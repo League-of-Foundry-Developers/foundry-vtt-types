@@ -346,8 +346,8 @@ declare global {
       transformation:
         | ((
             placeable: Document.ConfiguredObjectInstanceForName<DocumentName>,
-          ) => Document.UpdateDataFor<Document.ConfiguredClassForName<DocumentName>>)
-        | Document.UpdateDataFor<Document.ConfiguredClassForName<DocumentName>>,
+          ) => Document.UpdateDataForName<DocumentName>)
+        | Document.UpdateDataForName<DocumentName>,
       condition?: ((placeable: Document.ConfiguredObjectInstanceForName<DocumentName>) => boolean) | null,
       options?: PlaceablesLayer.UpdateAllOptions<DocumentName>,
     ): Promise<Array<Document.ConfiguredInstanceForName<DocumentName>>>;

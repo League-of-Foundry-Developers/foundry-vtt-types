@@ -1,8 +1,10 @@
 import { expectTypeOf } from "vitest";
 import type { Container, DisplayObject } from "pixi.js";
 import type Document from "../../../../../../src/foundry/common/abstract/document.d.mts";
-
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
+
+type CAL = AmbientLight.ConfiguredInstance;
+type CALDoc = AmbientLightDocument.ConfiguredInstance;
 
 class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
   static override get layerOptions() {
@@ -51,18 +53,18 @@ expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof AmbientLight>();
 expectTypeOf(layer.objects).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.preview).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.quadtree).toMatchTypeOf<CanvasQuadtree<PlaceableObject.Any> | null>();
-expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<AmbientLightDocument, Scene> | null>();
+expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<CALDoc, Scene> | null>();
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<number>();
-expectTypeOf(layer.hud).toEqualTypeOf<BasePlaceableHUD<AmbientLight> | null>();
-expectTypeOf(layer.placeables).toEqualTypeOf<AmbientLight[]>();
-expectTypeOf(layer.controlled).toEqualTypeOf<AmbientLight[]>();
+expectTypeOf(layer.hud).toEqualTypeOf<BasePlaceableHUD<CAL> | null>();
+expectTypeOf(layer.placeables).toEqualTypeOf<CAL[]>();
+expectTypeOf(layer.controlled).toEqualTypeOf<CAL[]>();
 expectTypeOf(layer.getDocuments()).toEqualTypeOf<
   EmbeddedCollection<AmbientLightDocument.ConfiguredInstance, Scene.ConfiguredInstance> | []
 >();
 
 expectTypeOf(layer.draw()).toEqualTypeOf<Promise<SomeLightLayer>>();
-declare const someLight: AmbientLightDocument.ConfiguredInstance;
-expectTypeOf(layer.createObject(someLight)).toEqualTypeOf<AmbientLight.ConfiguredInstance>();
+declare const someLight: CALDoc;
+expectTypeOf(layer.createObject(someLight)).toEqualTypeOf<CAL>();
 
 // @ts-expect-error - A LightLayer needs an AmbientLightDocument.
 layer.createObject({});
@@ -74,11 +76,11 @@ expectTypeOf(layer.tearDown()).toEqualTypeOf<Promise<SomeLightLayer>>();
 expectTypeOf(layer.activate()).toEqualTypeOf<SomeLightLayer>();
 expectTypeOf(layer.deactivate()).toEqualTypeOf<SomeLightLayer>();
 
-expectTypeOf(layer.get("id")).toEqualTypeOf<AmbientLight | undefined>();
+expectTypeOf(layer.get("id")).toEqualTypeOf<CAL | undefined>();
 
-expectTypeOf(layer.controlAll()).toEqualTypeOf<AmbientLight[]>();
-expectTypeOf(layer.controlAll({})).toEqualTypeOf<AmbientLight[]>();
-expectTypeOf(layer.controlAll({ releaseOthers: true })).toEqualTypeOf<AmbientLight[]>();
+expectTypeOf(layer.controlAll()).toEqualTypeOf<CAL[]>();
+expectTypeOf(layer.controlAll({})).toEqualTypeOf<CAL[]>();
+expectTypeOf(layer.controlAll({ releaseOthers: true })).toEqualTypeOf<CAL[]>();
 
 expectTypeOf(layer.releaseAll()).toEqualTypeOf<number>();
 expectTypeOf(layer.releaseAll({})).toEqualTypeOf<number>();
@@ -88,23 +90,23 @@ expectTypeOf(
   layer.rotateMany({
     angle: 270,
   }),
-).toEqualTypeOf<Promise<AmbientLight[]>>();
+).toEqualTypeOf<Promise<CAL[]>>();
 expectTypeOf(
   layer.rotateMany({
     delta: -30,
   }),
-).toEqualTypeOf<Promise<AmbientLight[]>>();
+).toEqualTypeOf<Promise<CAL[]>>();
 expectTypeOf(
   layer.rotateMany({ angle: 10, delta: 20, snap: 20, ids: ["abc", "def"], includeLocked: undefined }),
-).toEqualTypeOf<Promise<AmbientLight[]>>();
+).toEqualTypeOf<Promise<CAL[]>>();
 
-expectTypeOf(layer.moveMany()).toEqualTypeOf<Promise<AmbientLight[]> | undefined>();
-expectTypeOf(layer.moveMany({})).toEqualTypeOf<Promise<AmbientLight[]> | undefined>();
+expectTypeOf(layer.moveMany()).toEqualTypeOf<Promise<CAL[]> | undefined>();
+expectTypeOf(layer.moveMany({})).toEqualTypeOf<Promise<CAL[]> | undefined>();
 expectTypeOf(
   layer.moveMany({ dx: undefined, dy: -1, rotate: true, ids: ["abc", "def"], includeLocked: null }),
-).toEqualTypeOf<Promise<AmbientLight[]> | undefined>();
+).toEqualTypeOf<Promise<CAL[]> | undefined>();
 
-expectTypeOf(layer.undoHistory()).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
+expectTypeOf(layer.undoHistory()).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.deleteAll()).toEqualTypeOf<Promise<undefined | false | null>>();
 
 expectTypeOf(layer.storeHistory("create", { _id: someLight.id ?? "XXXXXSomeIDXXXXX" })).toEqualTypeOf<void>();
@@ -124,13 +126,13 @@ expectTypeOf(
 // @ts-expect-error - "new" is not a valid history type.
 layer.storeHistory("new", new AmbientLightDocument());
 
-expectTypeOf(layer.copyObjects()).toEqualTypeOf<AmbientLight[]>();
-expectTypeOf(layer.pasteObjects({ x: 10, y: 10 })).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
+expectTypeOf(layer.copyObjects()).toEqualTypeOf<CAL[]>();
+expectTypeOf(layer.pasteObjects({ x: 10, y: 10 })).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.pasteObjects({ x: 10, y: 10 }, { hidden: true, snap: false })).toEqualTypeOf<
   Promise<AmbientLightDocument[]>
 >();
-expectTypeOf(layer.pasteObjects({ x: 10, y: 10 }, { hidden: false })).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
-expectTypeOf(layer.pasteObjects({ x: 10, y: 10 }, { snap: true })).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
+expectTypeOf(layer.pasteObjects({ x: 10, y: 10 }, { hidden: false })).toEqualTypeOf<Promise<CALDoc[]>>();
+expectTypeOf(layer.pasteObjects({ x: 10, y: 10 }, { snap: true })).toEqualTypeOf<Promise<CALDoc[]>>();
 
 expectTypeOf(layer.selectObjects({ width: 200, height: 500 })).toEqualTypeOf<boolean>();
 expectTypeOf(
@@ -147,21 +149,22 @@ expectTypeOf(
   ),
 ).toEqualTypeOf<boolean>();
 
-declare function transformer(doc: AmbientLight): Partial<AmbientLightDocument>;
-declare function filter(doc: AmbientLight): boolean;
-expectTypeOf(layer.updateAll({ x: 10, y: 20 })).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
-expectTypeOf(layer.updateAll({ x: 10, y: 20 }, null, {})).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
-expectTypeOf(layer.updateAll({ x: 10, y: 20 }, filter)).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
+type t = Document.UpdateDataForName<"AmbientLight">;
+declare function transformer(placeable: CAL): Document.UpdateDataForName<"AmbientLight">;
+declare function filter(placeable: CAL): boolean;
+expectTypeOf(layer.updateAll({ x: 10, y: 20 })).toEqualTypeOf<Promise<CALDoc[]>>();
+expectTypeOf(layer.updateAll({ x: 10, y: 20 }, null, {})).toEqualTypeOf<Promise<CALDoc[]>>();
+expectTypeOf(layer.updateAll({ x: 10, y: 20 }, filter)).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.updateAll({ x: 10, y: 20 }, filter, { diff: false, noHook: false })).toEqualTypeOf<
   Promise<AmbientLightDocument[]>
 >();
-expectTypeOf(layer.updateAll(transformer)).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
-expectTypeOf(layer.updateAll(transformer, null, {})).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
-expectTypeOf(layer.updateAll(transformer, filter)).toEqualTypeOf<Promise<AmbientLightDocument[]>>();
+expectTypeOf(layer.updateAll(transformer)).toEqualTypeOf<Promise<CALDoc[]>>();
+expectTypeOf(layer.updateAll(transformer, null, {})).toEqualTypeOf<Promise<CALDoc[]>>();
+expectTypeOf(layer.updateAll(transformer, filter)).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.updateAll(transformer, filter, { diff: true, noHook: true })).toEqualTypeOf<
   Promise<AmbientLightDocument[]>
 >();
 
-// TODO: revisit after docs v2
-// // @ts-expect-error - An x and y coordinate is required
+// @ts-expect-error - An x and y coordinate is required
+// This actually currently errors just on unknown key, not x/y requiredness
 layer.updateAll({ no_light_data: 0 });
