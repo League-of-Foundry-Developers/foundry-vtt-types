@@ -1,13 +1,11 @@
-import type { EmptyObject } from "fvtt-types/utils";
+import type { HandleEmptyObject } from "fvtt-types/utils";
+import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
    * The Region Container.
    */
-  class RegionLayer<
-    DrawOptions extends RegionLayer.DrawOptions = RegionLayer.DrawOptions,
-    TearDownOptions extends PlaceablesLayer.TearDownOptions = PlaceablesLayer.TearDownOptions,
-  > extends PlaceablesLayer<"Region", DrawOptions, TearDownOptions> {
+  class RegionLayer extends PlaceablesLayer<"Region"> {
     #regionLayer: true;
 
     /**
@@ -53,7 +51,10 @@ declare global {
 
     protected override _deactivate(): void;
 
-    override storeHistory(type: PlaceablesLayer.HistoryEventType, data: EmptyObject[]): void;
+    override storeHistory<Operation extends Document.Database.Operation>(
+      type: Operation,
+      data: PlaceablesLayer.HistoryDataFor<Operation, "Region">,
+    ): void;
 
     /** @remarks Core overrides this returning an empty array to prevent copy & paste behavior. */
     override copyObjects(): [];
@@ -62,7 +63,7 @@ declare global {
 
     override getZIndex(): number;
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options?: HandleEmptyObject<RegionLayer.DrawOptions>): Promise<void>;
 
     /**
      * Highlight the shape or clear the highlight.
@@ -90,7 +91,7 @@ declare global {
 
   namespace RegionLayer {
     type AnyConstructor = typeof AnyRegionLayer;
-    type Any = AnyRegionLayer;
+    interface Any extends AnyRegionLayer {}
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
@@ -98,6 +99,6 @@ declare global {
   }
 }
 
-declare abstract class AnyRegionLayer extends RegionLayer<RegionLayer.DrawOptions, PlaceablesLayer.TearDownOptions> {
+declare abstract class AnyRegionLayer extends RegionLayer {
   constructor(arg0: never, ...args: never[]);
 }

@@ -1,13 +1,13 @@
 import { expectTypeOf } from "vitest";
-import BaseGrid = foundry.documents.BaseGrid;
+import type BaseGrid from "../../../../../../src/foundry/common/grid/base.d.mts";
 
-expectTypeOf(GridLayer.instance).toEqualTypeOf<GridLayer | undefined>();
+expectTypeOf(GridLayer.instance).toEqualTypeOf<GridLayer>();
 expectTypeOf(GridLayer.layerOptions).toEqualTypeOf<GridLayer.LayerOptions>();
 expectTypeOf(GridLayer.layerOptions.name).toEqualTypeOf<"grid">();
 
 const layer = new GridLayer();
 expectTypeOf(layer.options.name).toEqualTypeOf<"grid">();
-expectTypeOf(layer.grid).toEqualTypeOf<BaseGrid | undefined>();
+expectTypeOf(layer.grid).toEqualTypeOf<BaseGrid | null>();
 expectTypeOf(layer.highlight).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(layer.highlightLayers).toEqualTypeOf<Record<string, GridHighlight>>();
 expectTypeOf(layer.type).toEqualTypeOf<foundry.CONST.GRID_TYPES>();
@@ -30,20 +30,11 @@ expectTypeOf(layer.getSnappedPosition(10, 100, 2)).toEqualTypeOf<{ x: number; y:
 expectTypeOf(layer.getTopLeft(8, 17)).toEqualTypeOf<[number, number]>();
 expectTypeOf(layer.getCenter(8, 17)).toEqualTypeOf<[number, number]>();
 expectTypeOf(layer.measureDistance({ x: 8, y: 17 }, { x: 1100, y: 1200 })).toEqualTypeOf<number>();
-expectTypeOf(layer.measureDistances([{ ray: new Ray({ x: 8, y: 17 }, { x: 1100, y: 1200 }) }])).toEqualTypeOf<
-  number[]
->();
-expectTypeOf(layer.measureDistances([{ ray: new Ray({ x: 8, y: 17 }, { x: 1100, y: 1200 }) }], {})).toEqualTypeOf<
-  number[]
->();
-expectTypeOf(
-  layer.measureDistances([{ ray: new Ray({ x: 8, y: 17 }, { x: 1100, y: 1200 }) }], { gridSpaces: true }),
-).toEqualTypeOf<number[]>();
 expectTypeOf(layer.addHighlightLayer("some")).toEqualTypeOf<GridHighlight>();
 expectTypeOf(layer.getHighlightLayer("some")).toEqualTypeOf<GridHighlight | undefined>();
 expectTypeOf(layer.clearHighlightLayer("some")).toEqualTypeOf<void>();
 expectTypeOf(layer.destroyHighlightLayer("some")).toEqualTypeOf<void>();
-expectTypeOf(layer.highlightPosition("some")).toEqualTypeOf<void | false>();
+expectTypeOf(layer.highlightPosition("some", { x: 50, y: 50 })).toEqualTypeOf<void>();
 expectTypeOf(
   layer.highlightPosition("some", {
     x: 10,
@@ -53,5 +44,5 @@ expectTypeOf(
     alpha: 0.25,
     shape: new PIXI.Polygon(),
   }),
-).toEqualTypeOf<void | false>();
+).toEqualTypeOf<void>();
 expectTypeOf(layer.isNeighbor(0, 1, 2, 3)).toEqualTypeOf<boolean>();

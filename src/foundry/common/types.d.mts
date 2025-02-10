@@ -45,7 +45,7 @@ type Constructor = new (...args: any[]) => any;
 
 type Point = Canvas.Point;
 
-type PointArray = Canvas.PointArray;
+type PointArray = Canvas.PointTuple;
 
 type Rectangle = Canvas.Rectangle;
 

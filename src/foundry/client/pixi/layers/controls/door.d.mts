@@ -67,7 +67,7 @@ declare global {
   }
 
   namespace DoorControl {
-    type Any = AnyDoorControl;
+    interface Any extends AnyDoorControl {}
     type AnyConstructor = typeof AnyDoorControl;
   }
 }

@@ -1,13 +1,10 @@
-import type { NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
    * A CanvasLayer for displaying illumination visual effects
    */
-  class CanvasIlluminationEffects<
-    DrawOptions extends CanvasIlluminationEffects.DrawOptions = CanvasIlluminationEffects.DrawOptions,
-    TearDownOptions extends CanvasIlluminationEffects.TearDownOptions = CanvasIlluminationEffects.TearDownOptions,
-  > extends CanvasLayer<DrawOptions, TearDownOptions> {
+  class CanvasIlluminationEffects extends CanvasLayer {
     /**
      * The filter used to mask visual effects on this layer
      */
@@ -79,9 +76,9 @@ declare global {
 
     override render(renderer: PIXI.Renderer): void;
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<CanvasIlluminationEffects.DrawOptions>): Promise<void>;
 
-    protected override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<CanvasIlluminationEffects.TearDownOptions>): Promise<void>;
 
     /**
      * @deprecated since v11, will be removed in v13

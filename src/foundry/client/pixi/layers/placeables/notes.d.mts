@@ -1,13 +1,10 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { HandleEmptyObject, InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
    * The Notes Layer which contains Note canvas objects
    */
-  class NotesLayer<
-    DrawOptions extends NotesLayer.DrawOptions = NotesLayer.DrawOptions,
-    TearDownOptions extends PlaceablesLayer.TearDownOptions = PlaceablesLayer.TearDownOptions,
-  > extends PlaceablesLayer<"Note", DrawOptions, TearDownOptions> {
+  class NotesLayer extends PlaceablesLayer<"Note"> {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -42,7 +39,7 @@ declare global {
 
     override _deactivate(): void;
 
-    override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<NotesLayer.DrawOptions>): Promise<void>;
 
     /**
      * Register game settings used by the NotesLayer

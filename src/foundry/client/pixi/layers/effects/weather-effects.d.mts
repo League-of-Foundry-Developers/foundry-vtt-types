@@ -1,13 +1,10 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { HandleEmptyObject, InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
    * A CanvasLayer for displaying visual effects like weather, transitions, flashes, or more
    */
-  class WeatherEffects<
-    DrawOptions extends WeatherEffects.DrawOptions = WeatherEffects.DrawOptions,
-    TearDownOptions extends WeatherEffects.TearDownOptions = WeatherEffects.TearDownOptions,
-  > extends FullCanvasObjectMixin(CanvasLayer) {
+  class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -104,9 +101,9 @@ declare global {
 
     set zIndex(value: number);
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<WeatherEffects.DrawOptions>): Promise<void>;
 
-    protected override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<WeatherEffects.TearDownOptions>): Promise<void>;
 
     /**
      * Initialize the weather container from a weather config object.

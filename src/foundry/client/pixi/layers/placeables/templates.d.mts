@@ -1,14 +1,11 @@
-export {};
+import type { HandleEmptyObject } from "fvtt-types/utils";
 
 /**
  * This Canvas Layer provides a container for MeasuredTemplate objects.
  * @see {@link MeasuredTemplate}
  */
 declare global {
-  class TemplateLayer<
-    DrawOptions extends TemplateLayer.DrawOptions = TemplateLayer.DrawOptions,
-    TearDownOptions extends PlaceablesLayer.TearDownOptions = PlaceablesLayer.TearDownOptions,
-  > extends PlaceablesLayer<"MeasuredTemplate", DrawOptions, TearDownOptions> {
+  class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -37,7 +34,7 @@ declare global {
 
     override _deactivate(): void;
 
-    override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<TemplateLayer.DrawOptions>): Promise<void>;
 
     /**
      * Register game settings used by the TemplatesLayer
