@@ -1,4 +1,4 @@
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/extensions */
 import { expectTypeOf } from "vitest";
 import SchemaDefinition from "../../../../../src/foundry/common/prosemirror/schema/schema-definition.mjs";
 import type { MarkSpec, Node, NodeSpec } from "prosemirror-model";

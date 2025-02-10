@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import "./index.d.mts";
 
 declare global {

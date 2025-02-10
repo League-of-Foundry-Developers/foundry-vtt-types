@@ -1,4 +1,4 @@
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/extensions */
 import { expectTypeOf } from "vitest";
 import ProseMirrorDropDown from "../../../../src/foundry/common/prosemirror/dropdown.mjs";
 

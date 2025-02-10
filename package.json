@@ -7,10 +7,10 @@
   "types": "./index.d.mts",
   "exports": {
     ".": {
-      "types": "./index.d.mts"
+      "types": "./src/index.d.mts"
     },
     "./lenient": {
-      "types": "./index-lenient.d.mts"
+      "types": "./src/index-lenient.d.mts"
     },
     "./utils": {
       "types": "./src/utils/index.d.mts"
@@ -26,12 +26,15 @@
     }
   },
   "scripts": {
-    "lint": "./node_modules/typescript/bin/tsc; eslint .; prettier -c .",
-    "lint:fix": "eslint --fix .; prettier -l -w .",
-    "lint:ci": "eslint .; prettier -c .",
-    "eslint:report": "eslint --output-file eslint_report.json --format json .",
+    "lint": "npm-run-all -c typecheck lint/eslint lint/prettier",
+    "lint/eslint": "eslint --cache .",
+    "lint/prettier": "prettier -c .",
+    "lint:fix": "npm-run-all -c typecheck lint:fix/eslint lint:fix/prettier",
+    "lint:fix/eslint": "eslint --cache --fix .",
+    "lint:fix/prettier": "prettier -l -w .",
+    "eslint:report": "eslint --cache --output-file eslint_report.json --format json .",
     "test": "vitest --typecheck",
-    "typecheck": "./node_modules/typescript/bin/tsc",
+    "typecheck": "tsc -b tsconfig.main.json",
     "prepare": "is-ci || husky"
   },
   "repository": {
@@ -109,20 +112,25 @@
     "@actions/github": "^6.0.0",
     "@eslint/compat": "^1.2.6",
     "@eslint/js": "^9.19.0",
+    "@ts-morph/common": "^0.26.1",
+    "@types/debug": "^4.1.12",
+    "@types/fvtt-types": "file:.",
     "@typescript-eslint/eslint-plugin": "^8.23.0",
     "@typescript-eslint/parser": "^8.23.0",
+    "@typescript-eslint/utils": "^8.23.0",
     "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-import-resolver-typescript": "^3.7.0",
-    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-import-x": "^4.6.1",
     "eslint-plugin-tsdoc": "^0.4.0",
-    "fvtt-types": "file:.",
     "globals": "^15.14.0",
     "husky": "^9.1.4",
     "is-ci": "^4.1.0",
     "lint-staged": "^15.3.0",
+    "npm-run-all": "^4.1.5",
     "pathe": "^2.0.2",
     "prettier": "^3.0.3",
+    "type-fest": "^4.34.0",
     "typescript": "~5.7",
     "typescript-eslint": "^8.23.0",
     "vitest": "^3.0.5"

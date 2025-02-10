@@ -27,7 +27,7 @@ jobs:
             ${{ runner.OS }}-
       - run: npm ci --cache .npm --prefer-offline
       - run: npm run typecheck
-      - run: npm run lint:ci
+      - run: npm run lint
 
       # Note(LukeAbby): Currently the beta releases doesn't pass the tests.
       # This will be enabled again once tests are passing.

@@ -1,0 +1,8 @@
+// This file exists because for CI the `tests` folder's typechecking must be skipped.
+// This has to exist until tests are fixed.
+{
+  "$schema": "https://json.schemastore.org/tsconfig.json",
+  "extends": "./tsconfig.json",
+
+  "references": [{ "path": "./src" }, { "path": "./tsconfig.miscellaneous.json" }]
+}

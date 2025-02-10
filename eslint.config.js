@@ -3,44 +3,43 @@
 import globals from "globals";
 import { includeIgnoreFile } from "@eslint/compat";
 import js from "@eslint/js";
-import ts from "typescript-eslint";
+import tsESLint from "typescript-eslint";
 import tsParser from "@typescript-eslint/parser";
 import eslintConfigPrettier from "eslint-config-prettier";
 import tsdoc from "eslint-plugin-tsdoc";
-import * as importPlugin from "eslint-plugin-import";
+import importPlugin from "eslint-plugin-import-x";
 
 import * as path from "path";
+import * as url from "url";
+
+// import.meta.dirname isn't supported on enough Node versions.
+const dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 /**
- * @type {import("eslint").Linter.Config[]}
+ * @type {import("@typescript-eslint/utils").TSESLint.FlatConfig.ConfigArray}
  */
 const rules = [
-  includeIgnoreFile(path.resolve(import.meta.dirname, ".gitignore")),
+  includeIgnoreFile(path.resolve(dirname, ".gitignore")),
   js.configs.recommended,
-  ...ts.configs.strictTypeChecked,
-  ...ts.configs.stylisticTypeChecked,
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  importPlugin.flatConfigs?.recommended,
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  importPlugin.flatConfigs?.typescript,
+  ...tsESLint.configs.strictTypeChecked,
+  ...tsESLint.configs.stylisticTypeChecked,
+  importPlugin.flatConfigs.recommended,
+  importPlugin.flatConfigs.typescript,
   eslintConfigPrettier,
   {
     // This is excluded because if it weren't then it would mess with the type checking of the rest of the repo as it loosens the types of many types.
-    ignores: ["index-lenient.d.mts"],
+    ignores: ["src/index-lenient.d.mts"],
   },
   {
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        project: "./tsconfig.eslint.json",
-        tsconfigRootDir: import.meta.dirname,
+        projectService: true,
+        tsconfigRootDir: dirname,
         sourceType: "module",
       },
       ecmaVersion: 2025,
       sourceType: "module",
-      globals: {
-        ...globals.es2025,
-      },
     },
     plugins: {
       tsdoc,
@@ -99,11 +98,11 @@ const rules = [
       "@typescript-eslint/restrict-plus-operands": "off",
       "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
 
-      "import/consistent-type-specifier-style": ["warn", "prefer-top-level"],
-      "import/extensions": [
+      "import-x/consistent-type-specifier-style": ["warn", "prefer-top-level"],
+      "import-x/extensions": [
         "error",
         "always",
-        // TODO(LukeAbby): `eslint-plugin-import` needs to release a version with `pathGroupOverrides`
+        // TODO(LukeAbby): `eslint-plugin-import-x` needs to release a version with `pathGroupOverrides`
         // Once it does this can be enabled.
         // {
         //   checkTypeImports: true,
@@ -119,31 +118,31 @@ const rules = [
         //   ],
         // },
       ],
-      "import/first": "warn",
-      "import/newline-after-import": "warn",
-      "import/no-absolute-path": "error",
-      "import/no-amd": "error",
-      "import/no-anonymous-default-export": "warn",
-      "import/no-commonjs": "error",
-      "import/no-empty-named-blocks": "warn",
-      "import/no-extraneous-dependencies": "error",
-      "import/no-import-module-exports": "error",
-      "import/no-named-default": "warn",
+      "import-x/first": "warn",
+      "import-x/newline-after-import": "warn",
+      "import-x/no-absolute-path": "error",
+      "import-x/no-amd": "error",
+      "import-x/no-anonymous-default-export": "warn",
+      "import-x/no-commonjs": "error",
+      "import-x/no-empty-named-blocks": "warn",
+      "import-x/no-extraneous-dependencies": "error",
+      "import-x/no-import-module-exports": "error",
+      "import-x/no-named-default": "warn",
       // Some classes like `DataModel` are both default and named exports.
-      "import/no-named-as-default": "off",
-      "import/no-self-import": "error",
-      "import/no-unused-modules": "warn",
-      "import/no-useless-path-segments": "warn",
-      "import/no-webpack-loader-syntax": "error",
-      "import/no-named-as-default-member": "off",
+      "import-x/no-named-as-default": "off",
+      "import-x/no-self-import": "error",
+      "import-x/no-unused-modules": "warn",
+      "import-x/no-useless-path-segments": "warn",
+      "import-x/no-webpack-loader-syntax": "error",
+      "import-x/no-named-as-default-member": "off",
 
       "tsdoc/syntax": "warn",
     },
     settings: {
-      "import/parsers": {
+      "import-x/parsers": {
         "@typescript-eslint/parser": [".ts", ".cts", ".mts"],
       },
-      "import/resolver": {
+      "import-x/resolver": {
         typescript: {
           alwaysTryTypes: true,
         },
@@ -153,6 +152,11 @@ const rules = [
 
   {
     files: ["**/*.js"],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
     rules: {
       // JSDoc and TSDoc are mutually incompatible.
       // In theory we could use the JSDoc plugin for JS files but it has its own problems and there

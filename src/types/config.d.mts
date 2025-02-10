@@ -1,6 +1,6 @@
 import type { InterfaceToObject, MustConform } from "fvtt-types/utils";
 
-// eslint-disable-next-line import/extensions
+// eslint-disable-next-line import-x/extensions
 import * as configuration from "fvtt-types/configuration";
 
 declare global {

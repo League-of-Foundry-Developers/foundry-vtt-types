@@ -82,7 +82,7 @@ jobs:
       - run: npm ci --cache .npm --prefer-offline
 
       - name: Run Lints
-        run: npm run lint:ci
+        run: npm run lint
 
   test:
     # Can run untrusted code so disable all permissions.

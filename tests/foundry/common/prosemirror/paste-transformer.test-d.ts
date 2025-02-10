@@ -1,4 +1,4 @@
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/extensions */
 import { expectTypeOf } from "vitest";
 import ProseMirrorPasteTransformer from "../../../../src/foundry/common/prosemirror/paste-transformer.mjs";
 import { Slice } from "prosemirror-model";
