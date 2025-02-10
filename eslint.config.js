@@ -10,9 +10,10 @@ import tsdoc from "eslint-plugin-tsdoc";
 import importPlugin from "eslint-plugin-import-x";
 
 import * as path from "path";
+import * as url from "url";
 
 // import.meta.dirname isn't supported on enough Node versions.
-const dirname = path.dirname(new URL(import.meta.url).pathname);
+const dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 /**
  * @type {import("@typescript-eslint/utils").TSESLint.FlatConfig.ConfigArray}
