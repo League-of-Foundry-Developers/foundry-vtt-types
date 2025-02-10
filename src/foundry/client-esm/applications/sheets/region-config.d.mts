@@ -10,7 +10,7 @@ export default class RegionConfig<
   Configuration extends
     DocumentSheetV2.Configuration<RegionDocument.ConfiguredInstance> = DocumentSheetV2.Configuration<RegionDocument.ConfiguredInstance>,
   RenderOptions extends
-    HandlebarsApplicationMixin.DocSheetV2RenderOptions = HandlebarsApplicationMixin.DocSheetV2RenderOptions,
+    HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
   RegionDocument.ConfiguredInstance,
   RenderContext,

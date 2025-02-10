@@ -23,8 +23,8 @@ declare namespace HandlebarsApplicationMixin {
   interface RenderOptions {
     parts: string[];
   }
-  interface AppV2RenderOptions extends RenderOptions, ApplicationV2.RenderOptions {}
-  interface DocSheetV2RenderOptions extends RenderOptions, DocumentSheetV2.RenderOptions {}
+  interface ApplicationV2RenderOptions extends RenderOptions, ApplicationV2.RenderOptions {}
+  interface DocumentSheetV2RenderOptions extends RenderOptions, DocumentSheetV2.RenderOptions {}
 
   interface HandlebarsTemplatePart {
     /**

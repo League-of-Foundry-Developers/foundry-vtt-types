@@ -11,7 +11,7 @@ declare class UserConfig<
   Configuration extends
     DocumentSheetV2.Configuration<User.ConfiguredInstance> = DocumentSheetV2.Configuration<User.ConfiguredInstance>,
   RenderOptions extends
-    HandlebarsApplicationMixin.DocSheetV2RenderOptions = HandlebarsApplicationMixin.DocSheetV2RenderOptions,
+    HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
   User.ConfiguredInstance,
   RenderContext,

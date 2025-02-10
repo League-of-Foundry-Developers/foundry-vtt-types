@@ -11,7 +11,7 @@ declare class AmbientSoundConfig<
   Configuration extends
     DocumentSheetV2.Configuration<AmbientSoundDocument.ConfiguredInstance> = DocumentSheetV2.Configuration<AmbientSoundDocument.ConfiguredInstance>,
   RenderOptions extends
-    HandlebarsApplicationMixin.DocSheetV2RenderOptions = HandlebarsApplicationMixin.DocSheetV2RenderOptions,
+    HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
   AmbientSoundDocument.ConfiguredInstance,
   RenderContext,
