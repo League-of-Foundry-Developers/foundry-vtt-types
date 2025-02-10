@@ -1,5 +1,6 @@
 import type { DeepPartial, FixedInstanceType, Mixin } from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
+import type DocumentSheetV2 from "./document-sheet.d.mts";
 
 /**
  * Augment an Application class with [Handlebars](https://handlebarsjs.com) template rendering behavior.
@@ -19,10 +20,11 @@ declare namespace HandlebarsApplicationMixin {
     focus?: string | undefined;
   }
 
-  // TODO: How does this merge with DocumentSheetRenderOptions?
-  interface HandlebarsRenderOptions extends ApplicationV2.RenderOptions {
+  interface RenderOptions {
     parts: string[];
   }
+  interface ApplicationV2RenderOptions extends RenderOptions, ApplicationV2.RenderOptions {}
+  interface DocumentSheetV2RenderOptions extends RenderOptions, DocumentSheetV2.RenderOptions {}
 
   interface HandlebarsTemplatePart {
     /**
@@ -101,7 +103,7 @@ declare namespace HandlebarsApplicationMixin {
      */
     get parts(): Record<string, HTMLElement>;
 
-    protected _configureRenderOptions(options: DeepPartial<HandlebarsApplicationMixin.HandlebarsRenderOptions>): void;
+    protected _configureRenderOptions(options: DeepPartial<HandlebarsApplicationMixin.RenderOptions>): void;
 
     protected _preFirstRender(
       context: DeepPartial<HandlebarsApplication.RenderContextFor<this>>,
@@ -134,7 +136,7 @@ declare namespace HandlebarsApplicationMixin {
     protected _preparePartContext(
       partId: string,
       context: HandlebarsApplication.RenderContextFor<this>,
-      options: DeepPartial<HandlebarsApplicationMixin.HandlebarsRenderOptions>,
+      options: DeepPartial<HandlebarsApplicationMixin.RenderOptions>,
     ): Promise<HandlebarsApplication.RenderContextFor<this>>;
 
     /**
@@ -186,7 +188,7 @@ declare namespace HandlebarsApplicationMixin {
     protected _attachPartListeners(
       partId: string,
       htmlElement: HTMLElement,
-      options: DeepPartial<HandlebarsApplicationMixin.HandlebarsRenderOptions>,
+      options: DeepPartial<HandlebarsApplicationMixin.RenderOptions>,
     ): void;
   }
 }

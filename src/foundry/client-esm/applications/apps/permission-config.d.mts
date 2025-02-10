@@ -14,7 +14,8 @@ type PermissionConfigParts = ConformRecord<PermissionConfig.Parts, HandlebarsApp
 declare class PermissionConfig<
   RenderContext extends PermissionConfigRenderContext = PermissionConfigRenderContext,
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
-  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+  RenderOptions extends
+    HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   // placeholder private member to help subclassing
   #permissionConfig: true;
