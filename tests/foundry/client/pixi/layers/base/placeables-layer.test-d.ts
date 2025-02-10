@@ -149,21 +149,18 @@ expectTypeOf(
   ),
 ).toEqualTypeOf<boolean>();
 
-type t = Document.UpdateDataForName<"AmbientLight">;
 declare function transformer(placeable: CAL): Document.UpdateDataForName<"AmbientLight">;
 declare function filter(placeable: CAL): boolean;
 expectTypeOf(layer.updateAll({ x: 10, y: 20 })).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.updateAll({ x: 10, y: 20 }, null, {})).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.updateAll({ x: 10, y: 20 }, filter)).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.updateAll({ x: 10, y: 20 }, filter, { diff: false, noHook: false })).toEqualTypeOf<
-  Promise<AmbientLightDocument[]>
+  Promise<CALDoc[]>
 >();
 expectTypeOf(layer.updateAll(transformer)).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.updateAll(transformer, null, {})).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.updateAll(transformer, filter)).toEqualTypeOf<Promise<CALDoc[]>>();
-expectTypeOf(layer.updateAll(transformer, filter, { diff: true, noHook: true })).toEqualTypeOf<
-  Promise<AmbientLightDocument[]>
->();
+expectTypeOf(layer.updateAll(transformer, filter, { diff: true, noHook: true })).toEqualTypeOf<Promise<CALDoc[]>>();
 
 // @ts-expect-error - An x and y coordinate is required
 // This actually currently errors just on unknown key, not x/y requiredness
