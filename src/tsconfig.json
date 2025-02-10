@@ -3,7 +3,7 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "types": [],
-    "outDir": ".typescript-build/fvtt-types",
+    "outDir": "../.typescript-build/src",
     "composite": true,
     "noEmit": false,
     "emitDeclarationOnly": true
