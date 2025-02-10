@@ -1,26 +1,24 @@
 import { expectTypeOf } from "vitest";
 import Document = foundry.abstract.Document;
 
-expectTypeOf(foundry.documents.BaseDrawing.create({})).toEqualTypeOf<
-  Promise<Document.Stored<DrawingDocument> | undefined>
->();
-expectTypeOf(foundry.documents.BaseDrawing.createDocuments([])).toEqualTypeOf<
-  Promise<Document.Stored<DrawingDocument>[]>
->();
-expectTypeOf(foundry.documents.BaseDrawing.updateDocuments([])).toEqualTypeOf<Promise<DrawingDocument[]>>();
-expectTypeOf(foundry.documents.BaseDrawing.deleteDocuments([])).toEqualTypeOf<Promise<DrawingDocument[]>>();
+class BaseDrawing extends foundry.documents.BaseDrawing {}
 
-const drawing = await foundry.documents.BaseDrawing.create({}, { temporary: true });
+expectTypeOf(BaseDrawing.create({})).toEqualTypeOf<Promise<Document.Stored<DrawingDocument> | undefined>>();
+expectTypeOf(BaseDrawing.createDocuments([])).toEqualTypeOf<Promise<Document.Stored<DrawingDocument>[]>>();
+expectTypeOf(BaseDrawing.updateDocuments([])).toEqualTypeOf<Promise<DrawingDocument[]>>();
+expectTypeOf(BaseDrawing.deleteDocuments([])).toEqualTypeOf<Promise<DrawingDocument[]>>();
+
+const drawing = await BaseDrawing.create({}, { temporary: true });
 if (drawing) {
   expectTypeOf(drawing).toEqualTypeOf<DrawingDocument>();
   // @ts-expect-error Drawing is distinct from the DrawingDocument
   expectTypeOf(drawing).toEqualTypeOf<Drawing>();
 }
 
-expectTypeOf(new foundry.documents.BaseDrawing()).toEqualTypeOf<foundry.documents.BaseDrawing>();
-expectTypeOf(new foundry.documents.BaseDrawing({})).toEqualTypeOf<foundry.documents.BaseDrawing>();
+expectTypeOf(new BaseDrawing()).toEqualTypeOf<BaseDrawing>();
+expectTypeOf(new BaseDrawing({})).toEqualTypeOf<BaseDrawing>();
 expectTypeOf(
-  new foundry.documents.BaseDrawing({
+  new BaseDrawing({
     author: null,
     bezierFactor: null,
     fillAlpha: null,
@@ -44,9 +42,9 @@ expectTypeOf(
     z: null,
     _id: null,
   }),
-).toEqualTypeOf<foundry.documents.BaseDrawing>();
+).toEqualTypeOf<BaseDrawing>();
 expectTypeOf(
-  new foundry.documents.BaseDrawing({
+  new BaseDrawing({
     author: undefined,
     bezierFactor: undefined,
     fillAlpha: undefined,
@@ -70,11 +68,11 @@ expectTypeOf(
     z: undefined,
     _id: undefined,
   }),
-).toEqualTypeOf<foundry.documents.BaseDrawing>();
+).toEqualTypeOf<BaseDrawing>();
 
 expectTypeOf(
-  new foundry.documents.BaseDrawing({
-    author: new User({ name: "foo" }),
+  new BaseDrawing({
+    author: new User.implementation({ name: "foo" }),
     bezierFactor: 0,
     fillAlpha: 0.5,
     fillColor: "#FFFFFF",
@@ -102,4 +100,4 @@ expectTypeOf(
     z: 0,
     _id: "NlBhrPq62QrMErNh",
   }),
-).toEqualTypeOf<foundry.documents.BaseDrawing>();
+).toEqualTypeOf<BaseDrawing>();

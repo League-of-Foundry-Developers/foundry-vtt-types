@@ -61,14 +61,19 @@ import type ApplicationV2 from "./application.d.mts";
  * }).render({ force: true });
  * ```
  */
-declare class DialogV2 extends ApplicationV2<EmptyObject, DialogV2.Configuration> {
+declare class DialogV2<
+  RenderContext extends object = EmptyObject,
+  Configuration extends DialogV2.Configuration = DialogV2.Configuration,
+  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+> extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
   static override DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration>;
 
-  protected override _initializeApplicationOptions(
-    options: DeepPartial<DialogV2.Configuration>,
-  ): DialogV2.Configuration;
+  protected override _initializeApplicationOptions(options: DeepPartial<DialogV2.Configuration>): Configuration;
 
-  protected override _renderHTML(_context: unknown, _options: ApplicationV2.RenderOptions): Promise<HTMLFormElement>;
+  protected override _renderHTML(
+    _context: RenderContext,
+    _options: DeepPartial<RenderOptions>,
+  ): Promise<HTMLFormElement>;
 
   /**
    * Render configured buttons.
@@ -82,12 +87,12 @@ declare class DialogV2 extends ApplicationV2<EmptyObject, DialogV2.Configuration
    */
   protected _onSubmit(target: HTMLButtonElement, event: PointerEvent | SubmitEvent): Promise<DialogV2>;
 
-  protected override _onFirstRender(_context: EmptyObject, _options: DeepPartial<ApplicationV2.RenderOptions>): void;
+  protected override _onFirstRender(_context: RenderContext, _options: DeepPartial<RenderOptions>): void;
 
   protected override _replaceHTML(
     result: HTMLFormElement,
     content: HTMLElement,
-    _options: DeepPartial<ApplicationV2.RenderOptions>,
+    _options: DeepPartial<RenderOptions>,
   ): void;
 
   /**

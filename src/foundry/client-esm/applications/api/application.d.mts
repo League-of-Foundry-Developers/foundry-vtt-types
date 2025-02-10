@@ -1,11 +1,4 @@
-import type {
-  MustConform,
-  AnyObject,
-  DeepPartial,
-  EmptyObject,
-  InexactPartial,
-  MaybePromise,
-} from "../../../../utils/index.d.mts";
+import type { MustConform, AnyObject, DeepPartial, InexactPartial, MaybePromise } from "../../../../utils/index.d.mts";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
@@ -53,6 +46,11 @@ declare namespace ApplicationV2 {
     namespace Instance {
       type Any = Instance<any, any, any>;
     }
+  }
+
+  export interface RenderContext {
+    /** Tab data prepared from an entry in {@link ApplicationV2.TABS} */
+    tabs?: Record<string, Tab>;
   }
 
   export interface Configuration {
@@ -331,7 +329,8 @@ declare namespace ApplicationV2 {
 declare class ApplicationV2<
   // Foundry doesn't define this generic in its documentation but it's necessary
   // in fvtt-types to type `_prepareContext` etc.
-  RenderContext extends AnyObject = EmptyObject,
+  // `extends object` is to avoid having to call `InterfaceToObject` everywhere
+  RenderContext extends object = ApplicationV2.RenderContext,
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
 > extends EventEmitterMixin(Object) {
