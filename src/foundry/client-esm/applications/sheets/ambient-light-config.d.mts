@@ -10,7 +10,8 @@ declare class AmbientLightConfig<
   RenderContext extends AnyObject = InterfaceToObject<AmbientLightConfig.RenderContext>,
   Configuration extends
     DocumentSheetV2.Configuration<AmbientLightDocument.ConfiguredInstance> = DocumentSheetV2.Configuration<AmbientLightDocument.ConfiguredInstance>,
-  RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
+  RenderOptions extends
+    HandlebarsApplicationMixin.DocSheetV2RenderOptions = HandlebarsApplicationMixin.DocSheetV2RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
   AmbientLightDocument.ConfiguredInstance,
   RenderContext,
