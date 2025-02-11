@@ -5,8 +5,6 @@ declare global {
    * An abstract pattern for primary layers of the game canvas to implement
    */
   abstract class CanvasLayer extends PIXI.Container {
-    constructor();
-
     /**
      * Options for this layer instance.
      * @defaultValue `this.constructor.layerOptions`
@@ -77,7 +75,7 @@ declare global {
        */
       name: string;
 
-      baseClass: CanvasLayer.AnyConstructor;
+      baseClass: typeof CanvasLayer;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
