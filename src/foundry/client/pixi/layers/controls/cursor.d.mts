@@ -8,15 +8,15 @@ declare global {
     constructor(user: User.ConfiguredInstance);
 
     /**
+     * @defaultValue `{x: 0, y: 0}`
+     */
+    target: PIXI.IPointData;
+
+    /**
      * Update visibility and animations
      * @param user - The user
      */
     refreshVisibility(user: User.ConfiguredInstance): void;
-
-    /**
-     * @defaultValue `{x: 0, y: 0}`
-     */
-    target: { x: number; y: number };
 
     /**
      * Draw the user's cursor as a small dot with their user name attached as text
@@ -28,7 +28,7 @@ declare global {
      */
     protected _animate(): void;
 
-    override destroy(options?: PIXI.DisplayObject.DestroyOptions): void;
+    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
   }
 
   namespace Cursor {

@@ -1,4 +1,4 @@
-export {};
+import type { FixedInstanceType } from "../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -10,6 +10,12 @@ declare global {
     wall: Wall.ConfiguredInstance;
 
     /**
+     * @defaultValue `false`
+     * @remarks "Door controls are not visible by default"
+     */
+    override visible: boolean;
+
+    /**
      * The center of the wall which contains the door.
      */
     get center(): PIXI.Point;
@@ -19,16 +25,19 @@ declare global {
      */
     draw(): Promise<this>;
 
-    icon?: PIXI.Sprite;
-
+    /** @remarks Not initialized or even defined until set in {@link DoorControl#draw} */
     bg?: PIXI.Graphics;
 
+    /** @remarks Not initialized or even defined until set in {@link DoorControl#draw} */
+    icon?: PIXI.Sprite;
+
+    /** @remarks Not initialized or even defined until set in {@link DoorControl#draw} */
     border?: PIXI.Graphics;
 
     /**
      * Get the icon texture to use for the Door Control icon based on the door state
      */
-    protected _getTexture(): ReturnType<typeof getTexture>;
+    protected _getTexture(): LoadTexture.Return;
 
     reposition(): void;
 
@@ -43,32 +52,35 @@ declare global {
      * Handle mouse over events on a door control icon.
      * @param event - The originating interaction event
      */
-    protected _onMouseOver(event: PIXI.FederatedEvent): false | undefined;
+    protected _onMouseOver(event: PIXI.FederatedEvent): false | void;
 
     /**
      * Handle mouse out events on a door control icon.
      * @param event - The originating interaction event
      */
-    protected _onMouseOut(event: PIXI.FederatedEvent): false | undefined;
+    protected _onMouseOut(event: PIXI.FederatedEvent): false | void;
 
     /**
      * Handle left mouse down events on a door control icon.
      * This should only toggle between the OPEN and CLOSED states.
      * @param event - The originating interaction event
      */
-    protected _onMouseDown(event: PIXI.FederatedEvent): false | undefined | Promise<WallDocument.ConfiguredInstance>;
+    protected _onMouseDown(event: PIXI.FederatedEvent): false | void | Promise<WallDocument.ConfiguredInstance>;
 
     /**
      * Handle right mouse down events on the door control icon
      * This should toggle whether the door is LOCKED or CLOSED
      * @param event - The originating interaction event
      */
-    protected _onRightDown(event: PIXI.FederatedEvent): undefined | Promise<WallDocument.ConfiguredInstance>;
+    protected _onRightDown(event: PIXI.FederatedEvent): void | Promise<WallDocument.ConfiguredInstance>;
   }
 
   namespace DoorControl {
     interface Any extends AnyDoorControl {}
     type AnyConstructor = typeof AnyDoorControl;
+
+    type ImplementationClass = CONFIG["Canvas"]["doorControlClass"];
+    type Implementation = FixedInstanceType<ImplementationClass>;
   }
 }
 
