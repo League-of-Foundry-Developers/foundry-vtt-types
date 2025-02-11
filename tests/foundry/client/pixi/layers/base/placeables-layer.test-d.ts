@@ -17,8 +17,9 @@ class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
 }
 
 expectTypeOf(SomeLightLayer.instance).toEqualTypeOf<CanvasLayer | Container<DisplayObject> | undefined>();
-// FIXME: I think data model related error?
+// The following fails as the static `layerOptions` can't access the `DocumentName` type param
 // expectTypeOf(SomeLightLayer.layerOptions).toEqualTypeOf<PlaceablesLayer.LayerOptions<"AmbientLight">>();
+
 expectTypeOf(SomeLightLayer.layerOptions.objectClass).toEqualTypeOf<any>(); // TODO: Can this be typed to Document.AnyConstructor?
 expectTypeOf(PlaceablesLayer.documentName).toEqualTypeOf<
   | "AmbientLight"
@@ -35,6 +36,8 @@ expectTypeOf(PlaceablesLayer.documentName).toEqualTypeOf<
 expectTypeOf(PlaceablesLayer.placeableClass).toEqualTypeOf<PlaceableObject.AnyConstructor>();
 
 const layer = new SomeLightLayer();
+
+expectTypeOf(layer.options).toEqualTypeOf<PlaceablesLayer.LayerOptions<"AmbientLight">>();
 
 const firstHistoryEntry = layer.history[0]!;
 if (firstHistoryEntry.type === "create") {

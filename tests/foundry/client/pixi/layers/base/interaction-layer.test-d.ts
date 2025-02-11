@@ -24,7 +24,11 @@ const layer = new MyInteractionLayer();
 
 expectTypeOf(layer.name).toEqualTypeOf<string>();
 expectTypeOf(layer.hookName).toEqualTypeOf<"MyInteractionLayer">();
+
+expectTypeOf(layer.activate()).toEqualTypeOf<MyInteractionLayer>();
+expectTypeOf(layer.activate({})).toEqualTypeOf<MyInteractionLayer>();
 expectTypeOf(layer.activate({ tool: "foo" })).toEqualTypeOf<MyInteractionLayer>();
+
 expectTypeOf(layer["_activate"]()).toBeVoid();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(layer.getZIndex()).toBeNumber();

@@ -1,4 +1,4 @@
-import type { NullishProps, ValueOf } from "fvtt-types/utils";
+import type { Brand, FixedInstanceType, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -51,7 +51,7 @@ declare global {
     /**
      * The possible Ruler measurement states.
      */
-    static get STATES(): Ruler.STATES;
+    static get STATES(): Ruler.States;
 
     /**
      * Is the ruler ready for measure?
@@ -101,15 +101,15 @@ declare global {
     totalCost: number;
 
     /**
-     * The current state of the Ruler (one of {@link Ruler.STATES}).
+     * The current state of the Ruler (one of {@link Ruler.States}).
      */
-    get state(): ValueOf<Ruler.STATES>;
+    get state(): Ruler.STATES;
 
     /**
-     * The current state of the Ruler (one of {@link Ruler.STATES}).
+     * The current state of the Ruler (one of {@link Ruler.States}).
      * @defaultValue `Ruler.STATES.INACTIVE`
      */
-    protected _state: ValueOf<Ruler.STATES>;
+    protected _state: Ruler.STATES;
 
     /**
      * Is the Ruler being actively used to measure distance?
@@ -350,7 +350,7 @@ declare global {
      * Update a Ruler instance using data provided through the cursor activity socket
      * @param data - Ruler data with which to update the display
      */
-    update(data: Ruler.MeasurementData | null): void;
+    update(data?: Ruler.MeasurementData | null): void;
 
     /**
      * Handle the beginning of a new Ruler measurement workflow
@@ -394,13 +394,19 @@ declare global {
   }
 
   namespace Ruler {
+    interface Any extends AnyRuler {}
     type AnyConstructor = typeof AnyRuler;
 
-    interface STATES {
-      readonly INACTIVE: 0;
-      readonly STARTING: 1;
-      readonly MEASURING: 2;
-      readonly MOVING: 3;
+    type ImplementationClass = CONFIG["Canvas"]["rulerClass"];
+    type Implementation = FixedInstanceType<ImplementationClass>;
+
+    type STATES = Brand<number, "Ruler.STATES">;
+
+    interface States {
+      readonly INACTIVE: 0 & STATES;
+      readonly STARTING: 1 & STATES;
+      readonly MEASURING: 2 & STATES;
+      readonly MOVING: 3 & STATES;
     }
 
     interface MeasurementSegment {
@@ -453,7 +459,7 @@ declare global {
 
     interface MeasurementData {
       /** The state ({@link Ruler#state}) */
-      state: ValueOf<Ruler.STATES>;
+      state: Ruler.STATES;
 
       /** The token ID ({@link Ruler#token}) */
       token: string | null;

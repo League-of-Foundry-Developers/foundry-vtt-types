@@ -30,4 +30,13 @@ declare global {
 
     override destroy(options?: PIXI.DisplayObject.DestroyOptions): void;
   }
+
+  namespace Cursor {
+    interface Any extends AnyCursor {}
+    type AnyConstructor = typeof AnyCursor;
+  }
+}
+
+declare abstract class AnyCursor extends Cursor {
+  constructor(arg0: never, ...args: never[]);
 }

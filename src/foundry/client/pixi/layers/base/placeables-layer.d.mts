@@ -417,6 +417,7 @@ declare global {
 
     type DocumentNames = Document.PlaceableType;
 
+    /** @privateRemarks Only used in types in `CanvasDocument#layer` */
     type ConfiguredClassForName<Name extends DocumentNames> = CONFIG[Name]["layerClass"];
 
     interface DrawOptions extends InteractionLayer.DrawOptions {}
