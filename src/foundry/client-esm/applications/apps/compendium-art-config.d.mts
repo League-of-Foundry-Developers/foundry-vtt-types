@@ -16,7 +16,8 @@ type CompendiumArtConfigParts = ConformRecord<
 declare class CompendiumArtConfig<
   RenderContext extends CompendiumArtConfigRenderContext = CompendiumArtConfigRenderContext,
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
-  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+  RenderOptions extends
+    HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   // placeholder private member to help subclassing
   #compendiumArtConfig: true;
@@ -28,7 +29,9 @@ declare class CompendiumArtConfig<
   /*  Rendering                                   */
   /* -------------------------------------------- */
 
-  override _prepareContext(_options: DeepPartial<ApplicationV2.RenderOptions>): Promise<RenderContext>;
+  override _prepareContext(
+    _options: DeepPartial<HandlebarsApplicationMixin.ApplicationV2RenderOptions>,
+  ): Promise<RenderContext>;
 }
 
 declare namespace CompendiumArtConfig {
