@@ -147,7 +147,7 @@ declare global {
        * @remarks Can't be `null` or `undefined` because `options` is `mergeObject`ed with an object with this key,
        * and passing either to `Color.from` produces a `Color(NaN)`, which may cause breakage in subclasses or when
        * passed to PIXI methods
-       * @privateRemarks Typing this as `Ping.ConstructorOptions["color"]` breaks, because it things an `| undefined` has snuck in for unknown reasons
+       * @privateRemarks Typing this as `Ping.ConstructorOptions["color"]` breaks, because it thinks `| undefined` has snuck in for unknown reasons
        */
       color?: Color.Source;
     }
