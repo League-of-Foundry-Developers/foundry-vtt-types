@@ -1,10 +1,19 @@
-import type { AnyObject, DeepPartial, EmptyObject, SimpleMerge } from "fvtt-types/utils";
+import type { DeepPartial, SimpleMerge } from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
 
 declare namespace DocumentSheetV2 {
   type Any = DocumentSheetV2<any, any, any, any>;
 
   type AnyConstructor = typeof AnyDocumentSheetV2;
+
+  interface RenderContext<Document extends foundry.abstract.Document.Any = foundry.abstract.Document.Any>
+    extends ApplicationV2.RenderContext {
+    document: Document;
+    source: Document["_source"];
+    fields: Document["schema"]["fields"];
+    editable: boolean;
+    rootId: string;
+  }
 
   interface Configuration<Document extends foundry.abstract.Document.Any = foundry.abstract.Document.Any>
     extends ApplicationV2.Configuration {
@@ -43,7 +52,7 @@ declare namespace DocumentSheetV2 {
  */
 declare class DocumentSheetV2<
   Document extends foundry.abstract.Document.Any,
-  RenderContext extends AnyObject = EmptyObject,
+  RenderContext extends object = DocumentSheetV2.RenderContext<Document>,
   Configuration extends DocumentSheetV2.Configuration<Document> = DocumentSheetV2.Configuration<Document>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
