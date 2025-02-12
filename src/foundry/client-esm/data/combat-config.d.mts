@@ -1,5 +1,6 @@
 /**
  * A configuration class managing the Combat Turn Markers.
+ * @remarks TODO: Stub
  */
 declare class CombatConfiguration {
   constructor();

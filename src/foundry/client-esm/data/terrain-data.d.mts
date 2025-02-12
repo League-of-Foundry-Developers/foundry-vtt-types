@@ -4,6 +4,7 @@ type DataSchema = foundry.data.fields.DataSchema;
 
 /**
  * The base TerrainData.
+ * @remarks TODO: Stub
  */
 declare abstract class BaseTerrainData<Schema extends DataSchema> extends DataModel<Schema> {}
 
