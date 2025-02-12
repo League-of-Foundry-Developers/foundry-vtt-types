@@ -264,6 +264,15 @@ declare class Color extends Number {
   static fromRGB(rgb: Color.RGBColorVector): Color;
 
   /**
+   * Create a Color instance from an RGB normalized values.
+   * @param r - The red value
+   * @param g - The green value
+   * @param b - The blue value
+   * @returns The hex color instance
+   */
+  static fromRGBvalues(r: number, g: number, b: number): Color;
+
+  /**
    * Create a Color instance from an HSV array.
    * Conversion formula adapted from {@link http://en.wikipedia.org/wiki/HSV_color_space}.
    * Assumes h, s, and v are contained in the set [0, 1].
