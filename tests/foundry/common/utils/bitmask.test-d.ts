@@ -2,6 +2,8 @@ import { expectTypeOf } from "vitest";
 
 const b = new foundry.utils.BitMask();
 
+expectTypeOf(b.states).toEqualTypeOf<Readonly<Record<string, string>>>();
+expectTypeOf(b.isEmpty).toEqualTypeOf<boolean>();
 expectTypeOf(b.hasState("a")).toEqualTypeOf<boolean>();
 expectTypeOf(b.addState("a")).toEqualTypeOf<void>();
 expectTypeOf(b.removeState("a")).toEqualTypeOf<void>();

@@ -12,7 +12,7 @@ export default class BitMask extends Number {
    * The enum associated with this structure.
    * @readonly
    */
-  states: Record<string, string>;
+  states: Readonly<Record<string, string>>;
 
   /**
    * True if this bitmask is empty (no active states).
