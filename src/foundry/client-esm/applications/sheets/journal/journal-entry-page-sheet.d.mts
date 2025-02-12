@@ -15,13 +15,13 @@ declare namespace JournalEntryPageSheet {
 
   interface Configuration extends DocumentSheetV2.Configuration<JournalEntryPage.ConfiguredInstance> {
     /** Whether the sheet includes additional table of contents elements besides its title. */
-    includeTOC?: boolean;
+    includeTOC: boolean;
 
     /** Whether the sheet is in edit or view mode. */
-    mode?: "edit" | "view";
+    mode: "edit" | "view";
 
     /** Classes appended to the page's root element when embedded in another sheet in view mode. */
-    viewClasses?: "string";
+    viewClasses: string[];
   }
 }
 

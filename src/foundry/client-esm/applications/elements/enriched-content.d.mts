@@ -12,7 +12,7 @@ export default class HTMLEnrichedContentElement extends HTMLElement {
    */
   static observedAttributes: string[];
 
-  #private;
+  #private: true;
 
   /**
    * Invoke the enricher onRender callback when it is added to the DOM.

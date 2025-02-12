@@ -1,3 +1,4 @@
+import type { DeepPartial } from "../../../../utils/index.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
@@ -26,14 +27,28 @@ declare class ImagePopout<
   RenderContext extends ImagePopout.RenderContext = ImagePopout.RenderContext,
   Configuration extends ImagePopout.Configuration = ImagePopout.Configuration,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
-> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {}
+> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  constructor(options: DeepPartial<Configuration> & { src: string });
+}
 
 declare namespace ImagePopout {
   interface RenderContext extends ApplicationV2.RenderContext {}
 
   interface Configuration extends ApplicationV2.Configuration {
-    src?: string;
-    uuid: string | null;
+    /** The URL to the image or video file */
+    src: string;
+
+    /** Caption text to display below the image. */
+    caption: string;
+
+    /**
+     * The UUID of some related {@link foundry.abstract.Document|`Document`}.
+     * @defaultValue `null`
+     */
+    uuid: string | null | undefined;
+
+    /** Force showing or hiding the title */
+    showTitle?: boolean | null | undefined;
   }
 }
 

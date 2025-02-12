@@ -48,12 +48,12 @@ declare class ContextMenu {
   /**
    * A function to call when the context menu is opened.
    */
-  onOpen: ContextMenu.ContextMenuCallback;
+  onOpen: ContextMenu.ContextMenuCallback | null | undefined;
 
   /**
    * A function to call when the context menu is closed.
    */
-  onClose: ContextMenu.ContextMenuCallback;
+  onClose: ContextMenu.ContextMenuCallback | null | undefined;
 
   /**
    * Track which direction the menu is expanded in
@@ -148,7 +148,7 @@ declare namespace ContextMenu {
      * An identifier for a group this entry belongs to.
      * @defaultValue `_none`
      */
-    group?: string | undefined;
+    group?: string | null | undefined;
 
     /**
      * The function to call when the menu item is clicked. Receives the HTML element
@@ -159,8 +159,9 @@ declare namespace ContextMenu {
     /**
      * A function to call or boolean value to determine if this entry
      * appears in the menu.
+     * @remarks `null` equivalent to `false`
      */
-    condition?: boolean | ((target: JQuery) => boolean) | undefined;
+    condition?: boolean | ((target: JQuery) => boolean | null) | null | undefined;
   }
 
   /**
@@ -178,8 +179,9 @@ declare namespace ContextMenu {
     /**
      * Animate the context menu closing.
      * @defaultValue `true`
+     * @remarks `null` equivalent to `false`
      */
-    animate?: boolean;
+    animate?: boolean | null;
   }
 
   type ContextMenuCallback =
@@ -198,12 +200,12 @@ declare namespace ContextMenu {
     /**
      * A function to call when the context menu is opened.
      */
-    onOpen?: ContextMenuCallback;
+    onOpen?: ContextMenuCallback | null | undefined;
 
     /**
      * A function to call when the context menu is closed.
      */
-    onClose?: ContextMenuCallback;
+    onClose?: ContextMenuCallback | null | undefined;
   }
 }
 

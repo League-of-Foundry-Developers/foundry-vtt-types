@@ -3,7 +3,7 @@ import type AbstractFormInputElement from "../form-element.d.mts";
 declare namespace HTMLCodeMirrorElement {
   interface Options {
     /** The initial editor contents. */
-    value?: string;
+    value?: string | null | undefined;
   }
 }
 

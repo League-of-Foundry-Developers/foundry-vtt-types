@@ -56,6 +56,7 @@ declare class Notifications {
    * @param options   - Additional options which affect the notification
    *                    (default: `{}`)
    * @returns The ID of the notification (positive integer)
+   * @remarks `type` and `options` use parameter defaults so `null` causes an error
    */
   notify(message: string, type?: "info" | "warning" | "error", options?: Notifications.NotifyOptions): number;
 
@@ -64,6 +65,7 @@ declare class Notifications {
    * @param message - The content of the notification message
    * @param options - Notification options passed to the notify function
    * @returns The ID of the notification (positive integer)
+   * @remarks `options` use parameter defaults so `null` causes an error
    */
   info(message: string, options?: Notifications.NotifyOptions): number;
 
@@ -72,6 +74,7 @@ declare class Notifications {
    * @param message - The content of the notification message
    * @param options - Notification options passed to the notify function
    * @returns The ID of the notification (positive integer)
+   * @remarks `options` use parameter defaults so `null` causes an error
    */
   warn(message: string, options?: Notifications.NotifyOptions): number;
 
@@ -80,6 +83,7 @@ declare class Notifications {
    * @param message - The content of the notification message
    * @param options - Notification options passed to the notify function
    * @returns The ID of the notification (positive integer)
+   * @remarks `options` use parameter defaults so `null` causes an error
    */
   error(message: string, options?: Notifications.NotifyOptions): number;
 
@@ -124,8 +128,9 @@ declare namespace Notifications {
     /**
      * Whether to log the message to the console
      * @defaultValue `true`
+     * @remarks `null` equivalent to `false`
      */
-    console?: boolean;
+    console?: boolean | null | undefined;
   }
 
   interface Notification {
