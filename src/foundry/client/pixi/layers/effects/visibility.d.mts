@@ -1,4 +1,4 @@
-import type { EmptyObject, HandleEmptyObject, InexactPartial, ValueOf } from "fvtt-types/utils";
+import type { HandleEmptyObject, InexactPartial, IntentionalPartial } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -9,11 +9,13 @@ declare global {
   class CanvasVisibility extends CanvasLayer {
     /**
      * The currently revealed vision.
+     * @remarks Only `undefined` prior to first draw
      */
     vision: CanvasVisionMask.CanvasVisionContainer | undefined;
 
     /**
      * The exploration container which tracks exploration progress.
+     * @remarks Only `undefined` prior to first draw
      */
     explored: PIXI.Container | undefined;
 
@@ -21,6 +23,9 @@ declare global {
      * The optional visibility overlay sprite that should be drawn instead of the unexplored color in the fog of war.
      */
     visibilityOverlay: PIXI.Sprite | undefined;
+
+    /** @remarks Not defined or initialized until it's set on draw */
+    filter?: VisibilityFilter.ConfiguredInstance;
 
     /**
      * The active vision source data object
@@ -32,10 +37,7 @@ declare global {
      * }
      * ```
      */
-    visionModeData: {
-      source: foundry.canvas.sources.PointVisionSource.Any | null | undefined;
-      activeLightingOptions: VisionMode["_source"]["lighting"] | EmptyObject;
-    };
+    visionModeData: CanvasVisibility.VisionModeData;
 
     /**
      * Define whether each lighting layer is enabled, required, or disabled by this vision mode.
@@ -50,13 +52,7 @@ declare global {
      * }
      * ```
      */
-    lightingVisibility: {
-      illumination: CanvasVisibility.LightingVisibility;
-      background: CanvasVisibility.LightingVisibility;
-      coloration: CanvasVisibility.LightingVisibility;
-      darkness: CanvasVisibility.LightingVisibility;
-      any: boolean;
-    };
+    lightingVisibility: CanvasVisibility.LightingVisibility;
 
     /**
      * A status flag for whether the layer initialization workflow has succeeded.
@@ -65,13 +61,14 @@ declare global {
 
     /**
      * Indicates whether containment filtering is required when rendering vision into a texture
+     * @remarks Foundry marked `@internal`
      */
-    protected get needsContainment(): boolean;
+    get needsContainment(): boolean;
 
     /**
      * Does the currently viewed Scene support Token field of vision?
      */
-    //TODO: make `Scene.ConfiguredInstance["tokenVision"]` or equivalent when docsv2 is done
+    // TODO: make `Scene.Implementation["tokenVision"]` when docs v2 is done
     get tokenVision(): boolean;
 
     /**
@@ -83,11 +80,14 @@ declare global {
     /**
      * Optional overrides for exploration sprite dimensions.
      *
-     * @privateRemarks Foundry types this parameter as `FogTextureConfiguration`, and
-     * unlike the other place they used this type seeming in error, only `rect`'s
-     * `x, y, width, height` properties are accessed, so I'm assuming they meant Rectangle
+     * @privateRemarks Foundry types this parameter as `FogTextureConfiguration` in v12.331 which is plainly wrong even if it didn't not exist
+     * v13.335 types as `PIXI.Rectable | undefined`, but only x/y/width/height are ever accessed, and only then if this has been set to something
+     * other than `undefined`, and in fact nothing in core ever does.
      */
-    set explorationRect(rect: Canvas.Rectangle);
+    set explorationRect(rect: Canvas.Rectangle | undefined);
+
+    /** @remarks This getter doesn't actually exist, it's only here to correct the type inferred from the setter */
+    get explorationRect(): undefined;
 
     /**
      * Initialize all Token vision sources which are present on this layer
@@ -131,14 +131,15 @@ declare global {
      * @param options - Additional options which modify visibility testing.
      * @returns Whether the point is currently visible.
      */
-    testVisibility(point: Canvas.Point, options?: CanvasVisibility.CreateTestConfigOptions): boolean;
+    testVisibility(point: Canvas.Point, options?: CanvasVisibility.TestVisibilityOptions): boolean;
 
     /**
      * Create the visibility test config.
      * @param point   - The point in space to test, an object with coordinates x and y.
      * @param options - Additional options which modify visibility testing.
+     * @remarks Foundry marked `@internal`
      */
-    _createVisibilityTestConfig(
+    protected _createVisibilityTestConfig(
       point: Canvas.Point,
       options?: CanvasVisibility.CreateTestConfigOptions,
     ): CanvasVisibility.TestConfig;
@@ -154,13 +155,27 @@ declare global {
     interface Any extends AnyCanvasVisibility {}
     type AnyConstructor = typeof AnyCanvasVisibility;
 
-    type LightingVisibility = ValueOf<typeof VisionMode.LIGHTING_VISIBILITY>;
-
     interface DrawOptions extends CanvasLayer.DrawOptions {}
 
     interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 
     type TestObject = PlaceableObject.Any | null;
+
+    interface VisionModeData {
+      source: foundry.canvas.sources.PointVisionSource.Any | null | undefined;
+      activeLightingOptions: IntentionalPartial<VisionMode["lighting"]>;
+    }
+
+    interface LightingVisibility {
+      illumination: VisionMode.LIGHTING_VISIBILITY;
+      background: VisionMode.LIGHTING_VISIBILITY;
+      coloration: VisionMode.LIGHTING_VISIBILITY;
+      darkness: VisionMode.LIGHTING_VISIBILITY;
+      /** @remarks Only set `false` if all other keys are `VisionMode.LIGHTING_VISIBILITY.DISABLED` */
+      any: boolean;
+    }
+
+    interface TestVisibilityOptions extends CreateTestConfigOptions {}
 
     /** @internal */
     type _CreateTestConfigOptions = InexactPartial<{

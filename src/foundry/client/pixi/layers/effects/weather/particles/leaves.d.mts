@@ -17,4 +17,13 @@ declare global {
 
     override getParticleEmitters(): PIXI.particles.Emitter[];
   }
+
+  namespace AutumnLeavesWeatherEffect {
+    interface Any extends AnyAutumnLeavesWeatherEffect {}
+    type AnyConstructor = typeof AnyAutumnLeavesWeatherEffect;
+  }
+}
+
+declare abstract class AnyAutumnLeavesWeatherEffect extends AutumnLeavesWeatherEffect {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -1,4 +1,4 @@
-export {};
+import type { FixedInstanceType } from "../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -140,6 +140,9 @@ declare global {
   namespace FogManager {
     interface Any extends AnyFogManager {}
     type AnyConstructor = typeof AnyFogManager;
+
+    type ConfiguredClass = CONFIG["Canvas"]["fogManager"];
+    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
   }
 }
 

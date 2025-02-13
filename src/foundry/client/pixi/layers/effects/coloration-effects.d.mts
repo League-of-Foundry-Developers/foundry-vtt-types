@@ -12,8 +12,9 @@ declare global {
 
     /**
      * The filter used to mask visual effects on this layer
+     * @remarks Only `undefined` prior to first draw
      */
-    filter: VisualEffectsMaskingFilter;
+    filter: VisualEffectsMaskingFilter.ConfiguredInstance | undefined;
 
     /**
      * Clear coloration effects container
@@ -26,6 +27,7 @@ declare global {
   }
 
   namespace CanvasColorationEffects {
+    interface Any extends AnyCanvasColorationEffects {}
     type AnyConstructor = typeof AnyCanvasColorationEffects;
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}

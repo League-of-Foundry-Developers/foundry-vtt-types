@@ -339,8 +339,8 @@ declare global {
     interface Any extends AnyRuler {}
     type AnyConstructor = typeof AnyRuler;
 
-    type ImplementationClass = CONFIG["Canvas"]["rulerClass"];
-    type Implementation = FixedInstanceType<ImplementationClass>;
+    type ConfiguredClass = CONFIG["Canvas"]["rulerClass"];
+    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 
     /** @internal */
     type _ConstructorOptions = NullishProps<{

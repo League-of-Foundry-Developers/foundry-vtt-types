@@ -154,11 +154,14 @@ declare global {
       uniforms: fields.ObjectField;
     }>;
 
-    type LightingSchema = fields.SchemaField<{
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    type LightingSchema = {
       visibility: fields.NumberField;
       postProcessingModes: fields.ArrayField<fields.StringField>;
       uniforms: fields.ObjectField;
-    }>;
+    };
+
+    type LightingSchemaField = fields.SchemaField<LightingSchema>;
 
     type LightingLevels = Record<foundry.CONST.LIGHTING_LEVELS, foundry.CONST.LIGHTING_LEVELS>;
     type LightingMultipliers = Record<foundry.CONST.LIGHTING_LEVELS, number>;
@@ -172,9 +175,9 @@ declare global {
         uniforms: fields.ObjectField;
       }>;
       lighting: fields.SchemaField<{
-        background: LightingSchema;
-        coloration: LightingSchema;
-        illumination: LightingSchema;
+        background: LightingSchemaField;
+        coloration: LightingSchemaField;
+        illumination: LightingSchemaField;
         levels: fields.ObjectField<
           {
             validate: (o: unknown) => boolean;

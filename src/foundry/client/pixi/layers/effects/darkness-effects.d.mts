@@ -19,9 +19,12 @@ declare global {
   }
 
   namespace CanvasDarknessEffects {
+    interface Any extends AnyCanvasDarknessEffects {}
     type AnyConstructor = typeof AnyCanvasDarknessEffects;
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
   }
 }
 

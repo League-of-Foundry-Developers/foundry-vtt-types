@@ -79,8 +79,8 @@ declare global {
     interface Any extends AnyDoorControl {}
     type AnyConstructor = typeof AnyDoorControl;
 
-    type ImplementationClass = CONFIG["Canvas"]["doorControlClass"];
-    type Implementation = FixedInstanceType<ImplementationClass>;
+    type ConfiguredClass = CONFIG["Canvas"]["doorControlClass"];
+    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
   }
 }
 

@@ -73,7 +73,7 @@ declare global {
      *
      * Foundry marked `@private`
      */
-    protected _rulers: Record<string, Ruler.Implementation>;
+    protected _rulers: Record<string, Ruler.ConfiguredInstance>;
 
     /**
      * The positions of any offscreen pings we are tracking.
@@ -103,12 +103,12 @@ declare global {
     /**
      * A convenience accessor to the Ruler for the active game user
      */
-    get ruler(): Ruler.Implementation | null;
+    get ruler(): Ruler.ConfiguredInstance | null;
 
     /**
      * Get the Ruler display for a specific User ID
      */
-    getRulerForUser(userId: string): Ruler.Implementation | null;
+    getRulerForUser(userId: string): Ruler.ConfiguredInstance | null;
 
     protected override _draw(options: HandleEmptyObject<ControlsLayer.DrawOptions>): Promise<void>;
 

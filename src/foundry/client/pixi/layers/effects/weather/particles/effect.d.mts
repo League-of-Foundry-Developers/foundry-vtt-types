@@ -9,7 +9,7 @@ declare global {
      * @param options - Options passed to the getParticleEmitters method which can be used to customize values of the emitter configuration.
      *                  (default: `{}`)
      */
-    constructor(options: PIXI.particles.EmitterConfigV3);
+    constructor(options?: PIXI.particles.EmitterConfigV3);
 
     parent: PIXI.Container;
 
@@ -44,4 +44,13 @@ declare global {
      */
     stop(): void;
   }
+
+  namespace ParticleEffect {
+    interface Any extends AnyParticleEffect {}
+    type AnyConstructor = typeof AnyParticleEffect;
+  }
+}
+
+declare abstract class AnyParticleEffect extends ParticleEffect {
+  constructor(arg0: never, ...args: never[]);
 }
