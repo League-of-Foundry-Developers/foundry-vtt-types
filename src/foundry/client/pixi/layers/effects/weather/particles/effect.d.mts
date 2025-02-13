@@ -8,10 +8,9 @@ declare global {
     /**
      * @param options - Options passed to the getParticleEmitters method which can be used to customize values of the emitter configuration.
      *                  (default: `{}`)
+     * @remarks Despite being an `={}` parameter, construction will throw if it is passed or defaults to an empty object
      */
-    constructor(options?: PIXI.particles.EmitterConfigV3);
-
-    parent: PIXI.Container;
+    constructor(options: PIXI.particles.EmitterConfigV3);
 
     emitters: PIXI.particles.Emitter[];
 
@@ -28,11 +27,12 @@ declare global {
      * Subclasses can override this method for more advanced configurations.
      * @param options - Options provided to the ParticleEffect constructor which can be used to customize
      *                  configuration values for created emitters. (default: `{}`)
-     * @throws An error if `foundry.utils.isEmpty(options)`
+     * @throws If `options` is passed as or defaults to an empty object
+     * @remarks Despite its name, this method only takes a single config object and only returns a single-element array.
      */
     getParticleEmitters(options: PIXI.particles.EmitterConfigV3): PIXI.particles.Emitter[];
 
-    override destroy(options?: PIXI.DisplayObject.DestroyOptions): void;
+    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     /**
      * Begin animation for the configured emitters.
