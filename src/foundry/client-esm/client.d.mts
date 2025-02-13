@@ -8,11 +8,10 @@ import * as _CONST from "../common/constants.mjs";
 import * as _abstract from "../common/abstract/module.mjs";
 import * as _documents from "../common/documents/_module.mjs";
 import * as _packages from "../common/packages/module.mjs";
-import * as _utils from "../common/utils/module.mjs";
+// utils is exported here in the foundry file
 import * as _config from "../common/config.mjs";
 import * as _prosemirror from "../common/prosemirror/_module.mjs";
 import * as _grid from "../common/grid/_module.mjs";
-// import * as _types from "../common/types.mjs";
 
 // client
 import * as _applications from "./applications/_module.mjs";
@@ -21,6 +20,7 @@ import * as _canvas from "./canvas/_module.mjs";
 import * as _helpers from "./helpers/_module.mjs";
 import * as _data from "./data/_module.mjs";
 import * as _dice from "./dice/_module.mjs";
+import * as _utils from "./utils/_module.mjs"; // moved here to match other client-esm exports
 
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.
@@ -95,7 +95,7 @@ export * as dice from "./dice/_module.mjs";
 /**
  * Shared importable types.
  */
-export * as types from "../common/types.mjs";
+// export * as types from "./types.mjs";
 
 declare global {
   namespace foundry {
