@@ -1,23 +1,17 @@
-export {};
+import type { HandleEmptyObject } from "fvtt-types/utils";
 
 declare global {
   /**
    * A layer of background alteration effects which change the appearance of the primary group render texture.
    */
-  class CanvasBackgroundAlterationEffects<
-    DrawOptions extends CanvasBackgroundAlterationEffects.DrawOptions = CanvasBackgroundAlterationEffects.DrawOptions,
-    TearDownOptions extends
-      CanvasBackgroundAlterationEffects.TearDownOptions = CanvasBackgroundAlterationEffects.TearDownOptions,
-  > extends CanvasLayer<DrawOptions, TearDownOptions> {
+  class CanvasBackgroundAlterationEffects extends CanvasLayer {
     /**
      * A collection of effects which provide background vision alterations.
-     * @defaultValue `vision.sortableChildren = true`
      */
     vision: PIXI.Container;
 
     /**
      * A collection of effects which provide background preferred vision alterations.
-     * @defaultValue `visionPreferred.sortableChildren = true`
      */
     visionPreferred: PIXI.Container;
 
@@ -26,9 +20,11 @@ declare global {
      */
     lighting: PIXI.Container;
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<CanvasBackgroundAlterationEffects.DrawOptions>): Promise<void>;
 
-    protected override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(
+      options: HandleEmptyObject<CanvasBackgroundAlterationEffects.TearDownOptions>,
+    ): Promise<void>;
 
     /**
      * Clear background alteration effects vision and lighting containers
@@ -37,6 +33,7 @@ declare global {
   }
 
   namespace CanvasBackgroundAlterationEffects {
+    interface Any extends AnyCanvasBackgroundAlterationEffects {}
     type AnyConstructor = typeof AnyCanvasBackgroundAlterationEffects;
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}

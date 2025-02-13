@@ -1,13 +1,10 @@
-export {};
+import type { HandleEmptyObject } from "fvtt-types/utils";
 
 declare global {
   /**
    * A CanvasLayer for displaying coloration visual effects
    */
-  class CanvasColorationEffects<
-    DrawOptions extends CanvasColorationEffects.DrawOptions = CanvasColorationEffects.DrawOptions,
-    TearDownOptions extends CanvasColorationEffects.TearDownOptions = CanvasColorationEffects.TearDownOptions,
-  > extends CanvasLayer<DrawOptions, TearDownOptions> {
+  class CanvasColorationEffects extends CanvasLayer {
     /**
      * @defaultValue `true`
      */
@@ -15,20 +12,22 @@ declare global {
 
     /**
      * The filter used to mask visual effects on this layer
+     * @remarks Only `undefined` prior to first draw
      */
-    filter: VisualEffectsMaskingFilter;
+    filter: VisualEffectsMaskingFilter.ConfiguredInstance | undefined;
 
     /**
      * Clear coloration effects container
      */
     clear(): void;
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<CanvasColorationEffects.DrawOptions>): Promise<void>;
 
-    protected override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<CanvasColorationEffects.TearDownOptions>): Promise<void>;
   }
 
   namespace CanvasColorationEffects {
+    interface Any extends AnyCanvasColorationEffects {}
     type AnyConstructor = typeof AnyCanvasColorationEffects;
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}

@@ -995,8 +995,6 @@ declare global {
     namespace DisplayObject {
       interface Any extends AnyPIXIDisplayObject {}
       type AnyConstructor = typeof AnyPIXIDisplayObject;
-
-      type DestroyOptions = _PIXI.IDestroyOptions | boolean;
     }
 
     export import Filter = _PIXI.Filter;

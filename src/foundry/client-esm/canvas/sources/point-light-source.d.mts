@@ -31,7 +31,7 @@ declare class PointLightSource<
    * @param config - The visibility test configuration
    * @returns Is the target object visible to this source?
    */
-  testVisibility(config?: CanvasVisibilityTestConfig): boolean;
+  testVisibility(config?: CanvasVisibility.TestConfig): boolean;
 
   /**
    * Can this LightSource theoretically detect a certain object based on its properties?

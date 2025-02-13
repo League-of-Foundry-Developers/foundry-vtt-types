@@ -530,7 +530,7 @@ declare global {
      * @param origin  - Point to display Ping at
      * @param options - Additional options to configure how the ping is drawn.
      */
-    ping(origin: Canvas.Point, options?: PingOptions): Promise<boolean>;
+    ping(origin: Canvas.Point, options?: Ping.ConstructorOptions): Promise<boolean>;
 
     /**
      * Create a BlurFilter instance and register it to the array for updates when the zoom level changes.
@@ -779,9 +779,9 @@ declare global {
      * A single point, expressed as an array \[x,y\]
      * @remarks Copied from `resources/app/common/types.mjs`
      */
-    type PointArray = [x: number, y: number];
+    type PointTuple = [x: number, y: number];
 
-    type PairOfPointsArray = [x0: number, y0: number, x1: number, y1: number];
+    type PairOfPointsTuple = [x0: number, y0: number, x1: number, y1: number];
 
     /**
      * A standard rectangle interface.

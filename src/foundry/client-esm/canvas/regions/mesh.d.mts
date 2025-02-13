@@ -55,7 +55,7 @@ declare class RegionMesh extends PIXI.Container {
   /** Tests if a point is indie this RegionMesh */
   containsPoint(point: PIXI.IPointData): boolean;
 
-  override destroy(options?: PIXI.DisplayObject.DestroyOptions): void;
+  override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 }
 
 export default RegionMesh;
