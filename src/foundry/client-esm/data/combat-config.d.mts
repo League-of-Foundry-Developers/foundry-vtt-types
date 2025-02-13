@@ -24,27 +24,29 @@ declare namespace CombatConfiguration {
     /**
      * Turn marker configuration.
      */
-    turnMarker: {
-      /**
-       * Whether the turn marker is enabled.
-       */
-      enabled: boolean;
+    turnMarker: TurnMarker;
+  }
 
-      /**
-       * The file path for the turn marker icon.
-       */
-      path: string;
+  interface TurnMarker {
+    /**
+     * Whether the turn marker is enabled.
+     */
+    enabled: boolean;
 
-      /**
-       * The identifier for the default turn marker animation.
-       */
-      animation: string;
+    /**
+     * The file path for the turn marker icon.
+     */
+    path: string;
 
-      /**
-       * Tint the turn marker according to token disposition.
-       */
-      disposition: string;
-    };
+    /**
+     * The identifier for the default turn marker animation.
+     */
+    animation: string;
+
+    /**
+     * Tint the turn marker according to token disposition.
+     */
+    disposition: string;
   }
 }
 
