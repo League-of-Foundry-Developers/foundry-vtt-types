@@ -47,7 +47,11 @@ declare class Notifications {
    * @returns The ID of the notification (positive integer)
    * @remarks `type` and `options` use parameter defaults so `null` causes an error
    */
-  notify<T extends Notifications.Type = "info">(message: string, type?: T, options?: Notifications.NotifyOptions): Readonly<Notifications.Notification<T>>;
+  notify<T extends Notifications.Type = "info">(
+    message: string,
+    type?: T,
+    options?: Notifications.NotifyOptions,
+  ): Readonly<Notifications.Notification<T>>;
 
   /**
    * Display a notification with the "info" type
@@ -134,34 +138,38 @@ declare namespace Notifications {
     /**
      * Whether to escape the values of `format`
      * @defaultValue `true`
+     * @remarks `null` equivalent to `false`
      */
-    escape?: boolean;
+    escape?: boolean | null | undefined;
 
     /**
      * Whether to clean the provided message string as untrusted user input.
      * No cleaning is applied if `format` is passed and `escape` is true or `localize` is true and `format` is not passed.
      * @defaultValue `true`
+     * @remarks `null` equivalent to `false`
      */
-    clean?: boolean;
+    clean?: boolean | null | undefined;
 
     /**
      * A mapping of formatting strings passed to Localization#format
      */
-    format?: Record<string, string>;
+    format?: Record<string, string> | null | undefined;
   }
 
   interface NotifyOptions extends FormatOptions {
     /**
      * Should the notification be permanently displayed until dismissed
      * @defaultValue `false`
+     * @remarks Overridden as `true` if `progress` is true. `null` equivalent to `false`
      */
-    permanent?: boolean;
+    permanent?: boolean | null | undefined;
 
     /**
      * Does this Notification include a progress bar?
      * @defaultValue `false`
+     * @remarks `null` equivalent to `false`
      */
-    progress?: boolean;
+    progress?: boolean | null | undefined;
 
     /**
      * Whether to localize the message content before displaying it
@@ -181,18 +189,19 @@ declare namespace Notifications {
     /**
      * An update to the string message
      */
-    message?: string;
+    message?: string | null | undefined;
 
     /**
      * Localize updates to presented progress text
      * @defaultValue `false`
+     * @remarks `null` equivalent to `false`
      */
-    localize?: boolean;
+    localize?: boolean | null | undefined;
 
     /**
      * An update to the completion percentage
      */
-    pct?: number;
+    pct?: number | null | undefined;
   }
 }
 
