@@ -304,7 +304,7 @@ export function isNewerVersion(v1: number | string, v0: number | string): boolea
  * @param value - The value to test
  * @returns Is the value empty-like?
  */
-export function isEmpty(value: undefined | null | unknown[] | object | Set<unknown> | Map<unknown, unknown>): boolean;
+export function isEmpty(value: unknown): boolean;
 
 export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
   DeleteByObjectKeys<T, U, M>,
@@ -470,7 +470,7 @@ export function timeSince(timeStamp: Date | string): string;
  * @param options - Additional options. (default: `{}`)
  * @returns
  */
-export function formatFileSize(size: number, options: FormatFileSizeOptions): string;
+export function formatFileSize(size: number, options?: FormatFileSizeOptions): string;
 
 interface FormatFileSizeOptions {
   /**
