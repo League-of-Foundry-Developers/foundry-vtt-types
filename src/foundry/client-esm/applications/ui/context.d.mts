@@ -1,5 +1,10 @@
 import type ApplicationV2 from "../api/application.d.mts";
 
+declare global {
+  /** @deprecated Use foundry.applications.ui.ContextMenu.Entry */
+  type ContextMenuEntry = ContextMenu.Entry<JQuery>;
+}
+
 /**
  * Display a right-click activated Context Menu which provides a dropdown menu of options.
  * A ContextMenu is constructed by designating a parent HTML container and a target selector.

@@ -2865,7 +2865,7 @@ declare global {
       nav: SceneNavigation.AnyConstructor;
 
       /** @defaultValue `Notifications` */
-      notifications: Notifications.AnyConstructor;
+      notifications: foundry.applications.ui.Notifications.AnyConstructor;
 
       /** @defaultValue `ActorDirectory` */
       actors: ActorDirectory.AnyConstructor;

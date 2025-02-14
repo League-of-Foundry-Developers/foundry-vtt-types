@@ -75,9 +75,9 @@ declare global {
 
     protected override _getFolderDragData(folderId: string): { type: "Folder"; uuid: string };
 
-    protected override _getFolderContextOptions(): ContextMenuEntry[];
+    protected override _getFolderContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
   }
 
   namespace Compendium {

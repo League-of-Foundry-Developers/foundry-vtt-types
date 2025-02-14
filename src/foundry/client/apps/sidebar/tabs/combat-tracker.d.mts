@@ -145,7 +145,7 @@ declare global {
      * @returns The Combatant entry context options
      * @internal
      */
-    protected _getEntryContextOptions(): ContextMenuEntry[];
+    protected _getEntryContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
 
     /**
      * Display a dialog which prompts the user to enter a new initiative value for a Combatant

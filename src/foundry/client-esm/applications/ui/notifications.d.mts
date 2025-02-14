@@ -47,7 +47,7 @@ declare class Notifications {
    * @returns The ID of the notification (positive integer)
    * @remarks `type` and `options` use parameter defaults so `null` causes an error
    */
-  notify(message: string, type?: Notifications.Type, options?: Notifications.NotifyOptions): Notifications.Notification;
+  notify<T extends Notifications.Type = "info">(message: string, type?: T, options?: Notifications.NotifyOptions): Readonly<Notifications.Notification<T>>;
 
   /**
    * Display a notification with the "info" type
@@ -56,7 +56,7 @@ declare class Notifications {
    * @returns The ID of the notification (positive integer)
    * @remarks `options` use parameter defaults so `null` causes an error
    */
-  info(message: string, options?: Notifications.NotifyOptions): Notifications.Notification;
+  info(message: string, options?: Notifications.NotifyOptions): Readonly<Notifications.Notification<"info">>;
 
   /**
    * Display a notification with the "warning" type
@@ -65,7 +65,7 @@ declare class Notifications {
    * @returns The ID of the notification (positive integer)
    * @remarks `options` use parameter defaults so `null` causes an error
    */
-  warn(message: string, options?: Notifications.NotifyOptions): Notifications.Notification;
+  warn(message: string, options?: Notifications.NotifyOptions): Readonly<Notifications.Notification<"warning">>;
 
   /**
    * Display a notification with the "error" type
@@ -74,7 +74,7 @@ declare class Notifications {
    * @returns The ID of the notification (positive integer)
    * @remarks `options` use parameter defaults so `null` causes an error
    */
-  error(message: string, options?: Notifications.NotifyOptions): Notifications.Notification;
+  error(message: string, options?: Notifications.NotifyOptions): Readonly<Notifications.Notification<"error">>;
 
   /**
    * Display a notification with the "success" type.
@@ -82,23 +82,27 @@ declare class Notifications {
    * @param options - Notification options passed to the notify function
    * @returns The registered notification
    */
-  success(message: string, options?: Notifications.NotifyOptions): Notifications.Notification;
+  success(message: string, options?: Notifications.NotifyOptions): Readonly<Notifications.Notification<"success">>;
+
+  /**
+   * Update the progress of the notification.
+   * @param notification - A Notification or ID to update
+   * @param update       - An incremental progress update
+   */
+  update(notification: Notifications.Notification | number, update: Notifications.UpdateOptions): void;
 
   /**
    * Remove the notification linked to the ID.
-   * @param id - The ID of the notification
+   * @param id - The Notification or ID to remove
    */
-  remove(id: number): void;
+  remove(id: Notifications.Notification | number): void;
 
   /**
    * Clear all notifications.
    */
   clear(): void;
 
-  /**
-   * Retrieve a pending notification from the queue and display it
-   */
-  protected fetch(): void;
+  #private: true;
 }
 
 declare abstract class AnyNotifications extends Notifications {
@@ -111,7 +115,42 @@ declare namespace Notifications {
 
   type Type = "info" | "warning" | "error" | "success";
 
-  interface NotifyOptions {
+  interface Notification<T extends Type = Type> {
+    id: number;
+    type: T;
+    timestamp: number;
+    message: string;
+    permanent: boolean;
+    console: boolean;
+    active: boolean;
+    progress: boolean;
+    pct: number;
+    element?: HTMLLIElement;
+    remove?: () => void;
+    update?: (pct: number) => void;
+  }
+
+  interface FormatOptions {
+    /**
+     * Whether to escape the values of `format`
+     * @defaultValue `true`
+     */
+    escape?: boolean;
+
+    /**
+     * Whether to clean the provided message string as untrusted user input.
+     * No cleaning is applied if `format` is passed and `escape` is true or `localize` is true and `format` is not passed.
+     * @defaultValue `true`
+     */
+    clean?: boolean;
+
+    /**
+     * A mapping of formatting strings passed to Localization#format
+     */
+    format?: Record<string, string>;
+  }
+
+  interface NotifyOptions extends FormatOptions {
     /**
      * Should the notification be permanently displayed until dismissed
      * @defaultValue `false`
@@ -136,39 +175,24 @@ declare namespace Notifications {
      * @remarks `null` equivalent to `false`
      */
     console?: boolean | null | undefined;
-
-    /**
-     * Whether to escape the values of `format`
-     * @defaultValue `true`
-     */
-    escape?: boolean;
-
-    /**
-     * Whether to clean the provided message string as untrusted user input.
-     * No cleaning is applied if `format` is passed and `escape` is true or `localize` is true and `format` is not passed.
-     * @defaultValue `true`
-     */
-    clean?: boolean;
-
-    /**
-     * A mapping of formatting strings passed to Localization#format
-     */
-    format?: Record<string, string>;
   }
 
-  interface Notification {
-    id: number;
-    type: "info" | "warning" | "error" | "success";
-    timestamp: number;
-    message: string;
-    permanent: boolean;
-    console: boolean;
-    active: boolean;
-    progress: boolean;
-    pct: number;
-    element?: HTMLLIElement;
-    remove?: () => void;
-    update?: (pct: number) => void;
+  interface UpdateOptions extends FormatOptions {
+    /**
+     * An update to the string message
+     */
+    message?: string;
+
+    /**
+     * Localize updates to presented progress text
+     * @defaultValue `false`
+     */
+    localize?: boolean;
+
+    /**
+     * An update to the completion percentage
+     */
+    pct?: number;
   }
 }
 
