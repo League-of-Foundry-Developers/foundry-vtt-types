@@ -49,7 +49,11 @@ declare global {
    * Critical server-side startup messages which need to be displayed to the client.
    */
   let MESSAGES:
-    | { type: foundry.applications.ui.Notifications.Type; message: string; options: foundry.applications.ui.Notifications.NotifyOptions }[]
+    | {
+        type: foundry.applications.ui.Notifications.Type;
+        message: string;
+        options: foundry.applications.ui.Notifications.NotifyOptions;
+      }[]
     | null;
 
   /**
@@ -61,7 +65,7 @@ declare global {
   let ui: {
     /**
      * @remarks
-     * Initialized whenever a {@link ContextMenu} is opened, deleted when it's closed again.
+     * Initialized whenever a {@link foundry.applications.ui.ContextMenu | `ContextMenu`} is opened, deleted when it's closed again.
      */
     context?: foundry.applications.ui.ContextMenu;
 

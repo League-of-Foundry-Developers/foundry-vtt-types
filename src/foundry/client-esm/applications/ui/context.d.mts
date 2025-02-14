@@ -10,7 +10,7 @@ declare global {
  * A ContextMenu is constructed by designating a parent HTML container and a target selector.
  * An Array of menuItems defines the entries of the menu which is displayed.
  */
-declare class ContextMenu<UsesJQuery extends boolean = true, Fixed extends boolean = false> {
+declare class ContextMenu<UsesJQuery extends boolean = true> {
   /**
    * @param element   - The containing HTML element within which the menu is positioned
    * @param selector  - A CSS selector which activates the context menu.
@@ -21,7 +21,7 @@ declare class ContextMenu<UsesJQuery extends boolean = true, Fixed extends boole
     element: JQuery | HTMLElement,
     selector: string | null | undefined,
     menuItems: ContextMenu.Entry<ContextMenu.CallbackToTarget<UsesJQuery>>[],
-    options?: ContextMenu.ConstructorOptions<UsesJQuery, Fixed>,
+    options?: ContextMenu.ConstructorOptions<UsesJQuery>,
   );
 
   /**
@@ -33,32 +33,32 @@ declare class ContextMenu<UsesJQuery extends boolean = true, Fixed extends boole
    * @param options   - Additional options to configure context menu initialization.
    *                    (default: `"EntryContext"`)
    */
-  static create<UsesJQuery extends boolean = true, Fixed extends boolean = false>(
+  static create<UsesJQuery extends boolean = true>(
     app: Application.Any,
     html: JQuery | HTMLElement,
     selector: string,
     menuItems: ContextMenu.Entry<ContextMenu.CallbackToTarget<UsesJQuery>>[],
-    options?: ContextMenu.CreateOptions<UsesJQuery, Fixed>,
-  ): ContextMenu<UsesJQuery, Fixed>;
+    options?: ContextMenu.CreateOptions<UsesJQuery>,
+  ): ContextMenu<UsesJQuery>;
 
   /**
    * @deprecated - `ContextMenu.create` no longer accepts the menuItems argument for ApplicationV2 applications.
    * Instead it calls the `_get${hookName}Options` function, which defaults to `_getEntryContextOptions`
    */
-  static create<UsesJQuery extends boolean = true, Fixed extends boolean = false>(
+  static create<UsesJQuery extends boolean = true>(
     app: ApplicationV2.Any,
     html: JQuery | HTMLElement,
     selector: string,
     menuItems: ContextMenu.Entry<ContextMenu.CallbackToTarget<UsesJQuery>>[],
-    options?: ContextMenu.CreateOptions<UsesJQuery, Fixed>,
-  ): ContextMenu<UsesJQuery, Fixed>;
+    options?: ContextMenu.CreateOptions<UsesJQuery>,
+  ): ContextMenu<UsesJQuery>;
 
-  static create<UsesJQuery extends boolean = true, Fixed extends boolean = false>(
+  static create<UsesJQuery extends boolean = true>(
     app: ApplicationV2.Any,
     html: JQuery | HTMLElement,
     selector: string,
-    options?: ContextMenu.CreateOptions<UsesJQuery, Fixed>,
-  ): ContextMenu<UsesJQuery, Fixed>;
+    options?: ContextMenu.CreateOptions<UsesJQuery>,
+  ): ContextMenu<UsesJQuery>;
 
   /**
    * The menu element.
@@ -99,7 +99,7 @@ declare class ContextMenu<UsesJQuery extends boolean = true, Fixed extends boole
   /**
    * Whether to position the context menu as a fixed element, or inject it into the target.
    */
-  get fixed(): Fixed;
+  get fixed(): boolean;
 
   /**
    * The parent HTML element to which the context menu is attached
@@ -270,7 +270,7 @@ declare namespace ContextMenu {
      */
     (target: HTMLElement) => void;
 
-  interface ConstructorOptions<UsesJQuery extends boolean = true, Fixed extends boolean = false> {
+  interface ConstructorOptions<UsesJQuery extends boolean = true> {
     /**
      * Optionally override the triggering event which can spawn the menu. If the menu is using a fixed position, this event must be a MouseEvent
      * @defaultValue `"contextmenu"`
@@ -297,11 +297,10 @@ declare namespace ContextMenu {
      * If true, the context menu is given a fixed position rather than being injected into the target.
      * @defaultValue `false`
      */
-    fixed?: Fixed;
+    fixed?: boolean | undefined;
   }
 
-  interface CreateOptions<UsesJQuery extends boolean = true, Fixed extends boolean = false>
-    extends ConstructorOptions<UsesJQuery, Fixed> {
+  interface CreateOptions<UsesJQuery extends boolean = true> extends ConstructorOptions<UsesJQuery> {
     /**
      * The name of the hook to call
      * @defaultValue `EntryContext`
