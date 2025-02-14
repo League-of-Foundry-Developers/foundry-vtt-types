@@ -4,6 +4,7 @@
  * displayed at once. Each notification is displayed for {@link Notifications.LIFETIME_MS} milliseconds before being
  * removed, at which point further notifications are pulled from the queue.
  *
+ *
  * @example Displaying Notification Messages
  * ```js
  * ui.notifications.error("This is a permanent error message", {permanent: true});
@@ -20,7 +21,6 @@
  * progress.update({pct: 0.75, message: "Stay on target!"});
  * progress.update({pct: 1.0, message: "Done!"});
  * ```
- * @remarks TODO: Copied from client/ui, not fully updated to v13
  */
 declare class Notifications {
   constructor();
@@ -32,21 +32,10 @@ declare class Notifications {
   static MAX_ACTIVE: number;
 
   /**
-   * Submitted notifications which are queued for display
-   * @defaultValue `[]`
+   * The maximum number of active notifications.
+   * @defaultValue `5000`
    */
-  queue: Notifications.Notification[];
-
-  /**
-   * Notifications which are currently displayed
-   * @defaultValue `[]`
-   */
-  active: JQuery[];
-
-  /**
-   * Initialize the Notifications system by displaying any system-generated messages which were passed from the server.
-   */
-  initialize(): void;
+  static LIFETIME_MS: number;
 
   /**
    * Push a new notification into the queue
@@ -58,7 +47,11 @@ declare class Notifications {
    * @returns The ID of the notification (positive integer)
    * @remarks `type` and `options` use parameter defaults so `null` causes an error
    */
-  notify(message: string, type?: "info" | "warning" | "error", options?: Notifications.NotifyOptions): number;
+  notify<T extends Notifications.Type = "info">(
+    message: string,
+    type?: T,
+    options?: Notifications.NotifyOptions,
+  ): Readonly<Notifications.Notification<T>>;
 
   /**
    * Display a notification with the "info" type
@@ -67,7 +60,7 @@ declare class Notifications {
    * @returns The ID of the notification (positive integer)
    * @remarks `options` use parameter defaults so `null` causes an error
    */
-  info(message: string, options?: Notifications.NotifyOptions): number;
+  info(message: string, options?: Notifications.NotifyOptions): Readonly<Notifications.Notification<"info">>;
 
   /**
    * Display a notification with the "warning" type
@@ -76,7 +69,7 @@ declare class Notifications {
    * @returns The ID of the notification (positive integer)
    * @remarks `options` use parameter defaults so `null` causes an error
    */
-  warn(message: string, options?: Notifications.NotifyOptions): number;
+  warn(message: string, options?: Notifications.NotifyOptions): Readonly<Notifications.Notification<"warning">>;
 
   /**
    * Display a notification with the "error" type
@@ -85,23 +78,35 @@ declare class Notifications {
    * @returns The ID of the notification (positive integer)
    * @remarks `options` use parameter defaults so `null` causes an error
    */
-  error(message: string, options?: Notifications.NotifyOptions): number;
+  error(message: string, options?: Notifications.NotifyOptions): Readonly<Notifications.Notification<"error">>;
+
+  /**
+   * Display a notification with the "success" type.
+   * @param message - The content of the success message
+   * @param options - Notification options passed to the notify function
+   * @returns The registered notification
+   */
+  success(message: string, options?: Notifications.NotifyOptions): Readonly<Notifications.Notification<"success">>;
+
+  /**
+   * Update the progress of the notification.
+   * @param notification - A Notification or ID to update
+   * @param update       - An incremental progress update
+   */
+  update(notification: Notifications.Notification | number, update: Notifications.UpdateOptions): void;
 
   /**
    * Remove the notification linked to the ID.
-   * @param id - The ID of the notification
+   * @param id - The Notification or ID to remove
    */
-  remove(id: number): void;
+  remove(id: Notifications.Notification | number): void;
 
   /**
    * Clear all notifications.
    */
   clear(): void;
 
-  /**
-   * Retrieve a pending notification from the queue and display it
-   */
-  protected fetch(): void;
+  #private: true;
 }
 
 declare abstract class AnyNotifications extends Notifications {
@@ -112,12 +117,59 @@ declare namespace Notifications {
   type Any = AnyNotifications;
   type AnyConstructor = typeof AnyNotifications;
 
-  interface NotifyOptions {
+  type Type = "info" | "warning" | "error" | "success";
+
+  interface Notification<T extends Type = Type> {
+    id: number;
+    type: T;
+    timestamp: number;
+    message: string;
+    permanent: boolean;
+    console: boolean;
+    active: boolean;
+    progress: boolean;
+    pct: number;
+    element?: HTMLLIElement;
+    remove?: () => void;
+    update?: (pct: number) => void;
+  }
+
+  interface FormatOptions {
+    /**
+     * Whether to escape the values of `format`
+     * @defaultValue `true`
+     * @remarks `null` equivalent to `false`
+     */
+    escape?: boolean | null | undefined;
+
+    /**
+     * Whether to clean the provided message string as untrusted user input.
+     * No cleaning is applied if `format` is passed and `escape` is true or `localize` is true and `format` is not passed.
+     * @defaultValue `true`
+     * @remarks `null` equivalent to `false`
+     */
+    clean?: boolean | null | undefined;
+
+    /**
+     * A mapping of formatting strings passed to Localization#format
+     */
+    format?: Record<string, string> | null | undefined;
+  }
+
+  interface NotifyOptions extends FormatOptions {
     /**
      * Should the notification be permanently displayed until dismissed
      * @defaultValue `false`
+     * @remarks Overridden as `true` if `progress` is true. `null` equivalent to `false`
      */
-    permanent?: boolean;
+    permanent?: boolean | null | undefined;
+
+    /**
+     * Does this Notification include a progress bar?
+     * @defaultValue `false`
+     * @remarks `null` equivalent to `false`
+     */
+    progress?: boolean | null | undefined;
 
     /**
      * Whether to localize the message content before displaying it
@@ -133,12 +185,23 @@ declare namespace Notifications {
     console?: boolean | null | undefined;
   }
 
-  interface Notification {
-    message: string;
-    type: "info" | "warning" | "error";
-    timestamp: number;
-    permanent: boolean;
-    console: boolean;
+  interface UpdateOptions extends FormatOptions {
+    /**
+     * An update to the string message
+     */
+    message?: string | null | undefined;
+
+    /**
+     * Localize updates to presented progress text
+     * @defaultValue `false`
+     * @remarks `null` equivalent to `false`
+     */
+    localize?: boolean | null | undefined;
+
+    /**
+     * An update to the completion percentage
+     */
+    pct?: number | null | undefined;
   }
 }
 

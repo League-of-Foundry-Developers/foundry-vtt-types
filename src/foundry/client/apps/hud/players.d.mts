@@ -51,7 +51,7 @@ declare global {
     /**
      * Return the default context options available for the Players application
      */
-    protected _getUserContextOptions(): ContextMenuEntry[];
+    protected _getUserContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
 
     /**
      * Toggle display of the Players hud setting for whether or not to display offline players
