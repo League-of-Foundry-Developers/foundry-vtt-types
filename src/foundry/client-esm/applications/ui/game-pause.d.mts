@@ -18,3 +18,5 @@ declare namespace GamePause {
     spin: boolean;
   }
 }
+
+export default GamePause;

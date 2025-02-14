@@ -5,7 +5,7 @@ import type ApplicationV2 from "../api/application.d.mts";
  * A ContextMenu is constructed by designating a parent HTML container and a target selector.
  * An Array of menuItems defines the entries of the menu which is displayed.
  */
-declare class ContextMenu<Element extends JQuery | HTMLElement, Fixed extends boolean = false> {
+declare class ContextMenu<JQCallback extends boolean = true, Fixed extends boolean = false> {
   /**
    * @param element   - The containing HTML element within which the menu is positioned
    * @param selector  - A CSS selector which activates the context menu.
@@ -13,10 +13,10 @@ declare class ContextMenu<Element extends JQuery | HTMLElement, Fixed extends bo
    * @param options   - Additional options to configure the context menu.
    */
   constructor(
-    element: Element,
+    element: JQuery | HTMLElement,
     selector: string | null | undefined,
-    menuItems: ContextMenu.Entry<Element>[],
-    options?: ContextMenu.ConstructorOptions<Element, Fixed>,
+    menuItems: ContextMenu.Entry<ContextMenu.CallbackToTarget<JQCallback>>[],
+    options?: ContextMenu.ConstructorOptions<JQCallback, Fixed>,
   );
 
   /**
@@ -28,30 +28,30 @@ declare class ContextMenu<Element extends JQuery | HTMLElement, Fixed extends bo
    * @param options   - Additional options to configure context menu initialization.
    *                    (default: `"EntryContext"`)
    */
-  static create<Element extends JQuery | HTMLElement, Fixed extends boolean = false>(
+  static create<JQCallback extends boolean = true, Fixed extends boolean = false>(
     app: Application.Any,
-    html: Element,
+    html: JQuery | HTMLElement,
     selector: string,
-    menuItems: ContextMenu.Entry<Element>[],
-    options?: ContextMenu.ConstructorOptions<Element, Fixed>,
-  ): ContextMenu<Element, Fixed>;
+    menuItems: ContextMenu.Entry<ContextMenu.CallbackToTarget<JQCallback>>[],
+    options?: ContextMenu.CreateOptions<JQCallback, Fixed>,
+  ): ContextMenu<JQCallback, Fixed>;
   /**
    * @deprecated - `ContextMenu.create` no longer accepts the menuItems argument for ApplicationV2 applications.
    * Instead it calls the `_get${hookName}Options` function, which defaults to `_getEntryContextOptions`
    */
-  static create<Element extends JQuery | HTMLElement, Fixed extends boolean = false>(
+  static create<JQCallback extends boolean = true, Fixed extends boolean = false>(
     app: ApplicationV2.Any,
-    html: Element,
+    html: JQuery | HTMLElement,
     selector: string,
-    menuItems: ContextMenu.Entry<Element>[],
-    options?: ContextMenu.ConstructorOptions<Element, Fixed>,
-  ): ContextMenu<Element, Fixed>;
-  static create<Element extends JQuery | HTMLElement, Fixed extends boolean = false>(
+    menuItems: ContextMenu.Entry<ContextMenu.CallbackToTarget<JQCallback>>[],
+    options?: ContextMenu.CreateOptions<JQCallback, Fixed>,
+  ): ContextMenu<JQCallback, Fixed>;
+  static create<JQCallback extends boolean = true, Fixed extends boolean = false>(
     app: ApplicationV2.Any,
-    html: Element,
+    html: JQuery | HTMLElement,
     selector: string,
-    options?: ContextMenu.ConstructorOptions<Element, Fixed>,
-  ): ContextMenu<Element, Fixed>;
+    options?: ContextMenu.CreateOptions<JQCallback, Fixed>,
+  ): ContextMenu<JQCallback, Fixed>;
 
   /**
    * The menu element.
@@ -71,7 +71,7 @@ declare class ContextMenu<Element extends JQuery | HTMLElement, Fixed extends bo
   /**
    * The array of menu items to render.
    */
-  menuItems: ContextMenu.Entry<Element>[];
+  menuItems: ContextMenu.Entry<ContextMenu.CallbackToTarget<JQCallback>>[];
 
   /**
    * A function to call when the context menu is opened.
@@ -263,12 +263,12 @@ declare namespace ContextMenu {
      */
     (target: HTMLElement) => void;
 
-  interface ConstructorOptions<Element extends JQuery | HTMLElement, Fixed> {
+  interface ConstructorOptions<JQCallback extends boolean = true, Fixed extends boolean = false> {
     /**
-     * The name of the hook to call
-     * @defaultValue `EntryContext`
+     * Optionally override the triggering event which can spawn the menu. If the menu is using a fixed position, this event must be a MouseEvent
+     * @defaultValue `"contextmenu"`
      */
-    hookName?: string;
+    eventName?: string;
 
     /**
      * A function to call when the context menu is opened.
@@ -284,7 +284,7 @@ declare namespace ContextMenu {
      * If true, callbacks will be passed jQuery objects instead of HTMLElement instances
      * @defaultValue `true`
      */
-    jQuery?: (Element extends JQuery ? true : never) | (Element extends HTMLElement ? false : never);
+    jQuery?: JQCallback;
 
     /**
      * If true, the context menu is given a fixed position rather than being injected into the target.
@@ -292,6 +292,19 @@ declare namespace ContextMenu {
      */
     fixed?: Fixed;
   }
+
+  interface CreateOptions<JQCallback extends boolean = true, Fixed extends boolean = false>
+    extends ConstructorOptions<JQCallback, Fixed> {
+    /**
+     * The name of the hook to call
+     * @defaultValue `EntryContext`
+     */
+    hookName?: string;
+  }
+
+  type CallbackToTarget<JQCallback extends boolean> =
+    | (JQCallback extends true ? JQuery : never)
+    | (JQCallback extends false ? HTMLElement : never);
 }
 
 export default ContextMenu;
