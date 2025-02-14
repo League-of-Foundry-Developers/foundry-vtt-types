@@ -1,4 +1,3 @@
-import "./context.d.mts";
 import "./dialog.d.mts";
 import "./drag.d.mts";
 import "./dragdrop.d.mts";
@@ -6,7 +5,6 @@ import "./editor.d.mts";
 import "./filepicker.d.mts";
 import "./filter.d.mts";
 import "./forms.d.mts";
-import "./notifications.d.mts";
 import "./prosemirror.d.mts";
 import "./secrets.d.mts";
 import "./tabs.d.mts";

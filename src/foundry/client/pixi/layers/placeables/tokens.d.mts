@@ -128,7 +128,7 @@ declare global {
     protected _onDropActorData(
       event: DragEvent,
       data: TokenLayer.DropData,
-    ): Promise<ReturnType<Notifications["warn"]> | false | TokenDocument.ConfiguredInstance>;
+    ): Promise<ReturnType<foundry.applications.ui.Notifications["warn"]> | false | TokenDocument.ConfiguredInstance>;
 
     //TODO: use configured ruler type once it exists
     protected override _onClickLeft(event: PIXI.FederatedEvent): void; // ReturnType<CONFIG.Canvas["rulerClass"]["_onClickLeft"]>;

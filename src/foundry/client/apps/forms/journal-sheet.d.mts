@@ -259,7 +259,7 @@ declare global {
      * Get the set of ContextMenu options which should be used for JournalEntryPages in the sidebar.
      * @returns The Array of context options passed to the ContextMenu instance.
      */
-    protected _getEntryContextOptions(): ContextMenuEntry[];
+    protected _getEntryContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
 
     protected override _updateObject(event: Event, formData: JournalSheet.FormData): Promise<unknown>;
 

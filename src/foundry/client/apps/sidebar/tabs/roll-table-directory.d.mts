@@ -8,7 +8,7 @@ declare global {
   class RollTableDirectory extends DocumentDirectory<"RollTable"> {
     static override documentName: "RollTable";
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
   }
 
   namespace RollTableDirectory {

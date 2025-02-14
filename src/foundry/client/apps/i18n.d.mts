@@ -186,7 +186,7 @@ declare global {
      * {{localize "MYMODULE.GREETING" name="Andrew"}} <!-- Hello, this is my module! -->
      * ```
      */
-    format(stringId: string, data?: Record<string, unknown>): string;
+    format(stringId: string, data?: Record<string, string>): string;
 
     /**
      * Retreive list formatter configured to the world's language setting.
