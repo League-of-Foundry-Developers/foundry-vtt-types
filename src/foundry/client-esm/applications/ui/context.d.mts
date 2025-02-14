@@ -10,7 +10,7 @@ declare global {
  * A ContextMenu is constructed by designating a parent HTML container and a target selector.
  * An Array of menuItems defines the entries of the menu which is displayed.
  */
-declare class ContextMenu<UsesJQuery extends boolean = true> {
+declare class ContextMenu<UsesJQuery extends boolean | undefined = true> {
   /**
    * @param element   - The containing HTML element within which the menu is positioned
    * @param selector  - A CSS selector which activates the context menu.
@@ -20,7 +20,7 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
   constructor(
     element: JQuery | HTMLElement,
     selector: string | null | undefined,
-    menuItems: ContextMenu.Entry<ContextMenu.CallbackToTarget<UsesJQuery>>[],
+    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
     options?: ContextMenu.ConstructorOptions<UsesJQuery>,
   );
 
@@ -37,27 +37,56 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
     app: Application.Any,
     html: JQuery | HTMLElement,
     selector: string,
-    menuItems: ContextMenu.Entry<ContextMenu.CallbackToTarget<UsesJQuery>>[],
-    options?: ContextMenu.CreateOptions<UsesJQuery>,
+    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
+    options: ContextMenu.CreateOptions<UsesJQuery>,
   ): ContextMenu<UsesJQuery>;
+
+  /**
+   * @deprecated "ContextMenu is changing to no longer transact jQuery objects.
+   * You may temporarily pass the jQuery option to nominate a behavior.
+   * In v14 the default will become false."
+   */
+  static create(
+    app: Application.Any,
+    html: JQuery | HTMLElement,
+    selector: string,
+    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<true>>[],
+    options?: ContextMenu.CreateOptions<true | undefined>,
+  ): ContextMenu<true>;
 
   /**
    * @deprecated - `ContextMenu.create` no longer accepts the menuItems argument for ApplicationV2 applications.
    * Instead it calls the `_get${hookName}Options` function, which defaults to `_getEntryContextOptions`
+   *
+   * @deprecated - "ContextMenu is changing to no longer transact jQuery objects.
+   * You may temporarily pass the jQuery option to nominate a behavior.
+   * In v14 the default will become false."
    */
-  static create<UsesJQuery extends boolean = true>(
+  static create<UsesJQuery extends boolean | undefined = true>(
     app: ApplicationV2.Any,
     html: JQuery | HTMLElement,
     selector: string,
-    menuItems: ContextMenu.Entry<ContextMenu.CallbackToTarget<UsesJQuery>>[],
+    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
     options?: ContextMenu.CreateOptions<UsesJQuery>,
   ): ContextMenu<UsesJQuery>;
+
+  /**
+   * @deprecated - "ContextMenu is changing to no longer transact jQuery objects.
+   * You may temporarily pass the jQuery option to nominate a behavior.
+   * In v14 the default will become false."
+   */
+  static create(
+    app: ApplicationV2.Any,
+    html: JQuery | HTMLElement,
+    selector: string,
+    options?: ContextMenu.CreateOptions<true | undefined>,
+  ): ContextMenu<true>;
 
   static create<UsesJQuery extends boolean = true>(
     app: ApplicationV2.Any,
     html: JQuery | HTMLElement,
     selector: string,
-    options?: ContextMenu.CreateOptions<UsesJQuery>,
+    options: ContextMenu.CreateOptions<UsesJQuery>,
   ): ContextMenu<UsesJQuery>;
 
   /**
@@ -78,7 +107,7 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
   /**
    * The array of menu items to render.
    */
-  menuItems: ContextMenu.Entry<ContextMenu.CallbackToTarget<UsesJQuery>>[];
+  menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[];
 
   /**
    * A function to call when the context menu is opened.
@@ -138,7 +167,7 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
    * @param target  - The target element to which the context menu is attached
    * @param options - (default: `{}`)
    */
-  render(target: HTMLElement, options?: ContextMenu.RenderOptions): void | Promise<JQuery | void>;
+  render(target: HTMLElement, options?: ContextMenu.RenderOptions): Promise<void>;
 
   /**
    * Called after the context menu has finished rendering and animating open.
@@ -270,7 +299,7 @@ declare namespace ContextMenu {
      */
     (target: HTMLElement) => void;
 
-  interface ConstructorOptions<UsesJQuery extends boolean = true> {
+  interface ConstructorOptions<IsJQuery extends boolean | undefined = true> {
     /**
      * Optionally override the triggering event which can spawn the menu. If the menu is using a fixed position, this event must be a MouseEvent
      * @defaultValue `"contextmenu"`
@@ -291,7 +320,7 @@ declare namespace ContextMenu {
      * If true, callbacks will be passed jQuery objects instead of HTMLElement instances
      * @defaultValue `true`
      */
-    jQuery?: UsesJQuery;
+    jQuery?: IsJQuery;
 
     /**
      * If true, the context menu is given a fixed position rather than being injected into the target.
@@ -300,7 +329,7 @@ declare namespace ContextMenu {
     fixed?: boolean | undefined;
   }
 
-  interface CreateOptions<UsesJQuery extends boolean = true> extends ConstructorOptions<UsesJQuery> {
+  interface CreateOptions<IsJQuery extends boolean | undefined = true> extends ConstructorOptions<IsJQuery> {
     /**
      * The name of the hook to call
      * @defaultValue `EntryContext`
@@ -308,9 +337,7 @@ declare namespace ContextMenu {
     hookName?: string;
   }
 
-  type CallbackToTarget<UsesJQuery extends boolean> =
-    | (UsesJQuery extends true ? JQuery : never)
-    | (UsesJQuery extends false ? HTMLElement : never);
+  type JQueryOrHTML<IsJQuery extends boolean | undefined> = IsJQuery extends false ? HTMLElement : JQuery;
 }
 
 export default ContextMenu;
