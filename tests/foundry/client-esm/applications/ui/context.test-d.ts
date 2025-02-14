@@ -17,29 +17,14 @@ expectTypeOf(menuA.menuItems[0]?.callback(htmlElement)).toBeVoid();
 // @ts-expect-error Callback for jQuery: false takes an HTML Element
 menuA.menuItems[0]?.callback(jquery);
 
-// Need to pass explicit jQuery in options
-foundry.applications.ui.ContextMenu.create(testAppV2, testAppV2.element, ".foobar", {
-  fixed: true,
-});
-// Need Jquery to be a boolean
-foundry.applications.ui.ContextMenu.create(testAppV2, testAppV2.element, ".foobar", {
-  jQuery: undefined,
-  fixed: true,
-});
-
-// Deprecated menu items for appv2
+// Deprecated: Don't pass menu items for appv2
 const menuB = foundry.applications.ui.ContextMenu.create(testAppV2, testAppV2.element, ".foobar", []);
 expectTypeOf(menuB.fixed).toBeBoolean();
 expectTypeOf(menuB.menuItems[0]?.callback(jquery)).toBeVoid();
 // @ts-expect-error Callback for jQuery: true takes JQuery
 menuB.menuItems[0]?.callback(htmlElement);
 
-// Need to pass explicit `jQuery` param
-foundry.applications.ui.ContextMenu.create(testAppV2, testAppV2.element, ".foobar");
-// param should be a boolean
-foundry.applications.ui.ContextMenu.create(testAppV2, testAppV2.element, ".foobar", { jQuery: undefined });
-
-// Need to pass explicit `jQuery` parameter
+// Deprecated: Need to pass options with `jQuery` parameter to a boolean
 const menuC = foundry.applications.ui.ContextMenu.create(testAppV1, testAppV1.element, ".foobar", []);
 expectTypeOf(menuC.fixed).toBeBoolean();
 expectTypeOf(menuC.menuItems[0]?.callback(jquery)).toBeVoid();
@@ -48,21 +33,40 @@ menuC.menuItems[0]?.callback(htmlElement);
 
 foundry.applications.ui.ContextMenu.create(testAppV1, testAppV1.element, ".foobar", [], { jQuery: true });
 
+// jQuery param deprecation testing
+
 new foundry.applications.ui.ContextMenu(testAppV2.element, ".foobar", [], {
   jQuery: false,
   fixed: true,
 });
 
-// jQuery must be provided
+// Deprecated: Need to pass options
+new foundry.applications.ui.ContextMenu(testAppV2.element, ".foobar", []);
+
+// Deprecated: Need to pass explicit `jQuery` param
 new foundry.applications.ui.ContextMenu(testAppV2.element, ".foobar", [], {
   fixed: true,
 });
 
-// jQuery must be a boolean
+// Deprecated: jQuery param should be a boolean
 new foundry.applications.ui.ContextMenu(testAppV2.element, ".foobar", [], {
   jQuery: undefined,
   fixed: true,
 });
 
-// options must be provided
-new foundry.applications.ui.ContextMenu(testAppV2.element, ".foobar", []);
+// Deprecated: Need to pass options
+foundry.applications.ui.ContextMenu.create(testAppV2, testAppV2.element, ".foobar");
+// Deprecated: Need to pass explicit `jQuery` param
+foundry.applications.ui.ContextMenu.create(testAppV2, testAppV2.element, ".foobar", {});
+// Deprecated: jQuery param should be a boolean
+foundry.applications.ui.ContextMenu.create(testAppV2, testAppV2.element, ".foobar", { jQuery: undefined });
+
+// Deprecated: Need to pass explicit `jQuery` param
+foundry.applications.ui.ContextMenu.create(testAppV2, testAppV2.element, ".foobar", {
+  fixed: true,
+});
+// Deprecated: jQuery param should be a boolean
+foundry.applications.ui.ContextMenu.create(testAppV2, testAppV2.element, ".foobar", {
+  jQuery: undefined,
+  fixed: true,
+});
