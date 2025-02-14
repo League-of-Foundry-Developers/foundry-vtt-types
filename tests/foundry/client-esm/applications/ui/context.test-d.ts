@@ -17,6 +17,16 @@ expectTypeOf(menuA.menuItems[0]?.callback(htmlElement)).toBeVoid();
 // @ts-expect-error Callback for jQuery: false takes an HTML Element
 menuA.menuItems[0]?.callback(jquery);
 
+// Need to pass explicit jQuery in options
+foundry.applications.ui.ContextMenu.create(testAppV2, testAppV2.element, ".foobar", {
+  fixed: true,
+});
+// Need Jquery to be a boolean
+foundry.applications.ui.ContextMenu.create(testAppV2, testAppV2.element, ".foobar", {
+  jQuery: undefined,
+  fixed: true,
+});
+
 // Deprecated menu items for appv2
 const menuB = foundry.applications.ui.ContextMenu.create(testAppV2, testAppV2.element, ".foobar", []);
 expectTypeOf(menuB.fixed).toBeBoolean();
