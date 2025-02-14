@@ -4,6 +4,7 @@
  * displayed at once. Each notification is displayed for {@link Notifications.LIFETIME_MS} milliseconds before being
  * removed, at which point further notifications are pulled from the queue.
  *
+ *
  * @example Displaying Notification Messages
  * ```js
  * ui.notifications.error("This is a permanent error message", {permanent: true});
@@ -20,7 +21,6 @@
  * progress.update({pct: 0.75, message: "Stay on target!"});
  * progress.update({pct: 1.0, message: "Done!"});
  * ```
- * @remarks TODO: Copied from client/ui, not fully updated to v13
  */
 declare class Notifications {
   constructor();
@@ -32,21 +32,10 @@ declare class Notifications {
   static MAX_ACTIVE: number;
 
   /**
-   * Submitted notifications which are queued for display
-   * @defaultValue `[]`
+   * The maximum number of active notifications.
+   * @defaultValue `5000`
    */
-  queue: Notifications.Notification[];
-
-  /**
-   * Notifications which are currently displayed
-   * @defaultValue `[]`
-   */
-  active: JQuery[];
-
-  /**
-   * Initialize the Notifications system by displaying any system-generated messages which were passed from the server.
-   */
-  initialize(): void;
+  static LIFETIME_MS: number;
 
   /**
    * Push a new notification into the queue
@@ -58,7 +47,7 @@ declare class Notifications {
    * @returns The ID of the notification (positive integer)
    * @remarks `type` and `options` use parameter defaults so `null` causes an error
    */
-  notify(message: string, type?: "info" | "warning" | "error", options?: Notifications.NotifyOptions): number;
+  notify(message: string, type?: Notifications.Type, options?: Notifications.NotifyOptions): Notifications.Notification;
 
   /**
    * Display a notification with the "info" type
@@ -67,7 +56,7 @@ declare class Notifications {
    * @returns The ID of the notification (positive integer)
    * @remarks `options` use parameter defaults so `null` causes an error
    */
-  info(message: string, options?: Notifications.NotifyOptions): number;
+  info(message: string, options?: Notifications.NotifyOptions): Notifications.Notification;
 
   /**
    * Display a notification with the "warning" type
@@ -76,7 +65,7 @@ declare class Notifications {
    * @returns The ID of the notification (positive integer)
    * @remarks `options` use parameter defaults so `null` causes an error
    */
-  warn(message: string, options?: Notifications.NotifyOptions): number;
+  warn(message: string, options?: Notifications.NotifyOptions): Notifications.Notification;
 
   /**
    * Display a notification with the "error" type
@@ -85,7 +74,15 @@ declare class Notifications {
    * @returns The ID of the notification (positive integer)
    * @remarks `options` use parameter defaults so `null` causes an error
    */
-  error(message: string, options?: Notifications.NotifyOptions): number;
+  error(message: string, options?: Notifications.NotifyOptions): Notifications.Notification;
+
+  /**
+   * Display a notification with the "success" type.
+   * @param message - The content of the success message
+   * @param options - Notification options passed to the notify function
+   * @returns The registered notification
+   */
+  success(message: string, options?: Notifications.NotifyOptions): Notifications.Notification;
 
   /**
    * Remove the notification linked to the ID.
@@ -112,12 +109,20 @@ declare namespace Notifications {
   type Any = AnyNotifications;
   type AnyConstructor = typeof AnyNotifications;
 
+  type Type = "info" | "warning" | "error" | "success";
+
   interface NotifyOptions {
     /**
      * Should the notification be permanently displayed until dismissed
      * @defaultValue `false`
      */
     permanent?: boolean;
+
+    /**
+     * Does this Notification include a progress bar?
+     * @defaultValue `false`
+     */
+    progress?: boolean;
 
     /**
      * Whether to localize the message content before displaying it
@@ -131,14 +136,39 @@ declare namespace Notifications {
      * @remarks `null` equivalent to `false`
      */
     console?: boolean | null | undefined;
+
+    /**
+     * Whether to escape the values of `format`
+     * @defaultValue `true`
+     */
+    escape?: boolean;
+
+    /**
+     * Whether to clean the provided message string as untrusted user input.
+     * No cleaning is applied if `format` is passed and `escape` is true or `localize` is true and `format` is not passed.
+     * @defaultValue `true`
+     */
+    clean?: boolean;
+
+    /**
+     * A mapping of formatting strings passed to Localization#format
+     */
+    format?: Record<string, string>;
   }
 
   interface Notification {
-    message: string;
-    type: "info" | "warning" | "error";
+    id: number;
+    type: "info" | "warning" | "error" | "success";
     timestamp: number;
+    message: string;
     permanent: boolean;
     console: boolean;
+    active: boolean;
+    progress: boolean;
+    pct: number;
+    element?: HTMLLIElement;
+    remove?: () => void;
+    update?: (pct: number) => void;
   }
 }
 
