@@ -1,3 +1,4 @@
+import type { InexactPartial } from "../../../../utils/index.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
 
 declare global {
@@ -10,7 +11,7 @@ declare global {
  * A ContextMenu is constructed by designating a parent HTML container and a target selector.
  * An Array of menuItems defines the entries of the menu which is displayed.
  */
-declare class ContextMenu<UsesJQuery extends boolean | undefined = true> {
+declare class ContextMenu<UsesJQuery extends boolean = true> {
   /**
    * @param element   - The containing HTML element within which the menu is positioned
    * @param selector  - A CSS selector which activates the context menu.
@@ -21,7 +22,19 @@ declare class ContextMenu<UsesJQuery extends boolean | undefined = true> {
     element: JQuery | HTMLElement,
     selector: string | null | undefined,
     menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
-    options?: ContextMenu.ConstructorOptions<UsesJQuery>,
+    options: ContextMenu.ConstructorOptions<UsesJQuery>,
+  );
+
+  /**
+   * @deprecated "ContextMenu is changing to no longer transact jQuery objects.
+   * You may temporarily pass the jQuery option to nominate a behavior.
+   * In v14 the default will become false."
+   */
+  constructor(
+    element: JQuery | HTMLElement,
+    selector: string | null | undefined,
+    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
+    options?: InexactPartial<ContextMenu.ConstructorOptions<UsesJQuery>, "jQuery">,
   );
 
   /**
@@ -51,7 +64,7 @@ declare class ContextMenu<UsesJQuery extends boolean | undefined = true> {
     html: JQuery | HTMLElement,
     selector: string,
     menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<true>>[],
-    options?: ContextMenu.CreateOptions<true | undefined>,
+    options?: InexactPartial<ContextMenu.CreateOptions<true>, "jQuery">,
   ): ContextMenu<true>;
 
   /**
@@ -62,12 +75,12 @@ declare class ContextMenu<UsesJQuery extends boolean | undefined = true> {
    * You may temporarily pass the jQuery option to nominate a behavior.
    * In v14 the default will become false."
    */
-  static create<UsesJQuery extends boolean | undefined = true>(
+  static create<UsesJQuery extends boolean = true>(
     app: ApplicationV2.Any,
     html: JQuery | HTMLElement,
     selector: string,
     menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
-    options?: ContextMenu.CreateOptions<UsesJQuery>,
+    options?: InexactPartial<ContextMenu.CreateOptions<UsesJQuery>, "jQuery">,
   ): ContextMenu<UsesJQuery>;
 
   /**
@@ -79,7 +92,7 @@ declare class ContextMenu<UsesJQuery extends boolean | undefined = true> {
     app: ApplicationV2.Any,
     html: JQuery | HTMLElement,
     selector: string,
-    options?: ContextMenu.CreateOptions<true | undefined>,
+    options?: InexactPartial<ContextMenu.CreateOptions<true>, "jQuery">,
   ): ContextMenu<true>;
 
   static create<UsesJQuery extends boolean = true>(
@@ -299,7 +312,7 @@ declare namespace ContextMenu {
      */
     (target: HTMLElement) => void;
 
-  interface ConstructorOptions<IsJQuery extends boolean | undefined = true> {
+  interface ConstructorOptions<IsJQuery extends boolean = true> {
     /**
      * Optionally override the triggering event which can spawn the menu. If the menu is using a fixed position, this event must be a MouseEvent
      * @defaultValue `"contextmenu"`
@@ -320,7 +333,7 @@ declare namespace ContextMenu {
      * If true, callbacks will be passed jQuery objects instead of HTMLElement instances
      * @defaultValue `true`
      */
-    jQuery?: IsJQuery;
+    jQuery: IsJQuery;
 
     /**
      * If true, the context menu is given a fixed position rather than being injected into the target.
@@ -329,7 +342,7 @@ declare namespace ContextMenu {
     fixed?: boolean | undefined;
   }
 
-  interface CreateOptions<IsJQuery extends boolean | undefined = true> extends ConstructorOptions<IsJQuery> {
+  interface CreateOptions<IsJQuery extends boolean = true> extends ConstructorOptions<IsJQuery> {
     /**
      * The name of the hook to call
      * @defaultValue `EntryContext`

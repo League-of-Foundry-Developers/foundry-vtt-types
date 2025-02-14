@@ -47,3 +47,22 @@ expectTypeOf(menuC.menuItems[0]?.callback(jquery)).toBeVoid();
 menuC.menuItems[0]?.callback(htmlElement);
 
 foundry.applications.ui.ContextMenu.create(testAppV1, testAppV1.element, ".foobar", [], { jQuery: true });
+
+new foundry.applications.ui.ContextMenu(testAppV2.element, ".foobar", [], {
+  jQuery: false,
+  fixed: true,
+});
+
+// jQuery must be provided
+new foundry.applications.ui.ContextMenu(testAppV2.element, ".foobar", [], {
+  fixed: true,
+});
+
+// jQuery must be a boolean
+new foundry.applications.ui.ContextMenu(testAppV2.element, ".foobar", [], {
+  jQuery: undefined,
+  fixed: true,
+});
+
+// options must be provided
+new foundry.applications.ui.ContextMenu(testAppV2.element, ".foobar", []);
