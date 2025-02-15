@@ -22,7 +22,7 @@ declare global {
 
     /**
      * Graphics in which token radial and vision occlusion shapes are drawn.
-     * @remarks The `blendMode` of this `LegacyGraphics` is set to `PIXI>BLEND_MODES.MIN_ALL`
+     * @remarks The `blendMode` of this `LegacyGraphics` is set to `PIXI.BLEND_MODES.MIN_ALL`
      */
     tokens: PIXI.LegacyGraphics;
 
