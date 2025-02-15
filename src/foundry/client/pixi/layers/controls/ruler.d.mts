@@ -1,4 +1,4 @@
-import type { NullishProps, ValueOf } from "fvtt-types/utils";
+import type { AnyObject, Brand, FixedInstanceType, IntentionalPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -10,15 +10,7 @@ declare global {
      *                  (default: `game.user`)
      * @param options - Additional options
      */
-    constructor(
-      user?: User.ConfiguredInstance,
-      options?: NullishProps<{
-        /**
-         * The color of the ruler (defaults to the color of the User)
-         */
-        color?: number;
-      }>,
-    );
+    constructor(user?: User.ConfiguredInstance, options?: Ruler.ConstructorOptions);
 
     /**
      * Record the User which this Ruler references
@@ -34,7 +26,7 @@ declare global {
 
     /**
      * The ruler color - by default the color of the active user
-     * @defaultValue `foundry.utils.colorStringToHex(this.user.data.color) || 0x42F4E2`
+     * @defaultValue `this.user.color`
      */
     color: Color;
 
@@ -51,7 +43,7 @@ declare global {
     /**
      * The possible Ruler measurement states.
      */
-    static get STATES(): Ruler.STATES;
+    static get STATES(): Ruler.States;
 
     /**
      * Is the ruler ready for measure?
@@ -101,15 +93,15 @@ declare global {
     totalCost: number;
 
     /**
-     * The current state of the Ruler (one of {@link Ruler.STATES}).
+     * The current state of the Ruler (one of {@link Ruler.States}).
      */
-    get state(): ValueOf<Ruler.STATES>;
+    get state(): Ruler.STATES;
 
     /**
-     * The current state of the Ruler (one of {@link Ruler.STATES}).
+     * The current state of the Ruler (one of {@link Ruler.States}).
      * @defaultValue `Ruler.STATES.INACTIVE`
      */
-    protected _state: ValueOf<Ruler.STATES>;
+    protected _state: Ruler.STATES;
 
     /**
      * Is the Ruler being actively used to measure distance?
@@ -137,38 +129,14 @@ declare global {
      * @param options     - Additional options
      * @returns The array of measured segments if measured
      */
-    measure(
-      destination: Canvas.Point,
-      options?: NullishProps<{
-        /**
-         * Snap the destination?
-         * @defaultValue `true`
-         */
-        snap: boolean;
-
-        /**
-         * If not forced and the destination matches the current destination of this ruler, no measuring is done and nothing is returned
-         * @defaultValue `false`
-         */
-        force: boolean;
-      }>,
-    ): Ruler.MeasurementSegment[] | void;
+    measure(destination: Canvas.Point, options?: Ruler.MeasureOptions): Ruler.MeasurementSegment[] | void;
 
     /**
      * Get the measurement origin.
      * @param point   - The waypoint
      * @param options - Additional options
      */
-    protected _getMeasurementOrigin(
-      point: Canvas.Point,
-      options?: NullishProps<{
-        /**
-         * Snap the waypoint?
-         * @defaultValue `true`
-         */
-        snap: boolean;
-      }>,
-    ): Canvas.Point;
+    protected _getMeasurementOrigin(point: Canvas.Point, options?: Ruler.GetMeasurementOriginOptions): Canvas.Point;
 
     /**
      * While measurement is in progress, update the destination to be the central point of the target grid space.
@@ -178,13 +146,7 @@ declare global {
      */
     protected _getMeasurementDestination(
       point: Canvas.Point,
-      options?: NullishProps<{
-        /**
-         * Snap the point?
-         * @defaultValue `true`
-         */
-        snap: boolean;
-      }>,
+      options?: Ruler.GetMeasurementDestinationOptions,
     ): Canvas.Point;
 
     /**
@@ -198,21 +160,7 @@ declare global {
      * @param origin  - The origin
      * @param options - Additional options
      */
-    protected _startMeasurement(
-      origin: Canvas.Point,
-      options?: NullishProps<{
-        /**
-         * Snap the origin?
-         * @defaultValue `true`
-         */
-        snap: boolean;
-
-        /**
-         * The token that is moved (defaults to {@link Ruler#_getMovementToken})
-         */
-        token: Token.ConfiguredInstance | null;
-      }>,
-    ): void;
+    protected _startMeasurement(origin: Canvas.Point, options?: Ruler.StartMeasurementOptions): void;
 
     /**
      * Handle the conclusion of a Ruler measurement workflow
@@ -224,16 +172,7 @@ declare global {
      * @param point   - The waypoint
      * @param options - Additional options
      */
-    protected _addWaypoint(
-      point: Canvas.Point,
-      options?: NullishProps<{
-        /**
-         * Snap the waypoint?
-         * @defaultValue `true`
-         */
-        snap: boolean;
-      }>,
-    ): void;
+    protected _addWaypoint(point: Canvas.Point, options?: Ruler.AddWaypointOptions): void;
 
     /**
      * Handle the removal of a waypoint in the Ruler measurement path
@@ -242,6 +181,7 @@ declare global {
 
     /**
      * Get the cost function to be used for Ruler measurements.
+     * @remarks Just a stub in v12.331
      */
     protected _getCostFunction(): foundry.grid.BaseGrid.MeasurePathCostFunction | void;
 
@@ -253,7 +193,7 @@ declare global {
     /**
      * Get the text label for a segment of the measured path
      */
-    protected _getSegmentLabel(segment: Ruler.MeasurementSegment): string;
+    protected _getSegmentLabel(segment: Ruler.PartialSegmentForLabelling): string;
 
     /**
      * Draw each segment of the measured path.
@@ -263,7 +203,7 @@ declare global {
     /**
      * Highlight the measurement required to complete the move in the minimum number of discrete spaces
      */
-    protected _highlightMeasurementSegment(segment: Ruler.MeasurementSegment): void;
+    protected _highlightMeasurementSegment(segment: Ruler.PartialSegmentForHighlighting): void;
 
     /**
      * Determine whether a SPACE keypress event entails a legal token movement along a measured ruler
@@ -284,6 +224,7 @@ declare global {
     /**
      * Get the current measurement history.
      * @returns The current measurement history, if any
+     * @remarks Just a stub in v12.331
      */
     protected _getMeasurementHistory(): Ruler.MeasurementHistory | void;
 
@@ -318,22 +259,22 @@ declare global {
      */
     protected _animateSegment(
       token: Token.ConfiguredInstance,
-      segment: Ruler.MeasurementSegment,
+      segment: Ruler.PartialSegmentForAnimating,
       destination: Canvas.Point,
-      updateOptions: TokenDocument.DatabaseOperations["update"],
+      updateOptions: Ruler.PartialTokenUpdateOptions,
     ): Promise<void>;
 
     /**
      * An method which can be extended by a subclass of Ruler to define custom behaviors before a confirmed movement.
      * @param token - The Token that will be moving
      */
-    protected _preMove(token: Token): Promise<void>;
+    protected _preMove(token: Token.ConfiguredInstance): Promise<void>;
 
     /**
      * An event which can be extended by a subclass of Ruler to define custom behaviors before a confirmed movement.
      * @param token - The Token that finished moving
      */
-    protected _postMove(token: Token): Promise<void>;
+    protected _postMove(token: Token.ConfiguredInstance): Promise<void>;
 
     /**
      * Broadcast Ruler measurement if its User is the connected client.
@@ -350,7 +291,7 @@ declare global {
      * Update a Ruler instance using data provided through the cursor activity socket
      * @param data - Ruler data with which to update the display
      */
-    update(data: Ruler.MeasurementData | null): void;
+    update(data?: Ruler.MeasurementData | null): void;
 
     /**
      * Handle the beginning of a new Ruler measurement workflow
@@ -389,23 +330,43 @@ declare global {
 
     /**
      * Move the Token along the measured path when the move key is pressed.
+     * @remarks `context` is unused in 12.331
      */
     protected _onMoveKeyDown(context: KeyboardManager.KeyboardEventContext): void;
   }
 
   namespace Ruler {
+    interface Any extends AnyRuler {}
     type AnyConstructor = typeof AnyRuler;
 
-    interface STATES {
-      readonly INACTIVE: 0;
-      readonly STARTING: 1;
-      readonly MEASURING: 2;
-      readonly MOVING: 3;
+    type ConfiguredClass = CONFIG["Canvas"]["rulerClass"];
+    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+
+    /** @internal */
+    type _ConstructorOptions = NullishProps<{
+      /**
+       * The color of the ruler (defaults to the color of the User)
+       * @defaultValue `this.user.color`
+       */
+      color?: number;
+    }>;
+
+    interface ConstructorOptions extends _ConstructorOptions {}
+
+    type STATES = Brand<number, "Ruler.STATES">;
+
+    interface States {
+      readonly INACTIVE: 0 & STATES;
+      readonly STARTING: 1 & STATES;
+      readonly MEASURING: 2 & STATES;
+      readonly MOVING: 3 & STATES;
     }
 
     interface MeasurementSegment {
       /** The Ray which represents the point-to-point line segment */
       ray: Ray;
+
+      teleport: boolean;
 
       /** The text object used to display a label for this segment */
       label: PreciseText;
@@ -432,7 +393,7 @@ declare global {
       last: boolean;
 
       /** Animation options passed to {@link TokenDocument#update} */
-      animation: object;
+      animation: AnyObject; // TODO: Document.Database.OperationOf<"Token", "update">["animation"]; once that's defined; see Token#animate
     }
 
     interface MeasurementHistoryWaypoint {
@@ -453,7 +414,7 @@ declare global {
 
     interface MeasurementData {
       /** The state ({@link Ruler#state}) */
-      state: ValueOf<Ruler.STATES>;
+      state: Ruler.STATES;
 
       /** The token ID ({@link Ruler#token}) */
       token: string | null;
@@ -467,6 +428,56 @@ declare global {
       /** The destination ({@link Ruler#destination}) */
       destination: Canvas.Point | null;
     }
+
+    /** @internal */
+    type _Snap = NullishProps<{
+      /**
+       * Snap the destination?
+       * @defaultValue `true`
+       */
+      snap: boolean;
+    }>;
+
+    /** @internal */
+    type _MeasureOptions = NullishProps<{
+      /**
+       * If not forced and the destination matches the current destination of this ruler, no measuring is done and nothing is returned
+       * @defaultValue `false`
+       */
+      force: boolean;
+    }>;
+
+    interface MeasureOptions extends _Snap, _MeasureOptions {}
+
+    interface GetMeasurementOriginOptions extends _Snap {}
+
+    interface GetMeasurementDestinationOptions extends _Snap {}
+
+    /** @internal */
+    type _StartMeasurementOptions = NullishProps<{
+      /**
+       * The token that is moved (defaults to {@link Ruler#_getMovementToken})
+       */
+      token: Token.ConfiguredInstance | null;
+    }>;
+
+    interface StartMeasurementOptions extends _StartMeasurementOptions, _Snap {}
+
+    interface AddWaypointOptions extends _Snap {}
+
+    interface PartialSegmentForLabelling
+      extends Pick<MeasurementSegment, "teleport" | "last" | "distance">,
+        IntentionalPartial<Omit<MeasurementSegment, "teleport" | "last" | "distance">> {}
+
+    interface PartialSegmentForHighlighting
+      extends Pick<MeasurementSegment, "teleport" | "ray">,
+        IntentionalPartial<Omit<MeasurementSegment, "teleport" | "ray">> {}
+
+    interface PartialSegmentForAnimating
+      extends Pick<MeasurementSegment, "teleport" | "animation">,
+        IntentionalPartial<Omit<MeasurementSegment, "teleport" | "animation">> {}
+
+    type PartialTokenUpdateOptions = IntentionalPartial<TokenDocument.DatabaseOperations["update"]>;
   }
 }
 
