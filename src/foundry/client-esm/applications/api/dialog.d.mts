@@ -87,7 +87,7 @@ declare class DialogV2<
    */
   protected _onSubmit(target: HTMLButtonElement, event: PointerEvent | SubmitEvent): Promise<DialogV2>;
 
-  protected override _onFirstRender(_context: RenderContext, _options: DeepPartial<RenderOptions>): void;
+  protected override _onFirstRender(_context: RenderContext, _options: DeepPartial<RenderOptions>): Promise<void>;
 
   protected override _replaceHTML(
     result: HTMLFormElement,

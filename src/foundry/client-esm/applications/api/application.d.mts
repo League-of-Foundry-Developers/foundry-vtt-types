@@ -1,4 +1,11 @@
-import type { MustConform, AnyObject, DeepPartial, InexactPartial, MaybePromise } from "../../../../utils/index.d.mts";
+import type {
+  MustConform,
+  AnyObject,
+  DeepPartial,
+  InexactPartial,
+  MaybePromise,
+  ValueOf,
+} from "../../../../utils/index.d.mts";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
@@ -47,6 +54,39 @@ declare namespace ApplicationV2 {
       type Any = Instance<any, any, any>;
     }
   }
+
+  type EmittedEvents = Readonly<["render", "close", "position"]>;
+
+  interface DoEventOptions<HandlerArgs extends Array<any>, Async extends boolean = false> {
+    /**
+     * Await the result of the handler function?
+     * @defaultValue `false`
+     */
+    async: Async;
+
+    /**
+     * Arguments passed to the handler function
+     * @defaultValue `[]`
+     */
+    handlerArgs: HandlerArgs;
+
+    /** Debugging text to log for the event */
+    debugText: string;
+
+    /** An event name to dispatch for registered listeners */
+    eventName: string;
+
+    /** A hook name to dispatch for this and all parent classes */
+    hookName: string;
+
+    /** Arguments passed to the requested hook function */
+    hookArgs: string;
+
+    /** Add the handler response to hookArgs */
+    hookResponse: string;
+  }
+
+  type RenderState = ValueOf<(typeof ApplicationV2)["RENDER_STATES"]>;
 
   export interface RenderContext {
     /** Tab data prepared from an entry in {@link ApplicationV2.TABS} */
@@ -107,10 +147,16 @@ declare namespace ApplicationV2 {
     /** Window offset pixels from left */
     left: number;
 
-    /** Un-scaled pixels in width or "auto" */
+    /**
+     * Un-scaled pixels in width or "auto"
+     * @defaultValue "auto"
+     */
     width: number | "auto";
 
-    /** Un-scaled pixels in height or "auto" */
+    /**
+     * Un-scaled pixels in height or "auto"
+     * @defaultValue "auto"
+     */
     height: number | "auto";
 
     /** A numeric scaling factor applied to application dimensions */
@@ -183,7 +229,7 @@ declare namespace ApplicationV2 {
     action: string;
 
     /** Is the control button visible for the current client? */
-    visible?: boolean | undefined;
+    visible?: boolean | (() => boolean) | undefined;
 
     /**
      * A key or value in CONST.DOCUMENT_OWNERSHIP_LEVELS that restricts visibility of this option for the current user.
@@ -236,6 +282,9 @@ declare namespace ApplicationV2 {
 
     /** Whether the application was closed via keypress. */
     closeKey: boolean;
+
+    /** Is the application being closed because a form was submitted? */
+    submitted: boolean;
   }
 
   /** An on-click action supported by the Application. Run in the context of a HandlebarsApplication. */
@@ -263,10 +312,10 @@ declare namespace ApplicationV2 {
   interface Tab {
     id: string;
     group: string;
-    icon: string;
-    label: string;
     active: boolean;
     cssClass: string;
+    icon?: string;
+    label?: string;
   }
 
   /** @remarks Used with `templates/generic/form-fields.hbs` */
@@ -357,7 +406,7 @@ declare class ApplicationV2<
     RENDERED: 2;
   };
 
-  static override readonly emittedEvents: ["render", "close", "position"];
+  static override readonly emittedEvents: string[];
 
   /**
    * Application instance configuration options.
@@ -383,10 +432,10 @@ declare class ApplicationV2<
 
   /**
    * If this Application uses tabbed navigation groups, this mapping is updated whenever the changeTab method is called.
-   * Reports the active tab for each group.
+   * Reports the active tab for each group, with a value of `null` indicating no tab is active.
    * Subclasses may override this property to define default tabs for each group.
    */
-  tabGroups: Record<string, string>;
+  tabGroups: Record<string, string | null>;
 
   /**
    * The CSS class list of this Application instance
@@ -395,6 +444,9 @@ declare class ApplicationV2<
 
   /**
    * The HTML element ID of this Application instance.
+   * This provides a readonly view into the internal ID used by this application.
+   * This getter should not be overridden by subclasses, which should instead configure the ID in `DEFAULT_OPTIONS` or
+   * by defining a `uniqueId` during `_initializeApplicationOptions`.
    */
   get id(): string;
 
@@ -407,6 +459,11 @@ declare class ApplicationV2<
    * The HTMLElement which renders this Application into the DOM.
    */
   get element(): HTMLElement;
+
+  /**
+   * Does this Application have a top-level form element?
+   */
+  get form(): HTMLFormElement | null;
 
   /**
    * Is this Application instance currently minimized?
@@ -426,7 +483,7 @@ declare class ApplicationV2<
   /**
    * The current render state of the Application.
    */
-  get state(): typeof ApplicationV2.RENDER_STATES;
+  get state(): ApplicationV2.RenderState;
 
   /**
    * Does this Application instance render within an outer window frame?
@@ -478,6 +535,12 @@ declare class ApplicationV2<
    * @returns Context data for the render operation
    */
   protected _prepareContext(options: DeepPartial<RenderOptions> & { isFirstRender: boolean }): Promise<RenderContext>;
+
+  /**
+   * Prepare application tab data for a single tab group.
+   * @param group - The ID of the tab group to prepare
+   */
+  protected _prepareTabs(group: string): Record<string, ApplicationV2.Tab>;
 
   /**
    * Configure the array of header control menu options
@@ -548,11 +611,13 @@ declare class ApplicationV2<
    */
   protected _removeElement(element: HTMLElement): void;
 
+  protected _tearDown(options: DeepPartial<ApplicationV2.ClosingOptions>): void;
+
   /**
    * Update the Application element position using provided data which is merged with the prior position.
    * @param position - New Application positioning data
    */
-  setPosition(position: DeepPartial<ApplicationV2.Position>): ApplicationV2.Position;
+  setPosition(position: DeepPartial<ApplicationV2.Position>): ApplicationV2.Position | void;
 
   /**
    * Translate a requested application position updated into a resolved allowed position for the Application.
@@ -567,8 +632,19 @@ declare class ApplicationV2<
    * Only applicable to window Applications.
    * @param expanded - Set the controls visibility to a specific state.
    *                   Otherwise, the visible state is toggled from its current value
+   * @param options  - Options to configure the toggling behavior
+   * @returns A Promise which resolves once the control expansion animation is complete
    */
-  toggleControls(expanded?: boolean): void;
+  toggleControls(
+    expanded?: boolean,
+    options?: {
+      /**
+       * Animate the controls toggling.
+       * @defaultValue `true`
+       */
+      animate?: boolean;
+    },
+  ): void;
 
   /**
    * Minimize the Application, collapsing it to a minimal header.
@@ -598,6 +674,19 @@ declare class ApplicationV2<
   changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
 
   /**
+   * Perform an event in the application life-cycle.
+   * Await an internal life-cycle method defined by the class.
+   * Optionally dispatch an event for any registered listeners.
+   * @param handler - A handler function to call
+   * @param options - Options which configure event handling
+   * @returns A promise which resoles once the handler is complete if async is true
+   */
+  protected _doEvent<HandlerArgs extends Array<any>, Async extends boolean = false>(
+    handler: (...args: HandlerArgs) => void,
+    options?: InexactPartial<ApplicationV2.DoEventOptions<HandlerArgs, Async>>,
+  ): Async extends true ? Promise<void> : void;
+
+  /**
    * Test whether this Application is allowed to be rendered.
    * @param options - Provided render options
    * @returns Return false to prevent rendering
@@ -614,11 +703,10 @@ declare class ApplicationV2<
 
   /**
    * Actions performed after a first render of the Application.
-   * Post-render steps are not awaited by the render process.
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _onFirstRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): void;
+  protected _onFirstRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   /**
    * Actions performed before any render of the Application.
@@ -630,11 +718,10 @@ declare class ApplicationV2<
 
   /**
    * Actions performed after any render of the Application.
-   * Post-render steps are not awaited by the render process.
    * @param context - Prepared context data
    * @param options - Provided render options
    */
-  protected _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): void;
+  protected _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   /**
    * Actions performed before closing the Application.
@@ -667,6 +754,11 @@ declare class ApplicationV2<
    * Attach event listeners to the Application frame.
    */
   protected _attachFrameListeners(): void;
+
+  /**
+   * Handle click events on a tab within the Application.
+   */
+  protected _onClickTab(event: PointerEvent): void;
 
   /**
    * A generic event handler for action clicks which can be extended by subclasses.
@@ -706,6 +798,12 @@ declare class ApplicationV2<
    * @internal
    */
   protected _awaitTransition(element: HTMLElement, timeout: number): Promise<void>;
+
+  /**
+   * Wait for any images in the given element to load.
+   * @param element - The element.
+   */
+  static waitForImages(element: HTMLElement): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
