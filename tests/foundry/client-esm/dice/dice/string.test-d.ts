@@ -1,33 +1,11 @@
 import { expectTypeOf } from "vitest";
-import type { ParentheticalRollParseNode } from "../../../../../src/foundry/client-esm/dice/_types.d.mts";
 
-const poolTerm = new foundry.dice.terms.PoolTerm();
+const stringTerm = new foundry.dice.terms.StringTerm({ term: "aaa" });
 
-expectTypeOf(poolTerm.terms).toEqualTypeOf<string[] | undefined>();
-expectTypeOf(poolTerm.modifiers).toEqualTypeOf<string[] | undefined>();
-expectTypeOf(poolTerm.rolls).toEqualTypeOf<foundry.dice.Roll[] | undefined>();
-expectTypeOf(poolTerm.results).toEqualTypeOf<foundry.dice.terms.DiceTerm.Result[] | undefined>();
-expectTypeOf(poolTerm.dice).toEqualTypeOf<foundry.dice.terms.DiceTerm[]>();
-expectTypeOf(poolTerm.expression).toEqualTypeOf<string>();
-expectTypeOf(poolTerm.total).toEqualTypeOf<number | undefined>();
-expectTypeOf(poolTerm.values).toEqualTypeOf<number[]>();
-expectTypeOf(poolTerm.isDeterministic).toEqualTypeOf<boolean>();
-expectTypeOf(poolTerm.alter(3, 3)).toEqualTypeOf<foundry.dice.terms.PoolTerm>();
-expectTypeOf(poolTerm.toJSON()).toEqualTypeOf<Record<string, unknown>>();
-expectTypeOf(poolTerm.keep("")).toEqualTypeOf<boolean | void>();
-expectTypeOf(poolTerm.drop("")).toEqualTypeOf<boolean | void>();
-expectTypeOf(poolTerm.countSuccess("")).toEqualTypeOf<boolean | void>();
-expectTypeOf(poolTerm.countFailures("")).toEqualTypeOf<boolean | void>();
+expectTypeOf(stringTerm.term).toEqualTypeOf<string>();
+expectTypeOf(stringTerm.expression).toEqualTypeOf<string>();
+expectTypeOf(stringTerm.total).toEqualTypeOf<string>();
+expectTypeOf(stringTerm.isDeterministic).toEqualTypeOf<boolean>();
+expectTypeOf(stringTerm.evaluate()).toEqualTypeOf<never>();
 
-expectTypeOf(foundry.dice.terms.PoolTerm.MODIFIERS).toEqualTypeOf<foundry.dice.terms.PoolTerm.Modifiers>();
-expectTypeOf(foundry.dice.terms.PoolTerm.OPEN_REGEXP).toEqualTypeOf<RegExp>();
-expectTypeOf(foundry.dice.terms.PoolTerm.CLOSE_REGEXP).toEqualTypeOf<RegExp>();
-expectTypeOf(foundry.dice.terms.PoolTerm.REGEXP).toEqualTypeOf<RegExp>();
-expectTypeOf(foundry.dice.terms.PoolTerm.SERIALIZE_ATTRIBUTES).toEqualTypeOf<string[]>();
-expectTypeOf(foundry.dice.terms.PoolTerm.fromExpression("")).toEqualTypeOf<foundry.dice.terms.PoolTerm | null>();
-expectTypeOf(foundry.dice.terms.PoolTerm.fromRolls([])).toEqualTypeOf<foundry.dice.terms.PoolTerm>();
-
-declare const node: ParentheticalRollParseNode;
-expectTypeOf(
-  foundry.dice.terms.ParentheticalTerm.fromParseNode(node),
-).toEqualTypeOf<foundry.dice.terms.ParentheticalTerm>();
+expectTypeOf(foundry.dice.terms.StringTerm.SERIALIZE_ATTRIBUTES).toEqualTypeOf<string[]>();
