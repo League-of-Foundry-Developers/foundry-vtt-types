@@ -66,8 +66,12 @@ expectTypeOf(roll.render()).toEqualTypeOf<Promise<string>>();
 declare const testBool: boolean;
 expectTypeOf(roll.toMessage()).toEqualTypeOf<Promise<ChatMessage | undefined>>();
 expectTypeOf(roll.toMessage({}, { create: true })).toEqualTypeOf<Promise<ChatMessage | undefined>>();
-expectTypeOf(roll.toMessage({}, { create: false })).toEqualTypeOf <
-  foundry.data.fields.SchemaField.InnerPersistedType<ChatMessage.Schema>();
+expectTypeOf(roll.toMessage({}, { create: false })).toEqualTypeOf<
+  Promise<foundry.data.fields.SchemaField.InnerPersistedType<ChatMessage.Schema>>
+>();
+expectTypeOf(roll.toMessage({}, { create: null })).toEqualTypeOf<
+  Promise<foundry.data.fields.SchemaField.InnerPersistedType<ChatMessage.Schema>>
+>();
 expectTypeOf(roll.toMessage({}, { create: testBool })).toEqualTypeOf<
   Promise<ChatMessage | undefined | foundry.data.fields.SchemaField.InnerPersistedType<ChatMessage.Schema>>
 >();

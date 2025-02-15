@@ -463,10 +463,13 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @returns A promise which resolves to the created ChatMessage entity, if create is true
    *          or the Object of prepared chatData otherwise.
    */
-  toMessage<const Create extends boolean | null | undefined>(
-    messageData?: InexactPartial<Roll.MessageData>,
+  toMessage<
+    const Create extends boolean | null | undefined,
+    MD extends undefined | InexactPartial<Roll.MessageData> = undefined,
+  >(
+    messageData?: MD,
     options?: Roll.ToMessageOptions<Create>,
-  ): Promise<Roll.ToMessageReturn<Create>>;
+  ): Promise<MD extends undefined ? Roll.ToMessageReturn<undefined> : Roll.ToMessageReturn<Create>>;
 
   /* -------------------------------------------- */
   /*  Interface Helpers                           */
