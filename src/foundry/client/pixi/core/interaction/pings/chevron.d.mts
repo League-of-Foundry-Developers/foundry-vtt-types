@@ -10,7 +10,7 @@ declare global {
      * @param options - Additional options to configure the ping animation.
      *                  (default: `{duration: 900, size: 128, color: "#ff6400"}`)
      */
-    constructor(origin: Canvas.Point, options?: PingOptions);
+    constructor(origin: Canvas.Point, options?: Ping.ConstructorOptions);
 
     /** @defaultValue `(this.options.size / 2) * .75` */
     _r: number;
