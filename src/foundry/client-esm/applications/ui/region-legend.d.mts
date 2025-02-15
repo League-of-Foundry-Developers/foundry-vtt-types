@@ -27,9 +27,12 @@ export default class RegionLegend<
 
   override close(options?: DeepPartial<ApplicationV2.ClosingOptions>): Promise<this>;
 
-  protected override _onFirstRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): void;
+  protected override _onFirstRender(
+    context: DeepPartial<RenderContext>,
+    options: DeepPartial<RenderOptions>,
+  ): Promise<void>;
 
-  protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): void;
+  protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   protected override _onClose(options: DeepPartial<RenderOptions>): void;
 

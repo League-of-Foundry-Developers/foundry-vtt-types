@@ -26,7 +26,6 @@ declare class AmbientSoundConfig<
 
   protected override _prepareContext(options: DeepPartial<RenderOptions>): Promise<RenderContext>;
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   protected override _onClose(options: DeepPartial<RenderOptions>): void;
