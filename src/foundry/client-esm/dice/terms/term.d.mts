@@ -4,7 +4,7 @@ import type { RollParseNode } from "../_types.mts";
 import type RollResolver from "../../applications/dice/roll-resolver.d.mts";
 
 declare abstract class RollTerm {
-  constructor({ options }?: InexactPartial<{ options: RollTerm.Options }>);
+  constructor(termData?: InexactPartial<{ options: RollTerm.Options }>);
 
   /** An object of additional options which describes and modifies the term. */
   options: RollTerm.Options;

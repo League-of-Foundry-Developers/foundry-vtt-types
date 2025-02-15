@@ -35,7 +35,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
    *                  (default: `{}`)
    * @param options - (default: `{}`)
    */
-  constructor(formula: string, data?: D, options?: Roll["options"]);
+  constructor(formula: string, data?: D, options?: InexactPartial<Roll.Options>);
 
   /**
    * The original provided data object which substitutes into attributes of the roll formula
@@ -106,8 +106,6 @@ declare class Roll<D extends AnyObject = AnyObject> {
    */
   static RESOLVERS: Map<Roll, RollResolver>; // TODO: Fix this
 
-  /* -------------------------------------------- */
-
   /**
    * Prepare the data structure used for the Roll.
    * This is factored out to allow for custom Roll classes to do special data preparation using provided input.
@@ -167,8 +165,6 @@ declare class Roll<D extends AnyObject = AnyObject> {
    */
   clone(): this;
 
-  /* -------------------------------------------- */
-
   /**
    * Execute the Roll, replacing dice and evaluating the total result
    * @param options - Options which inform how the Roll is evaluated
@@ -191,8 +187,6 @@ declare class Roll<D extends AnyObject = AnyObject> {
     ...options
   }?: InexactPartial<Roll.Options>): Promise<Roll.Evaluated<this>>;
 
-  /* -------------------------------------------- */
-
   /**
    * Execute the Roll synchronously, replacing dice and evaluating the total result.
    * @param options - Options which inform how the Roll is evaluated
@@ -210,8 +204,6 @@ declare class Roll<D extends AnyObject = AnyObject> {
    */
   protected _evaluate(options?: InexactPartial<Roll.Options>): Promise<Roll.Evaluated<this>>;
 
-  /* -------------------------------------------- */
-
   /**
    * Evaluate an AST asynchronously.
    * @param node    - The root node or term.
@@ -223,16 +215,12 @@ declare class Roll<D extends AnyObject = AnyObject> {
     options?: InexactPartial<Roll.Options>,
   ): Promise<string | number>;
 
-  /* -------------------------------------------- */
-
   /**
    * Evaluate the roll synchronously.
    * @param options - Options which inform how evaluation is performed
    *                  (default: `{}`)
    */
   protected _evaluateSync(options?: InexactPartial<Roll.Options>): Roll.Evaluated<this>;
-
-  /* -------------------------------------------- */
 
   /**
    * Evaluate an AST synchronously.
@@ -242,15 +230,11 @@ declare class Roll<D extends AnyObject = AnyObject> {
    */
   protected _evaluateASTSync(node: RollParseNode | RollTerm, options?: InexactPartial<Roll.Options>): string | number;
 
-  /* -------------------------------------------- */
-
   /**
    * Safely evaluate the final total result for the Roll using its component terms.
    * @returns The evaluated total
    */
   protected _evaluateTotal(): number;
-
-  /* -------------------------------------------- */
 
   /**
    * Alias for evaluate.
@@ -258,8 +242,6 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @param options - Options passed to Roll#evaluate.
    */
   roll(options?: InexactPartial<Roll.Options>): Promise<Roll.Evaluated<this>>;
-
-  /* -------------------------------------------- */
 
   /**
    * Create a new Roll object using the original provided formula and data.
@@ -269,23 +251,17 @@ declare class Roll<D extends AnyObject = AnyObject> {
    */
   reroll(options?: InexactPartial<Roll.Options>): Promise<Roll.Evaluated<this>>;
 
-  /* -------------------------------------------- */
-
   /**
    * Recompile the formula string that represents this Roll instance from its component terms.
    * @returns The re-compiled formula
    */
   resetFormula(): string;
 
-  /* -------------------------------------------- */
-
   /**
    * Propagate flavor text across all terms that do not have any.
    * @param flavor -The flavor text.
    */
   propagateFlavor(flavor: string): void;
-
-  /* -------------------------------------------- */
 
   /** @override */
   toString(): string;
@@ -370,8 +346,6 @@ declare class Roll<D extends AnyObject = AnyObject> {
    */
   static parse(formula: string, data: Record<string, unknown>): RollTerm[];
 
-  /* -------------------------------------------- */
-
   /**
    * Instantiate the nodes in an AST sub-tree into RollTerm instances.
    * @param ast - The root of the AST sub-tree.
@@ -427,7 +401,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @param next         - The next term to classify
    * @returns A classified RollTerm instance
    */
-  protected static _classifyStringTerm(
+  static _classifyStringTerm(
     term: string,
     {
       intermediate,
@@ -490,7 +464,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
    *          or the Object of prepared chatData otherwise.
    */
   toMessage<const Create extends boolean | null | undefined>(
-    messageData?: Roll.MessageData,
+    messageData?: InexactPartial<Roll.MessageData>,
     options?: Roll.ToMessageOptions<Create>,
   ): Promise<Roll.ToMessageReturn<Create>>;
 
@@ -543,7 +517,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @param json - Serialized JSON data representing the Roll
    * @returns A reconstructed Roll instance
    */
-  static fromJSON(json: string): Roll;
+  static fromJSON<T extends Roll.AnyConstructor>(this: T, json: string): FixedInstanceType<T>;
 
   /**
    * Manually construct a Roll object by providing an explicit set of input terms
