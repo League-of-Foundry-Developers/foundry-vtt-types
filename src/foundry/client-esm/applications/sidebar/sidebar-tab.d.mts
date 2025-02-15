@@ -26,7 +26,7 @@ declare abstract class AbstractSidebarTab<
   /**
    * A reference to the popped-out version of this tab, if one exists.
    */
-  get popout(): this | void;
+  get popout(): this | undefined;
 
   /**
    * The base name of the sidebar tab.

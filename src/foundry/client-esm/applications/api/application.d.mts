@@ -5,6 +5,7 @@ import type {
   InexactPartial,
   MaybePromise,
   ValueOf,
+  AnyArray,
 } from "../../../../utils/index.d.mts";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
@@ -57,7 +58,7 @@ declare namespace ApplicationV2 {
 
   type EmittedEvents = Readonly<["render", "close", "position"]>;
 
-  interface DoEventOptions<HandlerArgs extends Array<any>, Async extends boolean = false> {
+  interface DoEventOptions<HandlerArgs extends AnyArray, Async extends boolean | undefined = false> {
     /**
      * Await the result of the handler function?
      * @defaultValue `false`
@@ -83,10 +84,10 @@ declare namespace ApplicationV2 {
     hookArgs: string;
 
     /** Add the handler response to hookArgs */
-    hookResponse: string;
+    hookResponse: boolean;
   }
 
-  type RenderState = ValueOf<(typeof ApplicationV2)["RENDER_STATES"]>;
+  type RenderState = ValueOf<typeof ApplicationV2.RENDER_STATES>;
 
   export interface RenderContext {
     /** Tab data prepared from an entry in {@link ApplicationV2.TABS} */
@@ -314,8 +315,8 @@ declare namespace ApplicationV2 {
     group: string;
     active: boolean;
     cssClass: string;
-    icon?: string;
-    label?: string;
+    icon?: string | null | undefined;
+    label?: string | null | undefined;
   }
 
   /** @remarks Used with `templates/generic/form-fields.hbs` */
@@ -349,6 +350,19 @@ declare namespace ApplicationV2 {
     disabled?: boolean | undefined;
   }
 
+  interface ToggleControlOptions {
+    /**
+     * Animate the controls toggling.
+     * @defaultValue `true`
+     * @remarks `null` equivalent to `false`
+     */
+    animate?: boolean | null | undefined;
+  }
+
+  /**
+   * @remarks InexactPartial is used over NullishProps because event/navElement are not called with null as a possible value,
+   *          and null interferes with the defaults of force/updatePosition
+   */
   interface ChangeTabOptions
     extends InexactPartial<{
       /**
@@ -635,16 +649,7 @@ declare class ApplicationV2<
    * @param options  - Options to configure the toggling behavior
    * @returns A Promise which resolves once the control expansion animation is complete
    */
-  toggleControls(
-    expanded?: boolean,
-    options?: {
-      /**
-       * Animate the controls toggling.
-       * @defaultValue `true`
-       */
-      animate?: boolean;
-    },
-  ): void;
+  toggleControls(expanded?: boolean, options?: ApplicationV2.ToggleControlOptions): void;
 
   /**
    * Minimize the Application, collapsing it to a minimal header.
@@ -668,8 +673,7 @@ declare class ApplicationV2<
    * @param tab     - The name of the tab which should become active
    * @param group   - The name of the tab group which defines the set of tabs
    * @param options - Additional options which affect tab navigation
-   * @remarks InexactPartial is used over NullishProps because event/navElement are not called with null as a possible value,
-   *          and null interferes with the defaults of force/updatePosition
+   *                  (default: `{}`)
    */
   changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
 
@@ -681,8 +685,8 @@ declare class ApplicationV2<
    * @param options - Options which configure event handling
    * @returns A promise which resoles once the handler is complete if async is true
    */
-  protected _doEvent<HandlerArgs extends Array<any>, Async extends boolean = false>(
-    handler: (...args: HandlerArgs) => void,
+  protected _doEvent<HandlerArgs extends AnyArray, Async extends boolean | undefined = false>(
+    handler: (...args: HandlerArgs) => Async extends true ? Promise<void> : void,
     options?: InexactPartial<ApplicationV2.DoEventOptions<HandlerArgs, Async>>,
   ): Async extends true ? Promise<void> : void;
 
