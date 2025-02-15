@@ -1,4 +1,5 @@
-import type { AnyObject, Brand, FixedInstanceType, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type { Brand, FixedInstanceType, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -393,7 +394,7 @@ declare global {
       last: boolean;
 
       /** Animation options passed to {@link TokenDocument#update} */
-      animation: AnyObject; // TODO: Document.Database.OperationOf<"Token", "update">["animation"]; once that's defined; see Token#animate
+      animation: Document.Database.OperationOf<"Token", "update">["animation"];
     }
 
     interface MeasurementHistoryWaypoint {
