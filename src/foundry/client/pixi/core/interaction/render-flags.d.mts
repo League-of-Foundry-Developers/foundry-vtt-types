@@ -1,11 +1,4 @@
-import type {
-  AnyConstructor,
-  AnyObject,
-  FixedInstanceType,
-  InexactPartial,
-  Mixin,
-  RemoveIndexSignatures,
-} from "fvtt-types/utils";
+import type { AnyConstructor, AnyObject, FixedInstanceType, InexactPartial, Mixin } from "fvtt-types/utils";
 import type { LogCompatibilityWarningOptions } from "../../../../common/utils/logging.d.mts";
 
 declare class RenderFlagObject {
@@ -42,12 +35,20 @@ declare class RenderFlagObject {
  * @privateRemarks Values are marked as optional here based on use, foundry docs incomplete
  * @internal
  */
-type _RenderFlags<Flags extends AnyObject> = InexactPartial<{
-  /** Activating this flag also sets these flags to true */
-  propagate: Array<keyof RemoveIndexSignatures<Flags>>;
+type _RenderFlags<_Flags extends AnyObject> = InexactPartial<{
+  /**
+   * Activating this flag also sets these flags to true
+   * @privateRemarks Without including the list of valid flags as a type param on the mixin somehow, trying to make this
+   * `Array<keyof RemoveIndexSignatures<Flags>>` produces `never[]`
+   */
+  propagate: string[];
 
-  /** Activating this flag resets these flags to false */
-  reset: Array<keyof RemoveIndexSignatures<Flags>>;
+  /**
+   * Activating this flag resets these flags to false
+   * @privateRemarks Without including the list of valid flags as a type param on the mixin somehow, trying to make this
+   * `Array<keyof RemoveIndexSignatures<Flags>>` produces `never[]`
+   */
+  reset: string[];
 
   /**
    * Is this flag deprecated? The deprecation options are passed to
