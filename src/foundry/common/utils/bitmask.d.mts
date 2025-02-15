@@ -1,4 +1,4 @@
-export default class BitMask extends Number {
+declare class InternalBitMask extends Number {
   /**
    * Create a new BitMask instance.
    * @param states    - An object containing valid states and their corresponding initial boolean values (default is null).
@@ -108,3 +108,8 @@ export default class BitMask extends Number {
    */
   static generateShaderBitMaskConstants(states: string[]): string;
 }
+
+declare const BitMask: typeof InternalBitMask & (new (...args: any) => number);
+type BitMask = InternalBitMask & number;
+
+export default BitMask;

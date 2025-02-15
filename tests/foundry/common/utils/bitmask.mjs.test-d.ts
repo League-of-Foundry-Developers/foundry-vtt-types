@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 
 const b = new foundry.utils.BitMask();
+const _number: number = b;
 
 expectTypeOf(b.hasState("a")).toEqualTypeOf<boolean>();
 expectTypeOf(b.addState("a")).toEqualTypeOf<void>();
