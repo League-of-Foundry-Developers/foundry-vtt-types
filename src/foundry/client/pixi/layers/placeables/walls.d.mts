@@ -1,14 +1,11 @@
-import type { NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
    * The Walls canvas layer which provides a container for Wall objects within the rendered Scene.
    */
-  class WallsLayer<
-    DrawOptions extends WallsLayer.DrawOptions = WallsLayer.DrawOptions,
-    TearDownOptions extends PlaceablesLayer.TearDownOptions = PlaceablesLayer.TearDownOptions,
-  > extends PlaceablesLayer<"Wall", DrawOptions, TearDownOptions> {
+  class WallsLayer extends PlaceablesLayer<"Wall"> {
     /**
      * A graphics layer used to display chained Wall selection
      * @defaultValue `null`
@@ -74,7 +71,7 @@ declare global {
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-    override _draw(options?: DrawOptions): Promise<void>;
+    override _draw(options: HandleEmptyObject<WallsLayer.DrawOptions>): Promise<void>;
 
     override _deactivate(): void;
 
