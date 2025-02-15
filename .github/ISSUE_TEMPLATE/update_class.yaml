@@ -3,6 +3,7 @@ description: Submit an issue for updating a class for a certain Foundry VTT vers
 title: "Update CLASS to Foundry VTT VERSION"
 labels:
   - version update
+type: Feature
 body:
   - type: input
     id: class
