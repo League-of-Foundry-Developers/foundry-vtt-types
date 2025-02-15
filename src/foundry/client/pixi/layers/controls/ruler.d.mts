@@ -262,7 +262,7 @@ declare global {
       token: Token.ConfiguredInstance,
       segment: Ruler.PartialSegmentForAnimating,
       destination: Canvas.Point,
-      updateOptions: Ruler.PartialTokenUpdateOptions,
+      updateOptions: Document.Database.OperationOf<"Token", "update">,
     ): Promise<void>;
 
     /**
@@ -477,8 +477,6 @@ declare global {
     interface PartialSegmentForAnimating
       extends Pick<MeasurementSegment, "teleport" | "animation">,
         IntentionalPartial<Omit<MeasurementSegment, "teleport" | "animation">> {}
-
-    type PartialTokenUpdateOptions = IntentionalPartial<TokenDocument.DatabaseOperations["update"]>;
   }
 }
 
