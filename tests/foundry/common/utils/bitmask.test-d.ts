@@ -1,15 +1,31 @@
 import { expectTypeOf } from "vitest";
 
-const b = new foundry.utils.BitMask();
+const b = new foundry.utils.BitMask({ foo: true, bar: false });
 
-expectTypeOf(b.states).toEqualTypeOf<Readonly<Record<string, string>>>();
+expectTypeOf(b.states).toEqualTypeOf<
+  Readonly<{
+    foo: "foo";
+    bar: "bar";
+  }>
+>();
 expectTypeOf(b.isEmpty).toEqualTypeOf<boolean>();
-expectTypeOf(b.hasState("a")).toEqualTypeOf<boolean>();
-expectTypeOf(b.addState("a")).toEqualTypeOf<void>();
-expectTypeOf(b.removeState("a")).toEqualTypeOf<void>();
 
+// @ts-expect-error - only valid states should work
+expectTypeOf(b.hasState("a")).toEqualTypeOf<boolean>();
+expectTypeOf(b.hasState("foo")).toEqualTypeOf<boolean>();
+
+// @ts-expect-error - only valid states should work
+expectTypeOf(b.addState("a")).toEqualTypeOf<void>();
+expectTypeOf(b.addState("foo")).toEqualTypeOf<void>();
+
+// @ts-expect-error - only valid states should work
+expectTypeOf(b.removeState("a")).toEqualTypeOf<void>();
+expectTypeOf(b.removeState("bar")).toEqualTypeOf<void>();
+
+// @ts-expect-error - only valid states should work
 expectTypeOf(b.toggleState("a", true)).toEqualTypeOf<void>();
-expectTypeOf(b.toggleState("a")).toEqualTypeOf<number>();
+expectTypeOf(b.toggleState("bar")).toEqualTypeOf<number>();
+expectTypeOf(b.toggleState("foo", true)).toEqualTypeOf<void>();
 
 expectTypeOf(b.clear()).toEqualTypeOf<void>();
 expectTypeOf(b.valueOf()).toEqualTypeOf<number>();
@@ -20,8 +36,8 @@ expectTypeOf(b.isCompatible(b2)).toEqualTypeOf<boolean>();
 
 expectTypeOf(b.toJSON()).toEqualTypeOf<string>();
 
-expectTypeOf(foundry.utils.BitMask.fromJSON("{a: true}")).toEqualTypeOf<foundry.utils.BitMask>();
+expectTypeOf(foundry.utils.BitMask.fromJSON('{"a": true}')).toEqualTypeOf<foundry.utils.BitMask.Any>();
 expectTypeOf(b.toObject()).toEqualTypeOf<Record<string, boolean>>();
-expectTypeOf(b.clone()).toEqualTypeOf<foundry.utils.BitMask>();
+expectTypeOf(b.clone()).toEqualTypeOf<typeof b>();
 
 expectTypeOf(foundry.utils.BitMask.generateShaderBitMaskConstants(["a"])).toEqualTypeOf<string>();

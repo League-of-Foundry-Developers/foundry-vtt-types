@@ -304,7 +304,11 @@ export function isNewerVersion(v1: number | string, v0: number | string): boolea
  * @param value - The value to test
  * @returns Is the value empty-like?
  */
-export function isEmpty(value: unknown): boolean;
+
+export function isEmpty(
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  value: undefined | null | unknown[] | object | Set<unknown> | Map<unknown, unknown> | unknown,
+): boolean;
 
 export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
   DeleteByObjectKeys<T, U, M>,
