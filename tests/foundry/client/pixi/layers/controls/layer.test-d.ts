@@ -49,19 +49,22 @@ expectTypeOf(layer.updateRuler(someUser, null)).toBeVoid();
 expectTypeOf(
   layer.updateRuler(someUser, {
     destination: { x: 50, y: 50 },
-    history: [],
+    history: [{ x: 20, y: 35, teleport: false, cost: 1 }],
     state: Ruler.STATES.MEASURING,
     token: "asfasgasg",
-    waypoints: [],
+    waypoints: [
+      { x: 0, y: 20 },
+      { x: 10, y: 35 },
+    ],
   }),
 ).toBeVoid();
 
 // @ts-expect-error handlePing requires a `scene` ID in its options
 expectTypeOf(layer.handlePing(someUser, somePoint)).toEqualTypeOf<Promise<boolean>>();
-expectTypeOf(layer.handlePing(someUser, somePoint, { scene: "asdfasg" })).toEqualTypeOf<Promise<boolean>>();
+expectTypeOf(layer.handlePing(someUser, somePoint, { scene: "some scene ID" })).toEqualTypeOf<Promise<boolean>>();
 expectTypeOf(
   layer.handlePing(someUser, somePoint, {
-    scene: "asdfasg",
+    scene: "some scene ID",
     color: 0xfaddaf,
     duration: 2323,
     name: "SomePing.ASFASDFAS",

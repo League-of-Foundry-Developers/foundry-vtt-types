@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { AnyObject, HandleEmptyObject, NullishProps, RemoveIndexSignatures } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -15,12 +15,14 @@ declare global {
     /**
      * The grid mesh.
      * @defaultValue `undefined`
+     * @remarks Only `undefined` prior to first draw
      */
     mesh: GridMesh | undefined;
 
     /**
      * The Grid Highlight container
      * @defaultValue `undefined`
+     * @remarks Only `undefined` prior to first draw
      */
     highlight: PIXI.Container | undefined;
 
@@ -40,38 +42,18 @@ declare global {
 
     override options: GridLayer.LayerOptions;
 
-    /**
-     * Draw the grid
-     * @param options - Override settings used in place of those saved to the Scene data
-     */
     protected override _draw(options: HandleEmptyObject<GridLayer.DrawOptions>): Promise<void>;
 
     /**
      * Creates the grid mesh.
      */
-    protected _drawMesh(): Promise<ReturnType<GridMesh["initialize"]>>;
+    protected _drawMesh(): GridMesh;
 
     /**
      * Initialize the grid mesh appearance and configure the grid shader.
+     * @remarks All the properties of `options` are optional, but it lacks an `={}` default so an object must be passed, even if empty
      */
-    initializeMesh(
-      /**
-       * @remarks Can't be NullishProps because ultimately `GridMesh#_initialize` does `!== undefined` checks
-       */
-      options?: InexactPartial<{
-        /** The grid style */
-        style: string; //TODO: Update as part of #2572 to keyof CONFIG["Canvas"]["gridStyles"];
-
-        /** The grid thickness */
-        thickness: number;
-
-        /** The grid color */
-        color: string;
-
-        /** The grid alpha */
-        alpha: number;
-      }>,
-    ): void;
+    initializeMesh(options: GridLayer.InitializeMeshOptions): void;
 
     /**
      * Define a new Highlight graphic
@@ -101,98 +83,92 @@ declare global {
      * Add highlighting for a specific grid position to a named highlight graphic
      * @param name    - The name for the referenced highlight layer
      * @param options - Options for the grid position that should be highlighted
+     * @remarks Despite being an `={}` parameter, `options` is required as not providing `x` or `y` produces `NaN`s
+     * or puts garbage data into the associated `GridHightlightLayer`, depending on the current grid type
      */
     highlightPosition(name: string, options: GridLayer.HighlightPositionOptions): void;
 
     /**
      * @deprecated since v12, will be removed in v14
-     * @remarks `"GridLayer#type is deprecated. Use canvas.grid.type instead."`
+     * @remarks "GridLayer#type is deprecated. Use canvas.grid.type instead."
      */
     get type(): foundry.CONST.GRID_TYPES;
 
     /**
      * @deprecated since v12, will be removed in v14
-     * @remarks `"GridLayer#size is deprecated. Use canvas.grid.size instead.`
+     * @remarks "GridLayer#size is deprecated. Use canvas.grid.size instead.
      */
     get size(): number;
 
     /**
      * @deprecated since v12, will be removed in v14
-     * `"GridLayer#grid is deprecated. Use canvas.grid instead."`
+     * @remarks "GridLayer#grid is deprecated. Use canvas.grid instead."
      */
     grid: Canvas["grid"];
 
     /**
      * @deprecated since v12, will be removed in v14
-     * @remarks `"GridLayer#isNeighbor is deprecated. Use canvas.grid.testAdjacency instead."`
+     * @remarks "GridLayer#isNeighbor is deprecated. Use canvas.grid.testAdjacency instead."
      */
     isNeighbor(r0: number, c0: number, r1: number, c1: number): boolean;
 
     /**
      * @deprecated since v12, will be removed in v14
-     * @remarks `"GridLayer#w is deprecated in favor of canvas.grid.sizeX."`
+     * @remarks "GridLayer#w is deprecated in favor of canvas.grid.sizeX."
      */
     get w(): number;
 
     /**
      * @deprecated since v12, will be removed in v14
-     * @remarks `"GridLayer#h is deprecated in favor of canvas.grid.sizeY."`
+     * @remarks "GridLayer#h is deprecated in favor of canvas.grid.sizeY."
      */
     get h(): number;
 
     /**
      * @deprecated since v12, will be removed in v14
-     * @remarks `"GridLayer#isHex is deprecated. Use canvas.grid.isHexagonal instead."`
+     * @remarks "GridLayer#isHex is deprecated. Use canvas.grid.isHexagonal instead."
      */
     get isHex(): boolean;
 
     /**
      * @deprecated since v12, will be removed in v14
-     * @remarks `"GridLayer#getTopLeft is deprecated. Use canvas.grid.getTopLeftPoint instead."`
+     * @remarks "GridLayer#getTopLeft is deprecated. Use canvas.grid.getTopLeftPoint instead."
      */
     getTopLeft(x: number, y: number): Canvas.PointTuple;
 
     /**
      * @deprecated since v12, will be removed in v14
-     * @remarks `"GridLayer#getCenter is deprecated. Use canvas.grid.getCenterPoint instead."`
+     * @remarks "GridLayer#getCenter is deprecated. Use canvas.grid.getCenterPoint instead."
      */
     getCenter(x: number, y: number): Canvas.PointTuple;
 
     /**
      * @deprecated since v12, will be removed in v14
-     * @remarks `"GridLayer#getSnappedPosition is deprecated. Use canvas.grid.getCenterPoint instead."`
+     * @remarks "GridLayer#getSnappedPosition is deprecated. Use canvas.grid.getCenterPoint instead."
      */
     getSnappedPosition(
       x: number,
       y: number,
+      /** @defaultValue `1` */
       interval?: number,
-      options?: NullishProps<{
-        /**
-         * The token
-         */
-        token: Token;
-      }>,
-    ): { x: number; y: number };
+      /** @remarks Unused */
+      options?: AnyObject,
+    ): PIXI.IPointData;
 
     /**
      * @deprecated since v12, will be removed in v14
      * @remarks `"GridLayer#measureDistance is deprecated. "Use canvas.grid.measurePath instead for non-Euclidean measurements."`
      */
     measureDistance(
-      origin: {
-        x: number;
-        y: number;
-      },
-      target: {
-        x: number;
-        y: number;
-      },
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      options?: GridLayer.MeasureDistancesOptions,
+      origin: Canvas.Point,
+      target: Canvas.Point,
+      /** @remarks Unused */
+      options?: AnyObject,
     ): number;
   }
 
   namespace GridLayer {
+    interface Any extends AnyGridLayer {}
     type AnyConstructor = typeof AnyGridLayer;
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}
@@ -203,62 +179,85 @@ declare global {
       name: "grid";
     }
 
-    interface HighlightPositionOptions {
-      /**
-       * The x-coordinate of the highlighted position
-       * @remarks Required if `canvas.grid !== CONST.GRID_TYPES.GRIDLESS`
-       */
-      x?: number | undefined | null;
+    /** @internal */
+    type _InitializeMeshOptions = NullishProps<{
+      /** The grid style */
+      style: ConfiguredGridStyles;
+    }>;
 
-      /**
-       * The y-coordinate of the highlighted position
-       * @remarks Required if `canvas.grid !== CONST.GRID_TYPES.GRIDLESS`
-       */
-      y?: number | undefined | null;
+    interface InitializeMeshOptions
+      extends _InitializeMeshOptions,
+        Pick<GridMesh.InitializationMeshData, "thickness" | "color" | "alpha"> {}
 
+    /** @internal */
+    type _HighlightPositionOptions = NullishProps<{
       /**
-       * The fill color of the highlight
        * @defaultValue `0x33BBFF`
-       * @privateRemarks `null` is a problem because it's forwarded to a PIXI.Graphics#beginFill call which has a default value set
+       * @remarks This value eventually ends up at `PIXI.Graphics#normalizeColor()`, which handles `null` as `0` (black)
        */
-      color?: PIXI.ColorSource | undefined;
+      color: PIXI.ColorSource | Color;
 
       /**
        * The border color of the highlight
        * @defaultValue `null`
+       * @remarks If `null`, no border will be drawn.
        */
-      border?: PIXI.ColorSource | undefined | null;
+      border: PIXI.ColorSource | Color;
 
       /**
        * The opacity of the highlight
        * @defaultValue `0.25`
+       * @remarks The above is only a parameter default; `PIXI.Graphics#normalizeColor()` will replace `null` with `1`
        */
-      alpha?: number | undefined;
+      alpha: number;
 
       /**
        * A predefined shape to highlight
        * @defaultValue `null`
+       * @remarks Must be provided on gridless scenes or highlighting will fail quietly
        */
-      shape?: PIXI.Polygon | undefined | null;
-    }
-
-    /**
-     * @deprecated since v12, will be removed in v14
-     * @remarks Used by {@link foundry.grid.BaseGrid#measureDistances}
-     */
-    interface Segment {
-      ray: Ray;
-      label?: Ruler["labels"]["children"][number];
-    }
-
-    /**
-     * @deprecated since v12, will be removed in v14
-     * @remarks Used by {@link foundry.grid.BaseGrid#measureDistances}
-     */
-    type MeasureDistancesOptions = NullishProps<{
-      /** Return the distance in grid increments rather than the co-ordinate distance. */
-      gridSpaces?: boolean;
+      shape: PIXI.IShape;
     }>;
+
+    interface HighlightPositionOptions extends _HighlightPositionOptions {
+      /**
+       * The x-coordinate of the highlighted position
+       * @remarks Required despite Foundry marking it optional. If omitted on gridless will produce `NaN`s,
+       * and on other grid types will insert garbage data into the associated `GridHighlightLayer`
+       */
+      x: number;
+
+      /**
+       * The y-coordinate of the highlighted position
+       * @remarks Required despite Foundry marking it optional. If omitted on gridless will produce `NaN`s,
+       * and on other grid types will insert garbage data into the associated `GridHighlightLayer`
+       */
+      y: number;
+    }
+
+    /** @internal */
+    type _GridStyle = NullishProps<{
+      /** @defaultValue `GridShader` */
+      shaderClass: GridShader.AnyConstructor;
+
+      /** @defaultValue `{}` */
+      shaderOptions: NullishProps<{
+        /**
+         * @defaultValue `0`
+         * @remarks Gets applied to the constructed shaderClass instance's `uniforms`.
+         *
+         * @privateRemarks It's unclear if this is actually repesenting an enum value or not, so it's been left as `number`.
+         */
+        style: number;
+      }>;
+    }>;
+
+    interface GridStyle extends _GridStyle {
+      /** @remarks A localization key to display in the Configure Scene sheet */
+      label: string;
+    }
+
+    type ConfiguredGridStyles = keyof RemoveIndexSignatures<CONFIG["Canvas"]["gridStyles"]>;
   }
 }
 
