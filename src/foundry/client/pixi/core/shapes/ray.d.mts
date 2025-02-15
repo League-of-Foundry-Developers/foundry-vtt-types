@@ -119,7 +119,7 @@ declare global {
      * @param B - The destination point [x,y]
      * @returns The constructed Ray instance
      */
-    static fromArrays(A: Canvas.PointArray, B: Canvas.PointArray): Ray;
+    static fromArrays(A: Canvas.PointTuple, B: Canvas.PointTuple): Ray;
 
     /**
      * Project the Array by some proportion of it's initial distance.
@@ -169,7 +169,7 @@ declare global {
      * Find the point I[x,y] and distance t* on ray R(t) which intersects another ray
      * @see foundry.utils.lineLineIntersection
      */
-    intersectSegment(coords: Canvas.PairOfPointsArray): LineIntersection | null;
+    intersectSegment(coords: Canvas.PairOfPointsTuple): LineIntersection | null;
   }
 
   namespace Ray {

@@ -781,7 +781,13 @@ declare global {
      */
     type PointArray = [x: number, y: number];
 
-    type PairOfPointsArray = [x0: number, y0: number, x1: number, y1: number];
+    /**
+     * @privateRemarks Alias of `Canvas.PointArray`, as that name, while accurate to Foundry's types,
+     * could easily be inferred to mean incorrect things (`[{x,y}, {x,y}]` for example)
+     * */
+    type PointTuple = PointArray;
+
+    type PairOfPointsTuple = [x0: number, y0: number, x1: number, y1: number];
 
     /**
      * A standard rectangle interface.
