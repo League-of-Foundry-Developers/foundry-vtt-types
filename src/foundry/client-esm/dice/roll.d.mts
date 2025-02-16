@@ -462,9 +462,9 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    */
   toMessage<
     const Create extends boolean | null | undefined,
-    ConcreteMessageData extends Roll.MessageData | undefined = undefined,
+    ConcreteMessageData extends Roll.MessageData | null | undefined = undefined,
   >(
-    messageData?: ConcreteMessageData | null,
+    messageData?: ConcreteMessageData,
     options?: Roll.ToMessageOptions<Create>, // can't be null because it gets destructured
   ): Promise<Roll.ToMessageReturn<Create, ConcreteMessageData>>;
 
@@ -644,7 +644,7 @@ declare namespace Roll {
 
   type ToMessageReturn<
     Create extends boolean | null | undefined,
-    ConcreteMessageData extends Roll.MessageData | undefined = undefined,
+    ConcreteMessageData extends Roll.MessageData | null | undefined = undefined,
   > =
     | (ConcreteMessageData extends undefined ? ChatMessage.ConfiguredInstance | undefined : never)
     | (Create extends true | undefined ? ChatMessage.ConfiguredInstance | undefined : never)
