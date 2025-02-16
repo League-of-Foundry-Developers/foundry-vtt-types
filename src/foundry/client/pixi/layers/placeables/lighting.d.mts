@@ -29,7 +29,7 @@ declare global {
      */
     static override get layerOptions(): LightingLayer.LayerOptions;
 
-    override get hookName(): string;
+    override get hookName(): "LightingLayer";
 
     protected override _draw(options: HandleEmptyObject<LightingLayer.DrawOptions>): Promise<void>;
 
@@ -40,7 +40,7 @@ declare global {
      */
     refreshFields(): void;
 
-    override _activate(): void;
+    protected override _activate(): void;
 
     protected override _canDragLeftStart(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
 
@@ -51,7 +51,7 @@ declare global {
     protected override _onDragLeftCancel(event: PointerEvent): void;
 
     // @ts-expect-error Foundry is changing the return type here from Promise<PlaceableObject[]> to just Promise<AmbientLight>
-    protected _onMouseWheel(event: WheelEvent): ReturnType<AmbientLight.ConfiguredInstance["rotate"]>;
+    protected _onMouseWheel(event: WheelEvent): Promise<AmbientLight.ConfiguredInstance>;
 
     /**
      * Actions to take when the darkness level of the Scene is changed
@@ -61,6 +61,7 @@ declare global {
   }
 
   namespace LightingLayer {
+    interface Any extends AnyLightingLayer {}
     type AnyConstructor = typeof AnyLightingLayer;
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
