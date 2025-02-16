@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 
 declare const diceTerm: foundry.dice.terms.DiceTerm;
 
-expectTypeOf(diceTerm.method).toEqualTypeOf<keyof typeof CONFIG.Dice.fulfillment.methods | undefined>();
+expectTypeOf(diceTerm.method).toEqualTypeOf<keyof typeof CONFIG.Dice.fulfillment.methods | null | undefined>();
 expectTypeOf(diceTerm.modifiers).toEqualTypeOf<string[]>();
 expectTypeOf(diceTerm.results).toEqualTypeOf<foundry.dice.terms.DiceTerm.Result[]>();
 expectTypeOf(diceTerm.number).toEqualTypeOf<number | undefined>();

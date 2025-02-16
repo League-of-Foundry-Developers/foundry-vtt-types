@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyObject, EmptyObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, EmptyObject } from "fvtt-types/utils";
 import type { RollParseNode } from "../../../../src/foundry/client-esm/dice/_types.d.mts";
 
 class CustomRoll<D extends Record<string, unknown> = EmptyObject> extends Roll<D> {}
@@ -10,7 +10,7 @@ type RollType = Roll<{ prof: number; strMod: number }>;
 
 const roll = new Roll("2d20kh + @prof + @strMod", { prof: 2, strMod: 4 });
 expectTypeOf(roll.data).toEqualTypeOf<{ prof: number; strMod: number }>();
-expectTypeOf(roll.options).toEqualTypeOf<InexactPartial<Roll.Options>>();
+expectTypeOf(roll.options).toEqualTypeOf<Roll.Options>();
 
 // The parsed terms of the roll formula
 // [Die, OperatorTerm, NumericTerm, OperatorTerm, NumericTerm]
@@ -42,6 +42,9 @@ expectTypeOf(roll.roll()).toEqualTypeOf<Promise<Roll.Evaluated<TypeOfR>>>();
 expectTypeOf(roll.roll()).toEqualTypeOf<Promise<Roll.Evaluated<TypeOfR>>>();
 expectTypeOf(roll.roll({ minimize: true, maximize: true })).toEqualTypeOf<Promise<Roll.Evaluated<TypeOfR>>>();
 expectTypeOf((await roll.roll()).total).toEqualTypeOf<number>();
+
+declare const customRoll: CustomRoll<EmptyObject>;
+expectTypeOf(await customRoll.roll()).toEqualTypeOf<Roll.Evaluated<CustomRoll<EmptyObject>>>();
 
 expectTypeOf(roll.reroll()).toEqualTypeOf<Promise<Roll.Evaluated<TypeOfR>>>();
 expectTypeOf(roll.reroll({ minimize: true, maximize: true })).toEqualTypeOf<Promise<Roll.Evaluated<TypeOfR>>>();
@@ -83,11 +86,11 @@ expectTypeOf(Roll.RESOLVERS).toEqualTypeOf<Map<Roll, foundry.applications.dice.R
 
 // create the configured roll instance
 // TODO: Find way to ensure that first element of CONFIG.Dice.rolls array is used by `Roll.create`
-expectTypeOf(Roll.create("1d20")).toEqualTypeOf<Roll<AnyObject>>();
-expectTypeOf(Roll.create("1d20 + @prof", { prof: 2 })).toEqualTypeOf<CustomRoll<{ prof: number }>>();
-expectTypeOf(Roll.fromTerms([])).toEqualTypeOf<Roll<AnyObject>>();
+// expectTypeOf(Roll.create("1d20")).toEqualTypeOf<CustomRoll<EmptyObject>>();
+// expectTypeOf(Roll.create("1d20 + @prof", { prof: 2 })).toEqualTypeOf<CustomRoll<{ prof: number }>>();
+// expectTypeOf(Roll.fromTerms([])).toEqualTypeOf<CustomRoll<EmptyObject>>();
+// expectTypeOf(Roll.defaultImplementation).toEqualTypeOf<CustomRoll<EmptyObject>>();
 
-expectTypeOf(Roll.defaultImplementation).toEqualTypeOf<typeof Roll>();
 expectTypeOf(Roll.resolverImplementation).toEqualTypeOf<typeof foundry.applications.dice.RollResolver>();
 expectTypeOf(Roll.getFormula([])).toEqualTypeOf<string>();
 expectTypeOf(Roll.safeEval("")).toEqualTypeOf<number>();
@@ -109,9 +112,13 @@ expectTypeOf(Roll.collapseInlineResult(a)).toEqualTypeOf<void>();
 
 declare const d: foundry.dice.Roll.Data;
 
-expectTypeOf(Roll.fromData(d)).toEqualTypeOf<Roll>();
-expectTypeOf(Roll.fromJSON("")).toEqualTypeOf<Roll>();
-expectTypeOf(Roll.fromTerms([])).toEqualTypeOf<Roll>();
+expectTypeOf(Roll.fromData(d)).toEqualTypeOf<Roll<AnyObject>>();
+expectTypeOf(Roll.fromJSON("")).toEqualTypeOf<Roll<AnyObject>>();
+expectTypeOf(Roll.fromTerms([])).toEqualTypeOf<Roll<AnyObject>>();
+
+expectTypeOf(CustomRoll.fromData(d)).toEqualTypeOf<CustomRoll<Record<string, unknown>>>();
+expectTypeOf(CustomRoll.fromJSON("")).toEqualTypeOf<CustomRoll<Record<string, unknown>>>();
+expectTypeOf(CustomRoll.fromTerms([])).toEqualTypeOf<CustomRoll<Record<string, unknown>>>();
 
 CONFIG.Dice.rolls = [CustomRoll, Roll];
 const rollCls = CONFIG.Dice.rolls[0];

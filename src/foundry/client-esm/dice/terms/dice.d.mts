@@ -24,7 +24,7 @@ declare abstract class DiceTerm extends RollTerm {
    */
   constructor(termData?: InexactPartial<DiceTerm.TermData>);
 
-  get method(): keyof typeof CONFIG.Dice.fulfillment.methods | undefined;
+  get method(): keyof typeof CONFIG.Dice.fulfillment.methods | null | undefined;
 
   set method(method: keyof typeof CONFIG.Dice.fulfillment.methods);
 
@@ -222,7 +222,7 @@ declare abstract class DiceTerm extends RollTerm {
   protected static _keepOrDrop(
     results: DiceTerm.Result[],
     number: number,
-    { keep, highest }?: InexactPartial<{ keep: boolean; highest: boolean }>,
+    options?: DiceTerm.KeepOrDropOptions,
   ): DiceTerm.Result;
 
   /**
@@ -234,7 +234,7 @@ declare abstract class DiceTerm extends RollTerm {
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    { flagSuccess, flagFailure }?: InexactPartial<{ flagSuccess: boolean; flagFailure: boolean }>,
+    options?: DiceTerm.ApplyCountOptions,
   ): void;
 
   /**
@@ -246,7 +246,7 @@ declare abstract class DiceTerm extends RollTerm {
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    { deductFailure, invertFailure }?: InexactPartial<{ deductFailure: boolean; invertFailure: boolean }>,
+    options?: DiceTerm.ApplyDeductOptions,
   ): void;
 
   /* -------------------------------------------- */
@@ -260,10 +260,7 @@ declare abstract class DiceTerm extends RollTerm {
    * @param imputeNumber - Allow the number of dice to be optional, i.e. "d6"
    *                       (default: `true`)
    */
-  static matchTerm(
-    expression: string,
-    { imputeNumber }?: InexactPartial<{ imputeNumber: boolean }>,
-  ): RegExpMatchArray | null;
+  static matchTerm(expression: string, options?: DiceTerm.MatchTermOptions): RegExpMatchArray | null;
 
   /**
    * Construct a term of this type given a matched regular expression array.
@@ -295,38 +292,36 @@ declare namespace DiceTerm {
     results: DiceTerm.Result[];
   }
 
-  interface TermData extends Required<TermConstructorData> {}
-
-  interface TermConstructorData {
+  interface TermData {
     /**
      * @defaultValue `1`
      */
-    number?: number | undefined;
+    number: number;
 
     /**
      * @defaultValue `6`
      */
-    faces?: number | undefined;
+    faces: number;
 
     /**
      * @defaultValue `undefined`
      */
-    method?: keyof typeof CONFIG.Dice.fulfillment.methods | undefined;
+    method: keyof typeof CONFIG.Dice.fulfillment.methods | null | undefined;
 
     /**
      * @defaultValue `[]`
      */
-    modifiers?: string[] | undefined;
+    modifiers: string[];
 
     /**
      * @defaultValue `[]`
      */
-    results?: Result[] | undefined;
+    results: Result[];
 
     /**
      * @defaultValue `{}`
      */
-    options?: DiceTerm.Options | undefined;
+    options: InexactPartial<DiceTerm.Options>;
   }
 
   interface Options extends RollTerm.Options {}
@@ -358,6 +353,25 @@ declare namespace DiceTerm {
     method: string;
     formula: string;
     rolls: { result: string; classes: string }[];
+  }
+
+  interface KeepOrDropOptions {
+    keep?: boolean | undefined;
+    highest?: boolean | undefined;
+  }
+
+  interface ApplyCountOptions {
+    flagSuccess?: boolean | undefined;
+    flagFailure?: boolean | undefined;
+  }
+
+  interface ApplyDeductOptions {
+    deductFailure?: boolean | undefined;
+    invertFailure?: boolean | undefined;
+  }
+
+  interface MatchTermOptions {
+    imputeNumber?: boolean | undefined;
   }
 
   interface EvaluationOptions extends RollTerm.EvaluationOptions {
