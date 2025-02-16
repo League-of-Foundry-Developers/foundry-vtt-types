@@ -1,4 +1,4 @@
-import type { AnyConstructor, AnyFunction, DeepPartial, InexactPartial } from "fvtt-types/utils";
+import type { AnyConstructor, AnyFunction, DeepPartial, InexactPartial, NonNullish } from "fvtt-types/utils";
 import type Document from "../abstract/document.d.mts";
 
 /**
@@ -306,8 +306,7 @@ export function isNewerVersion(v1: number | string, v0: number | string): boolea
  */
 
 export function isEmpty(
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  value: undefined | null | unknown[] | object | Set<unknown> | Map<unknown, unknown> | unknown,
+  value: undefined | null | unknown[] | object | Set<unknown> | Map<unknown, unknown> | NonNullish,
 ): boolean;
 
 export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
