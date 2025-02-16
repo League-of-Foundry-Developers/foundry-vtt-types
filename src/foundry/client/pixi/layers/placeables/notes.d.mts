@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, InexactPartial } from "fvtt-types/utils";
+import type { HandleEmptyObject, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -33,11 +33,12 @@ declare global {
      */
     static TOGGLE_SETTING: "notesDisplayToggle";
 
-    override get hookName(): string;
+    override get hookName(): "NotesLayer";
 
+    /** @defaultValue `game.settings.get("core", "notesDisplayToggle")` */
     override interactiveChildren: boolean;
 
-    override _deactivate(): void;
+    protected override _deactivate(): void;
 
     protected override _draw(options: HandleEmptyObject<NotesLayer.DrawOptions>): Promise<void>;
 
@@ -57,34 +58,19 @@ declare global {
      * @param options - Options which modify the pan operation.
      * @returns A Promise which resolves once the pan animation has concluded.
      */
-    panToNote(
-      note: Note,
-      /** @remarks Can't be NullishProps because `duration` is passed to `canvas.animatePan` which only provides a default for `undefined` with `{ duration=250 }`, and must be numeric */
-      options?: InexactPartial<{
-        /**
-         * The resulting zoom level.
-         * @defaultValue `1.5`
-         */
-        scale: number;
-
-        /**
-         * The speed of the pan animation in milliseconds.
-         * @defaultValue `250`
-         */
-        duration: number;
-      }>,
-    ): Promise<void>;
+    panToNote(note: Note.ConfiguredInstance, options?: NotesLayer.PanToNoteOptions): Promise<void>;
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    protected override _onClickLeft(event: PIXI.FederatedEvent): Promise<Note | void>;
+    protected override _onClickLeft(event: PIXI.FederatedEvent): Promise<Note.ConfiguredInstance | void>;
 
     /**
      * Handle JournalEntry document drop data
      */
-    protected _onDropData(event: DragEvent, data: NotesLayer.DropData): Promise<false | Note>;
+    protected _onDropData(event: DragEvent, data: NotesLayer.DropData): Promise<false | Note.ConfiguredInstance>;
   }
 
   namespace NotesLayer {
+    interface Any extends AnyNotesLayer {}
     type AnyConstructor = typeof AnyNotesLayer;
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
@@ -94,12 +80,42 @@ declare global {
       zIndex: 800;
     }
 
-    interface DropData<DocType extends "JournalEntry" | "JournalEntryPage" = "JournalEntry" | "JournalEntryPage">
-      extends Canvas.DropPosition {
-      type: DocType;
+    /** @internal */
+    interface _DropDataCommon {
       uuid: string;
-      anchor: DocType extends "JournalEntryPage" ? { name: string } : undefined;
     }
+
+    interface DropDataJournalEntry extends _DropDataCommon, Canvas.DropPosition {
+      type: "JournalEntry";
+    }
+
+    interface DropDataJournalEntryPage extends _DropDataCommon, Canvas.DropPosition {
+      type: "JournalEntryPage";
+      anchor: { name: string };
+    }
+
+    type DropData = DropDataJournalEntry | DropDataJournalEntryPage;
+
+    /** @internal */
+    type _PanToNoteOptions = NullishProps<{
+      /**
+       * The resulting zoom level.
+       * @defaultValue `1.5`
+       * @remarks The above is a parameter default only; `null` will be eventually be handled by
+       * {@link Canvas#_constrainView}, where it will be replaced with `canvas.stage.scale.x`
+       */
+      scale: number;
+    }> &
+      InexactPartial<{
+        /**
+         * The speed of the pan animation in milliseconds.
+         * @defaultValue `250`
+         * @remarks Can't be `null` as it only has a parameter default
+         */
+        duration: number;
+      }>;
+
+    interface PanToNoteOptions extends _PanToNoteOptions {}
   }
 }
 
