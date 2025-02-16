@@ -122,7 +122,7 @@ declare global {
      * @remarks yields A placeable object
      */
     // TODO: Update remark with proper @yields tag https://github.com/microsoft/tsdoc/issues/234
-    controllableObjects(): Generator<PlaceableObject>;
+    controllableObjects(): Generator<PlaceableObject.Any>;
 
     /**
      * Track the set of PlaceableObjects on this layer which are currently controlled.
