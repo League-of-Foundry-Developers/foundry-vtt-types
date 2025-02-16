@@ -1,5 +1,6 @@
 import type { HandleEmptyObject } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
+import type DataModel from "../../../../common/abstract/data.d.mts";
 
 declare global {
   /**
@@ -35,7 +36,7 @@ declare global {
 
     static override documentName: "Region";
 
-    override get hookName(): string;
+    override get hookName(): "RegionLayer";
 
     /** The RegionLegend application of this RegionLayer */
     get legend(): foundry.applications.ui.RegionLegend;
@@ -43,9 +44,10 @@ declare global {
     /**
      * Draw shapes as holes?
      * @defaultValue `false`
-     * @internal
+     * @remarks Foundry marked `@internal` but gets *and* sets it via the "hole" layer control toggle.
+     * Leaving public as this seems to be the source of truth for that.
      */
-    protected _holeMode: boolean;
+    _holeMode: boolean;
 
     protected override _activate(): void;
 
@@ -63,14 +65,14 @@ declare global {
 
     override getZIndex(): number;
 
-    protected override _draw(options?: HandleEmptyObject<RegionLayer.DrawOptions>): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<RegionLayer.DrawOptions>): Promise<void>;
 
     /**
      * Highlight the shape or clear the highlight.
      * @param data - The shape to highlight, or null to clear the highlight
-     * @internal
+     * @remarks Foundry marked `@internal`. If `data` is falsey, clears the current highly and returns early
      */
-    protected _highlightShape(data?: foundry.data.BaseShapeData | null): void;
+    protected _highlightShape(data?: DataModel.ConstructorDataFor<foundry.data.BaseShapeData> | null): void;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
@@ -90,12 +92,19 @@ declare global {
   }
 
   namespace RegionLayer {
-    type AnyConstructor = typeof AnyRegionLayer;
     interface Any extends AnyRegionLayer {}
+    type AnyConstructor = typeof AnyRegionLayer;
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Region"> {}
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Region"> {
+      name: "regions";
+      controllableObjects: true;
+      confirmDeleteKey: true;
+      quadtree: false;
+      zIndex: 100;
+      zIndexActive: 600;
+    }
   }
 }
 

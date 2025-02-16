@@ -21,12 +21,12 @@ expectTypeOf(layer.refreshFields()).toBeVoid();
 expectTypeOf(layer["_activate"]()).toBeVoid();
 
 declare const someUser: User.ConfiguredInstance;
-declare const someEevnt: PIXI.FederatedEvent;
+declare const someEvent: PIXI.FederatedEvent;
 declare const somePointerEvent: PointerEvent;
 declare const someWheelEvent: WheelEvent;
-expectTypeOf(layer["_canDragLeftStart"](someUser, someEevnt)).toBeBoolean();
-expectTypeOf(layer["_onDragLeftStart"](someEevnt)).toBeVoid();
-expectTypeOf(layer["_onDragLeftMove"](someEevnt)).toBeVoid();
+expectTypeOf(layer["_canDragLeftStart"](someUser, someEvent)).toBeBoolean();
+expectTypeOf(layer["_onDragLeftStart"](someEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftMove"](someEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftCancel"](somePointerEvent)).toBeVoid();
 expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<AmbientLight.ConfiguredInstance>>();
-expectTypeOf(layer["_onDarknessChange"](someEevnt)).toBeVoid();
+expectTypeOf(layer["_onDarknessChange"](someEvent)).toBeVoid();
