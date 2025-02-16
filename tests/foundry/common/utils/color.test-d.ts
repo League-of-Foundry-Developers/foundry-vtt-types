@@ -1,5 +1,9 @@
 import { expectTypeOf } from "vitest";
 
+// test assignability to number
+const _color1: number = new Color(0xffffff);
+const _color2: number = Color.from(0xffff00);
+
 const color = new Color();
 
 expectTypeOf(color.valid).toEqualTypeOf<boolean>();
