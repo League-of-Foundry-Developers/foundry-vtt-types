@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/dot-notation */
-// ^ should be unnecessary, all `[""]` accessed methods are protected, don't know why it's throwing a fit
 import { expectTypeOf } from "vitest";
 
 expectTypeOf(RegionLayer.documentName).toEqualTypeOf<"Region">();

@@ -39,6 +39,7 @@ expectTypeOf(
 declare const someEvent: PIXI.FederatedEvent;
 declare const someDragEvent: DragEvent;
 expectTypeOf(layer["_onClickLeft"](someEvent)).toEqualTypeOf<Promise<Note.ConfiguredInstance | void>>();
+
 expectTypeOf(
   layer["_onDropData"](someDragEvent, {
     anchor: { name: "foo " },
