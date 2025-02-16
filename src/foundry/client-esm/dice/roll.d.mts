@@ -398,14 +398,7 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    * @param next         - The next term to classify
    * @returns A classified RollTerm instance
    */
-  static _classifyStringTerm(
-    term: string,
-    {
-      intermediate,
-      prior,
-      next,
-    }?: InexactPartial<{ intermediate: boolean; prior: RollTerm | string; next: RollTerm | string }>,
-  ): RollTerm;
+  static _classifyStringTerm(term: string, { intermediate, prior, next }?: ClassifyStringTermOptions): RollTerm;
 
   /* -------------------------------------------- */
   /*  Chat Messages                               */
@@ -650,6 +643,12 @@ declare namespace Roll {
     | (Create extends true | undefined ? ChatMessage.ConfiguredInstance | undefined : never)
     | (Create extends false | null ? ChatMessageCreateData : never);
 }
+
+type ClassifyStringTermOptions = InexactPartial<{
+  intermediate: boolean;
+  prior: RollTerm | string;
+  next: RollTerm | string;
+}>;
 
 // TODO: Replace when `documents-v2` is merged.
 type ChatMessageCreateData = foundry.data.fields.SchemaField.InnerPersistedType<ChatMessage.Schema>;
