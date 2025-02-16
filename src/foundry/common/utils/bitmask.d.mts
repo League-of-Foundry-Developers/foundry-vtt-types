@@ -1,4 +1,4 @@
-declare class BitMask<T extends Record<string, boolean>> extends Number {
+declare class InternalBitMask<T extends Record<string, boolean>> extends Number {
   /**
    * Create a new BitMask instance.
    * @param states    - An object containing valid states and their corresponding initial boolean values (default is null).
@@ -74,7 +74,7 @@ declare class BitMask<T extends Record<string, boolean>> extends Number {
    * @param otherBitMask  - The bitmask structure to compare with.
    * @returns True if the two bitmasks have the same structure, false otherwise.
    */
-  isCompatible<R extends Record<string, boolean>>(otherBitMask: BitMask<R>): boolean;
+  isCompatible(otherBitMask: BitMask.Any): boolean;
 
   /**
    * Serializes the bitmask to a JSON string.
@@ -110,7 +110,10 @@ declare class BitMask<T extends Record<string, boolean>> extends Number {
 }
 
 declare namespace BitMask {
-  export type Any = BitMask<Record<string, boolean>>;
+  export type Any = InternalBitMask<Record<string, boolean>>;
 }
+
+declare const BitMask: typeof InternalBitMask & (new (...args: any) => number);
+type BitMask = BitMask.Any & number;
 
 export default BitMask;

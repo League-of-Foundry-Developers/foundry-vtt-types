@@ -1,6 +1,11 @@
-import { expectTypeOf } from "vitest";
+import { expect, expectTypeOf } from "vitest";
 
 const b = new foundry.utils.BitMask({ foo: true, bar: false });
+
+// test assignability to number
+const n: number = b;
+
+expect(n).toBe(1);
 
 expectTypeOf(b.states).toEqualTypeOf<
   Readonly<{
