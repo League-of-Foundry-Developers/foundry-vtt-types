@@ -35,7 +35,7 @@ declare global {
      * ```
      */
     protected last: {
-      point: Canvas.PointArray | null;
+      point: Canvas.PointTuple | null;
     };
 
     /**
@@ -81,7 +81,7 @@ declare global {
      * @param wall  - The existing Wall object being chained to
      * @returns The [x,y] coordinates of the starting endpoint
      */
-    static getClosestEndpoint(point: Canvas.Point, wall: Wall.ConfiguredInstance): Canvas.PointArray;
+    static getClosestEndpoint(point: Canvas.Point, wall: Wall.ConfiguredInstance): Canvas.PointTuple;
 
     override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
@@ -113,7 +113,7 @@ declare global {
          */
         snap: boolean;
       }>,
-    ): Canvas.PointArray;
+    ): Canvas.PointTuple;
 
     /**
      * The Scene Controls tools provide several different types of prototypical Walls to choose from
