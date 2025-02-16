@@ -35,11 +35,14 @@ declare global {
      */
     static DEFAULT_CONFIG_SETTING: "defaultDrawingConfig";
 
-    graphics: Collection<Drawing>;
+    /**
+     * The collection of drawing objects which are rendered in the interface.
+     */
+    graphics: Collection<Drawing.ConfiguredInstance>;
 
-    override get hud(): Exclude<Canvas["hud"], undefined>["drawing"];
+    override get hud(): NonNullable<Canvas["hud"]>["drawing"];
 
-    override get hookName(): string;
+    override get hookName(): "DrawingsLayer";
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
@@ -48,7 +51,7 @@ declare global {
      */
     configureDefault(): void;
 
-    override _deactivate(): void;
+    protected override _deactivate(): void;
 
     protected override _draw(options: HandleEmptyObject<DrawingsLayer.DrawOptions>): Promise<void>;
 
@@ -57,9 +60,9 @@ declare global {
      * Start with some global defaults, apply user default config, then apply mandatory overrides per tool.
      * @param origin - The initial coordinate
      * @returns The new drawing data
-     * @remarks This is used from DrawingConfig and hence public on purpose.
+     * @privateRemarks This isn't called externally (anymore?) but seems too useful to make protected without any indication on Foundry's side of such intent
      */
-    _getNewDrawingData(origin: Canvas.Point): foundry.documents.BaseDrawing.ConstructorData;
+    _getNewDrawingData(origin: Canvas.Point): DrawingDocument.ConstructorData;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
@@ -90,6 +93,7 @@ declare global {
   }
 
   namespace DrawingsLayer {
+    interface Any extends AnyDrawingsLayer {}
     type AnyConstructor = typeof AnyDrawingsLayer;
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}
