@@ -7,4 +7,4 @@ expectTypeOf(ui.menu).toEqualTypeOf<MainMenu | undefined>();
 
 const myColor = Color.from("foobar");
 
-expectTypeOf(myColor).toEqualTypeOf<number | Color>();
+expectTypeOf(myColor).toEqualTypeOf<Color>();

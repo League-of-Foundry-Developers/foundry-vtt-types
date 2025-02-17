@@ -1,18 +1,11 @@
 import { expectTypeOf, assertType } from "vitest";
-import type { AnyFunction, NonNullish } from "fvtt-types/utils";
-
-// Global export test
-expectTypeOf(benchmark).toEqualTypeOf(foundry.utils.benchmark);
-expectTypeOf(deepClone).toEqualTypeOf(foundry.utils.deepClone);
-expectTypeOf(duplicate).toEqualTypeOf(foundry.utils.duplicate);
-expectTypeOf(mergeObject).toEqualTypeOf(foundry.utils.mergeObject);
-// ---
-
-// benchmark
+import type { AnyConstructor, AnyFunction, NonNullish } from "fvtt-types/utils";
 
 declare function functionWithoutParameters(): void;
 declare function functionWithParameters(a: number, b: string, c?: boolean): void;
 declare function functionWithReturnTypeOtherThanVoid(): number;
+
+// benchmark
 
 expectTypeOf(foundry.utils.benchmark(functionWithoutParameters, 42)).toEqualTypeOf<Promise<void>>();
 
@@ -29,6 +22,55 @@ foundry.utils.benchmark(functionWithParameters, 42, 1);
 foundry.utils.benchmark(functionWithParameters, 42, 1, "", "unknown argument");
 
 expectTypeOf(foundry.utils.benchmark(functionWithReturnTypeOtherThanVoid, 42)).toEqualTypeOf<Promise<void>>();
+
+// threadLock
+expectTypeOf(foundry.utils.threadLock(42)).toEqualTypeOf<Promise<void>>();
+
+// debounce
+expectTypeOf(foundry.utils.debounce(functionWithoutParameters, 500)).toEqualTypeOf<() => void>();
+expectTypeOf(foundry.utils.debounce(functionWithParameters, 500)).toEqualTypeOf<
+  (a: number, b: string, c?: boolean) => void
+>();
+
+// throttle
+expectTypeOf(foundry.utils.throttle(functionWithoutParameters, 500)).toEqualTypeOf<() => void>();
+expectTypeOf(foundry.utils.throttle(functionWithParameters, 500)).toEqualTypeOf<
+  (a: number, b: string, c?: boolean) => void
+>();
+expectTypeOf(foundry.utils.throttle(() => {}, 1)).toBeFunction();
+
+expectTypeOf(
+  foundry.utils.throttle((a: number) => {
+    console.log(a);
+  }, 1),
+).toMatchTypeOf<(a: number) => void>();
+
+expectTypeOf(
+  foundry.utils.throttle((a: number, b: string) => {
+    console.log(a, b);
+  }, 1),
+).toMatchTypeOf<(a: number, b: string) => void>();
+
+expectTypeOf(
+  foundry.utils.throttle((a: number, b: string, c: boolean) => {
+    console.log(a, b, c);
+  }, 1),
+).toMatchTypeOf<(a: number, b: string, c: boolean) => void>();
+
+expectTypeOf(
+  foundry.utils.throttle((a: number, b: string, c: boolean, d: symbol) => {
+    console.log(a, b, c, d);
+  }, 1),
+).toMatchTypeOf<(a: number, b: string, c: boolean, d: symbol) => void>();
+
+expectTypeOf(
+  foundry.utils.throttle((a: number, b: string, c: boolean, d: symbol, e: bigint) => {
+    console.log(a, b, c, d, e);
+  }, 1),
+).toMatchTypeOf<(a: number, b: string, c: boolean, d: symbol, e: bigint) => void>();
+
+// debouncedReoload
+expectTypeOf(foundry.utils.debouncedReload).toEqualTypeOf<() => void>();
 
 // deepClone
 
@@ -73,10 +115,9 @@ expectTypeOf(foundry.utils.deepClone("abc" as string, { strict: true as boolean 
 expectTypeOf(foundry.utils.diffObject({ a: 1 }, { a: 1 })).toEqualTypeOf<object>();
 expectTypeOf(foundry.utils.diffObject({ a: 1 }, { a: 7, b: 2 })).toEqualTypeOf<object>();
 
-// getDefiningClass
+// objectsEqual
 
-expectTypeOf(foundry.utils.getDefiningClass).parameter(0).toBeObject();
-expectTypeOf(foundry.utils.getDefiningClass).parameter(1).toBeString();
+expectTypeOf(foundry.utils.objectsEqual({ a: 1 }, { a: 1 })).toEqualTypeOf<boolean>();
 
 // duplicate
 
@@ -240,11 +281,66 @@ expectTypeOf(
   foundry.utils.isSubclass(ClassWithConstructorParameters, ClassWithNoConstructorParameters),
 ).toEqualTypeOf<boolean>();
 
+// getDefiningClass
+expectTypeOf(foundry.utils.getDefiningClass(foundry.documents.BaseActor, "name")).toEqualTypeOf<AnyConstructor>();
+
+// encodeURL
+expectTypeOf(foundry.utils.encodeURL("")).toEqualTypeOf<string>();
+
+// expandObject
+expectTypeOf(foundry.utils.expandObject({})).toEqualTypeOf<object>();
+
+// filterObject
+expectTypeOf(foundry.utils.filterObject({}, {})).toEqualTypeOf<object>();
+
+// flattenObject
+expectTypeOf(foundry.utils.flattenObject({})).toEqualTypeOf<object>();
+
+// getParentClasses
+expectTypeOf(foundry.utils.getParentClasses(foundry.documents.BaseActor)).toEqualTypeOf<AnyConstructor[]>();
+
+// getRoute
+expectTypeOf(foundry.utils.getRoute("")).toEqualTypeOf<string>();
+
+// getType
+expectTypeOf(foundry.utils.getType("")).toEqualTypeOf<
+  | "Array"
+  | "Error"
+  | "HTMLElement"
+  | "Map"
+  | "Object"
+  | "Promise"
+  | "Set"
+  | "bigint"
+  | "boolean"
+  | "function"
+  | "null"
+  | "number"
+  | "string"
+  | "symbol"
+  | "undefined"
+>();
+
+// hasProperty
+expectTypeOf(foundry.utils.hasProperty({}, "")).toEqualTypeOf<boolean>();
+
+// getProperty
+expectTypeOf(foundry.utils.getProperty({}, "")).toEqualTypeOf<any>();
+
+// setProperty
+expectTypeOf(foundry.utils.setProperty({}, "", 4)).toEqualTypeOf<boolean>();
+
 // invertObject
 expectTypeOf(foundry.utils.invertObject({ a: 1, b: "foo" } as const)).toEqualTypeOf<{
   readonly 1: "a";
   readonly foo: "b";
 }>();
+
+// isNewerVersion
+expectTypeOf(foundry.utils.isNewerVersion(4, "2.3")).toEqualTypeOf<boolean>();
+
+// isEmpty
+expectTypeOf(foundry.utils.isEmpty(4)).toEqualTypeOf<boolean>();
 
 // mergeObject: assertType is used here because of https://github.com/SamVerschueren/tsd/issues/67
 // mergeObject (1): tests from the docs
@@ -445,36 +541,24 @@ foundry.utils.mergeObject(1, 2);
 // @ts-expect-error - A string isn't a valid object to merge.
 foundry.utils.mergeObject("foo", "bar");
 
-// Additions v12
-//   - throttle
-expectTypeOf(foundry.utils.throttle(() => {}, 1)).toBeFunction();
+// parseS3URL
+expectTypeOf(foundry.utils.parseS3URL("")).toEqualTypeOf<{ bucket: string | null; keyPrefix: string }>();
 
-expectTypeOf(
-  foundry.utils.throttle((a: number) => {
-    console.log(a);
-  }, 1),
-).toMatchTypeOf<(a: number) => void>();
+// randomID
+expectTypeOf(foundry.utils.randomID(16)).toEqualTypeOf<string>();
+expectTypeOf(foundry.utils.randomID()).toEqualTypeOf<string>();
 
-expectTypeOf(
-  foundry.utils.throttle((a: number, b: string) => {
-    console.log(a, b);
-  }, 1),
-).toMatchTypeOf<(a: number, b: string) => void>();
+// timeSince
+expectTypeOf(foundry.utils.timeSince(new Date())).toEqualTypeOf<string>();
+expectTypeOf(foundry.utils.timeSince("")).toEqualTypeOf<string>();
 
-expectTypeOf(
-  foundry.utils.throttle((a: number, b: string, c: boolean) => {
-    console.log(a, b, c);
-  }, 1),
-).toMatchTypeOf<(a: number, b: string, c: boolean) => void>();
+// formatFileSize
+expectTypeOf(foundry.utils.formatFileSize(4, { base: 2 })).toEqualTypeOf<string>();
+expectTypeOf(foundry.utils.formatFileSize(4)).toEqualTypeOf<string>();
 
-expectTypeOf(
-  foundry.utils.throttle((a: number, b: string, c: boolean, d: symbol) => {
-    console.log(a, b, c, d);
-  }, 1),
-).toMatchTypeOf<(a: number, b: string, c: boolean, d: symbol) => void>();
+// @ts-expect-error: base must be 2 or 10
+expectTypeOf(foundry.utils.formatFileSize(4, { base: 6 })).toEqualTypeOf<string>();
 
-expectTypeOf(
-  foundry.utils.throttle((a: number, b: string, c: boolean, d: symbol, e: bigint) => {
-    console.log(a, b, c, d, e);
-  }, 1),
-).toMatchTypeOf<(a: number, b: string, c: boolean, d: symbol, e: bigint) => void>();
+// parseUuid
+expectTypeOf(foundry.utils.parseUuid("", {})).toEqualTypeOf<foundry.utils.ResolvedUUID>();
+expectTypeOf(foundry.utils.parseUuid("")).toEqualTypeOf<foundry.utils.ResolvedUUID>();
