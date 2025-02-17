@@ -120,7 +120,7 @@ declare global {
      *          * all: returns a sorted array of PolygonVertex instances
      *          * closest: returns a PolygonVertex instance or null
      */
-    static testCollision<Mode extends PointSourcePolygon.CollisionModes>(
+    static testCollision<Mode extends PointSourcePolygon.CollisionModes = "all">(
       origin: Canvas.Point,
       destination: Canvas.Point,
       { mode, ...config }: PointSourcePolygon.TestCollisionConfig<Mode>,
