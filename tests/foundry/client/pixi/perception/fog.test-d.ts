@@ -16,8 +16,8 @@ expectTypeOf(myFogManager.commit()).toEqualTypeOf<void>();
 expectTypeOf(myFogManager.load()).toEqualTypeOf<Promise<PIXI.Texture | void>>();
 expectTypeOf(myFogManager.reset()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(myFogManager.save()).toEqualTypeOf<Promise<void>>();
-expectTypeOf(myFogManager._handleReset()).toEqualTypeOf<Promise<void>>();
 
+expectTypeOf(myFogManager["_handleReset"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(myFogManager["_extractBase64"]()).toEqualTypeOf<Promise<string>>();
 expectTypeOf(myFogManager["_createExplorationObject"](someTex)).toEqualTypeOf<SpriteMesh>();
 expectTypeOf(
