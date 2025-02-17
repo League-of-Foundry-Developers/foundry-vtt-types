@@ -1,20 +1,35 @@
 import { expectTypeOf } from "vitest";
 
-const DialogV2 = foundry.applications.api.DialogV2;
-
-expectTypeOf(await DialogV2.confirm()).toEqualTypeOf<boolean>();
-expectTypeOf(await DialogV2.confirm({ rejectClose: true })).toEqualTypeOf<boolean>();
-expectTypeOf(await DialogV2.confirm({ rejectClose: false })).toEqualTypeOf<boolean | null>();
-expectTypeOf(await DialogV2.confirm({ rejectClose: 3 > 2 })).toEqualTypeOf<boolean | null>();
+import DialogV2 = foundry.applications.api.DialogV2;
 
 const numberCallback = async () => 5;
+
+expectTypeOf(await DialogV2.confirm()).toEqualTypeOf<boolean | null>();
+expectTypeOf(await DialogV2.confirm({ rejectClose: true })).toEqualTypeOf<boolean>();
+expectTypeOf(await DialogV2.confirm({ rejectClose: false })).toEqualTypeOf<boolean | null>();
+expectTypeOf(await DialogV2.confirm({ rejectClose: 3 > 2, window: {} })).toEqualTypeOf<boolean | null>();
+expectTypeOf(
+  await DialogV2.confirm({
+    yes: {
+      callback: numberCallback,
+    },
+  }),
+).toEqualTypeOf<false | number | null>();
+
 const okButton = {
   callback: numberCallback,
 };
 
+expectTypeOf(await DialogV2.prompt()).toEqualTypeOf<string | null>();
 expectTypeOf(
   await DialogV2.prompt({
     ok: okButton,
+  }),
+).toEqualTypeOf<number | null>();
+expectTypeOf(
+  await DialogV2.prompt({
+    ok: okButton,
+    rejectClose: true,
   }),
 ).toEqualTypeOf<number>();
 expectTypeOf(
@@ -24,7 +39,6 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<number | null>();
 
-// note: despite the numeric callback, clicking "ok" returns the string "ok"
 expectTypeOf(
   await DialogV2.prompt({
     ok: okButton,
@@ -41,7 +55,7 @@ expectTypeOf(
       },
     ],
   }),
-).toEqualTypeOf<number | boolean | string>();
+).toEqualTypeOf<boolean | number | null>();
 
 expectTypeOf(
   await DialogV2.prompt({
@@ -58,7 +72,24 @@ expectTypeOf(
       },
     ],
   }),
-).toEqualTypeOf<number | string>();
+).toEqualTypeOf<number | string | null>();
+
+expectTypeOf(
+  await DialogV2.wait({
+    buttons: [
+      {
+        label: "Foo",
+        action: "foo",
+        callback: async () => 3 > 2,
+      },
+      {
+        label: "Bar",
+        action: "bar",
+      },
+    ],
+    rejectClose: true,
+  }),
+).toEqualTypeOf<boolean | string>();
 
 expectTypeOf(
   await DialogV2.wait({

@@ -1,4 +1,4 @@
-import type { AnyFunction, DeepPartial, EmptyObject, MaybePromise } from "fvtt-types/utils";
+import type { DeepPartial, EmptyObject, InexactPartial, MaybePromise } from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
 
 /**
@@ -115,12 +115,16 @@ declare class DialogV2<
    *          callback. If the dialog was dismissed, and rejectClose is false, the
    *          Promise resolves to null.
    */
-  static confirm<Options extends Partial<DialogV2.WaitOptions>, YesReturn = true, NoReturn = false>(
-    options?: Options & {
+  static confirm<Options extends DeepPartial<DialogV2.WaitOptions>, YesReturn = true, NoReturn = false>(
+    config?: Options & {
       /** Options to overwrite the default yes button configuration. */
-      yes?: DialogV2.Button<YesReturn>;
+      yes?: InexactPartial<DialogV2.Button<YesReturn>>;
+
       /** Options to overwrite the default no button configuration. */
-      no?: DialogV2.Button<NoReturn>;
+      no?: InexactPartial<DialogV2.Button<NoReturn>>;
+
+      /** The user that the dialog should be shown to. */
+      user?: User.ConfiguredInstance;
     },
   ): Promise<YesReturn | NoReturn | InferButtonReturnTypes<Options> | InferDismissType<Options>>;
 
@@ -131,9 +135,12 @@ declare class DialogV2<
    *             dismissed, and rejectClose is false, the Promise resolves to null.
    */
   static prompt<Options extends DeepPartial<DialogV2.WaitOptions>, OKReturn = string>(
-    options?: Options & {
+    config?: Options & {
       /** Options to overwrite the default confirmation button configuration. */
-      ok?: DeepPartial<DialogV2.Button<OKReturn>>;
+      ok?: InexactPartial<DialogV2.Button<OKReturn>>;
+
+      /** The user that the dialog should be shown to. */
+      user?: User.ConfiguredInstance;
     },
   ): Promise<OKReturn | InferButtonReturnTypes<Options> | InferDismissType<Options>>;
 
@@ -143,25 +150,30 @@ declare class DialogV2<
    *          dialog, or the value returned by that button's callback. If the
    *          dialog was dismissed, and rejectClose is false, the Promise
    *          resolves to null.
-   * @remarks Despite being the `wait` function this doesn't actually use that interface
    */
-  static wait<Options extends Partial<DialogV2.Configuration>>(
-    options?: Options & {
-      /** A function to invoke whenever the dialog is rendered. */
-      render?: DialogV2.RenderCallback;
-      /** A function to invoke when the dialog is closed under any circumstances. */
-      close?: DialogV2.CloseCallback;
+  static wait<
+    Options extends DeepPartial<DialogV2.WaitOptions>,
+    RejectClose extends DialogV2.WaitOptions["rejectClose"],
+  >(
+    config?: Options & {
       /**
        * Throw a Promise rejection if the dialog is dismissed.
-       * @defaultValue `true`
+       * @defaultValue `false`
+       * @remarks `null` equivalent to `false`
        */
-      rejectClose?: boolean;
+      rejectClose?: RejectClose;
     },
   ): Promise<InferButtonReturnTypes<Options> | InferDismissType<Options>>;
+
+  static query<T extends DialogV2.Type, Options extends DialogV2.WaitOptions>(
+    user: User.ConfiguredInstance,
+    type: T,
+    config: Options,
+  ): Promise<(T extends "confirm" ? boolean : string) | InferDismissType<Options>>;
 }
 
 declare namespace DialogV2 {
-  export interface Button<CallbackReturn> {
+  export interface Button<CallbackReturn = string> {
     /**
      * The button action identifier.
      */
@@ -205,8 +217,7 @@ declare namespace DialogV2 {
 
   export interface Configuration extends ApplicationV2.Configuration {
     /**
-     * Modal dialogs prevent interaction with the rest of the UI until they
-     * are dismissed or submitted.
+     * Modal dialogs prevent interaction with the rest of the UI until they are dismissed or submitted.
      */
     modal?: boolean;
 
@@ -216,56 +227,66 @@ declare namespace DialogV2 {
     buttons: Button<any>[];
 
     /**
-     * The dialog content.
+     * The dialog content: a HTML string or a <div> element.
+     * If string, the content is cleaned with {@link foundry.utils.cleanHTML}.
+     * Otherwise, the content is not cleaned.
+     * @defaultValue `''`
      */
-    content?: string;
+    content: string | HTMLDivElement;
 
     /**
-     * A function to invoke when the dialog is submitted. This will not be
-     * called if the dialog is dismissed.
+     * A function to invoke when the dialog is submitted.
+     * This will not be called if the dialog is dismissed.
      */
     submit?: SubmitCallback;
   }
 
-  // TODO(LukeAbby): I moved these types over from `_types.d.mts` mostly as-is. However this usage of `any` is suspicious and needs auditing.
+  export type RenderCallback = (event: Event, dialog: HTMLDialogElement) => void;
 
-  export type RenderCallback = (event: Event, dialog: HTMLDialogElement) => any;
+  export type CloseCallback = (event: Event, dialog: DialogV2) => void;
 
-  export type CloseCallback = (event: Event, dialog: DialogV2) => any;
-
+  // This is nominally receiving the results of the button callbacks,
+  // but that just further complicates the conditional types
   export type SubmitCallback = (result: any) => Promise<void>;
 
   export interface WaitOptions extends Configuration {
     /**
      * A synchronous function to invoke whenever the dialog is rendered.
      */
-    render?: RenderCallback;
+    render?: RenderCallback | null | undefined;
 
     /**
-     * A synchronous function to invoke when the dialog is closed under any
-     * circumstances.
+     * A synchronous function to invoke when the dialog is closed under any circumstances.
      */
-    close?: CloseCallback;
+    close?: CloseCallback | null | undefined;
 
     /**
      * Throw a Promise rejection if the dialog is dismissed.
-     * @defaultValue `true`
+     * @defaultValue `false`
+     * @remarks `null` equivalent to `false`
      */
-    rejectClose?: boolean;
+    rejectClose?: boolean | null | undefined;
+
+    /**
+     * The user that the dialog should be shown to.
+     */
+    user?: User.ConfiguredInstance;
   }
+
+  type Type = "prompt" | "confirm" | "wait";
 }
 
-type InferDismissType<Options extends DeepPartial<DialogV2.WaitOptions>> = Options["rejectClose"] extends boolean
-  ? Options["rejectClose"] extends true
-    ? never
-    : null
-  : never;
+type InferDismissType<Options extends { rejectClose?: boolean | null | undefined }> =
+  Options["rejectClose"] extends true ? never : null;
 
-type InferButtonReturnTypes<Options extends DeepPartial<DialogV2.WaitOptions>> =
-  Options["buttons"] extends ReadonlyArray<DialogV2.Button<infer Callback>>
-    ? Callback extends AnyFunction
-      ? Callback
-      : string
-    : never;
+type InferButtonReturnTypes<Options extends { buttons?: DialogV2.Button<any>[] }> =
+  // Two cases - one for where all buttons have a defined callback, the other where they don't
+  Options["buttons"] extends ReadonlyArray<{ callback: DialogV2.ButtonCallback<infer Callback> }>
+    ? Callback extends undefined
+      ? string
+      : Callback
+    : Options["buttons"] extends ReadonlyArray<DialogV2.Button<infer Callback>>
+      ? Callback | string
+      : never;
 
 export default DialogV2;
