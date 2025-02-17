@@ -466,9 +466,10 @@ declare global {
 
     interface AddWaypointOptions extends _Snap {}
 
+    // TODO: revisit after docs v2
     type PartialTokenUpdateOptions = IntentionalPartial<Document.Database.OperationOf<"Token", "update">>;
 
-    // TODO: revisit after docs v2 merges with new and improved IntentionalPartial
+    // TODO: also revisit after docs v2 merges with new and improved IntentionalPartial
     interface PartialSegmentForLabelling
       extends Pick<MeasurementSegment, "teleport" | "last" | "distance">,
         IntentionalPartial<Omit<MeasurementSegment, "teleport" | "last" | "distance">> {}
