@@ -11,7 +11,6 @@ declare global {
    * 3) Map pings
    */
   class ControlsLayer extends InteractionLayer {
-    /** @remarks Does not take arguments, does call `super()` */
     constructor();
 
     /**
@@ -248,7 +247,7 @@ declare global {
 
     interface DrawOffscreenPingOptions extends DrawPingOptions {
       /** @defaultValue `"arrow"` */
-      style?: User.PingData["style"];
+      style?: User.PingData["style"] | undefined;
     }
 
     interface ViewportIntersectionData {
