@@ -778,14 +778,10 @@ declare global {
     /**
      * A single point, expressed as an array \[x,y\]
      * @remarks Copied from `resources/app/common/types.mjs`
+     *
+     * Renamed from `PointArray` to avoid confusion (for `[{x,y},{x,y}]` for example)
      */
-    type PointArray = [x: number, y: number];
-
-    /**
-     * @privateRemarks Alias of `Canvas.PointArray`, as that name, while accurate to Foundry's types,
-     * could easily be inferred to mean incorrect things (`[{x,y}, {x,y}]` for example)
-     * */
-    type PointTuple = PointArray;
+    type PointTuple = [x: number, y: number];
 
     type PairOfPointsTuple = [x0: number, y0: number, x1: number, y1: number];
 
