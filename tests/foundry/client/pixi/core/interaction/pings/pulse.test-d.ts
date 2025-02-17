@@ -29,7 +29,7 @@ declare const someColor: Color;
 declare const someSymbol: unique symbol;
 
 const myAlertPing = new AlertPing(myPoint, {
-  color: undefined,
+  color: 0x00ff00,
   color2: someColor,
   rings: 15,
   name: someSymbol,
