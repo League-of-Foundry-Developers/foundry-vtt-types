@@ -36,36 +36,36 @@ declare namespace HandlebarsApplicationMixin {
      * A CSS id to assign to the top-level element of the rendered part.
      * This id string is automatically prefixed by the application id.
      */
-    id?: string;
+    id?: string | null | undefined;
 
     /**
      * Does this rendered contents of this template part replace the children of the root element?
      */
-    root?: boolean;
+    root?: boolean | null | undefined;
 
     /**
      * An array of CSS classes to apply to the top-level element of the
      * rendered part.
      */
-    classes?: string[];
+    classes?: string[] | null | undefined;
 
     /**
      * An array of additional templates that are required to render the part.
      * If omitted, only the entry-point is inferred as required.
      */
-    templates?: string[];
+    templates?: string[] | null | undefined;
 
     /**
      * An array of selectors within this part whose scroll positions should
      * be persisted during a re-render operation. A blank string is used
      * to denote that the root level of the part is scrollable.
      */
-    scrollable?: string[];
+    scrollable?: string[] | null | undefined;
 
     /**
      * A registry of forms selectors and submission handlers.
      */
-    forms?: Record<string, ApplicationV2.FormConfiguration>;
+    forms?: Record<string, ApplicationV2.FormConfiguration> | null | undefined;
   }
 
   namespace HandlebarsApplication {
