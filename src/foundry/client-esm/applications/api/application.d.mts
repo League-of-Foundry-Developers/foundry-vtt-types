@@ -625,6 +625,9 @@ declare class ApplicationV2<
    */
   protected _removeElement(element: HTMLElement): void;
 
+  /**
+   * Remove elements from the DOM and trigger garbage collection as part of application closure.
+   */
   protected _tearDown(options: DeepPartial<ApplicationV2.ClosingOptions>): void;
 
   /**

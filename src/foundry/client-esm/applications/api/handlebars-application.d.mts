@@ -39,13 +39,18 @@ declare namespace HandlebarsApplicationMixin {
     id?: string;
 
     /**
+     * Does this rendered contents of this template part replace the children of the root element?
+     */
+    root?: boolean;
+
+    /**
      * An array of CSS classes to apply to the top-level element of the
      * rendered part.
      */
     classes?: string[];
 
     /**
-     * An array of templates that are required to render the part.
+     * An array of additional templates that are required to render the part.
      * If omitted, only the entry-point is inferred as required.
      */
     templates?: string[];
@@ -104,6 +109,13 @@ declare namespace HandlebarsApplicationMixin {
     get parts(): Record<string, HTMLElement>;
 
     protected _configureRenderOptions(options: DeepPartial<HandlebarsApplicationMixin.RenderOptions>): void;
+
+    /**
+     * Allow subclasses to dynamically configure render parts.
+     */
+    protected _configureRenderParts(
+      options: HandlebarsApplicationMixin.RenderOptions,
+    ): Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
     protected _preFirstRender(
       context: DeepPartial<HandlebarsApplication.RenderContextFor<this>>,
@@ -178,6 +190,8 @@ declare namespace HandlebarsApplicationMixin {
       priorElement: HTMLElement,
       state: HandlebarsApplicationMixin.PartState,
     ): void;
+
+    protected _tearDown(options: DeepPartial<ApplicationV2.ClosingOptions>): void;
 
     /**
      * Attach event listeners to rendered template parts.
