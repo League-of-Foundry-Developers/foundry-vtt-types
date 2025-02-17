@@ -312,7 +312,7 @@ declare global {
      * @param options - Options of {@link PlaceablesLayer#pasteObjects}
      * @returns The update data
      */
-    _pasteObject(
+    protected _pasteObject(
       copy: Document.ConfiguredObjectInstanceForName<DocumentName>,
       offset: Canvas.Point,
       options?: PlaceablesLayer.PasteOptions,
@@ -387,8 +387,11 @@ declare global {
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
 
+    /** @privateRemarks `void` added to return union for TokenLayer reasons */
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    protected override _onMouseWheel(event: WheelEvent): ReturnType<this["rotateMany"]>;
+    protected override _onMouseWheel(
+      event: WheelEvent,
+    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[] | void>;
 
     protected override _onDeleteKey(event: KeyboardEvent): Promise<void>;
 

@@ -177,7 +177,7 @@ declare global {
        */
       dropCanvasData: (
         canvas: Canvas,
-        data: TokenLayer.DropData | NotesLayer.DropData | SoundsLayer.DropData,
+        data: TokenLayer.DropData | NotesLayer.DropData | SoundsLayer.DropData | TilesLayer.DropData,
       ) => boolean | void;
 
       /**
