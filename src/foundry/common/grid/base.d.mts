@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, EmptyObject, InexactPartial } from "fvtt-types/utils";
 
 /**
  * The base grid class.
@@ -366,8 +366,14 @@ declare abstract class BaseGrid {
    * @returns An Array of distance measurements for each segment
    * @deprecated Since v12 until v14. Use {@link BaseGrid#measurePath} instead.
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  measureDistances(segments: BaseGrid.Segment[], options?: AnyObject): number[];
+  measureDistances(
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    segments: BaseGrid.Segment[],
+    /**
+     * @defaultValue `{}`
+     * @remarks Unused */
+    options?: EmptyObject,
+  ): number[];
 
   /* -------------------------------------------- */
 
@@ -394,7 +400,7 @@ declare abstract class BaseGrid {
      * @defaultValue `{}`
      * @remarks Unused
      */
-    options?: AnyObject,
+    options?: EmptyObject,
   ): PIXI.IPointData;
 
   /* -------------------------------------------- */

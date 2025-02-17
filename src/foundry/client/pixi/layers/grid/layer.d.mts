@@ -1,4 +1,4 @@
-import type { AnyObject, HandleEmptyObject, NullishProps, RemoveIndexSignatures } from "fvtt-types/utils";
+import type { EmptyObject, HandleEmptyObject, NullishProps, RemoveIndexSignatures } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -152,7 +152,7 @@ declare global {
       /** @defaultValue `1` */
       interval?: number,
       /** @remarks Unused */
-      options?: AnyObject,
+      options?: EmptyObject,
     ): PIXI.IPointData;
 
     /**
@@ -163,7 +163,7 @@ declare global {
       origin: Canvas.Point,
       target: Canvas.Point,
       /** @remarks Unused */
-      options?: AnyObject,
+      options?: EmptyObject,
     ): number;
   }
 
