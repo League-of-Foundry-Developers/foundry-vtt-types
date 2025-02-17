@@ -107,3 +107,18 @@ expectTypeOf(
     rejectClose: false,
   }),
 ).toEqualTypeOf<boolean | string | null>();
+
+DialogV2.query(foundry.utils.randomID(), "confirm", {
+  yes: {
+    label: "foo",
+  },
+});
+
+DialogV2.query(foundry.utils.randomID(), "wait", {
+  buttons: [
+    {
+      action: "foo",
+      label: "bar",
+    },
+  ],
+});

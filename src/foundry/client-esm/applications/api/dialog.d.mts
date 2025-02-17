@@ -122,9 +122,6 @@ declare class DialogV2<
 
       /** Options to overwrite the default no button configuration. */
       no?: InexactPartial<DialogV2.Button<NoReturn>>;
-
-      /** The user that the dialog should be shown to. */
-      user?: User.ConfiguredInstance;
     },
   ): Promise<YesReturn | NoReturn | InferButtonReturnTypes<Options> | InferDismissType<Options>>;
 
@@ -138,9 +135,6 @@ declare class DialogV2<
     config?: Options & {
       /** Options to overwrite the default confirmation button configuration. */
       ok?: InexactPartial<DialogV2.Button<OKReturn>>;
-
-      /** The user that the dialog should be shown to. */
-      user?: User.ConfiguredInstance;
     },
   ): Promise<OKReturn | InferButtonReturnTypes<Options> | InferDismissType<Options>>;
 
@@ -151,25 +145,20 @@ declare class DialogV2<
    *          dialog was dismissed, and rejectClose is false, the Promise
    *          resolves to null.
    */
-  static wait<
-    Options extends DeepPartial<DialogV2.WaitOptions>,
-    RejectClose extends DialogV2.WaitOptions["rejectClose"],
-  >(
-    config?: Options & {
-      /**
-       * Throw a Promise rejection if the dialog is dismissed.
-       * @defaultValue `false`
-       * @remarks `null` equivalent to `false`
-       */
-      rejectClose?: RejectClose;
-    },
+  static wait<Options extends DeepPartial<DialogV2.WaitOptions>>(
+    config?: Options,
   ): Promise<InferButtonReturnTypes<Options> | InferDismissType<Options>>;
 
-  static query<T extends DialogV2.Type, Options extends DialogV2.WaitOptions>(
-    user: User.ConfiguredInstance,
+  static query<T extends DialogV2.Type, Options extends DeepPartial<DialogV2.QueryConfig<T>>>(
+    user: User.ConfiguredInstance | string,
     type: T,
     config: Options,
   ): Promise<(T extends "confirm" ? boolean : string) | InferDismissType<Options>>;
+
+  static _handleQuery<T extends DialogV2.Type, Options extends DeepPartial<DialogV2.QueryConfig<T>>>(config: {
+    type: T;
+    config: Options;
+  }): Promise<(T extends "confirm" ? boolean : string) | InferDismissType<Options>>;
 }
 
 declare namespace DialogV2 {
@@ -215,6 +204,8 @@ declare namespace DialogV2 {
     dialog: HTMLDialogElement,
   ) => MaybePromise<T>;
 
+  type NoCallbackButton = Omit<Button, "callback">;
+
   export interface Configuration extends ApplicationV2.Configuration {
     /**
      * Modal dialogs prevent interaction with the rest of the UI until they are dismissed or submitted.
@@ -238,7 +229,7 @@ declare namespace DialogV2 {
      * A function to invoke when the dialog is submitted.
      * This will not be called if the dialog is dismissed.
      */
-    submit?: SubmitCallback;
+    submit?: SubmitCallback | null | undefined;
   }
 
   export type RenderCallback = (event: Event, dialog: HTMLDialogElement) => void;
@@ -273,7 +264,34 @@ declare namespace DialogV2 {
     user?: User.ConfiguredInstance;
   }
 
+  // Not used by DialogV2.confirm for type inference reasons
+  interface ConfirmConfig extends WaitOptions {
+    /** Options to overwrite the default yes button configuration. */
+    yes?: InexactPartial<NoCallbackButton>;
+
+    /** Options to overwrite the default no button configuration. */
+    no?: InexactPartial<NoCallbackButton>;
+  }
+
+  // Not used by DialogV2.prompt for type inference reasons
+  interface PromptConfig extends WaitOptions {
+    /** Options to overwrite the default confirmation button configuration. */
+    ok?: InexactPartial<NoCallbackButton>;
+  }
+
   type Type = "prompt" | "confirm" | "wait";
+
+  type QueryConfig<T extends Type> = Omit<
+    | (T extends "wait" ? WaitOptions : never)
+    | (T extends "prompt" ? PromptConfig : never)
+    | (T extends "confirm" ? ConfirmConfig : never),
+    "buttons"
+  > & {
+    /**
+     * Button configuration.
+     */
+    buttons?: NoCallbackButton[];
+  };
 }
 
 type InferDismissType<Options extends { rejectClose?: boolean | null | undefined }> =
