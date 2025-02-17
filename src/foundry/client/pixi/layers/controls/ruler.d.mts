@@ -466,6 +466,7 @@ declare global {
 
     interface AddWaypointOptions extends _Snap {}
 
+    // TODO: revisit after docs v2 merges with new and improved IntentionalPartial
     interface PartialSegmentForLabelling
       extends Pick<MeasurementSegment, "teleport" | "last" | "distance">,
         IntentionalPartial<Omit<MeasurementSegment, "teleport" | "last" | "distance">> {}
