@@ -262,7 +262,7 @@ declare global {
       token: Token.ConfiguredInstance,
       segment: Ruler.PartialSegmentForAnimating,
       destination: Canvas.Point,
-      updateOptions: Document.Database.OperationOf<"Token", "update">,
+      updateOptions: Ruler.PartialTokenUpdateOptions,
     ): Promise<void>;
 
     /**
@@ -465,6 +465,8 @@ declare global {
     interface StartMeasurementOptions extends _StartMeasurementOptions, _Snap {}
 
     interface AddWaypointOptions extends _Snap {}
+
+    type PartialTokenUpdateOptions = IntentionalPartial<Document.Database.OperationOf<"Token", "update">>;
 
     // TODO: revisit after docs v2 merges with new and improved IntentionalPartial
     interface PartialSegmentForLabelling
