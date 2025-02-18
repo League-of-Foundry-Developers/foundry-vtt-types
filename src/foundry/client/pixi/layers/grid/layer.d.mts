@@ -149,7 +149,10 @@ declare global {
     getSnappedPosition(
       x: number,
       y: number,
-      /** @defaultValue `1` */
+      /**
+       * @defaultValue `1`
+       * @remarks Can't be `null` due to being used directly as a divisor
+       */
       interval?: number,
       /** @remarks Unused */
       options?: EmptyObject,
