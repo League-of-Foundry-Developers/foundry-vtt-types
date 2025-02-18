@@ -1053,7 +1053,15 @@ export type LazyUnknown = NonNullish | null | undefined;
  *
  * Then the most appropriate type might be:
  * ```ts
- * declare function toString<Item extends string | number | undefined>(item?: Item): `${Coalesce<Item, "default">}`
+ * declare function toString<
+ *   Item extends string | number | undefined = undefined
+ * >(item?: Item): `${Coalesce<Item, "default">}`
+ *
+ * const itemUnset = toString();
+ * //    ^ "default"
+ *
+ * const itemUndefined = tgoString(undefined);
+ * //    ^ "default"
  * ```
  *
  * This is because generic parameter defaults and function parameters behave differently. A function
