@@ -126,7 +126,7 @@ declare global {
     /**
      * Return the coordinates [x,y] at the midpoint of the wall segment
      */
-    get midpoint(): Canvas.PointArray;
+    get midpoint(): Canvas.PointTuple;
 
     override get center(): PIXI.Point;
 

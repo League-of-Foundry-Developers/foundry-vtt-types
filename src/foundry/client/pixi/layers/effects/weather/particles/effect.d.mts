@@ -32,7 +32,7 @@ declare global {
      */
     getParticleEmitters(options: PIXI.particles.EmitterConfigV3): PIXI.particles.Emitter[];
 
-    override destroy(options?: PIXI.DisplayObject.DestroyOptions): void;
+    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     /**
      * Begin animation for the configured emitters.
