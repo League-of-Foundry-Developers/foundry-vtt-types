@@ -1,9 +1,13 @@
 import { expectTypeOf } from "vitest";
 
-const mySprite = new SpriteMesh();
+expectTypeOf(CanvasDepthMask.textureConfiguration).toEqualTypeOf<CachedContainer.TextureConfiguration>();
 
+const mySprite = new SpriteMesh();
 const myDepthMask = new CanvasDepthMask(mySprite);
 
-expectTypeOf(myDepthMask.createRenderTexture()).toEqualTypeOf<PIXI.RenderTexture>();
-
-expectTypeOf(myDepthMask.clearColor[3]).toEqualTypeOf<number>();
+expectTypeOf(myDepthMask.roofs).toEqualTypeOf<PIXI.Container>();
+expectTypeOf(myDepthMask.clearColor).toEqualTypeOf<Color.RGBAColorVector>();
+expectTypeOf(myDepthMask["_elevationDirty"]).toBeBoolean();
+expectTypeOf(myDepthMask.mapElevation(5)).toBeNumber();
+expectTypeOf(myDepthMask["_update"]()).toBeVoid();
+expectTypeOf(myDepthMask.clear()).toBeVoid();

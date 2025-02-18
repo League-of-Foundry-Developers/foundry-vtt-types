@@ -290,7 +290,7 @@ declare abstract class BaseGrid {
    * @returns An Array [x, y] of the top-left coordinate of the square which contains (x, y)
    * @deprecated Since v12 until v14. Use {@link BaseGrid#getTopLeftPoint} instead.
    */
-  getTopLeft(x: number, y: number): Canvas.PointArray;
+  getTopLeft(x: number, y: number): Canvas.PointTuple;
 
   /**
    * Given a pair of coordinates (x, y), return the center of the grid square which contains that point
@@ -299,7 +299,7 @@ declare abstract class BaseGrid {
    * @returns An array [cx, cy] of the central point of the grid space which contains (x, y)
    * @deprecated Since v12 until v14. Use {@link BaseGrid#getCenterPoint} instead.
    */
-  getCenter(x: number, y: number): Canvas.PointArray;
+  getCenter(x: number, y: number): Canvas.PointTuple;
 
   /**
    * Get the grid row and column positions which are neighbors of a certain position
@@ -308,7 +308,7 @@ declare abstract class BaseGrid {
    * @returns An array of grid positions which are neighbors of the row and column
    * @deprecated Since v12 until v14. Use {@link BaseGrid#getAdjacentOffsets} instead.
    */
-  getNeighbors(row: number, col: number): Canvas.PointArray[];
+  getNeighbors(row: number, col: number): Canvas.PointTuple[];
 
   /**
    * Given a pair of pixel coordinates, return the grid position as an Array.
@@ -318,7 +318,7 @@ declare abstract class BaseGrid {
    * @returns An array representing the position in grid units
    * @deprecated Since v12 until v14. Use {@link BaseGrid#getOffset} instead.
    */
-  getGridPositionFromPixels(x: number, y: number): Canvas.PointArray;
+  getGridPositionFromPixels(x: number, y: number): Canvas.PointTuple;
 
   /* -------------------------------------------- */
 
@@ -330,7 +330,7 @@ declare abstract class BaseGrid {
    * @returns An array representing the position in pixels
    * @deprecated Since v12 until v14. Use {@link BaseGrid#getTopLeftPoint} instead.
    */
-  getPixelsFromGridPosition(x: number, y: number): Canvas.PointArray;
+  getPixelsFromGridPosition(x: number, y: number): Canvas.PointTuple;
 
   /* -------------------------------------------- */
 
@@ -354,7 +354,7 @@ declare abstract class BaseGrid {
        */
       token: Token;
     }>,
-  ): Canvas.PointArray;
+  ): Canvas.PointTuple;
 
   /* -------------------------------------------- */
 

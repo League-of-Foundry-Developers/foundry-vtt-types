@@ -4,6 +4,7 @@ import type {
   NullishProps,
   ValueOf,
   FixedInstanceType,
+  HandleEmptyObject,
 } from "../../../../../utils/index.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
@@ -17,11 +18,7 @@ declare global {
    * @typeParam DocumentName - The key of the configuration which defines the object and document class.
    * @typeParam Options      - The type of the options in this layer.
    */
-  class PlaceablesLayer<
-    DocumentName extends PlaceablesLayer.Type,
-    DrawOptions extends PlaceablesLayer.DrawOptions = PlaceablesLayer.DrawOptions,
-    TearDownOptions extends PlaceablesLayer.TearDownOptions = PlaceablesLayer.TearDownOptions,
-  > extends InteractionLayer<DrawOptions, TearDownOptions> {
+  class PlaceablesLayer<DocumentName extends PlaceablesLayer.Type> extends InteractionLayer {
     constructor();
 
     /**
@@ -126,7 +123,7 @@ declare global {
      * @remarks yields A placeable object
      */
     // TODO: Update remark with proper @yields tag https://github.com/microsoft/tsdoc/issues/234
-    controllableObjects(): Generator<PlaceableObject>;
+    controllableObjects(): Generator<PlaceableObject.Any>;
 
     /**
      * Track the set of PlaceableObjects on this layer which are currently controlled.
@@ -173,7 +170,7 @@ declare global {
       | Exclude<this["documentCollection"], null>
       | FixedInstanceType<Document.ConfiguredClassForName<DocumentName>>[];
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<PlaceablesLayer.DrawOptions>): Promise<void>;
 
     /**
      * Draw a single placeable object
@@ -183,7 +180,7 @@ declare global {
       document: Document.ConfiguredInstanceForName<DocumentName>,
     ): Document.ConfiguredObjectInstanceForName<DocumentName>;
 
-    protected override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<PlaceablesLayer.TearDownOptions>): Promise<void>;
 
     protected override _activate(): void;
 
