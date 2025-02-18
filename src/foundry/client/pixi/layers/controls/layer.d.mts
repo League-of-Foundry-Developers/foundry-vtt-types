@@ -238,7 +238,7 @@ declare global {
       /**
        * The user who pinged.
        * @remarks Only used to set the color of the ping. If `user?.color` ends up `undefined`, the relevant Ping class will provide a default color.
-       * If a `color` property is passed along with this, it will take precedence
+       * If a `color` property is passed along with this, `color` will take precedence
        */
       user: User.ConfiguredInstance;
     }>;
@@ -246,13 +246,18 @@ declare global {
     interface DrawPingOptions extends _DrawPingOptions, Pick<User.PingData, "style">, Ping.ConstructorOptions {}
 
     interface DrawOffscreenPingOptions extends DrawPingOptions {
-      /** @defaultValue `"arrow"` */
+      /**
+       * @defaultValue `"arrow"`
+       * @remarks Can't be `null` as it only has a parameter default
+       */
       style?: User.PingData["style"] | undefined;
     }
 
     interface ViewportIntersectionData {
+      /** A Ray from the center of the (viewport - sidebar) area to the point on the edge of that area in line with an offscreen ping */
       ray: Ray;
 
+      /** The intersection with the viewport edge, or undefined if its on-screen */
       intersection: LineIntersection | undefined;
     }
   }
