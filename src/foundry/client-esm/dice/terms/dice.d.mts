@@ -213,10 +213,6 @@ declare abstract class DiceTerm extends RollTerm {
    * A helper method to modify the results array of a dice term by flagging certain results are kept or dropped.
    * @param results - The results array
    * @param number  - The number to keep or drop
-   * @param keep    - Keep results?
-   *                  (default: `true`)
-   * @param highest - Keep the highest?
-   *                  (default: `true`)
    * @returns The modified results array
    */
   protected static _keepOrDrop(
@@ -227,8 +223,6 @@ declare abstract class DiceTerm extends RollTerm {
 
   /**
    * A reusable helper function to handle the identification and deduction of failures
-   * @param flagFailure - (default: `false`)
-   * @param flagSuccess - (default: `false`)
    */
   protected static _applyCount(
     results: DiceTerm.Result[],
@@ -239,8 +233,6 @@ declare abstract class DiceTerm extends RollTerm {
 
   /**
    * A reusable helper function to handle the identification and deduction of failures
-   * @param deductFailure - (default: `false`)
-   * @param invertFailure - (default: `false`)
    */
   protected static _applyDeduct(
     results: DiceTerm.Result[],
@@ -257,8 +249,6 @@ declare abstract class DiceTerm extends RollTerm {
    * Determine whether a string expression matches this type of term
    * @param expression - The expression to parse
    * @param options - Additional options which customize the match
-   * @param imputeNumber - Allow the number of dice to be optional, i.e. "d6"
-   *                       (default: `true`)
    */
   static matchTerm(expression: string, options?: DiceTerm.MatchTermOptions): RegExpMatchArray | null;
 
@@ -356,21 +346,28 @@ declare namespace DiceTerm {
   }
 
   interface KeepOrDropOptions {
-    keep?: boolean | undefined;
-    highest?: boolean | undefined;
+    /** Keep results?  (default: `true`) */
+    keep?: boolean | undefined; // these cannot be null because they are compared in the function
+    /** Keep the highest?  (default: `true`) */
+    highest?: boolean | undefined; // these cannot be null because they are compared in the function
   }
 
   interface ApplyCountOptions {
+    /** (default: `false`) */
     flagSuccess?: boolean | undefined;
+    /** (default: `false`) */
     flagFailure?: boolean | undefined;
   }
 
   interface ApplyDeductOptions {
+    /** (default: `false`) */
     deductFailure?: boolean | undefined;
+    /** (default: `false`) */
     invertFailure?: boolean | undefined;
   }
 
   interface MatchTermOptions {
+    /** Allow the number of dice to be optional, i.e. "d6" (default: `true`) */
     imputeNumber?: boolean | undefined;
   }
 
