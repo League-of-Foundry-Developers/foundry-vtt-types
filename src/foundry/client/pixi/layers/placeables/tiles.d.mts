@@ -1,13 +1,11 @@
+import type { HandleEmptyObject } from "../../../../../utils/index.d.mts";
 import type BaseTile from "../../../../common/documents/tile.d.mts";
 
 declare global {
   /**
    * A PlaceablesLayer designed for rendering the visual Scene for a specific vertical cross-section.
    */
-  class TilesLayer<
-    DrawOptions extends PlaceablesLayer.DrawOptions = PlaceablesLayer.DrawOptions,
-    TearDownOptions extends TilesLayer.TearDownOptions = TilesLayer.TearDownOptions,
-  > extends PlaceablesLayer<"Tile", DrawOptions, TearDownOptions> {
+  class TilesLayer extends PlaceablesLayer<"Tile"> {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -43,7 +41,7 @@ declare global {
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-    protected override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<TilesLayer.TearDownOptions>): Promise<void>;
 
     protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
