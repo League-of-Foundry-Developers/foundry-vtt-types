@@ -3,7 +3,7 @@ import type { DataModel } from "../abstract/data.d.mts";
 import type { fields } from "./module.d.mts";
 import type * as documents from "../documents/_module.d.mts";
 import type { AnyMutableObject, EmptyObject, ToMethod, ValueOf } from "fvtt-types/utils";
-import type { FilePathField } from "./fields.d.mts";
+import type { DataField, FilePathField, ForeignDocumentField, NumberField, SchemaField } from "./fields.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -437,19 +437,47 @@ declare class PolygonShapeData extends BaseShapeData {
 }
 
 declare namespace TextureData {
+  /** The parameter defaults for `srcOptions` in the {@link TextureData} constructor */
   interface DefaultOptions {
     categories: ["IMAGE", "VIDEO"];
-    // initial: {};
+    initial: EmptyObject;
     wildcard: false;
     label: "";
   }
 
-  interface Schema<SrcOptions extends FilePathField.Options> extends DataSchema {
+  interface SrcOptions extends Pick<FilePathField.Options, "categories" | "wildcard" | "label"> {
+    /** @remarks Initial values for the entire `TextureData`, not just the `src` field */
+    initial?: SchemaField.AssignmentData<Schema<DefaultOptions>>;
+  }
+
+  interface Schema<Options extends SrcOptions> extends DataSchema {
     /**
      * The URL of the texture source.
      * @defaultValue `initial.src ?? null`
+     * @remarks The `initial` in the above default value is the property from the `srcOptions`
+     * parameter of the {@link TextureData} constructor
      */
-    src: fields.FilePathField<SrcOptions>;
+    src: fields.FilePathField<{
+      categories: Options["categories"] extends NonNullable<FilePathField.Options["categories"]>
+        ? Options["categories"]
+        : DefaultOptions["categories"];
+
+      initial: Options["initial"] extends { src: unknown }
+        ? Options["initial"]["src"] extends null | undefined
+          ? null
+          : Options["initial"]["src"] extends DataField.Options.InitialType<
+                FilePathField.AssignmentType<FilePathField.Options>
+              >
+            ? Options["initial"]["src"]
+            : null
+        : null;
+
+      wildcard: Options["wildcard"] extends boolean ? Options["wildcard"] : DefaultOptions["wildcard"];
+
+      label: Options["label"] extends NonNullable<FilePathField.Options["label"]>
+        ? Options["label"]
+        : DefaultOptions["label"];
+    }>;
 
     /**
      * The X coordinate of the texture anchor.
@@ -517,7 +545,7 @@ declare namespace TextureData {
  * A {@link fields.SchemaField} subclass used to represent texture data.
  */
 declare class TextureData<
-  SrcOptions extends FilePathField.Options = TextureData.DefaultOptions,
+  SrcOptions extends TextureData.SrcOptions = TextureData.DefaultOptions,
   SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = EmptyObject,
 > extends fields.SchemaField<TextureData.Schema<SrcOptions>, SchemaOptions> {
   /**

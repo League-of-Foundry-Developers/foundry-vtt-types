@@ -123,12 +123,29 @@ declare global {
       y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
 
       /**
+       * The elevation of the note
+       * @defaultValue `0`
+       */
+      elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+      /**
+       * The z-index of this mpte relative to other siblings
+       * @defaultValue `0`
+       */
+      sort: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
+
+      /**
        * An image icon used to represent this note
        * @defaultValue `BaseNote.DEFAULT_ICON`
        */
       texture: TextureData<{
         categories: ["IMAGE"];
-        initial: () => typeof BaseNote.DEFAULT_ICON;
+        initial: {
+          src: () => typeof BaseNote.DEFAULT_ICON;
+          anchorX: 0.5;
+          anchorY: 0.5;
+          fit: "contain";
+        };
         label: "NOTE.EntryIcon";
       }>;
 
