@@ -1,13 +1,10 @@
-import type { EmptyObject } from "fvtt-types/utils";
+import type { EmptyObject, HandleEmptyObject } from "fvtt-types/utils";
 
 declare global {
   /**
    * The Region Container.
    */
-  class RegionLayer<
-    DrawOptions extends RegionLayer.DrawOptions = RegionLayer.DrawOptions,
-    TearDownOptions extends PlaceablesLayer.TearDownOptions = PlaceablesLayer.TearDownOptions,
-  > extends PlaceablesLayer<"Region", DrawOptions, TearDownOptions> {
+  class RegionLayer extends PlaceablesLayer<"Region"> {
     #regionLayer: true;
 
     /**
@@ -62,7 +59,7 @@ declare global {
 
     override getZIndex(): number;
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<RegionLayer.DrawOptions>): Promise<void>;
 
     /**
      * Highlight the shape or clear the highlight.
@@ -98,6 +95,6 @@ declare global {
   }
 }
 
-declare abstract class AnyRegionLayer extends RegionLayer<RegionLayer.DrawOptions, PlaceablesLayer.TearDownOptions> {
+declare abstract class AnyRegionLayer extends RegionLayer {
   constructor(arg0: never, ...args: never[]);
 }

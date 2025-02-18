@@ -1,14 +1,11 @@
-import type { IntentionalPartial, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { IntentionalPartial, InexactPartial, NullishProps, HandleEmptyObject } from "fvtt-types/utils";
 import type { AmbientSoundEffect } from "../../../../common/documents/_types.d.mts";
 
 declare global {
   /**
    * This Canvas Layer provides a container for AmbientSound objects.
    */
-  class SoundsLayer<
-    DrawOptions extends SoundsLayer.DrawOptions = SoundsLayer.DrawOptions,
-    TearDownOptions extends SoundsLayer.TearDownOptions = SoundsLayer.TearDownOptions,
-  > extends PlaceablesLayer<"AmbientSound", DrawOptions, TearDownOptions> {
+  class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -47,9 +44,9 @@ declare global {
 
     override get hookName(): string;
 
-    override _draw(options?: DrawOptions): Promise<void>;
+    override _draw(options: HandleEmptyObject<SoundsLayer.DrawOptions>): Promise<void>;
 
-    override _tearDown(options?: TearDownOptions): Promise<void>;
+    override _tearDown(options: HandleEmptyObject<SoundsLayer.TearDownOptions>): Promise<void>;
 
     override _activate(): void;
 
