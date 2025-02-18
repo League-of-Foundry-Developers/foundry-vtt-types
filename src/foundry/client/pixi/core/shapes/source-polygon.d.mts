@@ -1,4 +1,4 @@
-import type { Brand, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Brand, Coalesce, InexactPartial, NullishProps } from "fvtt-types/utils";
 import type PointEffectSourceMixin from "../../../../client-esm/canvas/sources/point-effect-source.d.mts";
 
 declare global {
@@ -120,11 +120,11 @@ declare global {
      *          * all: returns a sorted array of PolygonVertex instances
      *          * closest: returns a PolygonVertex instance or null
      */
-    static testCollision<Mode extends PointSourcePolygon.CollisionModes>(
+    static testCollision<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>(
       origin: Canvas.Point,
       destination: Canvas.Point,
       { mode, ...config }: PointSourcePolygon.TestCollisionConfig<Mode>,
-    ): PointSourcePolygon.TestCollision<Mode>;
+    ): PointSourcePolygon.TestCollision<Coalesce<Mode, "all">>;
 
     /**
      * Determine the set of collisions which occurs for a Ray.
