@@ -2,8 +2,6 @@ import type { Brand, HandleEmptyObject, InexactPartial, IntentionalPartial, Null
 import type Document from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
 
-type ConcretePlaceableOrPlaceableObject<T> = T extends PlaceableObject ? T : PlaceableObject;
-
 declare global {
   /**
    * A subclass of Canvas Layer which is specifically designed to contain multiple PlaceableObject instances,
@@ -37,22 +35,21 @@ declare global {
      * Keep track of history so that CTRL+Z can undo changes
      * @defaultValue `[]`
      */
-    history: Array<PlaceablesLayer.HistoryEntry<DocumentName>>;
+    history: PlaceablesLayer.HistoryEntry<DocumentName>[];
 
     /**
      * Keep track of an object copied with CTRL+C which can be pasted later
      * @defaultValue `[]`
      * @privateRemarks Accessed externally in `ClientKeybinds#_onPaste`, which is marked `@private`
      */
-    protected _copy: ConcretePlaceableOrPlaceableObject<Document.ConfiguredObjectInstanceForName<DocumentName>>[];
+    protected _copy: Document.ConfiguredObjectInstanceForName<DocumentName>[];
 
     /**
      * A Quadtree which partitions and organizes Walls into quadrants for efficient target identification.
      * @remarks Is `new CanvasQuadtree()` if `quadtree` is truthy in `this.constructor.layerOptions`, else `null`
      */
-    quadtree: CanvasQuadtree<
-      ConcretePlaceableOrPlaceableObject<Document.ConfiguredObjectInstanceForName<DocumentName>>
-    > | null;
+    //TODO: If dynamic static stuff can be worked out, this can be conditional on `options.quadtree`
+    quadtree: CanvasQuadtree<Document.ConfiguredObjectInstanceForName<DocumentName>> | null;
 
     /**
      * @remarks Override not in foundry docs but implicit from layerOptions
@@ -290,6 +287,7 @@ declare global {
     /**
      * Copy currently controlled PlaceableObjects to a temporary Array, ready to paste back into the scene later
      * @returns The Array of copied PlaceableObject instances
+     * @remarks If the current layer doesn't allow objects to be controlled, copies the hovered object.
      */
     copyObjects(): Document.ConfiguredObjectInstanceForName<DocumentName>[];
 
