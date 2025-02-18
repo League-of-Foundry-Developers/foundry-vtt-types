@@ -100,13 +100,19 @@ declare global {
        * The x-coordinate position of the origin of the sound.
        * @defaultValue `0`
        */
-      x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
+      x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
       /**
        * The y-coordinate position of the origin of the sound.
        * @defaultValue `0`
        */
-      y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
+      y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
+
+      /**
+       * The elevation of the sound.
+       * @defaultValue `0`
+       */
+      elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
       /**
        * The radius of the emitted sound.
@@ -118,14 +124,13 @@ declare global {
         initial: 0;
         min: 0;
         step: 0.01;
-        label: "SOUND.Radius";
       }>;
 
       /**
        * The audio file path that is played by this sound
        * @defaultValue `null`
        */
-      path: fields.FilePathField<{ categories: ["AUDIO"]; label: "SOUND.SourcePath" }>;
+      path: fields.FilePathField<{ categories: ["AUDIO"] }>;
 
       /**
        * Does this sound loop?
@@ -137,47 +142,73 @@ declare global {
        * The audio volume of the sound, from 0 to 1
        * @defaultValue `0.5`
        */
-      volume: fields.AlphaField<{ initial: 0.5; step: 0.01; label: "SOUND.MaxVol"; hint: "SOUND.MaxVolHint" }>;
+      volume: fields.AlphaField<{ initial: 0.5; step: 0.01 }>;
 
       /**
        * Whether or not this sound source is constrained by Walls.
        * @defaultValue `true`
        */
-      walls: fields.BooleanField<{ initial: true; label: "SOUND.Walls"; hint: "SOUND.WallsHint" }>;
+      walls: fields.BooleanField<{ initial: true }>;
 
       /**
        * Whether to adjust the volume of the sound heard by the listener based on how
        * close the listener is to the center of the sound source.
        * @defaultValue `true`
        */
-      easing: fields.BooleanField<{ initial: true; label: "SOUND.Easing"; hint: "SOUND.EasingHint" }>;
+      easing: fields.BooleanField<{ initial: true }>;
 
       /**
        * Is the sound source currently hidden?
        * @defaultValue `false`
        */
-      hidden: fields.BooleanField<{ label: "Hidden" }>;
+      hidden: fields.BooleanField;
 
       /**
        * A darkness range (min and max) for which the source should be active
        * @defaultValue see properties
        */
-      darkness: fields.SchemaField<
-        {
-          /** @defaultValue `0` */
-          min: fields.AlphaField<{ initial: 0 }>;
+      darkness: fields.SchemaField<{
+        /** @defaultValue `0` */
+        min: fields.AlphaField<{ initial: 0 }>;
 
-          /** @defaultValue `1` */
-          max: fields.AlphaField<{ initial: 1 }>;
-        },
-        { label: "SOUND.DarknessRange"; hint: "SOUND.DarknessRangeHint" }
-      >;
+        /** @defaultValue `1` */
+        max: fields.AlphaField<{ initial: 1 }>;
+      }>;
+
+      /**
+       * Special effects to apply to the sound
+       * @defaultValue see properties
+       */
+      effects: fields.SchemaField<{
+        /**
+         * @defaultValue see properties
+         * @remarks An effect configuration to apply to the sound when not muffled by walls (either clear of, or fully constrained by, walls)
+         */
+        base: fields.SchemaField<EffectsConfigSchema>;
+
+        /**
+         * @defaultValue see properies
+         * @remarks An effect configuration to apply to the sound when muffled by walls
+         */
+        type: fields.SchemaField<EffectsConfigSchema>;
+      }>;
 
       /**
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
       flags: fields.ObjectField.FlagsField<"AmbientSound">;
+    }
+
+    interface EffectsConfigSchema extends DataSchema {
+      /**
+       * @defaultValue `undefined`
+       * @remarks This isn't enforced by the model, but in practice should only have values in `keyof CONFIG["soundEffects"]`
+       */
+      type: fields.StringField;
+
+      /** @defaultValue `5` */
+      intensity: fields.NumberField<{ required: true; integer: true; initial: 5; min: 1; max: 10 }>;
     }
 
     namespace DatabaseOperation {
