@@ -11,7 +11,6 @@ declare global {
    * 3) Map pings
    */
   class ControlsLayer extends InteractionLayer {
-    /** @remarks Does not take arguments, does call `super()` */
     constructor();
 
     /**

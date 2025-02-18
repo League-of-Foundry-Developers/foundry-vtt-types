@@ -82,6 +82,17 @@ declare global {
       preview: PIXI.LegacyGraphics;
     }
 
+    interface GlobalLightContainer extends PIXI.Container {
+      /** @remarks `blendMode` set to `PIXI.BLEND_MODES.MAX_COLOR` */
+      source: PIXI.LegacyGraphics;
+
+      meshes: PIXI.Container;
+    }
+
+    interface LightMaskGraphics extends PIXI.LegacyGraphics {
+      preview: PIXI.LegacyGraphics;
+    }
+
     /**
      * The light part of {@link CanvasVisionContainer}.
      * The blend mode is MAX_COLOR.
@@ -100,17 +111,12 @@ declare global {
       cached: SpriteMesh;
 
       /** The light perception polygons of vision sources and the FOV of vision sources that provide vision. */
-      mask: PIXI.LegacyGraphics & { preview: PIXI.LegacyGraphics };
+      mask: LightMaskGraphics;
 
       /**
        * The global light container, which hold darkness level meshes for dynamic illumination
        */
-      global: PIXI.Container & {
-        /** @remarks `blendMode` set to `PIXI.BLEND_MODES.MAX_COLOR` */
-        source: PIXI.LegacyGraphics;
-
-        meshes: PIXI.Container;
-      };
+      global: GlobalLightContainer;
 
       /**
        * The light sources
@@ -132,9 +138,7 @@ declare global {
 
       /**
        * @deprecated since v12, until 14
-       * @remarks "CanvasVisibility#vision#tokens is deprecated in favor of CanvasVisibility#vision#light."
-       *
-       * The above is [sic], but probably meant to refer to `CanvasVisibility#vision#fov#tokens` as deprecated
+       * @remarks "CanvasVisibility#vision#fov#tokens is deprecated in favor of CanvasVisibility#vision#light."d
        */
       readonly tokens: this;
     }
