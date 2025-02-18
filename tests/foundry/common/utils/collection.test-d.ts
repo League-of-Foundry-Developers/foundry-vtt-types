@@ -2,6 +2,16 @@ import { expectTypeOf } from "vitest";
 
 const c = new Collection<string>();
 
+expectTypeOf(c.contents).toEqualTypeOf<string[]>();
+
+expectTypeOf(c.toJSON()).toEqualTypeOf<string[]>();
+
+const c2 = new Collection<{
+  toJSON(): boolean;
+}>();
+
+expectTypeOf(c2.toJSON()).toEqualTypeOf<boolean[]>();
+
 expectTypeOf(c.get("")).toEqualTypeOf<string | undefined>();
 expectTypeOf(c.get("", { strict: false })).toEqualTypeOf<string | undefined>();
 expectTypeOf(c.get("", { strict: true })).toEqualTypeOf<string>();

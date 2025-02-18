@@ -1,10 +1,15 @@
 export default Color;
+
+// `Color#fromString` breaks inheritance
+declare class PatchedNumber extends Number {
+  static fromString(color: string): any;
+}
+
 /**
  * A representation of a color in hexadecimal format.
  * This class provides methods for transformations and manipulations of colors.
  */
-// @ts-expect-error 2417: Override of Color.fromString does not match Number.fromString
-declare class Color extends Number {
+declare class InternalColor extends PatchedNumber {
   /**
    * Is this a valid color?
    */
@@ -264,6 +269,15 @@ declare class Color extends Number {
   static fromRGB(rgb: Color.RGBColorVector): Color;
 
   /**
+   * Create a Color instance from an RGB normalized values.
+   * @param r - The red value
+   * @param g - The green value
+   * @param b - The blue value
+   * @returns The hex color instance
+   */
+  static fromRGBvalues(r: number, g: number, b: number): Color;
+
+  /**
    * Create a Color instance from an HSV array.
    * Conversion formula adapted from {@link http://en.wikipedia.org/wiki/HSV_color_space}.
    * Assumes h, s, and v are contained in the set [0, 1].
@@ -289,6 +303,9 @@ declare class Color extends Number {
    */
   static fromLinearRGB(linear: Color.RGBColorVector): Color;
 }
+
+declare const Color: typeof InternalColor & (new (...args: any) => number);
+type Color = InternalColor & number;
 
 declare namespace Color {
   type RGBColorVector = [r: number, g: number, b: number];

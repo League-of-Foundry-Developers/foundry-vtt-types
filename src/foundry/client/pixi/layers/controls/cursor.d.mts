@@ -28,6 +28,6 @@ declare global {
      */
     protected _animate(): void;
 
-    override destroy(options?: PIXI.DisplayObject.DestroyOptions): void;
+    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
   }
 }

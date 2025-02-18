@@ -2,6 +2,7 @@ name: Wrong Type
 description: Report an incorrect type to help us improve
 labels:
   - bug
+type: Bug
 body:
   - type: input
     id: foundry-version

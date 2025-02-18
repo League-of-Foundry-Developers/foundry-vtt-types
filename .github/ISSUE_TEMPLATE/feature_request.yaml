@@ -2,6 +2,7 @@ name: Feature Request
 description: Suggest an idea for this project beyond plain Foundry types
 labels:
   - enhancement
+type: Task
 body:
   - type: input
     id: foundry-version
