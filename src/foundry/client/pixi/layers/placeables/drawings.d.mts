@@ -1,7 +1,5 @@
 import type { HandleEmptyObject } from "../../../../../utils/index.d.mts";
 
-export {};
-
 declare global {
   /**
    * The DrawingsLayer subclass of PlaceablesLayer.
