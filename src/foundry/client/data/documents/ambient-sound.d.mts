@@ -181,14 +181,14 @@ declare global {
        */
       effects: fields.SchemaField<{
         /**
+         * An effect configuration to apply to the sound when not muffled by walls (either clear of, or fully constrained by, walls)
          * @defaultValue see properties
-         * @remarks An effect configuration to apply to the sound when not muffled by walls (either clear of, or fully constrained by, walls)
          */
         base: fields.SchemaField<EffectsConfigSchema>;
 
         /**
+         * An effect configuration to apply to the sound when muffled by walls
          * @defaultValue see properies
-         * @remarks An effect configuration to apply to the sound when muffled by walls
          */
         type: fields.SchemaField<EffectsConfigSchema>;
       }>;
