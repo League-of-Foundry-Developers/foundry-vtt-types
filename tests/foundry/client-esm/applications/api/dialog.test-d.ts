@@ -5,6 +5,7 @@ import DialogV2 = foundry.applications.api.DialogV2;
 const numberCallback = async () => 5;
 
 expectTypeOf(await DialogV2.confirm()).toEqualTypeOf<boolean | null>();
+expectTypeOf(await DialogV2.confirm({ yes: {} })).toEqualTypeOf<boolean | null>();
 expectTypeOf(await DialogV2.confirm({ rejectClose: true })).toEqualTypeOf<boolean>();
 expectTypeOf(await DialogV2.confirm({ rejectClose: false })).toEqualTypeOf<boolean | null>();
 expectTypeOf(await DialogV2.confirm({ rejectClose: 3 > 2, window: {} })).toEqualTypeOf<boolean | null>();
@@ -15,6 +16,11 @@ expectTypeOf(
     },
   }),
 ).toEqualTypeOf<false | number | null>();
+
+const distributivityTest = await DialogV2.confirm(
+  Math.random() > 0.5 ? { yes: { callback: numberCallback } } : { window: {} },
+);
+expectTypeOf(distributivityTest).toEqualTypeOf<boolean | number | null>();
 
 const okButton = {
   callback: numberCallback,
@@ -122,3 +128,20 @@ DialogV2.query(foundry.utils.randomID(), "wait", {
     },
   ],
 });
+
+/*********************
+ *
+ * UNHANDLED BEHAVIOR
+ *
+ *********************/
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+const unsoundTest: {} = { yes: { callback: numberCallback } };
+
+// @ts-expect-error Inferring from type not assigned value, unsound variable assignment
+expectTypeOf(await DialogV2.confirm(unsoundTest)).toEqualTypeOf<number | false | null>();
+
+declare const unhandledOptionalYes: { yes?: { callback: typeof numberCallback } };
+
+// @ts-expect-error Declaring the yes/no/ok properties to be optional is not supported
+expectTypeOf(await DialogV2.confirm(unhandledOptionalYes)).toEqualTypeOf<number | boolean | null>();

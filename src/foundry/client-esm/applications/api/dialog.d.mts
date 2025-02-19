@@ -1,4 +1,4 @@
-import type { DeepPartial, EmptyObject, InexactPartial, MaybePromise } from "fvtt-types/utils";
+import type { DeepPartial, EmptyObject, InexactPartial, MaybePromise, NullishCoalesce } from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
 
 /**
@@ -311,24 +311,30 @@ declare namespace DialogV2 {
       ? never
       : null;
 
-    type ButtonReturnType<Options extends { buttons?: DialogV2.Button<unknown>[] }> =
+    type ButtonReturnType<Options extends { buttons?: Button<unknown>[] }> =
       // Two cases - one for where all buttons have a defined callback, the other where they don't
-      Options["buttons"] extends ReadonlyArray<{ callback: DialogV2.ButtonCallback<infer Callback> }>
+      Options["buttons"] extends ReadonlyArray<{ callback: ButtonCallback<infer Callback> }>
         ? Callback extends undefined
           ? string
           : Callback
-        : Options["buttons"] extends ReadonlyArray<DialogV2.Button<infer Callback>>
+        : Options["buttons"] extends ReadonlyArray<Button<infer Callback>>
           ? Callback | string
           : never;
 
-    type ConfirmReturnType<Options extends DialogV2.ConfirmConfig<unknown, unknown>> =
-      | (Options["yes"] extends { callback: DialogV2.ButtonCallback<infer YesReturn> } ? YesReturn : true)
-      | (Options["no"] extends { callback: DialogV2.ButtonCallback<infer NoReturn> } ? NoReturn : false);
+    type ConfirmReturnType<Options extends ConfirmConfig<unknown, unknown>> =
+      | (Options extends { yes: { readonly callback: ButtonCallback<infer YesReturn> } }
+          ? NullishCoalesce<YesReturn, true>
+          : true)
+      | (Options extends { no: { readonly callback: ButtonCallback<infer NoReturn> } }
+          ? NullishCoalesce<NoReturn, false>
+          : false);
 
-    type PromptReturnType<Options extends DialogV2.PromptConfig<unknown>> = Options["ok"] extends {
-      callback: DialogV2.ButtonCallback<infer OKReturn>;
+    type PromptReturnType<Options extends PromptConfig<unknown>> = Options extends {
+      ok: {
+        readonly callback: ButtonCallback<infer OKReturn>;
+      };
     }
-      ? OKReturn
+      ? NullishCoalesce<OKReturn, string>
       : string;
   }
 }
