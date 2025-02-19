@@ -115,14 +115,14 @@ expectTypeOf(layer.deleteAll()).toEqualTypeOf<Promise<undefined | false | null>>
 expectTypeOf(layer.storeHistory("create", { _id: someLight.id ?? "XXXXXSomeIDXXXXX" })).toEqualTypeOf<void>();
 expectTypeOf(
   layer.storeHistory("update", {
-    _id: someLight.id ?? "XXXXXSomeIDXXXXX",
     ...someLight.toObject(), // TODO: make this a subset of known properties of the schema after docs v2
+    _id: someLight.id ?? "XXXXXSomeIDXXXXX",
   }),
 ).toEqualTypeOf<void>();
 expectTypeOf(
   layer.storeHistory("delete", {
-    _id: someLight.id ?? "XXXXXSomeIDXXXXX",
     ...someLight.toObject(), // TODO: make this a subset of known properties of the schema after docs v2
+    _id: someLight.id ?? "XXXXXSomeIDXXXXX",
   }),
 ).toEqualTypeOf<void>();
 
