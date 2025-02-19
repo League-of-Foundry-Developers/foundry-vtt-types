@@ -1,32 +1,23 @@
-import type { FixedInstanceType, IntentionalPartial } from "fvtt-types/utils";
-
-type QuadMeshClass = typeof QuadMesh;
-
-interface InternalWeatherShaderEffect_Interface extends QuadMeshClass {
-  new <ShaderClassInstance extends object>(
-    ...args: ConstructorParameters<typeof QuadMesh>
-  ): QuadMesh & ShaderClassInstance;
-}
-
-declare const InternalWeatherShaderEffect_Const: InternalWeatherShaderEffect_Interface;
-
-// @ts-expect-error - This pattern inherently requires a ts-expect-error as the base class is dynamic.
-class InternalWeatherShaderEffect<
-  ShaderClass extends AbstractWeatherShader.AnyConstructor,
-  _ShaderClassInstance extends object = FixedInstanceType<ShaderClass>,
-> extends InternalWeatherShaderEffect_Const<_ShaderClassInstance> {}
+import type { IntentionalPartial } from "fvtt-types/utils";
 
 declare global {
   /**
    * An interface for defining shader-based weather effects
    */
-  class WeatherShaderEffect<
-    ShaderClass extends AbstractWeatherShader.AnyConstructor = AbstractWeatherShader.AnyConstructor,
-  > extends InternalWeatherShaderEffect<ShaderClass> {
+  class WeatherShaderEffect extends QuadMesh {
     /**
      * @param config - The config object to create the shader effect
      */
-    constructor(config: WeatherShaderEffect.Configuration | undefined, shaderClass: ShaderClass);
+    constructor(
+      config: WeatherShaderEffect.Configuration | undefined,
+      shaderClass: AbstractWeatherShader.AnyConstructor,
+    );
+
+    /** @privateRemarks Override not in Foundry code, but reflects reality at runtime */
+    override get shader(): AbstractWeatherShader;
+
+    /** @privateRemarks Override not in Foundry code, but reflects reality at runtime */
+    override setShaderClass(shaderClass: AbstractWeatherShader.AnyConstructor): void;
 
     /**
      * Set shader parameters.
@@ -58,6 +49,6 @@ declare global {
   }
 }
 
-declare abstract class AnyWeatherShaderEffect extends WeatherShaderEffect<AbstractWeatherShader.AnyConstructor> {
+declare abstract class AnyWeatherShaderEffect extends WeatherShaderEffect {
   constructor(arg0: never, ...args: never[]);
 }

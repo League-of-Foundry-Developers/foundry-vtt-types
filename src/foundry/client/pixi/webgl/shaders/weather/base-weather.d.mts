@@ -1,9 +1,4 @@
-import type {
-  InterfaceToObject,
-  AnyObject,
-  RemoveIndexSignatures,
-  FixedInstanceType,
-} from "../../../../../../utils/index.d.mts";
+import type { RemoveIndexSignatures, FixedInstanceType } from "../../../../../../utils/index.d.mts";
 
 type AbstractBaseShaderClass = typeof AbstractBaseShader;
 
@@ -17,16 +12,18 @@ declare const InternalAbstractWeatherShader_Const: InternalAbstractWeatherShader
 
 // @ts-expect-error - This pattern inherently requires a ts-expect-error as the base class is dynamic.
 class InternalAbstractWeatherShader<
-  DefaultUniforms extends AnyObject,
-  _ComputedUniforms extends object = RemoveIndexSignatures<Extract<DefaultUniforms, AnyObject>>,
+  DefaultUniforms extends AbstractBaseShader.Uniforms,
+  _ComputedUniforms extends object = RemoveIndexSignatures<DefaultUniforms>,
 > extends InternalAbstractWeatherShader_Const<_ComputedUniforms> {}
 
 declare global {
   /**
    * The base shader class for weather shaders.
+   * @typeParam DefaultUniforms - An interface representing an `AbstractWeatherShader` subclass's `static defaultUniforms`
+   * @remarks For each key in `static defaultOptions`, dynamically defines a getter/setter pair for `this.uniforms[key]` on the instance
    */
   class AbstractWeatherShader<
-    DefaultUniforms extends AnyObject = InterfaceToObject<AbstractWeatherShader.DefaultUniforms>,
+    DefaultUniforms extends AbstractBaseShader.Uniforms = AbstractWeatherShader.DefaultUniforms,
   > extends InternalAbstractWeatherShader<DefaultUniforms> {
     constructor(...args: ConstructorParameters<typeof AbstractBaseShader>);
 
@@ -101,11 +98,10 @@ declare global {
       time: number;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    interface DefaultUniforms {}
+    interface DefaultUniforms extends AbstractBaseShader.Uniforms {}
   }
 }
 
-declare abstract class AnyAbstractWeatherShader extends AbstractWeatherShader {
+declare abstract class AnyAbstractWeatherShader extends AbstractWeatherShader<AbstractWeatherShader.DefaultUniforms> {
   constructor(arg0: never, ...args: never[]);
 }
