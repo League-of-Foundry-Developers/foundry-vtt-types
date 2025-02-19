@@ -55,7 +55,7 @@ if (firstHistoryEntry.type === "create") {
 expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof AmbientLight>();
 expectTypeOf(layer.objects).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.preview).toEqualTypeOf<PIXI.Container | null>();
-expectTypeOf(layer.quadtree).toMatchTypeOf<CanvasQuadtree<PlaceableObject.Any> | null>();
+expectTypeOf(layer.quadtree).toMatchTypeOf<CanvasQuadtree<AmbientLight.ConfiguredInstance> | null>();
 expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<CALDoc, Scene> | null>();
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<number>();
 expectTypeOf(layer.hud).toEqualTypeOf<BasePlaceableHUD<CAL> | null>();
