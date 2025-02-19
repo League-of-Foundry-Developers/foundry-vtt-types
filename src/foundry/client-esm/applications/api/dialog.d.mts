@@ -150,19 +150,19 @@ declare class DialogV2<
    * @see {@link DialogV2.confirm}
    * @see {@link DialogV2.wait}
    */
-  static query<T extends DialogV2.Type, Options extends DeepPartial<DialogV2.QueryConfig<T>>>(
+  static query<T extends DialogV2.Type, Options extends DialogV2.QueryConfig<T>>(
     user: User.ConfiguredInstance | string,
     type: T,
     config?: Options,
-  ): Promise<(T extends "confirm" ? boolean : string) | DialogV2.Internal.DismissType<Options>>;
+  ): Promise<DialogV2.QueryReturn<T, Options>>;
 
   /**
    * The dialog query handler.
    */
-  static _handleQuery<T extends DialogV2.Type, Options extends DeepPartial<DialogV2.QueryConfig<T>>>(config: {
+  static _handleQuery<T extends DialogV2.Type, Options extends DialogV2.QueryConfig<T>>(config: {
     type: T;
     config: Options;
-  }): Promise<(T extends "confirm" ? boolean : string) | DialogV2.Internal.DismissType<Options>>;
+  }): Promise<DialogV2.QueryReturn<T, Options>>;
 }
 
 declare namespace DialogV2 {
@@ -305,6 +305,10 @@ declare namespace DialogV2 {
     | WaitReturn<Options>;
 
   type PromptReturn<Options extends PromptConfig<unknown>> = Internal.PromptReturnType<Options> | WaitReturn<Options>;
+
+  type QueryReturn<T extends Type, Options extends QueryConfig<T>> =
+    | (T extends "confirm" ? boolean : string)
+    | DialogV2.Internal.DismissType<Options>;
 
   namespace Internal {
     type DismissType<Options extends { rejectClose?: boolean | null | undefined }> = Options["rejectClose"] extends true
