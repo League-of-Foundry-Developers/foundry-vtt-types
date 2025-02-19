@@ -239,7 +239,7 @@ declare global {
        * @remarks Despite the corresponding `ParticleEffect#constructor` parameter being `={}`, construction will
        * throw if this isn't a non-empty object, **except** in the case of the only core `extends ParticleEffect`
        * class, {@link AutumnLeavesWeatherEffect}, which overrides the relevant method and always uses its static
-       * `LEAF_CONFIG` property instead; account for this is the only reason the property is optional
+       * `LEAF_CONFIG` property instead; accounting for this is the only reason the property is optional
        */
       config: PIXI.particles.EmitterConfigV3;
     }
