@@ -8,10 +8,10 @@ expectTypeOf(WeatherEffects.layerOptions.name).toEqualTypeOf<"effects">();
 declare class SomeWeatherShader extends AbstractWeatherShader {}
 declare const someShader: SomeWeatherShader;
 declare const someTex: PIXI.Texture;
-expectTypeOf(WeatherEffects["configureOcclusionMask"](someShader)).toBeVoid();
-expectTypeOf(WeatherEffects["configureOcclusionMask"](someShader, {})).toBeVoid();
+expectTypeOf(WeatherEffects.configureOcclusionMask(someShader)).toBeVoid();
+expectTypeOf(WeatherEffects.configureOcclusionMask(someShader, {})).toBeVoid();
 expectTypeOf(
-  WeatherEffects["configureOcclusionMask"](someShader, {
+  WeatherEffects.configureOcclusionMask(someShader, {
     channelWeights: [1, 0, 0, 0],
     enabled: true,
     reverse: false,
@@ -19,10 +19,10 @@ expectTypeOf(
   }),
 ).toBeVoid();
 
-expectTypeOf(WeatherEffects["configureTerrainMask"](someShader)).toBeVoid();
-expectTypeOf(WeatherEffects["configureTerrainMask"](someShader, {})).toBeVoid();
+expectTypeOf(WeatherEffects.configureTerrainMask(someShader)).toBeVoid();
+expectTypeOf(WeatherEffects.configureTerrainMask(someShader, {})).toBeVoid();
 expectTypeOf(
-  WeatherEffects["configureTerrainMask"](someShader, {
+  WeatherEffects.configureTerrainMask(someShader, {
     channelWeights: undefined,
     enabled: null,
     reverse: true,

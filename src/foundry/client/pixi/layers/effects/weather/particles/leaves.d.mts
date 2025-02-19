@@ -6,19 +6,19 @@ declare global {
    */
   class AutumnLeavesWeatherEffect extends ParticleEffect {
     /**
-     * @remarks `options` is completely
+     * @remarks `options` is completely unused in this subclass, as it gets passed to `#getParticleEmitters`, which, unlike super's method, takes no arguments
      */
     constructor(options?: PIXI.particles.EmitterConfigV3);
     /**
      * @defaultValue `"WEATHER.AutumnLeaves"`
      * @remarks A localization key. Appears to be unused in v12.331, probably vestigial, is identical to the
-     * `label` for the AmbienceConfig using this effect in `CONFIG.Canvas.weatherEffects`
+     * `label` for the AmbienceConfig containing this effect in `CONFIG.Canvas.weatherEffects`
      */
     static label: string;
 
     /**
      * Configuration for the particle emitter for falling leaves
-     * @remarks Not a complete config; the `frequency` and `pos` required keys are omitted. `frequency` is set
+     * @remarks Not a complete EmitterConfigV3; the `frequency` and `pos` required keys are omitted. `frequency` is set
      * up in `#getParticleEmitters`, but `pos` is not; it is erroneously marked as required in the interface,
      * see https://github.com/pixijs-userland/particle-emitter/issues/219
      */
