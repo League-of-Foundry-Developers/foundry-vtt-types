@@ -164,6 +164,7 @@ declare global {
        * @defaultValue `false`
        */
       enabled: boolean;
+
       /**
        * If the mask should be reversed.
        * @defaultValue `false`
@@ -233,6 +234,7 @@ declare global {
 
     interface ParticleEffectConfiguration extends _CommonEffectConfiguration {
       id: string;
+
       effectClass: ParticleEffect.AnyConstructor;
 
       /**
@@ -246,6 +248,7 @@ declare global {
 
     interface SpecificallyAutumnLeavesConfiguration {
       id: string;
+
       effectClass: AutumnLeavesWeatherEffect.AnyConstructor;
 
       /** @remarks {@link AutumnLeavesWeatherEffect} overrides {@link ParticleEffect#getParticleEmitters} -- the method that would throw when passed an empty config -- to not take any parameters and always use */
@@ -254,10 +257,12 @@ declare global {
 
     interface WeatherShaderEffectConfiguration extends _CommonEffectConfiguration {
       id: string;
+
       effectClass: WeatherShaderEffect.AnyConstructor;
+
       shaderClass: AbstractWeatherShader.AnyConstructor;
 
-      /** @remarks Can't be `null` because it gets `Object.entries()`'d with only a parameter default */
+      /** @remarks Can't be `null` because it gets `Object.entries()`ed with only a parameter default */
       config?: WeatherShaderEffect.Configuration | undefined;
     }
 
