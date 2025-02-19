@@ -123,14 +123,14 @@ declare global {
      * @param context - The shader context
      * @param config  - Occlusion masking options
      */
-    protected static configureOcclusionMask(context: PIXI.Shader, config?: WeatherEffects.MaskConfiguration): void;
+    static configureOcclusionMask(context: PIXI.Shader, config?: WeatherEffects.MaskConfiguration): void;
 
     /**
      * Set the terrain uniforms for this weather shader.
      * @param context - The shader context
      * @param config  - Terrain masking options
      */
-    protected static configureTerrainMask(context: PIXI.Shader, config?: WeatherEffects.MaskConfiguration): void;
+    static configureTerrainMask(context: PIXI.Shader, config?: WeatherEffects.MaskConfiguration): void;
 
     /**
      * @deprecated since v11, will be removed in v13
