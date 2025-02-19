@@ -9,7 +9,12 @@ declare global {
      * @param origin - The canvas coordinates of the origin of the ping.
      * @param options - Additional options to configure the ping animation.
      */
-    constructor(origin: Canvas.Point, options?: PulsePing.ConstructorOptions);
+    constructor(
+      origin: Canvas.Point,
+
+      /** @privateRemarks Can't be `null` as it's directly assigned to  `Ping#options` which has properties accessed null-unsafely */
+      options?: PulsePing.ConstructorOptions,
+    );
 
     override options: PulsePing.ConstructorOptions;
 

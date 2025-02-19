@@ -195,7 +195,10 @@ declare global {
      * @param options  - Additional options to configure how the ping is drawn.
      * @returns A promise which resolves once the Ping has been drawn and animated
      */
-    drawOffscreenPing(position: Canvas.Point, options?: ControlsLayer.DrawOffscreenPingOptions): Promise<boolean>;
+    drawOffscreenPing(
+      position: Canvas.Point,
+      options?: ControlsLayer.DrawOffscreenPingOptions, // not:null (destructured)
+    ): Promise<boolean>;
 
     /**
      * Draw a ping on the canvas
@@ -204,7 +207,10 @@ declare global {
      * @param options  - Additional options to configure how the ping is drawn.
      * @returns A promise which resolves once the Ping has been drawn and animated
      */
-    drawPing(position: Canvas.Point, options?: ControlsLayer.DrawPingOptions): Promise<boolean>;
+    drawPing(
+      position: Canvas.Point,
+      options?: ControlsLayer.DrawPingOptions, // not:null (destructured)
+    ): Promise<boolean>;
 
     /**
      * Given off-screen coordinates, determine the closest point at the edge of the viewport to these coordinates.
@@ -254,7 +260,7 @@ declare global {
     }
 
     interface ViewportIntersectionData {
-      /** A Ray from the center of the (viewport - sidebar) area to the point on the edge of that area in line with an offscreen ping */
+      /** A Ray from the center of the [viewport minus right sidebar] area to the point on the edge of that area in line with an offscreen ping */
       ray: Ray;
 
       /** The intersection with the viewport edge, or undefined if its on-screen */
