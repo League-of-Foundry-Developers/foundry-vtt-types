@@ -1,13 +1,10 @@
-export {};
+import type { HandleEmptyObject } from "../../../../../utils/index.d.mts";
 
 declare global {
   /**
    * The DrawingsLayer subclass of PlaceablesLayer.
    */
-  class DrawingsLayer<
-    DrawOptions extends DrawingsLayer.DrawOptions = DrawingsLayer.DrawOptions,
-    TearDownOptions extends CanvasLayer.TearDownOptions = CanvasLayer.TearDownOptions,
-  > extends PlaceablesLayer<"Drawing", DrawOptions, TearDownOptions> {
+  class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
      */
@@ -53,7 +50,7 @@ declare global {
 
     override _deactivate(): void;
 
-    override _draw(options?: DrawOptions): Promise<void>;
+    override _draw(options: HandleEmptyObject<DrawingsLayer.DrawOptions>): Promise<void>;
 
     /**
      * Get initial data for a new drawing.

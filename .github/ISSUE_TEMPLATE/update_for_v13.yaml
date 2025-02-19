@@ -1,9 +1,10 @@
-name: Update for v12
-description: Submit an issue for adding, updating or deleting something for Foundry VTT v12
-title: Update … for Foundry VTT v12.327
+name: Update for v13
+description: Submit an issue for adding, updating or deleting something for Foundry VTT v13
+title: Update … for Foundry VTT v13.336
 labels:
   - version update
-  - foundry v12
+  - foundry v13
+type: Feature
 body:
   - type: input
     id: to-change

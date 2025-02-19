@@ -1,14 +1,11 @@
-import type { ArrayOverlaps, NullishProps } from "fvtt-types/utils";
+import type { ArrayOverlaps, HandleEmptyObject, NullishProps } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
    * The Tokens Container
    */
-  class TokenLayer<
-    DrawOptions extends TokenLayer.DrawOptions = TokenLayer.DrawOptions,
-    TearDownOptions extends TokenLayer.TearDownOptions = TokenLayer.TearDownOptions,
-  > extends PlaceablesLayer<"Token", DrawOptions, TearDownOptions> {
+  class TokenLayer extends PlaceablesLayer<"Token"> {
     /**
      * The current index position in the tab cycle
      * @defaultValue `null`
@@ -62,9 +59,9 @@ declare global {
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<TokenLayer.DrawOptions>): Promise<void>;
 
-    protected override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<TokenLayer.TearDownOptions>): Promise<void>;
 
     protected override _activate(): void;
 

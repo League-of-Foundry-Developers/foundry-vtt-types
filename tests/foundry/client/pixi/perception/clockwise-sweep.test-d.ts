@@ -9,6 +9,7 @@ declare const someCircle: PIXI.Circle;
 declare const someEdge: foundry.canvas.edges.Edge;
 declare const somePV: foundry.canvas.edges.PolygonVertex;
 
+expectTypeOf(ClockwiseSweepPolygon.testCollision(pointA, pointB, { type: "light" })).toEqualTypeOf<PolygonVertex[]>();
 expectTypeOf(
   ClockwiseSweepPolygon.testCollision(pointA, pointB, { mode: "any", type: "light" }),
 ).toEqualTypeOf<boolean>();
