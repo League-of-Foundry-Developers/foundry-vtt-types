@@ -21,7 +21,7 @@ declare global {
      * A mapping of ambient audio sources which are active within the rendered Scene
      * @defaultValue `new foundry.utils.Collection()`
      */
-    sources: foundry.utils.Collection<foundry.canvas.sources.PointSoundSource>;
+    sources: foundry.utils.Collection<foundry.canvas.sources.PointSoundSource.Any>;
 
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
@@ -42,13 +42,13 @@ declare global {
 
     static override documentName: "AmbientSound";
 
-    override get hookName(): string;
+    override get hookName(): "SoundsLayer";
 
-    override _draw(options: HandleEmptyObject<SoundsLayer.DrawOptions>): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<SoundsLayer.DrawOptions>): Promise<void>;
 
-    override _tearDown(options: HandleEmptyObject<SoundsLayer.TearDownOptions>): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<SoundsLayer.TearDownOptions>): Promise<void>;
 
-    override _activate(): void;
+    protected override _activate(): void;
 
     /**
      * Initialize all AmbientSound sources which are present on this layer
@@ -60,15 +60,9 @@ declare global {
      * Sync audio for the positions of tokens which are capable of hearing.
      * @param options - Additional options forwarded to AmbientSound synchronization
      *                  (defaultValue: `{}`)
+     * @remarks Probably meant to be treated as always `void`; the `number` return is from an `Array#push` call, not anything meaningful
      */
-    refresh(
-      options?: NullishProps<{
-        /**
-         * A duration in milliseconds to fade volume transition
-         */
-        fade: number;
-      }>,
-    ): number | void;
+    refresh(options?: SoundsLayer.RefreshOptions): number | void;
 
     /**
      * Preview ambient audio for a given mouse cursor position
@@ -83,8 +77,9 @@ declare global {
 
     /**
      * Get an array of listener positions for Tokens which are able to hear environmental sound.
+     * @remarks Returns an array of `token.center`s, so actual `PIXI.Point`s for once
      */
-    getListenerPositions(): Canvas.Point[];
+    getListenerPositions(): PIXI.Point[];
 
     /**
      * Sync the playing state and volume of all AmbientSound objects based on the position of listener points
@@ -92,15 +87,7 @@ declare global {
      * @param options   - Additional options forwarded to AmbientSound synchronization
      *                    (defaultValue: `{}`)
      */
-    protected _syncPositions(
-      listeners: Canvas.Point[],
-      options?: NullishProps<{
-        /**
-         * A duration in milliseconds to fade volume transition
-         */
-        fade: number;
-      }>,
-    ): void;
+    protected _syncPositions(listeners: PIXI.Point[], options?: SoundsLayer.SyncPositionsOptions): void;
 
     /**
      * Configure playback by assigning the muffled state and final playback volume for the sound.
@@ -156,10 +143,10 @@ declare global {
      */
     playAtPosition(
       src: string,
+      /** @privateRemarks The examples in the docs show passing a simple `{x, y}` object here, so unlike other places in this layer `Canvas.Point` is appropriate */
       origin: Canvas.Point,
       radius: number,
-      /** @remarks Can't be NullishProps because a default for `volume` is provided only for `undefined` with `{ volume=1 }`, which must be numeric */
-      options?: InexactPartial<SoundsLayer.PlayAtPositionOptions>,
+      options?: SoundsLayer.PlayAtPositionOptions,
     ): Promise<foundry.audio.Sound | null>;
 
     /**
@@ -190,10 +177,11 @@ declare global {
     protected _onDropData(
       event: DragEvent,
       data: SoundsLayer.DropData,
-    ): Promise<ReturnType<PlaceablesLayer<"AmbientSound">["_createPreview"]> | false>;
+    ): Promise<AmbientSound.ConfiguredInstance | false>;
   }
 
   namespace SoundsLayer {
+    interface Any extends AnySoundsLayer {}
     type AnyConstructor = typeof AnySoundsLayer;
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
@@ -210,24 +198,27 @@ declare global {
       uuid: string;
     }
 
-    interface PlayAtPositionOptions {
+    /** @internal */
+    type _Fade = NullishProps<{
       /**
-       * The maximum volume at which the effect should be played
-       * @defaultValue `1.0`
+       * A duration in milliseconds to fade volume transition
+       * @defaultValue `250`
+       * @remarks The above is only a parameter default; `null` is treated as `0`
        */
-      volume: number;
+      fade: number;
+    }>;
 
+    interface RefreshOptions extends _Fade {}
+
+    interface SyncPositionsOptions extends _Fade {}
+
+    /** @internal */
+    type _PlayAtPositionOptions = NullishProps<{
       /**
        * Should volume be attenuated by distance?
        * @defaultValue `true`
        */
       easing: boolean;
-
-      /**
-       * Should the sound be constrained by walls?
-       * @defaultValue `true`
-       */
-      walls: boolean;
 
       /**
        * Should the sound always be played for GM users regardless of actively controlled tokens?
@@ -243,54 +234,84 @@ declare global {
 
       /**
        * Additional data passed to the SoundSource constructor
-       * @remarks IntentionalPartial because this is spread into an object with existing keys
+       * @remarks `IntentionalPartial` because this is spread into an object with existing `x`, `y`, `radius`, and `walls` keys
        */
       sourceData: IntentionalPartial<PointSourceData>;
 
-      /** Additional options passed to Sound#play */
+      /**
+       * Additional options passed to Sound#play
+       * @remarks The `loop` and `volume` keys will be overwritten
+       */
       playbackOptions: foundry.audio.Sound.PlaybackOptions;
-    }
+    }> &
+      InexactPartial<{
+        /**
+         * The maximum volume at which the effect should be played
+         * @defaultValue `1`
+         * @remarks Can't be `null` because it only has a parameter default
+         */
+        volume: number;
 
-    interface AmbientSoundPlaybackConfig {
-      /**
-       * The Sound node which should be controlled for playback
-       */
-      sound: foundry.audio.Sound;
+        /**
+         * Should the sound be constrained by walls?
+         * @defaultValue `true`
+         * @remarks Can't be `null` as it gets passed to `PointSoundSource.ConfiguredInstance#initialize`
+         */
+        walls: boolean;
+      }>;
 
-      /**
-       * The SoundSource which defines the area of effect for the sound
-       */
-      source: foundry.canvas.sources.PointSoundSource;
+    interface PlayAtPositionOptions extends _PlayAtPositionOptions {}
 
-      /**
-       * An AmbientSound object responsible for the sound, or undefined
-       */
-      object: AmbientSound | undefined;
-
-      /**
-       * The coordinates of the closest listener or undefined if there is none
-       */
-      listener: Canvas.Point | undefined;
-
-      /**
-       * The minimum distance between a listener and the AmbientSound origin
-       */
-      distance: number;
-
-      /**
-       * Is the closest listener muffled
-       */
-      muffled: boolean;
-
+    /** @internal */
+    type _AmbientSoundPlaybackConfig = NullishProps<{
       /**
        * Is playback constrained or muffled by walls?
+       * @remarks Falsey is *possibly* muffled, truthy is definitely constrained
        */
       walls: boolean;
 
       /**
+       * The coordinates of the closest listener or undefined if there is none
+       * @remarks If falsey, `volume` is set to `0`
+       *
+       * One of the rare times Foundry actually wants a `PIXI.Point`, as it calls `listener#equals(source)`
+       */
+      listener: PIXI.Point;
+    }>;
+
+    /** @privateRemarks The only place this is used outside of variables entirely internal to function bodies in Foundry code is as a parameter for `#_configurePlayback` */
+    interface AmbientSoundPlaybackConfig extends _AmbientSoundPlaybackConfig {
+      /**
+       * The Sound node which should be controlled for playback
+       */
+      sound?: foundry.audio.Sound;
+
+      /**
+       * The SoundSource which defines the area of effect for the sound
+       */
+      source: foundry.canvas.sources.PointSoundSource.ConfiguredInstance;
+
+      /**
+       * An AmbientSound object responsible for the sound, or undefined
+       */
+      object?: AmbientSound.ConfiguredInstance;
+
+      /**
+       * The minimum distance between a listener and the AmbientSound origin
+       * @remarks Entirely unused in 12.331
+       */
+      distance?: number;
+
+      /**
+       * Is the closest listener muffled
+       * @remarks Always overwritten in `#_configurePlayback`, never required to be passed
+       */
+      muffled?: boolean;
+
+      /**
        * The final volume at which the Sound should be played
        */
-      volume: number;
+      volume?: number;
     }
   }
 }
