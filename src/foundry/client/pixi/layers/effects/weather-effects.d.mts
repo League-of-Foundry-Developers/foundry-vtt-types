@@ -248,7 +248,7 @@ declare global {
       id: string;
       effectClass: AutumnLeavesWeatherEffect.AnyConstructor;
 
-      /** @remarks {@link AutumnLeavesWeatherEffect} overrides {@link ParticleEffect#getParticleEmitters}, the method that would throw on an empty config, to not take any parameters and always use */
+      /** @remarks {@link AutumnLeavesWeatherEffect} overrides {@link ParticleEffect#getParticleEmitters} -- the method that would throw when passed an empty config -- to not take any parameters and always use */
       config?: never;
     }
 
