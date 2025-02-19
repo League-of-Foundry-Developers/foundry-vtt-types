@@ -113,7 +113,7 @@ declare global {
       multisample: PIXI.MSAA_QUALITY;
       scaleMode: PIXI.SCALE_MODES;
       format: PIXI.FORMATS;
-      /** @privateRemarks Only exists on DarknessLevelContainer and is seemingly unused there */
+      /** @remarks Only exists on DarknessLevelContainer and is seemingly unused there */
       mipmap: PIXI.MIPMAP_MODES;
     }>;
 

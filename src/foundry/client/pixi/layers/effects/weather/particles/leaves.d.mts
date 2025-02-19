@@ -6,15 +6,44 @@ declare global {
    */
   class AutumnLeavesWeatherEffect extends ParticleEffect {
     /**
+     * @remarks `options` is completely
+     */
+    constructor(options?: PIXI.particles.EmitterConfigV3);
+    /**
      * @defaultValue `"WEATHER.AutumnLeaves"`
+     * @remarks A localization key. Appears to be unused in v12.331, probably vestigial, is identical to the
+     * `label` for the AmbienceConfig using this effect in `CONFIG.Canvas.weatherEffects`
      */
     static label: string;
 
     /**
      * Configuration for the particle emitter for falling leaves
+     * @remarks Not a complete config; the `frequency` and `pos` required keys are omitted. `frequency` is set
+     * up in `#getParticleEmitters`, but `pos` is not; it is erroneously marked as required in the interface,
+     * see https://github.com/pixijs-userland/particle-emitter/issues/219
      */
-    static LEAF_CONFIG: PIXI.particles.EmitterConfigV3;
+    static LEAF_CONFIG: AutumnLeavesWeatherEffect.LeafConfig;
 
+    /** @remarks This does not take a config paramater, unlike its parent class; uses `static LEAF_CONFIG` on this class instead */
     override getParticleEmitters(): PIXI.particles.Emitter[];
   }
+
+  namespace AutumnLeavesWeatherEffect {
+    interface Any extends AnyAutumnLeavesWeatherEffect {}
+    type AnyConstructor = typeof AnyAutumnLeavesWeatherEffect;
+
+    /** @internal */
+    interface _EmitterConfigOptionalProperties {
+      pos?: PIXI.particles.EmitterConfigV3["pos"];
+      frequency?: PIXI.particles.EmitterConfigV3["frequency"];
+    }
+
+    interface LeafConfig
+      extends Omit<PIXI.particles.EmitterConfigV3, keyof _EmitterConfigOptionalProperties>,
+        _EmitterConfigOptionalProperties {}
+  }
+}
+
+declare abstract class AnyAutumnLeavesWeatherEffect extends AutumnLeavesWeatherEffect {
+  constructor(arg0: never, ...args: never[]);
 }
