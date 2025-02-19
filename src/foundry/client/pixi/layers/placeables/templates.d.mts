@@ -30,11 +30,11 @@ declare global {
 
     static override documentName: "MeasuredTemplate";
 
-    override get hookName(): string;
+    override get hookName(): "TemplateLayer";
 
-    override _deactivate(): void;
+    protected override _deactivate(): void;
 
-    override _draw(options: HandleEmptyObject<TemplateLayer.DrawOptions>): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<TemplateLayer.DrawOptions>): Promise<void>;
 
     /**
      * Register game settings used by the TemplatesLayer
@@ -46,12 +46,11 @@ declare global {
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     // @ts-expect-error Foundry is changing the return type here from Promise<PlaceableObject[]> to Promise<MeasuredTemplate>
-    protected override _onMouseWheel(
-      event: WheelEvent,
-    ): ReturnType<MeasuredTemplate.ConfiguredInstance["rotate"]> | void;
+    protected override _onMouseWheel(event: WheelEvent): Promise<MeasuredTemplate.ConfiguredInstance> | void;
   }
 
   namespace TemplateLayer {
+    interface Any extends AnyTemplateLayer {}
     type AnyConstructor = typeof AnyTemplateLayer;
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}

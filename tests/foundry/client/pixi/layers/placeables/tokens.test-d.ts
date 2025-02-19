@@ -1,24 +1,79 @@
 import { expectTypeOf } from "vitest";
+import type Document from "../../../../../../src/foundry/common/abstract/document.d.mts";
 
+expectTypeOf(TokenLayer.documentName).toEqualTypeOf<"Token">();
 expectTypeOf(TokenLayer.instance).toEqualTypeOf<TokenLayer | undefined>();
+expectTypeOf(TokenLayer.layerOptions).toEqualTypeOf<TokenLayer.LayerOptions>();
+expectTypeOf(TokenLayer.layerOptions.name).toEqualTypeOf<"tokens">();
 expectTypeOf(TokenLayer.layerOptions.objectClass).toEqualTypeOf<typeof Token>();
 
 const layer = new TokenLayer();
+
 expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof Token>();
 expectTypeOf(layer.options).toEqualTypeOf<TokenLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"tokens">();
 
-// This is testing the `ArrayOverlaps` constraint.
+expectTypeOf(layer["_tabIndex"]).toEqualTypeOf<number | null>();
+expectTypeOf(layer.occlusionMode).toMatchTypeOf<foundry.CONST.OCCLUSION_MODES>();
+layer.occlusionMode = CONST.OCCLUSION_MODES.RADIAL;
+expectTypeOf(layer.hookName).toEqualTypeOf<"TokenLayer">();
+expectTypeOf(layer.hud).toEqualTypeOf<TokenHUD>();
+expectTypeOf(layer.ownedTokens).toEqualTypeOf<Token.ConfiguredInstance[]>();
+expectTypeOf(layer.getSnappedPoint({ x: 4, y: 5 })).toEqualTypeOf<Canvas.Point>();
 
-// _getMovableObjects asks for a `string[]`
-layer["_getMovableObjects"](["foo", "bar"]);
+expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
+expectTypeOf(layer["_tearDown"]({})).toEqualTypeOf<Promise<void>>();
+expectTypeOf(layer["_activate"]()).toBeVoid();
+expectTypeOf(layer["_deactivate"]()).toBeVoid();
 
-// @ts-expect-error - `1` is statically known not to be a `string[]`.
-layer["_getMovableObjects"](1);
+declare const someToken: Token.ConfiguredInstance;
+declare const somePoint: PIXI.Point;
+expectTypeOf(layer["_pasteObject"](someToken, somePoint)).toEqualTypeOf<Document.ConfiguredSourceForName<"Token">>();
+expectTypeOf(layer["_pasteObject"](someToken, somePoint, { hidden: true, snap: false })).toEqualTypeOf<
+  Document.ConfiguredSourceForName<"Token">
+>();
+expectTypeOf(layer["_pasteObject"](someToken, somePoint, { hidden: undefined, snap: null })).toEqualTypeOf<
+  Document.ConfiguredSourceForName<"Token">
+>();
 
-// This is allowed because both `["foo", "bar"]` and `1` are valid at runtime.
-// The only reason why `1` was disallowed above is because it's _never_ a `string[]` and therefore always is useless.
-layer["_getMovableObjects"](Math.random() > 0.5 ? ["foo", "bar"] : 1);
+expectTypeOf(layer["_getMovableObjects"]()).toEqualTypeOf<Token.ConfiguredInstance[]>();
+expectTypeOf(layer["_getMovableObjects"](null, null)).toEqualTypeOf<Token.ConfiguredInstance[]>();
+expectTypeOf(layer["_getMovableObjects"](["id1", "id2"], false)).toEqualTypeOf<Token.ConfiguredInstance[]>();
 
-// @ts-expect-error - A `string[]` would error at runtime so has to be disallowed.
-layer["_getMovableObjects"](Math.random() > 0.5 ? ["foo", "bar"] : [1, 2]);
+expectTypeOf(layer.targetObjects({ x: 0, y: 0, width: 500, height: 500 })).toBeNumber();
+expectTypeOf(layer.targetObjects({ x: 0, y: 0, width: 500, height: 500 }, { releaseOthers: null })).toBeNumber();
+expectTypeOf(layer.targetObjects({ x: 0, y: 0, width: 500, height: 500 }, { releaseOthers: true })).toBeNumber();
+
+expectTypeOf(layer.cycleTokens()).toEqualTypeOf<Token.ConfiguredInstance | null>();
+expectTypeOf(layer.cycleTokens(true, false)).toEqualTypeOf<Token.ConfiguredInstance | null>();
+expectTypeOf(layer.cycleTokens(undefined, null)).toEqualTypeOf<Token.ConfiguredInstance | null>();
+
+expectTypeOf(layer["_getCycleOrder"]()).toEqualTypeOf<Token.ConfiguredInstance[]>();
+expectTypeOf(layer.concludeAnimation()).toBeVoid();
+expectTypeOf(layer["_getOccludableTokens"]()).toEqualTypeOf<Token.ConfiguredInstance[]>();
+
+// `storeHistory` tests omitted due to current breakage of document `.toObject()` typing
+// The override does not change the signature, so they'd be redundant over the `PlaceablesLayer` tests in any case
+
+declare const someEvent: PIXI.FederatedEvent;
+declare const someWheelEvent: WheelEvent;
+declare const someDragEvent: DragEvent;
+expectTypeOf(
+  layer["_onDropActorData"](someDragEvent, {
+    type: "Actor",
+    uuid: "SomeUUID",
+    x: 20,
+    y: 30000,
+  }),
+).toEqualTypeOf<Promise<number | false | TokenDocument.ConfiguredInstance>>();
+expectTypeOf(layer["_onClickLeft"](someEvent)).toBeVoid();
+expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<Token.ConfiguredInstance[] | void>>();
+
+//deprecated since v12, until v14
+expectTypeOf(layer.gridPrecision).toEqualTypeOf<1>();
+declare const someCombat: Combat.ConfiguredInstance;
+expectTypeOf(layer.toggleCombat()).toEqualTypeOf<Promise<Combatant.ConfiguredInstance[]>>();
+expectTypeOf(layer.toggleCombat(null, null, { token: null })).toEqualTypeOf<Promise<Combatant.ConfiguredInstance[]>>();
+expectTypeOf(layer.toggleCombat(true, someCombat, { token: someToken })).toEqualTypeOf<
+  Promise<Combatant.ConfiguredInstance[]>
+>();

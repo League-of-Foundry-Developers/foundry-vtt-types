@@ -1021,7 +1021,93 @@ declare global {
       /** @defaultValue `4` */
       objectBorderThickness: number;
 
-      gridStyles: Record<string, CONFIG.Canvas.GridStyle>;
+      gridStyles: {
+        [key: string]: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.SolidLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        solidLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DashedLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 1
+         *   }
+         * }
+         * ```
+         */
+        dashedLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DottedLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        dottedLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.SquarePoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        squarePoints: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DiamondPoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        diamondPoints: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.RoundPoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        roundPoints: GridLayer.GridStyle;
+      };
 
       lightAnimations: CONFIG.Canvas.LightSourceAnimationConfig & {
         flame: {
@@ -1560,7 +1646,7 @@ declare global {
      * Available Weather Effects implementations
      */
     weatherEffects: {
-      [key: string]: CONFIG.WeatherAmbienceConfiguration;
+      [key: string]: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1575,7 +1661,7 @@ declare global {
        * }
        * ```
        */
-      leaves: CONFIG.WeatherAmbienceConfiguration;
+      leaves: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1603,7 +1689,7 @@ declare global {
        * }
        * ```
        */
-      rain: CONFIG.WeatherAmbienceConfiguration;
+      rain: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1644,7 +1730,7 @@ declare global {
        * }
        * ```
        */
-      rainStorm: CONFIG.WeatherAmbienceConfiguration;
+      rainStorm: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1669,7 +1755,7 @@ declare global {
        * }
        * ```
        */
-      fog: CONFIG.WeatherAmbienceConfiguration;
+      fog: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1695,7 +1781,7 @@ declare global {
        * }
        * ```
        * */
-      snow: CONFIG.WeatherAmbienceConfiguration;
+      snow: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1733,7 +1819,7 @@ declare global {
        * }
        * ```
        */
-      blizzard: CONFIG.WeatherAmbienceConfiguration;
+      blizzard: WeatherEffects.AmbienceConfiguration;
     };
 
     /**
@@ -2995,14 +3081,6 @@ declare global {
         group: Group;
       }
 
-      interface GridStyle {
-        label: string;
-        shaderClass: GridShader.AnyConstructor;
-        shaderOptions: {
-          style: number;
-        };
-      }
-
       /**
        * A light source animation configuration object.
        */
@@ -3037,23 +3115,6 @@ declare global {
           duration: number;
         }
       }
-    }
-
-    interface WeatherAmbienceConfiguration {
-      id: string;
-      label: string;
-      filter: {
-        enabled: boolean;
-        blendMode: PIXI.BLEND_MODES;
-      };
-      effects: WeatherEffectConfiguration;
-    }
-
-    interface WeatherEffectConfiguration {
-      id: string;
-      effectClass: ParticleEffect | WeatherShaderEffect.AnyConstructor;
-      blendMode: PIXI.BLEND_MODES;
-      config: Record<string, unknown>;
     }
 
     // The point of this interface is to be declaration merged into so you can override `DefaultSpecialStatusEffects` and remove existing keys. It's never used when empty.

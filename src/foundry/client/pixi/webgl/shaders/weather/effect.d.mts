@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
+import type { FixedInstanceType, IntentionalPartial } from "fvtt-types/utils";
 
 type QuadMeshClass = typeof QuadMesh;
 
@@ -26,12 +26,12 @@ declare global {
     /**
      * @param config - The config object to create the shader effect
      */
-    constructor(config: WeatherShaderEffect.WeatherShaderEffectConfig | undefined, shaderClass: ShaderClass);
+    constructor(config: WeatherShaderEffect.Configuration | undefined, shaderClass: ShaderClass);
 
     /**
      * Set shader parameters.
      */
-    configure(config?: WeatherShaderEffect.WeatherShaderEffectConfig): void;
+    configure(config?: WeatherShaderEffect.Configuration): void;
 
     /**
      * Begin animation
@@ -47,14 +47,14 @@ declare global {
      * Initialize the weather effect.
      * @param config - Config object.
      */
-    protected _initialize(config: WeatherShaderEffect.WeatherShaderEffectConfig): void;
+    protected _initialize(config: WeatherShaderEffect.Configuration): void;
   }
 
   namespace WeatherShaderEffect {
     interface Any extends AnyWeatherShaderEffect {}
     type AnyConstructor = typeof AnyWeatherShaderEffect;
 
-    type WeatherShaderEffectConfig = InexactPartial<AbstractBaseShader.Uniforms & WeatherShaderEffect["shader"]>;
+    type Configuration = IntentionalPartial<AbstractBaseShader.Uniforms & AbstractWeatherShader>;
   }
 }
 

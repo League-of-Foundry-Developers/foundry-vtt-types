@@ -45,25 +45,33 @@ declare global {
     interface Any extends AnySmoothNoise {}
     type AnyConstructor = typeof AnySmoothNoise;
 
-    interface ConstructorOptions {
+    /** @internal */
+    type _ConstructorOptions = InexactPartial<{
       /**
        * The generated noise will be on the range [0, amplitude].
        * @defaultValue `1`
+       * @remarks Can't be null because it only has a signature-provided default
        */
       amplitude: number;
 
       /**
        * An adjustment factor for the input x values which place them on an appropriate range.
        * @defaultValue `1`
+       * @remarks Can't be null because it only has a signature-provided default
        */
       scale: number;
 
       /**
        * The number of pre-generated random numbers to generate.
        * @defaultValue `256`
+       * @remarks Must be a power of 2 or construction throws.
+       * Can't be null because it only has a signature-provided default
        */
       maxReferences: number;
-    }
+    }>;
+
+    /** Options for the {@link SmoothNoise} constructor */
+    interface ConstructorOptions extends _ConstructorOptions {}
   }
 }
 

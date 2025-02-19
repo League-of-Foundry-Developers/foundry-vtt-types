@@ -55,16 +55,7 @@ declare global {
     /**
      * The flags declared here are required for all PlaceableObject subclasses to also support.
      */
-    static override RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<PlaceableObject.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshState"], alias: true }` */
-      refresh: RenderFlag<PlaceableObject.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshState: RenderFlag<PlaceableObject.RenderFlags>;
-    };
+    static override RENDER_FLAGS: PlaceableObject.RENDER_FLAGS;
 
     /**
      * The object that this object is a preview of if this object is a preview
@@ -574,12 +565,17 @@ declare global {
 
     type AnyConstructor = typeof AnyPlaceableObject;
 
-    interface RenderFlags {
-      redraw: boolean;
+    type RenderFlags = RenderFlagsMixin.ToFlags<RENDER_FLAGS>;
 
-      refresh: boolean;
+    interface RENDER_FLAGS extends RenderFlagsMixin.RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<PlaceableObject.RenderFlags>;
 
-      refreshState: boolean;
+      /** @defaultValue `{ propagate: ["refreshState"], alias: true }` */
+      refresh: RenderFlag<PlaceableObject.RenderFlags>;
+
+      /** @defaultValue `{}` */
+      refreshState: RenderFlag<PlaceableObject.RenderFlags>;
     }
 
     interface ControlOptions {
@@ -593,6 +589,8 @@ declare global {
      * @privateRemarks `PlaceableObject#_onDelete` is the only place in foundry code that calls `PlaceableObject#release` with any options at all,
      * where it passes `{trigger: false}`. This is passed on to `PlaceableObject#_onRelease`, which does not check for any options, including trigger.
      * `Drawing`, `Region`, and `Token` extend `_onRelease` and pass the options back to `super`, but do no further checks.
+     *
+     * Atro has confirmed it's vestigial and will be removed in v13
      * */
     interface ReleaseOptions {
       trigger?: boolean;

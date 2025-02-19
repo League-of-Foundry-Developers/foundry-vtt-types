@@ -15,7 +15,7 @@ declare global {
     /**
      * Track distinct positions which have already been highlighted
      */
-    positions: Set<string>;
+    positions: Set<GridHighlight.PositionString>;
 
     /**
      * Record a position that is highlighted and return whether or not it should be rendered
@@ -27,7 +27,17 @@ declare global {
 
     override clear(): this;
 
-    /** @privateRemarks Foundry handles this by passing `(...args)` directly to super, but it only takes the one */
     override destroy(options?: PIXI.IDestroyOptions | boolean): void;
   }
+
+  namespace GridHighlight {
+    interface Any extends AnyGridHightlight {}
+    type AnyConstructor = typeof AnyGridHightlight;
+
+    type PositionString = `${number},${number}`;
+  }
+}
+
+declare abstract class AnyGridHightlight extends GridHighlight {
+  constructor(arg0: never, ...args: never[]);
 }
