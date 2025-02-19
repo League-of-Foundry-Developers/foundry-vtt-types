@@ -83,7 +83,7 @@ declare global {
      * Add highlighting for a specific grid position to a named highlight graphic
      * @param name    - The name for the referenced highlight layer
      * @param options - Options for the grid position that should be highlighted
-     * @remarks Despite being an `={}` parameter, `options` is required as not providing `x` or `y` produces `NaN`s
+     * @remarks Despite being an `={}` parameter, `options` is required, as not providing `x` or `y` produces `NaN`s
      * or puts garbage data into the associated `GridHightlightLayer`, depending on the current grid type
      */
     highlightPosition(name: string, options: GridLayer.HighlightPositionOptions): void;
@@ -104,7 +104,7 @@ declare global {
      * @deprecated since v12, will be removed in v14
      * @remarks "GridLayer#grid is deprecated. Use canvas.grid instead."
      */
-    grid: Canvas["grid"];
+    get grid(): Canvas["grid"];
 
     /**
      * @deprecated since v12, will be removed in v14
@@ -155,7 +155,7 @@ declare global {
        */
       interval?: number,
       /** @remarks Unused */
-      options?: EmptyObject,
+      options?: EmptyObject | null,
     ): PIXI.IPointData;
 
     /**
@@ -166,7 +166,7 @@ declare global {
       origin: Canvas.Point,
       target: Canvas.Point,
       /** @remarks Unused */
-      options?: EmptyObject,
+      options?: EmptyObject | null,
     ): number;
   }
 
