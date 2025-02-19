@@ -130,14 +130,20 @@ declare global {
      * @param options     - Additional options
      * @returns The array of measured segments if measured
      */
-    measure(destination: Canvas.Point, options?: Ruler.MeasureOptions): Ruler.MeasurementSegment[] | void;
+    measure(
+      destination: Canvas.Point,
+      options?: Ruler.MeasureOptions, // not:null (destructured)
+    ): Ruler.MeasurementSegment[] | void;
 
     /**
      * Get the measurement origin.
      * @param point   - The waypoint
      * @param options - Additional options
      */
-    protected _getMeasurementOrigin(point: Canvas.Point, options?: Ruler.GetMeasurementOriginOptions): Canvas.Point;
+    protected _getMeasurementOrigin(
+      point: Canvas.Point,
+      options?: Ruler.GetMeasurementOriginOptions, // not:null (destructured)
+    ): Canvas.Point;
 
     /**
      * While measurement is in progress, update the destination to be the central point of the target grid space.
@@ -147,7 +153,7 @@ declare global {
      */
     protected _getMeasurementDestination(
       point: Canvas.Point,
-      options?: Ruler.GetMeasurementDestinationOptions,
+      options?: Ruler.GetMeasurementDestinationOptions, // not:null (destructured)
     ): Canvas.Point;
 
     /**
@@ -161,7 +167,10 @@ declare global {
      * @param origin  - The origin
      * @param options - Additional options
      */
-    protected _startMeasurement(origin: Canvas.Point, options?: Ruler.StartMeasurementOptions): void;
+    protected _startMeasurement(
+      origin: Canvas.Point,
+      options?: Ruler.StartMeasurementOptions, // not:null (destructured)
+    ): void;
 
     /**
      * Handle the conclusion of a Ruler measurement workflow
@@ -173,7 +182,10 @@ declare global {
      * @param point   - The waypoint
      * @param options - Additional options
      */
-    protected _addWaypoint(point: Canvas.Point, options?: Ruler.AddWaypointOptions): void;
+    protected _addWaypoint(
+      point: Canvas.Point,
+      options?: Ruler.AddWaypointOptions, // not:null (destructured)
+    ): void;
 
     /**
      * Handle the removal of a waypoint in the Ruler measurement path
@@ -262,7 +274,7 @@ declare global {
       token: Token.ConfiguredInstance,
       segment: Ruler.PartialSegmentForAnimating,
       destination: Canvas.Point,
-      updateOptions: Ruler.PartialTokenUpdateOptions,
+      updateOptions?: Ruler.PartialTokenUpdateOptions, // not:null (used as first param in mergeObject)
     ): Promise<void>;
 
     /**
