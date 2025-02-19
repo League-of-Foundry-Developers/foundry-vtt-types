@@ -105,9 +105,6 @@ declare global {
     interface Any extends AnyVisualEffectsMaskingFilter {}
     type AnyConstructor = typeof AnyVisualEffectsMaskingFilter;
 
-    type ConfiguredClass = CONFIG["Canvas"]["visualEffectsMaskingFilter"];
-    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
-
     type PostProcessModes = Array<keyof typeof VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES>;
 
     interface ConcreteCreateOptions {
