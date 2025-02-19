@@ -43,7 +43,7 @@ declare global {
     testVisibility(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
-      config?: DetectionMode.TestConfig,
+      config?: DetectionMode.TestConfig, // not:null (destructured)
     ): boolean;
 
     /**

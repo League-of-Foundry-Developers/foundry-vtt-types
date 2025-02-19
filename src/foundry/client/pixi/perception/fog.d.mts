@@ -44,20 +44,20 @@ declare global {
     /**
      * Does the currently viewed Scene support Token field of vision?
      */
-    //TODO: make `Scene.ConfiguredInstance["tokenVision"]` or equivalent when docsv2 is done
+    //TODO: make `Scene.Implementation["tokenVision"]` when docsv2 is done
     get tokenVision(): boolean;
 
     /**
      * Does the currently viewed Scene support fog of war exploration?
      */
-    //TODO: make `Scene.ConfiguredInstance["fog"]["exploration"]` or equivalent when docsv2 is done
+    //TODO: make `Scene.Implementation["fog"]["exploration"]` when docsv2 is done
     get fogExploration(): boolean;
 
     /**
      * Create the exploration display object with or without a provided texture.
      * @privateRemarks Despite Foundry only typing this as returning `DisplayObject` in 12.331, it always returns a `SpriteMesh`
      */
-    protected _createExplorationObject(tex?: PIXI.Texture | PIXI.RenderTexture): SpriteMesh;
+    protected _createExplorationObject(tex?: PIXI.Texture | PIXI.RenderTexture | null): SpriteMesh;
 
     /**
      * Initialize fog of war - resetting it when switching scenes or re-drawing the canvas
@@ -125,8 +125,10 @@ declare global {
     /**
      * @deprecated since v11, will be removed in v13
      * @remarks "update is obsolete and always returns true. The fog exploration does not record position anymore."
+     *
+     * Both parameters are unused
      */
-    update(source: any, force?: boolean): true;
+    update(source: any, force?: boolean | null): true;
 
     /**
      * @deprecated since v11, will be removed in v13

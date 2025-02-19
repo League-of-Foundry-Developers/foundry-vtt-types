@@ -131,7 +131,10 @@ declare global {
      * @param options - Additional options which modify visibility testing.
      * @returns Whether the point is currently visible.
      */
-    testVisibility(point: Canvas.Point, options?: CanvasVisibility.TestVisibilityOptions): boolean;
+    testVisibility(
+      point: Canvas.Point,
+      options?: CanvasVisibility.TestVisibilityOptions, // not:null (destructured when passed to _createVisibilityTestConfig)
+    ): boolean;
 
     /**
      * Create the visibility test config.
@@ -141,7 +144,7 @@ declare global {
      */
     protected _createVisibilityTestConfig(
       point: Canvas.Point,
-      options?: CanvasVisibility.CreateTestConfigOptions,
+      options?: CanvasVisibility.CreateTestConfigOptions, // not:null (destructured)
     ): CanvasVisibility.TestConfig;
 
     /**

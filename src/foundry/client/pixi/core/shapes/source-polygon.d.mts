@@ -91,7 +91,10 @@ declare global {
      * @param intersectionOptions - Options passed to the shape intersection method
      * @returns A new constrained polygon
      */
-    applyConstraint(constraint: PIXI.Polygon, intersectionOptions?: PIXI.Polygon.IntersectPolygonOptions): this;
+    applyConstraint(
+      constraint: PIXI.Polygon,
+      intersectionOptions?: PIXI.Polygon.IntersectPolygonOptions, // not:null (property set on it via `??=`)
+    ): this;
     applyConstraint(constraint: PIXI.Circle, intersectionOptions?: PIXI.Circle.WACIntersectPolygonOptions): this;
     applyConstraint(constraint: PIXI.Circle, intersectionOptions?: PIXI.Circle.ClipperLibIntersectPolygonOptions): this;
     applyConstraint(constraint: PIXI.Rectangle, intersectionOptions?: PIXI.Rectangle.WACIntersectPolygonOptions): this;
@@ -116,14 +119,16 @@ declare global {
      * @param mode        - The collision mode to test: "any", "all", or "closest"
      *                      (default: "all")
      * @returns The collision result depends on the mode of the test:
-     *          * any: returns a boolean for whether any collision occurred
-     *          * all: returns a sorted array of PolygonVertex instances
-     *          * closest: returns a PolygonVertex instance or null
+     *          - any: returns a boolean for whether any collision occurred
+     *          - all: returns a sorted array of PolygonVertex instances
+     *          - closest: returns a PolygonVertex instance or null
+     * @remarks Despite being an `={}` parameter, `options` is required as it must be a valid
+     * `PointSourcePolygon.Config`, which has a required property (`type`)
      */
     static testCollision<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>(
       origin: Canvas.Point,
       destination: Canvas.Point,
-      { mode, ...config }: PointSourcePolygon.TestCollisionConfig<Mode>,
+      options: PointSourcePolygon.TestCollisionConfig<Mode>,
     ): PointSourcePolygon.TestCollision<Coalesce<Mode, "all">>;
 
     /**

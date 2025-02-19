@@ -43,12 +43,13 @@ declare class PointLightSource<
 }
 
 declare namespace PointLightSource {
+  interface Any extends AnyPointLightSource {}
   type AnyConstructor = typeof AnyPointLightSource;
 
   type SourceData = PointEffectSourceMixin.SourceData & BaseLightSource.SourceData;
 }
 
-declare abstract class AnyPointLightSource extends PointLightSource {
+declare abstract class AnyPointLightSource extends PointLightSource<PointLightSource.SourceData, PointSourcePolygon> {
   constructor(arg0: never, ...args: never[]);
 }
 
