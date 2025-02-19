@@ -31,7 +31,7 @@ declare class PointLightSource<
    * @param config - The visibility test configuration
    * @returns Is the target object visible to this source?
    */
-  testVisibility(config?: CanvasVisibility.TestConfig): boolean;
+  testVisibility(config?: CanvasVisibilityTestConfig): boolean;
 
   /**
    * Can this LightSource theoretically detect a certain object based on its properties?
@@ -43,13 +43,12 @@ declare class PointLightSource<
 }
 
 declare namespace PointLightSource {
-  interface Any extends AnyPointLightSource {}
   type AnyConstructor = typeof AnyPointLightSource;
 
   type SourceData = PointEffectSourceMixin.SourceData & BaseLightSource.SourceData;
 }
 
-declare abstract class AnyPointLightSource extends PointLightSource<PointLightSource.SourceData, PointSourcePolygon> {
+declare abstract class AnyPointLightSource extends PointLightSource {
   constructor(arg0: never, ...args: never[]);
 }
 

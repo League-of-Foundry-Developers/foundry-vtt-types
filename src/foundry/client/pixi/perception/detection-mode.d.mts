@@ -1,9 +1,24 @@
-import type { Brand, NullishProps } from "fvtt-types/utils";
+import type { InexactPartial, ValueOf } from "fvtt-types/utils";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { TokenDetectionMode } from "../../../common/documents/_types.d.mts";
-import type { DataSchema } from "../../../common/data/fields.d.mts";
+
+type DataSchema = foundry.data.fields.DataSchema;
 
 declare global {
+  namespace DetectionMode {
+    interface Schema extends DataSchema {
+      id: fields.StringField<{ blank: false }>;
+      label: fields.StringField<{ blank: false }>;
+      tokenConfig: fields.BooleanField<{ initial: true }>;
+      walls: fields.BooleanField<{ initial: true }>;
+      angle: fields.BooleanField<{ initial: true }>;
+      type: fields.NumberField<{
+        initial: typeof DetectionMode.DETECTION_TYPES.SIGHT;
+        choices: ValueOf<typeof DetectionMode.DETECTION_TYPES>[];
+      }>;
+    }
+  }
+
   /**
    * A Detection Mode which can be associated with any kind of sense/vision/perception.
    * A token could have multiple detection modes.
@@ -24,14 +39,22 @@ declare global {
     /**
      * The type of the detection mode.
      * @see CONST.WALL_RESTRICTION_TYPES
-     * @remarks Set via `Object.defineProperty` with a frozen object, so `readonly` is justified both here and for the interface properties
      */
-    static readonly DETECTION_TYPES: DetectionMode.DetectionTypes;
+    static DETECTION_TYPES: {
+      /** Sight, and anything depending on light perception */
+      SIGHT: 0;
+      /** What you can hear. Includes echolocation for bats per example */
+      SOUND: 1;
+      /** This is mostly a sense for touch and vibration, like tremorsense, movement detection, etc. */
+      MOVE: 2;
+      /** Can't fit in other types (smell, life sense, trans-dimensional sense, sense of humor...) */
+      OTHER: 3;
+    };
 
     /**
      * The identifier of the basic sight detection mode.
      */
-    static readonly BASIC_MODE_ID: "basicSight";
+    static BASIC_MODE_ID: "basicSight";
 
     /**
      * Test visibility of a target object or array of points for a specific vision source.
@@ -43,7 +66,7 @@ declare global {
     testVisibility(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
-      config?: DetectionMode.TestConfig,
+      { object, tests }: InexactPartial<CanvasVisibilityTestConfig>,
     ): boolean;
 
     /**
@@ -53,10 +76,7 @@ declare global {
      * @param target       - The target object being tested
      * @returns Can the target object theoretically be detected by this vision source?
      */
-    protected _canDetect(
-      visionSource: foundry.canvas.sources.PointVisionSource.Any,
-      target: CanvasVisibility.TestObject,
-    ): boolean;
+    protected _canDetect(visionSource: foundry.canvas.sources.PointVisionSource.Any, target: PlaceableObject): boolean;
 
     /**
      * Evaluate a single test point to confirm whether it is visible.
@@ -69,8 +89,8 @@ declare global {
     protected _testPoint(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
-      target: CanvasVisibility.TestObject,
-      test: CanvasVisibility.Test,
+      target: PlaceableObject,
+      test: CanvasVisibilityTest,
     ): boolean;
 
     /**
@@ -86,8 +106,8 @@ declare global {
     protected _testLOS(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
-      target: CanvasVisibility.TestObject,
-      test: CanvasVisibility.Test,
+      target: PlaceableObject,
+      test: CanvasVisibilityTest,
     ): boolean;
 
     /**
@@ -101,8 +121,8 @@ declare global {
     protected _testAngle(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
-      target: CanvasVisibility.TestObject,
-      test: CanvasVisibility.Test,
+      target: PlaceableObject,
+      test: CanvasVisibilityTest,
     ): boolean;
 
     /**
@@ -116,52 +136,9 @@ declare global {
     protected _testRange(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
-      target: CanvasVisibility.TestObject,
-      test: CanvasVisibility.Test,
+      target: PlaceableObject,
+      test: CanvasVisibilityTest,
     ): boolean;
-  }
-
-  namespace DetectionMode {
-    interface Any extends AnyDetectionMode {}
-    type AnyConstructor = typeof AnyDetectionMode;
-
-    interface Schema extends DataSchema {
-      id: fields.StringField<{ blank: false }>;
-
-      label: fields.StringField<{ blank: false }>;
-
-      /** If this DM is available in Token Config UI */
-      tokenConfig: fields.BooleanField<{ initial: true }>;
-
-      /** If this DM is constrained by walls */
-      walls: fields.BooleanField<{ initial: true }>;
-
-      /** If this DM is constrained by the vision angle */
-      angle: fields.BooleanField<{ initial: true }>;
-
-      type: fields.NumberField<{
-        initial: DetectionMode.DETECTION_TYPES;
-        choices: DetectionMode.DETECTION_TYPES[];
-      }>;
-    }
-
-    /** @see CanvasVisibility.TestConfig */
-    interface TestConfig
-      extends CanvasVisibility._TestConfigRequired,
-        NullishProps<CanvasVisibility._TestConfigOptional> {}
-
-    type DETECTION_TYPES = Brand<number, "DetectionMode.DETECTION_TYPES">;
-
-    interface DetectionTypes {
-      /** Sight, and anything depending on light perception */
-      readonly SIGHT: 0 & DETECTION_TYPES;
-      /** What you can hear. Includes echolocation for bats per example */
-      readonly SOUND: 1 & DETECTION_TYPES;
-      /** This is mostly a sense for touch and vibration, like tremorsense, movement detection, etc. */
-      readonly MOVE: 2 & DETECTION_TYPES;
-      /** Can't fit in other types (smell, life sense, trans-dimensional sense, sense of humor...) */
-      readonly OTHER: 3 & DETECTION_TYPES;
-    }
   }
 
   /**
@@ -172,20 +149,15 @@ declare global {
   class DetectionModeLightPerception extends DetectionMode {
     protected override _canDetect(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
-      target: CanvasVisibility.TestObject,
+      target: PlaceableObject,
     ): boolean;
 
     protected override _testPoint(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
-      target: CanvasVisibility.TestObject,
-      test: CanvasVisibility.Test,
+      target: PlaceableObject,
+      test: CanvasVisibilityTest,
     ): boolean;
-  }
-
-  namespace DetectionModeLightPerception {
-    interface Any extends AnyDetectionModeLightPerception {}
-    type AnyConstructor = typeof AnyDetectionModeLightPerception;
   }
 
   /**
@@ -196,13 +168,8 @@ declare global {
   class DetectionModeBasicSight extends DetectionMode {
     protected override _canDetect(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
-      target: CanvasVisibility.TestObject,
+      target: PlaceableObject,
     ): boolean;
-  }
-
-  namespace DetectionModeBasicSight {
-    interface Any extends AnyDetectionModeBasicSight {}
-    type AnyConstructor = typeof AnyDetectionModeBasicSight;
   }
 
   /**
@@ -212,34 +179,24 @@ declare global {
    * - The "See" version needs sight and is affected by blindness
    */
   class DetectionModeInvisibility extends DetectionMode {
-    static override getDetectionFilter(): PIXI.Filter;
+    static override getDetectionFilter(): PIXI.Filter | undefined;
 
     protected override _canDetect(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
-      target: CanvasVisibility.TestObject,
+      target: PlaceableObject,
     ): boolean;
-  }
-
-  namespace DetectionModeInvisibility {
-    interface Any extends AnyDetectionModeInvisibility {}
-    type AnyConstructor = typeof AnyDetectionModeInvisibility;
   }
 
   /**
    * Detection mode that see creatures in contact with the ground.
    */
   class DetectionModeTremor extends DetectionMode {
-    static override getDetectionFilter(): PIXI.Filter;
+    static override getDetectionFilter(): PIXI.Filter | undefined;
 
     protected override _canDetect(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
-      target: CanvasVisibility.TestObject,
+      target: PlaceableObject,
     ): boolean;
-  }
-
-  namespace DetectionModeTremor {
-    interface Any extends AnyDetectionModeTremor {}
-    type AnyConstructor = typeof AnyDetectionModeTremor;
   }
 
   /**
@@ -247,40 +204,11 @@ declare global {
    * If not constrained by walls, see everything within the range.
    */
   class DetectionModeAll extends DetectionMode {
-    static override getDetectionFilter(): PIXI.Filter;
+    static override getDetectionFilter(): PIXI.Filter | undefined;
 
     protected override _canDetect(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
-      target: CanvasVisibility.TestObject,
+      target: PlaceableObject,
     ): boolean;
   }
-
-  namespace DetectionModeAll {
-    interface Any extends AnyDetectionModeAll {}
-    type AnyConstructor = typeof AnyDetectionModeAll;
-  }
-}
-
-declare abstract class AnyDetectionMode extends DetectionMode {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyDetectionModeLightPerception extends DetectionModeLightPerception {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyDetectionModeBasicSight extends DetectionModeBasicSight {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyDetectionModeInvisibility extends DetectionModeInvisibility {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyDetectionModeTremor extends DetectionModeTremor {
-  constructor(arg0: never, ...args: never[]);
-}
-
-declare abstract class AnyDetectionModeAll extends DetectionModeAll {
-  constructor(arg0: never, ...args: never[]);
 }

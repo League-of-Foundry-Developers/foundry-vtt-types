@@ -1,4 +1,4 @@
-import type { FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { DisplayObject } from "pixi.js";
 
 declare global {
   /**
@@ -9,26 +9,23 @@ declare global {
      * The FogExploration document which applies to this canvas view
      * @defaultValue `null`
      */
-    exploration: FogExploration.ConfiguredInstance | null;
+    exploration: FogExploration | null;
 
     /**
      * Track whether we have pending fog updates which have not yet been saved to the database
      * @defaultValue `false`
-     * @remarks Foundry marked `@internal`
      */
-    protected _updated: boolean;
+    _updated: boolean;
 
     /**
      * Texture extractor
-     * @remarks Only `undefined` before first `#initialize()`ation. Set to `null` if `TextureExtractor` creation fails, and will not retry from that state.
      */
-    get extractor(): TextureExtractor | undefined | null;
+    get extractor(): TextureExtractor;
 
     /**
      * Define the number of fog refresh needed before the fog texture is extracted and pushed to the server.
-     * @defaultValue `70`
      */
-    static COMMIT_THRESHOLD: number;
+    static COMMIT_THRESHOLD: 70;
 
     /**
      * The exploration SpriteMesh which holds the fog exploration texture.
@@ -37,27 +34,23 @@ declare global {
 
     /**
      * The configured options used for the saved fog-of-war texture.
-     * @remarks Only `undefined` prior to the first time the canvas visibility layer is `#draw()`n
      */
-    get textureConfiguration(): CanvasVisibility["textureConfiguration"];
+    get textureConfiguration(): VisibilityTextureConfiguration;
 
     /**
      * Does the currently viewed Scene support Token field of vision?
      */
-    //TODO: make `Scene.ConfiguredInstance["tokenVision"]` or equivalent when docsv2 is done
     get tokenVision(): boolean;
 
     /**
      * Does the currently viewed Scene support fog of war exploration?
      */
-    //TODO: make `Scene.ConfiguredInstance["fog"]["exploration"]` or equivalent when docsv2 is done
     get fogExploration(): boolean;
 
     /**
      * Create the exploration display object with or without a provided texture.
-     * @privateRemarks Despite Foundry only typing this as returning `DisplayObject` in 12.331, it always returns a `SpriteMesh`
      */
-    protected _createExplorationObject(tex?: PIXI.Texture | PIXI.RenderTexture): SpriteMesh;
+    protected _createExplorationObject(tex?: PIXI.Texture | PIXI.RenderTexture): DisplayObject;
 
     /**
      * Initialize fog of war - resetting it when switching scenes or re-drawing the canvas
@@ -102,47 +95,42 @@ declare global {
      * @param base64Image - The extracted base64 image data
      * @returns Exploration data to update
      */
-    protected _prepareFogUpdateData(base64Image: string): FogExploration.UpdateData;
+    protected _prepareFogUpdateData(base64Image: string): foundry.documents.BaseFogExploration.UpdateData;
 
     /**
      * If fog of war data is reset from the server, deactivate the current fog and initialize the exploration.
-     * @remarks Foundry marked `@internal`, called externally in the `fogReset` socket handler
+     * @internal
      */
-    protected _handleReset(): Promise<void>;
+    _handleReset(): Promise<void>;
 
     /**
      * @deprecated since v11, will be removed in v13
-     * @remarks "pending is deprecated and redirected to the exploration container"
+     * @remarks pending is deprecated and redirected to the exploration container
      */
     get pending(): CanvasVisibility["explored"];
 
     /**
      * @deprecated since v11, will be removed in v13
-     * @remarks "revealed is deprecated and redirected to the exploration container"
+     * @remarks revealed is deprecated and redirected to the exploration container
      */
     get revealed(): CanvasVisibility["explored"];
 
     /**
      * @deprecated since v11, will be removed in v13
-     * @remarks "update is obsolete and always returns true. The fog exploration does not record position anymore."
+     * @remarks update is obsolete and always returns true. The fog exploration does not record position anymore.
      */
-    update(source: any, force?: boolean): true;
+    update(source: any, force: boolean): true;
 
     /**
      * @deprecated since v11, will be removed in v13
-     * @remarks "resolution is deprecated and redirected to CanvasVisibility#textureConfiguration"
-     *
-     * Probable Bug Note: Returns the entire `textureConfiguration` object, not just its `resolution` property
+     * @remarks resolution is deprecated and redirected to CanvasVisibility#textureConfiguration
      */
     get resolution(): CanvasVisibility["textureConfiguration"];
   }
 
   namespace FogManager {
-    interface Any extends AnyFogManager {}
+    type Any = AnyFogManager;
     type AnyConstructor = typeof AnyFogManager;
-
-    type ConfiguredClass = CONFIG["Canvas"]["fogManager"];
-    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
   }
 }
 
