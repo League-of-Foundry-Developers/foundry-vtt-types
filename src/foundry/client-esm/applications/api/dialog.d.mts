@@ -117,7 +117,7 @@ declare class DialogV2<
    */
   static confirm<Options extends DialogV2.ConfirmConfig<unknown, unknown>>(
     config?: Options,
-  ): Promise<ConfirmReturnType<Options> | ButtonReturnType<Options> | DismissType<Options>>;
+  ): Promise<DialogV2.ConfirmReturn<Options>>;
 
   /**
    * A utility helper to generate a dialog with a single confirmation button.
@@ -127,7 +127,7 @@ declare class DialogV2<
    */
   static prompt<Options extends DialogV2.PromptConfig<unknown>>(
     config?: Options,
-  ): Promise<PromptReturnType<Options> | ButtonReturnType<Options> | DismissType<Options>>;
+  ): Promise<DialogV2.PromptReturn<Options>>;
 
   /**
    * Spawn a dialog and wait for it to be dismissed or submitted.
@@ -136,9 +136,7 @@ declare class DialogV2<
    *          dialog was dismissed, and rejectClose is false, the Promise
    *          resolves to null.
    */
-  static wait<Options extends DialogV2.WaitOptions>(
-    config?: Options,
-  ): Promise<ButtonReturnType<Options> | DismissType<Options>>;
+  static wait<Options extends DialogV2.WaitOptions>(config?: Options): Promise<DialogV2.WaitReturn<Options>>;
 
   /**
    * Present an asynchronous Dialog query to a specific User for response.
@@ -156,7 +154,7 @@ declare class DialogV2<
     user: User.ConfiguredInstance | string,
     type: T,
     config?: Options,
-  ): Promise<(T extends "confirm" ? boolean : string) | DismissType<Options>>;
+  ): Promise<(T extends "confirm" ? boolean : string) | DialogV2.Internal.DismissType<Options>>;
 
   /**
    * The dialog query handler.
@@ -164,7 +162,7 @@ declare class DialogV2<
   static _handleQuery<T extends DialogV2.Type, Options extends DeepPartial<DialogV2.QueryConfig<T>>>(config: {
     type: T;
     config: Options;
-  }): Promise<(T extends "confirm" ? boolean : string) | DismissType<Options>>;
+  }): Promise<(T extends "confirm" ? boolean : string) | DialogV2.Internal.DismissType<Options>>;
 }
 
 declare namespace DialogV2 {
@@ -270,7 +268,6 @@ declare namespace DialogV2 {
     user?: User.ConfiguredInstance;
   }
 
-  // Not used by DialogV2.confirm for type inference reasons
   interface ConfirmConfig<YesReturn, NoReturn> extends WaitOptions {
     /** Options to overwrite the default yes button configuration. */
     yes?: InexactPartial<Button<YesReturn>> | null | undefined;
@@ -279,7 +276,6 @@ declare namespace DialogV2 {
     no?: InexactPartial<Button<NoReturn>> | null | undefined;
   }
 
-  // Not used by DialogV2.prompt for type inference reasons
   interface PromptConfig<OKReturn> extends WaitOptions {
     /** Options to overwrite the default confirmation button configuration. */
     ok?: InexactPartial<Button<OKReturn>> | null | undefined;
@@ -288,7 +284,7 @@ declare namespace DialogV2 {
   type Type = "prompt" | "confirm" | "wait";
 
   /**
-   * @remarks Query gets passed through a socket which means it can't take a callback function
+   * @remarks Query gets passed through a socket which means it can't take a callback function on its buttons
    */
   type QueryConfig<T extends Type> = Omit<
     | (T extends "wait" ? WaitOptions : never)
@@ -301,30 +297,40 @@ declare namespace DialogV2 {
      */
     buttons?: NoCallbackButton[];
   };
+
+  type WaitReturn<Options extends WaitOptions> = Internal.ButtonReturnType<Options> | Internal.DismissType<Options>;
+
+  type ConfirmReturn<Options extends ConfirmConfig<unknown, unknown>> =
+    | Internal.ConfirmReturnType<Options>
+    | WaitReturn<Options>;
+
+  type PromptReturn<Options extends PromptConfig<unknown>> = Internal.PromptReturnType<Options> | WaitReturn<Options>;
+
+  namespace Internal {
+    type DismissType<Options extends { rejectClose?: boolean | null | undefined }> = Options["rejectClose"] extends true
+      ? never
+      : null;
+
+    type ButtonReturnType<Options extends { buttons?: DialogV2.Button<unknown>[] }> =
+      // Two cases - one for where all buttons have a defined callback, the other where they don't
+      Options["buttons"] extends ReadonlyArray<{ callback: DialogV2.ButtonCallback<infer Callback> }>
+        ? Callback extends undefined
+          ? string
+          : Callback
+        : Options["buttons"] extends ReadonlyArray<DialogV2.Button<infer Callback>>
+          ? Callback | string
+          : never;
+
+    type ConfirmReturnType<Options extends DialogV2.ConfirmConfig<unknown, unknown>> =
+      | (Options["yes"] extends { callback: DialogV2.ButtonCallback<infer YesReturn> } ? YesReturn : true)
+      | (Options["no"] extends { callback: DialogV2.ButtonCallback<infer NoReturn> } ? NoReturn : false);
+
+    type PromptReturnType<Options extends DialogV2.PromptConfig<unknown>> = Options["ok"] extends {
+      callback: DialogV2.ButtonCallback<infer OKReturn>;
+    }
+      ? OKReturn
+      : string;
+  }
 }
-
-type DismissType<Options extends { rejectClose?: boolean | null | undefined }> = Options["rejectClose"] extends true
-  ? never
-  : null;
-
-type ButtonReturnType<Options extends { buttons?: DialogV2.Button<unknown>[] }> =
-  // Two cases - one for where all buttons have a defined callback, the other where they don't
-  Options["buttons"] extends ReadonlyArray<{ callback: DialogV2.ButtonCallback<infer Callback> }>
-    ? Callback extends undefined
-      ? string
-      : Callback
-    : Options["buttons"] extends ReadonlyArray<DialogV2.Button<infer Callback>>
-      ? Callback | string
-      : never;
-
-type ConfirmReturnType<Options extends DialogV2.ConfirmConfig<unknown, unknown>> =
-  | (Options["yes"] extends { callback: DialogV2.ButtonCallback<infer YesReturn> } ? YesReturn : true)
-  | (Options["no"] extends { callback: DialogV2.ButtonCallback<infer NoReturn> } ? NoReturn : false);
-
-type PromptReturnType<Options extends DialogV2.PromptConfig<unknown>> = Options["ok"] extends {
-  callback: DialogV2.ButtonCallback<infer OKReturn>;
-}
-  ? OKReturn
-  : string;
 
 export default DialogV2;
