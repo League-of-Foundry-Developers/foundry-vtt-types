@@ -1,4 +1,4 @@
-import type { Mixin } from "fvtt-types/utils";
+import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare class PrimaryCanvasObject {
@@ -174,7 +174,7 @@ declare global {
 
   namespace PrimaryCanvasObjectMixin {
     type AnyMixedConstructor = ReturnType<typeof PrimaryCanvasObjectMixin<PrimaryCanvasObjectMixin.BaseClass>>;
-    interface AnyMixed extends AnyMixedConstructor {}
+    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = PIXI.Container.AnyConstructor;
   }
@@ -191,7 +191,7 @@ declare global {
 
   namespace CanvasTransformMixin {
     type AnyMixedConstructor = ReturnType<typeof CanvasTransformMixin<CanvasTransformMixin.BaseClass>>;
-    interface AnyMixed extends AnyMixedConstructor {}
+    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = PIXI.Container.AnyConstructor;
   }

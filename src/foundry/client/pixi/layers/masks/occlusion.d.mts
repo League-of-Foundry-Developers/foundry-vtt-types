@@ -1,4 +1,4 @@
-import type { FixedInstanceType } from "fvtt-types/utils";
+export {};
 
 declare global {
   /**
@@ -18,21 +18,18 @@ declare global {
      * }
      * ```
      */
-    static override textureConfiguration: {
-      scaleMode: PIXI.SCALE_MODES;
-      format: PIXI.FORMATS;
-      multisample: PIXI.MSAA_QUALITY;
-    };
+    static override textureConfiguration: CachedContainer.TextureConfiguration;
 
     /**
      * Graphics in which token radial and vision occlusion shapes are drawn.
+     * @remarks The `blendMode` of this `LegacyGraphics` is set to `PIXI.BLEND_MODES.MIN_ALL`
      */
     tokens: PIXI.LegacyGraphics;
 
     /**
      * @defaultValue `[0, 1, 1, 1]`
      */
-    override clearColor: [r: number, g: number, b: number, a: number];
+    override clearColor: Color.RGBAColorVector;
 
     override autoRender: boolean;
 
@@ -40,6 +37,9 @@ declare global {
      * Is vision occlusion active?
      */
     get vision(): boolean;
+
+    /** @remarks No setter is provided */
+    set vision(value: never);
 
     /**
      * Clear the occlusion mask.
@@ -78,14 +78,21 @@ declare global {
      * @param tokens - The set of currently controlled Token objects
      * @returns The PCO objects which should be currently occluded
      */
-    protected _identifyOccludedObjects(
-      tokens: Token.Object[],
-    ): Set<FixedInstanceType<ReturnType<typeof PrimaryCanvasObjectMixin>>>;
+    protected _identifyOccludedObjects(tokens: Token.Object[]): Set<PrimaryCanvasObjectMixin.AnyMixed>;
 
     /**
      * @deprecated since v11, will be removed in v13
-     * @remarks `"CanvasOcclusionMask#_identifyOccludedTiles has been deprecated in favor of CanvasOcclusionMask#_identifyOccludedObjects."`
+     * @remarks "CanvasOcclusionMask#_identifyOccludedTiles has been deprecated in favor of CanvasOcclusionMask#_identifyOccludedObjects."
      */
-    _identifyOccludedTiles(): Set<typeof PrimaryCanvasObjectMixin>;
+    _identifyOccludedTiles(): Set<PrimaryCanvasObjectMixin.AnyMixed>;
   }
+
+  namespace CanvasOcclusionMask {
+    interface Any extends AnyCanvasOcclusionMask {}
+    type AnyConstructor = typeof AnyCanvasOcclusionMask;
+  }
+}
+
+declare abstract class AnyCanvasOcclusionMask extends CanvasOcclusionMask {
+  constructor(arg0: never, ...args: never[]);
 }

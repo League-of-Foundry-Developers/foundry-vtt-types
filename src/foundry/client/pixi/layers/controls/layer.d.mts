@@ -3,6 +3,7 @@ import type {
   InexactPartial,
   NullishProps,
   RemoveIndexSignatures,
+  HandleEmptyObject,
 } from "../../../../../utils/index.d.mts";
 import type { LineIntersection } from "../../../../common/utils/geometry.d.mts";
 
@@ -15,10 +16,7 @@ declare global {
    * 2) Ruler measurement
    * 3) Map pings
    */
-  class ControlsLayer<
-    DrawOptions extends ControlsLayer.DrawOptions = ControlsLayer.DrawOptions,
-    TearDownOptions extends ControlsLayer.TearDownOptions = ControlsLayer.TearDownOptions,
-  > extends InteractionLayer<DrawOptions, TearDownOptions> {
+  class ControlsLayer extends InteractionLayer {
     constructor();
 
     /**
@@ -105,9 +103,9 @@ declare global {
      */
     getRulerForUser(userId: string): Ruler | null;
 
-    override _draw(options?: DrawOptions): Promise<void>;
+    override _draw(options: HandleEmptyObject<ControlsLayer.DrawOptions>): Promise<void>;
 
-    override _tearDown(options?: TearDownOptions): Promise<void>;
+    override _tearDown(options: HandleEmptyObject<ControlsLayer.TearDownOptions>): Promise<void>;
 
     /**
      * Draw the cursors container

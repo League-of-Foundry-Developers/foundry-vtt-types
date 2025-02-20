@@ -1,4 +1,4 @@
-import type { Mixin } from "fvtt-types/utils";
+import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
 
 declare class DirectoryApplication {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -276,7 +276,7 @@ declare global {
 
   namespace DirectoryApplicationMixin {
     type AnyMixedConstructor = ReturnType<typeof DirectoryApplicationMixin<BaseClass>>;
-    interface AnyMixed extends AnyMixedConstructor {}
+    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = Application.AnyConstructor;
   }

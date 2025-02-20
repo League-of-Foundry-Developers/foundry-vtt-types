@@ -10,7 +10,8 @@ declare class AmbientLightConfig<
   RenderContext extends AnyObject = InterfaceToObject<AmbientLightConfig.RenderContext>,
   Configuration extends
     DocumentSheetV2.Configuration<AmbientLightDocument.Implementation> = DocumentSheetV2.Configuration<AmbientLightDocument.Implementation>,
-  RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
+  RenderOptions extends
+    HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
   AmbientLightDocument.Implementation,
   RenderContext,
@@ -36,6 +37,7 @@ declare class AmbientLightConfig<
     options: DeepPartial<RenderOptions>,
   ): Promise<void>;
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   protected override _onClose(options: DeepPartial<RenderOptions>): void;

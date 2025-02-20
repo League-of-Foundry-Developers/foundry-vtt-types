@@ -534,7 +534,7 @@ declare global {
     get sourceName(): string;
 
     /**
-     * Apply EffectChangeData to a field within a DataModel.
+     * Apply ActiveEffect.EffectChangeData to a field within a DataModel.
      * @param model  - The model instance.
      * @param change - The change to apply.
      * @param field  - The field. If not supplied, it will be retrieved from the supplied model.
@@ -550,7 +550,7 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    apply(actor: Actor.Implementation, change: ActiveEffect.EffectChangeData): unknown;
+    apply(actor: Actor.Implementation, change: ActiveEffect.ActiveEffect.EffectChangeData): unknown;
 
     /**
      * Apply this ActiveEffect to a provided Actor using a heuristic to infer the value types based on the current value
@@ -562,7 +562,7 @@ declare global {
     protected _applyLegacy(actor: Actor.Implementation, change: ActiveEffect.DurationData, changes: AnyObject): void;
 
     /**
-     * Cast a raw EffectChangeData change string to the desired data type.
+     * Cast a raw ActiveEffect.EffectChangeData change string to the desired data type.
      * @param raw - The raw string value
      * @param type - The target data type that the raw value should be cast to match
      * @returns The parsed delta cast to the target data type
@@ -570,7 +570,7 @@ declare global {
     protected _castDelta(raw: string, type: string): boolean | number | string | object;
 
     /**
-     * Cast a raw EffectChangeData change string to an Array of an inner type.
+     * Cast a raw ActiveEffect.EffectChangeData change string to an Array of an inner type.
      * @param raw  - The raw string value
      * @param type - The target data type of inner array elements
      * @returns The parsed delta cast as a typed array
@@ -602,7 +602,7 @@ declare global {
      */
     protected _applyAdd(
       actor: Actor.Implementation,
-      change: ActiveEffect.EffectChangeData,
+      change: ActiveEffect.ActiveEffect.EffectChangeData,
       current: any,
       delta: any,
       changes: AnyObject,
@@ -620,7 +620,7 @@ declare global {
      */
     protected _applyMultiply(
       actor: Actor.Implementation,
-      change: ActiveEffect.EffectChangeData,
+      change: ActiveEffect.ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
       changes: AnyObject,
@@ -638,7 +638,7 @@ declare global {
      */
     protected _applyOverride(
       actor: Actor.Implementation,
-      change: ActiveEffect.EffectChangeData,
+      change: ActiveEffect.ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
       changes: AnyObject,
@@ -656,7 +656,7 @@ declare global {
      */
     protected _applyUpgrade(
       actor: Actor.Implementation,
-      change: ActiveEffect.EffectChangeData,
+      change: ActiveEffect.ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
       changes: AnyObject,
@@ -673,7 +673,7 @@ declare global {
      */
     protected _applyCustom(
       actor: Actor.Implementation,
-      change: ActiveEffect.EffectChangeData,
+      change: ActiveEffect.ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
       changes: AnyObject,

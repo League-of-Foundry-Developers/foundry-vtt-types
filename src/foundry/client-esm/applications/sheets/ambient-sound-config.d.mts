@@ -10,7 +10,8 @@ declare class AmbientSoundConfig<
   RenderContext extends AnyObject = InterfaceToObject<AmbientSoundConfig.RenderContext>,
   Configuration extends
     DocumentSheetV2.Configuration<AmbientSoundDocument.Implementation> = DocumentSheetV2.Configuration<AmbientSoundDocument.Implementation>,
-  RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
+  RenderOptions extends
+    HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
   AmbientSoundDocument.Implementation,
   RenderContext,
@@ -26,6 +27,7 @@ declare class AmbientSoundConfig<
 
   protected override _prepareContext(options: DeepPartial<RenderOptions>): Promise<RenderContext>;
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   protected override _onClose(options: DeepPartial<RenderOptions>): void;

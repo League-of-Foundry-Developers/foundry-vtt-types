@@ -40,7 +40,6 @@ export type EffectDurationData = ActiveEffect.DurationData;
 /**
  * @deprecated {@link ActiveEffect.EffectChangeData | `ActiveEffect.EffectChangeData`}
  */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type EffectChangeData = ActiveEffect.EffectChangeData;
 export interface AmbientSoundEffect {
   type: string;

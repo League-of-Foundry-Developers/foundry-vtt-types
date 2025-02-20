@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-namespace */
 import { assertType, expectTypeOf } from "vitest";
 
 class FakePrimaryGroup<

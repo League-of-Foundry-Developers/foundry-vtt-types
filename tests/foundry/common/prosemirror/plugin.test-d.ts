@@ -1,4 +1,4 @@
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/extensions */
 import { expectTypeOf } from "vitest";
 import { Schema } from "prosemirror-model";
 import ProseMirrorPlugin from "../../../../src/foundry/common/prosemirror/plugin.mjs";

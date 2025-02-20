@@ -132,7 +132,7 @@ declare namespace RollTerm {
   type AnyConstructor = typeof AnyRollTerm;
 
   interface Options {
-    flavor?: string | unknown;
+    flavor?: string;
   }
 
   interface EvaluationOptions {
@@ -162,7 +162,7 @@ declare namespace RollTerm {
   }
 }
 
-declare abstract class AnyRollTerm {
+declare abstract class AnyRollTerm extends RollTerm {
   constructor(arg0: never, ...args: never[]);
 }
 

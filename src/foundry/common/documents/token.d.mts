@@ -62,8 +62,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): boolean;
 
   updateSource(
-    changes?: TokenDocument.CreateData | undefined,
-    options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean } | undefined,
+    changes?: TokenDocument.CreateData,
+    options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
   ): AnyObject;
 
   static override migrateData(source: AnyMutableObject): AnyMutableObject;

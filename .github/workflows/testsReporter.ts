@@ -1,23 +1,25 @@
-import { Vitest } from "vitest/node";
-import { Reporter } from "vitest/reporters";
+import type { Vitest } from "vitest/node";
+import type { Reporter } from "vitest/reporters";
 import { relative } from "pathe";
 import * as fs from "fs/promises";
 
 export default class JSONReporter implements Reporter {
   declare ctx: Vitest;
 
-  async onInit(ctx: Vitest) {
+  onInit(ctx: Vitest) {
     this.ctx = ctx;
   }
 
   async onFinished(files = this.ctx.state.getFiles()) {
-    const fileToErrors = {};
+    const fileToErrors: Record<string, string[]> = {};
 
     for (const file of files) {
       const filePath = relative(this.ctx.config.root, file.filepath);
-      fileToErrors[filePath] ??= [];
 
-      const errors =
+      const errors = fileToErrors[filePath] ?? [];
+      fileToErrors[filePath] = errors;
+
+      const errorMessages =
         file.result?.errors?.map((error) => {
           if (error.nameStr != null) {
             return `${error.nameStr}: ${error.message}`;
@@ -26,15 +28,13 @@ export default class JSONReporter implements Reporter {
           return error.message;
         }) ?? [];
 
-      if (errors.length > 0) {
-        fileToErrors[filePath].push(...errors);
-      }
+      errors.push(...errorMessages);
     }
 
     try {
       await fs.mkdir("test-results");
     } catch (e) {
-      if (e.code !== "EEXIST") {
+      if (!(e instanceof Error && "code" in e && e.code !== "EEXIST")) {
         throw e;
       }
     }

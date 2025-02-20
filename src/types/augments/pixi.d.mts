@@ -4,10 +4,10 @@ import * as _PIXI from "pixi.js";
 // Note(LukeAbby): The `smooth.d.mts` and `smooth.d.mts` files exist to make it DRY to selectively tweak PIXI sub-namespaces.
 // Each of them write `export * from "..."` and then selectively shadow or augment the exports.
 
-// eslint-disable-next-line import/extensions
+// eslint-disable-next-line import-x/extensions
 import * as _smooth from "./smooth.mjs";
 
-// eslint-disable-next-line import/extensions
+// eslint-disable-next-line import-x/extensions
 import * as _particles from "./particles.mjs";
 
 export * from "pixi.js";
@@ -995,8 +995,6 @@ declare global {
     namespace DisplayObject {
       interface Any extends AnyPIXIDisplayObject {}
       type AnyConstructor = typeof AnyPIXIDisplayObject;
-
-      type DestroyOptions = _PIXI.IDestroyOptions | boolean;
     }
 
     export import Filter = _PIXI.Filter;

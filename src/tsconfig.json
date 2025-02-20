@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig.json",
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": [],
+    "outDir": "../.typescript-build/src",
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true
+  },
+  // Note: `**/*` is used to work around a bug with `eslint`. This will be removed once it's fixed.
+  "include": ["index.d.mts", "**/*"],
+  "exclude": ["index-lenient.d.mts"],
+  "references": []
+}

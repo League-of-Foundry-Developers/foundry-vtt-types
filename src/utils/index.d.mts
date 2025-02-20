@@ -25,9 +25,9 @@ export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";
  * `GetKey` accesses a property while intentionally ignoring index signatures. This means `GetKey<Record<string, unknown>, "foo">` will return `never`.
  */
 // Note(LukeAbby): There are two tricky cases:
-// - `T = {}` would regularly always return `unknown`. The fix here adding a single dummy property `{ _?: any } & T`.
+// - `T = {}` would regularly always return `unknown`. The fix here adding a single dummy property with `{ _?: unknown } & T`.
 // - `T = never` would regularly always return `unknown`. The fix here is checking if `any` is assignable to it.
-export type GetKey<T, K extends PropertyKey, D = never> = [any] extends [T] ? _GetKey<{ _?: any } & T, K, D> : D;
+export type GetKey<T, K extends PropertyKey, D = never> = [any] extends [T] ? _GetKey<{ _?: unknown } & T, K, D> : D;
 
 type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infer V } ? V : D;
 
@@ -755,7 +755,7 @@ export type HandleEmptyObject<T extends object, D extends object = EmptyObject> 
  * - `Record<string, unknown>` - This is the appropriate type for any mutable object but doesn't allow readonly objects.
  */
 // This type is not meant to be extended and it has to use an indexed type.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type AnyObject = {
   readonly [K: string]: unknown;
 };
@@ -769,7 +769,7 @@ export type AnyObject = {
  * - `Record<string, any>`/`{}` - These allows anything besides `null` and `undefined`.
  * - `Record<string, unknown>` - These types are equivalent but `AnyMutableObject` is preferred for explicitness.
  */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/consistent-indexed-object-style
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type AnyMutableObject = {
   [K: string]: unknown;
 };
@@ -924,7 +924,6 @@ export type NonNullish = {};
  * {@link NonNullish | `NonNullish`} if you want that behavior.
  */
 // It would be unsound to merge into so an interface is not used.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type EmptyObject = Record<string, never>;
 
 declare const empty: unique symbol;
@@ -1016,6 +1015,70 @@ type _MustBeValidUuid<
  * Drops the first element of an array
  */
 type DropFirst<T extends AnyArray> = T extends [infer _1, ...infer V] ? V : T;
+
+/**
+ * This type is used when you want to use `unknown` in a union. This works because while `T | unknown`
+ * will reduce to `unknown`. However by comparison the only way that `T | LazyUnknown` can reduce is
+ * if there's
+ *
+ * This makes it the ideal type to accept any input in some situations, mostly for documenting types
+ * where anything is acceptable but certain ones are more notable. For example `number | LazyUnknown`
+ * would still accept anything but appear as `number | {} | null | undefined` in intellisense, due
+ * to the inlining of the composite parts of `LazyUnknown`.
+ *
+ * The type `{}` isn't actually the type for an empty object. It allows anything except
+ * `null`/`undefined` which is why `{} | null | undefined` allows anything to be assigned to it.
+ * See {@link NonNullish | `NonNullish`} for a further explanation on why `{}` allows anything
+ * besides `null`/`undefined`.
+ */
+export type LazyUnknown = NonNullish | null | undefined;
+
+/**
+ * `Coalesce` is useful to provide defaults. For example if you have the function:
+ * ```js
+ * function toString(item="default") {
+ *  return `${item}`;
+ * }
+ * ```
+ *
+ * Then the most appropriate type might be:
+ * ```ts
+ * declare function toString<
+ *   Item extends string | number | undefined = undefined
+ * >(item?: Item): `${Coalesce<Item, "default">}`
+ *
+ * const itemUnset = toString();
+ * //    ^ "default"
+ *
+ * const itemUndefined = tgoString(undefined);
+ * //    ^ "default"
+ * ```
+ *
+ * This is because generic parameter defaults and function parameters behave differently. A function
+ * default is used whenever `undefined` would otherwise be the value, either explicitly or implicitly
+ * i.e. both `doubles()` and `doubles(undefined)` would use the default of `"default"`. However a generic'
+ * defaults only shows up when it's not used at all. The behavior with an explicit `undefined` has
+ * two cases to explain:
+ *
+ * ```ts
+ * declare function toString1<Item extends string | number = "foo">(item?: Item): void;
+ *
+ * toString1(undefined);
+ * // `Item` will infer as `string | number` because `undefined` isn't assignable to the constraint of `Item`.
+ *
+ * declare function toString2<Item extends string | number | undefined = "foo">(item?: Item): void;
+ *
+ * toString2(undefined);
+ * // `Item` will infer as `undefined` not `"foo"` because the generic has something to infer from.
+ * ```
+ */
+export type Coalesce<T, D, CoalesceType = undefined> = T extends CoalesceType ? D : T;
+
+/**
+ * Coalesces specifically `null | undefined`. Behaves like `??` does at runtime.
+ * See {@link Coalesce | `Coalesce`}.
+ */
+export type NullishCoalesce<T, D> = T extends null | undefined ? D : T;
 
 /**
  * ### Usage

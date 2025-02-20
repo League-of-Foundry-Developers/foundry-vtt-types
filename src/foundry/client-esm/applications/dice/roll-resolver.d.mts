@@ -9,7 +9,8 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
 declare class RollResolver<
   RenderContext extends AnyObject = EmptyObject,
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
-  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+  RenderOptions extends
+    HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   constructor(roll: Roll, options?: DeepPartial<Configuration>);
 

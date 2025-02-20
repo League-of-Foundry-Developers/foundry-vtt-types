@@ -110,10 +110,8 @@ declare global {
     let PI2: number;
 
     class IntPoint {
-      constructor(x: number, y: number, z: number);
-      constructor(x: number, y: number);
-      constructor(dp: DoublePoint);
-      constructor();
+      constructor(x: number, y: number, z?: number);
+      constructor(dp?: DoublePoint);
 
       X: number;
       Y: number;
@@ -391,10 +389,10 @@ declare global {
       protected m_Scanbeam: Scanbeam | null;
 
       /** @defaultValue `null` */
-      protected m_PolyOuts: unknown | null;
+      protected m_PolyOuts: unknown;
 
       /** @defaultValue `null` */
-      protected m_ActiveEdges: unknown | null;
+      protected m_ActiveEdges: unknown;
 
       /**
        * -2^53

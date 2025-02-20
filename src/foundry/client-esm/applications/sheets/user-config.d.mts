@@ -10,7 +10,8 @@ declare class UserConfig<
   RenderContext extends AnyObject = InterfaceToObject<UserConfig.RenderContext>,
   Configuration extends
     DocumentSheetV2.Configuration<User.Implementation> = DocumentSheetV2.Configuration<User.Implementation>,
-  RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
+  RenderOptions extends
+    HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
   User.Implementation,
   RenderContext,

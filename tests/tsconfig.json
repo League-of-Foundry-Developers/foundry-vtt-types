@@ -3,11 +3,11 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "types": ["fvtt-types"],
-    "outDir": ".typescript-build",
+    "outDir": "../.typescript-build/tests",
     "composite": true,
     "noEmit": false,
-    "emitDeclarationOnly": true,
-    "typeRoots": ["../node_modules"]
+    "emitDeclarationOnly": true
   },
-  "include": ["**/*.test-d.ts", "**/*.d.ts"]
+  "include": ["**/*"],
+  "references": []
 }

@@ -1,4 +1,4 @@
-import type { AnyConstructor, AnyFunction, DeepPartial, InexactPartial } from "fvtt-types/utils";
+import type { AnyConstructor, AnyFunction, DeepPartial, InexactPartial, NonNullish } from "fvtt-types/utils";
 import type Document from "../abstract/document.d.mts";
 
 /**
@@ -279,7 +279,9 @@ export type InvertableObject = {
   readonly [K: PropertyKey]: PropertyKey;
 };
 
-export type InvertObject<in out T extends InvertableObject> = { [Key in keyof T as T[Key]]: Key };
+export type InvertObject<in out T extends InvertableObject> = {
+  [K in keyof T as T[K]]: K;
+};
 
 /**
  * Invert an object by assigning its values as keys and its keys as values.
@@ -302,7 +304,10 @@ export function isNewerVersion(v1: number | string, v0: number | string): boolea
  * @param value - The value to test
  * @returns Is the value empty-like?
  */
-export function isEmpty(value: undefined | null | unknown[] | object | Set<unknown> | Map<unknown, unknown>): boolean;
+
+export function isEmpty(
+  value: undefined | null | unknown[] | object | Set<unknown> | Map<unknown, unknown> | NonNullish,
+): boolean;
 
 export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
   DeleteByObjectKeys<T, U, M>,
@@ -468,7 +473,7 @@ export function timeSince(timeStamp: Date | string): string;
  * @param options - Additional options. (default: `{}`)
  * @returns
  */
-export function formatFileSize(size: number, options: FormatFileSizeOptions): string;
+export function formatFileSize(size: number, options?: FormatFileSizeOptions): string;
 
 interface FormatFileSizeOptions {
   /**

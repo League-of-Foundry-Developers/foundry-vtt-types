@@ -1,9 +1,9 @@
-export default class BitMask extends Number {
+declare class InternalBitMask<T extends Record<string, boolean>> extends Number {
   /**
    * Create a new BitMask instance.
    * @param states    - An object containing valid states and their corresponding initial boolean values (default is null).
    */
-  constructor(states?: Record<string, boolean> | null);
+  constructor(states?: T | null);
 
   // a placeholder private method to help subclassing
   #bitmask: true;
@@ -12,7 +12,7 @@ export default class BitMask extends Number {
    * The enum associated with this structure.
    * @readonly
    */
-  states: Record<string, string>;
+  states: Readonly<{ [K in keyof T]: K }>;
 
   /**
    * True if this bitmask is empty (no active states).
@@ -24,33 +24,33 @@ export default class BitMask extends Number {
    * @param state   - The state to check.
    * @returns True if the state is active, false otherwise.
    */
-  hasState(state: string): boolean;
+  hasState(state: keyof T): boolean;
 
   /**
    * Add a state to the bitmask.
    * @param state - The state to add. Throws an error if the provided state is not valid.
    */
-  addState(state: string): void;
+  addState(state: keyof T): void;
 
   /**
    * Remove a state from the bitmask.
    * @param state   - The state to remove. Throws an error if the provided state is not valid.
    */
-  removeState(state: string): void;
+  removeState(state: keyof T): void;
 
   /**
    * Toggle the state of a specific state in the bitmask.
    * @param state   - The state to toggle. Throws an error if the provided state is not valid.
    * @param enabled - Toggle on (true) or off (false)? If undefined, the state is switched automatically.
    */
-  toggleState(state: string, enabled: boolean): void;
+  toggleState(state: keyof T, enabled: boolean): void;
 
   /**
    * Toggle the state of a specific state in the bitmask.
    * @param state - The state to toggle.
    * @returns  The updated bitmask. Throws an error if the provided state is not valid.
    */
-  toggleState(state: string): number;
+  toggleState(state: keyof T): number;
 
   /**
    * Clear the bitmask, setting all states to inactive.
@@ -74,7 +74,7 @@ export default class BitMask extends Number {
    * @param otherBitMask  - The bitmask structure to compare with.
    * @returns True if the two bitmasks have the same structure, false otherwise.
    */
-  isCompatible(otherBitMask: BitMask): boolean;
+  isCompatible(otherBitMask: BitMask.Any): boolean;
 
   /**
    * Serializes the bitmask to a JSON string.
@@ -87,7 +87,7 @@ export default class BitMask extends Number {
    * @param jsonString    - The JSON string representing the bitmask.
    * @returns A new BitMask instance created from the JSON string.
    */
-  static fromJSON(jsonString: string): BitMask;
+  static fromJSON(jsonString: string): BitMask.Any;
 
   /**
    * Convert value of this BitMask to object representation according to structure.
@@ -99,7 +99,7 @@ export default class BitMask extends Number {
    * Creates a clone of this BitMask instance.
    * @returns A new BitMask instance with the same value and valid states as this instance.
    */
-  clone(): BitMask;
+  clone(): this;
 
   /**
    * Generates shader constants based on the provided states.
@@ -108,3 +108,12 @@ export default class BitMask extends Number {
    */
   static generateShaderBitMaskConstants(states: string[]): string;
 }
+
+declare namespace BitMask {
+  export type Any = InternalBitMask<Record<string, boolean>>;
+}
+
+declare const BitMask: typeof InternalBitMask & (new (...args: any) => number);
+type BitMask = BitMask.Any & number;
+
+export default BitMask;

@@ -157,7 +157,7 @@ declare namespace DynamicRingData {
     Options extends ClassReferenceField.Options<BaseClass> = ClassReferenceField.DefaultOptions,
     AssignmentType = ClassReferenceField.AssignmentType<BaseClass, Options>,
     InitializedType = ClassReferenceField.InitializedType<BaseClass, Options>,
-    PersistedType extends unknown | null | undefined = InitializedType,
+    PersistedType = InitializedType,
   > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
     #ClassReferenceField: true;
 

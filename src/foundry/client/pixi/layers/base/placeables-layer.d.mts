@@ -4,6 +4,7 @@ import type {
   NullishProps,
   ValueOf,
   FixedInstanceType,
+  HandleEmptyObject,
 } from "../../../../../utils/index.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
@@ -167,7 +168,7 @@ declare global {
      */
     getDocuments(): Exclude<this["documentCollection"], null> | FixedInstanceType<DocumentClass>[];
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<PlaceablesLayer.DrawOptions>): Promise<void>;
 
     /**
      * Draw a single placeable object
@@ -175,7 +176,7 @@ declare global {
      */
     createObject(document: FixedInstanceType<DocumentClass>): FixedInstanceType<PlaceableClass>;
 
-    protected override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<PlaceablesLayer.TearDownOptions>): Promise<void>;
 
     protected override _activate(): void;
 

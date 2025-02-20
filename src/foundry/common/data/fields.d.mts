@@ -44,7 +44,7 @@ declare abstract class DataField<
   const Options extends DataField.Options.Any = DataField.DefaultOptions,
   const AssignmentType = DataField.AssignmentType<Options>,
   const InitializedType = DataField.InitializedType<Options>,
-  const PersistedType extends unknown | null | undefined = InitializedType,
+  const PersistedType = InitializedType,
 > {
   // Prevent from being bivariant.
   #assignmentType: AssignmentType;
@@ -782,7 +782,7 @@ declare class SchemaField<
 
   override apply<Options, Return>(
     fn: keyof this | ((this: this, value: undefined | null, options: Options) => Return),
-    value?: undefined | null,
+    value?: null,
     options?: Options,
   ): Return;
   override apply<Value, Options, Return>(
@@ -2779,14 +2779,13 @@ declare class DocumentUUIDField<
 }
 
 declare namespace DocumentUUIDField {
-  type Options = StringField.Options &
-    StringField.Options & {
-      /* A specific document type in CONST.ALL_DOCUMENT_TYPES required by this field */
-      type?: Document.Type | undefined;
+  type Options = StringField.Options & {
+    /* A specific document type in CONST.ALL_DOCUMENT_TYPES required by this field */
+    type?: Document.Type | undefined;
 
-      /* Does this field require (or prohibit) embedded documents? */
-      embedded?: boolean | undefined;
-    };
+    /* Does this field require (or prohibit) embedded documents? */
+    embedded?: boolean | undefined;
+  };
 
   type DefaultOptions = SimpleMerge<
     StringField.DefaultOptions,
@@ -4070,7 +4069,7 @@ declare class TypedSchemaField<
   const Options extends TypedSchemaField.Options<Types> = TypedSchemaField.DefaultOptions,
   const AssignmentType = TypedSchemaField.AssignmentType<Types, Options>,
   const InitializedType = TypedSchemaField.InitializedType<Types, Options>,
-  const PersistedType extends unknown | null | undefined = TypedSchemaField.PersistedType<Types, Options>,
+  const PersistedType = TypedSchemaField.PersistedType<Types, Options>,
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param types   - The different types this field can represent.
@@ -4201,6 +4200,7 @@ declare namespace TypedSchemaField {
  * @typeParam Errors - the type of the errors contained in this error
  */
 declare class ModelValidationError<
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   Errors extends ModelValidationError.Errors = ModelValidationError.Errors,
 > extends Error {
   /**
@@ -4216,6 +4216,7 @@ declare class ModelValidationError<
    * @param errors - The raw error structure
    * @returns A formatted error message
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   static formatErrors(errors: ModelValidationError.Errors): string;
 }
 

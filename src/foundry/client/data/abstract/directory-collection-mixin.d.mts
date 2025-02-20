@@ -99,7 +99,7 @@ declare global {
 
   namespace DirectoryCollectionMixin {
     type AnyMixedConstructor = ReturnType<typeof DirectoryCollectionMixin<foundry.utils.Collection.AnyConstructor>>;
-    type AnyMixed = FixedInstanceType<AnyMixedConstructor>;
+    type AnyMixed = FixedInstanceType<FixedInstanceType<AnyMixedConstructor>>;
 
     type BaseClass = foundry.utils.Collection.AnyConstructor;
 

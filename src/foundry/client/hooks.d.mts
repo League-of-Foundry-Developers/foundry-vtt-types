@@ -2,8 +2,6 @@ import type { EditorState, Plugin } from "prosemirror-state";
 import type { DeepPartial, EmptyObject, FixedInstanceType, ValueOf } from "fvtt-types/utils";
 import type Document from "../common/abstract/document.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
-
-// eslint-disable-next-line import/no-named-as-default
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
 import type PointVisionSource from "../client-esm/canvas/sources/point-vision-source.d.mts";
 import type RenderedEffectSource from "../client-esm/canvas/sources/rendered-effect-source.d.mts";
@@ -246,7 +244,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link ActiveEffect#_applyCustom}
        */
-      applyActiveEffect: (actor: Actor.Implementation, change: ActiveEffect.EffectChangeData) => boolean | void;
+      applyActiveEffect: (actor: Actor.Implementation, change: ActiveEffect.ActiveEffect.EffectChangeData) => boolean | void;
 
       /** Compendium */
 
@@ -349,7 +347,7 @@ declare global {
        * @param options - Options for rendering the associated {@link JournalSheet}
        * @remarks This is called by {@link Hooks.call}.
        */
-      activateNote: (note: Note.ConfiguredInstance, options: JournalSheet.RenderOptions) => boolean | false;
+      activateNote: (note: Note.ConfiguredInstance, options: JournalSheet.RenderOptions) => true | false;
 
       /** Cards */
 
@@ -698,8 +696,8 @@ declare global {
         messageData: {
           message: ChatMessage.PersistedData;
           user: Game["user"];
-          author: ChatMessage.Implementation["user"];
-          alias: ChatMessage.Implementation["alias"];
+          author: User.Implementation | null;
+          alias: string;
           cssClass: string;
           isWhisper: boolean;
           canDelete: boolean;
@@ -807,7 +805,7 @@ declare global {
       app: A,
       html: JQuery,
       data: ReturnType<A["getData"]> extends Promise<infer T> ? T : ReturnType<A["getData"]>,
-    ) => boolean | void;
+    ) => void;
 
     /**
      * A hook event that fires whenever this Application is first rendered to add buttons to its header.
@@ -830,10 +828,22 @@ declare global {
      * @param html  - The application HTML when it is closed
      * @typeParam A - the type of the Application
      * @remarks The name for this hook is dynamically created by joining "close" with the type name of the Application.
-     * @remarks This is called by {@link Hooks.call}.
+     * @remarks This is called by {@link Hooks.callAll}.
      * @see {@link Application#close}
      */
-    type CloseApplication<A extends Application.Any = Application.Any> = (app: A, html: JQuery) => boolean | void;
+    type CloseApplication<A extends Application.Any = Application.Any> = (app: A, html: JQuery) => void;
+
+    /** ApplicationV2 */
+
+    // Not explicitly typed in Foundry v12 but still fires
+    type RenderApplicationV2<
+      A extends foundry.applications.api.ApplicationV2.Any = foundry.applications.api.ApplicationV2.Any,
+    > = (app: A, element: HTMLElement) => void;
+
+    // Not explicitly typed in Foundry v12 but still fires
+    type CloseApplicationV2<
+      A extends foundry.applications.api.ApplicationV2.Any = foundry.applications.api.ApplicationV2.Any,
+    > = (app: A) => void;
 
     /** EffectsCanvasGroup */
 
@@ -842,18 +852,14 @@ declare global {
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "drawPrimaryCanvasGroup".
      * @param group - The group being drawn
      */
-    type DrawGroup<G extends CanvasGroupMixin.AnyMixedConstructor = CanvasGroupMixin.AnyMixedConstructor> = (
-      group: G,
-    ) => void;
+    type DrawGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (group: G) => void;
 
     /**
      * A hook event that fires when a {@link CanvasGroup} is deconstructed.
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "tearDownPrimaryCanvasGroup".
      * @param group - The group being deconstructed
      */
-    type TearDownGroup<G extends CanvasGroupMixin.AnyMixedConstructor = CanvasGroupMixin.AnyMixedConstructor> = (
-      group: G,
-    ) => void;
+    type TearDownGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (group: G) => void;
 
     /** CanvasLayer */
 
@@ -1179,8 +1185,7 @@ declare global {
       | DeactivateLayer
       | GetEntryContext
       | GetPlaylistDirectorySoundContext
-      | GetSidebarDirectoryFolderContext
-      | HoverObject;
+      | GetSidebarDirectoryFolderContext;
 
     interface ErrorCallbackParameters {
       "Canvas#draw": [location: "Canvas#draw", err: Error, data: { layer: CanvasLayer }];

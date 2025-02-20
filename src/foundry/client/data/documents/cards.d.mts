@@ -488,15 +488,6 @@ declare global {
     shuffle(options?: InexactPartial<Cards.ShuffleOptions>): Promise<Cards.Implementation>;
 
     /**
-     * Reset the Cards stack, retrieving all original cards from other stacks where they may have been drawn if this is a
-     * deck, otherwise returning all the cards in this stack to the decks where they originated.
-     * @param options - Options which modify the reset operation
-     *                  (default: `{}`)
-     * @returns The Cards document after the reset operation has completed
-     */
-    reset(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.Implementation>;
-
-    /**
      * Perform a reset operation for a deck, retrieving all original cards from other stacks where they may have been
      * drawn.
      * @param options - Options which modify the reset operation.
@@ -588,7 +579,7 @@ declare global {
      */
     resetDialog(): Promise<Cards.Implementation | false | null>;
 
-    override deleteDialog(options?: Partial<DialogOptions>): Promise<this | false | null | undefined>;
+    override deleteDialog(options?: Partial<Dialog.Options>): Promise<this | false | null | undefined>;
     /*
      * After this point these are not really overridden methods.
      * They are here because they're static properties but depend on the instance and so can't be

@@ -13,6 +13,8 @@ expectTypeOf(Math.normalizeDegrees(240)).toEqualTypeOf<number>();
 
 expectTypeOf(Math.normalizeRadians(4.18879)).toEqualTypeOf<number>();
 
+expectTypeOf(Math.roundDecimals(4.18879, 2)).toEqualTypeOf<number>();
+
 expectTypeOf(Math.toDegrees(4.18879)).toEqualTypeOf<number>();
 
 expectTypeOf(Math.toRadians(240)).toEqualTypeOf<number>();

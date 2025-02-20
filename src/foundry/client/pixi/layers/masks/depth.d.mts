@@ -23,16 +23,12 @@ declare global {
      * }
      * ```
      */
-    static override textureConfiguration: {
-      scaleMode: PIXI.SCALE_MODES;
-      format: PIXI.FORMATS;
-      multisample: PIXI.MSAA_QUALITY;
-    };
+    static override textureConfiguration: CachedContainer.TextureConfiguration;
 
     /**
      * @defaultValue `[0, 0, 0, 0]`
      */
-    override clearColor: [r: number, g: number, b: number, a: number];
+    override clearColor: Color.RGBAColorVector;
 
     /**
      * Update the elevation-to-depth mapping?
@@ -59,4 +55,13 @@ declare global {
      */
     clear(): void;
   }
+
+  namespace CanvasDepthMask {
+    interface Any extends AnyCanvasDepthMask {}
+    type AnyConstructor = typeof AnyCanvasDepthMask;
+  }
+}
+
+declare abstract class AnyCanvasDepthMask extends CanvasDepthMask {
+  constructor(arg0: never, ...args: never[]);
 }

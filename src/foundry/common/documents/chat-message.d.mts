@@ -31,24 +31,6 @@ declare abstract class BaseChatMessage<
 
   static override defineSchema(): BaseChatMessage.Schema;
 
-  /**
-   * Is a user able to create a new chat message?
-   * @internal
-   */
-  static #canCreate(user: User.Implementation, doc: BaseChatMessage): boolean;
-
-  /**
-   * Is a user able to update an existing chat message?
-   * @internal
-   */
-  static #canUpdate(user: User.Implementation, doc: BaseChatMessage, data: BaseChatMessage.UpdateData): boolean;
-
-  /**
-   * Validate that Rolls belonging to the ChatMessage document are valid
-   * @param rollJSON - The serialized Roll data
-   */
-  static #validateRoll(rollJSON: string): void;
-
   override testUserPermission(
     user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
@@ -206,6 +188,8 @@ declare abstract class BaseChatMessage<
   ): DataModel<ChatMessage.Schema, DataModel.Any | null>;
 
   static override fromJSON(json: string): DataModel<ChatMessage.Schema, DataModel.Any | null>;
+
+  #baseChatMessage: true;
 }
 
 export default BaseChatMessage;

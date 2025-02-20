@@ -1,4 +1,4 @@
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/extensions */
 import { expectTypeOf } from "vitest";
 import LinkMark from "../../../../../src/foundry/common/prosemirror/schema/link-mark.mjs";
 import type { Mark, MarkSpec, Node, NodeSpec } from "prosemirror-model";

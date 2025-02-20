@@ -1,5 +1,4 @@
 import type { GetKey, AnyObject, InexactPartial, AnyMutableObject } from "fvtt-types/utils";
-// eslint-disable-next-line import/no-named-as-default
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -382,7 +381,7 @@ declare namespace BasePackage {
 
   interface LogOptions extends InexactPartial<LogCompatibilityWarningOptions> {
     /** Is the package installed? */
-    installed?: unknown | undefined;
+    installed?: unknown;
   }
 }
 

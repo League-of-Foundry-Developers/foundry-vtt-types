@@ -16,10 +16,10 @@ expectTypeOf(baseSystem.background).toEqualTypeOf<string | undefined>();
 expectTypeOf(baseSystem.initiative).toEqualTypeOf<string | undefined>();
 
 // these all want undefined, but I don't think that's right
-expectTypeOf(baseSystem.grid!.type).toEqualTypeOf<number>();
-expectTypeOf(baseSystem.grid!.distance).toEqualTypeOf<number>();
-expectTypeOf(baseSystem.grid!.units).toEqualTypeOf<string>();
-expectTypeOf(baseSystem.grid!.diagonals).toEqualTypeOf<number>();
+expectTypeOf(baseSystem.grid.type).toEqualTypeOf<number>();
+expectTypeOf(baseSystem.grid.distance).toEqualTypeOf<number>();
+expectTypeOf(baseSystem.grid.units).toEqualTypeOf<string>();
+expectTypeOf(baseSystem.grid.diagonals).toEqualTypeOf<number>();
 
 expectTypeOf(baseSystem.primaryTokenAttribute).toEqualTypeOf<string | undefined>();
 expectTypeOf(baseSystem.secondaryTokenAttribute).toEqualTypeOf<string | undefined>();

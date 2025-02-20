@@ -9,7 +9,8 @@ export default class RegionConfig<
   RenderContext extends AnyObject = EmptyObject,
   Configuration extends
     DocumentSheetV2.Configuration<RegionDocument.Implementation> = DocumentSheetV2.Configuration<RegionDocument.Implementation>,
-  RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
+  RenderOptions extends
+    HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
   RegionDocument.Implementation,
   RenderContext,
@@ -32,7 +33,7 @@ export default class RegionConfig<
   protected override _preparePartContext(
     partId: string,
     context: HandlebarsApplicationMixin.HandlebarsApplication.RenderContextFor<this>,
-    options: DeepPartial<HandlebarsApplicationMixin.HandlebarsRenderOptions>,
+    options: DeepPartial<RenderOptions>,
   ): Promise<HandlebarsApplicationMixin.HandlebarsApplication.RenderContextFor<this>>;
 
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): void;

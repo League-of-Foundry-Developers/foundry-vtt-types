@@ -137,7 +137,7 @@ declare global {
      * Closes the menu and removes it from the DOM.
      * @param options - Options to configure the closing behavior.
      */
-    close(options?: ContextMenu.CloseOptions | undefined): Promise<void>;
+    close(options?: ContextMenu.CloseOptions): Promise<void>;
 
     /** @internal */
     protected _close(): void;

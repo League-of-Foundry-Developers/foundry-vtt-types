@@ -277,6 +277,7 @@ declare global {
 
     protected _onDragStart(event: DragEvent): void;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected _onDrop(event: DragEvent): Promise<void>;
 
     protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;

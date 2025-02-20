@@ -1,7 +1,7 @@
 // In Foundry itself this file contains re-exports of these other modules.
 // Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
-// While `.mts` could work, to avoid `import/no-unresolved` from erroring `.mjs` is used.
-/* eslint-disable import/extensions */
+// While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
+/* eslint-disable import-x/extensions */
 
 import "../common/primitives/module.mjs";
 import * as _CONST from "../common/constants.mjs";
@@ -191,7 +191,6 @@ declare global {
   /** @deprecated since v12 will be removed in v14 */
   export import IterableWeakSet = _utils.IterableWeakSet;
 
-  /* eslint-disable no-var */
   /* --- geometry --- */
   /** @deprecated since v12 will be removed in v14 */
   export import orient2dFast = _utils.orient2dFast;
@@ -277,5 +276,4 @@ declare global {
 
   /** @deprecated since v12 will be removed in v14 */
   export import logCompatibilityWarning = _utils.logCompatibilityWarning;
-  /* eslint-enable no-var */
 }

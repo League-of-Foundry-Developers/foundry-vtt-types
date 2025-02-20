@@ -1,6 +1,10 @@
+// This is an issue only on Windows. It's worked around in this weird way to avoid ESLint
+// whining about an unused disable.
+/* eslint import-x/no-unresolved: [2, { ignore: ["fvtt-types/configuration"] }] */
+
 import type { InterfaceToObject, MustConform } from "fvtt-types/utils";
 
-// eslint-disable-next-line import/extensions
+// eslint-disable-next-line import-x/extensions
 import * as configuration from "fvtt-types/configuration";
 
 declare global {

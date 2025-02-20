@@ -299,7 +299,7 @@ declare global {
      *          null if the dialog was closed without making a choice.
      */
     importDialog(
-      options?: DialogOptions,
+      options?: Dialog.Options,
     ): Promise<Document.Stored<Document.ConfiguredInstanceForName<T["type"]>>[] | null | false>;
 
     /**

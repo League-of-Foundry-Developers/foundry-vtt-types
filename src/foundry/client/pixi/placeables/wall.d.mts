@@ -156,7 +156,7 @@ declare global {
     /**
      * Return the coordinates [x,y] at the midpoint of the wall segment
      */
-    get midpoint(): Canvas.PointArray;
+    get midpoint(): Canvas.PointTuple;
 
     override get center(): PIXI.Point;
 
@@ -296,6 +296,7 @@ declare global {
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<unknown>;
 
     /**

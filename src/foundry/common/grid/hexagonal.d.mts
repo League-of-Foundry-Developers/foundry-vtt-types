@@ -170,7 +170,7 @@ declare class HexagonalGrid extends BaseGrid {
    * Special border polygons for different token sizes.
    * @deprecated Since v12 until v14. No Replacement
    */
-  static get POINTY_HEX_BORDERS(): Record<number, Canvas.PointArray[]>;
+  static get POINTY_HEX_BORDERS(): Record<number, Canvas.PointTuple[]>;
 
   /**
    * @deprecated Since v12 until v14. No Replacement
@@ -181,25 +181,25 @@ declare class HexagonalGrid extends BaseGrid {
    * Special border polygons for different token sizes.
    * @deprecated Since v12 until v14. No Replacement
    */
-  static get FLAT_HEX_BORDERS(): Record<number, Canvas.PointArray[]>;
+  static get FLAT_HEX_BORDERS(): Record<number, Canvas.PointTuple[]>;
 
   /**
    * A matrix of x and y offsets which is multiplied by the width/height vector to get pointy-top polygon coordinates
    * @deprecated Since v12 until v14. No Replacement
    */
-  static get pointyHexPoints(): Canvas.PointArray[];
+  static get pointyHexPoints(): Canvas.PointTuple[];
 
   /**
    * A matrix of x and y offsets which is multiplied by the width/height vector to get flat-top polygon coordinates
    * @deprecated Since v12 until v14. No Replacement
    */
-  static get flatHexPoints(): Canvas.PointArray[];
+  static get flatHexPoints(): Canvas.PointTuple[];
 
   /**
    * An array of the points which define a hexagon for this grid shape
    * @deprecated Since v12 until v14. No Replacement
    */
-  get hexPoints(): Canvas.PointArray[];
+  get hexPoints(): Canvas.PointTuple[];
 
   /**
    * A convenience method for getting all the polygon points relative to a top-left [x,y] coordinate pair
@@ -211,12 +211,12 @@ declare class HexagonalGrid extends BaseGrid {
    * @deprecated Since v12 until v14. You can get the shape of the hex with {@link HexagonalGrid#getShape}
    *             and the polygon with {@link HexagonalGrid#getVertices}.
    */
-  getPolygon(x: number, y: number, w?: number, h?: number, points?: Canvas.PointArray[]): Canvas.PointArray[];
+  getPolygon(x: number, y: number, w?: number, h?: number, points?: Canvas.PointTuple[]): Canvas.PointTuple[];
 
   /**
    * @deprecated Since v12 until v14. If you need the shape of a Token, use {@link Token#getShape} instead.
    */
-  getBorderPolygon(w: number, h: number, p: number): Canvas.PointArray[];
+  getBorderPolygon(w: number, h: number, p: number): Canvas.PointTuple[];
 
   /**
    * @deprecated Since v12 until v14. If you need the size of a Token, use {@link Token#getSize} instead.

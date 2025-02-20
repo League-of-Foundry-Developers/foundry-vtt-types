@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin } from "fvtt-types/utils";
+import type { FixedInstanceType, InexactPartial, Mixin } from "fvtt-types/utils";
 import type { CONST } from "../../client-esm/client.d.mts";
 import type BasePackage from "../../common/packages/base-package.d.mts";
 
@@ -142,7 +142,7 @@ declare global {
 
   namespace ClientPackageMixin {
     type AnyMixedConstructor = ReturnType<typeof ClientPackageMixin<BaseClass>>;
-    interface AnyMixed extends AnyMixedConstructor {}
+    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = BasePackage.Internal.Constructor;
   }

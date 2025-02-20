@@ -178,6 +178,8 @@ declare abstract class BaseCombatant<
   ): DataModel<Combatant.Schema, DataModel.Any | null>;
 
   static override fromJSON(json: string): DataModel<Combatant.Schema, DataModel.Any | null>;
+
+  #baseCombatant: true;
 }
 
 export default BaseCombatant;

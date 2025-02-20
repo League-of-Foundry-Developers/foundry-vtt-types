@@ -1,4 +1,4 @@
-import type { EmptyObject, InexactPartial, ValueOf } from "fvtt-types/utils";
+import type { EmptyObject, HandleEmptyObject, InexactPartial, ValueOf } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -6,10 +6,7 @@ declare global {
    * This layer uses an event-driven workflow to perform the minimal required calculation in response to changes.
    * @see {@link PointSource}
    */
-  class CanvasVisibility<
-    DrawOptions extends CanvasVisibility.DrawOptions = CanvasVisibility.DrawOptions,
-    TearDownOptions extends CanvasVisibility.TearDownOptions = CanvasVisibility.TearDownOptions,
-  > extends CanvasLayer<DrawOptions, TearDownOptions> {
+  class CanvasVisibility extends CanvasLayer {
     /**
      * The currently revealed vision.
      */
@@ -100,9 +97,9 @@ declare global {
      */
     initializeVisionMode(): void;
 
-    protected override _draw(options?: DrawOptions): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<CanvasVisibility.DrawOptions>): Promise<void>;
 
-    protected override _tearDown(options?: TearDownOptions): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<CanvasVisibility.TearDownOptions>): Promise<void>;
 
     /**
      * Update the display of the sight layer.

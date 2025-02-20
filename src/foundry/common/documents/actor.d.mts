@@ -55,23 +55,6 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   static override canUserCreate(user: User.Implementation): boolean;
 
   /**
-   * Is a user able to create this actor?
-   * @param user - The user attempting the creation operation.
-   * @param doc  - The Actor being created.
-   * @internal
-   */
-  static #canCreate(user: User.Implementation, doc: BaseActor): boolean;
-
-  /**
-   * Is a user able to update an existing actor?
-   * @param user - The user attempting the update operation.
-   * @param doc  - The Actor being updated.
-   * @param data - The update delta being applied.
-   * @internal
-   */
-  static #canUpdate(user: User.Implementation, doc: BaseActor, data: BaseActor.UpdateData): boolean;
-
-  /**
    * @privateRemarks _preCreate and _preUpdate are overridden but with no signature changes.
    * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
    */
@@ -206,6 +189,8 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   ): DataModel<Actor.Schema, DataModel.Any | null>;
 
   static override fromJSON(json: string): DataModel<Actor.Schema, DataModel.Any | null>;
+
+  #baseActor: true;
 }
 
 declare namespace BaseActor {

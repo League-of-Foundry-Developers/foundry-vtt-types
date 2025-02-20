@@ -1,5 +1,5 @@
 import type { ConfiguredJournalEntryPage } from "../../../../configuration/index.d.mts";
-import type { InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial, LazyUnknown } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -554,7 +554,7 @@ declare global {
     protected _embedImagePage(
       config: TextEditor.DocumentHTMLEmbedConfig & {
         /** Alt text for the image, otherwise the caption will be used. **/
-        alt?: string | unknown;
+        alt?: string | LazyUnknown;
       },
       options?: InexactPartial<TextEditor.EnrichmentOptions>,
     ): Promise<HTMLElement | HTMLCollection | null>;

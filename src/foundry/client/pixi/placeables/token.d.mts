@@ -899,6 +899,7 @@ declare global {
 
     protected override _onControl(options?: Token.ControlOptions): void;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onRelease(
       options: PlaceableObject.ReleaseOptions,
     ): Promise<TokenDocument.Implementation> | undefined;
@@ -925,7 +926,8 @@ declare global {
 
     protected override _onClickRight2(event: PIXI.FederatedEvent): void;
 
-    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<any>;
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    protected override _onDragLeftDrop(event: PIXI.FederatedEvent): Promise<unknown>;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
