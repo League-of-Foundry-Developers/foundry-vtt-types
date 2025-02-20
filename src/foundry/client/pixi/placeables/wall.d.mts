@@ -35,7 +35,7 @@ declare global {
      *
      * @deprecated {@link WallDocument.ImplementationClass | `WallDocument.ImplementationClass`}
      */
-    type ImplementationClass = WallDocument.Implementation;
+    type ImplementationClass = WallDocument.ImplementationClass;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshLine: boolean;

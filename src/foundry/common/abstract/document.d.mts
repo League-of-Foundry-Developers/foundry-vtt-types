@@ -489,7 +489,7 @@ declare abstract class Document<
    */
   getEmbeddedCollection<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
     embeddedName: EmbeddedName,
-  ): Collection<Document.ConfiguredInstanceForName<EmbeddedName>>;
+  ): Collection<Document.ImplementationInstanceFor<EmbeddedName>>;
 
   /**
    * Get an embedded document by its id from a named collection in the parent document.
@@ -538,7 +538,7 @@ declare abstract class Document<
     operation?: InexactPartial<Document.Database.OperationOf<Extract<EmbeddedName, Document.Type>, "create">> & {
       temporary?: Temporary;
     },
-  ): Promise<Array<Document.ConfiguredInstanceForName<Extract<EmbeddedName, Document.Type>>> | undefined>;
+  ): Promise<Array<Document.ImplementationInstanceFor<Extract<EmbeddedName, Document.Type>>> | undefined>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
@@ -554,7 +554,7 @@ declare abstract class Document<
     embeddedName: EmbeddedName,
     updates?: Array<AnyObject>,
     context?: Document.ModificationContext<Parent>,
-  ): Promise<Array<Document.Stored<Document.ConfiguredInstanceForName<Extract<EmbeddedName, Document.Type>>>>>;
+  ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<Extract<EmbeddedName, Document.Type>>>>>;
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
@@ -569,7 +569,7 @@ declare abstract class Document<
     embeddedName: EmbeddedName,
     ids: Array<string>,
     operation?: Document.Database.OperationOf<DocumentName, "delete">,
-  ): Promise<Array<Document.Stored<Document.ConfiguredInstanceForName<EmbeddedName>>>>;
+  ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>>>;
 
   /**
    * Iterate over all embedded Documents that are hierarchical children of this Document.
@@ -1140,10 +1140,6 @@ declare namespace Document {
   >;
 
   // These helper types exist to help break a loop
-  /**
-   * @deprecated - {@link CreateDataForName}
-   */
-  type ConstructorDataForName<T extends Document.Type> = CreateData[T];
 
   // TODO(LukeAbby): Actually make this distinguishable from `CreateDataForName`.
   type UpdateDataForName<T extends Document.Type> = CreateData[T];
@@ -1191,9 +1187,7 @@ declare namespace Document {
     metadata: { name: SystemType };
   };
 
-  type ConfiguredClassForName<Name extends Type> = ConfiguredDocumentClass[Name];
-
-  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = ConfiguredClassForName<
+  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = ImplementationClassFor<
     NameFor<ConcreteDocument>
   >;
 
@@ -1225,7 +1219,8 @@ declare namespace Document {
   type NameFor<ConcreteDocument extends Document.Internal.Constructor> =
     ConcreteDocument[" fvtt_types_internal_document_name_static"];
 
-  type ConfiguredInstanceForName<Name extends Type> = MakeConform<ConfiguredDocumentInstance[Name], Document.Any>;
+  type ImplementationInstanceFor<Name extends Type> = MakeConform<ConfiguredDocumentInstance[Name], Document.Any>;
+  type ImplementationClassFor<Name extends Type> = ConfiguredDocumentClass[Name];
 
   type ConfiguredObjectClassForName<Name extends PlaceableType> = CONFIG[Name]["objectClass"];
   type ConfiguredObjectInstanceForName<Name extends PlaceableType> = FixedInstanceType<CONFIG[Name]["objectClass"]>;
@@ -1235,15 +1230,6 @@ declare namespace Document {
   type ConfiguredSourceForName<Name extends Type> = GetKey<SourceConfig, Name, EmptyObject>;
 
   type ConfiguredFlagsForName<Name extends Type> = GetKey<FlagConfig, Name, EmptyObject>;
-
-  /**
-   * @deprecated {@link SchemaField.PersistedData | `SchemaField.PersistedData<Schema>``}
-   */
-  type ToObjectFalseType<T extends Document.Internal.Instance.Any> = T extends {
-    toObject: (source: false) => infer U;
-  }
-    ? U
-    : T;
 
   type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
     ConcreteDocument extends Internal.Instance<infer _1, infer Schema, infer _2> ? Schema : never;
@@ -1500,14 +1486,6 @@ declare namespace Document {
     }
   }
 
-  /**
-   * @deprecated {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
-   */
-  type DatabaseOperationsFor<
-    Name extends Document.Type,
-    ConcreteOperation extends Document.Database.Operation,
-  > = Document.Database.OperationOf<Name, ConcreteOperation>;
-
   type ConfiguredSheetClassFor<Name extends Document.Type> = MakeConform<
     GetKey<GetKey<CONFIG, Name>, "sheetClass">,
     AnyConstructor
@@ -1541,16 +1519,19 @@ declare namespace Document {
 
     /** Used for {@link Document.createDocuments} */
     type CreateOperation<Op extends DatabaseCreateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;
+
     /** Used for {@link Document._preCreateOperation} */
     type PreCreateOperationStatic<Op extends DatabaseCreateOperation> = InexactPartial<
       Op,
       Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "renderSheet" | "data" | "noHook" | "pack" | "parent">
     >;
+
     /** Used for {@link Document#_preCreate} */
     type PreCreateOperationInstance<Op extends DatabaseCreateOperation> = Omit<
       PreCreateOperationStatic<Op>,
       "data" | "noHook" | "pack" | "parent"
     >;
+
     /** Used for {@link Document#_onCreate} */
     type OnCreateOperation<Op extends DatabaseCreateOperation> = Omit<
       Op,
@@ -1559,6 +1540,7 @@ declare namespace Document {
 
     /** Used for {@link Document.updateDocuments} */
     type UpdateOperation<Op extends DatabaseUpdateOperation> = NullishProps<Omit<Op, "updates" | "modifiedTime">>;
+
     /** Used for {@link Document._preUpdateOperation} */
     type PreUpdateOperationStatic<Op extends DatabaseUpdateOperation> = InexactPartial<
       Op,
@@ -1567,11 +1549,13 @@ declare namespace Document {
         "modifiedTime" | "diff" | "recursive" | "render" | "updates" | "restoreDelta" | "noHook" | "pack" | "parent"
       >
     >;
+
     /** Used for {@link Document#_preUpdate} */
     type PreUpdateOperationInstance<Op extends DatabaseUpdateOperation> = Omit<
       PreUpdateOperationStatic<Op>,
       "updates" | "restoreDelta" | "noHook" | "pack" | "parent"
     >;
+
     /** Used for {@link Document#_onUpdate} */
     type OnUpdateOperation<Op extends DatabaseUpdateOperation> = Omit<
       Op,
@@ -1580,21 +1564,34 @@ declare namespace Document {
 
     /** Used for {@link Document.deleteDocuments} */
     type DeleteOperation<Op extends DatabaseDeleteOperation> = NullishProps<Omit<Op, "ids" | "modifiedTime">>;
+
     /** Used for {@link Document._preDeleteOperation} */
     type PreDeleteOperationStatic<Op extends DatabaseDeleteOperation> = InexactPartial<
       Op,
       Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "ids" | "deleteAll" | "noHook" | "pack" | "parent">
     >;
+
     /** Used for {@link Document#_preDelete} */
     type PreDeleteOperationInstance<Op extends DatabaseDeleteOperation> = Omit<
       InexactPartial<Op, Exclude<AllKeysOf<Op>, "modifiedTime" | "render">>,
       "ids" | "deleteAll" | "noHook" | "pack" | "parent"
     >;
+
     /** Used for {@link Document#_onDelete} */
     type OnDeleteOperation<Op extends DatabaseDeleteOperation> = Omit<
       Op,
       "ids" | "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
     >;
+
+    /**
+     * This is a helper type that gets the right DatabaseOperation (including the
+     * proper options) for a particular Document type.
+     */
+    type OperationOf<
+      T extends Document.Type,
+      Operation extends Database.Operation,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+    > = DatabaseOperationMap[T][Operation];
 
     /**
      * @deprecated - TODO: Delete this once it's been fully removed.
@@ -1609,16 +1606,6 @@ declare namespace Document {
       update: AnyObject;
       delete: AnyObject;
     }
-
-    /**
-     * This is a helper type that gets the right DatabaseOperation (including the
-     * proper options) for a particular Document type.
-     */
-    type OperationOf<
-      T extends Document.Type,
-      Operation extends Database.Operation,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-    > = DatabaseOperationMap[T][Operation];
   }
 
   interface DataFieldShimOptions {
@@ -1641,7 +1628,7 @@ declare namespace Document {
     : {
         /** A parent document within which the created Document should belong */
         parent: Parent;
-      }
+      };
 
   type DefaultNameContext<SubType extends string, Parent extends Document.Any | null> = {
     /** The sub-type of the document */
@@ -1649,7 +1636,7 @@ declare namespace Document {
 
     /** A compendium pack within which the Document should be created */
     pack?: string | undefined;
-  } & ParentContext<Parent>
+  } & ParentContext<Parent>;
 
   interface FromDropDataOptions {
     /**
@@ -1688,6 +1675,38 @@ declare namespace Document {
      */
     exact?: boolean | undefined;
   }
+
+  /**
+   * @deprecated {@link ImplementationInstanceFor | `ImplementationInstanceFor`}
+   */
+  type ConfiguredInstanceForName<Name extends Type> = ImplementationInstanceFor<Name>;
+
+  /**
+   * @deprecated {@link ImplementationClassFor | `ImplementationClassFor`}
+   */
+  type ConfiguredClassForName<Name extends Type> = ImplementationClassFor<Name>;
+
+  /**
+   * @deprecated {@link SchemaField.PersistedData | `SchemaField.PersistedData<Schema>`}
+   */
+  type ToObjectFalseType<T extends Document.Internal.Instance.Any> = T extends {
+    toObject: (source: false) => infer U;
+  }
+    ? U
+    : T;
+
+  /**
+   * @deprecated {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
+   */
+  type DatabaseOperationsFor<
+    Name extends Document.Type,
+    ConcreteOperation extends Document.Database.Operation,
+  > = Document.Database.OperationOf<Name, ConcreteOperation>;
+
+  /**
+   * @deprecated - {@link CreateDataForName}
+   */
+  type ConstructorDataForName<T extends Document.Type> = CreateData[T];
 }
 
 /** @deprecated {@link Document.Database.Operation | `Document.Database.Operation`} */

@@ -12,13 +12,13 @@ declare global {
      * The implementation of the Cards document instance configured through `CONFIG.Cards.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCards | `configuration/ConfiguredCards`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Cards">;
+    type Implementation = Document.ImplementationInstanceFor<"Cards">;
 
     /**
      * The implementation of the Cards document configured through `CONFIG.Cards.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Cards">;
+    type ImplementationClass = Document.ImplementationClassFor<"Cards">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
@@ -587,9 +587,7 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(
-      context?: Document.DefaultNameContext<Cards.SubType, Cards.Parent>,
-    ): string;
+    static override defaultName(context?: Document.DefaultNameContext<Cards.SubType, Cards.Parent>): string;
 
     static override createDialog(
       data?: Document.CreateDialogData<Cards.CreateData>,

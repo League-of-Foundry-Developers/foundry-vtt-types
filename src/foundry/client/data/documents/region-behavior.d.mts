@@ -10,13 +10,13 @@ declare global {
      * The implementation of the RegionBehavior document instance configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRegionBehavior | `configuration/ConfiguredRegionBehavior`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"RegionBehavior">;
+    type Implementation = Document.ImplementationInstanceFor<"RegionBehavior">;
 
     /**
      * The implementation of the RegionBehavior document configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"RegionBehavior">;
+    type ImplementationClass = Document.ImplementationClassFor<"RegionBehavior">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

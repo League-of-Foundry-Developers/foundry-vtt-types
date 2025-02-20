@@ -9,13 +9,13 @@ declare global {
      * The implementation of the Adventure document instance configured through `CONFIG.Adventure.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredAdventure | `configuration/ConfiguredAdventure`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Adventure">;
+    type Implementation = Document.ImplementationInstanceFor<"Adventure">;
 
     /**
      * The implementation of the Adventure document configured through `CONFIG.Adventure.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Adventure">;
+    type ImplementationClass = Document.ImplementationClassFor<"Adventure">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
@@ -363,12 +363,12 @@ declare global {
 
 type DocumentDataRecord = {
   [K in AdventureDocumentTypes]?: foundry.data.fields.SchemaField.AssignmentData<
-    ReturnType<Document.ConfiguredClassForName<K>["defineSchema"]>
+    ReturnType<Document.ImplementationClassFor<K>["defineSchema"]>
   >[];
 };
 
 type DocumentResult = {
-  [K in AdventureDocumentTypes]?: FixedInstanceType<Document.ConfiguredClassForName<K>>[];
+  [K in AdventureDocumentTypes]?: FixedInstanceType<Document.ImplementationClassFor<K>>[];
 };
 
 type AdventureDocumentTypes = Exclude<FolderDocumentTypes, "Adventure"> | "Folder";

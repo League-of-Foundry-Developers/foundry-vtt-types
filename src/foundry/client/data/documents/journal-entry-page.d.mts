@@ -11,13 +11,13 @@ declare global {
      * The implementation of the JournalEntryPage document instance configured through `CONFIG.JournalEntryPage.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredJournalEntryPage | `configuration/ConfiguredJournalEntryPage`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"JournalEntryPage">;
+    type Implementation = Document.ImplementationInstanceFor<"JournalEntryPage">;
 
     /**
      * The implementation of the JournalEntryPage document configured through `CONFIG.JournalEntryPage.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"JournalEntryPage">;
+    type ImplementationClass = Document.ImplementationClassFor<"JournalEntryPage">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

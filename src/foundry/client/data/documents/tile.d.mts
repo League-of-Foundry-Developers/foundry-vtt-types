@@ -9,13 +9,13 @@ declare global {
      * The implementation of the TileDocument document instance configured through `CONFIG.Tile.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTileDocument | `configuration/ConfiguredTileDocument`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Tile">;
+    type Implementation = Document.ImplementationInstanceFor<"Tile">;
 
     /**
      * The implementation of the TileDocument document configured through `CONFIG.Tile.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Tile">;
+    type ImplementationClass = Document.ImplementationClassFor<"Tile">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

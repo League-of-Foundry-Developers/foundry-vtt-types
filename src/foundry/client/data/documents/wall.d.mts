@@ -10,13 +10,13 @@ declare global {
      * The implementation of the WallDocument document instance configured through `CONFIG.Wall.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredWallDocument | `configuration/ConfiguredWallDocument`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Wall">;
+    type Implementation = Document.ImplementationInstanceFor<"Wall">;
 
     /**
      * The implementation of the WallDocument document configured through `CONFIG.Wall.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Wall">;
+    type ImplementationClass = Document.ImplementationClassFor<"Wall">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

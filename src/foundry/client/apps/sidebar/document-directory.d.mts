@@ -31,7 +31,7 @@ declare global {
     /**
      * References to the set of Documents which are displayed in the Sidebar
      */
-    documents: FolderType extends Document.Type ? Document.ConfiguredInstanceForName<FolderType>[] : undefined;
+    documents: FolderType extends Document.Type ? Document.ImplementationInstanceFor<FolderType>[] : undefined;
 
     /**
      * Reference the set of Folders which exist in this Sidebar

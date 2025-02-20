@@ -37,7 +37,7 @@ declare global {
      *
      * @deprecated {@link AmbientLightDocument.ImplementationClass | `AmbientLightDocument.ImplementationClass`}
      */
-    type ImplementationClass = AmbientLightDocument.Implementation;
+    type ImplementationClass = AmbientLightDocument.ImplementationClass;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshField: boolean;

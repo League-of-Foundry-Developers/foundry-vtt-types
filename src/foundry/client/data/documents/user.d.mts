@@ -11,13 +11,13 @@ declare global {
      * The implementation of the User document instance configured through `CONFIG.User.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredUser | `configuration/ConfiguredUser`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"User">;
+    type Implementation = Document.ImplementationInstanceFor<"User">;
 
     /**
      * The implementation of the User document configured through `CONFIG.User.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"User">;
+    type ImplementationClass = Document.ImplementationClassFor<"User">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

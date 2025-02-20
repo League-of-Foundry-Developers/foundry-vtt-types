@@ -12,13 +12,13 @@ declare global {
      * The implementation of the TokenDocument document instance configured through `CONFIG.Token.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTokenDocument | `configuration/ConfiguredTokenDocument`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Token">;
+    type Implementation = Document.ImplementationInstanceFor<"Token">;
 
     /**
      * The implementation of the TokenDocument document configured through `CONFIG.Token.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Token">;
+    type ImplementationClass = Document.ImplementationClassFor<"Token">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
@@ -729,7 +729,7 @@ declare global {
 
     override getEmbeddedCollection<DocType extends Document.Type>(
       embeddedName: DocType,
-    ): Collection<Document.ConfiguredInstanceForName<DocType>>;
+    ): Collection<Document.ImplementationInstanceFor<DocType>>;
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,

@@ -294,7 +294,7 @@ declare global {
      */
     Actor: {
       /** @defaultValue `Actor` */
-      documentClass: Document.ConfiguredClassForName<"Actor">;
+      documentClass: Document.ImplementationClassFor<"Actor">;
 
       /** @defaultValue `Actors` */
       collection: Actors.AnyConstructor;
@@ -339,7 +339,7 @@ declare global {
      */
     Adventure: {
       /** @defaultValue `foundry.documents.BaseAdventure` */
-      documentClass: Document.ConfiguredClassForName<"Adventure">;
+      documentClass: Document.ImplementationClassFor<"Adventure">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -372,7 +372,7 @@ declare global {
       compendiumIndexFields: string[];
 
       /** @defaultValue `Cards` */
-      documentClass: Document.ConfiguredClassForName<"Cards">;
+      documentClass: Document.ImplementationClassFor<"Cards">;
 
       /** @defaultValue `"fa-solid fa-cards"` */
       sidebarIcon: string;
@@ -430,7 +430,7 @@ declare global {
      */
     ChatMessage: {
       /** @defaultValue `ChatMessage` */
-      documentClass: Document.ConfiguredClassForName<"ChatMessage">;
+      documentClass: Document.ImplementationClassFor<"ChatMessage">;
 
       /** @defaultValue `Messages` */
       collection: Messages.AnyConstructor;
@@ -470,7 +470,7 @@ declare global {
      */
     Combat: {
       /** @defaultValue `Combat` */
-      documentClass: Document.ConfiguredClassForName<"Combat">;
+      documentClass: Document.ImplementationClassFor<"Combat">;
 
       /** @defaultValue `CombatEncounters` */
       collection: CombatEncounters.AnyConstructor;
@@ -538,7 +538,7 @@ declare global {
      */
     FogExploration: {
       /** @defaultValue `FogExploration` */
-      documentClass: Document.ConfiguredClassForName<"FogExploration">;
+      documentClass: Document.ImplementationClassFor<"FogExploration">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -559,7 +559,7 @@ declare global {
      */
     Folder: {
       /** @defaultValue `Folder` */
-      documentClass: Document.ConfiguredClassForName<"Folder">;
+      documentClass: Document.ImplementationClassFor<"Folder">;
 
       /** @defaultValue `Folders` */
       collection: Folders.AnyConstructor;
@@ -583,7 +583,7 @@ declare global {
      */
     Item: {
       /** @defaultValue `Item` */
-      documentClass: Document.ConfiguredClassForName<"Item">;
+      documentClass: Document.ImplementationClassFor<"Item">;
 
       /** @defaultValue `Items` */
       collection: Items.AnyConstructor;
@@ -620,7 +620,7 @@ declare global {
      */
     JournalEntry: {
       /** @defaultValue `JournalEntry` */
-      documentClass: Document.ConfiguredClassForName<"JournalEntry">;
+      documentClass: Document.ImplementationClassFor<"JournalEntry">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -733,7 +733,7 @@ declare global {
      */
     Macro: {
       /** @defaultValue `Macro` */
-      documentClass: Document.ConfiguredClassForName<"Macro">;
+      documentClass: Document.ImplementationClassFor<"Macro">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -763,7 +763,7 @@ declare global {
      */
     Playlist: {
       /** @defaultValue `Playlist` */
-      documentClass: Document.ConfiguredClassForName<"Playlist">;
+      documentClass: Document.ImplementationClassFor<"Playlist">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -796,7 +796,7 @@ declare global {
      */
     RollTable: {
       /** @defaultValue `RollTable` */
-      documentClass: Document.ConfiguredClassForName<"RollTable">;
+      documentClass: Document.ImplementationClassFor<"RollTable">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -832,7 +832,7 @@ declare global {
      */
     Scene: {
       /** @defaultValue `Scene` */
-      documentClass: Document.ConfiguredClassForName<"Scene">;
+      documentClass: Document.ImplementationClassFor<"Scene">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -859,7 +859,7 @@ declare global {
 
     Setting: {
       /** @defaultValue `Setting` */
-      documentClass: Document.ConfiguredClassForName<"Setting">;
+      documentClass: Document.ImplementationClassFor<"Setting">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -880,7 +880,7 @@ declare global {
      */
     User: {
       /** @defaultValue `User` */
-      documentClass: Document.ConfiguredClassForName<"User">;
+      documentClass: Document.ImplementationClassFor<"User">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2077,7 +2077,7 @@ declare global {
      */
     ActiveEffect: {
       /** @defaultValue `ActiveEffect` */
-      documentClass: Document.ConfiguredClassForName<"ActiveEffect">;
+      documentClass: Document.ImplementationClassFor<"ActiveEffect">;
 
       /**
        * @defaultValue `{}`
@@ -2114,7 +2114,7 @@ declare global {
      */
     ActorDelta: {
       /** @defaultValue `ActorDelta` */
-      documentClass: Document.ConfiguredClassForName<"ActorDelta">;
+      documentClass: Document.ImplementationClassFor<"ActorDelta">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2132,7 +2132,7 @@ declare global {
      */
     Card: {
       /** @defaultValue `Card` */
-      documentClass: Document.ConfiguredClassForName<"Card">;
+      documentClass: Document.ImplementationClassFor<"Card">;
 
       /**
        * @defaultValue `{}`
@@ -2160,7 +2160,7 @@ declare global {
      */
     TableResult: {
       /** @defaultValue `TableResult` */
-      documentClass: Document.ConfiguredClassForName<"TableResult">;
+      documentClass: Document.ImplementationClassFor<"TableResult">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2175,7 +2175,7 @@ declare global {
 
     JournalEntryPage: {
       /** @defaultValue `JournalEntryPage` */
-      documentClass: Document.ConfiguredClassForName<"JournalEntryPage">;
+      documentClass: Document.ImplementationClassFor<"JournalEntryPage">;
 
       /**
        * @defaultValue `{}`
@@ -2219,7 +2219,7 @@ declare global {
      */
     PlaylistSound: {
       /** @defaultValue `PlaylistSound` */
-      documentClass: Document.ConfiguredClassForName<"PlaylistSound">;
+      documentClass: Document.ImplementationClassFor<"PlaylistSound">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2237,7 +2237,7 @@ declare global {
      */
     AmbientLight: {
       /** @defaultValue `AmbientLightDocument` */
-      documentClass: Document.ConfiguredClassForName<"AmbientLight">;
+      documentClass: Document.ImplementationClassFor<"AmbientLight">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2261,7 +2261,7 @@ declare global {
      */
     AmbientSound: {
       /** @defaultValue `AmbientSoundDocument` */
-      documentClass: Document.ConfiguredClassForName<"AmbientSound">;
+      documentClass: Document.ImplementationClassFor<"AmbientSound">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2285,7 +2285,7 @@ declare global {
      */
     Combatant: {
       /** @defaultValue `Combatant` */
-      documentClass: Document.ConfiguredClassForName<"Combatant">;
+      documentClass: Document.ImplementationClassFor<"Combatant">;
 
       /**
        * @defaultValue `{}`
@@ -2313,7 +2313,7 @@ declare global {
      */
     Drawing: {
       /** @defaultValue `DrawingDocument` */
-      documentClass: Document.ConfiguredClassForName<"Drawing">;
+      documentClass: Document.ImplementationClassFor<"Drawing">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2362,7 +2362,7 @@ declare global {
       };
 
       /** @defaultValue `MeasuredTemplateDocument` */
-      documentClass: Document.ConfiguredClassForName<"MeasuredTemplate">;
+      documentClass: Document.ImplementationClassFor<"MeasuredTemplate">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2386,7 +2386,7 @@ declare global {
      */
     Note: {
       /** @defaultValue `NoteDocument` */
-      documentClass: Document.ConfiguredClassForName<"Note">;
+      documentClass: Document.ImplementationClassFor<"Note">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2407,7 +2407,7 @@ declare global {
 
     Region: {
       /** @defaultValue `RegionDocument` */
-      documentClass: Document.ConfiguredClassForName<"Region">;
+      documentClass: Document.ImplementationClassFor<"Region">;
 
       /** @defaultValue `Region` */
       objectClass: ConfiguredObjectClassOrDefault<typeof Region>;
@@ -2431,7 +2431,7 @@ declare global {
      */
     Tile: {
       /** @defaultValue `TileDocument` */
-      documentClass: Document.ConfiguredClassForName<"Tile">;
+      documentClass: Document.ImplementationClassFor<"Tile">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2458,7 +2458,7 @@ declare global {
      */
     Token: {
       /** @defaultValue `TokenDocument` */
-      documentClass: Document.ConfiguredClassForName<"Token">;
+      documentClass: Document.ImplementationClassFor<"Token">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2497,7 +2497,7 @@ declare global {
      */
     Wall: {
       /** @defaultValue `WallDocument` */
-      documentClass: Document.ConfiguredClassForName<"Wall">;
+      documentClass: Document.ImplementationClassFor<"Wall">;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`

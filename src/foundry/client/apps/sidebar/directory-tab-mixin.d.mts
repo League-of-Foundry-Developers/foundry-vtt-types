@@ -275,7 +275,7 @@ declare global {
   ): Mixin<typeof DirectoryApplication, BaseApplication>;
 
   namespace DirectoryApplicationMixin {
-    type AnyMixedConstructor = ReturnType<typeof DirectoryApplicationMixin<BaseClass>>;
+    interface AnyMixedConstructor extends ReturnType<typeof DirectoryApplicationMixin<BaseClass>> {}
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = Application.AnyConstructor;

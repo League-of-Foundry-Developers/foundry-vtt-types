@@ -61,7 +61,7 @@ declare abstract class BaseActorDelta<
     delta: BaseActorDelta,
     baseActor: documents.BaseActor,
     context: unknown,
-  ): Document.ConfiguredClassForName<"Actor"> | null;
+  ): Document.ImplementationClassFor<"Actor"> | null;
 
   static migrateData(source: AnyMutableObject): AnyMutableObject;
 

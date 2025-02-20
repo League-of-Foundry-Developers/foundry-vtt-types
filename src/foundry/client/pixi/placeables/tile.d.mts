@@ -34,7 +34,7 @@ declare global {
      *
      * @deprecated {@link TileDocument.ImplementationClass | `TileDocument.ImplementationClass`}
      */
-    type ImplementationClass = TileDocument.Implementation;
+    type ImplementationClass = TileDocument.ImplementationClass;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshShape: boolean;

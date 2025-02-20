@@ -12,13 +12,13 @@ declare global {
      * The implementation of the ChatMessage document instance configured through `CONFIG.ChatMessage.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredChatMessage | `configuration/ConfiguredChatMessage`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"ChatMessage">;
+    type Implementation = Document.ImplementationInstanceFor<"ChatMessage">;
 
     /**
      * The implementation of the ChatMessage document configured through `CONFIG.ChatMessage.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"ChatMessage">;
+    type ImplementationClass = Document.ImplementationClassFor<"ChatMessage">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

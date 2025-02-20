@@ -9,13 +9,13 @@ declare global {
      * The implementation of the Region document instance configured through `CONFIG.Region.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRegion | `configuration/ConfiguredRegion`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Region">;
+    type Implementation = Document.ImplementationInstanceFor<"Region">;
 
     /**
      * The implementation of the Region document configured through `CONFIG.Region.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Region">;
+    type ImplementationClass = Document.ImplementationClassFor<"Region">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

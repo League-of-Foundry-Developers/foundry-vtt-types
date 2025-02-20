@@ -10,13 +10,13 @@ declare global {
      * The implementation of the RollTable document instance configured through `CONFIG.RollTable.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRollTable | `configuration/ConfiguredRollTable`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"RollTable">;
+    type Implementation = Document.ImplementationInstanceFor<"RollTable">;
 
     /**
      * The implementation of the RollTable document configured through `CONFIG.RollTable.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"RollTable">;
+    type ImplementationClass = Document.ImplementationClassFor<"RollTable">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

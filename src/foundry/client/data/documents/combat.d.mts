@@ -12,13 +12,13 @@ declare global {
      * The implementation of the Combat document instance configured through `CONFIG.Combat.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombat | `configuration/ConfiguredCombat`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Combat">;
+    type Implementation = Document.ImplementationInstanceFor<"Combat">;
 
     /**
      * The implementation of the Combat document configured through `CONFIG.Combat.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Combat">;
+    type ImplementationClass = Document.ImplementationClassFor<"Combat">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

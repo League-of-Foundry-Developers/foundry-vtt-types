@@ -98,8 +98,9 @@ declare global {
   ): Mixin<typeof DirectoryCollection, BaseCollection>;
 
   namespace DirectoryCollectionMixin {
-    type AnyMixedConstructor = ReturnType<typeof DirectoryCollectionMixin<foundry.utils.Collection.AnyConstructor>>;
-    type AnyMixed = FixedInstanceType<FixedInstanceType<AnyMixedConstructor>>;
+    interface AnyMixedConstructor
+      extends ReturnType<typeof DirectoryCollectionMixin<foundry.utils.Collection.AnyConstructor>> {}
+    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = foundry.utils.Collection.AnyConstructor;
 

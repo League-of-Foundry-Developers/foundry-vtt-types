@@ -35,7 +35,7 @@ declare global {
      *
      * @deprecated {@link TokenDocument.ImplementationClass | `TokenDocument.ImplementationClass`}
      */
-    type ImplementationClass = TokenDocument.Implementation;
+    type ImplementationClass = TokenDocument.ImplementationClass;
 
     type Schema = BaseToken.Schema;
     type Parent = BaseToken.Parent;

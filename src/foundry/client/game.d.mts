@@ -745,8 +745,8 @@ declare global {
     } & {
       [DocumentType in  // eslint-disable-next-line @typescript-eslint/no-deprecated
         | foundry.CONST.DOCUMENT_TYPES
-        | "Setting" as Document.ConfiguredClassForName<DocumentType>["metadata"]["collection"]]?: FixedInstanceType<
-        Document.ConfiguredClassForName<DocumentType>
+        | "Setting" as Document.ImplementationClassFor<DocumentType>["metadata"]["collection"]]?: FixedInstanceType<
+        Document.ImplementationClassFor<DocumentType>
       >["_source"][];
     };
 

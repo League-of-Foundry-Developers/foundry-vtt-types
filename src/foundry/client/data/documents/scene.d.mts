@@ -10,13 +10,13 @@ declare global {
      * The implementation of the Scene document instance configured through `CONFIG.Scene.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredScene | `configuration/ConfiguredScene`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Scene">;
+    type Implementation = Document.ImplementationInstanceFor<"Scene">;
 
     /**
      * The implementation of the Scene document configured through `CONFIG.Scene.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Scene">;
+    type ImplementationClass = Document.ImplementationClassFor<"Scene">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

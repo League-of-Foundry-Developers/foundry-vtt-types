@@ -10,13 +10,16 @@ new ActiveEffect.implementation();
 new ActiveEffect.implementation({});
 
 // @ts-expect-error - ActiveEffect.createDialog requires a parent
-await ActiveEffect.createDialog({}, {})
+await ActiveEffect.createDialog({}, {});
 
 declare const actor: Actor.Implementation;
 
-await ActiveEffect.createDialog({}, {
-  parent: actor
-})
+await ActiveEffect.createDialog(
+  {},
+  {
+    parent: actor,
+  },
+);
 
 const effect = new ActiveEffect.implementation({ name: "My effect" });
 expectTypeOf(effect).toEqualTypeOf<ActiveEffect.Implementation>();

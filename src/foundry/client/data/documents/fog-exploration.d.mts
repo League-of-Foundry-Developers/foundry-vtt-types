@@ -11,13 +11,13 @@ declare global {
      * The implementation of the FogExploration document instance configured through `CONFIG.FogExploration.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredFogExploration | `configuration/ConfiguredFogExploration`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"FogExploration">;
+    type Implementation = Document.ImplementationInstanceFor<"FogExploration">;
 
     /**
      * The implementation of the FogExploration document configured through `CONFIG.FogExploration.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"FogExploration">;
+    type ImplementationClass = Document.ImplementationClassFor<"FogExploration">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

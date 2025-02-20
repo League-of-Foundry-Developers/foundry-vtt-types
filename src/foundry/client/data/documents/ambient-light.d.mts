@@ -9,13 +9,13 @@ declare global {
      * The implementation of the AmbientLightDocument document instance configured through `CONFIG.AmbientLight.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"AmbientLight">;
+    type Implementation = Document.ImplementationInstanceFor<"AmbientLight">;
 
     /**
      * The implementation of the AmbientLightDocument document configured through `CONFIG.AmbientLight.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"AmbientLight">;
+    type ImplementationClass = Document.ImplementationClassFor<"AmbientLight">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

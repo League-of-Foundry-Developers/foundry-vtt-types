@@ -12,13 +12,13 @@ declare global {
      * The implementation of the ActiveEffect document instance configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActiveEffect | `configuration/ConfiguredActiveEffect`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"ActiveEffect">;
+    type Implementation = Document.ImplementationInstanceFor<"ActiveEffect">;
 
     /**
      * The implementation of the ActiveEffect document configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"ActiveEffect">;
+    type ImplementationClass = Document.ImplementationClassFor<"ActiveEffect">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
@@ -460,7 +460,7 @@ declare global {
      */
     protected static _fromStatusEffect(
       statusId: string,
-      effectData: ActiveEffect.Data,
+      effectData: ActiveEffect.CreateData,
       options?: Document.ConstructionContext<Document.Any | null>,
     ): Promise<ActiveEffect.Implementation>;
 
@@ -550,7 +550,7 @@ declare global {
      * @param change - The change data being applied
      * @returns The resulting applied value
      */
-    apply(actor: Actor.Implementation, change: ActiveEffect.ActiveEffect.EffectChangeData): unknown;
+    apply(actor: Actor.Implementation, change: ActiveEffect.EffectChangeData): unknown;
 
     /**
      * Apply this ActiveEffect to a provided Actor using a heuristic to infer the value types based on the current value
@@ -602,7 +602,7 @@ declare global {
      */
     protected _applyAdd(
       actor: Actor.Implementation,
-      change: ActiveEffect.ActiveEffect.EffectChangeData,
+      change: ActiveEffect.EffectChangeData,
       current: any,
       delta: any,
       changes: AnyObject,
@@ -620,7 +620,7 @@ declare global {
      */
     protected _applyMultiply(
       actor: Actor.Implementation,
-      change: ActiveEffect.ActiveEffect.EffectChangeData,
+      change: ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
       changes: AnyObject,
@@ -638,7 +638,7 @@ declare global {
      */
     protected _applyOverride(
       actor: Actor.Implementation,
-      change: ActiveEffect.ActiveEffect.EffectChangeData,
+      change: ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
       changes: AnyObject,
@@ -656,7 +656,7 @@ declare global {
      */
     protected _applyUpgrade(
       actor: Actor.Implementation,
-      change: ActiveEffect.ActiveEffect.EffectChangeData,
+      change: ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
       changes: AnyObject,
@@ -673,7 +673,7 @@ declare global {
      */
     protected _applyCustom(
       actor: Actor.Implementation,
-      change: ActiveEffect.ActiveEffect.EffectChangeData,
+      change: ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
       changes: AnyObject,

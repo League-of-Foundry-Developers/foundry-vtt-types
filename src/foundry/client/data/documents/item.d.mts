@@ -10,13 +10,13 @@ declare global {
      * The implementation of the Item document instance configured through `CONFIG.Item.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredItem | `configuration/ConfiguredItem`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Item">;
+    type Implementation = Document.ImplementationInstanceFor<"Item">;
 
     /**
      * The implementation of the Item document configured through `CONFIG.Item.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Item">;
+    type ImplementationClass = Document.ImplementationClassFor<"Item">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

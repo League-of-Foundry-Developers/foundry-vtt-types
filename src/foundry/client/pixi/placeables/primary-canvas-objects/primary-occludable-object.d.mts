@@ -151,7 +151,7 @@ declare global {
   ): Mixin<typeof PrimaryOccludableObject, ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>>;
 
   namespace PrimaryOccludableObjectMixin {
-    type AnyMixedConstructor = ReturnType<typeof PrimaryOccludableObjectMixin<BaseClass>>;
+    interface AnyMixedConstructor extends ReturnType<typeof PrimaryOccludableObjectMixin<BaseClass>> {}
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = PIXI.Container.AnyConstructor;

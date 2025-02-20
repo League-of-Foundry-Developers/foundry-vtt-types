@@ -127,7 +127,7 @@ declare global {
   ): Mixin<typeof RenderFlagObject, BaseClass>;
 
   namespace RenderFlagsMixin {
-    type AnyMixedConstructor = ReturnType<typeof RenderFlagsMixin<BaseClass>>;
+    interface AnyMixedConstructor extends ReturnType<typeof RenderFlagsMixin<BaseClass>> {}
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = AnyConstructor;

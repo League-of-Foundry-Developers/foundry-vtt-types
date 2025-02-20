@@ -8,13 +8,13 @@ declare global {
      * The implementation of the AmbientSoundDocument document instance configured through `CONFIG.AmbientSound.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"AmbientSound">;
+    type Implementation = Document.ImplementationInstanceFor<"AmbientSound">;
 
     /**
      * The implementation of the AmbientSoundDocument document configured through `CONFIG.AmbientSound.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"AmbientSound">;
+    type ImplementationClass = Document.ImplementationClassFor<"AmbientSound">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

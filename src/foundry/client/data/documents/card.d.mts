@@ -13,13 +13,13 @@ declare global {
      * The implementation of the Card document instance configured through `CONFIG.Card.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCard | `configuration/ConfiguredCard`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Card">;
+    type Implementation = Document.ImplementationInstanceFor<"Card">;
 
     /**
      * The implementation of the Card document configured through `CONFIG.Card.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Card">;
+    type ImplementationClass = Document.ImplementationClassFor<"Card">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

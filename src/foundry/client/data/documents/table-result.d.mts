@@ -10,13 +10,13 @@ declare global {
      * The implementation of the TableResult document instance configured through `CONFIG.TableResult.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTableResult | `configuration/ConfiguredTableResult`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"TableResult">;
+    type Implementation = Document.ImplementationInstanceFor<"TableResult">;
 
     /**
      * The implementation of the TableResult document configured through `CONFIG.TableResult.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"TableResult">;
+    type ImplementationClass = Document.ImplementationClassFor<"TableResult">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

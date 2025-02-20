@@ -40,7 +40,7 @@ declare global {
    */
   class CompendiumCollection<T extends CompendiumCollection.Metadata> extends DirectoryCollectionMixin(
     DocumentCollection,
-  )<Document.ConfiguredClassForName<T["type"]>, T["name"]> {
+  )<Document.ImplementationClassFor<T["type"]>, T["name"]> {
     /** @param metadata - The compendium metadata, an object provided by game.data */
     constructor(metadata: CompendiumCollection.ConstructorMetadata<T>);
 
@@ -150,7 +150,7 @@ declare global {
 
     // NOTE(LukeAbby): This override was disabled for the time being because it's erroring.
     // Thankfully it doesn't actually change its parent class's signature.
-    // set(id: string, document: Document.Stored<Document.ConfiguredInstanceForName<T["type"]>>): this;
+    // set(id: string, document: Document.Stored<Document.ImplementationInstanceFor<T["type"]>>): this;
 
     delete: (id: string) => boolean;
 
@@ -168,7 +168,7 @@ declare global {
      * @param id -  The requested Document id
      * @returns The retrieved Document instance
      */
-    getDocument(id: string): Promise<Document.Stored<Document.ConfiguredInstanceForName<T["type"]>> | undefined | null>;
+    getDocument(id: string): Promise<Document.Stored<Document.ImplementationInstanceFor<T["type"]>> | undefined | null>;
 
     /**
      * Load multiple documents from the Compendium pack using a provided query object.
@@ -193,7 +193,7 @@ declare global {
      */
     getDocuments(
       query?: Record<string, unknown>,
-    ): Promise<Document.Stored<Document.ConfiguredInstanceForName<T["type"]>>[]>;
+    ): Promise<Document.Stored<Document.ImplementationInstanceFor<T["type"]>>[]>;
 
     /**
      * Get the ownership level that a User has for this Compendium pack.
@@ -229,9 +229,9 @@ declare global {
      * @returns The imported Document instance
      */
     importDocument(
-      document: Document.ConfiguredInstanceForName<T["type"]>,
+      document: Document.ImplementationInstanceFor<T["type"]>,
       options?: InexactPartial<ClientDocument.CompendiumExportOptions>,
-    ): Promise<Document.Stored<Document.ConfiguredInstanceForName<T["type"]>> | undefined>;
+    ): Promise<Document.Stored<Document.ImplementationInstanceFor<T["type"]>> | undefined>;
 
     /**
      * Import a Folder into this Compendium Collection.
@@ -288,7 +288,7 @@ declare global {
         } & Document.OnCreateOptions<this["metadata"]["type"]> &
           WorldCollection.FromCompendiumOptions
       >,
-    ): Promise<Document.Stored<Document.ConfiguredInstanceForName<T["type"]>>[]>;
+    ): Promise<Document.Stored<Document.ImplementationInstanceFor<T["type"]>>[]>;
 
     /**
      * Provide a dialog form that prompts the user to import the full contents of a Compendium pack into the World.
@@ -300,13 +300,13 @@ declare global {
      */
     importDialog(
       options?: Dialog.Options,
-    ): Promise<Document.Stored<Document.ConfiguredInstanceForName<T["type"]>>[] | null | false>;
+    ): Promise<Document.Stored<Document.ImplementationInstanceFor<T["type"]>>[] | null | false>;
 
     /**
      * Add a Document to the index, capturing it's relevant index attributes
      * @param document -The document to index
      */
-    indexDocument(document: Document.Stored<Document.ConfiguredInstanceForName<T["type"]>>): void;
+    indexDocument(document: Document.Stored<Document.ImplementationInstanceFor<T["type"]>>): void;
 
     /**
      * Prompt the gamemaster with a dialog to configure ownership of this Compendium pack.
@@ -428,12 +428,12 @@ declare global {
        * An array of fields to return as part of the index
        * @defaultValue `[]`
        */
-      fields?: (keyof Document.ConfiguredInstanceForName<T["type"]>["_source"])[];
+      fields?: (keyof Document.ImplementationInstanceFor<T["type"]>["_source"])[];
     }
 
     // TODO: Improve automatic index properties based on document type
     type IndexEntry<T extends CompendiumCollection.Metadata> = { _id: string; uuid: string } & DeepPartial<
-      Document.ConfiguredInstanceForName<T["type"]>["_source"]
+      Document.ImplementationInstanceFor<T["type"]>["_source"]
     >;
   }
 }

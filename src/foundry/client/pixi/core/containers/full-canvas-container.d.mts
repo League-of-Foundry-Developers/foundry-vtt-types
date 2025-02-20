@@ -20,7 +20,7 @@ declare global {
   ): Mixin<typeof FullCanvasObject, BaseClass>;
 
   namespace FullCanvasObjectMixin {
-    type AnyMixedConstructor = ReturnType<typeof FullCanvasObjectMixin<BaseClass>>;
+    interface AnyMixedConstructor extends ReturnType<typeof FullCanvasObjectMixin<BaseClass>> {}
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = PIXI.DisplayObject.AnyConstructor;

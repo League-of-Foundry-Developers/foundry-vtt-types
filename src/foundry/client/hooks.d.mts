@@ -244,7 +244,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call}.
        * @see {@link ActiveEffect#_applyCustom}
        */
-      applyActiveEffect: (actor: Actor.Implementation, change: ActiveEffect.ActiveEffect.EffectChangeData) => boolean | void;
+      applyActiveEffect: (actor: Actor.Implementation, change: ActiveEffect.EffectChangeData) => boolean | void;
 
       /** Compendium */
 

@@ -9,13 +9,13 @@ declare global {
      * The implementation of the DrawingDocument document instance configured through `CONFIG.Drawing.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredDrawingDocument | `configuration/ConfiguredDrawingDocument`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Drawing">;
+    type Implementation = Document.ImplementationInstanceFor<"Drawing">;
 
     /**
      * The implementation of the DrawingDocument document configured through `CONFIG.DrawingDocument.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Drawing">;
+    type ImplementationClass = Document.ImplementationClassFor<"Drawing">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

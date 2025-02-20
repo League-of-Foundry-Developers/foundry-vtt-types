@@ -141,7 +141,7 @@ declare global {
   ): Mixin<typeof ClientPackage, BaseClass>;
 
   namespace ClientPackageMixin {
-    type AnyMixedConstructor = ReturnType<typeof ClientPackageMixin<BaseClass>>;
+    interface AnyMixedConstructor extends ReturnType<typeof ClientPackageMixin<BaseClass>> {}
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = BasePackage.Internal.Constructor;

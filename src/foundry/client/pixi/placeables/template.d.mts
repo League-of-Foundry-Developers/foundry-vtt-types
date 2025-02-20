@@ -34,7 +34,7 @@ declare global {
      *
      * @deprecated {@link MeasuredTemplateDocument.ImplementationClass | `MeasuredTemplateDocument.ImplementationClass`}
      */
-    type ImplementationClass = MeasuredTemplateDocument.Implementation;
+    type ImplementationClass = MeasuredTemplateDocument.ImplementationClass;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshShape: boolean;

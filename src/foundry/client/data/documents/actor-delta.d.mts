@@ -10,13 +10,13 @@ declare global {
      * The implementation of the ActorDelta document instance configured through `CONFIG.ActorDelta.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActorDelta | `configuration/ConfiguredActorDelta`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"ActorDelta">;
+    type Implementation = Document.ImplementationInstanceFor<"ActorDelta">;
 
     /**
      * The implementation of the ActorDelta document configured through `CONFIG.ActorDelta.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"ActorDelta">;
+    type ImplementationClass = Document.ImplementationClassFor<"ActorDelta">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

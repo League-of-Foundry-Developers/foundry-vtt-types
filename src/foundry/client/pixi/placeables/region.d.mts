@@ -38,7 +38,7 @@ declare global {
      *
      * @deprecated {@link RegionDocument.ImplementationClass | `RegionDocument.ImplementationClass`}
      */
-    type ImplementationClass = RegionDocument.Implementation;
+    type ImplementationClass = RegionDocument.ImplementationClass;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {}
 

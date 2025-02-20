@@ -290,7 +290,7 @@ declare global {
      */
     static getDragEventData(
       event: DragEvent,
-    ): PlaceableObject | number | Promise<Document.ConfiguredClassForName<"User">>;
+    ): PlaceableObject | number | Promise<Document.ImplementationClassFor<"User">>;
 
     /**
      * Given a Drop event, returns a Content link if possible such as `@Actor[ABC123]`, else null

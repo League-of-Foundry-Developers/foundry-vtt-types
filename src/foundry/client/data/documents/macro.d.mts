@@ -12,13 +12,13 @@ declare global {
      * The implementation of the Macro document instance configured through `CONFIG.Macro.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredMacro | `configuration/ConfiguredMacro`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Macro">;
+    type Implementation = Document.ImplementationInstanceFor<"Macro">;
 
     /**
      * The implementation of the Macro document configured through `CONFIG.Macro.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Macro">;
+    type ImplementationClass = Document.ImplementationClassFor<"Macro">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

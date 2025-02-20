@@ -11,13 +11,13 @@ declare global {
      * The implementation of the Folder document instance configured through `CONFIG.Folder.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredFolder | `configuration/ConfiguredFolder`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Folder">;
+    type Implementation = Document.ImplementationInstanceFor<"Folder">;
 
     /**
      * The implementation of the Folder document configured through `CONFIG.Folder.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Folder">;
+    type ImplementationClass = Document.ImplementationClassFor<"Folder">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
@@ -275,7 +275,7 @@ declare global {
      * of objects inside the index of the pack that are contained in this Folder.
      */
     // TODO: Handle compendium. This requires the index to be configured.
-    get contents(): Document.ConfiguredInstanceForName<Extract<SubType, Document.Type>>[];
+    get contents(): Document.ImplementationInstanceFor<Extract<SubType, Document.Type>>[];
 
     set contents(value);
 
@@ -283,7 +283,7 @@ declare global {
      * The reference to the Document type which is contained within this Folder.
      */
     // TODO: Compendium Pack index
-    get documentClass(): Document.ConfiguredClassForName<Extract<SubType, Document.Type>>;
+    get documentClass(): Document.ImplementationClassFor<Extract<SubType, Document.Type>>;
 
     /**
      * The reference to the WorldCollection instance which provides Documents to this Folder,

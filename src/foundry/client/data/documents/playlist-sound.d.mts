@@ -10,13 +10,13 @@ declare global {
      * The implementation of the PlaylistSound document instance configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylistSound | `configuration/ConfiguredPlaylistSound`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"PlaylistSound">;
+    type Implementation = Document.ImplementationInstanceFor<"PlaylistSound">;
 
     /**
      * The implementation of the PlaylistSound document configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"PlaylistSound">;
+    type ImplementationClass = Document.ImplementationClassFor<"PlaylistSound">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
@@ -345,7 +345,9 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<"base", Exclude<PlaylistSound.Parent, null>>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", Exclude<PlaylistSound.Parent, null>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<PlaylistSound.CreateData>,

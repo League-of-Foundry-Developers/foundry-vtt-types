@@ -10,13 +10,13 @@ declare global {
      * The implementation of the Playlist document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylist | `configuration/ConfiguredPlaylist`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Playlist">;
+    type Implementation = Document.ImplementationInstanceFor<"Playlist">;
 
     /**
      * The implementation of the Playlist document configured through `CONFIG.Playlist.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Playlist">;
+    type ImplementationClass = Document.ImplementationClassFor<"Playlist">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

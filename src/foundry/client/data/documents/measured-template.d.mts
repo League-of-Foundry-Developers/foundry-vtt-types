@@ -9,13 +9,13 @@ declare global {
      * The implementation of the MeasuredTemplateDocument document instance configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredMeasuredTemplateDocument | `configuration/ConfiguredMeasuredTemplateDocument`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"MeasuredTemplate">;
+    type Implementation = Document.ImplementationInstanceFor<"MeasuredTemplate">;
 
     /**
      * The implementation of the MeasuredTemplateDocument document configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"MeasuredTemplate">;
+    type ImplementationClass = Document.ImplementationClassFor<"MeasuredTemplate">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

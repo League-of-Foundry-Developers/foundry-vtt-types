@@ -10,13 +10,13 @@ declare global {
      * The implementation of the NoteDocument document instance configured through `CONFIG.Note.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredNoteDocument | `configuration/ConfiguredNoteDocument`} in fvtt-types.
      */
-    type Implementation = Document.ConfiguredInstanceForName<"Note">;
+    type Implementation = Document.ImplementationInstanceFor<"Note">;
 
     /**
      * The implementation of the NoteDocument document configured through `CONFIG.Note.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ConfiguredClassForName<"Note">;
+    type ImplementationClass = Document.ImplementationClassFor<"Note">;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,

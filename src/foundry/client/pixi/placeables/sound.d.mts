@@ -35,7 +35,7 @@ declare global {
      *
      * @deprecated {@link AmbientSoundDocument.ImplementationClass | `AmbientSoundDocument.ImplementationClass`}
      */
-    type ImplementationClass = AmbientSoundDocument.Implementation;
+    type ImplementationClass = AmbientSoundDocument.ImplementationClass;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       refreshField: boolean;

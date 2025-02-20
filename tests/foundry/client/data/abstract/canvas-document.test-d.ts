@@ -20,5 +20,5 @@ expectTypeOf(AmbientLightDocument.createDialog()).toEqualTypeOf<Promise<AmbientL
 
 // Test the props
 assertType<FixedInstanceType<Document.ConfiguredObjectClassForName<"AmbientLight">> | null>(doc.object);
-assertType<FixedInstanceType<PlaceablesLayer.ConfiguredClassForName<"AmbientLight">> | null>(doc.layer);
+assertType<FixedInstanceType<PlaceablesLayer.ImplementationClassFor<"AmbientLight">> | null>(doc.layer);
 expectTypeOf(doc.rendered).toEqualTypeOf<boolean>();

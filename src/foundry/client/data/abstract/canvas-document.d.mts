@@ -34,7 +34,7 @@ declare class CanvasDocument<
   /**
    * A reference to the CanvasLayer which contains Document objects of this type.
    */
-  get layer(): FixedInstanceType<PlaceablesLayer.ConfiguredClassForName<PlaceableType>>;
+  get layer(): FixedInstanceType<PlaceablesLayer.ImplementationClassFor<PlaceableType>>;
 
   /**
    * An indicator for whether this document is currently rendered on the game canvas.
