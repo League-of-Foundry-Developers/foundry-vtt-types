@@ -87,7 +87,7 @@ declare global {
      * @param options   - Additional options forwarded to AmbientSound synchronization
      *                    (defaultValue: `{}`)
      */
-    protected _syncPositions(listeners: PIXI.Point[], options?: SoundsLayer.SyncPositionsOptions): void;
+    protected _syncPositions(listeners: PIXI.Point[], options?: SoundsLayer.SyncPositionsOptions | null): void;
 
     /**
      * Configure playback by assigning the muffled state and final playback volume for the sound.
@@ -146,7 +146,7 @@ declare global {
       /** @privateRemarks The examples in the docs show passing a simple `{x, y}` object here, so unlike other places in this layer `Canvas.Point` is appropriate */
       origin: Canvas.Point,
       radius: number,
-      options?: SoundsLayer.PlayAtPositionOptions,
+      options?: SoundsLayer.PlayAtPositionOptions, // not:null (destructured)
     ): Promise<foundry.audio.Sound | null>;
 
     /**

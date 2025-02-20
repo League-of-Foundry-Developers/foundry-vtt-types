@@ -58,7 +58,10 @@ declare global {
      * @param options - Options which modify the pan operation.
      * @returns A Promise which resolves once the pan animation has concluded.
      */
-    panToNote(note: Note.ConfiguredInstance, options?: NotesLayer.PanToNoteOptions): Promise<void>;
+    panToNote(
+      note: Note.ConfiguredInstance,
+      options?: NotesLayer.PanToNoteOptions, // not:null (destructured)
+    ): Promise<void>;
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onClickLeft(event: PIXI.FederatedEvent): Promise<Note.ConfiguredInstance | void>;

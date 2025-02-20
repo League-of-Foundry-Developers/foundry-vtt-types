@@ -204,7 +204,9 @@ declare global {
      *                  (default: `{}`)
      * @returns An array of objects that were controlled
      */
-    controlAll(options?: PlaceableObject.ControlOptions): Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    controlAll(
+      options?: PlaceableObject.ControlOptions, // not:null (property set on it without checks)
+    ): Document.ConfiguredObjectInstanceForName<DocumentName>[];
 
     /**
      * Release all controlled PlaceableObject instance from this layer.
@@ -213,7 +215,9 @@ declare global {
      *                  (default: `{}`)
      * @returns The number of PlaceableObject instances which were released
      */
-    releaseAll(options?: PlaceableObject.ReleaseOptions): number;
+    releaseAll(
+      options?: PlaceableObject.ReleaseOptions, // not:null (`Placeable#release` behaviour depends on subclasses, cannot assume null allowed)
+    ): number;
 
     /**
      * Simultaneously rotate multiple PlaceableObjects using a provided angle or incremental.
@@ -224,7 +228,7 @@ declare global {
      *                  (default: `{}`)
      * @returns An array of objects which were rotated
      * @throws If both `options.angle` and `options.delta` are nullish
-     * @remarks Overload is necessary to ensure that one of `angle` or `delta` are numeric in `options`
+     * @remarks Overload is necessary to ensure that one of `angle` or `delta` are numeric in `options`, as neither has a parameter default
      */
     rotateMany(
       options: PlaceablesLayer.RotateManyOptionsWithAngle,
@@ -242,7 +246,7 @@ declare global {
      * @returns An array of objects which were moved during the operation
      */
     moveMany(
-      options?: PlaceablesLayer.MoveManyOptions,
+      options?: PlaceablesLayer.MoveManyOptions, // not:null (destructured)
     ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]> | undefined;
 
     /**
@@ -299,7 +303,7 @@ declare global {
      */
     pasteObjects(
       position: Canvas.Point,
-      options?: PlaceablesLayer.PasteOptions,
+      options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
     ): Promise<Document.ConfiguredInstanceForName<DocumentName>[]>;
 
     /**
@@ -313,7 +317,7 @@ declare global {
     protected _pasteObject(
       copy: Document.ConfiguredObjectInstanceForName<DocumentName>,
       offset: Canvas.Point,
-      options?: PlaceablesLayer.PasteOptions,
+      options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
     ): Document.ConfiguredSourceForName<DocumentName>;
 
     /**
@@ -326,7 +330,7 @@ declare global {
      */
     selectObjects(
       options: PlaceablesLayer.SelectObjectsOptions,
-      additionalOptions?: PlaceablesLayer.SelectObjectsAdditionalOptions,
+      additionalOptions?: PlaceablesLayer.SelectObjectsAdditionalOptions, // not:null (destructured)
     ): boolean;
 
     /**
@@ -347,7 +351,7 @@ declare global {
           ) => Document.UpdateDataForName<DocumentName>)
         | Document.UpdateDataForName<DocumentName>,
       condition?: ((placeable: Document.ConfiguredObjectInstanceForName<DocumentName>) => boolean) | null,
-      options?: PlaceablesLayer.UpdateAllOptions<DocumentName>,
+      options?: PlaceablesLayer.UpdateAllOptions<DocumentName>, // not:null (updateEmbeddedDocuments tries to set `parent` on it)
     ): Promise<Array<Document.ConfiguredInstanceForName<DocumentName>>>;
 
     /**
@@ -356,7 +360,7 @@ declare global {
      */
     protected _canvasCoordinatesFromDrop(
       event: DragEvent,
-      options?: PlaceablesLayer.CanvasCoordinatesFromDropOptions,
+      options?: PlaceablesLayer.CanvasCoordinatesFromDropOptions, // not:null (destructured)
     ): Canvas.PointTuple | false;
 
     /**
@@ -368,7 +372,7 @@ declare global {
      */
     protected _createPreview(
       createData: Document.ConstructorDataFor<Document.ConfiguredClassForName<DocumentName>>,
-      options?: PlaceablesLayer.CreatePreviewOptions,
+      options?: PlaceablesLayer.CreatePreviewOptions, // not:null (destructured)
     ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>>;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
