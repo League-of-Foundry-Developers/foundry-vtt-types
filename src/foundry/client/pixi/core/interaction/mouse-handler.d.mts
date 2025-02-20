@@ -274,7 +274,7 @@ declare global {
       | "hoverIn"
       | "hoverOut";
 
-    type PermissionFunction = (user: User.ConfiguredInstance, event: Event | PIXI.FederatedEvent) => boolean;
+    type PermissionFunction = (user: User.Implementation, event: Event | PIXI.FederatedEvent) => boolean;
 
     type Permissions = Partial<Record<PermissionAction, PermissionFunction | boolean>>;
 

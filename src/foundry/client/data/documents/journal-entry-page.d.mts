@@ -333,9 +333,11 @@ declare global {
       /** The linear ordering of the heading in the table of contents. */
       order: number;
     }
+
     /**
      * @deprecated - {@link JournalEntryPage.DatabaseOperation}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<JournalEntryPage> {}
 
     /**

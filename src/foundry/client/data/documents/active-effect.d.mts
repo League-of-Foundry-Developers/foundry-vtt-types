@@ -4,7 +4,6 @@ import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField, DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
-import type { ActiveEffectData } from "../../../common/documents/_types.d.mts";
 import type BaseActiveEffect from "../../../common/documents/active-effect.d.mts";
 
 declare global {
@@ -382,6 +381,7 @@ declare global {
      * @deprecated - {@link ActiveEffect.DatabaseOperation}
      */
     interface DatabaseOperations
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       extends Document.Database.Operations<
         ActiveEffect,
         { animate: boolean },
@@ -460,7 +460,7 @@ declare global {
      */
     protected static _fromStatusEffect(
       statusId: string,
-      effectData: ActiveEffectData,
+      effectData: ActiveEffect.Data,
       options?: Document.ConstructionContext<Document.Any | null>,
     ): Promise<ActiveEffect.Implementation>;
 

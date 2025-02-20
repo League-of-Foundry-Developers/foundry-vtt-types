@@ -674,7 +674,6 @@ export type Merge<T, U> =
  * type RecordFails = Interface extends Record<string, unknown> ? true : false; // false
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 export type IsObject<T> = T extends object ? (T extends AnyArray | AnyFunction | AnyConstructor ? false : true) : false;
 
 /**

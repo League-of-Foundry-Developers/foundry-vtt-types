@@ -162,11 +162,11 @@ declare namespace TypeDataModel {
       : never;
 
   type ParentAssignmentType<Schema extends DataSchema, Parent extends Document.Internal.Instance.Any> = SimpleMerge<
-    SchemaField.InitializedType<Document.SchemaFor<Parent>>,
+    SchemaField.InitializedData<Document.SchemaFor<Parent>>,
     {
       // FIXME(LukeAbby): Callers handle making this partial when obvious.
       // However also should make system partial using the regular rules: if `initial` is assignable to the field or if `required` is false etc.
-      system: SchemaField.InitializedType<Schema>;
+      system: SchemaField.InitializedData<Schema>;
     }
   >;
 }

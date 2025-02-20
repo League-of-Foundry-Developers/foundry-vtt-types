@@ -192,6 +192,7 @@ declare global {
     /**
      * @deprecated - {@link FogExploration.DatabaseOperation}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<FogExploration> {}
 
     /**
@@ -253,16 +254,13 @@ declare global {
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
-
     /*
      * After this point these are not really overridden methods.
      * They are here because they're static properties but depend on the instance and so can't be
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(
-      context?: Document.DefaultNameContext<string, FogExploration.Parent>,
-    ): string;
+    static override defaultName(context?: Document.DefaultNameContext<string, FogExploration.Parent>): string;
 
     static override createDialog(
       data?: FogExploration.CreateData,

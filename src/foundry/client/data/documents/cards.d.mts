@@ -367,6 +367,7 @@ declare global {
     /**
      * @deprecated - {@link Cards.DatabaseOperation}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Cards> {}
 
     /**

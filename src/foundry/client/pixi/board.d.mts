@@ -735,7 +735,7 @@ declare global {
   }
 
   namespace Canvas {
-    interface Dimensions extends SceneDimensions {
+    interface Dimensions extends Scene.Dimensions {
       /** The canvas rectangle. */
       rect: PIXI.Rectangle;
 

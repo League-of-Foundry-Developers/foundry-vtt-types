@@ -33,7 +33,7 @@ declare global {
     override render(
       force?: boolean,
       options?: Application.RenderOptions<Options> & {
-        walls?: Wall.ConfiguredInstance[] | undefined;
+        walls?: Wall.Object[] | undefined;
       },
     ): this;
 

@@ -347,7 +347,7 @@ declare global {
        * @param options - Options for rendering the associated {@link JournalSheet}
        * @remarks This is called by {@link Hooks.call}.
        */
-      activateNote: (note: Note.ConfiguredInstance, options: JournalSheet.RenderOptions) => true | false;
+      activateNote: (note: Note.Object, options: JournalSheet.RenderOptions) => true | false;
 
       /** Cards */
 

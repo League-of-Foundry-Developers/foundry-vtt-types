@@ -205,10 +205,9 @@ declare global {
     /**
      * @deprecated {@link AmbientLightDocument.DatabaseOperation | `AmbientLightDocument.DatabaseOperation`}
      */
-    /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations
+      // eslint-disable-next-line @typescript-eslint/no-deprecated, @typescript-eslint/no-empty-object-type
       extends Document.Database.Operations<AmbientLightDocument, {}, { animate: boolean }, {}> {}
-    /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     /**
      * @deprecated {@link AmbientLightDocument.CreateData | `AmbientLightDocument.CreateData`}

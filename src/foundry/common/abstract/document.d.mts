@@ -1667,7 +1667,7 @@ declare namespace Document {
   type CreateDialogContext<
     SubType extends string,
     Parent extends Document.Any | null,
-  > = InexactPartial<DialogOptions> & {
+  > = InexactPartial<Dialog.Options> & {
     /**
      * A compendium pack within which the Document should be created
      */
@@ -1703,6 +1703,7 @@ export type DocumentDatabaseOperations<
 > = Document.Database.Operations<T, ExtraCreateOptions, ExtraUpdateOptions, ExtraDeleteOptions>;
 /* eslint-enable @typescript-eslint/no-empty-object-type */
 
+/* eslint-disable @typescript-eslint/no-deprecated */
 /**
  * @deprecated if you want to get individual operations see {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
  */
@@ -1740,3 +1741,4 @@ export interface DatabaseOperationMap {
   User: User.DatabaseOperations;
   Wall: WallDocument.DatabaseOperations;
 }
+/* eslint-enable @typescript-eslint/no-deprecated */

@@ -551,6 +551,7 @@ declare global {
     /**
      * @deprecated - {@link Scene.DatabaseOperation}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Scene> {}
 
     /**
@@ -652,7 +653,7 @@ declare global {
      * Apply padding to enlarge the playable space and round to the nearest 2x grid size to ensure symmetry.
      * The rounding accomplishes that the padding buffer around the map always contains whole grid spaces.
      */
-    getDimensions(): SceneDimensions;
+    getDimensions(): Scene.Dimensions;
 
     override _onClickDocumentLink(event: MouseEvent): unknown;
 
