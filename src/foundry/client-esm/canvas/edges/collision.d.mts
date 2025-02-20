@@ -7,7 +7,9 @@ import type PolygonVertex from "./vertex.d.mts";
  * This class is not designed or intended for use outside of that context.
  */
 declare class CollisionResult {
-  constructor(values?: CollisionResult.ConstructorValues);
+  constructor(
+    values?: CollisionResult.ConstructorValues, // not:null (destructured)
+  );
 
   /**
    * The vertex that was the target of this result

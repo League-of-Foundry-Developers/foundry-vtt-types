@@ -14,7 +14,11 @@ declare class Edge {
    * @param b - The second endpoint of the edge
    * @param options - Additional options which describe the edge
    */
-  constructor(a: Canvas.Point, b: Canvas.Point, options?: Edge.ConstructorOptions);
+  constructor(
+    a: Canvas.Point,
+    b: Canvas.Point,
+    options?: Edge.ConstructorOptions, // not:null (destructured)
+  );
 
   /**
    * The first endpoint of the edge.
@@ -140,7 +144,11 @@ declare class Edge {
    * @returns True if the edge has a threshold greater than 0 for the source type,
    *          and the source type is within that distance.
    */
-  applyThreshold(sourceType: Edge.AttenuationTypes, sourceOrigin: Canvas.Point, externalRadius?: number): boolean;
+  applyThreshold(
+    sourceType: Edge.AttenuationTypes,
+    sourceOrigin: Canvas.Point,
+    externalRadius?: number | null,
+  ): boolean;
 
   /**
    * Determine the orientation of this Edge with respect to a reference point.
