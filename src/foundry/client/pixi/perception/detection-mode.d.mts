@@ -127,10 +127,18 @@ declare global {
 
     interface Schema extends DataSchema {
       id: fields.StringField<{ blank: false }>;
+
       label: fields.StringField<{ blank: false }>;
-      tokenConfig: fields.BooleanField<{ initial: true }>; // If this DM is available in Token Config UI
-      walls: fields.BooleanField<{ initial: true }>; // If this DM is constrained by walls
-      angle: fields.BooleanField<{ initial: true }>; // If this DM is constrained by the vision angle
+
+      /** If this DM is available in Token Config UI */
+      tokenConfig: fields.BooleanField<{ initial: true }>;
+
+      /** If this DM is constrained by walls */
+      walls: fields.BooleanField<{ initial: true }>;
+
+      /** If this DM is constrained by the vision angle */
+      angle: fields.BooleanField<{ initial: true }>;
+
       type: fields.NumberField<{
         initial: DetectionMode.DETECTION_TYPES;
         choices: DetectionMode.DETECTION_TYPES[];

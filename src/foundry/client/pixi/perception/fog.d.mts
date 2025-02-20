@@ -108,7 +108,7 @@ declare global {
      * If fog of war data is reset from the server, deactivate the current fog and initialize the exploration.
      * @remarks Foundry marked `@internal`, called externally in the `fogReset` socket handler
      */
-    _handleReset(): Promise<void>;
+    protected _handleReset(): Promise<void>;
 
     /**
      * @deprecated since v11, will be removed in v13
