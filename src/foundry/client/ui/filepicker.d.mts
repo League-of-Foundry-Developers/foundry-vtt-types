@@ -372,7 +372,7 @@ declare global {
 
       /**
        * The requested dir represents a wildcard path
-       * @defaultValue false
+       * @defaultValue `false`
        */
       wildcard?: boolean | undefined;
     }

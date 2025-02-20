@@ -36,7 +36,7 @@ declare abstract class DiceTerm extends RollTerm {
 
   /**
    * Define the denomination string used to register this DiceTerm type in CONFIG.Dice.terms
-   * @defaultValue ""
+   * @defaultValue `""`
    */
   static DENOMINATION: string;
 
