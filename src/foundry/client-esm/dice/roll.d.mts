@@ -392,10 +392,6 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    * @param term         - A remaining un-classified string
    * @param options      - Options which customize classification
    *                       (default: `{}`)
-   * @param intermediate - Allow intermediate terms
-   *                       (default: `true`)
-   * @param prior        - The prior classified term
-   * @param next         - The next term to classify
    * @returns A classified RollTerm instance
    */
   static _classifyStringTerm(
@@ -593,8 +589,15 @@ declare namespace Roll {
   }
 
   interface ClassifyStringTermOptions {
+    /** @param intermediate - Allow intermediate terms
+     *                       (default: `true`)
+     */
     intermediate: boolean; // not: null (default true)
+
+    /** @param prior        - The prior classified term */
     prior: RollTerm | string | null;
+
+    /** @param next         - The next term to classify */
     next: RollTerm | string | null;
   }
 
