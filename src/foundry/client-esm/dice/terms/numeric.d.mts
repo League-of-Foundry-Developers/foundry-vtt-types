@@ -5,7 +5,7 @@ import type RollTerm from "./term.d.mts";
  * A type of RollTerm used to represent static numbers.
  */
 declare class NumericTerm extends RollTerm {
-  constructor({ number, options }: NumericTerm.TermData);
+  constructor(termData: NumericTerm.TermData);
 
   number: NumericTerm.TermData["number"];
 
@@ -32,8 +32,6 @@ declare class NumericTerm extends RollTerm {
    */
   static matchTerm(expression: string): RegExpMatchArray | null;
 
-  /* -------------------------------------------- */
-
   /**
    * Construct a term of this type given a matched regular expression array.
    * @param match -  The matched regular expression array
@@ -47,7 +45,7 @@ declare namespace NumericTerm {
     number: number;
 
     /**
-     * @defaultValue `{}`
+     * @defaultValue `undefined`
      */
     options?: InexactPartial<RollTerm.Options>;
   }

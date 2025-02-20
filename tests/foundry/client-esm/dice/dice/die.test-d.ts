@@ -1,19 +1,24 @@
-declare namespace Die {
-  interface Modifiers {
-    testModifier1: (this: DiceTerm) => void;
-    testModifier2: (this: DiceTerm) => DiceTerm;
-    testModifier3: (this: DiceTerm, modifier: string) => undefined | DiceTerm;
-  }
-}
+import { expectTypeOf } from "vitest";
 
-Die.MODIFIERS.testModifier1 = function (this: DiceTerm) {
-  return;
-};
+const die = new foundry.dice.terms.Die();
 
-Die.MODIFIERS.testModifier2 = function (this: DiceTerm) {
-  return this;
-};
+expectTypeOf(die.total).toEqualTypeOf<number | undefined>();
+expectTypeOf(die.denomination).toEqualTypeOf<string>();
+expectTypeOf(die.reroll("")).toEqualTypeOf<Promise<boolean | void>>();
+expectTypeOf(die.rerollRecursive("")).toEqualTypeOf<Promise<boolean | void>>();
+expectTypeOf(die.explode("")).toEqualTypeOf<Promise<boolean | void>>();
+expectTypeOf(die.explodeOnce("")).toEqualTypeOf<Promise<boolean | void>>();
+expectTypeOf(die.keep("")).toEqualTypeOf<boolean | void>();
+expectTypeOf(die.drop("")).toEqualTypeOf<boolean | void>();
+expectTypeOf(die.countSuccess("")).toEqualTypeOf<boolean | void>();
+expectTypeOf(die.countFailures("")).toEqualTypeOf<boolean | void>();
+expectTypeOf(die.countEven("")).toEqualTypeOf<boolean | void>();
+expectTypeOf(die.countOdd("")).toEqualTypeOf<boolean | void>();
+expectTypeOf(die.deductFailures("")).toEqualTypeOf<boolean | void>();
+expectTypeOf(die.subtractFailures("")).toEqualTypeOf<boolean | void>();
+expectTypeOf(die.marginSuccess("")).toEqualTypeOf<boolean | void>();
+expectTypeOf(die.minimum("")).toEqualTypeOf<boolean | void>();
+expectTypeOf(die.maximum("")).toEqualTypeOf<boolean | void>();
 
-Die.MODIFIERS.testModifier3 = function (this: DiceTerm, modifier: string) {
-  return modifier.length > 0 ? undefined : this;
-};
+expectTypeOf(foundry.dice.terms.Die.DENOMINATION).toEqualTypeOf<string>();
+expectTypeOf(foundry.dice.terms.Die.MODIFIERS).toEqualTypeOf<foundry.dice.terms.Die.Modifiers>();

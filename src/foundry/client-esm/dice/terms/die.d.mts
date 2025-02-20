@@ -215,7 +215,7 @@ declare namespace Die {
   type AnyConstructor = typeof AnyDie;
 
   interface TermData extends DiceTerm.TermData {
-    modifiers: Array<keyof typeof Die.MODIFIERS>;
+    modifiers: Array<keyof Modifiers>;
   }
 
   interface Modifiers {

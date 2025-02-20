@@ -24,8 +24,6 @@ declare class Coin extends DiceTerm {
    */
   static MODIFIERS: Coin.Modifiers;
 
-  /* -------------------------------------------- */
-
   override roll({
     minimize,
     maximize,
@@ -35,8 +33,6 @@ declare class Coin extends DiceTerm {
   override getResultLabel(result: DiceTerm.Result): string;
 
   override getResultCSS(result: DiceTerm.Result): (string | null)[];
-
-  /* -------------------------------------------- */
 
   override mapRandomFace(randomUniform: number): number;
 

@@ -1,19 +1,12 @@
-declare namespace FateDie {
-  interface Modifiers {
-    testModifier1: (this: DiceTerm) => void;
-    testModifier2: (this: DiceTerm) => DiceTerm;
-    testModifier3: (this: DiceTerm, modifier: string) => undefined | DiceTerm;
-  }
-}
+import { expectTypeOf } from "vitest";
 
-FateDie.MODIFIERS.testModifier1 = function (this: DiceTerm) {
-  return;
-};
+const fateDie = new foundry.dice.terms.FateDie();
 
-FateDie.MODIFIERS.testModifier2 = function (this: DiceTerm) {
-  return this;
-};
+expectTypeOf(fateDie.roll()).toEqualTypeOf<Promise<foundry.dice.terms.DiceTerm.Result>>();
+expectTypeOf(fateDie.mapRandomFace(5)).toEqualTypeOf<number>();
 
-FateDie.MODIFIERS.testModifier3 = function (this: DiceTerm, modifier: string) {
-  return modifier.length > 0 ? undefined : this;
-};
+declare const result: foundry.dice.terms.DiceTerm.Result;
+expectTypeOf(fateDie.getResultLabel(result)).toEqualTypeOf<string>();
+
+expectTypeOf(foundry.dice.terms.FateDie.DENOMINATION).toEqualTypeOf<string>();
+expectTypeOf(foundry.dice.terms.FateDie.MODIFIERS).toEqualTypeOf<foundry.dice.terms.FateDie.Modifiers>();
