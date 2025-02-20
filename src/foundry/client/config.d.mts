@@ -1021,7 +1021,93 @@ declare global {
       /** @defaultValue `4` */
       objectBorderThickness: number;
 
-      gridStyles: Record<string, CONFIG.Canvas.GridStyle>;
+      gridStyles: {
+        [key: string]: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.SolidLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        solidLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DashedLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 1
+         *   }
+         * }
+         * ```
+         */
+        dashedLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DottedLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        dottedLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.SquarePoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        squarePoints: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DiamondPoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        diamondPoints: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.RoundPoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        roundPoints: GridLayer.GridStyle;
+      };
 
       lightAnimations: CONFIG.Canvas.LightSourceAnimationConfig & {
         flame: {
