@@ -398,7 +398,10 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    * @param next         - The next term to classify
    * @returns A classified RollTerm instance
    */
-  static _classifyStringTerm(term: string, { intermediate, prior, next }?: ClassifyStringTermOptions): RollTerm;
+  static _classifyStringTerm(
+    term: string,
+    options?: InexactPartial<Roll.ClassifyStringTermOptions>, // not: null (destructured)
+  ): RollTerm;
 
   /* -------------------------------------------- */
   /*  Chat Messages                               */
@@ -589,6 +592,12 @@ declare namespace Roll {
     total: number | null;
   }
 
+  interface ClassifyStringTermOptions {
+    intermediate: boolean; // not: null (default true)
+    prior: RollTerm | string | null;
+    next: RollTerm | string | null;
+  }
+
   // TODO(LukeAbby): When shims are added then `"user"` should also be added here #3065. Specifically `user` should be added as partial.
   // Also use `IntentionalPartial<ChatMessageCreateData, "content" | "sound" | "rolls">` once `documents-v2` is merged.
   //
@@ -643,12 +652,6 @@ declare namespace Roll {
     | (Create extends true | undefined ? ChatMessage.ConfiguredInstance | undefined : never)
     | (Create extends false | null ? ChatMessageCreateData : never);
 }
-
-type ClassifyStringTermOptions = InexactPartial<{
-  intermediate: boolean;
-  prior: RollTerm | string;
-  next: RollTerm | string;
-}>;
 
 // TODO: Replace when `documents-v2` is merged.
 type ChatMessageCreateData = foundry.data.fields.SchemaField.InnerPersistedType<ChatMessage.Schema>;

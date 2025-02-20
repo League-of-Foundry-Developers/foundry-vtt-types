@@ -218,7 +218,7 @@ declare abstract class DiceTerm extends RollTerm {
   protected static _keepOrDrop(
     results: DiceTerm.Result[],
     number: number,
-    options?: DiceTerm.KeepOrDropOptions,
+    options?: InexactPartial<DiceTerm.KeepOrDropOptions>,
   ): DiceTerm.Result;
 
   /**
@@ -228,7 +228,7 @@ declare abstract class DiceTerm extends RollTerm {
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    options?: DiceTerm.ApplyCountOptions,
+    options?: InexactPartial<DiceTerm.ApplyCountOptions>, // not: null (destructured)
   ): void;
 
   /**
@@ -238,7 +238,7 @@ declare abstract class DiceTerm extends RollTerm {
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    options?: DiceTerm.ApplyDeductOptions,
+    options?: InexactPartial<DiceTerm.ApplyDeductOptions>, // not: null (destructured)
   ): void;
 
   /* -------------------------------------------- */
@@ -250,7 +250,10 @@ declare abstract class DiceTerm extends RollTerm {
    * @param expression - The expression to parse
    * @param options - Additional options which customize the match
    */
-  static matchTerm(expression: string, options?: DiceTerm.MatchTermOptions): RegExpMatchArray | null;
+  static matchTerm(
+    expression: string,
+    options?: InexactPartial<DiceTerm.MatchTermOptions>, // not: null (destructured)
+  ): RegExpMatchArray | null;
 
   /**
    * Construct a term of this type given a matched regular expression array.
@@ -354,21 +357,21 @@ declare namespace DiceTerm {
 
   interface ApplyCountOptions {
     /** (default: `false`) */
-    flagSuccess?: boolean | undefined;
+    flagSuccess: boolean | null;
     /** (default: `false`) */
-    flagFailure?: boolean | undefined;
+    flagFailure: boolean | null;
   }
 
   interface ApplyDeductOptions {
     /** (default: `false`) */
-    deductFailure?: boolean | undefined;
+    deductFailure: boolean | null;
     /** (default: `false`) */
-    invertFailure?: boolean | undefined;
+    invertFailure: boolean | null;
   }
 
   interface MatchTermOptions {
     /** Allow the number of dice to be optional, i.e. "d6" (default: `true`) */
-    imputeNumber?: boolean | undefined;
+    imputeNumber: boolean | null;
   }
 
   interface EvaluationOptions extends RollTerm.EvaluationOptions {

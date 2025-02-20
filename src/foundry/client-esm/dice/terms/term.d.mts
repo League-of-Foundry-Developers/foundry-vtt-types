@@ -132,7 +132,7 @@ declare namespace RollTerm {
   type AnyConstructor = typeof AnyRollTerm;
 
   interface Options {
-    flavor?: string | undefined;
+    flavor?: string | undefined | null;
   }
 
   interface EvaluationOptions {
