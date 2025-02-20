@@ -12,7 +12,7 @@ declare global {
     constructor(
       program: PIXI.Program,
       /** @defaultValue `{}` */
-      uniforms?: AbstractBaseShader.Uniforms,
+      uniforms?: AbstractBaseShader.Uniforms | null,
     );
 
     /**
@@ -47,7 +47,7 @@ declare global {
      */
     static create<ThisType extends AbstractBaseShader.AnyConstructor>(
       this: ThisType,
-      initialUniforms?: AbstractBaseShader.Uniforms,
+      initialUniforms?: AbstractBaseShader.Uniforms | null,
     ): FixedInstanceType<ThisType>;
 
     /**

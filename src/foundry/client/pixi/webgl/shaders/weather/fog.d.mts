@@ -1,4 +1,4 @@
-import type { InterfaceToObject } from "fvtt-types/utils";
+export {};
 
 declare global {
   /**
@@ -6,7 +6,7 @@ declare global {
    */
   class FogShader<
     DefaultUniforms extends FogShader.DefaultUniforms = FogShader.DefaultUniforms,
-  > extends AbstractWeatherShader<InterfaceToObject<DefaultUniforms>> {
+  > extends AbstractWeatherShader<DefaultUniforms> {
     /**
      * @defaultValue
      * ```js
@@ -38,7 +38,7 @@ declare global {
     interface Any extends AnyFogShader {}
     type AnyConstructor = typeof AnyFogShader;
 
-    interface DefaultUniforms extends AbstractBaseShader.Uniforms, AbstractWeatherShader.DefaultUniforms {
+    interface DefaultUniforms extends AbstractWeatherShader.DefaultUniforms {
       intensity: number;
       rotation: number;
       slope: number;

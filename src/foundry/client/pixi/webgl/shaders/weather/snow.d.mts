@@ -1,4 +1,4 @@
-import type { InterfaceToObject } from "fvtt-types/utils";
+export {};
 
 declare global {
   /**
@@ -6,7 +6,7 @@ declare global {
    */
   class SnowShader<
     DefaultUniforms extends SnowShader.DefaultUniforms = SnowShader.DefaultUniforms,
-  > extends AbstractWeatherShader<InterfaceToObject<DefaultUniforms>> {
+  > extends AbstractWeatherShader<DefaultUniforms> {
     /**
      * @defaultValue
      * ```
@@ -24,7 +24,7 @@ declare global {
     interface Any extends AnySnowShader {}
     type AnyConstructor = typeof AnySnowShader;
 
-    interface DefaultUniforms extends AbstractBaseShader.Uniforms {
+    interface DefaultUniforms extends AbstractWeatherShader.DefaultUniforms {
       direction: number;
     }
   }
