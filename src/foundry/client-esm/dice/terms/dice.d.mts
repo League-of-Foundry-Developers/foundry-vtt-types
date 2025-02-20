@@ -218,7 +218,7 @@ declare abstract class DiceTerm extends RollTerm {
   protected static _keepOrDrop(
     results: DiceTerm.Result[],
     number: number,
-    options?: InexactPartial<DiceTerm.KeepOrDropOptions>,
+    options?: DiceTerm.KeepOrDropOptions,
   ): DiceTerm.Result;
 
   /**
@@ -228,7 +228,7 @@ declare abstract class DiceTerm extends RollTerm {
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    options?: InexactPartial<DiceTerm.ApplyCountOptions>, // not: null (destructured)
+    options?: DiceTerm.ApplyCountOptions, // not: null (destructured)
   ): void;
 
   /**
@@ -238,7 +238,7 @@ declare abstract class DiceTerm extends RollTerm {
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    options?: InexactPartial<DiceTerm.ApplyDeductOptions>, // not: null (destructured)
+    options?: DiceTerm.ApplyDeductOptions, // not: null (destructured)
   ): void;
 
   /* -------------------------------------------- */
@@ -252,7 +252,7 @@ declare abstract class DiceTerm extends RollTerm {
    */
   static matchTerm(
     expression: string,
-    options?: InexactPartial<DiceTerm.MatchTermOptions>, // not: null (destructured)
+    options?: DiceTerm.MatchTermOptions, // not: null (destructured)
   ): RegExpMatchArray | null;
 
   /**
@@ -348,31 +348,47 @@ declare namespace DiceTerm {
     rolls: { result: string; classes: string }[];
   }
 
-  interface KeepOrDropOptions {
-    /** Keep results?  (default: `true`) */
-    keep?: boolean | undefined; // these cannot be null because they are compared in the function
-    /** Keep the highest?  (default: `true`) */
-    highest?: boolean | undefined; // these cannot be null because they are compared in the function
-  }
+  type _KeepOrDropOptions = InexactPartial<{
+    /** Keep results?
+     * @defaultValue true
+     */
+    keep?: boolean | undefined; // not: null (function checks keep===highest)
+    /** Keep the highest?
+     * @defaultValue true
+     */
+    highest?: boolean | undefined; // not: null (function checks keep===highest)
+  }>;
 
-  interface ApplyCountOptions {
-    /** (default: `false`) */
+  interface KeepOrDropOptions extends _KeepOrDropOptions {}
+
+  type _ApplyCountOptions = InexactPartial<{
+    /** @defaultValue false */
     flagSuccess: boolean | null;
-    /** (default: `false`) */
+
+    /** @defaultValue false */
     flagFailure: boolean | null;
-  }
+  }>;
 
-  interface ApplyDeductOptions {
-    /** (default: `false`) */
+  interface ApplyCountOptions extends _ApplyCountOptions {}
+
+  type _ApplyDeductOptions = InexactPartial<{
+    /** @defaultValue false */
     deductFailure: boolean | null;
-    /** (default: `false`) */
-    invertFailure: boolean | null;
-  }
 
-  interface MatchTermOptions {
-    /** Allow the number of dice to be optional, i.e. "d6" (default: `true`) */
+    /** @defaultValue false */
+    invertFailure: boolean | null;
+  }>;
+
+  interface ApplyDeductOptions extends _ApplyDeductOptions {}
+
+  type _MatchTermOptions = InexactPartial<{
+    /** Allow the number of dice to be optional, i.e. "d6"
+     * @defaultValue true
+     */
     imputeNumber: boolean | null;
-  }
+  }>;
+
+  interface MatchTermOptions extends _MatchTermOptions {}
 
   interface EvaluationOptions extends RollTerm.EvaluationOptions {
     /**

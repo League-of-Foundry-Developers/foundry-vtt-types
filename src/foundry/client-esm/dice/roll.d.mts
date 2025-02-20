@@ -396,7 +396,7 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    */
   static _classifyStringTerm(
     term: string,
-    options?: InexactPartial<Roll.ClassifyStringTermOptions>, // not: null (destructured)
+    options?: Roll.ClassifyStringTermOptions, // not: null (destructured)
   ): RollTerm;
 
   /* -------------------------------------------- */
@@ -588,18 +588,20 @@ declare namespace Roll {
     total: number | null;
   }
 
-  interface ClassifyStringTermOptions {
-    /** @param intermediate - Allow intermediate terms
-     *                       (default: `true`)
+  type _ClassifyStringTermOptions = InexactPartial<{
+    /** Allow intermediate terms
+     *  @defaultValue true
      */
     intermediate: boolean; // not: null (default true)
 
-    /** @param prior        - The prior classified term */
+    /** The prior classified term */
     prior: RollTerm | string | null;
 
-    /** @param next         - The next term to classify */
+    /** The next term to classify */
     next: RollTerm | string | null;
-  }
+  }>;
+
+  interface ClassifyStringTermOptions extends _ClassifyStringTermOptions {}
 
   // TODO(LukeAbby): When shims are added then `"user"` should also be added here #3065. Specifically `user` should be added as partial.
   // Also use `IntentionalPartial<ChatMessageCreateData, "content" | "sound" | "rolls">` once `documents-v2` is merged.
