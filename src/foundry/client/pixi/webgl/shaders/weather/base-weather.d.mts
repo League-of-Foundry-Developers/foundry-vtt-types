@@ -46,7 +46,7 @@ declare global {
 
     static override create<ThisType extends AbstractBaseShader.AnyConstructor>(
       this: ThisType,
-      initialUniforms?: AbstractBaseShader.Uniforms,
+      initialUniforms?: AbstractBaseShader.Uniforms | null,
     ): FixedInstanceType<ThisType>;
 
     /**
@@ -61,6 +61,9 @@ declare global {
      * @param scale - The desired scale
      */
     set scale(scale: number | { x: number; y?: number });
+
+    /** @remarks No getter is actually provided */
+    get scale(): undefined;
 
     set scaleX(x: number);
 

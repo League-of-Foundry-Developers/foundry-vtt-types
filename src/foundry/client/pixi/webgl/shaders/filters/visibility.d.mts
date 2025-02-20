@@ -27,8 +27,8 @@ declare global {
 
     static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
       this: ThisType,
-      initiaUniforms?: AbstractBaseShader.Uniforms,
-      options?: VisibilityFilter.FragmentShaderOptions,
+      initiaUniforms?: AbstractBaseShader.Uniforms | null,
+      options?: VisibilityFilter.FragmentShaderOptions, // not:null (passed to `this.fragmentShader()` where its properties are accesed unsafely),
     ): FixedInstanceType<ThisType>;
 
     static override vertexShader: string;

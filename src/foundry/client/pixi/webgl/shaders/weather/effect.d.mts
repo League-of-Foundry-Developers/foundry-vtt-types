@@ -22,7 +22,9 @@ declare global {
     /**
      * Set shader parameters.
      */
-    configure(config?: WeatherShaderEffect.Configuration): void;
+    configure(
+      config?: WeatherShaderEffect.Configuration, // not:null (gets `Object.entries()`ed)
+    ): void;
 
     /**
      * Begin animation
