@@ -26,7 +26,7 @@
     }
   },
   "scripts": {
-    "lint": "npm-run-all -c typecheck lint/eslint lint/prettier",
+    "lint": "npm-run-all -c typecheck eslint prettier",
     "eslint": "eslint --cache .",
     "prettier": "prettier -c .",
     "lint:fix": "npm-run-all -c typecheck eslint-fix prettier-fix",
