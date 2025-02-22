@@ -6,7 +6,7 @@ import type RollTerm from "./term.d.mts";
  * A type of RollTerm used to denote and perform an arithmetic operation.
  */
 declare class OperatorTerm extends RollTerm {
-  constructor({ operator, options }?: InexactPartial<OperatorTerm.TermData>);
+  constructor(termData: OperatorTerm.TermData);
 
   /** The term's operator value. */
   operator: OperatorTerm.TermData["operator"];
