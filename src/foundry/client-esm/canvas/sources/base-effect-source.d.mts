@@ -35,7 +35,7 @@ declare abstract class BaseEffectSource<
 
   /**
    * The target collection into the effects canvas group.
-   * @remarks Foundry marked `@abstract`; `undefined` in `BaseEffectSource`
+   * @remarks Foundry marked `@abstract`; Is `undefined` in `BaseEffectSource`
    */
   static effectsCollection: string | undefined;
 
@@ -152,7 +152,8 @@ declare abstract class BaseEffectSource<
 
   /**
    * Create the polygon shape (or shapes) for this source using configured data.
-   * @remarks Should be abstract, but can't be because `RenderedEffectSource` doesn't implement it
+   * @remarks Foundry marked `@abstract`, but due to `RenderedEffectSource` not implementing
+   * it (`PointEffectSourceMixin` does), it can't be *actually* abstract
    */
   protected _createShapes(): void;
 
@@ -234,8 +235,10 @@ declare namespace BaseEffectSource {
     /**
      * A unique ID for this source. This will be set automatically if an
      * object is provided, otherwise is required.
-     * @remarks The above is misleading; sourceId will *not* be inferred if you pass in `{object: PlaceableObject}`,
-     * only if you pass a `PlaceableObject` *instead* of an options object to the constructor.
+     * @remarks The above is misleading; sourceId will only be inferred if you pass a `PlaceableObject`
+     * _instead_ of an options object to the constructor (which is a deprecated path removed in v13),
+     * _not_ if you pass in `{ object: PlaceableObject }`, where you're expected to also pass `sourceId`
+     * yourself.
      */
     sourceId?: string;
   }
@@ -243,18 +246,25 @@ declare namespace BaseEffectSource {
   interface SourceData {
     /**
      * The x-coordinate of the source location
+     * @defaultValue `0`
      */
     x: number;
+
     /**
      * The y-coordinate of the source location
+     * @defaultValue `0`
      */
     y: number;
+
     /**
      * The elevation of the point source
+     * @defaultValue `0`
      */
     elevation: number;
+
     /**
      * Whether or not the source is disabled
+     * @defaultValue `false`
      */
     disabled: boolean;
   }

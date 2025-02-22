@@ -961,14 +961,34 @@ declare global {
       /** @defaultValue `10000` */
       daylightToDarknessAnimationMS: number;
 
+      /**
+       * @defaultValue `foundry.canvas.sources.PointDarknessSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
+       */
       darknessSourceClass: typeof foundry.canvas.sources.PointDarknessSource;
 
+      /**
+       * @defaultValue `foundry.canvas.sources.PointLightSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
+       */
       lightSourceClass: typeof foundry.canvas.sources.PointLightSource;
 
+      /**
+       * @defaultValue `foundry.canvas.sources.GlobalLightSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
+       */
       globalLightSourceClass: typeof foundry.canvas.sources.GlobalLightSource;
 
+      /**
+       * @defaultValue `foundry.canvas.sources.PointVisionSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
+       */
       visionSourceClass: typeof foundry.canvas.sources.PointVisionSource;
 
+      /**
+       * @defaultValue `foundry.canvas.sources.PointSoundSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
+       */
       soundSourceClass: typeof foundry.canvas.sources.PointSoundSource;
 
       groups: CONFIG.Canvas.Groups;
@@ -1306,8 +1326,8 @@ declare global {
 
       /**
        * A registry of Scenes which are managed by a specific SceneManager class.
+       * @privateRemarks Can't be `AnyConstructor` because it's instantiated via `new`
        */
-      // `typeof foundry.canvas.SceneManager` is used because
       managedScenes: Record<string, typeof foundry.canvas.SceneManager>;
 
       pings: {

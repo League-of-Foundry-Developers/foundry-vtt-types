@@ -58,13 +58,13 @@ declare class PointDarknessSource<
 
   override _initialize(data: IntentionalPartial<SourceData>): void;
 
-  override _createShapes(): void;
+  protected override _createShapes(): void;
 
-  override _configure(changes: IntentionalPartial<SourceData>): void;
+  protected override _configure(changes: IntentionalPartial<SourceData>): void;
 
   override _getPolygonConfiguration(): PointSourcePolygon.Config;
 
-  override _drawMesh(layerId: string): PIXI.Mesh | null;
+  protected override _drawMesh(layerId: string): PointSourceMesh | null;
 
   override _updateGeometry(): void;
 

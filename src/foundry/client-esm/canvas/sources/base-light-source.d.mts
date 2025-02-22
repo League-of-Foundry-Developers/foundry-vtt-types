@@ -73,11 +73,11 @@ declare abstract class BaseLightSource<
 
   override _updateCommonUniforms(shader: AbstractBaseShader): void;
 
-  /** @remarks This property is undocumented, and only defined during `_updateCommonUniforms` */
-  cachededAttentuation?: number;
+  /** @remarks Doesn't exist prior to initialization. Ultimately set in `_updateCommonUniforms` */
+  cachedAttenuation?: number;
 
-  /** @remarks This property is undocumented, and only defined during `_updateCommonUniforms` */
-  computedAttentuation?: number;
+  /** @remarks Doesn't exist prior to initialization. Ultimately set in `_updateCommonUniforms` */
+  computedAttenuation?: number;
 
   /**
    * An animation with flickering ratio and light intensity.

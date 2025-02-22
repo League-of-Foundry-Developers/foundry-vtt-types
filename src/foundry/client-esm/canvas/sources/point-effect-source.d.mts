@@ -30,20 +30,20 @@ declare class PointEffectSource {
    */
   get radius(): number;
 
-  _initialize(data: IntentionalPartial<PointEffectSourceMixin.MixedSourceData>): void;
+  protected _initialize(data: IntentionalPartial<PointEffectSourceMixin.MixedSourceData>): void;
 
-  _initializeSoftEdges(): void;
+  protected _initializeSoftEdges(): void;
 
   /**
    * Configure the parameters of the polygon that is generated for this source.
    */
   protected _getPolygonConfiguration(): PointSourcePolygon.Config;
 
-  _createShapes(): void;
+  protected _createShapes(): void;
 
-  _drawMesh(layerId: string): PIXI.Mesh | null;
+  protected _drawMesh(layerId: string): PointSourceMesh | null;
 
-  _updateGeometry(): void;
+  protected _updateGeometry(): void;
 
   /**
    * @deprecated since v11, until v13

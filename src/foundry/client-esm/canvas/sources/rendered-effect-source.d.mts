@@ -1,4 +1,4 @@
-import type { InexactPartial, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, IntentionalPartial, NullishProps } from "fvtt-types/utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type BaseLightSource from "./base-light-source.d.mts";
 
@@ -6,7 +6,7 @@ import type BaseLightSource from "./base-light-source.d.mts";
  * An abstract class which extends the base PointSource to provide common functionality for rendering.
  * This class is extended by both the LightSource and VisionSource subclasses.
  */
-declare class RenderedEffectSource<
+declare abstract class RenderedEffectSource<
   SourceData extends RenderedEffectSource.SourceData = RenderedEffectSource.SourceData,
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
   RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = RenderedEffectSource.Layers,
@@ -37,11 +37,11 @@ declare class RenderedEffectSource<
    * @defaultValue
    * ```js
    * {
-   * ...super.defaultData,
-   * animation: {},
-   * seed: null,
-   * preview: false,
-   * color: null
+   *   ...super.defaultData,
+   *   animation: {},
+   *   seed: null,
+   *   preview: false,
+   *   color: null
    * }
    * ```
    */
@@ -98,23 +98,24 @@ declare class RenderedEffectSource<
    */
   get illumination(): PointSourceMesh;
 
-  override _initialize(data: IntentionalPartial<SourceData>): void;
+  protected override _initialize(data: IntentionalPartial<SourceData>): void;
 
   /**
    * Decide whether to render soft edges with a blur.
    */
   protected _initializeSoftEdges(): void;
 
-  override _configure(changes: IntentionalPartial<SourceData>): void;
+  protected override _configure(changes: AnyObject): void;
 
   /**
    * Configure which shaders are used for each rendered layer.
    * @privateRemarks Foundry marks this as private then overrides it in `PointVisionSource`
    */
-  protected _configureShaders(): Record<keyof RenderingLayers, typeof AdaptiveLightingShader>;
+  protected _configureShaders(): Record<keyof RenderingLayers, AdaptiveLightingShader.AnyConstructor>;
 
   /**
    * Specific configuration for a layer.
+   * @remarks Is a no-op in `RenderedEffectSource`
    */
   protected _configureLayer(layer: RenderedEffectSource.SourceLayer, layerId: string): void;
 
@@ -127,15 +128,16 @@ declare class RenderedEffectSource<
 
   /**
    * Render the containers used to represent this light source within the LightingLayer
+   * @remarks Will error if called prior to initialization
    */
-  drawMeshes(): Record<keyof RenderingLayers, PIXI.Mesh | null>;
+  drawMeshes(): Record<keyof RenderingLayers, PointSourceMesh | null>;
 
   /**
    * Create a Mesh for a certain rendered layer of this source.
    * @param layerId - The layer key in layers to draw
    * @returns The drawn mesh for this layer, or null if no mesh is required
    */
-  protected _drawMesh(layerId: string): PIXI.Mesh | null;
+  protected _drawMesh(layerId: string): PointSourceMesh | null;
 
   /**
    * Update shader uniforms used by every rendered layer.
@@ -178,7 +180,7 @@ declare class RenderedEffectSource<
    * Get corrected level according to level and active vision mode data.
    * @returns The corrected level.
    */
-  static getCorrectedLevel(level: foundry.CONST.LIGHTING_LEVELS): number;
+  static getCorrectedLevel(level: foundry.CONST.LIGHTING_LEVELS): foundry.CONST.LIGHTING_LEVELS;
 
   /**
    * Get corrected color according to level, dim color, bright color and background color.
@@ -187,7 +189,7 @@ declare class RenderedEffectSource<
     level: foundry.CONST.LIGHTING_LEVELS,
     colorDim: Color,
     colorBright: Color,
-    colorBackground?: Color,
+    colorBackground?: Color | null,
   ): Color;
 
   /**
@@ -218,6 +220,8 @@ declare namespace RenderedEffectSource {
      * A color applied to the rendered effect
      * @defaultValue `null`
      * @remarks Foundry types as `number`, but it gets passed to `Color.from()`
+     *
+     * If `null`, Foundry will use the associated shader's `.defaultUniforms.color`
      */
     color: Color.Source | null;
 
@@ -225,6 +229,8 @@ declare namespace RenderedEffectSource {
      * An integer seed to synchronize (or de-synchronize) animations
      * @defaultValue `null`
      * @remarks This will remain null in `#data` if not specified, which will lead to `Math.floor(Math.random() * 100000)`
+     *
+     * If specified, takes precedence over `RenderedEffectSource#animation.seed`
      */
     seed: number | null;
 
@@ -321,20 +327,24 @@ declare namespace RenderedEffectSource {
      * @defaultValue `AdaptiveBackgroundShader`
      */
     backgroundShader: AdaptiveBackgroundShader.AnyConstructor;
-  }>;
+  }> & { darknessShader?: never };
 
   /**
    * Foundry's typedef lists `darknessShader` as required, and every core-provided config
    * has one specified, but it has a default just like the lighting shaders
    * @internal
    */
-  type _AnimationConfigDarknessShaders = NullishProps<{
+  interface _AnimationConfigDarknessShaders {
     /**
      * A custom darkness shader used by this animation
      * @defaultValue `AdaptiveDarknessShader`
      */
     darknessShader: AdaptiveDarknessShader.AnyConstructor;
-  }>;
+
+    illuminationShader?: never;
+    colorationShader?: never;
+    backgroundShader?: never;
+  }
 
   /**
    * `this.animation.time` always gets set by `RenderedEffectSource#animateTime`,
@@ -351,14 +361,15 @@ declare namespace RenderedEffectSource {
 
   interface LightAnimationConfig extends _AnimationConfigBase, _Seed, _AnimationConfigLightingShaders {}
 
+  interface StoredLightAnimationConfig extends IntentionalPartial<LightAnimationConfig>, _AnimationConfigComputed {}
+
   interface DarknessAnimationConfig extends _AnimationConfigBase, _Seed, _AnimationConfigDarknessShaders {}
 
-  /**
-   * @remarks `RenderedEffectSource#animation` and `#data.animation` both default to `{}` , so clearly no properties are required.
-   */
-  type AnimationConfig =
-    | (IntentionalPartial<LightAnimationConfig> & _AnimationConfigComputed)
-    | (IntentionalPartial<DarknessAnimationConfig> & _AnimationConfigComputed);
+  interface StoredDarknessAnimationConfig
+    extends IntentionalPartial<DarknessAnimationConfig>,
+      _AnimationConfigComputed {}
+
+  type AnimationConfig = StoredLightAnimationConfig | StoredDarknessAnimationConfig;
   /**
    * @remarks The properties `mesh` and `shader` from `LayerConfig` are not documented as being part of the typedef. They are given values
    * during initialization *if* the Source has a valid `Placeable` as its `object`. `vmUniforms` is only provided a value for `PointVisionSource` layers.
