@@ -4,7 +4,7 @@ import type { IntentionalPartial } from "fvtt-types/utils";
 
 class MyEffectSource<SourceData extends BaseEffectSource.SourceData = BaseEffectSource.SourceData> extends foundry
   .canvas.sources.BaseEffectSource<SourceData, PIXI.Polygon> {
-  static override sourceType: BaseEffectSource.SourceTypes = "sight";
+  static override sourceType = "sight";
 
   static override effectsCollection = "someCollection";
 
