@@ -988,8 +988,11 @@ declare global {
         bright: number;
       };
 
-      /** @defaultValue `FogManager` */
-      fogManager: FogManager.AnyConstructor;
+      /**
+       * @defaultValue `FogManager`
+       * @remarks Can't be `AnyConstructor` because it's instantiated via `new`
+       */
+      fogManager: typeof FogManager;
 
       polygonBackends: {
         /** @defaultValue `typeof ClockwiseSweepPolygon` */
