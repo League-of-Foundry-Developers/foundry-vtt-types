@@ -23,7 +23,7 @@ declare class RegionMesh extends PIXI.Container {
    * The tint applied to the mesh. This is a hex value.
    *
    * A value of 0xFFFFFF will remove any tint effect.
-   * @defaultValue 0xFFFFFF
+   * @defaultValue `0xFFFFFF`
    */
   get tint(): number;
   set tint(value: number);

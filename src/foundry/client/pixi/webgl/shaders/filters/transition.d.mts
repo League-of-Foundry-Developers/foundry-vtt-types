@@ -9,7 +9,7 @@ declare global {
 
     /**
      * The transition type (see {@link TextureTransitionFilter.TYPES}).
-     * @defaultValue TYPES.FADE
+     * @defaultValue `TYPES.FADE`
      */
     get type(): TextureTransitionFilter.TYPES;
 
