@@ -2,6 +2,7 @@ import type * as CONST from "../common/constants.d.mts";
 import type { DataModel, Document } from "../common/abstract/module.d.mts";
 import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "fvtt-types/utils";
 import type BaseLightSource from "../client-esm/canvas/sources/base-light-source.d.mts";
+import type RenderedEffectSource from "../client-esm/canvas/sources/rendered-effect-source.d.mts";
 
 declare global {
   namespace CONFIG {
@@ -960,15 +961,15 @@ declare global {
       /** @defaultValue `10000` */
       daylightToDarknessAnimationMS: number;
 
-      darknessSourceClass: foundry.canvas.sources.PointDarknessSource.AnyConstructor;
+      darknessSourceClass: typeof foundry.canvas.sources.PointDarknessSource;
 
-      lightSourceClass: foundry.canvas.sources.PointLightSource.AnyConstructor;
+      lightSourceClass: typeof foundry.canvas.sources.PointLightSource;
 
-      globalLightSourceClass: foundry.canvas.sources.GlobalLightSource.AnyConstructor;
+      globalLightSourceClass: typeof foundry.canvas.sources.GlobalLightSource;
 
-      visionSourceClass: foundry.canvas.sources.PointVisionSource.AnyConstructor;
+      visionSourceClass: typeof foundry.canvas.sources.PointVisionSource;
 
-      soundSourceClass: foundry.canvas.sources.PointSoundSource.AnyConstructor;
+      soundSourceClass: typeof foundry.canvas.sources.PointSoundSource;
 
       groups: CONFIG.Canvas.Groups;
 
@@ -1023,7 +1024,9 @@ declare global {
 
       gridStyles: Record<string, CONFIG.Canvas.GridStyle>;
 
-      lightAnimations: CONFIG.Canvas.LightSourceAnimationConfig & {
+      lightAnimations: {
+        [key: string]: RenderedEffectSource.LightAnimationConfig;
+
         flame: {
           /** @defaultValue `"LIGHT.AnimationFame"` */
           label: string;
@@ -1096,7 +1099,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `ChromaColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1107,7 +1110,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `WaveIlluminationShader` */
           illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
@@ -1121,7 +1124,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `FogColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1132,7 +1135,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `SunburstIlluminationShader` */
           illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
@@ -1146,7 +1149,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `LightDomeColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1157,7 +1160,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `EmanationColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1168,7 +1171,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `HexaDomeColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1179,7 +1182,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `GhostLightIlluminationShader` */
           illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
@@ -1193,7 +1196,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `EnergyFieldColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1204,7 +1207,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `VortexIlluminationShader` */
           illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
@@ -1218,7 +1221,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `BewitchingWaveIlluminationShader` */
           illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
@@ -1232,7 +1235,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `SwirlingRainbowColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1243,7 +1246,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `RadialRainbowColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1254,7 +1257,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `FairyLightIlluminationShader` */
           illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
@@ -1264,7 +1267,42 @@ declare global {
         };
       };
 
-      darknessAnimations: CONFIG.Canvas.DarknessSourceAnimationConfig;
+      darknessAnimations: {
+        [key: string]: RenderedEffectSource.DarknessAnimationConfig;
+
+        magicalGloom: {
+          /** @defaultValue `"LIGHT.AnimationMagicalGloom"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `MagicalGloomDarknessShader` */
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+        };
+
+        roiling: {
+          /** @defaultValue `"LIGHT.AnimationRoilingMass"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `RoilingDarknessShader` */
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+        };
+
+        hole: {
+          /** @defaultValue `"LIGHT.AnimationBlackHole"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `BlackHoleDarknessShader` */
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+        };
+      };
 
       /**
        * A registry of Scenes which are managed by a specific SceneManager class.
@@ -3002,32 +3040,6 @@ declare global {
           style: number;
         };
       }
-
-      /**
-       * A light source animation configuration object.
-       */
-      type LightSourceAnimationConfig = Record<
-        string,
-        {
-          label: string;
-          animation: BaseLightSource.LightAnimationFunction;
-          backgroundShader?: AdaptiveBackgroundShader.AnyConstructor;
-          illuminationShader?: AdaptiveIlluminationShader.AnyConstructor;
-          colorationShader?: AdaptiveColorationShader.AnyConstructor;
-        }
-      >;
-
-      /**
-       * A darkness source animation configuration object.
-       */
-      type DarknessSourceAnimationConfig = Record<
-        string,
-        {
-          label: string;
-          animation: BaseLightSource.LightAnimationFunction;
-          darknessShader: AdaptiveDarknessShader.AnyConstructor;
-        }
-      >;
 
       namespace Pings {
         interface Style {

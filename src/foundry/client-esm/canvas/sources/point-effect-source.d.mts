@@ -2,7 +2,7 @@ import type { Mixin, IntentionalPartial, FixedInstanceType } from "fvtt-types/ut
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
 declare class PointEffectSource {
-  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /**

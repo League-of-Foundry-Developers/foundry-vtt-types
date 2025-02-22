@@ -1,5 +1,6 @@
-import type { InexactPartial, IntentionalPartial } from "fvtt-types/utils";
+import type { InexactPartial, IntentionalPartial, NullishProps } from "fvtt-types/utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
+import type BaseLightSource from "./base-light-source.d.mts";
 
 /**
  * An abstract class which extends the base PointSource to provide common functionality for rendering.
@@ -60,7 +61,7 @@ declare class RenderedEffectSource<
   /**
    * The color of the source as an RGB vector.
    */
-  colorRGB: [number, number, number] | null;
+  colorRGB: Color.RGBColorVector | null;
 
   /**
    * PIXI Geometry generated to draw meshes.
@@ -203,28 +204,33 @@ declare class RenderedEffectSource<
 }
 
 declare namespace RenderedEffectSource {
-  type Any = RenderedEffectSource<any, any, any>;
-
+  interface Any extends AnyRenderedEffectSource {}
   type AnyConstructor = typeof AnyRenderedEffectSource;
 
   interface SourceData extends BaseEffectSource.SourceData {
     /**
      * An animation configuration for the source
+     * @defaultValue `{}`
      */
-    animation: object;
+    animation: AnimationConfig;
 
     /**
      * A color applied to the rendered effect
+     * @defaultValue `null`
+     * @remarks Foundry types as `number`, but it gets passed to `Color.from()`
      */
-    color: number | null;
+    color: Color.Source | null;
 
     /**
      * An integer seed to synchronize (or de-synchronize) animations
+     * @defaultValue `null`
+     * @remarks This will remain null in `#data` if not specified, which will lead to `Math.floor(Math.random() * 100000)`
      */
     seed: number | null;
 
     /**
      * Is this source a temporary preview?
+     * @defaultValue `false`
      */
     preview: boolean;
   }
@@ -241,14 +247,14 @@ declare namespace RenderedEffectSource {
     /**
      * The animation speed, from 0 to 10
      * @defaultValue `5`
-     * @remarks Can't be null due to only having default via signature
+     * @remarks Can't be `null` as it only has a parameter default
      */
     speed: number;
 
     /**
      * The animation intensity, from 1 to 10
      * @defaultValue `5`
-     * @remarks Can't be null due to only having default via signature
+     * @remarks Can't be `null` as it only has a parameter default
      */
     intensity: number;
 
@@ -259,52 +265,100 @@ declare namespace RenderedEffectSource {
     reverse: boolean | null;
   }>;
 
-  /** Shared options for the {@link AnimationFunction}s provided by `_Source` classes */
+  /** Shared options for the {@link AnimationFunction}s provided by {@link RenderedEffectSource} and subclasses */
   interface AnimationFunctionOptions extends _AnimationFunctionOptions {}
 
-  type AnimationConfig = InexactPartial<{
+  /**
+   * Properties *every* core-provided config has
+   * @internal
+   */
+  interface _AnimationConfigBase {
     /**
      * The human-readable (localized) label for the animation
+     * @remarks Despite the above, all of the core-provided configs provide a localization
+     * key here, not localized text.
      */
     label: string;
 
     /**
      * The animation function that runs every frame
-     * @privateRemarks TODO: Figure out if there's a better way to define the function
+     * @privateRemarks Eventually called with `animation?.call()`, but at no point is a default provided,
+     * and not having one is nonsensical.
      */
-    animation: RenderedEffectSource.AnimationFunction;
+    animation: AnimationFunction | BaseLightSource.LightAnimationFunction;
+  }
 
+  /** @internal */
+  type _Seed = NullishProps<{
+    /**
+     * The animation seed
+     * @defaultValue `Math.floor(Math.random() * 100000)`
+     * @remarks No Foundry-provided config specifies this, but it would be respected if set
+     */
+    seed: number;
+  }>;
+
+  /**
+   * Each Foundry-provided entry in `CONFIG.Canvas.lightAnimations` provides at least a `colorationShader`,
+   * but any properties not provided will be backfilled by `|| this.layers[layer].defaultShader`
+   * @internal
+   */
+  type _AnimationConfigLightingShaders = NullishProps<{
     /**
      * A custom illumination shader used by this animation
+     * @defaultValue `AdaptiveIlluminationShader`
      */
-    illuminationShader: typeof AdaptiveIlluminationShader;
+    illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
     /**
      * A custom coloration shader used by this animation
+     * @defaultValue `AdaptiveColorationShader`
      */
-    colorationShader: typeof AdaptiveColorationShader;
+    colorationShader: AdaptiveColorationShader.AnyConstructor;
 
     /**
      * A custom background shader used by this animation
+     * @defaultValue `AdaptiveBackgroundShader`
      */
-    backgroundShader: typeof AdaptiveBackgroundShader;
+    backgroundShader: AdaptiveBackgroundShader.AnyConstructor;
+  }>;
 
+  /**
+   * Foundry's typedef lists `darknessShader` as required, and every core-provided config
+   * has one specified, but it has a default just like the lighting shaders
+   * @internal
+   */
+  type _AnimationConfigDarknessShaders = NullishProps<{
     /**
      * A custom darkness shader used by this animation
+     * @defaultValue `AdaptiveDarknessShader`
      */
-    darknessShader: typeof AdaptiveDarknessShader;
+    darknessShader: AdaptiveDarknessShader.AnyConstructor;
+  }>;
 
-    /**
-     * The animation seed
-     */
-    seed: number;
-
+  /**
+   * `this.animation.time` always gets set by `RenderedEffectSource#animateTime`,
+   * which all animation functions end up calling
+   * @internal
+   */
+  type _AnimationConfigComputed = InexactPartial<{
     /**
      * The animation time
+     * @remarks Always computed, never specified in `CONFIG`
      */
     time: number;
   }>;
 
+  interface LightAnimationConfig extends _AnimationConfigBase, _Seed, _AnimationConfigLightingShaders {}
+
+  interface DarknessAnimationConfig extends _AnimationConfigBase, _Seed, _AnimationConfigDarknessShaders {}
+
+  /**
+   * @remarks `RenderedEffectSource#animation` and `#data.animation` both default to `{}` , so clearly no properties are required.
+   */
+  type AnimationConfig =
+    | (IntentionalPartial<LightAnimationConfig> & _AnimationConfigComputed)
+    | (IntentionalPartial<DarknessAnimationConfig> & _AnimationConfigComputed);
   /**
    * @remarks The properties `mesh` and `shader` from `LayerConfig` are not documented as being part of the typedef. They are given values
    * during initialization *if* the Source has a valid `Placeable` as its `object`. `vmUniforms` is only provided a value for `PointVisionSource` layers.
@@ -335,7 +389,7 @@ declare namespace RenderedEffectSource {
      */
     shader: AdaptiveLightingShader | undefined;
 
-    /** @remarks Foundry does not include this in the typedef but is in the initalization of `RenderedEffectSource#layers` */
+    /** @remarks Foundry does not include this in the typedef but is in the initialization of `RenderedEffectSource#layers` */
     vmUniforms: AbstractBaseShader.Uniforms | undefined;
   }
 
@@ -343,7 +397,7 @@ declare namespace RenderedEffectSource {
     /**
      * The default shader used by this layer
      */
-    defaultShader: typeof AdaptiveLightingShader;
+    defaultShader: AdaptiveLightingShader.AnyConstructor;
 
     /**
      * The blend mode used by this layer
@@ -360,7 +414,11 @@ declare namespace RenderedEffectSource {
   };
 }
 
-declare abstract class AnyRenderedEffectSource extends RenderedEffectSource<any, any, any> {
+declare abstract class AnyRenderedEffectSource extends RenderedEffectSource<
+  RenderedEffectSource.SourceData,
+  PIXI.Polygon,
+  RenderedEffectSource.Layers
+> {
   constructor(arg0: never, ...args: never[]);
 }
 

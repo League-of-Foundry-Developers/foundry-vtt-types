@@ -1,4 +1,4 @@
-import type { InexactPartial, IntentionalPartial } from "fvtt-types/utils";
+import type { IntentionalPartial, NullishProps } from "fvtt-types/utils";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
 /**
@@ -32,7 +32,7 @@ declare abstract class BaseLightSource<
 
   /**
    * The corresponding animation config.
-   * @remarks More broad than it should be to accomodate {@link foundry.canvas.sources.PointDarknessSource}
+   * @remarks More broad than it should be to accommodate {@link foundry.canvas.sources.PointDarknessSource}
    * TODO: Reevaluate after CONFIG has been gone over
    */
   protected static get ANIMATIONS(): typeof CONFIG.Canvas.lightAnimations | typeof CONFIG.Canvas.darknessAnimations;
@@ -84,6 +84,7 @@ declare abstract class BaseLightSource<
    * @param dt      - Delta time
    * @param options - Additional options which modify the torch animation
    */
+  // not null (destructured)
   animateTorch(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
 
   /**
@@ -91,17 +92,8 @@ declare abstract class BaseLightSource<
    * @param dt      - Delta time
    * @param options - Additional options which modify the flame animation
    */
-  animateFlickering(
-    dt: number,
-    options?: RenderedEffectSource.AnimationFunctionOptions &
-      InexactPartial<{
-        /**
-         * Noise amplification (\>1) or dampening (\<1)
-         * @defaultValue `1`
-         */
-        amplification: number;
-      }>,
-  ): void;
+  // not null (destructured)
+  animateFlickering(dt: number, options?: BaseLightSource.AnimateFlickeringOptions): void;
 
   /**
    * @remarks This property will be generated on any class that is `animateFlickering`'s `this` when it is called.
@@ -114,6 +106,7 @@ declare abstract class BaseLightSource<
    * @param dt      - Delta time
    * @param options - Additional options which modify the pulse animation
    */
+  // not null (destructured)
   animatePulse(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
 
   /**
@@ -124,6 +117,7 @@ declare abstract class BaseLightSource<
 }
 
 declare namespace BaseLightSource {
+  interface Any extends AnyBaseLightSource {}
   type AnyConstructor = typeof AnyBaseLightSource;
 
   type LightAnimationFunction = (
@@ -188,9 +182,25 @@ declare namespace BaseLightSource {
      */
     priority: number;
   }
+
+  /** @internal */
+  type _AnimateFlickeringOptions = NullishProps<{
+    /**
+     * Noise amplification (\>1) or dampening (\<1)
+     * @defaultValue `1`
+     * @remarks Parameter default only, `null` is only cast to `0`
+     */
+    amplification: number;
+  }>;
+
+  interface AnimateFlickeringOptions extends _AnimateFlickeringOptions {}
 }
 
-declare abstract class AnyBaseLightSource extends BaseLightSource {
+declare abstract class AnyBaseLightSource extends BaseLightSource<
+  BaseLightSource.SourceData,
+  PIXI.Polygon,
+  RenderedEffectSource.Layers
+> {
   constructor(arg0: never, ...args: never[]);
 }
 
