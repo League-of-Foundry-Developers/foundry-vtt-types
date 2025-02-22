@@ -1,19 +1,13 @@
-declare namespace Coin {
-  interface Modifiers {
-    testModifier1: (this: DiceTerm) => void;
-    testModifier2: (this: DiceTerm) => DiceTerm;
-    testModifier3: (this: DiceTerm, modifier: string) => undefined | DiceTerm;
-  }
-}
+import { expectTypeOf } from "vitest";
 
-Coin.MODIFIERS.testModifier1 = function (this: DiceTerm) {
-  return;
-};
+const coin = new foundry.dice.terms.Coin();
 
-Coin.MODIFIERS.testModifier2 = function (this: DiceTerm) {
-  return this;
-};
+expectTypeOf(coin.roll()).toEqualTypeOf<Promise<foundry.dice.terms.DiceTerm.Result>>();
 
-Coin.MODIFIERS.testModifier3 = function (this: DiceTerm, modifier: string) {
-  return modifier.length > 0 ? undefined : this;
-};
+declare const result: foundry.dice.terms.DiceTerm.Result;
+expectTypeOf(coin.getResultLabel(result)).toEqualTypeOf<string>();
+expectTypeOf(coin.getResultCSS(result)).toEqualTypeOf<(string | null)[]>();
+expectTypeOf(coin.call("")).toEqualTypeOf<void>();
+
+expectTypeOf(foundry.dice.terms.Coin.DENOMINATION).toEqualTypeOf<string>();
+expectTypeOf(foundry.dice.terms.Coin.MODIFIERS).toEqualTypeOf<foundry.dice.terms.Coin.Modifiers>();
