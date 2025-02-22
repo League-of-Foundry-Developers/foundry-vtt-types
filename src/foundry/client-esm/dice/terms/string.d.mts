@@ -5,9 +5,9 @@ import type RollTerm from "./term.d.mts";
  * A type of RollTerm used to represent strings which have not yet been matched.
  */
 declare class StringTerm extends RollTerm {
-  constructor({ term, options }: StringTerm.ConstructorData);
+  constructor({ term, options }: StringTerm.TermData);
 
-  term: StringTerm.ConstructorData["term"];
+  term: string;
 
   /**
    * @defaultValue `["term"]`
@@ -24,7 +24,7 @@ declare class StringTerm extends RollTerm {
 }
 
 declare namespace StringTerm {
-  interface ConstructorData {
+  interface TermData {
     term: string;
 
     options?: RollTerm.Options | undefined;
