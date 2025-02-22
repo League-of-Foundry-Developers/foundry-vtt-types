@@ -35,7 +35,7 @@ declare namespace FateDie {
   type AnyConstructor = typeof AnyFateDie;
 
   interface TermData extends DiceTerm.TermData {
-    modifiers: Array<keyof typeof FateDie.MODIFIERS>;
+    modifiers: Array<keyof Modifiers>;
   }
 
   interface Modifiers {

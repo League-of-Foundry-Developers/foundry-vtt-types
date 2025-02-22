@@ -14,7 +14,7 @@ declare class RenderFlagObject {
   /**
    * The ticker priority when RenderFlags of this class are handled.
    * Valid values are OBJECTS or PERCEPTION.
-   * @defaultValue "OBJECTS"
+   * @defaultValue `"OBJECTS"`
    */
   static RENDER_FLAG_PRIORITY: "OBJECTS" | "PERCEPTION";
 
