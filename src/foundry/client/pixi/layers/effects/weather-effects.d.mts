@@ -123,14 +123,20 @@ declare global {
      * @param context - The shader context
      * @param config  - Occlusion masking options
      */
-    protected static configureOcclusionMask(context: PIXI.Shader, config?: WeatherEffects.MaskConfiguration): void;
+    static configureOcclusionMask(
+      context: PIXI.Shader,
+      config?: WeatherEffects.MaskConfiguration, // not:null (destructured)
+    ): void;
 
     /**
      * Set the terrain uniforms for this weather shader.
      * @param context - The shader context
      * @param config  - Terrain masking options
      */
-    protected static configureTerrainMask(context: PIXI.Shader, config?: WeatherEffects.MaskConfiguration): void;
+    static configureTerrainMask(
+      context: PIXI.Shader,
+      config?: WeatherEffects.MaskConfiguration, // not:null (destructured)
+    ): void;
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -164,6 +170,7 @@ declare global {
        * @defaultValue `false`
        */
       enabled: boolean;
+
       /**
        * If the mask should be reversed.
        * @defaultValue `false`
@@ -174,9 +181,7 @@ declare global {
         /**
          * An RGBA array of channel weights applied to the mask texture.
          * @defaultValue `[0, 0, 1, 0]`
-         * @remarks Foundry only uses values of `0` and `1`, it's unclear if that's required.
-         *
-         * Can't be `null` as it only has a parameter default.
+         * @remarks Can't be `null` as it only has a parameter default.
          */
         channelWeights: [r: number, b: number, g: number, a: number];
 
@@ -233,31 +238,35 @@ declare global {
 
     interface ParticleEffectConfiguration extends _CommonEffectConfiguration {
       id: string;
+
       effectClass: ParticleEffect.AnyConstructor;
 
       /**
        * @remarks Despite the corresponding `ParticleEffect#constructor` parameter being `={}`, construction will
        * throw if this isn't a non-empty object, **except** in the case of the only core `extends ParticleEffect`
-       * class, {@link AutumnLeavesWeatherEffect}, which overrides the relevant method and always uses its static
-       * `LEAF_CONFIG` property instead; account for this is the only reason the property is optional
+       * class, {@link AutumnLeavesWeatherEffect | `AutumnLeavesWeatherEffect`}, which overrides the relevant method and always uses its static
+       * `LEAF_CONFIG` property instead; accounting for this is the only reason the property is optional
        */
       config: PIXI.particles.EmitterConfigV3;
     }
 
     interface SpecificallyAutumnLeavesConfiguration {
       id: string;
+
       effectClass: AutumnLeavesWeatherEffect.AnyConstructor;
 
-      /** @remarks {@link AutumnLeavesWeatherEffect} overrides {@link ParticleEffect#getParticleEmitters}, the method that would throw on an empty config, to not take any parameters and always use */
+      /** @remarks {@link AutumnLeavesWeatherEffect | `AutumnLeavesWeatherEffect`} overrides {@link ParticleEffect.getParticleEmitters | `ParticleEffect#getParticleEmitters`} -- the method that would throw when passed an empty config -- to not take any parameters and always use */
       config?: never;
     }
 
     interface WeatherShaderEffectConfiguration extends _CommonEffectConfiguration {
       id: string;
+
       effectClass: WeatherShaderEffect.AnyConstructor;
+
       shaderClass: AbstractWeatherShader.AnyConstructor;
 
-      /** @remarks Can't be `null` because it gets `Object.entries()`'d with only a parameter default */
+      /** @remarks Can't be `null` because it gets `Object.entries()`ed with only a parameter default */
       config?: WeatherShaderEffect.Configuration | undefined;
     }
 

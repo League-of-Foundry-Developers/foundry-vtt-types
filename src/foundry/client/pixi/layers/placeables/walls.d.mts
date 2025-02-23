@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
+import type { Coalesce, HandleEmptyObject, NullishProps } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
@@ -84,7 +84,7 @@ declare global {
     protected override _pasteObject(
       copy: Wall.ConfiguredInstance,
       offset: Canvas.Point,
-      options?: PlaceablesLayer.PasteOptions,
+      options?: PlaceablesLayer.PasteOptions | null,
     ): Document.ConfiguredSourceForName<"Wall">;
 
     /**
@@ -104,7 +104,7 @@ declare global {
      */
     protected _getWallEndpointCoordinates(
       point: Canvas.Point,
-      options?: WallsLayer.GetWallEndpointCoordinatesOptions,
+      options?: WallsLayer.GetWallEndpointCoordinatesOptions, // not:null (destructured)
     ): Canvas.PointTuple;
 
     /**
@@ -113,7 +113,7 @@ declare global {
      * @param tool - The active canvas tool
      * @remarks If a tool is not provided, returns an object with `light`, `sight`, `sound`, and `move` keys, all with the value `CONST.WALL_SENSE_TYPES.NORMAL`
      */
-    protected _getWallDataFromActiveTool(tool?: WallsLayer.WallTools): Document.ConfiguredSourceForName<"Wall">;
+    protected _getWallDataFromActiveTool(tool?: WallsLayer.WallTools | null): Document.ConfiguredSourceForName<"Wall">;
 
     /**
      * Identify the interior enclosed by the given walls.
@@ -138,10 +138,10 @@ declare global {
      * @deprecated since v11, will be removed in v13
      * @remarks "WallsLayer#checkCollision is obsolete. Prefer calls to testCollision from CONFIG.Canvas.polygonBackends[type]"
      */
-    checkCollision<Mode extends PointSourcePolygon.CollisionModes = "all">(
+    checkCollision<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>(
       ray: Ray,
       options: PointSourcePolygon.TestCollisionConfig<Mode>,
-    ): PointSourcePolygon.TestCollision<Mode>;
+    ): PointSourcePolygon.TestCollision<Coalesce<Mode, "all">>;
 
     /**
      * @deprecated since v11, will be removed in v13

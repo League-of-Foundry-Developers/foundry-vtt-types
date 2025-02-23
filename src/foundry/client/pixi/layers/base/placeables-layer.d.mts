@@ -13,7 +13,7 @@ declare global {
     /**
      * Sort order for placeables belonging to this layer
      * @defaultValue `0`
-     * @remarks Unusused in v12.331
+     * @remarks Unused in v12.331
      */
     static SORT_ORDER: number;
 
@@ -74,9 +74,9 @@ declare global {
     /**
      * A reference to the named Document type which is contained within this Canvas Layer.
      * @defaultValue `undefined`
-     * @remarks Subclasses must define
+     * @abstract
      */
-    static documentName: PlaceablesLayer.DocumentNames | undefined;
+    static documentName: PlaceablesLayer.DocumentNames;
 
     /**
      * Creation states affected to placeables during their construction.
@@ -136,7 +136,7 @@ declare global {
     /**
      * Track whether "highlight all objects" is currently active
      * @defaultValue `false`
-     * @remarks Set by {@link Canvas#highlightObjects}
+     * @remarks Set by {@link Canvas.highlightObjects | `Canvas#highlightObjects`}
      */
     highlightObjects: boolean;
 
@@ -151,7 +151,7 @@ declare global {
      * Send the controlled objects of this layer to the back or bring them to the front.
      * @param front - Bring to front instead of send to back?
      * @returns Returns true if the layer has sortable object, and false otherwise
-     * @remarks Same check as {@link PlaceablesLayer#getMaxSort}
+     * @remarks Same check as {@link PlaceablesLayer.getMaxSort | `PlaceablesLayer#getMaxSort`}
      */
     protected _sendToBackOrBringToFront(front?: boolean | null): boolean;
 
@@ -204,7 +204,9 @@ declare global {
      *                  (default: `{}`)
      * @returns An array of objects that were controlled
      */
-    controlAll(options?: PlaceableObject.ControlOptions): Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    controlAll(
+      options?: PlaceableObject.ControlOptions, // not:null (property set on it without checks)
+    ): Document.ConfiguredObjectInstanceForName<DocumentName>[];
 
     /**
      * Release all controlled PlaceableObject instance from this layer.
@@ -213,7 +215,9 @@ declare global {
      *                  (default: `{}`)
      * @returns The number of PlaceableObject instances which were released
      */
-    releaseAll(options?: PlaceableObject.ReleaseOptions): number;
+    releaseAll(
+      options?: PlaceableObject.ReleaseOptions, // not:null (`Placeable#release` behaviour depends on subclasses, cannot assume null allowed)
+    ): number;
 
     /**
      * Simultaneously rotate multiple PlaceableObjects using a provided angle or incremental.
@@ -224,7 +228,7 @@ declare global {
      *                  (default: `{}`)
      * @returns An array of objects which were rotated
      * @throws If both `options.angle` and `options.delta` are nullish
-     * @remarks Overload is necessary to ensure that one of `angle` or `delta` are numeric in `options`
+     * @remarks Overload is necessary to ensure that one of `angle` or `delta` are numeric in `options`, as neither has a parameter default
      */
     rotateMany(
       options: PlaceablesLayer.RotateManyOptionsWithAngle,
@@ -240,9 +244,10 @@ declare global {
      * @param options - Options which configure how multiple objects are moved
      *                  (default: `{}`)
      * @returns An array of objects which were moved during the operation
+     * @throws If an array is passed for `ids` and any of its contents are not a valid ID for a placeable on this layer
      */
     moveMany(
-      options?: PlaceablesLayer.MoveManyOptions,
+      options?: PlaceablesLayer.MoveManyOptions, // not:null (destructured)
     ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]> | undefined;
 
     /**
@@ -250,7 +255,7 @@ declare global {
      * @param ids           - An explicit array of IDs requested.
      * @param includeLocked - Include locked objects which would otherwise be ignored?
      * @returns An array of objects which can be moved or rotated
-     * @throws If an array is passed and any of its contents are not a valid ID for a placeable on this layer
+     * @throws If an array is passed for `ids` and any of its contents are not a valid ID for a placeable on this layer
      * @remarks Any non-array input for `ids` will default to using currently controlled objects
      */
     protected _getMovableObjects(
@@ -299,21 +304,21 @@ declare global {
      */
     pasteObjects(
       position: Canvas.Point,
-      options?: PlaceablesLayer.PasteOptions,
+      options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
     ): Promise<Document.ConfiguredInstanceForName<DocumentName>[]>;
 
     /**
      * Get the data of the copied object pasted at the position given by the offset.
-     * Called by {@link PlaceablesLayer#pasteObjects} for each copied object.
+     * Called by {@link PlaceablesLayer.pasteObjects | `PlaceablesLayer#pasteObjects`} for each copied object.
      * @param copy    - The copied object that is pasted
      * @param offset  - The offset relative from the current position to the destination
-     * @param options - Options of {@link PlaceablesLayer#pasteObjects}
+     * @param options - Options of {@link PlaceablesLayer.pasteObjects | `PlaceablesLayer#pasteObjects`}
      * @returns The update data
      */
     protected _pasteObject(
       copy: Document.ConfiguredObjectInstanceForName<DocumentName>,
       offset: Canvas.Point,
-      options?: PlaceablesLayer.PasteOptions,
+      options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
     ): Document.ConfiguredSourceForName<DocumentName>;
 
     /**
@@ -326,7 +331,7 @@ declare global {
      */
     selectObjects(
       options: PlaceablesLayer.SelectObjectsOptions,
-      additionalOptions?: PlaceablesLayer.SelectObjectsAdditionalOptions,
+      additionalOptions?: PlaceablesLayer.SelectObjectsAdditionalOptions, // not:null (destructured)
     ): boolean;
 
     /**
@@ -338,7 +343,7 @@ declare global {
      * @param options        - Additional options passed to Document.update
      *                         (default: `{}`)
      * @returns An array of updated data once the operation is complete
-     * @throws An error if the `transformation` paramater is neither a function nor a plain object
+     * @throws An error if the `transformation` parameter is neither a function nor a plain object
      */
     updateAll(
       transformation:
@@ -347,7 +352,7 @@ declare global {
           ) => Document.UpdateDataForName<DocumentName>)
         | Document.UpdateDataForName<DocumentName>,
       condition?: ((placeable: Document.ConfiguredObjectInstanceForName<DocumentName>) => boolean) | null,
-      options?: PlaceablesLayer.UpdateAllOptions<DocumentName>,
+      options?: PlaceablesLayer.UpdateAllOptions<DocumentName>, // not:null (updateEmbeddedDocuments tries to set `parent` on it)
     ): Promise<Array<Document.ConfiguredInstanceForName<DocumentName>>>;
 
     /**
@@ -356,7 +361,7 @@ declare global {
      */
     protected _canvasCoordinatesFromDrop(
       event: DragEvent,
-      options?: PlaceablesLayer.CanvasCoordinatesFromDropOptions,
+      options?: PlaceablesLayer.CanvasCoordinatesFromDropOptions, // not:null (destructured)
     ): Canvas.PointTuple | false;
 
     /**
@@ -368,7 +373,7 @@ declare global {
      */
     protected _createPreview(
       createData: Document.ConstructorDataFor<Document.ConfiguredClassForName<DocumentName>>,
-      options?: PlaceablesLayer.CreatePreviewOptions,
+      options?: PlaceablesLayer.CreatePreviewOptions, // not:null (destructured)
     ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>>;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
@@ -480,12 +485,12 @@ declare global {
     type _RotateManyOptions = NullishProps<{
       /**
        * Snap the resulting angle to a multiple of some increment (in degrees)
-       * @remarks Passed to {@link PlaceableObject#_updateRotation} where it is checked for `> 0` before being passed to the non-null-safe `Number#toNearest`
+       * @remarks Passed to {@link PlaceableObject._updateRotation | `PlaceableObject#_updateRotation`} where it is checked for `> 0` before being passed to the non-null-safe `Number#toNearest`
        */
       snap: number;
       /**
        * An Array of object IDs to target for rotation
-       * @remarks Passed to {@link PlaceablesLayer#_getMovableObjects}
+       * @remarks Passed to {@link PlaceablesLayer._getMovableObjects | `PlaceablesLayer#_getMovableObjects`}
        */
       ids: string[];
       /**

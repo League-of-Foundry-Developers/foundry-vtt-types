@@ -71,7 +71,7 @@ declare global {
     protected override _pasteObject(
       copy: Token.ConfiguredInstance,
       offset: Canvas.Point,
-      options?: PlaceablesLayer.PasteOptions,
+      options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
     ): Document.ConfiguredSourceForName<"Token">;
 
     /** @remarks Returns `[]` if the ruler is currently measuring */
@@ -86,7 +86,10 @@ declare global {
      * @param options   - Additional options to configure targeting behaviour.
      * @returns The number of Token instances which were targeted.
      */
-    targetObjects(rectangle: Canvas.Rectangle, options?: TokenLayer.TargetObjectsOptions): number;
+    targetObjects(
+      rectangle: Canvas.Rectangle,
+      options?: TokenLayer.TargetObjectsOptions, // not:null (destructured)
+    ): number;
 
     /**
      * Cycle the controlled token by rotating through the list of Owned Tokens that are available within the Scene
@@ -160,7 +163,7 @@ declare global {
     toggleCombat(
       state?: boolean | null,
       combat?: Combat.ConfiguredInstance | null,
-      { token }?: TokenLayer.ToggleCombatOptions,
+      options?: TokenLayer.ToggleCombatOptions, // not:null (destructured)
     ): Promise<Combatant.ConfiguredInstance[]>;
   }
 
