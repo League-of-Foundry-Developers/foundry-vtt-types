@@ -38,14 +38,20 @@ expectTypeOf(
 
 const mySource = new MyRenderedSource();
 
-expectTypeOf(mySource.animation).toEqualTypeOf<RenderedEffectSource.AnimationConfig>();
+expectTypeOf(mySource.animation).toEqualTypeOf<RenderedEffectSource.StoredAnimationConfig>();
 
+// if there's a `darknessShader`, it's a `DarknessAnimationConfig`
 if (mySource.animation.darknessShader) {
   expectTypeOf(mySource.animation.darknessShader).toEqualTypeOf<AdaptiveDarknessShader.AnyConstructor>();
-} else if (mySource.animation.illuminationShader) {
-  expectTypeOf(mySource.animation.illuminationShader).toEqualTypeOf<AdaptiveIlluminationShader.AnyConstructor>();
+} else {
+  expectTypeOf(mySource.animation.illuminationShader).toEqualTypeOf<
+    AdaptiveIlluminationShader.AnyConstructor | undefined | null
+  >();
   expectTypeOf(mySource.animation.colorationShader).toEqualTypeOf<
     AdaptiveColorationShader.AnyConstructor | undefined | null
+  >();
+  expectTypeOf(mySource.animation.backgroundShader).toEqualTypeOf<
+    AdaptiveBackgroundShader.AnyConstructor | undefined | null
   >();
 }
 

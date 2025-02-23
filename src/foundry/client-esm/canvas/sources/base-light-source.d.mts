@@ -32,8 +32,8 @@ declare abstract class BaseLightSource<
 
   /**
    * The corresponding animation config.
-   * @remarks More broad than it should be to accommodate {@link foundry.canvas.sources.PointDarknessSource}
-   * TODO: Reevaluate after CONFIG has been gone over
+   * @privateRemarks Only uses `CONFIG.Canvas.lightAnimations` in `BaseLightSource`, but `PointDarknessSource`
+   * overrides to use `.darknessAnimations`, so the union type is necessary
    */
   protected static get ANIMATIONS(): typeof CONFIG.Canvas.lightAnimations | typeof CONFIG.Canvas.darknessAnimations;
 
@@ -63,15 +63,15 @@ declare abstract class BaseLightSource<
    */
   ratio: number;
 
-  override _initialize(data: IntentionalPartial<SourceData>): void;
+  protected override _initialize(data: IntentionalPartial<SourceData>): void;
 
-  override _updateColorationUniforms(): void;
+  protected override _updateColorationUniforms(): void;
 
-  override _updateIlluminationUniforms(): void;
+  protected override _updateIlluminationUniforms(): void;
 
-  override _updateBackgroundUniforms(): void;
+  protected override _updateBackgroundUniforms(): void;
 
-  override _updateCommonUniforms(shader: AbstractBaseShader): void;
+  protected override _updateCommonUniforms(shader: AbstractBaseShader): void;
 
   /** @remarks Doesn't exist prior to initialization. Ultimately set in `_updateCommonUniforms` */
   cachedAttenuation?: number;
@@ -96,8 +96,9 @@ declare abstract class BaseLightSource<
   animateFlickering(dt: number, options?: BaseLightSource.AnimateFlickeringOptions): void;
 
   /**
-   * @remarks This property will be generated on any class that is `animateFlickering`'s `this` when it is called.
-   * Foundry does not document it.
+   * @remarks This property will be generated on any class that is `#animateFlickering`'s `this` when it is called.
+   * In Foundry practice this will always be a `BaseLightSource` subclass, so it's defined here. Foundry does not
+   * document it.
    */
   _noise?: SmoothNoise;
 
@@ -112,6 +113,8 @@ declare abstract class BaseLightSource<
   /**
    * @deprecated since v12, until v14
    * @remarks "BaseLightSource#isDarkness is now obsolete. Use DarknessSource instead."
+   *
+   * Always returns `false`
    */
   get isDarkness(): boolean;
 }
@@ -193,7 +196,7 @@ declare namespace BaseLightSource {
     amplification: number;
   }>;
 
-  interface AnimateFlickeringOptions extends _AnimateFlickeringOptions {}
+  interface AnimateFlickeringOptions extends RenderedEffectSource.AnimationFunctionOptions, _AnimateFlickeringOptions {}
 }
 
 declare abstract class AnyBaseLightSource extends BaseLightSource<

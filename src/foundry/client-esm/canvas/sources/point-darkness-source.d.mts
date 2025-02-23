@@ -78,8 +78,10 @@ declare class PointDarknessSource<
   /**
    * @deprecated since v12, until v14
    * @remarks `"BaseLightSource#isDarkness is now obsolete. Use DarknessSource instead."`
+   *
+   * Always returns `true`
    */
-  get isDarkness(): boolean;
+  get isDarkness(): true;
 }
 
 declare namespace PointDarknessSource {

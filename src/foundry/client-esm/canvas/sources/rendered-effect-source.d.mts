@@ -13,6 +13,8 @@ declare abstract class RenderedEffectSource<
 > extends BaseEffectSource<SourceData, SourceShape> {
   /**
    * Keys of the data object which require shaders to be re-initialized.
+   * @privateRemarks Presumably, allowing this to contain `"animation.type"` in `BaseLightSource` is why
+   * `#_configure` is passed flattened data
    */
   protected static _initializeShaderKeys: string[];
 
@@ -51,7 +53,7 @@ declare abstract class RenderedEffectSource<
    * The animation configuration applied to this source
    * @defaultValue `{}`
    */
-  animation: RenderedEffectSource.AnimationConfig;
+  animation: RenderedEffectSource.StoredAnimationConfig;
 
   /**
    * Track the status of rendering layers
@@ -369,7 +371,9 @@ declare namespace RenderedEffectSource {
     extends IntentionalPartial<DarknessAnimationConfig>,
       _AnimationConfigComputed {}
 
-  type AnimationConfig = StoredLightAnimationConfig | StoredDarknessAnimationConfig;
+  type AnimationConfig = LightAnimationConfig | DarknessAnimationConfig;
+
+  type StoredAnimationConfig = StoredLightAnimationConfig | StoredDarknessAnimationConfig;
   /**
    * @remarks The properties `mesh` and `shader` from `LayerConfig` are not documented as being part of the typedef. They are given values
    * during initialization *if* the Source has a valid `Placeable` as its `object`. `vmUniforms` is only provided a value for `PointVisionSource` layers.
