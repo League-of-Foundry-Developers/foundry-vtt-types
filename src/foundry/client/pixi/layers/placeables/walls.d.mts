@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
+import type { Coalesce, HandleEmptyObject, NullishProps } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
@@ -9,6 +9,7 @@ declare global {
     /**
      * A graphics layer used to display chained Wall selection
      * @defaultValue `null`
+     * @remarks Only `null` prior to first draw
      */
     chain: PIXI.Graphics | null;
 
@@ -21,18 +22,14 @@ declare global {
     /**
      * Track the most recently created or updated wall data for use with the clone tool
      * @defaultValue `null`
-     * @remarks This is intentional `public` because it is accessed from Wall
+     * @remarks Foundry marked `@private`, is set via {@link Wall#_onCreate} and {@link Wall#_onUpdate}
      */
-    _cloneType: ReturnType<foundry.documents.BaseWall["toJSON"]> | null;
+    protected _cloneType: Document.ConfiguredSourceForName<"Wall"> | null;
 
     /**
      * Reference the last interacted wall endpoint for the purposes of chaining
-     * @defaultValue
-     * ```
-     * {
-     *   point: null,
-     * }
-     * ```
+     * @defaultValue `{ point: null }`
+     * @remarks Foundry marked `@private`, is set via {@link Wall#_onHoverIn}, {@link Wall#_onHoverOut}, and {@link Wall#_prepareDragLeftDropUpdates}
      */
     protected last: {
       point: Canvas.PointTuple | null;
@@ -55,14 +52,12 @@ declare global {
      */
     static override get layerOptions(): WallsLayer.LayerOptions;
 
-    /**
-     * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-     */
+    /** @privateRemarks This is not overridden in foundry but reflects the real behavior. */
     override options: WallsLayer.LayerOptions;
 
     static override documentName: "Wall";
 
-    override get hookName(): string;
+    override get hookName(): "WallsLayer";
 
     /**
      * An Array of Wall instances in the current Scene which act as Doors.
@@ -71,9 +66,9 @@ declare global {
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-    override _draw(options: HandleEmptyObject<WallsLayer.DrawOptions>): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<WallsLayer.DrawOptions>): Promise<void>;
 
-    override _deactivate(): void;
+    protected override _deactivate(): void;
 
     /**
      * Given a point and the coordinates of a wall, determine which endpoint is closer to the point
@@ -85,10 +80,11 @@ declare global {
 
     override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
-    override _pasteObject(
+    /** @remarks `options` is unused */
+    protected override _pasteObject(
       copy: Wall.ConfiguredInstance,
       offset: Canvas.Point,
-      options?: NullishProps<{ hidden: boolean; snap: boolean }>,
+      options?: PlaceablesLayer.PasteOptions | null,
     ): Document.ConfiguredSourceForName<"Wall">;
 
     /**
@@ -96,45 +92,34 @@ declare global {
      * @param event - The originating mouse movement event
      * @param x     - The x-coordinate
      * @param y     - The y-coordinate
+     * @remarks Foundry marked `@private`
      */
-    protected _panCanvasEdge(event: MouseEvent, x: number, y: number): void | ReturnType<Canvas["animatePan"]>;
+    protected _panCanvasEdge(event: MouseEvent, x: number, y: number): Promise<boolean> | void;
 
     /**
      * Get the wall endpoint coordinates for a given point.
      * @param  point - The candidate wall endpoint.
      * @returns The wall endpoint coordinates.
+     * @remarks Foundry marked `@internal`, is called externally in {@link Wall#_onDragLeftMove} and {@link Wall#_prepareDragLeftDropUpdates}
      */
     protected _getWallEndpointCoordinates(
       point: Canvas.Point,
-      options?: NullishProps<{
-        /**
-         * Snap to the grid?
-         * @defaultValue `true`
-         */
-        snap: boolean;
-      }>,
+      options?: WallsLayer.GetWallEndpointCoordinatesOptions, // not:null (destructured)
     ): Canvas.PointTuple;
 
     /**
      * The Scene Controls tools provide several different types of prototypical Walls to choose from
      * This method helps to translate each tool into a default wall data configuration for that type
      * @param tool - The active canvas tool
+     * @remarks If a tool is not provided, returns an object with `light`, `sight`, `sound`, and `move` keys, all with the value `CONST.WALL_SENSE_TYPES.NORMAL`
      */
-    protected _getWallDataFromActiveTool(tool: string):
-      | {
-          light: foundry.CONST.WALL_SENSE_TYPES;
-          sight: foundry.CONST.WALL_SENSE_TYPES;
-          sound: foundry.CONST.WALL_SENSE_TYPES;
-          move: foundry.CONST.WALL_SENSE_TYPES;
-          door?: foundry.CONST.WALL_DOOR_TYPES;
-        }
-      | this["_cloneType"];
+    protected _getWallDataFromActiveTool(tool?: WallsLayer.WallTools | null): Document.ConfiguredSourceForName<"Wall">;
 
     /**
      * Identify the interior enclosed by the given walls.
      * @param  walls - The walls that enclose the interior.
      * @returns The polygons of the interior.
-     * @remarks Marked \@license MIT
+     * @remarks Foundry marked `@license MIT`
      */
     identifyInteriorArea(walls: Wall.ConfiguredInstance[]): PIXI.Polygon[];
 
@@ -153,7 +138,10 @@ declare global {
      * @deprecated since v11, will be removed in v13
      * @remarks "WallsLayer#checkCollision is obsolete. Prefer calls to testCollision from CONFIG.Canvas.polygonBackends[type]"
      */
-    checkCollision(ray: Ray, options: Parameters<(typeof PointSourcePolygon)["testCollision"]>[2]): boolean;
+    checkCollision<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>(
+      ray: Ray,
+      options: PointSourcePolygon.TestCollisionConfig<Mode>,
+    ): PointSourcePolygon.TestCollision<Coalesce<Mode, "all">>;
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -186,6 +174,7 @@ declare global {
   }
 
   namespace WallsLayer {
+    interface Any extends AnyWallsLayer {}
     type AnyConstructor = typeof AnyWallsLayer;
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
@@ -194,11 +183,22 @@ declare global {
       name: "walls";
       controllableObjects: true;
       objectClass: typeof Wall;
-      quadtree: true;
-      sheetClass: FormApplication.AnyConstructor;
-      sortActiveTop: boolean;
-      zIndex: number;
+      zIndex: 700;
     }
+
+    /** @internal */
+    type _Snap = NullishProps<{
+      /**
+       * Snap to the grid?
+       * @defaultValue `true`
+       */
+      snap: boolean;
+    }>;
+
+    /** @remarks The types handled by {@link Wall#_getWallDataFromActiveTool} */
+    type WallTools = "clone" | "invisible" | "terrain" | "ethereal" | "doors" | "secret" | "window";
+
+    interface GetWallEndpointCoordinatesOptions extends _Snap {}
   }
 }
 

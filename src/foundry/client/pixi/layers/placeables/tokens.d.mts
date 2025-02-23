@@ -1,4 +1,4 @@
-import type { ArrayOverlaps, HandleEmptyObject, NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
@@ -9,9 +9,9 @@ declare global {
     /**
      * The current index position in the tab cycle
      * @defaultValue `null`
-     * @remarks Foundry marked \@private but accesses it from Canvas
+     * @remarks Foundry marked `@private` but sets it `null` in  {@link Canvas#_onDragRightMove}
      */
-    _tabIndex: number | null;
+    protected _tabIndex: number | null;
 
     /**
      * @privateRemarks This is not overridden in foundry but reflects the real behavior.
@@ -41,22 +41,23 @@ declare global {
     /**
      * The set of tokens that trigger occlusion (a union of {@link CONST.TOKEN_OCCLUSION_MODES}).
      */
-    set occlusionMode(value: number);
+    set occlusionMode(value: foundry.CONST.OCCLUSION_MODES);
 
-    get occlusionMode(): number;
+    get occlusionMode();
 
-    override get hookName(): string;
+    override get hookName(): "TokenLayer";
 
     /**
      * Token objects on this layer utilize the TokenHUD
      */
-    get hud(): TokenHUD;
+    get hud(): NonNullable<Canvas["hud"]>["token"];
 
     /**
      * An Array of tokens which belong to actors which are owned
      */
-    get ownedTokens(): ReturnType<this["placeables"]["filter"]>;
+    get ownedTokens(): Token.ConfiguredInstance[];
 
+    /** @remarks Forces top left corner snapping */
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
     protected override _draw(options: HandleEmptyObject<TokenLayer.DrawOptions>): Promise<void>;
@@ -67,34 +68,44 @@ declare global {
 
     protected override _deactivate(): void;
 
-    override _pasteObject(
+    protected override _pasteObject(
       copy: Token.ConfiguredInstance,
       offset: Canvas.Point,
-      options?: NullishProps<{ hidden: boolean; snap: boolean }>,
+      options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
     ): Document.ConfiguredSourceForName<"Token">;
 
-    protected override _getMovableObjects<const T>(
-      ids?: ArrayOverlaps<T, string>,
-      includeLocked?: boolean,
+    /** @remarks Returns `[]` if the ruler is currently measuring */
+    protected override _getMovableObjects(
+      ids?: string[] | null,
+      includeLocked?: boolean | null,
     ): Token.ConfiguredInstance[];
 
     /**
      * Target all Token instances which fall within a coordinate rectangle.
      * @param rectangle - The selection rectangle.
-     * @param options - Additional options to configure targeting behaviour.
+     * @param options   - Additional options to configure targeting behaviour.
+     * @returns The number of Token instances which were targeted.
      */
-    targetObjects(rectangle: Canvas.Rectangle, options?: NullishProps<PlaceableObject.ControlOptions>): number;
+    targetObjects(
+      rectangle: Canvas.Rectangle,
+      options?: TokenLayer.TargetObjectsOptions, // not:null (destructured)
+    ): number;
 
     /**
      * Cycle the controlled token by rotating through the list of Owned Tokens that are available within the Scene
      * Tokens are currently sorted in order of their TokenID
      * @param forwards - Which direction to cycle. A truthy value cycles forward, while a false value cycles backwards.
      * @param reset    - Restart the cycle order back at the beginning?
+     * @returns The Token object which was cycled to, or null
+     * @remarks Neither parameter has a default, so a call with no arguments cycles backward without resetting
+     *
+     * Also selects the returned token if any, and pans the camera to its center
      */
-    cycleTokens(forwards: boolean, reset: boolean): Token.ConfiguredInstance | null;
+    cycleTokens(forwards?: boolean | null, reset?: boolean | null): Token.ConfiguredInstance | null;
 
     /**
      * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.
+     * @remarks Foundry marked `@private`
      */
     protected _getCycleOrder(): Token.ConfiguredInstance[];
 
@@ -114,27 +125,28 @@ declare global {
      */
     protected _getOccludableTokens(): Token.ConfiguredInstance[];
 
-    override storeHistory(
-      type: PlaceablesLayer.HistoryEventType,
-      data: Document.ConfiguredSourceForName<"Token">[],
+    /** @remarks "Clean actorData and delta updates from the history so changes to those fields are not undone" */
+    override storeHistory<Operation extends Document.Database.Operation>(
+      type: Operation,
+      data: PlaceablesLayer.HistoryDataFor<Operation, "Token">,
     ): void;
 
     /**
      * Handle dropping of Actor data onto the Scene canvas
+     * @remarks Foundry marked `@private`
      */
     protected _onDropActorData(
       event: DragEvent,
       data: TokenLayer.DropData,
-    ): Promise<ReturnType<Notifications["warn"]> | false | TokenDocument.ConfiguredInstance>;
+    ): Promise<number | false | TokenDocument.ConfiguredInstance>;
 
-    //TODO: use configured ruler type once it exists
-    protected override _onClickLeft(event: PIXI.FederatedEvent): void; // ReturnType<CONFIG.Canvas["rulerClass"]["_onClickLeft"]>;
+    protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
-    protected override _onMouseWheel(event: WheelEvent): ReturnType<this["rotateMany"]>;
+    protected override _onMouseWheel(event: WheelEvent): Promise<Token.ConfiguredInstance[] | void>;
 
     /**
      * @deprecated since v12 until v14
-     * @remarks "TokenLayer#toggleCombat is deprecated in favor of TokenDocument.implementation.createCombatants and TokenDocument.implementation.deleteCombatants"
+     * @remarks "TokenLayer#gridPrecision is deprecated. Use TokenLayer#getSnappedPoint instead of GridLayer#getSnappedPosition and TokenLayer#gridPrecision."
      */
     override get gridPrecision(): 1;
 
@@ -149,21 +161,14 @@ declare global {
      * @remarks "TokenLayer#toggleCombat is deprecated in favor of TokenDocument.implementation.createCombatants and TokenDocument.implementation.deleteCombatants"
      */
     toggleCombat(
-      state?: boolean,
+      state?: boolean | null,
       combat?: Combat.ConfiguredInstance | null,
-      {
-        token,
-      }?: {
-        /**
-         * A specific Token which is the origin of the group toggle request
-         * @defaultValue `null`
-         */
-        token?: Token.ConfiguredInstance | null;
-      },
+      options?: TokenLayer.ToggleCombatOptions, // not:null (destructured)
     ): Promise<Combatant.ConfiguredInstance[]>;
   }
 
   namespace TokenLayer {
+    interface Any extends AnyTokenLayer {}
     type AnyConstructor = typeof AnyTokenLayer;
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
@@ -181,6 +186,22 @@ declare global {
       type: "Actor";
       uuid: string;
     }
+
+    /** @internal */
+    // TODO: the NP should probably be on the PO side, update once PO has been done
+    type _TargetObjectsOptions = NullishProps<PlaceableObject.ControlOptions>;
+
+    interface TargetObjectsOptions extends _TargetObjectsOptions {}
+
+    /** @internal */
+    type _ToggleCombatOptions = NullishProps<{
+      /**
+       * A specific Token which is the origin of the group toggle request
+       * @defaultValue `null`
+       */
+      token: Token.ConfiguredInstance;
+    }>;
+    interface ToggleCombatOptions extends _ToggleCombatOptions {}
   }
 }
 
