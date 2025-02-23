@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { IntentionalPartial, RemoveIndexSignatures } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -9,9 +9,9 @@ declare global {
      * @param origin  - The canvas coordinates of the origin of the ping.
      * @param options - Additional options to configure the ping animation.
      */
-    constructor(origin: Canvas.Point, options?: PingOptions);
+    constructor(origin: Canvas.Point, options?: Ping.ConstructorOptions);
 
-    options: PingOptions;
+    options: Ping.ConstructorOptions;
 
     _color: Color;
 
@@ -38,13 +38,16 @@ declare global {
     interface Any extends AnyPing {}
     type AnyConstructor = typeof AnyPing;
 
+    type ConfiguredStyles = keyof RemoveIndexSignatures<typeof CONFIG.Canvas.pings.styles>;
+
     /** @internal */
-    type _Options = InexactPartial<{
+    type _ConstructorOptions = IntentionalPartial<{
       /**
        * The duration of the animation in milliseconds.
        * @defaultValue `900`
        * @remarks Can't be `null` because `options` is `mergeObject`ed with an object with this key,
-       * and the result is passed on to `CanvasAnimation.animate` in its options
+       * and the result is passed on to `CanvasAnimation.animate` in its options, which only has a
+       * parameter default for this property
        */
       duration: number | undefined;
 
@@ -69,11 +72,11 @@ declare global {
       /**
        * The name for the ping animation to pass to {@link CanvasAnimation.animate}.
        */
-      name?: PropertyKey | undefined | null;
+      name: PropertyKey | undefined | null;
     }>;
-  }
 
-  interface PingOptions extends Ping._Options {}
+    interface ConstructorOptions extends _ConstructorOptions {}
+  }
 }
 
 declare abstract class AnyPing extends Ping {

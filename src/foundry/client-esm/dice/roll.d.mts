@@ -452,12 +452,13 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    * @returns A promise which resolves to the created ChatMessage entity, if create is true
    *          or the Object of prepared chatData otherwise.
    */
+  // options: not null (destructured)
   toMessage<
     const Create extends boolean | null | undefined,
     ConcreteMessageData extends Roll.MessageData | null | undefined = undefined,
   >(
     messageData?: ConcreteMessageData,
-    options?: Roll.ToMessageOptions<Create>, // can't be null because it gets destructured
+    options?: Roll.ToMessageOptions<Create>,
   ): Promise<Roll.ToMessageReturn<Create, ConcreteMessageData>>;
 
   /* -------------------------------------------- */
@@ -589,10 +590,11 @@ declare namespace Roll {
   }
 
   type _ClassifyStringTermOptions = InexactPartial<{
-    /** Allow intermediate terms
-     *  @defaultValue true
+    /**
+     * Allow intermediate terms
+     * @defaultValue `true`
      */
-    intermediate: boolean; // not: null (default true)
+    intermediate: boolean | null;
 
     /** The prior classified term */
     prior: RollTerm | string | null;
