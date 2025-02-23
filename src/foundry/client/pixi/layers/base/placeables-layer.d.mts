@@ -13,7 +13,7 @@ declare global {
     /**
      * Sort order for placeables belonging to this layer
      * @defaultValue `0`
-     * @remarks Unusused in v12.331
+     * @remarks Unused in v12.331
      */
     static SORT_ORDER: number;
 
@@ -74,9 +74,9 @@ declare global {
     /**
      * A reference to the named Document type which is contained within this Canvas Layer.
      * @defaultValue `undefined`
-     * @remarks Subclasses must define
+     * @abstract
      */
-    static documentName: PlaceablesLayer.DocumentNames | undefined;
+    static documentName: PlaceablesLayer.DocumentNames;
 
     /**
      * Creation states affected to placeables during their construction.
@@ -244,6 +244,7 @@ declare global {
      * @param options - Options which configure how multiple objects are moved
      *                  (default: `{}`)
      * @returns An array of objects which were moved during the operation
+     * @throws If an array is passed for `ids` and any of its contents are not a valid ID for a placeable on this layer
      */
     moveMany(
       options?: PlaceablesLayer.MoveManyOptions, // not:null (destructured)
@@ -254,7 +255,7 @@ declare global {
      * @param ids           - An explicit array of IDs requested.
      * @param includeLocked - Include locked objects which would otherwise be ignored?
      * @returns An array of objects which can be moved or rotated
-     * @throws If an array is passed and any of its contents are not a valid ID for a placeable on this layer
+     * @throws If an array is passed for `ids` and any of its contents are not a valid ID for a placeable on this layer
      * @remarks Any non-array input for `ids` will default to using currently controlled objects
      */
     protected _getMovableObjects(
@@ -342,7 +343,7 @@ declare global {
      * @param options        - Additional options passed to Document.update
      *                         (default: `{}`)
      * @returns An array of updated data once the operation is complete
-     * @throws An error if the `transformation` paramater is neither a function nor a plain object
+     * @throws An error if the `transformation` parameter is neither a function nor a plain object
      */
     updateAll(
       transformation:
