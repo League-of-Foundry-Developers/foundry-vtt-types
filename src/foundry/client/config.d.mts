@@ -946,8 +946,9 @@ declare global {
 
       /**
        * The class used to render door control icons
+       * @remarks Not `AnyConstructor` because it's instantiated with a `Wall.Implementation` as its first argument
        */
-      doorControlClass: DoorControl.AnyConstructor;
+      doorControlClass: typeof DoorControl;
 
       /** @defaultValue `0x000000` */
       exploredColor: number;
@@ -1030,8 +1031,11 @@ declare global {
 
       visualEffectsMaskingFilter: VisualEffectsMaskingFilter.AnyConstructor;
 
-      /** @defaultValue `Ruler` */
-      rulerClass: Ruler.AnyConstructor;
+      /**
+       * @defaultValue `Ruler`
+       * @remarks Not `AnyConstructor` because it's instantiated with a `User.Implementation` as its first argument
+       */
+      rulerClass: typeof Ruler;
 
       /** @defaultValue `0.8` */
       dragSpeedModifier: number;
@@ -1042,7 +1046,93 @@ declare global {
       /** @defaultValue `4` */
       objectBorderThickness: number;
 
-      gridStyles: Record<string, CONFIG.Canvas.GridStyle>;
+      gridStyles: {
+        [key: string]: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.SolidLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        solidLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DashedLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 1
+         *   }
+         * }
+         * ```
+         */
+        dashedLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DottedLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        dottedLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.SquarePoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        squarePoints: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DiamondPoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        diamondPoints: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.RoundPoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        roundPoints: GridLayer.GridStyle;
+      };
 
       lightAnimations: {
         [key: string]: RenderedEffectSource.LightAnimationConfig;
