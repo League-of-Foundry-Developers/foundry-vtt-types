@@ -224,13 +224,13 @@ declare global {
     /**
      * Import a Document into this Compendium Collection.
      * @param document - The existing Document you wish to import
-     * @param options  - Additional options which modify how the data is imported. See {@link ClientDocument#toCompendium}
+     * @param options  - Additional options which modify how the data is imported. See {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`}
      *                   (default: `{}`)
      * @returns The imported Document instance
      */
     importDocument(
       document: Document.ImplementationInstanceFor<T["type"]>,
-      options?: InexactPartial<ClientDocument.CompendiumExportOptions>,
+      options?: InexactPartial<ClientDocument.ToCompendiumOptions>,
     ): Promise<Document.Stored<Document.ImplementationInstanceFor<T["type"]>> | undefined>;
 
     /**

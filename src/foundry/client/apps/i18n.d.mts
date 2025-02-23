@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+export {};
 
 declare global {
   /**
@@ -86,18 +86,7 @@ declare global {
      */
     static localizeDataModel(
       model: foundry.abstract.DataModel.AnyConstructor,
-      options?: InexactPartial<{
-        /**
-         * An array of localization key prefixes to use. If not specified, prefixes
-         * are learned from the DataModel.LOCALIZATION_PREFIXES static property.
-         */
-        prefixes: string[];
-
-        /**
-         * A localization path prefix used to prefix all field names within this model. This is generally not required.
-         */
-        prefixPath: string;
-      }>,
+      options?: Localization.LocalizeDataModelOptions,
     ): void;
 
     /**
@@ -192,30 +181,45 @@ declare global {
      * Retreive list formatter configured to the world's language setting.
      * @see [Intl.ListFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat/ListFormat)
      */
-    getListFormatter(
-      options?: InexactPartial<{
-        /**
-         * The list formatter style, either "long", "short", or "narrow".
-         */
-        style: Intl.ListFormatStyle;
-        /**
-         * The list formatter type, either "conjunction", "disjunction", or "unit".
-         */
-        type: Intl.ListFormatType;
-      }>,
-    ): Intl.ListFormat;
+    getListFormatter(options?: Localization.GetListFormatterOptions): Intl.ListFormat;
 
     /**
      * Sort an array of objects by a given key in a localization-aware manner.
      * @param objects - The objects to sort, this array will be mutated
      * @param key     - The key to sort the objects by. This can be provided in dot-notation.
      */
+    // TODO(LukeAbby): Should be constrainted to dot property keys of `objects`
     sortObjects<T extends object>(objects: Array<T>, key: string): T[];
   }
 
   namespace Localization {
     interface Translations {
       [K: string]: string | Translations;
+    }
+
+    interface LocalizeDataModelOptions {
+      /**
+       * An array of localization key prefixes to use. If not specified, prefixes
+       * are learned from the DataModel.LOCALIZATION_PREFIXES static property.
+       */
+      prefixes?: string[] | undefined;
+
+      /**
+       * A localization path prefix used to prefix all field names within this model. This is generally not required.
+       */
+      prefixPath?: string | undefined;
+    }
+
+    interface GetListFormatterOptions {
+      /**
+       * The list formatter style, either "long", "short", or "narrow".
+       */
+      style?: Intl.ListFormatStyle | undefined;
+
+      /**
+       * The list formatter type, either "conjunction", "disjunction", or "unit".
+       */
+      type?: Intl.ListFormatType | undefined;
     }
   }
 }

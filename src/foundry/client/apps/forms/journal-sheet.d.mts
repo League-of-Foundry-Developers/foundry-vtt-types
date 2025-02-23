@@ -1,16 +1,14 @@
 import type { MaybePromise, InexactPartial } from "fvtt-types/utils";
 
 declare global {
-  interface JournalSheetOptions extends DocumentSheetOptions<JournalEntry.Implementation> {
-    /** The current display mode of the journal. Either "text" or "image". */
-    sheetMode?: JournalSheet.SheetMode | null;
-  }
+  /** @deprecated {@link JournalSheet.Options | `JournalSheet.Options`} */
+  type JournalSheetOptions = JournalSheet.Options;
 
   /**
    * The Application responsible for displaying and editing a single JournalEntry document.
    * @typeParam Options - the type of the options object
    */
-  class JournalSheet<Options extends JournalSheetOptions = JournalSheetOptions> extends DocumentSheet<
+  class JournalSheet<Options extends JournalSheet.Options = JournalSheet.Options> extends DocumentSheet<
     Options,
     JournalEntry.Implementation
   > {
@@ -35,7 +33,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): JournalSheetOptions;
+    static override get defaultOptions(): JournalSheet.Options;
 
     /**
      * The cached list of processed page entries.
@@ -112,15 +110,7 @@ declare global {
      * This can be controlled by options passed into the render method or by a subclass override.
      * @param options - Sheet rendering options
      */
-    protected _getCurrentPage(
-      options?: InexactPartial<{
-        /** A numbered index of page to render */
-        pageIndex: number;
-
-        /** The ID of a page to render */
-        pageId: string;
-      }>,
-    ): number;
+    protected _getCurrentPage(options?: JournalSheet.GetCurrentPageOptions): number;
 
     override activateListeners(html: JQuery<HTMLElement>): void;
 
@@ -288,26 +278,45 @@ declare global {
 
     type SheetMode = "text" | "image";
 
-    type RenderOptions<Options extends JournalSheetOptions = JournalSheetOptions> = Application.RenderOptions<Options> &
-      InexactPartial<{
-        /** Render the sheet in a given view mode, see {@link JournalSheet.VIEW_MODES}. */
-        mode: number;
-        /** Render the sheet with the page with the given ID in view. */
-        pageId: string;
-        /** Render the sheet with the page at the given index in view. */
-        pageIndex: number;
-        /** Render the sheet with the given anchor for the given page in view. */
-        anchor: string;
-        /** Whether the journal entry or one of its pages is being shown to players who might otherwise not have permission to view it. */
-        tempOwnership: boolean;
-        /** Render the sheet with the TOC sidebar collapsed? */
-        collapsed?: boolean;
-      }>;
+    interface Options extends DocumentSheetOptions<JournalEntry.Implementation> {
+      /** The current display mode of the journal. Either "text" or "image". */
+      sheetMode?: JournalSheet.SheetMode | null;
+    }
+
+    type RenderOptions<Options extends JournalSheet.Options = JournalSheet.Options> =
+      Application.RenderOptions<Options> &
+        InexactPartial<{
+          /** Render the sheet in a given view mode, see {@link JournalSheet.VIEW_MODES}. */
+          mode: number;
+
+          /** Render the sheet with the page with the given ID in view. */
+          pageId: string;
+
+          /** Render the sheet with the page at the given index in view. */
+          pageIndex: number;
+
+          /** Render the sheet with the given anchor for the given page in view. */
+          anchor: string;
+
+          /** Whether the journal entry or one of its pages is being shown to players who might otherwise not have permission to view it. */
+          tempOwnership: boolean;
+
+          /** Render the sheet with the TOC sidebar collapsed? */
+          collapsed: boolean;
+        }>;
 
     interface FormData {
       content: string;
       folder: string;
       name: string;
+    }
+
+    interface GetCurrentPageOptions {
+      /** A numbered index of page to render */
+      pageIndex?: number | undefined;
+
+      /** The ID of a page to render */
+      pageId?: string | undefined;
     }
   }
 }

@@ -44,25 +44,10 @@ declare global {
      */
     protected static _pullToScene(sceneId: string): void;
 
-    override fromCompendium<
-      FolderOpt extends boolean = false,
-      SortOpt extends boolean = true,
-      OwnershipOpt extends boolean = false,
-      IdOpt extends boolean = false,
-      StateOpt extends boolean = false,
-    >(
-      document: Scene.Implementation | foundry.documents.BaseScene.CreateData,
-      options?: InexactPartial<
-        WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt, StateOpt>
-      >,
-    ): Omit<
-      Scene["_source"],
-      | ClientDocument.OmitProperty<FolderOpt, "folder">
-      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
-      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
-      | (IdOpt extends false ? "_id" : never)
-      | ClientDocument.OmitProperty<StateOpt, "active">
-    >;
+    override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
+      document: Scene.Implementation | Scene.CreateData,
+      options?: Options,
+    ): WorldCollection.FromCompendiumReturnType<Scene.ImplementationClass, Options>;
   }
 
   namespace Scenes {

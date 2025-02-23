@@ -1,4 +1,3 @@
-import type { InexactPartial } from "fvtt-types/utils";
 import type StringTree from "./string-tree.d.mts";
 
 /**
@@ -6,15 +5,14 @@ import type StringTree from "./string-tree.d.mts";
  * Note that this works well for languages with alphabets (latin, cyrillic, korean, etc.), but may need more nuanced
  * handling for languages that compose characters and letters.
  */
-declare class WordTree extends StringTree<WordTree.WordTreeEntry> {
+declare class WordTree<Key = string> extends StringTree<WordTree.WordTreeEntry, Key> {
   /**
    * Insert an entry into the tree.
    * @param string    - The string key for the entry.
    * @param entry     - The entry to store.
    * @returns         The node the entry was added to.
    */
-  addLeaf(string: string, entry: WordTree.WordTreeEntry): StringTree.StringTreeNode;
-  addLeaf(strings: string[], entry: any): StringTree.StringTreeNode;
+  addLeaf(key: Key, entry: WordTree.WordTreeEntry): StringTree.StringTreeNode<WordTree.WordTreeEntry>;
 
   /**
    * Return entries that match the given string prefix.
@@ -22,29 +20,14 @@ declare class WordTree extends StringTree<WordTree.WordTreeEntry> {
    * @param options             - Additional options to configure behaviour.
    * @returns                   A number of entries that have the given prefix.
    */
-  lookup(
-    prefix: string,
-    options?: InexactPartial<{
-      /**
-       * The maximum number of items to retrieve. It is important
-       * to set this value as very short prefixes will naturally match large numbers
-       * of entries.
-       * (default: `10`)
-       */
-      limit: number;
-      /** A filter function to apply to each candidate entry. */
-      filterEntries?: StringTree.StringTreeEntryFilter | undefined;
-    }>,
-  ): WordTree.WordTreeEntry[];
-  lookup(strings: string[], options?: InexactPartial<{ limit: number }>): StringTree.StringTreeNode[];
+  lookup(prefix: Key, options?: StringTree.LookupOptions): WordTree.WordTreeEntry[];
 
   /**
    * Returns the node at the given prefix.
-   * @param prefix        - The prefix.
+   * @param prefix - The prefix.
    * @returns The node
    */
-  nodeAtPrefix(strings: string[], options?: InexactPartial<{ hasLeaves: boolean }>): StringTree.StringTreeNode | void;
-  nodeAtPrefix(prefix: string): WordTree.WordTreeEntry;
+  nodeAtPrefix(prefix: Key): StringTree.StringTreeNode<WordTree.WordTreeEntry> | void;
 }
 
 declare namespace WordTree {
@@ -52,14 +35,18 @@ declare namespace WordTree {
    * A leaf entry in the tree.
    */
   interface WordTreeEntry {
+    // TODO(LukeAbby): This appears to be possible to be a compendium index entry.
     /** An object that this entry represents. */
     entry: foundry.abstract.Document.Any;
+
     /** The document type. */
     documentName: string;
+
     /** The document's UUID. */
     uuid: string;
+
     /** The (optional) pack ID. */
-    pack?: string;
+    pack?: string | undefined;
   }
 }
 

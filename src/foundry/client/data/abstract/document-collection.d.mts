@@ -6,15 +6,17 @@ declare global {
   /**
    * An abstract subclass of the Collection container which defines a collection of Document instances.
    */
-  class DocumentCollection<T extends Document.AnyConstructor, Name extends string> extends foundry.utils.Collection<
-    Document.ToStored<T>
-  > {
-    constructor(data: FixedInstanceType<T>["_source"][]);
+  class DocumentCollection<
+    DocumentClass extends Document.AnyConstructor,
+    Name extends string,
+    Methods extends Collection.Methods.Any = DocumentCollection.Methods<DocumentClass>,
+  > extends foundry.utils.Collection<Document.ToStored<DocumentClass>, Methods> {
+    constructor(data: FixedInstanceType<DocumentClass>["_source"][]);
 
     /**
      * The source data array from which the Documents in the WorldCollection are created
      */
-    _source: FixedInstanceType<T>["_source"][];
+    _source: FixedInstanceType<DocumentClass>["_source"][];
 
     /**
      * An Array of application references which will be automatically updated when the collection content changes
@@ -31,13 +33,13 @@ declare global {
     /**
      * A reference to the Document class definition which is contained within this DocumentCollection.
      */
-    get documentClass(): T;
+    get documentClass(): DocumentClass;
 
     /**
      * A reference to the named Document class which is contained within this DocumentCollection.
      * @remarks This accessor is abstract: A subclass of DocumentCollection must implement the documentName getter
      */
-    get documentName(): T["metadata"]["name"];
+    get documentName(): DocumentClass["metadata"]["name"];
 
     /**
      * The base Document type which is contained within this DocumentCollection
@@ -60,10 +62,10 @@ declare global {
      * @param context - Document creation context
      */
     createDocument(
-      data: Document.ConstructorDataFor<T>,
+      data: Document.ConstructorDataFor<DocumentClass>,
       // TODO: Should be `Document.ParentOf<T>` or some equivalent.
       context: Document.ConstructionContext<Document.Any | null>,
-    ): T;
+    ): DocumentClass;
 
     /**
      * Obtain a temporary Document instance for a document id which currently has invalid source data.
@@ -74,36 +76,15 @@ declare global {
      */
     getInvalid(
       id: string,
-      options?: InexactPartial<{
-        /**
-         * Throw an Error if the requested ID is not in the set of invalid IDs for this collection.
-         */
-        strict: boolean;
-      }>,
-    ): unknown;
+      options?: DocumentCollection.GetInvalidOptions,
+    ): Document.Invalid<FixedInstanceType<DocumentClass>>;
 
-    get(
-      key: string,
-      options?: InexactPartial<{
-        /**
-         * Throw an Error if the requested Embedded Document does not exist.
-         * @defaultValue `false`
-         */
-        strict: false;
-        /**
-         * Allow retrieving an invalid Embedded Document.
-         * @defaultValue `false`
-         */
-        invalid: false;
-      }>,
-    ): Document.ToStored<T> | undefined;
-    get(key: string, options: { strict: true; invalid?: false }): Document.ToStored<T>;
-    get(key: string, options: { strict?: boolean; invalid: true }): unknown;
+    get: Methods["get"];
 
     /**
      * @remarks The parameter `id` is ignored, instead `document.id` is used as the key.
      */
-    set(id: string, document: Document.ToStored<T>): this;
+    set(id: string, document: Document.ToStored<DocumentClass>): this;
 
     /** @remarks Actually returns void */
     delete: (id: string) => boolean;
@@ -132,7 +113,7 @@ declare global {
      * If filters are provided, results are filtered to only those that match the provided values.
      * @param search   - An object configuring the search
      */
-    search(search?: DocumentCollection.SearchOptions): FixedInstanceType<T>[];
+    search(search?: DocumentCollection.SearchOptions): FixedInstanceType<DocumentClass>[];
 
     /**
      * Update all objects in this DocumentCollection with a provided transformation.
@@ -145,9 +126,11 @@ declare global {
      * @returns An array of updated data once the operation is complete
      */
     updateAll(
-      transformation: Document.UpdateDataFor<T> | ((doc: Document.ToStored<T>) => Document.UpdateDataFor<T>),
-      condition?: ((obj: Document.ToStored<T>) => boolean) | null,
-      options?: Document.OnUpdateOptions<T["metadata"]["name"]>,
+      transformation:
+        | Document.UpdateDataFor<DocumentClass>
+        | ((doc: Document.ToStored<DocumentClass>) => Document.UpdateDataFor<DocumentClass>),
+      condition?: ((obj: Document.ToStored<DocumentClass>) => boolean) | null,
+      options?: Document.OnUpdateOptions<DocumentClass["metadata"]["name"]>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
     /**
@@ -160,7 +143,7 @@ declare global {
      */
     _onModifyContents<A extends DatabaseAction>(
       action: A,
-      documents: Document.ToStored<T>[],
+      documents: Document.ToStored<DocumentClass>[],
       result: readonly AnyObject[] | readonly string[],
       operation: DatabaseOperationMap[A],
       user: User.Implementation,
@@ -169,6 +152,13 @@ declare global {
 
   namespace DocumentCollection {
     type Any = DocumentCollection<Document.AnyConstructor, string>;
+
+    interface Methods<T extends Document.AnyConstructor> {
+      get<Options extends DocumentCollection.GetOptions>(
+        key: string,
+        options?: Options,
+      ): DocumentCollection.GetReturnType<T, Options>;
+    }
 
     namespace RenderContext {
       interface Base<T extends Document.AnyConstructor> {
@@ -220,5 +210,34 @@ declare global {
     }
 
     interface SearchOptions extends InexactPartial<_SearchOptions> {}
+
+    interface GetInvalidOptions {
+      /**
+       * Throw an Error if the requested ID is not in the set of invalid IDs for this collection.
+       */
+      strict?: boolean | undefined;
+    }
+
+    interface GetOptions extends Collection.GetOptions {
+      /**
+       * Allow retrieving an invalid Embedded Document.
+       * @defaultValue `false`
+       */
+      invalid?: boolean | undefined;
+    }
+
+    type GetReturnType<
+      ConcreteDocument extends Document.AnyConstructor,
+      Options extends GetOptions,
+    > = Collection.GetReturnType<
+      _ApplyInvalid<Document.Stored<FixedInstanceType<ConcreteDocument>>, Options["invalid"]>,
+      Options
+    >;
+
+    /** @internal */
+    type _ApplyInvalid<
+      ConcreteDocument extends Document.Any,
+      Invalid extends boolean | undefined,
+    > = Invalid extends true ? Document.Invalid<ConcreteDocument> : never;
   }
 }

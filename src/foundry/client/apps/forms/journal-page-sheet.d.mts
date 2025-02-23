@@ -1,6 +1,6 @@
 import type { Editor } from "tinymce";
 import type { EditorView } from "prosemirror-view";
-import type { GetDataReturnType, InexactPartial, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 import type Showdown from "showdown";
 
 declare global {
@@ -187,9 +187,9 @@ declare global {
      * @param components - The time components
      * @returns The timestamp, in second
      */
-    _timeComponentsToTimestamp(components?: InexactPartial<JournalVideoPageSheet.TimeComponents>): number;
+    _timeComponentsToTimestamp(components?: JournalVideoPageSheet.TimeComponents): number;
 
-    _timestampToTimeComponents(timestamp: number): Partial<JournalVideoPageSheet.TimeComponents>;
+    _timestampToTimeComponents(timestamp: number): JournalVideoPageSheet.TimeComponents;
   }
 
   namespace JournalVideoPageSheet {
@@ -204,9 +204,9 @@ declare global {
     }
 
     interface TimeComponents {
-      h: number;
-      m: number;
-      s: number;
+      h?: number | undefined;
+      m?: number | undefined;
+      s?: number | undefined;
     }
   }
 

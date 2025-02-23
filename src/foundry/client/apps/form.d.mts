@@ -1,6 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { AnyObject, GetDataReturnType, InexactPartial, MaybePromise } from "fvtt-types/utils";
+import type { AnyObject, GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../common/prosemirror/_module.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 
@@ -211,21 +211,7 @@ declare global {
      * Handle saving the content of a specific editor by name
      * @param name - The named editor to save
      */
-    saveEditor(
-      name: string,
-      options?: InexactPartial<{
-        /**
-         * Remove the editor after saving its content
-         * @defaultValue `true`
-         */
-        remove: boolean;
-
-        /**
-         * Prevent normal re-rendering of the sheet after saving.
-         */
-        preventRender: boolean;
-      }>,
-    ): Promise<void>;
+    saveEditor(name: string, options?: FormApplication.SaveEditorOptions): Promise<void>;
 
     /**
      * Activate an editor instance present within the form
@@ -333,6 +319,19 @@ declare global {
       object: ConcreteObject;
       options: Options;
       title: string;
+    }
+
+    interface SaveEditorOptions {
+      /**
+       * Remove the editor after saving its content
+       * @defaultValue `true`
+       */
+      remove?: boolean | undefined;
+
+      /**
+       * Prevent normal re-rendering of the sheet after saving.
+       */
+      preventRender?: boolean | undefined;
     }
   }
 

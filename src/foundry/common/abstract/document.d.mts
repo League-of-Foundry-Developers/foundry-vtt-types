@@ -20,6 +20,7 @@ import type {
   AllKeysOf,
   IntentionalPartial,
   DiscriminatedUnion,
+  SimpleMerge,
 } from "../../../utils/index.d.mts";
 import type { documents } from "../../client-esm/client.d.mts";
 import type * as CONST from "../constants.mts";
@@ -1128,9 +1129,16 @@ declare namespace Document {
   type AnyChild<Parent extends Any | null> = Document<Document.Type, {}, Parent>;
 
   /**
-   * Returns the type of the constructor data for the given {@link foundry.abstract.Document}.
+   * @deprecated {@link Document.CreateDataFor | `Document.CreateDataFor`}
    */
   type ConstructorDataFor<T extends Document.Internal.Constructor> = SchemaField.CreateData<
+    T extends { defineSchema: () => infer R extends DataSchema } ? R : never
+  >;
+
+  /**
+   * Returns the type of the constructor data for the given {@link foundry.abstract.Document | `foundry.abstract.Document`}.
+   */
+  type CreateDataFor<T extends Document.Internal.Constructor> = SchemaField.CreateData<
     T extends { defineSchema: () => infer R extends DataSchema } ? R : never
   >;
 
@@ -1205,6 +1213,14 @@ declare namespace Document {
     _id: string;
     _source: GetKey<D, "_source"> & { _id: string };
   };
+
+  type Invalid<D extends Document.Any> = SimpleMerge<
+    D,
+    {
+      _source: object;
+      system: object;
+    }
+  >;
 
   type ToStored<D extends Document.AnyConstructor> = Stored<FixedInstanceType<D>>;
 

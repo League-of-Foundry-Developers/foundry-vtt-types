@@ -3,6 +3,7 @@
 declare class LenientMap<K, V> extends globalThis.Map<K, V> {
   [Symbol.iterator](): any;
   forEach(...args: any[]): any;
+  get(...args: any[]): any;
 }
 
 declare const Map: typeof LenientMap;
@@ -12,7 +13,7 @@ declare const Map: typeof LenientMap;
  * This concept is reused throughout Foundry VTT where a collection of uniquely identified elements is required.
  * @typeParam T - The type of the objects contained in the Collection
  */
-declare class Collection<V> extends Map<string, V> {
+declare class Collection<V, Methods extends Collection.Methods.Any = Collection.Methods<V>> extends Map<string, V> {
   constructor(entries?: Iterable<readonly [string, V]> | null);
 
   /**
@@ -87,8 +88,7 @@ declare class Collection<V> extends Map<string, V> {
    * c.get("d", {strict: true}); // throws Error
    * ```
    */
-  get(key: string, { strict }: { strict: true }): V;
-  get(key: string, { strict }?: { strict?: false }): V | undefined;
+  get: Methods["get"];
 
   /**
    * Get an entry from the Collection by name.
@@ -155,9 +155,37 @@ declare class Collection<V> extends Map<string, V> {
 
 declare namespace Collection {
   type AnyConstructor = typeof AnyCollection;
+
+  interface GetOptions {
+    /**
+     * Throw an Error if the requested Embedded Document does not exist.
+     * @defaultValue `false`
+     */
+    strict?: boolean | undefined;
+  }
+
+  interface Methods<V> {
+    get<Options extends DocumentCollection.GetOptions>(
+      key: string,
+      { strict }?: Options,
+    ): Collection.GetReturnType<V, Options>;
+  }
+
+  namespace Methods {
+    interface Any {
+      get(key: string, options?: never): unknown;
+    }
+  }
+
+  type GetReturnType<T, Options extends GetOptions> = _ApplyStrict<T, Options["strict"]>;
+
+  /** @internal */
+  type _ApplyStrict<ConcreteDocument, Strict extends boolean | undefined> =
+    | (Strict extends false | undefined ? undefined : never)
+    | ConcreteDocument;
 }
 
-declare abstract class AnyCollection extends Collection<any> {
+declare abstract class AnyCollection extends Collection<unknown, Collection.Methods.Any> {
   constructor(arg0: never, ...args: never[]);
 }
 

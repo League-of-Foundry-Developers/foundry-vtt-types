@@ -1,4 +1,4 @@
-import type { DeepPartial, DropFirst, FixedInstanceType, InexactPartial } from "fvtt-types/utils";
+import type { DeepPartial, DropFirst, FixedInstanceType, GetKey, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -8,9 +8,9 @@ declare global {
    * @see {@link Game#collections}
    */
   abstract class WorldCollection<
-    T extends Document.AnyConstructor,
+    DocumentClass extends Document.AnyConstructor,
     Name extends string,
-  > extends DirectoryCollectionMixin(DocumentCollection)<T, Name> {
+  > extends DirectoryCollectionMixin(DocumentCollection)<DocumentClass, Name> {
     /**
      * Reference the set of Folders which contain documents in this collection
      */
@@ -25,8 +25,8 @@ declare global {
     get directory(): Lowercase<Name> extends keyof typeof ui
       ? (typeof ui)[Lowercase<Name>]
       :
-          | (T["metadata"]["name"] extends foundry.CONST.FOLDER_DOCUMENT_TYPES
-              ? DocumentDirectory<T["metadata"]["name"]>
+          | (DocumentClass["metadata"]["name"] extends foundry.CONST.FOLDER_DOCUMENT_TYPES
+              ? DocumentDirectory<DocumentClass["metadata"]["name"]>
               : never)
           | SidebarTab
           | undefined
@@ -60,11 +60,13 @@ declare global {
      * DatabaseCreateOperation but the foundry typedef doesn't have them).
      */
     importFromCompendium(
-      pack: CompendiumCollection<CompendiumCollection.Metadata & { type: T["metadata"]["name"] }>,
+      pack: CompendiumCollection<CompendiumCollection.Metadata & { type: DocumentClass["metadata"]["name"] }>,
       id: string,
-      updateData?: DeepPartial<FixedInstanceType<T>["_source"]>,
-      options?: InexactPartial<Document.OnCreateOptions<T["metadata"]["name"]> & WorldCollection.FromCompendiumOptions>,
-    ): Promise<Document.ToStored<T>>;
+      updateData?: DeepPartial<FixedInstanceType<DocumentClass>["_source"]>,
+      options?: InexactPartial<
+        Document.OnCreateOptions<DocumentClass["metadata"]["name"]> & WorldCollection.FromCompendiumOptions
+      >,
+    ): Promise<Document.ToStored<DocumentClass>>;
 
     /**
      * Apply data transformations when importing a Document from a Compendium pack
@@ -74,21 +76,10 @@ declare global {
      * @returns The processed data ready for world Document creation
      * @remarks FromCompendiumOptions is inflated to account for expanded downstream use
      */
-    fromCompendium<
-      FolderOpt extends boolean = false,
-      SortOpt extends boolean = true,
-      OwnershipOpt extends boolean = false,
-      IdOpt extends boolean = false,
-    >(
-      document: FixedInstanceType<T> | Document.ConstructorDataFor<T>,
-      options?: InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>,
-    ): Omit<
-      FixedInstanceType<T>["_source"],
-      | ClientDocument.OmitProperty<FolderOpt, "folder">
-      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
-      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
-      | (IdOpt extends false ? "_id" : never)
-    >;
+    fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
+      document: FixedInstanceType<DocumentClass> | Document.CreateDataFor<DocumentClass>,
+      options?: Options,
+    ): WorldCollection.FromCompendiumReturnType<DocumentClass, Options>;
 
     /**
      * Register a Document sheet class as a candidate which can be used to display Documents of a given type.
@@ -122,39 +113,44 @@ declare global {
   }
 
   namespace WorldCollection {
-    interface FromCompendiumOptions<
-      FolderOpt extends boolean = false,
-      SortOpt extends boolean = true,
-      OwnershipOpt extends boolean = false,
-      IdOpt extends boolean = false,
-      StateOpt extends boolean = false,
-    > {
+    interface FromCompendiumOptions {
       /**
        * Clear the currently assigned folder
        * @defaultValue `false`
        */
-      clearFolder: FolderOpt;
+      clearFolder?: boolean | undefined;
 
       /**
        * Clear the currently sort order
        * @defaultValue `true`
        */
-      clearSort: SortOpt;
+      clearSort?: boolean | undefined;
 
       /**
        * Clear Document ownership
        * @defaultValue `true`
        */
-      clearOwnership: OwnershipOpt;
+      clearOwnership?: boolean | undefined;
 
       /**
        * Retain the Document ID from the source Compendium
        * @defaultValue `false`
        */
-      keepId: IdOpt;
+      keepId?: boolean | undefined;
 
       /** @remarks used by Scenes#fromCompendium */
-      clearState: StateOpt;
+      clearState?: boolean | undefined;
     }
+
+    type FromCompendiumReturnType<
+      DocumentClass extends Document.AnyConstructor,
+      Options extends FromCompendiumOptions | undefined,
+    > = Omit<
+      FixedInstanceType<DocumentClass>["_source"],
+      | ClientDocument._OmitProperty<GetKey<Options, "clearFolder", undefined>, false, "folder">
+      | ClientDocument._OmitProperty<GetKey<Options, "clearSort", undefined>, true, "sort" | "navigation" | "navOrder">
+      | ClientDocument._OmitProperty<GetKey<Options, "clearOwnership", undefined>, true, "ownership">
+      | (GetKey<Options, "keepId", undefined> extends true ? never : never)
+    >;
   }
 }

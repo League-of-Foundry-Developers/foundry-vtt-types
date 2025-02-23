@@ -1,84 +1,12 @@
 import type BasePackage from "./base-package.d.mts";
-import type * as fields from "../data/fields.d.mts";
-import type AdditionalTypesField from "./sub-types.d.mts";
 
 declare namespace BaseSystem {
-  interface Schema extends ReturnType<typeof BasePackage.defineSchema> {
-    /**
-     * The current package version
-     * @remarks Actually defined in BasePackage but defined here to avoid conflict with BaseWorld
-     */
-    version: fields.StringField<{ required: true; blank: false; initial: "0" }>;
-
-    /**
-     * Additional document subtypes provided by this system.
-     */
-    documentTypes: AdditionalTypesField;
-
-    /**
-     * A web URL or local file path which provides a default background banner for worlds which are created using this system
-     */
-    background: fields.StringField<{ required: false; blank: false }>;
-
-    /**
-     * A default initiative formula used for this system
-     */
-    initiative: fields.StringField;
-
-    /**
-     * The default grid settings to use for Scenes in this system
-     */
-    grid: fields.SchemaField<{
-      /** A default grid type to use for Scenes in this system */
-      type: fields.NumberField<{
-        required: true;
-        choices: typeof foundry.CONST.GRID_TYPES;
-        initial: typeof foundry.CONST.GRID_TYPES.SQUARE;
-      }>;
-
-      /** A default distance measurement to use for Scenes in this system */
-      distance: fields.NumberField<{
-        required: true;
-        nullable: false;
-        positive: true;
-        initial: 1;
-      }>;
-
-      /** A default unit of measure to use for distance measurement in this system */
-      units: fields.StringField<{
-        required: true;
-      }>;
-
-      /** The default rule used by this system for diagonal measurement on square grids */
-      diagonals: fields.NumberField<{
-        required: true;
-        choices: typeof foundry.CONST.GRID_DIAGONALS;
-        initial: typeof foundry.CONST.GRID_DIAGONALS.EQUIDISTANT;
-      }>;
-    }>;
-
-    /**
-     * An Actor data attribute path to use for Token primary resource bars
-     */
-    primaryTokenAttribute: fields.StringField;
-
-    /**
-     * An Actor data attribute path to use for Token secondary resource bars
-     */
-    secondaryTokenAttribute: fields.StringField;
-
-    /**
-     * A default distance measurement to use for Scenes in this system
-     * @deprecated since v12
-     */
-    gridDistance: fields.NumberField;
-
-    /**
-     * A default unit of measure to use for distance measurement in this system
-     * @deprecated since v12
-     */
-    gridUnits: fields.NumberField;
-  }
+  export import Source = Module.Source;
+  export import PersistedData = Module.PersistedData;
+  export import CreateData = Module.CreateData;
+  export import InitializedData = Module.InitializedData;
+  export import UpdateData = Module.UpdateData;
+  export import Schema = Module.Schema;
 }
 
 /**

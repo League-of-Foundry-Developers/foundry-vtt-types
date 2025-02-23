@@ -35,7 +35,7 @@ declare global {
     interface Stored extends Document.Stored<TileDocument.Implementation> {}
 
     /**
-     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
@@ -46,7 +46,7 @@ declare global {
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link TileDocument._source | `TileDocument._source`}. This data is what was
+     * The data put in {@link TileDataModel._source | `TileDataModel._source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * Both `Source` and `PersistedData` are equivalent.

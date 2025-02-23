@@ -1,30 +1,12 @@
 import type BasePackage from "./base-package.d.mts";
-import type * as fields from "../data/fields.d.mts";
-import type AdditionalTypesField from "./sub-types.d.mts";
 
 declare namespace BaseModule {
-  interface Schema extends ReturnType<typeof BasePackage.defineSchema> {
-    /**
-     * The current package version
-     * @remarks Actually defined in BasePackage but defined here to avoid conflict with BaseWorld
-     */
-    version: fields.StringField<{ required: true; blank: false; initial: "0" }>;
-
-    /**
-     * Does this module provide a translation for the core software?
-     */
-    coreTranslation: fields.BooleanField;
-
-    /**
-     * A library module provides no user-facing functionality and is solely for use by other modules. Loaded before any system or module scripts.
-     */
-    library: fields.BooleanField;
-
-    /**
-     * Additional document sub-types provided by this module.
-     */
-    documentTypes: AdditionalTypesField;
-  }
+  export import Source = Module.Source;
+  export import PersistedData = Module.PersistedData;
+  export import CreateData = Module.CreateData;
+  export import InitializedData = Module.InitializedData;
+  export import UpdateData = Module.UpdateData;
+  export import Schema = Module.Schema;
 }
 
 /**

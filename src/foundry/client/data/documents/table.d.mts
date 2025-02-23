@@ -36,7 +36,7 @@ declare global {
     interface Stored extends Document.Stored<RollTable.Implementation> {}
 
     /**
-     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
@@ -511,28 +511,10 @@ declare global {
       userId: string,
     ): void;
 
-    override toCompendium<
-      FlagsOpt extends boolean = false,
-      SourceOpt extends boolean = true,
-      SortOpt extends boolean = true,
-      FolderOpt extends boolean = false,
-      OwnershipOpt extends boolean = false,
-      StateOpt extends boolean = true,
-      IdOpt extends boolean = false,
-    >(
+    toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
-      options?: InexactPartial<
-        ClientDocument.CompendiumExportOptions<FlagsOpt, SourceOpt, SortOpt, FolderOpt, OwnershipOpt, StateOpt, IdOpt>
-      >,
-    ): Omit<
-      this["_source"],
-      | (IdOpt extends false ? "_id" : never)
-      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
-      | ClientDocument.OmitProperty<FolderOpt, "folder">
-      | ClientDocument.OmitProperty<FlagsOpt, "flags">
-      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
-      | ClientDocument.OmitProperty<StateOpt, "active" | "fogReset" | "playing"> // does not model the results.drawn = false
-    >;
+      options?: Options,
+    ): ClientDocument.ToCompendiumReturnType<foundry.documents.BaseRollTable, Options>;
 
     /**
      * Create a new RollTable document using all of the Documents from a specific Folder as new results.

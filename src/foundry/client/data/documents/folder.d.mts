@@ -42,7 +42,7 @@ declare global {
     interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
 
     /**
-     * The data put in {@link Document._source | `Document._source`}. This data is what was
+     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
@@ -317,7 +317,7 @@ declare global {
      * Export all Documents contained in this Folder to a given Compendium pack.
      * Optionally update existing Documents within the Pack by name, otherwise append all new entries.
      * @param pack    - A Compendium pack to which the documents will be exported
-     * @param options - Additional options which customize how content is exported. See {@link ClientDocument#toCompendium}
+     * @param options - Additional options which customize how content is exported. See {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`}
      *                  (default: `{}`)
      * @returns The updated Compendium Collection instance
      */

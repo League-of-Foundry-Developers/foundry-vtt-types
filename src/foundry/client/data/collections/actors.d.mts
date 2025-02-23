@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+export {};
 
 declare global {
   /**
@@ -22,34 +22,23 @@ declare global {
 
     static documentName: "Actor";
 
-    override fromCompendium<
-      FolderOpt extends boolean = false,
-      SortOpt extends boolean = true,
-      OwnershipOpt extends boolean = false,
-      IdOpt extends boolean = false,
-    >(
+    override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
       document: Actor.Implementation | foundry.documents.BaseActor.CreateData,
-      options?: InexactPartial<
-        WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt> & {
-          /**
-           * Clear prototype token data to allow default token settings to be applied.
-           * @defaultValue `true`
-           */
-          clearPrototypeToken: boolean;
-        }
-      >,
-    ): Omit<
-      Actor["_source"],
-      | ClientDocument.OmitProperty<FolderOpt, "folder">
-      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
-      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
-      | (IdOpt extends false ? "_id" : never)
-    >;
+      options?: Options,
+    ): WorldCollection.FromCompendiumReturnType<Actor.ImplementationClass, Options>;
   }
 
   namespace Actors {
     type Any = AnyActors;
     type AnyConstructor = typeof AnyActors;
+
+    interface FromCompendiumOptions extends WorldCollection.FromCompendiumOptions {
+      /**
+       * Clear prototype token data to allow default token settings to be applied.
+       * @defaultValue `true`
+       */
+      clearPrototypeToken: boolean;
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin, FixedInstanceType } from "fvtt-types/utils";
+import type { Mixin, FixedInstanceType, Coalesce, AnyObject } from "fvtt-types/utils";
 import type {
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
@@ -150,7 +150,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param options - Sorting options provided to SortingHelper.performIntegerSort
    * @returns The Document after it has been re-sorted
    */
-  sortRelative(options?: InexactPartial<ClientDocument.SortOptions<this>>): Promise<this>;
+  sortRelative(options?: ClientDocument.SortOptions<this>): Promise<this>;
 
   /**
    * Construct a UUID relative to another document.
@@ -159,24 +159,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   getRelativeUuid(relative: ClientDocument): string;
 
   /**
-   * Createa  content link for this document
+   * Create a content link for this document
    * @param eventData - The parsed object of data provided by the drop transfer event.
    * @param options   - Additional options to configure link generation.
    */
-  protected _createDocumentLink(
-    eventData: unknown,
-    options?: InexactPartial<{
-      /**
-       * A document to generate a link relative to.
-       */
-      relativeTo: ClientDocument;
-
-      /**
-       * A custom label to use instead of the document's name.
-       */
-      label: string;
-    }>,
-  ): string;
+  protected _createDocumentLink(eventData: unknown, options?: ClientDocument.CreateDocumentLinkOptions): string;
 
   /**
    * Handle clicking on a content link for this document.
@@ -311,14 +298,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Whenever the Document's sheet changes, close any existing applications for this Document, and re-render the new
    * sheet if one was already open.
    */
-  protected _onSheetChange(
-    options?: InexactPartial<{
-      /**
-       * Whether the sheet was originally open and needs to be re-opened.
-       */
-      sheetOpen: boolean;
-    }>,
-  ): Promise<void>;
+  protected _onSheetChange(options?: ClientDocument.OnSheetChangeOptions): Promise<void>;
 
   /**
    * Gets the default new name for a Document
@@ -348,9 +328,9 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
-   * @param options - Additional options passed to the {@link ClientDocument#toCompendium} method
+   * @param options - Additional options passed to the {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`} method
    */
-  exportToJSON(options?: InexactPartial<ClientDocument.CompendiumExportOptions>): void;
+  exportToJSON(options?: ClientDocument.ToCompendiumOptions): void;
 
   /**
    * Serialize salient information about this Document when dragging it.
@@ -379,7 +359,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    *
    * This function must be used to create a document from data that predates the current core version.
    * It must be given nonpartial data matching the schema it had in the core version it is coming from.
-   * It applies legacy migrations to the source data before calling {@link Document.fromSource}.
+   * It applies legacy migrations to the source data before calling {@link Document.fromSource | `Document.fromSource`}.
    * If this function is not used to import old data, necessary migrations may not applied to the data
    * resulting in an incorrectly imported document.
    *
@@ -387,7 +367,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * doesn't contain a `_stats` field, the data is assumed to be pre-V10, when the `_stats` field didn't exist yet.
    * The `_stats` field must not be stripped from the data before it is exported!
    * @param source - The document data that is imported.
-   * @param context - The model construction context passed to {@link Document.fromSource}.
+   * @param context - The model construction context passed to {@link Document.fromSource | `Document.fromSource`}.
    *                  (default: `context.strict=true`) Strict validation is enabled by default.
    */
   static fromImport(
@@ -415,28 +395,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    *                  (default: `{}`)
    * @returns A data object of cleaned data suitable for compendium import
    */
-  toCompendium<
-    FlagsOpt extends boolean = false,
-    SourceOpt extends boolean = true,
-    SortOpt extends boolean = true,
-    FolderOpt extends boolean = false,
-    OwnershipOpt extends boolean = false,
-    StateOpt extends boolean = true,
-    IdOpt extends boolean = false,
-  >(
+  toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
     pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
-    options?: InexactPartial<
-      ClientDocument.CompendiumExportOptions<FlagsOpt, SourceOpt, SortOpt, FolderOpt, OwnershipOpt, StateOpt, IdOpt>
-    >,
-  ): Omit<
-    Document.Internal.Instance.Complete<BaseDocument>["_source"],
-    | (IdOpt extends false ? "_id" : never)
-    | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder"> // helping out Scene
-    | ClientDocument.OmitProperty<FolderOpt, "folder">
-    | ClientDocument.OmitProperty<FlagsOpt, "flags">
-    | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
-    | ClientDocument.OmitProperty<StateOpt, "active" | "fogReset" | "playing"> // helping out Playlist, Scene
-  >;
+    options?: Options,
+  ): ClientDocument.ToCompendiumReturnType<BaseDocument, Options>;
 
   /**
    * Create a content link for this Document.
@@ -500,7 +462,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   protected _preCreateEmbeddedDocuments(
     embeddedName: string,
-    result: Record<string, unknown>[],
+    result: AnyObject[],
     options: Document.ModificationOptions,
     userId: string,
   ): void;
@@ -517,7 +479,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
     documents: Document.Any[],
-    result: Record<string, unknown>[],
+    result: AnyObject[],
     options: Document.ModificationOptions,
     userId: string,
   ): void;
@@ -532,7 +494,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   protected _preUpdateEmbeddedDocuments(
     embeddedName: string,
-    result: Record<string, unknown>[],
+    result: AnyObject[],
     options: Document.ModificationOptions,
     userId: string,
   ): void;
@@ -549,7 +511,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   protected _onUpdateEmbeddedDocuments(
     embeddedName: string,
     documents: Document.Any[],
-    result: Record<string, unknown>[],
+    result: AnyObject[],
     options: Document.ModificationContext<Document.Any | null>,
     userId: string,
   ): void;
@@ -628,58 +590,102 @@ declare global {
     // TODO: This may be better defined elsewhere
     type LifeCycleEventName = "preCreate" | "onCreate" | "preUpdate" | "onUpdate" | "preDelete" | "onDelete";
 
-    type OmitProperty<T extends boolean, Property extends string> = T extends true ? Property : never;
+    // Note(LukeAbby): If the property could be omitted it is. This is the safest option because in indeterminate cases access would be unsafe.
+    // In the future the indeterminate case could turn the property optional but that isn't done today because that's annoying to do for little benefit.
+    /** @internal */
+    type _OmitProperty<Omit extends boolean | undefined, Default extends boolean, ToOmit extends string> = Omit extends
+      | true
+      | (Default extends true ? undefined : never)
+      ? ToOmit
+      : never;
 
-    interface CompendiumExportOptions<
-      FlagsOpt extends boolean = false,
-      SourceOpt extends boolean = true,
-      SortOpt extends boolean = true,
-      FolderOpt extends boolean = false,
-      OwnershipOpt extends boolean = false,
-      StateOpt extends boolean = true,
-      IdOpt extends boolean = false,
-    > {
+    interface ToCompendiumOptions {
       /**
        * Clear the flags object
        * @defaultValue `false`
        */
-      clearFlags: FlagsOpt;
+      clearFlags?: boolean | undefined;
 
       /**
        * Clear any prior source information
        * @defaultValue `true`
        */
-      clearSource: SourceOpt;
+      clearSource?: boolean | undefined;
 
       /**
        * Clear the currently assigned folder and sort order
        * @defaultValue `true`
        */
-      clearSort: SortOpt;
+      clearSort?: boolean | undefined;
 
       /**
        * Clear the currently assigned folder
        * @defaultValue `false`
        */
-      clearFolder: FolderOpt;
+      clearFolder?: boolean | undefined;
 
       /**
        * Clear document ownership
        * @defaultValue `true`
        */
-      clearOwnership: OwnershipOpt;
+      clearOwnership?: boolean | undefined;
 
       /**
        * Clear fields which store document state
        * @defaultValue `true`
        */
-      clearState: StateOpt;
+      clearState?: boolean | undefined;
 
       /**
        * Retain the current Document id
        * @defaultValue `false`
        */
-      keepId: IdOpt;
+      keepId?: boolean | undefined;
+    }
+
+    interface CreateDocumentLinkOptions {
+      /**
+       * A document to generate a link relative to.
+       */
+      relativeTo?: ClientDocument | undefined;
+
+      /**
+       * A custom label to use instead of the document's name.
+       */
+      label?: string | undefined;
+    }
+
+    type ToCompendiumReturnType<
+      BaseDocument extends Document.Internal.Instance.Any,
+      Options extends ToCompendiumOptions,
+    > = _ToCompendiumReturnType<
+      Options["clearSource"],
+      Omit<
+        Document.Internal.Instance.Complete<BaseDocument>["_source"],
+        | ClientDocument._OmitProperty<Options["clearFlags"], false, "flags">
+        | ClientDocument._OmitProperty<Options["clearSort"], true, "sort" | "navigation" | "navOrder"> // helping out Scene
+        | ClientDocument._OmitProperty<Options["clearFolder"], true, "folder">
+        | ClientDocument._OmitProperty<Options["clearOwnership"], true, "ownership">
+        | ClientDocument._OmitProperty<Options["clearState"], true, "active" | "fogReset" | "playing"> // helping out Playlist, Scene
+        | (Options["keepId"] extends true ? never : "_id")
+      >
+    >;
+
+    type _ToCompendiumReturnType<ClearSource extends boolean | undefined, SourceData extends object> = [
+      Coalesce<ClearSource, true>,
+    ] extends [true]
+      ? {
+          [K in keyof SourceData]: "_stats" extends K
+            ? Omit<SourceData[K], "compendiumSource" | "duplicateSource">
+            : never;
+        }
+      : SourceData;
+
+    interface OnSheetChangeOptions {
+      /**
+       * Whether the sheet was originally open and needs to be re-opened.
+       */
+      sheetOpen?: boolean | undefined;
     }
   }
 }
