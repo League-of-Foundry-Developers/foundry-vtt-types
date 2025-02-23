@@ -1,24 +1,21 @@
 import { expectTypeOf } from "vitest";
 
-class MyVisionMode extends VisionMode {
-  _activate(source: VisionSource): void {
-    source.animate(5000);
-  }
+expectTypeOf(VisionMode.LIGHTING_VISIBILITY).toMatchTypeOf<
+  Record<keyof VisionMode.LightingVisibility, VisionMode.LIGHTING_VISIBILITY>
+>();
+expectTypeOf(VisionMode.LIGHTING_LEVELS).toEqualTypeOf<typeof foundry.CONST.LIGHTING_LEVELS>();
 
-  _deactivate(source: VisionSource): void {
-    source.animation;
-  }
-}
-
-const monochromatic = new MyVisionMode({
+const monochromatic = new VisionMode({
   id: "monochromatic",
   label: "VISION.ModeMonochromatic",
+  tokenConfig: false,
   canvas: {
     shader: ColorAdjustmentsSamplerShader,
     uniforms: { contrast: 0, saturation: -1.0, brightness: 0 },
   },
   lighting: {
     background: {
+      visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED,
       postProcessingModes: ["SATURATION"],
       uniforms: { saturation: -1.0, tint: [1, 1, 1] },
     },
@@ -30,10 +27,23 @@ const monochromatic = new MyVisionMode({
       postProcessingModes: ["SATURATION"],
       uniforms: { saturation: -1.0, tint: [1, 1, 1] },
     },
+    levels: {
+      [VisionMode.LIGHTING_LEVELS.BRIGHT]: VisionMode.LIGHTING_LEVELS.HALFDARK,
+    },
   },
   vision: {
+    coloration: {
+      shader: FlameColorationShader,
+      uniforms: { saturation: -1.0, tint: [1, 1, 1] },
+    },
+    illumination: {
+      shader: null,
+      uniforms: { saturation: -1.0, tint: [1, 1, 1] },
+    },
+    background: { shader: undefined, uniforms: { saturation: -1.0, tint: [1, 1, 1] } },
     darkness: { adaptive: false },
-    defaults: { attenuation: 0, contrast: 0, saturation: -1, brightness: 0 },
+    defaults: { color: "#FFABAB", attenuation: 0, contrast: 0, saturation: -1, brightness: 0 },
+    preferred: false,
   },
 });
 
@@ -43,10 +53,13 @@ expectTypeOf(ShaderAssType).toEqualTypeOf<typeof AbstractBaseShader | undefined 
 declare const ShaderInitType: ShaderField.InitializedType<ShaderField.DefaultOptions>;
 expectTypeOf(ShaderInitType).toEqualTypeOf<typeof AbstractBaseShader | undefined | null>;
 
-const myVisionSource = new VisionSource();
+declare const myVisionSource: foundry.canvas.sources.PointVisionSource.Any;
 
 // Next line could possibly be a `never` instead, but not sure the generic usage is worth the headache
 expectTypeOf(monochromatic.schema.fields.canvas.fields.shader._cast("foo")).toEqualTypeOf<typeof AbstractBaseShader>;
 expectTypeOf(monochromatic.activate(myVisionSource)).toEqualTypeOf<void>();
 expectTypeOf(monochromatic.id).toEqualTypeOf<string | undefined>();
 expectTypeOf(monochromatic.canvas.shader).toEqualTypeOf<typeof AbstractBaseShader | undefined | null>();
+expectTypeOf(monochromatic.animated).toBeBoolean();
+expectTypeOf(monochromatic.animate(0.6)).toEqualTypeOf<void>();
+expectTypeOf(monochromatic.perceivesLight).toBeBoolean();

@@ -989,8 +989,11 @@ declare global {
         bright: number;
       };
 
-      /** @defaultValue `FogManager` */
-      fogManager: FogManager.AnyConstructor;
+      /**
+       * @defaultValue `FogManager`
+       * @remarks Can't be `AnyConstructor` because Foundry assumes it can call `new` with the same arguments FogManager accepts
+       */
+      fogManager: typeof FogManager;
 
       polygonBackends: {
         /** @defaultValue `typeof ClockwiseSweepPolygon` */
