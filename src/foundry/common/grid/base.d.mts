@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, EmptyObject, InexactPartial } from "fvtt-types/utils";
 
 /**
  * The base grid class.
@@ -366,8 +366,14 @@ declare abstract class BaseGrid {
    * @returns An Array of distance measurements for each segment
    * @deprecated Since v12 until v14. Use {@link BaseGrid#measurePath} instead.
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  measureDistances(segments: GridLayer.Segment[], options?: GridLayer.MeasureDistancesOptions): number[];
+  measureDistances(
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    segments: BaseGrid.Segment[],
+    /**
+     * @defaultValue `{}`
+     * @remarks Unused */
+    options?: EmptyObject,
+  ): number[];
 
   /* -------------------------------------------- */
 
@@ -390,11 +396,12 @@ declare abstract class BaseGrid {
     x: number,
     y: number,
     interval?: number | null,
-    options?: InexactPartial<{
-      /** The token that is being moved. */
-      token: Token;
-    }>,
-  ): { x: number; y: number };
+    /**
+     * @defaultValue `{}`
+     * @remarks Unused
+     */
+    options?: EmptyObject,
+  ): PIXI.IPointData;
 
   /* -------------------------------------------- */
 
@@ -485,6 +492,9 @@ declare abstract class BaseGrid {
 }
 
 declare namespace BaseGrid {
+  interface Any extends AnyBaseGrid {}
+  type AnyConstructor = typeof AnyBaseGrid;
+
   interface Configuration {
     /** The size of a grid space in pixels (a positive number) */
     size: number;
@@ -631,6 +641,17 @@ declare namespace BaseGrid {
     rows: number;
     columns: number;
   }
+
+  /**
+   * @deprecated since v12, will be removed in v14
+   */
+  interface Segment {
+    ray: Ray;
+  }
+}
+
+declare abstract class AnyBaseGrid extends BaseGrid {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default BaseGrid;
