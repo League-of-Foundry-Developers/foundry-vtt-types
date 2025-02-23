@@ -7,8 +7,8 @@ class MyLightSource extends foundry.canvas.sources.BaseLightSource {}
 expectTypeOf(MyLightSource.sourceType).toBeString();
 expectTypeOf(MyLightSource["_initializeShaderKeys"]).toEqualTypeOf<string[]>();
 expectTypeOf(MyLightSource["_refreshUniformsKeys"]).toEqualTypeOf<string[]>();
-expectTypeOf(MyLightSource["_dimLightingLevel"]).toMatchTypeOf<foundry.CONST.LIGHTING_LEVELS>();
-expectTypeOf(MyLightSource["_brightLightingLevel"]).toMatchTypeOf<foundry.CONST.LIGHTING_LEVELS>();
+expectTypeOf(MyLightSource["_dimLightingLevel"]).toEqualTypeOf<foundry.CONST.LIGHTING_LEVELS>();
+expectTypeOf(MyLightSource["_brightLightingLevel"]).toEqualTypeOf<foundry.CONST.LIGHTING_LEVELS>();
 expectTypeOf(MyLightSource["ANIMATIONS"]).toMatchTypeOf<Record<string, RenderedEffectSource.AnimationConfig>>();
 expectTypeOf(MyLightSource.defaultData).toEqualTypeOf<BaseLightSource.SourceData>();
 
