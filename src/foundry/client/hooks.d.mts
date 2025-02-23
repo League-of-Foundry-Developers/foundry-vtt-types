@@ -487,7 +487,7 @@ declare global {
        */
       initializeWeatherEffects: (
         weatherEffect: WeatherEffects,
-        weatherEffectsConfig?: WeatherEffects.WeatherEffectsConfig | null,
+        weatherEffectsConfig?: WeatherEffects.EffectConfiguration | null,
       ) => void;
 
       /** Adventure */
