@@ -1,4 +1,4 @@
-import type { IntentionalPartial, RequiredProps } from "fvtt-types/utils";
+import type { AnyObject, IntentionalPartial, RequiredProps } from "fvtt-types/utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 
@@ -22,7 +22,7 @@ declare class PointLightSource<
 
   override _createShapes(): void;
 
-  override _configure(changes: IntentionalPartial<SourceData>): void;
+  override _configure(changes: AnyObject): void;
 
   override _getPolygonConfiguration(): PointLightSource.PolygonConfig;
 

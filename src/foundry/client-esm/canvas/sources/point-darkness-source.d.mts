@@ -1,4 +1,4 @@
-import type { IntentionalPartial, RequiredProps } from "fvtt-types/utils";
+import type { AnyObject, IntentionalPartial, RequiredProps } from "fvtt-types/utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
@@ -9,20 +9,21 @@ import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 declare class PointDarknessSource<
   SourceData extends PointDarknessSource.SourceData = PointDarknessSource.SourceData,
   SourceShape extends PointSourcePolygon = PointSourcePolygon,
-> extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape, PointDarknessSource.Layers> {
+  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = PointDarknessSource.Layers,
+> extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape, RenderingLayers> {
   /** @defaultValue `"darknessSources"` */
   static override effectsCollection: string;
 
   /** @defaultValue `foundry.CONST.LIGHTING_LEVELS.HALFDARK` */
-  static override _dimLightingLevel: foundry.CONST.LIGHTING_LEVELS;
+  protected static override _dimLightingLevel: foundry.CONST.LIGHTING_LEVELS;
 
   /** @defaultValue `foundry.CONST.LIGHTING_LEVELS.DARKNESS` */
-  static override _brightLightingLevel: foundry.CONST.LIGHTING_LEVELS;
+  protected static override _brightLightingLevel: foundry.CONST.LIGHTING_LEVELS;
 
   /** @defaultValue `CONFIG.Canvas.darknessAnimations` */
-  static get ANIMATIONS(): typeof CONFIG.Canvas.darknessAnimations;
+  protected static get ANIMATIONS(): typeof CONFIG.Canvas.darknessAnimations;
 
-  static override get _layers(): Record<string, foundry.canvas.sources.RenderedEffectSource.LayerConfig>;
+  protected static override get _layers(): Record<string, RenderedEffectSource.LayerConfig>;
 
   /** @privateRemarks This is not in Foundry's code, but accounts for the mixin class's static property's inability to be generic */
   static override defaultData: PointDarknessSource.SourceData;
@@ -54,26 +55,26 @@ declare class PointDarknessSource<
   /**
    * A convenience accessor to the darkness layer mesh.
    */
-  get darkness(): this["layers"]["darkness"]["mesh"];
+  get darkness(): PointSourceMesh;
 
-  override _initialize(data: IntentionalPartial<SourceData>): void;
+  protected override _initialize(data: IntentionalPartial<SourceData>): void;
 
   protected override _createShapes(): void;
 
-  protected override _configure(changes: IntentionalPartial<SourceData>): void;
+  protected override _configure(changes: AnyObject): void;
 
-  override _getPolygonConfiguration(): PointDarknessSource.PolygonConfig;
+  protected override _getPolygonConfiguration(): PointDarknessSource.PolygonConfig;
 
   protected override _drawMesh(layerId: string): PointSourceMesh | null;
 
-  override _updateGeometry(): void;
+  protected override _updateGeometry(): void;
 
   /**
    * Update the uniforms of the shader on the darkness layer.
    */
-  _updateDarknessUniforms(): void;
+  protected _updateDarknessUniforms(): void;
 
-  override _destroy(): void;
+  protected override _destroy(): void;
 
   /**
    * @deprecated since v12, until v14
@@ -88,7 +89,9 @@ declare namespace PointDarknessSource {
   interface Any extends AnyPointDarknessSource {}
   type AnyConstructor = typeof AnyPointDarknessSource;
 
-  type SourceData = BaseLightSource.SourceData & PointEffectSourceMixin.SourceData;
+  interface SourceData extends BaseLightSource.SourceData, PointEffectSourceMixin.SourceData {
+    animation: RenderedEffectSource.StoredDarknessAnimationConfig;
+  }
 
   interface PolygonConfig
     extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold" | "includeDarkness" | "radius"> {}
@@ -100,7 +103,11 @@ declare namespace PointDarknessSource {
   };
 }
 
-declare abstract class AnyPointDarknessSource extends PointDarknessSource {
+declare abstract class AnyPointDarknessSource extends PointDarknessSource<
+  PointDarknessSource.SourceData,
+  PointSourcePolygon,
+  PointDarknessSource.Layers
+> {
   constructor(arg0: never, ...args: never[]);
 }
 

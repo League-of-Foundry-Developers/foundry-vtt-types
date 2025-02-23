@@ -1,6 +1,6 @@
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
-import type { IntentionalPartial, RequiredProps } from "fvtt-types/utils";
+import type { AnyObject, IntentionalPartial, RequiredProps } from "fvtt-types/utils";
 
 /**
  * A specialized subclass of RenderedEffectSource which represents a source of point-based vision.
@@ -123,7 +123,7 @@ declare class PointVisionSource<
    */
   protected _updateVisionMode(): void;
 
-  override _configure(changes: IntentionalPartial<SourceData>): void;
+  override _configure(changes: AnyObject): void;
 
   override _configureLayer(layer: RenderedEffectSource.SourceLayer, layerId: string): void;
 

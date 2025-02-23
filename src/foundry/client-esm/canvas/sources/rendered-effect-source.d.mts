@@ -216,7 +216,7 @@ declare namespace RenderedEffectSource {
      * An animation configuration for the source
      * @defaultValue `{}`
      */
-    animation: AnimationConfig;
+    animation: StoredAnimationConfig;
 
     /**
      * A color applied to the rendered effect

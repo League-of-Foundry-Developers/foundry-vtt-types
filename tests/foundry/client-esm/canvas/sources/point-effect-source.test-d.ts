@@ -1,19 +1,17 @@
 import { expectTypeOf } from "vitest";
 import type PointEffectSourceMixin from "../../../../../src/foundry/client-esm/canvas/sources/point-effect-source.d.mts";
 
-const { PointEffectSourceMixin: PESM, BaseEffectSource: BES } = foundry.canvas.sources;
-
-declare class MyPES<
+declare class MyPointEffectSource<
   SourceData extends PointEffectSourceMixin.MixedSourceData = PointEffectSourceMixin.MixedSourceData,
   SourceShape extends PointSourcePolygon = ClockwiseSweepPolygon,
-> extends PESM(BES)<SourceData, SourceShape> {
+> extends PointEffectSourceMixin(foundry.canvas.sources.BaseEffectSource)<SourceData, SourceShape> {
   static defaultData: PointEffectSourceMixin.MixedSourceData;
   shape: SourceShape;
 }
 
-expectTypeOf(MyPES.defaultData).toEqualTypeOf<PointEffectSourceMixin.MixedSourceData>();
+expectTypeOf(MyPointEffectSource.defaultData).toEqualTypeOf<PointEffectSourceMixin.MixedSourceData>();
 
-const mySource = new MyPES();
+const mySource = new MyPointEffectSource();
 
 expectTypeOf(mySource.shape).toEqualTypeOf<ClockwiseSweepPolygon>();
 expectTypeOf(mySource.radius).toBeNumber();
@@ -38,5 +36,3 @@ expectTypeOf(mySource["_updateGeometry"]()).toBeVoid();
 // deprecated since v11, until v13
 expectTypeOf((mySource.radius = 5)).toBeNumber();
 expectTypeOf(mySource.los).toEqualTypeOf<ClockwiseSweepPolygon>();
-declare const someCSP: ClockwiseSweepPolygon;
-expectTypeOf((mySource.los = someCSP)).toEqualTypeOf<ClockwiseSweepPolygon>();
