@@ -13,6 +13,7 @@ expectTypeOf(MyPointEffectSource.defaultData).toEqualTypeOf<PointEffectSourceMix
 
 const mySource = new MyPointEffectSource();
 
+expectTypeOf(mySource.data).toEqualTypeOf<PointEffectSourceMixin.MixedSourceData>();
 expectTypeOf(mySource.shape).toEqualTypeOf<ClockwiseSweepPolygon>();
 expectTypeOf(mySource.radius).toBeNumber();
 

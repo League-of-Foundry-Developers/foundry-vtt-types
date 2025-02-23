@@ -20,6 +20,8 @@ expectTypeOf(mySource.edges).toEqualTypeOf<foundry.canvas.edges.Edge[]>();
 expectTypeOf(mySource.darkness).toEqualTypeOf<PointSourceMesh>();
 
 const sourceData = {
+  x: 50,
+  y: 50,
   alpha: 0.1,
   angle: 215,
   animation: {
@@ -45,7 +47,7 @@ const sourceData = {
   shadows: 1,
   vision: true,
   walls: false,
-};
+} satisfies PointDarknessSource.SourceData;
 
 expectTypeOf(mySource["_initialize"]({})).toBeVoid();
 expectTypeOf(mySource["_initialize"](sourceData)).toBeVoid();
