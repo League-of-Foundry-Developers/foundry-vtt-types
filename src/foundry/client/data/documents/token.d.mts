@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { SchemaField } from "../../../common/data/fields.d.mts";
 import type BaseToken from "../../../common/documents/token.d.mts";
@@ -25,6 +25,8 @@ declare global {
           _priorPosition: Record<string, { x: number; y: number; elevation: number }>;
           teleport: boolean;
           forced: boolean;
+          // TODO: Type this accurately when going over the Token placeable
+          animation: AnyObject;
         },
         {}
       > {}
