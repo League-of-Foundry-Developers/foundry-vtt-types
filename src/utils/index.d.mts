@@ -256,6 +256,11 @@ export type ConformRecord<T extends object, V, D extends V = V> = {
  * this behavior is disabled for functions in most codebases (including this one)
  * because of the `strictFunctionTypes` compiler flag, implicit under `strict: true`.
  * See: https://github.com/Microsoft/TypeScript/wiki/FAQ#why-are-function-parameters-bivariant
+ *
+ * Note that this does not work well with exotic functions. Unexpected behavior may occur with:
+ * - Overloaded functions.
+ * - Functions with additional properties, e.g. `(() => number) & { prop: string }`.
+ * - Functions of the shape `(...args: never[]) => T`.
  */
 export type ToMethod<T extends AnyFunction> = {
   method(...args: Parameters<T>): ReturnType<T>;

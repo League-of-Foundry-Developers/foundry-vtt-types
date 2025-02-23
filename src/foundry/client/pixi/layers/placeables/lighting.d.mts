@@ -50,7 +50,7 @@ declare global {
 
     protected override _onDragLeftCancel(event: PointerEvent): void;
 
-    protected _onMouseWheel(event: WheelEvent): ReturnType<AmbientLight.Object["rotate"]>;
+    protected _onMouseWheel(event: WheelEvent): Promise<void> | void;
 
     /**
      * Actions to take when the darkness level of the Scene is changed

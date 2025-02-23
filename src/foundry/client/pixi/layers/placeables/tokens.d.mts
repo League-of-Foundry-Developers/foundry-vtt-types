@@ -130,7 +130,7 @@ declare global {
     //TODO: use configured ruler type once it exists
     protected override _onClickLeft(event: PIXI.FederatedEvent): void; // ReturnType<CONFIG.Canvas["rulerClass"]["_onClickLeft"]>;
 
-    protected override _onMouseWheel(event: WheelEvent): Promise<Token.Object[]>;
+    protected override _onMouseWheel(event: WheelEvent): Promise<void> | void;
 
     /**
      * @deprecated since v12 until v14

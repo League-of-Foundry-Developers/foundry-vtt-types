@@ -85,7 +85,6 @@ declare global {
 
     interface Options<Metadata extends CompendiumCollection.Metadata = CompendiumCollection.Metadata>
       extends DocumentDirectoryOptions<Document.ImplementationClassFor<Metadata["type"]>> {
-      // Note(LukeAbby): Replacing `any` with `Metadata` causes an OOM within TypeScript.
       collection: CompendiumCollection<Metadata>;
     }
   }

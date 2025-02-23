@@ -5,7 +5,6 @@ import type {
   EmptyObject,
   NullishProps,
   InexactPartial,
-  ToMethod,
   FixedInstanceType,
   PrettifyType,
   InterfaceToObject,
@@ -471,7 +470,7 @@ declare namespace DataField {
       | undefined;
 
     /** A data validation function which accepts one argument with the current value. */
-    validate?: DataField.Validator<BaseAssignmentType> | undefined;
+    validate?: DataField.Validator<DataField.Any, BaseAssignmentType> | undefined;
 
     /** A localizable label displayed on forms which render this field. */
     label?: string | undefined;
@@ -491,9 +490,9 @@ declare namespace DataField {
   namespace Options {
     /** Any DataField.Options. */
     // Note(LukeAbby): This `& object` is intentional. Its purpose is to allow options like `{ integer: true }` to be assigned.
-    // This is an issue because `{ integer: true }` does not extend `{ required?: boolean }` because they have properties in common.
+    // This is an issue because `{ integer: true }` does not extend `{ required?: boolean }` because they have no properties in common.
     // Even though `{ integer: true, required: undefined }` would extend `{ required?: boolean }` following the regular rules of surplus properties being allowed.
-    // `object` was chosen over `AnyObject` so that people may pass in interfa
+    // `object` was chosen over `AnyObject` so that people may pass in interfaces.
     type Any = DataField.Options<any> & object;
 
     /**
@@ -612,22 +611,36 @@ declare namespace DataField {
    *
    * An Error may be thrown which provides a custom error message explaining the reason the value is invalid.
    */
-  type Validator<BaseAssignmentType> = ToMethod<
-    (
-      this: DataField,
-      // TODO(LukeAbby): Always allowing `null | undefined` may be too lenient but it's probably the best type for the time being.
-      value: BaseAssignmentType | null | undefined,
-      options: ValidationOptions<DataField>,
-    ) => DataModelValidationFailure | boolean | void
-  >;
+  type Validator<CurrentField extends DataField.Any, BaseAssignmentType> =
+    | {
+        validate(
+          this: CurrentField,
+          value: unknown,
+          options: ValidationOptions<CurrentField>,
+        ): value is BaseAssignmentType;
+      }["validate"]
+    | {
+        validate(
+          this: CurrentField,
+          value: unknown,
+          options: ValidationOptions<CurrentField>,
+        ): asserts value is BaseAssignmentType;
+      }["validate"]
+    | {
+        validate(
+          this: CurrentField,
+          value: unknown,
+          options: ValidationOptions<CurrentField>,
+        ): DataModelValidationFailure | boolean | void;
+      }["validate"];
 
   /**
    * An interface for the options of the {@link DataField} validation functions.
-   * @typeParam DataField - the type of the DataField, which is the receiver of the validate function
+   * @typeParam CurrentField - the type of the DataField, which is the receiver of the validate function
    */
-  interface ValidationOptions<DataField extends DataField.Any> extends DataValidationOptions {
+  interface ValidationOptions<CurrentField extends DataField.Any> extends DataValidationOptions {
     source?: AnyObject;
-    validate?: Validator<DataField.AssignmentTypeFor<DataField>>;
+    validate?: Validator<CurrentField, DataField.AssignmentTypeFor<CurrentField>>;
   }
 
   interface Context {

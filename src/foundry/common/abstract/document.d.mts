@@ -534,11 +534,11 @@ declare abstract class Document<
     Temporary extends boolean | undefined,
   >(
     embeddedName: EmbeddedName,
-    data?: Array<Document.CreateDataForName<Extract<EmbeddedName, Document.Type>>>,
-    operation?: InexactPartial<Document.Database.OperationOf<Extract<EmbeddedName, Document.Type>, "create">> & {
+    data?: Array<Document.CreateDataForName<EmbeddedName>>,
+    operation?: InexactPartial<Document.Database.OperationOf<EmbeddedName, "create">> & {
       temporary?: Temporary;
     },
-  ): Promise<Array<Document.ImplementationInstanceFor<Extract<EmbeddedName, Document.Type>>> | undefined>;
+  ): Promise<Array<Document.ImplementationInstanceFor<EmbeddedName>> | undefined>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
@@ -552,9 +552,9 @@ declare abstract class Document<
    */
   updateEmbeddedDocuments<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
     embeddedName: EmbeddedName,
-    updates?: Array<AnyObject>,
+    updates?: Array<Document.UpdateDataForName<EmbeddedName>>,
     context?: Document.ModificationContext<Parent>,
-  ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<Extract<EmbeddedName, Document.Type>>>>>;
+  ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>>>;
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
@@ -1587,11 +1587,11 @@ declare namespace Document {
      * This is a helper type that gets the right DatabaseOperation (including the
      * proper options) for a particular Document type.
      */
-    type OperationOf<
-      T extends Document.Type,
-      Operation extends Database.Operation,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-    > = DatabaseOperationMap[T][Operation];
+    // TODO(LukeAbby): Filling out causes circularities.
+    type OperationOf<T extends Document.Type, Operation extends Database.Operation> =
+      | (Operation extends "create" ? any : never)
+      | (Operation extends "update" ? any : never)
+      | (Operation extends "delete" ? any : never);
 
     /**
      * @deprecated - TODO: Delete this once it's been fully removed.
@@ -1712,16 +1712,6 @@ declare namespace Document {
 /** @deprecated {@link Document.Database.Operation | `Document.Database.Operation`} */
 export type Operation = Document.Database.Operation;
 
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-/** @deprecated {@link Document.Database.Operations | `Document.Database.Operations`} */
-export type DocumentDatabaseOperations<
-  T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
-  ExtraCreateOptions extends AnyObject = {},
-  ExtraUpdateOptions extends AnyObject = {},
-  ExtraDeleteOptions extends AnyObject = {},
-> = Document.Database.Operations<T, ExtraCreateOptions, ExtraUpdateOptions, ExtraDeleteOptions>;
-/* eslint-enable @typescript-eslint/no-empty-object-type */
-
 /* eslint-disable @typescript-eslint/no-deprecated */
 /**
  * @deprecated if you want to get individual operations see {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
@@ -1761,3 +1751,108 @@ export interface DatabaseOperationMap {
   Wall: WallDocument.DatabaseOperations;
 }
 /* eslint-enable @typescript-eslint/no-deprecated */
+
+interface DatabaseOperationCreateMap {
+  ActiveEffect: ActiveEffect.DatabaseOperation.Create;
+  Actor: Actor.DatabaseOperation.Create;
+  ActorDelta: ActorDelta.DatabaseOperation.Create;
+  Adventure: Adventure.DatabaseOperation.Create;
+  AmbientLight: AmbientLightDocument.DatabaseOperation.Create;
+  AmbientSound: AmbientSoundDocument.DatabaseOperation.Create;
+  Card: Card.DatabaseOperation.Create;
+  Cards: Cards.DatabaseOperation.Create;
+  ChatMessage: ChatMessage.DatabaseOperation.Create;
+  Combat: Combat.DatabaseOperation.Create;
+  Combatant: Combatant.DatabaseOperation.Create;
+  Drawing: DrawingDocument.DatabaseOperation.Create;
+  FogExploration: FogExploration.DatabaseOperation.Create;
+  Folder: Folder.DatabaseOperation.Create;
+  Item: Item.DatabaseOperation.Create;
+  JournalEntry: JournalEntry.DatabaseOperation.Create;
+  JournalEntryPage: JournalEntryPage.DatabaseOperation.Create;
+  Macro: Macro.DatabaseOperation.Create;
+  MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Create;
+  Note: NoteDocument.DatabaseOperation.Create;
+  Playlist: Playlist.DatabaseOperation.Create;
+  PlaylistSound: PlaylistSound.DatabaseOperation.Create;
+  Region: RegionDocument.DatabaseOperation.Create;
+  RegionBehavior: RegionBehavior.DatabaseOperation.Create;
+  RollTable: RollTable.DatabaseOperation.Create;
+  Scene: Scene.DatabaseOperation.Create;
+  Setting: Setting.DatabaseOperation.Create;
+  TableResult: TableResult.DatabaseOperation.Create;
+  Tile: TileDocument.DatabaseOperation.Create;
+  Token: TokenDocument.DatabaseOperation.Create;
+  User: User.DatabaseOperation.Create;
+  Wall: WallDocument.DatabaseOperation.Create;
+}
+
+interface DatabaseOperationUpdateMap {
+  ActiveEffect: ActiveEffect.DatabaseOperation.Update;
+  Actor: Actor.DatabaseOperation.Update;
+  ActorDelta: ActorDelta.DatabaseOperation.Update;
+  Adventure: Adventure.DatabaseOperation.Update;
+  AmbientLight: AmbientLightDocument.DatabaseOperation.Update;
+  AmbientSound: AmbientSoundDocument.DatabaseOperation.Update;
+  Card: Card.DatabaseOperation.Update;
+  Cards: Cards.DatabaseOperation.Update;
+  ChatMessage: ChatMessage.DatabaseOperation.Update;
+  Combat: Combat.DatabaseOperation.Update;
+  Combatant: Combatant.DatabaseOperation.Update;
+  Drawing: DrawingDocument.DatabaseOperation.Update;
+  FogExploration: FogExploration.DatabaseOperation.Update;
+  Folder: Folder.DatabaseOperation.Update;
+  Item: Item.DatabaseOperation.Update;
+  JournalEntry: JournalEntry.DatabaseOperation.Update;
+  JournalEntryPage: JournalEntryPage.DatabaseOperation.Update;
+  Macro: Macro.DatabaseOperation.Update;
+  MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Update;
+  Note: NoteDocument.DatabaseOperation.Update;
+  Playlist: Playlist.DatabaseOperation.Update;
+  PlaylistSound: PlaylistSound.DatabaseOperation.Update;
+  Region: RegionDocument.DatabaseOperation.Update;
+  RegionBehavior: RegionBehavior.DatabaseOperation.Update;
+  RollTable: RollTable.DatabaseOperation.Update;
+  Scene: Scene.DatabaseOperation.Update;
+  Setting: Setting.DatabaseOperation.Update;
+  TableResult: TableResult.DatabaseOperation.Update;
+  Tile: TileDocument.DatabaseOperation.Update;
+  Token: TokenDocument.DatabaseOperation.Update;
+  User: User.DatabaseOperation.Update;
+  Wall: WallDocument.DatabaseOperation.Update;
+}
+
+interface DatabaseOperationDeleteMap {
+  ActiveEffect: ActiveEffect.DatabaseOperation.Delete;
+  Actor: Actor.DatabaseOperation.Delete;
+  ActorDelta: ActorDelta.DatabaseOperation.Delete;
+  Adventure: Adventure.DatabaseOperation.Delete;
+  AmbientLight: AmbientLightDocument.DatabaseOperation.Delete;
+  AmbientSound: AmbientSoundDocument.DatabaseOperation.Delete;
+  Card: Card.DatabaseOperation.Delete;
+  Cards: Cards.DatabaseOperation.Delete;
+  ChatMessage: ChatMessage.DatabaseOperation.Delete;
+  Combat: Combat.DatabaseOperation.Delete;
+  Combatant: Combatant.DatabaseOperation.Delete;
+  Drawing: DrawingDocument.DatabaseOperation.Delete;
+  FogExploration: FogExploration.DatabaseOperation.Delete;
+  Folder: Folder.DatabaseOperation.Delete;
+  Item: Item.DatabaseOperation.Delete;
+  JournalEntry: JournalEntry.DatabaseOperation.Delete;
+  JournalEntryPage: JournalEntryPage.DatabaseOperation.Delete;
+  Macro: Macro.DatabaseOperation.Delete;
+  MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Delete;
+  Note: NoteDocument.DatabaseOperation.Delete;
+  Playlist: Playlist.DatabaseOperation.Delete;
+  PlaylistSound: PlaylistSound.DatabaseOperation.Delete;
+  Region: RegionDocument.DatabaseOperation.Delete;
+  RegionBehavior: RegionBehavior.DatabaseOperation.Delete;
+  RollTable: RollTable.DatabaseOperation.Delete;
+  Scene: Scene.DatabaseOperation.Delete;
+  Setting: Setting.DatabaseOperation.Delete;
+  TableResult: TableResult.DatabaseOperation.Delete;
+  Tile: TileDocument.DatabaseOperation.Delete;
+  Token: TokenDocument.DatabaseOperation.Delete;
+  User: User.DatabaseOperation.Delete;
+  Wall: WallDocument.DatabaseOperation.Delete;
+}

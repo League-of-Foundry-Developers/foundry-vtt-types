@@ -58,7 +58,7 @@ declare global {
   // TODO(LukeAbby): The constraint here should ideally be something like `Document<Document.PlaceableType, any, Scene.Implementation | null>` but this causes circularities.
   function CanvasDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): typeof AnyDocument & Mixin<typeof CanvasDocument<FixedInstanceType<BaseClass>>, BaseClass>;
+  ): Mixin<typeof CanvasDocument<FixedInstanceType<BaseClass>>, BaseClass>;
 }
 
 // This is yet another `AnyDocument` type.

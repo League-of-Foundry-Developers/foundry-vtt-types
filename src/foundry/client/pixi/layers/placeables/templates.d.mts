@@ -45,7 +45,7 @@ declare global {
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _onMouseWheel(event: WheelEvent): Promise<MeasuredTemplate.Object> | void;
+    protected override _onMouseWheel(event: WheelEvent): Promise<void> | void;
   }
 
   namespace TemplateLayer {
