@@ -1,4 +1,4 @@
-import type { IntentionalPartial } from "fvtt-types/utils";
+import type { IntentionalPartial, RequiredProps } from "fvtt-types/utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 
@@ -24,7 +24,7 @@ declare class PointLightSource<
 
   override _configure(changes: IntentionalPartial<SourceData>): void;
 
-  override _getPolygonConfiguration(): PointSourcePolygon.Config;
+  override _getPolygonConfiguration(): PointLightSource.PolygonConfig;
 
   /**
    * Test whether this LightSource provides visibility to see a certain target object.
@@ -47,6 +47,9 @@ declare namespace PointLightSource {
   type AnyConstructor = typeof AnyPointLightSource;
 
   type SourceData = PointEffectSourceMixin.SourceData & BaseLightSource.SourceData;
+
+  interface PolygonConfig
+    extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold" | "includeDarkness"> {}
 }
 
 declare abstract class AnyPointLightSource extends PointLightSource<PointLightSource.SourceData, PointSourcePolygon> {

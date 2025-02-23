@@ -1,4 +1,4 @@
-import type { NullishProps } from "fvtt-types/utils";
+import type { NullishProps, RequiredProps } from "fvtt-types/utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 
@@ -20,7 +20,7 @@ declare class PointSoundSource<
 
   override get effectsCollection(): Collection<this>;
 
-  override _getPolygonConfiguration(): PointSourcePolygon.Config;
+  override _getPolygonConfiguration(): PointSoundSource.PolygonConfig;
 
   /**
    * Get the effective volume at which an AmbientSound source should be played for a certain listener.
@@ -35,9 +35,12 @@ declare class PointSoundSource<
 }
 
 declare namespace PointSoundSource {
+  interface Any extends AnyPointSoundSource {}
   type AnyConstructor = typeof AnyPointSoundSource;
 
   type SourceData = PointEffectSourceMixin.MixedSourceData;
+
+  interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold"> {}
 }
 
 declare abstract class AnyPointSoundSource extends PointSoundSource {

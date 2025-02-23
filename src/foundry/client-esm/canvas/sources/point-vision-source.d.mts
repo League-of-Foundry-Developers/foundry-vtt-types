@@ -1,6 +1,6 @@
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
-import type { IntentionalPartial } from "fvtt-types/utils";
+import type { IntentionalPartial, RequiredProps } from "fvtt-types/utils";
 
 /**
  * A specialized subclass of RenderedEffectSource which represents a source of point-based vision.
@@ -69,12 +69,12 @@ declare class PointVisionSource<
   /**
    * The unconstrained LOS polygon.
    */
-  los: PointSourcePolygon;
+  los: this["shape"];
 
   /**
    * The polygon of light perception.
    */
-  light: PointSourcePolygon;
+  light: this["shape"];
 
   /**
    * An alias for the shape of the vision source.
@@ -127,7 +127,7 @@ declare class PointVisionSource<
 
   override _configureLayer(layer: RenderedEffectSource.SourceLayer, layerId: string): void;
 
-  override _getPolygonConfiguration(): PointSourcePolygon.Config;
+  override _getPolygonConfiguration(): PointVisionSource.PolygonConfig;
 
   /**
    * Creates the polygon that represents light perception.
@@ -164,8 +164,7 @@ declare class PointVisionSource<
 }
 
 declare namespace PointVisionSource {
-  type Any = PointVisionSource<SourceData>;
-
+  interface Any extends AnyPointVisionSource {}
   type AnyConstructor = typeof AnyPointVisionSource;
 
   interface SourceData extends RenderedEffectSource.SourceData, PointEffectSourceMixin.SourceData {
@@ -204,6 +203,9 @@ declare namespace PointVisionSource {
      */
     blinded: boolean;
   }
+
+  interface PolygonConfig
+    extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "radius" | "useThreshold" | "includeDarkness"> {}
 }
 
 declare abstract class AnyPointVisionSource extends PointVisionSource {

@@ -1,4 +1,4 @@
-import type { IntentionalPartial } from "fvtt-types/utils";
+import type { IntentionalPartial, RequiredProps } from "fvtt-types/utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
@@ -62,7 +62,7 @@ declare class PointDarknessSource<
 
   protected override _configure(changes: IntentionalPartial<SourceData>): void;
 
-  override _getPolygonConfiguration(): PointSourcePolygon.Config;
+  override _getPolygonConfiguration(): PointDarknessSource.PolygonConfig;
 
   protected override _drawMesh(layerId: string): PointSourceMesh | null;
 
@@ -85,9 +85,13 @@ declare class PointDarknessSource<
 }
 
 declare namespace PointDarknessSource {
+  interface Any extends AnyPointDarknessSource {}
   type AnyConstructor = typeof AnyPointDarknessSource;
 
   type SourceData = BaseLightSource.SourceData & PointEffectSourceMixin.SourceData;
+
+  interface PolygonConfig
+    extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold" | "includeDarkness" | "radius"> {}
 
   // Interface would require `RenderingLayers extends ... = InterfaceToObject<Layers>` in every subclass signature
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

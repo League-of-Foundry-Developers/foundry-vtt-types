@@ -1,4 +1,4 @@
-import type { Mixin, IntentionalPartial, FixedInstanceType } from "fvtt-types/utils";
+import type { Mixin, IntentionalPartial, FixedInstanceType, RequiredProps } from "fvtt-types/utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
 declare class PointEffectSource {
@@ -9,20 +9,25 @@ declare class PointEffectSource {
    * @defaultValue
    * ```js
    * {
-   * ...super.defaultData,
-   * radius: 0,
-   * externalRadius: 0,
-   * rotation: 0,
-   * angle: 360,
-   * walls: true
+   *   ...super.defaultData,
+   *   radius: 0,
+   *   externalRadius: 0,
+   *   rotation: 0,
+   *   angle: 360,
+   *   walls: true
    * }
    * ```
-   * @privateRemarks This will only be accurate for classes extending `PointEffectSourceMixin(BaseEffectSource)`.
-   * Other subclasses must override this.
+   * @remarks This type is only accurate for classes extending `PointEffectSourceMixin(BaseEffectSource)`.
+   * Other subclasses must override.
    */
   static defaultData: PointEffectSourceMixin.MixedSourceData;
 
-  /** @privateRemarks This is not in Foundry's code, but the mixin class loses access to the type parameter that would otherwise be here */
+  /**
+   * @defaultValue `CONFIG.Canvas.polygonBackends[this.constructor.sourceType].create(origin, config)`
+   * @privateRemarks This is not in Foundry's code, but the mixin class loses access to the type parameter that would
+   * otherwise be here, and per the default above this is always a {@link PointSourcePolygon} subclass, always
+   * {@link ClockwiseSweepPolygon} in core
+   */
   shape: PointSourcePolygon;
 
   /**
@@ -37,7 +42,7 @@ declare class PointEffectSource {
   /**
    * Configure the parameters of the polygon that is generated for this source.
    */
-  protected _getPolygonConfiguration(): PointSourcePolygon.Config;
+  protected _getPolygonConfiguration(): PointEffectSourceMixin.PolygonConfig;
 
   protected _createShapes(): void;
 
@@ -55,9 +60,9 @@ declare class PointEffectSource {
   /**
    * @deprecated since v11, until v13
    * @remarks `"PointEffectSource#los is deprecated in favor of PointEffectSource#shape."`
-   * @privateRemarks Actual definition is get/set
+   * @privateRemarks Actually implemented as getter/setter for deprecation warning purposes, but this causes inheritance problems in {@link PointVisionSource}
    */
-  los: PointSourcePolygon;
+  los: this["shape"];
 }
 
 /**
@@ -76,25 +81,38 @@ declare namespace PointEffectSourceMixin {
 
   type MixedSourceData = SourceData & BaseEffectSource.SourceData;
 
+  /** @remarks This mixin guarantees certain keys in the return type beyond the base required `type` */
+  interface PolygonConfig
+    extends RequiredProps<PointSourcePolygon.Config, "radius" | "externalRadius" | "angle" | "rotation" | "source"> {}
+
   interface SourceData {
     /**
      * The radius of the source
+     * @defaultValue `0`
      */
     radius: number;
+
     /**
      * A secondary radius used for limited angles
+     * @defaultValue `0`
      */
     externalRadius: number;
+
     /**
      * The angle of rotation for this point source
+     * @defaultValue `0`
      */
     rotation: number;
+
     /**
      * The angle of emission for this point source
+     * @defaultValue `360`
      */
     angle: number;
+
     /**
      * Whether or not the source is constrained by walls
+     * @defaultValue `true`
      */
     walls: boolean;
   }
