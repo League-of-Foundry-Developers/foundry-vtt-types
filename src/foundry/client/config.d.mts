@@ -991,7 +991,7 @@ declare global {
 
       /**
        * @defaultValue `FogManager`
-       * @remarks Can't be `AnyConstructor` because it's instantiated via `new`
+       * @remarks Can't be `AnyConstructor` because Foundry assumes it can call `new` with the same arguments FogManager accepts
        */
       fogManager: typeof FogManager;
 

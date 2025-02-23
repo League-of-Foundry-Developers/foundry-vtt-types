@@ -24,7 +24,7 @@ declare global {
      */
     visibilityOverlay: PIXI.Sprite | undefined;
 
-    /** @remarks Not defined or initialized until it's set on draw */
+    /** @remarks Doesn't exist until it's set on draw */
     filter?: VisibilityFilter.ConfiguredInstance;
 
     /**
