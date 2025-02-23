@@ -9,7 +9,7 @@ declare global {
   namespace Folder {
     /**
      * The implementation of the Folder document instance configured through `CONFIG.Folder.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredFolder | `configuration/ConfiguredFolder`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredFolder | `fvtt-types/configuration/ConfiguredFolder`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Folder">;
 
@@ -148,7 +148,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -168,32 +168,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link Folder._preCreateOperation | `Folder._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Folder#_preCreate | `Folder#_preCreate`} */
+      /** Options for {@link Folder._preCreate | `Folder#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Folder#_onCreate | `Folder#_onCreate`} */
+      /** Options for {@link Folder._onCreate | `Folder#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link Folder.updateDocuments | `Folder.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link Folder._preUpdateOperation | `Folder._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Folder#_preUpdate | `Folder#_preUpdate`} */
+      /** Options for {@link Folder._preUpdate | `Folder#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Folder#_onUpdate | `Folder#_onUpdate`} */
+      /** Options for {@link Folder._onUpdate | `Folder#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link Folder.deleteDocuments | `Folder.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link Folder._preDeleteOperation | `Folder._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Folder#_preDelete | `Folder#_preDelete`} */
+      /** Options for {@link Folder._preDelete | `Folder#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Folder#_onDelete | `Folder#_onDelete`} */
+      /** Options for {@link Folder._onDelete | `Folder#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link Folder.DatabaseOperation}
+     * @deprecated - {@link Folder.DatabaseOperation | `Folder.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Folder> {}
@@ -232,8 +232,8 @@ declare global {
   /**
    * The client-side Folder document which extends the common BaseFolder model.
    *
-   * @see {@link Folders}            The world-level collection of Folder documents
-   * @see {@link FolderConfig}       The Folder configuration application
+   * @see {@link Folders | `Folders`}            The world-level collection of Folder documents
+   * @see {@link FolderConfig | `FolderConfig`}       The Folder configuration application
    */
   class Folder<out SubType extends Folder.SubType = Folder.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseFolder,
@@ -253,13 +253,13 @@ declare global {
     /**
      * The depth of this folder in its sidebar tree
      *
-     * @remarks For folders that have been populated by the {@link SidebarDirectory}, this is always be defined
+     * @remarks For folders that have been populated by the {@link SidebarDirectory | `SidebarDirectory`}, this is always be defined
      */
     depth?: number;
 
     /**
      * An array of other Folders which are the displayed children of this one. This differs from the results of
-     * {@link Folder.getSubfolders} because reports the subset of child folders which  are displayed to the current User
+     * {@link Folder.getSubfolders | `Folder.getSubfolders`} because reports the subset of child folders which  are displayed to the current User
      * in the UI.
      */
     children: Folder.Implementation[];

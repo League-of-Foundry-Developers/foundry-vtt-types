@@ -66,8 +66,8 @@ declare global {
 
   /**
    * A type of Placeable Object which highlights an area of the grid as covered by some area of effect.
-   * @see {@link MeasuredTemplateDocument}
-   * @see {@link TemplateLayer}
+   * @see {@link MeasuredTemplateDocument | `MeasuredTemplateDocument`}
+   * @see {@link TemplateLayer | `TemplateLayer`}
    */
   class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.Implementation> {
     /**

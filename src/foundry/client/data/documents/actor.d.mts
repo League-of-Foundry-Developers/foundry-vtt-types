@@ -11,7 +11,7 @@ declare global {
   namespace Actor {
     /**
      * The implementation of the Actor document instance configured through `CONFIG.Actor.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActor | `configuration/ConfiguredActor`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Actor">;
 
@@ -126,7 +126,7 @@ declare global {
 
       /**
        * Default Token settings which are used for Tokens created from this Actor
-       * @defaultValue see {@link PrototypeToken}
+       * @defaultValue see {@link PrototypeToken | `PrototypeToken`}
        */
       prototypeToken: fields.EmbeddedDataField<typeof PrototypeToken>;
 
@@ -168,7 +168,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -185,32 +185,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link Actor._preCreateOperation | `Actor._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Actor#_preCreate | `Actor#_preCreate`} */
+      /** Options for {@link Actor._preCreate | `Actor#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Actor#_onCreate | `Actor#_onCreate`} */
+      /** Options for {@link Actor._onCreate | `Actor#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link Actor.updateDocuments | `Actor.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link Actor._preUpdateOperation | `Actor._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Actor#_preUpdate | `Actor#_preUpdate`} */
+      /** Options for {@link Actor._preUpdate | `Actor#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Actor#_onUpdate | `Actor#_onUpdate`} */
+      /** Options for {@link Actor._onUpdate | `Actor#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link Actor.deleteDocuments | `Actor.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link Actor._preDeleteOperation | `Actor._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Actor#_preDelete | `Actor#_preDelete`} */
+      /** Options for {@link Actor._preDelete | `Actor#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Actor#_onDelete | `Actor#_onDelete`} */
+      /** Options for {@link Actor._onDelete | `Actor#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link Actor.DatabaseOperation}
+     * @deprecated - {@link Actor.DatabaseOperation | `Actor.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Actor> {}
@@ -264,10 +264,10 @@ declare global {
    * The client-side Actor document which extends the common BaseActor model.
    *
    *  ### Hook Events
-   * {@link hookEvents.applyCompendiumArt}
+   * {@link hookEvents.applyCompendiumArt | `hookEvents.applyCompendiumArt`}
    *
-   * @see {@link Actors}            The world-level collection of Actor documents
-   * @see {@link ActorSheet}     The Actor configuration application
+   * @see {@link Actors | `Actors`}            The world-level collection of Actor documents
+   * @see {@link ActorSheet | `ActorSheet`}     The Actor configuration application
    *
    * @example <caption>Create a new Actor</caption>
    * ```typescript

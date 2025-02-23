@@ -92,10 +92,10 @@ declare global {
 
   /**
    * A Tile is an implementation of PlaceableObject which represents a static piece of artwork or prop within the Scene.
-   * Tiles are drawn inside the {@link TilesLayer} container.
+   * Tiles are drawn inside the {@link TilesLayer | `TilesLayer`} container.
    *
-   * @see {@link TileDocument}
-   * @see {@link TilesLayer}
+   * @see {@link TileDocument | `TileDocument`}
+   * @see {@link TilesLayer | `TilesLayer`}
    */
   class Tile extends PlaceableObject<TileDocument.Implementation> {
     static override embeddedName: "Tile";

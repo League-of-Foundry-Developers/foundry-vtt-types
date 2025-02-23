@@ -7,7 +7,7 @@ declare global {
   namespace DrawingDocument {
     /**
      * The implementation of the DrawingDocument document instance configured through `CONFIG.Drawing.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredDrawingDocument | `configuration/ConfiguredDrawingDocument`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredDrawingDocument | `fvtt-types/configuration/ConfiguredDrawingDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Drawing">;
 
@@ -105,7 +105,7 @@ declare global {
 
       /**
        * The geometric shape of the drawing
-       * @defaultValue see {@link ShapeData.Schema}
+       * @defaultValue see {@link ShapeData.Schema | `ShapeData.Schema`}
        */
       shape: fields.EmbeddedDataField<typeof ShapeData>;
 
@@ -269,32 +269,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link DrawingDocument._preCreateOperation | `DrawingDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link DrawingDocument#_preCreate | `DrawingDocument#_preCreate`} */
+      /** Options for {@link DrawingDocument._preCreate | `DrawingDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link DrawingDocument#_onCreate | `DrawingDocument#_onCreate`} */
+      /** Options for {@link DrawingDocument._onCreate | `DrawingDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link DrawingDocument.updateDocuments | `DrawingDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link DrawingDocument._preUpdateOperation | `DrawingDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link DrawingDocument#_preUpdate | `DrawingDocument#_preUpdate`} */
+      /** Options for {@link DrawingDocument._preUpdate | `DrawingDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link DrawingDocument#_onUpdate | `DrawingDocument#_onUpdate`} */
+      /** Options for {@link DrawingDocument._onUpdate | `DrawingDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link DrawingDocument.deleteDocuments | `DrawingDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link DrawingDocument._preDeleteOperation | `DrawingDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link DrawingDocument#_preDelete | `DrawingDocument#_preDelete`} */
+      /** Options for {@link DrawingDocument._preDelete | `DrawingDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link DrawingDocument#_onDelete | `DrawingDocument#_onDelete`} */
+      /** Options for {@link DrawingDocument._onDelete | `DrawingDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link DrawingDocument.DatabaseOperation}
+     * @deprecated - {@link DrawingDocument.DatabaseOperation | `DrawingDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<DrawingDocument> {}
@@ -318,8 +318,8 @@ declare global {
   /**
    * The client-side Drawing document which extends the common BaseDrawing model.
    *
-   * @see {@link Scene}               The Scene document type which contains Drawing embedded documents
-   * @see {@link DrawingConfig}       The Drawing configuration application
+   * @see {@link Scene | `Scene`}               The Scene document type which contains Drawing embedded documents
+   * @see {@link DrawingConfig | `DrawingConfig`}       The Drawing configuration application
    */
   class DrawingDocument extends CanvasDocumentMixin(foundry.documents.BaseDrawing) {
     /**

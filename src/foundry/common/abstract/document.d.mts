@@ -393,7 +393,7 @@ declare abstract class Document<
 
   /**
    * Create a new Document using provided input data, saving it to the database.
-   * @see {@link Document.createDocuments}
+   * @see {@link Document.createDocuments | `Document.createDocuments`}
    * @param data      - Initial data used to create this Document, or a Document instance to persist.
    * @param operation - Parameters of the creation operation
    *                    (default: `{}`)
@@ -426,7 +426,7 @@ declare abstract class Document<
 
   /**
    * Update this Document using incremental data, saving it to the database.
-   * @see {@link Document.updateDocuments}
+   * @see {@link Document.updateDocuments | `Document.updateDocuments`}
    * @param data      - Differential update data which modifies the existing values of this document data
    *                    (default: `{}`)
    * @param operation - Parameters of the update operation
@@ -443,7 +443,7 @@ declare abstract class Document<
 
   /**
    * Delete this Document, removing it from the database.
-   * @see {@link Document.deleteDocuments}
+   * @see {@link Document.deleteDocuments | `Document.deleteDocuments`}
    * @param operation - Parameters of the deletion operation
    *                    (default: `{}`)
    * @returns The deleted Document instance
@@ -519,7 +519,7 @@ declare abstract class Document<
 
   /**
    * Create multiple embedded Document instances within this parent Document using provided input data.
-   * @see {@link Document.createDocuments}
+   * @see {@link Document.createDocuments | `Document.createDocuments`}
    * @param embeddedName - The name of the embedded Document type
    * @param data         - An array of data objects used to create multiple documents
    *                       (default: `[]`)
@@ -543,7 +543,7 @@ declare abstract class Document<
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
-   * @see {@link Document.updateDocuments}
+   * @see {@link Document.updateDocuments | `Document.updateDocuments`}
    * @param embeddedName - The name of the embedded Document type
    * @param updates      - An array of differential data objects, each used to update a single Document
    *                       (default: `[]`)
@@ -559,7 +559,7 @@ declare abstract class Document<
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
-   * @see {@link Document.deleteDocuments}
+   * @see {@link Document.deleteDocuments | `Document.deleteDocuments`}
    * @param embeddedName - The name of the embedded Document type
    * @param ids          - An array of string ids for each Document to be deleted
    * @param operation    - Parameters of the database deletion workflow
@@ -627,7 +627,7 @@ declare abstract class Document<
   /**
    * Pre-process a creation operation for a single Document instance.
    * Pre-operation events only occur for the client which requested the operation.
-   * Modifications to the pending Document instance must be performed using {@link Document#updateSource}.
+   * Modifications to the pending Document instance must be performed using {@link Document.updateSource | `Document#updateSource`}.
    * @param data    - The initial data object provided to the document creation request
    * @param options - Additional options which modify the creation request
    * @param user    - The User requesting the document creation
@@ -648,11 +648,11 @@ declare abstract class Document<
    * Pre-process a creation operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document#_preCreate} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@link Document._preCreate | `Document#_preCreate`} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to pending documents must mutate the documents array or alter individual document instances using
-   * {@link Document#updateSource}.
+   * {@link Document.updateSource | `Document#updateSource`}.
    * @param documents - Pending document instances ot be created
    * @param operation - Parameters of the database creation operation
    * @param user      - The User requesting the creation operation
@@ -669,7 +669,7 @@ declare abstract class Document<
    * Post-process a creation operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document#_onCreate} workflows.
+   * This batch-wise workflow occurs after individual {@link Document._onCreate | `Document#_onCreate`} workflows.
    *
    * @param documents - The Document instances which were created
    * @param operation - Parameters of the database creation operation
@@ -705,11 +705,11 @@ declare abstract class Document<
    * Pre-process an update operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document#_preUpdate} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@link Document._preUpdate | `Document#_preUpdate`} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to the requested updates are performed by mutating the data array of the operation.
-   * {@link Document#updateSource}.
+   * {@link Document.updateSource | `Document#updateSource`}.
    *
    * @param documents - Document instances to be updated
    * @param operation - Parameters of the database update operation
@@ -727,7 +727,7 @@ declare abstract class Document<
    * Post-process an update operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document#_onUpdate} workflows.
+   * This batch-wise workflow occurs after individual {@link Document._onUpdate | `Document#_onUpdate`} workflows.
    *
    * @param documents - The Document instances which were updated
    * @param operation - Parameters of the database update operation
@@ -761,11 +761,11 @@ declare abstract class Document<
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document#_preDelete} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@link Document._preDelete | `Document#_preDelete`} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to the requested deletions are performed by mutating the operation object.
-   * {@link Document#updateSource}.
+   * {@link Document.updateSource | `Document#updateSource`}.
    *
    * @param documents - Document instances to be deleted
    * @param operation - Parameters of the database update operation
@@ -784,7 +784,7 @@ declare abstract class Document<
    * Post-process a deletion operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document#_onDelete} workflows.
+   * This batch-wise workflow occurs after individual {@link Document._onDelete | `Document#_onDelete`} workflows.
    *
    * @param documents - The Document instances which were deleted
    * @param operation - Parameters of the database deletion operation
@@ -1533,31 +1533,31 @@ declare namespace Document {
 
     type GetOperation = NullishProps<{ pack: string }>;
 
-    /** Used for {@link Document.createDocuments} */
+    /** Used for {@link Document.createDocuments | `Document.createDocuments`} */
     type CreateOperation<Op extends DatabaseCreateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;
 
-    /** Used for {@link Document._preCreateOperation} */
+    /** Used for {@link Document._preCreateOperation | `Document._preCreateOperation`} */
     type PreCreateOperationStatic<Op extends DatabaseCreateOperation> = InexactPartial<
       Op,
       Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "renderSheet" | "data" | "noHook" | "pack" | "parent">
     >;
 
-    /** Used for {@link Document#_preCreate} */
+    /** Used for {@link Document._preCreate | `Document#_preCreate`} */
     type PreCreateOperationInstance<Op extends DatabaseCreateOperation> = Omit<
       PreCreateOperationStatic<Op>,
       "data" | "noHook" | "pack" | "parent"
     >;
 
-    /** Used for {@link Document#_onCreate} */
+    /** Used for {@link Document._onCreate | `Document#_onCreate`} */
     type OnCreateOperation<Op extends DatabaseCreateOperation> = Omit<
       Op,
       "data" | "pack" | "parentUuid" | "syntheticActorUpdate"
     >;
 
-    /** Used for {@link Document.updateDocuments} */
+    /** Used for {@link Document.updateDocuments | `Document.updateDocuments`} */
     type UpdateOperation<Op extends DatabaseUpdateOperation> = NullishProps<Omit<Op, "updates" | "modifiedTime">>;
 
-    /** Used for {@link Document._preUpdateOperation} */
+    /** Used for {@link Document._preUpdateOperation | `Document._preUpdateOperation`} */
     type PreUpdateOperationStatic<Op extends DatabaseUpdateOperation> = InexactPartial<
       Op,
       Exclude<
@@ -1566,34 +1566,34 @@ declare namespace Document {
       >
     >;
 
-    /** Used for {@link Document#_preUpdate} */
+    /** Used for {@link Document._preUpdate | `Document#_preUpdate`} */
     type PreUpdateOperationInstance<Op extends DatabaseUpdateOperation> = Omit<
       PreUpdateOperationStatic<Op>,
       "updates" | "restoreDelta" | "noHook" | "pack" | "parent"
     >;
 
-    /** Used for {@link Document#_onUpdate} */
+    /** Used for {@link Document._onUpdate | `Document#_onUpdate`} */
     type OnUpdateOperation<Op extends DatabaseUpdateOperation> = Omit<
       Op,
       "updates" | "pack" | "parentUuid" | "syntheticActorUpdate"
     >;
 
-    /** Used for {@link Document.deleteDocuments} */
+    /** Used for {@link Document.deleteDocuments | `Document.deleteDocuments`} */
     type DeleteOperation<Op extends DatabaseDeleteOperation> = NullishProps<Omit<Op, "ids" | "modifiedTime">>;
 
-    /** Used for {@link Document._preDeleteOperation} */
+    /** Used for {@link Document._preDeleteOperation | `Document._preDeleteOperation`} */
     type PreDeleteOperationStatic<Op extends DatabaseDeleteOperation> = InexactPartial<
       Op,
       Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "ids" | "deleteAll" | "noHook" | "pack" | "parent">
     >;
 
-    /** Used for {@link Document#_preDelete} */
+    /** Used for {@link Document._preDelete | `Document#_preDelete`} */
     type PreDeleteOperationInstance<Op extends DatabaseDeleteOperation> = Omit<
       InexactPartial<Op, Exclude<AllKeysOf<Op>, "modifiedTime" | "render">>,
       "ids" | "deleteAll" | "noHook" | "pack" | "parent"
     >;
 
-    /** Used for {@link Document#_onDelete} */
+    /** Used for {@link Document._onDelete | `Document#_onDelete`} */
     type OnDeleteOperation<Op extends DatabaseDeleteOperation> = Omit<
       Op,
       "ids" | "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
@@ -1720,7 +1720,7 @@ declare namespace Document {
   > = Document.Database.OperationOf<Name, ConcreteOperation>;
 
   /**
-   * @deprecated - {@link CreateDataForName}
+   * @deprecated - {@link CreateDataForName | `CreateDataForName`}
    */
   type ConstructorDataForName<T extends Document.Type> = CreateData[T];
 }

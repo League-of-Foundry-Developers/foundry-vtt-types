@@ -8,7 +8,7 @@ declare global {
 
     /**
      * The implementation of the WallDocument document instance configured through `CONFIG.Wall.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredWallDocument | `configuration/ConfiguredWallDocument`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredWallDocument | `fvtt-types/configuration/ConfiguredWallDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Wall">;
 
@@ -251,32 +251,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link WallDocument._preCreateOperation | `WallDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link WallDocument#_preCreate | `WallDocument#_preCreate`} */
+      /** Options for {@link WallDocument._preCreate | `WallDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link WallDocument#_onCreate | `WallDocument#_onCreate`} */
+      /** Options for {@link WallDocument._onCreate | `WallDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link WallDocument.updateDocuments | `WallDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link WallDocument._preUpdateOperation | `WallDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link WallDocument#_preUpdate | `WallDocument#_preUpdate`} */
+      /** Options for {@link WallDocument._preUpdate | `WallDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link WallDocument#_onUpdate | `WallDocument#_onUpdate`} */
+      /** Options for {@link WallDocument._onUpdate | `WallDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link WallDocument.deleteDocuments | `WallDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link WallDocument._preDeleteOperation | `WallDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link WallDocument#_preDelete | `WallDocument#_preDelete`} */
+      /** Options for {@link WallDocument._preDelete | `WallDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link WallDocument#_onDelete | `WallDocument#_onDelete`} */
+      /** Options for {@link WallDocument._onDelete | `WallDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link WallDocument.DatabaseOperation}
+     * @deprecated - {@link WallDocument.DatabaseOperation | `WallDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<WallDocument> {}
@@ -300,8 +300,8 @@ declare global {
   /**
    * The client-side Wall document which extends the common BaseWall model.
    *
-   * @see {@link Scene}            The Scene document type which contains Wall embedded documents
-   * @see {@link WallConfig}       The Wall configuration application
+   * @see {@link Scene | `Scene`}            The Scene document type which contains Wall embedded documents
+   * @see {@link WallConfig | `WallConfig`}       The Wall configuration application
    */
   class WallDocument extends CanvasDocumentMixin(foundry.documents.BaseWall) {
     /**

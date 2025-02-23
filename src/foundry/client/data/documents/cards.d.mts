@@ -10,7 +10,7 @@ declare global {
   namespace Cards {
     /**
      * The implementation of the Cards document instance configured through `CONFIG.Cards.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCards | `configuration/ConfiguredCards`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCards | `fvtt-types/configuration/ConfiguredCards`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Cards">;
 
@@ -180,7 +180,7 @@ declare global {
 
       /**
        * An object which configures ownership of this Cards
-       * @defaultValue see {@link fields.DocumentOwnershipField}
+       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -192,7 +192,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -219,27 +219,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link Cards._preCreateOperation | `Cards._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Cards#_preCreate | `Cards#_preCreate`} */
+      /** Options for {@link Cards._preCreate | `Cards#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Cards#_onCreate | `Cards#_onCreate`} */
+      /** Options for {@link Cards._onCreate | `Cards#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link Cards.updateDocuments | `Cards.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link Cards._preUpdateOperation | `Cards._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Cards#_preUpdate | `Cards#_preUpdate`} */
+      /** Options for {@link Cards._preUpdate | `Cards#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Cards#_onUpdate | `Cards#_onUpdate`} */
+      /** Options for {@link Cards._onUpdate | `Cards#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link Cards.deleteDocuments | `Cards.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link Cards._preDeleteOperation | `Cards._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Cards#_preDelete | `Cards#_preDelete`} */
+      /** Options for {@link Cards._preDelete | `Cards#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Cards#_onDelete | `Cards#_onDelete`} */
+      /** Options for {@link Cards._onDelete | `Cards#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -365,7 +365,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link Cards.DatabaseOperation}
+     * @deprecated - {@link Cards.DatabaseOperation | `Cards.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Cards> {}
@@ -395,8 +395,8 @@ declare global {
    * The client-side Cards document which extends the common BaseCards model.
    * Each Cards document contains CardsData which defines its data schema.
    *
-   * @see {@link CardStacks}                        The world-level collection of Cards documents
-   * @see {@link CardsConfig}                       The Cards configuration application
+   * @see {@link CardStacks | `CardStacks`}                        The world-level collection of Cards documents
+   * @see {@link CardsConfig | `CardsConfig`}                       The Cards configuration application
    */
   class Cards<out SubType extends Cards.SubType = Cards.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseCards,
@@ -551,32 +551,32 @@ declare global {
 
     /**
      * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.
-     * @see {@link Cards#deal}
+     * @see {@link Cards.deal | `Cards#deal`}
      */
     dealDialog(): Promise<Cards.Implementation | null>;
 
     /**
      * Display a dialog which prompts the user to draw cards from some other deck-type Cards documents.
-     * @see {@link Cards#draw}
+     * @see {@link Cards.draw | `Cards#draw`}
      */
     drawDialog(): Promise<Card.Implementation[] | null>;
 
     /**
      * Display a dialog which prompts the user to pass cards from this document to some other other Cards document.
-     * @see {@link Cards#deal}
+     * @see {@link Cards.deal | `Cards#deal`}
      */
     passDialog(): Promise<Cards.Implementation | null>;
 
     /**
      * Display a dialog which prompts the user to play a specific Card to some other Cards document
-     * @see {@link Cards#pass}
+     * @see {@link Cards.pass | `Cards#pass`}
      * @param card - The specific card being played as part of this dialog
      */
     playDialog(card: Card.Implementation): Promise<Card.Implementation[] | void | null>;
 
     /**
      * Display a confirmation dialog for whether or not the user wishes to reset a Cards stack
-     * @see {@link Cards#reset}
+     * @see {@link Cards.reset | `Cards#reset`}
      */
     resetDialog(): Promise<Cards.Implementation | false | null>;
 

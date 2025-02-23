@@ -244,7 +244,7 @@ declare global {
 
     /**
      * @deprecated since v12, will be removed in v14
-     * @remarks Used by {@link foundry.grid.BaseGrid#measureDistances}
+     * @remarks Used by {@link foundry.grid.BaseGrid.measureDistances | `foundry.grid.BaseGrid#measureDistances`}
      */
     interface Segment {
       ray: Ray;
@@ -253,7 +253,7 @@ declare global {
 
     /**
      * @deprecated since v12, will be removed in v14
-     * @remarks Used by {@link foundry.grid.BaseGrid#measureDistances}
+     * @remarks Used by {@link foundry.grid.BaseGrid.measureDistances | `foundry.grid.BaseGrid#measureDistances`}
      */
     type MeasureDistancesOptions = NullishProps<{
       /** Return the distance in grid increments rather than the co-ordinate distance. */

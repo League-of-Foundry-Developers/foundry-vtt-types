@@ -7,7 +7,7 @@ declare global {
   namespace TileDocument {
     /**
      * The implementation of the TileDocument document instance configured through `CONFIG.Tile.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTileDocument | `configuration/ConfiguredTileDocument`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTileDocument | `fvtt-types/configuration/ConfiguredTileDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Tile">;
 
@@ -252,27 +252,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link TileDocument._preCreateOperation | `TileDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link TileDocument#_preCreate | `TileDocument#_preCreate`} */
+      /** Options for {@link TileDocument._preCreate | `TileDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link TileDocument#_onCreate | `TileDocument#_onCreate`} */
+      /** Options for {@link TileDocument._onCreate | `TileDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link TileDocument.updateDocuments | `TileDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link TileDocument._preUpdateOperation | `TileDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link TileDocument#_preUpdate | `TileDocument#_preUpdate`} */
+      /** Options for {@link TileDocument._preUpdate | `TileDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link TileDocument#_onUpdate | `TileDocument#_onUpdate`} */
+      /** Options for {@link TileDocument._onUpdate | `TileDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link TileDocument.deleteDocuments | `TileDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link TileDocument._preDeleteOperation | `TileDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link TileDocument#_preDelete | `TileDocument#_preDelete`} */
+      /** Options for {@link TileDocument._preDelete | `TileDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link TileDocument#_onDelete | `TileDocument#_onDelete`} */
+      /** Options for {@link TileDocument._onDelete | `TileDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -283,7 +283,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link TileDocument.DatabaseOperation}
+     * @deprecated - {@link TileDocument.DatabaseOperation | `TileDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<TileDocument> {}
@@ -307,8 +307,8 @@ declare global {
   /**
    * The client-side Tile document which extends the common BaseTile model.
    *
-   * @see {@link Scene}            The Scene document type which contains Tile embedded documents
-   * @see {@link TileConfig}       The Tile configuration application
+   * @see {@link Scene | `Scene`}            The Scene document type which contains Tile embedded documents
+   * @see {@link TileConfig | `TileConfig`}       The Tile configuration application
    */
   class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
     /**

@@ -8,7 +8,7 @@ declare global {
   namespace JournalEntry {
     /**
      * The implementation of the JournalEntry document instance configured through `CONFIG.JournalEntry.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredJournalEntry | `configuration/ConfiguredJournalEntry`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredJournalEntry | `fvtt-types/configuration/ConfiguredJournalEntry`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"JournalEntry">;
 
@@ -123,7 +123,7 @@ declare global {
 
       /**
        * An object which configures ownership of this JournalEntry
-       * @defaultValue see {@link fields.DocumentOwnershipField}
+       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -135,7 +135,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -161,27 +161,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link JournalEntry._preCreateOperation | `JournalEntry._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link JournalEntry#_preCreate | `JournalEntry#_preCreate`} */
+      /** Options for {@link JournalEntry._preCreate | `JournalEntry#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link JournalEntry#_onCreate | `JournalEntry#_onCreate`} */
+      /** Options for {@link JournalEntry._onCreate | `JournalEntry#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link JournalEntry.updateDocuments | `JournalEntry.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link JournalEntry._preUpdateOperation | `JournalEntry._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link JournalEntry#_preUpdate | `JournalEntry#_preUpdate`} */
+      /** Options for {@link JournalEntry._preUpdate | `JournalEntry#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link JournalEntry#_onUpdate | `JournalEntry#_onUpdate`} */
+      /** Options for {@link JournalEntry._onUpdate | `JournalEntry#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link JournalEntry.deleteDocuments | `JournalEntry.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link JournalEntry._preDeleteOperation | `JournalEntry._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link JournalEntry#_preDelete | `JournalEntry#_preDelete`} */
+      /** Options for {@link JournalEntry._preDelete | `JournalEntry#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link JournalEntry#_onDelete | `JournalEntry#_onDelete`} */
+      /** Options for {@link JournalEntry._onDelete | `JournalEntry#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -193,7 +193,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link JournalEntry.DatabaseOperation}
+     * @deprecated - {@link JournalEntry.DatabaseOperation | `JournalEntry.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<JournalEntry> {}
@@ -217,8 +217,8 @@ declare global {
   /**
    * The client-side JournalEntry document which extends the common BaseJournalEntry model.
    *
-   * @see {@link Journal}                  The world-level collection of JournalEntry documents
-   * @see {@link JournalSheet}          The JournalEntry configuration application
+   * @see {@link Journal | `Journal`}                  The world-level collection of JournalEntry documents
+   * @see {@link JournalSheet | `JournalSheet`}          The JournalEntry configuration application
    */
   class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
     /**

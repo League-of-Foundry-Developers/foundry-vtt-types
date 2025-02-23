@@ -66,7 +66,7 @@ declare global {
     /**
      * @param force   - Render and display the application even if it is not currently displayed.
      *                  (default: `false`)
-     * @param options - Additional options which update the current values of the @see Application#options object
+     * @param options - Additional options which update the current values of the @see {@link Application.options | `Application#options`} object
      * @internal
      */
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;

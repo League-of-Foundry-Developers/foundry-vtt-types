@@ -16,7 +16,7 @@ declare namespace RegionShape {
     | (ShapeType extends "rectangle" ? RegionRectangle<ShapeData> : never);
 }
 
-/** A shape of a {@link Region} */
+/** A shape of a {@link Region | `Region`} */
 declare abstract class RegionShape<ShapeData extends RegionShape.ShapeData> {
   #regionShape: true;
 
@@ -67,7 +67,7 @@ declare abstract class RegionShape<ShapeData extends RegionShape.ShapeData> {
 }
 
 /**
- * A circle of a {@link Region}
+ * A circle of a {@link Region | `Region`}
  * @privateRemarks Technically `ShapeData` should extend `CircleShapeData`, but it's easier to instantiate if it's `RegionShape.ShapeData`.
  */
 declare class RegionCircle<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
@@ -80,7 +80,7 @@ declare class RegionCircle<ShapeData extends RegionShape.ShapeData> extends Regi
   protected override _drawShape(graphics: PIXI.Graphics): void;
 }
 /**
- * An ellipse of a {@link Region}
+ * An ellipse of a {@link Region | `Region`}
  * @privateRemarks Technically `ShapeData` should extend `EllipseShapeData`, but it's easier to instantiate if it's `RegionShape.ShapeData`.
  */
 declare class RegionEllipse<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
@@ -93,7 +93,7 @@ declare class RegionEllipse<ShapeData extends RegionShape.ShapeData> extends Reg
   protected override _drawShape(graphics: PIXI.Graphics): void;
 }
 /**
- * A polygon of a {@link Region}
+ * A polygon of a {@link Region | `Region`}
  * @privateRemarks Technically `ShapeData` should extend `PolygonShapeData`, but it's easier to instantiate if it's `RegionShape.ShapeData`.
  */
 declare class RegionPolygon<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
@@ -104,7 +104,7 @@ declare class RegionPolygon<ShapeData extends RegionShape.ShapeData> extends Reg
   protected override _drawShape(graphics: PIXI.Graphics): void;
 }
 /**
- * A rectangle of a {@link Region}
+ * A rectangle of a {@link Region | `Region`}
  * @privateRemarks Technically `ShapeData` should extend `RectangleShapeData`, but it's easier to instantiate if it's `RegionShape.ShapeData`.
  */
 declare class RegionRectangle<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {

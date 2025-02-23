@@ -35,7 +35,7 @@ declare global {
     /**
      * Determine whether the DoorControl is visible to the calling user's perspective.
      * The control is always visible if the user is a GM and no Tokens are controlled.
-     * @see {@link CanvasVisibility#testVisibility}
+     * @see {@link CanvasVisibility.testVisibility | `CanvasVisibility#testVisibility`}
      */
     get isVisible(): boolean;
 

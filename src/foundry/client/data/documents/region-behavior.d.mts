@@ -8,7 +8,7 @@ declare global {
   namespace RegionBehavior {
     /**
      * The implementation of the RegionBehavior document instance configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRegionBehavior | `configuration/ConfiguredRegionBehavior`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"RegionBehavior">;
 
@@ -134,7 +134,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -160,32 +160,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link RegionBehavior._preCreateOperation | `RegionBehavior._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link RegionBehavior#_preCreate | `RegionBehavior#_preCreate`} */
+      /** Options for {@link RegionBehavior._preCreate | `RegionBehavior#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link RegionBehavior#_onCreate | `RegionBehavior#_onCreate`} */
+      /** Options for {@link RegionBehavior._onCreate | `RegionBehavior#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link RegionBehavior.updateDocuments | `RegionBehavior.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link RegionBehavior._preUpdateOperation | `RegionBehavior._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link RegionBehavior#_preUpdate | `RegionBehavior#_preUpdate`} */
+      /** Options for {@link RegionBehavior._preUpdate | `RegionBehavior#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link RegionBehavior#_onUpdate | `RegionBehavior#_onUpdate`} */
+      /** Options for {@link RegionBehavior._onUpdate | `RegionBehavior#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link RegionBehavior.deleteDocuments | `RegionBehavior.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link RegionBehavior._preDeleteOperation | `RegionBehavior._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link RegionBehavior#_preDelete | `RegionBehavior#_preDelete`} */
+      /** Options for {@link RegionBehavior._preDelete | `RegionBehavior#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link RegionBehavior#_onDelete | `RegionBehavior#_onDelete`} */
+      /** Options for {@link RegionBehavior._onDelete | `RegionBehavior#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link RegionBehavior.DatabaseOperation}
+     * @deprecated - {@link RegionBehavior.DatabaseOperation | `RegionBehavior.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<RegionBehavior> {}

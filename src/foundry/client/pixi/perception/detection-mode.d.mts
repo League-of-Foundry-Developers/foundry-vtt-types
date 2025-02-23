@@ -37,7 +37,7 @@ declare global {
 
     /**
      * The type of the detection mode.
-     * @see CONST.WALL_RESTRICTION_TYPES
+     * @see {@link CONST.WALL_RESTRICTION_TYPES | `CONST.WALL_RESTRICTION_TYPES`}
      */
     static DETECTION_TYPES: {
       /** Sight, and anything depending on light perception */

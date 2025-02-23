@@ -5,7 +5,7 @@ declare global {
    * The singleton collection of User documents which exist within the active World.
    * This Collection is accessible within the Game object as game.users.
    *
-   * @see {@link User} The User document
+   * @see {@link User | `User`} The User document
    */
   class Users extends WorldCollection<User.ImplementationClass, "Users"> {
     constructor(data?: User.Source[]);
@@ -35,7 +35,7 @@ declare global {
      */
     get activeGM(): User.Implementation | null;
 
-    /** @remarks This is not marked as protected because it is used in {@link Game#activateSocketListeners} */
+    /** @remarks This is not marked as protected because it is used in {@link Game.activateSocketListeners | `Game#activateSocketListeners`} */
     static _activateSocketListeners(socket: io.Socket): void;
 
     /**

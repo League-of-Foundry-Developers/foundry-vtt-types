@@ -8,7 +8,7 @@ declare global {
   namespace NoteDocument {
     /**
      * The implementation of the NoteDocument document instance configured through `CONFIG.Note.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredNoteDocument | `configuration/ConfiguredNoteDocument`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredNoteDocument | `fvtt-types/configuration/ConfiguredNoteDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Note">;
 
@@ -222,32 +222,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link NoteDocument._preCreateOperation | `NoteDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link NoteDocument#_preCreate | `NoteDocument#_preCreate`} */
+      /** Options for {@link NoteDocument._preCreate | `NoteDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link NoteDocument#_onCreate | `NoteDocument#_onCreate`} */
+      /** Options for {@link NoteDocument._onCreate | `NoteDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link NoteDocument.updateDocuments | `NoteDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link NoteDocument._preUpdateOperation | `NoteDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link NoteDocument#_preUpdate | `NoteDocument#_preUpdate`} */
+      /** Options for {@link NoteDocument._preUpdate | `NoteDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link NoteDocument#_onUpdate | `NoteDocument#_onUpdate`} */
+      /** Options for {@link NoteDocument._onUpdate | `NoteDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link NoteDocument.deleteDocuments | `NoteDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link NoteDocument._preDeleteOperation | `NoteDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link NoteDocument#_preDelete | `NoteDocument#_preDelete`} */
+      /** Options for {@link NoteDocument._preDelete | `NoteDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link NoteDocument#_onDelete | `NoteDocument#_onDelete`} */
+      /** Options for {@link NoteDocument._onDelete | `NoteDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link NoteDocument.DatabaseOperation}
+     * @deprecated - {@link NoteDocument.DatabaseOperation | `NoteDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<NoteDocument> {}
@@ -272,8 +272,8 @@ declare global {
    * The client-side Note document which extends the common BaseNote model.
    * Each Note document contains NoteData which defines its data schema.
    *
-   * @see {@link Scene}               The Scene document type which contains Note embedded documents
-   * @see {@link NoteConfig}          The Note configuration application
+   * @see {@link Scene | `Scene`}               The Scene document type which contains Note embedded documents
+   * @see {@link NoteConfig | `NoteConfig`}          The Note configuration application
    */
   class NoteDocument extends CanvasDocumentMixin(foundry.documents.BaseNote) {
     /**

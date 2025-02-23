@@ -11,7 +11,7 @@ declare global {
   namespace Card {
     /**
      * The implementation of the Card document instance configured through `CONFIG.Card.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCard | `configuration/ConfiguredCard`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCard | `fvtt-types/configuration/ConfiguredCard`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Card">;
 
@@ -261,32 +261,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link Card._preCreateOperation | `Card._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Card#_preCreate | `Card#_preCreate`} */
+      /** Options for {@link Card._preCreate | `Card#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Card#_onCreate | `Card#_onCreate`} */
+      /** Options for {@link Card._onCreate | `Card#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link Card.updateDocuments | `Card.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link Card._preUpdateOperation | `Card._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Card#_preUpdate | `Card#_preUpdate`} */
+      /** Options for {@link Card._preUpdate | `Card#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Card#_onUpdate | `Card#_onUpdate`} */
+      /** Options for {@link Card._onUpdate | `Card#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link Card.deleteDocuments | `Card.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link Card._preDeleteOperation | `Card._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Card#_preDelete | `Card#_preDelete`} */
+      /** Options for {@link Card._preDelete | `Card#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Card#_onDelete | `Card#_onDelete`} */
+      /** Options for {@link Card._onDelete | `Card#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link Card.DatabaseOperation}
+     * @deprecated - {@link Card.DatabaseOperation | `Card.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Card> {}
@@ -315,7 +315,7 @@ declare global {
   /**
    * The client-side Card document which extends the common BaseCard document model.
    *
-   * @see {@link Cards}                    The Cards document type which contains Card embedded documents
+   * @see {@link Cards | `Cards`}                    The Cards document type which contains Card embedded documents
    */
   class Card<out SubType extends Card.SubType = Card.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseCard,
@@ -394,15 +394,15 @@ declare global {
 
     /**
      * Play a specific card to some other Cards document.
-     * This method is currently a more semantic alias for Card#pass.
-     * @see Card#pass
+     * This method is currently a more semantic alias for {@link Card.pass | `Card#pass`}.
+     * @see {@link Card.pass | `Card#pass`}
      */
     play(to: Cards.Implementation, options?: Cards.PassOptions): Promise<Card.Implementation | undefined>;
 
     /**
      * Discard a specific card to some other Cards document.
-     * This method is currently a more semantic alias for Card#pass.
-     * @see Card#pass
+     * This method is currently a more semantic alias for {@link Card.pass | `Card#pass`}.
+     * @see {@link Card.pass | `Card#pass`}
      */
     discard(to: Cards.Implementation, options?: Cards.PassOptions): Promise<Card.Implementation | undefined>;
 

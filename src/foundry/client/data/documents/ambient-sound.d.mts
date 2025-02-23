@@ -204,27 +204,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link AmbientSoundDocument._preCreateOperation | `AmbientSoundDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link AmbientSoundDocument#_preCreate | `AmbientSoundDocument#_preCreate`} */
+      /** Options for {@link AmbientSoundDocument._preCreate | `AmbientSoundDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link AmbientSoundDocument#_onCreate | `AmbientSoundDocument#_onCreate`} */
+      /** Options for {@link AmbientSoundDocument._onCreate | `AmbientSoundDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link AmbientSoundDocument.updateDocuments | `AmbientSoundDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link AmbientSoundDocument._preUpdateOperation | `AmbientSoundDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link AmbientSoundDocument#_preUpdate | `AmbientSoundDocument#_preUpdate`} */
+      /** Options for {@link AmbientSoundDocument._preUpdate | `AmbientSoundDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link AmbientSoundDocument#_onUpdate | `AmbientSoundDocument#_onUpdate`} */
+      /** Options for {@link AmbientSoundDocument._onUpdate | `AmbientSoundDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link AmbientSoundDocument.deleteDocuments | `AmbientSoundDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link AmbientSoundDocument._preDeleteOperation | `AmbientSoundDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link AmbientSoundDocument#_preDelete | `AmbientSoundDocument#_preDelete`} */
+      /** Options for {@link AmbientSoundDocument._preDelete | `AmbientSoundDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link AmbientSoundDocument#_onDelete | `AmbientSoundDocument#_onDelete`} */
+      /** Options for {@link AmbientSoundDocument._onDelete | `AmbientSoundDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -253,8 +253,8 @@ declare global {
   /**
    * The client-side AmbientSound document which extends the common BaseAmbientSound document model.
    *
-   * @see {@link Scene}                   The Scene document type which contains AmbientSound documents
-   * @see {@link AmbientSoundConfig}      The AmbientSound configuration application
+   * @see {@link Scene | `Scene`}                   The Scene document type which contains AmbientSound documents
+   * @see {@link AmbientSoundConfig | `AmbientSoundConfig`}      The AmbientSound configuration application
    */
   class AmbientSoundDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientSound) {
     /**

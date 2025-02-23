@@ -161,14 +161,14 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
 
   /**
    * Determine whether the given menu item representing a mark is active or not.
-   * @param item - The menu item representing a {@link MarkType}.
+   * @param item - The menu item representing a {@link MarkType | `MarkType`}.
    * @returns Whether the cursor or selection is in a state represented by the given mark.
    */
   protected _isMarkActive(item: ProseMirrorMenu.Item): boolean;
 
   /**
    * Determine whether the given menu item representing a node is active or not.
-   * @param item - The menu item representing a {@link NodeType}.
+   * @param item - The menu item representing a {@link NodeType | `NodeType`}.
    * @returns Whether the cursor or selection is currently within a block of this menu item's node type.
    */
   protected _isNodeActive(item: ProseMirrorMenu.Item): boolean;

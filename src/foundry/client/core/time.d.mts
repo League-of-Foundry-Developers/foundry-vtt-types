@@ -2,7 +2,7 @@ import type Document from "../../common/abstract/document.d.mts";
 
 declare global {
   /**
-   * A singleton class {@link game#time} which keeps the official Server and World time stamps.
+   * A singleton class {@link game.time | `game#time`} which keeps the official Server and World time stamps.
    * Uses a basic implementation of https://www.geeksforgeeks.org/cristians-algorithm/ for synchronization.
    */
   class GameTime {

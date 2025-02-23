@@ -36,7 +36,7 @@ declare global {
    * A collection of Document objects contained within a specific compendium pack.
    * Each Compendium pack has its own associated instance of the CompendiumCollection class which contains its contents.
    *
-   * @see {@link Game#packs}
+   * @see {@link Game.packs | `Game#packs`}
    */
   class CompendiumCollection<T extends CompendiumCollection.Metadata> extends DirectoryCollectionMixin(
     DocumentCollection,
@@ -268,7 +268,7 @@ declare global {
     /**
      * Fully import the contents of a Compendium pack into a World folder.
      * @param options    - Options which modify the import operation. Additional options are forwarded to
-     *                     {@link WorldCollection#fromCompendium} and {@link Document.createDocuments}
+     *                     {@link WorldCollection.fromCompendium | `WorldCollection.fromCompendium`} and {@link Document.createDocuments | `Document.createDocuments`}
      *                     (default: `{}`)
      * @returns The imported Documents, now existing within the World
      */
@@ -450,7 +450,7 @@ interface ImportAllOptions {
    * */
   folderName?: string | undefined;
   /**
-   * Additional options forwarded to {@link WorldCollection#fromCompendium} and {@link Document.createDocuments}
+   * Additional options forwarded to {@link WorldCollection.fromCompendium | `WorldCollection.fromCompendium`} and {@link Document.createDocuments | `Document.createDocuments`}
    * @defaultValue `{}`
    */
   options?: (Document.ModificationContext<Document.Any | null> & WorldCollection.FromCompendiumOptions) | undefined;

@@ -10,7 +10,7 @@ declare global {
   namespace Combat {
     /**
      * The implementation of the Combat document instance configured through `CONFIG.Combat.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombat | `configuration/ConfiguredCombat`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Combat">;
 
@@ -160,7 +160,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -184,32 +184,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link Combat._preCreateOperation | `Combat._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Combat#_preCreate | `Combat#_preCreate`} */
+      /** Options for {@link Combat._preCreate | `Combat#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Combat#_onCreate | `Combat#_onCreate`} */
+      /** Options for {@link Combat._onCreate | `Combat#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link Combat.updateDocuments | `Combat.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link Combat._preUpdateOperation | `Combat._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Combat#_preUpdate | `Combat#_preUpdate`} */
+      /** Options for {@link Combat._preUpdate | `Combat#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Combat#_onUpdate | `Combat#_onUpdate`} */
+      /** Options for {@link Combat._onUpdate | `Combat#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link Combat.deleteDocuments | `Combat.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link Combat._preDeleteOperation | `Combat._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Combat#_preDelete | `Combat#_preDelete`} */
+      /** Options for {@link Combat._preDelete | `Combat#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Combat#_onDelete | `Combat#_onDelete`} */
+      /** Options for {@link Combat._onDelete | `Combat#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link Combat.DatabaseOperation}
+     * @deprecated - {@link Combat.DatabaseOperation | `Combat.DatabaseOperation`}
      */
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations
@@ -275,9 +275,9 @@ declare global {
   /**
    * The client-side Combat document which extends the common BaseCombat model.
    *
-   * @see {@link Combats}                       The world-level collection of Combat documents
-   * @see {@link Combatant}                     The Combatant embedded document which exists within a Combat document
-   * @see {@link CombatConfig}                  The Combat configuration application
+   * @see {@link Combats | `Combats`}                       The world-level collection of Combat documents
+   * @see {@link Combatant | `Combatant`}                     The Combatant embedded document which exists within a Combat document
+   * @see {@link CombatConfig | `CombatConfig`}                  The Combat configuration application
    */
   class Combat<out SubType extends Combat.SubType = Combat.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseCombat,
@@ -529,17 +529,17 @@ declare global {
     protected _onStartTurn(combatant: Combatant): Promise<void>;
 
     /**
-     * @deprecated Since v11 until v13. Use {@link Combat#updateCombatantActors} instead.
+     * @deprecated Since v11 until v13. Use {@link Combat.updateCombatantActors | `Combat#updateCombatantActors`} instead.
      */
     updateEffectDurations(): void;
 
     /**
-     * @deprecated Since v12. Use {@link Combat#getCombatantsByActor} instead.
+     * @deprecated Since v12. Use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
      */
     getCombatantByActor(actor: Actor): Combatant[];
 
     /**
-     * @deprecated Since v12. Use {@link Combat#getCombatantsByActor} instead.
+     * @deprecated Since v12. Use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
      */
     getCombatantByToken(token: Token): Combatant[];
 

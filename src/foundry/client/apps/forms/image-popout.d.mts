@@ -9,7 +9,7 @@ declare global {
     caption: boolean;
 
     /**
-     * The UUID of some related {@link Document}.
+     * The UUID of some related {@link Document | `Document`}.
      * @defaultValue `null`
      */
     uuid: string | null;

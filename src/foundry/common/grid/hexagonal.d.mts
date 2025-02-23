@@ -51,7 +51,7 @@ declare class HexagonalGrid extends BaseGrid {
    * Returns the cube coordinates of the grid space corresponding to the given coordinates
    * shifted by one grid space in the given direction.
    * @param coords    - The coordinates
-   * @param direction - The direction (see {@link CONST.MOVEMENT_DIRECTIONS})
+   * @param direction - The direction (see {@link CONST.MOVEMENT_DIRECTIONS | `CONST.MOVEMENT_DIRECTIONS`})
    * @returns The cube coordinates
    */
   getShiftedCube(coords: HexagonalGrid.Coordinates, direction: number): HexagonalGrid.Cube;
@@ -110,7 +110,7 @@ declare class HexagonalGrid extends BaseGrid {
 
   /**
    * Convert point coordinates (x, y) into cube coordinates (q, r, s).
-   * Inverse of {@link HexagonalGrid#cubeToPoint}.
+   * Inverse of {@link HexagonalGrid.cubeToPoint | `HexagonalGrid#cubeToPoint`}.
    * @see {@link https://www.redblobgames.com/grids/hexagons/}
    * @param point - The point
    * @returns The (fractional) cube coordinates
@@ -119,7 +119,7 @@ declare class HexagonalGrid extends BaseGrid {
 
   /**
    * Convert cube coordinates (q, r, s) into point coordinates (x, y).
-   * Inverse of {@link HexagonalGrid#pointToCube}.
+   * Inverse of {@link HexagonalGrid.pointToCube | `HexagonalGrid#pointToCube`}.
    * @see {@link https://www.redblobgames.com/grids/hexagons/}
    * @param cube - The cube coordinates
    * @returns The point coordinates
@@ -128,7 +128,7 @@ declare class HexagonalGrid extends BaseGrid {
 
   /**
    * Convert offset coordinates (i, j) into integer cube coordinates (q, r, s).
-   * Inverse of {@link HexagonalGrid#cubeToOffset}.
+   * Inverse of {@link HexagonalGrid.cubeToOffset | `HexagonalGrid#cubeToOffset`}.
    * @see {@link https://www.redblobgames.com/grids/hexagons/}
    * @param offset - The offset coordinates
    * @returns The integer cube coordinates
@@ -137,7 +137,7 @@ declare class HexagonalGrid extends BaseGrid {
 
   /**
    * Convert integer cube coordinates (q, r, s) into offset coordinates (i, j).
-   * Inverse of {@link HexagonalGrid#offsetToCube}.
+   * Inverse of {@link HexagonalGrid.offsetToCube | `HexagonalGrid#offsetToCube`}.
    * @see {@link https://www.redblobgames.com/grids/hexagons/}
    * @param cube - The cube coordinates
    * @returns The offset coordinates
@@ -153,11 +153,11 @@ declare class HexagonalGrid extends BaseGrid {
    */
   static cubeDistance(a: HexagonalGrid.Cube, b: HexagonalGrid.Cube): number;
 
-  /** Used by {@link HexagonalGrid#snapToCenter}. */
+  /** Used by {@link HexagonalGrid.snapToCenter | `HexagonalGrid#snapToCenter`}. */
   static #TEMP_POINT: Canvas.Point;
 
   /**
-   * Used by {@link HexagonalGrid#snapToCenter}.
+   * Used by {@link HexagonalGrid.snapToCenter | `HexagonalGrid#snapToCenter`}.
    * Always an odd grid!
    */
   static #TEMP_GRID: HexagonalGrid;
@@ -208,18 +208,18 @@ declare class HexagonalGrid extends BaseGrid {
    * @param w      - An optional polygon width
    * @param h      - An optional polygon height
    * @param points - An optional list of polygon points.
-   * @deprecated Since v12 until v14. You can get the shape of the hex with {@link HexagonalGrid#getShape}
-   *             and the polygon with {@link HexagonalGrid#getVertices}.
+   * @deprecated Since v12 until v14. You can get the shape of the hex with {@link HexagonalGrid.getShape | `HexagonalGrid#getShape`}
+   *             and the polygon with {@link HexagonalGrid.getVertices | `HexagonalGrid#getVertices`}.
    */
   getPolygon(x: number, y: number, w?: number, h?: number, points?: Canvas.PointTuple[]): Canvas.PointTuple[];
 
   /**
-   * @deprecated Since v12 until v14. If you need the shape of a Token, use {@link Token#getShape} instead.
+   * @deprecated Since v12 until v14. If you need the shape of a Token, use {@link Token.getShape | `Token#getShape`} instead.
    */
   getBorderPolygon(w: number, h: number, p: number): Canvas.PointTuple[];
 
   /**
-   * @deprecated Since v12 until v14. If you need the size of a Token, use {@link Token#getSize} instead.
+   * @deprecated Since v12 until v14. If you need the size of a Token, use {@link Token.getSize | `Token#getSize`} instead.
    */
   getRect(w: number, h: number): PIXI.Rectangle;
 
@@ -244,13 +244,13 @@ declare class HexagonalGrid extends BaseGrid {
 
   /**
    * Is this hex grid column-based (flat-topped), or row-based (pointy-topped)?
-   * @deprecated Since v12 until v14. Use {@link HexagonalGrid#columns} instead.
+   * @deprecated Since v12 until v14. Use {@link HexagonalGrid.columns | `HexagonalGrid#columns`} instead.
    */
   get columnar(): boolean;
 
   /**
    * Is this hex grid column-based (flat-topped), or row-based (pointy-topped)?
-   * @deprecated Since v12 until v14. Use {@link HexagonalGrid#columns} instead.
+   * @deprecated Since v12 until v14. Use {@link HexagonalGrid.columns | `HexagonalGrid#columns`} instead.
    */
   set columnar(value: boolean);
 
@@ -278,7 +278,7 @@ declare class HexagonalGrid extends BaseGrid {
    * Source code available https://www.redblobgames.com/grids/hexagons/codegen/output/lib-functions.js
    * @param offset - The offset coordinate
    * @param config - The hex grid configuration
-   * @deprecated Since v12 until v14. Use {@link HexagonalGrid#offsetToCube} instead.
+   * @deprecated Since v12 until v14. Use {@link HexagonalGrid.offsetToCube | `HexagonalGrid#offsetToCube`} instead.
    */
   static offsetToCube(
     offset: unknown,
@@ -295,7 +295,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @param cube   - The cube coordinate
    * @param config - The hex grid configuration
    * @returns The offset coordinate
-   * @deprecated Since v12 until v14. Use {@link HexagonalGrid#cubeToOffset} instead.
+   * @deprecated Since v12 until v14. Use {@link HexagonalGrid.cubeToOffset | `HexagonalGrid#cubeToOffset`} instead.
    */
   static cubeToOffset(cube: unknown, config: HexagonalGrid.Configuration): HexagonalGrid.Offset;
 
@@ -305,7 +305,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @param point  - The pixel point
    * @param config - The hex grid configuration
    * @returns The cube coordinate
-   * @deprecated Since v12 until v14. Use {@link HexagonalGrid#pointToCube} instead.
+   * @deprecated Since v12 until v14. Use {@link HexagonalGrid.pointToCube | `HexagonalGrid#pointToCube`} instead.
    */
   static pixelToCube(point: Canvas.Point, config: HexagonalGrid.Configuration): HexagonalGrid.Coordinates;
 
@@ -314,7 +314,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @param offset - The offset coordinate
    * @param config - The hex grid configuration
    * @returns The coordinate in pixels
-   * @deprecated Since v12 until v14. Use {@link HexagonalGrid#getTopLeftPoint} instead.
+   * @deprecated Since v12 until v14. Use {@link HexagonalGrid.getTopLeftPoint | `HexagonalGrid#getTopLeftPoint`} instead.
    */
   static offsetToPixels(offset: unknown, config: HexagonalGrid.Configuration): Canvas.Point;
 

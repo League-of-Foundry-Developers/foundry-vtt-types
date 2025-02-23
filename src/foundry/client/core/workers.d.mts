@@ -65,7 +65,7 @@ declare global {
   /**
    * A client-side class responsible for managing a set of web workers.
    * This interface is accessed as a singleton instance via game.workers.
-   * @see Game#workers
+   * @see {@link Game.workers | `Game#workers`}
    */
   class WorkerManager extends Map<string, AsyncWorker> {
     constructor();
@@ -89,7 +89,7 @@ declare global {
 
     /**
      * Retire a current Worker, terminating it immediately.
-     * @see {@link Worker#terminate}
+     * @see {@link Worker.terminate | `Worker#terminate`}
      * @param name - The named worker to terminate
      */
     retireWorker(name: string): void;

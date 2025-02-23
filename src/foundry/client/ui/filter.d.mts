@@ -50,7 +50,7 @@ declare global {
 
   /**
    * A controller class for managing a text input widget that filters the contents of some other UI element
-   * @see {@link Application}
+   * @see {@link Application | `Application`}
    */
   class SearchFilter {
     static readonly OPERATORS: {

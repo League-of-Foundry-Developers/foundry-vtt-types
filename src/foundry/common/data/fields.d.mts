@@ -431,7 +431,7 @@ declare namespace DataField {
   type PersistedTypeFor<ConcreteDataField extends Any> =
     ConcreteDataField extends DataField<any, any, any, infer PersistedType> ? PersistedType : never;
 
-  /** The type of the default options for the {@link DataField} class. */
+  /** The type of the default options for the {@link DataField | `DataField`} class. */
   interface DefaultOptions {
     required: false;
     nullable: false;
@@ -496,13 +496,13 @@ declare namespace DataField {
     type Any = DataField.Options<any> & object;
 
     /**
-     * A helper type for the {@link DataField.Options.initial} option.
+     * A helper type for the {@link DataField.Options.initial | `DataField.Options.initial`} option.
      * @typeParam ReturnType - the return type of the option
      */
     type InitialType<ReturnType> = ReturnType | ((initialData: unknown) => ReturnType);
 
     /**
-     * The decorated return type for the {@link DataField.Options.initial} option.
+     * The decorated return type for the {@link DataField.Options.initial | `DataField.Options.initial`} option.
      * @typeParam BaseAssignmentType - the base assignment type for a DataField
      * @typeParam NullableOption     - the value of the nullable option
      * @typeParam RequiredOption     - the value of the required option
@@ -589,7 +589,7 @@ declare namespace DataField {
    */
   type InitializedType<Options extends DataField.Options.Any> = DerivedInitializedType<any, MergedOptions<Options>>;
 
-  /** An interface for the options of the {@link DataField} clean functions. */
+  /** An interface for the options of the {@link DataField | `DataField`} clean functions. */
   interface CleanOptions {
     /** Whether to perform partial cleaning? */
     partial?: boolean;
@@ -635,7 +635,7 @@ declare namespace DataField {
       }["validate"];
 
   /**
-   * An interface for the options of the {@link DataField} validation functions.
+   * An interface for the options of the {@link DataField | `DataField`} validation functions.
    * @typeParam CurrentField - the type of the DataField, which is the receiver of the validate function
    */
   interface ValidationOptions<CurrentField extends DataField.Any> extends DataValidationOptions {
@@ -676,7 +676,7 @@ declare abstract class AnyDataField extends DataField<any, any, any, any> {
 }
 
 /**
- * A special class of {@link DataField} which defines a data schema.
+ * A special class of {@link DataField | `DataField`} which defines a data schema.
  * @typeParam Fields          - the DataSchema fields of the SchemaField
  * @typeParam Options         - the options of the SchemaField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the SchemaField
@@ -908,7 +908,7 @@ declare namespace SchemaField {
     }>
   >;
 
-  /** The type of the default options for the {@link SchemaField} class. */
+  /** The type of the default options for the {@link SchemaField | `SchemaField`} class. */
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
     {
@@ -1015,7 +1015,7 @@ declare namespace SchemaField {
 }
 
 /**
- * A subclass of [DataField]{@link DataField} which deals with boolean-typed data.
+ * A subclass of {@link DataField | `DataField`} which deals with boolean-typed data.
  * @typeParam Options         - the options of the BooleanField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the BooleanField
  * @typeParam InitializedType - the type of the initialized values of the BooleanField
@@ -1060,7 +1060,7 @@ declare namespace BooleanField {
   /** A shorthand for the options of a BooleanField class. */
   type Options = DataField.Options<boolean>;
 
-  /** The type of the default options for the {@link BooleanField} class. */
+  /** The type of the default options for the {@link BooleanField | `BooleanField`} class. */
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
     {
@@ -1090,7 +1090,7 @@ declare namespace BooleanField {
 }
 
 /**
- * A subclass of [DataField]{@link DataField} which deals with number-typed data.
+ * A subclass of {@link DataField | `DataField`} which deals with number-typed data.
  * @typeParam Options         - the options of the NumberField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the NumberField
  * @typeParam InitializedType - the type of the initialized values of the NumberField
@@ -1208,7 +1208,7 @@ declare class NumberField<
 }
 
 declare namespace NumberField {
-  /** The type of the default options for the {@link NumberField} class. */
+  /** The type of the default options for the {@link NumberField | `NumberField`} class. */
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
     {
@@ -1263,7 +1263,7 @@ declare namespace NumberField {
     choices?: NumberField.Choices | undefined;
   }
 
-  /** The type of the default options for the {@link NumberField} class when choices are provided. */
+  /** The type of the default options for the {@link NumberField | `NumberField`} class when choices are provided. */
   type DefaultOptionsWhenChoicesProvided = SimpleMerge<DefaultOptions, { nullable: false }>;
 
   /**
@@ -1325,7 +1325,7 @@ declare namespace NumberField {
 }
 
 /**
- * A subclass of [DataField]{@link DataField} which deals with string-typed data.
+ * A subclass of {@link DataField | `DataField`} which deals with string-typed data.
  * @typeParam Options         - the options of the StringField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the StringField
  * @typeParam InitializedType - the type of the initialized values of the StringField
@@ -1428,7 +1428,7 @@ declare class StringField<
 }
 
 declare namespace StringField {
-  /** The type of the default options for the {@link StringField} class. */
+  /** The type of the default options for the {@link StringField | `StringField`} class. */
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
     {
@@ -1467,7 +1467,7 @@ declare namespace StringField {
     textSearch?: boolean | undefined;
   }
 
-  /** The type of the default options for the {@link StringField} class when choices are provided. */
+  /** The type of the default options for the {@link StringField | `StringField`} class when choices are provided. */
   type DefaultOptionsWhenChoicesProvided = SimpleMerge<DefaultOptions, { nullable: false; blank: false }>;
 
   /**
@@ -1566,7 +1566,7 @@ declare namespace StringField {
 }
 
 /**
- * A subclass of [DataField]{@link DataField} which deals with object-typed data.
+ * A subclass of {@link DataField | `DataField`} which deals with object-typed data.
  * @typeParam Options         - the options of the ObjectField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the ObjectField
  * @typeParam InitializedType - the type of the initialized values of the ObjectField
@@ -1612,7 +1612,7 @@ declare class ObjectField<
 }
 
 declare namespace ObjectField {
-  /** The type of the default options for the {@link ObjectField} class. */
+  /** The type of the default options for the {@link ObjectField | `ObjectField`} class. */
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
     {
@@ -1646,7 +1646,7 @@ declare namespace ObjectField {
   >;
 
   /**
-   * A helper to create a flags object field for the given key in the {@link FlagConfig}.
+   * A helper to create a flags object field for the given key in the {@link FlagConfig | `FlagConfig`}.
    * @typeParam Key            - the key to look for in the FlagConfig
    * @typeParam ExtensionFlags - additional flags besides the ones configured for the class
    * @typeParam Options        - the options of the field
@@ -1675,7 +1675,7 @@ declare namespace ObjectField {
 }
 
 /**
- * A subclass of [DataField]{@link DataField} which deals with array-typed data.
+ * A subclass of {@link DataField | `DataField`} which deals with array-typed data.
  * @typeParam ElementFieldType       - the field type for the elements in the ArrayField
  * @typeParam AssignmentElementType  - the assignment type for the elements in the array
  * @typeParam InitializedElementType - the initialized type for the elements in the array
@@ -1810,7 +1810,7 @@ declare namespace ArrayField {
   type AnyOptions = Options<unknown>;
 
   /**
-   * The base assignment type for the {@link ArrayField} class.
+   * The base assignment type for the {@link ArrayField | `ArrayField`} class.
    * @typeParam AssignmentElementType - the assignment type of the elements in the array
    */
   type BaseAssignmentType<AssignmentElementType> =
@@ -1820,7 +1820,7 @@ declare namespace ArrayField {
     | AssignmentElementType;
 
   /**
-   * The type of the default options for the {@link ArrayField} class.
+   * The type of the default options for the {@link ArrayField | `ArrayField`} class.
    * @typeParam AssignmentElementType - the assignment type of the elements in the array
    */
   type DefaultOptions<AssignmentElementType> = SimpleMerge<
@@ -1914,7 +1914,7 @@ declare namespace ArrayField {
 }
 
 /**
- * A subclass of [ArrayField]{@link ArrayField} which supports a set of contained elements.
+ * A subclass of {@link ArrayField | `ArrayField`} which supports a set of contained elements.
  * Elements in this set are treated as fungible and may be represented in any order or discarded if invalid.
  * @typeParam ElementFieldType       - the field type for the elements in the SetField
  * @typeParam AssignmentElementType  - the assignment type for the elements in the set
@@ -1992,13 +1992,13 @@ declare namespace SetField {
   type AnyOptions = Options<unknown>;
 
   /**
-   * The base assignment type for the {@link SetField} class.
+   * The base assignment type for the {@link SetField | `SetField`} class.
    * @typeParam AssignmentElementType - the assignment type of the elements in the array
    */
   type BaseAssignmentType<AssignmentElementType> = ArrayField.BaseAssignmentType<AssignmentElementType>;
 
   /**
-   * The type of the default options for the {@link SetField} class.
+   * The type of the default options for the {@link SetField | `SetField`} class.
    * @typeParam AssignmentElementType - the assignment type of the elements in the array
    */
   type DefaultOptions<AssignmentElementType> = ArrayField.DefaultOptions<AssignmentElementType>;
@@ -2057,7 +2057,7 @@ declare namespace SetField {
 }
 
 /**
- * A subclass of [ObjectField]{@link ObjectField} which embeds some other DataModel definition as an inner object.
+ * A subclass of {@link ObjectField | `ObjectField`} which embeds some other DataModel definition as an inner object.
  * @typeParam ModelType       - the DataModel for the embedded data
  * @typeParam Options         - the options of the EmbeddedDataField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the EmbeddedDataField
@@ -2117,7 +2117,7 @@ declare namespace EmbeddedDataField {
     SchemaField.AssignmentData<DataModel.SchemaOfClass<ModelType>> | __SchemaFieldInitial
   >;
 
-  /** The type of the default options for the {@link EmbeddedDataField} class. */
+  /** The type of the default options for the {@link EmbeddedDataField | `EmbeddedDataField`} class. */
   type DefaultOptions = SchemaField.DefaultOptions;
 
   /**
@@ -2169,7 +2169,7 @@ declare namespace EmbeddedDataField {
 }
 
 /**
- * A subclass of [ArrayField]{@link ArrayField} which supports an embedded Document collection.
+ * A subclass of {@link ArrayField | `ArrayField`} which supports an embedded Document collection.
  * Invalid elements will be dropped from the collection during validation rather than failing for the field entirely.
  * @typeParam ElementFieldType       - the field type for the elements in the EmbeddedCollectionField
  * @typeParam AssignmentElementType  - the assignment type for the elements in the collection
@@ -2292,7 +2292,7 @@ declare namespace EmbeddedCollectionField {
   type Options<AssignmentElementType> = DataField.Options<ArrayField.BaseAssignmentType<AssignmentElementType>>;
 
   /**
-   * The type of the default options for the {@link EmbeddedCollectionField} class.
+   * The type of the default options for the {@link EmbeddedCollectionField | `EmbeddedCollectionField`} class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionField
    */
   type DefaultOptions<AssignmentElementType> = ArrayField.DefaultOptions<AssignmentElementType>;
@@ -2379,7 +2379,7 @@ declare namespace EmbeddedCollectionField {
 }
 
 /**
- * A subclass of {@link EmbeddedCollectionField} which manages a collection of delta objects relative to another
+ * A subclass of {@link EmbeddedCollectionField | `EmbeddedCollectionField`} which manages a collection of delta objects relative to another
  * collection.
  * @typeParam ElementFieldType       - the field type for the elements in the EmbeddedCollectionDeltaField
  * @typeParam AssignmentElementType  - the assignment type for the elements in the collection
@@ -2446,7 +2446,7 @@ declare namespace EmbeddedCollectionDeltaField {
   type Options<AssignmentElementType> = DataField.Options<ArrayField.BaseAssignmentType<AssignmentElementType>>;
 
   /**
-   * The type of the default options for the {@link EmbeddedCollectionDeltaField} class.
+   * The type of the default options for the {@link EmbeddedCollectionDeltaField | `EmbeddedCollectionDeltaField`} class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionDeltaField
    */
   type DefaultOptions<AssignmentElementType> = ArrayField.DefaultOptions<AssignmentElementType>;
@@ -2532,7 +2532,7 @@ declare namespace EmbeddedCollectionDeltaField {
 }
 
 /**
- * A subclass of {@link EmbeddedDataField} which supports a single embedded Document.
+ * A subclass of {@link EmbeddedDataField | `EmbeddedDataField`} which supports a single embedded Document.
  * @typeParam DocumentType    - the type of the embedded Document
  * @typeParam Options         - the options of the EmbeddedDocumentField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the EmbeddedDocumentField
@@ -2588,7 +2588,7 @@ declare namespace EmbeddedDocumentField {
     SchemaField.AssignmentData<DataModel.SchemaOfClass<DocumentType>> | __SchemaFieldInitial
   >;
 
-  /** The type of the default options for the {@link EmbeddedDocumentField} class. */
+  /** The type of the default options for the {@link EmbeddedDocumentField | `EmbeddedDocumentField`} class. */
   type DefaultOptions = SimpleMerge<
     EmbeddedDataField.DefaultOptions,
     {
@@ -2647,7 +2647,7 @@ declare namespace EmbeddedDocumentField {
 }
 
 /**
- * A subclass of [StringField]{@link StringField} which provides the primary _id for a Document.
+ * A subclass of {@link StringField | `StringField`} which provides the primary _id for a Document.
  * The field may be initially null, but it must be non-null when it is saved to the database.
  * @typeParam Options         - the options of the DocumentIdField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the DocumentIdField
@@ -2695,7 +2695,7 @@ declare class DocumentIdField<
 }
 
 declare namespace DocumentIdField {
-  /** The type of the default options for the {@link DocumentIdField} class. */
+  /** The type of the default options for the {@link DocumentIdField | `DocumentIdField`} class. */
   type DefaultOptions = SimpleMerge<
     StringField.DefaultOptions,
     {
@@ -2734,7 +2734,7 @@ declare namespace DocumentIdField {
 }
 
 /**
- * A subclass of {@link StringField} which supports referencing some other Document by its UUID.
+ * A subclass of {@link StringField | `StringField`} which supports referencing some other Document by its UUID.
  * This field may not be blank, but may be null to indicate that no UUID is referenced.
  */
 declare class DocumentUUIDField<
@@ -2832,7 +2832,7 @@ declare namespace DocumentUUIDField {
 }
 
 /**
- * A special class of [StringField]{@link StringField} field which references another DataModel by its id.
+ * A special class of {@link StringField | `StringField`} field which references another DataModel by its id.
  * This field may also be null to indicate that no foreign model is linked.
  * @typeParam DocumentType    - the type of the foreign document constructor
  * @typeParam Options         - the options for the ForeignDocumentField
@@ -2895,7 +2895,7 @@ declare namespace ForeignDocumentField {
       idOnly?: boolean;
     };
 
-  /** The type of the default options for the {@link ForeignDocumentField} class. */
+  /** The type of the default options for the {@link ForeignDocumentField | `ForeignDocumentField`} class. */
   type DefaultOptions = SimpleMerge<
     DocumentIdField.DefaultOptions,
     {
@@ -2940,7 +2940,7 @@ declare namespace ForeignDocumentField {
 }
 
 /**
- * A special [StringField]{@link StringField} which records a standardized CSS color string.
+ * A special {@link StringField | `StringField`} which records a standardized CSS color string.
  * @typeParam Options         - the options of the ColorField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the ColorField
  * @typeParam InitializedType - the type of the initialized values of the ColorField
@@ -2981,7 +2981,7 @@ declare class ColorField<
 }
 
 declare namespace ColorField {
-  /** The type of the default options for the {@link ColorField} class. */
+  /** The type of the default options for the {@link ColorField | `ColorField`} class. */
   type DefaultOptions = SimpleMerge<
     StringField.DefaultOptions,
     {
@@ -3027,7 +3027,7 @@ declare namespace ColorField {
 }
 
 /**
- * A special [StringField]{@link StringField} which records a file path or inline base64 data.
+ * A special {@link StringField | `StringField`} which records a file path or inline base64 data.
  * @typeParam Options         - the options of the FilePathField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the FilePathField
  * @typeParam InitializedType - the type of the initialized values of the FilePathField
@@ -3088,7 +3088,7 @@ declare class FilePathField<
 }
 
 declare namespace FilePathField {
-  /** The type of the default options for the {@link FilePathField} class. */
+  /** The type of the default options for the {@link FilePathField | `FilePathField`} class. */
   type DefaultOptions = SimpleMerge<
     StringField.DefaultOptions,
     {
@@ -3147,7 +3147,7 @@ declare namespace FilePathField {
 }
 
 /**
- * A special [NumberField]{@link NumberField} which represents an angle of rotation in degrees between 0 and 360.
+ * A special {@link NumberField | `NumberField`} which represents an angle of rotation in degrees between 0 and 360.
  * @typeParam Options         - the options of the AngleField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the AngleField
  * @typeParam InitializedType - the type of the initialized values of the AngleField
@@ -3192,7 +3192,7 @@ declare class AngleField<
 }
 
 declare namespace AngleField {
-  /** The type of the default options for the {@link AngleField} class. */
+  /** The type of the default options for the {@link AngleField | `AngleField`} class. */
   type DefaultOptions = SimpleMerge<
     NumberField.DefaultOptions,
     {
@@ -3232,7 +3232,7 @@ declare namespace AngleField {
 }
 
 /**
- * A special [NumberField]{@link NumberField} represents a number between 0 and 1.
+ * A special {@link NumberField | `NumberField`} represents a number between 0 and 1.
  * @typeParam Options         - the options of the AlphaField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the AlphaField
  * @typeParam InitializedType - the type of the initialized values of the AlphaField
@@ -3272,7 +3272,7 @@ declare class AlphaField<
 }
 
 declare namespace AlphaField {
-  /** The type of the default options for the {@link AlphaField} class. */
+  /** The type of the default options for the {@link AlphaField | `AlphaField`} class. */
   type DefaultOptions = SimpleMerge<
     NumberField.DefaultOptions,
     {
@@ -3311,7 +3311,7 @@ declare namespace AlphaField {
 }
 
 /**
- * A special [NumberField]{@link NumberField} represents a number between 0 (inclusive) and 1 (exclusive).
+ * A special {@link NumberField | `NumberField`} represents a number between 0 (inclusive) and 1 (exclusive).
  * Its values are normalized (modulo 1) to the range [0, 1) instead of being clamped.
  */
 declare class HueField<
@@ -3342,7 +3342,7 @@ declare namespace HueField {
 }
 
 /**
- * A special [ObjectField]{@link ObjectField} which captures a mapping of User IDs to Document permission levels.
+ * A special {@link ObjectField | `ObjectField`} which captures a mapping of User IDs to Document permission levels.
  * @typeParam Options         - the options of the DocumentOwnershipField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the DocumentOwnershipField
  * @typeParam InitializedType - the type of the initialized values of the DocumentOwnershipField
@@ -3381,7 +3381,7 @@ declare namespace DocumentOwnershipField {
   /** A shorthand for the options of a DocumentOwnershipField class. */
   type Options = DataField.Options<Record<string, DOCUMENT_OWNERSHIP_LEVELS>>;
 
-  /** The type of the default options for the {@link DocumentOwnershipField} class. */
+  /** The type of the default options for the {@link DocumentOwnershipField | `DocumentOwnershipField`} class. */
   type DefaultOptions = SimpleMerge<
     ObjectField.DefaultOptions,
     {
@@ -3416,7 +3416,7 @@ declare namespace DocumentOwnershipField {
 }
 
 /**
- * A special [StringField]{@link StringField} which contains serialized JSON data.
+ * A special {@link StringField | `StringField`} which contains serialized JSON data.
  * @typeParam Options         - the options of the JSONField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the JSONField
  * @typeParam InitializedType - the type of the initialized values of the JSONField
@@ -3489,7 +3489,7 @@ declare class JSONField<
 }
 
 declare namespace JSONField {
-  /** The type of the default options for the {@link JSONField} class. */
+  /** The type of the default options for the {@link JSONField | `JSONField`} class. */
   type DefaultOptions = SimpleMerge<
     StringField.DefaultOptions,
     {
@@ -3534,7 +3534,7 @@ declare namespace JSONField {
 }
 
 /**
- * A special subclass of {@link DataField} which can contain any value of any type.
+ * A special subclass of {@link DataField | `DataField`} which can contain any value of any type.
  * Any input is accepted and is treated as valid.
  * It is not recommended to use this class except for very specific circumstances.
  */
@@ -3549,7 +3549,7 @@ declare class AnyField extends DataField<DataField.Options.Any, unknown, unknown
 }
 
 /**
- * A subclass of [StringField]{@link StringField} which contains a sanitized HTML string.
+ * A subclass of {@link StringField | `StringField`} which contains a sanitized HTML string.
  * This class does not override any StringField behaviors, but is used by the server-side to identify fields which
  * require sanitization of user input.
  * @typeParam Options         - the options of the HTMLField instance
@@ -3603,7 +3603,7 @@ declare class HTMLField<
 }
 
 declare namespace HTMLField {
-  /** The type of the default options for the {@link HTMLField} class. */
+  /** The type of the default options for the {@link HTMLField | `HTMLField`} class. */
   type DefaultOptions = SimpleMerge<
     StringField.DefaultOptions,
     {
@@ -3641,7 +3641,7 @@ declare namespace HTMLField {
 }
 
 /**
- * A subclass of {@link NumberField} which is used for storing integer sort keys.
+ * A subclass of {@link NumberField | `NumberField`} which is used for storing integer sort keys.
  * @typeParam Options         - the options of the IntegerSortField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the IntegerSortField
  * @typeParam InitializedType - the type of the initialized values of the IntegerSortField
@@ -3679,7 +3679,7 @@ declare class IntegerSortField<
 }
 
 declare namespace IntegerSortField {
-  /** The type of the default options for the {@link IntegerSortField} class. */
+  /** The type of the default options for the {@link IntegerSortField | `IntegerSortField`} class. */
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
     {
@@ -3718,7 +3718,7 @@ declare namespace IntegerSortField {
 }
 
 /**
- * A subclass of {@link SchemaField} which stores document metadata in the _stats field.
+ * A subclass of {@link SchemaField | `SchemaField`} which stores document metadata in the _stats field.
  * @typeParam Options         - the options of the DocumentStatsField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the DocumentStatsField
  * @typeParam InitializedType - the type of the initialized values of the DocumentStatsField
@@ -3753,11 +3753,11 @@ declare namespace DocumentStatsField {
   /** A shorthand for the options of a DocumentStatsField class. */
   type Options = DataField.Options<SchemaField.AssignmentData<Schema>>;
 
-  /** The type of the default options for the {@link DocumentStatsField} class. */
+  /** The type of the default options for the {@link DocumentStatsField | `DocumentStatsField`} class. */
   type DefaultOptions = SimpleMerge<SchemaField.DefaultOptions, { initial: SchemaField.AssignmentData<Schema> }>;
 
   /**
-   * A helper type for the given options type merged into the default options of the {@link DocumentStatsField} class.
+   * A helper type for the given options type merged into the default options of the {@link DocumentStatsField | `DocumentStatsField`} class.
    * @typeParam Opts - the options that override the default options
    */
   type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
@@ -3836,7 +3836,7 @@ declare namespace DocumentStatsField {
 }
 
 /**
- * A subclass of [StringField]{@link StringField} that is used specifically for the Document "type" field.
+ * A subclass of {@link StringField | `StringField`} that is used specifically for the Document "type" field.
  */
 declare class DocumentTypeField<
   const ConcreteDocumentClass extends Document.AnyConstructor,
@@ -3869,7 +3869,7 @@ declare class DocumentTypeField<
 }
 
 declare namespace DocumentTypeField {
-  /** The type of the default options for the {@link DocumentTypeField} class. */
+  /** The type of the default options for the {@link DocumentTypeField | `DocumentTypeField`} class. */
   type DefaultOptions = SimpleMerge<
     StringField.DefaultOptions,
     {
@@ -3908,7 +3908,7 @@ declare namespace DocumentTypeField {
 }
 
 /**
- * A subclass of [ObjectField]{@link ObjectField} which supports a type-specific data object.
+ * A subclass of {@link ObjectField | `ObjectField`} which supports a type-specific data object.
  * @typeParam DocumentType    - the type of the embedded Document
  * @typeParam Options         - the options of the TypeDataField instance
  * @typeParam AssignmentType  - the type of the allowed assignment values of the TypeDataField
@@ -4001,7 +4001,7 @@ declare namespace TypeDataField {
     SchemaField.AssignmentData<DataModel.SchemaOfClass<DocumentType>>
   >;
 
-  /** The type of the default options for the {@link TypeDataField} class. */
+  /** The type of the default options for the {@link TypeDataField | `TypeDataField`} class. */
   type DefaultOptions = SimpleMerge<
     ObjectField.DefaultOptions,
     {
@@ -4075,7 +4075,7 @@ declare namespace TypeDataField {
 }
 
 /**
- * A subclass of [DataField]{@link DataField} which allows to typed schemas.
+ * A subclass of {@link DataField | `DataField`} which allows to typed schemas.
  */
 declare class TypedSchemaField<
   const Types extends TypedSchemaField.Types,
@@ -4256,7 +4256,7 @@ declare class _InternalJavaScriptField<
 }
 
 /**
- * A subclass of {@link StringField} which contains JavaScript code.
+ * A subclass of {@link StringField | `StringField`} which contains JavaScript code.
  */
 declare class JavaScriptField<
   const Options extends JavaScriptField.Options = JavaScriptField.DefaultOptions,

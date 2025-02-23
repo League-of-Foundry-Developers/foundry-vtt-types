@@ -4,7 +4,7 @@ declare global {
   /**
    * The collection of Cards documents which exist within the active World.
    * This Collection is accessible within the Game object as game.cards.
-   * @see {@link Cards} The Cards document
+   * @see {@link Cards | `Cards`} The Cards document
    */
   class CardStacks extends WorldCollection<Cards.ImplementationClass, "Cards"> {
     static documentName: "Cards";

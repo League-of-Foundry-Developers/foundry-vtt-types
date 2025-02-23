@@ -26,7 +26,7 @@ declare class HTMLFilePickerElement extends AbstractFormInputElement<string> {
 
   /**
    * A type of file which can be selected in this field.
-   * @see {@link FilePicker.FILE_TYPES}
+   * @see {@link FilePicker.FILE_TYPES | `FilePicker.FILE_TYPES`}
    */
   get type(): FilePicker.Type;
   set type(value: FilePicker.Type);

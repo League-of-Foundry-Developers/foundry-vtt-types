@@ -8,7 +8,7 @@ declare global {
   namespace Item {
     /**
      * The implementation of the Item document instance configured through `CONFIG.Item.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredItem | `configuration/ConfiguredItem`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Item">;
 
@@ -144,7 +144,7 @@ declare global {
 
       /**
        * An object which configures ownership of this Item
-       * @defaultValue see {@link fields.DocumentOwnershipField}
+       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -156,7 +156,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -177,32 +177,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link Item._preCreateOperation | `Item._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Item#_preCreate | `Item#_preCreate`} */
+      /** Options for {@link Item._preCreate | `Item#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Item#_onCreate | `Item#_onCreate`} */
+      /** Options for {@link Item._onCreate | `Item#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link Item.updateDocuments | `Item.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link Item._preUpdateOperation | `Item._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Item#_preUpdate | `Item#_preUpdate`} */
+      /** Options for {@link Item._preUpdate | `Item#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Item#_onUpdate | `Item#_onUpdate`} */
+      /** Options for {@link Item._onUpdate | `Item#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link Item.deleteDocuments | `Item.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link Item._preDeleteOperation | `Item._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Item#_preDelete | `Item#_preDelete`} */
+      /** Options for {@link Item._preDelete | `Item#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Item#_onDelete | `Item#_onDelete`} */
+      /** Options for {@link Item._onDelete | `Item#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link Item.DatabaseOperation}
+     * @deprecated - {@link Item.DatabaseOperation | `Item.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Item> {}
@@ -232,11 +232,11 @@ declare global {
    * The client-side Item document which extends the common BaseItem abstraction.
    * Each Item document contains ItemData which defines its data schema.
    *
-   * @see {@link Items}            The world-level collection of Item documents
-   * @see {@link ItemSheet}     The Item configuration application
+   * @see {@link Items | `Items`}            The world-level collection of Item documents
+   * @see {@link ItemSheet | `ItemSheet`}     The Item configuration application
    *
    * @param data    - Initial data provided to construct the Item document
-   * @param context - The document context, see {@link foundry.abstract.Document}
+   * @param context - The document context, see {@link foundry.abstract.Document | `foundry.abstract.Document`}
    */
   class Item<out SubType extends Item.SubType = Item.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseItem,

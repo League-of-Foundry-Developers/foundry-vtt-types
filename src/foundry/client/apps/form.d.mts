@@ -51,7 +51,7 @@ declare global {
    * 3) This abstract layer has no knowledge of what is being updated, so the implementation must define _updateObject
    *
    * @typeParam Options        - the type of the options object
-   * @typeParam ConcreteObject - the type of the object or {@link foundry.abstract.Document} which is modified by this form
+   * @typeParam ConcreteObject - the type of the object or {@link foundry.abstract.Document | `foundry.abstract.Document`} which is modified by this form
    */
   abstract class FormApplication<
     Options extends FormApplicationOptions = FormApplicationOptions,
@@ -98,7 +98,7 @@ declare global {
     /**
      * Assign the default options which are supported by the entity edit sheet.
      * @returns The default options for this FormApplication class
-     * @see {@link Application.defaultOptions}
+     * @see {@link Application.defaultOptions | `Application.defaultOptions`}
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -196,7 +196,7 @@ declare global {
     /**
      * Activate a named TinyMCE text editor
      * @param name           - The named data field which the editor modifies.
-     * @param options        - Editor initialization options passed to {@link TextEditor.create}.
+     * @param options        - Editor initialization options passed to {@link TextEditor.create | `TextEditor.create`}.
      *                         (default: `{}`)
      * @param initialContent - Initial text content for the editor area.
      *                         (default: `""`)
@@ -340,11 +340,11 @@ declare global {
   > extends FormApplicationOptions {
     /**
      * The default permissions required to view this Document sheet.
-     * @defaultValue {@link CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED}
+     * @defaultValue {@link CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED | `CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED`}
      */
     viewPermission: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
-    /** An array of {@link HTMLSecret} configuration objects. */
+    /** An array of {@link HTMLSecret | `HTMLSecret`} configuration objects. */
     secrets: HTMLSecretConfiguration<ConcreteDocument>[];
   }
 

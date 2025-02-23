@@ -167,7 +167,7 @@ declare global {
 
     /**
      * Handle a broadcast ping.
-     * @see {@link Ping#drawPing}
+     * @see {@link Ping.drawPing | `Ping#drawPing`}
      * @param user     - The user who pinged.
      * @param position - The position on the canvas that was pinged.
      * @param data     - The broadcast ping data.
@@ -184,7 +184,7 @@ declare global {
 
     /**
      * Draw a ping at the edge of the viewport, pointing to the location of an off-screen ping.
-     * @see {@link Ping#drawPing}
+     * @see {@link Ping.drawPing | `Ping#drawPing`}
      * @param position - The coordinates of the off-screen ping.
      * @param options  - Additional options to configure how the ping is drawn.
      * @returns A promise which resolves once the Ping has been drawn and animated
@@ -209,7 +209,7 @@ declare global {
 
     /**
      * Draw a ping on the canvas
-     * @see {@link Ping#animate}
+     * @see {@link Ping.animate | `Ping#animate`}
      * @param position - The position on the canvas that was pinged.
      * @param options  - Additional options to configure how the ping is drawn.
      * @returns A promise which resolves once the Ping has been drawn and animated

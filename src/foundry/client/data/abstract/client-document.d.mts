@@ -14,8 +14,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * A collection of Application instances which should be re-rendered whenever this document is updated.
    * The keys of this object are the application ids and the values are Application instances. Each
-   * Application in this object will have its render method called by {@link Document#render}.
-   * @see {@link Document#render}
+   * Application in this object will have its render method called by {@link Document.render | `Document#render`}.
+   * @see {@link Document.render | `Document#render`}
    * @defaultValue `{}`
    */
   readonly apps: Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>;
@@ -31,7 +31,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   static name: "ClientDocumentMixin";
 
   /**
-   * @see abstract.Document#_initialize
+   * @see {@link abstract.Document._initialize | `abstract.Document#_initialize`}
    */
   protected _initialize(): void;
 
@@ -133,7 +133,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
 
   /**
    * Render all Application instances which are connected to this document by calling their respective
-   * @see Application#render
+   * @see {@link Application.render | `Application#render`}
    * @param force   - Force rendering
    *                  (default: `false`)
    * @param context - Optional context

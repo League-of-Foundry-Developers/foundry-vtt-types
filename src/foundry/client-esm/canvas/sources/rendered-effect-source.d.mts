@@ -161,7 +161,7 @@ declare class RenderedEffectSource<
   /**
    * Animate the PointSource, if an animation is enabled and if it currently has rendered containers.
    * @param dt - Delta time.
-   * @privateRemarks In core this will return `void`, as the `this.animation.animation` function will  be a {@link BaseLightSource.LightAnimationFunction}
+   * @privateRemarks In core this will return `void`, as the `this.animation.animation` function will  be a {@link BaseLightSource.LightAnimationFunction | `BaseLightSource.LightAnimationFunction`}
    * and in fact most of the time will be `RenderedEffectSource#animateTime`, but it could technically be set to any function
    */
   animate(dt: number): this["animation"]["animation"] extends (...args: infer _1) => infer Return ? Return : void;
@@ -259,7 +259,7 @@ declare namespace RenderedEffectSource {
     reverse: boolean | null;
   }>;
 
-  /** Shared options for the {@link AnimationFunction}s provided by `_Source` classes */
+  /** Shared options for the {@link AnimationFunction | `AnimationFunction`}s provided by `_Source` classes */
   interface AnimationFunctionOptions extends _AnimationFunctionOptions {}
 
   type AnimationConfig = InexactPartial<{

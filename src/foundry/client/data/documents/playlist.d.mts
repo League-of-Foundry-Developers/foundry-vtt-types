@@ -8,7 +8,7 @@ declare global {
   namespace Playlist {
     /**
      * The implementation of the Playlist document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylist | `configuration/ConfiguredPlaylist`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylist | `fvtt-types/configuration/ConfiguredPlaylist`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Playlist">;
 
@@ -175,7 +175,7 @@ declare global {
 
       /**
        * An object which configures ownership of this Playlist
-       * @defaultValue see {@link fields.DocumentOwnershipField}
+       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -187,7 +187,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -208,32 +208,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link Playlist._preCreateOperation | `Playlist._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Playlist#_preCreate | `Playlist#_preCreate`} */
+      /** Options for {@link Playlist._preCreate | `Playlist#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Playlist#_onCreate | `Playlist#_onCreate`} */
+      /** Options for {@link Playlist._onCreate | `Playlist#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link Playlist.updateDocuments | `Playlist.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link Playlist._preUpdateOperation | `Playlist._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Playlist#_preUpdate | `Playlist#_preUpdate`} */
+      /** Options for {@link Playlist._preUpdate | `Playlist#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Playlist#_onUpdate | `Playlist#_onUpdate`} */
+      /** Options for {@link Playlist._onUpdate | `Playlist#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link Playlist.deleteDocuments | `Playlist.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link Playlist._preDeleteOperation | `Playlist._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Playlist#_preDelete | `Playlist#_preDelete`} */
+      /** Options for {@link Playlist._preDelete | `Playlist#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Playlist#_onDelete | `Playlist#_onDelete`} */
+      /** Options for {@link Playlist._onDelete | `Playlist#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link Playlist.DatabaseOperation}
+     * @deprecated - {@link Playlist.DatabaseOperation | `Playlist.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Playlist> {}
@@ -264,9 +264,9 @@ declare global {
   /**
    * The client-side Playlist document which extends the common BasePlaylist model.
    *
-   * @see {@link Playlists}             The world-level collection of Playlist documents
-   * @see {@link PlaylistSound}         The PlaylistSound embedded document within a parent Playlist
-   * @see {@link PlaylistConfig}        The Playlist configuration application
+   * @see {@link Playlists | `Playlists`}             The world-level collection of Playlist documents
+   * @see {@link PlaylistSound | `PlaylistSound`}         The PlaylistSound embedded document within a parent Playlist
+   * @see {@link PlaylistConfig | `PlaylistConfig`}        The Playlist configuration application
    *
    */
   class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
@@ -298,7 +298,7 @@ declare global {
     override get visible(): boolean;
 
     /**
-     * Find all content links belonging to a given {@link Playlist} or {@link PlaylistSound}.
+     * Find all content links belonging to a given {@link Playlist | `Playlist`} or {@link PlaylistSound | `PlaylistSound`}.
      * @param doc - The Playlist or PlaylistSound.
      */
     static _getSoundContentLinks(doc: Playlist | PlaylistSound): NodeListOf<Element>;

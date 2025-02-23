@@ -10,7 +10,7 @@ declare global {
   namespace Combatant {
     /**
      * The implementation of the Combatant document instance configured through `CONFIG.Combatant.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombatant | `configuration/ConfiguredCombatant`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Combatant">;
 
@@ -197,32 +197,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link Combatant._preCreateOperation | `Combatant._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Combatant#_preCreate | `Combatant#_preCreate`} */
+      /** Options for {@link Combatant._preCreate | `Combatant#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Combatant#_onCreate | `Combatant#_onCreate`} */
+      /** Options for {@link Combatant._onCreate | `Combatant#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link Combatant.updateDocuments | `Combatant.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link Combatant._preUpdateOperation | `Combatant._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Combatant#_preUpdate | `Combatant#_preUpdate`} */
+      /** Options for {@link Combatant._preUpdate | `Combatant#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Combatant#_onUpdate | `Combatant#_onUpdate`} */
+      /** Options for {@link Combatant._onUpdate | `Combatant#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link Combatant.deleteDocuments | `Combatant.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link Combatant._preDeleteOperation | `Combatant._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Combatant#_preDelete | `Combatant#_preDelete`} */
+      /** Options for {@link Combatant._preDelete | `Combatant#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Combatant#_onDelete | `Combatant#_onDelete`} */
+      /** Options for {@link Combatant._onDelete | `Combatant#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link Combatant.DatabaseOperation}
+     * @deprecated - {@link Combatant.DatabaseOperation | `Combatant.DatabaseOperation`}
      */
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -257,8 +257,8 @@ declare global {
   /**
    * The client-side Combatant document which extends the common BaseCombatant model.
    *
-   * @see {@link Combat}                    The Combat document which contains Combatant embedded documents
-   * @see {@link CombatantConfig}        The Combatant configuration application
+   * @see {@link Combat | `Combat`}                    The Combat document which contains Combatant embedded documents
+   * @see {@link CombatantConfig | `CombatantConfig`}        The Combatant configuration application
    */
   class Combatant<out SubType extends Combatant.SubType = Combatant.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseCombatant,

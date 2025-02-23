@@ -53,7 +53,7 @@ declare global {
 
     /**
      * Handle lazy-loading card face images.
-     * See {@link SidebarTab#_onLazyLoadImage}
+     * See {@link SidebarTab._onLazyLoadImage | `SidebarTab#_onLazyLoadImage`}
      * @param entries  - The entries which are now in the observer frame
      * @param observer - The intersection observer instance
      */

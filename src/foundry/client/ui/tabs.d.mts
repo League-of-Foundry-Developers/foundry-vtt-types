@@ -30,7 +30,7 @@ declare global {
 
   /**
    * A controller class for managing tabbed navigation within an Application instance.
-   * @see {@link Application}
+   * @see {@link Application | `Application`}
    *
    * @example Configure tab-control for a set of HTML elements
    * ```html

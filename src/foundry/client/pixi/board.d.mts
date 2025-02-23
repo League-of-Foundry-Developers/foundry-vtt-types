@@ -17,11 +17,11 @@ declare global {
    * objects that are drawn on the canvas itself.
    *
    * ### Hook Events
-   * {@link hookEvents.canvasConfig}
-   * {@link hookEvents.canvasInit}
-   * {@link hookEvents.canvasReady}
-   * {@link hookEvents.canvasPan}
-   * {@link hookEvents.canvasTearDown}
+   * {@link hookEvents.canvasConfig | `hookEvents.canvasConfig`}
+   * {@link hookEvents.canvasInit | `hookEvents.canvasInit`}
+   * {@link hookEvents.canvasReady | `hookEvents.canvasReady`}
+   * {@link hookEvents.canvasPan | `hookEvents.canvasPan`}
+   * {@link hookEvents.canvasTearDown | `hookEvents.canvasTearDown`}
    *
    * @example Canvas State
    * ```typescript
@@ -180,15 +180,15 @@ declare global {
 
     /**
      * The primary Canvas group which generally contains tangible physical objects which exist within the Scene.
-     * This group is a {@link CachedContainer} which is rendered to the Scene as a {@link SpriteMesh}.
-     * This allows the rendered result of the Primary Canvas Group to be affected by a {@link BaseSamplerShader}.
+     * This group is a {@link CachedContainer | `CachedContainer`} which is rendered to the Scene as a {@link SpriteMesh | `SpriteMesh`}.
+     * This allows the rendered result of the Primary Canvas Group to be affected by a {@link BaseSamplerShader | `BaseSamplerShader`}.
      * @defaultValue `undefined`
      */
     readonly primary: PrimaryCanvasGroup | undefined;
 
     /**
-     * The effects Canvas group which modifies the result of the {@link PrimaryCanvasGroup} by adding special effects.
-     * This includes lighting, vision, fog of war and related animations..
+     * The effects Canvas group which modifies the result of the {@link PrimaryCanvasGroup | `PrimaryCanvasGroup`} by adding special effects.
+     * This includes lighting, vision, fog of war and related animations.
      * @defaultValue `undefined`
      */
     readonly effects: EffectsCanvasGroup | undefined;
@@ -201,8 +201,8 @@ declare global {
 
     /**
      * The interface Canvas group which is rendered above other groups and contains all interactive elements.
-     * The various {@link InteractionLayer} instances of the interface group provide different control sets for
-     * interacting with different types of {@link Document}s which can be represented on the Canvas.
+     * The various {@link InteractionLayer | `InteractionLayer`} instances of the interface group provide different control sets for
+     * interacting with different types of {@link Document | `Document`}s which can be represented on the Canvas.
      * @defaultValue `undefined`
      */
     readonly interface: InterfaceCanvasGroup | undefined;

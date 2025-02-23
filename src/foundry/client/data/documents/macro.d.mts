@@ -10,7 +10,7 @@ declare global {
   namespace Macro {
     /**
      * The implementation of the Macro document instance configured through `CONFIG.Macro.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredMacro | `configuration/ConfiguredMacro`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredMacro | `fvtt-types/configuration/ConfiguredMacro`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Macro">;
 
@@ -180,7 +180,7 @@ declare global {
 
       /**
        * An object which configures ownership of this Macro
-       * @defaultValue see {@link fields.DocumentOwnershipField}
+       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -192,7 +192,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -213,27 +213,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link Macro._preCreateOperation | `Macro._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Macro#_preCreate | `Macro#_preCreate`} */
+      /** Options for {@link Macro._preCreate | `Macro#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Macro#_onCreate | `Macro#_onCreate`} */
+      /** Options for {@link Macro._onCreate | `Macro#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link Macro.updateDocuments | `Macro.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link Macro._preUpdateOperation | `Macro._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Macro#_preUpdate | `Macro#_preUpdate`} */
+      /** Options for {@link Macro._preUpdate | `Macro#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Macro#_onUpdate | `Macro#_onUpdate`} */
+      /** Options for {@link Macro._onUpdate | `Macro#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link Macro.deleteDocuments | `Macro.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link Macro._preDeleteOperation | `Macro._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Macro#_preDelete | `Macro#_preDelete`} */
+      /** Options for {@link Macro._preDelete | `Macro#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Macro#_onDelete | `Macro#_onDelete`} */
+      /** Options for {@link Macro._onDelete | `Macro#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -254,7 +254,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link Macro.DatabaseOperation}
+     * @deprecated - {@link Macro.DatabaseOperation | `Macro.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Macro> {}
@@ -283,8 +283,8 @@ declare global {
   /**
    * The client-side Macro document which extends the common BaseMacro model.
    *
-   * @see {@link Macros}            The world-level collection of Macro documents
-   * @see {@link MacroConfig}       The Macro configuration application
+   * @see {@link Macros | `Macros`}            The world-level collection of Macro documents
+   * @see {@link MacroConfig | `MacroConfig`}       The Macro configuration application
    *
    * @param data - Initial data provided to construct the Macro document
    */
@@ -328,7 +328,7 @@ declare global {
     /**
      * Execute the Macro command.
      * @param scope - Macro execution scope which is passed to script macros
-     * @returns A promising containing a created {@link ChatMessage} (or `undefined`) if a chat
+     * @returns A promising containing a created {@link ChatMessage | `ChatMessage`} (or `undefined`) if a chat
      *          macro or the return value if a script macro. A void return is possible if the user
      *          is not permitted to execute macros or a script macro execution fails.
      */

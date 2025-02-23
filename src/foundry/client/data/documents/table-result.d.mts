@@ -8,7 +8,7 @@ declare global {
   namespace TableResult {
     /**
      * The implementation of the TableResult document instance configured through `CONFIG.TableResult.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTableResult | `configuration/ConfiguredTableResult`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTableResult | `fvtt-types/configuration/ConfiguredTableResult`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"TableResult">;
 
@@ -192,32 +192,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link TableResult._preCreateOperation | `TableResult._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link TableResult#_preCreate | `TableResult#_preCreate`} */
+      /** Options for {@link TableResult._preCreate | `TableResult#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link TableResult#_onCreate | `TableResult#_onCreate`} */
+      /** Options for {@link TableResult._onCreate | `TableResult#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link TableResult.updateDocuments | `TableResult.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link TableResult._preUpdateOperation | `TableResult._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link TableResult#_preUpdate | `TableResult#_preUpdate`} */
+      /** Options for {@link TableResult._preUpdate | `TableResult#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link TableResult#_onUpdate | `TableResult#_onUpdate`} */
+      /** Options for {@link TableResult._onUpdate | `TableResult#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link TableResult.deleteDocuments | `TableResult.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link TableResult._preDeleteOperation | `TableResult._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link TableResult#_preDelete | `TableResult#_preDelete`} */
+      /** Options for {@link TableResult._preDelete | `TableResult#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link TableResult#_onDelete | `TableResult#_onDelete`} */
+      /** Options for {@link TableResult._onDelete | `TableResult#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link TableResult.DatabaseOperation}
+     * @deprecated - {@link TableResult.DatabaseOperation | `TableResult.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<TableResult> {}
@@ -246,7 +246,7 @@ declare global {
   /**
    * The client-side TableResult document which extends the common BaseTableResult model.
    *
-   * @see {@link RollTable}         The RollTable document which contains TableResult embedded documents
+   * @see {@link RollTable | `RollTable`}         The RollTable document which contains TableResult embedded documents
    */
   class TableResult<out SubType extends TableResult.SubType = TableResult.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseTableResult,

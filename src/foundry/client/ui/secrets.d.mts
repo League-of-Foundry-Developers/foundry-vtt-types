@@ -31,7 +31,7 @@ declare global {
 
   /**
    * A composable class for managing functionality for secret blocks within DocumentSheets.
-   * @see DocumentSheet
+   * @see {@link DocumentSheet | `DocumentSheet`}
    * @example Activate secret revealing functionality within a certain block of content.
    * ```js
    * const secrets = new HTMLSecret({

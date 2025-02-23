@@ -68,8 +68,8 @@ declare global {
 
   /**
    * An AmbientSound is an implementation of PlaceableObject which represents a dynamic audio source within the Scene.
-   * @see {@link AmbientSoundDocument}
-   * @see {@link SoundsLayer}
+   * @see {@link AmbientSoundDocument | `AmbientSoundDocument`}
+   * @see {@link SoundsLayer | `SoundsLayer`}
    */
   class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implementation> {
     constructor(document: AmbientSoundDocument.Implementation);

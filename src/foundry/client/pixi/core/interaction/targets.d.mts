@@ -12,7 +12,7 @@ declare const Set: typeof LenientSet;
 declare global {
   /**
    * A subclass of Set which manages the Token ids which the User has targeted.
-   * @see User#targets
+   * @see {@link User.targets | `User#targets`}
    */
   class UserTargets extends Set<Token.Object> {
     constructor(user: UserTargets["user"]);

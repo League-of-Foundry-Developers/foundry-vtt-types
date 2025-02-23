@@ -8,7 +8,7 @@ declare global {
   namespace PlaylistSound {
     /**
      * The implementation of the PlaylistSound document instance configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylistSound | `configuration/ConfiguredPlaylistSound`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylistSound | `fvtt-types/configuration/ConfiguredPlaylistSound`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"PlaylistSound">;
 
@@ -185,32 +185,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link PlaylistSound._preCreateOperation | `PlaylistSound._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link PlaylistSound#_preCreate | `PlaylistSound#_preCreate`} */
+      /** Options for {@link PlaylistSound._preCreate | `PlaylistSound#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link PlaylistSound#_onCreate | `PlaylistSound#_onCreate`} */
+      /** Options for {@link PlaylistSound._onCreate | `PlaylistSound#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link PlaylistSound.updateDocuments | `PlaylistSound.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link PlaylistSound._preUpdateOperation | `PlaylistSound._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link PlaylistSound#_preUpdate | `PlaylistSound#_preUpdate`} */
+      /** Options for {@link PlaylistSound._preUpdate | `PlaylistSound#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link PlaylistSound#_onUpdate | `PlaylistSound#_onUpdate`} */
+      /** Options for {@link PlaylistSound._onUpdate | `PlaylistSound#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link PlaylistSound.deleteDocuments | `PlaylistSound.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link PlaylistSound._preDeleteOperation | `PlaylistSound._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link PlaylistSound#_preDelete | `PlaylistSound#_preDelete`} */
+      /** Options for {@link PlaylistSound._preDelete | `PlaylistSound#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link PlaylistSound#_onDelete | `PlaylistSound#_onDelete`} */
+      /** Options for {@link PlaylistSound._onDelete | `PlaylistSound#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link PlaylistSound.DatabaseOperation}
+     * @deprecated - {@link PlaylistSound.DatabaseOperation | `PlaylistSound.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<PlaylistSound> {}
@@ -235,9 +235,9 @@ declare global {
    * The client-side PlaylistSound document which extends the common BasePlaylistSound model.
    * Each PlaylistSound belongs to the sounds collection of a Playlist document.
    *
-   * @see {@link Playlist}                       The Playlist document which contains PlaylistSound embedded documents
-   * @see {@link PlaylistSoundConfig}   The PlaylistSound configuration application
-   * @see {@link Sound}                          The Sound API which manages web audio playback
+   * @see {@link Playlist | `Playlist`}                       The Playlist document which contains PlaylistSound embedded documents
+   * @see {@link PlaylistSoundConfig | `PlaylistSoundConfig`}   The PlaylistSound configuration application
+   * @see {@link Sound | `Sound`}                          The Sound API which manages web audio playback
    *
    */
   class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSound) {

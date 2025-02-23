@@ -63,10 +63,10 @@ declare class PrimaryCanvasObject {
    */
   protected _onRemoved(parent: PIXI.Container): void;
 
-  /** @see {@link CanvasTransformMixinClass#updateCanvasTransform} */
+  /** @see {@link CanvasTransformMixinClass.updateCanvasTransform | `CanvasTransformMixinClass#updateCanvasTransform`} */
   updateCanvasTransform(): void;
 
-  /** @see {@link CanvasTransformMixinClass#_onCanvasBoundsUpdate} */
+  /** @see {@link CanvasTransformMixinClass._onCanvasBoundsUpdate | `CanvasTransformMixinClass#_onCanvasBoundsUpdate`} */
   protected _onCanvasBoundsUpdate(): void;
 
   /**

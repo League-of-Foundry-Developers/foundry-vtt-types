@@ -88,8 +88,8 @@ declare class BaseShader {
 
   /**
    * Voronoi noise function. Needs PRNG2D and CONSTANTS.
-   * @see PRNG2D
-   * @see CONSTANTS
+   * @see {@link PRNG2D | `PRNG2D`}
+   * @see {@link CONSTANTS | `CONSTANTS`}
    */
   static VORONOI: string;
 

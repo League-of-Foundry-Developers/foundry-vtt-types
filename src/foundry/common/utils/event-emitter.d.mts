@@ -3,7 +3,7 @@ import type { InexactPartial, Mixin } from "fvtt-types/utils";
 /**
  * A mixin class which implements the behavior of EventTarget.
  * This is useful in cases where a class wants EventTarget-like behavior but needs to extend some other class.
- * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/EventTarget}
  */
 declare class EventEmitter {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -16,7 +16,7 @@ declare class EventEmitter {
 
   /**
    * Add a new event listener for a certain type of event.
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener}
    * @param type     - The type of event being registered for
    * @param listener - The listener function called when the event occurs
    * @param options  - Options which configure the event listener
@@ -42,7 +42,7 @@ declare class EventEmitter {
 
   /**
    * Dispatch an event on this target.
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent}
    * @param event - The Event to dispatch
    * @returns Was default behavior for the event prevented?
    */

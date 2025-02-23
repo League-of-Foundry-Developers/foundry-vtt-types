@@ -48,7 +48,7 @@ declare global {
 
     /**
      * Identify the official Document name for this PlaceableObject class
-     * @remarks This is abstract in {@link PlaceableObject}.
+     * @remarks This is abstract in {@link PlaceableObject | `PlaceableObject`}.
      */
     static embeddedName: string;
 
@@ -434,7 +434,7 @@ declare global {
     /**
      * Actions that should be taken for this Placeable Object when a mouseover event occurs.
      * Hover events on PlaceableObject instances allow event propagation by default.
-     * @see MouseInteractionManager##handlePointerOver
+     * @see {@link MouseInteractionManager.#handlePointerOver | `MouseInteractionManager##handlePointerOver`}
      * @param event   - The triggering canvas interaction event
      * @param options - Options which customize event handling
      *                  (default: `{}`)
@@ -443,7 +443,7 @@ declare global {
 
     /**
      * Actions that should be taken for this Placeable Object when a mouseout event occurs
-     * @see MouseInteractionManager##handlePointerOut
+     * @see {@link MouseInteractionManager.#handlePointerOut | `MouseInteractionManager##handlePointerOut`}
      * @param event - The triggering canvas interaction event
      * @returns True if the event was handled, otherwise false
      */
@@ -457,35 +457,35 @@ declare global {
 
     /**
      * Callback actions which occur on a single left-click event to assume control of the object
-     * @see MouseInteractionManager##handleClickLeft
+     * @see {@link MouseInteractionManager.#handleClickLeft | `MouseInteractionManager##handleClickLeft`}
      * @param event - The triggering canvas interaction event
      */
     protected _onClickLeft(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a double left-click event to activate
-     * @see MouseInteractionManager##handleClickLeft2
+     * @see {@link MouseInteractionManager.#handleClickLeft2 | `MouseInteractionManager##handleClickLeft2`}
      * @param event - The triggering canvas interaction event
      */
     protected _onClickLeft2(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a single right-click event to configure properties of the object
-     * @see MouseInteractionManager##handleClickRight
+     * @see {@link MouseInteractionManager.#handleClickRight | `MouseInteractionManager##handleClickRight`}
      * @param event - The triggering canvas interaction event
      */
     protected _onClickRight(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a double right-click event to configure properties of the object
-     * @see MouseInteractionManager##handleClickRight2
+     * @see {@link MouseInteractionManager.#handleClickRight2 | `MouseInteractionManager##handleClickRight2`}
      * @param event - The triggering canvas interaction event
      */
     protected _onClickRight2(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur when a mouse-drag action is first begun.
-     * @see MouseInteractionManager##handleDragStart
+     * @see {@link MouseInteractionManager.#handleDragStart | `MouseInteractionManager##handleDragStart`}
      * @param event - The triggering canvas interaction event
      */
     protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
@@ -504,14 +504,14 @@ declare global {
 
     /**
      * Callback actions which occur on a mouse-move operation.
-     * @see MouseInteractionManager##handleDragMove
+     * @see {@link MouseInteractionManager.#handleDragMove | `MouseInteractionManager##handleDragMove`}
      * @param event - The triggering canvas interaction event
      */
     protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a mouse-move operation.
-     * @see MouseInteractionManager##handleDragDrop
+     * @see {@link MouseInteractionManager.#handleDragDrop | `MouseInteractionManager##handleDragDrop`}
      * @param event - The triggering canvas interaction event
      */
     protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
@@ -527,42 +527,42 @@ declare global {
 
     /**
      * Callback actions which occur on a mouse-move operation.
-     * @see MouseInteractionManager##handleDragCancel
+     * @see {@link MouseInteractionManager.#handleDragCancel | `MouseInteractionManager##handleDragCancel`}
      * @param event - The triggering mouse click event
      */
     protected _onDragLeftCancel(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
-     * @see MouseInteractionManager##handleDragStart
+     * @see {@link MouseInteractionManager.#handleDragStart | `MouseInteractionManager##handleDragStart`}
      * @param event - The triggering mouse click event
      */
     protected _onDragRightStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
-     * @see MouseInteractionManager##handleDragMove
+     * @see {@link MouseInteractionManager.#handleDragMove | `MouseInteractionManager##handleDragMove`}
      * @param event - The triggering canvas interaction event
      */
     protected _onDragRightMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
-     * @see MouseInteractionManager##handleDragDrop
+     * @see {@link MouseInteractionManager.#handleDragDrop | `MouseInteractionManager##handleDragDrop`}
      * @param event - The triggering canvas interaction event
      */
     protected _onDragRightDrop(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
-     * @see MouseInteractionManager##handleDragDrop
+     * @see {@link MouseInteractionManager.#handleDragDrop | `MouseInteractionManager##handleDragDrop`}
      * @param event - The triggering mouse click event
      */
     protected _onDragRightCancel(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback action which occurs on a long press.
-     * @see MouseInteractionManager##handleLongPress
+     * @see {@link MouseInteractionManager.#handleLongPress | `MouseInteractionManager##handleLongPress`}
      * @param event  - The triggering canvas interaction event
      * @param origin - The local canvas coordinates of the mousepress.
      */

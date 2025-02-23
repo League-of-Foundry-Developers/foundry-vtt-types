@@ -3,7 +3,7 @@ import type { MaybePromise } from "fvtt-types/utils";
 declare global {
   /** A management app for configuring which Tours are available or have been completed. */
   class ToursManagement extends PackageConfiguration {
-    /** @remarks This is not implemented in {@link ToursManagement} and will throw. */
+    /** @remarks This is not implemented in {@link ToursManagement | `ToursManagement`} and will throw. */
     protected override _updateObject(event: Event, formData?: object): Promise<never>;
 
     /**

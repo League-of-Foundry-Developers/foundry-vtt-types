@@ -54,7 +54,7 @@ declare global {
     }
 
     interface RegionMovementSegment {
-      /** The type of htis segment (see {@link Region.MovementSegmentTypes}) */
+      /** The type of htis segment (see {@link Region.MovementSegmentTypes | `Region.MovementSegmentTypes`}) */
       type: number;
 
       /** The waypoint that this segment starts from */

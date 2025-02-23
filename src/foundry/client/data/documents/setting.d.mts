@@ -6,7 +6,7 @@ declare global {
   namespace Setting {
     /**
      * The implementation of the Setting document instance configured through `CONFIG.Setting.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredSetting | `configuration/ConfiguredSetting`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredSetting | `fvtt-types/configuration/ConfiguredSetting`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Setting">;
 
@@ -120,7 +120,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -140,32 +140,32 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link Setting._preCreateOperation | `Setting._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Setting#_preCreate | `Setting#_preCreate`} */
+      /** Options for {@link Setting._preCreate | `Setting#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Setting#_onCreate | `Setting#_onCreate`} */
+      /** Options for {@link Setting._onCreate | `Setting#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link Setting.updateDocuments | `Setting.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link Setting._preUpdateOperation | `Setting._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Setting#_preUpdate | `Setting#_preUpdate`} */
+      /** Options for {@link Setting._preUpdate | `Setting#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Setting#_onUpdate | `Setting#_onUpdate`} */
+      /** Options for {@link Setting._onUpdate | `Setting#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link Setting.deleteDocuments | `Setting.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link Setting._preDeleteOperation | `Setting._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Setting#_preDelete | `Setting#_preDelete`} */
+      /** Options for {@link Setting._preDelete | `Setting#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Setting#_onDelete | `Setting#_onDelete`} */
+      /** Options for {@link Setting._onDelete | `Setting#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
     /**
-     * @deprecated - {@link Setting.DatabaseOperation}
+     * @deprecated - {@link Setting.DatabaseOperation | `Setting.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Setting> {}
@@ -189,7 +189,7 @@ declare global {
   /**
    * The client-side Setting document which extends the common BaseSetting model.
    *
-   * @see {@link WorldSettings}       The world-level collection of Setting documents
+   * @see {@link WorldSettings | `WorldSettings`}       The world-level collection of Setting documents
    */
   class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
     /**

@@ -2,7 +2,7 @@ export {};
 
 declare global {
   /**
-   * The shader used by {@link RegionMesh}.
+   * The shader used by {@link RegionMesh | `RegionMesh`}.
    */
   class RegionShader extends AbstractBaseShader {
     /**

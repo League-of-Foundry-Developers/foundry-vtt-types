@@ -1,5 +1,6 @@
 import type { NullishProps, RequiredProps, FixedInstanceType } from "fvtt-types/utils";
-import type BaseToken from "../../../common/documents/token.d.mts";
+// eslint-disable-next-line import-x/extensions
+import BaseToken from "../../../common/documents/token.mjs";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -42,11 +43,11 @@ declare global {
 
     type Metadata = BaseToken.Metadata;
 
-    type SchemaField = BaseToken.SchemaField;
-    type ConstructorData = BaseToken.ConstructorData;
-    type UpdateData = BaseToken.UpdateData;
-    type Properties = BaseToken.Properties;
-    type Source = BaseToken.Source;
+    export import SchemaField = BaseToken.SchemaField;
+    export import ConstructorData = BaseToken.ConstructorData;
+    export import UpdateData = BaseToken.UpdateData;
+    export import Properties = BaseToken.Properties;
+    export import Source = BaseToken.Source;
 
     interface RenderFlags extends PlaceableObject.RenderFlags {
       redrawEffects: boolean;
@@ -276,7 +277,7 @@ declare global {
       /** Synchronous functions that are executed after the animation ended */
       postAnimate: ((context: Token.AnimationContext) => void)[];
 
-      /** Synchronous functions that are executed each frame after `ontick` and before {@link Token#_onAnimationUpdate} */
+      /** Synchronous functions that are executed each frame after `ontick` and before {@link Token._onAnimationUpdate | `Token#_onAnimationUpdate`} */
       onAnimate: ((context: Token.AnimationContext) => void)[];
 
       /**
@@ -364,8 +365,8 @@ declare global {
 
   /**
    * A Token is an implementation of PlaceableObject which represents an Actor within a viewed Scene on the game canvas.
-   * @see TokenDocument
-   * @see TokenLayer
+   * @see {@link TokenDocument | `TokenDocument`}
+   * @see {@link TokenLayer | `TokenLayer`}
    */
   class Token extends PlaceableObject<TokenDocument.Implementation> {
     static override embeddedName: "Token";
@@ -549,7 +550,7 @@ declare global {
      * Controlled tokens are always visible.
      * All Tokens are visible to a GM user if no Token is controlled.
      *
-     * @see {@link CanvasVisibility#testVisibility}
+     * @see {@link CanvasVisibility.testVisibility | `CanvasVisibility#testVisibility`}
      */
     get isVisible(): boolean;
 
@@ -726,7 +727,7 @@ declare global {
 
     /**
      * Draw the effect icons for ActiveEffect documents which apply to the Token's Actor.
-     * Called by {@link Token#drawEffects}.
+     * Called by {@link Token.drawEffects | `Token#drawEffects`}.
      */
     protected _drawEffects(): Promise<void>;
 

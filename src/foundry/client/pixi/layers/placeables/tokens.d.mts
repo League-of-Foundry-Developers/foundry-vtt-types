@@ -39,7 +39,7 @@ declare global {
     static override documentName: "Token";
 
     /**
-     * The set of tokens that trigger occlusion (a union of {@link CONST.TOKEN_OCCLUSION_MODES}).
+     * The set of tokens that trigger occlusion (a union of {@link CONST.TOKEN_OCCLUSION_MODES | `CONST.TOKEN_OCCLUSION_MODES`}).
      */
     set occlusionMode(value: number);
 

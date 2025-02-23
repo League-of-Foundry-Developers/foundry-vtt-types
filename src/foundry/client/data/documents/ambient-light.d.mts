@@ -129,7 +129,7 @@ declare global {
 
       /**
        * Light configuration data
-       * @defaultValue see {@link LightData}
+       * @defaultValue see {@link LightData | `LightData`}
        */
       config: fields.EmbeddedDataField<typeof LightData>;
 
@@ -172,27 +172,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link AmbientLightDocument._preCreateOperation | `AmbientLightDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link AmbientLightDocument#_preCreate | `AmbientLightDocument#_preCreate`} */
+      /** Options for {@link AmbientLightDocument._preCreate | `AmbientLightDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link AmbientLightDocument#_onCreate | `AmbientLightDocument#_onCreate`} */
+      /** Options for {@link AmbientLightDocument._onCreate | `AmbientLightDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link AmbientLightDocument.updateDocuments | `AmbientLightDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link AmbientLightDocument._preUpdateOperation | `AmbientLightDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link AmbientLightDocument#_preUpdate | `AmbientLightDocument#_preUpdate`} */
+      /** Options for {@link AmbientLightDocument._preUpdate | `AmbientLightDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link AmbientLightDocument#_onUpdate | `AmbientLightDocument#_onUpdate`} */
+      /** Options for {@link AmbientLightDocument._onUpdate | `AmbientLightDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link AmbientLightDocument.deleteDocuments | `AmbientLightDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link AmbientLightDocument._preDeleteOperation | `AmbientLightDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link AmbientLightDocument#_preDelete | `AmbientLightDocument#_preDelete`} */
+      /** Options for {@link AmbientLightDocument._preDelete | `AmbientLightDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link AmbientLightDocument#_onDelete | `AmbientLightDocument#_onDelete`} */
+      /** Options for {@link AmbientLightDocument._onDelete | `AmbientLightDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -228,8 +228,8 @@ declare global {
   /**
    * The client-side AmbientLight document which extends the common BaseAmbientLight model.
    *
-   * @see {@link Scene}                     The Scene document type which contains AmbientLight documents
-   * @see {@link AmbientLightConfig}        The AmbientLight configuration application
+   * @see {@link Scene | `Scene`}                     The Scene document type which contains AmbientLight documents
+   * @see {@link AmbientLightConfig | `AmbientLightConfig`}        The AmbientLight configuration application
    */
   class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
     /**

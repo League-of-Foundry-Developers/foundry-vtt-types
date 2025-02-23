@@ -39,7 +39,7 @@ type DeepReadonly<T> = Readonly<{
 /**
  * A class constructor.
  * Used for functions with generic class constructor parameters.
- * @privateRemarks We have better tools like {@link AnyConcreteConstructor} and {@link AnyConstructor}
+ * @privateRemarks We have better tools like {@link AnyConcreteConstructor | `AnyConcreteConstructor`} and {@link AnyConstructor | `AnyConstructor`}
  */
 type Constructor = new (...args: any[]) => any;
 

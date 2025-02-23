@@ -2,7 +2,7 @@ export {};
 
 declare global {
   /**
-   * The base shader class of {@link PrimarySpriteMesh}.
+   * The base shader class of {@link PrimarySpriteMesh | `PrimarySpriteMesh`}.
    */
   class PrimaryBaseSamplerShader extends OccludableSamplerShader {
     /**

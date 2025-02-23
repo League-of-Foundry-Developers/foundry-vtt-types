@@ -5,8 +5,8 @@ declare global {
    * The singleton collection of Playlist documents which exist within the active World.
    * This Collection is accessible within the Game object as game.playlists.
    *
-   * @see {@link Playlist} The Playlist document
-   * @see {@link PlaylistDirectory} The PlaylistDirectory sidebar directory
+   * @see {@link Playlist | `Playlist`} The Playlist document
+   * @see {@link PlaylistDirectory | `PlaylistDirectory`} The PlaylistDirectory sidebar directory
    */
   class Playlists extends WorldCollection<Playlist.ImplementationClass, "Playlists"> {
     static documentName: "Playlist";

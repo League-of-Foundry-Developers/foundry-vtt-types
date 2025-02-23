@@ -28,7 +28,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Find an entry in the Map using an functional condition.
-   * @see {@link Array#find}
+   * @see {@link Array.find | `Array#find`}
    *
    * @param condition - The functional condition to test. Positional arguments are the value, the index of
    *                    iteration, and the collection being searched.
@@ -45,7 +45,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Filter the Collection, returning an Array of entries which match a functional condition.
-   * @see {@link Array#filter}
+   * @see {@link Array.filter | `Array#filter`}
    *
    * @param condition - The functional condition to test. Positional arguments are the value, the
    *                    index of iteration, and the collection being filtered.
@@ -62,7 +62,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Apply a function to each element of the collection
-   * @see Array#forEach
+   * @see {@link Array.forEach | `Array#forEach`}
    * @param fn - The function to apply to each element
    *
    * @example Apply a function to each value in the collection
@@ -120,7 +120,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Reduce the Collection by applying an evaluator function and accumulating entries
-   * @see {@link Array#reduce}
+   * @see {@link Array.reduce | `Array#reduce`}
    * @param reducer   - A reducer function applied to each entry value. Positional arguments are the accumulator, the
    *                    value, the index of iteration, and the collection being reduced.
    * @param initial   - An initial value which accumulates with each iteration
@@ -139,7 +139,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Test whether a condition is met by some entry in the Collection.
-   * @see Array#some
+   * @see {@link Array.some | `Array#some`}
    * @param condition - The functional condition to test. Positional arguments are the value, the index of iteration,
    *                    and the collection being tested.
    * @returns Was the test condition passed by at least one entry?

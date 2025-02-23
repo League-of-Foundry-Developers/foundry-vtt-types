@@ -67,7 +67,7 @@ declare namespace ProseMirrorHighlightMatchesPlugin {
 }
 
 /**
- * A ProseMirrorPlugin wrapper around the {@link PossibleMatchesTooltip} class.
+ * A ProseMirrorPlugin wrapper around the {@link PossibleMatchesTooltip | `PossibleMatchesTooltip`} class.
  */
 declare class ProseMirrorHighlightMatchesPlugin extends ProseMirrorPlugin {
   /**

@@ -3,7 +3,7 @@ export {};
 declare global {
   /**
    * The singleton collection of FogExploration documents which exist within the active World.
-   * @see {@link FogExploration} The FogExploration document
+   * @see {@link FogExploration | `FogExploration`} The FogExploration document
    */
   class FogExplorations extends WorldCollection<FogExploration.ImplementationClass, "FogExplorations"> {
     static documentName: "FogExploration";

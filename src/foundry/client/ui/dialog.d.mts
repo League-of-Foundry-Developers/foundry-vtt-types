@@ -41,7 +41,7 @@ declare global {
   class Dialog<Options extends Dialog.Options = Dialog.Options> extends Application<Options> {
     /**
      * @param data    - An object of dialog data which configures how the modal window is rendered
-     * @param options - Dialog rendering options, see {@link Application}
+     * @param options - Dialog rendering options, see {@link Application | `Application`}
      */
     constructor(data: Dialog.Data<Dialog.JQueryOrHTML<Options>>, options?: Partial<Options>);
 

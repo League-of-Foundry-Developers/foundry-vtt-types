@@ -8,16 +8,16 @@ declare global {
      */
     initializeLighting: boolean;
 
-    /** Re-initialize the entire vision configuration. See {@link CanvasVisibility#initializeSources}. */
+    /** Re-initialize the entire vision configuration. See {@link CanvasVisibility.initializeSources | `CanvasVisibility#initializeSources`}. */
     initializeVision: boolean;
 
-    /** Re-initialize the entire vision modes. See {@link CanvasVisibility#initializeVisionMode}. */
+    /** Re-initialize the entire vision modes. See {@link CanvasVisibility.initializeVisionMode | `CanvasVisibility#initializeVisionMode`}. */
     initializeVisionModes: boolean;
 
-    /** Re-initialize the entire ambient sound configuration. See {@link SoundsLayer#initializeSources}. */
+    /** Re-initialize the entire ambient sound configuration. See {@link SoundsLayer.initializeSources | `SoundsLayer#initializeSources`}. */
     initializeSounds: boolean;
 
-    /** Recompute intersections between all registered edges. See {@link CanvasEdges#refresh}. */
+    /** Recompute intersections between all registered edges. See {@link CanvasEdges.refresh | `CanvasEdges#refresh`}. */
     refreshEdges: boolean;
 
     /** Refresh the rendered appearance of lighting */
@@ -48,7 +48,7 @@ declare global {
   /**
    * A helper class which manages the refresh workflow for perception layers on the canvas.
    * This controls the logic which batches multiple requested updates to minimize the amount of work required.
-   * A singleton instance is available as {@link Canvas#perception}.
+   * A singleton instance is available as {@link Canvas.perception | `Canvas#perception`}.
    */
   class PerceptionManager extends RenderFlagsMixin(Object) {
     static RENDER_FLAGS: {

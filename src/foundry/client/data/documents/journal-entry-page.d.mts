@@ -9,7 +9,7 @@ declare global {
   namespace JournalEntryPage {
     /**
      * The implementation of the JournalEntryPage document instance configured through `CONFIG.JournalEntryPage.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredJournalEntryPage | `configuration/ConfiguredJournalEntryPage`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"JournalEntryPage">;
 
@@ -113,7 +113,7 @@ declare global {
       name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true }>;
 
       /**
-       * The type of this page, in {@link BaseJournalEntryPage.TYPES}.
+       * The type of this page, in {@link BaseJournalEntryPage.TYPES | `BaseJournalEntryPage.TYPES`}.
        * @defaultValue `"text"`
        */
       type: fields.DocumentTypeField<
@@ -174,7 +174,7 @@ declare global {
         markdown: fields.StringField<{ required: false; initial: undefined }>;
 
         /**
-         * The format of the page's content, in {@link CONST.JOURNAL_ENTRY_PAGE_FORMATS}.
+         * The format of the page's content, in {@link CONST.JOURNAL_ENTRY_PAGE_FORMATS | `CONST.JOURNAL_ENTRY_PAGE_FORMATS`}.
          * @defaultValue `CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML`
          */
         format: fields.NumberField<{
@@ -290,27 +290,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link JournalEntryPage._preCreateOperation | `JournalEntryPage._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link JournalEntryPage#_preCreate | `JournalEntryPage#_preCreate`} */
+      /** Options for {@link JournalEntryPage._preCreate | `JournalEntryPage#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link JournalEntryPage#_onCreate | `JournalEntryPage#_onCreate`} */
+      /** Options for {@link JournalEntryPage._onCreate | `JournalEntryPage#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link JournalEntryPage.updateDocuments | `JournalEntryPage.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link JournalEntryPage._preUpdateOperation | `JournalEntryPage._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link JournalEntryPage#_preUpdate | `JournalEntryPage#_preUpdate`} */
+      /** Options for {@link JournalEntryPage._preUpdate | `JournalEntryPage#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link JournalEntryPage#_onUpdate | `JournalEntryPage#_onUpdate`} */
+      /** Options for {@link JournalEntryPage._onUpdate | `JournalEntryPage#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link JournalEntryPage.deleteDocuments | `JournalEntryPage.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link JournalEntryPage._preDeleteOperation | `JournalEntryPage._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link JournalEntryPage#_preDelete | `JournalEntryPage#_preDelete`} */
+      /** Options for {@link JournalEntryPage._preDelete | `JournalEntryPage#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link JournalEntryPage#_onDelete | `JournalEntryPage#_onDelete`} */
+      /** Options for {@link JournalEntryPage._onDelete | `JournalEntryPage#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -335,7 +335,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link JournalEntryPage.DatabaseOperation}
+     * @deprecated - {@link JournalEntryPage.DatabaseOperation | `JournalEntryPage.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<JournalEntryPage> {}
@@ -364,7 +364,7 @@ declare global {
   /**
    * The client-side JournalEntryPage document which extends the common BaseJournalEntryPage document model.
    *
-   * @see {@link JournalEntry}  The JournalEntry document type which contains JournalEntryPage embedded documents.
+   * @see {@link JournalEntry | `JournalEntry`}  The JournalEntry document type which contains JournalEntryPage embedded documents.
    */
   class JournalEntryPage<
     out SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType,

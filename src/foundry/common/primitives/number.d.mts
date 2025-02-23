@@ -1,5 +1,8 @@
 export {};
 
+// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
+type NumberInstance = Number;
+
 declare global {
   interface Number {
     /**
@@ -69,7 +72,7 @@ declare global {
 
   interface NumberConstructor {
     /**
-     * @see {@link Number#between}
+     * @see {@link NumberInstance.between | `Number#between`}
      */
     between(num: number, a: number, b: number, inclusive?: boolean): boolean;
 

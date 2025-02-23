@@ -8,7 +8,7 @@ declare global {
   namespace RollTable {
     /**
      * The implementation of the RollTable document instance configured through `CONFIG.RollTable.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRollTable | `configuration/ConfiguredRollTable`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRollTable | `fvtt-types/configuration/ConfiguredRollTable`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"RollTable">;
 
@@ -157,7 +157,7 @@ declare global {
 
       /**
        * An object which configures ownership of this RollTable
-       * @defaultValue see {@link fields.DocumentOwnershipField}
+       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -169,7 +169,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -189,27 +189,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link RollTable._preCreateOperation | `RollTable._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link RollTable#_preCreate | `RollTable#_preCreate`} */
+      /** Options for {@link RollTable._preCreate | `RollTable#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link RollTable#_onCreate | `RollTable#_onCreate`} */
+      /** Options for {@link RollTable._onCreate | `RollTable#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link RollTable.updateDocuments | `RollTable.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link RollTable._preUpdateOperation | `RollTable._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link RollTable#_preUpdate | `RollTable#_preUpdate`} */
+      /** Options for {@link RollTable._preUpdate | `RollTable#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link RollTable#_onUpdate | `RollTable#_onUpdate`} */
+      /** Options for {@link RollTable._onUpdate | `RollTable#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link RollTable.deleteDocuments | `RollTable.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link RollTable._preDeleteOperation | `RollTable._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link RollTable#_preDelete | `RollTable#_preDelete`} */
+      /** Options for {@link RollTable._preDelete | `RollTable#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link RollTable#_onDelete | `RollTable#_onDelete`} */
+      /** Options for {@link RollTable._onDelete | `RollTable#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -311,7 +311,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link RollTable.DatabaseOperation}
+     * @deprecated - {@link RollTable.DatabaseOperation | `RollTable.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<RollTable> {}
@@ -335,9 +335,9 @@ declare global {
   /**
    * The client-side RollTable document which extends the common BaseRollTable model.
    *
-   * @see {@link RollTables}         The world-level collection of RollTable documents
-   * @see {@link TableResult}        The embedded TableResult document
-   * @see {@link RollTableConfig}    The RollTable configuration application
+   * @see {@link RollTables | `RollTables`}         The world-level collection of RollTable documents
+   * @see {@link TableResult | `TableResult`}        The embedded TableResult document
+   * @see {@link RollTableConfig | `RollTableConfig`}    The RollTable configuration application
    */
   class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
     /**
@@ -551,7 +551,7 @@ declare global {
   }
 
   /**
-   * @deprecated Use {@link RollTable.Draw}
+   * @deprecated Use {@link RollTable.Draw | `RollTable.Draw`}
    */
   interface RollTableDraw extends RollTable.Draw {}
 }

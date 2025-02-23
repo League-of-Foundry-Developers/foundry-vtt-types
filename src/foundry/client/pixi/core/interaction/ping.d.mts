@@ -67,7 +67,7 @@ declare global {
       color: Color.Source;
 
       /**
-       * The name for the ping animation to pass to {@link CanvasAnimation.animate}.
+       * The name for the ping animation to pass to {@link CanvasAnimation.animate | `CanvasAnimation.animate`}.
        */
       name?: PropertyKey | undefined | null;
     }>;

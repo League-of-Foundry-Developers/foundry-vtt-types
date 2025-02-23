@@ -11,7 +11,7 @@ declare global {
 
   /**
    * The sidebar directory which organizes and displays world-level ChatMessage documents.
-   * @see {@link Sidebar}
+   * @see {@link Sidebar | `Sidebar`}
    */
   class ChatLog extends SidebarTab<ChatLogOptions> {
     constructor(options?: Partial<ChatLogOptions>);

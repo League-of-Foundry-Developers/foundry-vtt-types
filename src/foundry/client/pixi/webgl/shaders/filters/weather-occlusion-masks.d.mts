@@ -3,7 +3,7 @@ export {};
 declare global {
   /**
    * The filter used by the weather layer to mask weather above occluded roofs.
-   * @see {@link WeatherEffects}
+   * @see {@link WeatherEffects | `WeatherEffects`}
    */
   class WeatherOcclusionMaskFilter extends AbstractBaseMaskFilter {
     /**

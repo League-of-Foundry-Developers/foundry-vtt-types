@@ -232,7 +232,7 @@ declare global {
      * include or specifically exclude certain file paths or warning messages.
      * Exclusion rules take precedence over inclusion rules.
      *
-     * @see {@link CONST.COMPATIBILITY_MODES}
+     * @see {@link CONST.COMPATIBILITY_MODES | `CONST.COMPATIBILITY_MODES`}
      *
      * @example Include Specific Errors
      * ```js

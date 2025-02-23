@@ -179,7 +179,7 @@ declare global {
 
     /**
      * Retreive list formatter configured to the world's language setting.
-     * @see [Intl.ListFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat/ListFormat)
+     * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat/ListFormat | Intl.ListFormat}
      */
     getListFormatter(options?: Localization.GetListFormatterOptions): Intl.ListFormat;
 

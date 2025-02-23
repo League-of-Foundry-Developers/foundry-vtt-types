@@ -1,6 +1,6 @@
 import type { Point } from "../../../common/types.d.mts";
 
-/** The node of a {@link RegionPolygonTree}.*/
+/** The node of a {@link RegionPolygonTree | `RegionPolygonTree`}.*/
 declare class RegionPolygonTreeNode {
   #regionPolygonTreeNode: true;
 
@@ -83,7 +83,7 @@ declare class RegionPolygonTreeNode {
   testCircle(center: Point, radius: number): -1 | 0 | 1;
 }
 
-/** The polygon tree of a {@link Region}. */
+/** The polygon tree of a {@link Region | `Region`}. */
 declare class RegionPolygonTree extends RegionPolygonTreeNode {
   /**
    * Create a RegionPolygonTree

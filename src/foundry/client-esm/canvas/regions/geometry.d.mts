@@ -1,5 +1,5 @@
 /**
- * The geometry of a {@link Region}.
+ * The geometry of a {@link Region | `Region`}.
  * - Vertex Attribute: `aVertexPosition` (`vec2`)
  * - Draw Mode: `PIXI.DRAW_MODES.TRIANGLES`
  */

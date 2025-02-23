@@ -145,7 +145,7 @@ declare namespace DynamicRingData {
   }
 
   /**
-   * A special subclass of [DataField]{@link DataField} used to reference a class definition.
+   * A special subclass of [DataField]{@link DataField | `DataField`} used to reference a class definition.
    * @typeParam BaseClass - The base class constructor linked to this data field.
    * @typeParam Options         - the options of the ClassReferenceField instance
    * @typeParam AssignmentType  - the type of the allowed assignment values of the ClassReferenceField

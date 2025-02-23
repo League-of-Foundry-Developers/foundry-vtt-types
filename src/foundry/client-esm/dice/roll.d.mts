@@ -254,8 +254,8 @@ declare class Roll<D extends AnyObject = AnyObject> {
 
   /**
    * Alias for evaluate.
-   * @see Roll#evaluate
-   * @param options - Options passed to Roll#evaluate.
+   * @see {@link Roll.evaluate | `Roll#evaluate`}
+   * @param options - Options passed to {@link Roll.evaluate | `Roll#evaluate`}.
    */
   roll(options?: InexactPartial<Roll.Options>): Promise<Roll.Evaluated<this>>;
 
@@ -264,7 +264,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
   /**
    * Create a new Roll object using the original provided formula and data.
    * Each roll is immutable, so this method returns a new Roll instance using the same data.
-   * @param options - Evaluation options passed to Roll#evaluate
+   * @param options - Evaluation options passed to {@link Roll.evaluate | `Roll#evaluate`}
    * @returns A new Roll object, rolled using the same formula and data
    */
   reroll(options?: InexactPartial<Roll.Options>): Promise<Roll.Evaluated<this>>;

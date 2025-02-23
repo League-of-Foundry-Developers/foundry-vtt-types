@@ -167,7 +167,7 @@ declare global {
 
     /**
      * Find the point I[x,y] and distance t* on ray R(t) which intersects another ray
-     * @see foundry.utils.lineLineIntersection
+     * @see {@link foundry.utils.lineLineIntersection | `foundry.utils.lineLineIntersection`}
      */
     intersectSegment(coords: Canvas.PairOfPointsTuple): LineIntersection | null;
   }

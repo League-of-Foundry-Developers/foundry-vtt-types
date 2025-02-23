@@ -61,7 +61,7 @@ declare class SquareGrid extends BaseGrid {
 declare namespace SquareGrid {
   interface Configuration extends BaseGrid.Configuration {
     /**
-     * The rule for diagonal measurement (see {@link CONST.GRID_DIAGONALS})
+     * The rule for diagonal measurement (see {@link CONST.GRID_DIAGONALS | `CONST.GRID_DIAGONALS`})
      * Default: `CONST.GRID_DIAGONALS.EQUIDISTANT`,
      */
     diagonals: number;

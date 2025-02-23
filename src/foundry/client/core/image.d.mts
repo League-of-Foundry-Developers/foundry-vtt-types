@@ -8,7 +8,7 @@ declare global {
     /**
      * Create thumbnail preview for a provided image path.
      * @param src     - The string URL or DisplayObject of the texture to render to a thumbnail
-     * @param options - Additional named options passed to the {@link ImageHelper.compositeCanvasTexture} method
+     * @param options - Additional named options passed to the {@link ImageHelper.compositeCanvasTexture | `ImageHelper.compositeCanvasTexture`} method
      *                  (default: `{}`)
      * @returns The parsed and converted thumbnail data
      */
@@ -112,7 +112,7 @@ declare global {
 
       /**
        * The desired height of the output texture
-       * @defaultValue The height of the object passed to {@link ImageHelper.compositeCanvasTexture}
+       * @defaultValue The height of the object passed to {@link ImageHelper.compositeCanvasTexture | `ImageHelper.compositeCanvasTexture`}
        */
       height: number;
 
@@ -130,13 +130,13 @@ declare global {
 
       /**
        * The desired width of the output texture
-       * @defaultValue The width of the object passed to {@link ImageHelper.compositeCanvasTexture}
+       * @defaultValue The width of the object passed to {@link ImageHelper.compositeCanvasTexture | `ImageHelper.compositeCanvasTexture`}
        */
       width: number;
     }>;
 
     /**
-     * An interface for options for the {@link ImageHelper.createThumbnail} and {@link ImageHelper.compositeCanvasTexture}
+     * An interface for options for the {@link ImageHelper.createThumbnail | `ImageHelper.createThumbnail`} and {@link ImageHelper.compositeCanvasTexture | `ImageHelper.compositeCanvasTexture`}
      * methods.
      */
     interface CompositeOptions extends _CompositeOptions {}
@@ -190,11 +190,11 @@ declare global {
     interface UploadBase64Options extends _UploadBase64Options {}
 
     /**
-     * An interface for return values of the {@link ImageHelper.createThumbnail} method.
+     * An interface for return values of the {@link ImageHelper.createThumbnail | `ImageHelper.createThumbnail`} method.
      */
     interface ThumbnailReturn {
       /**
-       * The height of the {@link PIXI.Sprite}, created by {@link ImageHelper.createThumbnail}
+       * The height of the {@link PIXI.Sprite | `PIXI.Sprite`}, created by {@link ImageHelper.createThumbnail | `ImageHelper.createThumbnail`}
        */
       height: number;
 
@@ -204,17 +204,17 @@ declare global {
       src: string | PIXI.DisplayObject;
 
       /**
-       * The Texture, returned from {@link ImageHelper.compositeCanvasTexture}, with `destroy(true)` already called on it.
+       * The Texture, returned from {@link ImageHelper.compositeCanvasTexture | `ImageHelper.compositeCanvasTexture`}, with `destroy(true)` already called on it.
        */
       texture: PIXI.Texture;
 
       /**
-       * The base64 encoded image data, returned from {@link ImageHelper.textureToImage}
+       * The base64 encoded image data, returned from {@link ImageHelper.textureToImage | `ImageHelper.textureToImage`}
        */
       thumb: string;
 
       /**
-       * The width of the {@link PIXI.Sprite}, created by {@link ImageHelper.createThumbnail}
+       * The width of the {@link PIXI.Sprite | `PIXI.Sprite`}, created by {@link ImageHelper.createThumbnail | `ImageHelper.createThumbnail`}
        */
       width: number;
     }

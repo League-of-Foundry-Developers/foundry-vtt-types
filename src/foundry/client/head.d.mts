@@ -55,13 +55,13 @@ declare global {
   /**
    * A collection of application instances
    * @remarks
-   * - All of the elements of {@link ui} except for `context` and `window` are initialized between the `"setup"` and `"ready"` hook events.
-   * - In the `/stream` view, only `chat` is initialized but none of the other {@link Application}s.
+   * - All of the elements of {@link ui | `ui`} except for `context` and `window` are initialized between the `"setup"` and `"ready"` hook events.
+   * - In the `/stream` view, only `chat` is initialized but none of the other {@link Application | `Application`}s.
    */
   let ui: {
     /**
      * @remarks
-     * Initialized whenever a {@link ContextMenu} is opened, deleted when it's closed again.
+     * Initialized whenever a {@link ContextMenu | `ContextMenu`} is opened, deleted when it's closed again.
      */
     context?: ContextMenu;
 

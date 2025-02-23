@@ -8,7 +8,7 @@ declare global {
   namespace ActorDelta {
     /**
      * The implementation of the ActorDelta document instance configured through `CONFIG.ActorDelta.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActorDelta | `configuration/ConfiguredActorDelta`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"ActorDelta">;
 
@@ -173,7 +173,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link ActorDelta.DatabaseOperation}
+     * @deprecated - {@link ActorDelta.DatabaseOperation | `ActorDelta.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<ActorDelta.Implementation> {}
@@ -201,7 +201,7 @@ declare global {
 
   /**
    * The client-side ActorDelta embedded document which extends the common BaseActorDelta document model.
-   * @see {@link TokenDocument}  The TokenDocument document type which contains ActorDelta embedded documents.
+   * @see {@link TokenDocument | `TokenDocument`}  The TokenDocument document type which contains ActorDelta embedded documents.
    */
   class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.SubType> extends ClientDocumentMixin(
     BaseActorDelta,

@@ -10,7 +10,7 @@ declare global {
   namespace TokenDocument {
     /**
      * The implementation of the TokenDocument document instance configured through `CONFIG.Token.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTokenDocument | `configuration/ConfiguredTokenDocument`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTokenDocument | `fvtt-types/configuration/ConfiguredTokenDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Token">;
 
@@ -228,7 +228,7 @@ declare global {
 
       /**
        * Configuration of the light source that this Token emits
-       * @defaultValue see {@link LightData}
+       * @defaultValue see {@link LightData | `LightData`}
        */
       light: fields.EmbeddedDataField<typeof LightData>;
 
@@ -516,27 +516,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link TokenDocument._preCreateOperation | `TokenDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link TokenDocument#_preCreate | `TokenDocument#_preCreate`} */
+      /** Options for {@link TokenDocument._preCreate | `TokenDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link TokenDocument#_onCreate | `TokenDocument#_onCreate`} */
+      /** Options for {@link TokenDocument._onCreate | `TokenDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link TokenDocument.updateDocuments | `TokenDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link TokenDocument._preUpdateOperation | `TokenDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link TokenDocument#_preUpdate | `TokenDocument#_preUpdate`} */
+      /** Options for {@link TokenDocument._preUpdate | `TokenDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link TokenDocument#_onUpdate | `TokenDocument#_onUpdate`} */
+      /** Options for {@link TokenDocument._onUpdate | `TokenDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link TokenDocument.deleteDocuments | `TokenDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link TokenDocument._preDeleteOperation | `TokenDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link TokenDocument#_preDelete | `TokenDocument#_preDelete`} */
+      /** Options for {@link TokenDocument._preDelete | `TokenDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link TokenDocument#_onDelete | `TokenDocument#_onDelete`} */
+      /** Options for {@link TokenDocument._onDelete | `TokenDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -548,7 +548,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link TokenDocument.DatabaseOperation}
+     * @deprecated - {@link TokenDocument.DatabaseOperation | `TokenDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<TokenDocument> {}
@@ -572,8 +572,8 @@ declare global {
   /**
    * The client-side Token document which extends the common BaseToken model.
    *
-   * @see {@link Scene}               The Scene document type which contains Token embedded documents
-   * @see {@link TokenConfig}      The Token configuration application
+   * @see {@link Scene | `Scene`}               The Scene document type which contains Token embedded documents
+   * @see {@link TokenConfig | `TokenConfig`}      The Token configuration application
    */
   class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
     /**

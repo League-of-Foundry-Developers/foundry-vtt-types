@@ -8,7 +8,7 @@ declare global {
     static get TYPES(): TextureTransitionFilter.Types;
 
     /**
-     * The transition type (see {@link TextureTransitionFilter.TYPES}).
+     * The transition type (see {@link TextureTransitionFilter.TYPES | `TextureTransitionFilter.TYPES`}).
      * @defaultValue TYPES.FADE
      */
     get type(): TextureTransitionFilter.TYPES;
@@ -99,7 +99,7 @@ declare global {
       type: TextureTransitionFilter.TYPES;
 
       /**
-       * The name of the {@link CanvasAnimation}.
+       * The name of the {@link CanvasAnimation | `CanvasAnimation`}.
        * @remarks All use of `name` in `CanvasAnimation.animate` is predicated on `if (name)`, so null should be equivalent to leaving it off.
        */
       name: PropertyKey | null;

@@ -48,8 +48,8 @@ declare global {
 
   /**
    * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.
-   * @see {@link AmbientLightDocument}
-   * @see {@link LightingLayer}
+   * @see {@link AmbientLightDocument | `AmbientLightDocument`}
+   * @see {@link LightingLayer | `LightingLayer`}
    */
   class AmbientLight extends PlaceableObject<AmbientLightDocument.Implementation> {
     constructor(document: AmbientLightDocument.Implementation);

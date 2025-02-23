@@ -69,7 +69,7 @@ declare abstract class BaseEffectSource<
 
   /**
    * The geometric shape of the effect source which is generated later.
-   * @remarks This only isn't `undefined` in subclasses implementing `_createShapes()`, usually via {@link PointEffectSourceMixin}
+   * @remarks This only isn't `undefined` in subclasses implementing `_createShapes()`, usually via {@link PointEffectSourceMixin | `PointEffectSourceMixin`}
    */
   shape: SourceShape | undefined;
 

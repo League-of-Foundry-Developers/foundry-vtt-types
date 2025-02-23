@@ -62,7 +62,7 @@ declare global {
      * @param context - Document creation context
      */
     createDocument(
-      data: Document.ConstructorDataFor<DocumentClass>,
+      data: Document.CreateDataFor<DocumentClass>,
       // TODO: Should be `Document.ParentOf<T>` or some equivalent.
       context: Document.ConstructionContext<Document.Any | null>,
     ): DocumentClass;

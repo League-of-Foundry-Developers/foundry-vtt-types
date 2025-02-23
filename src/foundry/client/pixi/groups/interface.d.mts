@@ -14,13 +14,13 @@ declare global {
      * @returns The created Graphics instance
      * @remarks
      */
-    addDrawing(drawing: Drawing.ConfiguredInstance): PIXI.Graphics;
+    addDrawing(drawing: Drawing.Object): PIXI.Graphics;
 
     /**
      * Remove a PrimaryGraphics from the group.
      * @param drawing - The Drawing being removed
      */
-    removeDrawing(drawing: Drawing.ConfiguredInstance): void;
+    removeDrawing(drawing: Drawing.Object): void;
 
     protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
@@ -81,7 +81,7 @@ declare global {
       }> &
       /**
        * Additional parameters of PIXI.TextStyle which are applied to the text
-       * @remarks Excess keys are collected as `{...textStyle}` and passed to {@link PreciseText.getTextStyle} which checks for `!== undefined`, so this can't be NullishProps
+       * @remarks Excess keys are collected as `{...textStyle}` and passed to {@link PreciseText.getTextStyle | `PreciseText.getTextStyle`} which checks for `!== undefined`, so this can't be NullishProps
        */
       InexactPartial<PIXI.ITextStyle>;
 

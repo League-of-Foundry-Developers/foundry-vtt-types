@@ -101,12 +101,12 @@ declare global {
     totalCost: number;
 
     /**
-     * The current state of the Ruler (one of {@link Ruler.STATES}).
+     * The current state of the Ruler (one of {@link Ruler.STATES | `Ruler.STATES`}).
      */
     get state(): ValueOf<Ruler.STATES>;
 
     /**
-     * The current state of the Ruler (one of {@link Ruler.STATES}).
+     * The current state of the Ruler (one of {@link Ruler.STATES | `Ruler.STATES`}).
      * @defaultValue `Ruler.STATES.INACTIVE`
      */
     protected _state: ValueOf<Ruler.STATES>;
@@ -208,7 +208,7 @@ declare global {
         snap: boolean;
 
         /**
-         * The token that is moved (defaults to {@link Ruler#_getMovementToken})
+         * The token that is moved (defaults to {@link Ruler._getMovementToken | `Ruler#_getMovementToken`})
          */
         token: Token.Object | null;
       }>,
@@ -355,35 +355,35 @@ declare global {
     /**
      * Handle the beginning of a new Ruler measurement workflow
      * @param event - The drag start event
-     * @see Canvas.#onDragLeftStart
+     * @see {@link Canvas.#onDragLeftStart | `Canvas.#onDragLeftStart`}
      */
     protected _onDragStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle left-click events on the Canvas during Ruler measurement.
      * @param event - The pointer-down event
-     * @see Canvas._onClickLeft
+     * @see {@link Canvas._onClickLeft | `Canvas._onClickLeft`}
      */
     protected _onClickLeft(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle right-click events on the Canvas during Ruler measurement.
      * @param event - The pointer-down event
-     * @see Canvas._onClickRight
+     * @see {@link Canvas._onClickRight | `Canvas._onClickRight`}
      */
     protected _onClickRight(event: PIXI.FederatedEvent): void;
 
     /**
      * Continue a Ruler measurement workflow for left-mouse movements on the Canvas.
      * @param event - The mouse move event
-     * @see Canvas.#onDragLeftMove
+     * @see {@link Canvas.#onDragLeftMove | `Canvas.#onDragLeftMove`}
      */
     protected _onMouseMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Conclude a Ruler measurement workflow by releasing the left-mouse button.
      * @param event - The pointer-up event
-     * @see Canvas.#onDragLeftDrop
+     * @see {@link Canvas.#onDragLeftDrop | `Canvas.#onDragLeftDrop`}
      */
     protected _onMouseUp(event: PIXI.FederatedEvent): void;
 
@@ -431,7 +431,7 @@ declare global {
       /** Is this segment the last one? */
       last: boolean;
 
-      /** Animation options passed to {@link TokenDocument#update} */
+      /** Animation options passed to {@link TokenDocument.update | `TokenDocument#update`} */
       animation: object;
     }
 
@@ -452,19 +452,19 @@ declare global {
     type MeasurementHistory = MeasurementHistoryWaypoint[];
 
     interface MeasurementData {
-      /** The state ({@link Ruler#state}) */
+      /** The state ({@link Ruler.state | `Ruler#state`}) */
       state: ValueOf<Ruler.STATES>;
 
-      /** The token ID ({@link Ruler#token}) */
+      /** The token ID ({@link Ruler.token | `Ruler#token`}) */
       token: string | null;
 
-      /** The measurement history ({@link Ruler#history}) */
+      /** The measurement history ({@link Ruler.history | `Ruler#history`}) */
       history: MeasurementHistory;
 
-      /** The waypoints ({@link Ruler#waypoints}) */
+      /** The waypoints ({@link Ruler.waypoints | `Ruler#waypoints`}) */
       waypoints: Canvas.Point[];
 
-      /** The destination ({@link Ruler#destination}) */
+      /** The destination ({@link Ruler.destination | `Ruler#destination`}) */
       destination: Canvas.Point | null;
     }
   }

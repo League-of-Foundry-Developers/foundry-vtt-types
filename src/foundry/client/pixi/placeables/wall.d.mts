@@ -60,8 +60,8 @@ declare global {
    * Walls are used to restrict Token movement or visibility as well as to define the areas of effect for ambient lights
    * and sounds.
    *
-   * @see {@link WallDocument}
-   * @see {@link WallsLayer}
+   * @see {@link WallDocument | `WallDocument`}
+   * @see {@link WallsLayer | `WallsLayer`}
    */
   class Wall extends PlaceableObject<WallDocument.Implementation> {
     static override embeddedName: "Wall";
@@ -117,7 +117,7 @@ declare global {
     get coords(): Wall["document"]["c"];
 
     /**
-     * The endpoints of the wall expressed as {@link foundry.canvas.edges.PolygonVertex} instances.
+     * The endpoints of the wall expressed as {@link foundry.canvas.edges.PolygonVertex | `foundry.canvas.edges.PolygonVertex`} instances.
      */
     get vertices(): { a: foundry.canvas.edges.PolygonVertex; b: foundry.canvas.edges.PolygonVertex };
 

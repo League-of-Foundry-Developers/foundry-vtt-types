@@ -5,8 +5,8 @@ declare global {
    * The singleton collection of JournalEntry documents which exist within the active World.
    * This Collection is accessible within the Game object as game.journal.
    *
-   * @see {@link JournalEntry} The JournalEntry document
-   * @see {@link JournalDirectory} The JournalDirectory sidebar directory
+   * @see {@link JournalEntry | `JournalEntry`} The JournalEntry document
+   * @see {@link JournalDirectory | `JournalDirectory`} The JournalDirectory sidebar directory
    */
   class Journal extends WorldCollection<JournalEntry.ImplementationClass, "Journal"> {
     static documentName: "JournalEntry";
@@ -49,7 +49,7 @@ declare global {
 
     /**
      * Open Socket listeners which transact JournalEntry data
-     * @remarks This is not marked as protected because it is used in {@link Game#activateSocketListeners}
+     * @remarks This is not marked as protected because it is used in {@link Game.activateSocketListeners | `Game#activateSocketListeners`}
      */
     protected static _activateSocketListeners(socket: io.Socket): void;
 

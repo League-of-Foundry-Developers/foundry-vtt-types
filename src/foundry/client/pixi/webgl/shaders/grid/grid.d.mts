@@ -2,7 +2,7 @@ import type { NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
-   * The grid shader used by {@link GridMesh}.
+   * The grid shader used by {@link GridMesh | `GridMesh`}.
    */
   class GridShader extends AbstractBaseShader {
     /**

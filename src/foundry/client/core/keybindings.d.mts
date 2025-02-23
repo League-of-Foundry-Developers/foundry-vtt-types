@@ -8,9 +8,9 @@ declare global {
    * When Foundry Virtual Tabletop is initialized, a singleton instance of this class is constructed within the global
    * Game object as as game.keybindings.
    *
-   * @see {@link Game.keybindings}
-   * @see {@link SettingKeybindingConfig}
-   * @see {@link KeybindingsConfig}
+   * @see {@link Game.keybindings | `Game.keybindings`}
+   * @see {@link SettingKeybindingConfig | `SettingKeybindingConfig`}
+   * @see {@link KeybindingsConfig | `KeybindingsConfig`}
    */
   class ClientKeybindings {
     constructor();

@@ -30,7 +30,7 @@ declare global {
   /**
    * A controller class for managing drag and drop workflows within an Application instance.
    * The controller manages the following actions: dragstart, dragover, drop
-   * @see {@link Application}
+   * @see {@link Application | `Application`}
    *
    * @example Activate drag-and-drop handling for a certain set of elements
    * ```typescript

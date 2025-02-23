@@ -384,7 +384,7 @@ declare namespace DataModel {
   type AnyConstructor = typeof AnyDataModel;
 
   /**
-   * A helper type to extract the {@link SchemaOf} from a {@link DataModel}.
+   * A helper type to extract the schema from a {@link DataModel | `DataModel`}.
    * @typeParam ModelType - the DataModel for the embedded data
    */
   type SchemaOf<ModelType extends DataModel.Any> = ModelType["schema"]["fields"];

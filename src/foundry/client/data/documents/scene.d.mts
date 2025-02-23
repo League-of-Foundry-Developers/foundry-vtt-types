@@ -8,7 +8,7 @@ declare global {
   namespace Scene {
     /**
      * The implementation of the Scene document instance configured through `CONFIG.Scene.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredScene | `configuration/ConfiguredScene`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredScene | `fvtt-types/configuration/ConfiguredScene`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Scene">;
 
@@ -130,7 +130,7 @@ declare global {
 
       /**
        * An image or video file that provides the background texture for the scene.
-       * @defaultValue see {@link TextureData}
+       * @defaultValue see {@link TextureData | `TextureData`}
        */
       background: TextureData<{ categories: ["IMAGE", "VIDEO"]; initial: null; wildcard: false }>;
 
@@ -398,7 +398,7 @@ declare global {
 
       /**
        * An object which configures ownership of this Scene
-       * @defaultValue see {@link fields.DocumentOwnershipField}
+       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -410,7 +410,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -435,27 +435,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link Scene._preCreateOperation | `Scene._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Scene#_preCreate | `Scene#_preCreate`} */
+      /** Options for {@link Scene._preCreate | `Scene#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Scene#_onCreate | `Scene#_onCreate`} */
+      /** Options for {@link Scene._onCreate | `Scene#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link Scene.updateDocuments | `Scene.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link Scene._preUpdateOperation | `Scene._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Scene#_preUpdate | `Scene#_preUpdate`} */
+      /** Options for {@link Scene._preUpdate | `Scene#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Scene#_onUpdate | `Scene#_onUpdate`} */
+      /** Options for {@link Scene._onUpdate | `Scene#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link Scene.deleteDocuments | `Scene.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link Scene._preDeleteOperation | `Scene._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Scene#_preDelete | `Scene#_preDelete`} */
+      /** Options for {@link Scene._preDelete | `Scene#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Scene#_onDelete | `Scene#_onDelete`} */
+      /** Options for {@link Scene._onDelete | `Scene#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -549,7 +549,7 @@ declare global {
     interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}
 
     /**
-     * @deprecated - {@link Scene.DatabaseOperation}
+     * @deprecated - {@link Scene.DatabaseOperation | `Scene.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Scene> {}
@@ -573,8 +573,8 @@ declare global {
   /**
    * The client-side Scene document which extends the common BaseScene model.
    *
-   * @see {@link Scenes}            The world-level collection of Scene documents
-   * @see {@link SceneConfig}       The Scene configuration application
+   * @see {@link Scenes | `Scenes`}            The world-level collection of Scene documents
+   * @see {@link SceneConfig | `SceneConfig`}       The Scene configuration application
    *
    */
   class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
@@ -714,6 +714,6 @@ declare global {
     ): Promise<Scene.Implementation>;
   }
 
-  /** @deprecated Use {@link Scene.Dimensions} */
+  /** @deprecated Use {@link Scene.Dimensions | `Scene.Dimensions`} */
   interface SceneDimensions extends Scene.Dimensions {}
 }

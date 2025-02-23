@@ -1,12 +1,12 @@
-import type { InexactPartial } from "fvtt-types/utils";
+export {};
 
 declare global {
   /**
    * The singleton collection of Scene documents which exist within the active World.
    * This Collection is accessible within the Game object as game.scenes.
    *
-   * @see {@link Scene} The Scene document
-   * @see {@link SceneDirectory} The SceneDirectory sidebar directory
+   * @see {@link Scene | `Scene`} The Scene document
+   * @see {@link SceneDirectory | `SceneDirectory`} The SceneDirectory sidebar directory
    */
   class Scenes extends WorldCollection<Scene.ImplementationClass, "Scenes"> {
     static documentName: "Scene";
@@ -36,7 +36,7 @@ declare global {
      */
     preload(sceneId: string, push?: boolean): io.Socket | Promise<unknown[]>;
 
-    /** @remarks This is not marked as protected because it is used in {@link Game#activateSocketListeners} */
+    /** @remarks This is not marked as protected because it is used in {@link Game.activateSocketListeners | `Game#activateSocketListeners`} */
     static _activateSocketListeners(socket: io.Socket): void;
 
     /**

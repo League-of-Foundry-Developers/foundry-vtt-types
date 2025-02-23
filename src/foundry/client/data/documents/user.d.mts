@@ -9,7 +9,7 @@ declare global {
   namespace User {
     /**
      * The implementation of the User document instance configured through `CONFIG.User.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredUser | `configuration/ConfiguredUser`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredUser | `fvtt-types/configuration/ConfiguredUser`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"User">;
 
@@ -193,7 +193,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -214,27 +214,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link User._preCreateOperation | `User._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link User#_preCreate | `User#_preCreate`} */
+      /** Options for {@link User._preCreate | `User#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link User#_onCreate | `User#_onCreate`} */
+      /** Options for {@link User._onCreate | `User#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link User.updateDocuments | `User.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link User._preUpdateOperation | `User._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link User#_preUpdate | `User#_preUpdate`} */
+      /** Options for {@link User._preUpdate | `User#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link User#_onUpdate | `User#_onUpdate`} */
+      /** Options for {@link User._onUpdate | `User#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link User.deleteDocuments | `User.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link User._preDeleteOperation | `User._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link User#_preDelete | `User#_preDelete`} */
+      /** Options for {@link User._preDelete | `User#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link User#_onDelete | `User#_onDelete`} */
+      /** Options for {@link User._onDelete | `User#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -291,7 +291,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link User.DatabaseOperation}
+     * @deprecated - {@link User.DatabaseOperation | `User.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<User> {}
@@ -316,8 +316,8 @@ declare global {
    * The client-side User document which extends the common BaseUser model.
    * Each User document contains UserData which defines its data schema.
    *
-   * @see {@link Users}             The world-level collection of User documents
-   * @see {@link UserConfig}     The User configuration application
+   * @see {@link Users | `Users`}             The world-level collection of User documents
+   * @see {@link UserConfig | `UserConfig`}     The User configuration application
    */
   class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
     /**

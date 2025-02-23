@@ -10,7 +10,7 @@ declare global {
   namespace ActiveEffect {
     /**
      * The implementation of the ActiveEffect document instance configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActiveEffect | `configuration/ConfiguredActiveEffect`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"ActiveEffect">;
 
@@ -279,27 +279,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link ActiveEffect._preCreateOperation | `ActiveEffect._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link ActiveEffect#_preCreate | `ActiveEffect#_preCreate`} */
+      /** Options for {@link ActiveEffect._preCreate | `ActiveEffect#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link ActiveEffect#_onCreate | `ActiveEffect#_onCreate`} */
+      /** Options for {@link ActiveEffect._onCreate | `ActiveEffect#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link ActiveEffect.updateDocuments | `ActiveEffect.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link ActiveEffect._preUpdateOperation | `ActiveEffect._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link ActiveEffect#_preUpdate | `ActiveEffect#_preUpdate`} */
+      /** Options for {@link ActiveEffect._preUpdate | `ActiveEffect#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link ActiveEffect#_onUpdate | `ActiveEffect#_onUpdate`} */
+      /** Options for {@link ActiveEffect._onUpdate | `ActiveEffect#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link ActiveEffect.deleteDocuments | `ActiveEffect.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link ActiveEffect._preDeleteOperation | `ActiveEffect._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link ActiveEffect#_preDelete | `ActiveEffect#_preDelete`} */
+      /** Options for {@link ActiveEffect._preDelete | `ActiveEffect#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link ActiveEffect#_onDelete | `ActiveEffect#_onDelete`} */
+      /** Options for {@link ActiveEffect._onDelete | `ActiveEffect#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -378,7 +378,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link ActiveEffect.DatabaseOperation}
+     * @deprecated - {@link ActiveEffect.DatabaseOperation | `ActiveEffect.DatabaseOperation`}
      */
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -415,9 +415,9 @@ declare global {
    * Each ActiveEffect belongs to the effects collection of its parent Document.
    * Each ActiveEffect contains a ActiveEffectData object which provides its source data.
    *
-   * @see {@link ActiveEffectData}          The ActiveEffect data schema
-   * @see {@link Actor}                     The Actor document which contains ActiveEffect embedded documents
-   * @see {@link Item}                      The Item document which contains ActiveEffect embedded documents
+   * @see {@link ActiveEffectData | `ActiveEffectData`}          The ActiveEffect data schema
+   * @see {@link Actor | `Actor`}                     The Actor document which contains ActiveEffect embedded documents
+   * @see {@link Item | `Item`}                      The Item document which contains ActiveEffect embedded documents
    */
   class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseActiveEffect,
@@ -436,7 +436,7 @@ declare global {
 
     /**
      * Create an ActiveEffect instance from some status effect ID.
-     * Delegates to {@link ActiveEffect._fromStatusEffect} to create the ActiveEffect instance
+     * Delegates to {@link ActiveEffect._fromStatusEffect | `ActiveEffect._fromStatusEffect`} to create the ActiveEffect instance
      * after creating the ActiveEffect data from the status effect data if `CONFIG.statusEffects`.
      * @param statusId - The status effect ID.
      * @param options  - Additional options to pass to the ActiveEffect constructor.
@@ -452,7 +452,7 @@ declare global {
 
     /**
      * Create an ActiveEffect instance from status effect data.
-     * Called by {@link ActiveEffect.fromStatusEffect}.
+     * Called by {@link ActiveEffect.fromStatusEffect | `ActiveEffect.fromStatusEffect`}.
      * @param statusId   - The status effect ID.
      * @param effectData - The status effect data.
      * @param options    - Additional options to pass to the ActiveEffect constructor.

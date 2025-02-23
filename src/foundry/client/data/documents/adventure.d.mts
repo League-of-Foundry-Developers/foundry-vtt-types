@@ -7,7 +7,7 @@ declare global {
   namespace Adventure {
     /**
      * The implementation of the Adventure document instance configured through `CONFIG.Adventure.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredAdventure | `configuration/ConfiguredAdventure`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredAdventure | `fvtt-types/configuration/ConfiguredAdventure`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"Adventure">;
 
@@ -206,7 +206,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField}
+       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -227,27 +227,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link Adventure._preCreateOperation | `Adventure._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Adventure#_preCreate | `Adventure#_preCreate`} */
+      /** Options for {@link Adventure._preCreate | `Adventure#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link Adventure#_onCreate | `Adventure#_onCreate`} */
+      /** Options for {@link Adventure._onCreate | `Adventure#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link Adventure.updateDocuments | `Adventure.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link Adventure._preUpdateOperation | `Adventure._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Adventure#_preUpdate | `Adventure#_preUpdate`} */
+      /** Options for {@link Adventure._preUpdate | `Adventure#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link Adventure#_onUpdate | `Adventure#_onUpdate`} */
+      /** Options for {@link Adventure._onUpdate | `Adventure#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link Adventure.deleteDocuments | `Adventure.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link Adventure._preDeleteOperation | `Adventure._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Adventure#_preDelete | `Adventure#_preDelete`} */
+      /** Options for {@link Adventure._preDelete | `Adventure#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Adventure#_onDelete | `Adventure#_onDelete`} */
+      /** Options for {@link Adventure._onDelete | `Adventure#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -268,7 +268,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link Adventure.DatabaseOperation}
+     * @deprecated - {@link Adventure.DatabaseOperation | `Adventure.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Adventure> {}
@@ -290,7 +290,7 @@ declare global {
   }
 
   /**
-   * The client-side Adventure document which extends the common {@link foundry.documents.BaseAdventure} model.
+   * The client-side Adventure document which extends the common {@link foundry.documents.BaseAdventure | `foundry.documents.BaseAdventure`} model.
    */
   class Adventure extends ClientDocumentMixin(foundry.documents.BaseAdventure) {
     /**

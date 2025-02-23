@@ -48,8 +48,8 @@ declare global {
   /**
    * A Note is an implementation of PlaceableObject which represents an annotated location within the Scene.
    * Each Note links to a JournalEntry document and represents its location on the map.
-   * @see {@link NoteDocument}
-   * @see {@link NotesLayer}
+   * @see {@link NoteDocument | `NoteDocument`}
+   * @see {@link NotesLayer | `NotesLayer`}
    */
   class Note extends PlaceableObject<NoteDocument.Implementation> {
     static override embeddedName: "Note";

@@ -37,7 +37,7 @@ declare global {
 
     /**
      * If true, the Container is rendered every frame.
-     * If false, the Container is rendered only if {@link CachedContainer#renderDirty} is true.
+     * If false, the Container is rendered only if {@link CachedContainer.renderDirty | `CachedContainer#renderDirty`} is true.
      * @defaultValue `true`
      */
     autoRender: boolean;

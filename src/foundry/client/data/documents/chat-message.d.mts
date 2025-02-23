@@ -10,7 +10,7 @@ declare global {
   namespace ChatMessage {
     /**
      * The implementation of the ChatMessage document instance configured through `CONFIG.ChatMessage.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredChatMessage | `configuration/ConfiguredChatMessage`} in fvtt-types.
+     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`} in fvtt-types.
      */
     type Implementation = Document.ImplementationInstanceFor<"ChatMessage">;
 
@@ -239,27 +239,27 @@ declare global {
         Document.Database.CreateOperation<Create<Temporary>>;
       /** Options for {@link ChatMessage._preCreateOperation | `ChatMessage._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link ChatMessage#_preCreate | `ChatMessage#_preCreate`} */
+      /** Options for {@link ChatMessage._preCreate | `ChatMessage#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      /** Options for {@link ChatMessage#_onCreate | `ChatMessage#_onCreate`} */
+      /** Options for {@link ChatMessage._onCreate | `ChatMessage#_onCreate`} */
       type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
 
       /** Options for {@link ChatMessage.updateDocuments | `ChatMessage.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateOperation<Update>;
       /** Options for {@link ChatMessage._preUpdateOperation | `ChatMessage._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link ChatMessage#_preUpdate | `ChatMessage#_preUpdate`} */
+      /** Options for {@link ChatMessage._preUpdate | `ChatMessage#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link ChatMessage#_onUpdate | `ChatMessage#_onUpdate`} */
+      /** Options for {@link ChatMessage._onUpdate | `ChatMessage#_onUpdate`} */
       type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
 
       /** Options for {@link ChatMessage.deleteDocuments | `ChatMessage.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteOperation<Delete>;
       /** Options for {@link ChatMessage._preDeleteOperation | `ChatMessage._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link ChatMessage#_preDelete | `ChatMessage#_preDelete`} */
+      /** Options for {@link ChatMessage._preDelete | `ChatMessage#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link ChatMessage#_onDelete | `ChatMessage#_onDelete`} */
+      /** Options for {@link ChatMessage._onDelete | `ChatMessage#_onDelete`} */
       type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
     }
 
@@ -298,7 +298,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link ChatMessage.DatabaseOperation}
+     * @deprecated - {@link ChatMessage.DatabaseOperation | `ChatMessage.DatabaseOperation`}
      */
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations
@@ -336,7 +336,7 @@ declare global {
    * The client-side ChatMessage document which extends the common BaseChatMessage abstraction.
    * Each ChatMessage document contains ChatMessageData which defines its data schema.
    *
-   * @see {@link Messages}                The world-level collection of ChatMessage documents
+   * @see {@link Messages | `Messages`}                The world-level collection of ChatMessage documents
    *
    */
   class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.SubType> extends ClientDocumentMixin(

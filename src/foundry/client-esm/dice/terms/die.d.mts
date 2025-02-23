@@ -70,7 +70,7 @@ declare class Die extends DiceTerm {
   reroll(modifier: string, { recursive }?: InexactPartial<{ recursive: boolean }>): Promise<boolean | void>;
 
   /**
-   * @see {@link Die#reroll}
+   * @see {@link Die.reroll | `Die#reroll`}
    */
   rerollRecursive(modifier: string): Promise<boolean | void>;
 
@@ -86,7 +86,7 @@ declare class Die extends DiceTerm {
   explode(modifier: string, { recursive }?: InexactPartial<{ recursive: boolean }>): Promise<boolean | void>;
 
   /**
-   * @see {@link Die#explode}
+   * @see {@link Die.explode | `Die#explode`}
    */
   explodeOnce(modifier: string): Promise<boolean | void>;
 

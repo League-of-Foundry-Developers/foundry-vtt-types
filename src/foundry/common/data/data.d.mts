@@ -514,7 +514,7 @@ declare namespace TextureData {
 }
 
 /**
- * A {@link fields.SchemaField} subclass used to represent texture data.
+ * A {@link fields.SchemaField | `fields.SchemaField`} subclass used to represent texture data.
  */
 declare class TextureData<
   SrcOptions extends FilePathField.Options = TextureData.DefaultOptions,
@@ -554,7 +554,7 @@ declare namespace PrototypeToken {
   }
 
   /**
-   * {@link PrototypeToken.CreateData | PrototypeToken.CreateData}
+   * {@link PrototypeToken.CreateData | `PrototypeToken.CreateData`}
    */
   type ConstructorData = CreateData;
 
@@ -596,27 +596,27 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, any> {
   static #applyDefaultTokenSettings(schema: DataSchema): void;
 
   /**
-   * @see foundry.abstract.Document#update
+   * @see {@link foundry.abstract.Document.update | `foundry.abstract.Document#update`}
    */
   update(data: unknown, options: unknown): unknown;
 
   /**
-   * @see foundry.abstract.Document#getFlag
+   * @see {@link foundry.abstract.Document.getFlag | `foundry.abstract.Document#getFlag`}
    */
   getFlag(args: unknown): unknown;
 
   /**
-   * @see foundry.abstract.Document#setFlag
+   * @see {@link foundry.abstract.Document.setFlag | `foundry.abstract.Document#setFlag`}
    */
   setFlag(args: unknown): unknown;
 
   /**
-   * @see foundry.abstract.Document#unsetFlag
+   * @see {@link foundry.abstract.Document.unsetFlag | `foundry.abstract.Document#unsetFlag`}
    */
   unsetFlag(args: unknown): Promise<unknown>;
 
   /**
-   * @see foundry.abstract.Document#testUserPermission
+   * @see {@link foundry.abstract.Document.testUserPermission | `foundry.abstract.Document#testUserPermission`}
    */
   testUserPermission(
     user: User.Implementation,
@@ -625,12 +625,12 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, any> {
   ): ReturnType<this["actor"]["testUserPermission"]>;
 
   /**
-   * @see foundry.abstract.Document#isOwner
+   * @see {@link foundry.abstract.Document.isOwner | `foundry.abstract.Document#isOwner`}
    */
   get isOwner(): boolean;
 
   /**
-   * @see TokenDocument#getBarAttribute
+   * @see {@link TokenDocument.getBarAttribute | `TokenDocument#getBarAttribute`}
    *
    * @remarks This is monkey patched in from `token.js`, put here due to issues with the merge process
    */

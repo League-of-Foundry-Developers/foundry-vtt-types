@@ -200,7 +200,7 @@ declare namespace BaseAdventure {
   type ConstructorData = BaseAdventure.CreateData;
 
   /**
-   * A helper type to extract the return value for {@link BaseAdventure.contentFields}
+   * A helper type to extract the return value for {@link BaseAdventure.contentFields | `BaseAdventure.contentFields`}
    */
   type ContentFields = {
     [Key in keyof BaseAdventure.Schema as BaseAdventure.Schema[Key] extends fields.SetField.Any

@@ -6,7 +6,7 @@ import type { InexactPartial } from "fvtt-types/utils";
  * A helper class to provide common functionality for working with the Web Audio API.
  * https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
  * A singleton instance of this class is available as game#audio.
- * @see Game#audio
+ * @see {@link Game.audio | `Game#audio`}
  */
 declare class AudioHelper {
   constructor();
@@ -39,7 +39,7 @@ declare class AudioHelper {
    * A user gesture must be registered before audio can be played.
    * This Array contains the Sound instances which are requested for playback prior to a gesture.
    * Once a gesture is observed, we begin playing all elements of this Array.
-   * @see Sound
+   * @see {@link Sound | `Sound`}
    * @defaultValue `[]`
    */
   pending: (() => void)[];

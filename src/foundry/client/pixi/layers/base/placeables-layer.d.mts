@@ -80,7 +80,7 @@ declare global {
 
     /**
      * A reference to the named Document type which is contained within this Canvas Layer.
-     * @remarks This getter is abstract in {@link PlaceablesLayer}.
+     * @remarks This getter is abstract in {@link PlaceablesLayer | `PlaceablesLayer`}.
      */
     static documentName: PlaceablesLayer.Type;
 
@@ -312,10 +312,10 @@ declare global {
 
     /**
      * Get the data of the copied object pasted at the position given by the offset.
-     * Called by {@link PlaceablesLayer#pasteObjects} for each copied object.
+     * Called by {@link PlaceablesLayer.pasteObjects | `PlaceablesLayer#pasteObjects`} for each copied object.
      * @param copy    - The copied object that is pasted
      * @param offset  - The offset relative from the current position to the destination
-     * @param options - Options of {@link PlaceablesLayer#pasteObjects}
+     * @param options - Options of {@link PlaceablesLayer.pasteObjects | `PlaceablesLayer#pasteObjects`}
      * @returns The update data
      */
     _pasteObject(

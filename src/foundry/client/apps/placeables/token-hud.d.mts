@@ -7,7 +7,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class TokenHUD<Options extends ApplicationOptions = ApplicationOptions> extends BasePlaceableHUD<
-    Token.ConfiguredInstance,
+    Token.Object,
     Options
   > {
     /**
@@ -28,7 +28,7 @@ declare global {
      */
     static override get defaultOptions(): ApplicationOptions;
 
-    override bind(object: Token.ConfiguredInstance): void;
+    override bind(object: Token.Object): void;
 
     /**
      * Refresh the currently active state of all status effect icons in the Token HUD selector.
