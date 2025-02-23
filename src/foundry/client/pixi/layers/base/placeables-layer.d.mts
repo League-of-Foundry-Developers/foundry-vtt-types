@@ -136,7 +136,7 @@ declare global {
     /**
      * Track whether "highlight all objects" is currently active
      * @defaultValue `false`
-     * @remarks Set by {@link Canvas#highlightObjects}
+     * @remarks Set by {@link Canvas.highlightObjects | `Canvas#highlightObjects`}
      */
     highlightObjects: boolean;
 
@@ -151,7 +151,7 @@ declare global {
      * Send the controlled objects of this layer to the back or bring them to the front.
      * @param front - Bring to front instead of send to back?
      * @returns Returns true if the layer has sortable object, and false otherwise
-     * @remarks Same check as {@link PlaceablesLayer#getMaxSort}
+     * @remarks Same check as {@link PlaceablesLayer.getMaxSort | `PlaceablesLayer#getMaxSort`}
      */
     protected _sendToBackOrBringToFront(front?: boolean | null): boolean;
 
@@ -309,10 +309,10 @@ declare global {
 
     /**
      * Get the data of the copied object pasted at the position given by the offset.
-     * Called by {@link PlaceablesLayer#pasteObjects} for each copied object.
+     * Called by {@link PlaceablesLayer.pasteObjects | `PlaceablesLayer#pasteObjects`} for each copied object.
      * @param copy    - The copied object that is pasted
      * @param offset  - The offset relative from the current position to the destination
-     * @param options - Options of {@link PlaceablesLayer#pasteObjects}
+     * @param options - Options of {@link PlaceablesLayer.pasteObjects | `PlaceablesLayer#pasteObjects`}
      * @returns The update data
      */
     protected _pasteObject(
@@ -485,12 +485,12 @@ declare global {
     type _RotateManyOptions = NullishProps<{
       /**
        * Snap the resulting angle to a multiple of some increment (in degrees)
-       * @remarks Passed to {@link PlaceableObject#_updateRotation} where it is checked for `> 0` before being passed to the non-null-safe `Number#toNearest`
+       * @remarks Passed to {@link PlaceableObject._updateRotation | `PlaceableObject#_updateRotation`} where it is checked for `> 0` before being passed to the non-null-safe `Number#toNearest`
        */
       snap: number;
       /**
        * An Array of object IDs to target for rotation
-       * @remarks Passed to {@link PlaceablesLayer#_getMovableObjects}
+       * @remarks Passed to {@link PlaceablesLayer._getMovableObjects | `PlaceablesLayer#_getMovableObjects`}
        */
       ids: string[];
       /**
