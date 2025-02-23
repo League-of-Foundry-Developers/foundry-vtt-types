@@ -3088,14 +3088,6 @@ declare global {
         group: Group;
       }
 
-      interface GridStyle {
-        label: string;
-        shaderClass: GridShader.AnyConstructor;
-        shaderOptions: {
-          style: number;
-        };
-      }
-
       /**
        * A light source animation configuration object.
        */

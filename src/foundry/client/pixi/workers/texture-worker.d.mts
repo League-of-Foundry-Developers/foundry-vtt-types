@@ -61,7 +61,7 @@ declare global {
   }
 
   namespace TextureCompressor {
-    type Any = AnyTextureCompressor;
+    interface Any extends AnyTextureCompressor {}
     type AnyConstructor = typeof AnyTextureCompressor;
 
     /** @internal */
