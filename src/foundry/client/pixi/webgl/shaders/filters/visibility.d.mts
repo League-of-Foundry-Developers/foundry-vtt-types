@@ -60,6 +60,9 @@ declare global {
     interface Any extends AnyVisibilityFilter {}
     type AnyConstructor = typeof AnyVisibilityFilter;
 
+    type ConfiguredClass = CONFIG["Canvas"]["visibilityFilter"];
+    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+
     /** @internal */
     type _FragmentShaderOptions = NullishProps<{
       persistentVision: boolean;
