@@ -53,7 +53,7 @@ declare global {
 
     static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
       this: ThisType,
-      initialUniforms?: AbstractBaseShader.Uniforms,
+      initialUniforms?: AbstractBaseShader.Uniforms | null,
     ): FixedInstanceType<ThisType>;
 
     override apply(

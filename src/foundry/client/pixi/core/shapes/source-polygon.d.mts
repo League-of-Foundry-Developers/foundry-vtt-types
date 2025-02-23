@@ -128,7 +128,7 @@ declare global {
     static testCollision<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>(
       origin: Canvas.Point,
       destination: Canvas.Point,
-      options: PointSourcePolygon.TestCollisionConfig<Mode>,
+      { mode, ...config }: PointSourcePolygon.TestCollisionConfig<Mode>,
     ): PointSourcePolygon.TestCollision<Coalesce<Mode, "all">>;
 
     /**

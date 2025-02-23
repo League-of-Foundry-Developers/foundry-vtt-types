@@ -1010,8 +1010,11 @@ declare global {
         bright: number;
       };
 
-      /** @defaultValue `FogManager` */
-      fogManager: FogManager.AnyConstructor;
+      /**
+       * @defaultValue `FogManager`
+       * @remarks Can't be `AnyConstructor` because Foundry assumes it can call `new` with the same arguments FogManager accepts
+       */
+      fogManager: typeof FogManager;
 
       polygonBackends: {
         /** @defaultValue `typeof ClockwiseSweepPolygon` */
@@ -1708,7 +1711,7 @@ declare global {
      * Available Weather Effects implementations
      */
     weatherEffects: {
-      [key: string]: CONFIG.WeatherAmbienceConfiguration;
+      [key: string]: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1723,7 +1726,7 @@ declare global {
        * }
        * ```
        */
-      leaves: CONFIG.WeatherAmbienceConfiguration;
+      leaves: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1751,7 +1754,7 @@ declare global {
        * }
        * ```
        */
-      rain: CONFIG.WeatherAmbienceConfiguration;
+      rain: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1792,7 +1795,7 @@ declare global {
        * }
        * ```
        */
-      rainStorm: CONFIG.WeatherAmbienceConfiguration;
+      rainStorm: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1817,7 +1820,7 @@ declare global {
        * }
        * ```
        */
-      fog: CONFIG.WeatherAmbienceConfiguration;
+      fog: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1843,7 +1846,7 @@ declare global {
        * }
        * ```
        * */
-      snow: CONFIG.WeatherAmbienceConfiguration;
+      snow: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1881,7 +1884,7 @@ declare global {
        * }
        * ```
        */
-      blizzard: CONFIG.WeatherAmbienceConfiguration;
+      blizzard: WeatherEffects.AmbienceConfiguration;
     };
 
     /**
@@ -3159,23 +3162,6 @@ declare global {
           duration: number;
         }
       }
-    }
-
-    interface WeatherAmbienceConfiguration {
-      id: string;
-      label: string;
-      filter: {
-        enabled: boolean;
-        blendMode: PIXI.BLEND_MODES;
-      };
-      effects: WeatherEffectConfiguration;
-    }
-
-    interface WeatherEffectConfiguration {
-      id: string;
-      effectClass: ParticleEffect | WeatherShaderEffect.AnyConstructor;
-      blendMode: PIXI.BLEND_MODES;
-      config: Record<string, unknown>;
     }
 
     // The point of this interface is to be declaration merged into so you can override `DefaultSpecialStatusEffects` and remove existing keys. It's never used when empty.

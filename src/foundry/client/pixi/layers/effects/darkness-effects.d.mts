@@ -1,4 +1,4 @@
-import type { HandleEmptyObject } from "../../../../../utils/index.d.mts";
+import type { HandleEmptyObject } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -15,13 +15,16 @@ declare global {
      */
     clear(): void;
 
-    override _draw(options: HandleEmptyObject<CanvasDarknessEffects.DrawOptions>): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<CanvasDarknessEffects.DrawOptions>): Promise<void>;
   }
 
   namespace CanvasDarknessEffects {
+    interface Any extends AnyCanvasDarknessEffects {}
     type AnyConstructor = typeof AnyCanvasDarknessEffects;
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
   }
 }
 

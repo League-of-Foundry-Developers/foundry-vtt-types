@@ -33,7 +33,7 @@ declare global {
       /**
        * @defaultValue `{}`
        */
-      initialUniforms?: AbstractBaseShader.Uniforms,
+      initialUniforms?: AbstractBaseShader.Uniforms | null,
     ): FixedInstanceType<ThisType>;
   }
 

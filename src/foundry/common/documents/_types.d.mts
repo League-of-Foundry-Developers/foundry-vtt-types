@@ -40,9 +40,14 @@ export type EffectDurationData = BaseActiveEffect.Properties["duration"];
  */
 export type EffectChangeData = ActiveEffect.EffectChangeData;
 export interface AmbientSoundEffect {
-  type: string;
-  intensity: number;
-} // TODO: Audit and maybe move when BaseAmbientSound's schema is updated.
+  type: keyof CONFIG["soundEffects"];
+
+  /**
+   * @defaultValue `5`
+   * @remarks Can't be `null` as {@link BiquadFilterNode} and {@link ConvolverNode} constructors both only have parameter defaults
+   */
+  intensity?: number | undefined;
+} // TODO: Maybe move when BaseAmbientSound's schema is updated.
 
 export type CardData = BaseCard.Properties;
 
