@@ -11,6 +11,9 @@ declare class PointMovementSource<
   /** @defaultValue `"move"` */
   static override sourceType: string;
 
+  /** @privateRemarks Not in Foundry code, necessary type override */
+  static override defaultData: PointMovementSource.SourceData;
+
   /**
    * @privateRemarks This is not in foundry's code, but since this class (and its parent) implements `_createShapes`,
    * and we are counting what happens in `initialize` as 'the constructor', this gets to be declared never undefined.
@@ -19,12 +22,16 @@ declare class PointMovementSource<
 }
 
 declare namespace PointMovementSource {
+  interface Any extends AnyPointMovementSource {}
   type AnyConstructor = typeof AnyPointMovementSource;
 
-  type SourceData = PointEffectSourceMixin.MixedSourceData;
+  interface SourceData extends PointEffectSourceMixin.MixedSourceData {}
 }
 
-declare abstract class AnyPointMovementSource extends PointMovementSource {
+declare abstract class AnyPointMovementSource extends PointMovementSource<
+  PointMovementSource.SourceData,
+  PointSourcePolygon
+> {
   constructor(arg0: never, ...args: never[]);
 }
 
