@@ -1,18 +1,20 @@
 import { expectTypeOf } from "vitest";
+import type GlobalLightSource from "../../../../../src/foundry/client-esm/canvas/sources/global-light-source.d.mts";
 
-const mySource = new foundry.canvas.sources.GlobalLightSource();
+const { GlobalLightSource: GLSC } = foundry.canvas.sources;
 
-expectTypeOf(mySource.active).toEqualTypeOf<boolean>();
-expectTypeOf(mySource.drawMeshes().background.visible).toEqualTypeOf<boolean>();
-expectTypeOf(mySource.animateTorch(5)).toEqualTypeOf<void>();
+expectTypeOf(GLSC.sourceType).toBeString();
+expectTypeOf(GLSC.effectsCollection).toBeString();
+expectTypeOf(GLSC.defaultData).toEqualTypeOf<GlobalLightSource.SourceData>();
 
-// Pulled from EnvironmentCanvasGroup##configureGlobalLight
-const globalLightData = {
-  z: -Infinity,
-  elevation: Infinity,
-  dim: 0,
-  bright: 0,
-  disabled: false,
-};
+declare const ecg: EffectsCanvasGroup;
+const mySource = new GLSC({ object: ecg, sourceId: "globalLight" });
 
-expectTypeOf(mySource.initialize(globalLightData)).toEqualTypeOf<foundry.canvas.sources.GlobalLightSource>();
+expectTypeOf(mySource.name).toBeString();
+expectTypeOf(mySource.customPolygon).toEqualTypeOf<PIXI.Polygon | number[] | null>();
+
+expectTypeOf(mySource["_updateColorationUniforms"]()).toBeVoid();
+expectTypeOf(mySource["_updateIlluminationUniforms"]()).toBeVoid();
+expectTypeOf(mySource["_updateBackgroundUniforms"]()).toBeVoid();
+declare const someBackgroundShader: AdaptiveBackgroundShader;
+expectTypeOf(mySource["_updateCommonUniforms"](someBackgroundShader)).toBeVoid();

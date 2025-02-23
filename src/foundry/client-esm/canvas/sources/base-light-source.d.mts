@@ -41,18 +41,18 @@ declare abstract class BaseLightSource<
    * @defaultValue
    * ```js
    * {
-   * ...super.defaultData,
-   * priority: 0,
-   * alpha: 0.5,
-   * bright: 0,
-   * coloration: 1,
-   * contrast: 0,
-   * dim: 0,
-   * attenuation: 0.5,
-   * luminosity: 0.5,
-   * saturation: 0,
-   * shadows: 0,
-   * vision: false
+   *   ...super.defaultData,
+   *   priority: 0,
+   *   alpha: 0.5,
+   *   bright: 0,
+   *   coloration: 1,
+   *   contrast: 0,
+   *   dim: 0,
+   *   attenuation: 0.5,
+   *   luminosity: 0.5,
+   *   saturation: 0,
+   *   shadows: 0,
+   *   vision: false
    * }
    * ```
    */
@@ -132,56 +132,67 @@ declare namespace BaseLightSource {
   interface SourceData extends RenderedEffectSource.SourceData {
     /**
      * An opacity for the emitted light, if any
+     * @defaultValue `0.5`
      */
     alpha: number;
 
     /**
      * The allowed radius of bright vision or illumination
+     * @defaultValue `0`
      */
     bright: number;
 
     /**
      * The coloration technique applied in the shader
+     * @defaultValue `1`
      */
     coloration: number;
 
     /**
      * The amount of contrast this light applies to the background texture
+     * @defaultValue `0`
      */
     contrast: number;
 
     /**
      * The allowed radius of dim vision or illumination
+     * @defaultValue `0`
      */
     dim: number;
 
     /**
      * Strength of the attenuation between bright, dim, and dark
+     * @defaultValue `0.5`
      */
     attenuation: number;
 
     /**
      * The luminosity applied in the shader
+     * @defaultValue `0.5`
      */
     luminosity: number;
 
     /**
      * The amount of color saturation this light applies to the background texture
+     * @defaultValue `0`
      */
     saturation: number;
 
     /**
      * The depth of shadows this light applies to the background texture
+     * @defaultValue `0`
      */
     shadows: number;
 
     /**
      * Whether or not this source provides a source of vision
+     * @defaultValue `false`
      */
     vision: boolean;
 
     /**
      * Strength of this source to beat or not negative/positive sources
+     * @defaultValue `0`
      */
     priority: number;
   }

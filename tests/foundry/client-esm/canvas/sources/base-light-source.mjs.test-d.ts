@@ -12,7 +12,8 @@ expectTypeOf(MyLightSource["_brightLightingLevel"]).toMatchTypeOf<foundry.CONST.
 expectTypeOf(MyLightSource["ANIMATIONS"]).toMatchTypeOf<Record<string, RenderedEffectSource.AnimationConfig>>();
 expectTypeOf(MyLightSource.defaultData).toEqualTypeOf<BaseLightSource.SourceData>();
 
-const mySource = new MyLightSource({ object: null, sourceId: "asfsdfs" });
+declare const someToken: Token.ConfiguredInstance;
+const mySource = new MyLightSource({ object: someToken, sourceId: "asfsdfs" });
 
 expectTypeOf(mySource.ratio).toBeNumber();
 

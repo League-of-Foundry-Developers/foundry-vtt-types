@@ -24,7 +24,7 @@ declare abstract class BaseEffectSource<
    * @remarks Passing a PlaceableObject is deprecated, and will be removed in v13
    */
   // not null (property access)
-  constructor(options?: BaseEffectSource.SourceOptions | PlaceableObject);
+  constructor(options?: BaseEffectSource.ConstructorOptions | PlaceableObject);
 
   /**
    * The type of source represented by this data structure.
@@ -163,8 +163,9 @@ declare abstract class BaseEffectSource<
    * @param changes - Changes to the source data which were applied
    * @remarks Not actually abstract, but is a no-op in `BaseEffectSource`
    * @privateRemarks This is actually passed *flattened* partial data, and while we were very close to having
-   * that be a non-issue, `RenderedEffectSource`'s data's `animation` property is an object, so this
-   * can't just be `IntentionalPartial<SourceData>` until we have a `Flatten<>` type
+   * that be a non-issue, `RenderedEffectSource`'s data's `animation` and `GlobalLightSource`'s `darkness`
+   * properties are objects, so this can't just be `IntentionalPartial<SourceData>` until we have a `Flatten<>`
+   * type.
    */
   // TODO: Flatten<IntentionalPartial<SourceData>>
   protected _configure(changes: AnyObject): void;
@@ -224,14 +225,15 @@ declare namespace BaseEffectSource {
   type AnyConstructor = typeof AnyBaseEffectSource;
 
   /** @internal */
-  type _SourceOptions = NullishProps<{
+  type _ConstructorOptions = NullishProps<{
     /**
      * An optional PlaceableObject which is responsible for this source
+     * @remarks Only the global light source is passed the ECG
      */
-    object: PlaceableObject;
+    object: PlaceableObject.Any | EffectsCanvasGroup.Any;
   }>;
 
-  interface SourceOptions extends _SourceOptions {
+  interface ConstructorOptions extends _ConstructorOptions {
     /**
      * A unique ID for this source. This will be set automatically if an
      * object is provided, otherwise is required.
