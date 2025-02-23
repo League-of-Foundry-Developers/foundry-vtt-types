@@ -202,7 +202,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link Item.DatabaseOperation | `Item.DatabaseOperation`}
+     * @deprecated {@link Item.DatabaseOperation | `Item.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Item> {}

@@ -378,7 +378,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link ActiveEffect.DatabaseOperation | `ActiveEffect.DatabaseOperation`}
+     * @deprecated {@link ActiveEffect.DatabaseOperation | `ActiveEffect.DatabaseOperation`}
      */
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated

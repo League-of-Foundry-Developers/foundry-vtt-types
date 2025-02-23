@@ -209,7 +209,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link Combat.DatabaseOperation | `Combat.DatabaseOperation`}
+     * @deprecated {@link Combat.DatabaseOperation | `Combat.DatabaseOperation`}
      */
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations

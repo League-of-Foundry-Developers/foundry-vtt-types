@@ -291,7 +291,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link User.DatabaseOperation | `User.DatabaseOperation`}
+     * @deprecated {@link User.DatabaseOperation | `User.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<User> {}

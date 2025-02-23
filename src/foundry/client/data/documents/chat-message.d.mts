@@ -298,7 +298,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link ChatMessage.DatabaseOperation | `ChatMessage.DatabaseOperation`}
+     * @deprecated {@link ChatMessage.DatabaseOperation | `ChatMessage.DatabaseOperation`}
      */
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations

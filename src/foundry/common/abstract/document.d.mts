@@ -1610,7 +1610,7 @@ declare namespace Document {
       | (Operation extends "delete" ? any : never);
 
     /**
-     * @deprecated - TODO: Delete this once it's been fully removed.
+     * @deprecated TODO: Delete this once it's been fully removed.
      */
     interface Operations<
       _T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
@@ -1720,7 +1720,7 @@ declare namespace Document {
   > = Document.Database.OperationOf<Name, ConcreteOperation>;
 
   /**
-   * @deprecated - {@link CreateDataForName | `CreateDataForName`}
+   * @deprecated {@link CreateDataForName | `CreateDataForName`}
    */
   type ConstructorDataForName<T extends Document.Type> = CreateData[T];
 }

@@ -548,7 +548,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link TokenDocument.DatabaseOperation | `TokenDocument.DatabaseOperation`}
+     * @deprecated {@link TokenDocument.DatabaseOperation | `TokenDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<TokenDocument> {}

@@ -549,7 +549,7 @@ declare global {
     interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}
 
     /**
-     * @deprecated - {@link Scene.DatabaseOperation | `Scene.DatabaseOperation`}
+     * @deprecated {@link Scene.DatabaseOperation | `Scene.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Scene> {}

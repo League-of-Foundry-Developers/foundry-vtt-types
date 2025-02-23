@@ -27,7 +27,7 @@ import type BaseUser from "./user.d.mts";
 import type BaseWall from "./wall.d.mts";
 
 /**
- * @deprecated - This does not specify whether this is for source, initialized, or update data and
+ * @deprecated This does not specify whether this is for source, initialized, or update data and
  * is used interchangeably with all of those.
  */
 export type ActiveEffectData = BaseActiveEffect.Properties;

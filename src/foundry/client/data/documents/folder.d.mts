@@ -193,7 +193,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link Folder.DatabaseOperation | `Folder.DatabaseOperation`}
+     * @deprecated {@link Folder.DatabaseOperation | `Folder.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Folder> {}

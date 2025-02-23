@@ -222,7 +222,7 @@ declare global {
     }
 
     /**
-     * @deprecated - {@link Combatant.DatabaseOperation | `Combatant.DatabaseOperation`}
+     * @deprecated {@link Combatant.DatabaseOperation | `Combatant.DatabaseOperation`}
      */
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated

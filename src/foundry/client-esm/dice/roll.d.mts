@@ -639,7 +639,7 @@ declare namespace Roll {
     /**
      * The URL of an audio file which plays when this message is received
      *
-     * @deprecated - In `Roll.MessageData`, Foundry always overrides `rolls` to `[this]`.
+     * @deprecated In `Roll.MessageData`, Foundry always overrides `rolls` to `[this]`.
      * This makes it useless to set. Do not use.
      */
     rolls?: ChatMessage.CreateData["rolls"];
