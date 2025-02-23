@@ -1,4 +1,5 @@
-import type { AnyObject, Brand, FixedInstanceType, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type { Brand, FixedInstanceType, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -129,14 +130,20 @@ declare global {
      * @param options     - Additional options
      * @returns The array of measured segments if measured
      */
-    measure(destination: Canvas.Point, options?: Ruler.MeasureOptions): Ruler.MeasurementSegment[] | void;
+    measure(
+      destination: Canvas.Point,
+      options?: Ruler.MeasureOptions, // not:null (destructured)
+    ): Ruler.MeasurementSegment[] | void;
 
     /**
      * Get the measurement origin.
      * @param point   - The waypoint
      * @param options - Additional options
      */
-    protected _getMeasurementOrigin(point: Canvas.Point, options?: Ruler.GetMeasurementOriginOptions): Canvas.Point;
+    protected _getMeasurementOrigin(
+      point: Canvas.Point,
+      options?: Ruler.GetMeasurementOriginOptions, // not:null (destructured)
+    ): Canvas.Point;
 
     /**
      * While measurement is in progress, update the destination to be the central point of the target grid space.
@@ -146,7 +153,7 @@ declare global {
      */
     protected _getMeasurementDestination(
       point: Canvas.Point,
-      options?: Ruler.GetMeasurementDestinationOptions,
+      options?: Ruler.GetMeasurementDestinationOptions, // not:null (destructured)
     ): Canvas.Point;
 
     /**
@@ -160,7 +167,10 @@ declare global {
      * @param origin  - The origin
      * @param options - Additional options
      */
-    protected _startMeasurement(origin: Canvas.Point, options?: Ruler.StartMeasurementOptions): void;
+    protected _startMeasurement(
+      origin: Canvas.Point,
+      options?: Ruler.StartMeasurementOptions, // not:null (destructured)
+    ): void;
 
     /**
      * Handle the conclusion of a Ruler measurement workflow
@@ -172,7 +182,10 @@ declare global {
      * @param point   - The waypoint
      * @param options - Additional options
      */
-    protected _addWaypoint(point: Canvas.Point, options?: Ruler.AddWaypointOptions): void;
+    protected _addWaypoint(
+      point: Canvas.Point,
+      options?: Ruler.AddWaypointOptions, // not:null (destructured)
+    ): void;
 
     /**
      * Handle the removal of a waypoint in the Ruler measurement path
@@ -261,7 +274,7 @@ declare global {
       token: Token.ConfiguredInstance,
       segment: Ruler.PartialSegmentForAnimating,
       destination: Canvas.Point,
-      updateOptions: Ruler.PartialTokenUpdateOptions,
+      updateOptions?: Ruler.PartialTokenUpdateOptions, // not:null (used as first param in mergeObject)
     ): Promise<void>;
 
     /**
@@ -393,7 +406,7 @@ declare global {
       last: boolean;
 
       /** Animation options passed to {@link TokenDocument#update} */
-      animation: AnyObject; // TODO: Document.Database.OperationOf<"Token", "update">["animation"]; once that's defined; see Token#animate
+      animation: Document.Database.OperationOf<"Token", "update">["animation"];
     }
 
     interface MeasurementHistoryWaypoint {
@@ -465,6 +478,10 @@ declare global {
 
     interface AddWaypointOptions extends _Snap {}
 
+    // TODO: revisit after docs v2
+    type PartialTokenUpdateOptions = IntentionalPartial<Document.Database.OperationOf<"Token", "update">>;
+
+    // TODO: also revisit after docs v2 merges with new and improved IntentionalPartial
     interface PartialSegmentForLabelling
       extends Pick<MeasurementSegment, "teleport" | "last" | "distance">,
         IntentionalPartial<Omit<MeasurementSegment, "teleport" | "last" | "distance">> {}
@@ -476,8 +493,6 @@ declare global {
     interface PartialSegmentForAnimating
       extends Pick<MeasurementSegment, "teleport" | "animation">,
         IntentionalPartial<Omit<MeasurementSegment, "teleport" | "animation">> {}
-
-    type PartialTokenUpdateOptions = IntentionalPartial<TokenDocument.DatabaseOperations["update"]>;
   }
 }
 

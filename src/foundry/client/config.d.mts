@@ -66,7 +66,7 @@ declare global {
         options?: AnyObject,
       ) => Promise<number | void>;
 
-      type RollFunction = (arg0: never, ...args: never[]) => MaybePromise<number>;
+      type RollFunction = (...args: Array<string | number>) => MaybePromise<number | `${number}`>;
 
       type DTermDiceStrings = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
     }
@@ -945,8 +945,9 @@ declare global {
 
       /**
        * The class used to render door control icons
+       * @remarks Not `AnyConstructor` because it's instantiated with a `Wall.Implementation` as its first argument
        */
-      doorControlClass: DoorControl.AnyConstructor;
+      doorControlClass: typeof DoorControl;
 
       /** @defaultValue `0x000000` */
       exploredColor: number;
@@ -1009,8 +1010,11 @@ declare global {
 
       visualEffectsMaskingFilter: VisualEffectsMaskingFilter.AnyConstructor;
 
-      /** @defaultValue `Ruler` */
-      rulerClass: Ruler.AnyConstructor;
+      /**
+       * @defaultValue `Ruler`
+       * @remarks Not `AnyConstructor` because it's instantiated with a `User.Implementation` as its first argument
+       */
+      rulerClass: typeof Ruler;
 
       /** @defaultValue `0.8` */
       dragSpeedModifier: number;

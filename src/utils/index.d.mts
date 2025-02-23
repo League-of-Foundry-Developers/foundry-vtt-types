@@ -25,9 +25,9 @@ export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";
  * `GetKey` accesses a property while intentionally ignoring index signatures. This means `GetKey<Record<string, unknown>, "foo">` will return `never`.
  */
 // Note(LukeAbby): There are two tricky cases:
-// - `T = {}` would regularly always return `unknown`. The fix here adding a single dummy property `{ _?: any } & T`.
+// - `T = {}` would regularly always return `unknown`. The fix here adding a single dummy property with `{ _?: unknown } & T`.
 // - `T = never` would regularly always return `unknown`. The fix here is adding `_GetKey` which makes the type distributive and therefore `never` as an input becomes `never` in the output.
-export type GetKey<T, K extends PropertyKey, D = never> = _GetKey<{ _?: any } & T, K, D>;
+export type GetKey<T, K extends PropertyKey, D = never> = _GetKey<{ _?: unknown } & T, K, D>;
 
 type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infer V } ? V : D;
 

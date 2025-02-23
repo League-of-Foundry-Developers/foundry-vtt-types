@@ -4,14 +4,13 @@ declare const wall: Wall;
 
 // @ts-expect-error - A DoorControl requires a wall.
 new DoorControl();
-
 const control = new DoorControl(wall);
 
 expectTypeOf(control.wall).toEqualTypeOf<Wall.ConfiguredInstance>();
 expectTypeOf(control.center).toEqualTypeOf<PIXI.Point>();
 expectTypeOf(control.isVisible).toEqualTypeOf<boolean>();
 
-expectTypeOf(control.draw()).toEqualTypeOf<Promise<DoorControl>>();
+expectTypeOf(control.draw()).toEqualTypeOf<Promise<DoorControl.ConfiguredInstance>>();
 
 expectTypeOf(control.bg).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(control.icon).toEqualTypeOf<PIXI.Sprite | undefined>();
