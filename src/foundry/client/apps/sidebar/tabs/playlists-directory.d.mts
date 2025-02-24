@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class PlaylistDirectory<
-    Options extends DocumentDirectoryOptions = DocumentDirectoryOptions,
+    Options extends DocumentDirectory.Options = DocumentDirectory.Options,
   > extends DocumentDirectory<"Playlist", Options> {
     constructor(options?: Partial<Options>);
 
@@ -60,7 +60,7 @@ declare global {
      * return options;
      * ```
      */
-    static override get defaultOptions(): DocumentDirectoryOptions;
+    static override get defaultOptions(): DocumentDirectory.Options;
 
     /**
      * Initialize the set of Playlists which should be displayed in an expanded form
@@ -278,6 +278,6 @@ declare global {
   }
 }
 
-declare abstract class AnyPlaylistDirectory extends PlaylistDirectory<DocumentDirectoryOptions> {
+declare abstract class AnyPlaylistDirectory extends PlaylistDirectory<DocumentDirectory.Options> {
   constructor(arg0: never, ...args: never[]);
 }

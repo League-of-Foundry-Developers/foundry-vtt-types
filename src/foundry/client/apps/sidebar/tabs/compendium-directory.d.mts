@@ -7,7 +7,7 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class CompendiumDirectory<
-    Options extends DocumentDirectoryOptions = DocumentDirectoryOptions,
+    Options extends DocumentDirectory.Options = DocumentDirectory.Options,
   > extends DirectoryApplicationMixin(SidebarTab)<Options> {
     /**
      * @defaultValue
@@ -21,7 +21,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentDirectoryOptions;
+    static override get defaultOptions(): DocumentDirectory.Options;
 
     get activeFilters(): string[];
 
@@ -106,6 +106,6 @@ declare global {
   }
 }
 
-declare abstract class AnyCompendiumDirectory extends CompendiumDirectory<DocumentDirectoryOptions> {
+declare abstract class AnyCompendiumDirectory extends CompendiumDirectory<DocumentDirectory.Options> {
   constructor(...args: ConstructorParameters<typeof CompendiumDirectory>);
 }

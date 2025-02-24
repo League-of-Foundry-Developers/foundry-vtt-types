@@ -84,8 +84,9 @@ declare global {
     type Any = Compendium<any, any>;
 
     interface Options<Metadata extends CompendiumCollection.Metadata = CompendiumCollection.Metadata>
-      extends DocumentDirectoryOptions<Document.ImplementationClassFor<Metadata["type"]>> {
-      collection: CompendiumCollection<Metadata>;
+      extends DocumentDirectory.Options<Document.ImplementationClassFor<Metadata["type"]>> {
+      // TODO(LukeAbby): Replace with `CompendiumCollection<Metadata>` when possible.
+      collection: any;
     }
   }
 }

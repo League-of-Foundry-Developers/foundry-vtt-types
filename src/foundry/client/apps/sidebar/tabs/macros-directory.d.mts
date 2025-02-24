@@ -9,7 +9,7 @@ declare global {
    * @see {@link MacroConfig | `MacroConfig`}   The Macro Configuration Sheet
    */
   class MacroDirectory extends DocumentDirectory<"Macro"> {
-    constructor(options?: Partial<DocumentDirectoryOptions>);
+    constructor(options?: Partial<DocumentDirectory.Options>);
 
     static override documentName: "Macro";
   }

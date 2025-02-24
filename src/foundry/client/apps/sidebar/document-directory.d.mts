@@ -1,30 +1,12 @@
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
-  interface DocumentDirectoryOptions<T extends Document.AnyConstructor = Document.AnyConstructor>
-    extends ApplicationOptions {
-    /**
-     * A list of data property keys that will trigger a rerender of the tab if
-     * they are updated on a Document that this tab is responsible for.
-     */
-    renderUpdateKeys?: string[];
-
-    /**
-     * The CSS selector that activates the context menu for displayed Documents.
-     */
-    contextMenuSelector?: string;
-
-    /**
-     * The CSS selector for the clickable area of an entry in the tab.
-     */
-    entryClickSelector?: string;
-
-    collection: DocumentCollection<T, string>;
-  }
+  /** @deprecated {@link DocumentDirectory.Options | `DocumentDirectory.Options`} */
+  type DocumentDirectoryOptions<T extends Document.AnyConstructor = Document.AnyConstructor> = DocumentDirectory.Options<T>
 
   abstract class DocumentDirectory<
     FolderType extends foundry.CONST.FOLDER_DOCUMENT_TYPES,
-    Options extends DocumentDirectoryOptions = DocumentDirectoryOptions,
+    Options extends DocumentDirectory.Options = DocumentDirectory.Options,
   > extends DirectoryApplicationMixin(SidebarTab)<Options> {
     constructor(options: Options);
 
@@ -57,7 +39,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentDirectoryOptions;
+    static override get defaultOptions(): DocumentDirectory.Options;
 
     override get title(): string;
 
@@ -167,5 +149,25 @@ declare global {
 
   namespace DocumentDirectory {
     type Any = DocumentDirectory<any, any>;
+
+    interface Options<T extends Document.AnyConstructor = Document.AnyConstructor> extends ApplicationOptions {
+      /**
+       * A list of data property keys that will trigger a rerender of the tab if
+       * they are updated on a Document that this tab is responsible for.
+       */
+      renderUpdateKeys?: string[];
+
+      /**
+       * The CSS selector that activates the context menu for displayed Documents.
+       */
+      contextMenuSelector?: string;
+
+      /**
+       * The CSS selector for the clickable area of an entry in the tab.
+       */
+      entryClickSelector?: string;
+
+      collection: DocumentCollection<T, string>;
+    }
   }
 }

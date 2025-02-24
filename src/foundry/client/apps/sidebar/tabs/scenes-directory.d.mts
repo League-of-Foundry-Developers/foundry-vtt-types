@@ -20,11 +20,11 @@ declare global {
      * return options;
      * ```
      */
-    static override get defaultOptions(): DocumentDirectoryOptions;
+    static override get defaultOptions(): DocumentDirectory.Options;
 
     protected override _render(
       force?: boolean,
-      options?: Application.RenderOptions<DocumentDirectoryOptions>,
+      options?: Application.RenderOptions<DocumentDirectory.Options>,
     ): Promise<void>;
 
     protected override _getEntryContextOptions(): ContextMenuEntry[];

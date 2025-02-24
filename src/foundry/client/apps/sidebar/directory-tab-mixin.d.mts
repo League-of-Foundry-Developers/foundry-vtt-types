@@ -14,7 +14,7 @@ declare class DirectoryApplication {
    */
   static folderPartial: string;
 
-  static get defaultOptions(): DocumentDirectoryOptions;
+  static get defaultOptions(): DocumentDirectory.Options;
 
   /**
    * The type of Entry that is contained in this DirectoryTab.

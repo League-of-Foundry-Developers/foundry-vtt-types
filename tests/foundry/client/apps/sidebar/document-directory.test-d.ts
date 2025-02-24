@@ -2,8 +2,8 @@ import { expectTypeOf } from "vitest";
 
 declare const documentDirectory: DocumentDirectory<"Actor">;
 
-expectTypeOf(DocumentDirectory.defaultOptions).toEqualTypeOf<DocumentDirectoryOptions>();
-expectTypeOf(documentDirectory.options).toEqualTypeOf<DocumentDirectoryOptions>();
+expectTypeOf(DocumentDirectory.defaultOptions).toEqualTypeOf<DocumentDirectory.Options>();
+expectTypeOf(documentDirectory.options).toEqualTypeOf<DocumentDirectory.Options>();
 expectTypeOf(documentDirectory.getData()).toEqualTypeOf<Promise<object>>();
 
 expectTypeOf(documentDirectory.documents).toEqualTypeOf<Actor[]>();
