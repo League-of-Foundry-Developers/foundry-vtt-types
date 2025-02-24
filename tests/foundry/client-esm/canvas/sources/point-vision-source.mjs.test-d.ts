@@ -31,7 +31,34 @@ expectTypeOf(mySource.isBlinded).toBeBoolean();
 expectTypeOf(mySource.blinded).toEqualTypeOf<PointVisionSource.BlindedReasons>();
 expectTypeOf(mySource.visionModeOverrides).toEqualTypeOf<PointVisionSource.VisionModeOverrides>();
 
-expectTypeOf(mySource["_initialize"]({})).toBeVoid();
+// Every property of SourceData represented for testing, not all necessarily actually used by this type
+expectTypeOf(
+  mySource["_initialize"]({
+    angle: 100,
+    animation: {
+      animation: PVS.prototype.animateTime,
+      // not actually sure if vision animation takes shaders here or not, so omitted
+    },
+    attenuation: -1,
+    blinded: false,
+    brightness: 0.6,
+    color: 0xfeafef,
+    contrast: -0.2,
+    disabled: false,
+    elevation: 10,
+    externalRadius: 20000,
+    lightRadius: 3123,
+    preview: false,
+    radius: 222,
+    rotation: 179,
+    saturation: 0.3,
+    seed: 2442,
+    visionMode: "darkvision",
+    walls: false,
+    x: 10,
+    y: 20,
+  }),
+).toBeVoid();
 expectTypeOf(mySource["_createShapes"]()).toBeVoid();
 
 const someBackgroundShader = BackgroundVisionShader.create();

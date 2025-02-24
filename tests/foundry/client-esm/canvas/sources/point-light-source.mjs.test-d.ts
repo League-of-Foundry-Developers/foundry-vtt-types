@@ -20,6 +20,8 @@ const sourceData = {
     animation: PLS.prototype.animateTime,
     illuminationShader: FairyLightIlluminationShader,
     colorationShader: FairyLightColorationShader,
+    backgroundShader: AdaptiveBackgroundShader,
+    seed: 987654321,
   },
   attenuation: 0,
   bright: 10,

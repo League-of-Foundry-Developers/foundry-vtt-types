@@ -17,6 +17,7 @@ const mySource = new MyLightSource({ object: someToken, sourceId: "asfsdfs" });
 
 expectTypeOf(mySource.ratio).toBeNumber();
 
+// only new SourceData keys tested here, thorough tests are on the final Point*Source classes
 expectTypeOf(
   mySource["_initialize"]({
     priority: 7,

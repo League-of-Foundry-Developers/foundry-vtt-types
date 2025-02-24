@@ -17,7 +17,7 @@ declare class PolygonVertex {
 
   /**
    * @defaultValue `undefined`
-   * @remarks Accessed externally in {@link ClockwiseSweepPolygon#_testCollision}
+   * @remarks Accessed externally in {@link ClockwiseSweepPolygon#_testCollision | `ClockwiseSweepPolygon#_testCollision`}
    */
   _distance: number | undefined | null;
 
@@ -142,6 +142,7 @@ declare class PolygonVertex {
    * @param options - Additional options that apply to this vertex
    * @returns The constructed vertex
    */
+  // options: not null (destructured when passed to `new this()`)
   static fromPoint(point: Canvas.Point, options?: PolygonVertex.ConstructorOptions): PolygonVertex;
 }
 

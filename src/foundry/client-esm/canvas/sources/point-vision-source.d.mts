@@ -205,7 +205,7 @@ declare namespace PointVisionSource {
      * The vision mode.
      * @defaultValue `"basic"`
      */
-    visionMode: string;
+    visionMode: VisionMode.ConfiguredModes;
 
     /**
      * The range of light perception.

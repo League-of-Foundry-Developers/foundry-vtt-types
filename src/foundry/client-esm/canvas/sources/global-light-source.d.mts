@@ -33,6 +33,9 @@ declare class GlobalLightSource<
    */
   static override defaultData: GlobalLightSource.SourceData;
 
+  /** @privateRemarks This class implements `#_createShapes`, so it's shape property will 'never' be undefined (after initialization) */
+  shape: SourceShape;
+
   /**
    * Name of this global light source.
    * @defaultValue `this.constructor.sourceType` (`"GlobalLight"`)
@@ -64,6 +67,9 @@ declare namespace GlobalLightSource {
    * but are here for defaultValue overrides
    */
   interface SourceData extends BaseLightSource.SourceData {
+    /** @privateRemarks Type override only, the global light is not going to use a `darknessShader` */
+    animation: RenderedEffectSource.StoredLightAnimationConfig;
+
     /**
      * @defaultValue `0`
      * @remarks Seemingly unused here, since `GlobalLightSource` does not inherit from `PointEffectSourceMixin`

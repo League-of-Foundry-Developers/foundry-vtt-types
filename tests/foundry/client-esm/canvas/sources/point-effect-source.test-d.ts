@@ -18,6 +18,7 @@ expectTypeOf(mySource.shape).toEqualTypeOf<ClockwiseSweepPolygon>();
 expectTypeOf(mySource.radius).toBeNumber();
 
 expectTypeOf(mySource["_initialize"]({})).toBeVoid();
+// only new SourceData keys tested here, thorough tests are on the final Point*Source classes
 expectTypeOf(
   mySource["_initialize"]({
     radius: 200,

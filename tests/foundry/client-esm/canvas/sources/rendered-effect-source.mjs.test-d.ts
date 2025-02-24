@@ -68,6 +68,7 @@ expectTypeOf(mySource.background).toEqualTypeOf<PointSourceMesh>();
 expectTypeOf(mySource.coloration).toEqualTypeOf<PointSourceMesh>();
 expectTypeOf(mySource.illumination).toEqualTypeOf<PointSourceMesh>();
 
+// only new SourceData keys tested here, thorough tests are on the final Point*Source classes
 expectTypeOf(
   mySource["_initialize"]({
     color: 0xfedcba,
