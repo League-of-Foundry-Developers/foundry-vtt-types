@@ -65,7 +65,9 @@ declare class PointVisionSource<
 
   /**
    * The vision mode activation flag for handlers
-   * @remarks Foundry marked `@internal`. Read and set externally in {@link VisionMode#activate} and {@link VisionMode#deactivate}
+   * @remarks Foundry marked `@internal`.
+   *
+   * Read and set externally in {@link VisionMode#activate | `VisionMode#activate`} and {@link VisionMode#deactivate | `VisionMode#deactivate`}
    */
   protected _visionModeActivated: boolean;
 

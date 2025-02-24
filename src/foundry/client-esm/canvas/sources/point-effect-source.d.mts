@@ -25,8 +25,8 @@ declare class PointEffectSource {
   /**
    * @defaultValue `CONFIG.Canvas.polygonBackends[this.constructor.sourceType].create(origin, config)`
    * @privateRemarks This is not in Foundry's code, but the mixin class loses access to the type parameter that would
-   * otherwise be here, and per the default above this is always a {@link PointSourcePolygon} subclass, always
-   * {@link ClockwiseSweepPolygon} in core
+   * otherwise be here, and per the default above this is always a {@link PointSourcePolygon | `PointSourcePolygon`} subclass, always
+   * {@link ClockwiseSweepPolygon | `ClockwiseSweepPolygon`} in core
    */
   shape: PointSourcePolygon;
 
@@ -60,7 +60,7 @@ declare class PointEffectSource {
   /**
    * @deprecated since v11, until v13
    * @remarks `"PointEffectSource#los is deprecated in favor of PointEffectSource#shape."`
-   * @privateRemarks Actually implemented as getter/setter for deprecation warning purposes, but this causes inheritance problems in {@link PointVisionSource}
+   * @privateRemarks Actually implemented as getter/setter for deprecation warning purposes, but this causes inheritance problems with  {@link foundry.canvas.sources.PointVisionSource#los | `PointVisionSource`}
    */
   los: this["shape"];
 }
