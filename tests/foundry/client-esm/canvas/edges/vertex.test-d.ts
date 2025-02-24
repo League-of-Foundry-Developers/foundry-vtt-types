@@ -16,7 +16,7 @@ expectTypeOf(vertex.isBlockingCCW).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(vertex.isBlockingCW).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(vertex.isInternal).toEqualTypeOf<boolean>();
 expectTypeOf(vertex.restriction).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
-expectTypeOf(vertex._visited).toEqualTypeOf<boolean>();
+expectTypeOf(vertex["_visited"]).toEqualTypeOf<boolean>();
 expectTypeOf(vertex.isLimited).toEqualTypeOf<boolean>();
 
 declare const edge: foundry.canvas.edges.Edge;

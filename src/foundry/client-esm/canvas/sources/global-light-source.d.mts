@@ -1,3 +1,4 @@
+import type { FixedInstanceType } from "../../../../utils/index.d.mts";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
@@ -108,6 +109,9 @@ declare namespace GlobalLightSource {
       max: number;
     };
   }
+
+  type ConfiguredClass = CONFIG["Canvas"]["globalLightSourceClass"];
+  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 }
 
 declare abstract class AnyGlobalLightSource extends GlobalLightSource {

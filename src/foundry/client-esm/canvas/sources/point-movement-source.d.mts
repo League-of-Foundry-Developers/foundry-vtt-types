@@ -26,6 +26,9 @@ declare namespace PointMovementSource {
   type AnyConstructor = typeof AnyPointMovementSource;
 
   interface SourceData extends PointEffectSourceMixin.MixedSourceData {}
+
+  // This is the only core Point*Source class that isn't configurable, `Token##getMovementSource`
+  // references this class directly, not a `CONFIG` property
 }
 
 declare abstract class AnyPointMovementSource extends PointMovementSource<

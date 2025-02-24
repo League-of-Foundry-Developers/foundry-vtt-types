@@ -1,4 +1,4 @@
-import type { AnyObject, IntentionalPartial, RequiredProps } from "fvtt-types/utils";
+import type { AnyObject, FixedInstanceType, IntentionalPartial, RequiredProps } from "fvtt-types/utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
@@ -101,6 +101,9 @@ declare namespace PointDarknessSource {
   type Layers = {
     darkness: RenderedEffectSource.SourceLayer;
   };
+
+  type ConfiguredClass = CONFIG["Canvas"]["darknessSourceClass"];
+  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 }
 
 declare abstract class AnyPointDarknessSource extends PointDarknessSource<

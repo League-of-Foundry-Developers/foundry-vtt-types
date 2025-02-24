@@ -1,6 +1,6 @@
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
-import type { AnyObject, IntentionalPartial, RequiredProps } from "fvtt-types/utils";
+import type { AnyObject, FixedInstanceType, IntentionalPartial, RequiredProps } from "fvtt-types/utils";
 
 /**
  * A specialized subclass of RenderedEffectSource which represents a source of point-based vision.
@@ -241,6 +241,9 @@ declare namespace PointVisionSource {
 
   interface PolygonConfig
     extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "radius" | "useThreshold" | "includeDarkness"> {}
+
+  type ConfiguredClass = CONFIG["Canvas"]["visionSourceClass"];
+  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 }
 
 declare abstract class AnyPointVisionSource extends PointVisionSource<
