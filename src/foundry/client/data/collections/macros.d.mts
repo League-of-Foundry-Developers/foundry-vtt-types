@@ -16,7 +16,7 @@ declare global {
     override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
       document: Macro.Implementation | Macro.CreateData,
       options?: Options,
-    ): WorldCollection.FromCompendiumReturnType<Macro.Implementation, Options>;
+    ): WorldCollection.FromCompendiumReturnType<Macro.ImplementationClass, Options>;
   }
 
   namespace Macros {
