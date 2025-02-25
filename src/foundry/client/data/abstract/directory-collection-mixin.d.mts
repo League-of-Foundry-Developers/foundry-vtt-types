@@ -14,7 +14,7 @@ declare class DirectoryCollection {
   /**
    * Reference the set of Folders which contain documents in this collection
    */
-  get folders(): Collection<Folder.Stored>;
+  get folders(): Collection<Folder.Stored, Collection.Methods.Any>;
 
   /**
    * The built tree structure of the DocumentCollection
