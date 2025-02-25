@@ -465,7 +465,9 @@ declare namespace DataField {
     /** The initial value of a field, or a function which assigns that initial value. */
     initial?:
       | DataField.Options.InitialType<
-          DataField.Options.InitialReturnType<BaseAssignmentType, this["nullable"], this["required"]>
+          // TODO(LukeAbby): Add a `ValidateOptions` type or something of that sort in order to
+          // catch incorrect initial types.
+          DataField.Options.InitialReturnType<BaseAssignmentType, boolean, boolean>
         >
       | undefined;
 
@@ -1338,7 +1340,7 @@ declare namespace NumberField {
  * InitialValue: `""`
  */
 declare class StringField<
-  const Options extends StringField.Options = StringField.DefaultOptions,
+  const Options extends StringField.Options<unknown> = StringField.DefaultOptions,
   const AssignmentType = StringField.AssignmentType<Options>,
   const InitializedType = StringField.InitializedType<Options>,
   const PersistedType extends string | null | undefined = StringField.InitializedType<Options>,
@@ -1377,7 +1379,7 @@ declare class StringField<
   /** @defaultValue `false` */
   textSearch: boolean;
 
-  protected static override get _defaults(): StringField.Options;
+  protected static override get _defaults(): StringField.Options<unknown>;
 
   override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
@@ -1440,7 +1442,7 @@ declare namespace StringField {
     }
   >;
 
-  interface Options extends DataField.Options<string> {
+  interface Options<Type = string> extends DataField.Options<Type> {
     /**
      * Is the string allowed to be blank (empty)?
      * @defaultValue `true`
@@ -1474,7 +1476,7 @@ declare namespace StringField {
    * A helper type for the given options type merged into the default options of the StringField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends StringField.Options> = SimpleMerge<
+  type MergedOptions<Options extends StringField.Options<unknown>> = SimpleMerge<
     _OptionsForInitial<_OptionsForChoices<Options["choices"]>>,
     Options
   >;
@@ -1484,11 +1486,11 @@ declare namespace StringField {
     : DefaultOptionsWhenChoicesProvided;
 
   // FIXME: `"initial" extends keyof Options` does not work for modeling `"initial" in options`.
-  type _OptionsForInitial<Options extends StringField.Options> = "initial" extends keyof Options
+  type _OptionsForInitial<Options extends StringField.Options<unknown>> = "initial" extends keyof Options
     ? Options
     : SimpleMerge<Options, { initial: _InitialForOptions<Options> }>;
 
-  type _InitialForOptions<Options extends StringField.Options> = Options["required"] extends false | undefined
+  type _InitialForOptions<Options extends StringField.Options<unknown>> = Options["required"] extends false | undefined
     ? undefined
     : Options["blank"] extends true
       ? string
@@ -1498,7 +1500,7 @@ declare namespace StringField {
 
   // choices?: string[] | Record<string, string> | (() => string[] | Record<string, string>) | undefined;
 
-  type ValidChoice<Options extends StringField.Options> = Options["choices"] extends undefined
+  type ValidChoice<Options extends StringField.Options<unknown>> = Options["choices"] extends undefined
     ? string
     : Options["choices"] extends (...args: infer _1) => infer Choices
       ? FixedChoice<Choices>
@@ -1515,7 +1517,7 @@ declare namespace StringField {
    * A shorthand for the assignment type of a StringField class.
    * @typeParam Options - the options that override the default options
    */
-  type AssignmentType<Options extends StringField.Options> = DataField.DerivedAssignmentType<
+  type AssignmentType<Options extends StringField.Options<unknown>> = DataField.DerivedAssignmentType<
     ValidChoice<Options>,
     MergedOptions<Options>
   >;
@@ -1524,7 +1526,7 @@ declare namespace StringField {
    * A shorthand for the initialized type of a StringField class.
    * @typeParam Options - the options that override the default options
    */
-  type InitializedType<Options extends StringField.Options> = DataField.DerivedInitializedType<
+  type InitializedType<Options extends StringField.Options<unknown>> = DataField.DerivedInitializedType<
     // TODO(LukeAbby): This is a workaround for how `ValidChoice` is defined ignorant of the `StringField`/`NumberField` divide.
     ValidChoice<Options> & (string | null | undefined),
     MergedOptions<Options>
@@ -2661,7 +2663,7 @@ declare namespace EmbeddedDocumentField {
  * InitialValue: `null`
  */
 declare class DocumentIdField<
-  Options extends StringField.Options = DocumentIdField.DefaultOptions,
+  Options extends StringField.Options<unknown> = DocumentIdField.DefaultOptions,
   AssignmentType = DocumentIdField.AssignmentType<Options>,
   InitializedType = DocumentIdField.InitializedType<Options>,
   PersistedType extends string | null | undefined = DocumentIdField.InitializedType<Options>,
@@ -2684,7 +2686,7 @@ declare class DocumentIdField<
   /** @defaultValue `"is not a valid Document ID string"` */
   override validationError: string;
 
-  protected static override get _defaults(): StringField.Options;
+  protected static override get _defaults(): StringField.Options<unknown>;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
@@ -2712,13 +2714,13 @@ declare namespace DocumentIdField {
    * A helper type for the given options type merged into the default options of the DocumentIdField class.
    * @typeParam Options - the options that override the default options
    */
-  type MergedOptions<Options extends StringField.Options> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends StringField.Options<unknown>> = SimpleMerge<DefaultOptions, Options>;
 
   /**
    * A shorthand for the assignment type of a StringField class.
    * @typeParam Options - the options that override the default options
    */
-  type AssignmentType<Options extends StringField.Options> = DataField.DerivedAssignmentType<
+  type AssignmentType<Options extends StringField.Options<unknown>> = DataField.DerivedAssignmentType<
     string | Document.Any,
     MergedOptions<Options>
   >;
@@ -2727,7 +2729,7 @@ declare namespace DocumentIdField {
    * A shorthand for the initialized type of a StringField class.
    * @typeParam Options - the options that override the default options
    */
-  type InitializedType<Options extends StringField.Options> = DataField.DerivedInitializedType<
+  type InitializedType<Options extends StringField.Options<unknown>> = DataField.DerivedInitializedType<
     string,
     MergedOptions<Options>
   >;
@@ -2888,12 +2890,11 @@ declare class ForeignDocumentField<
 
 declare namespace ForeignDocumentField {
   /** The options for the ForeignDocumentField class. */
-  type Options = StringField.Options &
-    // TODO(LukeAbby)
-    DataField.Options<string | Document.Any> & {
-      // Making this ---------^ more concrete leads to excessively deep instantiation
-      idOnly?: boolean;
-    };
+  // TODO(LukeAbby)
+  interface Options extends StringField.Options<string | Document.Any> {
+    //                                          ^ Making this more concrete leads to excessively deep instantiation
+    idOnly?: boolean;
+  }
 
   /** The type of the default options for the {@link ForeignDocumentField | `ForeignDocumentField`} class. */
   type DefaultOptions = SimpleMerge<
