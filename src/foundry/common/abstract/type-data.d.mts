@@ -255,15 +255,15 @@ declare abstract class TypeDataModel<
   /**
    * Prepare data related to this DataModel itself, before any derived data is computed.
    *
-   * Called before {@link ClientDocument#prepareBaseData} in {@link ClientDocument#prepareData | `ClientDocument#prepareBaseData} in {@link ClientDocument#prepareData`}.
-   * */
+   * Called before {@link ClientDocument.prepareBaseData | `ClientDocument#prepareBaseData`} in {@link ClientDocument.prepareData | `ClientDocument#prepareData`}.
+   */
   prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void;
 
   /**
    * Apply transformations of derivations to the values of the source data object.
    * Compute data fields whose values are not stored to the database.
    *
-   * Called before {@link ClientDocument#prepareDerivedData} in {@link ClientDocument#prepareData | `ClientDocument#prepareDerivedData} in {@link ClientDocument#prepareData`}.
+   * Called before {@link ClientDocument.prepareDerivedData | `ClientDocument#prepareDerivedData`} in {@link ClientDocument.prepareData | `ClientDocument#prepareData`}.
    */
   prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>): void;
 
@@ -283,7 +283,7 @@ declare abstract class TypeDataModel<
   /* -------------------------------------------- */
 
   /**
-   * Called by {@link ClientDocument#_preCreate | `ClientDocument#_preCreate`}.
+   * Called by {@link ClientDocument._preCreate | `ClientDocument#_preCreate`}.
    *
    * @param data    - The initial data object provided to the document creation request
    * @param options - Additional options which modify the creation request
@@ -297,7 +297,7 @@ declare abstract class TypeDataModel<
   ): Promise<boolean | void>;
 
   /**
-   * Called by {@link ClientDocument#_onCreate | `ClientDocument#_onCreate`}.
+   * Called by {@link ClientDocument._onCreate | `ClientDocument#_onCreate`}.
    *
    * @param data    - The initial data object provided to the document creation request
    * @param options - Additional options which modify the creation request
@@ -310,7 +310,7 @@ declare abstract class TypeDataModel<
   ): void;
 
   /**
-   * Called by {@link ClientDocument#_preUpdate | `ClientDocument#_preUpdate`}.
+   * Called by {@link ClientDocument._preUpdate | `ClientDocument#_preUpdate`}.
    *
    * @param changes - The candidate changes to the Document
    * @param options - Additional options which modify the update request
@@ -324,7 +324,7 @@ declare abstract class TypeDataModel<
   ): Promise<boolean | void>;
 
   /**
-   * Called by {@link ClientDocument#_onUpdate | `ClientDocument#_onUpdate`}.
+   * Called by {@link ClientDocument._onUpdate | `ClientDocument#_onUpdate`}.
    *
    * @param changed - The differential data that was changed relative to the documents prior values
    * @param options - Additional options which modify the update request
@@ -337,7 +337,7 @@ declare abstract class TypeDataModel<
   ): void;
 
   /**
-   * Called by {@link ClientDocument#_preDelete | `ClientDocument#_preDelete`}.
+   * Called by {@link ClientDocument._preDelete | `ClientDocument#_preDelete`}.
    *
    * @param options - Additional options which modify the deletion request
    * @param user    - The User requesting the document deletion
@@ -346,7 +346,7 @@ declare abstract class TypeDataModel<
   protected _preDelete(options: Document.PreDeleteOptions<any>, user: User.Implementation): Promise<boolean | void>;
 
   /**
-   * Called by {@link ClientDocument#_onDelete | `ClientDocument#_onDelete`}.
+   * Called by {@link ClientDocument._onDelete | `ClientDocument#_onDelete`}.
    *
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
