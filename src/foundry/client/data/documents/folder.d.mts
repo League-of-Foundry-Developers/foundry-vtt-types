@@ -308,7 +308,7 @@ declare global {
      * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
-    static createDialog(
+    static override createDialog(
       data?: Document.CreateDialogData<Folder.CreateData>,
       context?: InexactPartial<Omit<FolderConfig.Options, "resolve">>,
     ): Promise<Folder.Stored | null | undefined>;
