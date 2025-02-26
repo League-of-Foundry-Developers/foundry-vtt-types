@@ -82,16 +82,16 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<DrawingDocument.Implementation | DrawingDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<DrawingDocument.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<DrawingDocument.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<DrawingDocument.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: DrawingDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<DrawingDocument.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<DrawingDocument.DatabaseOperation.Update>,
   ): Promise<DrawingDocument.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<DrawingDocument.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<DrawingDocument.DatabaseOperation.Delete>,
   ): Promise<DrawingDocument.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -99,7 +99,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     operation?: Document.Database.CreateOperation<DrawingDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<DrawingDocument.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): DrawingDocument.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): DrawingDocument.Implementation | null;
 
   protected _preCreate(
     data: DrawingDocument.CreateData,

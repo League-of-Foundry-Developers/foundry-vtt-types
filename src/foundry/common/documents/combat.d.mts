@@ -70,16 +70,16 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Combat.Implementation | Combat.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Combat.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<Combat.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<Combat.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Combat.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<Combat.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Combat.DatabaseOperation.Update>,
   ): Promise<Combat.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<Combat.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Combat.DatabaseOperation.Delete>,
   ): Promise<Combat.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -87,7 +87,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
     operation?: Document.Database.CreateOperation<Combat.DatabaseOperation.Create<Temporary>>,
   ): Promise<Combat.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): Combat.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): Combat.Implementation | null;
 
   protected _preCreate(
     data: Combat.CreateData,

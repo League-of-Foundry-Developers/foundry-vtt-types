@@ -253,27 +253,27 @@ declare global {
       /** Options for {@link TileDocument._preCreateOperation | `TileDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
       /** Options for {@link TileDocument._preCreate | `TileDocument#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
       /** Options for {@link TileDocument._onCreate | `TileDocument#_onCreate`} */
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
       /** Options for {@link TileDocument.updateDocuments | `TileDocument.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
       /** Options for {@link TileDocument._preUpdateOperation | `TileDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
       /** Options for {@link TileDocument._preUpdate | `TileDocument#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
       /** Options for {@link TileDocument._onUpdate | `TileDocument#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
       /** Options for {@link TileDocument.deleteDocuments | `TileDocument.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
       /** Options for {@link TileDocument._preDeleteOperation | `TileDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
       /** Options for {@link TileDocument._preDelete | `TileDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link TileDocument._onDelete | `TileDocument#_onDelete`} */
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
     interface CoreFlags {
@@ -331,13 +331,11 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(
-      context: Document.DefaultNameContext<"base", Exclude<TileDocument.Parent, null>>,
-    ): string;
+    static override defaultName(context: Document.DefaultNameContext<"base", TileDocument.Parent>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<TileDocument.CreateData>,
-      context: Document.CreateDialogContext<string, Exclude<TileDocument.Parent, null>>,
+      context: Document.CreateDialogContext<string, TileDocument.Parent>,
     ): Promise<TileDocument.Stored | null | undefined>;
 
     static override fromDropData(

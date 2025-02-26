@@ -132,16 +132,16 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<User.Implementation | User.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<User.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<User.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<User.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: User.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<User.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<User.DatabaseOperation.Update>,
   ): Promise<User.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<User.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<User.DatabaseOperation.Delete>,
   ): Promise<User.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -149,7 +149,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
     operation?: Document.Database.CreateOperation<User.DatabaseOperation.Create<Temporary>>,
   ): Promise<User.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): User.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): User.Implementation | null;
 
   protected _preCreate(
     data: User.CreateData,

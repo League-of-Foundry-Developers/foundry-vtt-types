@@ -49,16 +49,16 @@ declare abstract class BaseJournalEntryPage<
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<JournalEntryPage.Implementation | JournalEntryPage.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<JournalEntryPage.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<JournalEntryPage.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<JournalEntryPage.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: JournalEntryPage.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<JournalEntryPage.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<JournalEntryPage.DatabaseOperation.Update>,
   ): Promise<JournalEntryPage.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<JournalEntryPage.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<JournalEntryPage.DatabaseOperation.Delete>,
   ): Promise<JournalEntryPage.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -66,7 +66,7 @@ declare abstract class BaseJournalEntryPage<
     operation?: Document.Database.CreateOperation<JournalEntryPage.DatabaseOperation.Create<Temporary>>,
   ): Promise<JournalEntryPage.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): JournalEntryPage.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): JournalEntryPage.Implementation | null;
 
   protected _preCreate(
     data: JournalEntryPage.CreateData,

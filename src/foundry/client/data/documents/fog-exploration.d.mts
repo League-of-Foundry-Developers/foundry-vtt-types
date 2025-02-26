@@ -166,27 +166,27 @@ declare global {
       /** Options for {@link FogExploration._preCreateOperation | `FogExploration._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
       /** Options for {@link FogExploration._preCreate | `FogExploration#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
       /** Options for {@link FogExploration._onCreate | `FogExploration#_onCreate`} */
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
       /** Options for {@link FogExploration.updateDocuments | `FogExploration.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
       /** Options for {@link FogExploration._preUpdateOperation | `FogExploration._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
       /** Options for {@link FogExploration._preUpdate | `FogExploration#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
       /** Options for {@link FogExploration._onUpdate | `FogExploration#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
       /** Options for {@link FogExploration.deleteDocuments | `FogExploration.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
       /** Options for {@link FogExploration._preDeleteOperation | `FogExploration._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
       /** Options for {@link FogExploration._preDelete | `FogExploration#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link FogExploration._onDelete | `FogExploration#_onDelete`} */
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
     /**

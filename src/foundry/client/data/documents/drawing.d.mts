@@ -270,27 +270,27 @@ declare global {
       /** Options for {@link DrawingDocument._preCreateOperation | `DrawingDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
       /** Options for {@link DrawingDocument._preCreate | `DrawingDocument#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
       /** Options for {@link DrawingDocument._onCreate | `DrawingDocument#_onCreate`} */
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
       /** Options for {@link DrawingDocument.updateDocuments | `DrawingDocument.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
       /** Options for {@link DrawingDocument._preUpdateOperation | `DrawingDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
       /** Options for {@link DrawingDocument._preUpdate | `DrawingDocument#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
       /** Options for {@link DrawingDocument._onUpdate | `DrawingDocument#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
       /** Options for {@link DrawingDocument.deleteDocuments | `DrawingDocument.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
       /** Options for {@link DrawingDocument._preDeleteOperation | `DrawingDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
       /** Options for {@link DrawingDocument._preDelete | `DrawingDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link DrawingDocument._onDelete | `DrawingDocument#_onDelete`} */
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
     /**
@@ -345,13 +345,11 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(
-      context: Document.DefaultNameContext<"base", Exclude<DrawingDocument.Parent, null>>,
-    ): string;
+    static override defaultName(context: Document.DefaultNameContext<"base", DrawingDocument.Parent>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<DrawingDocument.CreateData>,
-      context: Document.CreateDialogContext<string, Exclude<DrawingDocument.Parent, null>>,
+      context: Document.CreateDialogContext<string, DrawingDocument.Parent>,
     ): Promise<DrawingDocument.Stored | null | undefined>;
 
     static override fromDropData(

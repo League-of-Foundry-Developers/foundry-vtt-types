@@ -223,27 +223,27 @@ declare global {
       /** Options for {@link NoteDocument._preCreateOperation | `NoteDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
       /** Options for {@link NoteDocument._preCreate | `NoteDocument#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
       /** Options for {@link NoteDocument._onCreate | `NoteDocument#_onCreate`} */
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
       /** Options for {@link NoteDocument.updateDocuments | `NoteDocument.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
       /** Options for {@link NoteDocument._preUpdateOperation | `NoteDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
       /** Options for {@link NoteDocument._preUpdate | `NoteDocument#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
       /** Options for {@link NoteDocument._onUpdate | `NoteDocument#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
       /** Options for {@link NoteDocument.deleteDocuments | `NoteDocument.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
       /** Options for {@link NoteDocument._preDeleteOperation | `NoteDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
       /** Options for {@link NoteDocument._preDelete | `NoteDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link NoteDocument._onDelete | `NoteDocument#_onDelete`} */
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
     /**
@@ -309,13 +309,11 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(
-      context: Document.DefaultNameContext<"base", Exclude<NoteDocument.Parent, null>>,
-    ): string;
+    static override defaultName(context: Document.DefaultNameContext<"base", NoteDocument.Parent>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<NoteDocument.CreateData>,
-      context: Document.CreateDialogContext<string, Exclude<NoteDocument.Parent, null>>,
+      context: Document.CreateDialogContext<string, NoteDocument.Parent>,
     ): Promise<NoteDocument.Stored | null | undefined>;
 
     static override fromDropData(

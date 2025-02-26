@@ -193,27 +193,27 @@ declare global {
       /** Options for {@link TableResult._preCreateOperation | `TableResult._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
       /** Options for {@link TableResult._preCreate | `TableResult#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
       /** Options for {@link TableResult._onCreate | `TableResult#_onCreate`} */
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
       /** Options for {@link TableResult.updateDocuments | `TableResult.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
       /** Options for {@link TableResult._preUpdateOperation | `TableResult._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
       /** Options for {@link TableResult._preUpdate | `TableResult#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
       /** Options for {@link TableResult._onUpdate | `TableResult#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
       /** Options for {@link TableResult.deleteDocuments | `TableResult.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
       /** Options for {@link TableResult._preDeleteOperation | `TableResult._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
       /** Options for {@link TableResult._preDelete | `TableResult#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link TableResult._onDelete | `TableResult#_onDelete`} */
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
     /**
@@ -280,13 +280,11 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(
-      context: Document.DefaultNameContext<TableResult.SubType, Exclude<TableResult.Parent, null>>,
-    ): string;
+    static override defaultName(context: Document.DefaultNameContext<TableResult.SubType, TableResult.Parent>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<TableResult.CreateData>,
-      context: Document.CreateDialogContext<TableResult.SubType, Exclude<TableResult.Parent, null>>,
+      context: Document.CreateDialogContext<TableResult.SubType, TableResult.Parent>,
     ): Promise<TableResult.Stored | null | undefined>;
 
     static override fromDropData(

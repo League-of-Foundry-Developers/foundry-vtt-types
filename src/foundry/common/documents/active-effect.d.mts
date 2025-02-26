@@ -86,16 +86,16 @@ declare abstract class BaseActiveEffect<
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<ActiveEffect.Implementation | ActiveEffect.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ActiveEffect.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<ActiveEffect.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<ActiveEffect.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: ActiveEffect.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<ActiveEffect.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<ActiveEffect.DatabaseOperation.Update>,
   ): Promise<ActiveEffect.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<ActiveEffect.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<ActiveEffect.DatabaseOperation.Delete>,
   ): Promise<ActiveEffect.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -103,7 +103,7 @@ declare abstract class BaseActiveEffect<
     operation?: Document.Database.CreateOperation<ActiveEffect.DatabaseOperation.Create<Temporary>>,
   ): Promise<ActiveEffect.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): ActiveEffect.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): ActiveEffect.Implementation | null;
 
   protected _preCreate(
     data: ActiveEffect.CreateData,

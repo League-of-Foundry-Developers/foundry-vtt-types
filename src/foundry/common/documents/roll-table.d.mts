@@ -52,16 +52,16 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<RollTable.Implementation | RollTable.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RollTable.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<RollTable.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<RollTable.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: RollTable.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<RollTable.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<RollTable.DatabaseOperation.Update>,
   ): Promise<RollTable.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<RollTable.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<RollTable.DatabaseOperation.Delete>,
   ): Promise<RollTable.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -69,7 +69,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
     operation?: Document.Database.CreateOperation<RollTable.DatabaseOperation.Create<Temporary>>,
   ): Promise<RollTable.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): RollTable.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): RollTable.Implementation | null;
 
   protected _preCreate(
     data: RollTable.CreateData,

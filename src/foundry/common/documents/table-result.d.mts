@@ -62,16 +62,16 @@ declare abstract class BaseTableResult<
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<TableResult.Implementation | TableResult.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<TableResult.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<TableResult.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<TableResult.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: TableResult.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<TableResult.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<TableResult.DatabaseOperation.Update>,
   ): Promise<TableResult.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<TableResult.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<TableResult.DatabaseOperation.Delete>,
   ): Promise<TableResult.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -79,7 +79,7 @@ declare abstract class BaseTableResult<
     operation?: Document.Database.CreateOperation<TableResult.DatabaseOperation.Create<Temporary>>,
   ): Promise<TableResult.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): TableResult.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): TableResult.Implementation | null;
 
   protected _preCreate(
     data: TableResult.CreateData,

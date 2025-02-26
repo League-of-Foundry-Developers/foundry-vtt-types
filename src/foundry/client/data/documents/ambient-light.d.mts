@@ -173,27 +173,27 @@ declare global {
       /** Options for {@link AmbientLightDocument._preCreateOperation | `AmbientLightDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
       /** Options for {@link AmbientLightDocument._preCreate | `AmbientLightDocument#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
       /** Options for {@link AmbientLightDocument._onCreate | `AmbientLightDocument#_onCreate`} */
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
       /** Options for {@link AmbientLightDocument.updateDocuments | `AmbientLightDocument.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
       /** Options for {@link AmbientLightDocument._preUpdateOperation | `AmbientLightDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
       /** Options for {@link AmbientLightDocument._preUpdate | `AmbientLightDocument#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
       /** Options for {@link AmbientLightDocument._onUpdate | `AmbientLightDocument#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
       /** Options for {@link AmbientLightDocument.deleteDocuments | `AmbientLightDocument.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
       /** Options for {@link AmbientLightDocument._preDeleteOperation | `AmbientLightDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
       /** Options for {@link AmbientLightDocument._preDelete | `AmbientLightDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link AmbientLightDocument._onDelete | `AmbientLightDocument#_onDelete`} */
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
     interface CoreFlags {
@@ -260,13 +260,11 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(
-      context: Document.DefaultNameContext<"base", Exclude<AmbientLightDocument.Parent, null>>,
-    ): string;
+    static override defaultName(context: Document.DefaultNameContext<"base", AmbientLightDocument.Parent>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<AmbientLightDocument.CreateData>,
-      context: Document.CreateDialogContext<string, Exclude<AmbientLightDocument.Parent, null>>,
+      context: Document.CreateDialogContext<string, AmbientLightDocument.Parent>,
     ): Promise<AmbientLightDocument.Stored | null | undefined>;
 
     static override fromDropData(

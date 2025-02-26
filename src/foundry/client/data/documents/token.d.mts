@@ -517,27 +517,27 @@ declare global {
       /** Options for {@link TokenDocument._preCreateOperation | `TokenDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
       /** Options for {@link TokenDocument._preCreate | `TokenDocument#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
       /** Options for {@link TokenDocument._onCreate | `TokenDocument#_onCreate`} */
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
       /** Options for {@link TokenDocument.updateDocuments | `TokenDocument.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
       /** Options for {@link TokenDocument._preUpdateOperation | `TokenDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
       /** Options for {@link TokenDocument._preUpdate | `TokenDocument#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
       /** Options for {@link TokenDocument._onUpdate | `TokenDocument#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
       /** Options for {@link TokenDocument.deleteDocuments | `TokenDocument.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
       /** Options for {@link TokenDocument._preDeleteOperation | `TokenDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
       /** Options for {@link TokenDocument._preDelete | `TokenDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link TokenDocument._onDelete | `TokenDocument#_onDelete`} */
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
     interface CoreFlags {
@@ -841,13 +841,11 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(
-      context: Document.DefaultNameContext<"base", Exclude<TokenDocument.Parent, null>>,
-    ): string;
+    static override defaultName(context: Document.DefaultNameContext<"base", TokenDocument.Parent>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<TokenDocument.CreateData>,
-      context: Document.CreateDialogContext<string, Exclude<TokenDocument.Parent, null>>,
+      context: Document.CreateDialogContext<string, TokenDocument.Parent>,
     ): Promise<TokenDocument.Stored | null | undefined>;
 
     static override fromDropData(

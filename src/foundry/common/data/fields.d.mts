@@ -2582,6 +2582,8 @@ declare class EmbeddedDocumentField<
 }
 
 declare namespace EmbeddedDocumentField {
+  interface Any extends EmbeddedDocumentField<any, any, any, any, any> {}
+
   /**
    * A shorthand for the options of an EmbeddedDocumentField class.
    * @typeParam DocumentType - the type of the embedded Document

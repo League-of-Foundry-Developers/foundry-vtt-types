@@ -44,16 +44,16 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Setting.Implementation | Setting.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Setting.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<Setting.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<Setting.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Setting.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<Setting.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Setting.DatabaseOperation.Update>,
   ): Promise<Setting.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<Setting.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Setting.DatabaseOperation.Delete>,
   ): Promise<Setting.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -61,7 +61,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
     operation?: Document.Database.CreateOperation<Setting.DatabaseOperation.Create<Temporary>>,
   ): Promise<Setting.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): Setting.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): Setting.Implementation | null;
 
   protected _preCreate(
     data: Setting.CreateData,

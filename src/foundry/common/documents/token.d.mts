@@ -98,16 +98,16 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<TokenDocument.Implementation | TokenDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<TokenDocument.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<TokenDocument.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<TokenDocument.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: TokenDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<TokenDocument.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<TokenDocument.DatabaseOperation.Update>,
   ): Promise<TokenDocument.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<TokenDocument.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<TokenDocument.DatabaseOperation.Delete>,
   ): Promise<TokenDocument.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -115,7 +115,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     operation?: Document.Database.CreateOperation<TokenDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<TokenDocument.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): TokenDocument.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): TokenDocument.Implementation | null;
 
   protected _preCreate(
     data: TokenDocument.CreateData,

@@ -80,16 +80,16 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Card.Implementation | Card.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Card.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<Card.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<Card.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Card.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<Card.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Card.DatabaseOperation.Update>,
   ): Promise<Card.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<Card.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Card.DatabaseOperation.Delete>,
   ): Promise<Card.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -97,7 +97,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
     operation?: Document.Database.CreateOperation<Card.DatabaseOperation.Create<Temporary>>,
   ): Promise<Card.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): Card.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): Card.Implementation | null;
 
   protected _preCreate(
     data: Card.CreateData,

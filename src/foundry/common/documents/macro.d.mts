@@ -71,16 +71,16 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Macro.Implementation | Macro.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Macro.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<Macro.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<Macro.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Macro.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<Macro.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Macro.DatabaseOperation.Update>,
   ): Promise<Macro.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<Macro.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Macro.DatabaseOperation.Delete>,
   ): Promise<Macro.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -88,7 +88,7 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
     operation?: Document.Database.CreateOperation<Macro.DatabaseOperation.Create<Temporary>>,
   ): Promise<Macro.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): Macro.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): Macro.Implementation | null;
 
   protected _preCreate(
     data: Macro.CreateData,

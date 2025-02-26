@@ -53,16 +53,16 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Adventure.Implementation | Adventure.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Adventure.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<Adventure.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<Adventure.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Adventure.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<Adventure.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Adventure.DatabaseOperation.Update>,
   ): Promise<Adventure.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<Adventure.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Adventure.DatabaseOperation.Delete>,
   ): Promise<Adventure.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -70,7 +70,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     operation?: Document.Database.CreateOperation<Adventure.DatabaseOperation.Create<Temporary>>,
   ): Promise<Adventure.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): Adventure.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): Adventure.Implementation | null;
 
   protected _preCreate(
     data: Adventure.CreateData,

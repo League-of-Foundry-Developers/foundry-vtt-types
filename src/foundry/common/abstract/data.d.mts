@@ -30,7 +30,7 @@ declare abstract class DataModel<
    *                  will be owned by the constructed model instance and may be mutated.
    * @param options - Options which affect DataModel construction
    */
-  // TODO(LukeAbby): Make only optional if `{}` is assignable to `AssignmentData`.
+  // TODO(LukeAbby): Make optional only if `{}` is assignable to `AssignmentData`.
   constructor(
     data?: DataModel.CreateData<Schema>,
     { parent, strict, ...options }?: DataModel.DataValidationOptions<Parent> & ExtraConstructorOptions,
@@ -148,60 +148,7 @@ declare abstract class DataModel<
    * @param options - Optional parameters which customize how validation occurs.
    * @returns An indicator for whether the document contains valid data
    */
-  validate({
-    changes,
-    clean,
-    fallback,
-    strict,
-    fields,
-    joint,
-  }?: {
-    /**
-     * A specific set of proposed changes to validate, rather than the full source data of the model.
-     */
-    changes?: fields.SchemaField.AssignmentData<Schema>;
-
-    /**
-     * If changes are provided, attempt to clean the changes before validating them?
-     * @defaultValue `false`
-     */
-    clean?: boolean;
-
-    /**
-     * Allow replacement of invalid values with valid defaults?
-     * @defaultValue `false`
-     */
-    fallback?: boolean;
-
-    /**
-     * If true, invalid embedded documents will emit a warning and
-     * be placed in the invalidDocuments collection rather than
-     * causing the parent to be considered invalid.
-     * @defaultValue `false`
-     */
-    dropInvalidEmbedded: boolean;
-
-    /**
-     * Throw if an invalid value is encountered, otherwise log a warning?
-     * @defaultValue `true`
-     */
-    strict?: boolean;
-
-    /**
-     * Perform validation on individual fields?
-     * @defaultValue `true`
-     */
-    fields?: boolean;
-
-    /**
-     * Perform joint validation on the full data model?
-     * Joint validation will be performed by default if no changes are passed.
-     * Joint validation will be disabled by default if changes are passed.
-     * Joint validation can be performed on a complete set of changes (for
-     * example testing a complete data model) by explicitly passing true.
-     */
-    joint?: boolean;
-  }): boolean;
+  validate({ changes, clean, fallback, strict, fields, joint }?: DataModel.ValidateOptions<Schema>): boolean;
 
   /**
    * Evaluate joint validation rules which apply validation conditions across multiple fields of the model.
@@ -425,6 +372,54 @@ declare namespace DataModel {
      * @defaultValue `true`
      */
     embedded?: boolean;
+  }
+
+  interface ValidateOptions<Schema extends DataSchema> {
+    /**
+     * A specific set of proposed changes to validate, rather than the full source data of the model.
+     */
+    changes?: fields.SchemaField.AssignmentData<Schema>;
+
+    /**
+     * If changes are provided, attempt to clean the changes before validating them?
+     * @defaultValue `false`
+     */
+    clean?: boolean;
+
+    /**
+     * Allow replacement of invalid values with valid defaults?
+     * @defaultValue `false`
+     */
+    fallback?: boolean;
+
+    /**
+     * If true, invalid embedded documents will emit a warning and
+     * be placed in the invalidDocuments collection rather than
+     * causing the parent to be considered invalid.
+     * @defaultValue `false`
+     */
+    dropInvalidEmbedded: boolean;
+
+    /**
+     * Throw if an invalid value is encountered, otherwise log a warning?
+     * @defaultValue `true`
+     */
+    strict?: boolean;
+
+    /**
+     * Perform validation on individual fields?
+     * @defaultValue `true`
+     */
+    fields?: boolean;
+
+    /**
+     * Perform joint validation on the full data model?
+     * Joint validation will be performed by default if no changes are passed.
+     * Joint validation will be disabled by default if changes are passed.
+     * Joint validation can be performed on a complete set of changes (for
+     * example testing a complete data model) by explicitly passing true.
+     */
+    joint?: boolean;
   }
 }
 

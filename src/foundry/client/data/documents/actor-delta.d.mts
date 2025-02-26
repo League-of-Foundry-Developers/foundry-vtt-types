@@ -158,18 +158,18 @@ declare global {
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
+      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
     /**
@@ -288,13 +288,11 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(
-      context: Document.DefaultNameContext<ActorDelta.SubType, Exclude<ActorDelta.Parent, null>>,
-    ): string;
+    static override defaultName(context: Document.DefaultNameContext<ActorDelta.SubType, ActorDelta.Parent>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<ActorDelta.CreateData>,
-      context: Document.CreateDialogContext<ActorDelta.SubType, Exclude<ActorDelta.Parent, null>>,
+      context: Document.CreateDialogContext<ActorDelta.SubType, ActorDelta.Parent>,
     ): Promise<ActorDelta.Stored | null | undefined>;
 
     static override fromDropData(

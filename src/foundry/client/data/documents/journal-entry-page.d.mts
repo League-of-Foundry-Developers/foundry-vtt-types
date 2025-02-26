@@ -291,27 +291,27 @@ declare global {
       /** Options for {@link JournalEntryPage._preCreateOperation | `JournalEntryPage._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
       /** Options for {@link JournalEntryPage._preCreate | `JournalEntryPage#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
       /** Options for {@link JournalEntryPage._onCreate | `JournalEntryPage#_onCreate`} */
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
       /** Options for {@link JournalEntryPage.updateDocuments | `JournalEntryPage.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
       /** Options for {@link JournalEntryPage._preUpdateOperation | `JournalEntryPage._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
       /** Options for {@link JournalEntryPage._preUpdate | `JournalEntryPage#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
       /** Options for {@link JournalEntryPage._onUpdate | `JournalEntryPage#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
       /** Options for {@link JournalEntryPage.deleteDocuments | `JournalEntryPage.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
       /** Options for {@link JournalEntryPage._preDeleteOperation | `JournalEntryPage._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
       /** Options for {@link JournalEntryPage._preDelete | `JournalEntryPage#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link JournalEntryPage._onDelete | `JournalEntryPage#_onDelete`} */
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
     interface JournalEntryPageHeading {
@@ -568,12 +568,12 @@ declare global {
      */
 
     static override defaultName(
-      context: Document.DefaultNameContext<JournalEntryPage.SubType, Exclude<JournalEntryPage.Parent, null>>,
+      context: Document.DefaultNameContext<JournalEntryPage.SubType, JournalEntryPage.Parent>,
     ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<JournalEntryPage.CreateData>,
-      context: Document.CreateDialogContext<JournalEntryPage.SubType, Exclude<JournalEntryPage.Parent, null>>,
+      context: Document.CreateDialogContext<JournalEntryPage.SubType, JournalEntryPage.Parent>,
     ): Promise<JournalEntryPage.Stored | null | undefined>;
 
     static override fromDropData(

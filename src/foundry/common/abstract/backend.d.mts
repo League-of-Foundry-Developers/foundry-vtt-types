@@ -189,8 +189,8 @@ declare namespace DatabaseBackend {
   type CreateOperation<T extends Document.AnyConstructor> =
     Document.Database.CreateOperation<DatabaseCreateOperation> & { data: Document.CreateDataFor<T>[] };
   type UpdateOperation<T extends Document.AnyConstructor> =
-    Document.Database.UpdateOperation<DatabaseUpdateOperation> & { updates: Document.UpdateDataFor<T>[] };
-  type DeleteOperation = Document.Database.DeleteOperation<DatabaseDeleteOperation> & { ids: string[] };
+    Document.Database.UpdateDocumentsOperation<DatabaseUpdateOperation> & { updates: Document.UpdateDataFor<T>[] };
+  type DeleteOperation = Document.Database.DeleteDocumentsOperation<DatabaseDeleteOperation> & { ids: string[] };
 }
 
 export default DatabaseBackend;

@@ -45,16 +45,16 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<AmbientSoundDocument.Implementation | AmbientSoundDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<AmbientSoundDocument.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<AmbientSoundDocument.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<AmbientSoundDocument.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: AmbientSoundDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<AmbientSoundDocument.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<AmbientSoundDocument.DatabaseOperation.Update>,
   ): Promise<AmbientSoundDocument.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<AmbientSoundDocument.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<AmbientSoundDocument.DatabaseOperation.Delete>,
   ): Promise<AmbientSoundDocument.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -62,7 +62,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     operation?: Document.Database.CreateOperation<AmbientSoundDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<AmbientSoundDocument.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): AmbientSoundDocument.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): AmbientSoundDocument.Implementation | null;
 
   protected _preCreate(
     data: AmbientSoundDocument.CreateData,

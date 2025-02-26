@@ -80,16 +80,16 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Actor.Implementation | Actor.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Actor.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<Actor.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<Actor.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Actor.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<Actor.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Actor.DatabaseOperation.Update>,
   ): Promise<Actor.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<Actor.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Actor.DatabaseOperation.Delete>,
   ): Promise<Actor.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -97,7 +97,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     operation?: Document.Database.CreateOperation<Actor.DatabaseOperation.Create<Temporary>>,
   ): Promise<Actor.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): Actor.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): Actor.Implementation | null;
 
   protected _preCreate(
     data: Actor.CreateData,

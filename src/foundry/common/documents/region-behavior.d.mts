@@ -49,16 +49,16 @@ declare abstract class BaseRegionBehavior<
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<RegionBehavior.Implementation | RegionBehavior.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RegionBehavior.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<RegionBehavior.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<RegionBehavior.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: RegionBehavior.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<RegionBehavior.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<RegionBehavior.DatabaseOperation.Update>,
   ): Promise<RegionBehavior.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<RegionBehavior.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<RegionBehavior.DatabaseOperation.Delete>,
   ): Promise<RegionBehavior.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -66,7 +66,7 @@ declare abstract class BaseRegionBehavior<
     operation?: Document.Database.CreateOperation<RegionBehavior.DatabaseOperation.Create<Temporary>>,
   ): Promise<RegionBehavior.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): RegionBehavior.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): RegionBehavior.Implementation | null;
 
   protected _preCreate(
     data: RegionBehavior.CreateData,

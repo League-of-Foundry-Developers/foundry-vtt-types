@@ -45,16 +45,16 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<AmbientLightDocument.Implementation | AmbientLightDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<AmbientLightDocument.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<AmbientLightDocument.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<AmbientLightDocument.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: AmbientLightDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<AmbientLightDocument.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<AmbientLightDocument.DatabaseOperation.Update>,
   ): Promise<AmbientLightDocument.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<AmbientLightDocument.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<AmbientLightDocument.DatabaseOperation.Delete>,
   ): Promise<AmbientLightDocument.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -62,7 +62,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     operation?: Document.Database.CreateOperation<AmbientLightDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<AmbientLightDocument.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): AmbientLightDocument.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): AmbientLightDocument.Implementation | null;
 
   protected _preCreate(
     data: AmbientLightDocument.CreateData,

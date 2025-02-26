@@ -88,16 +88,16 @@ declare abstract class BaseActorDelta<
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<ActorDelta.Implementation | ActorDelta.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ActorDelta.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<ActorDelta.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<ActorDelta.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: ActorDelta.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<ActorDelta.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<ActorDelta.DatabaseOperation.Update>,
   ): Promise<ActorDelta.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<ActorDelta.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<ActorDelta.DatabaseOperation.Delete>,
   ): Promise<ActorDelta.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -105,7 +105,7 @@ declare abstract class BaseActorDelta<
     operation?: Document.Database.CreateOperation<ActorDelta.DatabaseOperation.Create<Temporary>>,
   ): Promise<ActorDelta.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): ActorDelta.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): ActorDelta.Implementation | null;
 
   protected _preCreate(
     data: ActorDelta.CreateData,

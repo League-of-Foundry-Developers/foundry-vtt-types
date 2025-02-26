@@ -56,16 +56,16 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Playlist.Implementation | Playlist.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Playlist.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<Playlist.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<Playlist.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Playlist.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<Playlist.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Playlist.DatabaseOperation.Update>,
   ): Promise<Playlist.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<Playlist.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Playlist.DatabaseOperation.Delete>,
   ): Promise<Playlist.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -73,7 +73,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     operation?: Document.Database.CreateOperation<Playlist.DatabaseOperation.Create<Temporary>>,
   ): Promise<Playlist.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): Playlist.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): Playlist.Implementation | null;
 
   protected _preCreate(
     data: Playlist.CreateData,

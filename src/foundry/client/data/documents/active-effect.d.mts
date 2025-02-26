@@ -280,27 +280,27 @@ declare global {
       /** Options for {@link ActiveEffect._preCreateOperation | `ActiveEffect._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
       /** Options for {@link ActiveEffect._preCreate | `ActiveEffect#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
       /** Options for {@link ActiveEffect._onCreate | `ActiveEffect#_onCreate`} */
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
       /** Options for {@link ActiveEffect.updateDocuments | `ActiveEffect.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
       /** Options for {@link ActiveEffect._preUpdateOperation | `ActiveEffect._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
       /** Options for {@link ActiveEffect._preUpdate | `ActiveEffect#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
       /** Options for {@link ActiveEffect._onUpdate | `ActiveEffect#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
       /** Options for {@link ActiveEffect.deleteDocuments | `ActiveEffect.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
       /** Options for {@link ActiveEffect._preDeleteOperation | `ActiveEffect._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
       /** Options for {@link ActiveEffect._preDelete | `ActiveEffect#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link ActiveEffect._onDelete | `ActiveEffect#_onDelete`} */
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
     interface CoreFlags {
@@ -718,12 +718,12 @@ declare global {
      */
 
     static override defaultName(
-      context: Document.DefaultNameContext<ActiveEffect.SubType, Exclude<ActiveEffect.Parent, null>>,
+      context: Document.DefaultNameContext<ActiveEffect.SubType, ActiveEffect.Parent>,
     ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<ActiveEffect.CreateData>,
-      context: Document.CreateDialogContext<ActiveEffect.SubType, Exclude<ActiveEffect.Parent, null>>,
+      context: Document.CreateDialogContext<ActiveEffect.SubType, ActiveEffect.Parent>,
     ): Promise<ActiveEffect.Stored | null | undefined>;
 
     static override fromDropData(

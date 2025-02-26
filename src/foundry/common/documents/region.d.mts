@@ -39,16 +39,16 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<RegionDocument.Implementation | RegionDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RegionDocument.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<RegionDocument.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<RegionDocument.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: RegionDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<RegionDocument.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<RegionDocument.DatabaseOperation.Update>,
   ): Promise<RegionDocument.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<RegionDocument.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<RegionDocument.DatabaseOperation.Delete>,
   ): Promise<RegionDocument.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -56,7 +56,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     operation?: Document.Database.CreateOperation<RegionDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<RegionDocument.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): RegionDocument.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): RegionDocument.Implementation | null;
 
   protected _preCreate(
     data: RegionDocument.CreateData,

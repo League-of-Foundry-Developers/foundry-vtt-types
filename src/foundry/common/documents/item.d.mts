@@ -74,16 +74,16 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Item.Implementation | Item.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Item.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<Item.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<Item.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Item.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<Item.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Item.DatabaseOperation.Update>,
   ): Promise<Item.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<Item.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Item.DatabaseOperation.Delete>,
   ): Promise<Item.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -91,7 +91,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     operation?: Document.Database.CreateOperation<Item.DatabaseOperation.Create<Temporary>>,
   ): Promise<Item.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): Item.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): Item.Implementation | null;
 
   protected _preCreate(
     data: Item.CreateData,

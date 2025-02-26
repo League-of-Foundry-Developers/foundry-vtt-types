@@ -186,27 +186,27 @@ declare global {
       /** Options for {@link PlaylistSound._preCreateOperation | `PlaylistSound._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
       /** Options for {@link PlaylistSound._preCreate | `PlaylistSound#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
       /** Options for {@link PlaylistSound._onCreate | `PlaylistSound#_onCreate`} */
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
       /** Options for {@link PlaylistSound.updateDocuments | `PlaylistSound.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
       /** Options for {@link PlaylistSound._preUpdateOperation | `PlaylistSound._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
       /** Options for {@link PlaylistSound._preUpdate | `PlaylistSound#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
       /** Options for {@link PlaylistSound._onUpdate | `PlaylistSound#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
       /** Options for {@link PlaylistSound.deleteDocuments | `PlaylistSound.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
       /** Options for {@link PlaylistSound._preDeleteOperation | `PlaylistSound._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
       /** Options for {@link PlaylistSound._preDelete | `PlaylistSound#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link PlaylistSound._onDelete | `PlaylistSound#_onDelete`} */
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
     /**
@@ -345,13 +345,11 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(
-      context: Document.DefaultNameContext<"base", Exclude<PlaylistSound.Parent, null>>,
-    ): string;
+    static override defaultName(context: Document.DefaultNameContext<"base", PlaylistSound.Parent>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<PlaylistSound.CreateData>,
-      context: Document.CreateDialogContext<string, Exclude<PlaylistSound.Parent, null>>,
+      context: Document.CreateDialogContext<string, PlaylistSound.Parent>,
     ): Promise<PlaylistSound.Stored | null | undefined>;
 
     static override fromDropData(

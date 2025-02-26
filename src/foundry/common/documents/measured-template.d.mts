@@ -76,16 +76,16 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<MeasuredTemplateDocument.Implementation | MeasuredTemplateDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<MeasuredTemplateDocument.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<MeasuredTemplateDocument.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<MeasuredTemplateDocument.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: MeasuredTemplateDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<MeasuredTemplateDocument.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<MeasuredTemplateDocument.DatabaseOperation.Update>,
   ): Promise<MeasuredTemplateDocument.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<MeasuredTemplateDocument.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<MeasuredTemplateDocument.DatabaseOperation.Delete>,
   ): Promise<MeasuredTemplateDocument.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -95,7 +95,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   static get(
     documentId: string,
-    options?: Document.Database.GetOperation,
+    options?: Document.Database.GetOptions,
   ): MeasuredTemplateDocument.Implementation | null;
 
   protected _preCreate(

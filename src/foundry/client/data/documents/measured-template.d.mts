@@ -206,27 +206,27 @@ declare global {
       /** Options for {@link MeasuredTemplateDocument._preCreateOperation | `MeasuredTemplateDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
       /** Options for {@link MeasuredTemplateDocument._preCreate | `MeasuredTemplateDocument#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
       /** Options for {@link MeasuredTemplateDocument._onCreate | `MeasuredTemplateDocument#_onCreate`} */
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
       /** Options for {@link MeasuredTemplateDocument.updateDocuments | `MeasuredTemplateDocument.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
       /** Options for {@link MeasuredTemplateDocument._preUpdateOperation | `MeasuredTemplateDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
       /** Options for {@link MeasuredTemplateDocument._preUpdate | `MeasuredTemplateDocument#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
       /** Options for {@link MeasuredTemplateDocument._onUpdate | `MeasuredTemplateDocument#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
       /** Options for {@link MeasuredTemplateDocument.deleteDocuments | `MeasuredTemplateDocument.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
       /** Options for {@link MeasuredTemplateDocument._preDeleteOperation | `MeasuredTemplateDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
       /** Options for {@link MeasuredTemplateDocument._preDelete | `MeasuredTemplateDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link MeasuredTemplateDocument._onDelete | `MeasuredTemplateDocument#_onDelete`} */
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
     /**
@@ -288,13 +288,11 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(
-      context: Document.DefaultNameContext<"base", Exclude<MeasuredTemplateDocument.Parent, null>>,
-    ): string;
+    static override defaultName(context: Document.DefaultNameContext<"base", MeasuredTemplateDocument.Parent>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<MeasuredTemplateDocument.CreateData>,
-      context: Document.CreateDialogContext<string, Exclude<MeasuredTemplateDocument.Parent, null>>,
+      context: Document.CreateDialogContext<string, MeasuredTemplateDocument.Parent>,
     ): Promise<MeasuredTemplateDocument.Stored | null | undefined>;
 
     static override fromDropData(

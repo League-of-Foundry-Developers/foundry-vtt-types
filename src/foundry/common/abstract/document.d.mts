@@ -21,6 +21,8 @@ import type {
   IntentionalPartial,
   DiscriminatedUnion,
   SimpleMerge,
+  ConcreteKeys,
+  ValueOf,
 } from "../../../utils/index.d.mts";
 import type { documents } from "../../client-esm/client.d.mts";
 import type * as CONST from "../constants.mts";
@@ -162,7 +164,6 @@ declare abstract class Document<
 
   /**
    * The allowed types which may exist for this Document class
-   * @remarks Document.TYPES is overly generic so subclasses don't cause problems
    */
   static get TYPES(): string[];
 
@@ -174,7 +175,7 @@ declare abstract class Document<
   /**
    * The Embedded Document hierarchy for this Document.
    */
-  static get hierarchy(): Record<string, EmbeddedCollectionField<any, any> | EmbeddedDocumentField<any>>;
+  static get hierarchy(): Record<string, EmbeddedCollectionField.Any | EmbeddedDocumentField.Any>;
 
   /**
    * Identify the collection in a parent Document that this Document exists belongs to, if any.
@@ -241,7 +242,11 @@ declare abstract class Document<
    *                 (default: `{}`)
    * @returns Does the User have permission?
    */
-  canUserModify(user: User.Internal.Implementation, action: "create" | "update" | "delete", data?: object): boolean;
+  canUserModify<Action extends "create" | "update" | "delete">(
+    user: User.Internal.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<Schema, Action>,
+  ): boolean;
 
   /**
    * Clone a document, creating a new document by combining current data with provided overrides.
@@ -421,7 +426,7 @@ declare abstract class Document<
    * @remarks If the document creation is skipped by a hook or `_preCreate` then `undefined` is
    * returned.
    */
-  // Note: This uses `never` because it's unsound to try to call `Document.create`.
+  // Note: This uses `never` because it's unsound to try to call `Document.create` directly.
   static create(data: never, operation?: never): Promise<Document.Any | undefined>;
 
   /**
@@ -436,10 +441,8 @@ declare abstract class Document<
    * @remarks If the document update is skipped by a hook or `_preUpdate` then `undefined` is
    * returned.
    */
-  update(
-    data: SchemaField.UpdateData<Schema> | undefined,
-    operation?: InexactPartial<Omit<Document.Database.OperationOf<DocumentName, "update">, "updates">>,
-  ): Promise<this | undefined>;
+  // Note: This uses `never` because it's unsound to try to call `Document#update` directly.
+  update(data: never, operation: never): Promise<this | undefined>;
 
   /**
    * Delete this Document, removing it from the database.
@@ -451,17 +454,16 @@ declare abstract class Document<
    * @remarks If the document deletion is skipped by a hook or `_preUpdate` then `undefined` is
    * returned.
    */
-  delete(
-    operation?: InexactPartial<Omit<Document.Database.OperationOf<DocumentName, "delete">, "ids">>,
-  ): Promise<this | undefined>;
+  // Note: This uses `never` because it's unsound to try to call `Document#delete` directly.
+  delete(operation: never): Promise<this | undefined>;
 
   /**
    * Get a World-level Document of this type by its id.
    * @param documentId - The Document ID
-   * @param operation    - Additional options which customize the request
+   * @param operation  - Additional options which customize the request
    * @returns The retrieved Document, or null
    */
-  static get(documentId: string, operation?: Document.Database.GetOperation): Document.Any | null;
+  static get(documentId: string, operation?: Document.Database.GetOptions): Document.Any | null;
 
   /**
    * A compatibility method that returns the appropriate name of an embedded collection within this Document.
@@ -480,7 +482,7 @@ declare abstract class Document<
    * // returns "items"
    * ```
    */
-  static getCollectionName(name: string): string | null;
+  static getCollectionName(name: never): string | null;
 
   /**
    * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
@@ -488,9 +490,8 @@ declare abstract class Document<
    * @returns The Collection instance of embedded Documents of the requested type
    * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
    */
-  getEmbeddedCollection<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
-    embeddedName: EmbeddedName,
-  ): Collection<Document.ImplementationInstanceFor<EmbeddedName>>;
+  // Note: This uses `never` because it's unsound to try to call `Document#getEmbeddedCollection` directly.
+  getEmbeddedCollection(embeddedName: never): Collection<Document.Any>;
 
   /**
    * Get an embedded document by its id from a named collection in the parent document.
@@ -500,21 +501,11 @@ declare abstract class Document<
    * @returns The retrieved embedded Document instance, or undefined
    * @throws If the embedded collection does not exist, or if strict is true and the Embedded Document could not be found.
    */
+  // Note: This uses `never` because it's unsound to try to call `Document#getEmbeddedDocument` directly.
   getEmbeddedDocument(
-    embeddedName: string,
+    embeddedName: never,
     id: string,
-    options: InexactPartial<{
-      /**
-       * Throw an Error if the requested id does not exist. See Collection#get
-       * @defaultValue `false`
-       */
-      strict: boolean;
-      /**
-       * Allow retrieving an invalid Embedded Document.
-       * @defaultValue `false`
-       */
-      invalid: boolean;
-    }>,
+    options: Document.GetEmbeddedDocumentOptions,
   ): Document.AnyChild<this> | undefined;
 
   /**
@@ -527,19 +518,13 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of created Document instances
    */
-  // TODO: I think we could do a better job on all the embedded methods of limiting the types here based on the
-  //   allowed embedded types of the parent (vs. allowing any document to create embedded
-  //   documents of any type)
-  createEmbeddedDocuments<
-    EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES,
-    Temporary extends boolean | undefined,
-  >(
-    embeddedName: EmbeddedName,
-    data?: Array<Document.CreateDataForName<EmbeddedName>>,
-    operation?: InexactPartial<Document.Database.OperationOf<EmbeddedName, "create">> & {
-      temporary?: Temporary;
-    },
-  ): Promise<Array<Document.ImplementationInstanceFor<EmbeddedName>> | undefined>;
+  // Note: This uses `never` because it's unsound to try to call `Document#createEmbeddedDocuments` directly.
+  createEmbeddedDocuments(
+    embeddedName: never,
+    // Note: Not optional because `createEmbeddedDocuments("Actor")` does effectively nothing.
+    data: never,
+    operation?: never,
+  ): Promise<Array<Document.AnyStored> | undefined>;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
@@ -551,11 +536,13 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of updated Document instances
    */
-  updateEmbeddedDocuments<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
-    embeddedName: EmbeddedName,
-    updates?: Array<Document.UpdateDataForName<EmbeddedName>>,
-    context?: Document.ModificationContext<Parent>,
-  ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>>>;
+  // Note: This uses `never` because it's unsound to try to call `Document#updateEmbeddedDocuments` directly.
+  updateEmbeddedDocuments(
+    embeddedName: never,
+    // Note: Not optional because `updateEmbeddedDocuments("Actor")` does effectively nothing.
+    updates: never,
+    context?: never,
+  ): Promise<Array<Document.AnyStored> | undefined>;
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
@@ -566,18 +553,18 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of deleted Document instances
    */
-  deleteEmbeddedDocuments<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
-    embeddedName: EmbeddedName,
+  deleteEmbeddedDocuments(
+    embeddedName: never,
     ids: Array<string>,
-    operation?: Document.Database.OperationOf<DocumentName, "delete">,
-  ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>>>;
+    operation?: never,
+  ): Promise<Array<Document.AnyStored>>;
 
   /**
    * Iterate over all embedded Documents that are hierarchical children of this Document.
    * @param _parentPath - A parent field path already traversed
    * @remarks Not called within Foundry's client-side code, likely exists for server documents
    */
-  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.Any]>;
+  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
 
   /**
    * Get the value of a "flag" for this document
@@ -587,10 +574,7 @@ declare abstract class Document<
    * @param key   - The flag key
    * @returns The flag value
    */
-  getFlag<
-    S extends Document.FlagKeyOf<Document.ConfiguredFlagsForName<DocumentName>>,
-    K extends Document.FlagKeyOf<Document.FlagGetKey<Document.ConfiguredFlagsForName<DocumentName>, S>>,
-  >(scope: S, key: K): Document.GetFlag<DocumentName, S, K>;
+  getFlag(scope: never, key: never): unknown;
 
   /**
    * Assign a "flag" to this document.
@@ -610,11 +594,7 @@ declare abstract class Document<
    * @param value - The flag value
    * @returns A Promise resolving to the updated document
    */
-  setFlag<
-    S extends Document.FlagKeyOf<Document.ConfiguredFlagsForName<DocumentName>>,
-    K extends Document.FlagKeyOf<Document.FlagGetKey<Document.ConfiguredFlagsForName<DocumentName>, S>>,
-    V extends Document.GetFlag<DocumentName, S, K>,
-  >(scope: S, key: K, value: V): Promise<this>;
+  setFlag(scope: never, key: never, value: never): Promise<this>;
 
   /**
    * Remove a flag assigned to the document
@@ -622,7 +602,7 @@ declare abstract class Document<
    * @param key   - The flag key
    * @returns The updated document instance
    */
-  unsetFlag(scope: string, key: string): Promise<this>;
+  unsetFlag(scope: never, key: never): Promise<this>;
 
   /**
    * Pre-process a creation operation for a single Document instance.
@@ -890,10 +870,9 @@ declare abstract class AnyDocument extends Document<Document.Type, {}, Document.
   // Note(LukeAbby): This uses `object` instead of `AnyObject` to avoid more thorough evaluation of
   // the involved types which can cause a loop.
   _source: object;
+  system?: object;
 
   flags?: unknown;
-
-  getFlag(scope: never, key: never): any;
 }
 
 type AnyDocumentClass = typeof AnyDocument;
@@ -901,6 +880,8 @@ type AnyDocumentClass = typeof AnyDocument;
 declare namespace Document {
   /** Any Document, except for Settings */
   interface Any extends AnyDocument {}
+  interface AnyStored extends Stored<Any> {}
+  interface AnyValid extends AnyDocument {}
   interface AnyConstructor extends AnyDocumentClass {}
 
   type Type =
@@ -1070,14 +1051,11 @@ declare namespace Document {
     | "JournalEntryPage"
     | "RegionBehavior";
 
-  type EmbeddableNamesFor<ConcreteDocument extends Document.Internal.Instance.Any> = {
-    [K in keyof ConfiguredDocumentClass]: IsParentOf<
-      ConcreteDocument,
-      FixedInstanceType<ConfiguredDocumentClass[K]>
-    > extends true
-      ? K
-      : never;
-  };
+  type EmbeddableNamesFor<Metadata extends Document.Metadata.Any> = Document.Type & ConcreteKeys<Metadata["embedded"]>;
+
+  type CollectionNamesFor<Metadata extends Document.Metadata.Any> =
+    | EmbeddableNamesFor<Metadata>
+    | ValueOf<Metadata["embedded"]>;
 
   type IsParentOf<
     ParentDocument extends Document.Internal.Instance.Any,
@@ -1228,7 +1206,12 @@ declare namespace Document {
     ? FixedInstanceType<D>
     : ToConfiguredStored<D>;
 
-  type StoredIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true ? D : Stored<D>;
+  /** @deprecated {@link Document.TemporaryIf | `Document.TemporaryIf`} */
+  type StoredIf<D extends Document.Any, Temporary extends boolean | undefined> = TemporaryIf<D, Temporary>;
+
+  type TemporaryIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true
+    ? D
+    : Stored<D>;
 
   type Temporary<D extends Document.Any> = D extends Stored<infer U> ? U : D;
 
@@ -1432,28 +1415,38 @@ declare namespace Document {
 
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
+  /* eslint-disable @typescript-eslint/no-deprecated */
+  /** @deprecated */
   type PreCreateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "create">,
     "data" | "noHook" | "pack" | "parent"
   >;
+
+  /** @deprecated */
   type OnCreateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "create">,
     "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
+  /** @deprecated */
   type PreUpdateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "update">,
     "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
   >;
+
+  /** @deprecated */
   type OnUpdateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "update">,
     "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
+  /** @deprecated */
   type PreDeleteOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "delete">,
     "ids" | "deleteAll" | "noHook" | "pack" | "parent"
   >;
+
+  /** @deprecated */
   type OnDeleteOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "delete">,
     "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
@@ -1461,6 +1454,7 @@ declare namespace Document {
 
   type PreUpsertOptions<Name extends Type> = PreCreateOptions<Name> | PreUpdateOptions<Name>;
   type OnUpsertOptions<Name extends Type> = OnCreateOptions<Name> | OnUpdateOptions<Name>;
+  /* eslint-enable @typescript-eslint/no-deprecated */
 
   interface Metadata<out ThisType extends Document.Any> {
     readonly name: ThisType["documentName"];
@@ -1469,7 +1463,9 @@ declare namespace Document {
     readonly compendiumIndexFields: readonly string[];
     readonly label: string;
     readonly coreTypes: readonly string[];
-    readonly embedded: Record<string, string>;
+    readonly embedded: {
+      [DocumentType in Document.Type]?: string;
+    };
     readonly permissions: {
       create: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
       update: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
@@ -1485,7 +1481,7 @@ declare namespace Document {
   namespace Metadata {
     type Any = Metadata<any>;
 
-    export interface Default {
+    interface Default {
       readonly name: "Document";
       readonly collection: "documents";
       readonly indexed: false;
@@ -1531,10 +1527,18 @@ declare namespace Document {
   namespace Database {
     type Operation = "create" | "update" | "delete";
 
-    type GetOperation = NullishProps<{ pack: string }>;
+    interface GetOptions {
+      pack?: string | null;
+    }
 
     /** Used for {@link Document.createDocuments | `Document.createDocuments`} */
     type CreateOperation<Op extends DatabaseCreateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;
+
+    /** Used for {@link Document.update | `Document.update`} */
+    type UpdateOperation<Op extends DatabaseUpdateOperation> = InexactPartial<Omit<Op, "updates">>;
+
+    /** Used for {@link Document.delete | `Document.delete`} */
+    type DeleteOperation<Op extends DatabaseDeleteOperation> = InexactPartial<Omit<Op, "ids">>;
 
     /** Used for {@link Document._preCreateOperation | `Document._preCreateOperation`} */
     type PreCreateOperationStatic<Op extends DatabaseCreateOperation> = InexactPartial<
@@ -1543,19 +1547,24 @@ declare namespace Document {
     >;
 
     /** Used for {@link Document._preCreate | `Document#_preCreate`} */
-    type PreCreateOperationInstance<Op extends DatabaseCreateOperation> = Omit<
+    type PreCreateOptions<Op extends DatabaseCreateOperation> = Omit<
       PreCreateOperationStatic<Op>,
       "data" | "noHook" | "pack" | "parent"
     >;
 
     /** Used for {@link Document._onCreate | `Document#_onCreate`} */
-    type OnCreateOperation<Op extends DatabaseCreateOperation> = Omit<
+    type CreateOptions<Op extends DatabaseCreateOperation> = Omit<
       Op,
       "data" | "pack" | "parentUuid" | "syntheticActorUpdate"
     >;
 
     /** Used for {@link Document.updateDocuments | `Document.updateDocuments`} */
-    type UpdateOperation<Op extends DatabaseUpdateOperation> = NullishProps<Omit<Op, "updates" | "modifiedTime">>;
+    type UpdateDocumentsOperation<Op extends DatabaseUpdateOperation> = NullishProps<
+      Omit<Op, "updates" | "modifiedTime">
+    >;
+
+    /** Used for {@link Document.update | `Document#update`} */
+    type UpdateOperationInstance<Op extends DatabaseUpdateOperation> = InexactPartial<Omit<Op, "updates">>;
 
     /** Used for {@link Document._preUpdateOperation | `Document._preUpdateOperation`} */
     type PreUpdateOperationStatic<Op extends DatabaseUpdateOperation> = InexactPartial<
@@ -1567,19 +1576,22 @@ declare namespace Document {
     >;
 
     /** Used for {@link Document._preUpdate | `Document#_preUpdate`} */
-    type PreUpdateOperationInstance<Op extends DatabaseUpdateOperation> = Omit<
+    type PreUpdateOptions<Op extends DatabaseUpdateOperation> = Omit<
       PreUpdateOperationStatic<Op>,
       "updates" | "restoreDelta" | "noHook" | "pack" | "parent"
     >;
 
     /** Used for {@link Document._onUpdate | `Document#_onUpdate`} */
-    type OnUpdateOperation<Op extends DatabaseUpdateOperation> = Omit<
+    type UpdateOptions<Op extends DatabaseUpdateOperation> = Omit<
       Op,
       "updates" | "pack" | "parentUuid" | "syntheticActorUpdate"
     >;
 
     /** Used for {@link Document.deleteDocuments | `Document.deleteDocuments`} */
-    type DeleteOperation<Op extends DatabaseDeleteOperation> = NullishProps<Omit<Op, "ids" | "modifiedTime">>;
+    type DeleteDocumentsOperation<Op extends DatabaseDeleteOperation> = NullishProps<Omit<Op, "ids" | "modifiedTime">>;
+
+    /** Used for {@link Document.delete} */
+    type DeleteOperationInstance<Op extends DatabaseDeleteOperation> = InexactPartial<Omit<Op, "ids">>;
 
     /** Used for {@link Document._preDeleteOperation | `Document._preDeleteOperation`} */
     type PreDeleteOperationStatic<Op extends DatabaseDeleteOperation> = InexactPartial<
@@ -1594,7 +1606,7 @@ declare namespace Document {
     >;
 
     /** Used for {@link Document._onDelete | `Document#_onDelete`} */
-    type OnDeleteOperation<Op extends DatabaseDeleteOperation> = Omit<
+    type DeleteOptions<Op extends DatabaseDeleteOperation> = Omit<
       Op,
       "ids" | "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
     >;
@@ -1602,15 +1614,16 @@ declare namespace Document {
     /**
      * This is a helper type that gets the right DatabaseOperation (including the
      * proper options) for a particular Document type.
+     *
+     * @deprecated This is no longer used internally inside fvtt-types. If you have use for it please file an issue.
      */
-    // TODO(LukeAbby): Filling out causes circularities.
     type OperationOf<T extends Document.Type, Operation extends Database.Operation> =
-      | (Operation extends "create" ? any : never)
-      | (Operation extends "update" ? any : never)
-      | (Operation extends "delete" ? any : never);
+      | (Operation extends "create" ? DatabaseOperationCreateMap[T] : never)
+      | (Operation extends "update" ? DatabaseOperationUpdateMap[T] : never)
+      | (Operation extends "delete" ? DatabaseOperationDeleteMap[T] : never);
 
     /**
-     * @deprecated TODO: Delete this once it's been fully removed.
+     * @deprecated See individual document's namespaces.
      */
     interface Operations<
       _T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
@@ -1652,7 +1665,7 @@ declare namespace Document {
 
     /** A compendium pack within which the Document should be created */
     pack?: string | undefined;
-  } & ParentContext<Parent>;
+  } & ParentContext<Exclude<Parent, null>>;
 
   interface FromDropDataOptions {
     /**
@@ -1678,7 +1691,7 @@ declare namespace Document {
 
     /** A restriction the selectable sub-types of the Dialog. */
     types?: SubType[] | null | undefined;
-  } & ParentContext<Parent>;
+  } & ParentContext<Exclude<Parent, null>>;
 
   interface FromImportContext<Parent extends Document.Any | null>
     extends ConstructionContext<Parent>,
@@ -1717,12 +1730,37 @@ declare namespace Document {
   type DatabaseOperationsFor<
     Name extends Document.Type,
     ConcreteOperation extends Document.Database.Operation,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
   > = Document.Database.OperationOf<Name, ConcreteOperation>;
 
   /**
    * @deprecated {@link CreateDataForName | `CreateDataForName`}
    */
   type ConstructorDataForName<T extends Document.Type> = CreateData[T];
+
+  type CanUserModifyData<Schema extends DataSchema, Action extends "create" | "update" | "delete"> =
+    | (Action extends "create" ? SchemaField.CreateData<Schema> : never)
+    | (Action extends "update" ? SchemaField.UpdateData<Schema> : never)
+    | (Action extends "delete" ? EmptyObject : never);
+
+  type _GetEmbeddedDocumentOptions = InexactPartial<{
+    /**
+     * Throw an Error if the requested id does not exist. See {@link Collection.get | `Collection#get`}
+     * @defaultValue `false`
+     */
+    strict: boolean;
+
+    /**
+     * Allow retrieving an invalid Embedded Document.
+     * @defaultValue `false`
+     */
+    invalid: boolean;
+  }>;
+
+  interface GetEmbeddedDocumentOptions extends _GetEmbeddedDocumentOptions {}
+
+  // TODO
+  type EmbeddedCollectionFor<DocumentName extends Document.Type, EmbeddedCollection> = any;
 }
 
 /** @deprecated {@link Document.Database.Operation | `Document.Database.Operation`} */
@@ -1800,7 +1838,7 @@ interface DatabaseOperationCreateMap {
   Tile: TileDocument.DatabaseOperation.Create;
   Token: TokenDocument.DatabaseOperation.Create;
   User: User.DatabaseOperation.Create;
-  Wall: WallDocument.DatabaseOperation.Create;
+  Wall: WallDocument.Database.Create;
 }
 
 interface DatabaseOperationUpdateMap {
@@ -1835,7 +1873,7 @@ interface DatabaseOperationUpdateMap {
   Tile: TileDocument.DatabaseOperation.Update;
   Token: TokenDocument.DatabaseOperation.Update;
   User: User.DatabaseOperation.Update;
-  Wall: WallDocument.DatabaseOperation.Update;
+  Wall: WallDocument.Database.Update;
 }
 
 interface DatabaseOperationDeleteMap {
@@ -1870,5 +1908,5 @@ interface DatabaseOperationDeleteMap {
   Tile: TileDocument.DatabaseOperation.Delete;
   Token: TokenDocument.DatabaseOperation.Delete;
   User: User.DatabaseOperation.Delete;
-  Wall: WallDocument.DatabaseOperation.Delete;
+  Wall: WallDocument.Database.Delete;
 }

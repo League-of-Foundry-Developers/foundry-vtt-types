@@ -1,10 +1,11 @@
+import type { AnyObject } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 
 declare global {
   namespace WallDocument {
-    type A = WallDocument extends { readonly documentName: infer Name extends Document.Type } ? Name : never;
+    type Name = "Wall";
 
     /**
      * The implementation of the WallDocument document instance configured through `CONFIG.Wall.documentClass` in Foundry and
@@ -29,6 +30,33 @@ declare global {
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = Scene.Implementation | null;
+
+    // Note: I set to null to punt. Please check.
+    type ParentCollection = null;
+    type Pack = null;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName | EmbeddedCollectionName> =
+      CollectionName extends keyof Metadata["embedded"] ? Metadata["embedded"][CollectionName] : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `WallDocument` that comes from the database.
@@ -81,7 +109,7 @@ declare global {
      */
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
-    export interface ThresholdSchema extends DataSchema {
+    interface ThresholdSchema extends DataSchema {
       /**
        * Minimum distance from a light source for which this wall blocks light
        */
@@ -230,9 +258,11 @@ declare global {
        */
       flags: fields.ObjectField.FlagsField<"Wall">;
     }
-    namespace DatabaseOperation {
+
+    namespace Database {
       /** Options passed along in Get operations for WallDocuments */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<WallDocument.Parent> {}
+
       /** Options passed along in Create operations for WallDocuments */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<
@@ -240,43 +270,112 @@ declare global {
           WallDocument.Parent,
           Temporary
         > {}
+
       /** Options passed along in Delete operations for WallDocuments */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<WallDocument.Parent> {}
+
       /** Options passed along in Update operations for WallDocuments */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<WallDocument.UpdateData, WallDocument.Parent> {}
 
-      /** Options for {@link WallDocument.createDocuments | `WallDocument.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link WallDocument._preCreateOperation | `WallDocument._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link WallDocument.createDocuments | `WallDocument.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<WallDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link WallDocument.updateDocuments | `WallDocument.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<WallDocument.Database.Update> {}
+
+      /** Operation for {@link WallDocument.deleteDocuments | `WallDocument.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<WallDocument.Database.Delete> {}
+
+      /** Operation for {@link WallDocument.create | `WallDocument.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<WallDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link WallDocument.update | `WallDocument#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link WallDocument.get | `WallDocument.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link WallDocument._preCreate | `WallDocument#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link WallDocument._onCreate | `WallDocument#_onCreate`} */
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link WallDocument.updateDocuments | `WallDocument.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
-      /** Options for {@link WallDocument._preUpdateOperation | `WallDocument._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link WallDocument._preCreateOperation | `WallDocument._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<WallDocument.Database.Create> {}
+
+      /** Operation for {@link WallDocument._onCreateOperation | `WallDocument#_onCreateOperation`} */
+      interface OnCreateOperation extends WallDocument.Database.Create {}
+
       /** Options for {@link WallDocument._preUpdate | `WallDocument#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
-      /** Options for {@link WallDocument._onUpdate | `WallDocument#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link WallDocument.deleteDocuments | `WallDocument.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
-      /** Options for {@link WallDocument._preDeleteOperation | `WallDocument._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link WallDocument._onUpdate | `WallDocument#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link WallDocument._preUpdateOperation | `WallDocument._preUpdateOperation`} */
+      interface PreUpdateOperation extends WallDocument.Database.Update {}
+
+      /** Operation for {@link WallDocument._onUpdateOperation | `WallDocument._preUpdateOperation`} */
+      interface OnUpdateOperation extends WallDocument.Database.Update {}
+
       /** Options for {@link WallDocument._preDelete | `WallDocument#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link WallDocument._onDelete | `WallDocument#_onDelete`} */
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link WallDocument._preDeleteOperation | `WallDocument#_preDeleteOperation`} */
+      interface PreDeleteOperation extends WallDocument.Database.Delete {}
+
+      /** Options for {@link WallDocument._onDeleteOperation | `WallDocument#_onDeleteOperation`} */
+      interface OnDeleteOperation extends WallDocument.Database.Delete {}
+
+      /** Context for {@link WallDocument._onDeleteOperation | `WallDocument._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<WallDocument.Parent> {}
+
+      /** Context for {@link WallDocument._onCreateDocuments | `WallDocument._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<WallDocument.Parent> {}
+
+      /** Context for {@link WallDocument._onUpdateDocuments | `WallDocument._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<WallDocument.Parent> {}
+
+      /**
+       * Options for {@link WallDocument._preCreateDescendantDocuments | `WallDocument#_preCreateDescendantDocuments`}
+       * and {@link WallDocument._onCreateDescendantDocuments | `WallDocument#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<WallDocument.Database.Create> {}
+
+      /**
+       * Options for {@link WallDocument._preUpdateDescendantDocuments | `WallDocument#_preUpdateDescendantDocuments`}
+       * and {@link WallDocument._onUpdateDescendantDocuments | `WallDocument#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<WallDocument.Database.Update> {}
+
+      /**
+       * Options for {@link WallDocument._preDeleteDescendantDocuments | `WallDocument#_preDeleteDescendantDocuments`}
+       * and {@link WallDocument._onDeleteDescendantDocuments | `WallDocument#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<WallDocument.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<"Wall"> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<"Wall", Scope, Key>;
     }
 
     /**
-     * @deprecated {@link WallDocument.DatabaseOperation | `WallDocument.DatabaseOperation`}
+     * @deprecated {@link WallDocument.Database | `WallDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<WallDocument> {}
@@ -322,13 +421,63 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(
-      context: Document.DefaultNameContext<"base", Exclude<WallDocument.Parent, null>>,
-    ): string;
+    static override defaultName(context: Document.DefaultNameContext<"base", WallDocument.Parent>): string;
+
+    protected override _preCreateDescendantDocuments(
+      // TODO: Determine what parents are possible and put it into a nice variable.
+      parent: ClientDocument,
+      collection: string,
+      data: unknown[], // TODO
+      options: WallDocument.Database.CreateOptions,
+      userId: string,
+    ): void;
+
+    protected override _onCreateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      data: unknown[],
+      options: WallDocument.Database.CreateOptions,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      changes: unknown[],
+      options: WallDocument.Database.UpdateOptions,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      changes: unknown[],
+      options: WallDocument.Database.UpdateOptions,
+      userId: string,
+    ): void;
+
+    protected override _preDeleteDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      ids: string[],
+      options: WallDocument.Database.DeleteOptions,
+      userId: string,
+    ): void;
+
+    protected override _onDeleteDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      ids: string[],
+      options: WallDocument.Database.DeleteOptions,
+      userId: string,
+    ): void;
 
     static override createDialog(
       data: Document.CreateDialogData<WallDocument.CreateData>,
-      context: Document.CreateDialogContext<string, Exclude<WallDocument.Parent, null>>,
+      context: Document.CreateDialogContext<string, WallDocument.Parent>,
     ): Promise<WallDocument.Stored | null | undefined>;
 
     static override fromDropData(
@@ -340,5 +489,50 @@ declare global {
       source: WallDocument.Source,
       context?: Document.FromImportContext<WallDocument.Parent>,
     ): Promise<WallDocument.Implementation>;
+
+    protected override _preCreateEmbeddedDocuments(
+      embeddedName: string,
+      result: AnyObject[],
+      options: Document.ModificationOptions,
+      userId: string,
+    ): void;
+
+    protected override _onCreateEmbeddedDocuments(
+      embeddedName: string,
+      documents: never,
+      result: never,
+      options: Document.ModificationOptions,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateEmbeddedDocuments(
+      embeddedName: string,
+      result: never,
+      options: Document.ModificationOptions,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateEmbeddedDocuments(
+      embeddedName: string,
+      documents: never,
+      result: never,
+      options: Document.ModificationContext<never>,
+      userId: string,
+    ): void;
+
+    protected override _preDeleteEmbeddedDocuments(
+      embeddedName: string,
+      result: string[],
+      options: Document.ModificationContext<never>,
+      userId: string,
+    ): void;
+
+    protected override _onDeleteEmbeddedDocuments(
+      embeddedName: string,
+      documents: Document.Any[],
+      result: string[],
+      options: Document.ModificationContext<Document.Any | null>,
+      userId: string,
+    ): void;
   }
 }

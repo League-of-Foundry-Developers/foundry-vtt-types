@@ -46,16 +46,16 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<FogExploration.Implementation | FogExploration.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<FogExploration.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<FogExploration.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<FogExploration.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: FogExploration.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<FogExploration.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<FogExploration.DatabaseOperation.Update>,
   ): Promise<FogExploration.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<FogExploration.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<FogExploration.DatabaseOperation.Delete>,
   ): Promise<FogExploration.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -63,7 +63,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     operation?: Document.Database.CreateOperation<FogExploration.DatabaseOperation.Create<Temporary>>,
   ): Promise<FogExploration.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): FogExploration.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): FogExploration.Implementation | null;
 
   protected _preCreate(
     data: FogExploration.CreateData,

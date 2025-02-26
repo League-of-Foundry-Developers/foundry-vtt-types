@@ -75,16 +75,16 @@ declare abstract class BaseChatMessage<
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<ChatMessage.Implementation | ChatMessage.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ChatMessage.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<ChatMessage.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<ChatMessage.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: ChatMessage.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<ChatMessage.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<ChatMessage.DatabaseOperation.Update>,
   ): Promise<ChatMessage.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<ChatMessage.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<ChatMessage.DatabaseOperation.Delete>,
   ): Promise<ChatMessage.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -92,7 +92,7 @@ declare abstract class BaseChatMessage<
     operation?: Document.Database.CreateOperation<ChatMessage.DatabaseOperation.Create<Temporary>>,
   ): Promise<ChatMessage.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): ChatMessage.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): ChatMessage.Implementation | null;
 
   protected _preCreate(
     data: ChatMessage.CreateData,

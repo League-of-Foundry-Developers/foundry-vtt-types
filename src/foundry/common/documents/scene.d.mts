@@ -56,16 +56,16 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Scene.Implementation | Scene.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Scene.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<Scene.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<Scene.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Scene.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<Scene.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Scene.DatabaseOperation.Update>,
   ): Promise<Scene.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<Scene.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Scene.DatabaseOperation.Delete>,
   ): Promise<Scene.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -73,7 +73,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     operation?: Document.Database.CreateOperation<Scene.DatabaseOperation.Create<Temporary>>,
   ): Promise<Scene.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): Scene.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): Scene.Implementation | null;
 
   protected _preCreate(
     data: Scene.CreateData,

@@ -205,7 +205,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     parent: ClientDocument,
     collection: string,
     data: unknown[],
-    options: Document.Database.OnCreateOperation<DatabaseCreateOperation>,
+    options: Document.Database.CreateOptions<DatabaseCreateOperation>,
     userId: string,
   ): void;
 
@@ -223,9 +223,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     collection: string,
     documents: ClientDocument[],
     data: unknown[],
-    options: Document.Database.OnCreateOperation<DatabaseCreateOperation>,
+    options: Document.Database.CreateOptions<DatabaseCreateOperation>,
     userId: string,
   ): void;
+
   /**
    * Actions taken after descendant documents have been updated, but before changes are applied to the client data.
    * @param parent - The direct parent of the updated Documents, may be this Document or a child
@@ -238,7 +239,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     parent: ClientDocument,
     collection: string,
     changes: unknown[],
-    options: Document.Database.OnUpdateOperation<DatabaseUpdateOperation>,
+    options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
     userId: string,
   ): void;
 
@@ -256,7 +257,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     collection: string,
     documents: ClientDocument[],
     changes: unknown[],
-    options: Document.Database.OnUpdateOperation<DatabaseUpdateOperation>,
+    options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
     userId: string,
   ): void;
 
@@ -272,7 +273,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     parent: ClientDocument,
     collection: string,
     ids: string[],
-    options: Document.Database.OnDeleteOperation<DatabaseDeleteOperation>,
+    options: Document.Database.OnDeleteOperationInstance<DatabaseDeleteOperation>,
     userId: string,
   ): void;
 
@@ -290,7 +291,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     collection: string,
     documents: ClientDocument[],
     ids: string[],
-    options: Document.Database.OnDeleteOperation<DatabaseDeleteOperation>,
+    options: Document.Database.OnDeleteOperationInstance<DatabaseDeleteOperation>,
     userId: string,
   ): void;
 

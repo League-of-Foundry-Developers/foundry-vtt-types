@@ -55,16 +55,16 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<PlaylistSound.Implementation | PlaylistSound.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<PlaylistSound.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<PlaylistSound.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<PlaylistSound.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: PlaylistSound.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<PlaylistSound.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<PlaylistSound.DatabaseOperation.Update>,
   ): Promise<PlaylistSound.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<PlaylistSound.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<PlaylistSound.DatabaseOperation.Delete>,
   ): Promise<PlaylistSound.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -72,7 +72,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     operation?: Document.Database.CreateOperation<PlaylistSound.DatabaseOperation.Create<Temporary>>,
   ): Promise<PlaylistSound.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): PlaylistSound.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): PlaylistSound.Implementation | null;
 
   protected _preCreate(
     data: PlaylistSound.CreateData,

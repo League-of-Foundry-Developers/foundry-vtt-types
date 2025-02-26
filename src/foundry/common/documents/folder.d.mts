@@ -57,16 +57,16 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Folder.Implementation | Folder.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Folder.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<Folder.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<Folder.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Folder.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<Folder.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Folder.DatabaseOperation.Update>,
   ): Promise<Folder.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<Folder.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Folder.DatabaseOperation.Delete>,
   ): Promise<Folder.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -74,7 +74,7 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
     operation?: Document.Database.CreateOperation<Folder.DatabaseOperation.Create<Temporary>>,
   ): Promise<Folder.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): Folder.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): Folder.Implementation | null;
 
   protected _preCreate(
     data: Folder.CreateData,

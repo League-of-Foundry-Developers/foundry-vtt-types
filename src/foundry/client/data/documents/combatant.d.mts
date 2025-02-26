@@ -198,27 +198,27 @@ declare global {
       /** Options for {@link Combatant._preCreateOperation | `Combatant._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
       /** Options for {@link Combatant._preCreate | `Combatant#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOperationInstance<Create>;
+      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
       /** Options for {@link Combatant._onCreate | `Combatant#_onCreate`} */
-      type OnCreateOperation = Document.Database.OnCreateOperation<Create>;
+      type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
       /** Options for {@link Combatant.updateDocuments | `Combatant.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateOperation<Update>;
+      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
       /** Options for {@link Combatant._preUpdateOperation | `Combatant._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
       /** Options for {@link Combatant._preUpdate | `Combatant#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOperationInstance<Update>;
+      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
       /** Options for {@link Combatant._onUpdate | `Combatant#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.OnUpdateOperation<Update>;
+      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
       /** Options for {@link Combatant.deleteDocuments | `Combatant.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteOperation<Delete>;
+      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
       /** Options for {@link Combatant._preDeleteOperation | `Combatant._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
       /** Options for {@link Combatant._preDelete | `Combatant#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
       /** Options for {@link Combatant._onDelete | `Combatant#_onDelete`} */
-      type OnDeleteOperation = Document.Database.OnDeleteOperation<Delete>;
+      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
     /**
@@ -357,13 +357,11 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(
-      context: Document.DefaultNameContext<Combatant.SubType, Exclude<Combatant.Parent, null>>,
-    ): string;
+    static override defaultName(context: Document.DefaultNameContext<Combatant.SubType, Combatant.Parent>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<Combatant.CreateData>,
-      context: Document.CreateDialogContext<Combatant.SubType, Exclude<Combatant.Parent, null>>,
+      context: Document.CreateDialogContext<Combatant.SubType, Combatant.Parent>,
     ): Promise<Combatant.Stored | null | undefined>;
 
     static override fromDropData(

@@ -56,16 +56,16 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<TileDocument.Implementation | TileDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<TileDocument.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<TileDocument.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<TileDocument.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: TileDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<TileDocument.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<TileDocument.DatabaseOperation.Update>,
   ): Promise<TileDocument.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<TileDocument.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<TileDocument.DatabaseOperation.Delete>,
   ): Promise<TileDocument.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -73,7 +73,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
     operation?: Document.Database.CreateOperation<TileDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<TileDocument.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): TileDocument.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): TileDocument.Implementation | null;
 
   protected _preCreate(
     data: TileDocument.CreateData,

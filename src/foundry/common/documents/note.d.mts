@@ -74,16 +74,16 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<NoteDocument.Implementation | NoteDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<NoteDocument.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Array<Document.StoredIf<NoteDocument.Implementation, Temporary>>>;
+  ): Promise<Array<Document.TemporaryIf<NoteDocument.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: NoteDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateOperation<NoteDocument.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<NoteDocument.DatabaseOperation.Update>,
   ): Promise<NoteDocument.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteOperation<NoteDocument.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<NoteDocument.DatabaseOperation.Delete>,
   ): Promise<NoteDocument.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
@@ -91,7 +91,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     operation?: Document.Database.CreateOperation<NoteDocument.DatabaseOperation.Create<Temporary>>,
   ): Promise<NoteDocument.Implementation | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOperation): NoteDocument.Implementation | null;
+  static get(documentId: string, options?: Document.Database.GetOptions): NoteDocument.Implementation | null;
 
   protected _preCreate(
     data: NoteDocument.CreateData,
