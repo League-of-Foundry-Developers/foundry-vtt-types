@@ -51,8 +51,9 @@ declare global {
      */
     type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
 
-    type CollectionNameOf<CollectionName extends EmbeddedName | EmbeddedCollectionName> =
-      CollectionName extends keyof Metadata["embedded"] ? Metadata["embedded"][CollectionName] : CollectionName;
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
 
     type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
 
@@ -423,55 +424,61 @@ declare global {
 
     static override defaultName(context: Document.DefaultNameContext<"base", WallDocument.Parent>): string;
 
+    // TODO: Make generic over collection?
     protected override _preCreateDescendantDocuments(
       // TODO: Determine what parents are possible and put it into a nice variable.
       parent: ClientDocument,
       collection: string,
-      data: unknown[], // TODO
-      options: WallDocument.Database.CreateOptions,
-      userId: string,
-    ): void;
-
-    protected override _onCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
       data: unknown[],
       options: WallDocument.Database.CreateOptions,
       userId: string,
     ): void;
 
+    // TODO: Make generic over collection?
+    protected override _onCreateDescendantDocuments(
+      parent: ClientDocument,
+      collection: string,
+      documents: ClientDocument[],
+      data: unknown[],
+      options: WallDocument.Database.CreateOptions, // Should be the descendant's operations
+      userId: string,
+    ): void;
+
+    // TODO: Make generic over collection?
     protected override _preUpdateDescendantDocuments(
       parent: ClientDocument,
       collection: string,
       changes: unknown[],
-      options: WallDocument.Database.UpdateOptions,
+      options: WallDocument.Database.UpdateOptions, // Should be the descendant's operations
       userId: string,
     ): void;
 
+    // TODO: Make generic over collection?
     protected override _onUpdateDescendantDocuments(
       parent: ClientDocument,
       collection: string,
       documents: ClientDocument[],
       changes: unknown[],
-      options: WallDocument.Database.UpdateOptions,
+      options: WallDocument.Database.UpdateOptions, // Should be the descendant's operations
       userId: string,
     ): void;
 
+    // TODO: Make generic over collection?
     protected override _preDeleteDescendantDocuments(
       parent: ClientDocument,
       collection: string,
       ids: string[],
-      options: WallDocument.Database.DeleteOptions,
+      options: WallDocument.Database.DeleteOptions, // Should be the descendant's operations
       userId: string,
     ): void;
 
+    // TODO: Make generic over collection?
     protected override _onDeleteDescendantDocuments(
       parent: ClientDocument,
       collection: string,
       documents: ClientDocument[],
       ids: string[],
-      options: WallDocument.Database.DeleteOptions,
+      options: WallDocument.Database.DeleteOptions, // Should be the descendant's operations
       userId: string,
     ): void;
 

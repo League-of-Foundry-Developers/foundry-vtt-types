@@ -33,8 +33,12 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   /*
    * After this point these are not really overridden methods.
-   * They are here because they're static properties but depend on the instance and so can't be
-   * defined DRY-ly while also being easily overridable.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct any possible document. Finally it has also been
+   * liable to cause circularities.
    */
 
   /* Document */
@@ -94,38 +98,39 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     options?: WallDocument.Database.GetOptions,
   ): WallDocument.Implementation | null;
 
-  static getCollectionName<CollectionName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
+  static getCollectionName<CollectionName extends WallDocument.EmbeddedName>(
     name: CollectionName,
   ): WallDocument.CollectionNameOf<CollectionName> | null;
 
-  getEmbeddedCollection<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
+  getEmbeddedCollection<EmbeddedName extends WallDocument.EmbeddedName>(
     embeddedName: EmbeddedName,
   ): Document.EmbeddedCollectionFor<WallDocument.Name, EmbeddedName>;
 
-  getEmbeddedDocument<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
+  getEmbeddedDocument<EmbeddedName extends WallDocument.EmbeddedName>(
     embeddedName: EmbeddedName,
     id: string,
     options: Document.GetEmbeddedDocumentOptions,
+    // TODO: Generic over the EmbeddedName
   ): WallDocument.Embedded | undefined;
 
-  createEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
+  createEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataFor<EmbeddedName>[] | undefined,
-    // TODO: Figure out operation. Probably some flavor of create but is it the child's create operation?
+    // TODO: Generic over the EmbeddedName
     operation?: never,
   ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
 
-  updateEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
+  updateEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataFor<EmbeddedName>[] | undefined,
-    // TODO: Figure out operation. Probably some flavor of update but is it the child's update operation?
+    // TODO: Generic over the EmbeddedName
     operation?: never,
   ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
 
-  deleteEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
+  deleteEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
-    // TODO: Figure out operation. Probably some flavor of delete but is it the child's delete operation?
+    // TODO: Generic over the EmbeddedName
     operation?: never,
   ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>>>;
 
