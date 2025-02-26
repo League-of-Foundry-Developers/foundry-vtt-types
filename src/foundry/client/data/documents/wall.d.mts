@@ -484,6 +484,7 @@ declare global {
 
     static override createDialog(
       data: Document.CreateDialogData<WallDocument.CreateData>,
+      // TODO: Revert inlining the Exclude here, `null` is a valid parent for World documents
       context: Document.CreateDialogContext<string, WallDocument.Parent>,
     ): Promise<WallDocument.Stored | null | undefined>;
 

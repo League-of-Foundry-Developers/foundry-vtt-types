@@ -1691,7 +1691,7 @@ declare namespace Document {
 
     /** A restriction the selectable sub-types of the Dialog. */
     types?: SubType[] | null | undefined;
-  } & ParentContext<Exclude<Parent, null>>;
+  } & ParentContext<Exclude<Parent, null>>; // TODO: Revert inlining the Exclude here, `null` is a valid parent for World documents
 
   interface FromImportContext<Parent extends Document.Any | null>
     extends ConstructionContext<Parent>,
