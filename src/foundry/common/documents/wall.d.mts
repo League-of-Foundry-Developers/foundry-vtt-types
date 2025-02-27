@@ -98,9 +98,9 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     options?: WallDocument.Database.GetOptions,
   ): WallDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
-    name: CollectionName,
-  ): WallDocument.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<
+    CollectionName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName,
+  >(name: CollectionName): WallDocument.CollectionNameOf<CollectionName> | null;
 
   override getEmbeddedCollection<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
     embeddedName: EmbeddedName,
@@ -109,25 +109,30 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
   override getEmbeddedDocument<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
     embeddedName: EmbeddedName,
     id: string,
-    options: Document.GetEmbeddedDocumentOptions,
-  // TODO: Actually get the specific embedded name.
+    options: Document.GetEmbeddedDocumentOptions, // TODO: Actually get the specific embedded name.
   ): WallDocument.Embedded | undefined;
 
-  override createEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
+  override createEmbeddedDocuments<
+    EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName,
+  >(
     embeddedName: EmbeddedName,
     data: Document.CreateDataFor<EmbeddedName>[] | undefined,
     // TODO: Generic over the EmbeddedName
     operation?: never,
   ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
 
-  override updateEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
+  override updateEmbeddedDocuments<
+    EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName,
+  >(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataFor<EmbeddedName>[] | undefined,
     // TODO: Generic over the EmbeddedName
     operation?: never,
   ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
 
-  override deleteEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
+  override deleteEmbeddedDocuments<
+    EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName,
+  >(
     embeddedName: EmbeddedName,
     ids: Array<string>,
     // TODO: Generic over the EmbeddedName

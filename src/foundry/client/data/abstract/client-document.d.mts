@@ -349,10 +349,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @returns The resolved Document
    * @throws If a Document could not be retrieved from the provided data.
    */
-  static fromDropData(
-    data: Document.DropData<never>,
-    options?: Document.FromDropDataOptions,
-  ): Promise<unknown>;
+  static fromDropData(data: Document.DropData<never>, options?: Document.FromDropDataOptions): Promise<unknown>;
 
   /**
    * Create the Document from the given source with migration applied to it.
@@ -371,10 +368,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param context - The model construction context passed to {@link Document.fromSource | `Document.fromSource`}.
    *                  (default: `context.strict=true`) Strict validation is enabled by default.
    */
-  static fromImport(
-    source: never,
-    context?: never,
-  ): Promise<unknown>;
+  static fromImport(source: never, context?: never): Promise<unknown>;
 
   /**
    * Update this Document using a provided JSON string.
