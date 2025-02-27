@@ -229,15 +229,12 @@ declare global {
     type GetReturnType<
       ConcreteDocument extends Document.AnyConstructor,
       Options extends GetOptions,
-    > = Collection.GetReturnType<
-      _ApplyInvalid<Document.Stored<FixedInstanceType<ConcreteDocument>>, Options["invalid"]>,
-      Options
-    >;
+    > = Collection.GetReturnType<_ApplyInvalid<FixedInstanceType<ConcreteDocument>, Options["invalid"]>, Options>;
 
     /** @internal */
     type _ApplyInvalid<
       ConcreteDocument extends Document.Any,
       Invalid extends boolean | undefined,
-    > = Invalid extends true ? Document.Invalid<ConcreteDocument> : never;
+    > = Invalid extends true ? Document.Invalid<ConcreteDocument> : Document.Stored<ConcreteDocument>;
   }
 }

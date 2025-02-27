@@ -1193,7 +1193,7 @@ declare namespace Document {
   };
 
   type Invalid<D extends Document.Any> = SimpleMerge<
-    D,
+    Stored<D>,
     {
       _source: object;
       system: object;
