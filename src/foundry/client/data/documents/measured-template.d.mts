@@ -101,7 +101,7 @@ declare global {
        * The _id of the user who created this measured template
        * @defaultValue `game?.user?.id`
        */
-      user: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
+      user: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string | undefined }>;
 
       /**
        * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
@@ -128,10 +128,23 @@ declare global {
       y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
 
       /**
-       * The distance of the template effect
-       * @defaultValue `1`
+       * The elevation of the template
+       * @defaultValue `0`
        */
-      distance: fields.NumberField<{ required: true; positive: true; initial: 1; label: "Distance" }>;
+      elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+      /**
+       * The distance of the template effect
+       * @defaultValue `0`
+       */
+      distance: fields.NumberField<{
+        required: true;
+        nullable: false;
+        positive: true;
+        initial: 0;
+        min: 0;
+        label: "Distance";
+      }>;
 
       /**
        * The angle of rotation for the measured template
@@ -143,25 +156,25 @@ declare global {
        * The angle of effect of the measured template, applies to cone types
        * @defaultValue `0`
        */
-      angle: fields.AngleField<{ label: "Angle" }>;
+      angle: fields.AngleField<{ normalize: false; label: "Angle" }>;
 
       /**
        * The width of the measured template, applies to ray types
-       * @defaultValue `null`
+       * @defaultValue `0`
        */
-      width: fields.NumberField<{ integer: true; positive: true; label: "Width" }>;
+      width: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; step: 0.01; label: "Width" }>;
 
       /**
        * A color string used to tint the border of the template shape
        * @defaultValue `#000000`
        */
-      borderColor: fields.ColorField<{ initial: "#000000" }>;
+      borderColor: fields.ColorField<{ nullable: false; initial: "#000000" }>;
 
       /**
        * A color string used to tint the fill of the template shape
-       * @defaultValue `#FF0000`
+       * @defaultValue `game.user?.color.css || "#ffffff"`
        */
-      fillColor: fields.ColorField<{ initial: "#FF0000" }>;
+      fillColor: fields.ColorField<{ nullable: false; initial: () => string }>;
 
       /**
        * A repeatable tiling texture used to add a texture fill to the template shape
