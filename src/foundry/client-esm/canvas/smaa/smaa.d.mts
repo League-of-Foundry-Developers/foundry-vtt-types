@@ -2,15 +2,20 @@ import type { Brand, InexactPartial } from "fvtt-types/utils";
 
 declare class SMAAFilter extends PIXI.Filter {
   /**
-   * @param config    - The config (defaults: SMAAFilter.PRESETS.DEFAULT)
+   * @param config - The config
+   * @remarks The one place Foundry makes one of these it passes no config
+   * @privateRemarks Foundry references `SMAAFilter.PRESETS.DEFAULT` as the default values for `config`,
+   * but that key does not exist in 12.331 or 11.315, and appears to just be a docs error.
    */
-  constructor(config?: InexactPartial<SMAAFilter.ConstructorOptions>);
+  // config: not null (destructured)
+  constructor(config?: SMAAFilter.ConstructorOptions);
 
   // a placeholder private method to help subclassing
   #smaaFilter: true;
 
   /**
    * The presets.
+   * @remarks Unused in 12.331
    */
   static get PRESETS(): SMAAFilter.Presets;
 
