@@ -491,7 +491,7 @@ declare abstract class Document<
    * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
    */
   // Note: This uses `never` because it's unsound to try to call `Document#getEmbeddedCollection` directly.
-  getEmbeddedCollection(embeddedName: never): Collection<Document.Any>;
+  getEmbeddedCollection(embeddedName: never): unknown;
 
   /**
    * Get an embedded document by its id from a named collection in the parent document.
@@ -1452,7 +1452,10 @@ declare namespace Document {
     "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
+  /** @deprecated */
   type PreUpsertOptions<Name extends Type> = PreCreateOptions<Name> | PreUpdateOptions<Name>;
+
+  /** @deprecated */
   type OnUpsertOptions<Name extends Type> = OnCreateOptions<Name> | OnUpdateOptions<Name>;
   /* eslint-enable @typescript-eslint/no-deprecated */
 

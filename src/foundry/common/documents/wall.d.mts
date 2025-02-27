@@ -37,11 +37,11 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
    * There are DRY ways of representing this but this ends up being harder to understand
    * for end users extending these functions, especially for static methods. There are also a
    * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
-   * as there is no data that can safely construct any possible document. Finally it has also been
-   * liable to cause circularities.
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
    */
 
-  /* Document */
+  /* Document overrides */
 
   static override " fvtt_types_internal_document_name_static": WallDocument.Name;
 
@@ -98,56 +98,56 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     options?: WallDocument.Database.GetOptions,
   ): WallDocument.Implementation | null;
 
-  static getCollectionName<CollectionName extends WallDocument.EmbeddedName>(
+  static override getCollectionName<CollectionName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
     name: CollectionName,
   ): WallDocument.CollectionNameOf<CollectionName> | null;
 
-  getEmbeddedCollection<EmbeddedName extends WallDocument.EmbeddedName>(
+  override getEmbeddedCollection<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
     embeddedName: EmbeddedName,
   ): Document.EmbeddedCollectionFor<WallDocument.Name, EmbeddedName>;
 
-  getEmbeddedDocument<EmbeddedName extends WallDocument.EmbeddedName>(
+  override getEmbeddedDocument<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
     embeddedName: EmbeddedName,
     id: string,
     options: Document.GetEmbeddedDocumentOptions,
-    // TODO: Generic over the EmbeddedName
+  // TODO: Actually get the specific embedded name.
   ): WallDocument.Embedded | undefined;
 
-  createEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName>(
+  override createEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataFor<EmbeddedName>[] | undefined,
     // TODO: Generic over the EmbeddedName
     operation?: never,
   ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
 
-  updateEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName>(
+  override updateEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataFor<EmbeddedName>[] | undefined,
     // TODO: Generic over the EmbeddedName
     operation?: never,
   ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
 
-  deleteEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName>(
+  override deleteEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
     // TODO: Generic over the EmbeddedName
     operation?: never,
   ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>>>;
 
-  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
 
-  getFlag<Scope extends WallDocument.Flags.Scope, Key extends WallDocument.Flags.Key<Scope>>(
+  override getFlag<Scope extends WallDocument.Flags.Scope, Key extends WallDocument.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
   ): Document.GetFlag<WallDocument.Name, Scope, Key>;
 
-  setFlag<
+  override setFlag<
     Scope extends WallDocument.Flags.Scope,
     Key extends WallDocument.Flags.Key<Scope>,
     Value extends Document.GetFlag<WallDocument.Name, Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
-  unsetFlag<Scope extends WallDocument.Flags.Scope, Key extends WallDocument.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends WallDocument.Flags.Scope, Key extends WallDocument.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
   ): Promise<this>;
@@ -253,13 +253,13 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     context: WallDocument.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
-  /* DataModel */
+  /* DataModel overrides */
 
   protected static override _schema: SchemaField<WallDocument.Schema>;
 
   static override get schema(): SchemaField<WallDocument.Schema>;
 
-  static LOCALIZATION_PREFIXES: string[];
+  static override LOCALIZATION_PREFIXES: string[];
 
   static override validateJoint(data: WallDocument.Source): void;
 

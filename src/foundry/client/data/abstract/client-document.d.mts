@@ -273,7 +273,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     parent: ClientDocument,
     collection: string,
     ids: string[],
-    options: Document.Database.OnDeleteOperationInstance<DatabaseDeleteOperation>,
+    options: Document.Database.DeleteOptions<DatabaseDeleteOperation>,
     userId: string,
   ): void;
 
@@ -291,7 +291,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     collection: string,
     documents: ClientDocument[],
     ids: string[],
-    options: Document.Database.OnDeleteOperationInstance<DatabaseDeleteOperation>,
+    options: Document.Database.DeleteOptions<DatabaseDeleteOperation>,
     userId: string,
   ): void;
 
@@ -317,7 +317,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @returns A Promise which resolves to the created Document, or null if the dialog was
    *          closed.
    */
-  static createDialog(data: never, context: never): Promise<Document.Stored<Document.Any> | null | undefined>;
+  static createDialog(data: never, context: never): Promise<unknown>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
@@ -352,7 +352,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   static fromDropData(
     data: Document.DropData<never>,
     options?: Document.FromDropDataOptions,
-  ): Promise<Document.Any | undefined>;
+  ): Promise<unknown>;
 
   /**
    * Create the Document from the given source with migration applied to it.
@@ -373,8 +373,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   static fromImport(
     source: never,
-    context?: Document.ConstructionContext<never> & DataModel.DataValidationOptions,
-  ): Promise<Document.Any>;
+    context?: never,
+  ): Promise<unknown>;
 
   /**
    * Update this Document using a provided JSON string.
