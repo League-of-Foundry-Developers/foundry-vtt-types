@@ -7,7 +7,7 @@ declare global {
    */
   abstract class PointSourcePolygon extends PIXI.Polygon {
     /**
-     * @remarks This is protected because `new PointSourcePolygon` does not sufficiently initalize the class; Use the static `create` method instead.
+     * @remarks This is protected because `new PointSourcePolygon` does not sufficiently initialize the class; Use the static `create` method instead.
      */
     protected constructor(...args: ConstructorParameters<typeof PIXI.Polygon>);
 
@@ -24,13 +24,13 @@ declare global {
 
     /**
      * The origin point of the source polygon.
-     * @remarks Not initalized to any value, but immediately set by `PointSourcePolygon#initalize`
+     * @remarks Not initialized to any value, but immediately set by `PointSourcePolygon#initialize`
      */
     origin: Canvas.Point;
 
     /**
      * The configuration of this polygon.
-     * @remarks Initialized as `{}` but immediately filled by `PointSourcePolygon#initalize`
+     * @remarks Initialized as `{}` but immediately filled by `PointSourcePolygon#initialize`
      */
     config: PointSourcePolygon.StoredConfig;
 
@@ -221,7 +221,7 @@ declare global {
     interface _OptionalOnlyConfig {
       /**
        * The object (if any) that spawned this polygon.
-       * @remarks Not guaranteed by `PointSourcePolygon#initalize` but will exist in all configs created by `PointEffectSourceMixin` subclasses. No default provided
+       * @remarks Not guaranteed by `PointSourcePolygon#initialize` but will exist in all configs created by `PointEffectSourceMixin` subclasses. No default provided
        * @privateRemarks Foundry types this as `PointSource` which is neither a typedef nor a class, not even a mixin class name. The type here matches usage and tracks with what they probably meant.
        */
       source?: PointEffectSourceMixin.AnyMixed;
@@ -230,7 +230,7 @@ declare global {
        * The external radius of the source
        * @remarks Can't be `undefined` or `null` or its use in math would produce `NaN`s.
        *
-       * Not guaranteed by `PointSourcePolygon#initalize` but will exist in all configs created by `PointEffectSourceMixin` subclasses.
+       * Not guaranteed by `PointSourcePolygon#initialize` but will exist in all configs created by `PointEffectSourceMixin` subclasses.
        */
       externalRadius?: number;
     }
@@ -298,7 +298,7 @@ declare global {
 
       /**
        * Display debugging visualization and logging for the polygon
-       * @remarks Overriden `true` if `CONFIG.debug.polygons` is truthy
+       * @remarks Overridden `true` if `CONFIG.debug.polygons` is truthy
        */
       debug?: boolean;
 
