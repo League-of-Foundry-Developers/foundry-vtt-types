@@ -147,7 +147,10 @@
   "files": [
     "index.d.mts",
     "index-lenient.d.mts",
-    "src"
+    "src",
+    "tsconfig.json",
+    "tsconfig.main.json",
+    "tsconfig.miscellaneous.json"
   ],
   "publishConfig": {
     "access": "public"
