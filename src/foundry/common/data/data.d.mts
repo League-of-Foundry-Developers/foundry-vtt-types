@@ -2,7 +2,7 @@ import type { DatabaseBackend } from "../abstract/module.d.mts";
 import type { DataModel } from "../abstract/data.d.mts";
 import type { fields } from "./module.d.mts";
 import type * as documents from "../documents/_module.d.mts";
-import type { AnyMutableObject, EmptyObject, ToMethod, ValueOf } from "fvtt-types/utils";
+import type { AnyMutableObject, EmptyObject, RemoveIndexSignatures, ToMethod, ValueOf } from "fvtt-types/utils";
 import type { FilePathField } from "./fields.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
@@ -237,16 +237,20 @@ declare class ShapeData extends DataModel<ShapeData.Schema> {
 }
 
 declare namespace BaseShapeData {
-  interface Schema extends DataSchema {
+  interface Schema<ShapeType extends ShapeTypes = ShapeTypes> extends DataSchema {
     /**
      * The type of shape, a value in BaseShapeData.TYPES.
      * @defaultValue `this.TYPE`
+     * @remarks `this.TYPE` is `""` in `BaseShapeData`, and must be defined by subclasses
      */
     type: fields.StringField<{
       required: true;
       blank: false;
-      initial: string;
-      validate: (value: string) => boolean;
+      initial: ShapeType;
+      validate: (value: unknown) => value is ShapeType;
+      // TODO: The following `choices` does not exist in Foundry, it's a type hack to get this field to report as the only valid value it can have
+      // TODO: The validation function enough might be able to be made to sufficiently limit the value; revisit after docs-v2
+      choices: [ShapeType];
       validationError: `must be equal to "${string}"`;
     }>;
 
@@ -256,6 +260,8 @@ declare namespace BaseShapeData {
      */
     hole: fields.BooleanField;
   }
+
+  type ShapeTypes = keyof RemoveIndexSignatures<BaseShapeData.Types>;
 
   interface Types extends foundry.data.fields.TypedSchemaField.Types {
     rectangle: typeof RectangleShapeData;
@@ -268,7 +274,9 @@ declare namespace BaseShapeData {
 /**
  * A data model intended to be used as an inner EmbeddedDataField which defines a geometric shape.
  */
-declare abstract class BaseShapeData extends DataModel<BaseShapeData.Schema> {
+declare abstract class BaseShapeData<
+  ShapeSchema extends BaseShapeData.Schema = BaseShapeData.Schema,
+> extends DataModel<ShapeSchema> {
   /**
    * The possible shape types.
    */
@@ -285,7 +293,7 @@ declare abstract class BaseShapeData extends DataModel<BaseShapeData.Schema> {
 }
 
 declare namespace RectangleShapeData {
-  interface Schema extends BaseShapeData.Schema {
+  interface Schema extends BaseShapeData.Schema<"rectangle"> {
     /**
      * The top-left x-coordinate in pixels before rotation.
      * @defaultValue `undefined`
@@ -321,17 +329,14 @@ declare namespace RectangleShapeData {
 /**
  * The data model for a rectangular shape.
  */
-declare class RectangleShapeData extends BaseShapeData {
-  /**
-   * @defaultValue `"rectangle"`
-   */
-  static override TYPE: string;
+declare class RectangleShapeData extends BaseShapeData<RectangleShapeData.Schema> {
+  static override TYPE: "rectangle";
 
   static override defineSchema(): RectangleShapeData.Schema;
 }
 
 declare namespace CircleShapeData {
-  interface Schema extends BaseShapeData.Schema {
+  interface Schema extends BaseShapeData.Schema<"circle"> {
     /**
      * The x-coordinate of the center point in pixels.
      * @defaultValue `undefined`
@@ -355,17 +360,14 @@ declare namespace CircleShapeData {
 /**
  * The data model for a circle shape.
  */
-declare class CircleShapeData extends BaseShapeData {
-  /**
-   * @defaultValue `"circle"`
-   */
-  static override TYPE: string;
+declare class CircleShapeData extends BaseShapeData<CircleShapeData.Schema> {
+  static override TYPE: "circle";
 
   static override defineSchema(): CircleShapeData.Schema;
 }
 
 declare namespace EllipseShapeData {
-  interface Schema extends BaseShapeData.Schema {
+  interface Schema extends BaseShapeData.Schema<"ellipse"> {
     /**
      * The x-coordinate of the center point in pixels.
      * @defaultValue `undefined`
@@ -401,17 +403,14 @@ declare namespace EllipseShapeData {
 /**
  * The data model for an ellipse shape.
  */
-declare class EllipseShapeData extends BaseShapeData {
-  /**
-   * @defaultValue `"ellipse"`
-   */
-  static override TYPE: string;
+declare class EllipseShapeData extends BaseShapeData<EllipseShapeData.Schema> {
+  static override TYPE: "ellipse";
 
   static override defineSchema(): EllipseShapeData.Schema;
 }
 
 declare namespace PolygonShapeData {
-  interface Schema extends BaseShapeData.Schema {
+  interface Schema extends BaseShapeData.Schema<"polygon"> {
     /**
      * The points of the polygon ([x0, y0, x1, y1, ...]).
      * The polygon must not be self-intersecting.
@@ -427,11 +426,8 @@ declare namespace PolygonShapeData {
 /**
  * The data model for a polygon shape.
  */
-declare class PolygonShapeData extends BaseShapeData {
-  /**
-   * @defaultValue `"polygon"`
-   */
-  static override TYPE: string;
+declare class PolygonShapeData extends BaseShapeData<PolygonShapeData.Schema> {
+  static override TYPE: "polygon";
 
   static override defineSchema(): PolygonShapeData.Schema;
 }
