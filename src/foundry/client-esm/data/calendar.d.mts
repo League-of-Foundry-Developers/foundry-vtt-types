@@ -19,9 +19,9 @@ declare namespace CalendarData {
 
   type Config = fields.SchemaField.AssignmentType<Schema>;
 
-  /** A definition of a year within a calendar. */
-  type ConfigYears = ConfigYears.CreateData;
+  type PersistedData = fields.SchemaField.PersistedType<Schema>;
 
+  /** A definition of a year within a calendar. */
   namespace ConfigYears {
     interface Schema extends fields.DataSchema {
       /** The year which is considered year 0 in the calendar. */
@@ -38,8 +38,6 @@ declare namespace CalendarData {
   }
 
   /** A definition of how leap years work within a calendar. */
-  type ConfigLeapYear = NonNullable<ConfigLeapYear.CreateData>;
-
   namespace ConfigLeapYear {
     interface Schema extends fields.DataSchema {
       /** The year number of the first leap year. On or after yearZero. */
@@ -54,8 +52,6 @@ declare namespace CalendarData {
   }
 
   /** Month related configuration for a calendar. */
-  type ConfigMonths = ConfigMonths.CreateData;
-
   namespace ConfigMonths {
     interface Schema extends fields.DataSchema {
       /** An array of months in the calendar year. */
@@ -68,8 +64,6 @@ declare namespace CalendarData {
   }
 
   /** A definition of a month within a calendar year. */
-  type ConfigMonth = NonNullable<ConfigMonth.CreateData>;
-
   namespace ConfigMonth {
     interface Schema extends fields.DataSchema {
       /** The full name of the month. */
@@ -99,8 +93,6 @@ declare namespace CalendarData {
   }
 
   /** Day related configuration for a calendar. */
-  type ConfigDays = ConfigDays.CreateData;
-
   namespace ConfigDays {
     interface Schema extends fields.DataSchema {
       /** The configuration of the days of the week. */
@@ -119,8 +111,6 @@ declare namespace CalendarData {
   }
 
   /** A definition of the days of the week within a calendar. */
-  type ConfigDay = NonNullable<ConfigDay.CreateData>;
-
   namespace ConfigDay {
     interface Schema extends fields.DataSchema {
       /** The full name of the weekday. */
@@ -139,8 +129,6 @@ declare namespace CalendarData {
   }
 
   /** Season related configuration for a calendar. */
-  type ConfigSeasons = ConfigSeasons.CreateData;
-
   namespace ConfigSeasons {
     interface Schema extends fields.DataSchema {
       /** An array of seasons in the calendar year. */
@@ -153,8 +141,6 @@ declare namespace CalendarData {
   }
 
   /** A definition of a season within a calendar year. */
-  type ConfigSeason = NonNullable<ConfigSeason.CreateData>;
-
   namespace ConfigSeason {
     interface Schema extends fields.DataSchema {
       /** The full name of the season. */
