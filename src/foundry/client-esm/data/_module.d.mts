@@ -6,6 +6,8 @@
 // export * as types from "./_types.mjs";
 export * from "../../common/data/module.mjs";
 export * as regionBehaviors from "./region-behaviors/_module.mjs";
+// export * as regionShapes from "./region-shapes/_module.mjs";
 export * from "./terrain-data.mjs";
 export { default as CombatConfiguration } from "./combat-config.mjs";
 export { default as ClientDatabaseBackend } from "./client-backend.mjs";
+export { default as CalendarData, SIMPLIFIED_GREGORIAN_CALENDAR_CONFIG } from "./calendar.mjs";
