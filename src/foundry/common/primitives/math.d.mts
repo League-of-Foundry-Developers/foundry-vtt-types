@@ -98,6 +98,12 @@ declare global {
      *                  Its period must be 2π
      * @returns The oscillation according to t. `((maxValue - minValue) * (f(2π * t / p) + 1) / 2) + minValue`
      */
-    oscillation(minVal: number, maxVal: number, t: number, p?: number, func?: (radians: number) => number): number;
+    oscillation(
+      minVal: number,
+      maxVal: number,
+      t: number,
+      p?: number,
+      /** @immediate */ func?: (radians: number) => number,
+    ): number;
   }
 }
