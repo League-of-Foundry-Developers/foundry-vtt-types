@@ -1,4 +1,4 @@
-import type { MaybeInitialized } from "../../../client/game.d.mts";
+import type { InitializedOn } from "fvtt-types/utils";
 
 /**
  * Dynamic Token Ring Manager.
@@ -13,7 +13,7 @@ declare class TokenRing {
   static effects: TokenRing.Effects;
 
   /** Is the token rings framework enabled? Will be `null` if the system hasn't initialized yet. */
-  static get initialized(): MaybeInitialized<boolean, "init">;
+  static get initialized(): InitializedOn<boolean, "init">;
 
   /** Token Rings sprite sheet base texture. */
   static baseTexture: PIXI.BaseTexture;
@@ -110,7 +110,7 @@ declare class TokenRing {
   colorBand: TokenRing.RingColorBand;
 
   /** Reference to the token that should be animated */
-  get token(): MaybeInitialized<Token.ConfiguredInstance, "init">;
+  get token(): InitializedOn<Token.ConfiguredInstance, "init">;
 
   /**
    * Configure the sprite mesh.
