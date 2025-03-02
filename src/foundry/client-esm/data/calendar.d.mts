@@ -17,9 +17,40 @@ declare namespace CalendarData {
     seasons: fields.SchemaField<ConfigSeasons.Schema, { required: true; nullable: true; initial: null }>;
   }
 
+  /**
+   * The data put in {@link CalendarData._source | `CalendarData._source`}.
+   *
+   * Both `Source` and `PersistedData` are equivalent.
+   */
+  interface Source extends PersistedData {}
+
+  /**
+   * The data necessary to create a document. Used in places like {@link WallDocument.create | `WallDocument.create`}
+   * and {@link WallDocument | `new WallDocument(...)`}.
+   *
+   * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+   * with the right values. This means you can pass a `Set` instance, an array of values,
+   * a generator, or any other iterable.
+   * TODO: Replace with CreateData and convert to interface
+   */
   type Config = fields.SchemaField.AssignmentType<Schema>;
 
-  type PersistedData = fields.SchemaField.PersistedType<Schema>;
+  /**
+   * The data put in {@link CalendarData._source | `CalendarData._source`}.
+   *
+   * Both `Source` and `PersistedData` are equivalent.
+   */
+  interface PersistedData extends fields.SchemaField.PersistedType<Schema> {}
+
+  /**
+   * The data after a {@link DataModel | `DataModel`} has been initialized, for example
+   * {@link CalendarData.name | `CalenderData#name`}.
+   *
+   * This is data transformed from {@link CalendarData.Source | `CalendarData.Source`} and turned into more
+   * convenient runtime data structures. For example a source value of `undefined` will be replaced
+   * by the `initial` value of the field instance.
+   */
+  interface InitializedData extends fields.SchemaField.InitializedType<Schema> {}
 
   /** A definition of a year within a calendar. */
   namespace ConfigYears {
@@ -32,8 +63,9 @@ declare namespace CalendarData {
       leapYear: fields.SchemaField<ConfigLeapYear.Schema, { required: true; nullable: true; initial: null }>;
     }
 
-    type InitializedData = fields.SchemaField.InitializedType<Schema>;
+    interface InitializedData extends fields.SchemaField.InitializedType<Schema> {}
 
+    // TODO: Replace with CreateData and convert to interface
     type CreateData = fields.SchemaField.AssignmentType<Schema>;
   }
 
@@ -46,8 +78,9 @@ declare namespace CalendarData {
       leapInterval: fields.NumberField<{ required: true; nullable: false; min: 1; integer: true }>;
     }
 
-    type InitializedData = fields.SchemaField.InitializedType<Schema>;
+    interface InitializedData extends fields.SchemaField.InitializedType<Schema> {}
 
+    // TODO: Replace with CreateData and convert to interface
     type CreateData = fields.SchemaField.AssignmentType<Schema>;
   }
 
@@ -58,8 +91,9 @@ declare namespace CalendarData {
       values: fields.ArrayField<fields.SchemaField<ConfigMonth.Schema>>;
     }
 
-    type InitializedData = fields.SchemaField.InitializedType<Schema>;
+    interface InitializedData extends fields.SchemaField.InitializedType<Schema> {}
 
+    // TODO: Replace with CreateData and convert to interface
     type CreateData = fields.SchemaField.AssignmentType<Schema>;
   }
 
@@ -87,8 +121,9 @@ declare namespace CalendarData {
       startingWeekday: fields.NumberField<{ required: false; nullable: true }>;
     }
 
-    type InitializedData = fields.SchemaField.InitializedType<Schema>;
+    interface InitializedData extends fields.SchemaField.InitializedType<Schema> {}
 
+    // TODO: Replace with CreateData and convert to interface
     type CreateData = fields.SchemaField.AssignmentType<Schema>;
   }
 
@@ -105,8 +140,9 @@ declare namespace CalendarData {
       secondsPerMinute: fields.NumberField<{ required: true; nullable: false; positive: true }>;
     }
 
-    type InitializedData = fields.SchemaField.InitializedType<Schema>;
+    interface InitializedData extends fields.SchemaField.InitializedType<Schema> {}
 
+    // TODO: Replace with CreateData and convert to interface
     type CreateData = fields.SchemaField.AssignmentType<Schema>;
   }
 
@@ -123,8 +159,9 @@ declare namespace CalendarData {
       isRestDay: fields.BooleanField<{ required: false; nullable: false; initial: false }>;
     }
 
-    type InitializedData = fields.SchemaField.InitializedType<Schema>;
+    interface InitializedData extends fields.SchemaField.InitializedType<Schema> {}
 
+    // TODO: Replace with CreateData and convert to interface
     type CreateData = fields.SchemaField.AssignmentType<Schema>;
   }
 
@@ -135,8 +172,9 @@ declare namespace CalendarData {
       values: fields.ArrayField<fields.SchemaField<ConfigSeason.Schema>>;
     }
 
-    type InitializedData = fields.SchemaField.InitializedType<Schema>;
+    interface InitializedData extends fields.SchemaField.InitializedType<Schema> {}
 
+    // TODO: Replace with CreateData and convert to interface
     type CreateData = fields.SchemaField.AssignmentType<Schema>;
   }
 
@@ -157,8 +195,9 @@ declare namespace CalendarData {
       endDay: fields.NumberField<{ required: true; nullable: true; min: 0; integer: true }>;
     }
 
-    type InitializedData = fields.SchemaField.InitializedType<Schema>;
+    interface InitializedData extends fields.SchemaField.InitializedType<Schema> {}
 
+    // TODO: Replace with CreateData and convert to interface
     type CreateData = fields.SchemaField.AssignmentType<Schema>;
   }
 }
