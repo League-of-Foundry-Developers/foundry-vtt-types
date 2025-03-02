@@ -177,14 +177,31 @@ declare namespace TokenRingConfig {
   type DynamicRingId = string;
 
   /**
+   * @remarks Due to the way the core configs are initialized, {@link TokenRingConfig.CORE_TOKEN_RINGS | `TokenRingConfig.CORE_TOKEN_RINGS`}
+   * ends up becoming the `_source` of the constructed DataModels in `CONFIG.Token.ring`, that is:
+   * ```js
+   * CONFIG.Token.ring.getConfig("coreSteel")._source === TokenRingConfig.CORE_TOKEN_RINGS.coreSteel
+   * ```
+   * after `TokenRingConfig.initialize()` has been called, which happens between the `setup` and `ready` hooks
+   */
+  type RingData = foundry.data.fields.SchemaField.InnerPersistedType<DynamicRingData.Schema>;
+
+  /**  */
+  type CoreRingData = Required<Pick<RingData, "id" | "label" | "spritesheet">>;
+
+  /**
    * Core token rings used in Foundry VTT.
    * Each key is a string identifier for a ring, and the value is an object containing the ring's data.
    * This object is frozen to prevent any modifications.
    */
-  interface CoreTokenRings extends Readonly<Record<DynamicRingId, DynamicRingData.RingData>> {}
+  type CoreTokenRings = Record<"coreSteel" | "coreBronze", CoreRingData>;
+  // interface CoreTokenRings extends Readonly<Record<DynamicRingId, DynamicRingData.RingData>> {}
 
   /** Core token rings fit modes used in Foundry VTT. */
-  interface CoreTokenRingsFitModes extends Readonly<Record<string, RingFitMode>> {}
+  interface CoreTokenRingsFitModes extends Readonly<Record<string, RingFitMode>> {
+    readonly subject: RingFitMode;
+    readonly grid: RingFitMode;
+  }
 }
 
 export default TokenRingConfig;
