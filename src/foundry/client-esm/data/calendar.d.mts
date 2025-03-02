@@ -31,9 +31,10 @@ declare namespace CalendarData {
    * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
+   * @remarks Equivalent to how Foundry uses CalendarConfig, this is the type of `CONFIG.calendar`
    * TODO: Replace with CreateData and convert to interface
    */
-  type Config = fields.SchemaField.AssignmentType<Schema>;
+  type CreateData = fields.SchemaField.AssignmentType<Schema>;
 
   /**
    * The data put in {@link CalendarData._source | `CalendarData._source`}.
@@ -207,6 +208,6 @@ declare namespace CalendarData {
  */
 declare class CalendarData extends DataModel<CalendarData.Schema> {}
 
-export const SIMPLIFIED_GREGORIAN_CALENDAR_CONFIG: CalendarData.Config;
+export const SIMPLIFIED_GREGORIAN_CALENDAR_CONFIG: CalendarData.CreateData;
 
 export default CalendarData;
