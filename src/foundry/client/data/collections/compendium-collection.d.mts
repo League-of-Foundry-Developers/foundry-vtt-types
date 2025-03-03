@@ -435,6 +435,10 @@ declare global {
     type IndexEntry<T extends CompendiumCollection.Metadata> = { _id: string; uuid: string } & DeepPartial<
       Document.ImplementationInstanceFor<T["type"]>["_source"]
     >;
+
+    type ForDocument<Name extends Document.Type> = Name extends unknown
+      ? CompendiumCollection<Metadata & { type: Name }>
+      : never;
   }
 }
 

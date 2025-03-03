@@ -978,6 +978,7 @@ declare namespace Document {
     | (Name extends "RegionBehavior" ? RegionBehavior.OfType<SubType & RegionBehavior.SubType> : never)
     | (Name extends "TableResult" ? TableResult.OfType<SubType & TableResult.SubType> : never);
 
+  /** @internal */
   type _ActorDeltaSystemData = {
     [SubType in keyof SystemData["Actor"]]: IntentionalPartial<SystemData["Actor"][SubType]>;
   };
