@@ -773,7 +773,8 @@ declare global {
       /**
        * A hook event that allows to pass custom dynamic ring configurations.
        * @param ringConfig - The ring configuration instance
-       * @remarks This is called by {@link Hooks.callAll}.
+       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @see {@link foundry.canvas.tokens.TokenRingConfig.initialize | `TokenRingConfig.initialize`}
        */
       initializeDynamicTokenRingConfig: (ringConfig: foundry.canvas.tokens.TokenRingConfig) => void;
 
