@@ -5,8 +5,7 @@ import type {
   PolygonShapeData,
   RectangleShapeData,
 } from "../../../../../src/foundry/common/data/data.d.mts";
-
-const { RegionShape } = foundry.canvas.regions;
+import RegionShape = foundry.canvas.regions.RegionShape;
 
 declare const cData: CircleShapeData;
 declare const eData: EllipseShapeData;

@@ -1,11 +1,11 @@
 import { expectTypeOf } from "vitest";
-import type SMAAFilter from "../../../../../src/foundry/client-esm/canvas/smaa/smaa.mjs";
+import SMAAFilter = foundry.canvas.SMAAFilter;
 
-expectTypeOf(foundry.canvas.SMAAFilter.PRESETS).toMatchTypeOf<Record<keyof SMAAFilter.Presets, SMAAFilter.PRESETS>>();
+expectTypeOf(SMAAFilter.PRESETS).toMatchTypeOf<Record<keyof SMAAFilter.Presets, SMAAFilter.PRESETS>>();
 
-let smaaFilter = new foundry.canvas.SMAAFilter();
-smaaFilter = new foundry.canvas.SMAAFilter({});
-smaaFilter = new foundry.canvas.SMAAFilter({
+let smaaFilter = new SMAAFilter();
+smaaFilter = new SMAAFilter({});
+smaaFilter = new SMAAFilter({
   threshold: 0.07,
   cornerRounding: 32,
   disableCornerDetection: true,
@@ -15,7 +15,7 @@ smaaFilter = new foundry.canvas.SMAAFilter({
   maxSearchStepsDiag: 6,
 });
 // effectively testing runtime, as core never passes anything
-smaaFilter = new foundry.canvas.SMAAFilter({
+smaaFilter = new SMAAFilter({
   threshold: undefined,
   cornerRounding: undefined,
   disableCornerDetection: undefined,
