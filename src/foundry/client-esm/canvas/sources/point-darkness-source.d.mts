@@ -61,6 +61,7 @@ declare class PointDarknessSource<
 
   protected override _createShapes(): void;
 
+  // TODO: Flatten<IntentionalPartial<SourceData>>
   protected override _configure(changes: AnyObject): void;
 
   protected override _getPolygonConfiguration(): PointDarknessSource.PolygonConfig;

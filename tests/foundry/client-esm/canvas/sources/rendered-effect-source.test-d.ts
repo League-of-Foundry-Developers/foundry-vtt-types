@@ -1,7 +1,9 @@
 import { expectTypeOf } from "vitest";
 import type RenderedEffectSource from "../../../../../src/foundry/client-esm/canvas/sources/rendered-effect-source.d.mts";
 
-class MyRenderedSource extends foundry.canvas.sources.RenderedEffectSource {}
+declare class MyRenderedSource extends foundry.canvas.sources.RenderedEffectSource {
+  protected override _createShapes(): void;
+}
 
 expectTypeOf(MyRenderedSource["_initializeShaderKeys"]).toEqualTypeOf<string[]>();
 expectTypeOf(MyRenderedSource["_refreshUniformsKeys"]).toEqualTypeOf<string[]>();

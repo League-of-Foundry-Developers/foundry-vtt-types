@@ -104,7 +104,7 @@ declare class Edge {
    * A PolygonVertex instance.
    * Used as part of ClockwiseSweepPolygon computation.
    * @defaultValue `undefined`
-   * @remarks Only set in {@link ClockwiseSweepPolygon#_identifyVertices | `ClockwiseSweepPolygon#_identifyVertices`} (part of CSP initialization)
+   * @remarks Only set in {@link ClockwiseSweepPolygon._identifyVertices | `ClockwiseSweepPolygon#_identifyVertices`} (part of CSP initialization)
    */
   vertexA: PolygonVertex | undefined;
 
@@ -112,7 +112,7 @@ declare class Edge {
    * A PolygonVertex instance.
    * Used as part of ClockwiseSweepPolygon computation.
    * @defaultValue `undefined`
-   * @remarks Only set in {@link ClockwiseSweepPolygon#_identifyVertices | `ClockwiseSweepPolygon#_identifyVertices`} (part of CSP initialization)
+   * @remarks Only set in {@link ClockwiseSweepPolygon._identifyVertices | `ClockwiseSweepPolygon#_identifyVertices`} (part of CSP initialization)
    */
   vertexB: PolygonVertex | undefined;
 

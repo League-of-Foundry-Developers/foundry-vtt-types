@@ -964,25 +964,25 @@ declare global {
 
       /**
        * @defaultValue `foundry.canvas.sources.PointDarknessSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
        */
       darknessSourceClass: typeof foundry.canvas.sources.PointDarknessSource;
 
       /**
        * @defaultValue `foundry.canvas.sources.PointLightSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
        */
       lightSourceClass: typeof foundry.canvas.sources.PointLightSource;
 
       /**
        * @defaultValue `foundry.canvas.sources.GlobalLightSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
        */
       globalLightSourceClass: typeof foundry.canvas.sources.GlobalLightSource;
 
       /**
        * @defaultValue `foundry.canvas.sources.PointVisionSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
        */
       visionSourceClass: typeof foundry.canvas.sources.PointVisionSource;
 
@@ -1419,7 +1419,8 @@ declare global {
 
       /**
        * A registry of Scenes which are managed by a specific SceneManager class.
-       * @privateRemarks Can't be `AnyConstructor` because it's instantiated via `new`
+       * @remarks Keys are Scene IDs
+       * @privateRemarks Can't be `AnyConstructor` because it's instantiated expecting a compatible constructor
        */
       managedScenes: Record<string, typeof foundry.canvas.SceneManager>;
 

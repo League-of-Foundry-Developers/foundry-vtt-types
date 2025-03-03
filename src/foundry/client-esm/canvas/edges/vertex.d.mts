@@ -17,7 +17,7 @@ declare class PolygonVertex {
 
   /**
    * @defaultValue `undefined`
-   * @remarks Accessed externally in {@link ClockwiseSweepPolygon#_testCollision | `ClockwiseSweepPolygon#_testCollision`}
+   * @remarks Accessed externally in {@link ClockwiseSweepPolygon._testCollision | `ClockwiseSweepPolygon#_testCollision`}
    */
   _distance: number | undefined | null;
 

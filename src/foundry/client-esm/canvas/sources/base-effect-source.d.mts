@@ -150,12 +150,8 @@ declare abstract class BaseEffectSource<
     data: IntentionalPartial<SourceData>,
   ): void;
 
-  /**
-   * Create the polygon shape (or shapes) for this source using configured data.
-   * @remarks Foundry marked `@abstract`, but due to `RenderedEffectSource` not implementing
-   * it (`PointEffectSourceMixin` does), it can't be *actually* abstract
-   */
-  protected _createShapes(): void;
+  /** Create the polygon shape (or shapes) for this source using configured data. */
+  protected abstract _createShapes(): void;
 
   /**
    * Subclass specific configuration steps. Occurs after data initialization and shape computation.

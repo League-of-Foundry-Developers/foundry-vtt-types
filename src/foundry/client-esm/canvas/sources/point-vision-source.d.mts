@@ -67,7 +67,7 @@ declare class PointVisionSource<
    * The vision mode activation flag for handlers
    * @remarks Foundry marked `@internal`.
    *
-   * Read and set externally in {@link VisionMode#activate | `VisionMode#activate`} and {@link VisionMode#deactivate | `VisionMode#deactivate`}
+   * Read and set externally in {@link VisionMode.activate | `VisionMode#activate`} and {@link VisionMode.deactivate | `VisionMode#deactivate`}
    */
   protected _visionModeActivated: boolean;
 
@@ -131,6 +131,7 @@ declare class PointVisionSource<
    */
   protected _updateVisionMode(): void;
 
+  // TODO: Flatten<IntentionalPartial<SourceData>>
   protected override _configure(changes: AnyObject): void;
 
   protected override _configureLayer(layer: RenderedEffectSource.SourceLayer, layerId: string): void;
