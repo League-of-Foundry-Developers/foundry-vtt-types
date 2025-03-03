@@ -2,7 +2,9 @@ import { expectTypeOf } from "vitest";
 import type BaseLightSource from "../../../../../src/foundry/client-esm/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "../../../../../src/foundry/client-esm/canvas/sources/rendered-effect-source.d.mts";
 
-class MyLightSource extends foundry.canvas.sources.BaseLightSource {}
+declare class MyLightSource extends foundry.canvas.sources.BaseLightSource {
+  protected override _createShapes(): void;
+}
 
 expectTypeOf(MyLightSource.sourceType).toBeString();
 expectTypeOf(MyLightSource["_initializeShaderKeys"]).toEqualTypeOf<string[]>();
