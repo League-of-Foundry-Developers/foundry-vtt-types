@@ -1089,3 +1089,42 @@ export type Coalesce<T, D, CoalesceType = undefined> = T extends CoalesceType ? 
  * See {@link Coalesce | `Coalesce`}.
  */
 export type NullishCoalesce<T, D> = T extends null | undefined ? D : T;
+
+interface EarlierHook {
+  none: never;
+  init: "none";
+  i18nInit: "none" | "init";
+  setup: "none" | "init" | "i18nInit";
+  ready: "none" | "init" | "i18nInit" | "setup";
+}
+
+/**
+ * A hook that's valid to use in {@link AssumeHookRan | `AssumeHookRan`}
+ */
+export type InitializationHook = keyof EarlierHook;
+
+/**
+ * All hooks ran so far.
+ *
+ * @example
+ * ```ts
+ * HooksRan<never>;      // never
+ * HooksRan<"none">;     // "none"
+ * HooksRan<"init">;     // "none" | "init"
+ * HooksRan<"i18nInit">; // "none" | "init" | "i18nInit"
+ * HooksRan<"setup">;    // "none" | "init" | "i18nInit" | "setup"
+ * HooksRan<"setup">;    // "none" | "init" | "i18nInit" | "setup" | "ready"
+ * ```
+ */
+export type HooksRan<T extends InitializationHook> = EarlierHook[T] | T;
+type ValidHooksRan = Extract<keyof AssumeHookRan, InitializationHook>;
+
+/**
+ * Various things within Foundry are only initialized after a certain hook is ran.
+ * `InitializedOn` is useful to help model this pattern.
+ */
+export type InitializedOn<
+  InitializedTo,
+  InitializedOnHook extends InitializationHook,
+  BeforeInitialization = InitializedTo | undefined,
+> = Extract<HooksRan<ValidHooksRan>, InitializedOnHook> extends never ? InitializedTo : BeforeInitialization;
