@@ -1,12 +1,12 @@
 /**
- * The geometry of a {@link Region}.
+ * The geometry of a {@link Region | `Region`}.
  * - Vertex Attribute: `aVertexPosition` (`vec2`)
  * - Draw Mode: `PIXI.DRAW_MODES.TRIANGLES`
  */
 declare class RegionGeometry extends PIXI.Geometry {
   /**
    * Create a RegionGeometry
-   * @internal
+   * @remarks Foundry marked `@internal`
    */
   constructor(region: Region.ConfiguredInstance);
 
@@ -15,17 +15,24 @@ declare class RegionGeometry extends PIXI.Geometry {
 
   /**
    * Update the buffers
-   * @internal
+   * @remarks Foundry marked `@internal`, is exclusively called externally in `Region##updateShapes`
    */
   protected _clearBuffers(): void;
 
   /**
    * Update the buffers
-   * @internal
+   * @remarks Foundry marked `@internal`, is exclusively called externally in `Region##updateShapes`
    */
   protected _updateBuffers(): void;
+}
 
-  #regionGeometry: true;
+declare namespace RegionGeometry {
+  interface Any extends AnyRegionGeometry {}
+  type AnyConstructor = typeof AnyRegionGeometry;
+}
+
+declare abstract class AnyRegionGeometry extends RegionGeometry {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default RegionGeometry;

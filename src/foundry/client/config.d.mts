@@ -2639,7 +2639,8 @@ declare global {
 
       /**
        * @defaultValue `foundry.canvas.tokens.TokenRingConfig`
-       * @remarks `"ring property is initialized in foundry.canvas.tokens.TokenRingConfig.initialize"`
+       * @remarks Foundry leaves a comment claiming `"ring property is initialized in foundry.canvas.tokens.TokenRingConfig.initialize"`,
+       * and while that's true, it's _instantiated_ here in `config.js` via defineProperty (`enumerable: true`)
        */
       readonly ring: foundry.canvas.tokens.TokenRingConfig;
     };
