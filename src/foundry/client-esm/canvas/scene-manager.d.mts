@@ -1,3 +1,5 @@
+import type { AnyFunction } from "../../../utils/index.d.mts";
+
 /**
  * A framework for imbuing special scripted behaviors into a single specific Scene.
  * Managed scenes are registered in CONFIG.Canvas.managedScenes.
@@ -46,7 +48,7 @@ declare class SceneManager {
   /**
    * The SceneManager is constructed by passing a reference to the active Scene document.
    */
-  constructor(scene: Scene);
+  constructor(scene: Scene.ConfiguredInstance);
 
   /**
    * The managed Scene
@@ -82,7 +84,7 @@ declare class SceneManager {
   /**
    * Register additional hook functions are only used while this Scene is active and is automatically deactivated.
    */
-  registerHooks(hookName: string, handler: (...args: unknown[]) => unknown): void;
+  registerHooks(hookName: string, handler: AnyFunction): void;
 
   /**
    * Deactivate Hook functions that were added specifically for this Scene.
@@ -91,7 +93,7 @@ declare class SceneManager {
 }
 
 declare namespace SceneManager {
-  type Any = AnySceneManager;
+  interface Any extends AnySceneManager {}
   type AnyConstructor = typeof AnySceneManager;
 }
 
