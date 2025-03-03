@@ -14,6 +14,7 @@ declare class Edge {
    * @param b - The second endpoint of the edge
    * @param options - Additional options which describe the edge
    */
+  // options: not null (destructured)
   constructor(a: Canvas.Point, b: Canvas.Point, options?: Edge.ConstructorOptions);
 
   /**
@@ -103,7 +104,7 @@ declare class Edge {
    * A PolygonVertex instance.
    * Used as part of ClockwiseSweepPolygon computation.
    * @defaultValue `undefined`
-   * @remarks Only set in {@link ClockwiseSweepPolygon#_identifyVertices} (part of CSP initialization)
+   * @remarks Only set in {@link ClockwiseSweepPolygon._identifyVertices | `ClockwiseSweepPolygon#_identifyVertices`} (part of CSP initialization)
    */
   vertexA: PolygonVertex | undefined;
 
@@ -111,7 +112,7 @@ declare class Edge {
    * A PolygonVertex instance.
    * Used as part of ClockwiseSweepPolygon computation.
    * @defaultValue `undefined`
-   * @remarks Only set in {@link ClockwiseSweepPolygon#_identifyVertices} (part of CSP initialization)
+   * @remarks Only set in {@link ClockwiseSweepPolygon._identifyVertices | `ClockwiseSweepPolygon#_identifyVertices`} (part of CSP initialization)
    */
   vertexB: PolygonVertex | undefined;
 
@@ -140,7 +141,11 @@ declare class Edge {
    * @returns True if the edge has a threshold greater than 0 for the source type,
    *          and the source type is within that distance.
    */
-  applyThreshold(sourceType: Edge.AttenuationTypes, sourceOrigin: Canvas.Point, externalRadius?: number): boolean;
+  applyThreshold(
+    sourceType: Edge.AttenuationTypes,
+    sourceOrigin: Canvas.Point,
+    externalRadius?: number | null,
+  ): boolean;
 
   /**
    * Determine the orientation of this Edge with respect to a reference point.
