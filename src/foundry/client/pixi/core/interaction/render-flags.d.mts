@@ -1,4 +1,4 @@
-import type { AnyConstructor, FixedInstanceType, InexactPartial, Mixin } from "fvtt-types/utils";
+import type { AnyConstructor, AnyObject, FixedInstanceType, InexactPartial, Mixin } from "fvtt-types/utils";
 import type { LogCompatibilityWarningOptions } from "../../../../common/utils/logging.d.mts";
 
 declare class RenderFlagObject {
@@ -9,7 +9,7 @@ declare class RenderFlagObject {
    * Configure the render flags used for this class.
    * @defaultValue `{}`
    */
-  static RENDER_FLAGS: Record<string, RenderFlag.Any>;
+  static RENDER_FLAGS: RenderFlagsMixin.RENDER_FLAGS;
 
   /**
    * The ticker priority when RenderFlags of this class are handled.
@@ -35,12 +35,20 @@ declare class RenderFlagObject {
  * @privateRemarks Values are marked as optional here based on use, foundry docs incomplete
  * @internal
  */
-type _RenderFlags<Flags> = InexactPartial<{
-  /** Activating this flag also sets these flags to true */
-  propagate: Array<keyof Flags>;
+type _RenderFlags<_Flags extends AnyObject> = InexactPartial<{
+  /**
+   * Activating this flag also sets these flags to true
+   * @privateRemarks Without including the list of valid flags as a type param on the mixin somehow, trying to make this
+   * `Array<keyof RemoveIndexSignatures<Flags>>` produces `never[]`
+   */
+  propagate: string[];
 
-  /** Activating this flag resets these flags to false */
-  reset: Array<keyof Flags>;
+  /**
+   * Activating this flag resets these flags to false
+   * @privateRemarks Without including the list of valid flags as a type param on the mixin somehow, trying to make this
+   * `Array<keyof RemoveIndexSignatures<Flags>>` produces `never[]`
+   */
+  reset: string[];
 
   /**
    * Is this flag deprecated? The deprecation options are passed to
@@ -60,10 +68,12 @@ type _RenderFlags<Flags> = InexactPartial<{
 }>;
 
 declare global {
-  // @ts-expect-error - RenderFlag is built around willfully violating subclassing rules.
-  // The primary issue at hand is that each value can refer to the keys, thus making it technically
-  // unsound to apply a subclass to its superclass.
-  interface RenderFlag<out Flags> extends _RenderFlags<Flags> {}
+  /**
+   * @privateRemarks This *should* error but doesn't. RenderFlag is built around willfully violating subclassing rules.
+   * The primary issue at hand is that each value can refer to the keys, thus making it technically
+   * unsound to apply a subclass to its superclass.
+   */
+  interface RenderFlag<out Flags extends AnyObject> extends _RenderFlags<Flags> {}
 
   namespace RenderFlag {
     type Any = RenderFlag<any>;
@@ -89,7 +99,7 @@ declare global {
          * Valid options are OBJECTS or PERCEPTION.
          * @defaultValue `PIXI.UPDATE_PRIORITY.OBJECTS`
          */
-        priority?: PIXI.UPDATE_PRIORITY;
+        priority?: typeof PIXI.UPDATE_PRIORITY.OBJECTS | typeof PIXI.UPDATE_PRIORITY.PERCEPTION;
       },
     );
 
@@ -112,8 +122,9 @@ declare global {
 
     /**
      * Activate certain flags, also toggling propagation and reset behaviors
+     * @remarks Flags are only set if `true`, nullish values are discarded
      */
-    set(changes: Record<string, boolean>): void;
+    set(changes: Record<string, boolean | undefined | null>): void;
   }
 
   /**
@@ -131,5 +142,11 @@ declare global {
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = AnyConstructor;
+
+    type ToFlags<RenderFlags extends RENDER_FLAGS> = {
+      [K in keyof RenderFlags]: boolean;
+    };
+
+    interface RENDER_FLAGS extends Record<string, RenderFlag.Any> {}
   }
 }
