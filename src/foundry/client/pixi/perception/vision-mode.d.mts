@@ -1,4 +1,4 @@
-import type { Brand, InterfaceToObject, SimpleMerge } from "fvtt-types/utils";
+import type { Brand, InterfaceToObject, RemoveIndexSignatures, SimpleMerge } from "fvtt-types/utils";
 import type { fields } from "../../../common/data/module.d.mts";
 import DataField = foundry.data.fields.DataField;
 import type DataModel from "../../../common/abstract/data.d.mts";
@@ -134,6 +134,11 @@ declare global {
   }
 
   namespace VisionMode {
+    interface Any extends AnyVisionMode {}
+    type AnyConstructor = typeof AnyVisionMode;
+
+    type ConfiguredModes = keyof RemoveIndexSignatures<CONFIG["Canvas"]["visionModes"]>;
+
     type LIGHTING_VISIBILITY = Brand<number, "VisionMode.LIGHTING_VISIBILITY">;
 
     interface ExtraConstructorOptions {
@@ -233,4 +238,8 @@ declare global {
       }>;
     }
   }
+}
+
+declare class AnyVisionMode extends VisionMode {
+  constructor(arg0: never, ...args: never[]);
 }
