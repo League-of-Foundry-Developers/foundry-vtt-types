@@ -1,13 +1,12 @@
 /** A mesh of a {@link Region} */
 declare class RegionMesh extends PIXI.Container {
-  #regionMesh: true;
-
   /**
    * Create a RegionMesh
    * @param region        - The Region to create the RegionMesh from.
-   * @param shaderClass   - The shader class to use. @defaultValue `RegionShader`
+   * @param shaderClass   - The shader class to use. (default: `RegionShader`)
    */
-  constructor(region: Region.ConfiguredInstance, shaderClass?: AbstractBaseShader);
+  // shaderClass: not null (parameter default only)
+  constructor(region: Region.ConfiguredInstance, shaderClass?: AbstractBaseShader.AnyConstructor);
 
   /** The Region of this RegionMesh */
   get region(): Region.ConfiguredInstance;
@@ -17,7 +16,7 @@ declare class RegionMesh extends PIXI.Container {
 
   /** The blend mode assigned tot his RegionMesh */
   get blendMode(): PIXI.BLEND_MODES;
-  set blendMode(value: PIXI.BLEND_MODES);
+  set blendMode(value);
 
   /**
    * The tint applied to the mesh. This is a hex value.
@@ -26,25 +25,25 @@ declare class RegionMesh extends PIXI.Container {
    * @defaultValue `0xFFFFFF`
    */
   get tint(): number;
-  set tint(value: number);
+  set tint(value);
 
   /** The tint applied to the mesh. This is a hex value. A value of 0xFFFFFF will remove any tint effect. */
   protected _tintColor: PIXI.Color;
 
   /**
    * Cached tint value for the shader uniforms
-   * @internal
+   * @remarks Foundry marked `@internal`
    */
-  protected _cachedTint: [red: number, green: number, blue: number, alpha: number];
+  protected _cachedTint: Color.RGBAColorVector;
 
   /** Used to track a tint or alpha change to execute a recomputation of _cachedTint. */
   protected _tintAlphaDirty: boolean;
 
   /**
    * Initialize shader based on the shader class type.
-   * @param shaderClass   - The shader class, which must inherit from {@link AbstractBaseShader}.
+   * @param shaderClass - The shader class, which must inherit from {@link AbstractBaseShader | `AbstractBaseShader`}.
    */
-  setShaderClass(shaderClass: typeof AbstractBaseShader): void;
+  setShaderClass(shaderClass: AbstractBaseShader.AnyConstructor): void;
 
   override updateTransform(): void;
 
@@ -52,10 +51,22 @@ declare class RegionMesh extends PIXI.Container {
 
   protected override _calculateBounds(): void;
 
-  /** Tests if a point is indie this RegionMesh */
+  /**
+   * Tests if a point is inside this RegionMesh.
+   * @privateRemarks The rare instance of Foundry using the PIXI interface in *their* types
+   */
   containsPoint(point: PIXI.IPointData): boolean;
 
   override destroy(options?: PIXI.IDestroyOptions | boolean): void;
+}
+
+declare namespace RegionMesh {
+  interface Any extends AnyRegionMesh {}
+  type AnyConstructor = typeof AnyRegionMesh;
+}
+
+declare abstract class AnyRegionMesh extends RegionMesh {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default RegionMesh;

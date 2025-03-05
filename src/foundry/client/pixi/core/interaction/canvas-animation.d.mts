@@ -180,7 +180,7 @@ declare global {
     /**
      * A duration in milliseconds over which the animation should occur
      * @defaultValue `1000`
-     * @remarks Can't be `null` because it only has a parameter default, and used as a divisor in `CanvasAnimation.#animateFrame`
+     * @remarks Can't be `null` because it only has a parameter default, and is used as a divisor in `CanvasAnimation.#animateFrame`
      */
     duration?: number | undefined;
   }
