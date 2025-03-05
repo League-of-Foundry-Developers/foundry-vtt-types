@@ -357,11 +357,13 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<Combatant.SubType, Combatant.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<Combatant.SubType, NonNullable<Combatant.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<Combatant.CreateData>,
-      context: Document.CreateDialogContext<Combatant.SubType, Combatant.Parent>,
+      context: Document.CreateDialogContext<Combatant.SubType, NonNullable<Combatant.Parent>>,
     ): Promise<Combatant.Stored | null | undefined>;
 
     static override fromDropData(

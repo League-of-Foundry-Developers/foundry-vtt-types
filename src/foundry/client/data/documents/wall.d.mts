@@ -1,4 +1,3 @@
-import type { AnyObject } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -31,9 +30,23 @@ declare global {
      */
     type Parent = Scene.Implementation | null;
 
-    // Note: I set to null to punt. Please check.
-    type ParentCollection = null;
-    type Pack = null;
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Scene">;
 
     /**
      * An embedded document is a document contained in another.
@@ -428,70 +441,13 @@ declare global {
 
     /** ClientDocument overrides */
 
-    static override defaultName(context: Document.DefaultNameContext<"base", WallDocument.Parent>): string;
+    static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<WallDocument.Parent>>): string;
 
-    // TODO: Make generic over collection?
-    protected override _preCreateDescendantDocuments(
-      // TODO: Determine what parents are possible and put it into a nice variable.
-      parent: ClientDocument,
-      collection: string,
-      data: unknown[],
-      options: WallDocument.Database.CreateOptions,
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _onCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      data: unknown[],
-      options: WallDocument.Database.CreateOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _preUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      changes: unknown[],
-      options: WallDocument.Database.UpdateOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      changes: unknown[],
-      options: WallDocument.Database.UpdateOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _preDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      ids: string[],
-      options: WallDocument.Database.DeleteOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      ids: string[],
-      options: WallDocument.Database.DeleteOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
+    // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
     static override createDialog(
       data: Document.CreateDialogData<WallDocument.CreateData>,
-      // TODO: Revert inlining the Exclude here, `null` is a valid parent for World documents
-      context: Document.CreateDialogContext<string, WallDocument.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<WallDocument.Parent>>,
     ): Promise<WallDocument.Stored | null | undefined>;
 
     static override fromDropData(
@@ -504,49 +460,6 @@ declare global {
       context?: Document.FromImportContext<WallDocument.Parent>,
     ): Promise<WallDocument.Implementation>;
 
-    protected override _preCreateEmbeddedDocuments(
-      embeddedName: string,
-      result: AnyObject[],
-      options: Document.ModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: never,
-      result: never,
-      options: Document.ModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _preUpdateEmbeddedDocuments(
-      embeddedName: string,
-      result: never,
-      options: Document.ModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onUpdateEmbeddedDocuments(
-      embeddedName: string,
-      documents: never,
-      result: never,
-      options: Document.ModificationContext<never>,
-      userId: string,
-    ): void;
-
-    protected override _preDeleteEmbeddedDocuments(
-      embeddedName: string,
-      result: string[],
-      options: Document.ModificationContext<never>,
-      userId: string,
-    ): void;
-
-    protected override _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: Document.Any[],
-      result: string[],
-      options: Document.ModificationContext<Document.Any | null>,
-      userId: string,
-    ): void;
+    // Embedded document operations have been left out because Wall does not have any embedded documents.
   }
 }

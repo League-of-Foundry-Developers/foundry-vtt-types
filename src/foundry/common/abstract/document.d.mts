@@ -77,7 +77,7 @@ declare abstract class Document<
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
    */
-  readonly parentCollection: string | null;
+  readonly parentCollection: Document.MetadataFor<DocumentName>["collection"] | null;
 
   /**
    * An immutable reference to a containing Compendium collection to which this Document belongs.
@@ -1417,46 +1417,46 @@ declare namespace Document {
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
   /* eslint-disable @typescript-eslint/no-deprecated */
-  /** @deprecated */
+  /** @deprecated Use {@link Database.PreCreateOptions | `Database.PreCreateOptions`} */
   type PreCreateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "create">,
     "data" | "noHook" | "pack" | "parent"
   >;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.CreateOptions | `Database.CreateOptions`}  */
   type OnCreateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "create">,
     "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.PreUpdateOptions | `Database.PreUpdateOperation`}  */
   type PreUpdateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "update">,
     "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
   >;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.UpdateOptions | `Database.OnUpdateOperation`} */
   type OnUpdateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "update">,
     "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.PreDeleteOperationInstance | `Database.PreDeleteOperationInstance`} */
   type PreDeleteOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "delete">,
     "ids" | "deleteAll" | "noHook" | "pack" | "parent"
   >;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.DeleteOptions | `Database.OnDeleteOptions`} */
   type OnDeleteOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "delete">,
     "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.PreCreateOptions | `Database.PreCreateOptions`} or {@link Database.PreUpdateOptions | `Database.PreUpdateOperation`}*/
   type PreUpsertOptions<Name extends Type> = PreCreateOptions<Name> | PreUpdateOptions<Name>;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.CreateOptions | `Database.CreateOptions`} or {@link Database.UpdateOptions | `Database.OnUpdateOperation`} */
   type OnUpsertOptions<Name extends Type> = OnCreateOptions<Name> | OnUpdateOptions<Name>;
   /* eslint-enable @typescript-eslint/no-deprecated */
 
@@ -1669,7 +1669,7 @@ declare namespace Document {
 
     /** A compendium pack within which the Document should be created */
     pack?: string | undefined;
-  } & ParentContext<Exclude<Parent, null>>;
+  } & ParentContext<Parent>;
 
   interface FromDropDataOptions {
     /**
@@ -1695,7 +1695,7 @@ declare namespace Document {
 
     /** A restriction the selectable sub-types of the Dialog. */
     types?: SubType[] | null | undefined;
-  } & ParentContext<Exclude<Parent, null>>; // TODO: Revert inlining the Exclude here, `null` is a valid parent for World documents
+  } & ParentContext<Parent>;
 
   interface FromImportContext<Parent extends Document.Any | null>
     extends ConstructionContext<Parent>,

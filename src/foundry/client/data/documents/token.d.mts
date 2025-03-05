@@ -752,7 +752,7 @@ declare global {
      */
     protected _onUpdateBaseActor(
       update?: DeepPartial<Actor.Implementation["_source"]>,
-      options?: Document.OnUpdateOptions<"Actor">,
+      options?: Actor.DatabaseOperation.OnUpdateOperation,
     ): void;
 
     /**
@@ -762,10 +762,11 @@ declare global {
      */
     protected _onRelatedUpdate(
       update?: DeepPartial<Actor.Implementation["_source"]>,
-      /** @privateRemarks foundry calls this field operation
+      /**
+       * @privateRemarks foundry calls this field operation
        * but it's being passed options (and then ignores them)
        */
-      operation?: Document.OnUpdateOptions<"Actor">,
+      operation?: Actor.DatabaseOperation.OnUpdateOperation,
     ): void;
 
     /**
@@ -841,11 +842,13 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<"base", TokenDocument.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", NonNullable<TokenDocument.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<TokenDocument.CreateData>,
-      context: Document.CreateDialogContext<string, TokenDocument.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<TokenDocument.Parent>>,
     ): Promise<TokenDocument.Stored | null | undefined>;
 
     static override fromDropData(

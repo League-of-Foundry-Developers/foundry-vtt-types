@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-const myScene = new Scene({ name: "foobar" });
+declare const myScene: Scene;
 
 class TestBaseWall extends foundry.documents.BaseWall {}
 

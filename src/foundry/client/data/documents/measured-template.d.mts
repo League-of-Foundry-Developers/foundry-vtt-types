@@ -288,11 +288,13 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<"base", MeasuredTemplateDocument.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", NonNullable<MeasuredTemplateDocument.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<MeasuredTemplateDocument.CreateData>,
-      context: Document.CreateDialogContext<string, MeasuredTemplateDocument.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<MeasuredTemplateDocument.Parent>>,
     ): Promise<MeasuredTemplateDocument.Stored | null | undefined>;
 
     static override fromDropData(

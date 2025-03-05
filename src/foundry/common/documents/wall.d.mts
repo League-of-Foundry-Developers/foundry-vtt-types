@@ -98,46 +98,41 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     options?: WallDocument.Database.GetOptions,
   ): WallDocument.Implementation | null;
 
-  static override getCollectionName<
-    CollectionName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName,
-  >(name: CollectionName): WallDocument.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<CollectionName extends WallDocument.EmbeddedName>(
+    name: CollectionName,
+  ): WallDocument.CollectionNameOf<CollectionName> | null;
 
-  override getEmbeddedCollection<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
-    embeddedName: EmbeddedName,
-  ): Document.EmbeddedCollectionFor<WallDocument.Name, EmbeddedName>;
+  // TODO: We should remove these and then re-implement on a document that actually has embedded documents, e.g. JournalEntry
+  // override getEmbeddedCollection<EmbeddedName extends WallDocument.EmbeddedName>(
+  //   embeddedName: EmbeddedName,
+  // ): Document.EmbeddedCollectionFor<WallDocument.Name, EmbeddedName>;
 
-  override getEmbeddedDocument<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
-    embeddedName: EmbeddedName,
-    id: string,
-    options: Document.GetEmbeddedDocumentOptions, // TODO: Actually get the specific embedded name.
-  ): WallDocument.Embedded | undefined;
+  // override getEmbeddedDocument<EmbeddedName extends WallDocument.EmbeddedName>(
+  //   embeddedName: EmbeddedName,
+  //   id: string,
+  //   options: Document.GetEmbeddedDocumentOptions, // TODO: Actually get the specific embedded name.
+  // ): WallDocument.Embedded | undefined;
 
-  override createEmbeddedDocuments<
-    EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName,
-  >(
-    embeddedName: EmbeddedName,
-    data: Document.CreateDataFor<EmbeddedName>[] | undefined,
-    // TODO: Generic over the EmbeddedName
-    operation?: never,
-  ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
+  // override createEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName>(
+  //   embeddedName: EmbeddedName,
+  //   data: Document.CreateDataFor<EmbeddedName>[] | undefined,
+  //   // TODO: Generic over the EmbeddedName
+  //   operation?: never,
+  // ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
 
-  override updateEmbeddedDocuments<
-    EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName,
-  >(
-    embeddedName: EmbeddedName,
-    updates: Document.UpdateDataFor<EmbeddedName>[] | undefined,
-    // TODO: Generic over the EmbeddedName
-    operation?: never,
-  ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
+  // override updateEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName>(
+  //   embeddedName: EmbeddedName,
+  //   updates: Document.UpdateDataFor<EmbeddedName>[] | undefined,
+  //   // TODO: Generic over the EmbeddedName
+  //   operation?: never,
+  // ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
 
-  override deleteEmbeddedDocuments<
-    EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName,
-  >(
-    embeddedName: EmbeddedName,
-    ids: Array<string>,
-    // TODO: Generic over the EmbeddedName
-    operation?: never,
-  ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>>>;
+  // override deleteEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName>(
+  //   embeddedName: EmbeddedName,
+  //   ids: Array<string>,
+  //   // TODO: Generic over the EmbeddedName
+  //   operation?: never,
+  // ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>>>;
 
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
 
@@ -282,7 +277,6 @@ declare namespace BaseWall {
   export import Name = WallDocument.Name;
   export import Metadata = WallDocument.Metadata;
   export import Parent = WallDocument.Parent;
-  export import ParentCollection = WallDocument.ParentCollection;
   export import Pack = WallDocument.Pack;
   export import Embedded = WallDocument.Embedded;
   export import EmbeddedName = WallDocument.EmbeddedName;

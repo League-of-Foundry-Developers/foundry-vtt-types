@@ -280,11 +280,13 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<TableResult.SubType, TableResult.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<TableResult.SubType, NonNullable<TableResult.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<TableResult.CreateData>,
-      context: Document.CreateDialogContext<TableResult.SubType, TableResult.Parent>,
+      context: Document.CreateDialogContext<TableResult.SubType, NonNullable<TableResult.Parent>>,
     ): Promise<TableResult.Stored | null | undefined>;
 
     static override fromDropData(
