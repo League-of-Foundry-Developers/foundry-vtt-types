@@ -203,15 +203,12 @@ declare namespace TokenRingConfig {
 
   /**
    * Core token rings fit modes used in Foundry VTT.
-   * @remarks This is not an interface because allowing extensibility here is pointless; the existing two fit types are too hard-coded.
-   * Any additional fit types added to the static property would show up as options in settings but be non-functional, and errors will
-   * occur if either `grid.id` or `subject.id` aren't available
+   * @remarks Only the two provided core fit modes are checked against, by hardcoded IDs
    */
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  type CoreTokenRingsFitModes = {
+  interface CoreTokenRingsFitModes {
     readonly subject: RingFitMode;
     readonly grid: RingFitMode;
-  };
+  }
 
   type CoreRingIDs = "coreSteel" | "coreBronze";
 

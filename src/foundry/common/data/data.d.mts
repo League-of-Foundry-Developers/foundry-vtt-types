@@ -249,7 +249,7 @@ declare namespace BaseShapeData {
       initial: ShapeType;
       validate: (value: unknown) => value is ShapeType;
       // TODO: The following `choices` does not exist in Foundry, it's a type hack to get this field to report as the only valid value it can have
-      // TODO: The validation function enough might be able to be made to sufficiently limit the value; revisit after docs-v2
+      // TODO: The validation function enough might be able to be made to sufficiently limit the value
       choices: [ShapeType];
       validationError: `must be equal to "${ShapeType}"`;
     }>;

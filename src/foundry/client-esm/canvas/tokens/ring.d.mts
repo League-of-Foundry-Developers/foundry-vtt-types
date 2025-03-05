@@ -59,13 +59,13 @@ declare class TokenRing {
   static getRingDataBySize(size: number): TokenRing.RingData;
 
   /**
-   * @remarks Not initialized to a value, this gets set in {@link TokenRing.configureSize | `configureSize`}.
+   * @remarks Not initialized to a value, this gets set in {@link TokenRing.configureSize | TokenRing.configureSize`}.
    * After initialization (`ready`), this will only be `undefined` if the current spritesheet provides no frames
    */
   ringName: TokenRing.RingData["ringName"];
 
   /**
-   * @remarks Not initialized to a value, this gets set in {@link TokenRing.configureSize | `configureSize`}.
+   * @remarks Not initialized to a value, this gets set in {@link TokenRing.configureSize | `TokenRing.configureSize`}.
    * After initialization (`ready`), this will only be `undefined` if the current spritesheet provides no frames
    */
   bkgName: TokenRing.RingData["bkgName"];
@@ -201,7 +201,10 @@ declare namespace TokenRing {
 
   /** @remarks Overrides for default values */
   interface FlashColorOptions extends CanvasAnimationOptions {
-    /** @defaultValue `1600` */
+    /**
+     * @defaultValue `1600`
+     * @remarks Can't be `null` because it only has a parameter default, and is used as a divisor in `CanvasAnimation.#animateFrame`
+     */
     duration?: number;
 
     /** @defaultValue `PIXI.UPDATE_PRIORITY.HIGH` */

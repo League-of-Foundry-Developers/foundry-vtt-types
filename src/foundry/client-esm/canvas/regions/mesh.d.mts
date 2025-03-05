@@ -52,7 +52,7 @@ declare class RegionMesh extends PIXI.Container {
   protected override _calculateBounds(): void;
 
   /**
-   * Tests if a point is indie this RegionMesh
+   * Tests if a point is inside this RegionMesh.
    * @privateRemarks The rare instance of Foundry using the PIXI interface in *their* types
    */
   containsPoint(point: PIXI.IPointData): boolean;
