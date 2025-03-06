@@ -26,7 +26,8 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
 declare class ImagePopout<
   RenderContext extends ImagePopout.RenderContext = ImagePopout.RenderContext,
   Configuration extends ImagePopout.Configuration = ImagePopout.Configuration,
-  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+  RenderOptions extends
+    HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   constructor(options: DeepPartial<Configuration> & { src: string });
 }
