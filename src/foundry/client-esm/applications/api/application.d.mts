@@ -309,6 +309,19 @@ declare namespace ApplicationV2 {
     formData: FormDataExtended,
   ) => MaybePromise<void>;
 
+  interface TabsConfiguration {
+    /** An array of tab configuration data */
+    tabs: Omit<Tab, "group" | "active">[];
+
+    /** The tab in this group that will be active on first render */
+    initial?: string;
+    /**
+     * A localization path prefix for all tabs in the group: if set, a label is generated
+     * for each tab using a full path of `${labelPrefix}.${tabId}`.
+     */
+    labelPrefix?: string;
+  }
+
   /** @remarks Used with `templates/generic/tab-navigation.hbs` */
   interface Tab {
     id: string;
@@ -403,14 +416,35 @@ declare class ApplicationV2<
   [__RenderOptions]: RenderOptions;
   [__RenderContext]: RenderContext;
 
+  /**
+   * Applications are constructed by providing an object of configuration options.
+   * @param options - Options used to configure the Application instance
+   */
   constructor(options?: DeepPartial<Configuration>);
 
+  /**
+   * Designates which upstream Application class in this class' inheritance chain is the base application.
+   * Any DEFAULT_OPTIONS of super-classes further upstream of the BASE_APPLICATION are ignored.
+   * Hook events for super-classes further upstream of the BASE_APPLICATION are not dispatched.
+   */
   static BASE_APPLICATION: typeof ApplicationV2;
 
-  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
-  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  /**
+   * The default configuration options which are assigned to every instance of this Application class.
+   * @privateRemarks This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+   * Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+   */
   static DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration> & object;
 
+  /**
+   * Configuration of application tabs, with an entry per tab group.
+   * @defaultValue `{}`
+   */
+  static TABS: Record<string, ApplicationV2.TabsConfiguration>;
+
+  /**
+   * The sequence of rendering states that describe the Application life-cycle.
+   */
   static readonly RENDER_STATES: {
     ERROR: -3;
     CLOSING: -2;
@@ -555,6 +589,12 @@ declare class ApplicationV2<
    * @param group - The ID of the tab group to prepare
    */
   protected _prepareTabs(group: string): Record<string, ApplicationV2.Tab>;
+
+  /**
+   * Get the configuration for a tabs group.
+   * @param group - The ID of a tabs group
+   */
+  protected _getTabsConfig(group: string): ApplicationV2.TabsConfiguration | null;
 
   /**
    * Configure the array of header control menu options

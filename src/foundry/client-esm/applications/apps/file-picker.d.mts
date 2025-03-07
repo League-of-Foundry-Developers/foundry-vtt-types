@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../../utils/index.d.mts";
+import type { AnyObject, DeepPartial } from "../../../../utils/index.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type { FormSelectOption } from "../forms/fields.d.mts";
@@ -209,7 +209,9 @@ declare class FilePicker<
    */
   activeSource: FilePicker.SourceType;
 
-  // PARTS and TABS are overridden without changing the signature
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   /**
    * The allowed values for the type of this FilePicker instance.
@@ -354,7 +356,18 @@ declare class FilePicker<
    */
   browse(target?: string, options?: FilePicker.BrowseOptions): Promise<this>;
 
-  // render, _prepareContext, _prepareTabs, changeTab, _onRender are overridden without changing their signatures
+  override render(options?: DeepPartial<RenderOptions>): Promise<this>;
+  override render(options: boolean, _options?: DeepPartial<RenderOptions>): Promise<this>;
+
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  protected override _prepareTabs(group: string): Record<string, ApplicationV2.Tab>;
+
+  override changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
+
+  protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   /**
    * Handle changes to the tile size.
