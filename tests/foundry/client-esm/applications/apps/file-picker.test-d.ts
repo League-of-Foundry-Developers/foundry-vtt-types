@@ -11,3 +11,8 @@ declare const myFile: File;
 const response = await FilePicker.upload("foo", "bar", myFile);
 
 expectTypeOf(response.ok).toBeBoolean();
+
+const myPicker = new FilePicker();
+
+myPicker.render(true);
+myPicker.render({ force: true });

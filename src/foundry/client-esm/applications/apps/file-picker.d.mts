@@ -82,7 +82,7 @@ declare namespace FilePicker {
     tileSize?: boolean;
 
     /** Redirect to the root directory rather than starting in the source directory of one of these files. */
-    redirectToRoot?: string[];
+    redirectToRoot?: string[] | null | undefined;
   }
 
   interface FavoriteFolder {
@@ -133,8 +133,10 @@ declare namespace FilePicker {
   interface UploadOptions {
     /**
      * Display a UI notification when the upload is processed
+     * @defaultValue `true`
+     * @remarks `null` equivalent to `false`
      */
-    notify?: boolean;
+    notify?: boolean | undefined | null;
   }
 
   // Unknown if these are all possible properties
@@ -159,7 +161,6 @@ declare namespace FilePicker {
 /**
  * The FilePicker application renders contents of the server-side public directory.
  * This app allows for navigating and uploading files to the public path.
- * @remarks TODO: Stub
  */
 declare class FilePicker<
   RenderContext extends FilePicker.RenderContext = FilePicker.RenderContext,
@@ -291,6 +292,7 @@ declare class FilePicker<
    * @param source  - The source location in which to browse: see FilePicker#sources for details.
    * @param target  - The target within the source location
    * @param options - Optional arguments
+   *                  (default: `{}`)
    */
   static browse(source: string, target: string, options?: FilePicker.BrowseOptions): Promise<FilePicker.BrowseReturn>;
 
@@ -299,6 +301,7 @@ declare class FilePicker<
    * @param source  - The source location in which to browse: see FilePicker#sources for details.
    * @param target  - The target within the source location
    * @param options - Optional arguments modifying the request
+   *                  (default: `{}`)
    */
   static configurePath(
     source: string,
@@ -311,6 +314,7 @@ declare class FilePicker<
    * @param source  - The source location in which to browse: see FilePicker#sources for details.
    * @param target  - The target within the source location
    * @param options - Optional arguments which modify the request
+   *                  (default: `{}`)
    * @returns The full file path of the created directory
    */
   static createDirectory(source: string, target: string, options?: FilePicker.BrowseOptions): Promise<string>;
@@ -321,7 +325,9 @@ declare class FilePicker<
    * @param path    - The destination path
    * @param file    - The File object to upload
    * @param body    - Additional file upload options sent in the POST body
+   *                  (default: `{}`)
    * @param options - Additional options to configure how the method behaves
+   *                  (default: `{}`)
    * @returns The response object
    */
   static upload(
@@ -338,7 +344,9 @@ declare class FilePicker<
    * @param path      - The relative destination path in the package's storage directory
    * @param file      - The File object to upload
    * @param body      - Additional file upload options sent in the POST body
+   *                    (default: `{}`)
    * @param options   - Additional options to configure how the method behaves
+   *                    (default: `{}`)
    * @returns The response object
    */
   static uploadPersistent(
@@ -353,11 +361,11 @@ declare class FilePicker<
    * Browse to a specific location for this FilePicker instance
    * @param target  - The target within the currently active source location.
    * @param options - Browsing options
+   *                  (default: `{}`)
    */
   browse(target?: string, options?: FilePicker.BrowseOptions): Promise<this>;
 
-  override render(options?: DeepPartial<RenderOptions>): Promise<this>;
-  override render(options: boolean, _options?: DeepPartial<RenderOptions>): Promise<this>;
+  // Render is overridden for no signature change but omitted here to simplify the deprecation
 
   protected override _prepareContext(
     options: DeepPartial<RenderOptions> & { isFirstRender: boolean },

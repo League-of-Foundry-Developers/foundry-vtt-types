@@ -314,12 +314,12 @@ declare namespace ApplicationV2 {
     tabs: Omit<Tab, "group" | "active">[];
 
     /** The tab in this group that will be active on first render */
-    initial?: string;
+    initial?: string | null | undefined;
     /**
      * A localization path prefix for all tabs in the group: if set, a label is generated
      * for each tab using a full path of `${labelPrefix}.${tabId}`.
      */
-    labelPrefix?: string;
+    labelPrefix?: string | null | undefined;
   }
 
   /** @remarks Used with `templates/generic/tab-navigation.hbs` */
@@ -419,6 +419,7 @@ declare class ApplicationV2<
   /**
    * Applications are constructed by providing an object of configuration options.
    * @param options - Options used to configure the Application instance
+   *                  (default: `{}`)
    */
   constructor(options?: DeepPartial<Configuration>);
 
@@ -558,16 +559,18 @@ declare class ApplicationV2<
   /**
    * Render the Application, creating its HTMLElement and replacing its innerHTML.
    * Add it to the DOM if it is not currently rendered and rendering is forced. Otherwise, re-render its contents.
-   * @param options  - Options which configure application rendering behavior.
-   *                   A boolean is interpreted as the "force" option.
+   * @param options - Options which configure application rendering behavior.
+   *                  A boolean is interpreted as the "force" option.
+   *                  (default: `{}`)
    * @returns A Promise which resolves to the rendered Application instance
    */
   render(options?: DeepPartial<RenderOptions>): Promise<this>;
 
   /**
-   * @deprecated Exists for backwards compatability with the original `ApplicationV1#render` signature.
+   * @deprecated Exists for backwards compatibility with the original `ApplicationV1#render` signature.
    *
    * @param _options - Legacy options for backwards-compatibility with the original ApplicationV1#render signature.
+   *                   (default: `{}`)
    */
   render(options: boolean, _options?: DeepPartial<RenderOptions>): Promise<this>;
 
