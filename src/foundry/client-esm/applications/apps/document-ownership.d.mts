@@ -9,7 +9,8 @@ declare class DocumentOwnershipConfig<
   Document extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
   RenderContext extends object = DocumentOwnershipConfig.RenderContext<Document>,
   Configuration extends DocumentSheetV2.Configuration<Document> = DocumentSheetV2.Configuration<Document>,
-  RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
+  RenderOptions extends
+    HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, RenderContext, Configuration, RenderOptions> {}
 
 declare namespace DocumentOwnershipConfig {

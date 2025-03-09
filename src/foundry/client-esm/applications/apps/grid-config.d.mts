@@ -9,7 +9,8 @@ declare class GridConfig<
   RenderContext extends GridConfig.RenderContext = GridConfig.RenderContext,
   Configuration extends
     DocumentSheetV2.Configuration<Scene.ConfiguredInstance> = DocumentSheetV2.Configuration<Scene.ConfiguredInstance>,
-  RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
+  RenderOptions extends
+    HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
   Scene.ConfiguredInstance,
   RenderContext,
