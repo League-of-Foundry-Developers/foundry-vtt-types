@@ -386,7 +386,7 @@ declare global {
 
     protected override _onCreateDescendantDocuments(
       parent: Playlist.Stored,
-      collection: PlaylistSound.Metadata["collection"],
+      collection: PlaylistSound.ParentCollectionName,
       documents: PlaylistSound.Stored[],
       result: PlaylistSound.CreateData[],
       options: PlaylistSound.DatabaseOperation.OnCreateOperation,
@@ -395,7 +395,7 @@ declare global {
 
     protected override _onUpdateDescendantDocuments(
       parent: Playlist.Stored,
-      collection: PlaylistSound.Metadata["collection"],
+      collection: PlaylistSound.ParentCollectionName,
       documents: PlaylistSound.Stored[],
       changes: PlaylistSound.UpdateData[],
       options: PlaylistSound.DatabaseOperation.OnUpdateOperation,
@@ -404,7 +404,7 @@ declare global {
 
     protected override _onDeleteDescendantDocuments(
       parent: Playlist.Stored,
-      collection: PlaylistSound.Metadata["collection"],
+      collection: PlaylistSound.ParentCollectionName,
       documents: PlaylistSound.Stored[],
       ids: string[],
       options: PlaylistSound.DatabaseOperation.OnDeleteOperation,
