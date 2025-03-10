@@ -815,7 +815,7 @@ declare class SchemaField<
 }
 
 // FIXME(LukeAbby): This is a quick patch that avoids issues with the fact that the `initial` in `SchemaField` is not actually assignable to its assignment type etc.
-// This will be superceded once proper field treatment is applied.
+// This will be superseded once proper field treatment is applied.
 declare const __SchemaFieldInitialSymbol: unique symbol;
 
 type __SchemaFieldInitial = typeof __SchemaFieldInitialSymbol;
@@ -1905,7 +1905,7 @@ declare namespace ArrayField {
   /**
    * A shorthand for the persisted type of an ArrayField class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the ArrayField
-   * @typeParam PersistedElementType  - the perssited type of the elements of the ArrayField
+   * @typeParam PersistedElementType  - the persisted type of the elements of the ArrayField
    * @typeParam Opts                  - the options that override the default options
    */
   type PersistedType<
@@ -2040,7 +2040,7 @@ declare namespace SetField {
   /**
    * A shorthand for the persisted type of a SetField class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
-   * @typeParam PersistedElementType  - the perssited type of the elements of the SetField
+   * @typeParam PersistedElementType  - the persisted type of the elements of the SetField
    * @typeParam Opts                  - the options that override the default options
    */
   type PersistedType<
@@ -2370,7 +2370,7 @@ declare namespace EmbeddedCollectionField {
   /**
    * A shorthand for the persisted type of an ArrayField class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionField
-   * @typeParam PersistedElementType  - the perssited type of the elements of the EmbeddedCollectionField
+   * @typeParam PersistedElementType  - the persisted type of the elements of the EmbeddedCollectionField
    * @typeParam Opts                  - the options that override the default options
    */
   type PersistedType<
@@ -2523,7 +2523,7 @@ declare namespace EmbeddedCollectionDeltaField {
   /**
    * A shorthand for the persisted type of an ArrayField class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionDeltaField
-   * @typeParam PersistedElementType  - the perssited type of the elements of the EmbeddedCollectionDeltaField
+   * @typeParam PersistedElementType  - the persisted type of the elements of the EmbeddedCollectionDeltaField
    * @typeParam Opts                  - the options that override the default options
    */
   type PersistedType<

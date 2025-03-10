@@ -1,5 +1,4 @@
 import type { InterfaceToObject, AnyObject } from "fvtt-types/utils";
-import type StringTerm from "../../../client-esm/dice/terms/string.d.mts";
 
 declare global {
   /**
@@ -141,42 +140,61 @@ declare global {
     type Any = AnyTokenConfig;
     type AnyConstructor = typeof AnyTokenConfig;
 
-    interface FormData {
-      // TODO: Update
-      actorId: string;
-      actorLink: boolean;
-      alternateImages?: string;
-      alpha: number;
-      "bar1.attribute": string;
-      "bar2.attribute": string;
-      brightLight: number | null;
-      brightSight: number | null;
-      dimLight: number | null;
-      dimSight: number | null;
-      displayBars: foundry.CONST.TOKEN_DISPLAY_MODES;
-      displayName: foundry.CONST.TOKEN_DISPLAY_MODES;
-      disposition: foundry.CONST.TOKEN_DISPOSITIONS;
-      elevation: number | null;
-      height: number | null;
-      img: string;
-      lightAlpha: number;
-      lightAngle: number | null;
-      "lightAnimation.intensity": number;
-      "lightAnimation.speed": number;
-      "lightAnimation.type": string;
-      lightColor: string;
-      lockRotation: boolean;
-      mirrorX: boolean;
-      mirrorY: boolean;
-      name: StringTerm;
-      rotation: number | null;
-      scale: number;
-      sightAngle: number | null;
-      tint: string;
-      vision: boolean;
-      width: number | null;
-      x: number | null;
-      y: number | null;
+    /** @internal */
+    type _FormData = Pick<
+      TokenDocument,
+      | "actorId"
+      | "actorLink"
+      | "alpha"
+      | "detectionModes"
+      | "displayBars"
+      | "displayName"
+      | "disposition"
+      | "elevation"
+      | "lockRotation"
+      | "name"
+      | "rotation"
+      | "sort"
+      | "x"
+      | "y"
+    >;
+
+    interface FormData extends _FormData {
+      "bar1.attribute": TokenDocument["bar1"]["attribute"];
+      "bar2.attribute": TokenDocument["bar2"]["attribute"];
+      "light.alpha": TokenDocument["light"]["alpha"];
+      "light.angle": TokenDocument["light"]["angle"];
+      "light.animation.intensity": TokenDocument["light"]["animation"]["intensity"];
+      "light.animation.reverse": TokenDocument["light"]["animation"]["reverse"];
+      "light.animation.speed": TokenDocument["light"]["animation"]["speed"];
+      "light.animation.type": TokenDocument["light"]["animation"]["type"];
+      "light.attenuation": TokenDocument["light"]["attenuation"];
+      "light.bright": TokenDocument["light"]["bright"];
+      "light.color": TokenDocument["light"]["color"];
+      "light.coloration": TokenDocument["light"]["coloration"];
+      "light.contrast": TokenDocument["light"]["contrast"];
+      "light.dim": TokenDocument["light"]["dim"];
+      "light.luminosity": TokenDocument["light"]["luminosity"];
+      "light.saturation": TokenDocument["light"]["saturation"];
+      "light.shadows": TokenDocument["light"]["shadows"];
+      "occludable.radius": TokenDocument["occludable"]["radius"];
+      "ring.colors.background": TokenDocument["ring"]["colors"]["background"];
+      "ring.colors.ring": TokenDocument["ring"]["colors"]["ring"];
+      "ring.effects": TokenDocument["ring"]["effects"];
+      "ring.enabled": TokenDocument["ring"]["enabled"];
+      "ring.subject.scale": TokenDocument["ring"]["subject"]["scale"];
+      "ring.subject.texture": TokenDocument["ring"]["subject"]["texture"];
+      "sight.attenuation": TokenDocument["sight"]["attenuation"];
+      "sight.color": TokenDocument["sight"]["color"];
+      "sight.contrast": TokenDocument["sight"]["contrast"];
+      "sight.enabled": TokenDocument["sight"]["enabled"];
+      "texture.anchorX": TokenDocument["texture"]["anchorX"];
+      "texture.anchorY": TokenDocument["texture"]["anchorY"];
+      "texture.fit": TokenDocument["texture"]["fit"];
+      "texture.scaleX": TokenDocument["texture"]["scaleX"];
+      "texture.scaleY": TokenDocument["texture"]["scaleY"];
+      "texture.src": TokenDocument["texture"]["src"];
+      "texture.tint": TokenDocument["texture"]["tint"];
     }
   }
 

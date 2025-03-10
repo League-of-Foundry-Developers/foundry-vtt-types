@@ -1,8 +1,6 @@
 import "./drawing-config.d.mts";
 import "./drawing-hud.d.mts";
-import "./light-config.d.mts";
 import "./note-config.d.mts";
-import "./sound-config.d.mts";
 import "./tile-config.d.mts";
 import "./tile-hud.d.mts";
 import "./token-config.d.mts";
