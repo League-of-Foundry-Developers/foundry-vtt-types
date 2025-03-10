@@ -101,19 +101,24 @@ declare global {
        * The _id of the user who created this measured template
        * @defaultValue `game?.user?.id`
        */
-      user: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string | undefined }>;
+      author: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string | undefined }>;
 
       /**
        * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
        * @defaultValue `CONST.MEASURED_TEMPLATE_TYPES.CIRCLE`
        */
-      t: fields.StringField<{
-        required: true;
-        choices: foundry.CONST.MEASURED_TEMPLATE_TYPES[];
-        label: "Type";
-        initial: typeof CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
-        validationError: "must be a value in CONST.MEASURED_TEMPLATE_TYPES";
-      }>;
+      t: fields.StringField<
+        {
+          required: true;
+          choices: CONST.MEASURED_TEMPLATE_TYPES[];
+          label: "Type";
+          initial: typeof CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
+          validationError: "must be a value in CONST.MEASURED_TEMPLATE_TYPES";
+        },
+        CONST.MEASURED_TEMPLATE_TYPES | null | undefined,
+        CONST.MEASURED_TEMPLATE_TYPES,
+        CONST.MEASURED_TEMPLATE_TYPES
+      >;
 
       /**
        * The x-coordinate position of the origin of the template effect
@@ -134,13 +139,18 @@ declare global {
       elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
       /**
+       * The z-index of this template relative to other siblings
+       * @defaultValue `0`
+       */
+      sort: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
+
+      /**
        * The distance of the template effect
        * @defaultValue `0`
        */
       distance: fields.NumberField<{
         required: true;
         nullable: false;
-        positive: true;
         initial: 0;
         min: 0;
         label: "Distance";
@@ -194,6 +204,7 @@ declare global {
        */
       flags: fields.ObjectField.FlagsField<"MeasuredTemplate">;
     }
+
     namespace DatabaseOperation {
       /** Options passed along in Get operations for MeasuredTemplateDocuments */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<MeasuredTemplateDocument.Parent> {}

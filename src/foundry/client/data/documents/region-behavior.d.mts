@@ -125,7 +125,7 @@ declare global {
        * Is the RegionBehavior currently disabled?
        * @defaultValue `false`
        */
-      disabled: fields.BooleanField<{ label: string; hint: string }>;
+      disabled: fields.BooleanField<{ label: "BEHAVIOR.FIELDS.disabled.label"; hint: "BEHAVIOR.FIELDS.disabled.hint" }>;
 
       /**
        * An object of optional key/value flags

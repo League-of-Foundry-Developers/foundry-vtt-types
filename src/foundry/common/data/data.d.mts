@@ -1,9 +1,9 @@
 import type { DatabaseBackend } from "../abstract/module.d.mts";
 import type { DataModel } from "../abstract/data.d.mts";
-import type { fields } from "./module.d.mts";
+// import type { fields } from "./module.d.mts";
 import type * as documents from "../documents/_module.d.mts";
-import type { AnyMutableObject, EmptyObject, ToMethod, ValueOf } from "fvtt-types/utils";
-import type { DataField, FilePathField, ForeignDocumentField, NumberField, SchemaField } from "./fields.d.mts";
+import type { AnyMutableObject, EmptyObject, GetKey, NullishCoalesce, ToMethod, ValueOf } from "fvtt-types/utils";
+import fields = foundry.data.fields;
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -445,9 +445,19 @@ declare namespace TextureData {
     label: "";
   }
 
-  interface SrcOptions extends Pick<FilePathField.Options, "categories" | "wildcard" | "label"> {
-    /** @remarks Initial values for the entire `TextureData`, not just the `src` field */
-    initial?: SchemaField.AssignmentData<Schema<DefaultOptions>>;
+  /**
+   * @internal
+   * The `initial` property of the `srcOptions` parameter of the {@link TextureData | `TextureData`} constructor
+   * is not the `initial` for any one field, but instead is an object that gets parcelled out by key to the
+   * fields of the schema
+   */
+  type _SrcOptionsInitial<T> = {
+    [K in keyof T]: fields.DataField.Options.InitialType<T[K]>;
+  };
+
+  /** @remarks The keys picked directly are passed on to the `src: FilePathField` field, but `initial` is an object of initial values for potentially every field in the schema */
+  interface SrcOptions extends Pick<fields.FilePathField.Options, "categories" | "wildcard" | "label"> {
+    initial: _SrcOptionsInitial<fields.SchemaField.AssignmentData<Schema<DefaultOptions>>>;
   }
 
   interface Schema<Options extends SrcOptions> extends DataSchema {
@@ -455,89 +465,129 @@ declare namespace TextureData {
      * The URL of the texture source.
      * @defaultValue `initial.src ?? null`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData} constructor
+     * parameter of the {@link TextureData | `TextureData`} constructor
      */
     src: fields.FilePathField<{
-      categories: Options["categories"] extends NonNullable<FilePathField.Options["categories"]>
-        ? Options["categories"]
-        : DefaultOptions["categories"];
-
-      initial: Options["initial"] extends { src: unknown }
-        ? Options["initial"]["src"] extends null | undefined
-          ? null
-          : Options["initial"]["src"] extends DataField.Options.InitialType<
-                FilePathField.AssignmentType<FilePathField.Options>
-              >
-            ? Options["initial"]["src"]
-            : null
-        : null;
-
-      wildcard: Options["wildcard"] extends boolean ? Options["wildcard"] : DefaultOptions["wildcard"];
-
-      label: Options["label"] extends NonNullable<FilePathField.Options["label"]>
-        ? Options["label"]
-        : DefaultOptions["label"];
+      categories: NullishCoalesce<Options["categories"], DefaultOptions["categories"]>;
+      initial: NullishCoalesce<GetKey<Options["initial"], "src", null>, null>;
+      wildcard: NullishCoalesce<Options["wildcard"], DefaultOptions["wildcard"]>;
+      label: NullishCoalesce<Options["label"], DefaultOptions["label"]>;
     }>;
 
     /**
      * The X coordinate of the texture anchor.
      * @defaultValue `initial.anchorX ?? 0`
+     * @remarks The `initial` in the above default value is the property from the `srcOptions`
+     * parameter of the {@link TextureData | `TextureData`} constructor
      */
-    anchorX: fields.NumberField<{ nullable: false; initial: number }>;
+    anchorX: fields.NumberField<{
+      nullable: false;
+      initial: NullishCoalesce<GetKey<Options["initial"], "anchorX", 0>, 0>;
+    }>;
 
     /**
      * The Y coordinate of the texture anchor.
      * @defaultValue `initial.anchorY ?? 0`
+     * @remarks The `initial` in the above default value is the property from the `srcOptions`
+     * parameter of the {@link TextureData | `TextureData`} constructor
      */
-    anchorY: fields.NumberField<{ nullable: false; initial: number }>;
+    anchorY: fields.NumberField<{
+      nullable: false;
+      initial: NullishCoalesce<GetKey<Options["initial"], "anchorY", 0>, 0>;
+    }>;
 
     /**
      * The X offset of the texture with (0,0) in the top left.
      * @defaultValue `initial.offsetX ?? 0`
+     * @remarks The `initial` in the above default value is the property from the `srcOptions`
+     * parameter of the {@link TextureData | `TextureData`} constructor
      */
-    offsetX: fields.NumberField<{ nullable: false; integer: true; initial: number }>;
+    offsetX: fields.NumberField<{
+      nullable: false;
+      integer: true;
+      initial: NullishCoalesce<GetKey<Options["initial"], "offsetX", 0>, 0>;
+    }>;
 
     /**
      * The Y offset of the texture with (0,0) in the top left.
      * @defaultValue `initial.offsetY ?? 0`
+     * @remarks The `initial` in the above default value is the property from the `srcOptions`
+     * parameter of the {@link TextureData | `TextureData`} constructor
      */
-    offsetY: fields.NumberField<{ nullable: false; integer: true; initial: number }>;
+    offsetY: fields.NumberField<{
+      nullable: false;
+      integer: true;
+      initial: NullishCoalesce<GetKey<Options["initial"], "offsetY", 0>, 0>;
+    }>;
 
     /**
      * @defaultValue `initial.fit ?? "fill"`
+     * @remarks The `initial` in the above default value is the property from the `srcOptions`
+     * parameter of the {@link TextureData | `TextureData`} constructor
      */
-    fit: fields.StringField<{ initial: string; choices: typeof CONST.TEXTURE_DATA_FIT_MODES }>;
+    fit: fields.StringField<
+      {
+        initial: NullishCoalesce<GetKey<Options["initial"], "fit", "fill">, "fill">;
+        choices: typeof CONST.TEXTURE_DATA_FIT_MODES;
+      },
+      ValueOf<typeof CONST.TEXTURE_DATA_FIT_MODES> | null | undefined,
+      ValueOf<typeof CONST.TEXTURE_DATA_FIT_MODES>,
+      ValueOf<typeof CONST.TEXTURE_DATA_FIT_MODES>
+    >;
 
     /**
      * The scale of the texture in the X dimension.
      * @defaultValue `initial.scaleX ?? 1`
+     * @remarks The `initial` in the above default value is the property from the `srcOptions`
+     * parameter of the {@link TextureData | `TextureData`} constructor
      */
-    scaleX: fields.NumberField<{ nullable: false; initial: number }>;
+    scaleX: fields.NumberField<{
+      nullable: false;
+      initial: NullishCoalesce<GetKey<Options["initial"], "scaleX", 1>, 1>;
+    }>;
 
     /**
      * The scale of the texture in the Y dimension.
      * @defaultValue `initial.scaleY ?? 1`
+     * @remarks The `initial` in the above default value is the property from the `srcOptions`
+     * parameter of the {@link TextureData | `TextureData`} constructor
      */
-    scaleY: fields.NumberField<{ nullable: false; initial: number }>;
+    scaleY: fields.NumberField<{
+      nullable: false;
+      initial: NullishCoalesce<GetKey<Options["initial"], "scaleY", 1>, 1>;
+    }>;
 
     /**
      * An angle of rotation by which this texture is rotated around its center.
      * @defaultValue `initial.rotation ?? 0`
+     * @remarks The `initial` in the above default value is the property from the `srcOptions`
+     * parameter of the {@link TextureData | `TextureData`} constructor
      */
-    rotation: fields.AngleField<{ initial: number }>;
+    rotation: fields.AngleField<{
+      initial: NullishCoalesce<GetKey<Options["initial"], "rotation", 0>, 0>;
+    }>;
 
     /**
      * The tint applied to the texture.
      * @defaultValue `initial.tint ?? "#ffffff"`
+     * @remarks The `initial` in the above default value is the property from the `srcOptions`
+     * parameter of the {@link TextureData | `TextureData`} constructor
      */
-    tint: fields.ColorField<{ nullable: false; initial: string }>;
-
+    tint: fields.ColorField<{
+      nullable: false;
+      initial: NullishCoalesce<GetKey<Options["initial"], "tint", "#ffffff">, "#ffffff">;
+    }>;
     /**
      * Only pixels with an alpha value at or above this value are consider solid
      * w.r.t. to occlusion testing and light/weather blocking.
      * @defaultValue `initial.alphaThreshold ?? 0`
+     * @remarks The `initial` in the above default value is the property from the `srcOptions`
+     * parameter of the {@link TextureData | `TextureData`} constructor
      */
-    alphaThreshold: fields.AlphaField<{ nullable: false; initial: number }>;
+    alphaThreshold: fields.AlphaField<{
+      nullable: false;
+      initial: NullishCoalesce<GetKey<Options["initial"], "alphaThreshold", 0>, 0>;
+    }>;
   }
 }
 
@@ -571,12 +621,22 @@ declare namespace PrototypeToken {
     | "locked"
     | "_regions";
 
+  /**
+   * @privateRemarks Since the {@link TokenDocument.Schema | `TokenDocument` schema} also extends `SharedProtoSchema`,
+   * overrides & extensions specific to {@link PrototypeToken | `PrototypeToken`} must go here
+   */
   interface Schema extends TokenDocument.SharedProtoSchema {
-    name: fields.StringField<{ required: true; blank: true; textSearch: boolean }>;
+    /**
+     * The name used to describe the Token
+     * @defaultValue `""`
+     * @privateRemarks Only change from parent schema is `textSearch: false`
+     */
+    name: fields.StringField<{ required: true; blank: true; textSearch: false }>;
 
     /**
      * Does the prototype token use a random wildcard image?
      * @defaultValue `false`
+     * @privateRemarks New field, not in parent schema
      */
     randomImg: fields.BooleanField;
   }

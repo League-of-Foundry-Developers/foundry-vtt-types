@@ -155,7 +155,7 @@ declare global {
       c: fields.ArrayField<
         fields.NumberField<{ required: true; integer: true; nullable: false }>,
         {
-          validate: (c: [x0: number, y0: number, x1: number, y1: number]) => boolean;
+          validate: (c: unknown) => boolean;
           validationError: "must be a length-4 array of integer coordinates";
         },
         // TODO(LukeAbby): Make the array shape easier to override.
@@ -173,78 +173,113 @@ declare global {
        * The illumination restriction type of this wall
        * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
        */
-      light: fields.NumberField<{
-        required: true;
-        choices: CONST.WALL_SENSE_TYPES[];
-        initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
-        validationError: "must be a value in CONST.WALL_SENSE_TYPES";
-      }>;
+      light: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.WALL_SENSE_TYPES[];
+          initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
+          validationError: "must be a value in CONST.WALL_SENSE_TYPES";
+        },
+        CONST.WALL_SENSE_TYPES | null | undefined,
+        CONST.WALL_SENSE_TYPES | null,
+        CONST.WALL_SENSE_TYPES | null
+      >;
 
       /**
        * The movement restriction type of this wall
        * @defaultValue `CONST.WALL_MOVEMENT_TYPES.NORMAL`
        */
-      move: fields.NumberField<{
-        required: true;
-        choices: CONST.WALL_MOVEMENT_TYPES[];
-        initial: typeof CONST.WALL_MOVEMENT_TYPES.NORMAL;
-        validationError: "must be a value in CONST.WALL_MOVEMENT_TYPES";
-      }>;
+      move: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.WALL_MOVEMENT_TYPES[];
+          initial: typeof CONST.WALL_MOVEMENT_TYPES.NORMAL;
+          validationError: "must be a value in CONST.WALL_MOVEMENT_TYPES";
+        },
+        CONST.WALL_MOVEMENT_TYPES | null | undefined,
+        CONST.WALL_MOVEMENT_TYPES | null,
+        CONST.WALL_MOVEMENT_TYPES | null
+      >;
 
       /**
        * The visual restriction type of this wall
        * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
        */
-      sight: fields.NumberField<{
-        required: true;
-        choices: CONST.WALL_SENSE_TYPES[];
-        initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
-        validationError: "must be a value in CONST.WALL_SENSE_TYPES";
-      }>;
+      sight: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.WALL_SENSE_TYPES[];
+          initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
+          validationError: "must be a value in CONST.WALL_SENSE_TYPES";
+        },
+        CONST.WALL_SENSE_TYPES | null | undefined,
+        CONST.WALL_SENSE_TYPES | null,
+        CONST.WALL_SENSE_TYPES | null
+      >;
 
       /**
        * The auditory restriction type of this wall
        * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
        */
-      sound: fields.NumberField<{
-        required: true;
-        choices: CONST.WALL_SENSE_TYPES[];
-        initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
-        validationError: "must be a value in CONST.WALL_SENSE_TYPES";
-      }>;
+      sound: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.WALL_SENSE_TYPES[];
+          initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
+          validationError: "must be a value in CONST.WALL_SENSE_TYPES";
+        },
+        CONST.WALL_SENSE_TYPES | null | undefined,
+        CONST.WALL_SENSE_TYPES | null,
+        CONST.WALL_SENSE_TYPES | null
+      >;
 
       /**
        * The direction of effect imposed by this wall
        * @defaultValue `CONST.WALL_DIRECTIONS.BOTH`
        */
-      dir: fields.NumberField<{
-        required: true;
-        choices: CONST.WALL_DIRECTIONS[];
-        initial: typeof CONST.WALL_DIRECTIONS.BOTH;
-        validationError: "must be a value in CONST.WALL_DIRECTIONS";
-      }>;
+      dir: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.WALL_DIRECTIONS[];
+          initial: typeof CONST.WALL_DIRECTIONS.BOTH;
+          validationError: "must be a value in CONST.WALL_DIRECTIONS";
+        },
+        CONST.WALL_DIRECTIONS | null | undefined,
+        CONST.WALL_DIRECTIONS | null,
+        CONST.WALL_DIRECTIONS | null
+      >;
 
       /**
        * The type of door which this wall contains, if any
        * @defaultValue `CONST.WALL_DOOR_TYPES.NONE`
        */
-      door: fields.NumberField<{
-        required: true;
-        choices: CONST.WALL_DOOR_TYPES[];
-        initial: typeof CONST.WALL_DOOR_TYPES.NONE;
-        validationError: "must be a value in CONST.WALL_DOOR_TYPES";
-      }>;
+      door: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.WALL_DOOR_TYPES[];
+          initial: typeof CONST.WALL_DOOR_TYPES.NONE;
+          validationError: "must be a value in CONST.WALL_DOOR_TYPES";
+        },
+        CONST.WALL_DOOR_TYPES | null | undefined,
+        CONST.WALL_DOOR_TYPES | null,
+        CONST.WALL_DOOR_TYPES | null
+      >;
 
       /**
        * The state of the door this wall contains, if any
        * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED`
        */
-      ds: fields.NumberField<{
-        required: true;
-        choices: CONST.WALL_DOOR_STATES[];
-        initial: typeof CONST.WALL_DOOR_STATES.CLOSED;
-        validationError: "must be a value in CONST.WALL_DOOR_STATES";
-      }>;
+      ds: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.WALL_DOOR_STATES[];
+          initial: typeof CONST.WALL_DOOR_STATES.CLOSED;
+          validationError: "must be a value in CONST.WALL_DOOR_STATES";
+        },
+        CONST.WALL_DOOR_STATES | null | undefined,
+        CONST.WALL_DOOR_STATES | null,
+        CONST.WALL_DOOR_STATES | null
+      >;
 
       doorSound: fields.StringField<{ required: false; blank: true; initial: undefined }>;
 

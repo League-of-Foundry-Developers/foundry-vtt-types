@@ -188,7 +188,7 @@ declare global {
 
         /**
          * An effect configuration to apply to the sound when muffled by walls
-         * @defaultValue see properies
+         * @defaultValue see properties
          */
         type: fields.SchemaField<EffectsConfigSchema>;
       }>;

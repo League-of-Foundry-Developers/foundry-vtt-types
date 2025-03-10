@@ -101,7 +101,10 @@ declare global {
        * The _id of the user who created the drawing
        * @defaultValue `game.user?.id`
        */
-      author: fields.ForeignDocumentField<typeof documents.BaseUser, { nullable: false; initial: () => string }>;
+      author: fields.ForeignDocumentField<
+        typeof documents.BaseUser,
+        { nullable: false; initial: () => string | undefined }
+      >;
 
       /**
        * The geometric shape of the drawing
@@ -154,14 +157,19 @@ declare global {
        * The fill type of the drawing shape, a value from CONST.DRAWING_FILL_TYPES
        * @defaultValue `CONST.DRAWING_FILL_TYPES.NONE`
        */
-      fillType: fields.NumberField<{
-        required: true;
-        nullable: false;
-        initial: typeof CONST.DRAWING_FILL_TYPES.NONE;
-        choices: CONST.DRAWING_FILL_TYPES[];
-        label: "DRAWING.FillTypes";
-        validationError: "must be a value in CONST.DRAWING_FILL_TYPES";
-      }>;
+      fillType: fields.NumberField<
+        {
+          required: true;
+          nullable: false;
+          initial: typeof CONST.DRAWING_FILL_TYPES.NONE;
+          choices: CONST.DRAWING_FILL_TYPES[];
+          label: "DRAWING.FillTypes";
+          validationError: "must be a value in CONST.DRAWING_FILL_TYPES";
+        },
+        CONST.DRAWING_FILL_TYPES | null | undefined,
+        CONST.DRAWING_FILL_TYPES,
+        CONST.DRAWING_FILL_TYPES
+      >;
 
       /**
        * An optional color string with which to fill the drawing geometry
