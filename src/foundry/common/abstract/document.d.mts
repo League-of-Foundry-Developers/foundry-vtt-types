@@ -1568,7 +1568,9 @@ declare namespace Document {
     >;
 
     /** Used for {@link Document.update | `Document#update`} */
-    type UpdateOperationInstance<Op extends DatabaseUpdateOperation> = InexactPartial<Omit<Op, "updates">>;
+    type UpdateOperationInstance<Op extends DatabaseUpdateOperation> = InexactPartial<
+      Omit<Op, "updates" | "parent" | "pack">
+    >;
 
     /** Used for {@link Document._preUpdateOperation | `Document._preUpdateOperation`} */
     type PreUpdateOperationStatic<Op extends DatabaseUpdateOperation> = InexactPartial<
@@ -1595,7 +1597,9 @@ declare namespace Document {
     type DeleteDocumentsOperation<Op extends DatabaseDeleteOperation> = NullishProps<Omit<Op, "ids" | "modifiedTime">>;
 
     /** Used for {@link Document.delete} */
-    type DeleteOperationInstance<Op extends DatabaseDeleteOperation> = InexactPartial<Omit<Op, "ids">>;
+    type DeleteOperationInstance<Op extends DatabaseDeleteOperation> = InexactPartial<
+      Omit<Op, "ids" | "parent" | "pack">
+    >;
 
     /** Used for {@link Document._preDeleteOperation | `Document._preDeleteOperation`} */
     type PreDeleteOperationStatic<Op extends DatabaseDeleteOperation> = InexactPartial<
@@ -1763,8 +1767,8 @@ declare namespace Document {
 
   interface GetEmbeddedDocumentOptions extends _GetEmbeddedDocumentOptions {}
 
-  // TODO
-  type EmbeddedCollectionFor<DocumentName extends Document.Type, EmbeddedCollection> = any;
+  // TODO: @LukeAbby
+  type EmbeddedCollectionFor<_DocumentName extends Document.Type, _EmbeddedCollection> = any;
 }
 
 /** @deprecated {@link Document.Database.Operation | `Document.Database.Operation`} */

@@ -1,6 +1,11 @@
 import type { MakeConform, ValueOf } from "fvtt-types/utils";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../common/abstract/_types.d.mts";
 
 // Gets a key with a required shape to conform to which is also used as a fallback when the key doesn't exist.
 type GetKeyWithShape<T, K, S> = K extends keyof T ? MakeConform<T[K], S> : S;
@@ -227,7 +232,7 @@ declare global {
      */
     protected _onCreate(
       data: foundry.data.fields.SchemaField.AssignmentData<D["schema"]["fields"]>,
-      options: Document.OnCreateOptions<D["documentName"]>,
+      options: Document.Database.CreateOptions<DatabaseCreateOperation>,
       userId: string,
     ): void;
 
@@ -237,14 +242,14 @@ declare global {
      */
     protected _onUpdate(
       changed: foundry.data.fields.SchemaField.AssignmentData<D["schema"]["fields"]>,
-      options?: Document.OnUpdateOptions<D["documentName"]>,
+      options?: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
       userId?: string,
     ): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is deleted
      */
-    protected _onDelete(options: Document.OnDeleteOptions<D["documentName"]>, userId: string): void;
+    protected _onDelete(options: Document.Database.DeleteOptions<DatabaseDeleteOperation>, userId: string): void;
 
     /**
      * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors

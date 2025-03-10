@@ -1,11 +1,16 @@
 import type { EditorState, Plugin } from "prosemirror-state";
-import type { DeepPartial, EmptyObject, FixedInstanceType, ValueOf } from "fvtt-types/utils";
+import type { DeepPartial, EmptyObject, ValueOf } from "fvtt-types/utils";
 import type Document from "../common/abstract/document.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
 import type PointVisionSource from "../client-esm/canvas/sources/point-vision-source.d.mts";
 import type RenderedEffectSource from "../client-esm/canvas/sources/rendered-effect-source.d.mts";
 import type { CompendiumArtInfo } from "../client-esm/helpers/_types.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../common/abstract/_types.d.mts";
 
 declare global {
   /**
@@ -262,7 +267,7 @@ declare global {
       updateCompendium: (
         pack: CompendiumCollection.Any,
         documents: Document.Any[],
-        options: Document.OnUpdateOptions<Document.Any["documentName"]>,
+        options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
         userId: string,
       ) => void;
 
@@ -979,7 +984,7 @@ declare global {
     type PreCreateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
       data: ConstructorParameters<D>[0],
-      options: Document.PreCreateOptions<FixedInstanceType<D>["documentName"]>,
+      options: Document.Database.PreCreateOptions<DatabaseCreateOperation>,
       userId: string,
     ) => boolean | void;
 
@@ -1005,7 +1010,7 @@ declare global {
     type PreUpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
       changed: DeepPartial<ConstructorParameters<D>[0]>,
-      options: Document.PreUpdateOptions<FixedInstanceType<D>["documentName"]>,
+      options: Document.Database.PreUpdateOptions<DatabaseUpdateOperation>,
       userId: string,
     ) => boolean | void;
 
@@ -1029,7 +1034,7 @@ declare global {
      */
     type PreDeleteDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      options: Document.PreDeleteOptions<FixedInstanceType<D>["documentName"]>,
+      options: Document.Database.PreDeleteOperationInstance<DatabaseDeleteOperation>,
       userId: string,
     ) => boolean | void;
 
@@ -1049,7 +1054,7 @@ declare global {
      */
     type CreateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      options: Document.OnCreateOptions<FixedInstanceType<D>["documentName"]>,
+      options: Document.Database.CreateOptions<DatabaseCreateOperation>,
       userId: string,
     ) => void;
 
@@ -1071,7 +1076,7 @@ declare global {
     type UpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
-      options: Document.OnUpdateOptions<FixedInstanceType<D>["documentName"]>,
+      options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
       userId: string,
     ) => void;
 
@@ -1091,7 +1096,7 @@ declare global {
      */
     type DeleteDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      options: Document.OnDeleteOptions<FixedInstanceType<D>["documentName"]>,
+      options: Document.Database.DeleteOptions<DatabaseDeleteOperation>,
       userId: string,
     ) => void;
 

@@ -1,5 +1,6 @@
 import type { DeepPartial, EmptyObject, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
+import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 
 declare global {
   interface ManageCompendiumRequest extends SocketInterface.SocketRequest {
@@ -285,7 +286,7 @@ declare global {
            * @defaultValue `""`
            * */
           folderName: string;
-        } & Document.OnCreateOptions<this["metadata"]["type"]> &
+        } & Document.Database.CreateOperation<DatabaseCreateOperation> &
           WorldCollection.FromCompendiumOptions
       >,
     ): Promise<Document.Stored<Document.ImplementationInstanceFor<T["type"]>>[]>;
@@ -325,12 +326,12 @@ declare global {
      * Create a new Compendium Collection using provided metadata.
      * @param metadata - The compendium metadata used to create the new pack
      * @param options - Additional options which modify the Compendium creation request
-     *                  default `{}`
+     *                  (default: `{}`)
      */
     static createCompendium<T extends CompendiumCollection.Metadata>(
       this: abstract new (arg0: never, ...args: never[]) => CompendiumCollection<T>,
       metadata: CompendiumCollection.CreateCompendiumMetadata<NoInfer<T>>,
-      options?: Document.OnCreateOptions<T["type"]>,
+      options?: unknown,
     ): Promise<CompendiumCollection<T>>;
 
     /**

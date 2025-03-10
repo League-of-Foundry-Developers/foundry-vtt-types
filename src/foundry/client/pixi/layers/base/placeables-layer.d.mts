@@ -6,6 +6,7 @@ import type {
   FixedInstanceType,
   HandleEmptyObject,
 } from "../../../../../utils/index.d.mts";
+import type { DatabaseUpdateOperation } from "../../../../common/abstract/_types.d.mts";
 import type Document from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
 
@@ -388,7 +389,7 @@ declare global {
           ) => Partial<Document.ConfiguredSourceForName<DocumentName>>)
         | Partial<Document.ConfiguredSourceForName<DocumentName>>,
       condition?: ((placeable: Document.ConfiguredObjectInstanceForName<DocumentName>) => boolean) | null,
-      options?: Document.OnUpdateOptions<DocumentName>,
+      options?: Document.Database.UpdateDocumentsOperation<DatabaseUpdateOperation>,
     ): Promise<Array<Document.ImplementationInstanceFor<DocumentName>>>;
 
     /**

@@ -1,4 +1,4 @@
-import type Document from "../../common/abstract/document.d.mts";
+export {};
 
 declare global {
   /**
@@ -48,7 +48,10 @@ declare global {
      * @param options - Additional options passed to game.settings.set
      * @returns The new game time
      */
-    advance(seconds: number, options?: Document.OnUpsertOptions<"Setting">): Promise<number>;
+    advance(
+      seconds: number,
+      options?: Setting.DatabaseOperation.CreateOperation | Setting.DatabaseOperation.UpdateOperation,
+    ): Promise<number>;
 
     /**
      * Synchronize the local client game time with the official time kept by the server

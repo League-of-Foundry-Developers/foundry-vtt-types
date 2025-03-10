@@ -385,29 +385,29 @@ declare global {
      */
 
     protected override _onCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      data: unknown[],
-      options: Document.OnCreateOptions<"PlaylistSound">,
+      parent: Playlist.Stored,
+      collection: PlaylistSound.Metadata["collection"],
+      documents: PlaylistSound.Stored[],
+      result: PlaylistSound.CreateData[],
+      options: PlaylistSound.DatabaseOperation.OnCreateOperation,
       userId: string,
     ): void;
 
     protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      changes: unknown[],
-      options: Document.OnUpdateOptions<"PlaylistSound">,
+      parent: Playlist.Stored,
+      collection: PlaylistSound.Metadata["collection"],
+      documents: PlaylistSound.Stored[],
+      changes: PlaylistSound.UpdateData[],
+      options: PlaylistSound.DatabaseOperation.OnUpdateOperation,
       userId: string,
     ): void;
 
     protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
+      parent: Playlist.Stored,
+      collection: PlaylistSound.Metadata["collection"],
+      documents: PlaylistSound.Stored[],
       ids: string[],
-      options: Document.OnDeleteOptions<"PlaylistSound">,
+      options: PlaylistSound.DatabaseOperation.OnDeleteOperation,
       userId: string,
     ): void;
 
