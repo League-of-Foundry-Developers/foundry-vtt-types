@@ -3,35 +3,15 @@ import type Document from "../../../common/abstract/document.d.mts";
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 
 declare global {
-  interface ManageCompendiumRequest extends SocketInterface.SocketRequest {
-    /**
-     * The request action.
-     */
-    action: string;
+  /**
+   * @deprecated {@link CompendiumCollection.ManageCompendiumRequest | `CompendiumCollection.ManageCompendiumRequest`}
+   */
+  type ManageCompendiumRequest = CompendiumCollection.ManageCompendiumRequest;
 
-    /**
-     * The compendium creation data, or the ID of the compendium to delete.
-     */
-    data: PackageCompendiumData | string;
-
-    /**
-     * Additional options.
-     */
-    options?: Record<string, unknown>;
-  }
-
-  // @ts-expect-error Bad inheritance
-  interface ManageCompendiumResponse extends SocketInterface.SocketResponse {
-    /**
-     * The original request.
-     */
-    request: ManageCompendiumRequest;
-
-    /**
-     * The compendium creation data, or the collection name of the deleted compendium.
-     */
-    result: PackageCompendiumData | string;
-  }
+  /**
+   * @deprecated {@link CompendiumCollection.ManageCompendiumResponse | `CompendiumCollection.ManageCompendiumResponse`}
+   */
+  type ManageCompendiumResponse = CompendiumCollection.ManageCompendiumResponse;
 
   /**
    * A collection of Document objects contained within a specific compendium pack.
@@ -440,6 +420,36 @@ declare global {
     type ForDocument<Name extends Document.Type> = Name extends unknown
       ? CompendiumCollection<Metadata & { type: Name }>
       : never;
+
+    interface ManageCompendiumRequest extends SocketInterface.SocketRequest {
+      /**
+       * The request action.
+       */
+      action: string;
+
+      /**
+       * The compendium creation data, or the ID of the compendium to delete.
+       */
+      data: PackageCompendiumData | string;
+
+      /**
+       * Additional options.
+       */
+      options?: Record<string, unknown>;
+    }
+
+    // @ts-expect-error Bad inheritance
+    interface ManageCompendiumResponse extends SocketInterface.SocketResponse {
+      /**
+       * The original request.
+       */
+      request: ManageCompendiumRequest;
+
+      /**
+       * The compendium creation data, or the collection name of the deleted compendium.
+       */
+      result: PackageCompendiumData | string;
+    }
   }
 }
 

@@ -76,7 +76,7 @@ declare global {
     /**
      * The configured options used for the saved fog-of-war texture.
      */
-    get textureConfiguration(): VisibilityTextureConfiguration | undefined;
+    get textureConfiguration(): CanvasVisibility.TextureConfiguration | undefined;
 
     /**
      * Optional overrides for exploration sprite dimensions.
@@ -172,7 +172,7 @@ declare global {
          */
         object: PlaceableObject | null;
       }>,
-    ): CanvasVisibilityTestConfig;
+    ): CanvasVisibility.TestConfig;
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -190,36 +190,50 @@ declare global {
     interface DrawOptions extends CanvasLayer.DrawOptions {}
 
     interface TearDownOptions extends CanvasLayer.TearDownOptions {}
+
+    interface TextureConfiguration {
+      resolution: number;
+      width: number;
+      height: number;
+      mipmap: PIXI.MIPMAP_MODES;
+      multisample: PIXI.MSAA_QUALITY;
+      scaleMode: PIXI.SCALE_MODES;
+      alphaMode: PIXI.ALPHA_MODES;
+      format: PIXI.FORMATS;
+    }
+
+    interface Test {
+      point: PIXI.Point;
+      elevation: number;
+      los: Map<foundry.canvas.sources.PointVisionSource.Any, boolean>;
+    }
+
+    interface TestConfig {
+      /** The target object */
+      object: PlaceableObject.Any | null;
+
+      /** An array of visibility tests */
+      tests: CanvasVisibility.Test[];
+    }
   }
 
   /**
-   * @privateRemarks This is name foundry has for the return tyoe of `CanvasVisibility#configureVisibilityTexture`
+   * @deprecated {@link CanvasVisibility.TextureConfiguration | `CanvasVisibility.TextureConfiguration`}
+   *
+   * @privateRemarks This is name foundry has for the return type of `CanvasVisibility#configureVisibilityTexture`
    * The FogTextureConfiguration references seem to be in error
    */
-  interface VisibilityTextureConfiguration {
-    resolution: number;
-    width: number;
-    height: number;
-    mipmap: PIXI.MIPMAP_MODES;
-    multisample: PIXI.MSAA_QUALITY;
-    scaleMode: PIXI.SCALE_MODES;
-    alphaMode: PIXI.ALPHA_MODES;
-    format: PIXI.FORMATS;
-  }
+  type VisibilityTextureConfiguration = CanvasVisibility.TextureConfiguration;
 
-  interface CanvasVisibilityTest {
-    point: PIXI.Point;
-    elevation: number;
-    los: Map<foundry.canvas.sources.PointVisionSource.Any, boolean>;
-  }
+  /**
+   * @deprecated {@link CanvasVisibility.TextureConfiguration | `CanvasVisibility.TextureConfiguration`}
+   */
+  type CanvasVisibilityTest = CanvasVisibility.Test;
 
-  interface CanvasVisibilityTestConfig {
-    /** The target object */
-    object: PlaceableObject | null;
-
-    /** An array of visibility tests */
-    tests: CanvasVisibilityTest[];
-  }
+  /**
+   * @deprecated {@link CanvasVisibility.TestConfig | `CanvasVisibility.TestConfig`}
+   */
+  type CanvasVisibilityTestConfig = CanvasVisibility.TestConfig;
 }
 
 declare abstract class AnyCanvasVisibility extends CanvasVisibility {

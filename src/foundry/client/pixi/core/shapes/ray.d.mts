@@ -1,19 +1,10 @@
 import type { LineIntersection } from "../../../../common/utils/geometry.d.mts";
 
 declare global {
-  interface RayIntersection {
-    /** The x-coordinate of intersection */
-    x: number;
-
-    /** The y-coordinate of intersection */
-    y: number;
-
-    /** The proximity to the Ray origin, as a ratio of distance */
-    t0: number;
-
-    /** The proximity to the Ray destination, as a ratio of distance */
-    t1: number;
-  }
+  /**
+   * @deprecated {@link Ray.Intersection | `Ray.Intersection`}
+   */
+  type RayIntersection = Ray.Intersection;
 
   /**
    * A ray for the purposes of computing sight and collision
@@ -175,6 +166,20 @@ declare global {
   namespace Ray {
     interface Any extends AnyRay {}
     type AnyConstructor = typeof AnyRay;
+
+    interface Intersection {
+      /** The x-coordinate of intersection */
+      x: number;
+
+      /** The y-coordinate of intersection */
+      y: number;
+
+      /** The proximity to the Ray origin, as a ratio of distance */
+      t0: number;
+
+      /** The proximity to the Ray destination, as a ratio of distance */
+      t1: number;
+    }
   }
 }
 

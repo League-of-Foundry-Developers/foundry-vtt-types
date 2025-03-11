@@ -714,6 +714,6 @@ declare global {
     ): Promise<Scene.Implementation>;
   }
 
-  /** @deprecated Use {@link Scene.Dimensions | `Scene.Dimensions`} */
-  interface SceneDimensions extends Scene.Dimensions {}
+  /** @deprecated {@link Scene.Dimensions | `Scene.Dimensions`} */
+  type SceneDimensions = Scene.Dimensions;
 }

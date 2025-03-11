@@ -4,7 +4,7 @@ declare global {
   /**
    * An application responsible for configuring how dice are rolled and evaluated.
    */
-  class DiceConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<Options> {
+  class DiceConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -16,7 +16,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): FormApplicationOptions;
+    static get defaultOptions(): FormApplication.Options;
 
     override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<DiceConfig.DiceConfigData>>;
 

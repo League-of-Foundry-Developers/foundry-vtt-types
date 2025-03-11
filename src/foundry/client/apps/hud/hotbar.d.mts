@@ -16,7 +16,7 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class Hotbar<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class Hotbar<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -54,7 +54,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<Hotbar.HotbarData>>;
 
@@ -103,7 +103,7 @@ declare global {
      * @returns The Macro entry context options
      * @internal
      */
-    protected _getEntryContextOptions(): ContextMenuEntry[];
+    protected _getEntryContextOptions(): ContextMenu.Entry[];
 
     /**
      * Handle left-click events to

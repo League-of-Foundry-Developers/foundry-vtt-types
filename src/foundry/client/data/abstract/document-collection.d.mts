@@ -96,7 +96,7 @@ declare global {
     /**
      * Render any Applications associated with this DocumentCollection.
      */
-    render(force?: boolean, options?: ApplicationOptions): void;
+    render(force?: boolean, options?: Application.Options): void;
 
     /**
      * Get the searchable fields for a given document or index, based on its data model
@@ -204,7 +204,7 @@ declare global {
        * An array of filters to apply
        * @defaultValue `[]`
        */
-      filters: FieldFilter[];
+      filters: SearchFilter.FieldFilter[];
 
       /**
        * An array of document IDs to exclude from search results

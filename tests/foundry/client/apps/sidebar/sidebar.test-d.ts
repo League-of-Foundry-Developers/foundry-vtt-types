@@ -3,8 +3,8 @@ import type { MaybePromise } from "fvtt-types/utils";
 
 declare const sidebar: Sidebar;
 
-expectTypeOf(Sidebar.defaultOptions).toEqualTypeOf<ApplicationOptions>();
-expectTypeOf(sidebar.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(Sidebar.defaultOptions).toEqualTypeOf<Application.Options>();
+expectTypeOf(sidebar.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(sidebar.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(sidebar.render(true)).toEqualTypeOf<Sidebar>();
 

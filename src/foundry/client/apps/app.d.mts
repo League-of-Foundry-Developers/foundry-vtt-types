@@ -14,115 +14,14 @@ declare global {
   const MIN_WINDOW_WIDTH: 200;
   const MIN_WINDOW_HEIGHT: 50;
 
-  interface ApplicationOptions {
-    /**
-     * A named "base application" which generates an additional hook
-     * @defaultValue `null`
-     */
-    baseApplication: string | null;
-
-    /**
-     * The default pixel width for the rendered HTML
-     * @defaultValue `null`
-     */
-    width: number | null;
-
-    /**
-     * The default pixel height for the rendered HTML
-     * @defaultValue `null`
-     */
-    height: number | "auto" | null;
-
-    /**
-     * The default offset-top position for the rendered HTML
-     * @defaultValue `null`
-     */
-    top: number | null;
-
-    /**
-     * The default offset-left position for the rendered HTML
-     * @defaultValue `null`
-     */
-    left: number | null;
-
-    /**
-     * A transformation scale for the rendered HTML
-     * @defaultValue `null`
-     */
-    scale: number | null;
-
-    /**
-     * Whether to display the application as a pop-out container
-     * @defaultValue `true`
-     */
-    popOut: boolean;
-
-    /**
-     * Whether the rendered application can be minimized (popOut only)
-     * @defaultValue `true`
-     */
-    minimizable: boolean;
-
-    /**
-     * Whether the rendered application can be drag-resized (popOut only)
-     * @defaultValue `false`
-     */
-    resizable: boolean;
-
-    /**
-     * The default CSS id to assign to the rendered HTML
-     * @defaultValue `""`
-     */
-    id: string;
-
-    /**
-     * An array of CSS string classes to apply to the rendered HTML
-     * @defaultValue `[]`
-     */
-    classes: string[];
-
-    /**
-     * A default window title string (popOut only)
-     * @defaultValue `""`
-     */
-    title: string;
-
-    /**
-     * The default HTML template path to render for this Application
-     * @defaultValue `null`
-     */
-    template: string | null;
-
-    /**
-     * A list of unique CSS selectors which target containers that should
-     * have their vertical scroll positions preserved during a re-render.
-     * @defaultValue `[]`
-     */
-    scrollY: string[];
-
-    /**
-     * An array of tabbed container configurations which should be enabled
-     * for the application.
-     * @defaultValue `[]`
-     */
-    tabs: Omit<TabsConfiguration, "callback">[];
-
-    /**
-     * @defaultValue `[]`
-     */
-    dragDrop: Omit<DragDropConfiguration, "permissions" | "callbacks">[];
-
-    /**
-     * @defaultValue `[]`
-     */
-    filters: Omit<SearchFilterConfiguration, "callback">[];
-  }
+  /** @deprecated {@link Application.Options | `Application.Options`} */
+  type ApplicationOptions = Application.Options;
 
   /**
    * The standard application window that is rendered for a large variety of UI elements in Foundry VTT.
    * @typeParam Options - the type of the options object
    */
-  abstract class Application<Options extends ApplicationOptions = ApplicationOptions> {
+  abstract class Application<Options extends Application.Options = Application.Options> {
     /**
      * @param options - Configuration options which control how the application is rendered.
      *                  Application subclasses may add additional supported options, but the
@@ -235,7 +134,7 @@ declare global {
      * in this object are merged with any provided option values which are passed to the constructor upon initialization.
      * Application subclasses may include additional options which are specific to their usage.
      */
-    static get defaultOptions(): ApplicationOptions;
+    static get defaultOptions(): Application.Options;
 
     /**
      * Return the CSS application ID which uniquely references this UI element
@@ -515,6 +414,110 @@ declare global {
 
     type AnyConstructor = typeof AnyApplication;
 
+    interface Options {
+      /**
+       * A named "base application" which generates an additional hook
+       * @defaultValue `null`
+       */
+      baseApplication: string | null;
+
+      /**
+       * The default pixel width for the rendered HTML
+       * @defaultValue `null`
+       */
+      width: number | null;
+
+      /**
+       * The default pixel height for the rendered HTML
+       * @defaultValue `null`
+       */
+      height: number | "auto" | null;
+
+      /**
+       * The default offset-top position for the rendered HTML
+       * @defaultValue `null`
+       */
+      top: number | null;
+
+      /**
+       * The default offset-left position for the rendered HTML
+       * @defaultValue `null`
+       */
+      left: number | null;
+
+      /**
+       * A transformation scale for the rendered HTML
+       * @defaultValue `null`
+       */
+      scale: number | null;
+
+      /**
+       * Whether to display the application as a pop-out container
+       * @defaultValue `true`
+       */
+      popOut: boolean;
+
+      /**
+       * Whether the rendered application can be minimized (popOut only)
+       * @defaultValue `true`
+       */
+      minimizable: boolean;
+
+      /**
+       * Whether the rendered application can be drag-resized (popOut only)
+       * @defaultValue `false`
+       */
+      resizable: boolean;
+
+      /**
+       * The default CSS id to assign to the rendered HTML
+       * @defaultValue `""`
+       */
+      id: string;
+
+      /**
+       * An array of CSS string classes to apply to the rendered HTML
+       * @defaultValue `[]`
+       */
+      classes: string[];
+
+      /**
+       * A default window title string (popOut only)
+       * @defaultValue `""`
+       */
+      title: string;
+
+      /**
+       * The default HTML template path to render for this Application
+       * @defaultValue `null`
+       */
+      template: string | null;
+
+      /**
+       * A list of unique CSS selectors which target containers that should
+       * have their vertical scroll positions preserved during a re-render.
+       * @defaultValue `[]`
+       */
+      scrollY: string[];
+
+      /**
+       * An array of tabbed container configurations which should be enabled
+       * for the application.
+       * @defaultValue `[]`
+       */
+      tabs: Omit<Tabs.Configuration, "callback">[];
+
+      /**
+       * @defaultValue `[]`
+       */
+      dragDrop: Omit<DragDrop.Configuration, "permissions" | "callbacks">[];
+
+      /**
+       * @defaultValue `[]`
+       */
+      filters: Omit<SearchFilter.Configuration, "callback">[];
+    }
+
     interface CloseOptions {
       force?: boolean | undefined;
     }
@@ -548,7 +551,7 @@ declare global {
 
     // TODO(LukeAbby): This should accept already partial options but all callers have to be changed.
     // `_RenderOptions` should probably become the default and applications will extend that plus their optional options.
-    type RenderOptions<Options extends ApplicationOptions = ApplicationOptions> = Partial<Options> & _RenderOptions;
+    type RenderOptions<Options extends Application.Options = Application.Options> = Partial<Options> & _RenderOptions;
 
     /** @internal */
     interface _RenderOptions {

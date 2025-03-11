@@ -1,50 +1,58 @@
 import type { InexactPartial } from "fvtt-types/utils";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 
-export {};
-
 declare global {
-  interface ContextMenuEntry {
-    /**
-     * The context menu label. Can be localized.
-     */
-    name: string;
-
-    /**
-     * A string containing an HTML icon element for the menu item
-     */
-    icon: string;
-
-    /**
-     * An identifier for a group this entry belongs to.
-     * @defaultValue `_none`
-     */
-    group?: string | undefined;
-
-    /**
-     * The function to call when the menu item is clicked. Receives the HTML element
-     * of the entry that this context menu is for.
-     */
-    callback: (target: JQuery) => void;
-
-    /**
-     * A function to call or boolean value to determine if this entry
-     * appears in the menu.
-     */
-    condition?: boolean | ((target: JQuery) => boolean) | undefined;
-  }
+  /**
+   * @deprecated {@link ContextMenu.Entry | `ContextMenu.Entry`}
+   */
+  type ContextMenuEntry = ContextMenu.Entry;
 
   /**
-   * @param html      - The HTML element of the context menu entry.
-   * @returns         whether the entry should be rendered in the context menu.
+   * @deprecated {@link ContextMenu.Condition | `ContextMenu.Condition`}
    */
-  type ContextMenuCondition = (html: JQuery) => boolean;
+  type ContextMenuCondition = ContextMenu.Condition;
 
   namespace ContextMenu {
     interface RenderOptions {
       /** The event that triggered the context menu opening. */
       event: PointerEvent;
     }
+
+    interface Entry {
+      /**
+       * The context menu label. Can be localized.
+       */
+      name: string;
+
+      /**
+       * A string containing an HTML icon element for the menu item
+       */
+      icon: string;
+
+      /**
+       * An identifier for a group this entry belongs to.
+       * @defaultValue `_none`
+       */
+      group?: string | undefined;
+
+      /**
+       * The function to call when the menu item is clicked. Receives the HTML element
+       * of the entry that this context menu is for.
+       */
+      callback: (target: JQuery) => void;
+
+      /**
+       * A function to call or boolean value to determine if this entry
+       * appears in the menu.
+       */
+      condition?: boolean | ((target: JQuery) => boolean) | undefined;
+    }
+
+    /**
+     * @param html      - The HTML element of the context menu entry.
+     * @returns         whether the entry should be rendered in the context menu.
+     */
+    type Condition = (html: JQuery) => boolean;
   }
 
   /**
@@ -65,7 +73,7 @@ declare global {
     constructor(
       element: JQuery,
       selector: string | null | undefined,
-      menuItems: ContextMenuEntry[],
+      menuItems: ContextMenu.Entry[],
       { hookName, onOpen, onClose }?: ContextMenu.ConstructorOptions,
     );
 
@@ -88,7 +96,7 @@ declare global {
     /**
      * The array of menu items being rendered
      */
-    menuItems: ContextMenuEntry[];
+    menuItems: ContextMenu.Entry[];
 
     /**
      * A function to call when the context menu is opened.
@@ -124,7 +132,7 @@ declare global {
       app: Application.Any | ApplicationV2.Any,
       html: JQuery | HTMLElement,
       selector: string,
-      menuItems: ContextMenuEntry[],
+      menuItems: ContextMenu.Entry[],
       options?: ContextMenu.ConstructorOptions,
     ): ContextMenu;
 

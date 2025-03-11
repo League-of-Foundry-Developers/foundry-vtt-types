@@ -232,16 +232,16 @@ declare global {
 
     protected override _contextMenu(html: JQuery): void;
 
-    protected override _getFolderContextOptions(): ContextMenuEntry[];
+    protected override _getFolderContextOptions(): ContextMenu.Entry[];
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
 
     /**
      * Get context menu options for individual sound effects
      * @returns The context options for each sound
      * @internal
      */
-    protected _getSoundContextOptions(): ContextMenuEntry[];
+    protected _getSoundContextOptions(): ContextMenu.Entry[];
 
     protected override _onDragStart(event: DragEvent): void;
 

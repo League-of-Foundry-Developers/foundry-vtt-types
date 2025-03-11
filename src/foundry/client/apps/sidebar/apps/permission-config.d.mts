@@ -4,7 +4,7 @@ declare global {
   /**
    * An application for configuring the permissions which are available to each User role.
    */
-  class PermissionConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
+  class PermissionConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     Options,
     undefined
   > {
@@ -22,10 +22,10 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplication.Options;
 
     // TODO: Implement GetDataReturnType
-    override getData(options?: Partial<FormApplicationOptions>): Promise<object>;
+    override getData(options?: Partial<FormApplication.Options>): Promise<object>;
 
     /**
      * Prepare the permissions object used to render the configuration template

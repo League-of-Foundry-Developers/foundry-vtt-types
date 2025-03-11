@@ -287,7 +287,7 @@ declare global {
       ping: PingData;
 
       /** The state of the user's AV settings. */
-      av: AVSettingsData;
+      av: AVSettings.Data;
     }
 
     /**

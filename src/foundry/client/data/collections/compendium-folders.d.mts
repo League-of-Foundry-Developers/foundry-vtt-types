@@ -11,7 +11,7 @@ declare global {
 
     get documentName(): "Folder";
 
-    override render(force?: boolean, options?: ApplicationOptions): void;
+    override render(force?: boolean, options?: Application.Options): void;
 
     /**
      * @privateRemarks Possible this causes depth issues, this is just a small extension in the code with no meaningful transformations

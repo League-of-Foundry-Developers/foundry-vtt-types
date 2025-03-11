@@ -1,68 +1,11 @@
 export {};
 
 declare global {
-  interface SceneControlToolBase {
-    name: string;
-    title: string;
-    icon: string;
-    visible?: boolean;
-    active?: boolean;
-    toolclip?: ToolclipConfiguration;
-  }
-
-  interface SceneControlToolToggle extends SceneControlToolBase {
-    toggle: true;
-    onClick?: (toggled: boolean) => void;
-  }
-
-  interface SceneControlToolNoToggle extends SceneControlToolBase {
-    toggle?: false;
-    button?: boolean;
-    onClick?: () => void;
-  }
-
-  type SceneControlTool = SceneControlToolToggle | SceneControlToolNoToggle;
-
-  interface SceneControl {
-    name: string;
-    title: string;
-    layer: string;
-    icon: string;
-    visible: boolean;
-    tools: SceneControlTool[];
-    activeTool: string;
-  }
-
-  interface ToolclipConfiguration {
-    /** The filename of the toolclip video. */
-    src: string;
-
-    /** The heading string. */
-    heading: string;
-
-    /** The items in the toolclip body. */
-    items: ToolclipConfigurationItem[];
-  }
-
-  interface ToolclipConfigurationItem {
-    /** A plain paragraph of content for this item. */
-    paragraph?: string;
-
-    /** A heading for the item. */
-    heading?: string;
-
-    /** Content for the item. */
-    content?: string;
-
-    /** If the item is a single key reference, use this instead of content. */
-    reference?: string;
-  }
-
   /**
    * Scene controls navigation menu
    * @typeParam Options - the type of the options object
    */
-  class SceneControls<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class SceneControls<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -74,7 +17,7 @@ declare global {
     /**
      * The Array of Scene Control buttons which are currently rendered
      */
-    controls: SceneControl[];
+    controls: SceneControls.Control[];
 
     /**
      * @defaultValue
@@ -87,12 +30,12 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     /**
      * Return the active control set
      */
-    get control(): SceneControl | null;
+    get control(): SceneControls.Control | null;
 
     /**
      * Return the name of the active tool within the active control set
@@ -102,7 +45,7 @@ declare global {
     /**
      * Return the actively controlled tool
      */
-    get tool(): SceneControlTool | null;
+    get tool(): SceneControls.Tool | null;
 
     /**
      * A convenience reference for whether the currently active tool is a Ruler
@@ -114,10 +57,10 @@ declare global {
      * @param options - Options which modify how the controls UI is initialized
      *                  (defaultValue: `{}`)
      */
-    initialize(options?: InitializeOptions): void;
+    initialize(options?: SceneControls.InitializeOptions): void;
 
     override getData(options?: Partial<Options>): {
-      controls: SceneControl[];
+      controls: SceneControls.Control[];
       active: boolean;
       cssClass: "" | "disabled";
     };
@@ -140,32 +83,129 @@ declare global {
      * Get the set of Control sets and tools that are rendered as the Scene Controls.
      * These controls may be extended using the "getSceneControlButtons" Hook.
      */
-    protected _getControlButtons(): SceneControl[];
+    protected _getControlButtons(): SceneControls.Control[];
   }
 
   namespace SceneControls {
     type Any = AnySceneControls;
     type AnyConstructor = typeof AnySceneControls;
+
+    interface ToolBase {
+      name: string;
+      title: string;
+      icon: string;
+      visible?: boolean;
+      active?: boolean;
+      toolclip?: ToolclipConfiguration;
+    }
+
+    interface ToolToggle extends ToolBase {
+      toggle: true;
+      onClick?: (toggled: boolean) => void;
+    }
+
+    interface ToolNoToggle extends ToolBase {
+      toggle?: false;
+      button?: boolean;
+      onClick?: () => void;
+    }
+
+    type Tool = ToolToggle | ToolNoToggle;
+
+    interface Control {
+      name: string;
+      title: string;
+      layer: string;
+      icon: string;
+      visible: boolean;
+      tools: SceneControls.Tool[];
+      activeTool: string;
+    }
+
+    interface ToolclipConfiguration {
+      /** The filename of the toolclip video. */
+      src: string;
+
+      /** The heading string. */
+      heading: string;
+
+      /** The items in the toolclip body. */
+      items: ToolclipConfigurationItem[];
+    }
+
+    interface ToolclipConfigurationItem {
+      /** A plain paragraph of content for this item. */
+      paragraph?: string;
+
+      /** A heading for the item. */
+      heading?: string;
+
+      /** Content for the item. */
+      content?: string;
+
+      /** If the item is a single key reference, use this instead of content. */
+      reference?: string;
+    }
+
+    interface InitializeOptions {
+      /**
+       * An optional control set to set as active
+       */
+      control?: string;
+
+      /**
+       * An optional layer name to target as the active control
+       */
+      layer?: string;
+
+      /**
+       * A specific named tool to set as active for the palette
+       */
+      tool?: string;
+    }
   }
 
-  interface InitializeOptions {
-    /**
-     * An optional control set to set as active
-     */
-    control?: string;
+  /**
+   * @deprecated {@link SceneControls.InitializeOptions | `SceneControls.InitializeOptions`}
+   */
+  type InitializeOptions = SceneControls.InitializeOptions;
 
-    /**
-     * An optional layer name to target as the active control
-     */
-    layer?: string;
+  /**
+   * @deprecated {@link SceneControls.ToolBase | `SceneControls.ToolBase`}
+   */
+  type SceneControlToolBase = SceneControls.ToolBase;
 
-    /**
-     * A specific named tool to set as active for the palette
-     */
-    tool?: string;
-  }
+  /**
+   * @deprecated {@link SceneControls.ToolToggle | `SceneControls.ToolToggle`}
+   */
+  type SceneControlToolToggle = SceneControls.ToolToggle;
+
+  /**
+   * @deprecated {@link SceneControls.ToolNoToggle | `SceneControls.ToolNoToggle`}
+   */
+  type SceneControlToolNoToggle = SceneControls.ToolNoToggle;
+
+  /**
+   * @deprecated {@link SceneControls.Tool | `SceneControls.Tool`}
+   */
+  type SceneControlTool = SceneControls.Tool;
+
+  /**
+   * @deprecated {@link SceneControls.Control | `SceneControls.Control`}
+   */
+  type SceneControl = SceneControls.Control;
+
+  /**
+   * @deprecated {@link SceneControls.ToolclipConfiguration | `SceneControls.ToolclipConfiguration`}
+   */
+  type ToolclipConfiguration = SceneControls.ToolclipConfiguration;
+
+  /**
+   * @deprecated {@link SceneControls.ToolclipConfigurationItem | `SceneControls.ToolclipConfigurationItem`}
+   */
+  type ToolclipConfigurationItem = SceneControls.ToolclipConfigurationItem;
 }
 
-declare abstract class AnySceneControls extends SceneControls<ApplicationOptions> {
+declare abstract class AnySceneControls extends SceneControls<Application.Options> {
   constructor(arg0: never, ...args: never[]);
 }

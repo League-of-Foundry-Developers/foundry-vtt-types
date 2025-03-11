@@ -551,7 +551,7 @@ declare global {
   }
 
   /**
-   * @deprecated Use {@link RollTable.Draw | `RollTable.Draw`}
+   * @deprecated {@link RollTable.Draw | `RollTable.Draw`}
    */
-  interface RollTableDraw extends RollTable.Draw {}
+  type RollTableDraw = RollTable.Draw;
 }

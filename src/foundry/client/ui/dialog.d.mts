@@ -270,7 +270,7 @@ declare global {
       options?: Options;
     }
 
-    interface Options extends ApplicationOptions {
+    interface Options extends Application.Options {
       /**
        * Whether to provide jQuery objects to callback functions (if true) or plain
        * HTMLElement instances (if false). This is currently true by default but in the

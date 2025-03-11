@@ -6,7 +6,7 @@ declare global {
    * This interface provides controls for visibility, attribute bars, elevation, status effects, and more.
    * @typeParam Options - the type of the options object
    */
-  class TokenHUD<Options extends ApplicationOptions = ApplicationOptions> extends BasePlaceableHUD<
+  class TokenHUD<Options extends Application.Options = Application.Options> extends BasePlaceableHUD<
     Token.Object,
     Options
   > {
@@ -26,7 +26,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     override bind(object: Token.Object): void;
 
@@ -37,7 +37,7 @@ declare global {
 
     override setPosition(_position?: Partial<Application.Position>): void;
 
-    override getData(options?: Partial<ApplicationOptions>): MaybePromise<object>; // TODO: Implement GetDataReturnType
+    override getData(options?: Partial<Application.Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
     /**
      * Get an array of icon paths which represent valid status effect choices
@@ -134,6 +134,6 @@ declare global {
   }
 }
 
-declare abstract class AnyTokenHUD extends TokenHUD<ApplicationOptions> {
+declare abstract class AnyTokenHUD extends TokenHUD<Application.Options> {
   constructor(arg0: never, ...args: never[]);
 }

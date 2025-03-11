@@ -3,24 +3,29 @@ import type { Tour } from "../core/tour.d.mts";
 declare global {
   class SetupTour extends Tour {
     constructor(
-      config: SetupTourConfig,
-      { id, namespace }?: { id?: SetupTourConfig["id"]; namespace?: SetupTourConfig["namespace"] },
+      config: SetupTour.Config,
+      { id, namespace }?: { id?: SetupTour.Config["id"]; namespace?: SetupTour.Config["namespace"] },
     );
-    config: SetupTourConfig;
+    config: SetupTour.Config;
 
     focusedApp: Application.Any;
     override get canStart(): boolean;
-    override get steps(): TourStep[];
+    override get steps(): Tour.Step[];
     protected override _preStep(): Promise<void>;
     private _installingASystem(): Promise<void>;
     private _creatingAWorld(): Promise<void>;
   }
 
-  interface SetupTourConfig extends TourConfig {
-    /**
-     * Whether to close all open windows before beginning the tour.
-     * @defaultValue `true`
-     */
-    closeWindows: boolean;
+  namespace SetupTour {
+    interface Config extends Tour.Config {
+      /**
+       * Whether to close all open windows before beginning the tour.
+       * @defaultValue `true`
+       */
+      closeWindows: boolean;
+    }
   }
+
+  /** @deprecated {@link SetupTour.Config | `SetupTour.Config`} */
+  type SetupTourConfig = SetupTour.Config;
 }

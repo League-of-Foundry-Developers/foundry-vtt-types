@@ -5,42 +5,8 @@ import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../common/prosemirr
 import type Document from "../../common/abstract/document.d.mts";
 
 declare global {
-  interface FormApplicationOptions extends ApplicationOptions {
-    /**
-     * Whether to automatically close the application when it's contained
-     * form is submitted.
-     * @defaultValue `true`
-     */
-    closeOnSubmit: boolean;
-
-    /**
-     * Whether to automatically submit the contained HTML form when an input
-     * or select element is changed.
-     * @defaultValue `false`
-     */
-    submitOnChange: boolean;
-
-    /**
-     * Whether to automatically submit the contained HTML form when the
-     * application window is manually closed.
-     * @defaultValue `false`
-     */
-    submitOnClose: boolean;
-
-    /**
-     * Whether the application form is editable - if true, it's fields will
-     * be unlocked and the form can be submitted. If false, all form fields
-     * will be disabled and the form cannot be submitted.
-     * @defaultValue `true`
-     */
-    editable: boolean;
-
-    /**
-     * Support configuration of the sheet type used for this application.
-     * @defaultValue `false`
-     */
-    sheetConfig: boolean;
-  }
+  /** @deprecated {@link FormApplication.Options | `FormApplication.Options`} */
+  type FormApplicationOptions = FormApplication.Options;
 
   /**
    * An abstract pattern for defining an Application responsible for updating some object using an HTML form
@@ -54,7 +20,7 @@ declare global {
    * @typeParam ConcreteObject - the type of the object or {@link foundry.abstract.Document | `foundry.abstract.Document`} which is modified by this form
    */
   abstract class FormApplication<
-    Options extends FormApplicationOptions = FormApplicationOptions,
+    Options extends FormApplication.Options = FormApplication.Options,
     ConcreteObject = unknown,
   > extends Application<Options> {
     /**
@@ -111,7 +77,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplication.Options;
 
     /**
      * Is the Form Application currently editable?
@@ -261,7 +227,7 @@ declare global {
     /**
      * @deprecated since v12, will be removed in v14
      */
-    protected _getFilePickerOptions(event: PointerEvent): FilePickerOptions;
+    protected _getFilePickerOptions(event: PointerEvent): FilePicker.Options;
 
     /**
      * @deprecated since v12, will be removed in v14
@@ -273,6 +239,43 @@ declare global {
     type Any = FormApplication<any, any>;
 
     type AnyConstructor = typeof AnyFormApplication;
+
+    interface Options extends Application.Options {
+      /**
+       * Whether to automatically close the application when it's contained
+       * form is submitted.
+       * @defaultValue `true`
+       */
+      closeOnSubmit: boolean;
+
+      /**
+       * Whether to automatically submit the contained HTML form when an input
+       * or select element is changed.
+       * @defaultValue `false`
+       */
+      submitOnChange: boolean;
+
+      /**
+       * Whether to automatically submit the contained HTML form when the
+       * application window is manually closed.
+       * @defaultValue `false`
+       */
+      submitOnClose: boolean;
+
+      /**
+       * Whether the application form is editable - if true, it's fields will
+       * be unlocked and the form can be submitted. If false, all form fields
+       * will be disabled and the form cannot be submitted.
+       * @defaultValue `true`
+       */
+      editable: boolean;
+
+      /**
+       * Support configuration of the sheet type used for this application.
+       * @defaultValue `false`
+       */
+      sheetConfig: boolean;
+    }
 
     interface CloseOptions extends Application.CloseOptions {
       submit?: boolean;
@@ -313,7 +316,7 @@ declare global {
     }
 
     interface FormApplicationData<
-      Options extends FormApplicationOptions = FormApplicationOptions,
+      Options extends FormApplication.Options = FormApplication.Options,
       ConcreteObject = unknown,
     > {
       object: ConcreteObject;
@@ -335,18 +338,11 @@ declare global {
     }
   }
 
-  interface DocumentSheetOptions<
-    ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
-  > extends FormApplicationOptions {
-    /**
-     * The default permissions required to view this Document sheet.
-     * @defaultValue {@link CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED | `CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED`}
-     */
-    viewPermission: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
-
-    /** An array of {@link HTMLSecret | `HTMLSecret`} configuration objects. */
-    secrets: HTMLSecretConfiguration<ConcreteDocument>[];
-  }
+  /**
+   * @deprecated {@link DocumentSheet.Options | `DocumentSheet.Options`}
+   */
+  type DocumentSheetOptions<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> =
+    DocumentSheet.Options<ConcreteDocument>;
 
   /**
    * Extend the FormApplication pattern to incorporate specific logic for viewing or editing Document instances.
@@ -356,7 +352,7 @@ declare global {
    * @typeParam ConcreteDocument - the type of the Document which should be managed by this form sheet
    */
   abstract class DocumentSheet<
-    Options extends DocumentSheetOptions<ConcreteDocument>,
+    Options extends DocumentSheet.Options<ConcreteDocument>,
     ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
   > extends FormApplication<Options, ConcreteDocument> {
     /**
@@ -381,7 +377,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static get defaultOptions(): DocumentSheet.Options;
 
     /**
      * A semantic convenience reference to the Document instance which is the target object for this form.
@@ -465,7 +461,7 @@ declare global {
     type AnyConstructor = typeof AnyDocumentSheet;
 
     interface DocumentSheetData<
-      Options extends DocumentSheetOptions<ConcreteDocument>,
+      Options extends DocumentSheet.Options<ConcreteDocument>,
       ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
     > extends FormApplication.FormApplicationData {
       cssClass: string;
@@ -477,6 +473,18 @@ declare global {
       title: DocumentSheet<Options, ConcreteDocument>["title"];
       document: DocumentSheet<Options, ConcreteDocument>["document"];
     }
+
+    interface Options<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any>
+      extends FormApplication.Options {
+      /**
+       * The default permissions required to view this Document sheet.
+       * @defaultValue {@link CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED | `CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED`}
+       */
+      viewPermission: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+      /** An array of {@link HTMLSecret | `HTMLSecret`} configuration objects. */
+      secrets: HTMLSecret.Configuration<ConcreteDocument>[];
+    }
   }
 }
 
@@ -485,7 +493,7 @@ declare abstract class AnyFormApplication extends FormApplication<any, any> {
 }
 
 declare abstract class AnyDocumentSheet extends DocumentSheet<
-  DocumentSheetOptions<foundry.abstract.Document.Any>,
+  DocumentSheet.Options<foundry.abstract.Document.Any>,
   foundry.abstract.Document.Any
 > {
   constructor(arg0: never, ...args: never[]);

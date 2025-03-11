@@ -575,7 +575,7 @@ declare global {
   }
 
   namespace PlaceableObject {
-    type Any = PlaceableObject<any>;
+    type Any = PlaceableObject<Document.AnyChild<Scene.Implementation | null>>;
 
     type AnyConstructor = typeof AnyPlaceableObject;
 

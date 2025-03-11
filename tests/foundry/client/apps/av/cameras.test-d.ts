@@ -3,7 +3,7 @@ import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
 const view = ui.webrtc as CameraViews;
 
-expectTypeOf(CameraViews.defaultOptions).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(CameraViews.defaultOptions).toEqualTypeOf<Application.Options>();
 expectTypeOf(view.render(true)).toEqualTypeOf<CameraViews>();
 expectTypeOf(view.getData()).toEqualTypeOf<MaybePromise<GetDataReturnType<CameraViews.CameraViewsData>>>();
 

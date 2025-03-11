@@ -5,7 +5,7 @@ declare global {
    * Support Info and Report
    * @typeParam Options - the type of the options object
    */
-  class SupportDetails<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class SupportDetails<Options extends Application.Options = Application.Options> extends Application<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -21,7 +21,7 @@ declare global {
      * return options;
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     /**
      * Returns the support report data
@@ -80,7 +80,7 @@ declare global {
     /**
      * Collects a number of metrics that is useful for Support
      */
-    static generateSupportReport(): SupportReportData;
+    static generateSupportReport(): SupportDetails.ReportData;
 
     /**
      * Get a WebGL renderer information string
@@ -92,30 +92,35 @@ declare global {
 
   namespace SupportDetails {
     type Any = SupportDetails<any>;
+
+    interface ReportData {
+      coreVersion: number;
+      systemVersion: string;
+      activeModuleCount: number;
+      os: string;
+      client: string;
+      gpu: string;
+      maxTextureSize: number | string;
+      sceneDimensions: string;
+      grid: number;
+      padding: number; // note: float in actual code
+      walls: number;
+      lights: number;
+      sounds: number;
+      tiles: number;
+      tokens: number;
+      actors: number;
+      items: number;
+      journals: number;
+      tables: number;
+      playlists: number;
+      packs: number;
+      messages: number;
+    }
   }
 
-  interface SupportReportData {
-    coreVersion: number;
-    systemVersion: string;
-    activeModuleCount: number;
-    os: string;
-    client: string;
-    gpu: string;
-    maxTextureSize: number | string;
-    sceneDimensions: string;
-    grid: number;
-    padding: number; // note: float in actual code
-    walls: number;
-    lights: number;
-    sounds: number;
-    tiles: number;
-    tokens: number;
-    actors: number;
-    items: number;
-    journals: number;
-    tables: number;
-    playlists: number;
-    packs: number;
-    messages: number;
-  }
+  /**
+   * @deprecated {@link SupportDetails.ReportData | `SupportDetails.ReportData`}
+   */
+  type SupportReportData = SupportDetails.ReportData;
 }

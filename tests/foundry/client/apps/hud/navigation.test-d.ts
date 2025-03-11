@@ -3,8 +3,8 @@ import type { MaybePromise } from "fvtt-types/utils";
 
 const sceneNavigation = new SceneNavigation();
 
-expectTypeOf(SceneNavigation.defaultOptions).toEqualTypeOf<ApplicationOptions>();
-expectTypeOf(sceneNavigation.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(SceneNavigation.defaultOptions).toEqualTypeOf<Application.Options>();
+expectTypeOf(sceneNavigation.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(sceneNavigation.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(sceneNavigation.render(true)).toEqualTypeOf<SceneNavigation | void>();
 

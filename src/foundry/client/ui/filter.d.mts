@@ -1,52 +1,15 @@
 import type { ValueOf } from "fvtt-types/utils";
 
 declare global {
-  /** Options which customize the behavior of the filter */
-  interface SearchFilterConfiguration {
-    /**
-     * The CSS selector used to target the text input element.
-     */
-    inputSelector: string;
+  /**
+   * @deprecated {@link SearchFilter.Configuration | `SearchFilter.Configuration`}
+   */
+  type SearchFilterConfiguration = SearchFilter.Configuration;
 
-    /**
-     * The CSS selector used to target the content container for these tabs.
-     */
-    contentSelector: string;
-
-    /**
-     * A callback function which executes when the filter changes.
-     */
-    callback?: SearchFilter["callback"];
-
-    /**
-     * The initial value of the search query.
-     * @defaultValue `""`
-     */
-    initial?: SearchFilter["query"] | undefined;
-
-    /**
-     * The number of milliseconds to wait for text input before processing.
-     * @defaultValue `100`
-     */
-    delay?: number;
-  }
-
-  interface FieldFilter {
-    /** The dot-delimited path to the field being filtered */
-    field: string;
-
-    /**
-     * The search operator, from CONST.OPERATORS
-     * @defaultValue `SearchFilter.OPERATORS.EQUALS`
-     */
-    operator: ValueOf<typeof SearchFilter.OPERATORS>;
-
-    /** Negate the filter, returning results which do NOT match the filter criteria */
-    negate: boolean;
-
-    /** The value against which to test */
-    value: any;
-  }
+  /**
+   * @deprecated {@link SearchFilter.FieldFilter | `SearchFilter.FieldFilter`}
+   */
+  type FieldFilter = SearchFilter.FieldFilter;
 
   /**
    * A controller class for managing a text input widget that filters the contents of some other UI element
@@ -69,7 +32,7 @@ declare global {
     /**
      * @param options - Options which customize the behavior of the filter
      */
-    constructor(options: SearchFilterConfiguration);
+    constructor(options: SearchFilter.Configuration);
 
     /**
      * The value of the current query string
@@ -123,7 +86,7 @@ declare global {
      * @param filter - The filter to test
      * @returns Whether the object matches the filter
      */
-    static evaluateFilter(obj: Record<string, any>, filter: FieldFilter): boolean;
+    static evaluateFilter(obj: Record<string, any>, filter: SearchFilter.FieldFilter): boolean;
 
     /**
      * Bind the SearchFilter controller to an HTML application
@@ -144,5 +107,54 @@ declare global {
      * @returns A cleaned string of ASCII characters for comparison
      */
     static cleanQuery(query: string): string;
+  }
+
+  namespace SearchFilter {
+    /** Options which customize the behavior of the filter */
+    interface Configuration {
+      /**
+       * The CSS selector used to target the text input element.
+       */
+      inputSelector: string;
+
+      /**
+       * The CSS selector used to target the content container for these tabs.
+       */
+      contentSelector: string;
+
+      /**
+       * A callback function which executes when the filter changes.
+       */
+      callback?: SearchFilter["callback"];
+
+      /**
+       * The initial value of the search query.
+       * @defaultValue `""`
+       */
+      initial?: SearchFilter["query"] | undefined;
+
+      /**
+       * The number of milliseconds to wait for text input before processing.
+       * @defaultValue `100`
+       */
+      delay?: number;
+    }
+
+    interface FieldFilter {
+      /** The dot-delimited path to the field being filtered */
+      field: string;
+
+      /**
+       * The search operator, from CONST.OPERATORS
+       * @defaultValue `SearchFilter.OPERATORS.EQUALS`
+       */
+      operator: ValueOf<typeof SearchFilter.OPERATORS>;
+
+      /** Negate the filter, returning results which do NOT match the filter criteria */
+      negate: boolean;
+
+      /** The value against which to test */
+      value: any;
+    }
   }
 }

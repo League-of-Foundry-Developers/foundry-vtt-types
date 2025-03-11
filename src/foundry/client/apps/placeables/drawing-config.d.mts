@@ -1,19 +1,14 @@
 import type { MaybePromise } from "fvtt-types/utils";
 
 declare global {
-  interface DrawingConfigOptions extends FormApplicationOptions {
-    /**
-     * Configure the default drawing settings, instead of a specific Drawing
-     * @defaultValue `false`
-     */
-    configureDefault: boolean;
-  }
+  /** @deprecated {@link DrawingConfig.Options | `DrawingConfig.Options`} */
+  type DrawingConfigOptions = DrawingConfig.Options;
 
   /**
    * The Application responsible for configuring a single Drawing document within a parent Scene.
    * @typeParam Options - the type of the options object
    */
-  class DrawingConfig<Options extends DrawingConfigOptions = DrawingConfigOptions> extends FormApplication<
+  class DrawingConfig<Options extends DrawingConfig.Options = DrawingConfig.Options> extends FormApplication<
     Options,
     DrawingDocument.Implementation
   > {
@@ -30,7 +25,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DrawingConfigOptions;
+    static override get defaultOptions(): DrawingConfig.Options;
 
     override get title(): string;
 
@@ -53,6 +48,14 @@ declare global {
 
   namespace DrawingConfig {
     type Any = DrawingConfig<any>;
+
+    interface Options extends FormApplication.Options {
+      /**
+       * Configure the default drawing settings, instead of a specific Drawing
+       * @defaultValue `false`
+       */
+      configureDefault: boolean;
+    }
 
     interface FormData {
       author: string;

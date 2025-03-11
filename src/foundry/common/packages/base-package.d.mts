@@ -248,6 +248,8 @@ declare namespace BasePackage {
       }
     : PackageCompendiumFolderSchemaHelper;
 
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
   interface Schema extends DataSchema {
     /**
      * The machine-readable unique package id, should be lower-case with no spaces or special characters

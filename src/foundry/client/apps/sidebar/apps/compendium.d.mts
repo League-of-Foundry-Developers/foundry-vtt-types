@@ -51,14 +51,17 @@ declare global {
 
     override initialize(): void;
 
-    override render(force?: boolean, options?: Application.RenderOptions<ApplicationOptions>): unknown;
+    override render(force?: boolean, options?: Application.RenderOptions<Application.Options>): unknown;
 
     // TODO: Implement GetDataReturnType
     override getData(options?: Partial<Options>): Promise<object>;
 
-    protected override _entryAlreadyExists(entry: DirectoryMixinEntry): boolean;
+    protected override _entryAlreadyExists(entry: DirectoryApplicationMixin.Entry): boolean;
 
-    protected override _createDroppedEntry(entry: DirectoryMixinEntry, folderId?: string): Promise<DirectoryMixinEntry>;
+    protected override _createDroppedEntry(
+      entry: DirectoryApplicationMixin.Entry,
+      folderId?: string,
+    ): Promise<DirectoryApplicationMixin.Entry>;
 
     protected override _getEntryDragData(entryId: string): { type: string; uuid: string };
 
@@ -75,9 +78,9 @@ declare global {
 
     protected override _getFolderDragData(folderId: string): { type: "Folder"; uuid: string };
 
-    protected override _getFolderContextOptions(): ContextMenuEntry[];
+    protected override _getFolderContextOptions(): ContextMenu.Entry[];
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
   }
 
   namespace Compendium {

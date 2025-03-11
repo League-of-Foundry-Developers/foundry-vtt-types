@@ -9,9 +9,9 @@ declare global {
      * @param origin  - The canvas coordinates of the origin of the ping.
      * @param options - Additional options to configure the ping animation.
      */
-    constructor(origin: Canvas.Point, options?: PingOptions);
+    constructor(origin: Canvas.Point, options?: Ping.Options);
 
-    options: PingOptions;
+    options: Ping.Options;
 
     _color: Color;
 
@@ -31,7 +31,7 @@ declare global {
      * @param dt        - The number of ms that elapsed since the previous frame.
      * @param animation - The animation state.
      */
-    protected _animateFrame(dt: number, animation: CanvasAnimationData): void;
+    protected _animateFrame(dt: number, animation: CanvasAnimation.AnimationData): void;
   }
 
   namespace Ping {
@@ -71,9 +71,14 @@ declare global {
        */
       name?: PropertyKey | undefined | null;
     }>;
+
+    interface Options extends Ping._Options {}
   }
 
-  interface PingOptions extends Ping._Options {}
+  /**
+   * @deprecated {@link Ping.Options | `Ping.Options`}
+   */
+  type PingOptions = Ping._Options;
 }
 
 declare abstract class AnyPing extends Ping {

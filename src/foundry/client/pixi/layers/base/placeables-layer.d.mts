@@ -44,7 +44,7 @@ declare global {
      * Keep track of history so that CTRL+Z can undo changes
      * @defaultValue `[]`
      */
-    history: Array<CanvasHistory<DocumentName>>;
+    history: Array<PlaceablesLayer.CanvasHistory<DocumentName>>;
 
     /**
      * Keep track of an object copied with CTRL+C which can be pasted later
@@ -474,17 +474,8 @@ declare global {
     set _highlight(state);
   }
 
-  interface CanvasHistory<DocumentName extends PlaceablesLayer.Type> {
-    /**
-     * The type of operation stored as history (create, update, delete)
-     */
-    type: PlaceablesLayer.HistoryEventType;
-
-    /**
-     * The data corresponding to the action which may later be un-done
-     */
-    data: Document.ConfiguredSourceForName<DocumentName>[];
-  }
+  /** @deprecated {@link PlaceablesLayer.CanvasHistory | `PlaceablesLayer.CanvasHistory`} */
+  export import CanvasHistory = PlaceablesLayer.CanvasHistory;
 
   /** @deprecated {@link PlaceablesLayer.LayerOptions | `PlaceablesLayer.LayerOptions`} */
   export import PlaceablesLayerOptions = PlaceablesLayer.LayerOptions;
@@ -511,6 +502,18 @@ declare global {
       readonly POTENTIAL: 1;
       readonly CONFIRMED: 2;
       readonly COMPLETED: 3;
+    }
+
+    interface CanvasHistory<DocumentName extends PlaceablesLayer.Type> {
+      /**
+       * The type of operation stored as history (create, update, delete)
+       */
+      type: PlaceablesLayer.HistoryEventType;
+
+      /**
+       * The data corresponding to the action which may later be un-done
+       */
+      data: Document.ConfiguredSourceForName<DocumentName>[];
     }
 
     interface LayerOptions<ConcretePlaceable extends PlaceableObject.AnyConstructor>

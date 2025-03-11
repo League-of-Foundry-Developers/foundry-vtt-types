@@ -57,6 +57,23 @@ declare global {
       once?: boolean;
     }
 
+    interface HotReloadData {
+      /** The type of package which was modified */
+      packageType: string;
+
+      /** The id of the package which was modified */
+      packageId: string;
+
+      /** The updated stringified file content */
+      content: string;
+
+      /** The relative file path which was modified */
+      path: string;
+
+      /** The file extension which was modified, e.g. "js", "css", "html" */
+      extension: string;
+    }
+
     interface StaticCallbacks {
       /** Core lifecycle */
 
@@ -197,7 +214,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
        * @see {@link SceneControls._getControlButtons | `SceneControls#_getControlButtons`}
        */
-      getSceneControlButtons: (controls: SceneControl[]) => void;
+      getSceneControlButtons: (controls: SceneControls.Control[]) => void;
 
       /**
        * A hook event that fires whenever data is dropped into a Hotbar slot.
@@ -505,8 +522,8 @@ declare global {
       preImportAdventure: (
         adventure: Adventure.Implementation,
         formData: object, // TODO: Improve this. Also relevant to `AdventureImporter#_updateObject`
-        toCreate: AdventureImportData["toCreate"],
-        toUpdate: AdventureImportData["toUpdate"],
+        toCreate: Adventure.ImportData["toCreate"],
+        toUpdate: Adventure.ImportData["toUpdate"],
       ) => boolean | void;
 
       /**
@@ -521,8 +538,8 @@ declare global {
       importAdventure: (
         adventure: Adventure.Implementation,
         formData: object, // TODO: Improve this. Also relevant to `AdventureImporter#_updateObject`
-        toCreate: AdventureImportData["toCreate"],
-        toUpdate: AdventureImportData["toUpdate"],
+        toCreate: Adventure.ImportData["toCreate"],
+        toUpdate: Adventure.ImportData["toUpdate"],
       ) => void;
 
       /** Socket */
@@ -779,7 +796,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
        * @see {@link SceneNavigation.activateListeners | `SceneNavigation#activateListeners`}
        */
-      getSceneNavigationContext: (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+      getSceneNavigationContext: (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
 
       /**
        * A hook event that fires when the context menu for a PlayersList entry is constructed.
@@ -788,7 +805,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
        * @see {@link PlayerList.activateListeners | `PlayerList#activateListeners`}
        */
-      getUserContextOptions: (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+      getUserContextOptions: (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
     }
 
     /** Application */
@@ -1140,7 +1157,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
      * @see {@link ContextMenu.create | `ContextMenu.create`}
      */
-    type GetEntryContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+    type GetEntryContext = (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
 
     /**
      * A hook event that fires when the context menu for a Sound in the PlaylistDirectory is constructed.
@@ -1151,7 +1168,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
      * @see {@link PlaylistDirectory._contextMenu | `PlaylistDirectory#_contextMenu`}
      */
-    type GetPlaylistDirectorySoundContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+    type GetPlaylistDirectorySoundContext = (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
 
     /**
      * A hook event that fires when the context menu for folders in a SidebarTab
@@ -1164,7 +1181,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
      * @see {@link SidebarDirectory._contextMenu | `SidebarDirectory#_contextMenu`}
      */
-    type GetSidebarDirectoryFolderContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+    type GetSidebarDirectoryFolderContext = (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
 
     type DynamicCallbacks =
       | RenderApplication

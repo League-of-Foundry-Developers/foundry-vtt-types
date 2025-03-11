@@ -5,8 +5,8 @@ import type { Container, DisplayObject } from "pixi.js";
 const tileHUD = new TileHUD();
 
 expectTypeOf(tileHUD.object).toEqualTypeOf<Tile | undefined>();
-expectTypeOf(TileHUD.defaultOptions).toEqualTypeOf<ApplicationOptions>();
-expectTypeOf(tileHUD.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(TileHUD.defaultOptions).toEqualTypeOf<Application.Options>();
+expectTypeOf(tileHUD.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(tileHUD.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(tileHUD.render(true)).toEqualTypeOf<TileHUD>();
 

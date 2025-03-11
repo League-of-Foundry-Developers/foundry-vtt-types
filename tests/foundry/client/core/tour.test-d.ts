@@ -1,10 +1,10 @@
 import { expectTypeOf } from "vitest";
 
-declare const tourConfig: TourConfig;
+declare const tourConfig: Tour.Config;
 
 const tour = new Tour(tourConfig);
 
-expectTypeOf(tour.config).toEqualTypeOf<TourConfig>();
+expectTypeOf(tour.config).toEqualTypeOf<Tour.Config>();
 expectTypeOf(tour.targetElement).toEqualTypeOf<HTMLElement | undefined>();
 expectTypeOf(tour.fadeElement).toEqualTypeOf<HTMLElement | undefined>();
 expectTypeOf(tour.overlayElement).toEqualTypeOf<HTMLElement | undefined>();
@@ -13,8 +13,8 @@ expectTypeOf(tour.title).toEqualTypeOf<string>();
 expectTypeOf(tour.description).toEqualTypeOf<string | undefined>();
 expectTypeOf(tour.namespace).toEqualTypeOf<string | undefined>();
 expectTypeOf(tour.key).toEqualTypeOf<string>();
-expectTypeOf(tour.steps).toEqualTypeOf<TourStep[]>();
-expectTypeOf(tour.currentStep).toEqualTypeOf<TourStep | null>();
+expectTypeOf(tour.steps).toEqualTypeOf<Tour.Step[]>();
+expectTypeOf(tour.currentStep).toEqualTypeOf<Tour.Step | null>();
 expectTypeOf(tour.stepIndex).toEqualTypeOf<number | null>();
 expectTypeOf(tour.hasNext).toEqualTypeOf<boolean>();
 expectTypeOf(tour.hasPrevious).toEqualTypeOf<boolean>();

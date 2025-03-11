@@ -567,6 +567,32 @@ declare global {
      * @deprecated {@link TokenDocument.Implementation | `TokenDocument.Implementation`}
      */
     type ConfiguredInstance = Implementation;
+
+    // The getBarAttribute monkeypatch is simply inside the data model definition at `src\foundry\common\data\data.d.mts`
+
+    interface TrackedAttributesDescription {
+      /** A list of property path arrays to attributes with both a value and a max property. */
+      bar: string[][];
+      /** A list of property path arrays to attributes that have only a value property. */
+      value: string[][];
+    }
+
+    interface CreateCombatantOptions {
+      /**
+       * A specific Combat instance which should be modified. If undefined,
+       * the current active combat will be modified if one exists. Otherwise, a new
+       * Combat encounter will be created if the requesting user is a Gamemaster.
+       */
+      combat?: Combat | undefined;
+    }
+
+    interface ToggleCombatantOptions extends InexactPartial<TokenDocument.CreateCombatantOptions> {
+      /**
+       * Require this token to be an active Combatant or to be removed.
+       * Otherwise, the current combat state of the Token is toggled.
+       */
+      active: boolean;
+    }
   }
 
   /**
@@ -685,18 +711,7 @@ declare global {
      *                  Default: `{}`
      *  @returns Is this Token now an active Combatant?
      */
-    toggleCombatant({
-      active,
-      ...options
-    }?: InexactPartial<
-      CreateCombatantOptions & {
-        /**
-         * Require this token to be an active Combatant or to be removed.
-         * Otherwise, the current combat state of the Token is toggled.
-         */
-        active: boolean;
-      }
-    >): Promise<boolean>;
+    toggleCombatant({ active, ...options }?: TokenDocument.ToggleCombatantOptions): Promise<boolean>;
 
     /**
      * Create or remove Combatants for an array of provided Token objects.
@@ -705,7 +720,10 @@ declare global {
      *                  Default: `{}`
      * @returns An array of created Combatant documents
      */
-    static createCombatants(tokens: TokenDocument[], options?: CreateCombatantOptions): Promise<Combatant[]>;
+    static createCombatants(
+      tokens: TokenDocument[],
+      options?: TokenDocument.CreateCombatantOptions,
+    ): Promise<Combatant.Implementation[]>;
 
     /**
      * Remove Combatants for the array of provided Tokens.
@@ -714,7 +732,10 @@ declare global {
      *                  Default: `{}`
      * @returns An array of deleted Combatant documents
      */
-    static deleteCombatants(tokens: TokenDocument[], options?: CreateCombatantOptions): Promise<Combatant[]>;
+    static deleteCombatants(
+      tokens: TokenDocument[],
+      options?: TokenDocument.CreateCombatantOptions,
+    ): Promise<Combatant.Implementation[]>;
 
     /**
      * Convenience method to change a token vision mode.
@@ -744,8 +765,7 @@ declare global {
      * @param changes - The changes.
      * @returns Could this Token update change Region containment?
      */
-
-    protected _couldRegionsChange(changes: SchemaField.AssignmentData<foundry.documents.BaseToken.Schema>): boolean;
+    protected _couldRegionsChange(changes: Token.UpdateData): boolean;
 
     /**
      * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
@@ -774,13 +794,19 @@ declare global {
      * @param _path - (default: `[]`)
      */
     // TODO: There's some very complex handling for non-datamodel Actor system implementations if we want
-    static getTrackedAttributes(data?: Actor.Implementation["system"], _path?: string[]): TrackedAttributesDescription;
+    static getTrackedAttributes(
+      data?: Actor.Implementation["system"],
+      _path?: string[],
+    ): TokenDocument.TrackedAttributesDescription;
 
     /**
      * Retrieve an Array of attribute choices from a plain object.
      * @param schema - The schema to explore for attributes.
      */
-    protected static _getTrackedAttributesFromObject(data: object, _path?: string[]): TrackedAttributesDescription;
+    protected static _getTrackedAttributesFromObject(
+      data: object,
+      _path?: string[],
+    ): TokenDocument.TrackedAttributesDescription;
 
     /**
      * Retrieve an Array of attribute choices from a SchemaField.
@@ -789,20 +815,22 @@ declare global {
     protected static _getTrackedAttributesFromSchema(
       schema: foundry.data.fields.SchemaField.Any,
       _path?: string[],
-    ): TrackedAttributesDescription;
+    ): TokenDocument.TrackedAttributesDescription;
 
     /**
      * Retrieve any configured attributes for a given Actor type.
      * @param type - The Actor type.
      */
-    static _getConfiguredTrackedAttributes(type: string): TrackedAttributesDescription | void;
+    static _getConfiguredTrackedAttributes(type: string): TokenDocument.TrackedAttributesDescription | void;
 
     /**
      * Inspect the Actor data model and identify the set of attributes which could be used for a Token Bar
      * @param attributes - The tracked attributes which can be chosen from
      * @returns A nested object of attribute choices to display
      */
-    static getTrackedAttributeChoices(attributes?: TrackedAttributesDescription): Record<string, string[]>;
+    static getTrackedAttributeChoices(
+      attributes?: TokenDocument.TrackedAttributesDescription,
+    ): Record<string, string[]>;
 
     /**
      * @deprecated since v11
@@ -862,23 +890,15 @@ declare global {
     ): Promise<TokenDocument.Implementation>;
   }
 
-  // The getBarAttribute monkeypatch is simply inside the data model definition at `src\foundry\common\data\data.d.mts`
+  /**
+   * @deprecated {@link TokenDocument.TrackedAttributesDescription | `TokenDocument.TrackedAttributesDescription`}
+   */
+  type TrackedAttributesDescription = TokenDocument.TrackedAttributesDescription;
 
-  interface TrackedAttributesDescription {
-    /** A list of property path arrays to attributes with both a value and a max property. */
-    bar: string[][];
-    /** A list of property path arrays to attributes that have only a value property. */
-    value: string[][];
-  }
-
-  interface CreateCombatantOptions {
-    /**
-     * A specific Combat instance which should be modified. If undefined,
-     * the current active combat will be modified if one exists. Otherwise, a new
-     * Combat encounter will be created if the requesting user is a Gamemaster.
-     */
-    combat?: Combat | undefined;
-  }
+  /**
+   * @deprecated {@link TokenDocument.CreateCombatantOptions | `TokenDocument.CreateCombatantOptions`}
+   */
+  type CreateCombatantOptions = TokenDocument.CreateCombatantOptions;
 }
 
 interface SingleAttributeBar {
