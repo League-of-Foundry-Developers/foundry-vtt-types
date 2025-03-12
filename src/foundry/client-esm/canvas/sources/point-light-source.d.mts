@@ -1,6 +1,7 @@
-import type { IntentionalPartial } from "fvtt-types/utils";
+import type { AnyObject, FixedInstanceType, IntentionalPartial, RequiredProps } from "fvtt-types/utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
+import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
 /**
  * A specialized subclass of the BaseLightSource which renders a source of light as a point-based effect.
@@ -8,9 +9,13 @@ import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 declare class PointLightSource<
   SourceData extends PointLightSource.SourceData = PointLightSource.SourceData,
   SourceShape extends PointSourcePolygon = PointSourcePolygon,
-> extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape> {
+  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = RenderedEffectSource.Layers,
+> extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape, RenderingLayers> {
   /** @defaultValue `"lightSources"` */
   static override effectsCollection: string;
+
+  /** @privateRemarks Not in Foundry code, necessary type override */
+  static override defaultData: PointLightSource.SourceData;
 
   /**
    * @privateRemarks This is not in foundry's code, but since this class (and its parent) implements `_createShapes`,
@@ -18,20 +23,22 @@ declare class PointLightSource<
    */
   override shape: SourceShape;
 
-  override _initialize(data: IntentionalPartial<SourceData>): void;
+  protected override _initialize(data: IntentionalPartial<SourceData>): void;
 
-  override _createShapes(): void;
+  protected override _createShapes(): void;
 
-  override _configure(changes: IntentionalPartial<SourceData>): void;
+  // TODO: Flatten<IntentionalPartial<SourceData>>
+  protected override _configure(changes: AnyObject): void;
 
-  override _getPolygonConfiguration(): PointSourcePolygon.Config;
+  protected override _getPolygonConfiguration(): PointLightSource.PolygonConfig;
 
   /**
    * Test whether this LightSource provides visibility to see a certain target object.
    * @param config - The visibility test configuration
    * @returns Is the target object visible to this source?
+   * @remarks Despite being an `={}` parameter, this will error if `config.tests` is not at least an empty array of `CanvasVisibility.Test`s
    */
-  testVisibility(config?: CanvasVisibility.TestConfig): boolean;
+  testVisibility(config: CanvasVisibility.TestConfig): boolean;
 
   /**
    * Can this LightSource theoretically detect a certain object based on its properties?
@@ -39,17 +46,38 @@ declare class PointLightSource<
    * @param target - The target object being tested
    * @returns Can the target object theoretically be detected by this vision source?
    */
-  _canDetectObject(target?: PlaceableObject | null): boolean;
+  protected _canDetectObject(target?: PlaceableObject.Any | null): boolean;
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks `"BaseLightSource#isDarkness is now obsolete. Use DarknessSource instead."`
+   *
+   * Always returns `false`
+   * @privateRemarks This isn't actually overridden here, `BaseLightSource#isDarkness` always returns false, but it's type as `boolean` there to allow `PointDarknessSource#isDarkness` to return true.
+   */
+  get isDarkness(): false;
 }
 
 declare namespace PointLightSource {
   interface Any extends AnyPointLightSource {}
   type AnyConstructor = typeof AnyPointLightSource;
 
-  type SourceData = PointEffectSourceMixin.SourceData & BaseLightSource.SourceData;
+  interface SourceData extends PointEffectSourceMixin.SourceData, BaseLightSource.SourceData {
+    animation: RenderedEffectSource.StoredLightAnimationConfig;
+  }
+
+  interface PolygonConfig
+    extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold" | "includeDarkness"> {}
+
+  type ConfiguredClass = CONFIG["Canvas"]["lightSourceClass"];
+  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 }
 
-declare abstract class AnyPointLightSource extends PointLightSource<PointLightSource.SourceData, PointSourcePolygon> {
+declare abstract class AnyPointLightSource extends PointLightSource<
+  PointLightSource.SourceData,
+  PointSourcePolygon,
+  RenderedEffectSource.Layers
+> {
   constructor(arg0: never, ...args: never[]);
 }
 

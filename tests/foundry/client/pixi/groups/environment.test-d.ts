@@ -18,7 +18,9 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<void>();
 expectTypeOf(myEnvironmentGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor<"environment">>();
-expectTypeOf(myEnvironmentGroup.globalLightSource).toMatchTypeOf<foundry.canvas.sources.GlobalLightSource.Any>();
+expectTypeOf(
+  myEnvironmentGroup.globalLightSource,
+).toEqualTypeOf<foundry.canvas.sources.GlobalLightSource.ConfiguredInstance>();
 expectTypeOf(myEnvironmentGroup.darknessLevel).toEqualTypeOf<number>();
 expectTypeOf(myEnvironmentGroup.colors.ambientBrightest).toEqualTypeOf<Color | undefined>();
 expectTypeOf(myEnvironmentGroup.weights.bright).toEqualTypeOf<number | undefined>();

@@ -1,4 +1,4 @@
-import type { FixedInstanceType, HandleEmptyObject, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, InexactPartial, NullishProps } from "fvtt-types/utils";
 import type { SceneEnvironmentData } from "../../../common/documents/_types.d.mts";
 
 declare global {
@@ -13,7 +13,7 @@ declare global {
      * The global light source attached to the environment
      * @remarks This is `defineProperty`'d as non-writable and non-configurable at construction
      */
-    readonly globalLightSource: FixedInstanceType<typeof CONFIG.Canvas.globalLightSourceClass>;
+    readonly globalLightSource: foundry.canvas.sources.GlobalLightSource.ConfiguredInstance;
 
     /**
      * Should this group tear down its non-layer children?
