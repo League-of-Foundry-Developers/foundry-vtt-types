@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import ChatSpeakerData = foundry.data.ChatSpeakerData;
+
+type ChatSpeakerData = foundry.documents.BaseChatMessage.Properties["speaker"];
 
 expectTypeOf(new ChatMessage()).toEqualTypeOf<ChatMessage.Implementation>();
 expectTypeOf(new ChatMessage({})).toEqualTypeOf<ChatMessage.Implementation>();
