@@ -309,6 +309,19 @@ declare namespace ApplicationV2 {
     formData: FormDataExtended,
   ) => MaybePromise<void>;
 
+  interface TabsConfiguration {
+    /** An array of tab configuration data */
+    tabs: Omit<Tab, "group" | "active">[];
+
+    /** The tab in this group that will be active on first render */
+    initial?: string | null | undefined;
+    /**
+     * A localization path prefix for all tabs in the group: if set, a label is generated
+     * for each tab using a full path of `${labelPrefix}.${tabId}`.
+     */
+    labelPrefix?: string | null | undefined;
+  }
+
   /** @remarks Used with `templates/generic/tab-navigation.hbs` */
   interface Tab {
     id: string;
@@ -403,14 +416,37 @@ declare class ApplicationV2<
   [__RenderOptions]: RenderOptions;
   [__RenderContext]: RenderContext;
 
+  /**
+   * Applications are constructed by providing an object of configuration options.
+   * @param options - Options used to configure the Application instance
+   *                  (default: `{}`)
+   */
+  // not: null
   constructor(options?: DeepPartial<Configuration>);
 
+  /**
+   * Designates which upstream Application class in this class' inheritance chain is the base application.
+   * Any DEFAULT_OPTIONS of super-classes further upstream of the BASE_APPLICATION are ignored.
+   * Hook events for super-classes further upstream of the BASE_APPLICATION are not dispatched.
+   */
   static BASE_APPLICATION: typeof ApplicationV2;
 
-  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
-  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  /**
+   * The default configuration options which are assigned to every instance of this Application class.
+   * @privateRemarks This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+   * Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+   */
   static DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration> & object;
 
+  /**
+   * Configuration of application tabs, with an entry per tab group.
+   * @defaultValue `{}`
+   */
+  static TABS: Record<string, ApplicationV2.TabsConfiguration>;
+
+  /**
+   * The sequence of rendering states that describe the Application life-cycle.
+   */
   static readonly RENDER_STATES: {
     ERROR: -3;
     CLOSING: -2;
@@ -524,17 +560,21 @@ declare class ApplicationV2<
   /**
    * Render the Application, creating its HTMLElement and replacing its innerHTML.
    * Add it to the DOM if it is not currently rendered and rendering is forced. Otherwise, re-render its contents.
-   * @param options  - Options which configure application rendering behavior.
-   *                   A boolean is interpreted as the "force" option.
+   * @param options - Options which configure application rendering behavior.
+   *                  A boolean is interpreted as the "force" option.
+   *                  (default: `{}`)
    * @returns A Promise which resolves to the rendered Application instance
    */
+  // not: null
   render(options?: DeepPartial<RenderOptions>): Promise<this>;
 
   /**
-   * @deprecated Exists for backwards compatability with the original `ApplicationV1#render` signature.
+   * @deprecated Exists for backwards compatibility with the original `ApplicationV1#render` signature.
    *
    * @param _options - Legacy options for backwards-compatibility with the original ApplicationV1#render signature.
+   *                   (default: `{}`)
    */
+  // not: null
   render(options: boolean, _options?: DeepPartial<RenderOptions>): Promise<this>;
 
   /**
@@ -555,6 +595,12 @@ declare class ApplicationV2<
    * @param group - The ID of the tab group to prepare
    */
   protected _prepareTabs(group: string): Record<string, ApplicationV2.Tab>;
+
+  /**
+   * Get the configuration for a tabs group.
+   * @param group - The ID of a tabs group
+   */
+  protected _getTabsConfig(group: string): ApplicationV2.TabsConfiguration | null;
 
   /**
    * Configure the array of header control menu options
@@ -616,6 +662,7 @@ declare class ApplicationV2<
    * @param options - Options which modify how the application is closed.
    * @returns A Promise which resolves to the closed Application instance
    */
+  // not: null
   close(options?: DeepPartial<ApplicationV2.ClosingOptions>): Promise<this>;
 
   /**
@@ -648,11 +695,13 @@ declare class ApplicationV2<
    * Toggle display of the Application controls menu.
    * Only applicable to window Applications.
    * @param expanded - Set the controls visibility to a specific state.
-   *                   Otherwise, the visible state is toggled from its current value
+   *                   Otherwise, the visible state is toggled from its current value.
+   *                   `null` is same as undefined
    * @param options  - Options to configure the toggling behavior
    * @returns A Promise which resolves once the control expansion animation is complete
    */
-  toggleControls(expanded?: boolean, options?: ApplicationV2.ToggleControlOptions): void;
+  // not: null
+  toggleControls(expanded?: boolean | null, options?: ApplicationV2.ToggleControlOptions): void;
 
   /**
    * Minimize the Application, collapsing it to a minimal header.
@@ -678,6 +727,7 @@ declare class ApplicationV2<
    * @param options - Additional options which affect tab navigation
    *                  (default: `{}`)
    */
+  // not: null
   changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
 
   /**
@@ -688,6 +738,7 @@ declare class ApplicationV2<
    * @param options - Options which configure event handling
    * @returns A promise which resoles once the handler is complete if async is true
    */
+  // not: null
   protected _doEvent<HandlerArgs extends AnyArray, Async extends boolean | undefined = false>(
     handler: (...args: HandlerArgs) => Async extends true ? Promise<void> : void,
     options?: InexactPartial<ApplicationV2.DoEventOptions<HandlerArgs, Async>>,
