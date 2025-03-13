@@ -45,10 +45,12 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static override " fvtt_types_internal_document_name_static": WallDocument.Name;
 
+  // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: null;
-  readonly pack: null;
+  readonly parentCollection: WallDocument.ParentCollectionName | null;
+
+  readonly pack: string | null;
 
   static override get implementation(): WallDocument.ImplementationClass;
 
@@ -58,10 +60,12 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static get documentName(): WallDocument.Name;
 
+  // TODO: Fill in "base" type
   static get TYPES(): [];
 
   static get hasTypeData(): false;
 
+  // TODO: Consider EmptyObject
   static get hierarchy(): Record<string, EmbeddedCollectionField.Any | EmbeddedDocumentField.Any>;
 
   override parent: WallDocument.Parent;
@@ -134,6 +138,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
   //   operation?: never,
   // ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>>>;
 
+  // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
 
   override getFlag<Scope extends WallDocument.Flags.Scope, Key extends WallDocument.Flags.Key<Scope>>(
