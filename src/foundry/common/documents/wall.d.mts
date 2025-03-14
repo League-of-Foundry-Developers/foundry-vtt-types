@@ -60,12 +60,11 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static get documentName(): WallDocument.Name;
 
-  // TODO: Fill in "base" type
-  static get TYPES(): [];
+  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
   static get hasTypeData(): false;
 
-  // TODO: Consider EmptyObject
+  // TODO: Consider EmptyObject or helper type
   static get hierarchy(): Record<string, EmbeddedCollectionField.Any | EmbeddedDocumentField.Any>;
 
   override parent: WallDocument.Parent;

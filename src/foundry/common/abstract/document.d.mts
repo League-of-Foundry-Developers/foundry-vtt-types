@@ -947,7 +947,8 @@ declare namespace Document {
     ? [data?: CreateData, context?: Document.ConstructionContext<Parent>]
     : [data: CreateData, context?: Document.ConstructionContext<Parent>];
 
-  type CoreTypesForName<Name extends Type> = string & GetKey<Document.MetadataFor<Name>, "coreTypes", ["base"]>[number];
+  type CoreTypesForName<Name extends Type> = string &
+    GetKey<Document.MetadataFor<Name>, "coreTypes", [CONST.BASE_DOCUMENT_TYPE]>[number];
 
   type ConfiguredSubTypesOf<Name extends Type> = Name extends "ActorDelta"
     ? ConfiguredSubTypesOf<"Actor">
