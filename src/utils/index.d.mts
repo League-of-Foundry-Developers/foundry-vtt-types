@@ -1193,3 +1193,16 @@ type _DiscriminatedUnion<U extends object, AllKeys extends AllKeysOf<U>> = U ext
       readonly [K in Exclude<AllKeys, keyof U>]?: never;
     }
   : never;
+
+/**
+ * Picks keys where the value extends `Value`
+ *
+ * @example
+ * ```typescript
+ * type Picked = PickValue<{ type: "coordinates"; x: 123; y: 456; }, number>;
+ * //   ^ { x: 123; y: 456 }
+ * ```
+ */
+export type PickValue<T extends object, Value> = {
+  [K in keyof T as T[K] extends Value ? K : never]: T[K];
+};

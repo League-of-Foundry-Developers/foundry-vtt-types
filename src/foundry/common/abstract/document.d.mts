@@ -23,6 +23,7 @@ import type {
   SimpleMerge,
   ConcreteKeys,
   ValueOf,
+  PickValue,
 } from "../../../utils/index.d.mts";
 import type { documents } from "../../client-esm/client.d.mts";
 import type * as CONST from "../constants.mts";
@@ -1774,8 +1775,14 @@ declare namespace Document {
 
   interface GetEmbeddedDocumentOptions extends _GetEmbeddedDocumentOptions {}
 
-  // TODO: @LukeAbby
-  type EmbeddedCollectionFor<_DocumentName extends Document.Type, _EmbeddedCollection> = any;
+  /**
+   * Gets the hierarchical fields in the schema. Hardcoded to whatever Foundry fields are hierarchical
+   * as there is no way to access the a static property of a custom fields from an instance.
+   */
+  type HierarchyOf<Schema extends DataSchema> = PickValue<
+    Schema,
+    EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
+  >;
 }
 
 /** @deprecated {@link Document.Database.Operation | `Document.Database.Operation`} */

@@ -15,6 +15,11 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<WallDocument.CreateData, WallDocument.Parent> {}
 
     /**
+     * The documents embedded within Wall.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the WallDocument document instance configured through `CONFIG.Wall.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredWallDocument | `fvtt-types/configuration/ConfiguredWallDocument`} in fvtt-types.
      */

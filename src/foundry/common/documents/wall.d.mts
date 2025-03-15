@@ -1,7 +1,7 @@
 import type { AnyMutableObject, AnyObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField, SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
@@ -64,8 +64,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static get hasTypeData(): false;
 
-  // TODO: Consider EmptyObject or helper type
-  static get hierarchy(): Record<string, EmbeddedCollectionField.Any | EmbeddedDocumentField.Any>;
+  static get hierarchy(): WallDocument.Hierarchy;
 
   override parent: WallDocument.Parent;
 
@@ -280,6 +279,7 @@ export default BaseWall;
 declare namespace BaseWall {
   export import Name = WallDocument.Name;
   export import ConstructorArgs = WallDocument.ConstructorArgs;
+  export import Hierarchy = WallDocument.Hierarchy;
   export import Metadata = WallDocument.Metadata;
   export import Parent = WallDocument.Parent;
   export import Pack = WallDocument.Pack;
