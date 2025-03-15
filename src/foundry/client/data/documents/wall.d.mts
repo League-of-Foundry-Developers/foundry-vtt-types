@@ -91,7 +91,7 @@ declare global {
     interface Stored extends Document.Stored<WallDocument.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link foundry.abstract.DataModel._source | `DataModel._source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
@@ -102,7 +102,7 @@ declare global {
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link WallDataModel._source | `WallDataModel._source`}. This data is what was
+     * The data put in {@link WallDocument._source | `WallDocument._source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * Both `Source` and `PersistedData` are equivalent.
@@ -452,7 +452,7 @@ declare global {
      * separate like this helps against circularities.
      */
 
-    /** ClientDocument overrides */
+    // ClientDocument overrides
 
     static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<WallDocument.Parent>>): string;
 
