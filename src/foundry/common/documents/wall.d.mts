@@ -23,7 +23,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
    * You should use {@link WallDocument.implementation | `new WallDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `WallDocument`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseWall.CreateData, BaseWall.Parent>);
+  constructor(...args: WallDocument.ConstructorArgs);
 
   static override metadata: BaseWall.Metadata;
 
@@ -279,6 +279,7 @@ export default BaseWall;
 
 declare namespace BaseWall {
   export import Name = WallDocument.Name;
+  export import ConstructorArgs = WallDocument.ConstructorArgs;
   export import Metadata = WallDocument.Metadata;
   export import Parent = WallDocument.Parent;
   export import Pack = WallDocument.Pack;

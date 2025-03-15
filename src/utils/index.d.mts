@@ -6,7 +6,9 @@ type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig
  * This type exists due to https://github.com/microsoft/TypeScript/issues/55667
  * This will be deprecated once this issue is solved.
  */
-export type FixedInstanceType<T extends AnyConstructor> = T extends abstract new (...args: infer _) => infer R
+export type FixedInstanceType<T extends abstract new (...args: any[]) => any> = T extends abstract new (
+  ...args: infer _
+) => infer R
   ? R
   : never;
 

@@ -65,7 +65,9 @@ declare abstract class Document<
    * @param data    - Initial data provided to construct the Document
    * @param context - Construction context options
    */
-  constructor(data?: fields.SchemaField.CreateData<Schema>, context?: Document.ConstructionContext<Parent>);
+  // Note: This uses `any` because while it's unsound to try to do `new Document(...)` directly it
+  // simplifies assignability. Ideally this will be narrowed in the future.
+  constructor(...args: any[]);
 
   override parent: Parent;
 
@@ -865,7 +867,9 @@ declare abstract class Document<
 // An empty schema is the most accurate because index signatures are stripped.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 declare abstract class AnyDocument extends Document<Document.Type, {}, Document.Any | null> {
-  constructor(arg0: never, ...args: never[]);
+  // Note(LukeAbby): Document is one of the rare classes that is frequently used for mixins and also the conditional
+  // type in the constructor prevents `arg0: never, ...args: never[]` from being usable.
+  constructor(...args: any[]);
 
   // Note(LukeAbby): This uses `object` instead of `AnyObject` to avoid more thorough evaluation of
   // the involved types which can cause a loop.
@@ -1069,7 +1073,7 @@ declare namespace Document {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
-    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
+    type Constructor = (abstract new (...args: any[]) => Instance.Any) & {
       " fvtt_types_internal_document_name_static": Document.Type;
     };
 
