@@ -274,6 +274,13 @@ declare global {
 
     interface CoreFlags {
       core?: {
+        /**
+         * @deprecated since v12, until 14
+         * @remarks "Tiling Sprites are deprecated without replacement."
+         */
+        isTilingSprite?: boolean;
+
+        /** @remarks If true, and texture.src is a video, it will jump to a random timestamp every time the tile is drawn */
         randomizeVideo?: boolean;
       };
     }

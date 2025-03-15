@@ -1,4 +1,3 @@
-import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
@@ -24,16 +23,30 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    */
   constructor(...args: Document.ConstructorParameters<BaseAmbientSound.CreateData, BaseAmbientSound.Parent>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "AmbientSound",
+   *   collection: "sounds",
+   *   label: "DOCUMENT.AmbientSound",
+   *   labelPlural: "DOCUMENT.AmbientSounds",
+   *   isEmbedded: true,
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: AmbientSoundDocument.Metadata;
 
   static override defineSchema(): BaseAmbientSound.Schema;
 
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  /** @defaultValue `["AMBIENT_SOUND"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /*
    * After this point these are not really overridden methods.
    * They are here because they're static properties but depend on the instance and so can't be
-   * defined DRY-ly while also being easily overrideable.
+   * defined DRY-ly while also being easily overridable.
    */
 
   static " fvtt_types_internal_document_name_static": "AmbientLight";

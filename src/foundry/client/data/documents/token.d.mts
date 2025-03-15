@@ -85,7 +85,8 @@ declare global {
 
     /**
      * Schema definition shared by {@link foundry.data.PrototypeToken | `PrototypeToken`}.
-     * Foundry technically implements this through deletion, but it's easier for us to do by extension.
+     * Foundry technically implements this through deletion, but it's easier for us to do by extension as there are field
+     * option overrides (e.g `textSearch` on `name`) that cause type issues otherwise.
      */
     interface SharedProtoSchema extends DataSchema {
       // `name` omitted here because, while it is not in the list of omitted fields for `PrototypeToken`, it's `textSearch: true` in the base schema, but overridden to `false` in `PrototypeToken`
@@ -218,7 +219,7 @@ declare global {
           required: true;
           nullable: true;
           blank: false;
-          initial: () => string | undefined | null;
+          initial: () => string | null;
         }>;
       }>;
 
@@ -235,7 +236,7 @@ declare global {
           required: true;
           nullable: true;
           blank: false;
-          initial: () => string | undefined | null;
+          initial: () => string | null;
         }>;
       }>;
 
@@ -260,9 +261,9 @@ declare global {
 
         /**
          * How far in distance units the Token can see without the aid of a light source
-         * @defaultValue `null`
+         * @defaultValue `0`
          */
-        range: fields.NumberField<{ required: true; nullable: false; min: 0; step: 0.01; initial: 0 }>;
+        range: fields.NumberField<{ required: true; nullable: true; min: 0; step: 0.01; initial: 0 }>;
 
         /**
          * An angle at which the Token can see relative to their direction of facing
@@ -492,6 +493,13 @@ declare global {
       elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
       /**
+       * Is the Token currently locked? A locked token cannot be moved or rotated via
+       * standard keyboard or mouse interaction.
+       * @defaultValue `false`
+       */
+      locked: fields.BooleanField;
+
+      /**
        * The z-index of this token relative to other siblings
        * @defaultValue `0`
        */
@@ -558,7 +566,10 @@ declare global {
 
     interface CoreFlags {
       core?: {
+        /** @remarks If provided, will be used for any light animations emanating from this token */
         animationSeed?: number;
+
+        /** @remarks If true, and texture.src is a video, it will jump to a random timestamp every time the token is drawn */
         randomizeVideo?: boolean;
       };
     }

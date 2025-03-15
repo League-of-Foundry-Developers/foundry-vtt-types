@@ -1,7 +1,6 @@
-import type { AnyObject, AnyMutableObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as CONST from "../constants.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
 /**
@@ -25,47 +24,54 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    */
   constructor(...args: Document.ConstructorParameters<BaseDrawing.CreateData, BaseDrawing.Parent>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Drawing",
+   *   collection: "drawings",
+   *   label: "DOCUMENT.Drawing",
+   *   labelPlural: "DOCUMENT.Drawings",
+   *   isEmbedded: true,
+   *   permissions: {
+   *     create: this.#canCreate,
+   *     update: this.#canUpdate
+   *   },
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseDrawing.Metadata;
 
   static override defineSchema(): BaseDrawing.Schema;
 
-  /**
-   * Validate whether the drawing has some visible content (as required by validation).
-   */
-  static #validateVisibleContent(data: BaseDrawing.UpdateData): boolean;
+  static override canUserCreate(user: User.Internal.Implementation): boolean;
 
-  /**
-   * Is a user able to update or delete an existing Drawing document??
-   * @internal
-   */
-  static #canModify(user: User.Implementation, doc: BaseDrawing, data: BaseDrawing.UpdateData): boolean;
-
+  // options: not null (destructured)
   override testUserPermission(
-    user: User.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    user: User.Internal.Implementation,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
-  static override cleanData(source?: AnyObject, options?: foundry.data.fields.DataField.CleanOptions): AnyObject;
-
+  /**
+   * @remarks Migrates:
+   * - `z` to `elevation`
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
+  /**
+   * @remarks Shims:
+   * - `z` to `elevation` since v12, until v14
+   */
+  // options: not null (destructured)
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "You are accessing `z` which has been migrated to `elevation`"
+   */
+  get z(): this["elevation"];
 
   /*
    * After this point these are not really overridden methods.

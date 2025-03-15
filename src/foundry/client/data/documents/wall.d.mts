@@ -281,10 +281,15 @@ declare global {
         CONST.WALL_DOOR_STATES | null
       >;
 
+      /**
+       * @remarks TThis isn't enforced by the field, but should be in `keyof CONFIG.Wall.doorSounds`
+       * @defaultValue `undefined`
+       */
       doorSound: fields.StringField<{ required: false; blank: true; initial: undefined }>;
 
       /**
        * Configuration of threshold data for this wall
+       * @defaultValue see properties
        */
       threshold: fields.SchemaField<ThresholdSchema>;
 

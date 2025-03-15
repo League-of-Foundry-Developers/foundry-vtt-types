@@ -1,17 +1,9 @@
-import type { DatabaseBackend } from "../abstract/module.d.mts";
 import type { DataModel } from "../abstract/data.d.mts";
-// import type { fields } from "./module.d.mts";
-import type * as documents from "../documents/_module.d.mts";
 import type { AnyMutableObject, EmptyObject, GetKey, NullishCoalesce, ToMethod, ValueOf } from "fvtt-types/utils";
 import fields = foundry.data.fields;
+import documents = foundry.documents;
 
 type DataSchema = foundry.data.fields.DataSchema;
-
-// TODO: Implement all of the necessary options
-
-declare global {
-  type LightAnimationData = fields.SchemaField.InitializedData<LightData.LightAnimationDataSchema>;
-}
 
 declare namespace LightData {
   type Parent = TokenDocument | AmbientLightDocument;
@@ -20,6 +12,7 @@ declare namespace LightData {
     /**
      * The animation type which is applied
      * @defaultValue `null`
+     * @remarks While not enforced by the data model, this should be in `keyof CONFIG.Canvas.lightAnimations`
      */
     type: fields.StringField<{ nullable: true; blank: false; initial: null }>;
 
@@ -62,12 +55,12 @@ declare namespace LightData {
     /**
      * @defaultValue `0`
      */
-    min: fields.NumberField<{ initial: 0 }>;
+    min: fields.AlphaField<{ initial: 0 }>;
 
     /**
      * @defaultValue `1`
      */
-    max: fields.NumberField<{ initial: 1 }>;
+    max: fields.AlphaField<{ initial: 1 }>;
   }
 
   interface Schema extends DataSchema {
@@ -109,6 +102,7 @@ declare namespace LightData {
     /**
      * The coloration technique applied in the shader
      * @defaultValue `1`
+     * @remarks This should match the `id` of the desired property of {@link AdaptiveLightingShader.SHADER_TECHNIQUES | `AdaptiveLightingShader.SHADER_TECHNIQUES`}
      */
     coloration: fields.NumberField<{ required: true; integer: true; initial: 1 }>;
 
@@ -161,7 +155,7 @@ declare namespace LightData {
     darkness: fields.SchemaField<
       DarknessSchema,
       {
-        validate: (d: fields.SchemaField.AssignmentData<DarknessSchema>) => boolean;
+        validate: (d: unknown) => boolean;
         validationError: "darkness.max may not be less than darkness.min";
       }
     >;
@@ -175,12 +169,10 @@ declare namespace LightData {
 declare class LightData extends DataModel<LightData.Schema, LightData.Parent> {
   static override defineSchema(): LightData.Schema;
 
-  /**
-   * @defaultValue `["LIGHT"]`
-   */
+  /** @defaultValue `["LIGHT"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
-  static migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 }
 
 declare namespace ShapeData {
@@ -460,7 +452,7 @@ declare namespace TextureData {
     initial: _SrcOptionsInitial<fields.SchemaField.AssignmentData<Schema<DefaultOptions>>>;
   }
 
-  interface Schema<Options extends SrcOptions> extends DataSchema {
+  interface Schema<Options extends SrcOptions = DefaultOptions> extends DataSchema {
     /**
      * The URL of the texture source.
      * @defaultValue `initial.src ?? null`
@@ -608,7 +600,10 @@ declare class TextureData<
 declare namespace PrototypeToken {
   type Parent = documents.BaseActor;
 
-  // Not otherwise used
+  /**
+   * @internal
+   * The fields foundry omits from the BaseToken schema. Not used, left as reference
+   */
   type ExcludedProperties =
     | "_id"
     | "actorId"
@@ -622,6 +617,8 @@ declare namespace PrototypeToken {
     | "_regions";
 
   /**
+   * @remarks This has `PrototypeToken.#applyDefaultTokenSettings` run on it before actually being returned, so `initial`
+   * values may not be exactly accurate as typed
    * @privateRemarks Since the {@link TokenDocument.Schema | `TokenDocument` schema} also extends `SharedProtoSchema`,
    * overrides & extensions specific to {@link PrototypeToken | `PrototypeToken`} must go here
    */
@@ -652,13 +649,18 @@ declare namespace PrototypeToken {
 /**
  * Extend the base TokenData to define a PrototypeToken which exists within a parent Actor.
  */
-declare class PrototypeToken extends DataModel<PrototypeToken.Schema, any> {
-  constructor(data?: PrototypeToken.ConstructorData, options?: DataModel.DataValidationOptions<PrototypeToken.Parent>);
+declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeToken.Parent> {
+  // options: not null (destructured when passed to super)
+  constructor(
+    data?: PrototypeToken.ConstructorData | null,
+    options?: DataModel.DataValidationOptions<PrototypeToken.Parent>,
+  );
 
-  declare parent: PrototypeToken.Parent;
-
-  /** @defaultValue `{}` */
-  apps: Record<string, Application.Any>;
+  /**
+   * @defaultValue `{}`
+   * @remarks Created via `defineProperty` in constructor
+   */
+  apps: Record<string, Application.AnyIncludingV2>;
 
   static override defineSchema(): PrototypeToken.Schema;
 
@@ -673,9 +675,9 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, any> {
   get actor(): this["parent"];
 
   override toObject(source: true): this["_source"] & { actorId: string | undefined };
-  override toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+  override toObject(source?: boolean): ReturnType<this["schema"]["toObject"]> & { actorId: string | undefined };
 
-  static get database(): DatabaseBackend;
+  static get database(): CONFIG["DatabaseBackend"];
 
   /**
    * Apply configured default token settings to the schema.
@@ -739,7 +741,7 @@ declare namespace TombstoneData {
      */
     _tombstone: fields.BooleanField<{
       initial: true;
-      validate: (v: boolean) => boolean;
+      validate: (v: unknown) => boolean;
       validationError: "must be true";
     }>;
   }

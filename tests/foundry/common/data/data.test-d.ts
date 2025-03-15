@@ -1,32 +1,52 @@
 import { expectTypeOf } from "vitest";
 import DataModel = foundry.abstract.DataModel;
-import fields = foundry.data.fields;
 import type { ValueOf } from "fvtt-types/utils";
+import type { ObjectAttributeBar, SingleAttributeBar } from "../../../../src/foundry/client/data/documents/token.d.mts";
 
 const myLight = new foundry.data.LightData();
 
-expectTypeOf(myLight.alpha).toEqualTypeOf<number>();
+expectTypeOf(myLight.negative).toBeBoolean();
+expectTypeOf(myLight.priority).toBeNumber();
+expectTypeOf(myLight.alpha).toBeNumber();
+expectTypeOf(myLight.angle).toBeNumber();
+expectTypeOf(myLight.bright).toBeNumber();
+expectTypeOf(myLight.color).toEqualTypeOf<Color | null | undefined>();
+expectTypeOf(myLight.coloration).toEqualTypeOf<number | null>();
+expectTypeOf(myLight.dim).toBeNumber();
+expectTypeOf(myLight.attenuation).toBeNumber();
+expectTypeOf(myLight.luminosity).toBeNumber();
+expectTypeOf(myLight.saturation).toBeNumber();
+expectTypeOf(myLight.contrast).toBeNumber();
+expectTypeOf(myLight.shadows).toBeNumber();
+expectTypeOf(myLight.animation.intensity).toBeNumber();
+expectTypeOf(myLight.animation.reverse).toBeBoolean();
+expectTypeOf(myLight.animation.speed).toBeNumber();
+expectTypeOf(myLight.animation.type).toEqualTypeOf<string | null | undefined>();
+expectTypeOf(myLight.darkness.min).toBeNumber();
+expectTypeOf(myLight.darkness.max).toBeNumber();
+
+/******************************************************************/
 
 const myShape = new foundry.data.ShapeData();
 
 expectTypeOf(myShape.type).toEqualTypeOf<"c" | "r" | "e" | "p">();
+expectTypeOf(myShape.width).toEqualTypeOf<number | null | undefined>();
+expectTypeOf(myShape.height).toEqualTypeOf<number | null | undefined>();
+expectTypeOf(myShape.radius).toEqualTypeOf<number | null | undefined>();
+expectTypeOf(myShape.points).toEqualTypeOf<Array<number | undefined>>();
 
-// Using token here for comparison
-declare const baseToken: foundry.documents.BaseToken;
-expectTypeOf(baseToken.displayName).toEqualTypeOf<foundry.CONST.TOKEN_DISPLAY_MODES>();
-expectTypeOf(baseToken.light.alpha).toEqualTypeOf<number>();
+/******************************************************************/
 
-const myProtoToken = new foundry.data.PrototypeToken();
-expectTypeOf(myProtoToken.name).toEqualTypeOf<string>();
-expectTypeOf(myProtoToken.displayName).toEqualTypeOf<foundry.CONST.TOKEN_DISPLAY_MODES>();
-expectTypeOf(myProtoToken.light.alpha).toEqualTypeOf<number>();
-expectTypeOf(myProtoToken.isOwner).toEqualTypeOf<boolean>();
-expectTypeOf(myProtoToken.getBarAttribute("foo")?.attribute).toEqualTypeOf<string | undefined>();
+// BaseShapeData, RectangleShapeData, CircleShapeData, EllipseShapeData, and PolygonShapeData
+// are tested in `tests/foundry/client-esm/canvas/regions/shape.test-d.ts`
 
-// TextureData
+/******************************************************************/
+
 const textureDataTestSchema = {
-  fpf1: new fields.FilePathField({ initial: () => "bob" }),
-  textureData: new foundry.data.TextureData({}, { categories: ["IMAGE", "VIDEO"], initial: { src: "path/to/thing" } }),
+  textureData: new foundry.data.TextureData(
+    {},
+    { categories: ["IMAGE", "AUDIO"], initial: { src: "path/to/thing.png" } },
+  ),
 };
 type TextureTestSchema = typeof textureDataTestSchema;
 
@@ -48,7 +68,25 @@ expectTypeOf(testModel.textureData.rotation).toEqualTypeOf<number>();
 expectTypeOf(testModel.textureData.tint).toEqualTypeOf<Color | undefined>();
 expectTypeOf(testModel.textureData.alphaThreshold).toEqualTypeOf<number>();
 
-// TombstoneData
+/******************************************************************/
+
+expectTypeOf(foundry.data.PrototypeToken.database).toEqualTypeOf<CONFIG["DatabaseBackend"]>();
+
+const myProtoToken = new foundry.data.PrototypeToken();
+
+// only the fields specific to the prototype token are tested here, the rest of the
+// schema is tested in `tests/foundry/common/documents/token.test-d.ts`
+expectTypeOf(myProtoToken.name).toEqualTypeOf<string>();
+expectTypeOf(myProtoToken.randomImg).toBeBoolean();
+
+expectTypeOf(myProtoToken.actor).toEqualTypeOf<foundry.documents.BaseActor>();
+expectTypeOf(myProtoToken.toObject().actorId).toEqualTypeOf<string | undefined>();
+expectTypeOf(myProtoToken.getBarAttribute("foo")).toEqualTypeOf<SingleAttributeBar | ObjectAttributeBar | null>();
+expectTypeOf(myProtoToken.getBarAttribute("foo")?.attribute).toEqualTypeOf<string | undefined>();
+
+/******************************************************************/
+
 const myTombstone = new foundry.data.TombstoneData();
 
+expectTypeOf(myTombstone._id).toEqualTypeOf<string | null>();
 expectTypeOf(myTombstone._tombstone).toEqualTypeOf<boolean>();

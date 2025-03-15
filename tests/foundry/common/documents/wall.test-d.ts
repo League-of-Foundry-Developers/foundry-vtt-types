@@ -1,65 +1,20 @@
 import { expectTypeOf } from "vitest";
+import type { InterfaceToObject } from "fvtt-types/utils";
+import BaseWall = foundry.documents.BaseWall;
+import Document = foundry.abstract.Document;
 
 const myScene = new Scene({ name: "foobar" });
 
-class TestBaseWall extends foundry.documents.BaseWall {}
+class TestBaseWall extends BaseWall {}
 
-// @ts-expect-error - A BaseWall requires data.
-new TestBaseWall();
-
-// @ts-expect-error - A BaseWall requires c (coordinates).
-new TestBaseWall({});
-
-new TestBaseWall({ c: [0, 0, 0, 0] });
-new TestBaseWall({ c: [0, 0, 0, 0] }, { parent: myScene });
+let myWall = new TestBaseWall();
+myWall = new TestBaseWall({});
 
 // @ts-expect-error - c must be a length-4 array of integer coordinates
-new TestBaseWall({ c: [10, 20] });
-// @ts-expect-error - c must be a length-4 array of integer coordinates
-new TestBaseWall({ c: [10, 20, 30, 40, 50] });
+myWall = new TestBaseWall({ c: [10, 20] });
 
-expectTypeOf(new TestBaseWall({ c: [10, 20, 30, 40] })).toEqualTypeOf<foundry.documents.BaseWall>();
-expectTypeOf(
-  new TestBaseWall({
-    _id: null,
-    c: [10, 20, 30, 40],
-    light: null,
-    move: null,
-    sight: null,
-    sound: null,
-    dir: null,
-    door: null,
-    ds: null,
-    flags: null,
-  }),
-).toEqualTypeOf<foundry.documents.BaseWall>();
-expectTypeOf(
-  new TestBaseWall({
-    _id: undefined,
-    c: [10, 20, 30, 40],
-    light: undefined,
-    move: undefined,
-    sight: undefined,
-    sound: undefined,
-    dir: undefined,
-    door: undefined,
-    ds: undefined,
-    flags: undefined,
-  }),
-).toEqualTypeOf<foundry.documents.BaseWall>();
-expectTypeOf(
-  new TestBaseWall({
-    c: [10, 20, 30, 40],
-    light: foundry.CONST.WALL_SENSE_TYPES.NORMAL,
-    move: foundry.CONST.WALL_MOVEMENT_TYPES.NORMAL,
-    sight: foundry.CONST.WALL_SENSE_TYPES.NORMAL,
-    sound: foundry.CONST.WALL_SENSE_TYPES.NORMAL,
-    dir: foundry.CONST.WALL_DIRECTIONS.BOTH,
-    door: foundry.CONST.WALL_DOOR_TYPES.NONE,
-    ds: foundry.CONST.WALL_DOOR_STATES.CLOSED,
-    flags: {},
-  }),
-).toEqualTypeOf<foundry.documents.BaseWall>();
+// @ts-expect-error - c must be a length-4 array of integer coordinates
+myWall = new TestBaseWall({ c: [10, 20, 30, 40, 50] });
 
 new TestBaseWall({
   c: [10, 20, 30, 40],
@@ -102,3 +57,86 @@ new TestBaseWall({
   // @ts-expect-error - ds can't be an arbitrary number
   ds: 9999,
 });
+
+myWall = new TestBaseWall({
+  _id: "XXXXXSomeIDXXXXX",
+  c: [20, 30, 240, 340],
+  light: CONST.WALL_SENSE_TYPES.DISTANCE,
+  move: CONST.WALL_MOVEMENT_TYPES.NORMAL,
+  sight: CONST.WALL_SENSE_TYPES.LIMITED,
+  sound: CONST.WALL_SENSE_TYPES.PROXIMITY,
+  dir: CONST.WALL_DIRECTIONS.LEFT,
+  door: CONST.WALL_DOOR_TYPES.SECRET,
+  ds: CONST.WALL_DOOR_STATES.LOCKED,
+  doorSound: "futuristicForcefield",
+  threshold: {
+    light: 20,
+    sight: 20,
+    sound: 50,
+    attenuation: true,
+  },
+  flags: {
+    core: {
+      sheetLock: false,
+    },
+  },
+});
+myWall = new TestBaseWall({
+  _id: null,
+  c: [20, 30, 240, 340],
+  light: null,
+  move: null,
+  sight: null,
+  sound: null,
+  dir: null,
+  door: null,
+  ds: null,
+  doorSound: null,
+  threshold: {
+    light: null,
+    sight: null,
+    sound: null,
+    attenuation: null,
+  },
+  flags: null,
+});
+myWall = new TestBaseWall({ threshold: null });
+
+myWall = new TestBaseWall({
+  _id: undefined,
+  c: [20, 30, 240, 340],
+  light: undefined,
+  move: undefined,
+  sight: undefined,
+  sound: undefined,
+  dir: undefined,
+  door: undefined,
+  ds: undefined,
+  doorSound: undefined,
+  threshold: {
+    light: undefined,
+    sight: undefined,
+    sound: undefined,
+    attenuation: undefined,
+  },
+  flags: undefined,
+});
+myWall = new TestBaseWall({ threshold: undefined });
+
+expectTypeOf(myWall).toEqualTypeOf<foundry.documents.BaseWall>();
+
+expectTypeOf(myWall._id).toEqualTypeOf<string | null>();
+expectTypeOf(myWall.c).toEqualTypeOf<[number, number, number, number]>();
+expectTypeOf(myWall.light).toEqualTypeOf<CONST.WALL_SENSE_TYPES | null>();
+expectTypeOf(myWall.move).toEqualTypeOf<CONST.WALL_MOVEMENT_TYPES | null>();
+expectTypeOf(myWall.sight).toEqualTypeOf<CONST.WALL_SENSE_TYPES | null>();
+expectTypeOf(myWall.sound).toEqualTypeOf<CONST.WALL_SENSE_TYPES | null>();
+expectTypeOf(myWall.dir).toEqualTypeOf<CONST.WALL_DIRECTIONS | null>();
+expectTypeOf(myWall.door).toEqualTypeOf<CONST.WALL_DOOR_TYPES | null>();
+expectTypeOf(myWall.ds).toEqualTypeOf<CONST.WALL_DOOR_STATES | null>();
+expectTypeOf(myWall.doorSound).toEqualTypeOf<string | undefined>();
+expectTypeOf(myWall.threshold.light).toEqualTypeOf<number | null>();
+expectTypeOf(myWall.threshold.sight).toEqualTypeOf<number | null>();
+expectTypeOf(myWall.threshold.sound).toEqualTypeOf<number | null>();
+expectTypeOf(myWall.threshold.attenuation).toBeBoolean();
+expectTypeOf(myWall.flags).toEqualTypeOf<InterfaceToObject<Document.CoreFlags>>();

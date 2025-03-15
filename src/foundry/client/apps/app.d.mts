@@ -511,9 +511,11 @@ declare global {
   }
 
   namespace Application {
-    type Any = Application<any>;
-
+    interface Any extends AnyApplication {}
     type AnyConstructor = typeof AnyApplication;
+
+    type AnyIncludingV2 = Any | foundry.applications.api.ApplicationV2.Any;
+    type AnyConstructorIncludingV2 = AnyConstructor | foundry.applications.api.ApplicationV2.AnyConstructor;
 
     interface CloseOptions {
       force?: boolean | undefined;
@@ -602,6 +604,6 @@ declare global {
   }
 }
 
-declare abstract class AnyApplication extends Application<any> {
+declare abstract class AnyApplication extends Application<ApplicationOptions> {
   constructor(arg0: never, ...args: never[]);
 }

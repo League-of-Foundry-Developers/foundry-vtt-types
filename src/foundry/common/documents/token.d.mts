@@ -1,10 +1,8 @@
-import type { AnyObject, AnyMutableObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as CONST from "../constants.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
-import type { TokenDetectionMode } from "./_types.d.mts";
 
 /**
  * The base Token model definition which defines common behavior of an Token document between both client and server.
@@ -26,62 +24,78 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    */
   constructor(...args: Document.ConstructorParameters<BaseToken.CreateData, BaseToken.Parent>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Token",
+   *   collection: "tokens",
+   *   label: "DOCUMENT.Token",
+   *   labelPlural: "DOCUMENT.Tokens",
+   *   isEmbedded: true,
+   *   embedded: {
+   *     ActorDelta: "delta"
+   *   },
+   *   permissions: {
+   *     create: "TOKEN_CREATE",
+   *     update: this.#canUpdate,
+   *     delete: "TOKEN_DELETE"
+   *   },
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseToken.Metadata;
 
   static override defineSchema(): BaseToken.Schema;
 
   /**
-   * Validate the structure of the detection modes array
-   * @param modes - Configured detection modes
-   * @throws An error if the array is invalid
-   */
-  static #validateDetectionModes(modes: TokenDetectionMode[]): void;
-
-  /**
    * The default icon used for newly created Token documents
-   * @defaultValue `CONST.DEFAULT_TOKEN`
+   * @defaultValue `CONST.DEFAULT_TOKEN` (`"icons/svg/mystery-man.svg"`)
    */
   static DEFAULT_ICON: string;
 
-  /**
-   * Is a user able to update an existing Token?
-   * @internal
-   */
-  static #canUpdate(user: User.Implementation, doc: BaseToken, data: BaseToken.UpdateData): boolean;
-
+  // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   updateSource(
-    changes?: TokenDocument.CreateData,
+    changes?: TokenDocument.UpdateData,
     options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
-  ): AnyObject;
-
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
+  ): TokenDocument.UpdateData;
 
   //TODO: Update with the Delta conditionality
   toObject(source: true): this["_source"];
   toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+
+  /**
+   * @remarks Migrates:
+   * - `actorData` to `delta`
+   */
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /**
+   * @remarks Shims:
+   * - `actorData` to `delta` since v11, until v13
+   * - `effects` to nothing since v12, until v14 ("TokenDocument#effects is deprecated in favor of using ActiveEffect documents on the associated Actor")
+   * - `overlayEffect` to nothing since v12, until v14 ("TokenDocument#overlayEffect is deprecated in favor of using ActiveEffect documents on the associated Actor")
+   */
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "TokenDocument#overlayEffect is deprecated in favor of using ActiveEffect documents on the associated Actor"
+   */
+  get effects(): [];
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "TokenDocument# is deprecated in favor of using ActiveEffect documents on the associated Actor"
+   */
+  get overlayEffect(): "";
 
   /*
    * After this point these are not really overridden methods.

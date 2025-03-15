@@ -204,6 +204,7 @@ declare global {
 
     interface CoreFlags {
       core?: {
+        /** @remarks If provided, will be used for any light animations emanating from this token */
         animationSeed?: number;
       };
     }

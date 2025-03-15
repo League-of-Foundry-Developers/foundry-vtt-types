@@ -222,16 +222,11 @@ declare abstract class Document<
    * @param options    - Additional options involved in the permission test
    * @returns Does the user have this permission level over the Document?
    */
+  // options: not null (destructured)
   testUserPermission(
     user: User.Internal.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   /**
@@ -1229,7 +1224,9 @@ declare namespace Document {
 
   type ConfiguredSourceForName<Name extends Type> = GetKey<SourceConfig, Name, EmptyObject>;
 
-  type ConfiguredFlagsForName<Name extends Type> = GetKey<FlagConfig, Name, EmptyObject>;
+  // The type `{}` is useful here because in an intersection it reduces down to nothing unlike `EmptyObject`.
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  type ConfiguredFlagsForName<Name extends Type> = GetKey<FlagConfig, Name, {}>;
 
   type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
     ConcreteDocument extends Internal.Instance<infer _1, infer Schema, infer _2> ? Schema : never;
@@ -1270,7 +1267,7 @@ declare namespace Document {
   type FlagGetKey<T, K extends PropertyKey> = T extends unknown ? (K extends keyof T ? T[K] : never) : never;
 
   // Note(LukeAbby): It's at times been very important for `GetFlag` to be covariant over `ConcreteSchema`.
-  // If it isn't then issues arise where the `Document` type ends up becoming invaraint.
+  // If it isn't then issues arise where the `Document` type ends up becoming invariant.
   // Currently it is actually contravariant over `ConcreteSchema` and this may cause issues (because of the usage of `keyof`).
   // Unfortunately it's not easy to avoid because the typical `GetKey` trick has issues between `never`, not defined at all, and `unknown` etc.
   type GetFlag<Name extends Document.Type, S extends string, K extends string> = FlagGetKey<
@@ -1701,13 +1698,18 @@ declare namespace Document {
     extends ConstructionContext<Parent>,
       DataModel.DataValidationOptions<Parent> {}
 
-  interface TestUserPermissionOptions {
+  type TestableOwnershipLevel = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  /** @internal */
+  type _TestUserPermissionsOptions = NullishProps<{
     /**
      * Require the exact permission level requested?
      * @defaultValue `false`
      */
-    exact?: boolean | undefined;
-  }
+    exact: boolean;
+  }>;
+
+  interface TestUserPermissionOptions extends _TestUserPermissionsOptions {}
 
   /**
    * @deprecated {@link ImplementationInstanceFor | `ImplementationInstanceFor`}

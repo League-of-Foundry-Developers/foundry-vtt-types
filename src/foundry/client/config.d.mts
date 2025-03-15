@@ -3096,24 +3096,40 @@ declare global {
       }
     }
 
+    /** @privateRemarks Foundry does not document the array options */
     interface WallDoorSound {
       /** A localization string label */
       label: string;
 
-      /** A sound path when the door is closed */
-      close: string;
+      /**
+       * A sound path when the door is closed
+       * @remarks If an array is provided, a random entry is chosen
+       */
+      close?: string | string[];
 
-      /** A sound path when the door becomes locked */
-      lock: string;
+      /**
+       * A sound path when the door becomes locked
+       * @remarks If an array is provided, a random entry is chosen
+       */
+      lock?: string | string[];
 
-      /** A sound path when opening the door */
-      open: string;
+      /**
+       * A sound path when opening the door
+       * @remarks If an array is provided, a random entry is chosen
+       */
+      open?: string | string[];
 
-      /** A sound path when attempting to open a locked door */
-      test: string;
+      /**
+       * A sound path when attempting to open a locked door
+       * @remarks If an array is provided, a random entry is chosen
+       */
+      test?: string | string[];
 
-      /** A sound path when the door becomes unlocked */
-      unlock: string;
+      /**
+       * A sound path when the door becomes unlocked
+       * @remarks If an array is provided, a random entry is chosen
+       */
+      unlock?: string | string[];
     }
 
     namespace Dice {
