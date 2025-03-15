@@ -262,8 +262,6 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static override get schema(): SchemaField<WallDocument.Schema>;
 
-  static override LOCALIZATION_PREFIXES: string[];
-
   static override validateJoint(data: WallDocument.Source): void;
 
   static override fromSource(
