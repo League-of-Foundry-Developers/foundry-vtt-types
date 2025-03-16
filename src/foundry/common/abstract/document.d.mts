@@ -1856,7 +1856,7 @@ interface DatabaseOperationCreateMap {
   RollTable: RollTable.DatabaseOperation.Create;
   Scene: Scene.DatabaseOperation.Create;
   Setting: Setting.DatabaseOperation.Create;
-  TableResult: TableResult.DatabaseOperation.Create;
+  TableResult: TableResult.Database.Create;
   Tile: TileDocument.Database.Create;
   Token: TokenDocument.Database.Create;
   User: User.Database.Create;
@@ -1891,7 +1891,7 @@ interface DatabaseOperationUpdateMap {
   RollTable: RollTable.DatabaseOperation.Update;
   Scene: Scene.DatabaseOperation.Update;
   Setting: Setting.DatabaseOperation.Update;
-  TableResult: TableResult.DatabaseOperation.Update;
+  TableResult: TableResult.Database.Update;
   Tile: TileDocument.Database.Update;
   Token: TokenDocument.Database.Update;
   User: User.Database.Update;
@@ -1926,7 +1926,7 @@ interface DatabaseOperationDeleteMap {
   RollTable: RollTable.DatabaseOperation.Delete;
   Scene: Scene.DatabaseOperation.Delete;
   Setting: Setting.DatabaseOperation.Delete;
-  TableResult: TableResult.DatabaseOperation.Delete;
+  TableResult: TableResult.Database.Delete;
   Tile: TileDocument.Database.Delete;
   Token: TokenDocument.Database.Delete;
   User: User.Database.Delete;

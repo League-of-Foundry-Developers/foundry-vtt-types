@@ -7,6 +7,21 @@ import type BaseTableResult from "../../../common/documents/table-result.d.mts";
 declare global {
   namespace TableResult {
     /**
+     * The document's name.
+     */
+    type Name = "TableResult";
+
+    /**
+     * The arguments to construct the document.
+     */
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+
+    /**
+     * The documents embedded within TableResult.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the TableResult document instance configured through `CONFIG.TableResult.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTableResult | `fvtt-types/configuration/ConfiguredTableResult`} in fvtt-types.
      */
@@ -211,55 +226,125 @@ declare global {
       flags: fields.ObjectField.FlagsField<"TableResult">;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for TableResults */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<TableResult.Parent> {}
+
       /** Options passed along in Create operations for TableResults */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<TableResult.CreateData, TableResult.Parent, Temporary> {
         animate?: boolean;
       }
+
       /** Options passed along in Delete operations for TableResults */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TableResult.Parent> {
         animate?: boolean;
       }
+
       /** Options passed along in Update operations for TableResults */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<TableResult.UpdateData, TableResult.Parent> {
         animate?: boolean;
       }
 
-      /** Options for {@link TableResult.createDocuments | `TableResult.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link TableResult._preCreateOperation | `TableResult._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link TableResult.createDocuments | `TableResult.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<TableResult.Database.Create<Temporary>> {}
+
+      /** Operation for {@link TableResult.updateDocuments | `TableResult.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<TableResult.Database.Update> {}
+
+      /** Operation for {@link TableResult.deleteDocuments | `TableResult.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<TableResult.Database.Delete> {}
+
+      /** Operation for {@link TableResult.create | `TableResult.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<TableResult.Database.Create<Temporary>> {}
+
+      /** Operation for {@link TableResult.update | `TableResult#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link TableResult.get | `TableResult.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link TableResult._preCreate | `TableResult#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link TableResult._onCreate | `TableResult#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link TableResult.updateDocuments | `TableResult.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link TableResult._preUpdateOperation | `TableResult._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link TableResult._preCreateOperation | `TableResult._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TableResult.Database.Create> {}
+
+      /** Operation for {@link TableResult._onCreateOperation | `TableResult#_onCreateOperation`} */
+      interface OnCreateOperation extends TableResult.Database.Create {}
+
       /** Options for {@link TableResult._preUpdate | `TableResult#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link TableResult._onUpdate | `TableResult#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link TableResult.deleteDocuments | `TableResult.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link TableResult._preDeleteOperation | `TableResult._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link TableResult._onUpdate | `TableResult#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link TableResult._preUpdateOperation | `TableResult._preUpdateOperation`} */
+      interface PreUpdateOperation extends TableResult.Database.Update {}
+
+      /** Operation for {@link TableResult._onUpdateOperation | `TableResult._preUpdateOperation`} */
+      interface OnUpdateOperation extends TableResult.Database.Update {}
+
       /** Options for {@link TableResult._preDelete | `TableResult#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link TableResult._onDelete | `TableResult#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link TableResult._preDeleteOperation | `TableResult#_preDeleteOperation`} */
+      interface PreDeleteOperation extends TableResult.Database.Delete {}
+
+      /** Options for {@link TableResult._onDeleteOperation | `TableResult#_onDeleteOperation`} */
+      interface OnDeleteOperation extends TableResult.Database.Delete {}
+
+      /** Context for {@link TableResult._onDeleteOperation | `TableResult._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<TableResult.Parent> {}
+
+      /** Context for {@link TableResult._onCreateDocuments | `TableResult._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<TableResult.Parent> {}
+
+      /** Context for {@link TableResult._onUpdateDocuments | `TableResult._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<TableResult.Parent> {}
+
+      /**
+       * Options for {@link TableResult._preCreateDescendantDocuments | `TableResult#_preCreateDescendantDocuments`}
+       * and {@link TableResult._onCreateDescendantDocuments | `TableResult#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<TableResult.Database.Create> {}
+
+      /**
+       * Options for {@link TableResult._preUpdateDescendantDocuments | `TableResult#_preUpdateDescendantDocuments`}
+       * and {@link TableResult._onUpdateDescendantDocuments | `TableResult#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<TableResult.Database.Update> {}
+
+      /**
+       * Options for {@link TableResult._preDeleteDescendantDocuments | `TableResult#_preDeleteDescendantDocuments`}
+       * and {@link TableResult._onDeleteDescendantDocuments | `TableResult#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<TableResult.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<"TableResult"> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<"TableResult", Scope, Key>;
     }
 
     /**
-     * @deprecated {@link TableResult.DatabaseOperation | `TableResult.DatabaseOperation`}
+     * @deprecated {@link TableResult.Database | `TableResult.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<TableResult> {}
@@ -303,7 +388,7 @@ declare global {
      * You should use {@link TableResult.implementation | `new TableResult.implementation(...)`} instead which
      * will give you a system specific implementation of `TableResult`.
      */
-    constructor(...args: Document.ConstructorParameters<TableResult.CreateData, TableResult.Parent>);
+    constructor(...args: TableResult.ConstructorArgs);
 
     /**
      * A path reference to the icon image used to represent this result
@@ -318,9 +403,17 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    // Descendant Document operations have been left out because TableResult does not have any descendant documents.
 
     static override defaultName(
       context: Document.DefaultNameContext<TableResult.SubType, NonNullable<TableResult.Parent>>,
@@ -340,5 +433,7 @@ declare global {
       source: TableResult.Source,
       context?: Document.FromImportContext<TableResult.Parent>,
     ): Promise<TableResult.Implementation>;
+
+    // Embedded document operations have been left out because TableResult does not have any embedded documents.
   }
 }

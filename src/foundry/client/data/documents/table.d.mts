@@ -498,7 +498,7 @@ declare global {
       collection: TableResult.ParentCollectionName,
       documents: TableResult.Stored[],
       result: TableResult.CreateData[],
-      options: TableResult.DatabaseOperation.OnCreateOperation,
+      options: TableResult.Database.OnCreateOperation,
       userId: string,
     ): void;
 
@@ -507,7 +507,7 @@ declare global {
       collection: TableResult.ParentCollectionName,
       documents: TableResult.Stored[],
       ids: string[],
-      options: TableResult.DatabaseOperation.OnDeleteOperation,
+      options: TableResult.Database.OnDeleteOperation,
       userId: string,
     ): void;
 
