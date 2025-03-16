@@ -12,7 +12,7 @@ declare global {
     /**
      * The arguments to construct the document.
      */
-    interface ConstructorArgs extends Document.ConstructorParameters<WallDocument.CreateData, WallDocument.Parent> {}
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
      * The documents embedded within Wall.
@@ -459,9 +459,9 @@ declare global {
 
     // ClientDocument overrides
 
-    static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<WallDocument.Parent>>): string;
-
     // Descendant Document operations have been left out because Wall does not have any descendant documents.
+
+    static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<WallDocument.Parent>>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<WallDocument.CreateData>,

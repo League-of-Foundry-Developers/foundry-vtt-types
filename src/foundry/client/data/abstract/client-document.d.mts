@@ -221,7 +221,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   protected _onCreateDescendantDocuments(
     parent: Document.Any,
     collection: string,
-    documents: Document.Any[],
+    documents: never,
     data: unknown[],
     options: Document.Database.CreateOptions<DatabaseCreateOperation>,
     userId: string,
@@ -255,7 +255,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   protected _onUpdateDescendantDocuments(
     parent: Document.Any,
     collection: string,
-    documents: Document.Any[],
+    documents: never,
     changes: unknown[],
     options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
     userId: string,
@@ -289,7 +289,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   protected _onDeleteDescendantDocuments(
     parent: Document.Any,
     collection: string,
-    documents: Document.Any[],
+    documents: never,
     ids: string[],
     options: Document.Database.DeleteOptions<DatabaseDeleteOperation>,
     userId: string,
@@ -473,7 +473,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
-    documents: Document.Any[],
+    documents: never,
     result: AnyObject[],
     options: Document.ModificationOptions,
     userId: string,
@@ -505,7 +505,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   protected _onUpdateEmbeddedDocuments(
     embeddedName: string,
-    documents: Document.Any[],
+    documents: never,
     result: AnyObject[],
     options: Document.ModificationContext<Document.Any | null>,
     userId: string,
@@ -537,7 +537,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   protected _onDeleteEmbeddedDocuments(
     embeddedName: string,
-    documents: Document.Any[],
+    documents: never,
     result: string[],
     options: Document.ModificationContext<Document.Any | null>,
     userId: string,

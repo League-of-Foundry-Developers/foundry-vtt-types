@@ -15,7 +15,7 @@ declare global {
     /**
      * The arguments to construct the document.
      */
-    interface ConstructorArgs extends Document.ConstructorParameters<User.CreateData, User.Parent> {}
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
      * The documents embedded within User.
@@ -460,7 +460,7 @@ declare global {
      * You should use {@link User.implementation | `new User.implementation(...)`} instead which
      * will give you a system specific implementation of `User`.
      */
-    constructor(...args: Document.ConstructorParameters<User.CreateData, User.Parent>);
+    constructor(...args: User.ConstructorArgs);
 
     /**
      * Track whether the user is currently active in the game
@@ -561,9 +561,9 @@ declare global {
 
     // ClientDocument overrides
 
-    static override defaultName(context?: Document.DefaultNameContext<string, User.Parent>): string;
-
     // Descendant Document operations have been left out because User does not have any descendant documents.
+
+    static override defaultName(context?: Document.DefaultNameContext<string, User.Parent>): string;
 
     static override createDialog(
       data?: Document.CreateDialogData<User.CreateData>,

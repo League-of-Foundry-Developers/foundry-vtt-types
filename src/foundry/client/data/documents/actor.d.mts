@@ -529,7 +529,7 @@ declare global {
      */
     protected _updateDependentTokens(
       update: TokenDocument.UpdateData,
-      options: TokenDocument.DatabaseOperation.UpdateOperation,
+      options: TokenDocument.Database.UpdateOperation,
     ): void;
 
     /*

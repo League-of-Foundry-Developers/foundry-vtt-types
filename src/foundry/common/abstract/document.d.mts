@@ -1858,7 +1858,7 @@ interface DatabaseOperationCreateMap {
   Setting: Setting.DatabaseOperation.Create;
   TableResult: TableResult.DatabaseOperation.Create;
   Tile: TileDocument.DatabaseOperation.Create;
-  Token: TokenDocument.DatabaseOperation.Create;
+  Token: TokenDocument.Database.Create;
   User: User.Database.Create;
   Wall: WallDocument.Database.Create;
 }
@@ -1893,7 +1893,7 @@ interface DatabaseOperationUpdateMap {
   Setting: Setting.DatabaseOperation.Update;
   TableResult: TableResult.DatabaseOperation.Update;
   Tile: TileDocument.DatabaseOperation.Update;
-  Token: TokenDocument.DatabaseOperation.Update;
+  Token: TokenDocument.Database.Update;
   User: User.Database.Update;
   Wall: WallDocument.Database.Update;
 }
@@ -1928,7 +1928,7 @@ interface DatabaseOperationDeleteMap {
   Setting: Setting.DatabaseOperation.Delete;
   TableResult: TableResult.DatabaseOperation.Delete;
   Tile: TileDocument.DatabaseOperation.Delete;
-  Token: TokenDocument.DatabaseOperation.Delete;
+  Token: TokenDocument.Database.Delete;
   User: User.Database.Delete;
   Wall: WallDocument.Database.Delete;
 }

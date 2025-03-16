@@ -320,7 +320,7 @@ declare global {
       token: Token.Object,
       segment: Ruler.MeasurementSegment,
       destination: Canvas.Point,
-      updateOptions: TokenDocument.DatabaseOperation.UpdateOperation,
+      updateOptions: TokenDocument.Database.UpdateOperation,
     ): Promise<void>;
 
     /**

@@ -24,7 +24,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * You should use {@link User.implementation | `new User.implementation(...)`} instead which will give you
    * a system specific implementation of `User`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseUser.CreateData, BaseUser.Parent>);
+  constructor(...args: User.ConstructorArgs);
 
   static override metadata: User.Metadata;
 

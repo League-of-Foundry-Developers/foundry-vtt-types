@@ -9,6 +9,21 @@ import type BaseToken from "../../../common/documents/token.d.mts";
 declare global {
   namespace TokenDocument {
     /**
+     * The document's name.
+     */
+    type Name = "Token";
+
+    /**
+     * The arguments to construct the document.
+     */
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+
+    /**
+     * The documents embedded within Wall.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the TokenDocument document instance configured through `CONFIG.Token.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTokenDocument | `fvtt-types/configuration/ConfiguredTokenDocument`} in fvtt-types.
      */
@@ -31,6 +46,57 @@ declare global {
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = Scene.Implementation | null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = Actor.Stored | Item.Stored | ActiveEffect.Stored | ActorDelta.Stored;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses =
+      | Actor.ImplementationClass
+      | Item.ImplementationClass
+      | ActiveEffect.ImplementationClass
+      | ActorDelta.ImplementationClass;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Scene">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `TokenDocument` that comes from the database.
@@ -488,7 +554,7 @@ declare global {
       hidden: fields.BooleanField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for TokenDocuments */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<TokenDocument.Parent> {}
       /** Options passed along in Create operations for TokenDocuments */
@@ -511,33 +577,92 @@ declare global {
         forced?: boolean;
       }
 
-      /** Options for {@link TokenDocument.createDocuments | `TokenDocument.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link TokenDocument._preCreateOperation | `TokenDocument._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link TokenDocument.createDocuments | `TokenDocument.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link TokenDocument.updateDocuments | `TokenDocument.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<TokenDocument.Database.Update> {}
+
+      /** Operation for {@link TokenDocument.deleteDocuments | `TokenDocument.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<TokenDocument.Database.Delete> {}
+
+      /** Operation for {@link TokenDocument.create | `TokenDocument.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link TokenDocument.update | `TokenDocument#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link TokenDocument.get | `TokenDocument.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link TokenDocument._preCreate | `TokenDocument#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link TokenDocument._onCreate | `TokenDocument#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link TokenDocument.updateDocuments | `TokenDocument.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link TokenDocument._preUpdateOperation | `TokenDocument._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link TokenDocument._preCreateOperation | `TokenDocument._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TokenDocument.Database.Create> {}
+
+      /** Operation for {@link TokenDocument._onCreateOperation | `TokenDocument#_onCreateOperation`} */
+      interface OnCreateOperation extends TokenDocument.Database.Create {}
+
       /** Options for {@link TokenDocument._preUpdate | `TokenDocument#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link TokenDocument._onUpdate | `TokenDocument#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link TokenDocument.deleteDocuments | `TokenDocument.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link TokenDocument._preDeleteOperation | `TokenDocument._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link TokenDocument._onUpdate | `TokenDocument#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link TokenDocument._preUpdateOperation | `TokenDocument._preUpdateOperation`} */
+      interface PreUpdateOperation extends TokenDocument.Database.Update {}
+
+      /** Operation for {@link TokenDocument._onUpdateOperation | `TokenDocument._preUpdateOperation`} */
+      interface OnUpdateOperation extends TokenDocument.Database.Update {}
+
       /** Options for {@link TokenDocument._preDelete | `TokenDocument#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link TokenDocument._onDelete | `TokenDocument#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link TokenDocument._preDeleteOperation | `TokenDocument#_preDeleteOperation`} */
+      interface PreDeleteOperation extends TokenDocument.Database.Delete {}
+
+      /** Options for {@link TokenDocument._onDeleteOperation | `TokenDocument#_onDeleteOperation`} */
+      interface OnDeleteOperation extends TokenDocument.Database.Delete {}
+
+      /** Context for {@link TokenDocument._onDeleteOperation | `TokenDocument._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
+
+      /** Context for {@link TokenDocument._onCreateDocuments | `TokenDocument._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
+
+      /** Context for {@link TokenDocument._onUpdateDocuments | `TokenDocument._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
+
+      /**
+       * Options for {@link TokenDocument._preCreateDescendantDocuments | `TokenDocument#_preCreateDescendantDocuments`}
+       * and {@link TokenDocument._onCreateDescendantDocuments | `TokenDocument#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<TokenDocument.Database.Create> {}
+
+      /**
+       * Options for {@link TokenDocument._preUpdateDescendantDocuments | `TokenDocument#_preUpdateDescendantDocuments`}
+       * and {@link TokenDocument._onUpdateDescendantDocuments | `TokenDocument#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<TokenDocument.Database.Update> {}
+
+      /**
+       * Options for {@link TokenDocument._preDeleteDescendantDocuments | `TokenDocument#_preDeleteDescendantDocuments`}
+       * and {@link TokenDocument._onDeleteDescendantDocuments | `TokenDocument#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<TokenDocument.Database.Delete> {}
     }
 
     interface CoreFlags {
@@ -547,8 +672,16 @@ declare global {
       };
     }
 
+    interface Flags extends Document.ConfiguredFlagsForName<"Token"> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<"Token", Scope, Key>;
+    }
+
     /**
-     * @deprecated {@link TokenDocument.DatabaseOperation | `TokenDocument.DatabaseOperation`}
+     * @deprecated {@link TokenDocument.Database | `TokenDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<TokenDocument> {}
@@ -612,7 +745,7 @@ declare global {
      * You should use {@link TokenDocument.implementation | `new TokenDocument.implementation(...)`} instead which
      * will give you a system specific implementation of `TokenDocument`.
      */
-    constructor(...args: Document.ConstructorParameters<TokenDocument.CreateData, TokenDocument.Parent>);
+    constructor(...args: TokenDocument.ConstructorArgs);
 
     /**
      * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
@@ -866,9 +999,94 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    protected override _preCreateDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _onCreateDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _preDeleteDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _onDeleteDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
 
     static override defaultName(
       context: Document.DefaultNameContext<"base", NonNullable<TokenDocument.Parent>>,
@@ -888,6 +1106,8 @@ declare global {
       source: TokenDocument.Source,
       context?: Document.FromImportContext<TokenDocument.Parent>,
     ): Promise<TokenDocument.Implementation>;
+
+    // TODO: The deprecated Embedded Document Operations
   }
 
   /**
