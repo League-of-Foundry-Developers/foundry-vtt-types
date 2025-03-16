@@ -19,7 +19,7 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within Wall.
+     * The documents embedded within Token.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 

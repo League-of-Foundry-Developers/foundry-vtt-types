@@ -305,8 +305,16 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 export default BaseUser;
 
 declare namespace BaseUser {
+  export import Name = User.Name;
+  export import ConstructorArgs = User.ConstructorArgs;
+  export import Hierarchy = User.Hierarchy;
   export import Metadata = User.Metadata;
   export import Parent = User.Parent;
+  export import Pack = User.Pack;
+  export import Embedded = User.Embedded;
+  export import EmbeddedName = User.EmbeddedName;
+  export import EmbeddedCollectionName = User.EmbeddedCollectionName;
+  export import ParentCollectionName = User.ParentCollectionName;
   export import Stored = User.Stored;
   export import Source = User.Source;
   export import PersistedData = User.PersistedData;
@@ -315,6 +323,7 @@ declare namespace BaseUser {
   export import UpdateData = User.UpdateData;
   export import Schema = User.Schema;
   export import DatabaseOperation = User.Database;
+  export import Flags = User.Flags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

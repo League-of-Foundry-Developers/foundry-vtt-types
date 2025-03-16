@@ -137,7 +137,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   static get(documentId: string, options?: Document.Database.GetOptions): TokenDocument.Implementation | null;
 
-  // TODO: More Implementation Nonsense
+  // TODO: @LukeAbby More Implementation Nonsense
   // override getEmbeddedCollection<EmbeddedName extends TokenDocument.EmbeddedName>(
   //   embeddedName: EmbeddedName,
   // ): Document.EmbeddedCollectionFor<TokenDocument.Name, EmbeddedName>;
@@ -320,8 +320,16 @@ export class ActorDeltaField<
 export default BaseToken;
 
 declare namespace BaseToken {
+  export import Name = TokenDocument.Name;
+  export import ConstructorArgs = TokenDocument.ConstructorArgs;
+  export import Hierarchy = TokenDocument.Hierarchy;
   export import Metadata = TokenDocument.Metadata;
   export import Parent = TokenDocument.Parent;
+  export import Pack = TokenDocument.Pack;
+  export import Embedded = TokenDocument.Embedded;
+  export import EmbeddedName = TokenDocument.EmbeddedName;
+  export import EmbeddedCollectionName = TokenDocument.EmbeddedCollectionName;
+  export import ParentCollectionName = TokenDocument.ParentCollectionName;
   export import Stored = TokenDocument.Stored;
   export import Source = TokenDocument.Source;
   export import PersistedData = TokenDocument.PersistedData;
@@ -330,7 +338,7 @@ declare namespace BaseToken {
   export import UpdateData = TokenDocument.UpdateData;
   export import Schema = TokenDocument.Schema;
   export import DatabaseOperation = TokenDocument.Database;
-  export import CoreFlags = TokenDocument.CoreFlags;
+  export import Flags = TokenDocument.Flags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.
