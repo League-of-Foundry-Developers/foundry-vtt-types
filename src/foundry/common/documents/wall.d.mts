@@ -104,38 +104,6 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     name: CollectionName,
   ): WallDocument.CollectionNameOf<CollectionName> | null;
 
-  // TODO: We should remove these and then re-implement on a document that actually has embedded documents, e.g. JournalEntry
-  // override getEmbeddedCollection<EmbeddedName extends WallDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  // ): Document.EmbeddedCollectionFor<WallDocument.Name, EmbeddedName>;
-
-  // override getEmbeddedDocument<EmbeddedName extends WallDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  //   id: string,
-  //   options: Document.GetEmbeddedDocumentOptions, // TODO: Actually get the specific embedded name.
-  // ): WallDocument.Embedded | undefined;
-
-  // override createEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  //   data: Document.CreateDataFor<EmbeddedName>[] | undefined,
-  //   // TODO: Generic over the EmbeddedName
-  //   operation?: never,
-  // ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
-
-  // override updateEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  //   updates: Document.UpdateDataFor<EmbeddedName>[] | undefined,
-  //   // TODO: Generic over the EmbeddedName
-  //   operation?: never,
-  // ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
-
-  // override deleteEmbeddedDocuments<EmbeddedName extends WallDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  //   ids: Array<string>,
-  //   // TODO: Generic over the EmbeddedName
-  //   operation?: never,
-  // ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>>>;
-
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
 
