@@ -1,3 +1,4 @@
+import type { Identity } from "../../../utils/index.d.mts";
 import type {
   DiceRollParseNode,
   FunctionRollParseNode,
@@ -44,8 +45,6 @@ declare class RollParser {
     error: (error: string) => void,
   ): RollParseNode;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle a dice term.
    * @param number - The number of dice.
@@ -64,8 +63,6 @@ declare class RollParser {
     formula: string,
   ): DiceRollParseNode;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle a numeric term.
    * @param number - The number.
@@ -73,8 +70,6 @@ declare class RollParser {
    * @internal
    */
   protected _onNumericTerm(number: number, flavor: string): NumericRollParseNode;
-
-  /* -------------------------------------------- */
 
   /**
    * Handle a math term.
@@ -93,8 +88,6 @@ declare class RollParser {
     formula: string,
   ): FunctionRollParseNode;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle a pool term.
    * @param head - The first term.
@@ -112,8 +105,6 @@ declare class RollParser {
     formula: string,
   ): PoolRollParseNode;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle a parenthetical.
    * @param term - The inner term.
@@ -123,8 +114,6 @@ declare class RollParser {
    */
   protected _onParenthetical(term: RollParseNode, flavor: string | null, formula: string): ParentheticalRollParseNode;
 
-  /* -------------------------------------------- */
-
   /**
    * Handle some string that failed to be classified.
    * @param term - The term.
@@ -132,15 +121,11 @@ declare class RollParser {
    */
   protected _onStringTerm(term: string, flavor: string | null): StringParseNode;
 
-  /* -------------------------------------------- */
-
   /**
    * Collapse multiple additive operators into a single one.
    * @param operators - A sequence of additive operators.
    */
   protected _collapseOperators(operators: string[]): string;
-
-  /* -------------------------------------------- */
 
   /**
    * Wrap a term with a leading minus.
@@ -157,8 +142,6 @@ declare class RollParser {
    */
   static flattenTree(root: RollParseNode): RollParseNode[];
 
-  /* -------------------------------------------- */
-
   /**
    * Use the Shunting Yard algorithm to convert a parse tree or list of terms into an AST with correct operator
    * precedence.
@@ -167,12 +150,10 @@ declare class RollParser {
    */
   static toAST(root: RollParseNode | RollTerm[]): RollParseNode;
 
-  /* -------------------------------------------- */
-
   /**
    * Determine if a given node is an operator term.
    */
-  static isOperatorTerm(node: RollParseNode | RollTerm): void;
+  static isOperatorTerm(node: RollParseNode | RollTerm): boolean;
 
   /* -------------------------------------------- */
   /*  Debug Formatting                            */
@@ -184,15 +165,11 @@ declare class RollParser {
    */
   static formatList(list: RollParseArg[]): string;
 
-  /* -------------------------------------------- */
-
   /**
    * Format a parser argument.
    * @param arg - The argument.
    */
   static formatArg(arg: RollParseArg): string;
-
-  /* -------------------------------------------- */
 
   /**
    * Format arguments for debugging.
@@ -203,7 +180,8 @@ declare class RollParser {
 }
 
 declare namespace RollParser {
-  type AnyConstructor = typeof AnyRollParser;
+  interface AnyConstructor extends Identity<typeof AnyRollParser> {}
+  interface Any extends AnyRollParser {}
 }
 
 declare abstract class AnyRollParser extends RollParser {

@@ -152,7 +152,7 @@ declare global {
   }
 
   namespace DocumentDirectory {
-    type Any = DocumentDirectory<any, any>;
+    interface Any extends DocumentDirectory<any, any> {}
 
     interface Options<T extends Document.AnyConstructor = Document.AnyConstructor> extends Application.Options {
       /**

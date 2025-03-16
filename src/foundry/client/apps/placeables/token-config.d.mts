@@ -1,4 +1,4 @@
-import type { InterfaceToObject, AnyObject } from "fvtt-types/utils";
+import type { InterfaceToObject, AnyObject, Identity } from "fvtt-types/utils";
 import type StringTerm from "../../../client-esm/dice/terms/string.d.mts";
 
 declare global {
@@ -138,8 +138,8 @@ declare global {
   }
 
   namespace TokenConfig {
-    type Any = AnyTokenConfig;
-    type AnyConstructor = typeof AnyTokenConfig;
+    interface Any extends AnyTokenConfig {}
+    interface AnyConstructor extends Identity<typeof AnyTokenConfig> {}
 
     interface FormData {
       // TODO: Update
@@ -240,8 +240,8 @@ declare global {
   }
 
   namespace DefaultTokenConfig {
-    type Any = AnyDefaultTokenConfig;
-    type AnyConstructor = typeof AnyDefaultTokenConfig;
+    interface Any extends AnyDefaultTokenConfig {}
+    interface AnyConstructor extends Identity<typeof AnyDefaultTokenConfig> {}
   }
 }
 

@@ -1,4 +1,4 @@
-import type { MaybePromise } from "fvtt-types/utils";
+import type { MaybePromise, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -32,8 +32,8 @@ declare global {
   }
 
   namespace TileHUD {
-    type Any = AnyTileHUD;
-    type AnyConstructor = typeof AnyTileHUD;
+    interface Any extends AnyTileHUD {}
+    interface AnyConstructor extends Identity<typeof AnyTileHUD> {}
   }
 }
 

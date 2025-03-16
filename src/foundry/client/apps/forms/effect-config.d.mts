@@ -50,7 +50,7 @@ declare global {
   }
 
   namespace ActiveEffectConfig {
-    type Any = ActiveEffectConfig<any>;
+    interface Any extends ActiveEffectConfig<any> {}
 
     type ActiveEffectConfigData<
       Options extends

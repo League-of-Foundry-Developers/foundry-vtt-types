@@ -1,4 +1,4 @@
-import type { Brand, NullishProps } from "fvtt-types/utils";
+import type { Brand, Identity, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -227,7 +227,7 @@ declare global {
 
   namespace MouseInteractionManager {
     interface Any extends AnyMouseInteractionManager {}
-    type AnyConstructor = typeof AnyMouseInteractionManager;
+    interface AnyConstructor extends Identity<typeof AnyMouseInteractionManager> {}
 
     /** @privateRemarks The private class property is `#HANDLER_OUTCOME` singular, but the getter is `handlerOutcomes`, so the brand uses the plural */
     type HANDLER_OUTCOMES = Brand<number, "MouseInteractionManager.HANDLER_OUTCOMES">;

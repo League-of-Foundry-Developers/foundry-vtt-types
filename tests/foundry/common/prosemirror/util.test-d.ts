@@ -4,8 +4,8 @@ import {
   parseHTMLString,
   serializeHTMLString,
   transformSlice,
+  type ProseMirrorSliceTransformer,
 } from "../../../../src/foundry/common/prosemirror/util.mjs";
-import type { ProseMirrorSliceTransformer } from "../../../../src/foundry/common/prosemirror/util.d.mts";
 import type { Node, Slice } from "prosemirror-model";
 
 declare const node: Node;

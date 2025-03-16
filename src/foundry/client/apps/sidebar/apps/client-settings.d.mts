@@ -65,7 +65,7 @@ declare global {
   }
 
   namespace SettingsConfig {
-    type Any = SettingsConfig<any>;
+    interface Any extends SettingsConfig<any> {}
 
     interface Category extends PackageConfiguration.Category {
       menus: ClientSettings.SettingSubmenuConfig[];

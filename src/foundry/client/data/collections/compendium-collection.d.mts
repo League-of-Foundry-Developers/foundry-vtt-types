@@ -364,7 +364,7 @@ declare global {
   }
 
   namespace CompendiumCollection {
-    type Any = CompendiumCollection<any>;
+    interface Any extends CompendiumCollection<any> {}
 
     interface Configuration {
       ownership: InexactPartial<foundry.packages.BasePackage.OwnershipRecord>;

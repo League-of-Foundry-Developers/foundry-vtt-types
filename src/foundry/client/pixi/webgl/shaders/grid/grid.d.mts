@@ -1,4 +1,4 @@
-import type { NullishProps } from "fvtt-types/utils";
+import type { Identity, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -104,7 +104,7 @@ declare global {
 
   namespace GridShader {
     interface Any extends AnyGridShader {}
-    type AnyConstructor = typeof AnyGridShader;
+    interface AnyConstructor extends Identity<typeof AnyGridShader> {}
   }
 }
 

@@ -1,4 +1,4 @@
-import type { HandleEmptyObject } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -40,7 +40,7 @@ declare global {
 
   namespace HiddenCanvasGroup {
     interface Any extends AnyHiddenCanvasGroup {}
-    type AnyConstructor = typeof AnyHiddenCanvasGroup;
+    interface AnyConstructor extends Identity<typeof AnyHiddenCanvasGroup> {}
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 

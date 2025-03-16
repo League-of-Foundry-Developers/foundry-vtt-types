@@ -36,17 +36,33 @@ declare global {
      */
     type ImplementationClass = MeasuredTemplateDocument.ImplementationClass;
 
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshShape: boolean;
+    interface RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<this>;
 
-      refreshTemplate: boolean;
+      /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
+      refresh: RenderFlag<this>;
 
-      refreshPosition: boolean;
+      /** @defaultValue `{}` */
+      refreshState: RenderFlag<this>;
 
-      refreshGrid: boolean;
+      /** @defaultValue `{ propagate: ["refreshPosition", "refreshGrid", "refreshText", "refreshTemplate"] }` */
+      refreshShape: RenderFlag<this>;
 
-      refreshText: boolean;
+      /** @defaultValue `{}` */
+      refreshTemplate: RenderFlag<this>;
+
+      /** @defaultValue `{ propagate: ["refreshGrid"] }` */
+      refreshPosition: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshGrid: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshText: RenderFlag<this>;
     }
+
+    interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
 
     // TODO: Fix globalThis.ObjectHUD #2962
     interface ObjectHUD {
@@ -105,31 +121,7 @@ declare global {
 
     static override embeddedName: "MeasuredTemplate";
 
-    static override RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<MeasuredTemplate.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
-      refresh: RenderFlag<MeasuredTemplate.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshState: RenderFlag<MeasuredTemplate.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshPosition", "refreshGrid", "refreshText", "refreshTemplate"] }` */
-      refreshShape: RenderFlag<MeasuredTemplate.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshTemplate: RenderFlag<MeasuredTemplate.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshGrid"] }` */
-      refreshPosition: RenderFlag<MeasuredTemplate.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshGrid: RenderFlag<MeasuredTemplate.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshText: RenderFlag<MeasuredTemplate.RenderFlags>;
-    };
+    static override RENDER_FLAGS: MeasuredTemplate.RENDER_FLAGS;
 
     override get bounds(): PIXI.Rectangle;
 

@@ -47,7 +47,7 @@ declare class ProseMirrorDropDown {
    * Recurse through the menu structure and apply a function to each item in it.
    * @param fn - The function to call on each item. Return false to prevent iterating over any further items.
    */
-  forEachItem(fn: (entry: ProseMirrorDropDownMenu.Entry) => boolean): void;
+  forEachItem(/** @immediate */ fn: (entry: ProseMirrorDropDownMenu.Entry) => boolean): void;
 
   /**
    * Render a list of drop-down menu items.

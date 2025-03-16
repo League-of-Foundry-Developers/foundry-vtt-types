@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
+import type { InexactPartial, FixedInstanceType, Identity } from "fvtt-types/utils";
 import type { RollParseNode } from "../_types.mts";
 
 import type RollResolver from "../../applications/dice/roll-resolver.d.mts";
@@ -129,10 +129,11 @@ declare abstract class RollTerm {
 }
 
 declare namespace RollTerm {
-  type AnyConstructor = typeof AnyRollTerm;
+  interface Any extends AnyRollTerm {}
+  interface AnyConstructor extends Identity<typeof AnyRollTerm> {}
 
   interface Options {
-    flavor?: string;
+    flavor?: string | undefined | null;
   }
 
   interface EvaluationOptions {

@@ -1,4 +1,4 @@
-import type { Brand } from "fvtt-types/utils";
+import type { Brand, Identity } from "fvtt-types/utils";
 import * as _PIXI from "pixi.js";
 
 // Note(LukeAbby): The `smooth.d.mts` and `smooth.d.mts` files exist to make it DRY to selectively tweak PIXI sub-namespaces.
@@ -973,42 +973,42 @@ declare global {
 
     namespace BatchGeometry {
       interface Any extends AnyPIXIBatchGeometry {}
-      type AnyConstructor = typeof AnyPIXIBatchGeometry;
+      interface AnyConstructor extends Identity<typeof AnyPIXIBatchGeometry> {}
     }
 
     export import BatchRenderer = _PIXI.BatchRenderer;
 
     namespace BatchRenderer {
       interface Any extends AnyPIXIBatchRenderer {}
-      type AnyConstructor = typeof AnyPIXIBatchRenderer;
+      interface AnyConstructor extends Identity<typeof AnyPIXIBatchRenderer> {}
     }
 
     export import Container = _PIXI.Container;
 
     namespace Container {
       interface Any extends AnyPIXIContainer {}
-      type AnyConstructor = typeof AnyPIXIContainer;
+      interface AnyConstructor extends Identity<typeof AnyPIXIContainer> {}
     }
 
     export import DisplayObject = _PIXI.DisplayObject;
 
     namespace DisplayObject {
       interface Any extends AnyPIXIDisplayObject {}
-      type AnyConstructor = typeof AnyPIXIDisplayObject;
+      interface AnyConstructor extends Identity<typeof AnyPIXIDisplayObject> {}
     }
 
     export import Filter = _PIXI.Filter;
 
     namespace Filter {
       interface Any extends AnyPIXIFilter {}
-      type AnyConstructor = typeof AnyPIXIFilter;
+      interface AnyConstructor extends Identity<typeof AnyPIXIFilter> {}
     }
 
     export import Shader = _PIXI.Shader;
 
     namespace Shader {
       interface Any extends AnyPIXIShader {}
-      type AnyConstructor = typeof AnyPIXIShader;
+      interface AnyConstructor extends Identity<typeof AnyPIXIShader> {}
     }
   }
 }

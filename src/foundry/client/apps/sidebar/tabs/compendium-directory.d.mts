@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -107,8 +107,8 @@ declare global {
   }
 
   namespace CompendiumDirectory {
-    type Any = AnyCompendiumDirectory;
-    type AnyConstructor = typeof AnyCompendiumDirectory;
+    interface Any extends AnyCompendiumDirectory {}
+    interface AnyConstructor extends Identity<typeof AnyCompendiumDirectory> {}
   }
 }
 

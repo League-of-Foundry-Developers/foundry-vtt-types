@@ -1,13 +1,13 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
-declare const playlist: Playlist.ConfiguredInstance;
+declare const playlist: Playlist.Implementation;
 const playlistConfig = new PlaylistConfig(playlist);
 
 expectTypeOf(playlistConfig.object).toEqualTypeOf<Playlist>();
 expectTypeOf(playlistConfig.document).toEqualTypeOf<Playlist>();
-expectTypeOf(PlaylistConfig.defaultOptions).toEqualTypeOf<DocumentSheet.Options<Playlist.ConfiguredInstance>>();
-expectTypeOf(playlistConfig.options).toEqualTypeOf<DocumentSheet.Options<Playlist.ConfiguredInstance>>();
+expectTypeOf(PlaylistConfig.defaultOptions).toEqualTypeOf<DocumentSheet.Options<Playlist.Implementation>>();
+expectTypeOf(playlistConfig.options).toEqualTypeOf<DocumentSheet.Options<Playlist.Implementation>>();
 expectTypeOf(playlistConfig.getData()).toEqualTypeOf<
   MaybePromise<GetDataReturnType<PlaylistConfig.PlaylistConfigData>>
 >();

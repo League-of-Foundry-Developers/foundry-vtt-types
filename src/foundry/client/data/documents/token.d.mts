@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial, InterfaceToObject } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, InexactPartial, InterfaceToObject } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema, SchemaField } from "../../../common/data/fields.d.mts";
@@ -575,6 +575,8 @@ declare global {
         _priorPosition?: Record<string, { x: number; y: number; elevation: number }>;
         teleport?: boolean;
         forced?: boolean;
+        // TODO: Type this accurately when going over the Token placeable
+        animation: AnyObject;
       }
 
       /** Operation for {@link TokenDocument.createDocuments | `TokenDocument.createDocuments`} */

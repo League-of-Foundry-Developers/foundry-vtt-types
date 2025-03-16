@@ -1,4 +1,4 @@
-import type { HandleEmptyObject } from "../../../../../utils/index.d.mts";
+import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
 
 /**
  * The Lighting Layer which ambient light sources as part of the CanvasEffectsGroup.
@@ -29,18 +29,18 @@ declare global {
      */
     static override get layerOptions(): LightingLayer.LayerOptions;
 
-    override get hookName(): string;
+    override get hookName(): "LightingLayer";
 
-    override _draw(options: HandleEmptyObject<LightingLayer.DrawOptions>): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<LightingLayer.DrawOptions>): Promise<void>;
 
-    override _tearDown(options: HandleEmptyObject<LightingLayer.TearDownOptions>): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<LightingLayer.TearDownOptions>): Promise<void>;
 
     /**
      * Refresh the fields of all the ambient lights on this scene.
      */
     refreshFields(): void;
 
-    override _activate(): void;
+    protected override _activate(): void;
 
     protected override _canDragLeftStart(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
@@ -50,7 +50,8 @@ declare global {
 
     protected override _onDragLeftCancel(event: PointerEvent): void;
 
-    protected _onMouseWheel(event: WheelEvent): Promise<void> | void;
+    // @ts-expect-error Foundry is changing the return type here from Promise<PlaceableObject[]> to just Promise<AmbientLight>
+    protected _onMouseWheel(event: WheelEvent): Promise<AmbientLight.Object>;
 
     /**
      * Actions to take when the darkness level of the Scene is changed
@@ -60,7 +61,8 @@ declare global {
   }
 
   namespace LightingLayer {
-    type AnyConstructor = typeof AnyLightingLayer;
+    interface Any extends AnyLightingLayer {}
+    interface AnyConstructor extends Identity<typeof AnyLightingLayer> {}
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 

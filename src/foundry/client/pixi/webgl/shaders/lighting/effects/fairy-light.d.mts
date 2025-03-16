@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -15,7 +15,7 @@ declare global {
 
   namespace FairyLightColorationShader {
     interface Any extends AnyFairyLightColorationShader {}
-    type AnyConstructor = typeof AnyFairyLightColorationShader;
+    interface AnyConstructor extends Identity<typeof AnyFairyLightColorationShader> {}
   }
 
   /**
@@ -26,8 +26,8 @@ declare global {
   }
 
   namespace FairyLightIlluminationShader {
-    interface Any extends AnyFairyLightColorationShader {}
-    type AnyConstructor = typeof AnyFairyLightIlluminationShader;
+    interface Any extends AnyFairyLightIlluminationShader {}
+    interface AnyConstructor extends Identity<typeof AnyFairyLightIlluminationShader> {}
   }
 }
 

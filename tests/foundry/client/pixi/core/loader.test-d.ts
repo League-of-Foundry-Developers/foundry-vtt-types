@@ -10,7 +10,7 @@ expectTypeOf(loadTexture("path/to/texture", { fallback: "path/to/another/texture
   Promise<PIXI.Texture | PIXI.Spritesheet | null>
 >();
 
-declare const someScene: Scene.ConfiguredInstance;
+declare const someScene: Scene.Implementation;
 declare const someTex: PIXI.Texture;
 
 expectTypeOf(TextureLoader.loadSceneTextures(someScene, { expireCache: false, maxConcurrent: 4 })).toEqualTypeOf<

@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -20,8 +20,8 @@ declare global {
   }
 
   namespace Macros {
-    type Any = AnyMacros;
-    type AnyConstructor = typeof AnyMacros;
+    interface Any extends AnyMacros {}
+    interface AnyConstructor extends Identity<typeof AnyMacros> {}
   }
 }
 

@@ -193,10 +193,16 @@ declare global {
       y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
 
       /**
-       * The z-index ordering of this tile relative to its siblings
-       * @defaultValue `100`
+       * The elevation of the tile
+       * @defaultValue `0`
        */
-      z: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 100 }>;
+      elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+      /**
+       * How to sort this tile within its elevation
+       * @defaultValue `0`
+       */
+      sort: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
       /**
        * The angle of rotation for the tile between 0 and 360

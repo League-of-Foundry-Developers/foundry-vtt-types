@@ -49,7 +49,7 @@ declare global {
   }
 
   namespace WallConfig {
-    type Any = WallConfig<any>;
+    interface Any extends WallConfig<any> {}
 
     type FormData = Pick<
       WallDocument["_source"],

@@ -104,7 +104,7 @@ declare global {
   }
 
   namespace DocumentSheetConfig {
-    type Any = DocumentSheetConfig<any>;
+    interface Any extends DocumentSheetConfig<any> {}
 
     interface SheetRegistration {
       action: "register";

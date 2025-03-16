@@ -1,4 +1,4 @@
-import type { GetDataReturnType } from "fvtt-types/utils";
+import type { GetDataReturnType, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -70,7 +70,8 @@ declare global {
   }
 
   namespace AdventureImporter {
-    type Any = AdventureImporter<any>;
+    interface Any extends AnyAdventureImporter {}
+    interface AnyConstructor extends Identity<typeof AnyAdventureImporter> {}
 
     interface Options extends DocumentSheet.Options<Adventure.Implementation> {}
 
@@ -82,4 +83,8 @@ declare global {
       imported: boolean;
     }
   }
+}
+
+declare abstract class AnyAdventureImporter extends AdventureImporter<AdventureImporter.Options> {
+  constructor(arg0: never, ...args: never[]);
 }

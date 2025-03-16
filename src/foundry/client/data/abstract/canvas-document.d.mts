@@ -48,7 +48,7 @@ declare class CanvasDocument<
 }
 
 declare namespace CanvasDocument {
-  type Any = CanvasDocument<any>;
+  interface Any extends CanvasDocument<any> {}
 }
 
 declare global {

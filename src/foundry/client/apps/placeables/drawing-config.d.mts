@@ -47,7 +47,7 @@ declare global {
   }
 
   namespace DrawingConfig {
-    type Any = DrawingConfig<any>;
+    interface Any extends DrawingConfig<any> {}
 
     interface Options extends FormApplication.Options {
       /**

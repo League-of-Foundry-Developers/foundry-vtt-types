@@ -155,7 +155,7 @@ declare global {
   }
 
   namespace DocumentCollection {
-    type Any = DocumentCollection<Document.AnyConstructor, string>;
+    interface Any extends DocumentCollection<Document.AnyConstructor, string> {}
 
     interface Methods<T extends Document.AnyConstructor> {
       get<Options extends DocumentCollection.GetOptions>(

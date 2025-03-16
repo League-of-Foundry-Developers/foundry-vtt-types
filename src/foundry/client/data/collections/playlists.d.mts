@@ -1,4 +1,4 @@
-import type { DeepPartial } from "fvtt-types/utils";
+import type { DeepPartial, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -30,8 +30,8 @@ declare global {
   }
 
   namespace Playlists {
-    type Any = AnyPlaylists;
-    type AnyConstructor = typeof AnyPlaylists;
+    interface Any extends AnyPlaylists {}
+    interface AnyConstructor extends Identity<typeof AnyPlaylists> {}
   }
 }
 

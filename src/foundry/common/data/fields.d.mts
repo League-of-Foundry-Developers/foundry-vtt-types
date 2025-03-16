@@ -6,9 +6,10 @@ import type {
   NullishProps,
   InexactPartial,
   FixedInstanceType,
+  Identity,
   PrettifyType,
   InterfaceToObject,
-} from "../../../utils/index.d.mts";
+} from "fvtt-types/utils";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection, EmbeddedCollectionDelta, TypeDataModel } from "../abstract/module.d.mts";
@@ -415,9 +416,8 @@ declare abstract class DataField<
 
 declare namespace DataField {
   /** Any DataField. */
-  type Any = DataField<DataField.Options.Any, unknown, unknown, unknown>;
-
-  type AnyConstructor = typeof AnyDataField;
+  interface Any extends AnyDataField {}
+  interface AnyConstructor extends Identity<typeof AnyDataField> {}
 
   /** A DataField with unknown inner types. */
   type Unknown = DataField<any, unknown, unknown, unknown>;
@@ -495,7 +495,7 @@ declare namespace DataField {
     // This is an issue because `{ integer: true }` does not extend `{ required?: boolean }` because they have no properties in common.
     // Even though `{ integer: true, required: undefined }` would extend `{ required?: boolean }` following the regular rules of surplus properties being allowed.
     // `object` was chosen over `AnyObject` so that people may pass in interfaces.
-    type Any = DataField.Options<any> & object;
+    interface Any extends DataField.Options<any>, Identity<object> {}
 
     /**
      * A helper type for the {@link DataField.Options.initial | `DataField.Options.initial`} option.
@@ -828,7 +828,7 @@ declare namespace SchemaField {
   type Options<Fields extends DataSchema> = DataField.Options<AssignmentData<Fields> | __SchemaFieldInitial>;
 
   /** Any SchemaField. */
-  type Any = SchemaField<any, any, any, any, any>;
+  interface Any extends SchemaField<any, any, any, any, any> {}
 
   /**
    * Get the constructor type for the given DataSchema.
@@ -1905,7 +1905,7 @@ declare namespace ArrayField {
   /**
    * A shorthand for the persisted type of an ArrayField class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the ArrayField
-   * @typeParam PersistedElementType  - the perssited type of the elements of the ArrayField
+   * @typeParam PersistedElementType  - the persisted type of the elements of the ArrayField
    * @typeParam Opts                  - the options that override the default options
    */
   type PersistedType<
@@ -1983,7 +1983,7 @@ declare class SetField<
 
 declare namespace SetField {
   /** Any SetField */
-  type Any = SetField<DataField.Any, any, any, any, any, any, any, any>;
+  interface Any extends SetField<DataField.Any, any, any, any, any, any, any, any> {}
 
   /**
    * A shorthand for the options of a SetField class.
@@ -2040,7 +2040,7 @@ declare namespace SetField {
   /**
    * A shorthand for the persisted type of a SetField class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the SetField
-   * @typeParam PersistedElementType  - the perssited type of the elements of the SetField
+   * @typeParam PersistedElementType  - the persisted type of the elements of the SetField
    * @typeParam Opts                  - the options that override the default options
    */
   type PersistedType<
@@ -2285,7 +2285,7 @@ declare class EmbeddedCollectionField<
 }
 
 declare namespace EmbeddedCollectionField {
-  type Any = EmbeddedCollectionField<any, any, any, any, any, any, any, any, any>;
+  interface Any extends EmbeddedCollectionField<any, any, any, any, any, any, any, any, any> {}
 
   /**
    * A shorthand for the options of an EmbeddedCollectionField class.
@@ -2370,7 +2370,7 @@ declare namespace EmbeddedCollectionField {
   /**
    * A shorthand for the persisted type of an ArrayField class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionField
-   * @typeParam PersistedElementType  - the perssited type of the elements of the EmbeddedCollectionField
+   * @typeParam PersistedElementType  - the persisted type of the elements of the EmbeddedCollectionField
    * @typeParam Opts                  - the options that override the default options
    */
   type PersistedType<
@@ -2523,7 +2523,7 @@ declare namespace EmbeddedCollectionDeltaField {
   /**
    * A shorthand for the persisted type of an ArrayField class.
    * @typeParam AssignmentElementType - the assignment type of the elements of the EmbeddedCollectionDeltaField
-   * @typeParam PersistedElementType  - the perssited type of the elements of the EmbeddedCollectionDeltaField
+   * @typeParam PersistedElementType  - the persisted type of the elements of the EmbeddedCollectionDeltaField
    * @typeParam Opts                  - the options that override the default options
    */
   type PersistedType<

@@ -35,7 +35,7 @@ declare global {
   }
 
   namespace TileConfig {
-    type Any = TileConfig<any>;
+    interface Any extends TileConfig<any> {}
 
     type FormData = Pick<TileDocument, "alpha" | "height" | "rotation" | "width" | "x" | "y" | "overhead" | "roof"> & {
       "texture.src": string | null;

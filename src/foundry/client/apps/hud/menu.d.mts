@@ -1,4 +1,4 @@
-import type { MaybePromise } from "fvtt-types/utils";
+import type { MaybePromise, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -65,8 +65,8 @@ declare global {
   }
 
   namespace MainMenu {
-    type Any = AnyMainMenu;
-    type AnyConstructor = typeof AnyMainMenu;
+    interface Any extends AnyMainMenu {}
+    interface AnyConstructor extends Identity<typeof AnyMainMenu> {}
 
     interface MenuItem {
       label: string;

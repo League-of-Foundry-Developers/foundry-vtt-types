@@ -34,6 +34,6 @@ declare global {
   }
 
   namespace ChatPopout {
-    type Any = ChatPopout<any>;
+    interface Any extends ChatPopout<any> {}
   }
 }

@@ -5,7 +5,8 @@ import type {
   EmptyObject,
   InexactPartial,
   MaybePromise,
-} from "../../../../utils/index.d.mts";
+  Identity,
+} from "fvtt-types/utils";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
@@ -20,8 +21,8 @@ type _ClassMustBeAssignableToInternal = MustConform<typeof ApplicationV2, Applic
 type _InstanceMustBeAssignableToInternal = MustConform<ApplicationV2, ApplicationV2.Internal.Instance.Any>;
 
 declare namespace ApplicationV2 {
-  type Any = ApplicationV2<any, any, any>;
-  type AnyConstructor = typeof AnyApplicationV2;
+  interface Any extends AnyApplicationV2 {}
+  interface AnyConstructor extends Identity<typeof AnyApplicationV2> {}
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
@@ -51,7 +52,7 @@ declare namespace ApplicationV2 {
     }
 
     namespace Instance {
-      type Any = Instance<any, any, any>;
+      interface Any extends Instance<any, any, any> {}
     }
   }
 

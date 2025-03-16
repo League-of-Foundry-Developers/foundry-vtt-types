@@ -1,4 +1,11 @@
-import type { AnyObject, InexactPartial, FixedInstanceType, IntentionalPartial } from "fvtt-types/utils";
+import type {
+  AnyObject,
+  InexactPartial,
+  FixedInstanceType,
+  IntentionalPartial,
+  EmptyObject,
+  Identity,
+} from "fvtt-types/utils";
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
 import type PoolTerm from "./terms/pool.d.mts";
@@ -28,14 +35,14 @@ import type RollResolver from "../applications/dice/roll-resolver.d.mts";
  * console.log(r.total);    // 22
  * ```
  */
-declare class Roll<D extends AnyObject = AnyObject> {
+declare class Roll<D extends AnyObject = EmptyObject> {
   /**
    * @param formula - The string formula to parse
    * @param data    - The data object against which to parse attributes within the formula
    *                  (default: `{}`)
    * @param options - (default: `{}`)
    */
-  constructor(formula: string, data?: D, options?: Roll["options"]);
+  constructor(formula: string, data?: D, options?: Roll.Options);
 
   /**
    * The original provided data object which substitutes into attributes of the roll formula
@@ -45,7 +52,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
   /**
    * Options which modify or describe the Roll
    */
-  options: InexactPartial<Roll.Options>;
+  options: Roll.Options;
 
   /**
    * The identified terms of the Roll
@@ -106,8 +113,6 @@ declare class Roll<D extends AnyObject = AnyObject> {
    */
   static RESOLVERS: Map<Roll, RollResolver>; // TODO: Fix this
 
-  /* -------------------------------------------- */
-
   /**
    * Prepare the data structure used for the Roll.
    * This is factored out to allow for custom Roll classes to do special data preparation using provided input.
@@ -167,8 +172,6 @@ declare class Roll<D extends AnyObject = AnyObject> {
    */
   clone(): this;
 
-  /* -------------------------------------------- */
-
   /**
    * Execute the Roll, replacing dice and evaluating the total result
    * @param options - Options which inform how the Roll is evaluated
@@ -189,9 +192,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
     allowStrings,
     allowInteractive,
     ...options
-  }?: InexactPartial<Roll.Options>): Promise<Roll.Evaluated<this>>;
-
-  /* -------------------------------------------- */
+  }?: Roll.Options): Promise<Roll.Evaluated<this>>;
 
   /**
    * Execute the Roll synchronously, replacing dice and evaluating the total result.
@@ -200,7 +201,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
    *
    * @returns The evaluated Roll instance.
    */
-  evaluateSync({ minimize, maximize, allowStrings, strict }?: InexactPartial<Roll.Options>): Roll.Evaluated<this>;
+  evaluateSync({ minimize, maximize, allowStrings, strict }?: Roll.Options): Roll.Evaluated<this>;
 
   /**
    * Evaluate the roll asynchronously.
@@ -208,9 +209,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @param options - Options which inform how evaluation is performed
    * @internal
    */
-  protected _evaluate(options?: InexactPartial<Roll.Options>): Promise<Roll.Evaluated<this>>;
-
-  /* -------------------------------------------- */
+  protected _evaluate(options?: Roll.Options): Promise<Roll.Evaluated<this>>;
 
   /**
    * Evaluate an AST asynchronously.
@@ -218,21 +217,14 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @param options - Options which inform how evaluation is performed
    *                  (default: `{}`)
    */
-  protected _evaluateASTAsync(
-    node: RollParseNode | RollTerm,
-    options?: InexactPartial<Roll.Options>,
-  ): Promise<string | number>;
-
-  /* -------------------------------------------- */
+  protected _evaluateASTAsync(node: RollParseNode | RollTerm, options?: Roll.Options): Promise<string | number>;
 
   /**
    * Evaluate the roll synchronously.
    * @param options - Options which inform how evaluation is performed
    *                  (default: `{}`)
    */
-  protected _evaluateSync(options?: InexactPartial<Roll.Options>): Roll.Evaluated<this>;
-
-  /* -------------------------------------------- */
+  protected _evaluateSync(options?: Roll.Options): Roll.Evaluated<this>;
 
   /**
    * Evaluate an AST synchronously.
@@ -240,9 +232,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @param options - Options which inform how evaluation is performed
    *                  (default: `{}`)
    */
-  protected _evaluateASTSync(node: RollParseNode | RollTerm, options?: InexactPartial<Roll.Options>): string | number;
-
-  /* -------------------------------------------- */
+  protected _evaluateASTSync(node: RollParseNode | RollTerm, options?: Roll.Options): string | number;
 
   /**
    * Safely evaluate the final total result for the Roll using its component terms.
@@ -250,16 +240,12 @@ declare class Roll<D extends AnyObject = AnyObject> {
    */
   protected _evaluateTotal(): number;
 
-  /* -------------------------------------------- */
-
   /**
    * Alias for evaluate.
    * @see {@link Roll.evaluate | `Roll#evaluate`}
    * @param options - Options passed to {@link Roll.evaluate | `Roll#evaluate`}.
    */
-  roll(options?: InexactPartial<Roll.Options>): Promise<Roll.Evaluated<this>>;
-
-  /* -------------------------------------------- */
+  roll(options?: Roll.Options): Promise<Roll.Evaluated<this>>;
 
   /**
    * Create a new Roll object using the original provided formula and data.
@@ -267,9 +253,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @param options - Evaluation options passed to {@link Roll.evaluate | `Roll#evaluate`}
    * @returns A new Roll object, rolled using the same formula and data
    */
-  reroll(options?: InexactPartial<Roll.Options>): Promise<Roll.Evaluated<this>>;
-
-  /* -------------------------------------------- */
+  reroll(options?: Roll.Options): Promise<Roll.Evaluated<this>>;
 
   /**
    * Recompile the formula string that represents this Roll instance from its component terms.
@@ -277,15 +261,11 @@ declare class Roll<D extends AnyObject = AnyObject> {
    */
   resetFormula(): string;
 
-  /* -------------------------------------------- */
-
   /**
    * Propagate flavor text across all terms that do not have any.
    * @param flavor -The flavor text.
    */
   propagateFlavor(flavor: string): void;
-
-  /* -------------------------------------------- */
 
   /** @override */
   toString(): string;
@@ -302,10 +282,10 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @param options - Additional options which modify or describe this Roll
    * @returns The constructed Roll instance
    */
-  static create<D extends AnyObject = AnyObject>(
+  static create<D extends AnyObject = EmptyObject>(
     formula: string,
     data?: D,
-    options?: InexactPartial<Roll.Options>,
+    options?: Roll.Options,
   ): typeof CONFIG.Dice.rolls extends [infer T] ? T : Roll<D>;
 
   /**
@@ -370,8 +350,6 @@ declare class Roll<D extends AnyObject = AnyObject> {
    */
   static parse(formula: string, data: Record<string, unknown>): RollTerm[];
 
-  /* -------------------------------------------- */
-
   /**
    * Instantiate the nodes in an AST sub-tree into RollTerm instances.
    * @param ast - The root of the AST sub-tree.
@@ -421,19 +399,11 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @param term         - A remaining un-classified string
    * @param options      - Options which customize classification
    *                       (default: `{}`)
-   * @param intermediate - Allow intermediate terms
-   *                       (default: `true`)
-   * @param prior        - The prior classified term
-   * @param next         - The next term to classify
    * @returns A classified RollTerm instance
    */
-  protected static _classifyStringTerm(
+  static _classifyStringTerm(
     term: string,
-    {
-      intermediate,
-      prior,
-      next,
-    }?: InexactPartial<{ intermediate: boolean; prior: RollTerm | string; next: RollTerm | string }>,
+    options?: Roll.ClassifyStringTermOptions, // not: null (destructured)
   ): RollTerm;
 
   /* -------------------------------------------- */
@@ -489,10 +459,14 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @returns A promise which resolves to the created ChatMessage entity, if create is true
    *          or the Object of prepared chatData otherwise.
    */
-  toMessage<const Create extends boolean | null | undefined>(
-    messageData?: Roll.MessageData,
+  // options: not null (destructured)
+  toMessage<
+    const Create extends boolean | null | undefined,
+    ConcreteMessageData extends Roll.MessageData | null | undefined = undefined,
+  >(
+    messageData?: ConcreteMessageData,
     options?: Roll.ToMessageOptions<Create>,
-  ): Promise<Roll.ToMessageReturn<Create>>;
+  ): Promise<Roll.ToMessageReturn<Create, ConcreteMessageData>>;
 
   /* -------------------------------------------- */
   /*  Interface Helpers                           */
@@ -543,7 +517,7 @@ declare class Roll<D extends AnyObject = AnyObject> {
    * @param json - Serialized JSON data representing the Roll
    * @returns A reconstructed Roll instance
    */
-  static fromJSON(json: string): Roll;
+  static fromJSON<T extends Roll.AnyConstructor>(this: T, json: string): FixedInstanceType<T>;
 
   /**
    * Manually construct a Roll object by providing an explicit set of input terms
@@ -563,15 +537,15 @@ declare class Roll<D extends AnyObject = AnyObject> {
   static fromTerms<T extends Roll.AnyConstructor>(
     this: T,
     terms: RollTerm[],
-    options?: InexactPartial<Roll.Options>,
+    options?: Roll.Options,
   ): FixedInstanceType<T>;
 }
 
 declare namespace Roll {
-  type Any = Roll<any>;
-  type AnyConstructor = typeof AnyRoll;
+  interface Any extends AnyRoll {}
+  interface AnyConstructor extends Identity<typeof AnyRoll> {}
 
-  interface Options extends RollTerm.EvaluationOptions {
+  interface _Options extends RollTerm.EvaluationOptions {
     /**
      * If false, force the use of non-interactive rolls and do not prompt the user to make manual rolls.
      * @defaultValue `true`
@@ -583,6 +557,8 @@ declare namespace Roll {
      */
     strict?: boolean | undefined;
   }
+
+  interface Options extends InexactPartial<_Options> {}
 
   interface SplitGroupOptions {
     openRegexp: RegExp | string;
@@ -620,10 +596,26 @@ declare namespace Roll {
     total: number | null;
   }
 
+  type _ClassifyStringTermOptions = InexactPartial<{
+    /**
+     * Allow intermediate terms
+     * @defaultValue `true`
+     */
+    intermediate: boolean | null;
+
+    /** The prior classified term */
+    prior: RollTerm | string | null;
+
+    /** The next term to classify */
+    next: RollTerm | string | null;
+  }>;
+
+  interface ClassifyStringTermOptions extends _ClassifyStringTermOptions {}
+
   // TODO(LukeAbby): When shims are added then `"user"` should also be added here #3065. Specifically `user` should be added as partial.
   //
   // This is `IntentionalPartial` because Foundry merges in defaults with `mergeObject`.
-  interface MessageData extends IntentionalPartial<ChatMessage.CreateData, "content" | "sound" | "rolls"> {
+  interface _MessageData extends IntentionalPartial<ChatMessage.CreateData, "content" | "sound" | "rolls"> {
     /**
      * The HTML content of this chat message
      * @defaultValue `String(this.total)`
@@ -645,7 +637,9 @@ declare namespace Roll {
     rolls?: ChatMessage.CreateData["rolls"];
   }
 
-  type Evaluated<T extends Roll> = T & { _evaluated: true; _total: number; get total(): number };
+  interface MessageData extends InexactPartial<_MessageData> {}
+
+  type Evaluated<T extends Roll<any>> = T & { _evaluated: true; _total: number; get total(): number };
 
   interface ToMessageOptions<Create extends boolean | null | undefined> {
     /**
@@ -661,7 +655,11 @@ declare namespace Roll {
     create?: Create;
   }
 
-  type ToMessageReturn<Create extends boolean | null | undefined> =
+  type ToMessageReturn<
+    Create extends boolean | null | undefined,
+    ConcreteMessageData extends Roll.MessageData | null | undefined = undefined,
+  > =
+    | (ConcreteMessageData extends undefined ? ChatMessage.Implementation | undefined : never)
     | (Create extends true | undefined ? ChatMessage.Implementation | undefined : never)
     | (Create extends false | null ? ChatMessage.CreateData : never);
 }

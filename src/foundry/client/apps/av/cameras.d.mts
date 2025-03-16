@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -161,8 +161,8 @@ declare global {
   }
 
   namespace CameraViews {
-    type Any = AnyCameraViews;
-    type AnyConstructor = typeof AnyCameraViews;
+    interface Any extends AnyCameraViews {}
+    interface AnyConstructor extends Identity<typeof AnyCameraViews> {}
 
     interface User {
       user: Document.Stored<globalThis.User.Implementation>;

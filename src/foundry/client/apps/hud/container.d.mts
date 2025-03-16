@@ -49,6 +49,6 @@ declare global {
   }
 
   namespace HeadsUpDisplay {
-    type Any = HeadsUpDisplay<any>;
+    interface Any extends HeadsUpDisplay<any> {}
   }
 }

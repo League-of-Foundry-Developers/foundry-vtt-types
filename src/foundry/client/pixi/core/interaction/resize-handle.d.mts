@@ -1,4 +1,4 @@
-import type { NullishProps } from "fvtt-types/utils";
+import type { Identity, NullishProps } from "fvtt-types/utils";
 
 declare global {
   class ResizeHandle extends PIXI.Graphics {
@@ -52,7 +52,7 @@ declare global {
 
   namespace ResizeHandle {
     interface Any extends AnyResizeHandle {}
-    type AnyConstructor = typeof AnyResizeHandle;
+    interface AnyConstructor extends Identity<typeof AnyResizeHandle> {}
 
     type Offsets = [widthOffset: number, heightOffset: number];
 

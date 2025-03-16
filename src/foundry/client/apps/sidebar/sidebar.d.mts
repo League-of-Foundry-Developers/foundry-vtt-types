@@ -1,4 +1,4 @@
-import type { MaybePromise } from "fvtt-types/utils";
+import type { MaybePromise, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -90,8 +90,8 @@ declare global {
   }
 
   namespace Sidebar {
-    type Any = AnySidebar;
-    type AnyConstructor = typeof AnySidebar;
+    interface Any extends AnySidebar {}
+    interface AnyConstructor extends Identity<typeof AnySidebar> {}
   }
 }
 

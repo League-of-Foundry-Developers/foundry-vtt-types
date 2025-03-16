@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -84,8 +84,8 @@ declare global {
   }
 
   namespace SceneNavigation {
-    type Any = AnySceneNavigation;
-    type AnyConstructor = typeof AnySceneNavigation;
+    interface Any extends AnySceneNavigation {}
+    interface AnyConstructor extends Identity<typeof AnySceneNavigation> {}
 
     interface SceneData {
       id: string;

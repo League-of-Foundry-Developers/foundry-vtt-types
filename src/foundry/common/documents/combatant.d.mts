@@ -3,8 +3,6 @@ import type Document from "../abstract/document.mts";
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
-type DataSchema = foundry.data.fields.DataSchema;
-
 /**
  * The Combatant Document.
  * Defines the DataSchema and common behaviors for a Combatant which are shared between both client and server.

@@ -98,7 +98,7 @@ const rules = [
       "@typescript-eslint/restrict-plus-operands": "off",
       "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
 
-      "import-x/consistent-type-specifier-style": ["warn", "prefer-top-level"],
+      "import-x/consistent-type-specifier-style": "off",
       "import-x/extensions": [
         "error",
         "always",
@@ -124,6 +124,7 @@ const rules = [
       "import-x/no-amd": "error",
       "import-x/no-anonymous-default-export": "warn",
       "import-x/no-commonjs": "error",
+      "import-x/no-duplicates": ["error", { "prefer-inline": true }],
       "import-x/no-empty-named-blocks": "warn",
       "import-x/no-extraneous-dependencies": "error",
       "import-x/no-import-module-exports": "error",

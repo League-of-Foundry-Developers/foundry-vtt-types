@@ -1,4 +1,4 @@
-import type { IntentionalPartial } from "fvtt-types/utils";
+import type { Identity, IntentionalPartial } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -53,7 +53,7 @@ declare global {
 
   namespace PolygonMesher {
     interface Any extends AnyPolygonMesher {}
-    type AnyConstructor = typeof AnyPolygonMesher;
+    interface AnyConstructor extends Identity<typeof AnyPolygonMesher> {}
 
     /**
      *  @remarks These properties all have non-nullish values in `_defaultOptions`, and explicit `undefined` breaks

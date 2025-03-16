@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
+import type { InexactPartial, FixedInstanceType, Identity } from "fvtt-types/utils";
 import type { PoolRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";
@@ -22,27 +22,27 @@ import type Die from "./die.d.mts";
  * ```
  */
 declare class PoolTerm extends RollTerm {
-  constructor({ terms, modifiers, rolls, results, options }?: InexactPartial<PoolTerm.PoolTermConstructorData>);
+  constructor(terms?: PoolTerm.PoolTermConstructorData);
 
   /**
    * The original provided terms to the Dice Pool
    */
-  terms: PoolTerm.TermData["terms"];
+  terms: string[];
 
   /**
    * The string modifiers applied to resolve the pool
    */
-  modifiers: PoolTerm.TermData["modifiers"];
+  modifiers: (keyof PoolTerm.Modifiers)[];
 
   /**
    * Each component term of a dice pool is evaluated as a Roll instance
    */
-  rolls: PoolTerm.TermData["rolls"];
+  rolls: Roll[];
 
   /**
    * The array of dice pool results which have been rolled
    */
-  results: PoolTerm.TermData["results"];
+  results: DiceTerm.Result[];
 
   /**
    * Define the modifiers that can be used for this particular DiceTerm type.
@@ -91,18 +91,12 @@ declare class PoolTerm extends RollTerm {
 
   override get total(): undefined | number;
 
-  /* -------------------------------------------- */
-
   /**
    * Return an array of rolled values which are still active within the PoolTerm
    */
   get values(): number[];
 
-  /* -------------------------------------------- */
-
   override get isDeterministic(): boolean;
-
-  /* -------------------------------------------- */
 
   /**
    * Alter the DiceTerm by adding or multiplying the number of dice which are rolled
@@ -117,15 +111,11 @@ declare class PoolTerm extends RollTerm {
 
   protected _evaluateSync(options?: InexactPartial<RollTerm.EvaluationOptions>): this;
 
-  /* -------------------------------------------- */
-
   /**
    * Use the same logic as for the DiceTerm to avoid duplication
    * @see {@link DiceTerm._evaluateModifiers | `DiceTerm#_evaluateModifiers`}
    */
   protected _evaluateModifiers(): void;
-
-  /* -------------------------------------------- */
 
   /**
    * Use the same logic as for the DiceTerm to avoid duplication
@@ -142,11 +132,7 @@ declare class PoolTerm extends RollTerm {
     data: Record<string, unknown>,
   ): FixedInstanceType<T>;
 
-  /* -------------------------------------------- */
-
   toJSON(): Record<string, unknown>;
-
-  /* -------------------------------------------- */
 
   /**
    * Given a string formula, create and return an evaluated PoolTerm object
@@ -166,8 +152,6 @@ declare class PoolTerm extends RollTerm {
    * @returns The constructed PoolTerm comprised of the provided rolls
    */
   static fromRolls<T extends PoolTerm.AnyConstructor>(this: T, rolls?: Roll[]): FixedInstanceType<T>;
-
-  /* -------------------------------------------- */
 
   /** Construct a PoolTerm from parser information. */
   static fromParseNode(node: PoolRollParseNode): PoolTerm;
@@ -230,7 +214,8 @@ declare class PoolTerm extends RollTerm {
 }
 
 declare namespace PoolTerm {
-  type AnyConstructor = typeof AnyPoolTerm;
+  interface Any extends AnyPoolTerm {}
+  interface AnyConstructor extends Identity<typeof AnyPoolTerm> {}
 
   /**
    * @remarks This interface is not defined by foundry itself. It only exists
@@ -261,7 +246,7 @@ declare namespace PoolTerm {
     /**
      * @defaultValue `[]`
      */
-    modifiers?: string[] | undefined;
+    modifiers?: Array<keyof Modifiers> | undefined;
 
     /**
      * @defaultValue `[]`

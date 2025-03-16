@@ -1,3 +1,5 @@
+import type { Identity } from "fvtt-types/utils";
+
 declare class InternalBitMask<T extends Record<string, boolean>> extends Number {
   /**
    * Create a new BitMask instance.
@@ -110,7 +112,8 @@ declare class InternalBitMask<T extends Record<string, boolean>> extends Number 
 }
 
 declare namespace BitMask {
-  export type Any = InternalBitMask<Record<string, boolean>>;
+  interface Any extends InternalBitMask<Record<string, boolean>> {}
+  interface AnyConstructor extends Identity<typeof BitMask> {}
 }
 
 declare const BitMask: typeof InternalBitMask & (new (...args: any) => number);

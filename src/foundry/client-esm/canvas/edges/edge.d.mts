@@ -1,6 +1,6 @@
 import type PolygonVertex from "./vertex.d.mts";
 import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
-import type { NullishProps } from "fvtt-types/utils";
+import type { Identity, NullishProps } from "fvtt-types/utils";
 import type { WallThresholdData } from "../../../common/documents/_types.d.mts";
 
 /**
@@ -14,6 +14,7 @@ declare class Edge {
    * @param b - The second endpoint of the edge
    * @param options - Additional options which describe the edge
    */
+  // options: not null (destructured)
   constructor(a: Canvas.Point, b: Canvas.Point, options?: Edge.ConstructorOptions);
 
   /**
@@ -140,7 +141,11 @@ declare class Edge {
    * @returns True if the edge has a threshold greater than 0 for the source type,
    *          and the source type is within that distance.
    */
-  applyThreshold(sourceType: Edge.AttenuationTypes, sourceOrigin: Canvas.Point, externalRadius?: number): boolean;
+  applyThreshold(
+    sourceType: Edge.AttenuationTypes,
+    sourceOrigin: Canvas.Point,
+    externalRadius?: number | null,
+  ): boolean;
 
   /**
    * Determine the orientation of this Edge with respect to a reference point.
@@ -170,7 +175,7 @@ declare class Edge {
 
 declare namespace Edge {
   interface Any extends AnyEdge {}
-  type AnyConstructor = typeof AnyEdge;
+  interface AnyConstructor extends Identity<typeof AnyEdge> {}
 
   /** @internal */
   type _ConstructorOptions = NullishProps<{

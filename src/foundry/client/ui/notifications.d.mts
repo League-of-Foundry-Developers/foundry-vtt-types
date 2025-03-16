@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -105,8 +105,8 @@ declare global {
   }
 
   namespace Notifications {
-    type Any = AnyNotifications;
-    type AnyConstructor = typeof AnyNotifications;
+    interface Any extends AnyNotifications {}
+    interface AnyConstructor extends Identity<typeof AnyNotifications> {}
 
     interface NotifyOptions {
       /**

@@ -24,7 +24,7 @@ import type {
   ConcreteKeys,
   ValueOf,
   PickValue,
-} from "../../../utils/index.d.mts";
+} from "fvtt-types/utils";
 import type { documents } from "../../client-esm/client.d.mts";
 import type * as CONST from "../constants.mts";
 import type {
@@ -1096,7 +1096,7 @@ declare namespace Document {
     type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[" fvtt_types_internal_document_parent"];
 
     namespace Instance {
-      type Any = Instance<any, any, any>;
+      interface Any extends Instance<any, any, any> {}
 
       type Complete<T extends Any> = T extends Document.Any ? T : never;
     }
@@ -1491,7 +1491,7 @@ declare namespace Document {
   }
 
   namespace Metadata {
-    type Any = Metadata<any>;
+    interface Any extends Metadata<any> {}
 
     interface Default {
       readonly name: "Document";

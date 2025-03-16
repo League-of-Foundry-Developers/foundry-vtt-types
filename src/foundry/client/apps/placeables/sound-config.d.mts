@@ -31,7 +31,7 @@ declare global {
   }
 
   namespace AmbientSoundConfig {
-    type Any = AmbientSoundConfig<any>;
+    interface Any extends AmbientSoundConfig<any> {}
 
     type FormData = Pick<
       foundry.documents.BaseAmbientSound,

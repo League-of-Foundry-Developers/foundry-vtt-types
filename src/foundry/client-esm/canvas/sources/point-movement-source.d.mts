@@ -1,3 +1,4 @@
+import type { Identity } from "../../../../utils/index.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 
@@ -11,6 +12,9 @@ declare class PointMovementSource<
   /** @defaultValue `"move"` */
   static override sourceType: string;
 
+  /** @privateRemarks Not in Foundry code, necessary type override */
+  static override defaultData: PointMovementSource.SourceData;
+
   /**
    * @privateRemarks This is not in foundry's code, but since this class (and its parent) implements `_createShapes`,
    * and we are counting what happens in `initialize` as 'the constructor', this gets to be declared never undefined.
@@ -19,12 +23,19 @@ declare class PointMovementSource<
 }
 
 declare namespace PointMovementSource {
-  type AnyConstructor = typeof AnyPointMovementSource;
+  interface Any extends AnyPointMovementSource {}
+  interface AnyConstructor extends Identity<typeof AnyPointMovementSource> {}
 
-  type SourceData = PointEffectSourceMixin.MixedSourceData;
+  interface SourceData extends PointEffectSourceMixin.MixedSourceData {}
+
+  // This is the only core Point*Source class that isn't configurable, `Token##getMovementSource`
+  // references this class directly, not a `CONFIG` property
 }
 
-declare abstract class AnyPointMovementSource extends PointMovementSource {
+declare abstract class AnyPointMovementSource extends PointMovementSource<
+  PointMovementSource.SourceData,
+  PointSourcePolygon
+> {
   constructor(arg0: never, ...args: never[]);
 }
 

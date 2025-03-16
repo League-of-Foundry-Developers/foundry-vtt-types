@@ -1,4 +1,4 @@
-import type { InexactPartial, IntentionalPartial } from "fvtt-types/utils";
+import type { Identity, IntentionalPartial, NullishProps } from "fvtt-types/utils";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
 /**
@@ -32,8 +32,10 @@ declare abstract class BaseLightSource<
 
   /**
    * The corresponding animation config.
-   * @remarks More broad than it should be to accomodate {@link foundry.canvas.sources.PointDarknessSource | `foundry.canvas.sources.PointDarknessSource`}
-   * TODO: Reevaluate after CONFIG has been gone over
+   * @privateRemarks Only uses {@link CONFIG.Canvas.lightAnimations | `CONFIG.Canvas.lightAnimations`} in
+   * {@link foundry.canvas.sources.BaseLightSource | `foundry.canvas.sources.BaseLightSource`}, but
+   * {@link foundry.canvas.sources.PointDarknessSource | `foundry.canvas.sources.PointDarknessSource`}
+   * overrides to use `.darknessAnimations`, so the union type is necessary
    */
   protected static get ANIMATIONS(): typeof CONFIG.Canvas.lightAnimations | typeof CONFIG.Canvas.darknessAnimations;
 
@@ -41,18 +43,18 @@ declare abstract class BaseLightSource<
    * @defaultValue
    * ```js
    * {
-   * ...super.defaultData,
-   * priority: 0,
-   * alpha: 0.5,
-   * bright: 0,
-   * coloration: 1,
-   * contrast: 0,
-   * dim: 0,
-   * attenuation: 0.5,
-   * luminosity: 0.5,
-   * saturation: 0,
-   * shadows: 0,
-   * vision: false
+   *   ...super.defaultData,
+   *   priority: 0,
+   *   alpha: 0.5,
+   *   bright: 0,
+   *   coloration: 1,
+   *   contrast: 0,
+   *   dim: 0,
+   *   attenuation: 0.5,
+   *   luminosity: 0.5,
+   *   saturation: 0,
+   *   shadows: 0,
+   *   vision: false
    * }
    * ```
    */
@@ -63,27 +65,28 @@ declare abstract class BaseLightSource<
    */
   ratio: number;
 
-  override _initialize(data: IntentionalPartial<SourceData>): void;
+  protected override _initialize(data: IntentionalPartial<SourceData>): void;
 
-  override _updateColorationUniforms(): void;
+  protected override _updateColorationUniforms(): void;
 
-  override _updateIlluminationUniforms(): void;
+  protected override _updateIlluminationUniforms(): void;
 
-  override _updateBackgroundUniforms(): void;
+  protected override _updateBackgroundUniforms(): void;
 
-  override _updateCommonUniforms(shader: AbstractBaseShader): void;
+  protected override _updateCommonUniforms(shader: AbstractBaseShader): void;
 
-  /** @remarks This property is undocumented, and only defined during `_updateCommonUniforms` */
-  cachededAttentuation?: number;
+  /** @remarks Doesn't exist prior to initialization. Ultimately set in `_updateCommonUniforms` */
+  cachedAttenuation?: number;
 
-  /** @remarks This property is undocumented, and only defined during `_updateCommonUniforms` */
-  computedAttentuation?: number;
+  /** @remarks Doesn't exist prior to initialization. Ultimately set in `_updateCommonUniforms` */
+  computedAttenuation?: number;
 
   /**
    * An animation with flickering ratio and light intensity.
    * @param dt      - Delta time
    * @param options - Additional options which modify the torch animation
    */
+  // not null (destructured)
   animateTorch(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
 
   /**
@@ -91,21 +94,13 @@ declare abstract class BaseLightSource<
    * @param dt      - Delta time
    * @param options - Additional options which modify the flame animation
    */
-  animateFlickering(
-    dt: number,
-    options?: RenderedEffectSource.AnimationFunctionOptions &
-      InexactPartial<{
-        /**
-         * Noise amplification (\>1) or dampening (\<1)
-         * @defaultValue `1`
-         */
-        amplification: number;
-      }>,
-  ): void;
+  // not null (destructured)
+  animateFlickering(dt: number, options?: BaseLightSource.AnimateFlickeringOptions): void;
 
   /**
-   * @remarks This property will be generated on any class that is `animateFlickering`'s `this` when it is called.
-   * Foundry does not document it.
+   * @remarks This property will be generated on any class that is `#animateFlickering`'s `this` when it is called.
+   * In Foundry practice this will always be a `BaseLightSource` subclass, so it's defined here. Foundry does not
+   * document it.
    */
   _noise?: SmoothNoise;
 
@@ -114,17 +109,21 @@ declare abstract class BaseLightSource<
    * @param dt      - Delta time
    * @param options - Additional options which modify the pulse animation
    */
+  // not null (destructured)
   animatePulse(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
 
   /**
    * @deprecated since v12, until v14
    * @remarks "BaseLightSource#isDarkness is now obsolete. Use DarknessSource instead."
+   *
+   * Always returns `false`
    */
   get isDarkness(): boolean;
 }
 
 declare namespace BaseLightSource {
-  type AnyConstructor = typeof AnyBaseLightSource;
+  interface Any extends AnyBaseLightSource {}
+  interface AnyConstructor extends Identity<typeof AnyBaseLightSource> {}
 
   type LightAnimationFunction = (
     this: BaseLightSource,
@@ -135,62 +134,89 @@ declare namespace BaseLightSource {
   interface SourceData extends RenderedEffectSource.SourceData {
     /**
      * An opacity for the emitted light, if any
+     * @defaultValue `0.5`
      */
     alpha: number;
 
     /**
      * The allowed radius of bright vision or illumination
+     * @defaultValue `0`
      */
     bright: number;
 
     /**
      * The coloration technique applied in the shader
+     * @defaultValue `1`
      */
     coloration: number;
 
     /**
      * The amount of contrast this light applies to the background texture
+     * @defaultValue `0`
      */
     contrast: number;
 
     /**
      * The allowed radius of dim vision or illumination
+     * @defaultValue `0`
      */
     dim: number;
 
     /**
      * Strength of the attenuation between bright, dim, and dark
+     * @defaultValue `0.5`
      */
     attenuation: number;
 
     /**
      * The luminosity applied in the shader
+     * @defaultValue `0.5`
      */
     luminosity: number;
 
     /**
      * The amount of color saturation this light applies to the background texture
+     * @defaultValue `0`
      */
     saturation: number;
 
     /**
      * The depth of shadows this light applies to the background texture
+     * @defaultValue `0`
      */
     shadows: number;
 
     /**
      * Whether or not this source provides a source of vision
+     * @defaultValue `false`
      */
     vision: boolean;
 
     /**
      * Strength of this source to beat or not negative/positive sources
+     * @defaultValue `0`
      */
     priority: number;
   }
+
+  /** @internal */
+  type _AnimateFlickeringOptions = NullishProps<{
+    /**
+     * Noise amplification (\>1) or dampening (\<1)
+     * @defaultValue `1`
+     * @remarks Parameter default only, `null` is only cast to `0`
+     */
+    amplification: number;
+  }>;
+
+  interface AnimateFlickeringOptions extends RenderedEffectSource.AnimationFunctionOptions, _AnimateFlickeringOptions {}
 }
 
-declare abstract class AnyBaseLightSource extends BaseLightSource {
+declare abstract class AnyBaseLightSource extends BaseLightSource<
+  BaseLightSource.SourceData,
+  PIXI.Polygon,
+  RenderedEffectSource.Layers
+> {
   constructor(arg0: never, ...args: never[]);
 }
 

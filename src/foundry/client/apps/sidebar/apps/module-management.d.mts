@@ -124,7 +124,7 @@ declare global {
   }
 
   namespace ModuleManagement {
-    type Any = ModuleManagement<any>;
+    interface Any extends ModuleManagement<any> {}
 
     type FilterName = "all" | "active" | "inactive";
 

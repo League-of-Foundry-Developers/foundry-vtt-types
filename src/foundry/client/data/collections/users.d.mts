@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { Identity, InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -48,8 +48,8 @@ declare global {
   }
 
   namespace Users {
-    type Any = AnyUsers;
-    type AnyConstructor = typeof AnyUsers;
+    interface Any extends AnyUsers {}
+    interface AnyConstructor extends Identity<typeof AnyUsers> {}
   }
 }
 

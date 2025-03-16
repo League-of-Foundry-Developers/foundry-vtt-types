@@ -9,9 +9,7 @@ expectTypeOf(ambientSoundConfig.document).toEqualTypeOf<AmbientSoundDocument>();
 expectTypeOf(AmbientSoundConfig.defaultOptions).toEqualTypeOf<
   DocumentSheet.Options<AmbientSoundDocument.Implementation>
 >();
-expectTypeOf(ambientSoundConfig.options).toEqualTypeOf<
-  DocumentSheet.Options<AmbientSoundDocument.ConfiguredInstance>
->();
+expectTypeOf(ambientSoundConfig.options).toEqualTypeOf<DocumentSheet.Options<AmbientSoundDocument.Implementation>>();
 expectTypeOf(ambientSoundConfig.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(ambientSoundConfig.render(true)).toEqualTypeOf<AmbientSoundConfig>();
 

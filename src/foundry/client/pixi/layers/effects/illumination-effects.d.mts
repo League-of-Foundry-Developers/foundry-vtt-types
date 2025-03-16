@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -7,8 +7,9 @@ declare global {
   class CanvasIlluminationEffects extends CanvasLayer {
     /**
      * The filter used to mask visual effects on this layer
+     * @remarks Only `undefined` prior to first draw
      */
-    filter: VisualEffectsMaskingFilter | undefined;
+    filter: VisualEffectsMaskingFilter.ConfiguredInstance | undefined;
 
     /**
      * The container holding the lights.
@@ -42,8 +43,12 @@ declare global {
 
     /**
      * Set or retrieve the illumination background color.
+     * @remarks Foundry types this as `number` but it gets passed to {@link Color.from}
      */
-    set backgroundColor(color: number);
+    set backgroundColor(color: Color.Source);
+
+    /** @remarks This getter doesn't actually exist, it's only here to correct the type inferred from the setter */
+    get backgroundColor(): undefined;
 
     /**
      * Clear illumination effects container
@@ -55,7 +60,7 @@ declare global {
      * @param force - Force cached container invalidation?
      *                (default: `false`)
      */
-    invalidateDarknessLevelContainer(force: boolean): void;
+    invalidateDarknessLevelContainer(force?: boolean | null): void;
 
     /**
      * Create the background color texture used by illumination point source meshes.
@@ -88,18 +93,20 @@ declare global {
 
     /**
      * @deprecated since v12, will be removed in v14
+     * @remarks "CanvasIlluminationEffects#background is now obsolete."
      */
-    background: null;
+    background(): null;
 
     /**
      * @deprecated since v12, will be removed in v14
-     * @remarks `"CanvasIlluminationEffects#globalLight has been deprecated without replacement. Check the canvas.environment.globalLightSource.active instead."`
+     * @remarks "CanvasIlluminationEffects#globalLight has been deprecated without replacement. Check the canvas.environment.globalLightSource.active instead."
      */
     get globalLight(): boolean;
   }
 
   namespace CanvasIlluminationEffects {
-    type AnyConstructor = typeof AnyCanvasIlluminationEffects;
+    interface Any extends AnyCanvasIlluminationEffects {}
+    interface AnyConstructor extends Identity<typeof AnyCanvasIlluminationEffects> {}
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}
 
@@ -123,19 +130,15 @@ declare global {
      * }
      * ```
      */
-    static override textureConfiguration: NullishProps<{
-      multisample: PIXI.MSAA_QUALITY;
-      scaleMode: PIXI.SCALE_MODES;
-      format: PIXI.FORMATS;
-      mipmap: PIXI.MIPMAP_MODES;
-    }>;
+    static override textureConfiguration: CachedContainer.TextureConfiguration;
 
     /** @privateRemarks Including to protect duck typing due to overall similarities b/w DarknessLevelContainer and CachedContainer */
     #onChildChange(): void;
   }
 
   namespace DarknessLevelContainer {
-    type AnyConstructor = typeof AnyCanvasIlluminationEffects;
+    interface Any extends AnyDarknessLevelContainer {}
+    interface AnyConstructor extends Identity<typeof AnyDarknessLevelContainer> {}
   }
 }
 

@@ -30,7 +30,7 @@ declare global {
   }
 
   namespace CombatantConfig {
-    type Any = CombatantConfig<any>;
+    interface Any extends CombatantConfig<any> {}
 
     interface Options extends DocumentSheet.Options<Combatant.Implementation> {
       id: "combatant-config";
