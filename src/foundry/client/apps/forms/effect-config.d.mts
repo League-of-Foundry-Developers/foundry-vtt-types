@@ -8,7 +8,7 @@ declare global {
    */
   class ActiveEffectConfig<
     Options extends
-      DocumentSheetOptions<ActiveEffect.Implementation> = DocumentSheetOptions<ActiveEffect.Implementation>,
+      DocumentSheet.Options<ActiveEffect.Implementation> = DocumentSheet.Options<ActiveEffect.Implementation>,
   > extends DocumentSheet<Options, ActiveEffect.Implementation> {
     /**
      * @defaultValue
@@ -22,7 +22,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<ActiveEffect.Implementation>;
+    static override get defaultOptions(): DocumentSheet.Options<ActiveEffect.Implementation>;
 
     override getData(
       options?: Partial<Options>,
@@ -54,7 +54,7 @@ declare global {
 
     type ActiveEffectConfigData<
       Options extends
-        DocumentSheetOptions<ActiveEffect.Implementation> = DocumentSheetOptions<ActiveEffect.Implementation>,
+        DocumentSheet.Options<ActiveEffect.Implementation> = DocumentSheet.Options<ActiveEffect.Implementation>,
     > = SimpleMerge<
       DocumentSheet.DocumentSheetData<Options, ActiveEffect.Implementation>,
       {

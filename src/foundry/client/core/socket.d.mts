@@ -11,7 +11,7 @@ declare global {
      */
     static dispatch<DatabaseAction extends keyof DatabaseOperationMap>(
       eventName: string,
-      request: DocumentSocketRequest<DatabaseAction> | ManageCompendiumRequest,
+      request: DocumentSocketRequest<DatabaseAction> | CompendiumCollection.ManageCompendiumRequest,
     ): Promise<SocketInterface.SocketResponse>;
   }
 

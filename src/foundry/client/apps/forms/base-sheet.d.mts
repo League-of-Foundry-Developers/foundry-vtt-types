@@ -34,7 +34,7 @@ declare global {
     type Any = BaseSheet<any>;
 
     interface Options<ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any>
-      extends DocumentSheetOptions<ConcreteDocument> {}
+      extends DocumentSheet.Options<ConcreteDocument> {}
 
     interface BaseSheetData extends DocumentSheet.DocumentSheetData<Options, foundry.abstract.Document.Any> {
       hasName: boolean;

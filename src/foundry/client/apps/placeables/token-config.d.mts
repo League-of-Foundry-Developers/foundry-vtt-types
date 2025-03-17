@@ -7,7 +7,7 @@ declare global {
    */
   class TokenConfig<
     Options extends
-      DocumentSheetOptions<TokenDocument.Implementation> = DocumentSheetOptions<TokenDocument.Implementation>,
+      DocumentSheet.Options<TokenDocument.Implementation> = DocumentSheet.Options<TokenDocument.Implementation>,
   > extends DocumentSheet<Options, TokenDocument.Implementation | Actor.Implementation> {
     constructor(object: TokenDocument.Implementation | Actor.Implementation, options?: Partial<Options>);
 
@@ -44,7 +44,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<TokenDocument.Implementation>;
+    static override get defaultOptions(): DocumentSheet.Options<TokenDocument.Implementation>;
 
     /**
      * A convenience accessor to test whether we are configuring the prototype Token for an Actor.
@@ -185,7 +185,7 @@ declare global {
    */
   class DefaultTokenConfig<
     Options extends
-      DocumentSheetOptions<TokenDocument.Implementation> = DocumentSheetOptions<TokenDocument.Implementation>,
+      DocumentSheet.Options<TokenDocument.Implementation> = DocumentSheet.Options<TokenDocument.Implementation>,
   > extends TokenConfig<Options> {
     constructor(object?: unknown, options?: Partial<Options>);
 
@@ -206,7 +206,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<TokenDocument.Implementation>;
+    static override get defaultOptions(): DocumentSheet.Options<TokenDocument.Implementation>;
 
     override get id(): string;
 
@@ -245,12 +245,12 @@ declare global {
   }
 }
 
-declare abstract class AnyTokenConfig extends TokenConfig<DocumentSheetOptions<TokenDocument.Implementation>> {
+declare abstract class AnyTokenConfig extends TokenConfig<DocumentSheet.Options<TokenDocument.Implementation>> {
   constructor(arg0: never, ...args: never[]);
 }
 
 declare abstract class AnyDefaultTokenConfig extends DefaultTokenConfig<
-  DocumentSheetOptions<TokenDocument.Implementation>
+  DocumentSheet.Options<TokenDocument.Implementation>
 > {
   constructor(arg0: never, ...args: never[]);
 }

@@ -162,7 +162,7 @@ declare global {
       }
     }
 
-    interface Options extends DocumentSheetOptions<Actor.Implementation> {
+    interface Options extends DocumentSheet.Options<Actor.Implementation> {
       token?: TokenDocument.Implementation | null;
     }
 

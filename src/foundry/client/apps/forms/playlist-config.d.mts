@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class PlaylistConfig<
-    Options extends DocumentSheetOptions<Playlist.Implementation> = DocumentSheetOptions<Playlist.Implementation>,
+    Options extends DocumentSheet.Options<Playlist.Implementation> = DocumentSheet.Options<Playlist.Implementation>,
   > extends DocumentSheet<Options, Playlist.Implementation> {
     /**
      * @defaultValue
@@ -17,13 +17,13 @@ declare global {
      * options.width = 360;
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions<Playlist.Implementation>;
+    static get defaultOptions(): DocumentSheet.Options<Playlist.Implementation>;
 
     override get title(): string;
 
     override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<PlaylistConfig.PlaylistConfigData>>;
 
-    protected override _getFilePickerOptions(event: PointerEvent): FilePickerOptions;
+    protected override _getFilePickerOptions(event: PointerEvent): FilePicker.Options;
 
     /**
      * @remarks The return type could be given more concretely but it is not supposed to be used.
@@ -35,7 +35,7 @@ declare global {
     type Any = PlaylistConfig<any>;
 
     interface PlaylistConfigData<
-      Options extends DocumentSheetOptions<Playlist.Implementation> = DocumentSheetOptions<Playlist.Implementation>,
+      Options extends DocumentSheet.Options<Playlist.Implementation> = DocumentSheet.Options<Playlist.Implementation>,
     > extends DocumentSheet.DocumentSheetData<Options, Playlist.Implementation> {
       modes: Record<ValueOf<typeof foundry.CONST.PLAYLIST_MODES>, string>;
       sorting: Record<ValueOf<typeof foundry.CONST.PLAYLIST_SORT_MODES>, string>;

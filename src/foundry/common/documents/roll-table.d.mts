@@ -125,11 +125,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
-    data: RollTable.CreateData,
-    options: RollTable.Database.OnCreateOperation,
-    userId: string,
-  ): void;
+  protected _onCreate(data: RollTable.CreateData, options: RollTable.Database.OnCreateOperation, userId: string): void;
 
   protected static _preCreateOperation(
     documents: RollTable.Implementation[],

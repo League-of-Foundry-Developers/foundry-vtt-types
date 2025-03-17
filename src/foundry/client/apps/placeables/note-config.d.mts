@@ -7,7 +7,7 @@ declare global {
    */
   class NoteConfig<
     Options extends
-      DocumentSheetOptions<NoteDocument.Implementation> = DocumentSheetOptions<NoteDocument.Implementation>,
+      DocumentSheet.Options<NoteDocument.Implementation> = DocumentSheet.Options<NoteDocument.Implementation>,
   > extends DocumentSheet<Options, NoteDocument.Implementation> {
     /**
      * @defaultValue
@@ -19,7 +19,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<NoteDocument.Implementation>;
+    static override get defaultOptions(): DocumentSheet.Options<NoteDocument.Implementation>;
 
     override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 

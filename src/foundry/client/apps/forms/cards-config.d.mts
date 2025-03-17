@@ -127,7 +127,7 @@ declare global {
   }
 
   namespace CardsConfig {
-    interface Options extends DocumentSheetOptions<Cards.Implementation> {
+    interface Options extends DocumentSheet.Options<Cards.Implementation> {
       sort: string;
     }
 

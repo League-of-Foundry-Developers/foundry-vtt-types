@@ -26,10 +26,10 @@ expectTypeOf(app.object).toEqualTypeOf<{ foo: string }>();
 
 const doc = new AmbientLightDocument();
 const sheet = new (class extends DocumentSheet<
-  DocumentSheetOptions<AmbientLightDocument.Implementation>,
+  DocumentSheet.Options<AmbientLightDocument.Implementation>,
   AmbientLightDocument.Implementation
 > {})(doc);
 
-assertType<FormApplication<DocumentSheetOptions, AmbientLightDocument>>(sheet);
+assertType<FormApplication<DocumentSheet.Options, AmbientLightDocument>>(sheet);
 expectTypeOf(sheet.isEditable).toEqualTypeOf<boolean>();
 expectTypeOf(sheet.document).toEqualTypeOf<AmbientLightDocument>();

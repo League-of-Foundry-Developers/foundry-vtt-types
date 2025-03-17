@@ -44,7 +44,7 @@ declare global {
       "texture.tint": string;
     };
 
-    interface Options extends DocumentSheetOptions<TileDocument.Implementation> {
+    interface Options extends DocumentSheet.Options<TileDocument.Implementation> {
       /**
        * Configure a preview version of a tile which is not yet saved
        */

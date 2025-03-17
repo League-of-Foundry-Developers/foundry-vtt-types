@@ -75,7 +75,7 @@ declare global {
   namespace AdventureExporter {
     type Any = AdventureExporter<any>;
 
-    interface Options extends DocumentSheetOptions<Adventure.Implementation> {}
+    interface Options extends DocumentSheet.Options<Adventure.Implementation> {}
 
     interface AdventureContentTreeNode {
       /** An alias for folder.id */

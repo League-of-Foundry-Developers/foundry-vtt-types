@@ -7,10 +7,10 @@ const measuredTemplateConfig = new MeasuredTemplateConfig(measuredTemplateDocume
 expectTypeOf(measuredTemplateConfig.object).toEqualTypeOf<MeasuredTemplateDocument>();
 expectTypeOf(measuredTemplateConfig.document).toEqualTypeOf<MeasuredTemplateDocument>();
 expectTypeOf(MeasuredTemplateConfig.defaultOptions).toEqualTypeOf<
-  DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance>
+  DocumentSheet.Options<MeasuredTemplateDocument.ConfiguredInstance>
 >();
 expectTypeOf(measuredTemplateConfig.options).toEqualTypeOf<
-  DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance>
+  DocumentSheet.Options<MeasuredTemplateDocument.ConfiguredInstance>
 >();
 expectTypeOf(measuredTemplateConfig.getData()).toEqualTypeOf<
   MaybePromise<GetDataReturnType<MeasuredTemplateConfig.MeasuredTemplateConfigData>>

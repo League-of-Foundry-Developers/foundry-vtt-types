@@ -7,7 +7,7 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class CardConfig<
-    Options extends DocumentSheetOptions<Card.Implementation> = DocumentSheetOptions<Card.Implementation>,
+    Options extends DocumentSheet.Options<Card.Implementation> = DocumentSheet.Options<Card.Implementation>,
   > extends DocumentSheet<Options, Card.Implementation> {
     /**
      * @defaultValue
@@ -21,7 +21,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<Card.Implementation>;
+    static override get defaultOptions(): DocumentSheet.Options<Card.Implementation>;
 
     override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<CardConfig.CardConfigData>>;
 
@@ -39,7 +39,7 @@ declare global {
     type Any = CardConfig<any>;
 
     interface CardConfigData<
-      Options extends DocumentSheetOptions<Card.Implementation> = DocumentSheetOptions<Card.Implementation>,
+      Options extends DocumentSheet.Options<Card.Implementation> = DocumentSheet.Options<Card.Implementation>,
     > extends DocumentSheet.DocumentSheetData<Options, Card.Implementation> {
       //TODO: Find if we can better type this
       types: Record<string, string>;
