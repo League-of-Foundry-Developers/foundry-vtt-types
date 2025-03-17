@@ -214,11 +214,11 @@ declare namespace TokenRingConfig {
 
   /**
    * @remarks The type of any given {@link TokenRingConfig.CORE_TOKEN_RINGS | `TokenRingConfig.CORE_TOKEN_RINGS`} entry prior to
-   * {@link TokenRingConfig.initialize | `initialize`} being called between the `setup` and `ready` hooks
+   * {@link TokenRingConfig.initialize | `TokenRingConfig#initialize`} being called between the `setup` and `ready` hooks; Plain objects at this point
    */
-  type StoredCoreRingData = Required<Pick<InitializedCoreRingData, "id" | "label" | "spritesheet">>;
+  type InitialCoreRingData = Required<Pick<SourceCoreRingData, "id" | "label" | "spritesheet">>;
 
-  type StoredCoreRings = Record<CoreRingIDs, StoredCoreRingData>;
+  type InitialCoreRings = Record<CoreRingIDs, InitialCoreRingData>;
 
   /**
    * @remarks Due to the way the core configs are initialized, {@link TokenRingConfig.CORE_TOKEN_RINGS | `TokenRingConfig.CORE_TOKEN_RINGS`}
@@ -226,11 +226,11 @@ declare namespace TokenRingConfig {
    * ```js
    * CONFIG.Token.ring.getConfig("coreSteel")._source === TokenRingConfig.CORE_TOKEN_RINGS.coreSteel
    * ```
-   * after {@link TokenRingConfig.initialize | `initialize`} has been called, which happens between the `setup` and `ready` hooks
+   * after {@link TokenRingConfig.initialize | `TokenRingConfig#initialize`} has been called, which happens between the `setup` and `ready` hooks
    */
-  type InitializedCoreRingData = foundry.data.fields.SchemaField.InnerPersistedType<DynamicRingData.Schema>;
+  type SourceCoreRingData = foundry.data.fields.SchemaField.InnerPersistedType<DynamicRingData.Schema>;
 
-  type InitializedCoreRings = Record<CoreRingIDs, InitializedCoreRingData>;
+  type SourceCoreRings = Record<CoreRingIDs, SourceCoreRingData>;
 
   /**
    * Core token rings used in Foundry VTT.
@@ -240,9 +240,9 @@ declare namespace TokenRingConfig {
    * ```js
    * CONFIG.Token.ring.getConfig("coreSteel")._source === TokenRingConfig.CORE_TOKEN_RINGS.coreSteel
    * ```
-   * after {@link TokenRingConfig.initialize | `initialize`} has been called, which happens between the `setup` and `ready` hooks
+   * after {@link TokenRingConfig.initialize | `TokenRingConfig#initialize`} has been called, which happens between the `setup` and `ready` hooks
    */
-  type CoreTokenRings = InitializedOn<InitializedCoreRings, "ready", StoredCoreRings>;
+  type CoreTokenRings = InitializedOn<SourceCoreRings, "ready", InitialCoreRings>;
 }
 
 declare abstract class AnyTokenRingConfig extends TokenRingConfig {
