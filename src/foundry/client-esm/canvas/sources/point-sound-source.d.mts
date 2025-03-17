@@ -1,4 +1,4 @@
-import type { FixedInstanceType, NullishProps } from "fvtt-types/utils";
+import type { FixedInstanceType, NullishProps, RequiredProps } from "fvtt-types/utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 
@@ -12,15 +12,18 @@ declare class PointSoundSource<
   /** @defaultValue `"sound"` */
   static override sourceType: string;
 
+  /** @privateRemarks Not in Foundry code, necessary type override */
+  static override defaultData: PointSoundSource.SourceData;
+
   /**
    * @privateRemarks This is not in foundry's code, but since this class (and its parent) implements `_createShapes`,
    * and we are counting what happens in `initialize` as 'the constructor', this gets to be declared never undefined.
    */
   override shape: SourceShape;
 
-  override get effectsCollection(): Collection<this>;
+  override get effectsCollection(): foundry.utils.Collection<this>;
 
-  override _getPolygonConfiguration(): PointSourcePolygon.Config;
+  override _getPolygonConfiguration(): PointSoundSource.PolygonConfig;
 
   /**
    * Get the effective volume at which an AmbientSound source should be played for a certain listener.
@@ -44,13 +47,15 @@ declare namespace PointSoundSource {
 
   interface GetVolumeMultiplierOptions extends _GetVolumeMultiplierOptions {}
 
-  type SourceData = PointEffectSourceMixin.MixedSourceData;
+  interface SourceData extends PointEffectSourceMixin.MixedSourceData {}
+
+  interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold"> {}
 
   type ConfiguredClass = CONFIG["Canvas"]["soundSourceClass"];
   type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 }
 
-declare abstract class AnyPointSoundSource extends PointSoundSource {
+declare abstract class AnyPointSoundSource extends PointSoundSource<PointSoundSource.SourceData, PointSourcePolygon> {
   constructor(arg0: never, ...args: never[]);
 }
 
