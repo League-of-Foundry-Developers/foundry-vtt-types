@@ -1604,7 +1604,7 @@ declare namespace Document {
     /** Used for {@link Document.deleteDocuments | `Document.deleteDocuments`} */
     type DeleteDocumentsOperation<Op extends DatabaseDeleteOperation> = NullishProps<Omit<Op, "ids" | "modifiedTime">>;
 
-    /** Used for {@link Document.delete} */
+    /** Used for {@link Document.delete | `Document.delete`} */
     type DeleteOperationInstance<Op extends DatabaseDeleteOperation> = InexactPartial<
       Omit<Op, "ids" | "parent" | "pack">
     >;
