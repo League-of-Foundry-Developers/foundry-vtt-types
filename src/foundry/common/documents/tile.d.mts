@@ -94,10 +94,17 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
     operation?: Document.Database.DeleteDocumentsOperation<TileDocument.Database.Delete>,
   ): Promise<TileDocument.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: TileDocument.CreateData | TileDocument.CreateData[],
-    operation?: Document.Database.CreateOperation<TileDocument.Database.Create<Temporary>>,
-  ): Promise<TileDocument.Implementation | undefined>;
+    operation?: TileDocument.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<TileDocument.Implementation, Temporary> | undefined>;
+
+  override update(
+    data: TileDocument.UpdateData | undefined,
+    operation?: TileDocument.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: TileDocument.Database.DeleteOperation): Promise<this | undefined>;
 
   static get(documentId: string, options?: Document.Database.GetOptions): TileDocument.Implementation | null;
 

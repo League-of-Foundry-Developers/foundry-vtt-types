@@ -887,10 +887,87 @@ declare global {
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
-     * _onUpdateOperation, _onDeleteOperation, _preCreateDescendantDocuments, _preUpdateDescendantDocuments, _preDeleteDescendantDocuments,
-     * _onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     * _onUpdateOperation, _onDeleteOperation are all overridden but with no signature changes from their definition in BaseToken.
      */
+
+    protected override _preCreateDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _onCreateDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _preDeleteDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _onDeleteDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
 
     /**
      * Is to Token document updated such that the Regions the Token is contained in may change?
@@ -1008,85 +1085,6 @@ declare global {
      */
 
     // ClientDocument overrides
-
-    protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
-      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      data: CreateData[],
-      options: Document.Database.CreateOptions<Operation>,
-      userId: string,
-    ): void;
-
-    protected override _onCreateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
-      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      documents: InstanceType<DescendantDocumentType>,
-      data: CreateData[],
-      options: Document.Database.CreateOptions<Operation>,
-      userId: string,
-    ): void;
-
-    protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
-      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      changes: UpdateData[],
-      options: Document.Database.UpdateOptions<Operation>,
-      userId: string,
-    ): void;
-
-    protected override _onUpdateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
-      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      documents: InstanceType<DescendantDocumentType>,
-      changes: UpdateData[],
-      options: Document.Database.UpdateOptions<Operation>,
-      userId: string,
-    ): void;
-
-    protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
-      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      ids: string[],
-      options: Document.Database.DeleteOptions<Operation>,
-      userId: string,
-    ): void;
-
-    protected _onDeleteDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
-      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      documents: InstanceType<DescendantDocumentType>,
-      ids: string[],
-      options: Document.Database.DeleteOptions<Operation>,
-      userId: string,
-    ): void;
 
     static override defaultName(
       context: Document.DefaultNameContext<"base", NonNullable<TokenDocument.Parent>>,
