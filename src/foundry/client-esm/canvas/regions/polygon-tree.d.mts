@@ -1,13 +1,9 @@
-import type { Point } from "../../../common/types.d.mts";
-
-/** The node of a {@link RegionPolygonTree}.*/
+/** The node of a {@link RegionPolygonTree | `RegionPolygonTree`}.*/
 declare class RegionPolygonTreeNode {
-  #regionPolygonTreeNode: true;
-
   /**
    * Create a RegionPolygonTreeNode.
    * @param parent    - The parent node.
-   * @internal
+   * @remarks Foundry marked `@internal`
    */
   constructor(parent: RegionPolygonTreeNode | null);
 
@@ -15,62 +11,77 @@ declare class RegionPolygonTreeNode {
    * Create a node from the Clipper path and add it to the children of the parent.
    * @param clipperPath   - The clipper path of this node.
    * @param parent        - The parent node or `null` if root.
-   * @internal
+   * @remarks Foundry marked `@internal`, called exclusively  {@link RegionPolygonTree._fromClipperPolyTree | `RegionPolygonTree._fromClipperPolyTree`}
    */
-  static _fromClipperPath(
-    clipperPath: ClipperLib.IntPoint[],
+  protected static _fromClipperPath(
+    clipperPath: ClipperLib.Path,
     parent: RegionPolygonTreeNode | null,
   ): RegionPolygonTreeNode;
 
   /** The parent of this node or `null` if this is the root node. */
   get parent(): RegionPolygonTreeNode | null;
 
-  /** The children of this node. */
-  get children(): ReadonlyArray<RegionPolygonTreeNode>;
+  /**
+   * The children of this node.
+   * @remarks Foundry types this as `ReadonlyArray<>`, but does nothing to prevent writes
+   * at runtime, just returning a reference to `this.#children`
+   */
+  get children(): RegionPolygonTreeNode[];
 
   /**
    * The depth of this node.
+   *
    * The depth of the root node is 0.
    */
   get depth(): number;
 
   /**
    * Is this a hole?
+   *
    * The root node is a hole.
    */
   get isHole(): boolean;
 
   /**
    * The Clipper path of this node.
+   *
    * It is empty in case of the root node.
+   * @remarks Foundry types this as `ReadonlyArray<>`, but does nothing to prevent writes
+   * at runtime, just returning a reference to `this.#clipperPath`
    */
-  get clipperPath(): ReadonlyArray<ClipperLib.IntPoint> | null;
+  get clipperPath(): ClipperLib.Path | null;
 
   /**
    * The polygon of this node.
+   *
    * It is `null` in case of the root node.
    */
   get polygon(): PIXI.Polygon | null;
 
   /**
    * The points of the polygon ([x0, y0, x1, y1, ...]).
+   *
    * They are `null` in case of the root node.
+   * @remarks Foundry types this as `ReadonlyArray<>`, but does nothing to prevent writes
+   * at runtime, just returning a reference to `this.polygon.points`
    */
-  get points(): ReadonlyArray<number> | null;
+  get points(): number[] | null;
 
   /**
    * The bounds of the polygon.
+   *
    * They are `null` in case of the root node.
    */
   get bounds(): PIXI.Rectangle | null;
 
+  /** @privateRemarks Recursively iterates all child nodes */
   [Symbol.iterator](): Generator<RegionPolygonTreeNode>;
 
   /**
    * Test whether given point is contained within this node.
-   * @param point     - The point.
+   * @param point - The point.
    */
-  testPoint(point: Point): boolean;
+  testPoint(point: Canvas.Point): boolean;
 
   /**
    * Test circle containment/intersection with this node.
@@ -80,22 +91,40 @@ declare class RegionPolygonTreeNode {
    *                  - 0: the circle is intersects the boundary.
    *                  - 1: the circle is in the interior and does not intersect the boundary.
    */
-  testCircle(center: Point, radius: number): -1 | 0 | 1;
+  testCircle(center: Canvas.Point, radius: number): -1 | 0 | 1;
 }
 
-/** The polygon tree of a {@link Region}. */
+declare namespace RegionPolygonTreeNode {
+  interface Any extends AnyRegionPolygonTreeNode {}
+  type AnyConstructor = typeof AnyRegionPolygonTreeNode;
+}
+
+/** The polygon tree of a {@link Region | `Region`}. */
 declare class RegionPolygonTree extends RegionPolygonTreeNode {
   /**
    * Create a RegionPolygonTree
-   * @internal
+   * @remarks Foundry marked `@internal`
    */
   constructor();
 
   /**
    * Create the tree from a Clipper polygon tree.
-   * @internal
+   * @remarks Foundry marked `@internal`, called exclusively from {@link Region#polygonTree | `Region#polygonTree`}
    */
-  static _fromClipperPolyTree(clipperPolyTree: ClipperLib.PolyTree): RegionPolygonTree;
+  protected static _fromClipperPolyTree(clipperPolyTree: ClipperLib.PolyTree): RegionPolygonTree;
+}
+
+declare namespace RegionPolygonTree {
+  interface Any extends AnyRegionPolygonTree {}
+  type AnyConstructor = typeof AnyRegionPolygonTree;
+}
+
+declare abstract class AnyRegionPolygonTreeNode extends RegionPolygonTreeNode {
+  constructor(arg0: never, ...args: never[]);
+}
+
+declare abstract class AnyRegionPolygonTree extends RegionPolygonTree {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default RegionPolygonTree;
