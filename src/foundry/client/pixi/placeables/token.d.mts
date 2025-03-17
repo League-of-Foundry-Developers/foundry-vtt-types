@@ -504,7 +504,7 @@ declare global {
     /**
      * The Token's current central position
      */
-    get center(): Canvas.Point;
+    get center(): PIXI.Point;
 
     /**
      * The Token's central position, adjusted in each direction by one or zero pixels to offset it relative to walls.

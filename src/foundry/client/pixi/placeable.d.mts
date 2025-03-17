@@ -1,4 +1,4 @@
-import type { MakeConform, ValueOf } from "fvtt-types/utils";
+import type { HandleEmptyObject, InexactPartial, MakeConform, NullishProps } from "fvtt-types/utils";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
 
@@ -10,7 +10,7 @@ declare global {
    * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
    */
   abstract class PlaceableObject<
-    D extends Document.AnyChild<Scene.Implementation | null> = Document.AnyChild<Scene.Implementation | null>,
+    D extends PlaceableObject.CanvasDocument = PlaceableObject.CanvasDocument,
   > extends RenderFlagsMixin(PIXI.Container) {
     /**
      * @param document - The Document instance which is represented by this object
@@ -44,7 +44,7 @@ declare global {
      * Allow objects to be culled when off-screen
      * @defaultValue `false`
      */
-    cullable: boolean;
+    override cullable: boolean;
 
     /**
      * Identify the official Document name for this PlaceableObject class
@@ -79,7 +79,7 @@ declare global {
     /**
      * The mouse interaction state of this placeable.
      */
-    get interactionState(): ValueOf<typeof MouseInteractionManager.INTERACTION_STATES> | undefined;
+    get interactionState(): MouseInteractionManager.INTERACTION_STATES | undefined;
 
     /**
      * The bounding box for this PlaceableObject.
@@ -89,9 +89,8 @@ declare global {
 
     /**
      * The central coordinate pair of the placeable object based on it's own width and height
-     * @remarks `{ x: number, y: number }` has been added because of `Token.center`
      */
-    get center(): PIXI.Point | { x: number; y: number };
+    get center(): PIXI.Point;
 
     /**
      * The id of the corresponding Document which this PlaceableObject represents.
@@ -122,13 +121,13 @@ declare global {
     /**
      * Provide a reference to the CanvasLayer which contains this PlaceableObject.
      */
-    get layer(): GetKeyWithShape<D, "layer", PIXI.Container>;
+    get layer(): PlaceableObject.Layer<D>;
 
     /**
      * A Form Application which is used to configure the properties of this Placeable Object or the Document it
      * represents.
      */
-    get sheet(): GetKeyWithShape<D, "sheet", FormApplication | ApplicationV2.Any | null>;
+    get sheet(): PlaceableObject.Sheet<D>;
 
     /**
      * An indicator for whether the object is currently controlled
@@ -137,6 +136,7 @@ declare global {
 
     /**
      * An indicator for whether the object is currently a hover target
+     * @remarks In JS the setter treats all non-boolean values as `false`
      */
     get hover(): boolean;
 
@@ -151,8 +151,9 @@ declare global {
      * Get the snapped position for a given position or the current position
      * @param position - The position to be used instead of the current position
      * @returns The snapped position
+     * @remarks Calls the titular method of `this.layer`. If `position` is not provided or nullish, passes `this.document` instead
      */
-    getSnappedPosition(position?: Canvas.Point): Canvas.Point;
+    getSnappedPosition(position?: Canvas.Point | null): Canvas.Point;
 
     override applyRenderFlags(): void;
 
@@ -169,7 +170,7 @@ declare global {
      */
     clear(): this | void;
 
-    override destroy(options?: Parameters<PIXI.Container["destroy"]>[0]): void;
+    override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     /**
      * The inner _destroy method which may optionally be defined by each PlaceableObject subclass.
@@ -181,13 +182,14 @@ declare global {
      * Draw the placeable object into its parent container
      * @returns The drawn object
      */
-    draw(options?: Record<string, unknown>): Promise<this>;
+    draw(options?: HandleEmptyObject<PlaceableObject.DrawOptions>): Promise<this>;
 
     /**
      * The inner _draw method which must be defined by each PlaceableObject subclass.
      * @param options - Options which may modify the draw workflow
+     * @remarks The options passed to {@link PlaceableObject.draw | `PlaceableObject#draw`} get forwarded here
      */
-    protected abstract _draw(options?: Record<string, unknown>): Promise<void>;
+    protected abstract _draw(options: undefined): Promise<void>;
 
     /**
      * Execute a partial draw.
@@ -202,10 +204,11 @@ declare global {
      * @param options - Options which may modify the refresh workflow
      * @returns The refreshed object
      */
-    refresh(options?: Record<string, unknown>): this;
+    refresh(options?: HandleEmptyObject<PlaceableObject.RefreshOptions>): this;
 
     /**
      * Update the quadtree.
+     * @remarks Foundry marked `@internal`
      */
     protected _updateQuadtree(): void;
 
@@ -214,6 +217,7 @@ declare global {
     /**
      * Is this PlaceableObject within the selection rectangle?
      * @param rectangle - The selection rectangle
+     * @remarks Foundry marked `@internal`
      */
     protected _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
 
@@ -252,13 +256,15 @@ declare global {
      *                  (default: `{}`)
      * @returns A flag denoting whether control was successful
      */
+    // options: not null (property access with only a parameter default)
     control(options?: PlaceableObject.ControlOptions): boolean;
 
     /**
      * Additional events which trigger once control of the object is established
      * @param options - Optional parameters which apply for specific implementations
+     * @remarks The options passed to {@link PlaceableObject.control | `PlaceableObject#control`} get forwarded here
      */
-    protected _onControl(options?: PlaceableObject.ControlOptions): void;
+    protected _onControl(options: PlaceableObject.ControlOptions | undefined): void;
 
     /**
      * Release control over a PlaceableObject, removing it from the controlled set
@@ -266,13 +272,15 @@ declare global {
      *                  (default: `{}`)
      * @returns A Boolean flag confirming the object was released.
      */
-    release(options?: PlaceableObject.ReleaseOptions): boolean;
+    // options: not null (parameter default only, forwarded to `_onRelease`)
+    release(options?: HandleEmptyObject<PlaceableObject.ReleaseOptions>): boolean;
 
     /**
      * Additional events which trigger once control of the object is released
      * @param options - Options which modify the releasing workflow
+     * @remarks The options passed to {@link PlaceableObject.release | `PlaceableObject#release`} get forwarded here
      */
-    protected _onRelease(options?: PlaceableObject.ReleaseOptions): void;
+    protected _onRelease(options: HandleEmptyObject<PlaceableObject.ReleaseOptions> | undefined): void;
 
     /**
      * Clone the placeable object, returning a new object with identical attributes.
@@ -280,7 +288,7 @@ declare global {
      * If you plan to use it permanently you should call the create method.
      * @returns A new object with identical data
      */
-    clone(): PlaceableObject;
+    clone(): this;
 
     /**
      * Rotate the PlaceableObject to a certain angle of facing
@@ -293,37 +301,9 @@ declare global {
     /**
      * Determine a new angle of rotation for a PlaceableObject either from an explicit angle or from a delta offset.
      * @param options - An object which defines the rotation update parameters
-     * @param angle - An explicit angle, either this or delta must be provided
-     *                (default: `null`)
-     * @param delta - A relative angle delta, either this or the angle must be provided
-     *                (default: `0`)
-     * @param snap  - A precision (in degrees) to which the resulting angle should snap.
-     *                (default: `0`)
      * @returns The new rotation angle for the object
      */
-    protected _updateRotation({
-      angle,
-      delta,
-      snap,
-    }?: {
-      /**
-       * An explicit angle, either this or delta must be provided
-       * @defaultValue `undefined`
-       */
-      angle?: number;
-
-      /**
-       * A relative angle delta, either this or the angle must be provided
-       * @defaultValue `0`
-       */
-      delta?: number;
-
-      /**
-       * A precision (in degrees) to which the resulting angle should snap. Default is 0.
-       * @defaultValue `0`
-       */
-      snap?: number;
-    }): number;
+    protected _updateRotation({ angle, delta, snap }?: PlaceableObject.UpdateRotationOptions): number;
 
     /**
      * Obtain a shifted position for the Placeable Object
@@ -434,16 +414,17 @@ declare global {
     /**
      * Actions that should be taken for this Placeable Object when a mouseover event occurs.
      * Hover events on PlaceableObject instances allow event propagation by default.
-     * @see {@link MouseInteractionManager.#handlePointerOver | `MouseInteractionManager##handlePointerOver`}
+     * @see `MouseInteractionManager##handlePointerOver`
      * @param event   - The triggering canvas interaction event
      * @param options - Options which customize event handling
      *                  (default: `{}`)
      */
+    //options: not null (destructured)
     protected _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 
     /**
      * Actions that should be taken for this Placeable Object when a mouseout event occurs
-     * @see {@link MouseInteractionManager.#handlePointerOut | `MouseInteractionManager##handlePointerOut`}
+     * @see `MouseInteractionManager##handlePointerOut`
      * @param event - The triggering canvas interaction event
      * @returns True if the event was handled, otherwise false
      */
@@ -451,41 +432,57 @@ declare global {
 
     /**
      * Should the placeable propagate left click downstream?
-     * @defaultValue `false`
      */
     protected _propagateLeftClick(event: PIXI.FederatedEvent): boolean;
 
     /**
      * Callback actions which occur on a single left-click event to assume control of the object
-     * @see {@link MouseInteractionManager.#handleClickLeft | `MouseInteractionManager##handleClickLeft`}
+     * @see `MouseInteractionManager##handleClickLeft`
      * @param event - The triggering canvas interaction event
      */
     protected _onClickLeft(event: PIXI.FederatedEvent): void;
 
     /**
+     * Callback actions which occur on a single left-unclick event to assume control of the object
+     * @param event - The triggering canvas interaction event
+     */
+    protected _onUnclickLeft(event: PIXI.FederatedEvent): void;
+
+    /**
      * Callback actions which occur on a double left-click event to activate
-     * @see {@link MouseInteractionManager.#handleClickLeft2 | `MouseInteractionManager##handleClickLeft2`}
+     * @see `MouseInteractionManager##handleClickLeft2`
      * @param event - The triggering canvas interaction event
      */
     protected _onClickLeft2(event: PIXI.FederatedEvent): void;
 
     /**
+     * Should the placeable propagate right click downstream?
+     */
+    protected _propagateRightClick(event: PIXI.FederatedEvent): boolean;
+
+    /**
      * Callback actions which occur on a single right-click event to configure properties of the object
-     * @see {@link MouseInteractionManager.#handleClickRight | `MouseInteractionManager##handleClickRight`}
+     * @see `MouseInteractionManager##handleClickRight`
      * @param event - The triggering canvas interaction event
      */
     protected _onClickRight(event: PIXI.FederatedEvent): void;
 
     /**
+     * Callback actions which occur on a single right-unclick event
+     * @param event - The triggering canvas interaction event
+     */
+    protected _onUnclickRight(event: PIXI.FederatedEvent): void;
+
+    /**
      * Callback actions which occur on a double right-click event to configure properties of the object
-     * @see {@link MouseInteractionManager.#handleClickRight2 | `MouseInteractionManager##handleClickRight2`}
+     * @see `MouseInteractionManager##handleClickRight2`
      * @param event - The triggering canvas interaction event
      */
     protected _onClickRight2(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur when a mouse-drag action is first begun.
-     * @see {@link MouseInteractionManager.#handleDragStart | `MouseInteractionManager##handleDragStart`}
+     * @see `MouseInteractionManager##handleDragStart`
      * @param event - The triggering canvas interaction event
      */
     protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
@@ -504,14 +501,14 @@ declare global {
 
     /**
      * Callback actions which occur on a mouse-move operation.
-     * @see {@link MouseInteractionManager.#handleDragMove | `MouseInteractionManager##handleDragMove`}
+     * @see `MouseInteractionManager##handleDragMove`
      * @param event - The triggering canvas interaction event
      */
     protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a mouse-move operation.
-     * @see {@link MouseInteractionManager.#handleDragDrop | `MouseInteractionManager##handleDragDrop`}
+     * @see `MouseInteractionManager##handleDragDrop`
      * @param event - The triggering canvas interaction event
      */
     protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
@@ -520,49 +517,48 @@ declare global {
      * Perform the database updates that should occur as the result of a drag-left-drop operation.
      * @param event - The triggering canvas interaction event
      * @returns An array of database updates to perform for documents in this collection
+     * @remarks `| null` in the return because of the `Wall` override
      */
-    _prepareDragLeftDropUpdates(
-      event: PIXI.FederatedEvent,
-    ): foundry.data.fields.SchemaField.AssignmentData<D["schema"]["fields"]>[] | null;
+    protected _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.DragLeftDropUpdate[] | null;
 
     /**
      * Callback actions which occur on a mouse-move operation.
-     * @see {@link MouseInteractionManager.#handleDragCancel | `MouseInteractionManager##handleDragCancel`}
+     * @see `MouseInteractionManager##handleDragCancel`
      * @param event - The triggering mouse click event
      */
     protected _onDragLeftCancel(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
-     * @see {@link MouseInteractionManager.#handleDragStart | `MouseInteractionManager##handleDragStart`}
+     * @see `MouseInteractionManager##handleDragStart`
      * @param event - The triggering mouse click event
      */
     protected _onDragRightStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
-     * @see {@link MouseInteractionManager.#handleDragMove | `MouseInteractionManager##handleDragMove`}
+     * @see `MouseInteractionManager##handleDragMove`
      * @param event - The triggering canvas interaction event
      */
     protected _onDragRightMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
-     * @see {@link MouseInteractionManager.#handleDragDrop | `MouseInteractionManager##handleDragDrop`}
+     * @see `MouseInteractionManager##handleDragDrop`
      * @param event - The triggering canvas interaction event
      */
     protected _onDragRightDrop(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback actions which occur on a right mouse-drag operation.
-     * @see {@link MouseInteractionManager.#handleDragDrop | `MouseInteractionManager##handleDragDrop`}
+     * @see `MouseInteractionManager##handleDragDrop`
      * @param event - The triggering mouse click event
      */
     protected _onDragRightCancel(event: PIXI.FederatedEvent): void;
 
     /**
      * Callback action which occurs on a long press.
-     * @see {@link MouseInteractionManager.#handleLongPress | `MouseInteractionManager##handleLongPress`}
+     * @see `MouseInteractionManager##handleLongPress`
      * @param event  - The triggering canvas interaction event
      * @param origin - The local canvas coordinates of the mousepress.
      */
@@ -570,9 +566,10 @@ declare global {
   }
 
   namespace PlaceableObject {
-    type Any = PlaceableObject<any>;
-
+    interface Any extends AnyPlaceableObject {}
     type AnyConstructor = typeof AnyPlaceableObject;
+
+    type CanvasDocument = Document.ImplementationInstanceFor<Document.PlaceableType>;
 
     interface RenderFlags {
       redraw: boolean;
@@ -582,9 +579,24 @@ declare global {
       refreshState: boolean;
     }
 
+    type Layer<Doc extends CanvasDocument> = GetKeyWithShape<Doc, "layer", InteractionLayer>;
+
+    type Sheet<Doc extends CanvasDocument> = GetKeyWithShape<
+      Doc,
+      "sheet",
+      FormApplication.Any | ApplicationV2.Any | null
+    >;
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface DrawOptions {}
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface RefreshOptions {}
+
     interface ControlOptions {
       /**
        * Release any other controlled objects first
+       * @remarks Checked via `!== false`, so no nullish values allowed
        */
       releaseOthers?: boolean;
     }
@@ -593,10 +605,41 @@ declare global {
      * @privateRemarks `PlaceableObject#_onDelete` is the only place in foundry code that calls `PlaceableObject#release` with any options at all,
      * where it passes `{trigger: false}`. This is passed on to `PlaceableObject#_onRelease`, which does not check for any options, including trigger.
      * `Drawing`, `Region`, and `Token` extend `_onRelease` and pass the options back to `super`, but do no further checks.
+     *
+     * As it is completely unused and has been removed in v13, it is not included in this interface
      * */
-    interface ReleaseOptions {
-      trigger?: boolean;
-    }
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface ReleaseOptions {}
+
+    /** @internal */
+    type __UpdateRotationOptions = NullishProps<{
+      /**
+       * An explicit angle, either this or delta must be provided
+       * @defaultValue `undefined`
+       * @remarks Checked first. If non-numeric, ignored in favour of `delta`
+       */
+      angle: number;
+    }> &
+      InexactPartial<{
+        /**
+         * A relative angle delta, either this or the angle must be provided
+         * @defaultValue `0`
+         * @remarks Can't be null as it only has a parameter default.
+         *
+         * Only used if `angle` is non-numeric
+         */
+        delta: number;
+
+        /**
+         * A precision (in degrees) to which the resulting angle should snap. Default is 0.
+         * @defaultValue `0`
+         * @remarks Can't be null as it only has a parameter default.
+         *
+         * @see {@link Number.toNearest | `Number#toNearest`}
+         */
+        snap: number;
+      }>;
+    interface UpdateRotationOptions extends __UpdateRotationOptions {}
 
     interface HoverInOptions {
       /**
@@ -606,17 +649,20 @@ declare global {
       hoverOutOthers: boolean;
     }
 
-    type Action =
-      | "HUD"
-      | "configure"
-      | "control"
-      | "view"
-      | "create"
-      | "drag"
-      | "hover"
-      | "update"
-      | "delete"
-      | (string & {});
+    /**
+     * @remarks {@link PlaceableObject.can | `PlaceableObject#can`} calls `#titleCase()` on this before
+     * prepending `"_can"`, rendering `"HUD"` (as there's no `PlaceableObject#_canHud()`), and any
+     * actions with more than a single capital in their name (e.g `"DragLeftStart"`) inert, so they
+     * have been omitted here.
+     */
+    type Action = "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete" | (string & {});
+
+    interface DragLeftDropUpdate {
+      _id: string;
+      x: number;
+      y: number;
+      rotation: number | undefined;
+    }
   }
 }
 
@@ -634,6 +680,6 @@ interface Vision {
   los?: PointSourcePolygon | undefined;
 }
 
-declare abstract class AnyPlaceableObject extends PlaceableObject<any> {
+declare abstract class AnyPlaceableObject extends PlaceableObject<PlaceableObject.CanvasDocument> {
   constructor(arg0: never, ...args: never[]);
 }

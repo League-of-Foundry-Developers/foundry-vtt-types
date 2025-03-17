@@ -270,8 +270,7 @@ declare global {
   }
 
   namespace FormApplication {
-    type Any = FormApplication<any, any>;
-
+    interface Any extends AnyFormApplication {}
     type AnyConstructor = typeof AnyFormApplication;
 
     interface CloseOptions extends Application.CloseOptions {
@@ -461,7 +460,7 @@ declare global {
   }
 
   namespace DocumentSheet {
-    type Any = AnyDocumentSheet;
+    interface Any extends AnyDocumentSheet {}
     type AnyConstructor = typeof AnyDocumentSheet;
 
     interface DocumentSheetData<
@@ -480,7 +479,7 @@ declare global {
   }
 }
 
-declare abstract class AnyFormApplication extends FormApplication<any, any> {
+declare abstract class AnyFormApplication extends FormApplication<FormApplicationOptions, unknown> {
   constructor(arg0: never, ...args: never[]);
 }
 
