@@ -13,7 +13,7 @@ declare global {
      * The implementation of the Card document instance configured through `CONFIG.Card.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCard | `fvtt-types/configuration/ConfiguredCard`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Card">;
+    type Implementation = Document.ImplementationFor<"Card">;
 
     /**
      * The implementation of the Card document configured through `CONFIG.Card.documentClass` in Foundry and

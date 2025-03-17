@@ -13,7 +13,7 @@ declare global {
      * The implementation of the Actor document instance configured through `CONFIG.Actor.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Actor">;
+    type Implementation = Document.ImplementationFor<"Actor">;
 
     /**
      * The implementation of the Actor document configured through `CONFIG.Actor.documentClass` in Foundry and

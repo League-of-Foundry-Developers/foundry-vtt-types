@@ -10,7 +10,7 @@ declare global {
      * The implementation of the Scene document instance configured through `CONFIG.Scene.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredScene | `fvtt-types/configuration/ConfiguredScene`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Scene">;
+    type Implementation = Document.ImplementationFor<"Scene">;
 
     /**
      * The implementation of the Scene document configured through `CONFIG.Scene.documentClass` in Foundry and

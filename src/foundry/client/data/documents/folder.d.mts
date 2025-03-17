@@ -11,7 +11,7 @@ declare global {
      * The implementation of the Folder document instance configured through `CONFIG.Folder.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredFolder | `fvtt-types/configuration/ConfiguredFolder`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Folder">;
+    type Implementation = Document.ImplementationFor<"Folder">;
 
     /**
      * The implementation of the Folder document configured through `CONFIG.Folder.documentClass` in Foundry and
@@ -275,7 +275,7 @@ declare global {
      * of objects inside the index of the pack that are contained in this Folder.
      */
     // TODO: Handle compendium. This requires the index to be configured.
-    get contents(): Document.ImplementationInstanceFor<Extract<SubType, Document.Type>>[];
+    get contents(): Document.ImplementationFor<Extract<SubType, Document.Type>>[];
 
     set contents(value);
 

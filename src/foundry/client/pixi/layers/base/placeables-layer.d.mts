@@ -93,10 +93,7 @@ declare global {
     /**
      * Obtain a reference to the Collection of embedded Document instances within the currently viewed Scene
      */
-    get documentCollection(): EmbeddedCollection<
-      Document.ImplementationInstanceFor<DocumentName>,
-      Scene.Implementation
-    > | null;
+    get documentCollection(): EmbeddedCollection<Document.ImplementationFor<DocumentName>, Scene.Implementation> | null;
 
     /**
      * Define a Container implementation used to render placeable objects contained in this layer
@@ -178,7 +175,7 @@ declare global {
      * @param document - The Document instance used to create the placeable object
      */
     createObject(
-      document: Document.ImplementationInstanceFor<DocumentName>,
+      document: Document.ImplementationFor<DocumentName>,
     ): Document.ConfiguredObjectInstanceForName<DocumentName>;
 
     protected override _tearDown(options: HandleEmptyObject<PlaceablesLayer.TearDownOptions>): Promise<void>;
@@ -264,7 +261,7 @@ declare global {
      * Undo a change to the objects in this layer
      * This method is typically activated using CTRL+Z while the layer is active
      */
-    undoHistory(): Promise<Document.ImplementationInstanceFor<DocumentName>[]>;
+    undoHistory(): Promise<Document.ImplementationFor<DocumentName>[]>;
 
     /**
      * A helper method to prompt for deletion of all PlaceableObject instances within the Scene
@@ -309,7 +306,7 @@ declare global {
          */
         snap: boolean;
       }>,
-    ): Promise<Document.ImplementationInstanceFor<DocumentName>[]>;
+    ): Promise<Document.ImplementationFor<DocumentName>[]>;
 
     /**
      * Get the data of the copied object pasted at the position given by the offset.
@@ -390,7 +387,7 @@ declare global {
         | Partial<Document.ConfiguredSourceForName<DocumentName>>,
       condition?: ((placeable: Document.ConfiguredObjectInstanceForName<DocumentName>) => boolean) | null,
       options?: Document.Database.UpdateDocumentsOperation<DatabaseUpdateOperation>,
-    ): Promise<Array<Document.ImplementationInstanceFor<DocumentName>>>;
+    ): Promise<Array<Document.ImplementationFor<DocumentName>>>;
 
     /**
      * Get the world-transformed drop position.

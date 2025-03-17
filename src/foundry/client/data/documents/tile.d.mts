@@ -24,7 +24,7 @@ declare global {
      * The implementation of the TileDocument document instance configured through `CONFIG.Tile.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTileDocument | `fvtt-types/configuration/ConfiguredTileDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Tile">;
+    type Implementation = Document.ImplementationFor<"Tile">;
 
     /**
      * The implementation of the TileDocument document configured through `CONFIG.Tile.documentClass` in Foundry and
@@ -68,7 +68,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
 
     /**
      * An embedded document is a document contained in another.

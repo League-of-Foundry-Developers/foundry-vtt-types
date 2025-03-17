@@ -12,7 +12,7 @@ declare global {
      * The implementation of the Macro document instance configured through `CONFIG.Macro.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredMacro | `fvtt-types/configuration/ConfiguredMacro`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Macro">;
+    type Implementation = Document.ImplementationFor<"Macro">;
 
     /**
      * The implementation of the Macro document configured through `CONFIG.Macro.documentClass` in Foundry and

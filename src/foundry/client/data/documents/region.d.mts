@@ -9,7 +9,7 @@ declare global {
      * The implementation of the Region document instance configured through `CONFIG.Region.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRegion | `fvtt-types/configuration/ConfiguredRegion`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Region">;
+    type Implementation = Document.ImplementationFor<"Region">;
 
     /**
      * The implementation of the Region document configured through `CONFIG.Region.documentClass` in Foundry and

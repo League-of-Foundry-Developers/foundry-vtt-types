@@ -10,7 +10,7 @@ declare global {
      * The implementation of the JournalEntry document instance configured through `CONFIG.JournalEntry.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredJournalEntry | `fvtt-types/configuration/ConfiguredJournalEntry`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"JournalEntry">;
+    type Implementation = Document.ImplementationFor<"JournalEntry">;
 
     /**
      * The implementation of the JournalEntry document configured through `CONFIG.JournalEntry.documentClass` in Foundry and

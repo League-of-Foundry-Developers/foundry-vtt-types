@@ -27,7 +27,7 @@ declare global {
      * The implementation of the TokenDocument document instance configured through `CONFIG.Token.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTokenDocument | `fvtt-types/configuration/ConfiguredTokenDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Token">;
+    type Implementation = Document.ImplementationFor<"Token">;
 
     /**
      * The implementation of the TokenDocument document configured through `CONFIG.Token.documentClass` in Foundry and
@@ -75,7 +75,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
 
     /**
      * An embedded document is a document contained in another.
@@ -883,7 +883,7 @@ declare global {
 
     override getEmbeddedCollection<DocType extends Document.Type>(
       embeddedName: DocType,
-    ): Collection<Document.ImplementationInstanceFor<DocType>>;
+    ): Collection<Document.ImplementationFor<DocType>>;
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,

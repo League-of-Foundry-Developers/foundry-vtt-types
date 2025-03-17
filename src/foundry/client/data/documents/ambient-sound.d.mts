@@ -8,7 +8,7 @@ declare global {
      * The implementation of the AmbientSoundDocument document instance configured through `CONFIG.AmbientSound.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"AmbientSound">;
+    type Implementation = Document.ImplementationFor<"AmbientSound">;
 
     /**
      * The implementation of the AmbientSoundDocument document configured through `CONFIG.AmbientSound.documentClass` in Foundry and

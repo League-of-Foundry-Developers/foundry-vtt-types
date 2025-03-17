@@ -10,7 +10,7 @@ declare global {
      * The implementation of the ActorDelta document instance configured through `CONFIG.ActorDelta.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"ActorDelta">;
+    type Implementation = Document.ImplementationFor<"ActorDelta">;
 
     /**
      * The implementation of the ActorDelta document configured through `CONFIG.ActorDelta.documentClass` in Foundry and

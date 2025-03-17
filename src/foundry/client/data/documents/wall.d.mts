@@ -23,7 +23,7 @@ declare global {
      * The implementation of the WallDocument document instance configured through `CONFIG.Wall.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredWallDocument | `fvtt-types/configuration/ConfiguredWallDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Wall">;
+    type Implementation = Document.ImplementationFor<"Wall">;
 
     /**
      * The implementation of the WallDocument document configured through `CONFIG.Wall.documentClass` in Foundry and
@@ -67,7 +67,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
 
     /**
      * An embedded document is a document contained in another.

@@ -10,7 +10,7 @@ declare global {
      * The implementation of the Item document instance configured through `CONFIG.Item.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Item">;
+    type Implementation = Document.ImplementationFor<"Item">;
 
     /**
      * The implementation of the Item document configured through `CONFIG.Item.documentClass` in Foundry and

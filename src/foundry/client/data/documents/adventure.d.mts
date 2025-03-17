@@ -9,7 +9,7 @@ declare global {
      * The implementation of the Adventure document instance configured through `CONFIG.Adventure.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredAdventure | `fvtt-types/configuration/ConfiguredAdventure`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Adventure">;
+    type Implementation = Document.ImplementationFor<"Adventure">;
 
     /**
      * The implementation of the Adventure document configured through `CONFIG.Adventure.documentClass` in Foundry and

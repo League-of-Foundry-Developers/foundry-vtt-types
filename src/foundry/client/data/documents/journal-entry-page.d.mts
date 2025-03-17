@@ -11,7 +11,7 @@ declare global {
      * The implementation of the JournalEntryPage document instance configured through `CONFIG.JournalEntryPage.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"JournalEntryPage">;
+    type Implementation = Document.ImplementationFor<"JournalEntryPage">;
 
     /**
      * The implementation of the JournalEntryPage document configured through `CONFIG.JournalEntryPage.documentClass` in Foundry and

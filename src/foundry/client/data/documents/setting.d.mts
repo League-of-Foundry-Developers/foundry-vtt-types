@@ -8,7 +8,7 @@ declare global {
      * The implementation of the Setting document instance configured through `CONFIG.Setting.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredSetting | `fvtt-types/configuration/ConfiguredSetting`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Setting">;
+    type Implementation = Document.ImplementationFor<"Setting">;
 
     /**
      * The implementation of the Setting document configured through `CONFIG.Setting.documentClass` in Foundry and

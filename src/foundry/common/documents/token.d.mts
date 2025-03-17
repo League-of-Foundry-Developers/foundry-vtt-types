@@ -166,21 +166,21 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   //   data: Document.CreateDataFor<EmbeddedName>[] | undefined,
   //   // TODO: Generic over the EmbeddedName
   //   operation?: never,
-  // ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
+  // ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
 
   // override updateEmbeddedDocuments<EmbeddedName extends TokenDocument.EmbeddedName>(
   //   embeddedName: EmbeddedName,
   //   updates: Document.UpdateDataFor<EmbeddedName>[] | undefined,
   //   // TODO: Generic over the EmbeddedName
   //   operation?: never,
-  // ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
+  // ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
 
   // override deleteEmbeddedDocuments<EmbeddedName extends TokenDocument.EmbeddedName>(
   //   embeddedName: EmbeddedName,
   //   ids: Array<string>,
   //   // TODO: Generic over the EmbeddedName
   //   operation?: never,
-  // ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>>>;
+  // ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;

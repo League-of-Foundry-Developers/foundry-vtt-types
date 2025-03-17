@@ -1225,7 +1225,7 @@ declare namespace Document {
   type NameFor<ConcreteDocument extends Document.Internal.Constructor> =
     ConcreteDocument[" fvtt_types_internal_document_name_static"];
 
-  type ImplementationInstanceFor<Name extends Type> = MakeConform<ConfiguredDocumentInstance[Name], Document.Any>;
+  type ImplementationFor<Name extends Type> = MakeConform<ConfiguredDocumentInstance[Name], Document.Any>;
   type ImplementationClassFor<Name extends Type> = ConfiguredDocumentClass[Name];
 
   type ConfiguredObjectClassForName<Name extends PlaceableType> = CONFIG[Name]["objectClass"];
@@ -1722,9 +1722,9 @@ declare namespace Document {
   }
 
   /**
-   * @deprecated {@link ImplementationInstanceFor | `ImplementationInstanceFor`}
+   * @deprecated {@link ImplementationFor | `ImplementationInstanceFor`}
    */
-  type ConfiguredInstanceForName<Name extends Type> = ImplementationInstanceFor<Name>;
+  type ConfiguredInstanceForName<Name extends Type> = ImplementationFor<Name>;
 
   /**
    * @deprecated {@link ImplementationClassFor | `ImplementationClassFor`}

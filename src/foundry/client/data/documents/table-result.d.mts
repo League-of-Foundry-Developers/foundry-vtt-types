@@ -25,7 +25,7 @@ declare global {
      * The implementation of the TableResult document instance configured through `CONFIG.TableResult.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTableResult | `fvtt-types/configuration/ConfiguredTableResult`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"TableResult">;
+    type Implementation = Document.ImplementationFor<"TableResult">;
 
     /**
      * The implementation of the TableResult document configured through `CONFIG.TableResult.documentClass` in Foundry and
@@ -74,7 +74,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
 
     /**
      * An embedded document is a document contained in another.

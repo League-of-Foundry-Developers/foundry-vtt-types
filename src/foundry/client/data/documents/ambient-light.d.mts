@@ -9,7 +9,7 @@ declare global {
      * The implementation of the AmbientLightDocument document instance configured through `CONFIG.AmbientLight.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"AmbientLight">;
+    type Implementation = Document.ImplementationFor<"AmbientLight">;
 
     /**
      * The implementation of the AmbientLightDocument document configured through `CONFIG.AmbientLight.documentClass` in Foundry and

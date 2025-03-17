@@ -10,7 +10,7 @@ declare global {
      * The implementation of the NoteDocument document instance configured through `CONFIG.Note.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredNoteDocument | `fvtt-types/configuration/ConfiguredNoteDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Note">;
+    type Implementation = Document.ImplementationFor<"Note">;
 
     /**
      * The implementation of the NoteDocument document configured through `CONFIG.Note.documentClass` in Foundry and

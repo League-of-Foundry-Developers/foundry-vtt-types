@@ -12,7 +12,7 @@ declare global {
      * The implementation of the ActiveEffect document instance configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"ActiveEffect">;
+    type Implementation = Document.ImplementationFor<"ActiveEffect">;
 
     /**
      * The implementation of the ActiveEffect document configured through `CONFIG.ActiveEffect.documentClass` in Foundry and

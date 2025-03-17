@@ -12,7 +12,7 @@ declare global {
      * The implementation of the Combatant document instance configured through `CONFIG.Combatant.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Combatant">;
+    type Implementation = Document.ImplementationFor<"Combatant">;
 
     /**
      * The implementation of the Combatant document configured through `CONFIG.Combatant.documentClass` in Foundry and
@@ -61,7 +61,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
 
     /**
      * An embedded document is a document contained in another.

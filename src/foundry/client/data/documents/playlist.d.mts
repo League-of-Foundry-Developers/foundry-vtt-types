@@ -10,7 +10,7 @@ declare global {
      * The implementation of the Playlist document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylist | `fvtt-types/configuration/ConfiguredPlaylist`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Playlist">;
+    type Implementation = Document.ImplementationFor<"Playlist">;
 
     /**
      * The implementation of the Playlist document configured through `CONFIG.Playlist.documentClass` in Foundry and

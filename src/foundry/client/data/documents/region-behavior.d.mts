@@ -10,7 +10,7 @@ declare global {
      * The implementation of the RegionBehavior document instance configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"RegionBehavior">;
+    type Implementation = Document.ImplementationFor<"RegionBehavior">;
 
     /**
      * The implementation of the RegionBehavior document configured through `CONFIG.RegionBehavior.documentClass` in Foundry and

@@ -25,7 +25,7 @@ declare global {
      * The implementation of the RollTable document instance configured through `CONFIG.RollTable.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRollTable | `fvtt-types/configuration/ConfiguredRollTable`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"RollTable">;
+    type Implementation = Document.ImplementationFor<"RollTable">;
 
     /**
      * The implementation of the RollTable document configured through `CONFIG.RollTable.documentClass` in Foundry and
@@ -69,7 +69,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
 
     /**
      * An embedded document is a document contained in another.

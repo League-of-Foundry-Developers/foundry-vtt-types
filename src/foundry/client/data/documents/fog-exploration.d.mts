@@ -11,7 +11,7 @@ declare global {
      * The implementation of the FogExploration document instance configured through `CONFIG.FogExploration.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredFogExploration | `fvtt-types/configuration/ConfiguredFogExploration`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"FogExploration">;
+    type Implementation = Document.ImplementationFor<"FogExploration">;
 
     /**
      * The implementation of the FogExploration document configured through `CONFIG.FogExploration.documentClass` in Foundry and

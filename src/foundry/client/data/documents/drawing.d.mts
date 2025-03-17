@@ -9,7 +9,7 @@ declare global {
      * The implementation of the DrawingDocument document instance configured through `CONFIG.Drawing.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredDrawingDocument | `fvtt-types/configuration/ConfiguredDrawingDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Drawing">;
+    type Implementation = Document.ImplementationFor<"Drawing">;
 
     /**
      * The implementation of the DrawingDocument document configured through `CONFIG.DrawingDocument.documentClass` in Foundry and

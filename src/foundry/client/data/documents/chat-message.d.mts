@@ -12,7 +12,7 @@ declare global {
      * The implementation of the ChatMessage document instance configured through `CONFIG.ChatMessage.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"ChatMessage">;
+    type Implementation = Document.ImplementationFor<"ChatMessage">;
 
     /**
      * The implementation of the ChatMessage document configured through `CONFIG.ChatMessage.documentClass` in Foundry and
