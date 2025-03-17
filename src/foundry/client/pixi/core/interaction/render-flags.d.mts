@@ -1,4 +1,4 @@
-import type { AnyConstructor, AnyObject, FixedInstanceType, InexactPartial, Mixin } from "fvtt-types/utils";
+import type { AnyConstructor, ConcreteKeys, FixedInstanceType, InexactPartial, Mixin } from "fvtt-types/utils";
 import type { LogCompatibilityWarningOptions } from "../../../../common/utils/logging.d.mts";
 
 declare class RenderFlagObject {
@@ -35,20 +35,16 @@ declare class RenderFlagObject {
  * @privateRemarks Values are marked as optional here based on use, foundry docs incomplete
  * @internal
  */
-type _RenderFlags<_Flags extends AnyObject> = InexactPartial<{
+type _RenderFlags<Flags extends object> = InexactPartial<{
   /**
    * Activating this flag also sets these flags to true
-   * @privateRemarks Without including the list of valid flags as a type param on the mixin somehow, trying to make this
-   * `Array<keyof RemoveIndexSignatures<Flags>>` produces `never[]`
    */
-  propagate: string[];
+  propagate: ConcreteKeys<Flags>[];
 
   /**
    * Activating this flag resets these flags to false
-   * @privateRemarks Without including the list of valid flags as a type param on the mixin somehow, trying to make this
-   * `Array<keyof RemoveIndexSignatures<Flags>>` produces `never[]`
    */
-  reset: string[];
+  reset: ConcreteKeys<Flags>[];
 
   /**
    * Is this flag deprecated? The deprecation options are passed to
@@ -68,12 +64,10 @@ type _RenderFlags<_Flags extends AnyObject> = InexactPartial<{
 }>;
 
 declare global {
-  /**
-   * @privateRemarks This *should* error but doesn't. RenderFlag is built around willfully violating subclassing rules.
-   * The primary issue at hand is that each value can refer to the keys, thus making it technically
-   * unsound to apply a subclass to its superclass.
-   */
-  interface RenderFlag<out Flags extends AnyObject> extends _RenderFlags<Flags> {}
+  // Note(LukeAbby): The usage of `ConcreteKeys` is a hazard; if tsc were to become smarter it might
+  // notice that `ConcreteKeys<Flags>` is actually contravariant and reject this type. However
+  // `RenderFlags` is built upon the assumption this is only used in safe ways.
+  interface RenderFlag<out Flags extends object> extends _RenderFlags<Flags> {}
 
   namespace RenderFlag {
     type Any = RenderFlag<any>;
@@ -143,10 +137,16 @@ declare global {
 
     type BaseClass = AnyConstructor;
 
-    type ToFlags<RenderFlags extends RENDER_FLAGS> = {
-      [K in keyof RenderFlags]: boolean;
-    };
+    type RENDER_FLAGS = Record<string, RenderFlag<object>>;
 
-    interface RENDER_FLAGS extends Record<string, RenderFlag.Any> {}
+    /**
+     * @internal This type exists only to make sure `ToBooleanFlags` isn't a homomorphic mapped type
+     * to avoid keeping documentation.
+     */
+    type _KeyOf<T> = keyof T;
+
+    type ToBooleanFlags<RenderFlags extends object> = {
+      [K in _KeyOf<RenderFlags>]: boolean;
+    };
   }
 }

@@ -39,6 +39,10 @@ expectTypeOf(
   new ConcretePlaceableObject(new EmbeddedInSceneDocument()).mouseInteractionManager,
 ).toEqualTypeOf<MouseInteractionManager<ConcretePlaceableObject> | null>();
 
-expectTypeOf(PlaceableObject.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<string[] | undefined>();
+expectTypeOf(PlaceableObject.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
+  Array<"redraw" | "refresh" | "refreshState"> | undefined
+>();
 
-expectTypeOf(AmbientLight.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<string[] | undefined>();
+expectTypeOf(AmbientLight.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
+  Array<"redraw" | "refresh" | "refreshState" | "refreshField" | "refreshPosition"> | undefined
+>();

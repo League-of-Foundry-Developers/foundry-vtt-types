@@ -1,4 +1,4 @@
-import type { MakeConform, ValueOf } from "fvtt-types/utils";
+import type { InterfaceToObject, MakeConform, ValueOf } from "fvtt-types/utils";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
 
@@ -55,7 +55,7 @@ declare global {
     /**
      * The flags declared here are required for all PlaceableObject subclasses to also support.
      */
-    static override RENDER_FLAGS: PlaceableObject.RENDER_FLAGS;
+    static override RENDER_FLAGS: InterfaceToObject<PlaceableObject.RENDER_FLAGS>;
 
     /**
      * The object that this object is a preview of if this object is a preview
@@ -565,17 +565,17 @@ declare global {
 
     type AnyConstructor = typeof AnyPlaceableObject;
 
-    type RenderFlags = RenderFlagsMixin.ToFlags<RENDER_FLAGS>;
+    type RenderFlags = RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS>;
 
-    interface RENDER_FLAGS extends RenderFlagsMixin.RENDER_FLAGS {
+    interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<PlaceableObject.RenderFlags>;
+      redraw: RenderFlag<this>;
 
       /** @defaultValue `{ propagate: ["refreshState"], alias: true }` */
-      refresh: RenderFlag<PlaceableObject.RenderFlags>;
+      refresh: RenderFlag<this>;
 
       /** @defaultValue `{}` */
-      refreshState: RenderFlag<PlaceableObject.RenderFlags>;
+      refreshState: RenderFlag<this>;
     }
 
     interface ControlOptions {

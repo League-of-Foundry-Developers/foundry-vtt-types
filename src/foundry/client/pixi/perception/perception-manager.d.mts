@@ -37,7 +37,7 @@ declare global {
 
     type PassableFlags = NullishProps<RenderFlags>;
 
-    type RenderFlags = RenderFlagsMixin.ToFlags<RENDER_FLAGS>;
+    type RenderFlags = RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS>;
 
     interface RENDER_FLAGS extends RenderFlagsMixin.RENDER_FLAGS {
       /**
