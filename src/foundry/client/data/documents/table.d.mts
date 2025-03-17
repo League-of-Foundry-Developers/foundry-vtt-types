@@ -14,7 +14,7 @@ declare global {
     /**
      * The arguments to construct the document.
      */
-    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 
     /**
      * The documents embedded within RollTable.
@@ -243,7 +243,7 @@ declare global {
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<RollTable.CreateData, RollTable.Parent, Temporary> {}
 
-        /** Options passed along in Delete operations for RollTables */
+      /** Options passed along in Delete operations for RollTables */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RollTable.Parent> {}
 
       /** Options passed along in Update operations for RollTables */
