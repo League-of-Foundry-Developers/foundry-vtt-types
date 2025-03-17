@@ -1,8 +1,10 @@
-import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject, InexactPartial } from "fvtt-types/utils";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type * as CONST from "../constants.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The base Token model definition which defines common behavior of an Token document between both client and server.
@@ -22,7 +24,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * You should use {@link TokenDocument.implementation | `new TokenDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `TokenDocument`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseToken.CreateData, BaseToken.Parent>);
+  constructor(...args: TokenDocument.ConstructorArgs);
 
   /**
    * @defaultValue
@@ -99,104 +101,197 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   /*
    * After this point these are not really overridden methods.
-   * They are here because they're static properties but depend on the instance and so can't be
-   * defined DRY-ly while also being easily overridable.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
    */
+
+  /* Document overrides */
 
   static " fvtt_types_internal_document_name_static": "Token";
 
-  static get implementation(): TokenDocument.ImplementationClass;
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: TokenDocument.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static override get implementation(): TokenDocument.ImplementationClass;
+
+  static get baseDocument(): typeof BaseToken;
+
+  static get collectionName(): TokenDocument.ParentCollectionName;
+
+  static get documentName(): TokenDocument.Name;
+
+  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+
+  static get hasTypeData(): false;
+
+  static get hierarchy(): TokenDocument.Hierarchy;
 
   override parent: TokenDocument.Parent;
 
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<TokenDocument.Implementation | TokenDocument.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<TokenDocument.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<TokenDocument.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: TokenDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<TokenDocument.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<TokenDocument.Database.Update>,
   ): Promise<TokenDocument.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<TokenDocument.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<TokenDocument.Database.Delete>,
   ): Promise<TokenDocument.Implementation[]>;
 
   static create<Temporary extends boolean | undefined = false>(
     data: TokenDocument.CreateData | TokenDocument.CreateData[],
-    operation?: Document.Database.CreateOperation<TokenDocument.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>>,
   ): Promise<TokenDocument.Implementation | undefined>;
 
   static get(documentId: string, options?: Document.Database.GetOptions): TokenDocument.Implementation | null;
 
+  // TODO: @LukeAbby More Implementation Nonsense
+  // override getEmbeddedCollection<EmbeddedName extends TokenDocument.EmbeddedName>(
+  //   embeddedName: EmbeddedName,
+  // ): Document.EmbeddedCollectionFor<TokenDocument.Name, EmbeddedName>;
+
+  // override getEmbeddedDocument<EmbeddedName extends TokenDocument.EmbeddedName>(
+  //   embeddedName: EmbeddedName,
+  //   id: string,
+  //   options: Document.GetEmbeddedDocumentOptions, // TODO: Actually get the specific embedded name.
+  // ): TokenDocument.Embedded | undefined;
+
+  // override createEmbeddedDocuments<EmbeddedName extends TokenDocument.EmbeddedName>(
+  //   embeddedName: EmbeddedName,
+  //   data: Document.CreateDataFor<EmbeddedName>[] | undefined,
+  //   // TODO: Generic over the EmbeddedName
+  //   operation?: never,
+  // ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
+
+  // override updateEmbeddedDocuments<EmbeddedName extends TokenDocument.EmbeddedName>(
+  //   embeddedName: EmbeddedName,
+  //   updates: Document.UpdateDataFor<EmbeddedName>[] | undefined,
+  //   // TODO: Generic over the EmbeddedName
+  //   operation?: never,
+  // ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
+
+  // override deleteEmbeddedDocuments<EmbeddedName extends TokenDocument.EmbeddedName>(
+  //   embeddedName: EmbeddedName,
+  //   ids: Array<string>,
+  //   // TODO: Generic over the EmbeddedName
+  //   operation?: never,
+  // ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>>>;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends TokenDocument.Flags.Scope, Key extends TokenDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<TokenDocument.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends TokenDocument.Flags.Scope,
+    Key extends TokenDocument.Flags.Key<Scope>,
+    Value extends Document.GetFlag<TokenDocument.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends TokenDocument.Flags.Scope, Key extends TokenDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
+
   protected _preCreate(
     data: TokenDocument.CreateData,
-    options: TokenDocument.DatabaseOperation.PreCreateOperationInstance,
+    options: TokenDocument.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onCreate(
     data: TokenDocument.CreateData,
-    options: TokenDocument.DatabaseOperation.OnCreateOperation,
+    options: TokenDocument.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static _preCreateOperation(
     documents: TokenDocument.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<TokenDocument.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<TokenDocument.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: TokenDocument.Implementation[],
-    operation: TokenDocument.DatabaseOperation.Create,
+    operation: TokenDocument.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: TokenDocument.UpdateData,
-    options: TokenDocument.DatabaseOperation.PreUpdateOperationInstance,
+    options: TokenDocument.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onUpdate(
     changed: TokenDocument.UpdateData,
-    options: TokenDocument.DatabaseOperation.OnUpdateOperation,
+    options: TokenDocument.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static _preUpdateOperation(
     documents: TokenDocument.Implementation[],
-    operation: TokenDocument.DatabaseOperation.Update,
+    operation: TokenDocument.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: TokenDocument.Implementation[],
-    operation: TokenDocument.DatabaseOperation.Update,
+    operation: TokenDocument.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preDelete(
-    options: TokenDocument.DatabaseOperation.PreDeleteOperationInstance,
+    options: TokenDocument.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: TokenDocument.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: TokenDocument.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: TokenDocument.Implementation[],
-    operation: TokenDocument.DatabaseOperation.Delete,
+    operation: TokenDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: TokenDocument.Implementation[],
-    operation: TokenDocument.DatabaseOperation.Delete,
+    operation: TokenDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: TokenDocument.Implementation[],
@@ -212,6 +307,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     documents: TokenDocument.Implementation[],
     context: Document.ModificationContext<TokenDocument.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<TokenDocument.Schema>;
 
@@ -246,8 +343,16 @@ export class ActorDeltaField<
 export default BaseToken;
 
 declare namespace BaseToken {
+  export import Name = TokenDocument.Name;
+  export import ConstructorArgs = TokenDocument.ConstructorArgs;
+  export import Hierarchy = TokenDocument.Hierarchy;
   export import Metadata = TokenDocument.Metadata;
   export import Parent = TokenDocument.Parent;
+  export import Pack = TokenDocument.Pack;
+  export import Embedded = TokenDocument.Embedded;
+  export import EmbeddedName = TokenDocument.EmbeddedName;
+  export import EmbeddedCollectionName = TokenDocument.EmbeddedCollectionName;
+  export import ParentCollectionName = TokenDocument.ParentCollectionName;
   export import Stored = TokenDocument.Stored;
   export import Source = TokenDocument.Source;
   export import PersistedData = TokenDocument.PersistedData;
@@ -255,8 +360,8 @@ declare namespace BaseToken {
   export import InitializedData = TokenDocument.InitializedData;
   export import UpdateData = TokenDocument.UpdateData;
   export import Schema = TokenDocument.Schema;
-  export import DatabaseOperation = TokenDocument.DatabaseOperation;
-  export import CoreFlags = TokenDocument.CoreFlags;
+  export import DatabaseOperation = TokenDocument.Database;
+  export import Flags = TokenDocument.Flags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

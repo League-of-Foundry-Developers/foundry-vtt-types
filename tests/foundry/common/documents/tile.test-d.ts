@@ -172,7 +172,7 @@ expectTypeOf(myTile.video.loop).toBeBoolean();
 expectTypeOf(myTile.video.autoplay).toBeBoolean();
 expectTypeOf(myTile.video.volume).toBeNumber();
 expectTypeOf(myTile.flags).toEqualTypeOf<
-  InterfaceToObject<BaseTile.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  InterfaceToObject<TileDocument.CoreFlags> & InterfaceToObject<Document.CoreFlags>
 >();
 
 // document-specific flag(s)

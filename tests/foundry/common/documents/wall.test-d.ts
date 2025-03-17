@@ -3,8 +3,6 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseWall = foundry.documents.BaseWall;
 import Document = foundry.abstract.Document;
 
-const myScene = new Scene({ name: "foobar" });
-
 class TestBaseWall extends BaseWall {}
 
 let myWall = new TestBaseWall();
@@ -16,45 +14,45 @@ myWall = new TestBaseWall({ c: [10, 20] });
 // @ts-expect-error - c must be a length-4 array of integer coordinates
 myWall = new TestBaseWall({ c: [10, 20, 30, 40, 50] });
 
+// @ts-expect-error - light can't be an arbitrary number
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - light can't be an arbitrary number
   light: 9999,
 });
 
+// @ts-expect-error - move can't be an arbitrary number
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - move can't be an arbitrary number
   move: 9999,
 });
 
+// @ts-expect-error - sight can't be an arbitrary number
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - sight can't be an arbitrary number
   sight: 9999,
 });
 
+// @ts-expect-error - sound can't be an arbitrary number
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - sound can't be an arbitrary number
   sound: 9999,
 });
 
+// @ts-expect-error - dir can't be an arbitrary number
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - dir can't be an arbitrary number
   dir: 9999,
 });
 
+// @ts-expect-error - door can't be an arbitrary number
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - door can't be an arbitrary number
   door: 9999,
 });
 
+// @ts-expect-error - ds can't be an arbitrary number
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - ds can't be an arbitrary number
   ds: 9999,
 });
 

@@ -23,6 +23,7 @@ import type {
   SimpleMerge,
   ConcreteKeys,
   ValueOf,
+  PickValue,
 } from "../../../utils/index.d.mts";
 import type { documents } from "../../client-esm/client.d.mts";
 import type * as CONST from "../constants.mts";
@@ -65,7 +66,9 @@ declare abstract class Document<
    * @param data    - Initial data provided to construct the Document
    * @param context - Construction context options
    */
-  constructor(data?: fields.SchemaField.CreateData<Schema>, context?: Document.ConstructionContext<Parent>);
+  // Note: This uses `any` because while it's unsound to try to do `new Document(...)` directly it
+  // simplifies assignability. Ideally this will be narrowed in the future.
+  constructor(...args: any[]);
 
   override parent: Parent;
 
@@ -77,7 +80,7 @@ declare abstract class Document<
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
    */
-  readonly parentCollection: string | null;
+  readonly parentCollection: Document.MetadataFor<DocumentName>["collection"] | null;
 
   /**
    * An immutable reference to a containing Compendium collection to which this Document belongs.
@@ -860,7 +863,9 @@ declare abstract class Document<
 // An empty schema is the most accurate because index signatures are stripped.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 declare abstract class AnyDocument extends Document<Document.Type, {}, Document.Any | null> {
-  constructor(arg0: never, ...args: never[]);
+  // Note(LukeAbby): Document is one of the rare classes that is frequently used for mixins and also the conditional
+  // type in the constructor prevents `arg0: never, ...args: never[]` from being usable.
+  constructor(...args: any[]);
 
   // Note(LukeAbby): This uses `object` instead of `AnyObject` to avoid more thorough evaluation of
   // the involved types which can cause a loop.
@@ -942,7 +947,8 @@ declare namespace Document {
     ? [data?: CreateData, context?: Document.ConstructionContext<Parent>]
     : [data: CreateData, context?: Document.ConstructionContext<Parent>];
 
-  type CoreTypesForName<Name extends Type> = string & GetKey<Document.MetadataFor<Name>, "coreTypes", ["base"]>[number];
+  type CoreTypesForName<Name extends Type> = string &
+    GetKey<Document.MetadataFor<Name>, "coreTypes", [CONST.BASE_DOCUMENT_TYPE]>[number];
 
   type ConfiguredSubTypesOf<Name extends Type> = Name extends "ActorDelta"
     ? ConfiguredSubTypesOf<"Actor">
@@ -1063,7 +1069,7 @@ declare namespace Document {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
-    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
+    type Constructor = (abstract new (...args: any[]) => Instance.Any) & {
       " fvtt_types_internal_document_name_static": Document.Type;
     };
 
@@ -1414,46 +1420,46 @@ declare namespace Document {
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
   /* eslint-disable @typescript-eslint/no-deprecated */
-  /** @deprecated */
+  /** @deprecated Use {@link Database.PreCreateOptions | `Database.PreCreateOptions`} */
   type PreCreateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "create">,
     "data" | "noHook" | "pack" | "parent"
   >;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.CreateOptions | `Database.CreateOptions`}  */
   type OnCreateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "create">,
     "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.PreUpdateOptions | `Database.PreUpdateOperation`}  */
   type PreUpdateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "update">,
     "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
   >;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.UpdateOptions | `Database.OnUpdateOperation`} */
   type OnUpdateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "update">,
     "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.PreDeleteOperationInstance | `Database.PreDeleteOperationInstance`} */
   type PreDeleteOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "delete">,
     "ids" | "deleteAll" | "noHook" | "pack" | "parent"
   >;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.DeleteOptions | `Database.OnDeleteOptions`} */
   type OnDeleteOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "delete">,
     "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.PreCreateOptions | `Database.PreCreateOptions`} or {@link Database.PreUpdateOptions | `Database.PreUpdateOperation`}*/
   type PreUpsertOptions<Name extends Type> = PreCreateOptions<Name> | PreUpdateOptions<Name>;
 
-  /** @deprecated */
+  /** @deprecated Use {@link Database.CreateOptions | `Database.CreateOptions`} or {@link Database.UpdateOptions | `Database.OnUpdateOperation`} */
   type OnUpsertOptions<Name extends Type> = OnCreateOptions<Name> | OnUpdateOptions<Name>;
   /* eslint-enable @typescript-eslint/no-deprecated */
 
@@ -1565,7 +1571,9 @@ declare namespace Document {
     >;
 
     /** Used for {@link Document.update | `Document#update`} */
-    type UpdateOperationInstance<Op extends DatabaseUpdateOperation> = InexactPartial<Omit<Op, "updates">>;
+    type UpdateOperationInstance<Op extends DatabaseUpdateOperation> = InexactPartial<
+      Omit<Op, "updates" | "parent" | "pack">
+    >;
 
     /** Used for {@link Document._preUpdateOperation | `Document._preUpdateOperation`} */
     type PreUpdateOperationStatic<Op extends DatabaseUpdateOperation> = InexactPartial<
@@ -1592,7 +1600,9 @@ declare namespace Document {
     type DeleteDocumentsOperation<Op extends DatabaseDeleteOperation> = NullishProps<Omit<Op, "ids" | "modifiedTime">>;
 
     /** Used for {@link Document.delete} */
-    type DeleteOperationInstance<Op extends DatabaseDeleteOperation> = InexactPartial<Omit<Op, "ids">>;
+    type DeleteOperationInstance<Op extends DatabaseDeleteOperation> = InexactPartial<
+      Omit<Op, "ids" | "parent" | "pack">
+    >;
 
     /** Used for {@link Document._preDeleteOperation | `Document._preDeleteOperation`} */
     type PreDeleteOperationStatic<Op extends DatabaseDeleteOperation> = InexactPartial<
@@ -1666,7 +1676,7 @@ declare namespace Document {
 
     /** A compendium pack within which the Document should be created */
     pack?: string | undefined;
-  } & ParentContext<Exclude<Parent, null>>;
+  } & ParentContext<Parent>;
 
   interface FromDropDataOptions {
     /**
@@ -1692,7 +1702,7 @@ declare namespace Document {
 
     /** A restriction the selectable sub-types of the Dialog. */
     types?: SubType[] | null | undefined;
-  } & ParentContext<Exclude<Parent, null>>; // TODO: Revert inlining the Exclude here, `null` is a valid parent for World documents
+  } & ParentContext<Parent>;
 
   interface FromImportContext<Parent extends Document.Any | null>
     extends ConstructionContext<Parent>,
@@ -1765,8 +1775,14 @@ declare namespace Document {
 
   interface GetEmbeddedDocumentOptions extends _GetEmbeddedDocumentOptions {}
 
-  // TODO
-  type EmbeddedCollectionFor<DocumentName extends Document.Type, EmbeddedCollection> = any;
+  /**
+   * Gets the hierarchical fields in the schema. Hardcoded to whatever Foundry fields are hierarchical
+   * as there is no way to access the a static property of a custom fields from an instance.
+   */
+  type HierarchyOf<Schema extends DataSchema> = PickValue<
+    Schema,
+    EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
+  >;
 }
 
 /** @deprecated {@link Document.Database.Operation | `Document.Database.Operation`} */
@@ -1840,10 +1856,10 @@ interface DatabaseOperationCreateMap {
   RollTable: RollTable.DatabaseOperation.Create;
   Scene: Scene.DatabaseOperation.Create;
   Setting: Setting.DatabaseOperation.Create;
-  TableResult: TableResult.DatabaseOperation.Create;
-  Tile: TileDocument.DatabaseOperation.Create;
-  Token: TokenDocument.DatabaseOperation.Create;
-  User: User.DatabaseOperation.Create;
+  TableResult: TableResult.Database.Create;
+  Tile: TileDocument.Database.Create;
+  Token: TokenDocument.Database.Create;
+  User: User.Database.Create;
   Wall: WallDocument.Database.Create;
 }
 
@@ -1875,10 +1891,10 @@ interface DatabaseOperationUpdateMap {
   RollTable: RollTable.DatabaseOperation.Update;
   Scene: Scene.DatabaseOperation.Update;
   Setting: Setting.DatabaseOperation.Update;
-  TableResult: TableResult.DatabaseOperation.Update;
-  Tile: TileDocument.DatabaseOperation.Update;
-  Token: TokenDocument.DatabaseOperation.Update;
-  User: User.DatabaseOperation.Update;
+  TableResult: TableResult.Database.Update;
+  Tile: TileDocument.Database.Update;
+  Token: TokenDocument.Database.Update;
+  User: User.Database.Update;
   Wall: WallDocument.Database.Update;
 }
 
@@ -1910,9 +1926,9 @@ interface DatabaseOperationDeleteMap {
   RollTable: RollTable.DatabaseOperation.Delete;
   Scene: Scene.DatabaseOperation.Delete;
   Setting: Setting.DatabaseOperation.Delete;
-  TableResult: TableResult.DatabaseOperation.Delete;
-  Tile: TileDocument.DatabaseOperation.Delete;
-  Token: TokenDocument.DatabaseOperation.Delete;
-  User: User.DatabaseOperation.Delete;
+  TableResult: TableResult.Database.Delete;
+  Tile: TileDocument.Database.Delete;
+  Token: TokenDocument.Database.Delete;
+  User: User.Database.Delete;
   Wall: WallDocument.Database.Delete;
 }

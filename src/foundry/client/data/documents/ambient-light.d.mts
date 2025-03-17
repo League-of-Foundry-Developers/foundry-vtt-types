@@ -267,11 +267,13 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<"base", AmbientLightDocument.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", NonNullable<AmbientLightDocument.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<AmbientLightDocument.CreateData>,
-      context: Document.CreateDialogContext<string, AmbientLightDocument.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<AmbientLightDocument.Parent>>,
     ): Promise<AmbientLightDocument.Stored | null | undefined>;
 
     static override fromDropData(

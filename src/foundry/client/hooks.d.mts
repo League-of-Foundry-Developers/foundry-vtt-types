@@ -1,11 +1,16 @@
 import type { EditorState, Plugin } from "prosemirror-state";
-import type { DeepPartial, EmptyObject, FixedInstanceType, ValueOf } from "fvtt-types/utils";
+import type { DeepPartial, EmptyObject, ValueOf } from "fvtt-types/utils";
 import type Document from "../common/abstract/document.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
 import type PointVisionSource from "../client-esm/canvas/sources/point-vision-source.d.mts";
 import type RenderedEffectSource from "../client-esm/canvas/sources/rendered-effect-source.d.mts";
 import type { CompendiumArtInfo } from "../client-esm/helpers/_types.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../common/abstract/_types.d.mts";
 
 declare global {
   /**
@@ -50,6 +55,23 @@ declare global {
     interface OnOptions {
       /** Only trigger the hooked function once */
       once?: boolean;
+    }
+
+    interface HotReloadData {
+      /** The type of package which was modified */
+      packageType: string;
+
+      /** The id of the package which was modified */
+      packageId: string;
+
+      /** The updated stringified file content */
+      content: string;
+
+      /** The relative file path which was modified */
+      path: string;
+
+      /** The file extension which was modified, e.g. "js", "css", "html" */
+      extension: string;
     }
 
     interface StaticCallbacks {
@@ -192,7 +214,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
        * @see {@link SceneControls._getControlButtons | `SceneControls#_getControlButtons`}
        */
-      getSceneControlButtons: (controls: SceneControl[]) => void;
+      getSceneControlButtons: (controls: SceneControls.Control[]) => void;
 
       /**
        * A hook event that fires whenever data is dropped into a Hotbar slot.
@@ -262,7 +284,7 @@ declare global {
       updateCompendium: (
         pack: CompendiumCollection.Any,
         documents: Document.Any[],
-        options: Document.OnUpdateOptions<Document.Any["documentName"]>,
+        options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
         userId: string,
       ) => void;
 
@@ -500,8 +522,8 @@ declare global {
       preImportAdventure: (
         adventure: Adventure.Implementation,
         formData: object, // TODO: Improve this. Also relevant to `AdventureImporter#_updateObject`
-        toCreate: AdventureImportData["toCreate"],
-        toUpdate: AdventureImportData["toUpdate"],
+        toCreate: Adventure.ImportData["toCreate"],
+        toUpdate: Adventure.ImportData["toUpdate"],
       ) => boolean | void;
 
       /**
@@ -516,8 +538,8 @@ declare global {
       importAdventure: (
         adventure: Adventure.Implementation,
         formData: object, // TODO: Improve this. Also relevant to `AdventureImporter#_updateObject`
-        toCreate: AdventureImportData["toCreate"],
-        toUpdate: AdventureImportData["toUpdate"],
+        toCreate: Adventure.ImportData["toCreate"],
+        toUpdate: Adventure.ImportData["toUpdate"],
       ) => void;
 
       /** Socket */
@@ -774,7 +796,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
        * @see {@link SceneNavigation.activateListeners | `SceneNavigation#activateListeners`}
        */
-      getSceneNavigationContext: (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+      getSceneNavigationContext: (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
 
       /**
        * A hook event that fires when the context menu for a PlayersList entry is constructed.
@@ -783,7 +805,7 @@ declare global {
        * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
        * @see {@link PlayerList.activateListeners | `PlayerList#activateListeners`}
        */
-      getUserContextOptions: (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+      getUserContextOptions: (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
     }
 
     /** Application */
@@ -979,7 +1001,7 @@ declare global {
     type PreCreateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
       data: ConstructorParameters<D>[0],
-      options: Document.PreCreateOptions<FixedInstanceType<D>["documentName"]>,
+      options: Document.Database.PreCreateOptions<DatabaseCreateOperation>,
       userId: string,
     ) => boolean | void;
 
@@ -1005,7 +1027,7 @@ declare global {
     type PreUpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
       changed: DeepPartial<ConstructorParameters<D>[0]>,
-      options: Document.PreUpdateOptions<FixedInstanceType<D>["documentName"]>,
+      options: Document.Database.PreUpdateOptions<DatabaseUpdateOperation>,
       userId: string,
     ) => boolean | void;
 
@@ -1029,7 +1051,7 @@ declare global {
      */
     type PreDeleteDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      options: Document.PreDeleteOptions<FixedInstanceType<D>["documentName"]>,
+      options: Document.Database.PreDeleteOperationInstance<DatabaseDeleteOperation>,
       userId: string,
     ) => boolean | void;
 
@@ -1049,7 +1071,7 @@ declare global {
      */
     type CreateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      options: Document.OnCreateOptions<FixedInstanceType<D>["documentName"]>,
+      options: Document.Database.CreateOptions<DatabaseCreateOperation>,
       userId: string,
     ) => void;
 
@@ -1071,7 +1093,7 @@ declare global {
     type UpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
       change: DeepPartial<ConstructorParameters<D>[0]>,
-      options: Document.OnUpdateOptions<FixedInstanceType<D>["documentName"]>,
+      options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
       userId: string,
     ) => void;
 
@@ -1091,7 +1113,7 @@ declare global {
      */
     type DeleteDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      options: Document.OnDeleteOptions<FixedInstanceType<D>["documentName"]>,
+      options: Document.Database.DeleteOptions<DatabaseDeleteOperation>,
       userId: string,
     ) => void;
 
@@ -1135,7 +1157,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
      * @see {@link ContextMenu.create | `ContextMenu.create`}
      */
-    type GetEntryContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+    type GetEntryContext = (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
 
     /**
      * A hook event that fires when the context menu for a Sound in the PlaylistDirectory is constructed.
@@ -1146,7 +1168,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
      * @see {@link PlaylistDirectory._contextMenu | `PlaylistDirectory#_contextMenu`}
      */
-    type GetPlaylistDirectorySoundContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+    type GetPlaylistDirectorySoundContext = (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
 
     /**
      * A hook event that fires when the context menu for folders in a SidebarTab
@@ -1159,7 +1181,7 @@ declare global {
      * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
      * @see {@link SidebarDirectory._contextMenu | `SidebarDirectory#_contextMenu`}
      */
-    type GetSidebarDirectoryFolderContext = (html: JQuery, entryOptions: ContextMenuEntry[]) => boolean | void;
+    type GetSidebarDirectoryFolderContext = (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
 
     type DynamicCallbacks =
       | RenderApplication

@@ -258,7 +258,7 @@ declare global {
 
     static override createDialog(
       data: Document.CreateDialogData<RegionBehavior.CreateData>,
-      context: Document.CreateDialogContext<RegionBehavior.SubType, RegionBehavior.Parent>,
+      context: Document.CreateDialogContext<RegionBehavior.SubType, NonNullable<RegionBehavior.Parent>>,
     ): Promise<RegionBehavior.Stored | null | undefined>;
 
     /**
@@ -275,7 +275,7 @@ declare global {
      */
 
     static override defaultName(
-      context: Document.DefaultNameContext<RegionBehavior.SubType, RegionBehavior.Parent>,
+      context: Document.DefaultNameContext<RegionBehavior.SubType, NonNullable<RegionBehavior.Parent>>,
     ): string;
 
     static override fromDropData(

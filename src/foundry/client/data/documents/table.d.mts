@@ -280,7 +280,7 @@ declare global {
        * Additional options which customize the created messages
        * @defaultValue `{}`
        */
-      messageOptions: Document.OnCreateOptions<"ChatMessage">;
+      messageOptions: ChatMessage.DatabaseOperation.CreateOperation;
     }
 
     interface RollOptions {
@@ -494,20 +494,20 @@ declare global {
     ): Promise<HTMLElement | null>;
 
     protected override _onCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      data: unknown[],
-      options: Document.OnCreateOptions<"TableResult">,
+      parent: RollTable.Stored,
+      collection: TableResult.ParentCollectionName,
+      documents: TableResult.Stored[],
+      result: TableResult.CreateData[],
+      options: TableResult.Database.OnCreateOperation,
       userId: string,
     ): void;
 
     protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
+      parent: RollTable.Stored,
+      collection: TableResult.ParentCollectionName,
+      documents: TableResult.Stored[],
       ids: string[],
-      options: Document.OnDeleteOptions<"TableResult">,
+      options: TableResult.Database.OnDeleteOperation,
       userId: string,
     ): void;
 
@@ -523,7 +523,7 @@ declare global {
      */
     static fromFolder(
       folder: Folder,
-      options?: Document.OnCreateOptions<"Folder">,
+      options?: RollTable.DatabaseOperation.CreateOperation,
     ): Promise<RollTable.Implementation | undefined>;
 
     /*
@@ -551,7 +551,7 @@ declare global {
   }
 
   /**
-   * @deprecated Use {@link RollTable.Draw | `RollTable.Draw`}
+   * @deprecated {@link RollTable.Draw | `RollTable.Draw`}
    */
-  interface RollTableDraw extends RollTable.Draw {}
+  type RollTableDraw = RollTable.Draw;
 }

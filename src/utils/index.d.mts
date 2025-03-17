@@ -6,7 +6,9 @@ type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig
  * This type exists due to https://github.com/microsoft/TypeScript/issues/55667
  * This will be deprecated once this issue is solved.
  */
-export type FixedInstanceType<T extends AnyConstructor> = T extends abstract new (...args: infer _) => infer R
+export type FixedInstanceType<T extends abstract new (...args: any[]) => any> = T extends abstract new (
+  ...args: infer _
+) => infer R
   ? R
   : never;
 
@@ -1191,3 +1193,16 @@ type _DiscriminatedUnion<U extends object, AllKeys extends AllKeysOf<U>> = U ext
       readonly [K in Exclude<AllKeys, keyof U>]?: never;
     }
   : never;
+
+/**
+ * Picks keys where the value extends `Value`
+ *
+ * @example
+ * ```typescript
+ * type Picked = PickValue<{ type: "coordinates"; x: 123; y: 456; }, number>;
+ * //   ^ { x: 123; y: 456 }
+ * ```
+ */
+export type PickValue<T extends object, Value> = {
+  [K in keyof T as T[K] extends Value ? K : never]: T[K];
+};

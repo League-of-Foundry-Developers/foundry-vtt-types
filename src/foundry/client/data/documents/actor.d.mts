@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";
@@ -528,8 +528,8 @@ declare global {
      * @param options - The update context.
      */
     protected _updateDependentTokens(
-      update: DeepPartial<TokenDocument["_source"]>,
-      options: Document.OnUpdateOptions<"Token">,
+      update: TokenDocument.UpdateData,
+      options: TokenDocument.Database.UpdateOperation,
     ): void;
 
     /*

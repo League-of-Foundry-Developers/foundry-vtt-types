@@ -6,8 +6,8 @@ declare const message: ChatMessage;
 const popout = new ChatPopout(message);
 
 expectTypeOf(popout.message).toEqualTypeOf<ChatMessage>();
-expectTypeOf(ChatPopout.defaultOptions).toEqualTypeOf<ApplicationOptions>();
-expectTypeOf(popout.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(ChatPopout.defaultOptions).toEqualTypeOf<Application.Options>();
+expectTypeOf(popout.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(popout.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(popout.render(true)).toEqualTypeOf<ChatPopout>();
 

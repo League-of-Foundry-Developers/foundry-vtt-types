@@ -178,8 +178,8 @@ declare global {
       position: Canvas.Point,
       /**
        * @privateRemarks User.PingData is InexactPartial because `zoom` is assumed to be number
-       * PingOptions is IntentionalPartial because it gets `mergeObject`ed with some defaults */
-      data?: InexactPartial<User.PingData> & IntentionalPartial<PingOptions>,
+       * Ping.Options is IntentionalPartial because it gets `mergeObject`ed with some defaults */
+      data?: InexactPartial<User.PingData> & IntentionalPartial<Ping.Options>,
     ): ReturnType<this["drawPing"]>;
 
     /**
@@ -191,8 +191,8 @@ declare global {
      */
     drawOffscreenPing(
       position: Canvas.Point,
-      options?: /** @remarks Can't be NullishProps or InexactPartial because PingOptions gets spread into an object with existing values for some keys */
-      IntentionalPartial<PingOptions> &
+      options?: /** @remarks Can't be NullishProps or InexactPartial because Ping.Options gets spread into an object with existing values for some keys */
+      IntentionalPartial<Ping.Options> &
         NullishProps<{
           /**
            * The style of ping to draw, from CONFIG.Canvas.pings.
@@ -216,8 +216,8 @@ declare global {
      */
     drawPing(
       position: PIXI.Point,
-      options?: /** @remarks Can't be NullishProps or InexactPartial because PingOptions gets `mergeObject`ed */
-      IntentionalPartial<PingOptions> &
+      options?: /** @remarks Can't be NullishProps or InexactPartial because Ping.Options gets `mergeObject`ed */
+      IntentionalPartial<Ping.Options> &
         NullishProps<{
           /**
            * The style of ping to draw, from CONFIG.Canvas.pings.

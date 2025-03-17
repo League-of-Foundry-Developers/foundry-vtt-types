@@ -38,6 +38,48 @@ declare global {
     type Parent = Combat.Implementation | null;
 
     /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = never;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    type ParentCollectionName = Metadata["collection"];
+
+    /**
      * An instance of `Combatant` that comes from the database.
      */
     interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
@@ -182,14 +224,17 @@ declare global {
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<Combatant.CreateData, Combatant.Parent, Temporary> {
         combatTurn?: number;
+        turnEvents?: boolean;
       }
       /** Options passed along in Delete operations for Combatants */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Combatant.Parent> {
         combatTurn?: number;
+        turnEvents?: boolean;
       }
       /** Options passed along in Update operations for Combatants */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Combatant.UpdateData, Combatant.Parent> {
         combatTurn?: number;
+        turnEvents?: boolean;
       }
 
       /** Options for {@link Combatant.createDocuments | `Combatant.createDocuments`} */
@@ -357,11 +402,13 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<Combatant.SubType, Combatant.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<Combatant.SubType, NonNullable<Combatant.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<Combatant.CreateData>,
-      context: Document.CreateDialogContext<Combatant.SubType, Combatant.Parent>,
+      context: Document.CreateDialogContext<Combatant.SubType, NonNullable<Combatant.Parent>>,
     ): Promise<Combatant.Stored | null | undefined>;
 
     static override fromDropData(

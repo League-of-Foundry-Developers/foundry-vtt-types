@@ -1,11 +1,23 @@
-import type { AnyObject } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 
 declare global {
   namespace WallDocument {
+    /**
+     * The document's name.
+     */
     type Name = "Wall";
+
+    /**
+     * The arguments to construct the document.
+     */
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+
+    /**
+     * The documents embedded within Wall.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
      * The implementation of the WallDocument document instance configured through `CONFIG.Wall.documentClass` in Foundry and
@@ -31,9 +43,23 @@ declare global {
      */
     type Parent = Scene.Implementation | null;
 
-    // Note: I set to null to punt. Please check.
-    type ParentCollection = null;
-    type Pack = null;
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Scene">;
 
     /**
      * An embedded document is a document contained in another.
@@ -57,6 +83,11 @@ declare global {
 
     type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
 
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
     type ParentCollectionName = Metadata["collection"];
 
     /**
@@ -65,7 +96,7 @@ declare global {
     interface Stored extends Document.Stored<WallDocument.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link foundry.abstract.DataModel._source | `DataModel._source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
@@ -76,7 +107,7 @@ declare global {
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link WallDataModel._source | `WallDataModel._source`}. This data is what was
+     * The data put in {@link WallDocument._source | `WallDocument._source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * Both `Source` and `PersistedData` are equivalent.
@@ -454,7 +485,7 @@ declare global {
      * You should use {@link WallDocument.implementation | `new WallDocument.implementation(...)`} instead which
      * will give you a system specific implementation of `WallDocument`.
      */
-    constructor(...args: Document.ConstructorParameters<WallDocument.CreateData, WallDocument.Parent>);
+    constructor(...args: WallDocument.ConstructorArgs);
 
     /*
      * After this point these are not really overridden methods.
@@ -466,72 +497,15 @@ declare global {
      * separate like this helps against circularities.
      */
 
-    /** ClientDocument overrides */
+    // ClientDocument overrides
 
-    static override defaultName(context: Document.DefaultNameContext<"base", WallDocument.Parent>): string;
+    // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
-    // TODO: Make generic over collection?
-    protected override _preCreateDescendantDocuments(
-      // TODO: Determine what parents are possible and put it into a nice variable.
-      parent: ClientDocument,
-      collection: string,
-      data: unknown[],
-      options: WallDocument.Database.CreateOptions,
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _onCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      data: unknown[],
-      options: WallDocument.Database.CreateOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _preUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      changes: unknown[],
-      options: WallDocument.Database.UpdateOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      changes: unknown[],
-      options: WallDocument.Database.UpdateOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _preDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      ids: string[],
-      options: WallDocument.Database.DeleteOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      ids: string[],
-      options: WallDocument.Database.DeleteOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
+    static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<WallDocument.Parent>>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<WallDocument.CreateData>,
-      // TODO: Revert inlining the Exclude here, `null` is a valid parent for World documents
-      context: Document.CreateDialogContext<string, WallDocument.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<WallDocument.Parent>>,
     ): Promise<WallDocument.Stored | null | undefined>;
 
     static override fromDropData(
@@ -544,49 +518,6 @@ declare global {
       context?: Document.FromImportContext<WallDocument.Parent>,
     ): Promise<WallDocument.Implementation>;
 
-    protected override _preCreateEmbeddedDocuments(
-      embeddedName: string,
-      result: AnyObject[],
-      options: Document.ModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: never,
-      result: never,
-      options: Document.ModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _preUpdateEmbeddedDocuments(
-      embeddedName: string,
-      result: never,
-      options: Document.ModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onUpdateEmbeddedDocuments(
-      embeddedName: string,
-      documents: never,
-      result: never,
-      options: Document.ModificationContext<never>,
-      userId: string,
-    ): void;
-
-    protected override _preDeleteEmbeddedDocuments(
-      embeddedName: string,
-      result: string[],
-      options: Document.ModificationContext<never>,
-      userId: string,
-    ): void;
-
-    protected override _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: Document.Any[],
-      result: string[],
-      options: Document.ModificationContext<Document.Any | null>,
-      userId: string,
-    ): void;
+    // Embedded document operations have been left out because Wall does not have any embedded documents.
   }
 }

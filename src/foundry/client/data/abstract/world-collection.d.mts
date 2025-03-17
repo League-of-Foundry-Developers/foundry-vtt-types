@@ -1,5 +1,6 @@
 import type { DeepPartial, DropFirst, FixedInstanceType, GetKey, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
+import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 
 declare global {
   /**
@@ -64,7 +65,7 @@ declare global {
       id: string,
       updateData?: DeepPartial<FixedInstanceType<DocumentClass>["_source"]>,
       options?: InexactPartial<
-        Document.OnCreateOptions<DocumentClass["metadata"]["name"]> & WorldCollection.FromCompendiumOptions
+        Document.Database.CreateOperation<DatabaseCreateOperation> & WorldCollection.FromCompendiumOptions
       >,
     ): Promise<Document.ToStored<DocumentClass>>;
 

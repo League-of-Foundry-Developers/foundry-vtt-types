@@ -1,7 +1,7 @@
 import type { AnyObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField, SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
@@ -23,7 +23,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
    * You should use {@link WallDocument.implementation | `new WallDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `WallDocument`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseWall.CreateData, BaseWall.Parent>);
+  constructor(...args: WallDocument.ConstructorArgs);
 
   /**
    * @defaultValue
@@ -58,10 +58,12 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static override " fvtt_types_internal_document_name_static": WallDocument.Name;
 
+  // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: null;
-  readonly pack: null;
+  readonly parentCollection: WallDocument.ParentCollectionName | null;
+
+  readonly pack: string | null;
 
   static override get implementation(): WallDocument.ImplementationClass;
 
@@ -71,11 +73,11 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static get documentName(): WallDocument.Name;
 
-  static get TYPES(): [];
+  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
   static get hasTypeData(): false;
 
-  static get hierarchy(): Record<string, EmbeddedCollectionField.Any | EmbeddedDocumentField.Any>;
+  static get hierarchy(): WallDocument.Hierarchy;
 
   override parent: WallDocument.Parent;
 
@@ -111,47 +113,11 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     options?: WallDocument.Database.GetOptions,
   ): WallDocument.Implementation | null;
 
-  static override getCollectionName<
-    CollectionName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName,
-  >(name: CollectionName): WallDocument.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<CollectionName extends WallDocument.EmbeddedName>(
+    name: CollectionName,
+  ): WallDocument.CollectionNameOf<CollectionName> | null;
 
-  override getEmbeddedCollection<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
-    embeddedName: EmbeddedName,
-  ): Document.EmbeddedCollectionFor<WallDocument.Name, EmbeddedName>;
-
-  override getEmbeddedDocument<EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName>(
-    embeddedName: EmbeddedName,
-    id: string,
-    options: Document.GetEmbeddedDocumentOptions, // TODO: Actually get the specific embedded name.
-  ): WallDocument.Embedded | undefined;
-
-  override createEmbeddedDocuments<
-    EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName,
-  >(
-    embeddedName: EmbeddedName,
-    data: Document.CreateDataFor<EmbeddedName>[] | undefined,
-    // TODO: Generic over the EmbeddedName
-    operation?: never,
-  ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
-
-  override updateEmbeddedDocuments<
-    EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName,
-  >(
-    embeddedName: EmbeddedName,
-    updates: Document.UpdateDataFor<EmbeddedName>[] | undefined,
-    // TODO: Generic over the EmbeddedName
-    operation?: never,
-  ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>> | undefined>;
-
-  override deleteEmbeddedDocuments<
-    EmbeddedName extends WallDocument.EmbeddedName | WallDocument.EmbeddedCollectionName,
-  >(
-    embeddedName: EmbeddedName,
-    ids: Array<string>,
-    // TODO: Generic over the EmbeddedName
-    operation?: never,
-  ): Promise<Array<Document.Stored<Document.ImplementationInstanceFor<EmbeddedName>>>>;
-
+  // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
 
   override getFlag<Scope extends WallDocument.Flags.Scope, Key extends WallDocument.Flags.Key<Scope>>(
@@ -277,8 +243,6 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static override get schema(): SchemaField<WallDocument.Schema>;
 
-  static override LOCALIZATION_PREFIXES: string[];
-
   static override validateJoint(data: WallDocument.Source): void;
 
   static override fromSource(
@@ -293,9 +257,10 @@ export default BaseWall;
 
 declare namespace BaseWall {
   export import Name = WallDocument.Name;
+  export import ConstructorArgs = WallDocument.ConstructorArgs;
+  export import Hierarchy = WallDocument.Hierarchy;
   export import Metadata = WallDocument.Metadata;
   export import Parent = WallDocument.Parent;
-  export import ParentCollection = WallDocument.ParentCollection;
   export import Pack = WallDocument.Pack;
   export import Embedded = WallDocument.Embedded;
   export import EmbeddedName = WallDocument.EmbeddedName;

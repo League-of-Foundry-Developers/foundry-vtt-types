@@ -65,7 +65,7 @@ declare global {
     testVisibility(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
-      { object, tests }: InexactPartial<CanvasVisibilityTestConfig>,
+      { object, tests }: InexactPartial<CanvasVisibility.TestConfig>,
     ): boolean;
 
     /**
@@ -89,7 +89,7 @@ declare global {
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
       target: PlaceableObject,
-      test: CanvasVisibilityTest,
+      test: CanvasVisibility.Test,
     ): boolean;
 
     /**
@@ -106,7 +106,7 @@ declare global {
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
       target: PlaceableObject,
-      test: CanvasVisibilityTest,
+      test: CanvasVisibility.Test,
     ): boolean;
 
     /**
@@ -121,7 +121,7 @@ declare global {
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
       target: PlaceableObject,
-      test: CanvasVisibilityTest,
+      test: CanvasVisibility.Test,
     ): boolean;
 
     /**
@@ -136,7 +136,7 @@ declare global {
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
       target: PlaceableObject,
-      test: CanvasVisibilityTest,
+      test: CanvasVisibility.Test,
     ): boolean;
   }
 
@@ -155,7 +155,7 @@ declare global {
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
       target: PlaceableObject,
-      test: CanvasVisibilityTest,
+      test: CanvasVisibility.Test,
     ): boolean;
   }
 

@@ -1,31 +1,10 @@
 import type { InexactPartial } from "fvtt-types/utils";
 
-export {};
-
 declare global {
-  interface DragDropConfiguration {
-    /**
-     * The CSS selector used to target draggable elements.
-     */
-    dragSelector?: DragDrop["dragSelector"];
-
-    /**
-     * The CSS selector used to target viable drop targets.
-     */
-    dropSelector?: DragDrop["dropSelector"];
-
-    /**
-     * An object of permission test functions for each action
-     * @defaultValue `{}`
-     */
-    permissions?: DragDrop["permissions"];
-
-    /**
-     * An object of callback functions for each action
-     * @defaultValue `{}`
-     */
-    callbacks?: DragDrop["callbacks"];
-  }
+  /**
+   * @deprecated {@link DragDrop.Configuration | `DragDrop.Configuration`}
+   */
+  type DragDropConfiguration = DragDrop.Configuration;
 
   /**
    * A controller class for managing drag and drop workflows within an Application instance.
@@ -47,7 +26,7 @@ declare global {
     /**
      * @param options - (default: `{}`)
      */
-    constructor({ dragSelector, dropSelector, permissions, callbacks }?: InexactPartial<DragDropConfiguration>);
+    constructor({ dragSelector, dropSelector, permissions, callbacks }?: DragDrop.Configuration);
 
     /**
      * The HTML selector which identifies draggable elements
@@ -120,5 +99,32 @@ declare global {
 
   namespace DragDrop {
     type Action = "dragstart" | "dragover" | "drop";
+
+    /** @internal */
+    interface _Configuration {
+      /**
+       * The CSS selector used to target draggable elements.
+       */
+      dragSelector?: DragDrop["dragSelector"];
+
+      /**
+       * The CSS selector used to target viable drop targets.
+       */
+      dropSelector?: DragDrop["dropSelector"];
+
+      /**
+       * An object of permission test functions for each action
+       * @defaultValue `{}`
+       */
+      permissions?: DragDrop["permissions"];
+
+      /**
+       * An object of callback functions for each action
+       * @defaultValue `{}`
+       */
+      callbacks?: DragDrop["callbacks"];
+    }
+
+    interface Configuration extends InexactPartial<_Configuration> {}
   }
 }

@@ -718,12 +718,12 @@ declare global {
      */
 
     static override defaultName(
-      context: Document.DefaultNameContext<ActiveEffect.SubType, ActiveEffect.Parent>,
+      context: Document.DefaultNameContext<ActiveEffect.SubType, NonNullable<ActiveEffect.Parent>>,
     ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<ActiveEffect.CreateData>,
-      context: Document.CreateDialogContext<ActiveEffect.SubType, ActiveEffect.Parent>,
+      context: Document.CreateDialogContext<ActiveEffect.SubType, NonNullable<ActiveEffect.Parent>>,
     ): Promise<ActiveEffect.Stored | null | undefined>;
 
     static override fromDropData(

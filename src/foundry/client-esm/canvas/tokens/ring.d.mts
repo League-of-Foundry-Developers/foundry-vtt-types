@@ -129,10 +129,10 @@ declare class TokenRing {
 
   /**
    * Flash the ring briefly with a certain color.
-   * @param color             - Color to flash.
-   * @param animationOptions  - Options to customize the animation. @defaultValue `{}`
+   * @param color            - Color to flash.
+   * @param animationOptions - Options to customize the animation. @defaultValue `{}`
    */
-  flashColor(Color: Color, animationOptions: CanvasAnimationOptions): Promise<boolean | void>;
+  flashColor(Color: Color, animationOptions: CanvasAnimation.AnimateOptions): Promise<boolean | void>;
 
   /**
    * Create an easing function that spikes in the center. Ideal duration is around 1600ms.

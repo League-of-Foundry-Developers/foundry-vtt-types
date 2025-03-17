@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import Document = foundry.abstract.Document;
 
 const combat = new Combat();
 
@@ -36,3 +37,36 @@ expectTypeOf(combat.setInitiative("", 1)).toEqualTypeOf<Promise<void>>();
 expectTypeOf(combat.setupTurns()).toEqualTypeOf<Combat["turns"]>();
 expectTypeOf(combat.debounceSetup()).toEqualTypeOf<ReturnType<typeof foundry.utils.debounce>>();
 expectTypeOf(combat.updateCombatantActors()).toEqualTypeOf<void>();
+
+// @LukeAbby The actual implementation here is nonsense for the available document types,
+// but it shows narrowing BUT it also shows that the CreateData is odd.
+class MyCombatDocumentSubclass extends Combat {
+  protected override _preCreateDescendantDocuments<
+    DescendantDocumentType extends Combat.DescendantClasses,
+    Parent extends Combat.Stored,
+    CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+    Temporary extends boolean | undefined,
+    Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, Temporary>,
+  >(
+    parent: Parent,
+    collection: DescendantDocumentType["metadata"]["collection"],
+    data: CreateData[],
+    options: Document.Database.CreateOptions<Operation>,
+    userId: string,
+  ): void {
+    super._preCreateDescendantDocuments(parent, collection, data, options, userId);
+
+    switch (collection) {
+      case "combatants":
+        for (const d of data) {
+          expectTypeOf(d.initiative).toEqualTypeOf<number>();
+        }
+        break;
+      // @ts-expect-error "foobar" is not a valid collection
+      case "foobar":
+        break;
+    }
+  }
+}
+
+declare const _myWall: MyCombatDocumentSubclass;

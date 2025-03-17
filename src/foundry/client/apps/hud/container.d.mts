@@ -5,7 +5,7 @@ declare global {
    * Render the HUD container
    * @typeParam Options - the type of the options object
    */
-  class HeadsUpDisplay<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class HeadsUpDisplay<Options extends Application.Options = Application.Options> extends Application<Options> {
     /**
      * Token HUD
      */
@@ -36,7 +36,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     override getData(options?: Partial<Options>): MaybePromise<object>;
 

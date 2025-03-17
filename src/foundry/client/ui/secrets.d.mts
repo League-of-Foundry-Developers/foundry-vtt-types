@@ -2,32 +2,19 @@ import type Document from "../../common/abstract/document.d.mts";
 
 declare global {
   /**
-   * @param secret - The secret element whose surrounding content we wish to retrieve.
-   * @returns The content where the secret is housed.
+   * @deprecated {@link HTMLSecret.ContentCallback | `HTMLSecret.ContentCallback`}
    */
-  type HTMLSecretContentCallback = (secret: HTMLElement) => string;
+  export import HTMLSecretContentCallback = HTMLSecret.ContentCallback;
 
   /**
-   * @param secret  - The secret element that is being manipulated.
-   * @param content - The content block containing the updated secret element.
-   * @returns The updated Document.
+   * @deprecated {@link HTMLSecret.UpdateCallback | `HTMLSecret.UpdateCallback`}
    */
-  type HTMLSecretUpdateCallback<
-    ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
-  > = (secret: HTMLElement, content: string) => Promise<ConcreteDocument>;
+  export import HTMLSecretUpdateCallback = HTMLSecret.UpdateCallback;
 
-  interface HTMLSecretConfiguration<
-    ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
-  > {
-    /** The CSS selector used to target content that contains secret blocks. */
-    parentSelector: string;
-
-    /** An object of callback functions for each operation. */
-    callbacks: {
-      content: HTMLSecretContentCallback;
-      update: HTMLSecretUpdateCallback<ConcreteDocument>;
-    };
-  }
+  /**
+   * @deprecated {@link HTMLSecret.Configuration | `HTMLSecret.Configuration`}
+   */
+  export import HTMLSecretConfiguration = HTMLSecret.Configuration;
 
   /**
    * A composable class for managing functionality for secret blocks within DocumentSheets.
@@ -48,16 +35,13 @@ declare global {
     /**
      * @param config - Configuration options.
      */
-    constructor(
-      config: Omit<HTMLSecretConfiguration<ConcreteDocument>, "callbacks"> &
-        Partial<Pick<HTMLSecretConfiguration<ConcreteDocument>, "callbacks">>,
-    );
+    constructor(config: HTMLSecret.Configuration<ConcreteDocument>);
 
     /** The CSS selector used to target secret blocks. */
     readonly parentSelector: string;
 
     /** An object of callback functions for each operation. */
-    readonly callbacks: Readonly<HTMLSecretConfiguration<ConcreteDocument>["callbacks"]>;
+    readonly callbacks: Readonly<HTMLSecret.Callbacks<ConcreteDocument>>;
 
     /**
      * Add event listeners to the targeted secret blocks.
@@ -71,5 +55,36 @@ declare global {
      * @returns The Document whose content was modified.
      */
     protected _onToggleSecret(event: MouseEvent): ConcreteDocument | void;
+  }
+
+  namespace HTMLSecret {
+    /**
+     * @param secret - The secret element whose surrounding content we wish to retrieve.
+     * @returns The content where the secret is housed.
+     */
+    type ContentCallback = (secret: HTMLElement) => string;
+
+    /**
+     * @param secret  - The secret element that is being manipulated.
+     * @param content - The content block containing the updated secret element.
+     * @returns The updated Document.
+     */
+    type UpdateCallback<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> = (
+      secret: HTMLElement,
+      content: string,
+    ) => Promise<ConcreteDocument>;
+
+    interface Configuration<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> {
+      /** The CSS selector used to target content that contains secret blocks. */
+      parentSelector: string;
+
+      /** An object of callback functions for each operation. */
+      callbacks?: Callbacks<ConcreteDocument> | undefined;
+    }
+
+    interface Callbacks<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> {
+      content: HTMLSecret.ContentCallback;
+      update: HTMLSecret.UpdateCallback<ConcreteDocument>;
+    }
   }
 }

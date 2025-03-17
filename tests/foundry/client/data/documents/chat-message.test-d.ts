@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import ChatSpeakerData = foundry.data.ChatSpeakerData;
+
+type ChatSpeakerData = foundry.documents.BaseChatMessage.Properties["speaker"];
 
 expectTypeOf(new ChatMessage()).toEqualTypeOf<ChatMessage.Implementation>();
 expectTypeOf(new ChatMessage({})).toEqualTypeOf<ChatMessage.Implementation>();
@@ -76,3 +77,14 @@ chat.applyRollMode("unknown-roll-mode");
 expectTypeOf(chat.getRollData()).toEqualTypeOf<Record<string, unknown>>();
 expectTypeOf(chat.getHTML()).toEqualTypeOf<Promise<JQuery>>();
 expectTypeOf(chat.export()).toEqualTypeOf<string>();
+
+expectTypeOf(chat.flags.core?.sheetClass).toEqualTypeOf<string | undefined>();
+expectTypeOf(chat.flags.core?.canPopout).toEqualTypeOf<boolean | undefined>();
+await ChatMessage.create({
+  flags: {
+    core: {
+      canPopout: true,
+      sheetClass: "foobar",
+    },
+  },
+});

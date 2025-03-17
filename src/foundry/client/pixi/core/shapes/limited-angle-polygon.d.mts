@@ -87,7 +87,12 @@ declare global {
      * @param angle - The angle being tested, in degrees
      * @returns Is the vertex between the two rays?
      */
-    static pointBetweenRays(point: Canvas.Point, rMin: PolygonRay, rMax: PolygonRay, angle: number): boolean;
+    static pointBetweenRays(
+      point: Canvas.Point,
+      rMin: ClockwiseSweepPolygon.Ray,
+      rMax: ClockwiseSweepPolygon.Ray,
+      angle: number,
+    ): boolean;
   }
 
   namespace LimitedAnglePolygon {

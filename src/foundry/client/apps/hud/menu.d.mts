@@ -15,7 +15,7 @@ declare global {
      * });
      * ```
      * */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     /**
      * The structure of menu items
@@ -54,7 +54,7 @@ declare global {
      */
     get items(): MainMenu.MenuStructure;
 
-    override getData(options?: Partial<ApplicationOptions>): MaybePromise<object>;
+    override getData(options?: Partial<Application.Options>): MaybePromise<object>;
 
     override activateListeners(html: JQuery): void;
 

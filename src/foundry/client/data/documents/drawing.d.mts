@@ -367,11 +367,13 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<"base", DrawingDocument.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", NonNullable<DrawingDocument.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<DrawingDocument.CreateData>,
-      context: Document.CreateDialogContext<string, DrawingDocument.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<DrawingDocument.Parent>>,
     ): Promise<DrawingDocument.Stored | null | undefined>;
 
     static override fromDropData(

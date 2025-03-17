@@ -6,7 +6,7 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class Pause<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class Pause<Options extends Application.Options = Application.Options> extends Application<Options> {
     /**
      * @defaultValue
      * ```ts
@@ -17,7 +17,7 @@ declare global {
      * return options;
      * ```
      */
-    static get defaultOptions(): ApplicationOptions;
+    static get defaultOptions(): Application.Options;
 
     override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<Pause.PauseData>>;
   }
@@ -32,6 +32,6 @@ declare global {
   }
 }
 
-declare abstract class AnyPause extends Pause<ApplicationOptions> {
+declare abstract class AnyPause extends Pause<Application.Options> {
   constructor(arg0: never, ...args: never[]);
 }

@@ -287,6 +287,17 @@ declare global {
      * @deprecated {@link Adventure.Implementation | `Adventure.Implementation`}
      */
     type ConfiguredInstance = Implementation;
+
+    interface ImportData {
+      toCreate?: DocumentDataRecord;
+      toUpdate?: DocumentDataRecord;
+      documentCount: number;
+    }
+
+    interface ImportResult {
+      created: DocumentResult;
+      updated: DocumentResult;
+    }
   }
 
   /**
@@ -311,19 +322,19 @@ declare global {
      * @param options - Options which configure and customize the import process
      * @returns The import result
      */
-    import(options?: InexactPartial<Adventure.ImportOptions>): Promise<AdventureImportResult>;
+    import(options?: InexactPartial<Adventure.ImportOptions>): Promise<Adventure.ImportResult>;
 
     /**
      * Prepare Adventure data for import into the World.
      * @param options - Options passed in from the import dialog to configure the import behavior
      * @returns A subset of adventure fields to import.
      */
-    prepareImport(options?: InexactPartial<Adventure.PrepareImportOptions>): Promise<AdventureImportData>;
+    prepareImport(options?: InexactPartial<Adventure.PrepareImportOptions>): Promise<Adventure.ImportData>;
 
     /**
      * Execute an Adventure import workflow, creating and updating documents in the World.
      */
-    importContent(data?: InexactPartial<AdventureImportData>): Promise<AdventureImportResult>;
+    importContent(data?: InexactPartial<Adventure.ImportData>): Promise<Adventure.ImportResult>;
 
     /*
      * After this point these are not really overridden methods.
@@ -349,16 +360,11 @@ declare global {
     ): Promise<Adventure.Implementation>;
   }
 
-  interface AdventureImportData {
-    toCreate?: DocumentDataRecord;
-    toUpdate?: DocumentDataRecord;
-    documentCount: number;
-  }
+  /** @deprecated {@link Adventure.ImportData | `Adventure.ImportData`} */
+  type AdventureImportData = Adventure.ImportData;
 
-  interface AdventureImportResult {
-    created: DocumentResult;
-    updated: DocumentResult;
-  }
+  /** @deprecated {@link Adventure.ImportResult | `Adventure.ImportResult`} */
+  type AdventureImportResult = Adventure.ImportResult;
 }
 
 type DocumentDataRecord = {

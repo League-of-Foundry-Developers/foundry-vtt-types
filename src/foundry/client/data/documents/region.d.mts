@@ -408,11 +408,13 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<"base", RegionDocument.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", NonNullable<RegionDocument.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<RegionDocument.CreateData>,
-      context: Document.CreateDialogContext<string, RegionDocument.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<RegionDocument.Parent>>,
     ): Promise<RegionDocument.Stored | null | undefined>;
 
     static override fromDropData(

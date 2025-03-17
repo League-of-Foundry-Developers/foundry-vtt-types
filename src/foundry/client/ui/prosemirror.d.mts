@@ -4,16 +4,16 @@ import type { EditorView } from "prosemirror-view";
 import type { Socket } from "socket.io-client";
 
 declare global {
-  interface ProseMirrorHistory {
-    /** The ID of the user who submitted the step. */
-    userId: string;
-    /** The step that was submitted. */
-    step: Step;
-  }
+  /**
+   * @deprecated {@link ProseMirrorEditor.History | `ProseMirrorEditor.History`}
+   */
+  type ProseMirrorHistory = ProseMirrorEditor.History;
+
   namespace ProseMirrorEditor {
     interface Options {
       document?: ClientDocument;
     }
+
     interface CreateOptions {
       /** A string to uniquely identify this ProseMirror instance. Ignored for a collaborative editor. */
       uuid: string;
@@ -26,7 +26,15 @@ declare global {
       /** Whether to enable collaborative editing for this editor. */
       collaborate: boolean;
     }
+
+    interface History {
+      /** The ID of the user who submitted the step. */
+      userId: string;
+      /** The step that was submitted. */
+      step: Step;
+    }
   }
+
   /**
    * A class responsible for managing state and collaborative editing of a single ProseMirror instance.
    */
@@ -84,7 +92,7 @@ declare global {
      * @param offset  - The offset into the history, representing the point at which it was last truncated.
      * @param history - The entire edit history.
      */
-    protected _onNewSteps(offset: string, history: ProseMirrorHistory[]): void;
+    protected _onNewSteps(offset: string, history: ProseMirrorEditor.History[]): void;
 
     /**
      * Disable source code editing if the user was editing it when new steps arrived.

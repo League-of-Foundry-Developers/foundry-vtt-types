@@ -2,8 +2,8 @@ import { expectTypeOf } from "vitest";
 
 declare const sidebarTab: SidebarTab;
 
-expectTypeOf(SidebarTab.defaultOptions).toEqualTypeOf<ApplicationOptions>();
-expectTypeOf(sidebarTab.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(SidebarTab.defaultOptions).toEqualTypeOf<Application.Options>();
+expectTypeOf(sidebarTab.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(sidebarTab.getData()).toEqualTypeOf<Promise<object>>();
 expectTypeOf(sidebarTab.render(true)).toEqualTypeOf<SidebarTab>();
 

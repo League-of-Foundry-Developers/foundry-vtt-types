@@ -15,6 +15,6 @@ if (game instanceof Game) {
 const avConfig = new AVConfig();
 
 expectTypeOf(avConfig.object).toEqualTypeOf<AVMaster>();
-expectTypeOf(AVConfig.defaultOptions).toEqualTypeOf<FormApplicationOptions>();
+expectTypeOf(AVConfig.defaultOptions).toEqualTypeOf<FormApplication.Options>();
 expectTypeOf(avConfig.getData()).toEqualTypeOf<MaybePromise<GetDataReturnType<AVConfig.AVConfigData>>>();
 expectTypeOf(avConfig.render(true)).toEqualTypeOf<AVConfig>();

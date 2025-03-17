@@ -6,7 +6,7 @@ declare global {
    *
    * @typeParam Options - The type of the options object
    */
-  class AVConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
+  class AVConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     Options,
     AVMaster
   > {
@@ -30,7 +30,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplication.Options;
 
     override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<AVConfig.AVConfigData>>;
 

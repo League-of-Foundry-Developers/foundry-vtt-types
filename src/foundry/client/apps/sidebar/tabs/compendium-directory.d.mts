@@ -30,14 +30,17 @@ declare global {
 
     static override entryPartial: "templates/sidebar/partials/pack-partial.html";
 
-    protected override _entryAlreadyExists(entry: DirectoryMixinEntry): boolean;
+    protected override _entryAlreadyExists(entry: DirectoryApplicationMixin.Entry): boolean;
 
     protected override _getEntryDragData(entryId: string): object;
 
-    protected override _entryIsSelf(entry: DirectoryMixinEntry, otherEntry: DirectoryMixinEntry): boolean;
+    protected override _entryIsSelf(
+      entry: DirectoryApplicationMixin.Entry,
+      otherEntry: DirectoryApplicationMixin.Entry,
+    ): boolean;
 
     protected override _sortRelative(
-      entry: DirectoryMixinEntry,
+      entry: DirectoryApplicationMixin.Entry,
       sortData: { sortKey: string; sortBefore: boolean; updateData: object },
     ): Promise<object>;
 
@@ -66,9 +69,12 @@ declare global {
      * @param data - The data being dropped
      * @returns The dropped Entry
      */
-    protected _getDroppedEntryFromData(data: object): Promise<DirectoryMixinEntry>;
+    protected _getDroppedEntryFromData(data: object): Promise<DirectoryApplicationMixin.Entry>;
 
-    protected override _createDroppedEntry(entry: DirectoryMixinEntry, folderId?: string): Promise<DirectoryMixinEntry>;
+    protected override _createDroppedEntry(
+      entry: DirectoryApplicationMixin.Entry,
+      folderId?: string,
+    ): Promise<DirectoryApplicationMixin.Entry>;
 
     protected override _getEntryName(entry: object): string;
 
@@ -84,7 +90,7 @@ declare global {
      * @returns The sidebar entry context options
      * @internal
      */
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
 
     protected override _onClickEntryName(event: PointerEvent): Promise<void>;
 

@@ -568,12 +568,12 @@ declare global {
      */
 
     static override defaultName(
-      context: Document.DefaultNameContext<JournalEntryPage.SubType, JournalEntryPage.Parent>,
+      context: Document.DefaultNameContext<JournalEntryPage.SubType, NonNullable<JournalEntryPage.Parent>>,
     ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<JournalEntryPage.CreateData>,
-      context: Document.CreateDialogContext<JournalEntryPage.SubType, JournalEntryPage.Parent>,
+      context: Document.CreateDialogContext<JournalEntryPage.SubType, NonNullable<JournalEntryPage.Parent>>,
     ): Promise<JournalEntryPage.Stored | null | undefined>;
 
     static override fromDropData(

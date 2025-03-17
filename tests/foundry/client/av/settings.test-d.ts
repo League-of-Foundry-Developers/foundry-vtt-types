@@ -4,7 +4,7 @@ const avSettings = new AVSettings();
 
 expectTypeOf(avSettings.client).toEqualTypeOf<AVSettings.ClientSettings>();
 expectTypeOf(avSettings.world).toEqualTypeOf<AVSettings.WorldSettings>();
-expectTypeOf(avSettings.activity).toEqualTypeOf<Record<string, AVSettingsData>>();
+expectTypeOf(avSettings.activity).toEqualTypeOf<Record<string, AVSettings.Data>>();
 expectTypeOf(avSettings.getUser("")).toEqualTypeOf<AVSettings.UserSettings | null>();
 expectTypeOf(avSettings.users).toEqualTypeOf<Record<string, AVSettings.UserSettings>>();
 expectTypeOf(avSettings.verticalDock).toEqualTypeOf<boolean>();

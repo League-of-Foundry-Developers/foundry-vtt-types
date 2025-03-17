@@ -445,7 +445,7 @@ assertType<{ k1: { i2: string; i3: { j1: string; j3: string } }; k2: number; k3:
 
 // Array merging
 
-assertType<FormApplicationOptions>(
+assertType<FormApplication.Options>(
   foundry.utils.mergeObject(FormApplication.defaultOptions, {
     classes: ["my", "custom", "css"],
   }),

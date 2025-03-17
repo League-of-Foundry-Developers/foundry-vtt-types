@@ -5,8 +5,8 @@ declare const scene: Scene.ConfiguredInstance;
 const documentSheetConfig = new DocumentSheetConfig(scene);
 
 expectTypeOf(documentSheetConfig.object).toEqualTypeOf<Scene>();
-expectTypeOf(DocumentSheetConfig.defaultOptions).toEqualTypeOf<FormApplicationOptions>();
-expectTypeOf(documentSheetConfig.options).toEqualTypeOf<FormApplicationOptions>();
+expectTypeOf(DocumentSheetConfig.defaultOptions).toEqualTypeOf<FormApplication.Options>();
+expectTypeOf(documentSheetConfig.options).toEqualTypeOf<FormApplication.Options>();
 expectTypeOf(documentSheetConfig.getData()).toEqualTypeOf<
   MaybePromise<GetDataReturnType<DocumentSheetConfig.DocumentSheetConfigData>>
 >();
@@ -19,7 +19,7 @@ declare const actor: Actor.ConfiguredInstance;
 const actorDocumentSheetConfig = new DocumentSheetConfig(actor);
 
 expectTypeOf(actorDocumentSheetConfig.object).toEqualTypeOf<Actor>();
-expectTypeOf(actorDocumentSheetConfig.options).toEqualTypeOf<FormApplicationOptions>();
+expectTypeOf(actorDocumentSheetConfig.options).toEqualTypeOf<FormApplication.Options>();
 expectTypeOf(actorDocumentSheetConfig.getData()).toEqualTypeOf<
   MaybePromise<GetDataReturnType<DocumentSheetConfig.DocumentSheetConfigData>>
 >();

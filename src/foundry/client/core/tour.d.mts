@@ -3,65 +3,71 @@ import type { ValueOf } from "fvtt-types/utils";
 export { Tour };
 
 declare global {
-  /** A step in a Tour */
-  interface TourStep {
-    /** A machine-friendly id of the Tour Step */
-    id: string;
+  /** @deprecated {@link Tour.Step | `Tour.Step`} */
+  type TourStep = Tour.Step;
 
-    /** A DOM selector which denotes an element to highlight during this step */
-    selector?: string;
-
-    /** The title of the step, displayed in the tooltip header */
-    title: string;
-
-    /** Raw HTML content displayed during the step */
-    content: string;
-
-    /** How the tooltip for the step should be displayed relative to the target elemen */
-    tooltipDirection?: TooltipManager.TOOLTIP_DIRECTIONS;
-
-    /** Whether the Step is restricted to the GM only */
-    restricted?: boolean;
-  }
-
-  /** Tour configuration data */
-  interface TourConfig {
-    /** The namespace this Tour belongs to. Typically, the name of the package which implements the tour should be used */
-    namespace?: string;
-
-    /** A machine-friendly id of the Tour, must be unique within the provided namespace */
-    id?: string;
-
-    /** A human-readable name for this Tour */
-    title: string;
-
-    /** A human-readable description of this Tour */
-    description?: string;
-
-    /** The list of Tour Steps */
-    steps: TourStep[];
-
-    /** A map of translations for the Tour that should be merged into the default translations */
-    localization?: Localization.Translations;
-
-    /** Whether the Tour is restricted to the GM only */
-    restricted?: boolean;
-
-    /** Whether the Tour should be displayed in the Manage Tours UI */
-    display?: boolean;
-
-    /** Whether the Tour can be resumed or if it always needs to start from the beginning */
-    canBeResumed?: boolean;
-
-    /**
-     * A list of namespaced Tours that might be suggested to the user when this Tour is completed.
-     * The first non-completed Tour in the array will be recommended.
-     */
-    suggestedNextTours?: string[];
-  }
+  /** @deprecated {@link Tour.Config | `Tour.Config`} */
+  type TourConfig = Tour.Config;
 
   namespace Tour {
     type STATUS = ValueOf<typeof Tour.STATUS>;
+
+    /** A step in a Tour */
+    interface Step {
+      /** A machine-friendly id of the Tour Step */
+      id: string;
+
+      /** A DOM selector which denotes an element to highlight during this step */
+      selector?: string;
+
+      /** The title of the step, displayed in the tooltip header */
+      title: string;
+
+      /** Raw HTML content displayed during the step */
+      content: string;
+
+      /** How the tooltip for the step should be displayed relative to the target elemen */
+      tooltipDirection?: TooltipManager.TOOLTIP_DIRECTIONS;
+
+      /** Whether the Step is restricted to the GM only */
+      restricted?: boolean;
+    }
+
+    /** Tour configuration data */
+    interface Config {
+      /** The namespace this Tour belongs to. Typically, the name of the package which implements the tour should be used */
+      namespace?: string;
+
+      /** A machine-friendly id of the Tour, must be unique within the provided namespace */
+      id?: string;
+
+      /** A human-readable name for this Tour */
+      title: string;
+
+      /** A human-readable description of this Tour */
+      description?: string;
+
+      /** The list of Tour Steps */
+      steps: Tour.Step[];
+
+      /** A map of translations for the Tour that should be merged into the default translations */
+      localization?: Localization.Translations;
+
+      /** Whether the Tour is restricted to the GM only */
+      restricted?: boolean;
+
+      /** Whether the Tour should be displayed in the Manage Tours UI */
+      display?: boolean;
+
+      /** Whether the Tour can be resumed or if it always needs to start from the beginning */
+      canBeResumed?: boolean;
+
+      /**
+       * A list of namespaced Tours that might be suggested to the user when this Tour is completed.
+       * The first non-completed Tour in the array will be recommended.
+       */
+      suggestedNextTours?: string[];
+    }
   }
 
   /**
@@ -71,11 +77,14 @@ declare global {
     /**
      * @param config - The configuration of the Tour
      */
-    constructor(config: TourConfig, { id, namespace }?: { id?: TourConfig["id"]; namespace?: TourConfig["namespace"] });
+    constructor(
+      config: Tour.Config,
+      { id, namespace }?: { id?: Tour.Config["id"]; namespace?: Tour.Config["namespace"] },
+    );
     /**
      * The configuration of the tour. Cloned to avoid mutating the original configuration.
      */
-    config: TourConfig;
+    config: Tour.Config;
 
     static STATUS: Readonly<{
       UNSTARTED: "unstarted";
@@ -152,12 +161,12 @@ declare global {
     /**
      * The configuration of tour steps
      */
-    get steps(): TourStep[];
+    get steps(): Tour.Step[];
 
     /**
      * Return the current Step, or null if the tour has not yet started.
      */
-    get currentStep(): TourStep | null;
+    get currentStep(): Tour.Step | null;
 
     /**
      * The index of the current step; -1 if the tour has not yet started, or null if the tour is finished.
@@ -165,12 +174,12 @@ declare global {
     get stepIndex(): number | null;
 
     /**
-     * Returns True if there is a next TourStep
+     * Returns True if there is a next Tour.Step
      */
     get hasNext(): boolean;
 
     /**
-     * Returns True if there is a previous TourStep
+     * Returns True if there is a previous Tour.Step
      */
     get hasPrevious(): boolean;
 

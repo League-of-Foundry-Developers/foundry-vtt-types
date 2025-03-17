@@ -1,5 +1,5 @@
 import type { ConfiguredCard } from "../../../../configuration/index.d.mts";
-import type { DeepPartial, InexactPartial } from "fvtt-types/utils";
+import type { DeepPartial } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -424,7 +424,7 @@ declare global {
      */
     toMessage(
       messageData?: DeepPartial<foundry.documents.BaseChatMessage.CreateData>,
-      options?: InexactPartial<Document.OnCreateOptions<"ChatMessage">>,
+      options?: ChatMessage.DatabaseOperation.CreateOperation,
     ): Promise<ChatMessage.Implementation | undefined>;
 
     /*
@@ -433,11 +433,11 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<Card.SubType, Card.Parent>): string;
+    static override defaultName(context: Document.DefaultNameContext<Card.SubType, NonNullable<Card.Parent>>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<Card.CreateData>,
-      context: Document.CreateDialogContext<Card.SubType, Card.Parent>,
+      context: Document.CreateDialogContext<Card.SubType, NonNullable<Card.Parent>>,
     ): Promise<Card.Stored | null | undefined>;
 
     static override fromDropData(

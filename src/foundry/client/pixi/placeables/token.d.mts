@@ -759,7 +759,7 @@ declare global {
       updateData: unknown,
       options: {
         /** An optional function called each animation frame */
-        ontick: (dt: number, data: CanvasAnimationData) => number;
+        ontick: (dt: number, data: CanvasAnimation.AnimationData) => number;
 
         /**
          * A desired token movement speed in grid spaces per second

@@ -333,11 +333,11 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<"base", NoteDocument.Parent>): string;
+    static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<NoteDocument.Parent>>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<NoteDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NoteDocument.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<NoteDocument.Parent>>,
     ): Promise<NoteDocument.Stored | null | undefined>;
 
     static override fromDropData(

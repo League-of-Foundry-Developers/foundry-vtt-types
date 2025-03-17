@@ -28,7 +28,7 @@ declare global {
      */
     protected _refreshJournalEntrySheets(): void;
 
-    render(force?: boolean, context?: ApplicationOptions): void;
+    render(force?: boolean, context?: Application.Options): void;
   }
 
   namespace Folders {

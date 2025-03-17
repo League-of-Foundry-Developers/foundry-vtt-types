@@ -35,7 +35,7 @@ declare global {
     /**
      * The configured options used for the saved fog-of-war texture.
      */
-    get textureConfiguration(): VisibilityTextureConfiguration;
+    get textureConfiguration(): CanvasVisibility.TextureConfiguration;
 
     /**
      * Does the currently viewed Scene support Token field of vision?

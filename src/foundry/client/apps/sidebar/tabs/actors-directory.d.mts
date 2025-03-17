@@ -15,7 +15,7 @@ declare global {
 
     protected override _canDragDrop(selector: string): boolean;
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
   }
 
   namespace ActorDirectory {

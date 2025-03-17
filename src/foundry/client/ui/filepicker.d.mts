@@ -1,47 +1,17 @@
 import type { EmptyObject, MaybePromise, ValueOf } from "fvtt-types/utils";
 
 declare global {
-  interface FilePickerOptions extends ApplicationOptions {
-    /** A type of file to target */
-    type?: FilePicker.Type | undefined;
-
-    /** The current file path being modified, if any */
-    current?: string | undefined;
-
-    /** A current file source in "data", "public", or "s3" */
-    activeSource?: FilePicker.SourceType | undefined;
-
-    /** A callback function to trigger once a file has been selected */
-    callback?: FilePicker.Callback | undefined;
-
-    /** A flag which permits explicitly disallowing upload, true by default */
-    allowUpload?: boolean | undefined;
-
-    /** An HTML form field that the result of this selection is applied to */
-    field?: HTMLElement | undefined;
-
-    /** An HTML button element which triggers the display of this picker */
-    button?: HTMLElement | undefined;
-
-    /** The picker display mode in FilePicker.DISPLAY_MODES */
-    favorites?: Record<string, FilePicker.FavoriteFolder>;
-
-    /** The picker display mode in FilePicker.DISPLAY_MODES */
-    displayMode?: FilePicker.DisplayMode | undefined;
-
-    /** Display the tile size configuration. */
-    tileSize?: boolean | undefined;
-
-    /** Redirect to the root directory rather than starting in the source directory of one of these files. */
-    redirectToRoot?: string[];
-  }
+  /**
+   * @deprecated {@link FilePicker.Options | `FilePicker.Options`}
+   */
+  type FilePickerOptions = FilePicker.Options;
 
   /**
    * The FilePicker application renders contents of the server-side public directory.
    * This app allows for navigating and uploading files to the public path.
    * @typeParam Options - the type of the options object
    */
-  class FilePicker<Options extends FilePickerOptions = FilePickerOptions> extends Application<Options> {
+  class FilePicker<Options extends FilePicker.Options = FilePicker.Options> extends Application<Options> {
     /**
      * @param options - Options that configure the behavior of the FilePicker
      */
@@ -177,7 +147,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): FilePickerOptions;
+    static override get defaultOptions(): FilePicker.Options;
 
     /**
      * Given a current file path, determine the directory it belongs to
@@ -348,6 +318,41 @@ declare global {
   }
 
   namespace FilePicker {
+    interface Options extends Application.Options {
+      /** A type of file to target */
+      type?: FilePicker.Type | undefined;
+
+      /** The current file path being modified, if any */
+      current?: string | undefined;
+
+      /** A current file source in "data", "public", or "s3" */
+      activeSource?: FilePicker.SourceType | undefined;
+
+      /** A callback function to trigger once a file has been selected */
+      callback?: FilePicker.Callback | undefined;
+
+      /** A flag which permits explicitly disallowing upload, true by default */
+      allowUpload?: boolean | undefined;
+
+      /** An HTML form field that the result of this selection is applied to */
+      field?: HTMLElement | undefined;
+
+      /** An HTML button element which triggers the display of this picker */
+      button?: HTMLElement | undefined;
+
+      /** The picker display mode in FilePicker.DISPLAY_MODES */
+      favorites?: Record<string, FilePicker.FavoriteFolder>;
+
+      /** The picker display mode in FilePicker.DISPLAY_MODES */
+      displayMode?: FilePicker.DisplayMode | undefined;
+
+      /** Display the tile size configuration. */
+      tileSize?: boolean | undefined;
+
+      /** Redirect to the root directory rather than starting in the source directory of one of these files. */
+      redirectToRoot?: string[];
+    }
+
     interface BrowseResult {
       target: string;
       private: boolean;
