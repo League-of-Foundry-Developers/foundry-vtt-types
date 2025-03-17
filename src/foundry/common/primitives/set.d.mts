@@ -57,7 +57,7 @@ declare global {
      * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being tested.
      * @returns Does every element in the set satisfy the test criterion?
      */
-    every(test: (value: T, index: number, set: Set<T>) => boolean): boolean;
+    every(/** @immediate */ test: (value: T, index: number, set: Set<T>) => boolean): boolean;
 
     /**
      * Filter this set to create a subset of elements which satisfy a certain test criterion.
@@ -65,8 +65,8 @@ declare global {
      * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being filtered.
      * @returns A new Set containing only elements which satisfy the test criterion.
      */
-    filter<F extends T>(test: (value: T, index: number, set: Set<T>) => value is F): Set<F>;
-    filter(test: (value: T, index: number, set: Set<T>) => boolean): Set<T>;
+    filter<F extends T>(/** @immediate */ test: (value: T, index: number, set: Set<T>) => value is F): Set<F>;
+    filter(/** @immediate */ test: (value: T, index: number, set: Set<T>) => boolean): Set<T>;
 
     /**
      * Find the first element in this set which satisfies a certain test criterion.
@@ -74,8 +74,8 @@ declare global {
      * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being searched.
      * @returns The first element in the set which satisfies the test criterion, or undefined.
      */
-    find<F extends T>(test: (value: T, index: number, set: Set<T>) => value is F): F | undefined;
-    find(test: (value: T, index: number, set: Set<T>) => boolean): T | undefined;
+    find<F extends T>(/** @immediate */ test: (value: T, index: number, set: Set<T>) => value is F): F | undefined;
+    find(/** @immediate */ test: (value: T, index: number, set: Set<T>) => boolean): T | undefined;
 
     /**
      * Create a new Set where every element is modified by a provided transformation function.
@@ -83,7 +83,7 @@ declare global {
      * @param transform - The transformation function to apply.Positional arguments are the value, the index of iteration, and the set being transformed.
      * @returns A new Set of equal size containing transformed elements.
      */
-    map<V>(transform: (value: T, index: number, set: Set<T>) => V): Set<V>;
+    map<V>(/** @immediate */ transform: (value: T, index: number, set: Set<T>) => V): Set<V>;
 
     /**
      * Create a new Set with elements that are filtered and transformed by a provided reducer function.
@@ -92,7 +92,10 @@ declare global {
      * @param accumulator - The initial value of the returned accumulator.
      * @returns The final value of the accumulator.
      */
-    reduce<V>(reducer: (accumulator: V, value: T, index: number, set: Set<T>) => V, accumulator: V): V;
+    reduce<V>(
+      /** @immediate */ reducer: (accumulator: V, value: T, index: number, set: Set<T>) => V,
+      accumulator: V,
+    ): V;
 
     /**
      * Test whether any element in this Set satisfies a certain test criterion.
@@ -100,6 +103,6 @@ declare global {
      * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being tested.
      * @returns Does any element in the set satisfy the test criterion?
      */
-    some(test: (value: T, index: number, set: Set<T>) => boolean): boolean;
+    some(/** @immediate */ test: (value: T, index: number, set: Set<T>) => boolean): boolean;
   }
 }

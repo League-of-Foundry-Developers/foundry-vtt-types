@@ -39,8 +39,10 @@ declare class Collection<V> extends Map<string, V> {
    * c.get("a") === c.find(entry => entry === "A"); // true
    * ```
    */
-  find<S extends V>(condition: (e: V, index: number, collection: Collection<V>) => e is S): S | undefined;
-  find(condition: (e: V, index: number, collection: Collection<V>) => boolean): V | undefined;
+  find<S extends V>(
+    /** @immediate */ condition: (e: V, index: number, collection: Collection<V>) => e is S,
+  ): S | undefined;
+  find(/** @immediate */ condition: (e: V, index: number, collection: Collection<V>) => boolean): V | undefined;
 
   /**
    * Filter the Collection, returning an Array of entries which match a functional condition.
@@ -56,8 +58,8 @@ declare class Collection<V> extends Map<string, V> {
    * let hasA = c.filters(entry => entry.slice(0) === "A");
    * ```
    */
-  filter<S extends V>(condition: (e: V, index: number, collection: Collection<V>) => e is S): S[];
-  filter(condition: (e: V, index: number, collection: Collection<V>) => boolean): V[];
+  filter<S extends V>(/** @immediate */ condition: (e: V, index: number, collection: Collection<V>) => e is S): S[];
+  filter(/** @immediate */ condition: (e: V, index: number, collection: Collection<V>) => boolean): V[];
 
   /**
    * Apply a function to each element of the collection
@@ -70,7 +72,7 @@ declare class Collection<V> extends Map<string, V> {
    * c.forEach(e => e.active = true);
    * ```
    */
-  forEach(fn: (e: V) => void): void;
+  forEach(/** @immediate */ fn: (e: V) => void): void;
 
   /**
    * Get an element from the Collection by its key.
@@ -116,7 +118,7 @@ declare class Collection<V> extends Map<string, V> {
    * @typeParam M       - The type of the mapped values
    * @returns An Array of transformed values
    */
-  map<M>(transformer: (entity: V, index: number, collection: Collection<V>) => M): M[];
+  map<M>(/** @immediate */ transformer: (entity: V, index: number, collection: Collection<V>) => M): M[];
 
   /**
    * Reduce the Collection by applying an evaluator function and accumulating entries
@@ -135,7 +137,10 @@ declare class Collection<V> extends Map<string, V> {
    * }, ""); // "ABC"
    * ```
    */
-  reduce<A>(evaluator: (accumulator: A, entity: V, index: number, collection: Collection<V>) => A, initial: A): A;
+  reduce<A>(
+    /** @immediate */ evaluator: (accumulator: A, entity: V, index: number, collection: Collection<V>) => A,
+    initial: A,
+  ): A;
 
   /**
    * Test whether a condition is met by some entry in the Collection.
@@ -144,7 +149,7 @@ declare class Collection<V> extends Map<string, V> {
    *                    and the collection being tested.
    * @returns Was the test condition passed by at least one entry?
    */
-  some(condition: (e: V, index: number, collection: Collection<V>) => boolean): boolean;
+  some(/** @immediate */ condition: (e: V, index: number, collection: Collection<V>) => boolean): boolean;
 
   /**
    * Convert the Collection to a primitive array of its contents.

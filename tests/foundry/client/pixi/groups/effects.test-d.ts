@@ -19,4 +19,6 @@ expectTypeOf(myEffectGroup.animateDarkness(3, { duration: 40000 })).toEqualTypeO
 
 //deprecated since v12 until v14
 expectTypeOf(myEffectGroup.visibility).toMatchTypeOf<CanvasVisibility.Any>();
-expectTypeOf(myEffectGroup.globalLightSource).toMatchTypeOf<foundry.canvas.sources.GlobalLightSource.Any>();
+expectTypeOf(
+  myEffectGroup.globalLightSource,
+).toEqualTypeOf<foundry.canvas.sources.GlobalLightSource.ConfiguredInstance>();

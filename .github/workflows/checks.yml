@@ -278,7 +278,7 @@ jobs:
           fetch-depth: 1
 
       - name: Download Main Test Results
-        uses: dawidd6/action-download-artifact@v8
+        uses: dawidd6/action-download-artifact@v9
         with:
           branch: main
           name: main-test-results
