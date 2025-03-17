@@ -6,13 +6,36 @@ declare global {
     type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Note>;
     type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshPosition: boolean;
+    interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<this>;
 
-      refreshVisibility: boolean;
+      /** @defaultValue `{ propagate: ["refreshState", "refreshPosition", "refreshTooltip", "refreshElevation"]; alias: true }` */
+      refresh: RenderFlag<this>;
 
-      refreshText: boolean;
+      /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
+      refreshState: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshVisibility: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshPosition: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshTooltip: RenderFlag<this>;
+
+      /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
+      refreshElevation: RenderFlag<this>;
+
+      /**
+       * @defaultValue `{ propagate: ["refreshTooltip"]; deprecated: { since: 12; until: 14 }; alias: true }`
+       * @deprecated since v12
+       */
+      refreshText: RenderFlag<this>;
     }
+
+    interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
   }
 
   /**
@@ -24,25 +47,7 @@ declare global {
   class Note extends PlaceableObject<NoteDocument.ConfiguredInstance> {
     static override embeddedName: "Note";
 
-    static override RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<Note.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshState", "refreshPosition", "refreshText"], alias: true }` */
-      refresh: RenderFlag<Note.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
-      refreshPosition: RenderFlag<Note.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
-      refreshState: RenderFlag<Note.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshVisibility: RenderFlag<Note.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshText: RenderFlag<Note.RenderFlags>;
-    };
+    static override RENDER_FLAGS: Note.RENDER_FLAGS;
 
     override get bounds(): PIXI.Rectangle;
 

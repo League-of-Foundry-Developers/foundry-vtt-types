@@ -1,4 +1,4 @@
-import type { AnyConstructor, FixedInstanceType, InexactPartial, Mixin } from "fvtt-types/utils";
+import type { AnyConstructor, ConcreteKeys, FixedInstanceType, InexactPartial, Mixin } from "fvtt-types/utils";
 import type { LogCompatibilityWarningOptions } from "../../../../common/utils/logging.d.mts";
 
 declare class RenderFlagObject {
@@ -9,7 +9,7 @@ declare class RenderFlagObject {
    * Configure the render flags used for this class.
    * @defaultValue `{}`
    */
-  static RENDER_FLAGS: Record<string, RenderFlag.Any>;
+  static RENDER_FLAGS: RenderFlagsMixin.RENDER_FLAGS;
 
   /**
    * The ticker priority when RenderFlags of this class are handled.
@@ -35,12 +35,16 @@ declare class RenderFlagObject {
  * @privateRemarks Values are marked as optional here based on use, foundry docs incomplete
  * @internal
  */
-type _RenderFlags<Flags> = InexactPartial<{
-  /** Activating this flag also sets these flags to true */
-  propagate: Array<keyof Flags>;
+type _RenderFlags<Flags extends object> = InexactPartial<{
+  /**
+   * Activating this flag also sets these flags to true
+   */
+  propagate: ConcreteKeys<Flags>[];
 
-  /** Activating this flag resets these flags to false */
-  reset: Array<keyof Flags>;
+  /**
+   * Activating this flag resets these flags to false
+   */
+  reset: ConcreteKeys<Flags>[];
 
   /**
    * Is this flag deprecated? The deprecation options are passed to
@@ -60,10 +64,10 @@ type _RenderFlags<Flags> = InexactPartial<{
 }>;
 
 declare global {
-  // @ts-expect-error - RenderFlag is built around willfully violating subclassing rules.
-  // The primary issue at hand is that each value can refer to the keys, thus making it technically
-  // unsound to apply a subclass to its superclass.
-  interface RenderFlag<out Flags> extends _RenderFlags<Flags> {}
+  // Note(LukeAbby): The usage of `ConcreteKeys` is a hazard; if tsc were to become smarter it might
+  // notice that `ConcreteKeys<Flags>` is actually contravariant and reject this type. However
+  // `RenderFlags` is built upon the assumption this is only used in safe ways.
+  interface RenderFlag<out Flags extends object> extends _RenderFlags<Flags> {}
 
   namespace RenderFlag {
     type Any = RenderFlag<any>;
@@ -89,7 +93,7 @@ declare global {
          * Valid options are OBJECTS or PERCEPTION.
          * @defaultValue `PIXI.UPDATE_PRIORITY.OBJECTS`
          */
-        priority?: PIXI.UPDATE_PRIORITY;
+        priority?: typeof PIXI.UPDATE_PRIORITY.OBJECTS | typeof PIXI.UPDATE_PRIORITY.PERCEPTION;
       },
     );
 
@@ -112,8 +116,9 @@ declare global {
 
     /**
      * Activate certain flags, also toggling propagation and reset behaviors
+     * @remarks Flags are only set if `true`, nullish values are discarded
      */
-    set(changes: Record<string, boolean>): void;
+    set(changes: Record<string, boolean | undefined | null>): void;
   }
 
   /**
@@ -131,5 +136,17 @@ declare global {
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = AnyConstructor;
+
+    type RENDER_FLAGS = Record<string, RenderFlag<object>>;
+
+    /**
+     * @internal This type exists only to make sure `ToBooleanFlags` isn't a homomorphic mapped type
+     * to avoid keeping documentation.
+     */
+    type _KeyOf<T> = keyof T;
+
+    type ToBooleanFlags<RenderFlags extends object> = {
+      [K in _KeyOf<RenderFlags>]: boolean;
+    };
   }
 }

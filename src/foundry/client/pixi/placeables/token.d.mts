@@ -18,31 +18,54 @@ declare global {
     type Properties = BaseToken.Properties;
     type Source = BaseToken.Source;
 
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      redrawEffects: boolean;
+    interface RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<this>;
 
-      refreshSize: boolean;
+      /** @defaultValue `{}` */
+      redrawEffects: RenderFlag<this>;
 
-      refreshPosition: boolean;
+      /** @defaultValue `{ propagate: ["refreshState", "refreshSize", "refreshPosition", "refreshElevation", "refreshBars", "refreshNameplate", "refreshBorder", "refreshShader"], alias: true }` */
+      refresh: RenderFlag<this>;
 
-      refreshElevation: boolean;
+      /** @defaultValue `{ propagate: ["refreshVisibility", "refreshBorder"] }` */
+      refreshState: RenderFlag<this>;
 
-      refreshVisibility: boolean;
+      /** @defaultValue `{ propagate: ["refreshMesh", "refreshBorder", "refreshBars", "refreshPosition", "refreshTarget", "refreshEffects"] }` */
+      refreshSize: RenderFlag<this>;
 
-      refreshEffects: boolean;
+      /** @defaultValue `{ propagate: ["refreshMesh", "refreshVisibility"] }` */
+      refreshPosition: RenderFlag<this>;
 
-      refreshMesh: boolean;
+      /** @defaultValue `{ propagate: ["refreshMesh"] }` */
+      refreshElevation: RenderFlag<this>;
 
-      refreshShader: boolean;
+      /** @defaultValue `{}` */
+      refreshVisibility: RenderFlag<this>;
 
-      refreshBars: boolean;
+      /** @defaultValue `{}` */
+      refreshEffects: RenderFlag<this>;
 
-      refreshNameplate: boolean;
+      /** @defaultValue `{}` */
+      refreshMesh: RenderFlag<this>;
 
-      refreshBorder: boolean;
+      /** @defaultValue `{}` */
+      refreshShader: RenderFlag<this>;
 
-      refreshTarget: boolean;
+      /** @defaultValue `{}` */
+      refreshBars: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshNameplate: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshBorder: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshTarget: RenderFlag<this>;
     }
+
+    interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
 
     interface ReticuleOptions {
       /**
@@ -340,52 +363,7 @@ declare global {
   class Token extends PlaceableObject<TokenDocument.ConfiguredInstance> {
     static override embeddedName: "Token";
 
-    static override RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      redrawEffects: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshState", "refreshSize", "refreshPosition", "refreshElevation", "refreshBars", "refreshNameplate", "refreshBorder", "refreshShader"], alias: true }` */
-      refresh: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshVisibility", "refreshBorder"] }` */
-      refreshState: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshMesh", "refreshBorder", "refreshBars", "refreshPosition", "refreshTarget", "refreshEffects"] }` */
-      refreshSize: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshMesh", "refreshVisibility"] }` */
-      refreshPosition: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshMesh"] }` */
-      refreshElevation: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshVisibility: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshEffects: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshMesh: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshShader: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshBars: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshNameplate: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshBorder: RenderFlag<Token.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshTarget: RenderFlag<Token.RenderFlags>;
-    };
+    static override RENDER_FLAGS: Token.RENDER_FLAGS;
 
     /**
      * Defines the filter to use for detection.
