@@ -1,4 +1,4 @@
-import type { InterfaceToObject, MakeConform, ValueOf } from "fvtt-types/utils";
+import type { Identity, InterfaceToObject, MakeConform, ValueOf } from "fvtt-types/utils";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
 
@@ -561,9 +561,9 @@ declare global {
   }
 
   namespace PlaceableObject {
-    type Any = PlaceableObject<any>;
+    interface Any extends PlaceableObject<any> {}
 
-    type AnyConstructor = typeof AnyPlaceableObject;
+    interface AnyConstructor extends Identity<typeof AnyPlaceableObject> {}
 
     type RenderFlags = RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS>;
 

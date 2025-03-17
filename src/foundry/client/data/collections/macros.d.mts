@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { Identity, InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -31,8 +31,8 @@ declare global {
   }
 
   namespace Macros {
-    type Any = AnyMacros;
-    type AnyConstructor = typeof AnyMacros;
+    interface Any extends AnyMacros {}
+    interface AnyConstructor extends Identity<typeof AnyMacros> {}
   }
 }
 

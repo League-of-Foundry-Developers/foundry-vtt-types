@@ -1,4 +1,4 @@
-import type { FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { FixedInstanceType, Identity } from "fvtt-types/utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
@@ -61,7 +61,7 @@ declare class GlobalLightSource<
 
 declare namespace GlobalLightSource {
   interface Any extends AnyGlobalLightSource {}
-  type AnyConstructor = typeof AnyGlobalLightSource;
+  interface AnyConstructor extends Identity<typeof AnyGlobalLightSource> {}
 
   /**
    * @privateRemarks `attenuation`, `priority`, and `elevation` exist in the parent interface,

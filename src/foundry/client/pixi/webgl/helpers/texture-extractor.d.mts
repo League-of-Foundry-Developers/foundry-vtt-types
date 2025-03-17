@@ -1,4 +1,4 @@
-import type { Brand, InexactPartial } from "fvtt-types/utils";
+import type { Brand, Identity, InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -41,7 +41,7 @@ declare global {
 
   namespace TextureExtractor {
     interface Any extends AnyTextureExtractor {}
-    type AnyConstructor = typeof AnyTextureExtractor;
+    interface AnyConstructor extends Identity<typeof AnyTextureExtractor> {}
 
     /** @internal */
     type _ConstructorOptions = InexactPartial<{

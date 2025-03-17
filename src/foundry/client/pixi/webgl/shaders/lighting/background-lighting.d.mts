@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -57,7 +57,7 @@ declare global {
 
   namespace AdaptiveBackgroundShader {
     interface Any extends AnyAdaptiveBackgroundShader {}
-    type AnyConstructor = typeof AnyAdaptiveBackgroundShader;
+    interface AnyConstructor extends Identity<typeof AnyAdaptiveBackgroundShader> {}
   }
 }
 

@@ -185,7 +185,7 @@ declare global {
   }
 
   namespace DocumentCollection {
-    type Any = DocumentCollection<any, any>;
+    interface Any extends DocumentCollection<any, any> {}
 
     namespace RenderContext {
       interface Base<T extends Document.AnyConstructor> {

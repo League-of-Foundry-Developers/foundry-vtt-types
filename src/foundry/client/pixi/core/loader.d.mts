@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 import type { TranscoderWorker } from "@pixi/basis";
 
 declare global {
@@ -122,7 +122,7 @@ declare global {
 
   namespace TextureLoader {
     interface Any extends AnyTextureLoader {}
-    type AnyConstructor = typeof AnyTextureLoader;
+    interface AnyConstructor extends Identity<typeof AnyTextureLoader> {}
 
     type TranscodeWorkerLoadTranscoderReturn = ReturnType<typeof TranscoderWorker.loadTranscoder>;
 

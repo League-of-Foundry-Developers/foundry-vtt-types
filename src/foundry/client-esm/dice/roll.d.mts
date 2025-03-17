@@ -1,4 +1,11 @@
-import type { AnyObject, InexactPartial, FixedInstanceType, IntentionalPartial, EmptyObject } from "fvtt-types/utils";
+import type {
+  AnyObject,
+  InexactPartial,
+  FixedInstanceType,
+  IntentionalPartial,
+  EmptyObject,
+  Identity,
+} from "fvtt-types/utils";
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
 import type PoolTerm from "./terms/pool.d.mts";
@@ -535,8 +542,8 @@ declare class Roll<D extends AnyObject = EmptyObject> {
 }
 
 declare namespace Roll {
-  type Any = Roll<any>;
-  type AnyConstructor = typeof AnyRoll;
+  interface Any extends AnyRoll {}
+  interface AnyConstructor extends Identity<typeof AnyRoll> {}
 
   interface _Options extends RollTerm.EvaluationOptions {
     /**

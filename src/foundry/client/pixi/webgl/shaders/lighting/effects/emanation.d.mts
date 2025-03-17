@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -15,7 +15,7 @@ declare global {
 
   namespace EmanationColorationShader {
     interface Any extends AnyEmanationColorationShader {}
-    type AnyConstructor = typeof AnyEmanationColorationShader;
+    interface AnyConstructor extends Identity<typeof AnyEmanationColorationShader> {}
   }
 }
 

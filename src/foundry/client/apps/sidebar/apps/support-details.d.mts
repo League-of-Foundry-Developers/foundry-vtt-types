@@ -91,7 +91,7 @@ declare global {
   }
 
   namespace SupportDetails {
-    type Any = SupportDetails<any>;
+    interface Any extends SupportDetails<any> {}
   }
 
   interface SupportReportData {

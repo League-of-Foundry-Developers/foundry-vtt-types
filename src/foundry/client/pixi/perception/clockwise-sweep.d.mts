@@ -1,4 +1,4 @@
-import type { IntentionalPartial } from "fvtt-types/utils";
+import type { Identity, IntentionalPartial } from "fvtt-types/utils";
 import type Edge from "../../../client-esm/canvas/edges/edge.d.mts";
 
 declare global {
@@ -167,7 +167,7 @@ declare global {
 
   namespace ClockwiseSweepPolygon {
     interface Any extends AnyClockwiseSweepPolygon {}
-    type AnyConstructor = typeof AnyClockwiseSweepPolygon;
+    interface AnyConstructor extends Identity<typeof AnyClockwiseSweepPolygon> {}
 
     interface StoredConfig extends PointSourcePolygon.StoredConfig {
       /** The computed bounding box for the polygon */

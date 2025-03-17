@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -33,7 +33,7 @@ declare global {
 
   namespace Cursor {
     interface Any extends AnyCursor {}
-    type AnyConstructor = typeof AnyCursor;
+    interface AnyConstructor extends Identity<typeof AnyCursor> {}
   }
 }
 

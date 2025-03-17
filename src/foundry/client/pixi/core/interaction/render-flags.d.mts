@@ -70,7 +70,7 @@ declare global {
   interface RenderFlag<out Flags extends object> extends _RenderFlags<Flags> {}
 
   namespace RenderFlag {
-    type Any = RenderFlag<any>;
+    interface Any extends RenderFlag<any> {}
   }
 
   /**

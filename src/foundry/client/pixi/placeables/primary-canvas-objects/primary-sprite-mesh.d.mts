@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -121,7 +121,7 @@ declare global {
 
   namespace PrimarySpriteMesh {
     interface Any extends AnyPrimarySpriteMesh {}
-    type AnyConstructor = typeof AnyPrimarySpriteMesh;
+    interface AnyConstructor extends Identity<typeof AnyPrimarySpriteMesh> {}
 
     type FitType = "fill" | "cover" | "contain" | "width" | "height";
 

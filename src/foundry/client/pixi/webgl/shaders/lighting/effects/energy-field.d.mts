@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -15,7 +15,7 @@ declare global {
 
   namespace EnergyFieldColorationShader {
     interface Any extends AnyEnergyFieldColorationShader {}
-    type AnyConstructor = typeof AnyEnergyFieldColorationShader;
+    interface AnyConstructor extends Identity<typeof AnyEnergyFieldColorationShader> {}
   }
 }
 

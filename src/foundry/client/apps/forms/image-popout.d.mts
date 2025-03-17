@@ -125,7 +125,7 @@ declare global {
   }
 
   namespace ImagePopout {
-    type Any = ImagePopout<any>;
+    interface Any extends ImagePopout<any> {}
 
     interface Options extends FormApplicationOptions {
       /**

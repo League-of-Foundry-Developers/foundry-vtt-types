@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -6,9 +6,10 @@ declare global {
    *
    * @typeParam Options - The type of the options object
    */
-  class CardConfig<
-    Options extends DocumentSheetOptions<Card.ConfiguredInstance> = DocumentSheetOptions<Card.ConfiguredInstance>,
-  > extends DocumentSheet<Options, Card.ConfiguredInstance> {
+  class CardConfig<Options extends CardConfig.Options = CardConfig.Options> extends DocumentSheet<
+    Options,
+    Card.ConfiguredInstance
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -21,7 +22,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<Card.ConfiguredInstance>;
+    static override get defaultOptions(): CardConfig.Options;
 
     override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<CardConfig.CardConfigData>>;
 
@@ -36,7 +37,10 @@ declare global {
   }
 
   namespace CardConfig {
-    type Any = CardConfig<any>;
+    interface Any extends AnyCardConfig {}
+    interface AnyConstructor extends Identity<typeof AnyCardConfig> {}
+
+    interface Options extends DocumentSheetOptions<Card.ConfiguredInstance> {}
 
     interface CardConfigData<
       Options extends DocumentSheetOptions<Card.ConfiguredInstance> = DocumentSheetOptions<Card.ConfiguredInstance>,
@@ -45,4 +49,8 @@ declare global {
       types: Record<string, string>;
     }
   }
+}
+
+declare abstract class AnyCardConfig extends CardConfig<CardConfig.Options> {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -73,7 +73,7 @@ declare global {
 
   namespace PulsePing {
     interface Any extends AnyPulsePing {}
-    type AnyConstructor = typeof AnyPulsePing;
+    interface AnyConstructor extends Identity<typeof AnyPulsePing> {}
 
     /** @internal */
     type _ConstructorOptions = InexactPartial<{
@@ -113,7 +113,7 @@ declare global {
 
   namespace ArrowPing {
     interface Any extends AnyArrowPing {}
-    type AnyConstructor = typeof AnyArrowPing;
+    interface AnyConstructor extends Identity<typeof AnyArrowPing> {}
 
     /** @internal */
     type _ConstructorOptions = NullishProps<{
@@ -143,7 +143,7 @@ declare global {
 
   namespace AlertPing {
     interface Any extends AnyAlertPing {}
-    type AnyConstructor = typeof AnyAlertPing;
+    interface AnyConstructor extends Identity<typeof AnyAlertPing> {}
 
     /** @privateRemarks Only exists to change the default value of `color` */
     interface ConstructorOptions extends PulsePing.ConstructorOptions {

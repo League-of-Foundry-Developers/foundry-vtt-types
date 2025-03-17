@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -21,7 +21,7 @@ declare global {
 
   namespace InvisibilityFilter {
     interface Any extends AnyInvisibilityFilter {}
-    type AnyConstructor = typeof AnyInvisibilityFilter;
+    interface AnyConstructor extends Identity<typeof AnyInvisibilityFilter> {}
   }
 }
 

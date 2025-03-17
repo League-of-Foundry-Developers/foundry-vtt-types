@@ -1,4 +1,4 @@
-import type { ToMethod, InexactPartial, IntentionalPartial } from "fvtt-types/utils";
+import type { ToMethod, InexactPartial, IntentionalPartial, Identity } from "fvtt-types/utils";
 import type { IBatchableElement, ViewableBuffer } from "pixi.js";
 
 declare global {
@@ -76,7 +76,7 @@ declare global {
 
   namespace BatchRenderer {
     interface Any extends AnyBatchRenderer {}
-    type AnyConstructor = typeof AnyBatchRenderer;
+    interface AnyConstructor extends Identity<typeof AnyBatchRenderer> {}
 
     type PackInterleavedGeometryFunction = ToMethod<
       (

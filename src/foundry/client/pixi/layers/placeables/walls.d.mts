@@ -1,4 +1,4 @@
-import type { Coalesce, HandleEmptyObject, NullishProps } from "fvtt-types/utils";
+import type { Coalesce, HandleEmptyObject, Identity, NullishProps } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
@@ -175,7 +175,7 @@ declare global {
 
   namespace WallsLayer {
     interface Any extends AnyWallsLayer {}
-    type AnyConstructor = typeof AnyWallsLayer;
+    interface AnyConstructor extends Identity<typeof AnyWallsLayer> {}
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 

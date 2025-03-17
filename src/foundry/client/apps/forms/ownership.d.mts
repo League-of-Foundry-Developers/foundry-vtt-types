@@ -32,7 +32,7 @@ declare global {
   }
 
   namespace DocumentOwnershipConfig {
-    type Any = DocumentOwnershipConfig<any, any>;
+    interface Any extends DocumentOwnershipConfig<any, any> {}
   }
 
   /**

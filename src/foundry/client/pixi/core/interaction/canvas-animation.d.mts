@@ -1,4 +1,4 @@
-import type { PropertiesOfType, Brand, NullishProps, AnyObject } from "fvtt-types/utils";
+import type { PropertiesOfType, Brand, NullishProps, AnyObject, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -90,7 +90,7 @@ declare global {
 
   namespace CanvasAnimation {
     interface Any extends AnyCanvasAnimation {}
-    type AnyConstructor = typeof AnyCanvasAnimation;
+    interface AnyConstructor extends Identity<typeof AnyCanvasAnimation> {}
 
     /** @remarks Helper type as many things `return CanvasAnimation.animate(...)` */
     type AnimateReturn = Promise<boolean | void>;

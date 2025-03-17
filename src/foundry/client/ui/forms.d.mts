@@ -58,28 +58,28 @@ declare global {
      */
     override append(name: string, value: any): void;
   }
-}
 
-declare namespace FormDataExtended {
-  interface Options {
-    /**
-     * A record of TinyMCE editor metadata objects, indexed by their update key
-     * (default: `{}`)
-     */
-    editors?: FormDataExtended["editors"];
-    /**
-     * A mapping of data types for form fields
-     * (default: `{}`)
-     */
-    dtypes?: FormDataExtended["dtypes"];
-    /**
-     * Include disabled fields?
-     * (default: `false`)
-     */
-    disabled?: boolean;
-    /** Include readonly fields?
-     * (default: `true`)
-     */
-    readonly?: boolean;
+  namespace FormDataExtended {
+    interface Options {
+      /**
+       * A record of TinyMCE editor metadata objects, indexed by their update key
+       * (default: `{}`)
+       */
+      editors?: FormDataExtended["editors"];
+      /**
+       * A mapping of data types for form fields
+       * (default: `{}`)
+       */
+      dtypes?: FormDataExtended["dtypes"];
+      /**
+       * Include disabled fields?
+       * (default: `false`)
+       */
+      disabled?: boolean;
+      /** Include readonly fields?
+       * (default: `true`)
+       */
+      readonly?: boolean;
+    }
   }
 }

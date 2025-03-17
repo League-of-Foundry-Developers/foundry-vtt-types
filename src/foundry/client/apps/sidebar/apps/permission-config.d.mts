@@ -52,7 +52,7 @@ declare global {
   }
 
   namespace PermissionConfig {
-    type Any = PermissionConfig<any>;
+    interface Any extends PermissionConfig<any> {}
 
     type FormData = Record<string, boolean>;
 

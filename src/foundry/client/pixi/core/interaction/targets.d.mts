@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 // This class exists make it as sound as possible to override these parts of the class and make them
 // completely unrelated. It's done this way specifically to avoid situations with broken inheritance.
@@ -39,7 +39,7 @@ declare global {
 
   namespace UserTargets {
     interface Any extends AnyUserTargets {}
-    type AnyConstructor = typeof AnyUserTargets;
+    interface AnyConstructor extends Identity<typeof AnyUserTargets> {}
   }
 }
 

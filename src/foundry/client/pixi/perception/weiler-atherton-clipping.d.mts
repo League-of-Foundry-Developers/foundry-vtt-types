@@ -1,4 +1,4 @@
-import type { Brand, NullishProps } from "fvtt-types/utils";
+import type { Brand, Identity, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -122,7 +122,7 @@ declare global {
 
   namespace WeilerAthertonClipper {
     interface Any extends AnyWeilerAthertonClipper {}
-    type AnyConstructor = typeof AnyWeilerAthertonClipper;
+    interface AnyConstructor extends Identity<typeof AnyWeilerAthertonClipper> {}
 
     type CLIP_TYPES = Brand<number, "WeilerAthertonClipper.CLIP_TYPES">;
 

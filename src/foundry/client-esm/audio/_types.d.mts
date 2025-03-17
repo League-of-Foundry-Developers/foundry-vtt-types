@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 export {};
 
 // After seeing that none of these types add anything or are even exported a

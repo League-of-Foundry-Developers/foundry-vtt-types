@@ -1,4 +1,4 @@
-import type { NullishProps, IntentionalPartial, AnyObject } from "fvtt-types/utils";
+import type { NullishProps, IntentionalPartial, AnyObject, Identity } from "fvtt-types/utils";
 
 /**
  * TODO - Re-document after ESM refactor.
@@ -218,7 +218,7 @@ declare abstract class BaseEffectSource<
 
 declare namespace BaseEffectSource {
   interface Any extends AnyBaseEffectSource {}
-  type AnyConstructor = typeof AnyBaseEffectSource;
+  interface AnyConstructor extends Identity<typeof AnyBaseEffectSource> {}
 
   /** @internal */
   type _ConstructorOptions = NullishProps<{

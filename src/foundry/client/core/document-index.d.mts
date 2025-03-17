@@ -1,7 +1,5 @@
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../../common/constants.d.mts";
 
-export {};
-
 declare global {
   /**
    * This class is responsible for indexing all documents available in the world and storing them in a word tree structure

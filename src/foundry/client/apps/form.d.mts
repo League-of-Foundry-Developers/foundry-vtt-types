@@ -1,6 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { AnyObject, GetDataReturnType, InexactPartial, MaybePromise } from "fvtt-types/utils";
+import type { AnyObject, GetDataReturnType, InexactPartial, MaybePromise, Identity } from "fvtt-types/utils";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../common/prosemirror/_module.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 
@@ -284,9 +284,8 @@ declare global {
   }
 
   namespace FormApplication {
-    type Any = FormApplication<any, any>;
-
-    type AnyConstructor = typeof AnyFormApplication;
+    interface Any extends AnyFormApplication {}
+    interface AnyConstructor extends Identity<typeof AnyFormApplication> {}
 
     interface CloseOptions extends Application.CloseOptions {
       submit?: boolean;
@@ -462,8 +461,8 @@ declare global {
   }
 
   namespace DocumentSheet {
-    type Any = AnyDocumentSheet;
-    type AnyConstructor = typeof AnyDocumentSheet;
+    interface Any extends AnyDocumentSheet {}
+    interface AnyConstructor extends Identity<typeof AnyDocumentSheet> {}
 
     interface DocumentSheetData<
       Options extends DocumentSheetOptions<ConcreteDocument>,

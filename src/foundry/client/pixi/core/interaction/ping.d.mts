@@ -1,4 +1,4 @@
-import type { IntentionalPartial, RemoveIndexSignatures } from "fvtt-types/utils";
+import type { Identity, IntentionalPartial, RemoveIndexSignatures } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -36,7 +36,7 @@ declare global {
 
   namespace Ping {
     interface Any extends AnyPing {}
-    type AnyConstructor = typeof AnyPing;
+    interface AnyConstructor extends Identity<typeof AnyPing> {}
 
     type ConfiguredStyles = keyof RemoveIndexSignatures<typeof CONFIG.Canvas.pings.styles>;
 

@@ -1,4 +1,4 @@
-import type { EmptyObject, HandleEmptyObject, NullishProps, RemoveIndexSignatures } from "fvtt-types/utils";
+import type { EmptyObject, HandleEmptyObject, Identity, NullishProps, RemoveIndexSignatures } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -172,7 +172,7 @@ declare global {
 
   namespace GridLayer {
     interface Any extends AnyGridLayer {}
-    type AnyConstructor = typeof AnyGridLayer;
+    interface AnyConstructor extends Identity<typeof AnyGridLayer> {}
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}
 

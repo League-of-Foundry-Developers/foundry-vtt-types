@@ -82,6 +82,6 @@ declare global {
   }
 
   namespace BasePlaceableHUD {
-    type Any = BasePlaceableHUD<any, any>;
+    interface Any extends BasePlaceableHUD<any, any> {}
   }
 }

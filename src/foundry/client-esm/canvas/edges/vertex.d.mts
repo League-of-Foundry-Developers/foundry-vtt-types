@@ -1,4 +1,4 @@
-import type { NullishProps } from "../../../../utils/index.d.mts";
+import type { Identity, NullishProps } from "fvtt-types/utils";
 import type Edge from "./edge.d.mts";
 
 /**
@@ -148,7 +148,7 @@ declare class PolygonVertex {
 
 declare namespace PolygonVertex {
   interface Any extends AnyPolygonVertex {}
-  type AnyConstructor = typeof AnyPolygonVertex;
+  interface AnyConstructor extends Identity<typeof AnyPolygonVertex> {}
 
   /** @internal */
   type _ConstructorOptions = NullishProps<{

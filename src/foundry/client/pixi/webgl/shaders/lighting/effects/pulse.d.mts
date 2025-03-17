@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -10,7 +10,7 @@ declare global {
 
   namespace PulseIlluminationShader {
     interface Any extends AnyPulseIlluminationShader {}
-    type AnyConstructor = typeof AnyPulseIlluminationShader;
+    interface AnyConstructor extends Identity<typeof AnyPulseIlluminationShader> {}
   }
 
   /**
@@ -33,7 +33,7 @@ declare global {
 
   namespace PulseColorationShader {
     interface Any extends AnyPulseColorationShader {}
-    type AnyConstructor = typeof AnyPulseColorationShader;
+    interface AnyConstructor extends Identity<typeof AnyPulseColorationShader> {}
   }
 }
 

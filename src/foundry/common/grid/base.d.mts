@@ -1,4 +1,4 @@
-import type { AnyObject, EmptyObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, EmptyObject, InexactPartial, Identity } from "fvtt-types/utils";
 
 /**
  * The base grid class.
@@ -493,7 +493,7 @@ declare abstract class BaseGrid {
 
 declare namespace BaseGrid {
   interface Any extends AnyBaseGrid {}
-  type AnyConstructor = typeof AnyBaseGrid;
+  interface AnyConstructor extends Identity<typeof AnyBaseGrid> {}
 
   interface Configuration {
     /** The size of a grid space in pixels (a positive number) */

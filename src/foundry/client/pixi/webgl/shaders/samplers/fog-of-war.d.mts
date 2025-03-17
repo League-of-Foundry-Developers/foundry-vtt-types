@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -16,7 +16,7 @@ declare global {
 
   namespace FogSamplerShader {
     interface Any extends AnyFogSamplerShader {}
-    type AnyConstructor = typeof AnyFogSamplerShader;
+    interface AnyConstructor extends Identity<typeof AnyFogSamplerShader> {}
   }
 }
 

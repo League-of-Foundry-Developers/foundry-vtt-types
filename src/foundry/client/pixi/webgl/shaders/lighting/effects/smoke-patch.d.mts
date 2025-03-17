@@ -1,4 +1,5 @@
-export {};
+import type { Identity } from "../../../../../../../utils/index.d.mts";
+
 declare global {
   /**
    * A patch of smoke
@@ -9,7 +10,7 @@ declare global {
 
   namespace SmokePatchColorationShader {
     interface Any extends AnySmokePatchColorationShader {}
-    type AnyConstructor = typeof AnySmokePatchColorationShader;
+    interface AnyConstructor extends Identity<typeof AnySmokePatchColorationShader> {}
   }
 
   /**
@@ -21,7 +22,7 @@ declare global {
 
   namespace SmokePatchIlluminationShader {
     interface Any extends AnySmokePatchIlluminationShader {}
-    type AnyConstructor = typeof AnySmokePatchIlluminationShader;
+    interface AnyConstructor extends Identity<typeof AnySmokePatchIlluminationShader> {}
   }
 }
 

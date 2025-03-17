@@ -1,6 +1,6 @@
 import type PolygonVertex from "./vertex.d.mts";
 import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
-import type { NullishProps } from "fvtt-types/utils";
+import type { Identity, NullishProps } from "fvtt-types/utils";
 import type { WallThresholdData } from "../../../common/documents/_types.d.mts";
 
 /**
@@ -175,7 +175,7 @@ declare class Edge {
 
 declare namespace Edge {
   interface Any extends AnyEdge {}
-  type AnyConstructor = typeof AnyEdge;
+  interface AnyConstructor extends Identity<typeof AnyEdge> {}
 
   /** @internal */
   type _ConstructorOptions = NullishProps<{

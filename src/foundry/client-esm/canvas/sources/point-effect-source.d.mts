@@ -1,6 +1,7 @@
 import type { Mixin, IntentionalPartial, FixedInstanceType, RequiredProps } from "fvtt-types/utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class PointEffectSource {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);

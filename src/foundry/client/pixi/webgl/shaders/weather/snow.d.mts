@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -22,7 +22,7 @@ declare global {
 
   namespace SnowShader {
     interface Any extends AnySnowShader {}
-    type AnyConstructor = typeof AnySnowShader;
+    interface AnyConstructor extends Identity<typeof AnySnowShader> {}
 
     interface DefaultUniforms extends AbstractWeatherShader.DefaultUniforms {
       direction: number;

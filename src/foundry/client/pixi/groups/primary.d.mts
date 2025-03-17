@@ -1,4 +1,4 @@
-import type { Brand, HandleEmptyObject } from "fvtt-types/utils";
+import type { Brand, HandleEmptyObject, Identity } from "fvtt-types/utils";
 
 // Included to match Foundry's documented types
 type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;
@@ -199,7 +199,7 @@ declare global {
 
   namespace PrimaryCanvasGroup {
     interface Any extends AnyPrimaryCanvasGroup {}
-    type AnyConstructor = typeof AnyPrimaryCanvasGroup;
+    interface AnyConstructor extends Identity<typeof AnyPrimaryCanvasGroup> {}
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 

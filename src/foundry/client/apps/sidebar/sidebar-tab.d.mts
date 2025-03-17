@@ -75,6 +75,6 @@ declare global {
   }
 
   namespace SidebarTab {
-    type Any = SidebarTab<any>;
+    interface Any extends SidebarTab<any> {}
   }
 }

@@ -1,7 +1,7 @@
 import type { CircleShapeData, EllipseShapeData, PolygonShapeData, RectangleShapeData } from "../../data/_module.d.mts";
 
 declare namespace RegionShape {
-  type Any = RegionShape<any>;
+  interface Any extends RegionShape<any> {}
 
   type ShapeData = CircleShapeData | EllipseShapeData | PolygonShapeData | RectangleShapeData;
   type ShapeType = ShapeData["type"];

@@ -1,4 +1,4 @@
-import type { FixedInstanceType, ToMethod } from "fvtt-types/utils";
+import type { FixedInstanceType, Identity, ToMethod } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -78,7 +78,7 @@ declare global {
   }
 
   namespace AbstractBaseShader {
-    type AnyConstructor = typeof AnyAbstractBaseShader;
+    interface AnyConstructor extends Identity<typeof AnyAbstractBaseShader> {}
 
     type Coordinates = { x: number; y: number; z?: number } | { x: number; y: number; z: number; w?: number };
 

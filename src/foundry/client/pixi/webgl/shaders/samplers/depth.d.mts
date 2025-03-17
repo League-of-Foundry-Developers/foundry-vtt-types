@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -87,7 +87,7 @@ declare global {
 
   namespace DepthSamplerShader {
     interface Any extends AnyDepthSamplerShader {}
-    type AnyConstructor = typeof AnyDepthSamplerShader;
+    interface AnyConstructor extends Identity<typeof AnyDepthSamplerShader> {}
 
     /** @internal */
     type PartialPIXIBatchable = Pick<PIXI.IBatchableElement, "_texture" | "vertexData" | "indices" | "uvs">;

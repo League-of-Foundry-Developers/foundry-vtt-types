@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { Identity, InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -43,7 +43,7 @@ declare global {
 
   namespace SmoothNoise {
     interface Any extends AnySmoothNoise {}
-    type AnyConstructor = typeof AnySmoothNoise;
+    interface AnyConstructor extends Identity<typeof AnySmoothNoise> {}
 
     /** @internal */
     type _ConstructorOptions = InexactPartial<{

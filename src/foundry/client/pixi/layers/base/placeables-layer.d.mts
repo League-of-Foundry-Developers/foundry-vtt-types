@@ -1,4 +1,11 @@
-import type { Brand, HandleEmptyObject, InexactPartial, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type {
+  Brand,
+  HandleEmptyObject,
+  Identity,
+  InexactPartial,
+  IntentionalPartial,
+  NullishProps,
+} from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
 
@@ -419,7 +426,7 @@ declare global {
 
   namespace PlaceablesLayer {
     interface Any extends AnyPlaceablesLayer {}
-    type AnyConstructor = typeof AnyPlaceablesLayer;
+    interface AnyConstructor extends Identity<typeof AnyPlaceablesLayer> {}
 
     type DocumentNames = Document.PlaceableType;
 
@@ -478,7 +485,7 @@ declare global {
     }
 
     namespace LayerOptions {
-      type Any = LayerOptions<any>;
+      interface Any extends LayerOptions<any> {}
     }
 
     /** @internal */

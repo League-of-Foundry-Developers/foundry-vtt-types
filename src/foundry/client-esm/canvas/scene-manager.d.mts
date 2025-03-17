@@ -1,3 +1,5 @@
+import type { Identity } from "../../../utils/index.d.mts";
+
 /**
  * A framework for imbuing special scripted behaviors into a single specific Scene.
  * Managed scenes are registered in CONFIG.Canvas.managedScenes.
@@ -91,8 +93,8 @@ declare class SceneManager {
 }
 
 declare namespace SceneManager {
-  type Any = AnySceneManager;
-  type AnyConstructor = typeof AnySceneManager;
+  interface Any extends AnySceneManager {}
+  interface AnyConstructor extends Identity<typeof AnySceneManager> {}
 }
 
 declare abstract class AnySceneManager extends SceneManager {

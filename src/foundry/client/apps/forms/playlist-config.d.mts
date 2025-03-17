@@ -33,7 +33,7 @@ declare global {
   }
 
   namespace PlaylistConfig {
-    type Any = PlaylistConfig<any>;
+    interface Any extends PlaylistConfig<any> {}
 
     interface PlaylistConfigData<
       Options extends

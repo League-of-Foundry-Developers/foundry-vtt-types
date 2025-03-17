@@ -1,4 +1,4 @@
-import type { FixedInstanceType, NullishProps, RequiredProps } from "fvtt-types/utils";
+import type { FixedInstanceType, Identity, NullishProps, RequiredProps } from "fvtt-types/utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 
@@ -34,7 +34,7 @@ declare class PointSoundSource<
 
 declare namespace PointSoundSource {
   interface Any extends AnyPointSoundSource {}
-  type AnyConstructor = typeof AnyPointSoundSource;
+  interface AnyConstructor extends Identity<typeof AnyPointSoundSource> {}
 
   /** @internal */
   type _GetVolumeMultiplierOptions = NullishProps<{

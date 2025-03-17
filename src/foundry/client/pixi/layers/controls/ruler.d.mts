@@ -1,4 +1,4 @@
-import type { Brand, FixedInstanceType, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type { Brand, FixedInstanceType, Identity, IntentionalPartial, NullishProps } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
@@ -350,7 +350,7 @@ declare global {
 
   namespace Ruler {
     interface Any extends AnyRuler {}
-    type AnyConstructor = typeof AnyRuler;
+    interface AnyConstructor extends Identity<typeof AnyRuler> {}
 
     type ConfiguredClass = CONFIG["Canvas"]["rulerClass"];
     type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;

@@ -1,7 +1,5 @@
 import type { InexactPartial } from "fvtt-types/utils";
 
-export {};
-
 declare global {
   interface DragDropConfiguration {
     /**

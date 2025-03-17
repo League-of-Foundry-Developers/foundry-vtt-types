@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -326,7 +326,7 @@ declare global {
 
   namespace SpriteMesh {
     interface Any extends AnySpriteMesh {}
-    type AnyConstructor = typeof AnySpriteMesh;
+    interface AnyConstructor extends Identity<typeof AnySpriteMesh> {}
 
     /** Snapshot of some parameters of this display object to render in batched mode. */
     interface BatchData {

@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { Identity, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -49,8 +49,8 @@ declare global {
   }
 
   namespace Users {
-    type Any = AnyUsers;
-    type AnyConstructor = typeof AnyUsers;
+    interface Any extends AnyUsers {}
+    interface AnyConstructor extends Identity<typeof AnyUsers> {}
   }
 }
 

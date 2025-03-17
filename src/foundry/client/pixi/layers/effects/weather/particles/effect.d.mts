@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -47,7 +47,7 @@ declare global {
 
   namespace ParticleEffect {
     interface Any extends AnyParticleEffect {}
-    type AnyConstructor = typeof AnyParticleEffect;
+    interface AnyConstructor extends Identity<typeof AnyParticleEffect> {}
   }
 }
 

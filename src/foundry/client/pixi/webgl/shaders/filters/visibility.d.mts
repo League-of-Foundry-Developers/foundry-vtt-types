@@ -1,4 +1,4 @@
-import type { FixedInstanceType, NullishProps } from "fvtt-types/utils";
+import type { FixedInstanceType, Identity, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -58,7 +58,7 @@ declare global {
 
   namespace VisibilityFilter {
     interface Any extends AnyVisibilityFilter {}
-    type AnyConstructor = typeof AnyVisibilityFilter;
+    interface AnyConstructor extends Identity<typeof AnyVisibilityFilter> {}
 
     type ConfiguredClass = CONFIG["Canvas"]["visibilityFilter"];
     type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;

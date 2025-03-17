@@ -1,8 +1,6 @@
 import type { InexactPartial } from "fvtt-types/utils";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 
-export {};
-
 declare global {
   interface ContextMenuEntry {
     /**

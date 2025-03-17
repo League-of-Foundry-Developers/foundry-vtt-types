@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 import type { SceneEnvironmentData } from "../../../common/documents/_types.d.mts";
 
 declare global {
@@ -55,7 +55,7 @@ declare global {
 
   namespace EnvironmentCanvasGroup {
     interface Any extends AnyEnvironmentCanvasGroup {}
-    type AnyConstructor = typeof AnyEnvironmentCanvasGroup;
+    interface AnyConstructor extends Identity<typeof AnyEnvironmentCanvasGroup> {}
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 

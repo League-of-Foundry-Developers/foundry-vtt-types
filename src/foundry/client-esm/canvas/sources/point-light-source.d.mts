@@ -1,4 +1,4 @@
-import type { AnyObject, FixedInstanceType, IntentionalPartial, RequiredProps } from "fvtt-types/utils";
+import type { AnyObject, FixedInstanceType, Identity, IntentionalPartial, RequiredProps } from "fvtt-types/utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
@@ -60,7 +60,7 @@ declare class PointLightSource<
 
 declare namespace PointLightSource {
   interface Any extends AnyPointLightSource {}
-  type AnyConstructor = typeof AnyPointLightSource;
+  interface AnyConstructor extends Identity<typeof AnyPointLightSource> {}
 
   interface SourceData extends PointEffectSourceMixin.SourceData, BaseLightSource.SourceData {
     animation: RenderedEffectSource.StoredLightAnimationConfig;

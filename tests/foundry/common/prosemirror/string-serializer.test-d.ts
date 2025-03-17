@@ -1,9 +1,9 @@
 /* eslint-disable import-x/extensions */
 import { expectTypeOf } from "vitest";
-import StringSerializer, { StringNode } from "../../../../src/foundry/common/prosemirror/string-serializer.mjs";
-import type {
-  ProseMirrorMarkOutput,
-  ProseMirrorNodeOutput,
+import StringSerializer, {
+  StringNode,
+  type ProseMirrorMarkOutput,
+  type ProseMirrorNodeOutput,
 } from "../../../../src/foundry/common/prosemirror/string-serializer.mjs";
 import type { Fragment } from "prosemirror-model";
 

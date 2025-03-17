@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
+import type { InexactPartial, FixedInstanceType, Identity } from "fvtt-types/utils";
 import type { PoolRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";
@@ -214,7 +214,8 @@ declare class PoolTerm extends RollTerm {
 }
 
 declare namespace PoolTerm {
-  type AnyConstructor = typeof AnyPoolTerm;
+  interface Any extends AnyPoolTerm {}
+  interface AnyConstructor extends Identity<typeof AnyPoolTerm> {}
 
   /**
    * @remarks This interface is not defined by foundry itself. It only exists

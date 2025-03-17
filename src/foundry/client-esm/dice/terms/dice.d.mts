@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
+import type { InexactPartial, FixedInstanceType, Identity } from "fvtt-types/utils";
 import type { DiceRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";
@@ -278,7 +278,8 @@ declare abstract class DiceTerm extends RollTerm {
 }
 
 declare namespace DiceTerm {
-  type AnyConstructor = typeof AnyDiceTerm;
+  interface Any extends AnyDiceTerm {}
+  interface AnyConstructor extends Identity<typeof AnyDiceTerm> {}
 
   interface Data extends InexactPartial<TermData> {
     class?: string | undefined;

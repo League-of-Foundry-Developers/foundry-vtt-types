@@ -1,4 +1,4 @@
-import type { HandleEmptyObject } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -99,7 +99,7 @@ declare global {
 
   namespace TilesLayer {
     interface Any extends AnyTilesLayer {}
-    type AnyConstructor = typeof AnyTilesLayer;
+    interface AnyConstructor extends Identity<typeof AnyTilesLayer> {}
 
     interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 

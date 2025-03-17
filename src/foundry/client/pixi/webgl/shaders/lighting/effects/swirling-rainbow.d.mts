@@ -1,4 +1,5 @@
-export {};
+import type { Identity } from "../../../../../../../utils/index.d.mts";
+
 declare global {
   /**
    * Swirling rainbow animation coloration shader
@@ -14,7 +15,7 @@ declare global {
 
   namespace SwirlingRainbowColorationShader {
     interface Any extends AnySwirlingRainbowColorationShader {}
-    type AnyConstructor = typeof AnySwirlingRainbowColorationShader;
+    interface AnyConstructor extends Identity<typeof AnySwirlingRainbowColorationShader> {}
   }
 }
 

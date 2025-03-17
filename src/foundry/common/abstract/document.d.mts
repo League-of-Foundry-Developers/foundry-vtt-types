@@ -16,7 +16,8 @@ import type {
   InexactPartial,
   RemoveIndexSignatures,
   FixedInstanceType,
-} from "../../../utils/index.d.mts";
+  Identity,
+} from "fvtt-types/utils";
 import type * as CONST from "../constants.mts";
 import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
@@ -944,8 +945,8 @@ declare abstract class ConfigurationFailure extends AnyDocument {
 
 declare namespace Document {
   /** Any Document, except for Settings */
-  type Any = AnyDocument;
-  type AnyConstructor = typeof AnyDocument;
+  interface Any extends AnyDocument {}
+  interface AnyConstructor extends Identity<typeof AnyDocument> {}
 
   type ConfigurationFailureClass = typeof ConfigurationFailure;
   type ConfigurationFailureInstance = ConfigurationFailure;
@@ -1056,7 +1057,7 @@ declare namespace Document {
     type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof Parent];
 
     namespace Instance {
-      type Any = Instance<any, any, any>;
+      interface Any extends Instance<any, any, any> {}
 
       type Complete<T extends Any> = T extends Document.Any ? T : never;
     }
@@ -1367,7 +1368,7 @@ declare namespace Document {
   }
 
   namespace Metadata {
-    type Any = Metadata<any>;
+    interface Any extends Metadata<any> {}
 
     export interface Default {
       name: "Document";

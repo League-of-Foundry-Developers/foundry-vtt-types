@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -157,8 +157,8 @@ declare global {
   }
 
   namespace Hotbar {
-    type Any = AnyHotbar;
-    type AnyConstructor = typeof AnyHotbar;
+    interface Any extends AnyHotbar {}
+    interface AnyConstructor extends Identity<typeof AnyHotbar> {}
 
     interface HotbarData {
       page: Hotbar["page"];

@@ -47,7 +47,7 @@ declare global {
   }
 
   namespace ItemSheet {
-    type Any = ItemSheet<any>;
+    interface Any extends ItemSheet<any> {}
 
     interface ItemSheetData<
       Options extends DocumentSheetOptions<Item.ConfiguredInstance> = DocumentSheetOptions<Item.ConfiguredInstance>,

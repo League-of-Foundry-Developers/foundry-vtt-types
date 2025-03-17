@@ -1,4 +1,4 @@
-import type { FixedInstanceType } from "fvtt-types/utils";
+import type { FixedInstanceType, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -39,7 +39,7 @@ declare global {
 
   namespace AbstractBaseFilter {
     interface Any extends AnyAbstractBaseFilter {}
-    type AnyConstructor = typeof AnyAbstractBaseFilter;
+    interface AnyConstructor extends Identity<typeof AnyAbstractBaseFilter> {}
   }
 }
 

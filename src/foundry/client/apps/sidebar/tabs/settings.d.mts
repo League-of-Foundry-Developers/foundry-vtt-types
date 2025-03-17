@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -40,8 +40,8 @@ declare global {
   }
 
   namespace Settings {
-    type Any = AnySettings;
-    type AnyConstructor = typeof AnySettings;
+    interface Any extends AnySettings {}
+    interface AnyConstructor extends Identity<typeof AnySettings> {}
   }
 
   /**
@@ -76,8 +76,8 @@ declare global {
   }
 
   namespace FrameViewer {
-    type Any = AnyFrameViewer;
-    type AnyConstructor = typeof AnyFrameViewer;
+    interface Any extends AnyFrameViewer {}
+    interface AnyConstructor extends Identity<typeof AnyFrameViewer> {}
   }
 }
 

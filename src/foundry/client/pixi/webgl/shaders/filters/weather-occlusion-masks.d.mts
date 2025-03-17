@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -48,7 +48,7 @@ declare global {
 
   namespace WeatherOcclusionMaskFilter {
     interface Any extends AnyWeatherOcclusionMaskFilter {}
-    type AnyConstructor = typeof AnyWeatherOcclusionMaskFilter;
+    interface AnyConstructor extends Identity<typeof AnyWeatherOcclusionMaskFilter> {}
   }
 }
 

@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -36,7 +36,7 @@ declare global {
 
   namespace FogShader {
     interface Any extends AnyFogShader {}
-    type AnyConstructor = typeof AnyFogShader;
+    interface AnyConstructor extends Identity<typeof AnyFogShader> {}
 
     interface DefaultUniforms extends AbstractWeatherShader.DefaultUniforms {
       intensity: number;

@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -30,7 +30,7 @@ declare global {
 
   namespace AutumnLeavesWeatherEffect {
     interface Any extends AnyAutumnLeavesWeatherEffect {}
-    type AnyConstructor = typeof AnyAutumnLeavesWeatherEffect;
+    interface AnyConstructor extends Identity<typeof AnyAutumnLeavesWeatherEffect> {}
 
     /** @internal */
     interface _EmitterConfigOptionalProperties {
