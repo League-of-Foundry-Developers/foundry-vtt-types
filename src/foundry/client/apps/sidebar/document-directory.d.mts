@@ -165,6 +165,6 @@ declare global {
   }
 
   namespace DocumentDirectory {
-    type Any = DocumentDirectory<any, any>;
+    interface Any extends DocumentDirectory<any, any> {}
   }
 }

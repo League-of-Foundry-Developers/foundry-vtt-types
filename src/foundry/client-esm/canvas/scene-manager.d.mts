@@ -1,5 +1,4 @@
-import type { AnyFunction } from "../../../utils/index.d.mts";
-
+import type { AnyFunction, Identity } from "fvtt-types/utils";
 /**
  * A framework for imbuing special scripted behaviors into a single specific Scene.
  * Managed scenes are registered in CONFIG.Canvas.managedScenes.
@@ -94,7 +93,7 @@ declare class SceneManager {
 
 declare namespace SceneManager {
   interface Any extends AnySceneManager {}
-  type AnyConstructor = typeof AnySceneManager;
+  interface AnyConstructor extends Identity<typeof AnySceneManager> {}
 }
 
 declare abstract class AnySceneManager extends SceneManager {

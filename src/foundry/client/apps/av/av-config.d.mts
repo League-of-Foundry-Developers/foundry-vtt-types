@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -66,7 +66,8 @@ declare global {
   }
 
   namespace AVConfig {
-    type Any = AVConfig<any>;
+    interface Any extends AnyAVConfig {}
+    interface AnyConstructor extends Identity<typeof AnyAVConfig> {}
 
     interface AVConfigData {
       user: User;
@@ -90,4 +91,8 @@ declare global {
       dockPositions: Record<AVSettings.DOCK_POSITIONS, string>;
     }
   }
+}
+
+declare abstract class AnyAVConfig extends AVConfig<FormApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

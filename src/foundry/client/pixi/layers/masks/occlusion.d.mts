@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -89,7 +89,7 @@ declare global {
 
   namespace CanvasOcclusionMask {
     interface Any extends AnyCanvasOcclusionMask {}
-    type AnyConstructor = typeof AnyCanvasOcclusionMask;
+    interface AnyConstructor extends Identity<typeof AnyCanvasOcclusionMask> {}
   }
 }
 

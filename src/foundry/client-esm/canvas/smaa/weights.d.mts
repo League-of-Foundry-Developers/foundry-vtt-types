@@ -1,4 +1,4 @@
-import type { IntentionalPartial, RequiredProps } from "../../../../utils/index.d.mts";
+import type { Identity, IntentionalPartial, RequiredProps } from "../../../../utils/index.d.mts";
 
 /**
  * The blending weight calculation filter for {@link foundry.canvas.SMAAFilter | `SMAAFilter`}.
@@ -8,8 +8,8 @@ declare class SMAABWeightCalculationFilter extends PIXI.Filter {
 }
 
 declare namespace SMAABWeightCalculationFilter {
-  interface Any extends SMAABWeightCalculationFilter {}
-  type AnyConstructor = typeof AnySMAABWeightCalculationFilter;
+  interface Any extends AnySMAABWeightCalculationFilter {}
+  interface AnyConstructor extends Identity<typeof AnySMAABWeightCalculationFilter> {}
 
   type Config = RequiredProps<
     IntentionalPartial<foundry.canvas.SMAAFilter.Config>,

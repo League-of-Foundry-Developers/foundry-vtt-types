@@ -3148,14 +3148,6 @@ declare global {
         group: Group;
       }
 
-      interface GridStyle {
-        label: string;
-        shaderClass: GridShader.AnyConstructor;
-        shaderOptions: {
-          style: number;
-        };
-      }
-
       namespace Pings {
         interface Style {
           class: unknown;

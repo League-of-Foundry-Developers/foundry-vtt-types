@@ -1,3 +1,4 @@
+import type { Identity } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -34,8 +35,8 @@ declare global {
   }
 
   namespace Messages {
-    type Any = AnyMessages;
-    type AnyConstructor = typeof AnyMessages;
+    interface Any extends AnyMessages {}
+    interface AnyConstructor extends Identity<typeof AnyMessages> {}
   }
 }
 

@@ -1,4 +1,4 @@
-import type { Brand, InexactPartial, NullishProps } from "../../../../../utils/index.d.mts";
+import type { Brand, Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 /** @internal */
 interface _QuadtreeObjectBase<T> {
@@ -143,7 +143,7 @@ declare global {
 
   namespace Quadtree {
     interface Any extends AnyQuadtree {}
-    type AnyConstructor = typeof AnyQuadtree;
+    interface AnyConstructor extends Identity<typeof AnyQuadtree> {}
 
     /** @internal */
     type _OptionalSet<T> = NullishProps<{
@@ -241,7 +241,7 @@ declare global {
 
   namespace CanvasQuadtree {
     interface Any extends AnyCanvasQuadtree {}
-    type AnyConstructor = typeof AnyCanvasQuadtree;
+    interface AnyConstructor extends Identity<typeof AnyCanvasQuadtree> {}
 
     type CanvasQuadtreeObject = PrimaryCanvasObjectMixin.AnyMixed | PlaceableObject.Any;
   }

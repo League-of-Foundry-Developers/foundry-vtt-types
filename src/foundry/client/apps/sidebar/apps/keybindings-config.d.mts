@@ -145,7 +145,7 @@ declare global {
   }
 
   namespace KeybindingsConfig {
-    type Any = KeybindingsConfig<any>;
+    interface Any extends KeybindingsConfig<any> {}
 
     interface Category extends PackageConfiguration.Category {
       actions: ActionData[];

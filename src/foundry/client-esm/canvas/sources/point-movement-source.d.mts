@@ -1,3 +1,4 @@
+import type { Identity } from "../../../../utils/index.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 
@@ -23,7 +24,7 @@ declare class PointMovementSource<
 
 declare namespace PointMovementSource {
   interface Any extends AnyPointMovementSource {}
-  type AnyConstructor = typeof AnyPointMovementSource;
+  interface AnyConstructor extends Identity<typeof AnyPointMovementSource> {}
 
   interface SourceData extends PointEffectSourceMixin.MixedSourceData {}
 

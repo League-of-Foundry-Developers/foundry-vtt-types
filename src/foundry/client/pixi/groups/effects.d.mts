@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -209,7 +209,7 @@ declare global {
 
   namespace EffectsCanvasGroup {
     interface Any extends AnyEffectsCanvasGroup {}
-    type AnyConstructor = typeof AnyEffectsCanvasGroup;
+    interface AnyConstructor extends Identity<typeof AnyEffectsCanvasGroup> {}
 
     /** @internal */
     type _AnimateDarknessOptions = NullishProps<{

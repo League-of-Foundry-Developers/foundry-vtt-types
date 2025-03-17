@@ -1,4 +1,4 @@
-import type { HandleEmptyObject } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
 
 /**
  * This Canvas Layer provides a container for MeasuredTemplate objects.
@@ -51,7 +51,7 @@ declare global {
 
   namespace TemplateLayer {
     interface Any extends AnyTemplateLayer {}
-    type AnyConstructor = typeof AnyTemplateLayer;
+    interface AnyConstructor extends Identity<typeof AnyTemplateLayer> {}
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 

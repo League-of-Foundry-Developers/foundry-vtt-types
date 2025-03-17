@@ -1,9 +1,9 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   namespace AudioNode {
-    type Any = AnyAudioNode;
-    type AnyConstructor = typeof AnyAudioNode;
+    interface Any extends AnyAudioNode {}
+    interface AnyConstructor extends Identity<typeof AnyAudioNode> {}
   }
 }
 

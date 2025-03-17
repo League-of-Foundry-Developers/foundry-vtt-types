@@ -29,7 +29,7 @@ declare global {
   }
 
   namespace MeasuredTemplateConfig {
-    type Any = MeasuredTemplateConfig<any>;
+    interface Any extends MeasuredTemplateConfig<any> {}
 
     interface FormData {
       angle: number | null;

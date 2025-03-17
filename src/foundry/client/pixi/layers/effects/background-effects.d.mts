@@ -1,4 +1,4 @@
-import type { HandleEmptyObject } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -34,7 +34,7 @@ declare global {
 
   namespace CanvasBackgroundAlterationEffects {
     interface Any extends AnyCanvasBackgroundAlterationEffects {}
-    type AnyConstructor = typeof AnyCanvasBackgroundAlterationEffects;
+    interface AnyConstructor extends Identity<typeof AnyCanvasBackgroundAlterationEffects> {}
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}
 

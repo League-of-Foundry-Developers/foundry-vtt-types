@@ -1,4 +1,4 @@
-import type { RemoveIndexSignatures, FixedInstanceType } from "../../../../../../utils/index.d.mts";
+import type { RemoveIndexSignatures, FixedInstanceType, Identity } from "fvtt-types/utils";
 
 type AbstractBaseShaderClass = typeof AbstractBaseShader;
 
@@ -81,7 +81,7 @@ declare global {
 
   namespace AbstractWeatherShader {
     interface Any extends AnyAbstractWeatherShader {}
-    type AnyConstructor = typeof AnyAbstractWeatherShader;
+    interface AnyConstructor extends Identity<typeof AnyAbstractWeatherShader> {}
 
     interface CommonUniforms extends AbstractBaseShader.Uniforms {
       terrainUvMatrix: PIXI.Matrix;

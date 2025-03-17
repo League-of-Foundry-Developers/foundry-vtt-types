@@ -1,4 +1,4 @@
-import type { InexactPartial } from "../../../../../utils/index.d.mts";
+import type { Identity, InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -92,7 +92,7 @@ declare global {
 
   namespace LimitedAnglePolygon {
     interface Any extends AnyLimitedAnglePolygon {}
-    type AnyConstructor = typeof AnyLimitedAnglePolygon;
+    interface AnyConstructor extends Identity<typeof AnyLimitedAnglePolygon> {}
 
     /** @internal */
     type _ConstructorOptions = InexactPartial<{

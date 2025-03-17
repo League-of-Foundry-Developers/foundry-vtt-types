@@ -1,3 +1,4 @@
+import type { Identity } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
@@ -314,8 +315,8 @@ declare global {
   }
 
   namespace ChatLog {
-    type Any = AnyChatLog;
-    type AnyConstructor = typeof AnyChatLog;
+    interface Any extends AnyChatLog {}
+    interface AnyConstructor extends Identity<typeof AnyChatLog> {}
 
     type Command =
       | "roll"

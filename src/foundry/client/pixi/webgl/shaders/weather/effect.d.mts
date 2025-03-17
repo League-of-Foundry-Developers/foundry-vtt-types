@@ -1,4 +1,4 @@
-import type { IntentionalPartial } from "fvtt-types/utils";
+import type { Identity, IntentionalPartial } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -45,7 +45,7 @@ declare global {
 
   namespace WeatherShaderEffect {
     interface Any extends AnyWeatherShaderEffect {}
-    type AnyConstructor = typeof AnyWeatherShaderEffect;
+    interface AnyConstructor extends Identity<typeof AnyWeatherShaderEffect> {}
 
     type Configuration = IntentionalPartial<AbstractBaseShader.Uniforms & AbstractWeatherShader>;
   }

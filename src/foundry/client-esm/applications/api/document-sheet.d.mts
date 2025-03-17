@@ -1,10 +1,9 @@
-import type { AnyObject, DeepPartial, EmptyObject, SimpleMerge } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, EmptyObject, Identity, SimpleMerge } from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
 
 declare namespace DocumentSheetV2 {
-  type Any = DocumentSheetV2<any, any, any, any>;
-
-  type AnyConstructor = typeof AnyDocumentSheetV2;
+  interface Any extends AnyDocumentSheetV2 {}
+  interface AnyConstructor extends Identity<typeof AnyDocumentSheetV2> {}
 
   interface Configuration<Document extends foundry.abstract.Document.Any = foundry.abstract.Document.Any>
     extends ApplicationV2.Configuration {

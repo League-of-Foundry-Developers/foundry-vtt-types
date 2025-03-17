@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -22,7 +22,7 @@ declare global {
 
   namespace BatchShaderGenerator {
     interface Any extends AnyBatchShaderGenerator {}
-    type AnyConstructor = typeof AnyBatchShaderGenerator;
+    interface AnyConstructor extends Identity<typeof AnyBatchShaderGenerator> {}
   }
 }
 

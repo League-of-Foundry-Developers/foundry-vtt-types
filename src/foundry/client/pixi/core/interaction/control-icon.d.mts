@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { Identity, InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -68,7 +68,7 @@ declare global {
 
   namespace ControlIcon {
     interface Any extends AnyControlIcon {}
-    type AnyConstructor = typeof AnyControlIcon;
+    interface AnyConstructor extends Identity<typeof AnyControlIcon> {}
 
     /** @internal */
     type _Options = InexactPartial<{

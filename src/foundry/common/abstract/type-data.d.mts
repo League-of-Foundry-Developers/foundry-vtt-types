@@ -7,20 +7,15 @@ import type {
   Merge,
   RemoveIndexSignatures,
   SimpleMerge,
-} from "../../../utils/index.d.mts";
+  Identity,
+} from "fvtt-types/utils";
 import type { SchemaField } from "../data/fields.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
-declare class AnyDataModel extends DataModel<any, any, any> {
-  constructor(...args: any[]);
-}
-
-type StaticDataModel = typeof AnyDataModel;
-
-interface _InternalTypeDataModelInterface extends StaticDataModel {
+interface _InternalTypeDataModelInterface extends DataModel.AnyConstructor {
   new <Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends DataModel<Schema, Parent>>(
     ...args: ConstructorParameters<typeof DataModel<Schema, Parent>>
 
@@ -114,8 +109,8 @@ type InnerMerge<U, K extends keyof U, T> = T extends { readonly [_ in K]?: infer
   : U[K];
 
 declare namespace TypeDataModel {
-  type Any = TypeDataModel<any, any, any, any>;
-  type AnyConstructor = typeof AnyTypeDataModel;
+  interface Any extends AnyTypeDataModel {}
+  interface AnyConstructor extends Identity<typeof AnyTypeDataModel> {}
 
   type ConfigurationFailureInstance = ConfigurationFailure;
   type ConfigurationFailureClass = typeof ConfigurationFailure;
@@ -144,7 +139,7 @@ declare namespace TypeDataModel {
     }
 
     namespace Instance {
-      type Any = Instance<any, any, any, any, any>;
+      interface Any extends Instance<any, any, any, any, any> {}
     }
   }
 

@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -29,7 +29,7 @@ declare global {
   }
   namespace ObservableTransform {
     interface Any extends AnyObservableTransform {}
-    type AnyConstructor = typeof AnyObservableTransform;
+    interface AnyConstructor extends Identity<typeof AnyObservableTransform> {}
   }
 }
 

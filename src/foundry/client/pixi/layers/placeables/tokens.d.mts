@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity, NullishProps } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
@@ -169,7 +169,7 @@ declare global {
 
   namespace TokenLayer {
     interface Any extends AnyTokenLayer {}
-    type AnyConstructor = typeof AnyTokenLayer;
+    interface AnyConstructor extends Identity<typeof AnyTokenLayer> {}
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 

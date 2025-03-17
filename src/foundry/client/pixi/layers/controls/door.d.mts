@@ -1,4 +1,4 @@
-import type { FixedInstanceType } from "../../../../../utils/index.d.mts";
+import type { FixedInstanceType, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -77,7 +77,7 @@ declare global {
 
   namespace DoorControl {
     interface Any extends AnyDoorControl {}
-    type AnyConstructor = typeof AnyDoorControl;
+    interface AnyConstructor extends Identity<typeof AnyDoorControl> {}
 
     type ConfiguredClass = CONFIG["Canvas"]["doorControlClass"];
     type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;

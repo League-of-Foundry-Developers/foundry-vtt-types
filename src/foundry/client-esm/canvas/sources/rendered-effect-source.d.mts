@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type { AnyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "fvtt-types/utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type BaseLightSource from "./base-light-source.d.mts";
 
@@ -210,7 +210,7 @@ declare abstract class RenderedEffectSource<
 
 declare namespace RenderedEffectSource {
   interface Any extends AnyRenderedEffectSource {}
-  type AnyConstructor = typeof AnyRenderedEffectSource;
+  interface AnyConstructor extends Identity<typeof AnyRenderedEffectSource> {}
 
   interface SourceData extends BaseEffectSource.SourceData {
     /**

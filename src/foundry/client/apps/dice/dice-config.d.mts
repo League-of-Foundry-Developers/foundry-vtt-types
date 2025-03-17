@@ -1,4 +1,4 @@
-import type { MaybePromise, GetDataReturnType, EmptyObject } from "fvtt-types/utils";
+import type { MaybePromise, GetDataReturnType, EmptyObject, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -27,7 +27,8 @@ declare global {
   }
 
   namespace DiceConfig {
-    type Any = DiceConfig<any>;
+    interface Any extends AnyDiceConfig {}
+    interface AnyConstructor extends Identity<typeof AnyDiceConfig> {}
 
     interface DiceConfigData {
       dice: DiceConfigDiceData[];
@@ -42,4 +43,8 @@ declare global {
       method: string;
     }
   }
+}
+
+declare abstract class AnyDiceConfig extends DiceConfig<FormApplicationOptions> {
+  constructor(arg0: never, ...args: never[]);
 }

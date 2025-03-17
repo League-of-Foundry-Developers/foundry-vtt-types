@@ -27,6 +27,6 @@ declare global {
   }
 
   namespace InvitationLinks {
-    type Any = InvitationLinks<any>;
+    interface Any extends InvitationLinks<any> {}
   }
 }

@@ -1,4 +1,4 @@
-import type { NullishProps } from "fvtt-types/utils";
+import type { Identity, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -106,7 +106,7 @@ declare global {
 
   namespace CachedContainer {
     interface Any extends AnyCachedContainer {}
-    type AnyConstructor = typeof AnyCachedContainer;
+    interface AnyConstructor extends Identity<typeof AnyCachedContainer> {}
 
     /** @internal */
     type _TextureConfiguration = NullishProps<{

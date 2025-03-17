@@ -1,4 +1,4 @@
-import type { Brand, Coalesce, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Brand, Coalesce, Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 import type PointEffectSourceMixin from "../../../../client-esm/canvas/sources/point-effect-source.d.mts";
 
 declare global {
@@ -174,7 +174,7 @@ declare global {
 
   namespace PointSourcePolygon {
     interface Any extends AnyPointSourcePolygon {}
-    type AnyConstructor = typeof AnyPointSourcePolygon;
+    interface AnyConstructor extends Identity<typeof AnyPointSourcePolygon> {}
 
     type WALL_DIRECTION_MODES = Brand<number, "PointSourcePolygon.WALL_DIRECTION_MODES">;
 

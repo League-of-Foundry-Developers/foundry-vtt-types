@@ -1,4 +1,4 @@
-import type { HandleEmptyObject } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 import type DataModel from "../../../../common/abstract/data.d.mts";
 
@@ -93,7 +93,7 @@ declare global {
 
   namespace RegionLayer {
     interface Any extends AnyRegionLayer {}
-    type AnyConstructor = typeof AnyRegionLayer;
+    interface AnyConstructor extends Identity<typeof AnyRegionLayer> {}
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 

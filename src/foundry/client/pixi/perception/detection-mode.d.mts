@@ -1,4 +1,4 @@
-import type { Brand, NullishProps } from "fvtt-types/utils";
+import type { Brand, Identity, NullishProps } from "fvtt-types/utils";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { TokenDetectionMode } from "../../../common/documents/_types.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -123,7 +123,7 @@ declare global {
 
   namespace DetectionMode {
     interface Any extends AnyDetectionMode {}
-    type AnyConstructor = typeof AnyDetectionMode;
+    interface AnyConstructor extends Identity<typeof AnyDetectionMode> {}
 
     interface Schema extends DataSchema {
       id: fields.StringField<{ blank: false }>;
@@ -185,7 +185,7 @@ declare global {
 
   namespace DetectionModeLightPerception {
     interface Any extends AnyDetectionModeLightPerception {}
-    type AnyConstructor = typeof AnyDetectionModeLightPerception;
+    interface AnyConstructor extends Identity<typeof AnyDetectionModeLightPerception> {}
   }
 
   /**
@@ -202,7 +202,7 @@ declare global {
 
   namespace DetectionModeBasicSight {
     interface Any extends AnyDetectionModeBasicSight {}
-    type AnyConstructor = typeof AnyDetectionModeBasicSight;
+    interface AnyConstructor extends Identity<typeof AnyDetectionModeBasicSight> {}
   }
 
   /**
@@ -222,7 +222,7 @@ declare global {
 
   namespace DetectionModeInvisibility {
     interface Any extends AnyDetectionModeInvisibility {}
-    type AnyConstructor = typeof AnyDetectionModeInvisibility;
+    interface AnyConstructor extends Identity<typeof AnyDetectionModeInvisibility> {}
   }
 
   /**
@@ -239,7 +239,7 @@ declare global {
 
   namespace DetectionModeTremor {
     interface Any extends AnyDetectionModeTremor {}
-    type AnyConstructor = typeof AnyDetectionModeTremor;
+    interface AnyConstructor extends Identity<typeof AnyDetectionModeTremor> {}
   }
 
   /**
@@ -257,7 +257,7 @@ declare global {
 
   namespace DetectionModeAll {
     interface Any extends AnyDetectionModeAll {}
-    type AnyConstructor = typeof AnyDetectionModeAll;
+    interface AnyConstructor extends Identity<typeof AnyDetectionModeAll> {}
   }
 }
 

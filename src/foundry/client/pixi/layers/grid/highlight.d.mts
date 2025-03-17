@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -32,7 +32,7 @@ declare global {
 
   namespace GridHighlight {
     interface Any extends AnyGridHightlight {}
-    type AnyConstructor = typeof AnyGridHightlight;
+    interface AnyConstructor extends Identity<typeof AnyGridHightlight> {}
 
     type PositionString = `${number},${number}`;
   }

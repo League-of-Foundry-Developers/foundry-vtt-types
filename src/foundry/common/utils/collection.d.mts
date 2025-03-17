@@ -1,11 +1,12 @@
 // This class exists make it as sound as possible to override these parts of the class and make them
+
+import type { Identity } from "fvtt-types/utils";
+
 // completely unrelated. It's done this way specifically to avoid situations with broken inheritance.
-declare class LenientMap<K, V> extends globalThis.Map<K, V> {
+declare class Map<K, V> extends globalThis.Map<K, V> {
   [Symbol.iterator](): any;
   forEach(...args: any[]): any;
 }
-
-declare const Map: typeof LenientMap;
 
 /**
  * A reusable storage concept which blends the functionality of an Array with the efficient key-based lookup of a Map.
@@ -159,7 +160,8 @@ declare class Collection<V> extends Map<string, V> {
 }
 
 declare namespace Collection {
-  type AnyConstructor = typeof AnyCollection;
+  interface Any extends AnyCollection {}
+  interface AnyConstructor extends Identity<typeof AnyCollection> {}
 }
 
 declare abstract class AnyCollection extends Collection<any> {

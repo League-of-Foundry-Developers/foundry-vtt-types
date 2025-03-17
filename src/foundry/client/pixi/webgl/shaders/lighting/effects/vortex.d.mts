@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -15,7 +15,7 @@ declare global {
 
   namespace VortexColorationShader {
     interface Any extends AnyVortexColorationShader {}
-    type AnyConstructor = typeof AnyVortexColorationShader;
+    interface AnyConstructor extends Identity<typeof AnyVortexColorationShader> {}
   }
 
   /**
@@ -27,7 +27,7 @@ declare global {
 
   namespace VortexIlluminationShader {
     interface Any extends AnyVortexIlluminationShader {}
-    type AnyConstructor = typeof AnyVortexIlluminationShader;
+    interface AnyConstructor extends Identity<typeof AnyVortexIlluminationShader> {}
   }
 }
 

@@ -42,7 +42,7 @@ declare global {
   }
 
   namespace PlaylistSoundConfig {
-    type Any = PlaylistSoundConfig<any>;
+    interface Any extends PlaylistSoundConfig<any> {}
 
     interface FormData {
       description: string;

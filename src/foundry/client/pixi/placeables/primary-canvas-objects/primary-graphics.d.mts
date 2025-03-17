@@ -1,4 +1,4 @@
-import type { NullishProps } from "fvtt-types/utils";
+import type { Identity, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -24,7 +24,7 @@ declare global {
 
   namespace PrimaryGraphics {
     interface Any extends AnyPrimaryGraphics {}
-    type AnyConstructor = typeof AnyPrimaryGraphics;
+    interface AnyConstructor extends Identity<typeof AnyPrimaryGraphics> {}
 
     /** @internal */
     type _ConstructorOptions = NullishProps<{

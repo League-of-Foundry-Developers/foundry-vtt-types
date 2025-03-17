@@ -1,4 +1,4 @@
-import type { DeepPartial } from "fvtt-types/utils";
+import type { DeepPartial, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -155,8 +155,8 @@ declare global {
   }
 
   namespace SimplePeerAVClient {
-    type Any = AnySimplePeerAVClient;
-    type AnyConstructor = typeof AnySimplePeerAVClient;
+    interface Any extends AnySimplePeerAVClient {}
+    interface AnyConstructor extends Identity<typeof AnySimplePeerAVClient> {}
   }
 }
 

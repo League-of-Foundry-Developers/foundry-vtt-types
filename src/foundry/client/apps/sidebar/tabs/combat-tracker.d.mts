@@ -1,3 +1,4 @@
+import type { Identity } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
@@ -155,8 +156,8 @@ declare global {
   }
 
   namespace CombatTracker {
-    type Any = AnyCombatTracker;
-    type AnyConstructor = typeof AnyCombatTracker;
+    interface Any extends AnyCombatTracker {}
+    interface AnyConstructor extends Identity<typeof AnyCombatTracker> {}
   }
 }
 

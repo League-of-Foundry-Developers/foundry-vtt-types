@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -74,7 +74,7 @@ declare global {
 
   namespace NotesLayer {
     interface Any extends AnyNotesLayer {}
-    type AnyConstructor = typeof AnyNotesLayer;
+    interface AnyConstructor extends Identity<typeof AnyNotesLayer> {}
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 

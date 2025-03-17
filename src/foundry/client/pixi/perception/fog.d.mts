@@ -1,4 +1,4 @@
-import type { FixedInstanceType } from "../../../../utils/index.d.mts";
+import type { FixedInstanceType, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -141,7 +141,7 @@ declare global {
 
   namespace FogManager {
     interface Any extends AnyFogManager {}
-    type AnyConstructor = typeof AnyFogManager;
+    interface AnyConstructor extends Identity<typeof AnyFogManager> {}
 
     type ConfiguredClass = CONFIG["Canvas"]["fogManager"];
     type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;

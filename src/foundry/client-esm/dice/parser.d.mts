@@ -1,3 +1,4 @@
+import type { Identity } from "../../../utils/index.d.mts";
 import type {
   DiceRollParseNode,
   FunctionRollParseNode,
@@ -179,7 +180,8 @@ declare class RollParser {
 }
 
 declare namespace RollParser {
-  type AnyConstructor = typeof AnyRollParser;
+  interface AnyConstructor extends Identity<typeof AnyRollParser> {}
+  interface Any extends AnyRollParser {}
 }
 
 declare abstract class AnyRollParser extends RollParser {

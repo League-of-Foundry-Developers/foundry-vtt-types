@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -68,7 +68,7 @@ declare global {
 
   namespace CanvasVisionMask {
     interface Any extends AnyCanvasVisionMask {}
-    type AnyConstructor = typeof AnyCanvasVisionMask;
+    interface AnyConstructor extends Identity<typeof AnyCanvasVisionMask> {}
 
     /**
      * The sight part of {@link CanvasVisionContainer}.

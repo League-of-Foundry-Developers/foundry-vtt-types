@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -61,8 +61,8 @@ declare global {
   }
 
   namespace PlayerList {
-    type Any = AnyPlayerList;
-    type AnyConstructor = typeof AnyPlayerList;
+    interface Any extends AnyPlayerList {}
+    interface AnyConstructor extends Identity<typeof AnyPlayerList> {}
 
     interface UserData {
       active: User["active"];

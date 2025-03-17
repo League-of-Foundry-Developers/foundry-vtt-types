@@ -1,4 +1,4 @@
-import type { FixedInstanceType } from "fvtt-types/utils";
+import type { FixedInstanceType, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -78,7 +78,7 @@ declare global {
 
   namespace OutlineOverlayFilter {
     interface Any extends AnyOutlineOverlayFilter {}
-    type AnyConstructor = typeof AnyOutlineOverlayFilter;
+    interface AnyConstructor extends Identity<typeof AnyOutlineOverlayFilter> {}
   }
 }
 

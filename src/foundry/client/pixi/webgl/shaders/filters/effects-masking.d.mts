@@ -1,4 +1,4 @@
-import type { AnyObject, Brand, FixedInstanceType, ShapeWithIndexSignature } from "fvtt-types/utils";
+import type { AnyObject, Brand, FixedInstanceType, Identity, ShapeWithIndexSignature } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -103,7 +103,7 @@ declare global {
 
   namespace VisualEffectsMaskingFilter {
     interface Any extends AnyVisualEffectsMaskingFilter {}
-    type AnyConstructor = typeof AnyVisualEffectsMaskingFilter;
+    interface AnyConstructor extends Identity<typeof AnyVisualEffectsMaskingFilter> {}
 
     type ConfiguredClass = CONFIG["Canvas"]["visualEffectsMaskingFilter"];
     type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;

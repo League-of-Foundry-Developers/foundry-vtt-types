@@ -154,7 +154,7 @@ declare global {
   }
 
   namespace FontConfig {
-    type Any = FontConfig<any>;
+    interface Any extends FontConfig<any> {}
 
     interface Options extends FormApplicationOptions {}
 

@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -24,7 +24,7 @@ declare global {
 
   namespace PreciseText {
     interface Any extends AnyPreciseText {}
-    type AnyConstructor = typeof AnyPreciseText;
+    interface AnyConstructor extends Identity<typeof AnyPreciseText> {}
 
     /** @internal */
     type _GetTextStyleOptions = NullishProps<{

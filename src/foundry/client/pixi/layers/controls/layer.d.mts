@@ -1,4 +1,4 @@
-import type { FixedInstanceType, HandleEmptyObject, NullishProps } from "fvtt-types/utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity, NullishProps } from "fvtt-types/utils";
 import type { LineIntersection } from "../../../../common/utils/geometry.d.mts";
 
 declare global {
@@ -223,7 +223,7 @@ declare global {
 
   namespace ControlsLayer {
     interface Any extends AnyControlsLayer {}
-    type AnyConstructor = typeof AnyControlsLayer;
+    interface AnyConstructor extends Identity<typeof AnyControlsLayer> {}
 
     type ImplementationClass = CONFIG["Canvas"]["layers"]["controls"]["layerClass"];
     type Implementation = FixedInstanceType<ImplementationClass>;

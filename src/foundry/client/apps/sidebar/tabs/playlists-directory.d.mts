@@ -1,3 +1,4 @@
+import type { Identity } from "fvtt-types/utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
@@ -250,8 +251,8 @@ declare global {
   }
 
   namespace PlaylistDirectory {
-    type Any = AnyPlaylistDirectory;
-    type AnyConstructor = typeof AnyPlaylistDirectory;
+    interface Any extends AnyPlaylistDirectory {}
+    interface AnyConstructor extends Identity<typeof AnyPlaylistDirectory> {}
 
     interface PlaylistData extends Document.ToObjectFalseType<Playlist.ConfiguredInstance> {
       modeTooltip: string;

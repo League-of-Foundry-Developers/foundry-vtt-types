@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -92,7 +92,7 @@ declare global {
 
   namespace AlphaBlurFilterPass {
     interface Any extends AnyAlphaBlurFilterPass {}
-    type AnyConstructor = typeof AnyAlphaBlurFilterPass;
+    interface AnyConstructor extends Identity<typeof AnyAlphaBlurFilterPass> {}
   }
 
   /**
@@ -174,7 +174,7 @@ declare global {
 
   namespace AlphaBlurFilter {
     interface Any extends AnyAlphaBlurFilter {}
-    type AnyConstructor = typeof AnyAlphaBlurFilter;
+    interface AnyConstructor extends Identity<typeof AnyAlphaBlurFilter> {}
   }
 }
 

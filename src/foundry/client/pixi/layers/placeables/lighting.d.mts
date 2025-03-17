@@ -1,4 +1,4 @@
-import type { HandleEmptyObject } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
 
 /**
  * The Lighting Layer which ambient light sources as part of the CanvasEffectsGroup.
@@ -62,7 +62,7 @@ declare global {
 
   namespace LightingLayer {
     interface Any extends AnyLightingLayer {}
-    type AnyConstructor = typeof AnyLightingLayer;
+    interface AnyConstructor extends Identity<typeof AnyLightingLayer> {}
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 

@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, InexactPartial, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -147,7 +147,7 @@ declare global {
 
   namespace WeatherEffects {
     interface Any extends AnyWeatherEffects {}
-    type AnyConstructor = typeof AnyWeatherEffects;
+    interface AnyConstructor extends Identity<typeof AnyWeatherEffects> {}
 
     interface LayerOptions extends CanvasLayer.LayerOptions {
       /** @remarks This causes `WeatherEffect.instance` to be the `EffectsCanvasGroup` */

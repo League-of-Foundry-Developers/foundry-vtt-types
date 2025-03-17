@@ -6,19 +6,36 @@ declare global {
     type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof Tile>;
     type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshShape: boolean;
+    interface RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<this>;
 
-      refreshMesh: boolean;
+      /** @defaultValue `{ propagate: ["refreshState", "refreshShape", "refreshElevation", "refreshVideo"], alias: true }` */
+      refresh: RenderFlag<this>;
 
-      refreshFrame: boolean;
+      /** @defaultValue `{ propagate: ["refreshFrame"] }` */
+      refreshState: RenderFlag<this>;
 
-      refreshElevation: boolean;
+      /** @defaultValue `{ propagate: ["refreshMesh", "refreshPerception", "refreshFrame"] }` */
+      refreshShape: RenderFlag<this>;
 
-      refreshPerception: boolean;
+      /** @defaultValue `{}` */
+      refreshMesh: RenderFlag<this>;
 
-      refreshVideo: boolean;
+      /** @defaultValue `{}` */
+      refreshFrame: RenderFlag<this>;
+
+      /** @defaultValue `{ propagate: ["refreshMesh"] }` */
+      refreshElevation: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshPerception: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshVideo: RenderFlag<this>;
     }
+
+    interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
 
     interface RefreshOptions {
       /**
@@ -70,34 +87,7 @@ declare global {
   class Tile extends PlaceableObject<TileDocument.ConfiguredInstance> {
     static override embeddedName: "Tile";
 
-    static override RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<Tile.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshState", "refreshShape", "refreshElevation", "refreshVideo"], alias: true }` */
-      refresh: RenderFlag<Tile.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshFrame"] }` */
-      refreshState: RenderFlag<Tile.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshMesh", "refreshPerception", "refreshFrame"] }` */
-      refreshShape: RenderFlag<Tile.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshMesh: RenderFlag<Tile.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshFrame: RenderFlag<Tile.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshMesh"] }` */
-      refreshElevation: RenderFlag<Tile.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshPerception: RenderFlag<Tile.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshVideo: RenderFlag<Tile.RenderFlags>;
-    };
+    static override RENDER_FLAGS: Tile.RENDER_FLAGS;
 
     /**
      * The Tile border frame

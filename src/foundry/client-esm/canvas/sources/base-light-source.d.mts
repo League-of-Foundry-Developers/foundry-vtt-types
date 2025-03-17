@@ -1,4 +1,4 @@
-import type { IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type { Identity, IntentionalPartial, NullishProps } from "fvtt-types/utils";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
 /**
@@ -121,7 +121,7 @@ declare abstract class BaseLightSource<
 
 declare namespace BaseLightSource {
   interface Any extends AnyBaseLightSource {}
-  type AnyConstructor = typeof AnyBaseLightSource;
+  interface AnyConstructor extends Identity<typeof AnyBaseLightSource> {}
 
   type LightAnimationFunction = (
     this: BaseLightSource,

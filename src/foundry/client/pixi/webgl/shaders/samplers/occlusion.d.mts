@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -87,7 +87,7 @@ declare global {
 
   namespace OccludableSamplerShader {
     interface Any extends AnyOccludableSamplerShader {}
-    type AnyConstructor = typeof AnyOccludableSamplerShader;
+    interface AnyConstructor extends Identity<typeof AnyOccludableSamplerShader> {}
 
     /** @privateRemarks Unlike `DepthSamplerShader`, this class uses every `IBatchableElement` key */
     interface OccludableBatchData extends PIXI.IBatchableElement {

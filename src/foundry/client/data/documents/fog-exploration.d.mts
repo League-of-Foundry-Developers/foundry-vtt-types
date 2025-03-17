@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { Identity, InexactPartial } from "fvtt-types/utils";
 import type { DatabaseGetOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type BaseFogExploration from "../../../common/documents/fog-exploration.d.mts";
@@ -62,8 +62,8 @@ declare global {
   }
 
   namespace FogExploration {
-    type Any = AnyFogExploration;
-    type AnyConstructor = typeof AnyFogExploration;
+    interface Any extends AnyFogExploration {}
+    interface AnyConstructor extends Identity<typeof AnyFogExploration> {}
   }
 }
 

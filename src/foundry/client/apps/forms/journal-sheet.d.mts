@@ -284,7 +284,7 @@ declare global {
   }
 
   namespace JournalSheet {
-    type Any = JournalSheet<any>;
+    interface Any extends JournalSheet<any> {}
 
     type SheetMode = "text" | "image";
 

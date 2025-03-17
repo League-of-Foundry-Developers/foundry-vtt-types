@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -15,8 +15,8 @@ declare global {
   }
 
   namespace MacroDirectory {
-    type Any = AnyMacroDirectory;
-    type AnyConstructor = typeof AnyMacroDirectory;
+    interface Any extends AnyMacroDirectory {}
+    interface AnyConstructor extends Identity<typeof AnyMacroDirectory> {}
   }
 }
 

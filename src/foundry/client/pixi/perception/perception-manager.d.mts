@@ -1,117 +1,13 @@
-export {};
+import type { NullishProps } from "fvtt-types/utils";
 
 declare global {
-  interface PerceptionManagerFlags {
-    /**
-     * Re-initialize the entire lighting configuration. An aggregate behavior
-     * which does no work directly but propagates to set several other flags.
-     */
-    initializeLighting: boolean;
-
-    /** Re-initialize the entire vision configuration. See {@link CanvasVisibility#initializeSources}. */
-    initializeVision: boolean;
-
-    /** Re-initialize the entire vision modes. See {@link CanvasVisibility#initializeVisionMode}. */
-    initializeVisionModes: boolean;
-
-    /** Re-initialize the entire ambient sound configuration. See {@link SoundsLayer#initializeSources}. */
-    initializeSounds: boolean;
-
-    /** Recompute intersections between all registered edges. See {@link CanvasEdges#refresh}. */
-    refreshEdges: boolean;
-
-    /** Refresh the rendered appearance of lighting */
-    refreshLighting: boolean;
-
-    /** Update the configuration of light sources */
-    refreshLightSources: boolean;
-
-    /** Refresh occlusion */
-    refreshOcclusion: boolean;
-
-    /** Refresh the contents of the PrimaryCanvasGroup mesh */
-    refreshPrimary: boolean;
-
-    /** Refresh the audio state of ambient sounds */
-    refreshSounds: boolean;
-
-    /** Refresh the rendered appearance of vision */
-    refreshVision: boolean;
-
-    /** Update the configuration of vision sources */
-    refreshVisionSources: boolean;
-
-    /** Apply a fade duration to sound refresh workflow */
-    soundFadeDuration: boolean;
-  }
-
   /**
    * A helper class which manages the refresh workflow for perception layers on the canvas.
    * This controls the logic which batches multiple requested updates to minimize the amount of work required.
    * A singleton instance is available as {@link Canvas#perception}.
    */
   class PerceptionManager extends RenderFlagsMixin(Object) {
-    static RENDER_FLAGS: {
-      /** @defaultValue `{}` */
-      refreshEdges: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{propagate: ["refreshLighting", "refreshVision"]}` */
-      initializeLighting: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{propagate: ["refreshLighting", "refreshVision", "refreshEdges"]}` */
-      initializeDarknessSources: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{propagate: ["refreshLighting", "refreshVision"]}` */
-      initializeLightSources: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{propagate: ["refreshLightSources"]}` */
-      refreshLighting: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{}` */
-      refreshLightSources: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{propagate: ["refreshVisionSources", "refreshLighting", "refreshPrimary"]}` */
-      initializeVisionModes: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{propagate: ["refreshVision", "refreshTiles", "refreshLighting", "refreshLightSources", "refreshPrimary"]}` */
-      initializeVision: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{propagate: ["refreshVisionSources", "refreshOcclusionMask"]}` */
-      refreshVision: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{}` */
-      refreshVisionSources: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{}` */
-      refreshPrimary: RenderFlag<PerceptionManagerFlags>;
-
-      /** `{propagate: ["refreshOcclusionStates", "refreshOcclusionMask"]}` */
-      refreshOcclusion: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{}` */
-      refreshOcclusionStates: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{}` */
-      refreshOcclusionMask: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshSounds"] }` */
-      initializeSounds: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{}` */
-      refreshSounds: RenderFlag<PerceptionManagerFlags>;
-
-      /** @defaultValue `{}` */
-      soundFadeDuration: RenderFlag<PerceptionManagerFlags>;
-
-      /** @deprecated since v12, will be removed in v14 */
-      refreshTiles: RenderFlag<PerceptionManagerFlags>;
-
-      /** @deprecated since v12, will be removed in v14 */
-      identifyInteriorWalls: RenderFlag<PerceptionManagerFlags>;
-
-      /** @deprecated since v12, will be removed in v14 */
-      forceUpdateFog: RenderFlag<PerceptionManagerFlags>;
-    };
+    static RENDER_FLAGS: PerceptionManager.RENDER_FLAGS;
 
     static RENDER_FLAG_PRIORITY: "PERCEPTION";
 
@@ -121,47 +17,142 @@ declare global {
      * Update perception manager flags which configure which behaviors occur on the next frame render.
      * @param flags - Flag values (true) to assign where the keys belong to PerceptionManager.FLAGS
      */
-    update(flags: Partial<PerceptionManagerFlags>): void;
+    update(flags: PerceptionManager.PassableFlags): void;
 
     /**
      * A helper function to perform an immediate initialization plus incremental refresh.
      */
-    initialize(): ReturnType<this["update"]>;
+    initialize(): void;
 
     /**
      * @deprecated since v12, will be removed in v14
-     * @remarks `"PerceptionManager#refresh is deprecated in favor of assigning granular "refresh flags"`
+     * @remarks "PerceptionManager#refresh is deprecated in favor of assigning granular \"refresh flags\""
      */
-    refresh(): ReturnType<this["update"]>;
-
-    /**
-     * @deprecated since v11, will be removed in v13
-     * @remarks forceUpdateFog flag is now obsolete and has no replacement. The fog is now always updated when the visibility is refreshed
-     */
-    static forceUpdateFog(): void;
+    refresh(): void;
   }
 
   namespace PerceptionManager {
-    /** @deprecated Old flag structure */
-    interface Options {
-      lighting: {
-        initialize: boolean;
-        refresh: boolean;
-      };
-      sight: {
-        initialize: boolean;
-        refresh: boolean;
-        skipUpdateFog: boolean;
-        forceUpdateFog: boolean;
-      };
-      sounds: {
-        initialize: boolean;
-        refresh: boolean;
-        fade: boolean;
-      };
-      foreground: {
-        refresh: boolean;
-      };
+    interface Any extends AnyPerceptionManager {}
+    type AnyConstructor = typeof AnyPerceptionManager;
+
+    type PassableFlags = NullishProps<RenderFlags>;
+
+    type RenderFlags = RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS>;
+
+    interface RENDER_FLAGS extends RenderFlagsMixin.RENDER_FLAGS {
+      /**
+       * Recompute intersections between all registered edges. See {@link CanvasEdges#refresh}.
+       * @defaultValue `{}`
+       */
+      refreshEdges: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * Re-initialize the entire lighting configuration. An aggregate behavior
+       * which does no work directly but propagates to set several other flags.
+       * @defaultValue `{ propagate: ["initializeDarknessSources", "initializeLightSources"] }`
+       */
+      initializeLighting: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /** @defaultValue `{ propagate: ["refreshLighting", "refreshVision", "refreshEdges"] }` */
+      initializeDarknessSources: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /** @defaultValue `{ propagate: ["refreshLighting", "refreshVision"] }` */
+      initializeLightSources: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * Refresh the rendered appearance of lighting
+       * @defaultValue `{ propagate: ["refreshLightSources"] }`
+       */
+      refreshLighting: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * Update the configuration of light sources
+       * @defaultValue `{}`
+       */
+      refreshLightSources: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * Re-initialize the entire vision modes. See {@link CanvasVisibility#initializeVisionMode}.
+       * @defaultValue `{ propagate: ["refreshVisionSources", "refreshLighting", "refreshPrimary"] }`
+       */
+      initializeVisionModes: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * Re-initialize the entire vision configuration. See {@link CanvasVisibility#initializeSources}.
+       * @defaultValue `{ propagate: ["initializeVisionModes", "refreshVision"] }`
+       */
+      initializeVision: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * Refresh the rendered appearance of vision
+       * @defaultValue `{ propagate: ["refreshVisionSources", "refreshOcclusionMask"] }`
+       */
+      refreshVision: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * Update the configuration of vision sources
+       * @defaultValue `{}`
+       */
+      refreshVisionSources: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * Refresh the contents of the PrimaryCanvasGroup mesh
+       * @defaultValue `{}`
+       */
+      refreshPrimary: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * Refresh occlusion
+       * @defaultValue `{propagate: ["refreshOcclusionStates", "refreshOcclusionMask"] }`
+       */
+      refreshOcclusion: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /** @defaultValue `{}` */
+      refreshOcclusionStates: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /** @defaultValue `{}` */
+      refreshOcclusionMask: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * Re-initialize the entire ambient sound configuration. See {@link SoundsLayer#initializeSources}.
+       * @defaultValue `{ propagate: ["refreshSounds"] }`
+       */
+      initializeSounds: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * Refresh the audio state of ambient sounds
+       * @defaultValue `{}`
+       */
+      refreshSounds: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * Apply a fade duration to sound refresh workflow
+       * @defaultValue `{}`
+       */
+      soundFadeDuration: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * @defaultValue `{ propagate: ["refreshOcclusion"] }`
+       * @deprecated since v12, will be removed in v14
+       */
+      refreshTiles: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * @defaultValue `{ propagate: ["initializeLighting", "initializeVision"] }`
+       * @deprecated since v12, will be removed in v14
+       */
+      identifyInteriorWalls: RenderFlag<PerceptionManager.RenderFlags>;
+
+      /**
+       * @defaultValue `{ propagate: ["refreshVision"] }`
+       * @deprecated since v11, will be removed in v13
+       * @remarks In v12 the flag remains, but the static method it would have triggered was removed prematurely (was listed as until v13 in v11)
+       */
+      forceUpdateFog: RenderFlag<PerceptionManager.RenderFlags>;
     }
   }
+}
+
+declare abstract class AnyPerceptionManager extends PerceptionManager {
+  constructor(arg0: never, ...args: never[]);
 }

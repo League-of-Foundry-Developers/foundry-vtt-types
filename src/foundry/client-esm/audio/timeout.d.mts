@@ -2,6 +2,7 @@
  * A special error class used for cancellation.
  * @privateRemarks Yes this is a straight up empty class extension by Foundry used exclusively internally
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class AudioTimeoutCancellation extends Error {}
 
 declare namespace AudioTimeout {

@@ -1,3 +1,4 @@
+import type { Identity } from "fvtt-types/utils";
 import type { DatabaseAction, DatabaseOperationMap } from "../../../common/abstract/_types.d.mts";
 
 declare global {
@@ -32,8 +33,8 @@ declare global {
   }
 
   namespace Folders {
-    type Any = AnyFolders;
-    type AnyConstructor = typeof AnyFolders;
+    interface Any extends AnyFolders {}
+    interface AnyConstructor extends Identity<typeof AnyFolders> {}
   }
 }
 

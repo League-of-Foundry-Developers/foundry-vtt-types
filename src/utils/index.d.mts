@@ -1128,3 +1128,11 @@ export type InitializedOn<
   InitializedOnHook extends InitializationHook,
   BeforeInitialization = InitializedTo | undefined,
 > = Extract<HooksRan<ValidHooksRan>, InitializedOnHook> extends never ? InitializedTo : BeforeInitialization;
+
+/**
+ * Returns the inputted type. This may seem like a useless type but it exists due to limitations
+ * with the syntax of TypeScript interfaces. For example it's a syntax error to write
+ * `interface Example extends typeof SomeClass {}` but `typeof SomeClass` is a reasonable base type
+ * so to work around this you can write `interface Example extends Identity<typeof SomeClass> {}`
+ */
+export type Identity<T extends object> = T;

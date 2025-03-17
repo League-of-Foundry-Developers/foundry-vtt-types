@@ -40,7 +40,7 @@ declare global {
   }
 
   namespace MacroConfig {
-    type Any = MacroConfig<any>;
+    interface Any extends MacroConfig<any> {}
 
     interface FormData {
       command: string;

@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -20,8 +20,8 @@ declare global {
   }
 
   namespace RollTables {
-    type Any = AnyRollTables;
-    type AnyConstructor = typeof AnyRollTables;
+    interface Any extends AnyRollTables {}
+    interface AnyConstructor extends Identity<typeof AnyRollTables> {}
   }
 }
 

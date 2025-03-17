@@ -35,7 +35,7 @@ declare global {
   }
 
   namespace UserConfig {
-    type Any = UserConfig<any>;
+    interface Any extends UserConfig<any> {}
 
     interface Options extends DocumentSheetOptions<User.ConfiguredInstance> {
       /**

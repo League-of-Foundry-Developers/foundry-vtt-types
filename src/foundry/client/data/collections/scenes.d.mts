@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { Identity, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -67,8 +67,8 @@ declare global {
   }
 
   namespace Scenes {
-    type Any = AnyScenes;
-    type AnyConstructor = typeof AnyScenes;
+    interface Any extends AnyScenes {}
+    interface AnyConstructor extends Identity<typeof AnyScenes> {}
   }
 }
 
