@@ -194,6 +194,7 @@ declare global {
         fields.ArrayField.InitializedElementType<
           fields.NumberField<{ required: true; integer: true; nullable: false }>
         >,
+        //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
         [x0: number, y0: number, x1: number, y1: number],
         [x0: number, y0: number, x1: number, y1: number],
         fields.ArrayField.PersistedElementType<fields.NumberField<{ required: true; integer: true; nullable: false }>>,
@@ -202,7 +203,7 @@ declare global {
 
       /**
        * The illumination restriction type of this wall
-       * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
+       * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL` (`20`)
        */
       light: fields.NumberField<
         {
@@ -211,6 +212,7 @@ declare global {
           initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_SENSE_TYPES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_SENSE_TYPES | null | undefined,
         CONST.WALL_SENSE_TYPES | null,
         CONST.WALL_SENSE_TYPES | null
@@ -218,7 +220,7 @@ declare global {
 
       /**
        * The movement restriction type of this wall
-       * @defaultValue `CONST.WALL_MOVEMENT_TYPES.NORMAL`
+       * @defaultValue `CONST.WALL_MOVEMENT_TYPES.NORMAL` (`20`)
        */
       move: fields.NumberField<
         {
@@ -227,6 +229,7 @@ declare global {
           initial: typeof CONST.WALL_MOVEMENT_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_MOVEMENT_TYPES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_MOVEMENT_TYPES | null | undefined,
         CONST.WALL_MOVEMENT_TYPES | null,
         CONST.WALL_MOVEMENT_TYPES | null
@@ -234,7 +237,7 @@ declare global {
 
       /**
        * The visual restriction type of this wall
-       * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
+       * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL` (`20`)
        */
       sight: fields.NumberField<
         {
@@ -243,6 +246,7 @@ declare global {
           initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_SENSE_TYPES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_SENSE_TYPES | null | undefined,
         CONST.WALL_SENSE_TYPES | null,
         CONST.WALL_SENSE_TYPES | null
@@ -250,7 +254,7 @@ declare global {
 
       /**
        * The auditory restriction type of this wall
-       * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
+       * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL` (`20`)
        */
       sound: fields.NumberField<
         {
@@ -259,6 +263,7 @@ declare global {
           initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_SENSE_TYPES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_SENSE_TYPES | null | undefined,
         CONST.WALL_SENSE_TYPES | null,
         CONST.WALL_SENSE_TYPES | null
@@ -266,7 +271,7 @@ declare global {
 
       /**
        * The direction of effect imposed by this wall
-       * @defaultValue `CONST.WALL_DIRECTIONS.BOTH`
+       * @defaultValue `CONST.WALL_DIRECTIONS.BOTH` (`0`)
        */
       dir: fields.NumberField<
         {
@@ -275,6 +280,7 @@ declare global {
           initial: typeof CONST.WALL_DIRECTIONS.BOTH;
           validationError: "must be a value in CONST.WALL_DIRECTIONS";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_DIRECTIONS | null | undefined,
         CONST.WALL_DIRECTIONS | null,
         CONST.WALL_DIRECTIONS | null
@@ -282,7 +288,7 @@ declare global {
 
       /**
        * The type of door which this wall contains, if any
-       * @defaultValue `CONST.WALL_DOOR_TYPES.NONE`
+       * @defaultValue `CONST.WALL_DOOR_TYPES.NONE` (`0`)
        */
       door: fields.NumberField<
         {
@@ -291,6 +297,7 @@ declare global {
           initial: typeof CONST.WALL_DOOR_TYPES.NONE;
           validationError: "must be a value in CONST.WALL_DOOR_TYPES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_DOOR_TYPES | null | undefined,
         CONST.WALL_DOOR_TYPES | null,
         CONST.WALL_DOOR_TYPES | null
@@ -298,7 +305,7 @@ declare global {
 
       /**
        * The state of the door this wall contains, if any
-       * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED`
+       * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED` (`0`)
        */
       ds: fields.NumberField<
         {
@@ -307,6 +314,7 @@ declare global {
           initial: typeof CONST.WALL_DOOR_STATES.CLOSED;
           validationError: "must be a value in CONST.WALL_DOOR_STATES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_DOOR_STATES | null | undefined,
         CONST.WALL_DOOR_STATES | null,
         CONST.WALL_DOOR_STATES | null

@@ -21,8 +21,8 @@ myTile = new TestTile({
     scaleX: 0.8,
     scaleY: 1.2,
   },
-  width: 100,
-  height: 200,
+  width: 200, // actually required for construction
+  height: 200, // actually required for construction
   x: 300,
   y: 500,
   elevation: 20,
@@ -66,8 +66,8 @@ myTile = new TestTile({
     scaleX: null,
     scaleY: null,
   },
-  width: null,
-  height: null,
+  width: 200, // actually required for construction
+  height: 200, // actually required for construction
   x: null,
   y: null,
   elevation: null,
@@ -113,8 +113,8 @@ myTile = new TestTile({
     scaleX: undefined,
     scaleY: undefined,
   },
-  width: undefined,
-  height: undefined,
+  width: 200, // actually required for construction
+  height: 200, // actually required for construction
   x: undefined,
   y: undefined,
   elevation: undefined,
