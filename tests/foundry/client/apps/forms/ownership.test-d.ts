@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
-declare const actor: Actor.ConfiguredInstance;
+declare const actor: Actor.Implementation;
 const actorDocumentOwnershipConfig = new DocumentOwnershipConfig(actor);
 
 expectTypeOf(actorDocumentOwnershipConfig.object).toEqualTypeOf<Actor>();
@@ -16,7 +16,7 @@ expectTypeOf(actorDocumentOwnershipConfig.render(true)).toEqualTypeOf<DocumentOw
 expectTypeOf(actorDocumentOwnershipConfig.title).toEqualTypeOf<string>();
 
 // test a second type of document
-declare const item: Item.ConfiguredInstance;
+declare const item: Item.Implementation;
 const itemDocumentOwnershipConfig = new DocumentOwnershipConfig(item);
 
 expectTypeOf(itemDocumentOwnershipConfig.object).toEqualTypeOf<Item>();

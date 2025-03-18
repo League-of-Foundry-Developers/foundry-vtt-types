@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
+import type { InexactPartial, FixedInstanceType, Identity } from "fvtt-types/utils";
 import type { DiceRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";
@@ -24,23 +24,19 @@ declare abstract class DiceTerm extends RollTerm {
    */
   constructor(termData?: InexactPartial<DiceTerm.TermData>);
 
-  get method(): string; // TODO: Convert to CONFIG.Dice.fulfillment.methods
+  get method(): keyof typeof CONFIG.Dice.fulfillment.methods | null | undefined;
 
-  set method(method: string); // TODO: Convert to CONFIG.Dice.fulfillment.methods
-
-  #method: string; // TODO: Convert to CONFIG.Dice.fulfillment.methods
+  set method(method: keyof typeof CONFIG.Dice.fulfillment.methods);
 
   /**  An Array of dice term modifiers which are applied. */
-  modifiers: DiceTerm.TermData["modifiers"];
+  modifiers: string[];
 
   /** The array of dice term results which have been rolled. */
   results: DiceTerm.Result[];
 
-  /* -------------------------------------------- */
-
   /**
    * Define the denomination string used to register this DiceTerm type in CONFIG.Dice.terms
-   * @defaultValue ""
+   * @defaultValue `""`
    */
   static DENOMINATION: string;
 
@@ -73,27 +69,26 @@ declare abstract class DiceTerm extends RollTerm {
   /** The number of dice of this term to roll. Returns undefined if the number is a
    * complex term that has not yet been evaluated.
    */
-  get number(): DiceTerm.TermData["number"] | undefined;
+  get number(): number | undefined;
   /** The number of dice of this term to roll. */
-  set number(value: DiceTerm.TermData["number"]);
+  set number(value: number);
 
   /**
    * The number of dice of this term to roll, before modifiers are applied, or a Roll instance that will be evaluated to
    * a number.
    */
-  _number: DiceTerm.TermData["number"] | Roll;
+  _number: number | Roll;
 
   /**
    * The number of faces on the die. Returns undefined if the faces are represented as a complex term that has not yet
    * been evaluated.
    */
-  get faces(): DiceTerm.TermData["faces"] | undefined;
-  set faces(value: DiceTerm.TermData["faces"]);
+  get faces(): number | undefined;
+  set faces(value: number);
 
   /** The number of faces on the die, or a Roll instance that will be evaluated to a number. */
-  _faces: DiceTerm.TermData["faces"] | Roll;
+  _faces: number | Roll;
 
-  /* -------------------------------------------- */
   /**  The denomination of this DiceTerm instance. */
   get denomination(): string;
 
@@ -119,11 +114,7 @@ declare abstract class DiceTerm extends RollTerm {
    */
   alter(multiply: number, add: number): this;
 
-  /* -------------------------------------------- */
-
   protected _evaluate(options?: InexactPartial<DiceTerm.EvaluationOptions>): this | Promise<this>;
-
-  /* -------------------------------------------- */
 
   /**
    * Evaluate this dice term asynchronously.
@@ -131,14 +122,11 @@ declare abstract class DiceTerm extends RollTerm {
    */
   _evaluateAsync(options?: InexactPartial<DiceTerm.EvaluationOptions>): Promise<this>;
 
-  /* -------------------------------------------- */
   /**
    * Evaluate deterministic values of this term synchronously.
    * @param options - Options forwarded to inner Roll evaluation. (Default: `{}`)
    */
   _evaluateSync(options?: InexactPartial<DiceTerm.EvaluationOptions>): this;
-
-  /* -------------------------------------------- */
 
   /**
    * Roll the DiceTerm by mapping a random uniform draw against the faces of the dice term.
@@ -148,8 +136,6 @@ declare abstract class DiceTerm extends RollTerm {
    */
   roll({ minimize, maximize, ...options }?: InexactPartial<DiceTerm.EvaluationOptions>): Promise<DiceTerm.Result>;
 
-  /* -------------------------------------------- */
-
   /**
    * Generate a roll result value for this DiceTerm based on its fulfillment method.
    * @param  options - Options forwarded to the fulfillment method handler.
@@ -157,8 +143,6 @@ declare abstract class DiceTerm extends RollTerm {
    *          not be fulfilled.
    */
   protected _roll(options?: InexactPartial<DiceTerm.EvaluationOptions>): Promise<number | undefined>;
-
-  /* -------------------------------------------- */
 
   /**
    * Invoke the configured fulfillment handler for this term to produce a result value.
@@ -168,16 +152,12 @@ declare abstract class DiceTerm extends RollTerm {
    */
   #invokeFulfillmentHandler(options?: InexactPartial<DiceTerm.EvaluationOptions>): Promise<number | undefined>;
 
-  /* -------------------------------------------- */
-
   /**
    * Maps a randomly-generated value in the interval [0, 1) to a face value on the die.
    * @param randomUniform - A value to map. Must be in the interval [0, 1).
    * @returns The face value.
    */
   mapRandomFace(randomUniform: number): number;
-
-  /* -------------------------------------------- */
 
   /** Generate a random face value for this die using the configured PRNG. */
   randomFace(): number;
@@ -189,16 +169,12 @@ declare abstract class DiceTerm extends RollTerm {
    */
   getResultLabel(result: DiceTerm.Result): string;
 
-  /* -------------------------------------------- */
-
   /**
    * Get the CSS classes that should be used to display each rolled result
    * @param result - The rolled result
    * @returns The desired classes
    */
   getResultCSS(result: DiceTerm.Result): (string | null)[];
-
-  /* -------------------------------------------- */
 
   /**
    * Render the tooltip HTML for a Roll instance
@@ -216,15 +192,12 @@ declare abstract class DiceTerm extends RollTerm {
    */
   protected _evaluateModifiers(): void;
 
-  /* -------------------------------------------- */
-
   /**
    * Evaluate a single modifier command, recording it in the array of evaluated modifiers
    * @param command - The parsed modifier command
    * @param modifier -  The full modifier request
    */
   protected _evaluateModifier(command: string, modifier: string): void;
-  /* -------------------------------------------- */
 
   /**
    * A helper comparison function.
@@ -236,50 +209,36 @@ declare abstract class DiceTerm extends RollTerm {
    */
   static compareResult(result: number, comparison: string, target: number): boolean;
 
-  /* -------------------------------------------- */
-
   /**
    * A helper method to modify the results array of a dice term by flagging certain results are kept or dropped.
    * @param results - The results array
    * @param number  - The number to keep or drop
-   * @param keep    - Keep results?
-   *                  (default: `true`)
-   * @param highest - Keep the highest?
-   *                  (default: `true`)
    * @returns The modified results array
    */
   protected static _keepOrDrop(
     results: DiceTerm.Result[],
     number: number,
-    { keep, highest }?: InexactPartial<{ keep: boolean; highest: boolean }>,
+    options?: DiceTerm.KeepOrDropOptions,
   ): DiceTerm.Result;
-
-  /* -------------------------------------------- */
 
   /**
    * A reusable helper function to handle the identification and deduction of failures
-   * @param flagFailure - (default: `false`)
-   * @param flagSuccess - (default: `false`)
    */
   protected static _applyCount(
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    { flagSuccess, flagFailure }?: InexactPartial<{ flagSuccess: boolean; flagFailure: boolean }>,
+    options?: DiceTerm.ApplyCountOptions, // not: null (destructured)
   ): void;
-
-  /* -------------------------------------------- */
 
   /**
    * A reusable helper function to handle the identification and deduction of failures
-   * @param deductFailure - (default: `false`)
-   * @param invertFailure - (default: `false`)
    */
   protected static _applyDeduct(
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    { deductFailure, invertFailure }?: InexactPartial<{ deductFailure: boolean; invertFailure: boolean }>,
+    options?: DiceTerm.ApplyDeductOptions, // not: null (destructured)
   ): void;
 
   /* -------------------------------------------- */
@@ -290,15 +249,11 @@ declare abstract class DiceTerm extends RollTerm {
    * Determine whether a string expression matches this type of term
    * @param expression - The expression to parse
    * @param options - Additional options which customize the match
-   * @param imputeNumber - Allow the number of dice to be optional, i.e. "d6"
-   *                       (default: `true`)
    */
   static matchTerm(
     expression: string,
-    { imputeNumber }?: InexactPartial<{ imputeNumber: boolean }>,
+    options?: DiceTerm.MatchTermOptions, // not: null (destructured)
   ): RegExpMatchArray | null;
-
-  /* -------------------------------------------- */
 
   /**
    * Construct a term of this type given a matched regular expression array.
@@ -307,7 +262,6 @@ declare abstract class DiceTerm extends RollTerm {
    */
   static fromMatch(match: RegExpMatchArray): DiceTerm;
 
-  /* -------------------------------------------- */
   /** Construct a DiceTerm from parser information. */
   static override fromParseNode(node: DiceRollParseNode): DiceTerm;
 
@@ -324,7 +278,8 @@ declare abstract class DiceTerm extends RollTerm {
 }
 
 declare namespace DiceTerm {
-  type AnyConstructor = typeof AnyDiceTerm;
+  interface Any extends AnyDiceTerm {}
+  interface AnyConstructor extends Identity<typeof AnyDiceTerm> {}
 
   interface Data extends InexactPartial<TermData> {
     class?: string | undefined;
@@ -332,11 +287,35 @@ declare namespace DiceTerm {
   }
 
   interface TermData {
+    /**
+     * @defaultValue `1`
+     */
     number: number;
+
+    /**
+     * @defaultValue `6`
+     */
     faces: number;
+
+    /**
+     * @defaultValue `undefined`
+     */
+    method: keyof typeof CONFIG.Dice.fulfillment.methods | null | undefined;
+
+    /**
+     * @defaultValue `[]`
+     */
     modifiers: string[];
+
+    /**
+     * @defaultValue `[]`
+     */
     results: Result[];
-    options: DiceTerm.Options;
+
+    /**
+     * @defaultValue `{}`
+     */
+    options: InexactPartial<DiceTerm.Options>;
   }
 
   interface Options extends RollTerm.Options {}
@@ -369,6 +348,48 @@ declare namespace DiceTerm {
     formula: string;
     rolls: { result: string; classes: string }[];
   }
+
+  type _KeepOrDropOptions = InexactPartial<{
+    /** Keep results?
+     * @defaultValue true
+     */
+    keep?: boolean | undefined; // not: null (function checks keep===highest)
+    /** Keep the highest?
+     * @defaultValue true
+     */
+    highest?: boolean | undefined; // not: null (function checks keep===highest)
+  }>;
+
+  interface KeepOrDropOptions extends _KeepOrDropOptions {}
+
+  type _ApplyCountOptions = InexactPartial<{
+    /** @defaultValue false */
+    flagSuccess: boolean | null;
+
+    /** @defaultValue false */
+    flagFailure: boolean | null;
+  }>;
+
+  interface ApplyCountOptions extends _ApplyCountOptions {}
+
+  type _ApplyDeductOptions = InexactPartial<{
+    /** @defaultValue false */
+    deductFailure: boolean | null;
+
+    /** @defaultValue false */
+    invertFailure: boolean | null;
+  }>;
+
+  interface ApplyDeductOptions extends _ApplyDeductOptions {}
+
+  type _MatchTermOptions = InexactPartial<{
+    /** Allow the number of dice to be optional, i.e. "d6"
+     * @defaultValue true
+     */
+    imputeNumber: boolean | null;
+  }>;
+
+  interface MatchTermOptions extends _MatchTermOptions {}
 
   interface EvaluationOptions extends RollTerm.EvaluationOptions {
     /**

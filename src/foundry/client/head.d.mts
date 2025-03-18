@@ -1,7 +1,6 @@
-import type { FixedInstanceType } from "fvtt-types/utils";
-import type { EarlierEvents, InitializationEvent } from "./game.d.mts";
+import type { HooksRan, FixedInstanceType, InitializationHook } from "fvtt-types/utils";
 
-type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationEvent>;
+type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationHook>;
 
 type _UninitializedGame = { [K in keyof Game]?: never };
 
@@ -17,7 +16,7 @@ interface Games {
 }
 
 // Needs to include the current hook as well as all hooks that can run after it.
-type GameHooks = Exclude<InitializationEvent, EarlierEvents[ValidRanHooks]>;
+type GameHooks = Exclude<InitializationHook, HooksRan<ValidRanHooks>>;
 
 type MaybeUI = Extract<ValidRanHooks, "ready"> extends never ? Partial<UiApplications> : UiApplications;
 

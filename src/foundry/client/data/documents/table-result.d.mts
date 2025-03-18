@@ -25,7 +25,7 @@ declare global {
      * The implementation of the TableResult document instance configured through `CONFIG.TableResult.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTableResult | `fvtt-types/configuration/ConfiguredTableResult`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"TableResult">;
+    type Implementation = Document.ImplementationFor<"TableResult">;
 
     /**
      * The implementation of the TableResult document configured through `CONFIG.TableResult.documentClass` in Foundry and
@@ -74,7 +74,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
 
     /**
      * An embedded document is a document contained in another.
@@ -98,7 +98,7 @@ declare global {
     interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link TableResult._source | `TableResult#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
@@ -109,7 +109,7 @@ declare global {
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link TableResult._source | `TableResult._source`}. This data is what was
+     * The data put in {@link TableResult._source | `TableResult#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * Both `Source` and `PersistedData` are equivalent.
@@ -127,7 +127,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link TableResult.name | `TableResult#name`}.
      *
      * This is data transformed from {@link TableResult.Source | `TableResult.Source`} and turned into more

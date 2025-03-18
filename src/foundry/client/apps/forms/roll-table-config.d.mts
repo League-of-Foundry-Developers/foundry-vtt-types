@@ -125,7 +125,7 @@ declare global {
   }
 
   namespace RollTableConfig {
-    type Any = RollTableConfig<any>;
+    interface Any extends RollTableConfig<any> {}
 
     type FormData = {
       description: string;

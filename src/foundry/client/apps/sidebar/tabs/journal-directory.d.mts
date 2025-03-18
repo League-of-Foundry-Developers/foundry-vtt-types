@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -12,8 +12,8 @@ declare global {
   }
 
   namespace JournalDirectory {
-    type Any = AnyJournalDirectory;
-    type AnyConstructor = typeof AnyJournalDirectory;
+    interface Any extends AnyJournalDirectory {}
+    interface AnyConstructor extends Identity<typeof AnyJournalDirectory> {}
   }
 }
 

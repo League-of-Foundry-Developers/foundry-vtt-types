@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -9,9 +9,14 @@ declare global {
      * @param origin - The canvas coordinates of the origin of the ping.
      * @param options - Additional options to configure the ping animation.
      */
-    constructor(origin: Canvas.Point, options?: PulsePing.Options);
+    constructor(
+      origin: Canvas.Point,
 
-    override options: PulsePing.Options;
+      /** @privateRemarks Can't be `null` as it's directly assigned to  `Ping#options` which has properties accessed null-unsafely */
+      options?: PulsePing.ConstructorOptions,
+    );
+
+    override options: PulsePing.ConstructorOptions;
 
     _color2: Color;
 
@@ -68,32 +73,27 @@ declare global {
 
   namespace PulsePing {
     interface Any extends AnyPulsePing {}
-    type AnyConstructor = typeof AnyPulsePing;
+    interface AnyConstructor extends Identity<typeof AnyPulsePing> {}
 
     /** @internal */
-    type _Options = InexactPartial<{
+    type _ConstructorOptions = InexactPartial<{
       /**
        * The number of rings used in the animation.
        * @defaultValue `3`
        * @remarks Can't be `null` as it only has a parameter default and a coerced `0` ring count is nonsensical
        */
-      rings?: number;
+      rings: number;
 
       /**
        * The alternate color that the rings begin at. Use white for a 'flashing' effect.
        * @defaultValue `#ffffff`
        * @remarks Can't be `null` as it only has a parameter default and `Color(NaN)`s are to be avoided
        */
-      color2?: Color.Source;
+      color2: Color.Source;
     }>;
 
-    interface Options extends Ping.Options, PulsePing._Options {}
+    interface ConstructorOptions extends _ConstructorOptions, Ping.ConstructorOptions {}
   }
-
-  /**
-   * @deprecated {@link PulsePing.Options | `PulsePing.Options`}
-   */
-  type PulsePingOptions = PulsePing.Options;
 
   /**
    * A type of ping that produces an arrow pointing in a given direction.
@@ -103,20 +103,20 @@ declare global {
      * @param origin - The canvas coordinates of the origin of the ping. This becomes the arrow's tip.
      * @param options - Additional options to configure the ping animation.
      */
-    constructor(origin: PIXI.Point, options?: ArrowPing.Options);
+    constructor(origin: PIXI.Point, options?: ArrowPing.ConstructorOptions);
 
-    // @privateRemarks `options` does not get overridden here as the `rotation` key does not
-    // get passed up to super, so the property is still just `PulsePing.Options`
+    // @privateRemarks The `options` property does not get overridden here as the `rotation` key does not
+    // get passed up to super, so it's still just `PulsePing.Constructor.Options`
 
     protected override _drawShape(g: PIXI.Graphics, color: number | Color, alpha: number, size: number): void;
   }
 
   namespace ArrowPing {
     interface Any extends AnyArrowPing {}
-    type AnyConstructor = typeof AnyArrowPing;
+    interface AnyConstructor extends Identity<typeof AnyArrowPing> {}
 
     /** @internal */
-    type _Options = NullishProps<{
+    type _ConstructorOptions = NullishProps<{
       /**
        * The angle of the arrow in radians.
        * @defaultValue `0`
@@ -125,7 +125,7 @@ declare global {
       rotation: number;
     }>;
 
-    interface Options extends PulsePing.Options, _Options {}
+    interface ConstructorOptions extends _ConstructorOptions, PulsePing.ConstructorOptions {}
   }
 
   /**
@@ -136,24 +136,25 @@ declare global {
      * @param origin  - The canvas coordinates of the origin of the ping.
      * @param options - Additional options to configure the ping animation.
      */
-    constructor(origin: PIXI.Point, options: AlertPing.Options);
+    constructor(origin: PIXI.Point, options: AlertPing.ConstructorOptions);
 
     protected override _drawShape(g: PIXI.Graphics, color: number | Color, alpha: number, size: number): void;
   }
 
   namespace AlertPing {
     interface Any extends AnyAlertPing {}
-    type AnyConstructor = typeof AnyAlertPing;
+    interface AnyConstructor extends Identity<typeof AnyAlertPing> {}
 
     /** @privateRemarks Only exists to change the default value of `color` */
-    interface Options extends PulsePing.Options {
+    interface ConstructorOptions extends PulsePing.ConstructorOptions {
       /**
        * @defaultValue `"#ff0000"`
        * @remarks Can't be `null` or `undefined` because `options` is `mergeObject`ed with an object with this key,
        * and passing either to `Color.from` produces a `Color(NaN)`, which may cause breakage in subclasses or when
        * passed to PIXI methods
+       * @privateRemarks Typing this as `Ping.ConstructorOptions["color"]` breaks, because it thinks `| undefined` has snuck in for unknown reasons
        */
-      color?: PulsePing.Options["color"];
+      color?: Color.Source;
     }
   }
 }

@@ -196,7 +196,10 @@ declare global {
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link Canvas._onDrop | `Canvas#_onDrop`}
        */
-      dropCanvasData: (canvas: Canvas, data: TokenLayer.DropData | NotesLayer.DropData) => boolean | void;
+      dropCanvasData: (
+        canvas: Canvas,
+        data: TokenLayer.DropData | NotesLayer.DropData | SoundsLayer.DropData | TilesLayer.DropData,
+      ) => boolean | void;
 
       /**
        * A hook event that fires when objects are highlighted on the canvas.
@@ -504,7 +507,7 @@ declare global {
        */
       initializeWeatherEffects: (
         weatherEffect: WeatherEffects,
-        weatherEffectsConfig?: WeatherEffects.WeatherEffectsConfig | null,
+        weatherEffectsConfig?: WeatherEffects.EffectConfiguration | null,
       ) => void;
 
       /** Adventure */

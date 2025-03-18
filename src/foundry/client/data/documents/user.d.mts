@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/documentConfiguration.d.mts";
-import type { AnyObject, FixedInstanceType, InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, FixedInstanceType, InexactPartial, NullishProps } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -26,7 +26,7 @@ declare global {
      * The implementation of the User document instance configured through `CONFIG.User.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredUser | `fvtt-types/configuration/ConfiguredUser`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"User">;
+    type Implementation = Document.ImplementationFor<"User">;
 
     /**
      * The implementation of the User document configured through `CONFIG.User.documentClass` in Foundry and
@@ -70,7 +70,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
 
     /**
      * An embedded document is a document contained in another.
@@ -99,21 +99,21 @@ declare global {
     interface Stored extends Document.Stored<User.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link User._source | `User#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link User._source | `User._source`}. This data is what was
+     * The data put in {@link User._source | `User$_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -375,26 +375,37 @@ declare global {
       type Implementation = FixedInstanceType<ConfiguredDocumentClass["User"]>;
     }
 
-    interface PingData {
+    /** @internal */
+    type _PingData = InexactPartial<{
       /**
-       * Pulls all connected clients' views to the pinged co-ordinates.
+       * The zoom level at which the ping was made.
+       * @defaultValue `1`
+       * @remarks Can't be `null` because it only has a parameter default and is eventually used as a divisor in `Canvas#_constrainView`
        */
-      pull?: false | undefined;
+      zoom: number;
+    }> &
+      NullishProps<{
+        /**
+         * Pulls all connected clients' views to the pinged co-ordinates.
+         */
+        pull: boolean;
 
-      /**
-       * The ping style, see CONFIG.Canvas.pings.
-       */
-      style: string;
+        /**
+         * The ping style, see CONFIG.Canvas.pings.
+         * @defaultValue `"pulse"`
+         * @remarks Overriden with `"arrow"` if the position of the ping is outside the viewport
+         *
+         * Overridden with `CONFIG.Canvas.pings.types.PULL` (`"chevron"` by default) if photosensitive mode is enabled and the ping is within the viewport
+         */
+        style: Ping.ConfiguredStyles;
+      }>;
 
+    /** @privateRemarks Only consumed by {@link ControlsLayer#handlePing} */
+    interface PingData extends _PingData {
       /**
        * The ID of the scene that was pinged.
        */
       scene: string;
-
-      /**
-       * The zoom level at which the ping was made.
-       */
-      zoom: number;
     }
 
     interface ActivityData {

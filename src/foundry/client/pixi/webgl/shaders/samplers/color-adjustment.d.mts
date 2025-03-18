@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -55,7 +55,7 @@ declare global {
 
   namespace ColorAdjustmentsSamplerShader {
     interface Any extends AnyColorAdjustmentsSamplerShader {}
-    type AnyConstructor = typeof AnyColorAdjustmentsSamplerShader;
+    interface AnyConstructor extends Identity<typeof AnyColorAdjustmentsSamplerShader> {}
   }
 
   /**
@@ -105,7 +105,7 @@ declare global {
 
   namespace AmplificationSamplerShader {
     interface Any extends AnyAmplificationSamplerShader {}
-    type AnyConstructor = typeof AnyAmplificationSamplerShader;
+    interface AnyConstructor extends Identity<typeof AnyAmplificationSamplerShader> {}
   }
 }
 

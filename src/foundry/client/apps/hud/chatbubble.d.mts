@@ -1,4 +1,5 @@
 import type { Socket } from "socket.io-client";
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -98,8 +99,8 @@ declare global {
   }
 
   namespace ChatBubbles {
-    type Any = AnyChatBubbles;
-    type AnyConstructor = typeof AnyChatBubbles;
+    interface Any extends AnyChatBubbles {}
+    interface AnyConstructor extends Identity<typeof AnyChatBubbles> {}
 
     interface Dimensions {
       width: number;

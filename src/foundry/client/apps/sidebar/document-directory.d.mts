@@ -14,7 +14,7 @@ declare global {
     /**
      * References to the set of Documents which are displayed in the Sidebar
      */
-    documents: FolderType extends Document.Type ? Document.ImplementationInstanceFor<FolderType>[] : undefined;
+    documents: FolderType extends Document.Type ? Document.ImplementationFor<FolderType>[] : undefined;
 
     /**
      * Reference the set of Folders which exist in this Sidebar
@@ -152,7 +152,7 @@ declare global {
   }
 
   namespace DocumentDirectory {
-    type Any = DocumentDirectory<any, any>;
+    interface Any extends DocumentDirectory<any, any> {}
 
     interface Options<T extends Document.AnyConstructor = Document.AnyConstructor> extends Application.Options {
       /**

@@ -46,7 +46,7 @@ declare class DirectoryApplication {
    */
   protected _matchSearchFolders(
     query: RegExp,
-    includeFolder: (folder: Folder.Implementation, autoExpand?: boolean) => boolean,
+    /** @immediate */ includeFolder: (folder: Folder.Implementation, autoExpand?: boolean) => boolean,
   ): void;
 
   /**
@@ -61,7 +61,7 @@ declare class DirectoryApplication {
     query: RegExp,
     entryIds: Set<string>,
     folderIds: Set<string>,
-    includeFolder: (folder: Folder.Implementation, autoExpand?: boolean) => boolean,
+    /** @immediate */ includeFolder: (folder: Folder.Implementation, autoExpand?: boolean) => boolean,
   ): void;
 
   /**

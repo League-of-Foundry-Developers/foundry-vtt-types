@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -44,7 +44,7 @@ declare global {
 
   namespace QuadMesh {
     interface Any extends AnyQuadMesh {}
-    type AnyConstructor = typeof AnyQuadMesh;
+    interface AnyConstructor extends Identity<typeof AnyQuadMesh> {}
   }
 }
 

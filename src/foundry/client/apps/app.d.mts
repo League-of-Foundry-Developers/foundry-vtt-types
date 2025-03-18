@@ -1,4 +1,4 @@
-import type { MaybePromise, ValueOf } from "fvtt-types/utils";
+import type { MaybePromise, Identity, ValueOf } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -411,7 +411,7 @@ declare global {
 
   namespace Application {
     interface Any extends AnyApplication {}
-    type AnyConstructor = typeof AnyApplication;
+    interface AnyConstructor extends Identity<typeof AnyApplication> {}
 
     interface Options {
       /**

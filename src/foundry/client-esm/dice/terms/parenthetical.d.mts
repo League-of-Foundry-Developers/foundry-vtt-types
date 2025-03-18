@@ -11,10 +11,10 @@ declare class ParentheticalTerm extends RollTerm {
   constructor({ term, roll, options }?: ParentheticalTerm.TermData);
 
   /** The original provided string term used to construct the parenthetical */
-  term: ParentheticalTerm.TermData["term"];
+  term: string | undefined; // only one of term or roll is expected
 
   /** Alternatively, an already-evaluated Roll instance may be passed directly */
-  roll: ParentheticalTerm.TermData["roll"];
+  roll: Roll | undefined; // only one of term or roll is expected
 
   /**
    * Is this term intermediate, and should be evaluated first as part of the simplification process?
@@ -54,7 +54,7 @@ declare class ParentheticalTerm extends RollTerm {
   /** An array of evaluated DiceTerm instances that should be bubbled up to the parent Roll */
   get dice(): DiceTerm[];
 
-  override get total(): string | number | null | undefined;
+  override get total(): number | undefined;
 
   override get expression(): string;
 
@@ -68,8 +68,6 @@ declare class ParentheticalTerm extends RollTerm {
   protected _evaluateAsync(roll: Roll, options?: InexactPartial<RollTerm.EvaluationOptions>): Promise<this>;
 
   protected _evaluateSync(roll: Roll, options?: InexactPartial<RollTerm.EvaluationOptions>): this;
-
-  /* -------------------------------------------- */
 
   /**
    * Construct a ParentheticalTerm from an Array of component terms which should be wrapped inside the parentheses.
@@ -87,8 +85,6 @@ declare class ParentheticalTerm extends RollTerm {
    * ```
    */
   static fromTerms(terms: RollTerm[], options?: InexactPartial<RollTerm.Options>): ParentheticalTerm;
-
-  /* -------------------------------------------- */
 
   /** Construct a Parenthetical from parser information. */
   static override fromParseNode(node: ParentheticalRollParseNode): ParentheticalTerm;

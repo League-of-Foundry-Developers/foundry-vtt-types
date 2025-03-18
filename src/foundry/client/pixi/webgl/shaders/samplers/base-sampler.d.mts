@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin } from "fvtt-types/utils";
+import type { Identity, InexactPartial, Mixin } from "fvtt-types/utils";
 
 declare class BatchPlugin<BaseSamplerShaderClass extends BaseSamplerShader.AnyConstructor> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -184,7 +184,7 @@ declare global {
 
   namespace BaseSamplerShader {
     interface Any extends AnyBaseSamplerShader {}
-    type AnyConstructor = typeof AnyBaseSamplerShader;
+    interface AnyConstructor extends Identity<typeof AnyBaseSamplerShader> {}
 
     interface BatchGeometryData {
       id: string;

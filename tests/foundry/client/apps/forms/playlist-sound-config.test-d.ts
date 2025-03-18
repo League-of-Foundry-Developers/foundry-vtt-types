@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
-declare const playlistSound: PlaylistSound.ConfiguredInstance;
+declare const playlistSound: PlaylistSound.Implementation;
 const playlistSoundConfig = new PlaylistSoundConfig(playlistSound);
 
 expectTypeOf(playlistSoundConfig.object).toEqualTypeOf<PlaylistSound>();

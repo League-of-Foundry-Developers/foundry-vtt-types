@@ -66,7 +66,7 @@ declare global {
   }
 
   namespace PackageConfiguration {
-    type Any = PackageConfiguration<any>;
+    interface Any extends PackageConfiguration<any> {}
 
     interface Options extends FormApplication.Options {
       categoryTemplate?: string;

@@ -1,6 +1,10 @@
 import { expectTypeOf } from "vitest";
 
-const AWS = AbstractWeatherShader;
+declare class MyWeatherShader extends AbstractWeatherShader<{
+  foo: number;
+  bar: [number, number];
+}> {}
+const AWS = MyWeatherShader;
 let myAWS;
 
 expectTypeOf(AWS.fragmentShader).toEqualTypeOf<string | AbstractBaseShader.FragmentShaderFunction>();
@@ -10,3 +14,7 @@ expectTypeOf((myAWS = AWS.create())).toEqualTypeOf<AbstractWeatherShader>();
 
 expectTypeOf(myAWS.speed).toEqualTypeOf<number>();
 expectTypeOf(myAWS["_preRender"]).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();
+
+//dynamic properties
+expectTypeOf(myAWS.foo).toBeNumber();
+expectTypeOf(myAWS.bar).toEqualTypeOf<[number, number]>();

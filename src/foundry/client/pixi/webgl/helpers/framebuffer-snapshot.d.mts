@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -22,7 +22,7 @@ declare global {
 
   namespace FramebufferSnapshot {
     interface Any extends AnyFramebufferSnapshot {}
-    type AnyConstructor = typeof AnyFramebufferSnapshot;
+    interface AnyConstructor extends Identity<typeof AnyFramebufferSnapshot> {}
   }
 }
 

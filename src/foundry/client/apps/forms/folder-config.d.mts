@@ -34,7 +34,7 @@ declare global {
   }
 
   namespace FolderConfig {
-    type Any = FolderConfig<any>;
+    interface Any extends FolderConfig<any> {}
 
     interface Options extends DocumentSheet.Options<Folder.Implementation> {
       resolve?: (doc: Folder.Implementation) => void;

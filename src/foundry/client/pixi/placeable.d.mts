@@ -1,4 +1,4 @@
-import type { MakeConform, ValueOf } from "fvtt-types/utils";
+import type { Identity, InterfaceToObject, MakeConform, ValueOf } from "fvtt-types/utils";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
 import type {
@@ -60,16 +60,7 @@ declare global {
     /**
      * The flags declared here are required for all PlaceableObject subclasses to also support.
      */
-    static override RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<PlaceableObject.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshState"], alias: true }` */
-      refresh: RenderFlag<PlaceableObject.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshState: RenderFlag<PlaceableObject.RenderFlags>;
-    };
+    static override RENDER_FLAGS: InterfaceToObject<PlaceableObject.RENDER_FLAGS>;
 
     /**
      * The object that this object is a preview of if this object is a preview
@@ -575,16 +566,20 @@ declare global {
   }
 
   namespace PlaceableObject {
-    type Any = PlaceableObject<Document.AnyChild<Scene.Implementation | null>>;
+    interface Any extends PlaceableObject<Document.AnyChild<Scene.Implementation | null>> {}
+    interface AnyConstructor extends Identity<typeof AnyPlaceableObject> {}
 
-    type AnyConstructor = typeof AnyPlaceableObject;
+    type RenderFlags = RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS>;
 
-    interface RenderFlags {
-      redraw: boolean;
+    interface RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<this>;
 
-      refresh: boolean;
+      /** @defaultValue `{ propagate: ["refreshState"], alias: true }` */
+      refresh: RenderFlag<this>;
 
-      refreshState: boolean;
+      /** @defaultValue `{}` */
+      refreshState: RenderFlag<this>;
     }
 
     interface ControlOptions {

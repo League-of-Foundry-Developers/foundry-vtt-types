@@ -1,7 +1,5 @@
-import type { NullishProps } from "../../../../../../utils/index.d.mts";
+import type { Identity, NullishProps } from "fvtt-types/utils";
 import type TokenRing from "../../../../../client-esm/canvas/tokens/ring.d.mts";
-
-export {};
 
 declare global {
   /**
@@ -51,7 +49,7 @@ declare global {
 
   namespace TokenRingSamplerShader {
     interface Any extends AnyTokenRingSamplerShader {}
-    type AnyConstructor = typeof AnyTokenRingSamplerShader;
+    interface AnyConstructor extends Identity<typeof AnyTokenRingSamplerShader> {}
 
     /** @internal */
     type RingContainerObject = NullishProps<{

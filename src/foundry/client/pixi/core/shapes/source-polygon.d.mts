@@ -1,4 +1,4 @@
-import type { Brand, Coalesce, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Brand, Coalesce, Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 import type PointEffectSourceMixin from "../../../../client-esm/canvas/sources/point-effect-source.d.mts";
 
 declare global {
@@ -7,7 +7,7 @@ declare global {
    */
   abstract class PointSourcePolygon extends PIXI.Polygon {
     /**
-     * @remarks This is protected because `new PointSourcePolygon` does not sufficiently initalize the class; Use the static `create` method instead.
+     * @remarks This is protected because `new PointSourcePolygon` does not sufficiently initialize the class; Use the static `create` method instead.
      */
     protected constructor(...args: ConstructorParameters<typeof PIXI.Polygon>);
 
@@ -24,13 +24,13 @@ declare global {
 
     /**
      * The origin point of the source polygon.
-     * @remarks Not initalized to any value, but immediately set by `PointSourcePolygon#initalize`
+     * @remarks Not initialized to any value, but immediately set by `PointSourcePolygon#initialize`
      */
     origin: Canvas.Point;
 
     /**
      * The configuration of this polygon.
-     * @remarks Initialized as `{}` but immediately filled by `PointSourcePolygon#initalize`
+     * @remarks Initialized as `{}` but immediately filled by `PointSourcePolygon#initialize`
      */
     config: PointSourcePolygon.StoredConfig;
 
@@ -91,7 +91,10 @@ declare global {
      * @param intersectionOptions - Options passed to the shape intersection method
      * @returns A new constrained polygon
      */
-    applyConstraint(constraint: PIXI.Polygon, intersectionOptions?: PIXI.Polygon.IntersectPolygonOptions): this;
+    applyConstraint(
+      constraint: PIXI.Polygon,
+      intersectionOptions?: PIXI.Polygon.IntersectPolygonOptions, // not:null (property set on it via `??=`)
+    ): this;
     applyConstraint(constraint: PIXI.Circle, intersectionOptions?: PIXI.Circle.WACIntersectPolygonOptions): this;
     applyConstraint(constraint: PIXI.Circle, intersectionOptions?: PIXI.Circle.ClipperLibIntersectPolygonOptions): this;
     applyConstraint(constraint: PIXI.Rectangle, intersectionOptions?: PIXI.Rectangle.WACIntersectPolygonOptions): this;
@@ -116,9 +119,11 @@ declare global {
      * @param mode        - The collision mode to test: "any", "all", or "closest"
      *                      (default: "all")
      * @returns The collision result depends on the mode of the test:
-     *          * any: returns a boolean for whether any collision occurred
-     *          * all: returns a sorted array of PolygonVertex instances
-     *          * closest: returns a PolygonVertex instance or null
+     *          - any: returns a boolean for whether any collision occurred
+     *          - all: returns a sorted array of PolygonVertex instances
+     *          - closest: returns a PolygonVertex instance or null
+     * @remarks Despite being an `={}` parameter, `options` is required as it must be a valid
+     * `PointSourcePolygon.Config`, which has a required property (`type`)
      */
     static testCollision<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>(
       origin: Canvas.Point,
@@ -169,7 +174,7 @@ declare global {
 
   namespace PointSourcePolygon {
     interface Any extends AnyPointSourcePolygon {}
-    type AnyConstructor = typeof AnyPointSourcePolygon;
+    interface AnyConstructor extends Identity<typeof AnyPointSourcePolygon> {}
 
     type WALL_DIRECTION_MODES = Brand<number, "PointSourcePolygon.WALL_DIRECTION_MODES">;
 
@@ -216,7 +221,7 @@ declare global {
     interface _OptionalOnlyConfig {
       /**
        * The object (if any) that spawned this polygon.
-       * @remarks Not guaranteed by `PointSourcePolygon#initalize` but will exist in all configs created by `PointEffectSourceMixin` subclasses. No default provided
+       * @remarks Not guaranteed by `PointSourcePolygon#initialize` but will exist in all configs created by `PointEffectSourceMixin` subclasses. No default provided
        * @privateRemarks Foundry types this as `PointSource` which is neither a typedef nor a class, not even a mixin class name. The type here matches usage and tracks with what they probably meant.
        */
       source?: PointEffectSourceMixin.AnyMixed;
@@ -225,7 +230,7 @@ declare global {
        * The external radius of the source
        * @remarks Can't be `undefined` or `null` or its use in math would produce `NaN`s.
        *
-       * Not guaranteed by `PointSourcePolygon#initalize` but will exist in all configs created by `PointEffectSourceMixin` subclasses.
+       * Not guaranteed by `PointSourcePolygon#initialize` but will exist in all configs created by `PointEffectSourceMixin` subclasses.
        */
       externalRadius?: number;
     }
@@ -293,7 +298,7 @@ declare global {
 
       /**
        * Display debugging visualization and logging for the polygon
-       * @remarks Overriden `true` if `CONFIG.debug.polygons` is truthy
+       * @remarks Overridden `true` if `CONFIG.debug.polygons` is truthy
        */
       debug?: boolean;
 

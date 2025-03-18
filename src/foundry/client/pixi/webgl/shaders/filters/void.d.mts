@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -10,7 +10,7 @@ declare global {
 
   namespace VoidFilter {
     interface Any extends AnyVoidFilter {}
-    type AnyConstructor = typeof AnyVoidFilter;
+    interface AnyConstructor extends Identity<typeof AnyVoidFilter> {}
   }
 }
 

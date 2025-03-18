@@ -38,7 +38,7 @@ declare global {
   }
 
   namespace CombatTrackerConfig {
-    type Any = CombatTrackerConfig<any>;
+    interface Any extends CombatTrackerConfig<any> {}
 
     interface CombatTrackerConfigData extends FormApplication.FormApplicationData {
       settings: SettingConfig["core.combatTrackerConfig"];

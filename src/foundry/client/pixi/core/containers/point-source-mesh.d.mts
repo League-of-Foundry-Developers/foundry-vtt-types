@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -63,7 +63,7 @@ declare global {
 
   namespace PointSourceMesh {
     interface Any extends AnyPointSourceMesh {}
-    type AnyConstructor = typeof AnyPointSourceMesh;
+    interface AnyConstructor extends Identity<typeof AnyPointSourceMesh> {}
   }
 }
 

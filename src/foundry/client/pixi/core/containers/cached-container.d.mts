@@ -1,4 +1,4 @@
-import type { NullishProps } from "fvtt-types/utils";
+import type { Identity, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -106,14 +106,14 @@ declare global {
 
   namespace CachedContainer {
     interface Any extends AnyCachedContainer {}
-    type AnyConstructor = typeof AnyCachedContainer;
+    interface AnyConstructor extends Identity<typeof AnyCachedContainer> {}
 
     /** @internal */
     type _TextureConfiguration = NullishProps<{
       multisample: PIXI.MSAA_QUALITY;
       scaleMode: PIXI.SCALE_MODES;
       format: PIXI.FORMATS;
-      /** @privateRemarks Only exists on DarknessLevelContainer and is seemingly unused there */
+      /** @remarks Only exists on DarknessLevelContainer and is seemingly unused there */
       mipmap: PIXI.MIPMAP_MODES;
     }>;
 

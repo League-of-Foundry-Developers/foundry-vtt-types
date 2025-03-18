@@ -25,7 +25,7 @@ declare global {
      * The implementation of the RollTable document instance configured through `CONFIG.RollTable.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRollTable | `fvtt-types/configuration/ConfiguredRollTable`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"RollTable">;
+    type Implementation = Document.ImplementationFor<"RollTable">;
 
     /**
      * The implementation of the RollTable document configured through `CONFIG.RollTable.documentClass` in Foundry and
@@ -69,7 +69,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
 
     /**
      * An embedded document is a document contained in another.
@@ -98,21 +98,21 @@ declare global {
     interface Stored extends Document.Stored<RollTable.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link RollTable._source | `RollTable#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link RollTable._source | `RollTable._source`}. This data is what was
+     * The data put in {@link RollTable._source | `RollTable#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -127,7 +127,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link RollTable.name | `RollTable#name`}.
      *
      * This is data transformed from {@link RollTable.Source | `RollTable.Source`} and turned into more

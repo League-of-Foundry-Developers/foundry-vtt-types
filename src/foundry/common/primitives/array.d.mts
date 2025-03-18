@@ -25,8 +25,8 @@ declare global {
      * @param rule - The rule to partition by
      * @returns An Array of length two whose elements are the partitioned pieces of the original
      */
-    partition<S extends T>(rule: (val: T) => val is S): [Exclude<T, S>[], S[]];
-    partition(rule: (val: T) => boolean): [T[], T[]];
+    partition<S extends T>(/** @immediate */ rule: (val: T) => val is S): [Exclude<T, S>[], S[]];
+    partition(/** @immediate */ rule: (val: T) => boolean): [T[], T[]];
 
     /**
      * Join an Array using a string separator, first filtering out any parts which return a false-y value
@@ -41,7 +41,7 @@ declare global {
      * @param replace - A replacement for the spliced element
      * @returns The replacement element, the removed element, or null if no element was found.
      */
-    findSplice(find: (value: T, index: number, obj: T[]) => boolean, replace?: T): T | null;
+    findSplice(/** @immediate */ find: (value: T, index: number, obj: T[]) => boolean, replace?: T): T | null;
   }
 
   interface ArrayConstructor {

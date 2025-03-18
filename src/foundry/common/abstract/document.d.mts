@@ -24,7 +24,7 @@ import type {
   ConcreteKeys,
   ValueOf,
   PickValue,
-} from "../../../utils/index.d.mts";
+} from "fvtt-types/utils";
 import type { documents } from "../../client-esm/client.d.mts";
 import type * as CONST from "../constants.mts";
 import type {
@@ -1091,7 +1091,7 @@ declare namespace Document {
     type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[" fvtt_types_internal_document_parent"];
 
     namespace Instance {
-      type Any = Instance<any, any, any>;
+      interface Any extends Instance<any, any, any> {}
 
       type Complete<T extends Any> = T extends Document.Any ? T : never;
     }
@@ -1220,7 +1220,7 @@ declare namespace Document {
   type NameFor<ConcreteDocument extends Document.Internal.Constructor> =
     ConcreteDocument[" fvtt_types_internal_document_name_static"];
 
-  type ImplementationInstanceFor<Name extends Type> = MakeConform<ConfiguredDocumentInstance[Name], Document.Any>;
+  type ImplementationFor<Name extends Type> = MakeConform<ConfiguredDocumentInstance[Name], Document.Any>;
   type ImplementationClassFor<Name extends Type> = ConfiguredDocumentClass[Name];
 
   type ConfiguredObjectClassForName<Name extends PlaceableType> = CONFIG[Name]["objectClass"];
@@ -1486,7 +1486,7 @@ declare namespace Document {
   }
 
   namespace Metadata {
-    type Any = Metadata<any>;
+    interface Any extends Metadata<any> {}
 
     interface Default {
       readonly name: "Document";
@@ -1599,7 +1599,7 @@ declare namespace Document {
     /** Used for {@link Document.deleteDocuments | `Document.deleteDocuments`} */
     type DeleteDocumentsOperation<Op extends DatabaseDeleteOperation> = NullishProps<Omit<Op, "ids" | "modifiedTime">>;
 
-    /** Used for {@link Document.delete} */
+    /** Used for {@link Document.delete | `Document.delete`} */
     type DeleteOperationInstance<Op extends DatabaseDeleteOperation> = InexactPartial<
       Omit<Op, "ids" | "parent" | "pack">
     >;
@@ -1722,9 +1722,9 @@ declare namespace Document {
   interface TestUserPermissionOptions extends _TestUserPermissionsOptions {}
 
   /**
-   * @deprecated {@link ImplementationInstanceFor | `ImplementationInstanceFor`}
+   * @deprecated {@link ImplementationFor | `ImplementationInstanceFor`}
    */
-  type ConfiguredInstanceForName<Name extends Type> = ImplementationInstanceFor<Name>;
+  type ConfiguredInstanceForName<Name extends Type> = ImplementationFor<Name>;
 
   /**
    * @deprecated {@link ImplementationClassFor | `ImplementationClassFor`}

@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -87,8 +87,8 @@ declare global {
   }
 
   namespace SceneControls {
-    type Any = AnySceneControls;
-    type AnyConstructor = typeof AnySceneControls;
+    interface Any extends AnySceneControls {}
+    interface AnyConstructor extends Identity<typeof AnySceneControls> {}
 
     interface ToolBase {
       name: string;

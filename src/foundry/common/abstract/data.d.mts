@@ -1,4 +1,4 @@
-import type { AnyMutableObject, AnyObject, EmptyObject } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject, EmptyObject, Identity } from "fvtt-types/utils";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
@@ -327,9 +327,8 @@ declare namespace DataModel {
     parent?: Parent | null | undefined;
   }
 
-  type Any = DataModel<DataSchema, DataModel.Any | null, AnyObject>;
-
-  type AnyConstructor = typeof AnyDataModel;
+  interface Any extends AnyDataModel {}
+  interface AnyConstructor extends Identity<typeof AnyDataModel> {}
 
   /**
    * A helper type to extract the schema from a {@link DataModel | `DataModel`}.
@@ -425,7 +424,7 @@ declare namespace DataModel {
 }
 
 // This uses `any` because `Schema` and `Parent` are invariant
-declare abstract class AnyDataModel extends DataModel<any, any, AnyObject> {
+declare abstract class AnyDataModel extends DataModel<DataSchema, DataModel.Any | null, AnyObject> {
   constructor(arg0: never, ...args: never[]);
 }
 

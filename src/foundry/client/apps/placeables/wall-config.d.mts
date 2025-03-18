@@ -49,7 +49,7 @@ declare global {
   }
 
   namespace WallConfig {
-    type Any = WallConfig<any>;
+    interface Any extends WallConfig<any> {}
 
     /** @internal */
     type _FormData = Pick<WallDocument, "dir" | "door" | "doorSound" | "ds" | "light" | "move" | "sight" | "sound">;

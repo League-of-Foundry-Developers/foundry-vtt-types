@@ -12,7 +12,7 @@ declare global {
      * The implementation of the Combatant document instance configured through `CONFIG.Combatant.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Combatant">;
+    type Implementation = Document.ImplementationFor<"Combatant">;
 
     /**
      * The implementation of the Combatant document configured through `CONFIG.Combatant.documentClass` in Foundry and
@@ -61,7 +61,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
 
     /**
      * An embedded document is a document contained in another.
@@ -85,21 +85,21 @@ declare global {
     interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link Combatant._source | `Combatant#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link Combatant._source | `Combatant._source`}. This data is what was
+     * The data put in {@link Combatant._source | `Combatant#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -114,7 +114,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Combatant.name | `Combatant#name`}.
      *
      * This is data transformed from {@link Combatant.Source | `Combatant.Source`} and turned into more

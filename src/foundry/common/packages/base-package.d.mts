@@ -1,4 +1,4 @@
-import type { GetKey, AnyObject, InexactPartial, AnyMutableObject } from "fvtt-types/utils";
+import type { GetKey, AnyObject, InexactPartial, AnyMutableObject, Identity } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -13,9 +13,8 @@ declare const __BasePackageBrand: unique symbol;
 declare const __PackageSchema: unique symbol;
 
 declare namespace BasePackage {
-  type Any = BasePackage<any>;
-
-  type AnyConstructor = typeof AnyBasePackage;
+  interface Any extends AnyBasePackage {}
+  interface AnyConstructor extends Identity<typeof AnyBasePackage> {}
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
@@ -23,13 +22,15 @@ declare namespace BasePackage {
       [__BasePackageBrand]: never;
     };
 
-    interface Instance<PackageSchema extends Omit<BasePackage.Schema, "version"> = BasePackage.Schema> {
+    interface Instance<PackageSchema extends BasePackage.Internal.Schema> {
       [__PackageSchema]: PackageSchema;
     }
 
     namespace Instance {
-      type Any = Instance<any>;
+      interface Any extends Instance<BasePackage.Internal.Schema> {}
     }
+
+    interface Schema extends Omit<BasePackage.Schema, "version"> {}
   }
 
   interface OptionalString {
@@ -497,7 +498,7 @@ export class PackageCompendiumPacks<
  */
 declare class BasePackage<
   // BaseWorld alters the definition of `version`
-  PackageSchema extends Omit<BasePackage.Schema, "version"> = BasePackage.Schema,
+  PackageSchema extends BasePackage.Internal.Schema = BasePackage.Schema,
 > extends DataModel<PackageSchema, null> {
   static [__BasePackageBrand]: never;
 

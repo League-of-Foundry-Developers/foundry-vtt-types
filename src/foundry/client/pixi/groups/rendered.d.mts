@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -17,7 +17,7 @@ declare global {
 
   namespace RenderedCanvasGroup {
     interface Any extends AnyRenderedCanvasGroup {}
-    type AnyConstructor = typeof AnyRenderedCanvasGroup;
+    interface AnyConstructor extends Identity<typeof AnyRenderedCanvasGroup> {}
 
     interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 

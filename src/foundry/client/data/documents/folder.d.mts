@@ -11,7 +11,7 @@ declare global {
      * The implementation of the Folder document instance configured through `CONFIG.Folder.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredFolder | `fvtt-types/configuration/ConfiguredFolder`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Folder">;
+    type Implementation = Document.ImplementationFor<"Folder">;
 
     /**
      * The implementation of the Folder document configured through `CONFIG.Folder.documentClass` in Foundry and
@@ -42,21 +42,21 @@ declare global {
     interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link Folder._source | `Folder#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link Folder._source | `Folder._source`}. This data is what was
+     * The data put in {@link Folder._source | `Folder#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -71,7 +71,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Folder.name | `Folder#name`}.
      *
      * This is data transformed from {@link Folder.Source | `Folder.Source`} and turned into more
@@ -275,7 +275,7 @@ declare global {
      * of objects inside the index of the pack that are contained in this Folder.
      */
     // TODO: Handle compendium. This requires the index to be configured.
-    get contents(): Document.ImplementationInstanceFor<Extract<SubType, Document.Type>>[];
+    get contents(): Document.ImplementationFor<Extract<SubType, Document.Type>>[];
 
     set contents(value);
 

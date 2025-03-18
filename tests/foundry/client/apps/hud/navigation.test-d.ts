@@ -8,6 +8,6 @@ expectTypeOf(sceneNavigation.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(sceneNavigation.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(sceneNavigation.render(true)).toEqualTypeOf<SceneNavigation | void>();
 
-expectTypeOf(sceneNavigation.scenes).toEqualTypeOf<Scene.ConfiguredInstance[]>();
+expectTypeOf(sceneNavigation.scenes).toEqualTypeOf<Scene.Implementation[]>();
 expectTypeOf(sceneNavigation.expand()).toEqualTypeOf<Promise<boolean>>();
 expectTypeOf(sceneNavigation.collapse()).toEqualTypeOf<Promise<boolean>>();

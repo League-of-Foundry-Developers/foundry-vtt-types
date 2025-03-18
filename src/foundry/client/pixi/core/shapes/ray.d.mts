@@ -1,3 +1,4 @@
+import type { Identity } from "fvtt-types/utils";
 import type { LineIntersection } from "../../../../common/utils/geometry.d.mts";
 
 declare global {
@@ -165,7 +166,7 @@ declare global {
 
   namespace Ray {
     interface Any extends AnyRay {}
-    type AnyConstructor = typeof AnyRay;
+    interface AnyConstructor extends Identity<typeof AnyRay> {}
 
     interface Intersection {
       /** The x-coordinate of intersection */

@@ -321,7 +321,7 @@ declare global {
       /**
        * Which rich text editor engine to use, "tinymce" or "prosemirror". TinyMCE
        * is deprecated and will be removed in a later version.
-       * @defaultValue "tinymce"
+       * @defaultValue `"tinymce"`
        */
       engine?: "tinymce" | "prosemirror";
 

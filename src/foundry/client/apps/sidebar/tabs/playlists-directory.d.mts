@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -250,8 +250,8 @@ declare global {
   }
 
   namespace PlaylistDirectory {
-    type Any = AnyPlaylistDirectory;
-    type AnyConstructor = typeof AnyPlaylistDirectory;
+    interface Any extends AnyPlaylistDirectory {}
+    interface AnyConstructor extends Identity<typeof AnyPlaylistDirectory> {}
 
     interface PlaylistData extends Playlist.PersistedData {
       modeTooltip: string;

@@ -529,7 +529,7 @@ declare global {
      * @param origin  - Point to display Ping at
      * @param options - Additional options to configure how the ping is drawn.
      */
-    ping(origin: Canvas.Point, options?: Ping.Options): Promise<boolean>;
+    ping(origin: Canvas.Point, options?: Ping.ConstructorOptions): Promise<boolean>;
 
     /**
      * Create a BlurFilter instance and register it to the array for updates when the zoom level changes.

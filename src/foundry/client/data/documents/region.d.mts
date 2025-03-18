@@ -9,7 +9,7 @@ declare global {
      * The implementation of the Region document instance configured through `CONFIG.Region.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRegion | `fvtt-types/configuration/ConfiguredRegion`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Region">;
+    type Implementation = Document.ImplementationFor<"Region">;
 
     /**
      * The implementation of the Region document configured through `CONFIG.Region.documentClass` in Foundry and
@@ -35,7 +35,7 @@ declare global {
     interface Stored extends Document.Stored<RegionDocument.Implementation> {}
 
     /**
-     * The data put in {@link foundry.abstract.DataModel._source | `DataModel#_source`}. This data is what was
+     * The data put in {@link RegionDocument._source | `RegionDocument#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array

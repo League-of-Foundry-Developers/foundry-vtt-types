@@ -1,4 +1,4 @@
-import type { HandleEmptyObject } from "../../../../../utils/index.d.mts";
+import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -7,13 +7,11 @@ declare global {
   class CanvasBackgroundAlterationEffects extends CanvasLayer {
     /**
      * A collection of effects which provide background vision alterations.
-     * @defaultValue `vision.sortableChildren = true`
      */
     vision: PIXI.Container;
 
     /**
      * A collection of effects which provide background preferred vision alterations.
-     * @defaultValue `visionPreferred.sortableChildren = true`
      */
     visionPreferred: PIXI.Container;
 
@@ -35,7 +33,8 @@ declare global {
   }
 
   namespace CanvasBackgroundAlterationEffects {
-    type AnyConstructor = typeof AnyCanvasBackgroundAlterationEffects;
+    interface Any extends AnyCanvasBackgroundAlterationEffects {}
+    interface AnyConstructor extends Identity<typeof AnyCanvasBackgroundAlterationEffects> {}
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}
 

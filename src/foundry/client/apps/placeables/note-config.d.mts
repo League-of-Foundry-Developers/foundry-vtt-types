@@ -45,7 +45,7 @@ declare global {
   }
 
   namespace NoteConfig {
-    type Any = NoteConfig<any>;
+    interface Any extends NoteConfig<any> {}
 
     /** @internal */
     type _FormData = Pick<

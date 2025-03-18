@@ -125,7 +125,7 @@ declare global {
   type NewFontDefinition = FontConfig.NewFontDefinition;
 
   namespace FontConfig {
-    type Any = FontConfig<any>;
+    interface Any extends FontConfig<any> {}
 
     interface Options extends FormApplication.Options {}
 

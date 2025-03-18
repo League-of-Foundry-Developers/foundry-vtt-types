@@ -26,48 +26,69 @@ declare global {
      * }
      * ```
      */
-    data: GridMesh.Data;
+    data: GridMesh.MeshData;
 
     /**
      * Initialize and update the mesh given the (partial) data.
      * @param data - The (partial) data
-     * @remarks InexactPartial is more correct as null has different behavior in _initialize
      */
-    initialize(data: InexactPartial<GridMesh.Data>): this;
+    initialize(data: GridMesh.InitializationMeshData): this;
 
     /**
      * Initialize the data of this mesh given the (partial) data.
      * @param data - The (partial) data.
-     * @remarks Can't be NullishProps because of `!== undefined` tests
      */
-    protected _initialize(data: InexactPartial<GridMesh.Data>): void;
+    protected _initialize(data: GridMesh.InitializationMeshData): void;
   }
 
   namespace GridMesh {
     /**
      * The grid mesh data.
      */
-    interface Data {
-      /** The type of the grid (see {@link CONST.GRID_TYPES | `CONST.GRID_TYPES`}) */
-      type: number;
+    interface MeshData {
+      /**
+       * The type of the grid (see {@link CONST.GRID_TYPES | `CONST.GRID_TYPES`})
+       * @defaultValue `CONST.GRID_TYPES.GRIDLESS`
+       */
+      type: foundry.CONST.GRID_TYPES;
 
-      /** The width of the grid in pixels */
+      /**
+       * The width of the grid in pixels
+       * @defaultValue `0`
+       */
       width: number;
 
-      /** The height of the grid in pixels */
+      /**
+       * The height of the grid in pixels
+       * @defaultValue `0`
+       */
       height: number;
 
-      /** The size of a grid space in pixels */
+      /**
+       * The size of a grid space in pixels
+       * @defaultValue `0`
+       */
       size: number;
 
-      /** The thickness of the grid lines in pixels */
+      /**
+       * The thickness of the grid lines in pixels
+       * @defaultValue `1`
+       */
       thickness: number;
 
-      /** The color of the grid */
+      /**
+       * The color of the grid
+       * @defaultValue `0`
+       */
       color: number;
 
-      /** The alpha of the grid */
+      /**
+       * The alpha of the grid
+       * @defaultValue `1`
+       */
       alpha: number;
     }
+
+    interface InitializationMeshData extends InexactPartial<MeshData> {}
   }
 }

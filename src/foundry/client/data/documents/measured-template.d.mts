@@ -9,7 +9,7 @@ declare global {
      * The implementation of the MeasuredTemplateDocument document instance configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredMeasuredTemplateDocument | `fvtt-types/configuration/ConfiguredMeasuredTemplateDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"MeasuredTemplate">;
+    type Implementation = Document.ImplementationFor<"MeasuredTemplate">;
 
     /**
      * The implementation of the MeasuredTemplateDocument document configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
@@ -35,21 +35,21 @@ declare global {
     interface Stored extends Document.Stored<MeasuredTemplateDocument.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link MeasuredTemplate._source | `MeasuredTemplate#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link MeasuredTemplateDataModel._source | `MeasuredTemplateDataModel._source`}. This data is what was
+     * The data put in {@link MeasuredTemplate._source | `MeasuredTemplate#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -64,7 +64,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link MeasuredTemplateDocument.name | `MeasuredTemplateDocument#name`}.
      *
      * This is data transformed from {@link MeasuredTemplateDocument.Source | `MeasuredTemplateDocument.Source`} and turned into more

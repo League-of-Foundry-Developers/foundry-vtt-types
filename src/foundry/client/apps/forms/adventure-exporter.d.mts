@@ -1,6 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { GetDataReturnType } from "fvtt-types/utils";
+import type { GetDataReturnType, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -73,7 +73,8 @@ declare global {
   }
 
   namespace AdventureExporter {
-    type Any = AdventureExporter<any>;
+    interface Any extends AnyAdventureExporter {}
+    interface AnyConstructor extends Identity<typeof AnyAdventureExporter> {}
 
     interface Options extends DocumentSheet.Options<Adventure.Implementation> {}
 
@@ -129,4 +130,8 @@ declare global {
       contentTree: AdventureExporter["contentTree"];
     }
   }
+}
+
+declare abstract class AnyAdventureExporter extends AdventureExporter<AdventureExporter.Options> {
+  constructor(arg0: never, ...args: never[]);
 }

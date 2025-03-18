@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -23,8 +23,8 @@ declare global {
   }
 
   namespace Pause {
-    type Any = AnyPause;
-    type AnyConstructor = typeof AnyPause;
+    interface Any extends AnyPause {}
+    interface AnyConstructor extends Identity<typeof AnyPause> {}
 
     interface PauseData {
       paused: boolean;

@@ -1,9 +1,4 @@
-import type {
-  InterfaceToObject,
-  AnyObject,
-  RemoveIndexSignatures,
-  FixedInstanceType,
-} from "../../../../../../utils/index.d.mts";
+import type { RemoveIndexSignatures, FixedInstanceType, Identity } from "fvtt-types/utils";
 
 type AbstractBaseShaderClass = typeof AbstractBaseShader;
 
@@ -17,16 +12,18 @@ declare const InternalAbstractWeatherShader_Const: InternalAbstractWeatherShader
 
 // @ts-expect-error - This pattern inherently requires a ts-expect-error as the base class is dynamic.
 class InternalAbstractWeatherShader<
-  DefaultUniforms extends AnyObject,
-  _ComputedUniforms extends object = RemoveIndexSignatures<Extract<DefaultUniforms, AnyObject>>,
+  DefaultUniforms extends AbstractBaseShader.Uniforms,
+  _ComputedUniforms extends object = RemoveIndexSignatures<DefaultUniforms>,
 > extends InternalAbstractWeatherShader_Const<_ComputedUniforms> {}
 
 declare global {
   /**
    * The base shader class for weather shaders.
+   * @typeParam DefaultUniforms - An interface representing an `AbstractWeatherShader` subclass's `static defaultUniforms`
+   * @remarks For each key in `static defaultOptions`, dynamically defines a getter/setter pair for `this.uniforms[key]` on the instance
    */
   class AbstractWeatherShader<
-    DefaultUniforms extends AnyObject = InterfaceToObject<AbstractWeatherShader.DefaultUniforms>,
+    DefaultUniforms extends AbstractBaseShader.Uniforms = AbstractWeatherShader.DefaultUniforms,
   > extends InternalAbstractWeatherShader<DefaultUniforms> {
     constructor(...args: ConstructorParameters<typeof AbstractBaseShader>);
 
@@ -49,7 +46,7 @@ declare global {
 
     static override create<ThisType extends AbstractBaseShader.AnyConstructor>(
       this: ThisType,
-      initialUniforms?: AbstractBaseShader.Uniforms,
+      initialUniforms?: AbstractBaseShader.Uniforms | null,
     ): FixedInstanceType<ThisType>;
 
     /**
@@ -64,6 +61,9 @@ declare global {
      * @param scale - The desired scale
      */
     set scale(scale: number | { x: number; y?: number });
+
+    /** @remarks No getter is actually provided */
+    get scale(): undefined;
 
     set scaleX(x: number);
 
@@ -81,7 +81,7 @@ declare global {
 
   namespace AbstractWeatherShader {
     interface Any extends AnyAbstractWeatherShader {}
-    type AnyConstructor = typeof AnyAbstractWeatherShader;
+    interface AnyConstructor extends Identity<typeof AnyAbstractWeatherShader> {}
 
     interface CommonUniforms extends AbstractBaseShader.Uniforms {
       terrainUvMatrix: PIXI.Matrix;
@@ -101,11 +101,10 @@ declare global {
       time: number;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    interface DefaultUniforms {}
+    interface DefaultUniforms extends AbstractBaseShader.Uniforms {}
   }
 }
 
-declare abstract class AnyAbstractWeatherShader extends AbstractWeatherShader {
+declare abstract class AnyAbstractWeatherShader extends AbstractWeatherShader<AbstractWeatherShader.DefaultUniforms> {
   constructor(arg0: never, ...args: never[]);
 }

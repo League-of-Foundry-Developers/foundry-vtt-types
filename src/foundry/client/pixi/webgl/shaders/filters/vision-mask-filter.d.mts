@@ -1,4 +1,4 @@
-import type { FixedInstanceType } from "fvtt-types/utils";
+import type { FixedInstanceType, Identity } from "fvtt-types/utils";
 
 declare global {
   class VisionMaskFilter extends AbstractBaseMaskFilter {
@@ -27,7 +27,7 @@ declare global {
 
   namespace VisionMaskFilter {
     interface Any extends AnyVisionMaskFilter {}
-    type AnyConstructor = typeof AnyVisionMaskFilter;
+    interface AnyConstructor extends Identity<typeof AnyVisionMaskFilter> {}
   }
 }
 

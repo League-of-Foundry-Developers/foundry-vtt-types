@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial, InterfaceToObject } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, InexactPartial, InterfaceToObject } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema, SchemaField } from "../../../common/data/fields.d.mts";
@@ -27,7 +27,7 @@ declare global {
      * The implementation of the TokenDocument document instance configured through `CONFIG.Token.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTokenDocument | `fvtt-types/configuration/ConfiguredTokenDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Token">;
+    type Implementation = Document.ImplementationFor<"Token">;
 
     /**
      * The implementation of the TokenDocument document configured through `CONFIG.Token.documentClass` in Foundry and
@@ -75,7 +75,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
 
     /**
      * An embedded document is a document contained in another.
@@ -104,21 +104,21 @@ declare global {
     interface Stored extends Document.Stored<TokenDocument.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link TokenDocument._source | `TokenDocument#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link TokenDataModel._source | `TokenDataModel._source`}. This data is what was
+     * The data put in {@link TokenDocument._source | `TokenDocument#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -133,7 +133,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link TokenDocument.name | `TokenDocument#name`}.
      *
      * This is data transformed from {@link TokenDocument.Source | `TokenDocument.Source`} and turned into more
@@ -603,6 +603,8 @@ declare global {
         _priorPosition?: Record<string, { x: number; y: number; elevation: number }>;
         teleport?: boolean;
         forced?: boolean;
+        // TODO: Type this accurately when going over the Token placeable
+        animation: AnyObject;
       }
 
       /** Operation for {@link TokenDocument.createDocuments | `TokenDocument.createDocuments`} */
@@ -914,7 +916,7 @@ declare global {
 
     override getEmbeddedCollection<DocType extends Document.Type>(
       embeddedName: DocType,
-    ): Collection<Document.ImplementationInstanceFor<DocType>>;
+    ): Collection<Document.ImplementationFor<DocType>>;
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,

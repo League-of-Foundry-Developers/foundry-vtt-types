@@ -1,37 +1,30 @@
-import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
-
-type QuadMeshClass = typeof QuadMesh;
-
-interface InternalWeatherShaderEffect_Interface extends QuadMeshClass {
-  new <ShaderClassInstance extends object>(
-    ...args: ConstructorParameters<typeof QuadMesh>
-  ): QuadMesh & ShaderClassInstance;
-}
-
-declare const InternalWeatherShaderEffect_Const: InternalWeatherShaderEffect_Interface;
-
-// @ts-expect-error - This pattern inherently requires a ts-expect-error as the base class is dynamic.
-class InternalWeatherShaderEffect<
-  ShaderClass extends AbstractWeatherShader.AnyConstructor,
-  _ShaderClassInstance extends object = FixedInstanceType<ShaderClass>,
-> extends InternalWeatherShaderEffect_Const<_ShaderClassInstance> {}
+import type { Identity, IntentionalPartial } from "fvtt-types/utils";
 
 declare global {
   /**
    * An interface for defining shader-based weather effects
    */
-  class WeatherShaderEffect<
-    ShaderClass extends AbstractWeatherShader.AnyConstructor = AbstractWeatherShader.AnyConstructor,
-  > extends InternalWeatherShaderEffect<ShaderClass> {
+  class WeatherShaderEffect extends QuadMesh {
     /**
      * @param config - The config object to create the shader effect
      */
-    constructor(config: WeatherShaderEffect.WeatherShaderEffectConfig | undefined, shaderClass: ShaderClass);
+    constructor(
+      config: WeatherShaderEffect.Configuration | undefined,
+      shaderClass: AbstractWeatherShader.AnyConstructor,
+    );
+
+    /** @privateRemarks Override not in Foundry code, but reflects reality at runtime */
+    override get shader(): AbstractWeatherShader;
+
+    /** @privateRemarks Override not in Foundry code, but reflects reality at runtime */
+    override setShaderClass(shaderClass: AbstractWeatherShader.AnyConstructor): void;
 
     /**
      * Set shader parameters.
      */
-    configure(config?: WeatherShaderEffect.WeatherShaderEffectConfig): void;
+    configure(
+      config?: WeatherShaderEffect.Configuration, // not:null (gets `Object.entries()`ed)
+    ): void;
 
     /**
      * Begin animation
@@ -47,17 +40,17 @@ declare global {
      * Initialize the weather effect.
      * @param config - Config object.
      */
-    protected _initialize(config: WeatherShaderEffect.WeatherShaderEffectConfig): void;
+    protected _initialize(config: WeatherShaderEffect.Configuration): void;
   }
 
   namespace WeatherShaderEffect {
     interface Any extends AnyWeatherShaderEffect {}
-    type AnyConstructor = typeof AnyWeatherShaderEffect;
+    interface AnyConstructor extends Identity<typeof AnyWeatherShaderEffect> {}
 
-    type WeatherShaderEffectConfig = InexactPartial<AbstractBaseShader.Uniforms & WeatherShaderEffect["shader"]>;
+    type Configuration = IntentionalPartial<AbstractBaseShader.Uniforms & AbstractWeatherShader>;
   }
 }
 
-declare abstract class AnyWeatherShaderEffect extends WeatherShaderEffect<AbstractWeatherShader.AnyConstructor> {
+declare abstract class AnyWeatherShaderEffect extends WeatherShaderEffect {
   constructor(arg0: never, ...args: never[]);
 }

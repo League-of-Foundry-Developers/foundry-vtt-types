@@ -19,7 +19,7 @@ declare class MyInteractionLayer extends InteractionLayer {
 expectTypeOf(MyInteractionLayer.layerOptions.baseClass).toEqualTypeOf<typeof MyInteractionLayer>;
 
 declare const someEvent: PIXI.FederatedEvent;
-declare const someUser: User.ConfiguredInstance;
+declare const someUser: User.Implementation;
 const layer = new MyInteractionLayer();
 
 expectTypeOf(layer.name).toEqualTypeOf<string>();

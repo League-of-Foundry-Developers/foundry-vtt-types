@@ -8,8 +8,8 @@ expectTypeOf(readTextFromFile(file)).toEqualTypeOf<Promise<string>>();
 
 declare const actor: Actor;
 expectTypeOf(_resolveEmbedded(actor, [])).toEqualTypeOf<foundry.abstract.Document.Any>();
-expectTypeOf(getDocumentClass("Actor")).toEqualTypeOf<Actor.ConfiguredClass>();
-expectTypeOf(getDocumentClass("Item")).toEqualTypeOf<Item.ConfiguredClass>();
+expectTypeOf(getDocumentClass("Actor")).toEqualTypeOf<Actor.ImplementationClass>();
+expectTypeOf(getDocumentClass("Item")).toEqualTypeOf<Item.ImplementationClass>();
 
 expectTypeOf(fromUuid("Actor.uuid1")).toEqualTypeOf<Promise<Actor | null>>;
 expectTypeOf(fromUuid("Actor.uuid1.Item.uuid2")).toEqualTypeOf<Promise<Item | null>>;

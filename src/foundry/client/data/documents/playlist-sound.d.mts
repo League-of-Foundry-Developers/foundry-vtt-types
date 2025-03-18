@@ -10,7 +10,7 @@ declare global {
      * The implementation of the PlaylistSound document instance configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylistSound | `fvtt-types/configuration/ConfiguredPlaylistSound`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"PlaylistSound">;
+    type Implementation = Document.ImplementationFor<"PlaylistSound">;
 
     /**
      * The implementation of the PlaylistSound document configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
@@ -54,7 +54,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
 
     /**
      * An embedded document is a document contained in another.
@@ -78,21 +78,21 @@ declare global {
     interface Stored extends Document.Stored<PlaylistSound.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link PlaylistSound._source | `PlaylistSound#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link PlaylistSound._source | `PlaylistSound._source`}. This data is what was
+     * The data put in {@link PlaylistSound._source | `PlaylistSound#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -107,7 +107,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link PlaylistSound.name | `PlaylistSound#name`}.
      *
      * This is data transformed from {@link PlaylistSound.Source | `PlaylistSound.Source`} and turned into more

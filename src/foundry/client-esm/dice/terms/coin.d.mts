@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { Identity, InexactPartial } from "fvtt-types/utils";
 import type DiceTerm from "./dice.d.mts";
 
 /**
@@ -24,8 +24,6 @@ declare class Coin extends DiceTerm {
    */
   static MODIFIERS: Coin.Modifiers;
 
-  /* -------------------------------------------- */
-
   override roll({
     minimize,
     maximize,
@@ -35,8 +33,6 @@ declare class Coin extends DiceTerm {
   override getResultLabel(result: DiceTerm.Result): string;
 
   override getResultCSS(result: DiceTerm.Result): (string | null)[];
-
-  /* -------------------------------------------- */
 
   override mapRandomFace(randomUniform: number): number;
 
@@ -56,8 +52,8 @@ declare class Coin extends DiceTerm {
 }
 
 declare namespace Coin {
-  type Any = AnyCoin;
-  type AnyConstructor = typeof AnyCoin;
+  interface Any extends AnyCoin {}
+  interface AnyConstructor extends Identity<typeof AnyCoin> {}
 
   interface TermData extends DiceTerm.TermData {
     modifiers: Array<keyof Modifiers>;

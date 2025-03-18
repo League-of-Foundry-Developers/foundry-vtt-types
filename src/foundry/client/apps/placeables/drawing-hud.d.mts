@@ -26,6 +26,6 @@ declare global {
   }
 
   namespace DrawingHUD {
-    type Any = DrawingHUD<any>;
+    interface Any extends DrawingHUD<any> {}
   }
 }
