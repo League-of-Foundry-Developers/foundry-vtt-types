@@ -160,7 +160,7 @@ declare global {
       namespace: N,
       key: K,
       value: ClientSettings.SettingAssignmentType<N, K>,
-      options?: Setting.DatabaseOperation.CreateOperation | Setting.DatabaseOperation.UpdateOperation,
+      options?: Setting.Database.CreateOperation<undefined | false> | Setting.Database.UpdateOperation,
     ): Promise<ClientSettings.SettingInitializedType<N, K>>;
   }
 

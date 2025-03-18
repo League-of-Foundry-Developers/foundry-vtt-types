@@ -148,7 +148,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   override delete(operation?: TokenDocument.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): TokenDocument.Implementation | null;
+  static get(documentId: string, options?: TokenDocument.Database.GetOptions): TokenDocument.Implementation | null;
 
   // TODO: @LukeAbby More Implementation Nonsense
   // override getEmbeddedCollection<EmbeddedName extends TokenDocument.EmbeddedName>(

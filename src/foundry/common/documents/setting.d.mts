@@ -1,6 +1,8 @@
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Setting Document.
@@ -21,7 +23,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    * You should use {@link Setting.implementation | `new Setting.implementation(...)`} instead which will give you
    * a system specific implementation of `Setting`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseSetting.CreateData, BaseSetting.Parent>);
+  constructor(...args: Setting.ConstructorArgs);
 
   static override metadata: BaseSetting.Metadata;
 
@@ -31,104 +33,142 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   /*
    * After this point these are not really overridden methods.
-   * They are here because they're static properties but depend on the instance and so can't be
-   * defined DRY-ly while also being easily overridable.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
    */
 
   static " fvtt_types_internal_document_name_static": "Setting";
 
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: Setting.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static get baseDocument(): typeof BaseSetting;
+
   static get implementation(): Setting.ImplementationClass;
+
+  static get collectionName(): Setting.ParentCollectionName;
+
+  static get documentName(): Setting.Name;
+
+  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+
+  static get hasTypeData(): false;
+
+  static get hierarchy(): Setting.Hierarchy;
 
   override parent: Setting.Parent;
 
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Setting.Implementation | Setting.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<Setting.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<Setting.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Setting.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Setting.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<Setting.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Setting.Database.Update>,
   ): Promise<Setting.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<Setting.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Setting.Database.Delete>,
   ): Promise<Setting.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: Setting.CreateData | Setting.CreateData[],
-    operation?: Document.Database.CreateOperation<Setting.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Setting.Implementation | undefined>;
+    operation?: Setting.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<Setting.Implementation, Temporary> | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): Setting.Implementation | null;
+  override update(
+    data: Setting.UpdateData | undefined,
+    operation?: Setting.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: Setting.Database.DeleteOperation): Promise<this | undefined>;
+
+  static get(documentId: string, options?: Setting.Database.GetOptions): Setting.Implementation | null;
 
   protected _preCreate(
     data: Setting.CreateData,
-    options: Setting.DatabaseOperation.PreCreateOperationInstance,
+    options: Setting.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
-    data: Setting.CreateData,
-    options: Setting.DatabaseOperation.OnCreateOperation,
-    userId: string,
-  ): void;
+  protected _onCreate(data: Setting.CreateData, options: Setting.Database.OnCreateOperation, userId: string): void;
 
   protected static _preCreateOperation(
     documents: Setting.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<Setting.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<Setting.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: Setting.Implementation[],
-    operation: Setting.DatabaseOperation.Create,
+    operation: Setting.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: Setting.UpdateData,
-    options: Setting.DatabaseOperation.PreUpdateOperationInstance,
+    options: Setting.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
-    changed: Setting.UpdateData,
-    options: Setting.DatabaseOperation.OnUpdateOperation,
-    userId: string,
-  ): void;
+  protected _onUpdate(changed: Setting.UpdateData, options: Setting.Database.OnUpdateOperation, userId: string): void;
 
   protected static _preUpdateOperation(
     documents: Setting.Implementation[],
-    operation: Setting.DatabaseOperation.Update,
+    operation: Setting.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: Setting.Implementation[],
-    operation: Setting.DatabaseOperation.Update,
+    operation: Setting.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
-    options: Setting.DatabaseOperation.PreDeleteOperationInstance,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
+  protected _preDelete(options: Setting.Database.PreDeleteOptions, user: User.Implementation): Promise<boolean | void>;
 
-  protected _onDelete(options: Setting.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: Setting.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: Setting.Implementation[],
-    operation: Setting.DatabaseOperation.Delete,
+    operation: Setting.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: Setting.Implementation[],
-    operation: Setting.DatabaseOperation.Delete,
+    operation: Setting.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  static get hasSystemData(): false;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: Setting.Implementation[],
@@ -144,6 +184,8 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
     documents: Setting.Implementation[],
     context: Document.ModificationContext<Setting.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<Setting.Schema>;
 
@@ -162,8 +204,16 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 export default BaseSetting;
 
 declare namespace BaseSetting {
+  export import Name = Setting.Name;
+  export import ConstructorArgs = Setting.ConstructorArgs;
+  export import Hierarchy = Setting.Hierarchy;
   export import Metadata = Setting.Metadata;
   export import Parent = Setting.Parent;
+  export import Pack = Setting.Pack;
+  export import Embedded = Setting.Embedded;
+  export import EmbeddedName = Setting.EmbeddedName;
+  export import EmbeddedCollectionName = Setting.EmbeddedCollectionName;
+  export import ParentCollectionName = Setting.ParentCollectionName;
   export import Stored = Setting.Stored;
   export import Source = Setting.Source;
   export import PersistedData = Setting.PersistedData;
@@ -171,7 +221,7 @@ declare namespace BaseSetting {
   export import InitializedData = Setting.InitializedData;
   export import UpdateData = Setting.UpdateData;
   export import Schema = Setting.Schema;
-  export import DatabaseOperation = Setting.DatabaseOperation;
+  export import DatabaseOperation = Setting.Database;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

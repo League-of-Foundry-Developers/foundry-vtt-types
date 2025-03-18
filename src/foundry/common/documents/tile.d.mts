@@ -106,7 +106,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   override delete(operation?: TileDocument.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): TileDocument.Implementation | null;
+  static get(documentId: string, options?: TileDocument.Database.GetOptions): TileDocument.Implementation | null;
 
   static override getCollectionName<CollectionName extends TileDocument.EmbeddedName>(
     name: CollectionName,

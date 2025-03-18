@@ -182,7 +182,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override delete(operation?: User.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): User.Implementation | null;
+  static get(documentId: string, options?: User.Database.GetOptions): User.Implementation | null;
 
   static override getCollectionName<CollectionName extends User.EmbeddedName>(
     name: CollectionName,

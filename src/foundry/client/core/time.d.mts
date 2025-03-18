@@ -50,7 +50,7 @@ declare global {
      */
     advance(
       seconds: number,
-      options?: Setting.DatabaseOperation.CreateOperation | Setting.DatabaseOperation.UpdateOperation,
+      options?: Setting.Database.CreateOperation<false | undefined> | Setting.Database.UpdateOperation,
     ): Promise<number>;
 
     /**
