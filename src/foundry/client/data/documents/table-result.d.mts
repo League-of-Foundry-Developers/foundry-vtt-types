@@ -98,7 +98,7 @@ declare global {
     interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link TableResult._source | `TableResult#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
@@ -109,7 +109,7 @@ declare global {
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link TableResult._source | `TableResult._source`}. This data is what was
+     * The data put in {@link TableResult._source | `TableResult#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * Both `Source` and `PersistedData` are equivalent.
@@ -127,7 +127,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link TableResult.name | `TableResult#name`}.
      *
      * This is data transformed from {@link TableResult.Source | `TableResult.Source`} and turned into more

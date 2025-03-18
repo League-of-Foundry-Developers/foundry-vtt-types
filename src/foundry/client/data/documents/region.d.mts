@@ -35,27 +35,27 @@ declare global {
     interface Stored extends Document.Stored<RegionDocument.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link RegionDocument._source | `RegionDocument#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link Region._source | `Region._source`}. This data is what was
+     * The data put in {@link RegionDocument._source | `RegionDocument#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
     /**
-     * The data necessary to create a document. Used in places like {@link Region.create | `Region.create`}
-     * and {@link Region | `new Region(...)`}.
+     * The data necessary to create a document. Used in places like {@link RegionDocument.create | `RegionDocument.create`}
+     * and {@link RegionDocument | `new RegionDocument(...)`}.
      *
      * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
      * with the right values. This means you can pass a `Set` instance, an array of values,
@@ -64,18 +64,18 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
-     * {@link Region.name | `Region#name`}.
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
+     * {@link RegionDocument.name | `RegionDocument#name`}.
      *
-     * This is data transformed from {@link Region.Source | `Region.Source`} and turned into more
+     * This is data transformed from {@link RegionDocument.Source | `RegionDocument.Source`} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
     interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
     /**
-     * The data used to update a document, for example {@link Region.update | `Region#update`}.
-     * It is a distinct type from {@link Region.CreateData | `DeepPartial<Region.CreateData>`} because
+     * The data used to update a document, for example {@link RegionDocument.update | `RegionDocument#update`}.
+     * It is a distinct type from {@link RegionDocument.CreateData | `DeepPartial<RegionDocument.CreateData>`} because
      * it has different rules for `null` and `undefined`.
      */
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -176,32 +176,32 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<RegionDocument.UpdateData, RegionDocument.Parent> {}
 
-      /** Options for {@link Region.createDocuments | `Region.createDocuments`} */
+      /** Options for {@link RegionDocument.createDocuments | `RegionDocument.createDocuments`} */
       type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
         Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Region._preCreateOperation | `Region._preCreateOperation`} */
+      /** Options for {@link RegionDocument._preCreateOperation | `RegionDocument._preCreateOperation`} */
       type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      /** Options for {@link Region._preCreate | `Region#_preCreate`} */
+      /** Options for {@link RegionDocument._preCreate | `RegionDocument#_preCreate`} */
       type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
-      /** Options for {@link Region._onCreate | `Region#_onCreate`} */
+      /** Options for {@link RegionDocument._onCreate | `RegionDocument#_onCreate`} */
       type OnCreateOperation = Document.Database.CreateOptions<Create>;
 
-      /** Options for {@link Region.updateDocuments | `Region.updateDocuments`} */
+      /** Options for {@link RegionDocument.updateDocuments | `RegionDocument.updateDocuments`} */
       type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link Region._preUpdateOperation | `Region._preUpdateOperation`} */
+      /** Options for {@link RegionDocument._preUpdateOperation | `RegionDocument._preUpdateOperation`} */
       type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      /** Options for {@link Region._preUpdate | `Region#_preUpdate`} */
+      /** Options for {@link RegionDocument._preUpdate | `RegionDocument#_preUpdate`} */
       type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link Region._onUpdate | `Region#_onUpdate`} */
+      /** Options for {@link RegionDocument._onUpdate | `RegionDocument#_onUpdate`} */
       type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
 
-      /** Options for {@link Region.deleteDocuments | `Region.deleteDocuments`} */
+      /** Options for {@link RegionDocument.deleteDocuments | `RegionDocument.deleteDocuments`} */
       type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link Region._preDeleteOperation | `Region._preDeleteOperation`} */
+      /** Options for {@link RegionDocument._preDeleteOperation | `RegionDocument._preDeleteOperation`} */
       type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      /** Options for {@link Region._preDelete | `Region#_preDelete`} */
+      /** Options for {@link RegionDocument._preDelete | `RegionDocument#_preDelete`} */
       type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      /** Options for {@link Region._onDelete | `Region#_onDelete`} */
+      /** Options for {@link RegionDocument._onDelete | `RegionDocument#_onDelete`} */
       type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
     }
 
