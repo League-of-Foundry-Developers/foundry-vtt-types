@@ -6,8 +6,8 @@ const actorDocumentOwnershipConfig = new DocumentOwnershipConfig(actor);
 
 expectTypeOf(actorDocumentOwnershipConfig.object).toEqualTypeOf<Actor>();
 expectTypeOf(actorDocumentOwnershipConfig.document).toEqualTypeOf<Actor>();
-expectTypeOf(DocumentOwnershipConfig.defaultOptions).toEqualTypeOf<DocumentSheetOptions>();
-expectTypeOf(actorDocumentOwnershipConfig.options).toEqualTypeOf<DocumentSheetOptions<Actor>>();
+expectTypeOf(DocumentOwnershipConfig.defaultOptions).toEqualTypeOf<DocumentSheet.Options>();
+expectTypeOf(actorDocumentOwnershipConfig.options).toEqualTypeOf<DocumentSheet.Options<Actor>>();
 expectTypeOf(actorDocumentOwnershipConfig.getData()).toEqualTypeOf<
   MaybePromise<GetDataReturnType<DocumentOwnershipConfig.DocumentOwnershipConfigData>>
 >();
@@ -21,7 +21,7 @@ const itemDocumentOwnershipConfig = new DocumentOwnershipConfig(item);
 
 expectTypeOf(itemDocumentOwnershipConfig.object).toEqualTypeOf<Item>();
 expectTypeOf(itemDocumentOwnershipConfig.document).toEqualTypeOf<Item>();
-expectTypeOf(itemDocumentOwnershipConfig.options).toEqualTypeOf<DocumentSheetOptions<Item>>();
+expectTypeOf(itemDocumentOwnershipConfig.options).toEqualTypeOf<DocumentSheet.Options<Item>>();
 expectTypeOf(itemDocumentOwnershipConfig.getData()).toEqualTypeOf<
   MaybePromise<GetDataReturnType<DocumentOwnershipConfig.DocumentOwnershipConfigData>>
 >();

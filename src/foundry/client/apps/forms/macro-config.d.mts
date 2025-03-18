@@ -7,7 +7,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class MacroConfig<
-    Options extends DocumentSheetOptions<Macro.Implementation> = DocumentSheetOptions<Macro.Implementation>,
+    Options extends DocumentSheet.Options<Macro.Implementation> = DocumentSheet.Options<Macro.Implementation>,
   > extends DocumentSheet<Options, Macro.Implementation> {
     /**
      * @defaultValue
@@ -21,7 +21,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<Macro.Implementation>;
+    static override get defaultOptions(): DocumentSheet.Options<Macro.Implementation>;
 
     override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<MacroConfig.MacroConfigData>>;
 
@@ -50,7 +50,7 @@ declare global {
     }
 
     interface MacroConfigData<
-      Options extends DocumentSheetOptions<Macro.Implementation> = DocumentSheetOptions<Macro.Implementation>,
+      Options extends DocumentSheet.Options<Macro.Implementation> = DocumentSheet.Options<Macro.Implementation>,
     > extends DocumentSheet.DocumentSheetData<Options, Macro.Implementation> {
       macroTypes: Record<string, string>;
       macroScopes: typeof CONST.MACRO_TYPES;

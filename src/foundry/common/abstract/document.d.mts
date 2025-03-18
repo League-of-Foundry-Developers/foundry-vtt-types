@@ -66,9 +66,11 @@ declare abstract class Document<
    * @param data    - Initial data provided to construct the Document
    * @param context - Construction context options
    */
-  // Note: This uses `any` because while it's unsound to try to do `new Document(...)` directly it
-  // simplifies assignability. Ideally this will be narrowed in the future.
-  constructor(...args: any[]);
+  // Note: The constructor has been replaced with `never` in `Document` itself because it never makes
+  // sense to try to construct `new Document(...)` directly. Not only is it an abstract class but
+  // also it varies based upon the `Schema`. While this could be supported it also simplifies
+  // typechecking and helps stymy circularities.
+  constructor(arg0: never, ...args: never[]);
 
   override parent: Parent;
 
@@ -863,9 +865,7 @@ declare abstract class Document<
 // An empty schema is the most accurate because index signatures are stripped.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 declare abstract class AnyDocument extends Document<Document.Type, {}, Document.Any | null> {
-  // Note(LukeAbby): Document is one of the rare classes that is frequently used for mixins and also the conditional
-  // type in the constructor prevents `arg0: never, ...args: never[]` from being usable.
-  constructor(...args: any[]);
+  constructor(arg0: never, ...args: never[]);
 
   // Note(LukeAbby): This uses `object` instead of `AnyObject` to avoid more thorough evaluation of
   // the involved types which can cause a loop.
@@ -1069,7 +1069,7 @@ declare namespace Document {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
-    type Constructor = (abstract new (...args: any[]) => Instance.Any) & {
+    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
       " fvtt_types_internal_document_name_static": Document.Type;
     };
 
@@ -1853,7 +1853,7 @@ interface DatabaseOperationCreateMap {
   PlaylistSound: PlaylistSound.DatabaseOperation.Create;
   Region: RegionDocument.DatabaseOperation.Create;
   RegionBehavior: RegionBehavior.DatabaseOperation.Create;
-  RollTable: RollTable.DatabaseOperation.Create;
+  RollTable: RollTable.Database.Create;
   Scene: Scene.DatabaseOperation.Create;
   Setting: Setting.DatabaseOperation.Create;
   TableResult: TableResult.Database.Create;
@@ -1888,7 +1888,7 @@ interface DatabaseOperationUpdateMap {
   PlaylistSound: PlaylistSound.DatabaseOperation.Update;
   Region: RegionDocument.DatabaseOperation.Update;
   RegionBehavior: RegionBehavior.DatabaseOperation.Update;
-  RollTable: RollTable.DatabaseOperation.Update;
+  RollTable: RollTable.Database.Update;
   Scene: Scene.DatabaseOperation.Update;
   Setting: Setting.DatabaseOperation.Update;
   TableResult: TableResult.Database.Update;
@@ -1923,7 +1923,7 @@ interface DatabaseOperationDeleteMap {
   PlaylistSound: PlaylistSound.DatabaseOperation.Delete;
   Region: RegionDocument.DatabaseOperation.Delete;
   RegionBehavior: RegionBehavior.DatabaseOperation.Delete;
-  RollTable: RollTable.DatabaseOperation.Delete;
+  RollTable: RollTable.Database.Delete;
   Scene: Scene.DatabaseOperation.Delete;
   Setting: Setting.DatabaseOperation.Delete;
   TableResult: TableResult.Database.Delete;

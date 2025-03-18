@@ -37,30 +37,30 @@ declare global {
   namespace UserConfig {
     type Any = UserConfig<any>;
 
-    interface Options extends DocumentSheetOptions<User.Implementation> {
+    interface Options extends DocumentSheet.Options<User.Implementation> {
       /**
        * @defaultValue `["sheet", "user-config"]`
        */
-      classes: DocumentSheetOptions["classes"];
+      classes: DocumentSheet.Options["classes"];
 
       /**
        * @defaultValue `"templates/user/user-config.html"`
        */
-      template: DocumentSheetOptions["template"];
+      template: DocumentSheet.Options["template"];
 
       /**
        * @defaultValue `400`
        */
-      width: DocumentSheetOptions["width"];
+      width: DocumentSheet.Options["width"];
 
       /**
        * @defaultValue `"auto"`
        */
-      height: DocumentSheetOptions["height"];
+      height: DocumentSheet.Options["height"];
     }
 
     interface UserConfigData<
-      Options extends DocumentSheetOptions<User.Implementation> = DocumentSheetOptions<User.Implementation>,
+      Options extends DocumentSheet.Options<User.Implementation> = DocumentSheet.Options<User.Implementation>,
     > {
       user: UserConfig<Options>["object"];
       actors: Actor.ImplementationClass[];

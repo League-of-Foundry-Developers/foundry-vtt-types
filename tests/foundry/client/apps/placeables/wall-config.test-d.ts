@@ -6,8 +6,8 @@ const wallConfig = new WallConfig(wallDoc);
 
 expectTypeOf(wallConfig.object).toEqualTypeOf<WallDocument>();
 expectTypeOf(wallConfig.document).toEqualTypeOf<WallDocument>();
-expectTypeOf(WallConfig.defaultOptions).toEqualTypeOf<DocumentSheetOptions<WallDocument.Implementation>>();
-expectTypeOf(wallConfig.options).toEqualTypeOf<DocumentSheetOptions<WallDocument.Implementation>>();
+expectTypeOf(WallConfig.defaultOptions).toEqualTypeOf<DocumentSheet.Options<WallDocument.Implementation>>();
+expectTypeOf(wallConfig.options).toEqualTypeOf<DocumentSheet.Options<WallDocument.Implementation>>();
 expectTypeOf(wallConfig.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(wallConfig.render(true)).toEqualTypeOf<WallConfig>();
 

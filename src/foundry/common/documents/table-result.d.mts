@@ -98,17 +98,17 @@ declare abstract class BaseTableResult<
     operation?: Document.Database.DeleteDocumentsOperation<TableResult.Database.Delete>,
   ): Promise<TableResult.Implementation[]>;
 
+  static override create<Temporary extends boolean | undefined = false>(
+    data: TableResult.CreateData | TableResult.CreateData[],
+    operation?: TableResult.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<TableResult.Implementation, Temporary> | undefined>;
+
   override update(
     data: TableResult.UpdateData | undefined,
     operation?: TableResult.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
   override delete(operation?: TableResult.Database.DeleteOperation): Promise<this | undefined>;
-
-  static create<Temporary extends boolean | undefined = false>(
-    data: TableResult.CreateData | TableResult.CreateData[],
-    operation?: Document.Database.CreateOperation<TableResult.Database.Create<Temporary>>,
-  ): Promise<TableResult.Implementation | undefined>;
 
   static get(documentId: string, options?: Document.Database.GetOptions): TableResult.Implementation | null;
 

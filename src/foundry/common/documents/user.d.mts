@@ -170,10 +170,17 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
     operation?: Document.Database.DeleteDocumentsOperation<User.Database.Delete>,
   ): Promise<User.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: User.CreateData | User.CreateData[],
-    operation?: Document.Database.CreateOperation<User.Database.Create<Temporary>>,
-  ): Promise<User.Implementation | undefined>;
+    operation?: User.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<User.Implementation, Temporary> | undefined>;
+
+  override update(
+    data: User.UpdateData | undefined,
+    operation?: User.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: User.Database.DeleteOperation): Promise<this | undefined>;
 
   static get(documentId: string, options?: Document.Database.GetOptions): User.Implementation | null;
 

@@ -5,8 +5,8 @@ const tokenConfig = new TokenConfig(tokenDoc);
 
 expectTypeOf(tokenConfig.object).toEqualTypeOf<TokenDocument | Actor>();
 expectTypeOf(tokenConfig.document).toEqualTypeOf<TokenDocument | Actor>();
-expectTypeOf(TokenConfig.defaultOptions).toEqualTypeOf<DocumentSheetOptions<TokenDocument.ConfiguredInstance>>();
-expectTypeOf(tokenConfig.options).toEqualTypeOf<DocumentSheetOptions<TokenDocument.ConfiguredInstance>>();
+expectTypeOf(TokenConfig.defaultOptions).toEqualTypeOf<DocumentSheet.Options<TokenDocument.ConfiguredInstance>>();
+expectTypeOf(tokenConfig.options).toEqualTypeOf<DocumentSheet.Options<TokenDocument.ConfiguredInstance>>();
 expectTypeOf(tokenConfig.getData()).toEqualTypeOf<Promise<object>>();
 expectTypeOf(tokenConfig.render(true)).toEqualTypeOf<TokenConfig>();
 

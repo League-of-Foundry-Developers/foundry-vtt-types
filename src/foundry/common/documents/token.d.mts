@@ -151,10 +151,17 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     operation?: Document.Database.DeleteDocumentsOperation<TokenDocument.Database.Delete>,
   ): Promise<TokenDocument.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: TokenDocument.CreateData | TokenDocument.CreateData[],
-    operation?: Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>>,
-  ): Promise<TokenDocument.Implementation | undefined>;
+    operation?: TokenDocument.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<TokenDocument.Implementation, Temporary> | undefined>;
+
+  override update(
+    data: TokenDocument.UpdateData | undefined,
+    operation?: TokenDocument.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: TokenDocument.Database.DeleteOperation): Promise<this | undefined>;
 
   static get(documentId: string, options?: Document.Database.GetOptions): TokenDocument.Implementation | null;
 

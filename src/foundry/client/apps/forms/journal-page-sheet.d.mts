@@ -66,7 +66,7 @@ declare global {
   namespace JournalPageSheet {
     type Any = JournalPageSheet<any>;
 
-    interface Options extends DocumentSheetOptions<JournalEntryPage.Implementation> {}
+    interface Options extends DocumentSheet.Options<JournalEntryPage.Implementation> {}
 
     interface JournalPageSheetData extends DocumentSheet.DocumentSheetData<Options, JournalEntryPage.Implementation> {
       headingLevels: Record<number, string>;

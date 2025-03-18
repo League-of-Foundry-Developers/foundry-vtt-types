@@ -54,7 +54,7 @@ declare global {
       "video.volume": TileDocument["video"]["volume"];
     }
 
-    interface Options extends DocumentSheetOptions<TileDocument.Implementation> {
+    interface Options extends DocumentSheet.Options<TileDocument.Implementation> {
       /**
        * Configure a preview version of a tile which is not yet saved
        */

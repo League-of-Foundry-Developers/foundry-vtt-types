@@ -6,8 +6,8 @@ const sceneConfig = new SceneConfig(scene);
 
 expectTypeOf(sceneConfig.object).toEqualTypeOf<Scene>();
 expectTypeOf(sceneConfig.document).toEqualTypeOf<Scene>();
-expectTypeOf(SceneConfig.defaultOptions).toEqualTypeOf<DocumentSheetOptions<Scene.ConfiguredInstance>>();
-expectTypeOf(sceneConfig.options).toEqualTypeOf<DocumentSheetOptions<Scene.ConfiguredInstance>>();
+expectTypeOf(SceneConfig.defaultOptions).toEqualTypeOf<DocumentSheet.Options<Scene.ConfiguredInstance>>();
+expectTypeOf(sceneConfig.options).toEqualTypeOf<DocumentSheet.Options<Scene.ConfiguredInstance>>();
 expectTypeOf(sceneConfig.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(sceneConfig.render(true)).toEqualTypeOf<SceneConfig>();
 

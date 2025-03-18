@@ -7,6 +7,21 @@ import type { fields } from "../../../common/data/module.d.mts";
 declare global {
   namespace RollTable {
     /**
+     * The document's name.
+     */
+    type Name = "RollTable";
+
+    /**
+     * The arguments to construct the document.
+     */
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+    /**
+     * The documents embedded within RollTable.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the RollTable document instance configured through `CONFIG.RollTable.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRollTable | `fvtt-types/configuration/ConfiguredRollTable`} in fvtt-types.
      */
@@ -29,6 +44,53 @@ declare global {
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = TableResult.Stored;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = TableResult.ImplementationClass;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"RollTable">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `RollTable` that comes from the database.
@@ -173,44 +235,106 @@ declare global {
        */
       _stats: fields.DocumentStatsField;
     }
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for RollTables */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<RollTable.Parent> {}
+
       /** Options passed along in Create operations for RollTables */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<RollTable.CreateData, RollTable.Parent, Temporary> {}
+
       /** Options passed along in Delete operations for RollTables */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RollTable.Parent> {}
+
       /** Options passed along in Update operations for RollTables */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<RollTable.UpdateData, RollTable.Parent> {}
 
-      /** Options for {@link RollTable.createDocuments | `RollTable.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link RollTable._preCreateOperation | `RollTable._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link RollTable.createDocuments | `RollTable.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<RollTable.Database.Create<Temporary>> {}
+
+      /** Operation for {@link RollTable.updateDocuments | `RollTable.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<RollTable.Database.Update> {}
+
+      /** Operation for {@link RollTable.deleteDocuments | `RollTable.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<RollTable.Database.Delete> {}
+
+      /** Operation for {@link RollTable.create | `RollTable.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<RollTable.Database.Create<Temporary>> {}
+
+      /** Operation for {@link RollTable.update | `RollTable#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link RollTable.get | `RollTable.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link RollTable._preCreate | `RollTable#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link RollTable._onCreate | `RollTable#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link RollTable.updateDocuments | `RollTable.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link RollTable._preUpdateOperation | `RollTable._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link RollTable._preCreateOperation | `RollTable._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RollTable.Database.Create> {}
+
+      /** Operation for {@link RollTable._onCreateOperation | `RollTable#_onCreateOperation`} */
+      interface OnCreateOperation extends RollTable.Database.Create {}
+
       /** Options for {@link RollTable._preUpdate | `RollTable#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link RollTable._onUpdate | `RollTable#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link RollTable.deleteDocuments | `RollTable.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link RollTable._preDeleteOperation | `RollTable._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link RollTable._onUpdate | `RollTable#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link RollTable._preUpdateOperation | `RollTable._preUpdateOperation`} */
+      interface PreUpdateOperation extends RollTable.Database.Update {}
+
+      /** Operation for {@link RollTable._onUpdateOperation | `RollTable._preUpdateOperation`} */
+      interface OnUpdateOperation extends RollTable.Database.Update {}
+
       /** Options for {@link RollTable._preDelete | `RollTable#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link RollTable._onDelete | `RollTable#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link RollTable._preDeleteOperation | `RollTable#_preDeleteOperation`} */
+      interface PreDeleteOperation extends RollTable.Database.Delete {}
+
+      /** Options for {@link RollTable._onDeleteOperation | `RollTable#_onDeleteOperation`} */
+      interface OnDeleteOperation extends RollTable.Database.Delete {}
+
+      /** Context for {@link RollTable._onDeleteOperation | `RollTable._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<RollTable.Parent> {}
+
+      /** Context for {@link RollTable._onCreateDocuments | `RollTable._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<RollTable.Parent> {}
+
+      /** Context for {@link RollTable._onUpdateDocuments | `RollTable._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<RollTable.Parent> {}
+
+      /**
+       * Options for {@link RollTable._preCreateDescendantDocuments | `RollTable#_preCreateDescendantDocuments`}
+       * and {@link RollTable._onCreateDescendantDocuments | `RollTable#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<RollTable.Database.Create> {}
+
+      /**
+       * Options for {@link RollTable._preUpdateDescendantDocuments | `RollTable#_preUpdateDescendantDocuments`}
+       * and {@link RollTable._onUpdateDescendantDocuments | `RollTable#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<RollTable.Database.Update> {}
+
+      /**
+       * Options for {@link RollTable._preDeleteDescendantDocuments | `RollTable#_preDeleteDescendantDocuments`}
+       * and {@link RollTable._onDeleteDescendantDocuments | `RollTable#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<RollTable.Database.Delete> {}
     }
 
     /**
@@ -226,6 +350,14 @@ declare global {
        * An array of drawn TableResult documents
        */
       results: Document.ToConfiguredInstance<typeof foundry.documents.BaseTableResult>[];
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<"RollTable"> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<"Wall", Scope, Key>;
     }
 
     /**
@@ -311,7 +443,7 @@ declare global {
     }
 
     /**
-     * @deprecated {@link RollTable.DatabaseOperation | `RollTable.DatabaseOperation`}
+     * @deprecated {@link RollTable.Database | `RollTable.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<RollTable> {}
@@ -350,7 +482,7 @@ declare global {
      * You should use {@link RollTable.implementation | `new RollTable.implementation(...)`} instead which
      * will give you a system specific implementation of `RollTable`.
      */
-    constructor(...args: Document.ConstructorParameters<RollTable.CreateData, RollTable.Parent>);
+    constructor(...args: RollTable.ConstructorArgs);
 
     /**
      * Provide a thumbnail image path used to represent this document.
@@ -394,7 +526,7 @@ declare global {
      * @remarks Actually, returns list of TableEntries updated, not the RollTable.
      * As written, it force updates all records, not just the ones already drawn.
      */
-    resetResults(): Promise<TableResult.Implementation[]>;
+    resetResults(): Promise<TableResult.Stored[]>;
 
     /**
      * Evaluate a RollTable by rolling its formula and retrieving a drawn result.
@@ -429,7 +561,7 @@ declare global {
      * @param value - The rolled value
      * @returns An Array of results
      */
-    getResultsForRoll(value: number): TableResult.Implementation[];
+    getResultsForRoll(value: number): TableResult.Stored[];
 
     /**
      * Create embedded roll table markup.
@@ -493,21 +625,30 @@ declare global {
       options?: TextEditor.EnrichmentOptions,
     ): Promise<HTMLElement | null>;
 
-    protected override _onCreateDescendantDocuments(
-      parent: RollTable.Stored,
-      collection: TableResult.ParentCollectionName,
-      documents: TableResult.Stored[],
-      result: TableResult.CreateData[],
-      options: TableResult.Database.OnCreateOperation,
+    protected override _onCreateDescendantDocuments<
+      DescendantDocumentType extends RollTable.DescendantClasses,
+      Parent extends RollTable.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
       userId: string,
     ): void;
 
-    protected override _onDeleteDescendantDocuments(
-      parent: RollTable.Stored,
-      collection: TableResult.ParentCollectionName,
-      documents: TableResult.Stored[],
+    protected _onDeleteDescendantDocuments<
+      DescendantDocumentType extends RollTable.DescendantClasses,
+      Parent extends RollTable.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
       ids: string[],
-      options: TableResult.Database.OnDeleteOperation,
+      options: Document.Database.DeleteOptions<Operation>,
       userId: string,
     ): void;
 
@@ -521,16 +662,74 @@ declare global {
      * @param folder  - The Folder document from which to create a roll table
      * @param options - Additional options passed to the RollTable.create method
      */
-    static fromFolder(
+    static fromFolder<Temporary extends boolean | undefined = false>(
       folder: Folder,
-      options?: RollTable.DatabaseOperation.CreateOperation,
-    ): Promise<RollTable.Implementation | undefined>;
+      options?: RollTable.Database.CreateOperation<Temporary>,
+    ): Promise<Document.TemporaryIf<WallDocument.Implementation, Temporary> | undefined>;
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    protected override _preCreateDescendantDocuments<
+      DescendantDocumentType extends RollTable.DescendantClasses,
+      Parent extends RollTable.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments<
+      DescendantDocumentType extends RollTable.DescendantClasses,
+      Parent extends RollTable.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments<
+      DescendantDocumentType extends RollTable.DescendantClasses,
+      Parent extends RollTable.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _preDeleteDescendantDocuments<
+      DescendantDocumentType extends RollTable.DescendantClasses,
+      Parent extends RollTable.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
 
     static override defaultName(context?: Document.DefaultNameContext<string, RollTable.Parent>): string;
 

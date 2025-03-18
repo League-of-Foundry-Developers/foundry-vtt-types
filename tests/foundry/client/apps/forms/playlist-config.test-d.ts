@@ -6,8 +6,8 @@ const playlistConfig = new PlaylistConfig(playlist);
 
 expectTypeOf(playlistConfig.object).toEqualTypeOf<Playlist>();
 expectTypeOf(playlistConfig.document).toEqualTypeOf<Playlist>();
-expectTypeOf(PlaylistConfig.defaultOptions).toEqualTypeOf<DocumentSheetOptions<Playlist.ConfiguredInstance>>();
-expectTypeOf(playlistConfig.options).toEqualTypeOf<DocumentSheetOptions<Playlist.ConfiguredInstance>>();
+expectTypeOf(PlaylistConfig.defaultOptions).toEqualTypeOf<DocumentSheet.Options<Playlist.ConfiguredInstance>>();
+expectTypeOf(playlistConfig.options).toEqualTypeOf<DocumentSheet.Options<Playlist.ConfiguredInstance>>();
 expectTypeOf(playlistConfig.getData()).toEqualTypeOf<
   MaybePromise<GetDataReturnType<PlaylistConfig.PlaylistConfigData>>
 >();
