@@ -8,6 +8,10 @@
     {
       "tagName": "@immediate",
       "syntaxKind": "modifier"
+    },
+    {
+      "tagName": "@yields",
+      "syntaxKind": "modifier"
     }
   ]
 }

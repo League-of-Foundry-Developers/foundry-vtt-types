@@ -120,9 +120,8 @@ declare global {
 
     /**
      * Iterates over placeable objects that are eligible for control/select.
-     * @remarks yields A placeable object
+     * @yields A placeable object
      */
-    // TODO: Update remark with proper @yields tag https://github.com/microsoft/tsdoc/issues/234
     controllableObjects(): Generator<PlaceableObject.Any>;
 
     /**
