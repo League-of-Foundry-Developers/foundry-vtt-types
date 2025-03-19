@@ -72,7 +72,7 @@ declare global {
       copy: Token.Object,
       offset: Canvas.Point,
       options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
-    ): Document.ConfiguredSourceForName<"Token">;
+    ): Omit<TokenDocument.Source, "_id">;
 
     /** @remarks Returns `[]` if the ruler is currently measuring */
     protected override _getMovableObjects(ids?: string[] | null, includeLocked?: boolean | null): Token.Object[];

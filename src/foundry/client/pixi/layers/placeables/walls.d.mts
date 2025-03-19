@@ -1,5 +1,4 @@
 import type { Coalesce, HandleEmptyObject, Identity, NullishProps } from "fvtt-types/utils";
-import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -24,7 +23,7 @@ declare global {
      * @defaultValue `null`
      * @remarks Foundry marked `@private`, is set via {@link Wall#_onCreate} and {@link Wall#_onUpdate}
      */
-    protected _cloneType: Document.ConfiguredSourceForName<"Wall"> | null;
+    protected _cloneType: WallDocument.Source | null;
 
     /**
      * Reference the last interacted wall endpoint for the purposes of chaining
@@ -85,7 +84,7 @@ declare global {
       copy: Wall.Object,
       offset: Canvas.Point,
       options?: PlaceablesLayer.PasteOptions | null,
-    ): Document.ConfiguredSourceForName<"Wall">;
+    ): Omit<WallDocument.Source, "_id">;
 
     /**
      * Pan the canvas view when the cursor position gets close to the edge of the frame
@@ -113,7 +112,7 @@ declare global {
      * @param tool - The active canvas tool
      * @remarks If a tool is not provided, returns an object with `light`, `sight`, `sound`, and `move` keys, all with the value `CONST.WALL_SENSE_TYPES.NORMAL`
      */
-    protected _getWallDataFromActiveTool(tool?: WallsLayer.WallTools | null): Document.ConfiguredSourceForName<"Wall">;
+    protected _getWallDataFromActiveTool(tool?: WallsLayer.WallTools | null): WallDocument.Source;
 
     /**
      * Identify the interior enclosed by the given walls.
