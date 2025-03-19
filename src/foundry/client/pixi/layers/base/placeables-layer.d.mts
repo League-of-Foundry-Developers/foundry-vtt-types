@@ -49,14 +49,14 @@ declare global {
      * @defaultValue `[]`
      * @privateRemarks Accessed externally in `ClientKeybinds#_onPaste`, which is marked `@private`
      */
-    protected _copy: Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    protected _copy: Document.ObjectFor<DocumentName>[];
 
     /**
      * A Quadtree which partitions and organizes Walls into quadrants for efficient target identification.
      * @remarks Is `new CanvasQuadtree()` if `quadtree` is truthy in `this.constructor.layerOptions`, else `null`
      */
     //TODO: If dynamic static stuff can be worked out, this can be conditional on `options.quadtree`
-    quadtree: CanvasQuadtree<Document.ConfiguredObjectInstanceForName<DocumentName>> | null;
+    quadtree: CanvasQuadtree<Document.ObjectFor<DocumentName>> | null;
 
     /**
      * @remarks Override not in foundry docs but implicit from layerOptions
@@ -106,17 +106,17 @@ declare global {
      * If objects on this PlaceablesLayer have a HUD UI, provide a reference to its instance
      * @remarks Returns `null` unless overridden by subclass
      */
-    get hud(): BasePlaceableHUD<Document.ConfiguredObjectInstanceForName<DocumentName>> | null;
+    get hud(): BasePlaceableHUD<Document.ObjectFor<DocumentName>> | null;
 
     /**
      * A convenience method for accessing the placeable object instances contained in this layer
      */
-    get placeables(): Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    get placeables(): Document.ObjectFor<DocumentName>[];
 
     /**
      * An Array of placeable objects in this layer which have the _controlled attribute
      */
-    get controlled(): Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    get controlled(): Document.ObjectFor<DocumentName>[];
 
     /**
      * Iterates over placeable objects that are eligible for control/select.
@@ -128,12 +128,12 @@ declare global {
     /**
      * Track the set of PlaceableObjects on this layer which are currently controlled.
      */
-    get controlledObjects(): Map<string, Document.ConfiguredObjectInstanceForName<DocumentName>>;
+    get controlledObjects(): Map<string, Document.ObjectFor<DocumentName>>;
 
     /**
      * Track the PlaceableObject on this layer which is currently hovered upon.
      */
-    get hover(): Document.ConfiguredObjectInstanceForName<DocumentName> | null;
+    get hover(): Document.ObjectFor<DocumentName> | null;
 
     set hover(object);
 
@@ -178,9 +178,7 @@ declare global {
      * Draw a single placeable object
      * @param document - The Document instance used to create the placeable object
      */
-    createObject(
-      document: Document.ImplementationFor<DocumentName>,
-    ): Document.ConfiguredObjectInstanceForName<DocumentName>;
+    createObject(document: Document.ImplementationFor<DocumentName>): Document.ObjectFor<DocumentName>;
 
     protected override _tearDown(options: HandleEmptyObject<PlaceablesLayer.TearDownOptions>): Promise<void>;
 
@@ -199,7 +197,7 @@ declare global {
      * @param objectId - The ID of the contained object to retrieve
      * @returns The object instance, or undefined
      */
-    get(objectId: string): Document.ConfiguredObjectInstanceForName<DocumentName> | undefined;
+    get(objectId: string): Document.ObjectFor<DocumentName> | undefined;
 
     /**
      * Acquire control over all PlaceableObject instances which are visible and controllable within the layer.
@@ -210,7 +208,7 @@ declare global {
      */
     controlAll(
       options?: PlaceableObject.ControlOptions, // not:null (property set on it without checks)
-    ): Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    ): Document.ObjectFor<DocumentName>[];
 
     /**
      * Release all controlled PlaceableObject instance from this layer.
@@ -234,12 +232,8 @@ declare global {
      * @throws If both `options.angle` and `options.delta` are nullish
      * @remarks Overload is necessary to ensure that one of `angle` or `delta` are numeric in `options`, as neither has a parameter default
      */
-    rotateMany(
-      options: PlaceablesLayer.RotateManyOptionsWithAngle,
-    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]>;
-    rotateMany(
-      options: PlaceablesLayer.RotateManyOptionsWithDelta,
-    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]>;
+    rotateMany(options: PlaceablesLayer.RotateManyOptionsWithAngle): Promise<Document.ObjectFor<DocumentName>[]>;
+    rotateMany(options: PlaceablesLayer.RotateManyOptionsWithDelta): Promise<Document.ObjectFor<DocumentName>[]>;
 
     /**
      * Simultaneously move multiple PlaceableObjects via keyboard movement offsets.
@@ -252,7 +246,7 @@ declare global {
      */
     moveMany(
       options?: PlaceablesLayer.MoveManyOptions, // not:null (destructured)
-    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]> | undefined;
+    ): Promise<Document.ObjectFor<DocumentName>[]> | undefined;
 
     /**
      * An internal helper method to identify the array of PlaceableObjects which can be moved or rotated.
@@ -265,7 +259,7 @@ declare global {
     protected _getMovableObjects(
       ids?: string[] | null,
       includeLocked?: boolean | null,
-    ): Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    ): Document.ObjectFor<DocumentName>[];
 
     /**
      * Undo a change to the objects in this layer
@@ -298,7 +292,7 @@ declare global {
      * @returns The Array of copied PlaceableObject instances
      * @remarks If the current layer doesn't allow objects to be controlled, copies the hovered object.
      */
-    copyObjects(): Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    copyObjects(): Document.ObjectFor<DocumentName>[];
 
     /**
      * Paste currently copied PlaceableObjects back to the layer by creating new copies
@@ -320,10 +314,10 @@ declare global {
      * @returns The update data
      */
     protected _pasteObject(
-      copy: Document.ConfiguredObjectInstanceForName<DocumentName>,
+      copy: Document.ObjectFor<DocumentName>,
       offset: Canvas.Point,
       options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
-    ): Document.ConfiguredSourceForName<DocumentName>;
+    ): Omit<Document.ImplementationFor<DocumentName>["_source"], "_id">;
 
     /**
      * Select all PlaceableObject instances which fall within a coordinate rectangle.
@@ -351,11 +345,9 @@ declare global {
      */
     updateAll(
       transformation:
-        | ((
-            placeable: Document.ConfiguredObjectInstanceForName<DocumentName>,
-          ) => Document.UpdateDataForName<DocumentName>)
+        | ((placeable: Document.ObjectFor<DocumentName>) => Document.UpdateDataForName<DocumentName>)
         | Document.UpdateDataForName<DocumentName>,
-      condition?: ((placeable: Document.ConfiguredObjectInstanceForName<DocumentName>) => boolean) | null,
+      condition?: ((placeable: Document.ObjectFor<DocumentName>) => boolean) | null,
       options?: PlaceablesLayer.UpdateAllOptions<DocumentName>, // not:null (updateEmbeddedDocuments tries to set `parent` on it)
     ): Promise<Array<Document.ImplementationFor<DocumentName>>>;
 
@@ -378,7 +370,7 @@ declare global {
     protected _createPreview(
       createData: Document.CreateDataForName<DocumentName>,
       options?: PlaceablesLayer.CreatePreviewOptions, // not:null (destructured)
-    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>>;
+    ): Promise<Document.ObjectFor<DocumentName>>;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
@@ -396,9 +388,7 @@ declare global {
 
     /** @privateRemarks `void` added to return union for TokenLayer reasons */
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    protected override _onMouseWheel(
-      event: WheelEvent,
-    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[] | void>;
+    protected override _onMouseWheel(event: WheelEvent): Promise<Document.ObjectFor<DocumentName>[] | void>;
 
     protected override _onDeleteKey(event: KeyboardEvent): Promise<void>;
 

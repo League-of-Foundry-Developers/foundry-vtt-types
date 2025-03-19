@@ -1228,8 +1228,18 @@ declare namespace Document {
   type ImplementationFor<Name extends Type> = MakeConform<ConfiguredDocumentInstance[Name], Document.Any>;
   type ImplementationClassFor<Name extends Type> = ConfiguredDocumentClass[Name];
 
-  type ConfiguredObjectClassForName<Name extends PlaceableType> = CONFIG[Name]["objectClass"];
-  type ConfiguredObjectInstanceForName<Name extends PlaceableType> = FixedInstanceType<CONFIG[Name]["objectClass"]>;
+  type ObjectClassFor<Name extends PlaceableType> = CONFIG[Name]["objectClass"];
+  type ObjectFor<Name extends PlaceableType> = FixedInstanceType<CONFIG[Name]["objectClass"]>;
+
+  /**
+   * @deprecated {@link ObjectClassFor | `ObjectClassFor`}
+   */
+  type ConfiguredObjectClassForName<Name extends PlaceableType> = ObjectClassFor<Name>;
+
+  /**
+   * @deprecated {@link ObjectFor | `ObjectFor`}
+   */
+  type ConfiguredObjectInstanceForName<Name extends PlaceableType> = ObjectFor<Name>;
 
   type ConfiguredDataForName<Name extends Type> = GetKey<DataConfig, Name, EmptyObject>;
 

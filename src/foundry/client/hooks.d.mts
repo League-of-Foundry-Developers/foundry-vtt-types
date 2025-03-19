@@ -356,11 +356,7 @@ declare global {
        * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
        * @see {@link UserTargets._hook | `UserTargets#_hook`}
        */
-      targetToken: (
-        user: User.Implementation,
-        token: Document.ConfiguredObjectClassForName<"Token">,
-        targeted: boolean,
-      ) => void;
+      targetToken: (user: User.Implementation, token: Document.ObjectClassFor<"Token">, targeted: boolean) => void;
 
       /** Note */
 
