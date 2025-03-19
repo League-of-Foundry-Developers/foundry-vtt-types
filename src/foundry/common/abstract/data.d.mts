@@ -271,6 +271,7 @@ declare abstract class DataModel<
    * @param options - Additional shimming options
    * @returns Data with added backwards-compatible properties
    */
+  // options: not null (destructured)
   static shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 }
 

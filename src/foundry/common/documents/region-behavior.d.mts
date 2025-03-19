@@ -24,11 +24,39 @@ declare abstract class BaseRegionBehavior<
    */
   constructor(...args: Document.ConstructorParameters<BaseRegionBehavior.CreateData, BaseRegionBehavior.Parent>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "RegionBehavior",
+   *   collection: "behaviors",
+   *   label: "DOCUMENT.RegionBehavior",
+   *   labelPlural: "DOCUMENT.RegionBehaviors",
+   *   coreTypes: [
+   *     "adjustDarknessLevel",
+   *     "displayScrollingText",
+   *     "executeMacro",
+   *     "executeScript",
+   *     "pauseGame",
+   *     "suppressWeather",
+   *     "teleportToken",
+   *     "toggleBehavior"
+   *   ],
+   *   hasTypeData: true,
+   *   isEmbedded: true,
+   *   permissions: {
+   *     create: this.#canCreate,
+   *     update: this.#canUpdate
+   *   },
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseRegionBehavior.Metadata;
 
   static override defineSchema(): BaseRegionBehavior.Schema;
 
-  static override canUserCreate(user: User.Implementation): boolean;
+  static override canUserCreate(user: User.Internal.Implementation): boolean;
 
   /*
    * After this point these are not really overridden methods.

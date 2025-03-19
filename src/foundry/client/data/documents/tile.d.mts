@@ -123,6 +123,7 @@ declare global {
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
+    //TODO: ensure `width` and `height` are required for creation
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
@@ -161,24 +162,20 @@ declare global {
 
       /**
        * An image or video texture which this tile displays.
-       * @defaultValue `null`
        */
-      texture: TextureData<{ categories: ("IMAGE" | "VIDEO")[]; initial: null; wildcard: false }>;
+      texture: TextureData<{ initial: { anchorX: 0.5; anchorY: 0.5; alphaThreshold: 0.75 } }>;
 
       /**
        * The pixel width of the tile
        */
-      width: fields.NumberField<{
-        required: true;
-        min: 0;
-        nullable: false;
-        step: 0.1;
-      }>;
+      //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      width: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }, number>;
 
       /**
        * The pixel height of the tile
        */
-      height: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }>;
+      //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      height: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }, number>;
 
       /**
        * The x-coordinate position of the top-left corner of the tile
@@ -199,7 +196,7 @@ declare global {
       elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
       /**
-       * How to sort this tile within its elevation
+       * The z-index of this tile relative to other siblings
        * @defaultValue `0`
        */
       sort: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
@@ -228,17 +225,14 @@ declare global {
        */
       locked: fields.BooleanField;
 
-      /**
-       * Is the tile an overhead tile?
-       * @defaultValue `false`
-       */
-      overhead: fields.BooleanField;
+      /** @defaultValue see properties */
+      restrictions: fields.SchemaField<{
+        /** @defaultValue `false` */
+        light: fields.BooleanField;
 
-      /**
-       * Is the tile a roof?
-       * @defaultValue `false`
-       */
-      roof: fields.BooleanField;
+        /** @defaultValue `false` */
+        weather: fields.BooleanField;
+      }>;
 
       /**
        * The tile's occlusion settings
@@ -249,23 +243,23 @@ declare global {
          * The occlusion mode from CONST.TILE_OCCLUSION_MODES
          * @defaultValue `1`
          */
-        mode: fields.NumberField<{
-          choices: CONST.OCCLUSION_MODES[];
-          initial: typeof CONST.OCCLUSION_MODES.FADE;
-          validationError: "must be a value in CONST.TILE_OCCLUSION_MODES";
-        }>;
+        mode: fields.NumberField<
+          {
+            choices: CONST.OCCLUSION_MODES[];
+            initial: typeof CONST.OCCLUSION_MODES.NONE;
+            validationError: "must be a value in CONST.TILE_OCCLUSION_MODES";
+          },
+          //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+          CONST.OCCLUSION_MODES | null | undefined,
+          CONST.OCCLUSION_MODES | null,
+          CONST.OCCLUSION_MODES | null
+        >;
 
         /**
          * The occlusion alpha between 0 and 1
          * @defaultValue `0`
          */
         alpha: fields.AlphaField<{ initial: 0 }>;
-
-        /**
-         * An optional radius of occlusion used for RADIAL mode
-         * @defaultValue `null`
-         */
-        radius: fields.NumberField<{ positive: true }>;
       }>;
 
       /**
@@ -408,6 +402,13 @@ declare global {
 
     interface CoreFlags {
       core?: {
+        /**
+         * @deprecated since v12, until 14
+         * @remarks "Tiling Sprites are deprecated without replacement."
+         */
+        isTilingSprite?: boolean;
+
+        /** @remarks If true, and texture.src is a video, it will jump to a random timestamp every time the tile is drawn */
         randomizeVideo?: boolean;
       };
     }

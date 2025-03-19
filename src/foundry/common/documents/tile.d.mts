@@ -1,4 +1,4 @@
-import type { AnyObject, AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -23,24 +23,60 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    * You should use {@link TileDocument.implementation | `new TileDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `TileDocument`.
    */
-  constructor(...args: WallDocument.ConstructorArgs);
+  constructor(...args: TileDocument.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Tile",
+   *   collection: "tiles",
+   *   label: "DOCUMENT.Tile",
+   *   labelPlural: "DOCUMENT.Tiles",
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseTile.Metadata;
 
   static override defineSchema(): BaseTile.Schema;
 
+  /**
+   * @remarks Migrates:
+   * - `z` to `sort`
+   * - `roof` to `restrictions.light` and `restrictions.weather`
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
+  /**
+   * @remarks Shims:
+   * - `z` to `sort` since v12, until v14
+   */
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "You are accessing `roof` which has been migrated to `restrictions.{light|weather}`"
+   *
+   * Getter returns `this.restrictions.light && this.restrictions.weather`, setter sets both
+   */
+  set roof(value: boolean);
+
+  get roof();
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "You are accessing `z` which has been migrated to `sort`"
+   */
+  get z(): this["sort"];
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "`BaseTile#overhead` is deprecated."
+   *
+   * Returns `this.elevation >= this.parent?.foregroundElevation`
+   */
+  get overhead(): boolean;
 
   /*
    * After this point these are not really overridden methods.

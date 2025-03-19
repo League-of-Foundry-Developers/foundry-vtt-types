@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
@@ -24,43 +24,52 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    */
   constructor(...args: Document.ConstructorParameters<BaseMeasuredTemplate.CreateData, BaseMeasuredTemplate.Parent>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "MeasuredTemplate",
+   *   collection: "templates",
+   *   label: "DOCUMENT.MeasuredTemplate",
+   *   labelPlural: "DOCUMENT.MeasuredTemplates",
+   *   isEmbedded: true,
+   *   permissions: {
+   *     create: this.#canCreate,
+   *     update: this.#canUpdate
+   *   },
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseMeasuredTemplate.Metadata;
 
   static override defineSchema(): BaseMeasuredTemplate.Schema;
 
-  /**
-   * Is a user able to create a new MeasuredTemplate?
-   * @param user - The user attempting the creation operation.
-   * @param doc  - The MeasuredTemplate being created.
-   * @internal
-   */
-  static #canCreate(user: User.Implementation, doc: BaseMeasuredTemplate): boolean;
-
-  /**
-   * Is a user able to modify an existing MeasuredTemplate?
-   * @param user - The user attempting the modification.
-   * @param doc  - The MeasuredTemplate being modified.
-   * @param data - Data being changed.
-   * @internal
-   */
-  static #canModify(
-    user: User.Implementation,
-    doc: BaseMeasuredTemplate,
-    data?: BaseMeasuredTemplate.UpdateData,
-  ): boolean;
-
+  // options: not null (destructured)
   override testUserPermission(
-    user: User.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    user: User.Internal.Implementation,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  /**
+   * @remarks Migrates:
+   * - `user` to `author`
+   */
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /**
+   * @remarks Shims:
+   * - `user` to `author` since v12, until v14
+   */
+  // options: not null (destructured)
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+
+  /**
+   * @deprecated since v12, until 14
+   * @remarks "You are accessing `user` which has been migrated to `author`"
+   */
+  get user(): this["author"];
   /*
    * After this point these are not really overridden methods.
    * They are here because they're static properties but depend on the instance and so can't be

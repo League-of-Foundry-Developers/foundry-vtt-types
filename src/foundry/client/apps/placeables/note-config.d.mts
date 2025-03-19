@@ -47,19 +47,29 @@ declare global {
   namespace NoteConfig {
     interface Any extends NoteConfig<any> {}
 
-    interface FormData {
-      entryId: NoteDocument["entryId"];
-      fontFamily: NoteDocument["fontFamily"];
-      fontSize: NoteDocument["fontSize"];
+    /** @internal */
+    type _FormData = Pick<
+      NoteDocument,
+      | "elevation"
+      | "entryId"
+      | "fontFamily"
+      | "fontSize"
+      | "global"
+      | "iconSize"
+      | "pageId"
+      | "sort"
+      | "text"
+      | "textAnchor"
+      | "textColor"
+      | "x"
+      | "y"
+    >;
+
+    interface FormData extends _FormData {
       "icon.selected": NoteDocument["texture"]["src"];
-      "icon.custom": NoteDocument["texture"]["src"];
-      iconSize: NoteDocument["iconSize"];
-      iconTint: NoteDocument["texture"]["tint"];
-      text: NoteDocument["text"];
-      textAnchor: NoteDocument["textAnchor"];
-      textColor: NoteDocument["textColor"];
-      x: NoteDocument["x"];
-      y: NoteDocument["y"];
+
+      /** @remarks Only appears in the form data if `icon.selected` is set to "Custom" (`""` value) */
+      "icon.custom"?: NoteDocument["texture"]["src"];
     }
   }
 }

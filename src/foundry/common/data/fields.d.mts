@@ -815,7 +815,7 @@ declare class SchemaField<
 }
 
 // FIXME(LukeAbby): This is a quick patch that avoids issues with the fact that the `initial` in `SchemaField` is not actually assignable to its assignment type etc.
-// This will be superceded once proper field treatment is applied.
+// This will be superseded once proper field treatment is applied.
 declare const __SchemaFieldInitialSymbol: unique symbol;
 
 type __SchemaFieldInitial = typeof __SchemaFieldInitialSymbol;

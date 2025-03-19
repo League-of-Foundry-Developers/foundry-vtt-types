@@ -57,27 +57,32 @@ declare global {
       configureDefault: boolean;
     }
 
-    interface FormData {
-      author: string;
-      bezierFactor: DrawingDocument["bezierFactor"];
-      fillAlpha: DrawingDocument["fillAlpha"];
-      fillColor: DrawingDocument["fillColor"];
-      fillType: DrawingDocument["fillType"];
-      fontFamily: DrawingDocument["fontFamily"];
-      fontSize: DrawingDocument["fontSize"];
+    /** @internal */
+    type _FormData = Pick<
+      DrawingDocument,
+      | "author"
+      | "bezierFactor"
+      | "elevation"
+      | "fillAlpha"
+      | "fillColor"
+      | "fillType"
+      | "fontFamily"
+      | "fontSize"
+      | "rotation"
+      | "sort"
+      | "strokeAlpha"
+      | "strokeColor"
+      | "strokeWidth"
+      | "text"
+      | "textAlpha"
+      | "textColor"
+      | "texture"
+      | "x"
+      | "y"
+    >;
+    interface FormData extends _FormData {
       "shape.height": DrawingDocument["shape"]["height"];
-      rotation: DrawingDocument["rotation"];
-      strokeAlpha: DrawingDocument["strokeAlpha"];
-      strokeColor: DrawingDocument["strokeColor"];
-      strokeWidth: DrawingDocument["strokeWidth"];
-      text: DrawingDocument["text"];
-      textAlpha: DrawingDocument["textAlpha"];
-      textColor: DrawingDocument["textColor"];
-      texture: DrawingDocument["texture"];
       "shape.width": DrawingDocument["shape"]["width"];
-      x: DrawingDocument["x"];
-      y: DrawingDocument["y"];
-      z: DrawingDocument["z"];
     }
   }
 }

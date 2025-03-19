@@ -151,18 +151,15 @@ declare global {
 
     /**
      * Schema definition shared by {@link foundry.data.PrototypeToken | `PrototypeToken`}.
-     * Foundry technically implements this through deletion, but it's easier for us to do by extension.
+     * Foundry technically implements this through deletion, but it's easier for us to do by extension as there are field
+     * option overrides (e.g `textSearch` on `name`) that cause type issues otherwise.
      */
     interface SharedProtoSchema extends DataSchema {
-      /**
-       * The name used to describe the Token
-       * @defaultValue `""`
-       */
-      name: fields.StringField<{ required: true; blank: true }>;
+      // `name` omitted here because, while it is not in the list of omitted fields for `PrototypeToken`, it's `textSearch: true` in the base schema, but overridden to `false` in `PrototypeToken`
 
       /**
        * The display mode of the Token nameplate, from CONST.TOKEN_DISPLAY_MODES
-       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
+       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE` (`0`)
        */
       displayName: fields.NumberField<
         {
@@ -171,6 +168,7 @@ declare global {
           choices: CONST.TOKEN_DISPLAY_MODES[];
           validationError: "must be a value in CONST.TOKEN_DISPLAY_MODES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.TOKEN_DISPLAY_MODES | null | undefined,
         CONST.TOKEN_DISPLAY_MODES,
         CONST.TOKEN_DISPLAY_MODES
@@ -190,27 +188,41 @@ declare global {
        * The width of the Token in grid units
        * @defaultValue `1`
        */
-      width: fields.NumberField<{ positive: true; initial: 1; label: "Width" }>;
+      width: fields.NumberField<{ nullable: false; positive: true; initial: 1; step: 0.5; label: "Width" }>;
 
       /**
        * The height of the Token in grid units
        * @defaultValue `1`
        */
-      height: fields.NumberField<{ positive: true; initial: 1; label: "Height" }>;
+      height: fields.NumberField<{ nullable: false; positive: true; initial: 1; step: 0.5; label: "Height" }>;
 
       /**
        * The token's texture on the canvas.
-       * @defaultValue `BaseToken.DEFAULT_ICON`
        */
-      texture: TextureData<{ initial: () => typeof BaseToken.DEFAULT_ICON; wildcard: true }>;
+      texture: TextureData<{
+        initial: {
+          src: () => typeof BaseToken.DEFAULT_ICON;
+          anchorX: 0.5;
+          anchorY: 0.5;
+          fit: "contain";
+          alphaThreshold: 0.75;
+        };
+        wildcard: true;
+      }>;
 
       /**
-       * @defaultValue `CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1`
+       * @defaultValue `CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1` (`0`)
        */
-      hexagonalShape: fields.NumberField<{
-        initial: typeof CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1;
-        choices: CONST.TOKEN_HEXAGONAL_SHAPES[];
-      }>;
+      hexagonalShape: fields.NumberField<
+        {
+          initial: typeof CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1;
+          choices: CONST.TOKEN_HEXAGONAL_SHAPES[];
+        },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        CONST.TOKEN_HEXAGONAL_SHAPES | null | undefined,
+        CONST.TOKEN_HEXAGONAL_SHAPES,
+        CONST.TOKEN_HEXAGONAL_SHAPES
+      >;
 
       /**
        * Prevent the Token image from visually rotating?
@@ -232,7 +244,7 @@ declare global {
 
       /**
        * A displayed Token disposition from CONST.TOKEN_DISPOSITIONS
-       * @defaultValue `CONST.TOKEN_DISPOSITIONS.HOSTILE`
+       * @defaultValue `CONST.TOKEN_DISPOSITIONS.HOSTILE` (`-1`)
        */
       disposition: fields.NumberField<
         {
@@ -241,6 +253,7 @@ declare global {
           initial: typeof CONST.TOKEN_DISPOSITIONS.HOSTILE;
           validationError: "must be a value in CONST.TOKEN_DISPOSITIONS";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.TOKEN_DISPOSITIONS | null | undefined,
         CONST.TOKEN_DISPOSITIONS,
         CONST.TOKEN_DISPOSITIONS
@@ -248,7 +261,7 @@ declare global {
 
       /**
        * The display mode of Token resource bars, from CONST.TOKEN_DISPLAY_MODES
-       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
+       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE` (`0`)
        */
       displayBars: fields.NumberField<
         {
@@ -257,6 +270,7 @@ declare global {
           initial: typeof CONST.TOKEN_DISPLAY_MODES.NONE;
           validationError: "must be a value in CONST.TOKEN_DISPLAY_MODES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.TOKEN_DISPLAY_MODES | null | undefined,
         CONST.TOKEN_DISPLAY_MODES,
         CONST.TOKEN_DISPLAY_MODES
@@ -264,32 +278,36 @@ declare global {
 
       /**
        * The configuration of the Token's primary resource bar
-       * @defaultValue
-       * ```typescript
-       * { attribute: null }
-       * ```
+       * @defaultValue see property
        */
       bar1: fields.SchemaField<{
         /**
          * The attribute path within the Token's Actor data which should be displayed
          * @defaultValue `game?.system.primaryTokenAttribute || null`
          */
-        attribute: fields.StringField<{ required: true; nullable: true; blank: false; initial: () => string | null }>;
+        attribute: fields.StringField<{
+          required: true;
+          nullable: true;
+          blank: false;
+          initial: () => string | null;
+        }>;
       }>;
 
       /**
        * The configuration of the Token's secondary resource bar
-       * @defaultValue
-       * ```typescript
-       * { attribute: null }
-       * ```
+       * @defaultValue see property
        */
       bar2: fields.SchemaField<{
         /**
          * The attribute path within the Token's Actor data which should be displayed
-         * @defaultValue `game?.system.secondaryTokenAttribute`
+         * @defaultValue `game?.system.secondaryTokenAttribute || null`
          */
-        attribute: fields.StringField<{ required: true; nullable: true; blank: false; initial: () => string | null }>;
+        attribute: fields.StringField<{
+          required: true;
+          nullable: true;
+          blank: false;
+          initial: () => string | null;
+        }>;
       }>;
 
       /**
@@ -301,25 +319,27 @@ declare global {
       /**
        * Configuration of sight and vision properties for the Token
        * @defaultValue see properties
+       * @privateRemarks Foundry has this split out into its own `@typedef TokenSightData`, but it's never
+       * referenced outside `@typedef TokenData`, so no need for a separate interface
        */
       sight: fields.SchemaField<{
         /**
          * Should vision computation and rendering be active for this Token?
-         * @defaultValue true, when the token's sight range is greater than 0
+         * @defaultValue `true`, when the token's sight range is greater than 0
          */
-        enabled: fields.BooleanField<{ initial: () => boolean }>;
+        enabled: fields.BooleanField<{ initial: (data: unknown) => boolean }>;
 
         /**
          * How far in distance units the Token can see without the aid of a light source
-         * @defaultValue `null`
+         * @defaultValue `0`
          */
-        range: fields.NumberField<{ required: true; nullable: false; min: 0; step: 0.01; initial: 0 }>;
+        range: fields.NumberField<{ required: true; nullable: true; min: 0; step: 0.01; initial: 0 }>;
 
         /**
          * An angle at which the Token can see relative to their direction of facing
          * @defaultValue `360`
          */
-        angle: fields.AngleField<{ initial: 360; base: 360 }>;
+        angle: fields.AngleField<{ initial: 360; normalize: false }>;
 
         /**
          * The vision mode which is used to render the appearance of the visible area
@@ -395,6 +415,7 @@ declare global {
       /**
        * An array of detection modes which are available to this Token
        * @defaultValue `[]`
+       * @remarks The validation function is a `BaseToken.#validateDetectionModes` reference, which throws if there's a duplicate mode ID
        */
       detectionModes: fields.ArrayField<
         fields.SchemaField<{
@@ -412,9 +433,9 @@ declare global {
 
           /**
            * The maximum range in distance units at which this mode can detect targets
-           * @defaultValue `0`
+           * @defaultValue `null`
            */
-          range: fields.NumberField<{ required: true; nullable: false; min: 0; step: 0.01; initial: 0 }>;
+          range: fields.NumberField<{ required: true; min: 0; step: 0.01 }>;
         }>,
         {
           validate: () => void;
@@ -458,7 +479,7 @@ declare global {
         /**
          * @defaultValue `1`
          */
-        effects: fields.NumberField<{ initial: 1; min: 0; max: 8388607; integer: true }>;
+        effects: fields.NumberField<{ initial: 1; min: 0; max: 0x7fffff; integer: true }>;
 
         /**
          * @defaultValue see properties
@@ -477,7 +498,7 @@ declare global {
       }>;
 
       /**
-       * @internal
+       * @remarks Foundry marked `@internal`
        */
       _regions: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseRegion, { idOnly: true }>>;
 
@@ -504,6 +525,12 @@ declare global {
        * @defaultValue `null`
        */
       _id: fields.DocumentIdField;
+
+      /**
+       * The name used to describe the Token
+       * @defaultValue `""`
+       */
+      name: fields.StringField<{ required: true; blank: true; textSearch: true }>;
 
       /**
        * The _id of an Actor document which this Token represents
@@ -536,16 +563,17 @@ declare global {
       elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
       /**
-       * An array of effect icon paths which are displayed on the Token
-       * @defaultValue `[]`
+       * Is the Token currently locked? A locked token cannot be moved or rotated via
+       * standard keyboard or mouse interaction.
+       * @defaultValue `false`
        */
-      effects: fields.ArrayField<fields.StringField>;
+      locked: fields.BooleanField;
 
       /**
-       * A single icon path which is displayed as an overlay on the Token
-       * @defaultValue `""`
+       * The z-index of this token relative to other siblings
+       * @defaultValue `0`
        */
-      overlayEffect: fields.StringField;
+      sort: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
       /**
        * Is the Token currently hidden from player view?
@@ -669,7 +697,10 @@ declare global {
 
     interface CoreFlags {
       core?: {
+        /** @remarks If provided, will be used for any light animations emanating from this token */
         animationSeed?: number;
+
+        /** @remarks If true, and texture.src is a video, it will jump to a random timestamp every time the token is drawn */
         randomizeVideo?: boolean;
       };
     }

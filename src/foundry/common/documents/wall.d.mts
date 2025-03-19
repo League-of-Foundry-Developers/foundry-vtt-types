@@ -1,4 +1,4 @@
-import type { AnyMutableObject, AnyObject } from "../../../utils/index.d.mts";
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -25,11 +25,24 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
    */
   constructor(...args: WallDocument.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Wall",
+   *   collection: "walls",
+   *   label: "DOCUMENT.Wall",
+   *   labelPlural: "DOCUMENT.Walls",
+   *   permissions: {
+   *     update: this.#canUpdate
+   *   },
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseWall.Metadata;
 
   static override defineSchema(): BaseWall.Schema;
-
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.

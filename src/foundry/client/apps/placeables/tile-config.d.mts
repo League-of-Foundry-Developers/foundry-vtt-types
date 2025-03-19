@@ -37,12 +37,22 @@ declare global {
   namespace TileConfig {
     interface Any extends TileConfig<any> {}
 
-    type FormData = Pick<TileDocument, "alpha" | "height" | "rotation" | "width" | "x" | "y" | "overhead" | "roof"> & {
-      "texture.src": string | null;
-      "texture.scaleX": number | null;
-      "texture.scaleY": number | null;
-      "texture.tint": string;
-    };
+    /** @internal */
+    type _FormData = Pick<TileDocument, "alpha" | "elevation" | "height" | "rotation" | "sort" | "width" | "x" | "y">;
+
+    interface FormData extends _FormData {
+      "occlusion.alpha": TileDocument["occlusion"]["alpha"];
+      "occlusion.mode": TileDocument["occlusion"]["mode"];
+      "restrictions.light": TileDocument["restrictions"]["light"];
+      "restrictions.weather": TileDocument["restrictions"]["weather"];
+      "texture.src": TileDocument["texture"]["src"];
+      "texture.scaleX": TileDocument["texture"]["scaleX"];
+      "texture.scaleY": TileDocument["texture"]["scaleY"];
+      "texture.tint": TileDocument["texture"]["tint"];
+      "video.autoplay": TileDocument["video"]["autoplay"];
+      "video.loop": TileDocument["video"]["loop"];
+      "video.volume": TileDocument["video"]["volume"];
+    }
 
     interface Options extends DocumentSheet.Options<TileDocument.Implementation> {
       /**

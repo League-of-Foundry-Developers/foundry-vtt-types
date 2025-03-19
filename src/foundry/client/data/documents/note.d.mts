@@ -123,12 +123,29 @@ declare global {
       y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
 
       /**
+       * The elevation of the note
+       * @defaultValue `0`
+       */
+      elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+      /**
+       * The z-index of this note relative to other siblings
+       * @defaultValue `0`
+       */
+      sort: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
+
+      /**
        * An image icon used to represent this note
        * @defaultValue `BaseNote.DEFAULT_ICON`
        */
       texture: TextureData<{
         categories: ["IMAGE"];
-        initial: () => typeof BaseNote.DEFAULT_ICON;
+        initial: {
+          src: () => typeof BaseNote.DEFAULT_ICON;
+          anchorX: 0.5;
+          anchorY: 0.5;
+          fit: "contain";
+        };
         label: "NOTE.EntryIcon";
       }>;
 
@@ -138,6 +155,7 @@ declare global {
        */
       iconSize: fields.NumberField<{
         required: true;
+        nullable: false;
         integer: true;
         min: 32;
         initial: 40;
@@ -175,19 +193,24 @@ declare global {
        * A value in CONST.TEXT_ANCHOR_POINTS which defines where the text label anchors to the note icon.
        * @defaultValue `CONST.TEXT_ANCHOR_POINTS.BOTTOM`
        */
-      textAnchor: fields.NumberField<{
-        required: true;
-        choices: foundry.CONST.TEXT_ANCHOR_POINTS[];
-        initial: typeof CONST.TEXT_ANCHOR_POINTS.BOTTOM;
-        label: "NOTE.AnchorPoint";
-        validationError: "must be a value in CONST.TEXT_ANCHOR_POINTS";
-      }>;
+      textAnchor: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.TEXT_ANCHOR_POINTS[];
+          initial: typeof CONST.TEXT_ANCHOR_POINTS.BOTTOM;
+          label: "NOTE.AnchorPoint";
+          validationError: "must be a value in CONST.TEXT_ANCHOR_POINTS";
+        },
+        CONST.TEXT_ANCHOR_POINTS | null | undefined,
+        CONST.TEXT_ANCHOR_POINTS | null,
+        CONST.TEXT_ANCHOR_POINTS | null
+      >;
 
       /**
        * The string that defines the color with which the note text is rendered
        * @defaultValue `#FFFFFF`
        */
-      textColor: fields.ColorField<{ initial: "#FFFFFF"; label: "NOTE.TextColor" }>;
+      textColor: fields.ColorField<{ required: true; nullable: false; initial: "#FFFFFF"; label: "NOTE.TextColor" }>;
 
       /**
        * Whether this map pin is globally visible or requires LoS to see.
@@ -201,6 +224,7 @@ declare global {
        */
       flags: fields.ObjectField.FlagsField<"Note">;
     }
+
     namespace DatabaseOperation {
       /** Options passed along in Get operations for NoteDocuments */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<NoteDocument.Parent> {}

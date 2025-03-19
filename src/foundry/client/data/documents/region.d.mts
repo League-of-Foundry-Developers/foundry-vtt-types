@@ -81,10 +81,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link Region | `Region`}. This is the source of truth for how an Region document
+     * The schema for {@link RegionDocument | `RegionDocument`}. This is the source of truth for how an Region document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link Region | `Region`}. For example
+     * Foundry uses this schema to validate the structure of the {@link RegionDocument | `RegionDocument`}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -97,21 +97,31 @@ declare global {
        */
       _id: fields.DocumentIdField;
 
-      // TODO(Eon): Should label here be string or "Name"?
       /**
        * The name used to describe the Region
        */
-      name: fields.StringField<{ required: true; blank: false; label: string; textSearch: true }>;
+      //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      name: fields.StringField<{ required: true; blank: false; label: "Name"; textSearch: true }, string>;
 
       /**
        * The color used to highlight the Region
+       * @defaultValue `Color.fromHSV([Math.random(), 0.8, 0.8]).css`
        */
-      color: fields.ColorField<{ required: true; nullable: false; initial: () => string; label: string; hint: string }>;
+      color: fields.ColorField<{
+        required: true;
+        nullable: false;
+        initial: () => string;
+        label: "REGION.FIELDS.color.label";
+        hint: "REGION.FIELDS.color.hint";
+      }>;
 
       /**
        * The shapes that make up the Region
        */
-      shapes: fields.ArrayField<fields.TypedSchemaField<BaseShapeData.Types>>;
+      shapes: fields.ArrayField<
+        fields.TypedSchemaField<BaseShapeData.Types>,
+        { label: "REGION.FIELDS.shapes.label"; hint: "REGION.FIELDS.shapes.hint" }
+      >;
 
       /**
        * A RegionElevation object which defines the elevation levels where the Region takes effect
@@ -124,15 +134,29 @@ declare global {
            * @remarks if bottom is `null`, it is treated as `-Infinity`
            * @defaultValue `null`
            */
-          bottom: fields.NumberField<{ required: true; label: string; hint: string }>;
+          bottom: fields.NumberField<{
+            required: true;
+            label: "REGION.FIELDS.elevation.FIELDS.bottom.label";
+            hint: "REGION.FIELDS.elevation.FIELDS.bottom.hint";
+          }>;
+
           /**
            * The top elevation level where the Region's effect ends
            * @remarks if top is `null`, it is treated as `Infinity`
            * @defaultValue `null`
            */
-          top: fields.NumberField<{ required: true; label: string; hint: string }>;
+          top: fields.NumberField<{
+            required: true;
+            label: "REGION.FIELDS.elevation.FIELDS.top.label";
+            hint: "REGION.FIELDS.elevation.FIELDS.top.hint";
+          }>;
         },
-        { label: string; hint: string; validate: (d: any) => boolean; validationError: string }
+        {
+          label: "REGION.FIELDS.elevation.label";
+          hint: "REGION.FIELDS.elevation.hint";
+          validate: (d: unknown) => boolean;
+          validationError: "elevation.top may not be less than elevation.bottom";
+        }
       >;
 
       /**
@@ -141,17 +165,24 @@ declare global {
       behaviors: fields.EmbeddedCollectionField<
         typeof foundry.documents.BaseRegionBehavior,
         RegionDocument.Implementation,
-        { label: string; hint: string }
+        { label: "REGION.FIELDS.behaviors.label"; hint: "REGION.FIELDS.behaviors.hint" }
       >;
 
-      visibility: fields.NumberField<{
-        required: true;
-        initial: typeof CONST.REGION_VISIBILITY.LAYER;
-        choices: CONST.REGION_VISIBILITY[];
-        label: string;
-        hint: string;
-      }>;
+      /** @defaultValue `CONST.REGION_VISIBILITY.LAYER` (`0`) */
+      visibility: fields.NumberField<
+        {
+          required: true;
+          initial: typeof CONST.REGION_VISIBILITY.LAYER;
+          choices: CONST.REGION_VISIBILITY[];
+          label: "REGION.FIELDS.visibility.label";
+          hint: "REGION.FIELDS.visibility.hint";
+        },
+        CONST.REGION_VISIBILITY | null | undefined,
+        CONST.REGION_VISIBILITY | null,
+        CONST.REGION_VISIBILITY | null
+      >;
 
+      /** @defaultValue `false` */
       locked: fields.BooleanField;
 
       /**

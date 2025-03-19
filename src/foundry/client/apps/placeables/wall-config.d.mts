@@ -1,4 +1,4 @@
-import type { MaybePromise } from "fvtt-types/utils";
+import type { AnyObject, InterfaceToObject, MaybePromise } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -43,7 +43,7 @@ declare global {
 
     protected _onChangeInput(event: JQuery.ChangeEvent<any, any, any, any>): Promise<void | object>;
 
-    protected _getSubmitData(updateData?: object | null): WallConfig.FormData;
+    protected _getSubmitData(updateData?: AnyObject | null): InterfaceToObject<WallConfig.FormData>;
 
     protected override _updateObject(event: Event, formData: WallConfig.FormData): Promise<unknown>;
   }
@@ -51,14 +51,14 @@ declare global {
   namespace WallConfig {
     interface Any extends WallConfig<any> {}
 
-    type FormData = Pick<
-      WallDocument["_source"],
-      "move" | "light" | "sight" | "sound" | "dir" | "door" | "ds" | "doorSound"
-    > & {
-      "threshold.light": WallDocument["_source"]["threshold"]["light"];
-      "threshold.sight": WallDocument["_source"]["threshold"]["sight"];
-      "threshold.sound": WallDocument["_source"]["threshold"]["sound"];
-      "threshold.attenuation": WallDocument["_source"]["threshold"]["attenuation"];
-    };
+    /** @internal */
+    type _FormData = Pick<WallDocument, "dir" | "door" | "doorSound" | "ds" | "light" | "move" | "sight" | "sound">;
+
+    interface FormData extends _FormData {
+      "threshold.light": WallDocument["threshold"]["light"];
+      "threshold.sight": WallDocument["threshold"]["sight"];
+      "threshold.sound": WallDocument["threshold"]["sound"];
+      "threshold.attenuation": WallDocument["threshold"]["attenuation"];
+    }
   }
 }

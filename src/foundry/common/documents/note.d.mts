@@ -1,4 +1,3 @@
-import type { AnyObject, AnyMutableObject, InexactPartial } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
@@ -24,6 +23,21 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    */
   constructor(...args: Document.ConstructorParameters<BaseNote.CreateData, BaseNote.Parent>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Note",
+   *   collection: "notes",
+   *   label: "DOCUMENT.Note",
+   *   labelPlural: "DOCUMENT.Notes",
+   *   permissions: {
+   *     create: "NOTE_CREATE"
+   *   },
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseNote.Metadata;
 
   static override defineSchema(): BaseNote.Schema;
@@ -35,29 +49,10 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   static DEFAULT_ICON: string;
 
   override testUserPermission(
-    user: User.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    user: User.Internal.Implementation,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
-
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
 
   /*
    * After this point these are not really overridden methods.

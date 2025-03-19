@@ -101,7 +101,10 @@ declare global {
        * The _id of the user who created the drawing
        * @defaultValue `game.user?.id`
        */
-      author: fields.ForeignDocumentField<typeof documents.BaseUser, { nullable: false; initial: () => string }>;
+      author: fields.ForeignDocumentField<
+        typeof documents.BaseUser,
+        { nullable: false; initial: () => string | undefined }
+      >;
 
       /**
        * The geometric shape of the drawing
@@ -122,10 +125,16 @@ declare global {
       y: fields.NumberField<{ required: true; nullable: false; initial: 0; label: "YCoord" }>;
 
       /**
+       * The elevation of the drawing
+       * @defaultValue `0`
+       */
+      elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+      /**
        * The z-index of this drawing relative to other siblings
        * @defaultValue `0`
        */
-      z: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "DRAWING.ZIndex" }>;
+      sort: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
       /**
        * The angle of rotation for the drawing figure
@@ -148,19 +157,26 @@ declare global {
        * The fill type of the drawing shape, a value from CONST.DRAWING_FILL_TYPES
        * @defaultValue `CONST.DRAWING_FILL_TYPES.NONE`
        */
-      fillType: fields.NumberField<{
-        required: true;
-        initial: typeof CONST.DRAWING_FILL_TYPES.NONE;
-        choices: CONST.DRAWING_FILL_TYPES[];
-        label: "DRAWING.FillTypes";
-        validationError: "must be a value in CONST.DRAWING_FILL_TYPES";
-      }>;
+      fillType: fields.NumberField<
+        {
+          required: true;
+          nullable: false;
+          initial: typeof CONST.DRAWING_FILL_TYPES.NONE;
+          choices: CONST.DRAWING_FILL_TYPES[];
+          label: "DRAWING.FillTypes";
+          validationError: "must be a value in CONST.DRAWING_FILL_TYPES";
+        },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        CONST.DRAWING_FILL_TYPES | null | undefined,
+        CONST.DRAWING_FILL_TYPES,
+        CONST.DRAWING_FILL_TYPES
+      >;
 
       /**
        * An optional color string with which to fill the drawing geometry
-       * @defaultValue `game.user?.color`
+       * @defaultValue `game.user?.color.css || "#ffffff"`
        */
-      fillColor: fields.ColorField<{ initial: () => string; label: "DRAWING.FillColor" }>;
+      fillColor: fields.ColorField<{ nullable: false; initial: () => string; label: "DRAWING.FillColor" }>;
 
       /**
        * The opacity of the fill applied to the drawing geometry
@@ -172,13 +188,19 @@ declare global {
        * The width in pixels of the boundary lines of the drawing geometry
        * @defaultValue `8`
        */
-      strokeWidth: fields.NumberField<{ integer: true; initial: 8; min: 0; label: "DRAWING.LineWidth" }>;
+      strokeWidth: fields.NumberField<{
+        nullable: false;
+        integer: true;
+        initial: 8;
+        min: 0;
+        label: "DRAWING.LineWidth";
+      }>;
 
       /**
        * The color of the boundary lines of the drawing geometry
-       * @defaultValue `game.user?.color`
+       * @defaultValue `game.user?.color.css || "#ffffff"`
        */
-      strokeColor: fields.ColorField<{ initial: () => string; label: "DRAWING.StrokeColor" }>;
+      strokeColor: fields.ColorField<{ nullable: false; initial: () => string; label: "DRAWING.StrokeColor" }>;
 
       /**
        * The opacity of the boundary lines of the drawing geometry
@@ -194,7 +216,7 @@ declare global {
 
       /**
        * Optional text which is displayed overtop of the drawing
-       * @defaultValue `""`
+       * @defaultValue `undefined`
        */
       text: fields.StringField<{ label: "DRAWING.TextLabel" }>;
 
@@ -209,6 +231,7 @@ declare global {
        * @defaultValue `48`
        */
       fontSize: fields.NumberField<{
+        nullable: false;
         integer: true;
         min: 8;
         max: 256;
@@ -221,7 +244,7 @@ declare global {
        * The color of text displayed within this drawing
        * @defaultValue `#FFFFFF`
        */
-      textColor: fields.ColorField<{ initial: "#FFFFFF"; label: "DRAWING.TextColor" }>;
+      textColor: fields.ColorField<{ nullable: false; initial: "#FFFFFF"; label: "DRAWING.TextColor" }>;
 
       /**
        * The opacity of text displayed within this drawing

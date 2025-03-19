@@ -20,6 +20,22 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    */
   constructor(...args: Document.ConstructorParameters<BaseRegion.CreateData, BaseRegion.Parent>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Region",
+   *   collection: "regions",
+   *   label: "DOCUMENT.Region",
+   *   labelPlural: "DOCUMENT.Regions",
+   *   isEmbedded: true,
+   *   embedded: {
+   *     RegionBehavior: "behaviors"
+   *   },
+   *   schemaVersion: "12.324"
+   * }
+   * ```
+   */
   static override metadata: BaseRegion.Metadata;
 
   static override defineSchema(): BaseRegion.Schema;
