@@ -116,6 +116,7 @@
     "@ts-morph/common": "^0.26.1",
     "@types/debug": "^4.1.12",
     "@types/fvtt-types": "file:.",
+    "@types/picomatch": "^3.0.2",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.23.0",
     "@typescript-eslint/utils": "^8.26.1",
