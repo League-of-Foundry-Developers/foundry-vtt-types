@@ -6,6 +6,7 @@ import Document = foundry.abstract.Document;
 class TestBaseAmbientLight extends BaseAmbientLight {}
 
 let myLight;
+// AmbientLight has no hard required fields for construction
 myLight = new TestBaseAmbientLight();
 myLight = new TestBaseAmbientLight({});
 myLight = new TestBaseAmbientLight({

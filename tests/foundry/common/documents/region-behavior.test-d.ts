@@ -6,12 +6,14 @@ import Document = foundry.abstract.Document;
 class TestRegionBehavior extends BaseRegionBehavior {}
 
 let myRB;
+// @ts-expect-error RegionBehavior requires a `type` for creation
 myRB = new TestRegionBehavior();
+// @ts-expect-error RegionBehavior requires a `type` for creation
 myRB = new TestRegionBehavior({});
 myRB = new TestRegionBehavior({
   _id: "XXXXXSomeIDXXXXX",
   name: "Some Behaviour",
-  type: "executeScript",
+  type: "executeScript", // required for creation
   system: {},
   disabled: true,
   flags: {
@@ -34,7 +36,7 @@ myRB = new TestRegionBehavior({
 myRB = new TestRegionBehavior({
   _id: null,
   name: null,
-  type: null,
+  type: "executeScript", // required for creation
   system: null,
   disabled: null,
   flags: null,
@@ -49,12 +51,15 @@ myRB = new TestRegionBehavior({
     systemVersion: null,
   },
 });
-myRB = new TestRegionBehavior({ _stats: null });
+myRB = new TestRegionBehavior({
+  type: "executeScript", // required for creation
+  _stats: null,
+});
 
 myRB = new TestRegionBehavior({
   _id: undefined,
   name: undefined,
-  type: undefined,
+  type: "executeScript", // required for creation
   system: undefined,
   disabled: undefined,
   flags: undefined,
@@ -69,12 +74,16 @@ myRB = new TestRegionBehavior({
     systemVersion: undefined,
   },
 });
-myRB = new TestRegionBehavior({ _stats: undefined });
+myRB = new TestRegionBehavior({
+  type: "executeScript", // required for creation
+  _stats: undefined,
+});
 
 expectTypeOf(myRB).toEqualTypeOf<BaseRegionBehavior>();
 
 expectTypeOf(myRB._id).toEqualTypeOf<string | null>();
 expectTypeOf(myRB.name).toBeString();
+//TODO: fix somehow
 // excessively deep error
 // expectTypeOf(myRB.type).toEqualTypeOf<
 //   foundry.data.fields.DocumentTypeField.InitializedType<

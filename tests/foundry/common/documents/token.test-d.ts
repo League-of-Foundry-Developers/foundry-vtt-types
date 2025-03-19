@@ -5,6 +5,7 @@ import Document = foundry.abstract.Document;
 
 class TestBaseToken extends foundry.documents.BaseToken {}
 
+// Token has no hard required fields for construction
 let myToken = new TestBaseToken();
 myToken = new TestBaseToken({});
 myToken = new TestBaseToken({
@@ -163,6 +164,7 @@ if (myToken.detectionModes[0]) {
 }
 expectTypeOf(myToken.ring.enabled).toBeBoolean();
 expectTypeOf(myToken.ring.subject.texture).toEqualTypeOf<string | null | undefined>();
+// TODO: ArrayField<ForeignDocumentField> is returning `never[]`
 expectTypeOf(myToken._regions).toEqualTypeOf<Array<string | null>>();
 expectTypeOf(myToken.flags).toEqualTypeOf<
   InterfaceToObject<TokenDocument.CoreFlags> & InterfaceToObject<Document.CoreFlags>

@@ -122,6 +122,7 @@ declare global {
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
+    //TODO: ensure `c` is required for creation
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
@@ -186,7 +187,7 @@ declare global {
       c: fields.ArrayField<
         fields.NumberField<{ required: true; integer: true; nullable: false }>,
         {
-          validate: (c: unknown) => boolean;
+          validate: (c: unknown) => c is [x0: number, y0: number, x1: number, y1: number];
           validationError: "must be a length-4 array of integer coordinates";
         },
         // TODO(LukeAbby): Make the array shape easier to override.

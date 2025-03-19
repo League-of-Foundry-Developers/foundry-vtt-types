@@ -517,9 +517,6 @@ declare global {
       filters: Omit<SearchFilter.Configuration, "callback">[];
     }
 
-    type AnyIncludingV2 = Any | foundry.applications.api.ApplicationV2.Any;
-    type AnyConstructorIncludingV2 = AnyConstructor | foundry.applications.api.ApplicationV2.AnyConstructor;
-
     interface CloseOptions {
       force?: boolean | undefined;
     }

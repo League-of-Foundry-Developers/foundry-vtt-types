@@ -21,6 +21,7 @@ declare namespace LightData {
      * The animation type which is applied
      * @defaultValue `null`
      * @remarks While not enforced by the data model, this should be in `keyof CONFIG.Canvas.lightAnimations`
+     * (or `.darknessAnimations` as appropriate) or the animation will be ignored
      */
     type: fields.StringField<{ nullable: true; blank: false; initial: null }>;
 
@@ -664,7 +665,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
    * @defaultValue `{}`
    * @remarks Created via `defineProperty` in constructor
    */
-  apps: Record<string, Application.AnyIncludingV2>;
+  apps: Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>;
 
   static override defineSchema(): PrototypeToken.Schema;
 

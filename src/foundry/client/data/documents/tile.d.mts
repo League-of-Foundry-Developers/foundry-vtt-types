@@ -123,6 +123,7 @@ declare global {
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
+    //TODO: ensure `width` and `height` are required for creation
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**

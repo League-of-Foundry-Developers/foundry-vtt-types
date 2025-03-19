@@ -7,6 +7,7 @@ import Document = foundry.abstract.Document;
 class TestBaseAmbientSound extends BaseAmbientSound {}
 
 let mySound;
+// AmbientSound has no hard required fields for construction
 mySound = new TestBaseAmbientSound();
 mySound = new TestBaseAmbientSound({});
 

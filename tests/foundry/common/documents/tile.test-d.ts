@@ -6,6 +6,11 @@ import Document = foundry.abstract.Document;
 class TestTile extends BaseTile {}
 
 let myTile;
+// @ts-expect-error Tiles require a provided width and height
+myTile = new TestTile();
+// @ts-expect-error Tiles require a provided width and height
+myTile = new TestTile({});
+
 myTile = new TestTile({
   _id: "XXXXXSomeIDXXXXX",
   texture: {
@@ -92,6 +97,8 @@ myTile = new TestTile({
   flags: null,
 });
 myTile = new TestTile({
+  width: 200, // actually required for construction
+  height: 200, // actually required for construction
   texture: null,
   restrictions: null,
   occlusion: null,
@@ -139,6 +146,8 @@ myTile = new TestTile({
   flags: undefined,
 });
 myTile = new TestTile({
+  width: 200, // actually required for construction
+  height: 200, // actually required for construction
   texture: undefined,
   restrictions: undefined,
   occlusion: undefined,

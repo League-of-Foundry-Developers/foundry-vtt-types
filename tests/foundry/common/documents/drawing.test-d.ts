@@ -6,6 +6,7 @@ import Document = foundry.abstract.Document;
 class TestBaseDrawing extends foundry.documents.BaseDrawing {}
 
 let myDrawing;
+// Drawing has no hard required fields for construction
 myDrawing = new TestBaseDrawing();
 myDrawing = new TestBaseDrawing({});
 myDrawing = new TestBaseDrawing({
