@@ -131,7 +131,7 @@ declare global {
 
     // NOTE(LukeAbby): This override was disabled for the time being because it's erroring.
     // Thankfully it doesn't actually change its parent class's signature.
-    // set(id: string, document: Document.Stored<Document.ImplementationInstanceFor<T["type"]>>): this;
+    // set(id: string, document: Document.Stored<Document.ImplementationFor<T["type"]>>): this;
 
     delete: (id: string) => boolean;
 

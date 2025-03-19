@@ -1722,7 +1722,7 @@ declare namespace Document {
   }
 
   /**
-   * @deprecated {@link ImplementationFor | `ImplementationInstanceFor`}
+   * @deprecated {@link ImplementationFor | `ImplementationFor`}
    */
   type ConfiguredInstanceForName<Name extends Type> = ImplementationFor<Name>;
 
