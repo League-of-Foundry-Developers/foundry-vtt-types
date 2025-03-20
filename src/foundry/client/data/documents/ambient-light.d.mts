@@ -242,12 +242,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `AmbientLightDocument`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `AmbientLightDocument` directly is not advised. While `new AmbientLightDocument(...)` would create a
-     * temporary document it would not respect a system's subclass of `AmbientLightDocument`, if any.
-     *
-     * You should use {@link AmbientLightDocument.implementation | `new AmbientLightDocument.implementation(...)`} instead which
-     * will give you a system specific implementation of `AmbientLightDocument`.
      */
     constructor(...args: Document.ConstructorParameters<AmbientLightDocument.CreateData, AmbientLightDocument.Parent>);
 

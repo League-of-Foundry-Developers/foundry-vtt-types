@@ -771,12 +771,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `TokenDocument`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `TokenDocument` directly is not advised. While `new TokenDocument(...)` would create a
-     * temporary document it would not respect a system's subclass of `TokenDocument`, if any.
-     *
-     * You should use {@link TokenDocument.implementation | `new TokenDocument.implementation(...)`} instead which
-     * will give you a system specific implementation of `TokenDocument`.
      */
     constructor(...args: TokenDocument.ConstructorArgs);
 

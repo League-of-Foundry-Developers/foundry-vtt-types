@@ -291,12 +291,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `AmbientSoundDocument`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `AmbientSoundDocument` directly is not advised. While `new AmbientSoundDocument(...)` would create a
-     * temporary document it would not respect a system's subclass of `AmbientSoundDocument`, if any.
-     *
-     * You should use {@link AmbientSoundDocument.implementation | `new AmbientSoundDocument.implementation(...)`} instead which
-     * will give you a system specific implementation of `AmbientSoundDocument`.
      */
     constructor(...args: Document.ConstructorParameters<AmbientSoundDocument.CreateData, AmbientSoundDocument.Parent>);
 

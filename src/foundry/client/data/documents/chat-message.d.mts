@@ -345,12 +345,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `ChatMessage`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `ChatMessage` directly is not advised. While `new ChatMessage(...)` would create a
-     * temporary document it would not respect a system's subclass of `ChatMessage`, if any.
-     *
-     * You should use {@link ChatMessage.implementation | `new ChatMessage.implementation(...)`} instead which
-     * will give you a system specific implementation of `ChatMessage`.
      */
     constructor(...args: Document.ConstructorParameters<ChatMessage.CreateData, ChatMessage.Parent>);
 

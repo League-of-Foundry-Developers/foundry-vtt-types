@@ -453,12 +453,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `TileDocument`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `TileDocument` directly is not advised. While `new TileDocument(...)` would create a
-     * temporary document it would not respect a system's subclass of `TileDocument`, if any.
-     *
-     * You should use {@link TileDocument.implementation | `new TileDocument.implementation(...)`} instead which
-     * will give you a system specific implementation of `TileDocument`.
      */
     constructor(...args: TileDocument.ConstructorArgs);
 

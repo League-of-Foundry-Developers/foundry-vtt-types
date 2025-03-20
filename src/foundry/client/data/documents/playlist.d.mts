@@ -273,12 +273,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `Playlist`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `Playlist` directly is not advised. While `new Playlist(...)` would create a
-     * temporary document it would not respect a system's subclass of `Playlist`, if any.
-     *
-     * You should use {@link Playlist.implementation | `new Playlist.implementation(...)`} instead which
-     * will give you a system specific implementation of `Playlist`.
      */
     constructor(...args: Document.ConstructorParameters<Playlist.CreateData, Playlist.Parent>);
 

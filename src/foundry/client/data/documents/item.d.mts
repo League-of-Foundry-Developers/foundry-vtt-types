@@ -244,12 +244,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `Item`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `Item` directly is not advised. While `new Item(...)` would create a
-     * temporary document it would not respect a system's subclass of `Item`, if any.
-     *
-     * You should use {@link Item.implementation | `new Item.implementation(...)`} instead which
-     * will give you a system specific implementation of `Item`.
      */
     constructor(...args: Document.ConstructorParameters<Item.CreateData, Item.Parent>);
 

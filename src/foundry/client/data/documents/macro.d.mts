@@ -294,12 +294,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `Macro`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `Macro` directly is not advised. While `new Macro(...)` would create a
-     * temporary document it would not respect a system's subclass of `Macro`, if any.
-     *
-     * You should use {@link Macro.implementation | `new Macro.implementation(...)`} instead which
-     * will give you a system specific implementation of `Macro`.
      */
     constructor(...args: Document.ConstructorParameters<Macro.CreateData, Macro.Parent>);
 

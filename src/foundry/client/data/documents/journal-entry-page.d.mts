@@ -372,12 +372,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `JournalEntryPage`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `JournalEntryPage` directly is not advised. While `new JournalEntryPage(...)` would create a
-     * temporary document it would not respect a system's subclass of `JournalEntryPage`, if any.
-     *
-     * You should use {@link JournalEntryPage.implementation | `new JournalEntryPage.implementation(...)`} instead which
-     * will give you a system specific implementation of `JournalEntryPage`.
      */
     constructor(...args: Document.ConstructorParameters<JournalEntryPage.CreateData, JournalEntryPage.Parent>);
 

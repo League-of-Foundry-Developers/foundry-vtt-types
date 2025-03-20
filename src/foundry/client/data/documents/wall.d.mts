@@ -487,12 +487,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `WallDocument`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `WallDocument` directly is not advised. While `new WallDocument(...)` would create a
-     * temporary document it would not respect a system's subclass of `WallDocument`, if any.
-     *
-     * You should use {@link WallDocument.implementation | `new WallDocument.implementation(...)`} instead which
-     * will give you a system specific implementation of `WallDocument`.
      */
     constructor(...args: WallDocument.ConstructorArgs);
 

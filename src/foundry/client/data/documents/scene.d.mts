@@ -581,12 +581,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `Scene`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `Scene` directly is not advised. While `new Scene(...)` would create a
-     * temporary document it would not respect a system's subclass of `Scene`, if any.
-     *
-     * You should use {@link Scene.implementation | `new Scene.implementation(...)`} instead which
-     * will give you a system specific implementation of `Scene`.
      */
     constructor(...args: Document.ConstructorParameters<Scene.CreateData, Scene.Parent>);
 

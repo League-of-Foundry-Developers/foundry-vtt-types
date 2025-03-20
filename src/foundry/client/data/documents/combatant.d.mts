@@ -311,12 +311,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `Combatant`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `Combatant` directly is not advised. While `new Combatant(...)` would create a
-     * temporary document it would not respect a system's subclass of `Combatant`, if any.
-     *
-     * You should use {@link Combatant.implementation | `new Combatant.implementation(...)`} instead which
-     * will give you a system specific implementation of `Combatant`.
      */
     constructor(...args: Document.ConstructorParameters<Combatant.CreateData, Combatant.Parent>);
 

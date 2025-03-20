@@ -307,12 +307,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `Adventure`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `Adventure` directly is not advised. While `new Adventure(...)` would create a
-     * temporary document it would not respect a system's subclass of `Adventure`, if any.
-     *
-     * You should use {@link Adventure.implementation | `new Adventure.implementation(...)`} instead which
-     * will give you a system specific implementation of `Adventure`.
      */
     constructor(...args: Document.ConstructorParameters<Adventure.CreateData, Adventure.Parent>);
 

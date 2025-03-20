@@ -475,12 +475,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `RollTable`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `RollTable` directly is not advised. While `new RollTable(...)` would create a
-     * temporary document it would not respect a system's subclass of `RollTable`, if any.
-     *
-     * You should use {@link RollTable.implementation | `new RollTable.implementation(...)`} instead which
-     * will give you a system specific implementation of `RollTable`.
      */
     constructor(...args: RollTable.ConstructorArgs);
 

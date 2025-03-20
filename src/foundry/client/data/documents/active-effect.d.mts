@@ -425,12 +425,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `ActiveEffect`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `ActiveEffect` directly is not advised. While `new ActiveEffect(...)` would create a
-     * temporary document it would not respect a system's subclass of `ActiveEffect`, if any.
-     *
-     * You should use {@link ActiveEffect.implementation | `new ActiveEffect.implementation(...)`} instead which
-     * will give you a system specific implementation of `ActiveEffect`.
      */
     constructor(...args: Document.ConstructorParameters<ActiveEffect.CreateData, ActiveEffect.Parent>);
 

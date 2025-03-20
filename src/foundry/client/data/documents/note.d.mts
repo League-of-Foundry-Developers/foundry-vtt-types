@@ -303,12 +303,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `NoteDocument`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `NoteDocument` directly is not advised. While `new NoteDocument(...)` would create a
-     * temporary document it would not respect a system's subclass of `NoteDocument`, if any.
-     *
-     * You should use {@link NoteDocument.implementation | `new NoteDocument.implementation(...)`} instead which
-     * will give you a system specific implementation of `NoteDocument`.
      */
     constructor(...args: Document.ConstructorParameters<NoteDocument.CreateData, NoteDocument.Parent>);
 

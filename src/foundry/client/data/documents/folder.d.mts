@@ -241,12 +241,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `Folder`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `Folder` directly is not advised. While `new Folder(...)` would create a
-     * temporary document it would not respect a system's subclass of `Folder`, if any.
-     *
-     * You should use {@link Folder.implementation | `new Folder.implementation(...)`} instead which
-     * will give you a system specific implementation of `Folder`.
      */
     constructor(...args: Document.ConstructorParameters<Folder.CreateData, Folder.Parent>);
 

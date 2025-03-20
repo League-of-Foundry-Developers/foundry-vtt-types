@@ -404,12 +404,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `Cards`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `Cards` directly is not advised. While `new Cards(...)` would create a
-     * temporary document it would not respect a system's subclass of `Cards`, if any.
-     *
-     * You should use {@link Cards.implementation | `new Cards.implementation(...)`} instead which
-     * will give you a system specific implementation of `Cards`.
      */
     constructor(...args: Document.ConstructorParameters<Cards.CreateData, Cards.Parent>);
 

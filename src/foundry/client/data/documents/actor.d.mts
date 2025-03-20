@@ -289,12 +289,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `Actor`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `Actor` directly is not advised. While `new Actor(...)` would create a
-     * temporary document it would not respect a system's subclass of `Actor`, if any.
-     *
-     * You should use {@link Actor.implementation | `new Actor.implementation(...)`} instead which
-     * will give you a system specific implementation of `Actor`.
      */
     constructor(...args: Document.ConstructorParameters<Actor.CreateData, Actor.Parent>);
 

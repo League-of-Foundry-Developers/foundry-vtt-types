@@ -317,12 +317,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `Setting`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `Setting` directly is not advised. While `new Setting(...)` would create a
-     * temporary document it would not respect a system's subclass of `Setting`, if any.
-     *
-     * You should use {@link Setting.implementation | `new Setting.implementation(...)`} instead which
-     * will give you a system specific implementation of `Setting`.
      */
     constructor(...args: Setting.ConstructorArgs);
 

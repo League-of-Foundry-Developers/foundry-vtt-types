@@ -348,12 +348,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `DrawingDocument`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `DrawingDocument` directly is not advised. While `new DrawingDocument(...)` would create a
-     * temporary document it would not respect a system's subclass of `DrawingDocument`, if any.
-     *
-     * You should use {@link DrawingDocument.implementation | `new DrawingDocument.implementation(...)`} instead which
-     * will give you a system specific implementation of `DrawingDocument`.
      */
     constructor(...args: Document.ConstructorParameters<DrawingDocument.CreateData, DrawingDocument.Parent>);
 

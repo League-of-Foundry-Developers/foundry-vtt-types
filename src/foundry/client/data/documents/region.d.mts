@@ -338,12 +338,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `RegionDocument`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `RegionDocument` directly is not advised. While `new RegionDocument(...)` would create a
-     * temporary document it would not respect a system's subclass of `RegionDocument`, if any.
-     *
-     * You should use {@link RegionDocument.implementation | `new RegionDocument.implementation(...)`} instead which
-     * will give you a system specific implementation of `RegionDocument`.
      */
     constructor(...args: Document.ConstructorParameters<RegionDocument.CreateData, RegionDocument.Parent>);
 

@@ -220,12 +220,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `RegionBehavior`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `RegionBehavior` directly is not advised. While `new RegionBehavior(...)` would create a
-     * temporary document it would not respect a system's subclass of `RegionBehavior`, if any.
-     *
-     * You should use {@link RegionBehavior.implementation | `new RegionBehavior.implementation(...)`} instead which
-     * will give you a system specific implementation of `RegionBehavior`.
      */
     constructor(...args: Document.ConstructorParameters<RegionBehavior.CreateData, RegionBehavior.Parent>);
 

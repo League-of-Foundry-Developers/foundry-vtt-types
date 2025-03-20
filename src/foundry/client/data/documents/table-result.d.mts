@@ -381,12 +381,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `TableResult`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `TableResult` directly is not advised. While `new TableResult(...)` would create a
-     * temporary document it would not respect a system's subclass of `TableResult`, if any.
-     *
-     * You should use {@link TableResult.implementation | `new TableResult.implementation(...)`} instead which
-     * will give you a system specific implementation of `TableResult`.
      */
     constructor(...args: TableResult.ConstructorArgs);
 

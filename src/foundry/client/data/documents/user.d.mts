@@ -464,12 +464,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `User`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `User` directly is not advised. While `new User(...)` would create a
-     * temporary document it would not respect a system's subclass of `User`, if any.
-     *
-     * You should use {@link User.implementation | `new User.implementation(...)`} instead which
-     * will give you a system specific implementation of `User`.
      */
     constructor(...args: User.ConstructorArgs);
 

@@ -209,12 +209,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `ActorDelta`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `ActorDelta` directly is not advised. While `new ActorDelta(...)` would create a
-     * temporary document it would not respect a system's subclass of `ActorDelta`, if any.
-     *
-     * You should use {@link ActorDelta.implementation | `new ActorDelta.implementation(...)`} instead which
-     * will give you a system specific implementation of `ActorDelta`.
      */
     constructor(...args: Document.ConstructorParameters<ActorDelta.CreateData, ActorDelta.Parent>);
 
