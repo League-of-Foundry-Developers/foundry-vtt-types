@@ -7,7 +7,7 @@ updates:
       interval: "daily"
   - package-ecosystem: "npm"
     groups:
-      dependencies:
+      everything:
         patterns:
           - "*"
     directory: "/"
