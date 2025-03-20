@@ -6,6 +6,10 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "npm"
+    groups:
+      dependencies:
+        patterns:
+          - "*"
     directory: "/"
     schedule:
       interval: "daily"
@@ -13,21 +17,9 @@ updates:
       - dependency-name: "@pixi/graphics-smooth"
       - dependency-name: "@pixi/particle-emitter"
       - dependency-name: "@types/jquery"
-        update-types:
-          - "version-update:semver-major"
-          - "version-update:semver-minor"
       - dependency-name: "@types/showdown"
-        update-types:
-          - "version-update:semver-major"
-          - "version-update:semver-minor"
       - dependency-name: "@types/simple-peer"
-        update-types:
-          - "version-update:semver-major"
-          - "version-update:semver-minor"
       - dependency-name: "@types/youtube"
-        update-types:
-          - "version-update:semver-major"
-          - "version-update:semver-minor"
       - dependency-name: "handlebars"
       - dependency-name: "pixi.js"
       - dependency-name: "prosemirror-collab"
