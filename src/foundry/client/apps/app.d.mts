@@ -604,6 +604,6 @@ declare global {
   }
 }
 
-declare abstract class AnyApplication extends Application<ApplicationOptions> {
+declare abstract class AnyApplication extends Application<Application.Options> {
   constructor(arg0: never, ...args: never[]);
 }

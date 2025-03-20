@@ -280,7 +280,7 @@ declare namespace BaseEffectSource {
   interface InitializeOptions extends _InitializeOptions {}
 
   /** @privateRemarks The `| number` is from Foundry's typing, but core only uses boolean flags in v12.331 */
-  interface Flags extends Record<string, boolean | number> {
+  interface Flags extends Record<string, boolean | number | undefined> {
     renderSoftEdges?: boolean;
     initializedMeshes?: boolean;
     hasColor?: boolean;

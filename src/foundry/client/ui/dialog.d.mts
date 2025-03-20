@@ -150,7 +150,7 @@ declare global {
 
   namespace Dialog {
     /** @internal */
-    type _JQueryOrHTML<IsJQuery extends boolean> = IsJQuery extends true ? JQuery : HTMLElement;
+    type _JQueryOrHTML<IsJQuery extends boolean | undefined> = IsJQuery extends true ? JQuery : HTMLElement;
 
     type JQueryOrHTML<Options extends Partial<Dialog.Options> | undefined> = _JQueryOrHTML<
       Options extends {

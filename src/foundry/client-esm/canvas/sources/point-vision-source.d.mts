@@ -236,7 +236,7 @@ declare namespace PointVisionSource {
   }
 
   /** @privateRemarks Foundry types this as just the Record, but only ever checks the one key */
-  interface BlindedReasons extends Record<string, boolean> {
+  interface BlindedReasons extends Record<string, boolean | undefined> {
     darkness?: boolean;
   }
 
