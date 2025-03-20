@@ -10,7 +10,12 @@ declare global {
      * @param options - Additional options to configure the ping animation.
      *                  (default: `{duration: 900, size: 128, color: "#ff6400"}`)
      */
-    constructor(origin: Canvas.Point, options?: PingOptions);
+    constructor(
+      origin: Canvas.Point,
+
+      /** @privateRemarks Can't be `null` as it's directly assigned to  `Ping#options` which has properties accessed null-unsafely */
+      options?: Ping.ConstructorOptions,
+    );
 
     /** @defaultValue `(this.options.size / 2) * .75` */
     _r: number;
@@ -57,7 +62,7 @@ declare global {
 
     override animate(): Promise<boolean>;
 
-    override _animateFrame(dt: number, animation: CanvasAnimationData): void;
+    override _animateFrame(dt: number, animation: CanvasAnimation.AnimationData): void;
 
     /**
      * Draw the outer and inner rings.

@@ -14,7 +14,7 @@ declare global {
     /**
      * References to the set of Documents which are displayed in the Sidebar
      */
-    documents: FolderType extends Document.Type ? Document.ImplementationInstanceFor<FolderType>[] : undefined;
+    documents: FolderType extends Document.Type ? Document.ImplementationFor<FolderType>[] : undefined;
 
     /**
      * Reference the set of Folders which exist in this Sidebar
@@ -78,14 +78,17 @@ declare global {
 
     protected override _handleDroppedEntry(target: HTMLElement, data: object): Promise<void>;
 
-    protected override _getDroppedEntryFromData(data: object): Promise<DirectoryMixinEntry>;
+    protected override _getDroppedEntryFromData(data: object): Promise<DirectoryApplicationMixin.Entry>;
 
     protected override _sortRelative(
-      entry: DirectoryMixinEntry,
+      entry: DirectoryApplicationMixin.Entry,
       sortData: { sortKey: string; sortBefore: boolean; updateData: object },
     ): Promise<object>;
 
-    protected override _createDroppedEntry(entry: DirectoryMixinEntry, folderId?: string): Promise<DirectoryMixinEntry>;
+    protected override _createDroppedEntry(
+      entry: DirectoryApplicationMixin.Entry,
+      folderId?: string,
+    ): Promise<DirectoryApplicationMixin.Entry>;
 
     protected override _handleDroppedForeignFolder(
       folder: Folder.Implementation,
@@ -127,13 +130,13 @@ declare global {
       documentsToCreate: Array<foundry.abstract.Document.Any>,
     ): Promise<void>;
 
-    protected override _getFolderContextOptions(): ContextMenuEntry[];
+    protected override _getFolderContextOptions(): ContextMenu.Entry[];
 
     /**
      * Get the set of ContextMenu options which should be used for Documents in a SidebarDirectory
      * @returns The Array of context options passed to the ContextMenu instance
      */
-    protected _getEntryContextOptions(): ContextMenuEntry[];
+    protected _getEntryContextOptions(): ContextMenu.Entry[];
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -149,9 +152,9 @@ declare global {
   }
 
   namespace DocumentDirectory {
-    type Any = DocumentDirectory<any, any>;
+    interface Any extends DocumentDirectory<any, any> {}
 
-    interface Options<T extends Document.AnyConstructor = Document.AnyConstructor> extends ApplicationOptions {
+    interface Options<T extends Document.AnyConstructor = Document.AnyConstructor> extends Application.Options {
       /**
        * A list of data property keys that will trigger a rerender of the tab if
        * they are updated on a Document that this tab is responsible for.

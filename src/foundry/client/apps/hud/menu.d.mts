@@ -1,4 +1,4 @@
-import type { MaybePromise } from "fvtt-types/utils";
+import type { MaybePromise, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -15,7 +15,7 @@ declare global {
      * });
      * ```
      * */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     /**
      * The structure of menu items
@@ -54,7 +54,7 @@ declare global {
      */
     get items(): MainMenu.MenuStructure;
 
-    override getData(options?: Partial<ApplicationOptions>): MaybePromise<object>;
+    override getData(options?: Partial<Application.Options>): MaybePromise<object>;
 
     override activateListeners(html: JQuery): void;
 
@@ -65,8 +65,8 @@ declare global {
   }
 
   namespace MainMenu {
-    type Any = AnyMainMenu;
-    type AnyConstructor = typeof AnyMainMenu;
+    interface Any extends AnyMainMenu {}
+    interface AnyConstructor extends Identity<typeof AnyMainMenu> {}
 
     interface MenuItem {
       label: string;

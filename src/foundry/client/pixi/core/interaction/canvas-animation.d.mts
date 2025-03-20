@@ -1,4 +1,4 @@
-import type { PropertiesOfType, Brand, NullishProps, AnyObject } from "fvtt-types/utils";
+import type { PropertiesOfType, Brand, NullishProps, AnyObject, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -19,7 +19,7 @@ declare global {
      * @privateRemarks Foundry does not account for the possibility of Symbol animation names and types the keys as simply `string`,
      * despite typing `CanvasAnimationOptions.name` as `string | symbol`
      */
-    static animations: Record<PropertyKey, CanvasAnimationData>;
+    static animations: Record<PropertyKey, CanvasAnimation.AnimationData>;
 
     /**
      * Apply an animation from the current value of some attribute to a new value
@@ -50,7 +50,7 @@ declare global {
      */
     static animate(
       attributes: CanvasAnimation.Attribute[],
-      options?: CanvasAnimationOptions,
+      options?: CanvasAnimation.AnimateOptions,
     ): CanvasAnimation.AnimateReturn;
 
     /**
@@ -58,7 +58,7 @@ declare global {
      * @param name - The animation name to retrieve
      * @returns The animation data, or undefined
      */
-    static getAnimation(name: PropertyKey): CanvasAnimationData | undefined;
+    static getAnimation(name: PropertyKey): CanvasAnimation.AnimationData | undefined;
 
     /**
      * If an animation using a certain name already exists, terminate it
@@ -90,7 +90,7 @@ declare global {
 
   namespace CanvasAnimation {
     interface Any extends AnyCanvasAnimation {}
-    type AnyConstructor = typeof AnyCanvasAnimation;
+    interface AnyConstructor extends Identity<typeof AnyCanvasAnimation> {}
 
     /** @remarks Helper type as many things `return CanvasAnimation.animate(...)` */
     type AnimateReturn = Promise<boolean | void>;
@@ -117,10 +117,10 @@ declare global {
       readonly COMPLETED: 2 & CanvasAnimation.STATES;
     }
 
-    type OnTickFunction = (dt: number, animation: CanvasAnimationData) => void;
+    type OnTickFunction = (dt: number, animation: CanvasAnimation.AnimationData) => void;
 
     /** @internal */
-    type _AnimationOptions = NullishProps<{
+    type _AnimateOptions = NullishProps<{
       /**
        * A DisplayObject which defines context to the PIXI.Ticker function
        * @defaultValue `canvas.stage`
@@ -174,61 +174,67 @@ declare global {
       /** The destination value of the attribute */
       to: number | Color;
     }
+
+    interface AnimateOptions extends CanvasAnimation._AnimateOptions {
+      /**
+       * A duration in milliseconds over which the animation should occur
+       * @defaultValue `1000`
+       * @remarks Can't be `null` because it only has a parameter default, and is used as a divisor in `CanvasAnimation.#animateFrame`
+       */
+      duration?: number | undefined;
+    }
+
+    interface CanvasAnimationAttribute extends CanvasAnimation.Attribute {
+      /**
+       * The computed delta between to and from
+       * @remarks This key is always overwritten inside `.animate`, its passed value is irrelevant
+       */
+      delta: number;
+
+      /**
+       * The amount of the total delta which has been animated
+       * @remarks This key is always overwritten inside `.animate`, its passed value is irrelevant
+       */
+      done: number;
+
+      /**
+       * Is this a color animation that applies to RGB channels
+       * @remarks When true, `CanvasAnimation.#animateFrame` assumes `to` *and* `from` are
+       * both `Color`s. It's automatically set `true` if `to` is passed as a `Color`, so it
+       * should be unnecessary to set manually.
+       */
+      color?: boolean;
+    }
+
+    interface AnimationData extends CanvasAnimation.AnimateOptions {
+      /** The animation function being executed each frame */
+      fn: (dt: number) => void;
+
+      /** The current time of the animation, in milliseconds */
+      time: number;
+
+      /** The attributes being animated */
+      attributes: CanvasAnimationAttribute[];
+
+      /** The current state of the animation */
+      state: CanvasAnimation.STATES;
+
+      /** A Promise which resolves once the animation is complete */
+      promise: Promise<boolean>;
+
+      /** The resolution function, allowing animation to be ended early */
+      resolve: (value: boolean) => void;
+
+      /** The rejection function, allowing animation to be ended early */
+      reject: (err: Error) => void;
+    }
   }
 
-  interface CanvasAnimationOptions extends CanvasAnimation._AnimationOptions {
-    /**
-     * A duration in milliseconds over which the animation should occur
-     * @defaultValue `1000`
-     * @remarks Can't be `null` because it only has a parameter default, and used as a divisor in `CanvasAnimation.#animateFrame`
-     */
-    duration?: number | undefined;
-  }
+  /** @deprecated {@link CanvasAnimation.AnimateOptions | `CanvasAnimation.AnimateOptions`} */
+  type CanvasAnimationOptions = CanvasAnimation.AnimateOptions;
 
-  interface CanvasAnimationAttribute extends CanvasAnimation.Attribute {
-    /**
-     * The computed delta between to and from
-     * @remarks This key is always overwritten inside `.animate`, its passed value is irrelevant
-     */
-    delta: number;
-
-    /**
-     * The amount of the total delta which has been animated
-     * @remarks This key is always overwritten inside `.animate`, its passed value is irrelevant
-     */
-    done: number;
-
-    /**
-     * Is this a color animation that applies to RGB channels
-     * @remarks When true, `CanvasAnimation.#animateFrame` assumes `to` *and* `from` are
-     * both `Color`s. It's automatically set `true` if `to` is passed as a `Color`, so it
-     * should be unnecessary to set manually.
-     */
-    color?: boolean;
-  }
-
-  interface CanvasAnimationData extends CanvasAnimationOptions {
-    /** The animation function being executed each frame */
-    fn: (dt: number) => void;
-
-    /** The current time of the animation, in milliseconds */
-    time: number;
-
-    /** The attributes being animated */
-    attributes: CanvasAnimationAttribute[];
-
-    /** The current state of the animation */
-    state: CanvasAnimation.STATES;
-
-    /** A Promise which resolves once the animation is complete */
-    promise: Promise<boolean>;
-
-    /** The resolution function, allowing animation to be ended early */
-    resolve: (value: boolean) => void;
-
-    /** The rejection function, allowing animation to be ended early */
-    reject: (err: Error) => void;
-  }
+  /** @deprecated {@link CanvasAnimation.AnimationData | `CanvasAnimation.AnimationData`} */
+  type CanvasAnimationData = CanvasAnimation.AnimationData;
 }
 
 declare abstract class AnyCanvasAnimation extends CanvasAnimation {

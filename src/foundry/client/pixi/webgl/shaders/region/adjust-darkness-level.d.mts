@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -40,7 +40,7 @@ declare global {
 
   namespace AbstractDarknessLevelRegionShader {
     interface Any extends AnyAbstractDarknessLevelRegionShader {}
-    type AnyConstructor = typeof AnyAbstractDarknessLevelRegionShader;
+    interface AnyConstructor extends Identity<typeof AnyAbstractDarknessLevelRegionShader> {}
   }
 
   /**
@@ -86,7 +86,7 @@ declare global {
 
   namespace AdjustDarknessLevelRegionShader {
     interface Any extends AnyAdjustDarknessLevelRegionShader {}
-    type AnyConstructor = typeof AnyAdjustDarknessLevelRegionShader;
+    interface AnyConstructor extends Identity<typeof AnyAdjustDarknessLevelRegionShader> {}
   }
 
   /**
@@ -118,7 +118,7 @@ declare global {
 
   namespace IlluminationDarknessLevelRegionShader {
     interface Any extends AnyIlluminationDarknessLevelRegionShader {}
-    type AnyConstructor = typeof AnyIlluminationDarknessLevelRegionShader;
+    interface AnyConstructor extends Identity<typeof AnyIlluminationDarknessLevelRegionShader> {}
   }
 }
 

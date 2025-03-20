@@ -1,4 +1,4 @@
-import type { DeepPartial, InexactPartial, InterfaceToObject } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, InexactPartial, InterfaceToObject } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema, SchemaField } from "../../../common/data/fields.d.mts";
@@ -9,10 +9,25 @@ import type BaseToken from "../../../common/documents/token.d.mts";
 declare global {
   namespace TokenDocument {
     /**
+     * The document's name.
+     */
+    type Name = "Token";
+
+    /**
+     * The arguments to construct the document.
+     */
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+    /**
+     * The documents embedded within Token.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the TokenDocument document instance configured through `CONFIG.Token.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTokenDocument | `fvtt-types/configuration/ConfiguredTokenDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Token">;
+    type Implementation = Document.ImplementationFor<"Token">;
 
     /**
      * The implementation of the TokenDocument document configured through `CONFIG.Token.documentClass` in Foundry and
@@ -33,26 +48,77 @@ declare global {
     type Parent = Scene.Implementation | null;
 
     /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = Actor.Stored | Item.Stored | ActiveEffect.Stored | ActorDelta.Stored;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses =
+      | Actor.ImplementationClass
+      | Item.ImplementationClass
+      | ActiveEffect.ImplementationClass
+      | ActorDelta.ImplementationClass;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Scene">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
+
+    /**
      * An instance of `TokenDocument` that comes from the database.
      */
     interface Stored extends Document.Stored<TokenDocument.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link TokenDocument._source | `TokenDocument#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link TokenDataModel._source | `TokenDataModel._source`}. This data is what was
+     * The data put in {@link TokenDocument._source | `TokenDocument#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -67,7 +133,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link TokenDocument.name | `TokenDocument#name`}.
      *
      * This is data transformed from {@link TokenDocument.Source | `TokenDocument.Source`} and turned into more
@@ -102,6 +168,7 @@ declare global {
           choices: CONST.TOKEN_DISPLAY_MODES[];
           validationError: "must be a value in CONST.TOKEN_DISPLAY_MODES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.TOKEN_DISPLAY_MODES | null | undefined,
         CONST.TOKEN_DISPLAY_MODES,
         CONST.TOKEN_DISPLAY_MODES
@@ -151,6 +218,7 @@ declare global {
           initial: typeof CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1;
           choices: CONST.TOKEN_HEXAGONAL_SHAPES[];
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.TOKEN_HEXAGONAL_SHAPES | null | undefined,
         CONST.TOKEN_HEXAGONAL_SHAPES,
         CONST.TOKEN_HEXAGONAL_SHAPES
@@ -185,6 +253,7 @@ declare global {
           initial: typeof CONST.TOKEN_DISPOSITIONS.HOSTILE;
           validationError: "must be a value in CONST.TOKEN_DISPOSITIONS";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.TOKEN_DISPOSITIONS | null | undefined,
         CONST.TOKEN_DISPOSITIONS,
         CONST.TOKEN_DISPOSITIONS
@@ -201,6 +270,7 @@ declare global {
           initial: typeof CONST.TOKEN_DISPLAY_MODES.NONE;
           validationError: "must be a value in CONST.TOKEN_DISPLAY_MODES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.TOKEN_DISPLAY_MODES | null | undefined,
         CONST.TOKEN_DISPLAY_MODES,
         CONST.TOKEN_DISPLAY_MODES
@@ -512,7 +582,7 @@ declare global {
       hidden: fields.BooleanField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for TokenDocuments */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<TokenDocument.Parent> {}
       /** Options passed along in Create operations for TokenDocuments */
@@ -533,35 +603,96 @@ declare global {
         _priorPosition?: Record<string, { x: number; y: number; elevation: number }>;
         teleport?: boolean;
         forced?: boolean;
+        // TODO: Type this accurately when going over the Token placeable
+        animation: AnyObject;
       }
 
-      /** Options for {@link TokenDocument.createDocuments | `TokenDocument.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link TokenDocument._preCreateOperation | `TokenDocument._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link TokenDocument.createDocuments | `TokenDocument.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link TokenDocument.updateDocuments | `TokenDocument.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<TokenDocument.Database.Update> {}
+
+      /** Operation for {@link TokenDocument.deleteDocuments | `TokenDocument.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<TokenDocument.Database.Delete> {}
+
+      /** Operation for {@link TokenDocument.create | `TokenDocument.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link TokenDocument.update | `TokenDocument#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link TokenDocument.get | `TokenDocument.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link TokenDocument._preCreate | `TokenDocument#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link TokenDocument._onCreate | `TokenDocument#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link TokenDocument.updateDocuments | `TokenDocument.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link TokenDocument._preUpdateOperation | `TokenDocument._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link TokenDocument._preCreateOperation | `TokenDocument._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TokenDocument.Database.Create> {}
+
+      /** Operation for {@link TokenDocument._onCreateOperation | `TokenDocument#_onCreateOperation`} */
+      interface OnCreateOperation extends TokenDocument.Database.Create {}
+
       /** Options for {@link TokenDocument._preUpdate | `TokenDocument#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link TokenDocument._onUpdate | `TokenDocument#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link TokenDocument.deleteDocuments | `TokenDocument.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link TokenDocument._preDeleteOperation | `TokenDocument._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link TokenDocument._onUpdate | `TokenDocument#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link TokenDocument._preUpdateOperation | `TokenDocument._preUpdateOperation`} */
+      interface PreUpdateOperation extends TokenDocument.Database.Update {}
+
+      /** Operation for {@link TokenDocument._onUpdateOperation | `TokenDocument._preUpdateOperation`} */
+      interface OnUpdateOperation extends TokenDocument.Database.Update {}
+
       /** Options for {@link TokenDocument._preDelete | `TokenDocument#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link TokenDocument._onDelete | `TokenDocument#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link TokenDocument._preDeleteOperation | `TokenDocument#_preDeleteOperation`} */
+      interface PreDeleteOperation extends TokenDocument.Database.Delete {}
+
+      /** Options for {@link TokenDocument._onDeleteOperation | `TokenDocument#_onDeleteOperation`} */
+      interface OnDeleteOperation extends TokenDocument.Database.Delete {}
+
+      /** Context for {@link TokenDocument._onDeleteOperation | `TokenDocument._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
+
+      /** Context for {@link TokenDocument._onCreateDocuments | `TokenDocument._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
+
+      /** Context for {@link TokenDocument._onUpdateDocuments | `TokenDocument._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
+
+      /**
+       * Options for {@link TokenDocument._preCreateDescendantDocuments | `TokenDocument#_preCreateDescendantDocuments`}
+       * and {@link TokenDocument._onCreateDescendantDocuments | `TokenDocument#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<TokenDocument.Database.Create> {}
+
+      /**
+       * Options for {@link TokenDocument._preUpdateDescendantDocuments | `TokenDocument#_preUpdateDescendantDocuments`}
+       * and {@link TokenDocument._onUpdateDescendantDocuments | `TokenDocument#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<TokenDocument.Database.Update> {}
+
+      /**
+       * Options for {@link TokenDocument._preDeleteDescendantDocuments | `TokenDocument#_preDeleteDescendantDocuments`}
+       * and {@link TokenDocument._onDeleteDescendantDocuments | `TokenDocument#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<TokenDocument.Database.Delete> {}
     }
 
     interface CoreFlags {
@@ -574,8 +705,16 @@ declare global {
       };
     }
 
+    interface Flags extends Document.ConfiguredFlagsForName<"Token"> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<"Token", Scope, Key>;
+    }
+
     /**
-     * @deprecated {@link TokenDocument.DatabaseOperation | `TokenDocument.DatabaseOperation`}
+     * @deprecated {@link TokenDocument.Database | `TokenDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<TokenDocument> {}
@@ -594,6 +733,32 @@ declare global {
      * @deprecated {@link TokenDocument.Implementation | `TokenDocument.Implementation`}
      */
     type ConfiguredInstance = Implementation;
+
+    // The getBarAttribute monkeypatch is simply inside the data model definition at `src\foundry\common\data\data.d.mts`
+
+    interface TrackedAttributesDescription {
+      /** A list of property path arrays to attributes with both a value and a max property. */
+      bar: string[][];
+      /** A list of property path arrays to attributes that have only a value property. */
+      value: string[][];
+    }
+
+    interface CreateCombatantOptions {
+      /**
+       * A specific Combat instance which should be modified. If undefined,
+       * the current active combat will be modified if one exists. Otherwise, a new
+       * Combat encounter will be created if the requesting user is a Gamemaster.
+       */
+      combat?: Combat | undefined;
+    }
+
+    interface ToggleCombatantOptions extends InexactPartial<TokenDocument.CreateCombatantOptions> {
+      /**
+       * Require this token to be an active Combatant or to be removed.
+       * Otherwise, the current combat state of the Token is toggled.
+       */
+      active: boolean;
+    }
   }
 
   /**
@@ -613,7 +778,7 @@ declare global {
      * You should use {@link TokenDocument.implementation | `new TokenDocument.implementation(...)`} instead which
      * will give you a system specific implementation of `TokenDocument`.
      */
-    constructor(...args: Document.ConstructorParameters<TokenDocument.CreateData, TokenDocument.Parent>);
+    constructor(...args: TokenDocument.ConstructorArgs);
 
     /**
      * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
@@ -712,18 +877,7 @@ declare global {
      *                  Default: `{}`
      *  @returns Is this Token now an active Combatant?
      */
-    toggleCombatant({
-      active,
-      ...options
-    }?: InexactPartial<
-      CreateCombatantOptions & {
-        /**
-         * Require this token to be an active Combatant or to be removed.
-         * Otherwise, the current combat state of the Token is toggled.
-         */
-        active: boolean;
-      }
-    >): Promise<boolean>;
+    toggleCombatant({ active, ...options }?: TokenDocument.ToggleCombatantOptions): Promise<boolean>;
 
     /**
      * Create or remove Combatants for an array of provided Token objects.
@@ -732,7 +886,10 @@ declare global {
      *                  Default: `{}`
      * @returns An array of created Combatant documents
      */
-    static createCombatants(tokens: TokenDocument[], options?: CreateCombatantOptions): Promise<Combatant[]>;
+    static createCombatants(
+      tokens: TokenDocument[],
+      options?: TokenDocument.CreateCombatantOptions,
+    ): Promise<Combatant.Implementation[]>;
 
     /**
      * Remove Combatants for the array of provided Tokens.
@@ -741,7 +898,10 @@ declare global {
      *                  Default: `{}`
      * @returns An array of deleted Combatant documents
      */
-    static deleteCombatants(tokens: TokenDocument[], options?: CreateCombatantOptions): Promise<Combatant[]>;
+    static deleteCombatants(
+      tokens: TokenDocument[],
+      options?: TokenDocument.CreateCombatantOptions,
+    ): Promise<Combatant.Implementation[]>;
 
     /**
      * Convenience method to change a token vision mode.
@@ -756,14 +916,91 @@ declare global {
 
     override getEmbeddedCollection<DocType extends Document.Type>(
       embeddedName: DocType,
-    ): Collection<Document.ImplementationInstanceFor<DocType>>;
+    ): Collection<Document.ImplementationFor<DocType>>;
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
-     * _onUpdateOperation, _onDeleteOperation, _preCreateDescendantDocuments, _preUpdateDescendantDocuments, _preDeleteDescendantDocuments,
-     * _onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     * _onUpdateOperation, _onDeleteOperation are all overridden but with no signature changes from their definition in BaseToken.
      */
+
+    protected override _preCreateDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _onCreateDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _preDeleteDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _onDeleteDescendantDocuments<
+      DescendantDocumentType extends TokenDocument.DescendantClasses,
+      Parent extends TokenDocument.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
 
     /**
      * Is to Token document updated such that the Regions the Token is contained in may change?
@@ -771,15 +1008,14 @@ declare global {
      * @param changes - The changes.
      * @returns Could this Token update change Region containment?
      */
-
-    protected _couldRegionsChange(changes: SchemaField.AssignmentData<foundry.documents.BaseToken.Schema>): boolean;
+    protected _couldRegionsChange(changes: Token.UpdateData): boolean;
 
     /**
      * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
      */
     protected _onUpdateBaseActor(
       update?: DeepPartial<Actor.Implementation["_source"]>,
-      options?: Document.OnUpdateOptions<"Actor">,
+      options?: Actor.DatabaseOperation.OnUpdateOperation,
     ): void;
 
     /**
@@ -789,10 +1025,11 @@ declare global {
      */
     protected _onRelatedUpdate(
       update?: DeepPartial<Actor.Implementation["_source"]>,
-      /** @privateRemarks foundry calls this field operation
+      /**
+       * @privateRemarks foundry calls this field operation
        * but it's being passed options (and then ignores them)
        */
-      operation?: Document.OnUpdateOptions<"Actor">,
+      operation?: Actor.DatabaseOperation.OnUpdateOperation,
     ): void;
 
     /**
@@ -800,13 +1037,19 @@ declare global {
      * @param _path - (default: `[]`)
      */
     // TODO: There's some very complex handling for non-datamodel Actor system implementations if we want
-    static getTrackedAttributes(data?: Actor.Implementation["system"], _path?: string[]): TrackedAttributesDescription;
+    static getTrackedAttributes(
+      data?: Actor.Implementation["system"],
+      _path?: string[],
+    ): TokenDocument.TrackedAttributesDescription;
 
     /**
      * Retrieve an Array of attribute choices from a plain object.
      * @param schema - The schema to explore for attributes.
      */
-    protected static _getTrackedAttributesFromObject(data: object, _path?: string[]): TrackedAttributesDescription;
+    protected static _getTrackedAttributesFromObject(
+      data: object,
+      _path?: string[],
+    ): TokenDocument.TrackedAttributesDescription;
 
     /**
      * Retrieve an Array of attribute choices from a SchemaField.
@@ -815,20 +1058,22 @@ declare global {
     protected static _getTrackedAttributesFromSchema(
       schema: foundry.data.fields.SchemaField.Any,
       _path?: string[],
-    ): TrackedAttributesDescription;
+    ): TokenDocument.TrackedAttributesDescription;
 
     /**
      * Retrieve any configured attributes for a given Actor type.
      * @param type - The Actor type.
      */
-    static _getConfiguredTrackedAttributes(type: string): TrackedAttributesDescription | void;
+    static _getConfiguredTrackedAttributes(type: string): TokenDocument.TrackedAttributesDescription | void;
 
     /**
      * Inspect the Actor data model and identify the set of attributes which could be used for a Token Bar
      * @param attributes - The tracked attributes which can be chosen from
      * @returns A nested object of attribute choices to display
      */
-    static getTrackedAttributeChoices(attributes?: TrackedAttributesDescription): Record<string, string[]>;
+    static getTrackedAttributeChoices(
+      attributes?: TokenDocument.TrackedAttributesDescription,
+    ): Record<string, string[]>;
 
     /**
      * @deprecated since v11
@@ -864,15 +1109,23 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<"base", TokenDocument.Parent>): string;
+    // ClientDocument overrides
+
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", NonNullable<TokenDocument.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<TokenDocument.CreateData>,
-      context: Document.CreateDialogContext<string, TokenDocument.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<TokenDocument.Parent>>,
     ): Promise<TokenDocument.Stored | null | undefined>;
 
     static override fromDropData(
@@ -884,25 +1137,19 @@ declare global {
       source: TokenDocument.Source,
       context?: Document.FromImportContext<TokenDocument.Parent>,
     ): Promise<TokenDocument.Implementation>;
+
+    // TODO: The deprecated Embedded Document Operations
   }
 
-  // The getBarAttribute monkeypatch is simply inside the data model definition at `src\foundry\common\data\data.d.mts`
+  /**
+   * @deprecated {@link TokenDocument.TrackedAttributesDescription | `TokenDocument.TrackedAttributesDescription`}
+   */
+  type TrackedAttributesDescription = TokenDocument.TrackedAttributesDescription;
 
-  interface TrackedAttributesDescription {
-    /** A list of property path arrays to attributes with both a value and a max property. */
-    bar: string[][];
-    /** A list of property path arrays to attributes that have only a value property. */
-    value: string[][];
-  }
-
-  interface CreateCombatantOptions {
-    /**
-     * A specific Combat instance which should be modified. If undefined,
-     * the current active combat will be modified if one exists. Otherwise, a new
-     * Combat encounter will be created if the requesting user is a Gamemaster.
-     */
-    combat?: Combat | undefined;
-  }
+  /**
+   * @deprecated {@link TokenDocument.CreateCombatantOptions | `TokenDocument.CreateCombatantOptions`}
+   */
+  type CreateCombatantOptions = TokenDocument.CreateCombatantOptions;
 }
 
 interface SingleAttributeBar {

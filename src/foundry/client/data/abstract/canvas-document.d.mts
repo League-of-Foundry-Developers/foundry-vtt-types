@@ -15,14 +15,14 @@ declare class CanvasDocument<
   /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
    */
-  get object(): Document.ConfiguredObjectInstanceForName<PlaceableType> | null;
+  get object(): Document.ObjectFor<PlaceableType> | null;
 
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.
    * @internal
    * @defaultValue `null`
    */
-  protected _object: Document.ConfiguredObjectInstanceForName<PlaceableType> | null;
+  protected _object: Document.ObjectFor<PlaceableType> | null;
 
   /**
    * Has this object been deliberately destroyed as part of the deletion workflow?
@@ -48,7 +48,7 @@ declare class CanvasDocument<
 }
 
 declare namespace CanvasDocument {
-  type Any = CanvasDocument<any>;
+  interface Any extends CanvasDocument<any> {}
 }
 
 declare global {

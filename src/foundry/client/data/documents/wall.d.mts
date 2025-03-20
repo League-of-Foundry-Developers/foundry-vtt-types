@@ -1,17 +1,29 @@
-import type { AnyObject } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 
 declare global {
   namespace WallDocument {
+    /**
+     * The document's name.
+     */
     type Name = "Wall";
+
+    /**
+     * The arguments to construct the document.
+     */
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+    /**
+     * The documents embedded within Wall.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
      * The implementation of the WallDocument document instance configured through `CONFIG.Wall.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredWallDocument | `fvtt-types/configuration/ConfiguredWallDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Wall">;
+    type Implementation = Document.ImplementationFor<"Wall">;
 
     /**
      * The implementation of the WallDocument document configured through `CONFIG.Wall.documentClass` in Foundry and
@@ -31,9 +43,23 @@ declare global {
      */
     type Parent = Scene.Implementation | null;
 
-    // Note: I set to null to punt. Please check.
-    type ParentCollection = null;
-    type Pack = null;
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Scene">;
 
     /**
      * An embedded document is a document contained in another.
@@ -41,7 +67,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationInstanceFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
 
     /**
      * An embedded document is a document contained in another.
@@ -57,6 +83,11 @@ declare global {
 
     type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
 
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
     type ParentCollectionName = Metadata["collection"];
 
     /**
@@ -65,21 +96,21 @@ declare global {
     interface Stored extends Document.Stored<WallDocument.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link foundry.abstract.DataModel._source | `DataModel#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link WallDataModel._source | `WallDataModel._source`}. This data is what was
+     * The data put in {@link WallDocument._source | `WallDocument#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -91,10 +122,11 @@ declare global {
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
+    //TODO: ensure `c` is required for creation
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link WallDocument.name | `WallDocument#name`}.
      *
      * This is data transformed from {@link WallDocument.Source | `WallDocument.Source`} and turned into more
@@ -155,7 +187,7 @@ declare global {
       c: fields.ArrayField<
         fields.NumberField<{ required: true; integer: true; nullable: false }>,
         {
-          validate: (c: unknown) => boolean;
+          validate: (c: unknown) => c is [x0: number, y0: number, x1: number, y1: number];
           validationError: "must be a length-4 array of integer coordinates";
         },
         // TODO(LukeAbby): Make the array shape easier to override.
@@ -163,6 +195,7 @@ declare global {
         fields.ArrayField.InitializedElementType<
           fields.NumberField<{ required: true; integer: true; nullable: false }>
         >,
+        //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
         [x0: number, y0: number, x1: number, y1: number],
         [x0: number, y0: number, x1: number, y1: number],
         fields.ArrayField.PersistedElementType<fields.NumberField<{ required: true; integer: true; nullable: false }>>,
@@ -171,7 +204,7 @@ declare global {
 
       /**
        * The illumination restriction type of this wall
-       * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
+       * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL` (`20`)
        */
       light: fields.NumberField<
         {
@@ -180,6 +213,7 @@ declare global {
           initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_SENSE_TYPES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_SENSE_TYPES | null | undefined,
         CONST.WALL_SENSE_TYPES | null,
         CONST.WALL_SENSE_TYPES | null
@@ -187,7 +221,7 @@ declare global {
 
       /**
        * The movement restriction type of this wall
-       * @defaultValue `CONST.WALL_MOVEMENT_TYPES.NORMAL`
+       * @defaultValue `CONST.WALL_MOVEMENT_TYPES.NORMAL` (`20`)
        */
       move: fields.NumberField<
         {
@@ -196,6 +230,7 @@ declare global {
           initial: typeof CONST.WALL_MOVEMENT_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_MOVEMENT_TYPES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_MOVEMENT_TYPES | null | undefined,
         CONST.WALL_MOVEMENT_TYPES | null,
         CONST.WALL_MOVEMENT_TYPES | null
@@ -203,7 +238,7 @@ declare global {
 
       /**
        * The visual restriction type of this wall
-       * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
+       * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL` (`20`)
        */
       sight: fields.NumberField<
         {
@@ -212,6 +247,7 @@ declare global {
           initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_SENSE_TYPES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_SENSE_TYPES | null | undefined,
         CONST.WALL_SENSE_TYPES | null,
         CONST.WALL_SENSE_TYPES | null
@@ -219,7 +255,7 @@ declare global {
 
       /**
        * The auditory restriction type of this wall
-       * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL`
+       * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL` (`20`)
        */
       sound: fields.NumberField<
         {
@@ -228,6 +264,7 @@ declare global {
           initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_SENSE_TYPES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_SENSE_TYPES | null | undefined,
         CONST.WALL_SENSE_TYPES | null,
         CONST.WALL_SENSE_TYPES | null
@@ -235,7 +272,7 @@ declare global {
 
       /**
        * The direction of effect imposed by this wall
-       * @defaultValue `CONST.WALL_DIRECTIONS.BOTH`
+       * @defaultValue `CONST.WALL_DIRECTIONS.BOTH` (`0`)
        */
       dir: fields.NumberField<
         {
@@ -244,6 +281,7 @@ declare global {
           initial: typeof CONST.WALL_DIRECTIONS.BOTH;
           validationError: "must be a value in CONST.WALL_DIRECTIONS";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_DIRECTIONS | null | undefined,
         CONST.WALL_DIRECTIONS | null,
         CONST.WALL_DIRECTIONS | null
@@ -251,7 +289,7 @@ declare global {
 
       /**
        * The type of door which this wall contains, if any
-       * @defaultValue `CONST.WALL_DOOR_TYPES.NONE`
+       * @defaultValue `CONST.WALL_DOOR_TYPES.NONE` (`0`)
        */
       door: fields.NumberField<
         {
@@ -260,6 +298,7 @@ declare global {
           initial: typeof CONST.WALL_DOOR_TYPES.NONE;
           validationError: "must be a value in CONST.WALL_DOOR_TYPES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_DOOR_TYPES | null | undefined,
         CONST.WALL_DOOR_TYPES | null,
         CONST.WALL_DOOR_TYPES | null
@@ -267,7 +306,7 @@ declare global {
 
       /**
        * The state of the door this wall contains, if any
-       * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED`
+       * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED` (`0`)
        */
       ds: fields.NumberField<
         {
@@ -276,6 +315,7 @@ declare global {
           initial: typeof CONST.WALL_DOOR_STATES.CLOSED;
           validationError: "must be a value in CONST.WALL_DOOR_STATES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_DOOR_STATES | null | undefined,
         CONST.WALL_DOOR_STATES | null,
         CONST.WALL_DOOR_STATES | null
@@ -454,7 +494,7 @@ declare global {
      * You should use {@link WallDocument.implementation | `new WallDocument.implementation(...)`} instead which
      * will give you a system specific implementation of `WallDocument`.
      */
-    constructor(...args: Document.ConstructorParameters<WallDocument.CreateData, WallDocument.Parent>);
+    constructor(...args: WallDocument.ConstructorArgs);
 
     /*
      * After this point these are not really overridden methods.
@@ -466,72 +506,15 @@ declare global {
      * separate like this helps against circularities.
      */
 
-    /** ClientDocument overrides */
+    // ClientDocument overrides
 
-    static override defaultName(context: Document.DefaultNameContext<"base", WallDocument.Parent>): string;
+    // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
-    // TODO: Make generic over collection?
-    protected override _preCreateDescendantDocuments(
-      // TODO: Determine what parents are possible and put it into a nice variable.
-      parent: ClientDocument,
-      collection: string,
-      data: unknown[],
-      options: WallDocument.Database.CreateOptions,
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _onCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      data: unknown[],
-      options: WallDocument.Database.CreateOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _preUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      changes: unknown[],
-      options: WallDocument.Database.UpdateOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      changes: unknown[],
-      options: WallDocument.Database.UpdateOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _preDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      ids: string[],
-      options: WallDocument.Database.DeleteOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
-
-    // TODO: Make generic over collection?
-    protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      ids: string[],
-      options: WallDocument.Database.DeleteOptions, // Should be the descendant's operations
-      userId: string,
-    ): void;
+    static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<WallDocument.Parent>>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<WallDocument.CreateData>,
-      // TODO: Revert inlining the Exclude here, `null` is a valid parent for World documents
-      context: Document.CreateDialogContext<string, WallDocument.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<WallDocument.Parent>>,
     ): Promise<WallDocument.Stored | null | undefined>;
 
     static override fromDropData(
@@ -544,49 +527,6 @@ declare global {
       context?: Document.FromImportContext<WallDocument.Parent>,
     ): Promise<WallDocument.Implementation>;
 
-    protected override _preCreateEmbeddedDocuments(
-      embeddedName: string,
-      result: AnyObject[],
-      options: Document.ModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onCreateEmbeddedDocuments(
-      embeddedName: string,
-      documents: never,
-      result: never,
-      options: Document.ModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _preUpdateEmbeddedDocuments(
-      embeddedName: string,
-      result: never,
-      options: Document.ModificationOptions,
-      userId: string,
-    ): void;
-
-    protected override _onUpdateEmbeddedDocuments(
-      embeddedName: string,
-      documents: never,
-      result: never,
-      options: Document.ModificationContext<never>,
-      userId: string,
-    ): void;
-
-    protected override _preDeleteEmbeddedDocuments(
-      embeddedName: string,
-      result: string[],
-      options: Document.ModificationContext<never>,
-      userId: string,
-    ): void;
-
-    protected override _onDeleteEmbeddedDocuments(
-      embeddedName: string,
-      documents: Document.Any[],
-      result: string[],
-      options: Document.ModificationContext<Document.Any | null>,
-      userId: string,
-    ): void;
+    // Embedded document operations have been left out because Wall does not have any embedded documents.
   }
 }

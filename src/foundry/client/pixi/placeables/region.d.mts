@@ -40,7 +40,21 @@ declare global {
      */
     type ImplementationClass = RegionDocument.ImplementationClass;
 
-    interface RenderFlags extends PlaceableObject.RenderFlags {}
+    interface RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<this>;
+
+      /** @defaultValue `{ propagate: ["refreshState", "refreshBorder"]; alias: true }` */
+      refresh: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshState: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshBorder: RenderFlag<this>;
+    }
+
+    interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
 
     interface RegionMovementWaypoint {
       /** The x-coordinates in pixels (integer) */
@@ -92,19 +106,7 @@ declare global {
 
     static override embeddedName: "Region";
 
-    static override RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<Region.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshState", "refreshBorder"], alias: true }` */
-      refresh: RenderFlag<Region.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshState: RenderFlag<Region.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshBorder: RenderFlag<Region.RenderFlags>;
-    };
+    static override RENDER_FLAGS: Region.RENDER_FLAGS;
 
     static CLIPPER_SCALING_FACTOR: number;
     static MOVEMENT_SEGMENT_TYPES: Region.MOVEMENT_SEGMENT_TYPES;

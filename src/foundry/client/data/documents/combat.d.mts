@@ -1,5 +1,4 @@
 import type { ConfiguredCombat } from "../../../../configuration/index.d.mts";
-import type { InexactPartial } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -12,7 +11,7 @@ declare global {
      * The implementation of the Combat document instance configured through `CONFIG.Combat.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Combat">;
+    type Implementation = Document.ImplementationFor<"Combat">;
 
     /**
      * The implementation of the Combat document configured through `CONFIG.Combat.documentClass` in Foundry and
@@ -38,26 +37,68 @@ declare global {
     type Parent = null;
 
     /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = Combatant.Stored;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = Combatant.ImplementationClass;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = never;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    type ParentCollectionName = Metadata["collection"];
+
+    /**
      * An instance of `Combat` that comes from the database.
      */
     interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link Combat._source | `Combat#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link Combat._source | `Combat._source`}. This data is what was
+     * The data put in {@link Combat._source | `Combat#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -72,7 +113,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Combat.name | `Combat#name`}.
      *
      * This is data transformed from {@link Combat.Source | `Combat.Source`} and turned into more
@@ -334,7 +375,7 @@ declare global {
      * Deactivate all other Combat encounters within the viewed Scene and set this one as active
      * @param options - Additional context to customize the update workflow
      */
-    activate(options?: Document.OnUpdateOptions<"Combat">): Promise<Combat.Implementation[]>;
+    activate(options?: Combat.DatabaseOperation.UpdateOperation): Promise<Combat.Implementation[]>;
 
     override prepareDerivedData(): void;
 
@@ -447,30 +488,32 @@ declare global {
      * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
      */
 
+    // TODO: Implement generic to support v13 CombatantGroup
+
     protected override _onCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      result: unknown[],
-      options: Document.OnCreateOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
+      parent: Combat.Stored,
+      collection: Combatant.ParentCollectionName,
+      documents: Combatant.Stored[],
+      result: Combatant.CreateData[],
+      options: Combatant.DatabaseOperation.OnCreateOperation,
       userId: string,
     ): void;
 
     protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      changes: unknown[],
-      options: Document.OnUpdateOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
+      parent: Combat.Stored,
+      collection: Combatant.ParentCollectionName,
+      documents: Combatant.Stored[],
+      changes: Combatant.UpdateData[],
+      options: Combatant.DatabaseOperation.OnUpdateOperation,
       userId: string,
     ): void;
 
     protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
+      parent: Combat.Stored,
+      collection: Combatant.ParentCollectionName,
+      documents: Combatant.Stored[],
       ids: string[],
-      options: Document.OnDeleteOptions<"Combatant"> & InexactPartial<{ combatTurn: number; turnEvents: boolean }>,
+      options: Combatant.DatabaseOperation.OnDeleteOperation,
       userId: string,
     ): void;
 

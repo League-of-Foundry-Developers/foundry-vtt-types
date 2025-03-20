@@ -3,8 +3,8 @@ import type { MaybePromise } from "fvtt-types/utils";
 
 const imagePopout = new ImagePopout("");
 expectTypeOf(imagePopout.object).toEqualTypeOf<string>();
-expectTypeOf(ImagePopout.defaultOptions).toEqualTypeOf<ImagePopoutOptions>();
-expectTypeOf(imagePopout.options).toEqualTypeOf<ImagePopoutOptions>();
+expectTypeOf(ImagePopout.defaultOptions).toEqualTypeOf<ImagePopout.Options>();
+expectTypeOf(imagePopout.options).toEqualTypeOf<ImagePopout.Options>();
 expectTypeOf(imagePopout.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(imagePopout.render(true)).toEqualTypeOf<ImagePopout>();
 

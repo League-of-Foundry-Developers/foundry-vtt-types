@@ -1,10 +1,12 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { GetDataReturnType } from "fvtt-types/utils";
+import type { GetDataReturnType, Identity } from "fvtt-types/utils";
+
+import Document = foundry.abstract.Document;
 
 declare global {
   class BaseSheet<
-    ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
+    ConcreteDocument extends Document.Any = Document.Any,
     Options extends BaseSheet.Options<ConcreteDocument> = BaseSheet.Options<ConcreteDocument>,
   > extends DocumentSheet<Options, ConcreteDocument> {
     /**
@@ -31,16 +33,21 @@ declare global {
   }
 
   namespace BaseSheet {
-    type Any = BaseSheet<any>;
+    interface Any extends AnyBaseSheet {}
+    interface AnyConstructor extends Identity<typeof AnyBaseSheet> {}
 
-    interface Options<ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any>
-      extends DocumentSheetOptions<ConcreteDocument> {}
+    interface Options<ConcreteDocument extends Document.Any = Document.Any>
+      extends DocumentSheet.Options<ConcreteDocument> {}
 
-    interface BaseSheetData extends DocumentSheet.DocumentSheetData<Options, foundry.abstract.Document.Any> {
+    interface BaseSheetData extends DocumentSheet.DocumentSheetData<Options, Document.Any> {
       hasName: boolean;
       hasImage: boolean;
       hasDescription: boolean;
       desriptionHTML?: string;
     }
   }
+}
+
+declare abstract class AnyBaseSheet extends BaseSheet<Document.Any, BaseSheet.Options<Document.Any>> {
+  constructor(arg0: never, ...args: never[]);
 }

@@ -6,8 +6,8 @@ class MyPlaceableHUD extends BasePlaceableHUD {}
 
 const myPlaceableHUD = new MyPlaceableHUD();
 expectTypeOf(myPlaceableHUD.object).toEqualTypeOf<PlaceableObject | undefined>();
-expectTypeOf(BasePlaceableHUD.defaultOptions).toEqualTypeOf<ApplicationOptions>();
-expectTypeOf(myPlaceableHUD.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(BasePlaceableHUD.defaultOptions).toEqualTypeOf<Application.Options>();
+expectTypeOf(myPlaceableHUD.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(myPlaceableHUD.getData()).toEqualTypeOf<MaybePromise<object>>();
 // expectTypeOf(myPlaceableHUD.render(true)).toEqualTypeOf<BasePlaceableHUD>();
 

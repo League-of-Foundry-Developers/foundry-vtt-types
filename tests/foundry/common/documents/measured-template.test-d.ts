@@ -6,6 +6,7 @@ import Document = foundry.abstract.Document;
 class TestBaseMeasuredTemplate extends BaseMeasuredTemplate {}
 
 let myTemplate;
+// MeasuredTemplate has no hard required fields for construction
 myTemplate = new TestBaseMeasuredTemplate();
 myTemplate = new TestBaseMeasuredTemplate({});
 myTemplate = new TestBaseMeasuredTemplate({

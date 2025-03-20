@@ -110,12 +110,12 @@ declare global {
      * Configured performance settings which affect the behavior of the Canvas and its renderer.
      * @defaultValue `undefined`
      */
-    performance: CanvasPerformanceSettings | undefined;
+    performance: Canvas.PerformanceSettings | undefined;
 
     /**
      * A list of supported webGL capabilities and limitations.
      */
-    supported: CanvasSupportedComponents;
+    supported: Canvas.SupportedComponents;
 
     /**
      * Is the photosensitive mode enabled?
@@ -387,7 +387,7 @@ declare global {
      * Configure performance settings for hte canvas application based on the selected performance mode.
      * @internal
      */
-    protected _configurePerformanceMode(): CanvasPerformanceSettings;
+    protected _configurePerformanceMode(): Canvas.PerformanceSettings;
 
     /**
      * Draw the game canvas.
@@ -529,7 +529,7 @@ declare global {
      * @param origin  - Point to display Ping at
      * @param options - Additional options to configure how the ping is drawn.
      */
-    ping(origin: Canvas.Point, options?: PingOptions): Promise<boolean>;
+    ping(origin: Canvas.Point, options?: Ping.ConstructorOptions): Promise<boolean>;
 
     /**
      * Create a BlurFilter instance and register it to the array for updates when the zoom level changes.
@@ -682,57 +682,15 @@ declare global {
     get colorManager(): this["environment"];
   }
 
-  interface CanvasPerformanceSettings {
-    /** The performance mode in CONST.CANVAS_PERFORMANCE_MODES */
-    mode: CANVAS_PERFORMANCE_MODES;
+  /**
+   * @deprecated {@link Canvas.PerformanceSettings | `Canvas.PerformanceSettings`}
+   */
+  type CanvasPerformanceSettings = Canvas.PerformanceSettings;
 
-    /** Blur filter configuration */
-    blur: {
-      enabled: boolean;
-      illumination: boolean;
-    };
-
-    /** Whether to use mipmaps, "ON" or "OFF" */
-    mipmap: "ON" | "OFF";
-
-    /** Whether to apply MSAA at the overall canvas level */
-    msaa: boolean;
-
-    /** Maximum framerate which should be the render target */
-    fps: number;
-
-    /** Whether to display token movement animation */
-    tokenAnimation: boolean;
-
-    /** Whether to display light source animation */
-    lightAnimation: boolean;
-
-    /** Whether to render soft edges for light sources */
-    lightSoftEdges: boolean;
-
-    /** Texture configuration */
-    textures: {
-      enabled: boolean;
-
-      maxSize: number;
-
-      p2Steps: number;
-
-      /** @defaultValue `2` */
-      p2StepsMax: number;
-    };
-  }
-
-  interface CanvasSupportedComponents {
-    /** Is WebGL2 supported? */
-    webGL2: boolean;
-
-    /** Is reading pixels in RED format supported? */
-    readPixelsRED: boolean;
-
-    /** Is the OffscreenCanvas supported? */
-    offscreenCanvas: boolean;
-  }
+  /**
+   * @deprecated {@link Canvas.SupportedComponents | `Canvas.SupportedComponents`}
+   */
+  type CanvasSupportedComponents = Canvas.SupportedComponents;
 
   namespace Canvas {
     interface Dimensions extends Scene.Dimensions {
@@ -793,6 +751,58 @@ declare global {
       y: number;
       width: number;
       height: number;
+    }
+
+    interface PerformanceSettings {
+      /** The performance mode in CONST.CANVAS_PERFORMANCE_MODES */
+      mode: CANVAS_PERFORMANCE_MODES;
+
+      /** Blur filter configuration */
+      blur: {
+        enabled: boolean;
+        illumination: boolean;
+      };
+
+      /** Whether to use mipmaps, "ON" or "OFF" */
+      mipmap: "ON" | "OFF";
+
+      /** Whether to apply MSAA at the overall canvas level */
+      msaa: boolean;
+
+      /** Maximum framerate which should be the render target */
+      fps: number;
+
+      /** Whether to display token movement animation */
+      tokenAnimation: boolean;
+
+      /** Whether to display light source animation */
+      lightAnimation: boolean;
+
+      /** Whether to render soft edges for light sources */
+      lightSoftEdges: boolean;
+
+      /** Texture configuration */
+      textures: {
+        enabled: boolean;
+
+        maxSize: number;
+
+        p2Steps: number;
+
+        /** @defaultValue `2` */
+        p2StepsMax: number;
+      };
+    }
+
+    interface SupportedComponents {
+      /** Is WebGL2 supported? */
+      webGL2: boolean;
+
+      /** Is reading pixels in RED format supported? */
+      readPixelsRED: boolean;
+
+      /** Is the OffscreenCanvas supported? */
+      offscreenCanvas: boolean;
     }
   }
 }

@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
-declare const scene: Scene.ConfiguredInstance;
+declare const scene: Scene.Implementation;
 declare const sheet: GridConfig["sheet"];
 
 const gridConfig = new GridConfig(scene, sheet);

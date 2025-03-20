@@ -1,7 +1,5 @@
 import type { AnyFunction } from "fvtt-types/utils";
 
-export {};
-
 declare global {
   /**
    * A simple event framework used throughout Foundry Virtual Tabletop.

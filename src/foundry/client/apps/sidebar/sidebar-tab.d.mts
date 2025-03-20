@@ -5,7 +5,7 @@ declare global {
    * An abstract pattern followed by the different tabs of the sidebar
    * @typeParam Options - The type of the options object
    */
-  abstract class SidebarTab<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  abstract class SidebarTab<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(...args: ConstructorParameters<typeof Application>);
 
     /**
@@ -33,7 +33,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     override get id(): string;
 
@@ -75,6 +75,6 @@ declare global {
   }
 
   namespace SidebarTab {
-    type Any = SidebarTab<any>;
+    interface Any extends SidebarTab<any> {}
   }
 }

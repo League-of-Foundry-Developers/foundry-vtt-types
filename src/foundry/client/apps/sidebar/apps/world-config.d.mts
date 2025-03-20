@@ -1,19 +1,14 @@
 import type { MaybePromise } from "fvtt-types/utils";
 
 declare global {
-  interface WorldConfigOptions extends FormApplicationOptions {
-    /**
-     * Whether the world is being created or updated.
-     * @defaultValue `false`
-     */
-    create: boolean;
-  }
+  /** @deprecated {@link WorldConfig.Options | `WorldConfig.Options`} */
+  type WorldConfigOptions = WorldConfig.Options;
 
   /**
    * The World Management setup application
    * @typeParam Options - The type of the options object
    */
-  class WorldConfig<Options extends WorldConfigOptions = WorldConfigOptions> extends FormApplication<Options, World> {
+  class WorldConfig<Options extends WorldConfig.Options = WorldConfig.Options> extends FormApplication<Options, World> {
     /**
      * @defaultValue
      * ```typescript
@@ -26,7 +21,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): WorldConfigOptions;
+    static override get defaultOptions(): WorldConfig.Options;
 
     /**
      * A semantic alias for the World object which is being configured by this form.
@@ -53,5 +48,13 @@ declare global {
 
   namespace WorldConfig {
     type FormData = Partial<World["_source"]>;
+
+    interface Options extends FormApplication.Options {
+      /**
+       * Whether the world is being created or updated.
+       * @defaultValue `false`
+       */
+      create: boolean;
+    }
   }
 }

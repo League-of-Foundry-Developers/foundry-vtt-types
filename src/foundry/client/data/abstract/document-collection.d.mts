@@ -1,5 +1,9 @@
 import type { AnyObject, DeepPartial, InexactPartial, FixedInstanceType } from "fvtt-types/utils";
-import type { DatabaseAction, DatabaseOperationMap } from "../../../common/abstract/_types.d.mts";
+import type {
+  DatabaseAction,
+  DatabaseOperationMap,
+  DatabaseUpdateOperation,
+} from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -92,7 +96,7 @@ declare global {
     /**
      * Render any Applications associated with this DocumentCollection.
      */
-    render(force?: boolean, options?: ApplicationOptions): void;
+    render(force?: boolean, options?: Application.Options): void;
 
     /**
      * Get the searchable fields for a given document or index, based on its data model
@@ -130,7 +134,7 @@ declare global {
         | Document.UpdateDataFor<DocumentClass>
         | ((doc: Document.ToStored<DocumentClass>) => Document.UpdateDataFor<DocumentClass>),
       condition?: ((obj: Document.ToStored<DocumentClass>) => boolean) | null,
-      options?: Document.OnUpdateOptions<DocumentClass["metadata"]["name"]>,
+      options?: Document.Database.UpdateDocumentsOperation<DatabaseUpdateOperation>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
     /**
@@ -151,7 +155,7 @@ declare global {
   }
 
   namespace DocumentCollection {
-    type Any = DocumentCollection<Document.AnyConstructor, string>;
+    interface Any extends DocumentCollection<Document.AnyConstructor, string> {}
 
     interface Methods<T extends Document.AnyConstructor> {
       get<Options extends DocumentCollection.GetOptions>(
@@ -200,7 +204,7 @@ declare global {
        * An array of filters to apply
        * @defaultValue `[]`
        */
-      filters: FieldFilter[];
+      filters: SearchFilter.FieldFilter[];
 
       /**
        * An array of document IDs to exclude from search results

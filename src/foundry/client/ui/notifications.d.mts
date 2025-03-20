@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -16,7 +16,7 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class Notifications<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class Notifications<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -41,7 +41,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     /**
      * Initialize the Notifications system by displaying any system-generated messages which were passed from the server.
@@ -105,8 +105,8 @@ declare global {
   }
 
   namespace Notifications {
-    type Any = AnyNotifications;
-    type AnyConstructor = typeof AnyNotifications;
+    interface Any extends AnyNotifications {}
+    interface AnyConstructor extends Identity<typeof AnyNotifications> {}
 
     interface NotifyOptions {
       /**
@@ -138,6 +138,6 @@ declare global {
   }
 }
 
-declare abstract class AnyNotifications extends Notifications<ApplicationOptions> {
+declare abstract class AnyNotifications extends Notifications<Application.Options> {
   constructor(arg0: never, ...args: never[]);
 }

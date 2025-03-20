@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -6,7 +6,7 @@ declare global {
    *
    * @typeParam Options - The type of the options object
    */
-  class AVConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
+  class AVConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     Options,
     AVMaster
   > {
@@ -30,7 +30,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplication.Options;
 
     override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<AVConfig.AVConfigData>>;
 
@@ -66,7 +66,8 @@ declare global {
   }
 
   namespace AVConfig {
-    type Any = AVConfig<any>;
+    interface Any extends AnyAVConfig {}
+    interface AnyConstructor extends Identity<typeof AnyAVConfig> {}
 
     interface AVConfigData {
       user: User.Implementation;
@@ -90,4 +91,8 @@ declare global {
       dockPositions: Record<AVSettings.DOCK_POSITIONS, string>;
     }
   }
+}
+
+declare abstract class AnyAVConfig extends AVConfig<FormApplication.Options> {
+  constructor(arg0: never, ...args: never[]);
 }

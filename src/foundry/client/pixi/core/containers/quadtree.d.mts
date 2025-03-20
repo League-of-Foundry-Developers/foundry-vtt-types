@@ -1,15 +1,8 @@
-import type { Brand, InexactPartial, NullishProps } from "../../../../../utils/index.d.mts";
-
-/** @internal */
-interface _QuadtreeObjectBase<T> {
-  r: Canvas.Rectangle;
-  t: T;
-}
+import type { Brand, Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
-  interface QuadtreeObject<T> extends _QuadtreeObjectBase<T> {
-    n: Set<Quadtree<T>>;
-  }
+  /** @deprecated {@link Quadtree.Object | `Quadtree.Object`} */
+  type QuadtreeObject<T> = Quadtree.Object<T>;
 
   /**
    * A Quadtree implementation that supports collision detection for rectangles.
@@ -50,7 +43,7 @@ declare global {
      * The objects contained at this level of the tree
      * @defaultValue `[]`
      */
-    objects: QuadtreeObject<T>[];
+    objects: Quadtree.Object<T>[];
 
     /**
      * Children of this node
@@ -71,7 +64,7 @@ declare global {
     /**
      * Return an array of all the objects in the Quadtree (recursive)
      */
-    get all(): QuadtreeObject<T>[];
+    get all(): Quadtree.Object<T>[];
 
     /**
      * Split this node into 4 sub-nodes.
@@ -90,7 +83,7 @@ declare global {
      * @param obj - The object being inserted
      * @returns The Quadtree nodes the object was added to.
      */
-    insert(obj: Quadtree.QuadtreeObject<T>): Quadtree<T>[];
+    insert(obj: Quadtree.Object<T>): Quadtree<T>[];
 
     /**
      * Remove an object from the quadtree
@@ -104,7 +97,7 @@ declare global {
      * @param obj - The object being inserted
      * @returns The Quadtree nodes the object was added to
      */
-    update(obj: Quadtree.QuadtreeObject<T>): Quadtree<T>[];
+    update(obj: Quadtree.Object<T>): Quadtree<T>[];
 
     /**
      * Get all the objects which could collide with the provided rectangle
@@ -143,7 +136,7 @@ declare global {
 
   namespace Quadtree {
     interface Any extends AnyQuadtree {}
-    type AnyConstructor = typeof AnyQuadtree;
+    interface AnyConstructor extends Identity<typeof AnyQuadtree> {}
 
     /** @internal */
     type _OptionalSet<T> = NullishProps<{
@@ -151,9 +144,18 @@ declare global {
       n?: Set<Quadtree<T>>;
     }>;
 
-    interface QuadtreeObject<T> extends _QuadtreeObjectBase<T>, _OptionalSet<T> {}
+    /** @internal */
+    interface _ObjectBase<T> {
+      r: Canvas.Rectangle;
+      t: T;
+    }
 
-    type INDICES = Brand<number, "Quadtree.INDICIES">;
+    /** @deprecated {@link Quadtree.Object | `Quadtree.Object`} */
+    type QuadtreeObject<T> = Object<T>;
+
+    interface Object<T> extends _ObjectBase<T>, _OptionalSet<T> {}
+
+    type INDICES = Brand<number, "Quadtree.INDICES">;
 
     interface Indices {
       tl: 0 & Quadtree.INDICES;
@@ -205,7 +207,7 @@ declare global {
        * after a potential collision is found. Parameters are the object and rect, and the
        * function should return true if the object should be added to the result set.
        */
-      collisionTest: (o: globalThis.QuadtreeObject<T>, rect: Canvas.Rectangle) => boolean;
+      collisionTest: (o: Quadtree.Object<T>, rect: Canvas.Rectangle) => boolean;
 
       /**
        * The existing result set, for internal use.
@@ -241,7 +243,7 @@ declare global {
 
   namespace CanvasQuadtree {
     interface Any extends AnyCanvasQuadtree {}
-    type AnyConstructor = typeof AnyCanvasQuadtree;
+    interface AnyConstructor extends Identity<typeof AnyCanvasQuadtree> {}
 
     type CanvasQuadtreeObject = PrimaryCanvasObjectMixin.AnyMixed | PlaceableObject.Any;
   }

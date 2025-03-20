@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -6,7 +6,7 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class PlayerList<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class PlayerList<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -25,7 +25,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): ApplicationOptions;
+    static get defaultOptions(): Application.Options;
 
     /**
      * Whether the players list is in a configuration where it is hidden
@@ -51,7 +51,7 @@ declare global {
     /**
      * Return the default context options available for the Players application
      */
-    protected _getUserContextOptions(): ContextMenuEntry[];
+    protected _getUserContextOptions(): ContextMenu.Entry[];
 
     /**
      * Toggle display of the Players hud setting for whether or not to display offline players
@@ -61,8 +61,8 @@ declare global {
   }
 
   namespace PlayerList {
-    type Any = AnyPlayerList;
-    type AnyConstructor = typeof AnyPlayerList;
+    interface Any extends AnyPlayerList {}
+    interface AnyConstructor extends Identity<typeof AnyPlayerList> {}
 
     interface UserData {
       active: User.Implementation["active"];
@@ -82,6 +82,6 @@ declare global {
   }
 }
 
-declare abstract class AnyPlayerList extends PlayerList<ApplicationOptions> {
+declare abstract class AnyPlayerList extends PlayerList<Application.Options> {
   constructor(arg0: never, ...args: never[]);
 }

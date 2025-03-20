@@ -1,4 +1,4 @@
-import type { HandleEmptyObject } from "../../../../../utils/index.d.mts";
+import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -27,15 +27,19 @@ declare global {
      */
     static override get layerOptions(): TilesLayer.LayerOptions;
 
-    override get hookName(): string;
+    override get hookName(): "TilesLayer";
 
-    override get hud(): TileHUD;
+    override get hud(): NonNullable<Canvas["hud"]>["tile"];
 
     /**
      * An array of Tile objects which are rendered within the objects container
      */
     get tiles(): Tile.Object[];
 
+    /**
+     * @remarks Only produces foreground or non-forground tiles, depending on the state
+     * of the foregound layer toggle control
+     */
     override controllableObjects(): Generator<Tile.Object>;
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
@@ -54,10 +58,11 @@ declare global {
      * Handle drop events for Tile data on the Tiles Layer
      * @param event - The concluding drag event
      * @param data  - The extracted Tile data
+     * @remarks Foundry marked `@private`
      */
     protected _onDropData(
       event: DragEvent,
-      data: TileDocument.CreateData,
+      data: TilesLayer.DropData,
     ): Promise<TileDocument.Implementation | false | void>;
 
     /**
@@ -66,7 +71,7 @@ declare global {
      * @param data  - The extracted Tile data
      * @returns The prepared data to create
      */
-    _getDropData(event: DragEvent, data: TileDocument.CreateData): Promise<TileDocument.CreateData>;
+    protected _getDropData(event: DragEvent, data: TilesLayer.DropData): Promise<TileDocument.CreateData>;
 
     /**
      * Get an array of overhead Tile objects which are roofs
@@ -79,18 +84,19 @@ declare global {
      * @deprecated since v11, will be removed in v13
      * @remarks "TilesLayer#textureDataMap has moved to TextureLoader.textureBufferDataMap"
      */
-    get textureDataMap(): (typeof TextureLoader)["textureBufferDataMap"];
+    get textureDataMap(): Map<unknown, unknown>;
 
     /**
      * A convenience reference to the tile occlusion mask on the primary canvas group.
      * @deprecated since v11 until v13
      * @remarks "TilesLayer#depthMask is deprecated without replacement. Use canvas.masks.depth instead"
      */
-    get depthMask(): CachedContainer;
+    get depthMask(): CanvasDepthMask.Any;
   }
 
   namespace TilesLayer {
-    type AnyConstructor = typeof AnyTilesLayer;
+    interface Any extends AnyTilesLayer {}
+    interface AnyConstructor extends Identity<typeof AnyTilesLayer> {}
 
     interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
@@ -101,9 +107,15 @@ declare global {
       rotatableObjects: true;
     }
 
-    interface DropData extends Canvas.DropPosition {
+    /** @internal  */
+    type _DropData = Required<Pick<TileDocument.CreateData, "elevation" | "height" | "width" | "sort">>;
+
+    interface DropData extends Canvas.DropPosition, _DropData {
       type: "Tile";
-      uuid: string;
+      fromFilePicker: boolean;
+      tileSize: number;
+      texture: { src: string };
+      occlusion: { mode: foundry.CONST.OCCLUSION_MODES };
     }
   }
 }

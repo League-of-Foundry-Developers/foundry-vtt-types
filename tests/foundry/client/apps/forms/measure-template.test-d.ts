@@ -1,16 +1,16 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
-declare const measuredTemplateDocument: MeasuredTemplateDocument.ConfiguredInstance;
+declare const measuredTemplateDocument: MeasuredTemplateDocument.Implementation;
 const measuredTemplateConfig = new MeasuredTemplateConfig(measuredTemplateDocument);
 
 expectTypeOf(measuredTemplateConfig.object).toEqualTypeOf<MeasuredTemplateDocument>();
 expectTypeOf(measuredTemplateConfig.document).toEqualTypeOf<MeasuredTemplateDocument>();
 expectTypeOf(MeasuredTemplateConfig.defaultOptions).toEqualTypeOf<
-  DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance>
+  DocumentSheet.Options<MeasuredTemplateDocument.Implementation>
 >();
 expectTypeOf(measuredTemplateConfig.options).toEqualTypeOf<
-  DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance>
+  DocumentSheet.Options<MeasuredTemplateDocument.Implementation>
 >();
 expectTypeOf(measuredTemplateConfig.getData()).toEqualTypeOf<
   MaybePromise<GetDataReturnType<MeasuredTemplateConfig.MeasuredTemplateConfigData>>

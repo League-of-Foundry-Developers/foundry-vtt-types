@@ -6,9 +6,9 @@ const ambientLightConfig = new AmbientLightConfig(lightDoc);
 
 expectTypeOf(ambientLightConfig.object).toEqualTypeOf<AmbientLightDocument>();
 expectTypeOf(AmbientLightConfig.defaultOptions).toEqualTypeOf<
-  DocumentSheetOptions<AmbientLightDocument.ConfiguredInstance>
+  DocumentSheet.Options<AmbientLightDocument.Implementation>
 >();
-expectTypeOf(ambientLightConfig.options).toEqualTypeOf<DocumentSheetOptions<AmbientLightDocument.ConfiguredInstance>>();
+expectTypeOf(ambientLightConfig.options).toEqualTypeOf<DocumentSheet.Options<AmbientLightDocument.Implementation>>();
 expectTypeOf(ambientLightConfig.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(ambientLightConfig.render(true)).toEqualTypeOf<AmbientLightConfig>();
 

@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-declare const someToken: Token.ConfiguredInstance;
+declare const someToken: Token.Object;
 declare const someGG: PIXI.GraphicsGeometry;
 
 let myPG = new PrimaryGraphics(someGG);

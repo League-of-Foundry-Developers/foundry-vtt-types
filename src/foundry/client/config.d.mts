@@ -2,6 +2,7 @@ import type * as CONST from "../common/constants.d.mts";
 import type { DataModel, Document } from "../common/abstract/module.d.mts";
 import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "fvtt-types/utils";
 import type BaseLightSource from "../client-esm/canvas/sources/base-light-source.d.mts";
+import type RenderedEffectSource from "../client-esm/canvas/sources/rendered-effect-source.d.mts";
 
 declare global {
   namespace CONFIG {
@@ -66,7 +67,7 @@ declare global {
         options?: AnyObject,
       ) => Promise<number | void>;
 
-      type RollFunction = (arg0: never, ...args: never[]) => MaybePromise<number>;
+      type RollFunction = (...args: Array<string | number>) => MaybePromise<number | `${number}`>;
 
       type DTermDiceStrings = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
     }
@@ -945,8 +946,9 @@ declare global {
 
       /**
        * The class used to render door control icons
+       * @remarks Not `AnyConstructor` because it's instantiated with a `Wall.Implementation` as its first argument
        */
-      doorControlClass: DoorControl.AnyConstructor;
+      doorControlClass: typeof DoorControl;
 
       /** @defaultValue `0x000000` */
       exploredColor: number;
@@ -960,15 +962,35 @@ declare global {
       /** @defaultValue `10000` */
       daylightToDarknessAnimationMS: number;
 
-      darknessSourceClass: foundry.canvas.sources.PointDarknessSource.AnyConstructor;
+      /**
+       * @defaultValue `foundry.canvas.sources.PointDarknessSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
+       */
+      darknessSourceClass: typeof foundry.canvas.sources.PointDarknessSource;
 
-      lightSourceClass: foundry.canvas.sources.PointLightSource.AnyConstructor;
+      /**
+       * @defaultValue `foundry.canvas.sources.PointLightSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
+       */
+      lightSourceClass: typeof foundry.canvas.sources.PointLightSource;
 
-      globalLightSourceClass: foundry.canvas.sources.GlobalLightSource.AnyConstructor;
+      /**
+       * @defaultValue `foundry.canvas.sources.GlobalLightSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
+       */
+      globalLightSourceClass: typeof foundry.canvas.sources.GlobalLightSource;
 
-      visionSourceClass: foundry.canvas.sources.PointVisionSource.AnyConstructor;
+      /**
+       * @defaultValue `foundry.canvas.sources.PointVisionSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
+       */
+      visionSourceClass: typeof foundry.canvas.sources.PointVisionSource;
 
-      soundSourceClass: foundry.canvas.sources.PointSoundSource.AnyConstructor;
+      /**
+       * @defaultValue `foundry.canvas.sources.PointSoundSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
+       */
+      soundSourceClass: typeof foundry.canvas.sources.PointSoundSource;
 
       groups: CONFIG.Canvas.Groups;
 
@@ -988,8 +1010,11 @@ declare global {
         bright: number;
       };
 
-      /** @defaultValue `FogManager` */
-      fogManager: FogManager.AnyConstructor;
+      /**
+       * @defaultValue `FogManager`
+       * @remarks Can't be `AnyConstructor` because Foundry assumes it can call `new` with the same arguments FogManager accepts
+       */
+      fogManager: typeof FogManager;
 
       polygonBackends: {
         /** @defaultValue `typeof ClockwiseSweepPolygon` */
@@ -1009,8 +1034,11 @@ declare global {
 
       visualEffectsMaskingFilter: VisualEffectsMaskingFilter.AnyConstructor;
 
-      /** @defaultValue `Ruler` */
-      rulerClass: Ruler.AnyConstructor;
+      /**
+       * @defaultValue `Ruler`
+       * @remarks Not `AnyConstructor` because it's instantiated with a `User.Implementation` as its first argument
+       */
+      rulerClass: typeof Ruler;
 
       /** @defaultValue `0.8` */
       dragSpeedModifier: number;
@@ -1021,9 +1049,97 @@ declare global {
       /** @defaultValue `4` */
       objectBorderThickness: number;
 
-      gridStyles: Record<string, CONFIG.Canvas.GridStyle>;
+      gridStyles: {
+        [key: string]: GridLayer.GridStyle;
 
-      lightAnimations: CONFIG.Canvas.LightSourceAnimationConfig & {
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.SolidLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        solidLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DashedLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 1
+         *   }
+         * }
+         * ```
+         */
+        dashedLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DottedLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        dottedLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.SquarePoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        squarePoints: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DiamondPoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        diamondPoints: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.RoundPoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        roundPoints: GridLayer.GridStyle;
+      };
+
+      lightAnimations: {
+        [key: string]: RenderedEffectSource.LightAnimationConfig;
+
         flame: {
           /** @defaultValue `"LIGHT.AnimationFame"` */
           label: string;
@@ -1096,7 +1212,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `ChromaColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1107,7 +1223,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `WaveIlluminationShader` */
           illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
@@ -1121,7 +1237,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `FogColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1132,7 +1248,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `SunburstIlluminationShader` */
           illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
@@ -1146,7 +1262,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `LightDomeColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1157,7 +1273,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `EmanationColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1168,7 +1284,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `HexaDomeColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1179,7 +1295,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `GhostLightIlluminationShader` */
           illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
@@ -1193,7 +1309,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `EnergyFieldColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1204,7 +1320,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `VortexIlluminationShader` */
           illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
@@ -1218,7 +1334,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `BewitchingWaveIlluminationShader` */
           illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
@@ -1232,7 +1348,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `SwirlingRainbowColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1243,7 +1359,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `RadialRainbowColorationShader` */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
@@ -1254,7 +1370,7 @@ declare global {
           label: string;
 
           /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
+          animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `FairyLightIlluminationShader` */
           illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
@@ -1264,12 +1380,48 @@ declare global {
         };
       };
 
-      darknessAnimations: CONFIG.Canvas.DarknessSourceAnimationConfig;
+      darknessAnimations: {
+        [key: string]: RenderedEffectSource.DarknessAnimationConfig;
+
+        magicalGloom: {
+          /** @defaultValue `"LIGHT.AnimationMagicalGloom"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `MagicalGloomDarknessShader` */
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+        };
+
+        roiling: {
+          /** @defaultValue `"LIGHT.AnimationRoilingMass"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `RoilingDarknessShader` */
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+        };
+
+        hole: {
+          /** @defaultValue `"LIGHT.AnimationBlackHole"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `BlackHoleDarknessShader` */
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+        };
+      };
 
       /**
        * A registry of Scenes which are managed by a specific SceneManager class.
+       * @remarks Keys are Scene IDs
+       * @privateRemarks Can't be `AnyConstructor` because it's instantiated expecting a compatible constructor
        */
-      // `typeof foundry.canvas.SceneManager` is used because
       managedScenes: Record<string, typeof foundry.canvas.SceneManager>;
 
       pings: {
@@ -1560,7 +1712,7 @@ declare global {
      * Available Weather Effects implementations
      */
     weatherEffects: {
-      [key: string]: CONFIG.WeatherAmbienceConfiguration;
+      [key: string]: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1575,7 +1727,7 @@ declare global {
        * }
        * ```
        */
-      leaves: CONFIG.WeatherAmbienceConfiguration;
+      leaves: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1603,7 +1755,7 @@ declare global {
        * }
        * ```
        */
-      rain: CONFIG.WeatherAmbienceConfiguration;
+      rain: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1644,7 +1796,7 @@ declare global {
        * }
        * ```
        */
-      rainStorm: CONFIG.WeatherAmbienceConfiguration;
+      rainStorm: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1669,7 +1821,7 @@ declare global {
        * }
        * ```
        */
-      fog: CONFIG.WeatherAmbienceConfiguration;
+      fog: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1695,7 +1847,7 @@ declare global {
        * }
        * ```
        * */
-      snow: CONFIG.WeatherAmbienceConfiguration;
+      snow: WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1733,7 +1885,7 @@ declare global {
        * }
        * ```
        */
-      blizzard: CONFIG.WeatherAmbienceConfiguration;
+      blizzard: WeatherEffects.AmbienceConfiguration;
     };
 
     /**
@@ -2487,7 +2639,8 @@ declare global {
 
       /**
        * @defaultValue `foundry.canvas.tokens.TokenRingConfig`
-       * @remarks `"ring property is initialized in foundry.canvas.tokens.TokenRingConfig.initialize"`
+       * @remarks Foundry leaves a comment claiming `"ring property is initialized in foundry.canvas.tokens.TokenRingConfig.initialize"`,
+       * and while that's true, it's _instantiated_ here in `config.js` via defineProperty (`enumerable: true`)
        */
       readonly ring: foundry.canvas.tokens.TokenRingConfig;
     };
@@ -2995,40 +3148,6 @@ declare global {
         group: Group;
       }
 
-      interface GridStyle {
-        label: string;
-        shaderClass: GridShader.AnyConstructor;
-        shaderOptions: {
-          style: number;
-        };
-      }
-
-      /**
-       * A light source animation configuration object.
-       */
-      type LightSourceAnimationConfig = Record<
-        string,
-        {
-          label: string;
-          animation: BaseLightSource.LightAnimationFunction;
-          backgroundShader?: AdaptiveBackgroundShader.AnyConstructor;
-          illuminationShader?: AdaptiveIlluminationShader.AnyConstructor;
-          colorationShader?: AdaptiveColorationShader.AnyConstructor;
-        }
-      >;
-
-      /**
-       * A darkness source animation configuration object.
-       */
-      type DarknessSourceAnimationConfig = Record<
-        string,
-        {
-          label: string;
-          animation: BaseLightSource.LightAnimationFunction;
-          darknessShader: AdaptiveDarknessShader.AnyConstructor;
-        }
-      >;
-
       namespace Pings {
         interface Style {
           class: unknown;
@@ -3037,23 +3156,6 @@ declare global {
           duration: number;
         }
       }
-    }
-
-    interface WeatherAmbienceConfiguration {
-      id: string;
-      label: string;
-      filter: {
-        enabled: boolean;
-        blendMode: PIXI.BLEND_MODES;
-      };
-      effects: WeatherEffectConfiguration;
-    }
-
-    interface WeatherEffectConfiguration {
-      id: string;
-      effectClass: ParticleEffect | WeatherShaderEffect.AnyConstructor;
-      blendMode: PIXI.BLEND_MODES;
-      config: Record<string, unknown>;
     }
 
     // The point of this interface is to be declaration merged into so you can override `DefaultSpecialStatusEffects` and remove existing keys. It's never used when empty.

@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -6,7 +6,7 @@ declare global {
    * The Settings sidebar is the furthest-to-right using a triple-cogs icon.
    * @typeParam Options - The type of the options object
    */
-  class Settings<Options extends ApplicationOptions = ApplicationOptions> extends SidebarTab<Options> {
+  class Settings<Options extends Application.Options = Application.Options> extends SidebarTab<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -17,7 +17,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     // TODO: Implement GetDataReturnType
     override getData(options?: Partial<Options>): Promise<object>;
@@ -40,15 +40,15 @@ declare global {
   }
 
   namespace Settings {
-    type Any = AnySettings;
-    type AnyConstructor = typeof AnySettings;
+    interface Any extends AnySettings {}
+    interface AnyConstructor extends Identity<typeof AnySettings> {}
   }
 
   /**
    * A simple window application which shows the built documentation pages within an iframe
    * @typeParam Options - the type of the options object
    */
-  class FrameViewer<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class FrameViewer<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(url: string, options?: Partial<Options>);
 
     url: string;
@@ -76,15 +76,15 @@ declare global {
   }
 
   namespace FrameViewer {
-    type Any = AnyFrameViewer;
-    type AnyConstructor = typeof AnyFrameViewer;
+    interface Any extends AnyFrameViewer {}
+    interface AnyConstructor extends Identity<typeof AnyFrameViewer> {}
   }
 }
 
-declare abstract class AnySettings extends Settings<ApplicationOptions> {
+declare abstract class AnySettings extends Settings<Application.Options> {
   constructor(arg0: never, ...args: never[]);
 }
 
-declare abstract class AnyFrameViewer extends FrameViewer<ApplicationOptions> {
+declare abstract class AnyFrameViewer extends FrameViewer<Application.Options> {
   constructor(arg0: never, ...args: never[]);
 }

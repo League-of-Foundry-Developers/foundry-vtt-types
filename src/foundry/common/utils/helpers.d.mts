@@ -48,7 +48,7 @@ export interface DeepCloneOptions {
   strict?: boolean;
   /**
    * An internal depth tracker
-   * @defaultValue 0
+   * @defaultValue `0`
    */
   _d?: number;
 }
@@ -80,7 +80,7 @@ export type DiffObjectOptions = InexactPartial<{
 
   /**
    * An internal depth tracker
-   * @defaultValue 0
+   * @defaultValue `0`
    */
   _d?: number;
 }>;

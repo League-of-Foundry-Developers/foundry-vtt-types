@@ -7,7 +7,7 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class SettingsConfig<
-    Options extends FormApplicationOptions = FormApplicationOptions,
+    Options extends FormApplication.Options = FormApplication.Options,
   > extends PackageConfiguration<Options> {
     /**
      * @defaultValue
@@ -65,7 +65,7 @@ declare global {
   }
 
   namespace SettingsConfig {
-    type Any = SettingsConfig<any>;
+    interface Any extends SettingsConfig<any> {}
 
     interface Category extends PackageConfiguration.Category {
       menus: ClientSettings.SettingSubmenuConfig[];

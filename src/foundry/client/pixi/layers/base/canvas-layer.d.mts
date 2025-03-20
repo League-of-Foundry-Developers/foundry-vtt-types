@@ -1,4 +1,4 @@
-import type { HandleEmptyObject } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -67,7 +67,7 @@ declare global {
 
   namespace CanvasLayer {
     interface Any extends AnyCanvasLayer {}
-    type AnyConstructor = typeof AnyCanvasLayer;
+    interface AnyConstructor extends Identity<typeof AnyCanvasLayer> {}
 
     interface LayerOptions {
       /**

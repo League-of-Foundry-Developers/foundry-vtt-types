@@ -3,8 +3,8 @@ import type { MaybePromise } from "fvtt-types/utils";
 
 const menu = new MainMenu();
 
-expectTypeOf(MainMenu.defaultOptions).toEqualTypeOf<ApplicationOptions>();
-expectTypeOf(menu.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(MainMenu.defaultOptions).toEqualTypeOf<Application.Options>();
+expectTypeOf(menu.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(menu.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(menu.render(true)).toEqualTypeOf<MainMenu>();
 

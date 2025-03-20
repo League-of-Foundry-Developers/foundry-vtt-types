@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -8,15 +8,15 @@ declare global {
     constructor(user: User.Implementation);
 
     /**
+     * @defaultValue `{x: 0, y: 0}`
+     */
+    target: PIXI.IPointData;
+
+    /**
      * Update visibility and animations
      * @param user - The user
      */
     refreshVisibility(user: User.Implementation): void;
-
-    /**
-     * @defaultValue `{x: 0, y: 0}`
-     */
-    target: { x: number; y: number };
 
     /**
      * Draw the user's cursor as a small dot with their user name attached as text
@@ -30,4 +30,13 @@ declare global {
 
     override destroy(options?: PIXI.IDestroyOptions | boolean): void;
   }
+
+  namespace Cursor {
+    interface Any extends AnyCursor {}
+    interface AnyConstructor extends Identity<typeof AnyCursor> {}
+  }
+}
+
+declare abstract class AnyCursor extends Cursor {
+  constructor(arg0: never, ...args: never[]);
 }

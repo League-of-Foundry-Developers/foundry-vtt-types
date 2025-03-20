@@ -25,7 +25,7 @@ declare global {
   }
 
   namespace DefaultSheetsConfig {
-    type Any = DefaultSheetsConfig<any>;
+    interface Any extends DefaultSheetsConfig<any> {}
 
     interface Options extends PackageConfiguration.Options {}
 

@@ -37,11 +37,24 @@ declare global {
      */
     type ImplementationClass = AmbientSoundDocument.ImplementationClass;
 
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshField: boolean;
+    interface RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<this>;
 
-      refreshPosition: boolean;
+      /** @defaultValue `{ propagate: ["refreshField"], alias: true }` */
+      refresh: RenderFlag<this>;
+
+      /** @defaultValue `{ propagate: ["refreshPosition", "refreshState"] }` */
+      refreshField: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshPosition: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshState: RenderFlag<this>;
     }
+
+    interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
 
     interface SyncOptions {
       /**
@@ -86,22 +99,7 @@ declare global {
 
     static override embeddedName: "AmbientSound";
 
-    static override RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<AmbientSound.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshField"], alias: true }` */
-      refresh: RenderFlag<AmbientSound.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshPosition", "refreshState"] }` */
-      refreshField: RenderFlag<AmbientSound.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshPosition: RenderFlag<AmbientSound.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshState: RenderFlag<AmbientSound.RenderFlags>;
-    };
+    static override RENDER_FLAGS: AmbientSound.RENDER_FLAGS;
 
     /**
      * Is this ambient sound is currently audible based on its hidden state and the darkness level of the Scene?

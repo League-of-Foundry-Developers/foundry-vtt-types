@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -130,7 +130,8 @@ declare global {
   }
 
   namespace ActorSheet {
-    type Any = ActorSheet<any>;
+    interface Any extends AnyActorSheet {}
+    interface AnyConstructor extends Identity<typeof AnyActorSheet> {}
 
     type DropData =
       | DropData.ActiveEffect
@@ -162,7 +163,7 @@ declare global {
       }
     }
 
-    interface Options extends DocumentSheetOptions<Actor.Implementation> {
+    interface Options extends DocumentSheet.Options<Actor.Implementation> {
       token?: TokenDocument.Implementation | null;
     }
 
@@ -173,4 +174,8 @@ declare global {
       effects: this["data"]["effects"];
     }
   }
+}
+
+declare abstract class AnyActorSheet extends ActorSheet<ActorSheet.Options> {
+  constructor(arg0: never, ...args: never[]);
 }

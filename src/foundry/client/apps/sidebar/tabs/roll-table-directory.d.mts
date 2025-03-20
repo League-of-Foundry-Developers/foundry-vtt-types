@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -8,12 +8,12 @@ declare global {
   class RollTableDirectory extends DocumentDirectory<"RollTable"> {
     static override documentName: "RollTable";
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
   }
 
   namespace RollTableDirectory {
-    type Any = AnyRollTableDirectory;
-    type AnyConstructor = typeof AnyRollTableDirectory;
+    interface Any extends AnyRollTableDirectory {}
+    interface AnyConstructor extends Identity<typeof AnyRollTableDirectory> {}
   }
 }
 

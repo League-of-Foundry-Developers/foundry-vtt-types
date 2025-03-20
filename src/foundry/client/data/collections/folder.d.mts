@@ -1,3 +1,4 @@
+import type { Identity } from "fvtt-types/utils";
 import type { DatabaseAction, DatabaseOperationMap } from "../../../common/abstract/_types.d.mts";
 
 declare global {
@@ -28,12 +29,12 @@ declare global {
      */
     protected _refreshJournalEntrySheets(): void;
 
-    render(force?: boolean, context?: ApplicationOptions): void;
+    render(force?: boolean, context?: Application.Options): void;
   }
 
   namespace Folders {
-    type Any = AnyFolders;
-    type AnyConstructor = typeof AnyFolders;
+    interface Any extends AnyFolders {}
+    interface AnyConstructor extends Identity<typeof AnyFolders> {}
   }
 }
 

@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -24,7 +24,7 @@ declare global {
 
   namespace AdaptiveVisionShader {
     interface Any extends AnyAdaptiveVisionShader {}
-    type AnyConstructor = typeof AnyAdaptiveVisionShader;
+    interface AnyConstructor extends Identity<typeof AnyAdaptiveVisionShader> {}
   }
 }
 

@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -6,7 +6,7 @@ declare global {
    * The Camera UI View that displays all the camera feeds as individual video elements.
    * @typeParam Options - the type of the options object
    */
-  class CameraViews<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class CameraViews<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options: Options);
 
     /** @defaultValue `undefined` */
@@ -24,7 +24,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     /**
      * A reference to the master AV orchestrator instance
@@ -161,8 +161,8 @@ declare global {
   }
 
   namespace CameraViews {
-    type Any = AnyCameraViews;
-    type AnyConstructor = typeof AnyCameraViews;
+    interface Any extends AnyCameraViews {}
+    interface AnyConstructor extends Identity<typeof AnyCameraViews> {}
 
     interface User {
       user: Document.Stored<globalThis.User.Implementation>;
@@ -189,6 +189,6 @@ declare global {
   }
 }
 
-declare abstract class AnyCameraViews extends CameraViews<ApplicationOptions> {
+declare abstract class AnyCameraViews extends CameraViews<Application.Options> {
   constructor(arg0: never, ...args: never[]);
 }

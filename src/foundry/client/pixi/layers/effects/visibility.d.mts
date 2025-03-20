@@ -1,4 +1,4 @@
-import type { EmptyObject, HandleEmptyObject, InexactPartial, ValueOf } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -9,11 +9,13 @@ declare global {
   class CanvasVisibility extends CanvasLayer {
     /**
      * The currently revealed vision.
+     * @remarks Only `undefined` prior to first draw
      */
     vision: CanvasVisionMask.CanvasVisionContainer | undefined;
 
     /**
      * The exploration container which tracks exploration progress.
+     * @remarks Only `undefined` prior to first draw
      */
     explored: PIXI.Container | undefined;
 
@@ -21,6 +23,9 @@ declare global {
      * The optional visibility overlay sprite that should be drawn instead of the unexplored color in the fog of war.
      */
     visibilityOverlay: PIXI.Sprite | undefined;
+
+    /** @remarks Doesn't exist until it's set on draw */
+    filter?: VisibilityFilter.ConfiguredInstance;
 
     /**
      * The active vision source data object
@@ -32,10 +37,7 @@ declare global {
      * }
      * ```
      */
-    visionModeData: {
-      source: foundry.canvas.sources.PointVisionSource.Any | null | undefined;
-      activeLightingOptions: VisionMode["_source"]["lighting"] | EmptyObject;
-    };
+    visionModeData: CanvasVisibility.VisionModeData;
 
     /**
      * Define whether each lighting layer is enabled, required, or disabled by this vision mode.
@@ -50,13 +52,7 @@ declare global {
      * }
      * ```
      */
-    lightingVisibility: {
-      illumination: CanvasVisibility.LightingVisibility;
-      background: CanvasVisibility.LightingVisibility;
-      coloration: CanvasVisibility.LightingVisibility;
-      darkness: CanvasVisibility.LightingVisibility;
-      any: boolean;
-    };
+    lightingVisibility: CanvasVisibility.LightingVisibility;
 
     /**
      * A status flag for whether the layer initialization workflow has succeeded.
@@ -65,8 +61,9 @@ declare global {
 
     /**
      * Indicates whether containment filtering is required when rendering vision into a texture
+     * @remarks Foundry marked `@internal`
      */
-    protected get needsContainment(): boolean;
+    get needsContainment(): boolean;
 
     /**
      * Does the currently viewed Scene support Token field of vision?
@@ -75,17 +72,21 @@ declare global {
 
     /**
      * The configured options used for the saved fog-of-war texture.
+     * @remarks Only `undefined` before first `#draw()`
      */
-    get textureConfiguration(): VisibilityTextureConfiguration | undefined;
+    get textureConfiguration(): CanvasVisibility.TextureConfiguration | undefined;
 
     /**
      * Optional overrides for exploration sprite dimensions.
      *
-     * @privateRemarks Foundry types this parameter as `FogTextureConfiguration`, and
-     * unlike the other place they used this type seeming in error, only `rect`'s
-     * `x, y, width, height` properties are accessed, so I'm assuming they meant Rectangle
+     * @privateRemarks Foundry types this parameter as `FogTextureConfiguration` in v12.331 which is plainly wrong even if it didn't not exist
+     * v13.335 types as `PIXI.Rectangle | undefined`, but only x/y/width/height are ever accessed, and only then if this has been set to something
+     * other than `undefined`, and in fact nothing in core ever does.
      */
-    set explorationRect(rect: Canvas.Rectangle);
+    set explorationRect(rect: Canvas.Rectangle | undefined);
+
+    /** @remarks This getter doesn't actually exist, it's only here to correct the type inferred from the setter */
+    get explorationRect(): undefined;
 
     /**
      * Initialize all Token vision sources which are present on this layer
@@ -131,48 +132,19 @@ declare global {
      */
     testVisibility(
       point: Canvas.Point,
-      /**
-       * @remarks Can't be NullishProps because `tolerance` gets passed directly to `_createVisibilityTestConfig`,
-       * where a default is provided only for `undefined` with `{ tolerance=2 }`, which must be numeric
-       * */
-      options?: InexactPartial<{
-        /**
-         * A numeric radial offset which allows for a non-exact match.
-         * For example, if tolerance is 2 then the test will pass if the point
-         * is within 2px of a vision polygon.
-         */
-        tolerance: number;
-
-        /**
-         * An optional reference to the object whose visibility is being tested
-         */
-        object: PlaceableObject | null;
-      }>,
+      options?: CanvasVisibility.TestVisibilityOptions, // not:null (destructured when passed to _createVisibilityTestConfig)
     ): boolean;
 
     /**
      * Create the visibility test config.
      * @param point   - The point in space to test, an object with coordinates x and y.
      * @param options - Additional options which modify visibility testing.
+     * @remarks Foundry marked `@internal`
      */
-    _createVisibilityTestConfig(
+    protected _createVisibilityTestConfig(
       point: Canvas.Point,
-      /** @remarks Can't be NullishProps because a default for `tolerance` is provided only for `undefined` with `{ tolerance=2 }`, which must be numeric */
-      options?: InexactPartial<{
-        /**
-         * A numeric radial offset which allows for a non-exact match.
-         * For example, if tolerance is 2 then the test will pass if the point
-         * is within 2px of a vision polygon
-         * @defaultValue `2`
-         */
-        tolerance: number;
-
-        /**
-         * An optional reference to the object whose visibility is being tested
-         */
-        object: PlaceableObject | null;
-      }>,
-    ): CanvasVisibilityTestConfig;
+      options?: CanvasVisibility.CreateTestConfigOptions, // not:null (destructured)
+    ): CanvasVisibility.TestConfig;
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -183,42 +155,88 @@ declare global {
 
   namespace CanvasVisibility {
     interface Any extends AnyCanvasVisibility {}
-    type AnyConstructor = typeof AnyCanvasVisibility;
-
-    type LightingVisibility = ValueOf<typeof VisionMode.LIGHTING_VISIBILITY>;
+    interface AnyConstructor extends Identity<typeof AnyCanvasVisibility> {}
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}
 
     interface TearDownOptions extends CanvasLayer.TearDownOptions {}
-  }
 
-  /**
-   * @privateRemarks This is name foundry has for the return tyoe of `CanvasVisibility#configureVisibilityTexture`
-   * The FogTextureConfiguration references seem to be in error
-   */
-  interface VisibilityTextureConfiguration {
-    resolution: number;
-    width: number;
-    height: number;
-    mipmap: PIXI.MIPMAP_MODES;
-    multisample: PIXI.MSAA_QUALITY;
-    scaleMode: PIXI.SCALE_MODES;
-    alphaMode: PIXI.ALPHA_MODES;
-    format: PIXI.FORMATS;
-  }
+    type TestObject = PlaceableObject.Any | null;
 
-  interface CanvasVisibilityTest {
-    point: PIXI.Point;
-    elevation: number;
-    los: Map<foundry.canvas.sources.PointVisionSource.Any, boolean>;
-  }
+    interface VisionModeData {
+      source: foundry.canvas.sources.PointVisionSource.Any | null | undefined;
+      activeLightingOptions: IntentionalPartial<VisionMode["lighting"]>;
+    }
 
-  interface CanvasVisibilityTestConfig {
-    /** The target object */
-    object: PlaceableObject | null;
+    interface LightingVisibility {
+      illumination: VisionMode.LIGHTING_VISIBILITY;
+      background: VisionMode.LIGHTING_VISIBILITY;
+      coloration: VisionMode.LIGHTING_VISIBILITY;
+      darkness: VisionMode.LIGHTING_VISIBILITY;
+      /** @remarks Only set `false` if all other keys are `VisionMode.LIGHTING_VISIBILITY.DISABLED` */
+      any: boolean;
+    }
 
-    /** An array of visibility tests */
-    tests: CanvasVisibilityTest[];
+    interface TestVisibilityOptions extends CreateTestConfigOptions {}
+
+    /** @internal */
+    type _CreateTestConfigOptions = InexactPartial<{
+      /**
+       * A numeric radial offset which allows for a non-exact match.
+       * For example, if tolerance is 2 then the test will pass if the point
+       * is within 2px of a vision polygon
+       * @defaultValue `2`
+       * @remarks Can't be `null` because it only has a parameter default
+       */
+      tolerance: number;
+
+      /**
+       * An optional reference to the object whose visibility is being tested
+       * @defaultValue `null`
+       */
+      object: TestObject;
+    }>;
+
+    interface CreateTestConfigOptions extends _CreateTestConfigOptions {}
+
+    /** @internal */
+    type _TestConfigOptional = NullishProps<{
+      /**
+       * The target object
+       * @defaultValue `null`
+       * @remarks Only checked in `#_canDetect` for `instanceof Token`
+       */
+      object: TestObject;
+    }>;
+
+    /** @internal */
+    interface _TestConfigRequired {
+      /** An array of visibility tests */
+      tests: CanvasVisibility.Test[];
+    }
+
+    interface TestConfig extends _TestConfigRequired, _TestConfigOptional {}
+
+    interface Test {
+      point: Canvas.Point;
+      elevation: number;
+      los: Map<foundry.canvas.sources.PointVisionSource.Any, boolean>;
+    }
+
+    /**
+     * @privateRemarks This is a fixed subset of `PIXI.IBaseTextureOptions` that `CanvasVisibility##createTextureConfiguration` produces.
+     * Since it's generated by a private method and stored in a private property, it's not meaningfully extensible (`canvas.visibility.textureConfiguration.foo = "bar"` doesn't count)
+     */
+    interface TextureConfiguration {
+      resolution: number;
+      width: number;
+      height: number;
+      mipmap: PIXI.MIPMAP_MODES;
+      multisample: PIXI.MSAA_QUALITY;
+      scaleMode: PIXI.SCALE_MODES;
+      alphaMode: PIXI.ALPHA_MODES;
+      format: PIXI.FORMATS;
+    }
   }
 }
 

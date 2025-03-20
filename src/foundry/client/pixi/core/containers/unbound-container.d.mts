@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -11,7 +11,7 @@ declare global {
 
   namespace UnboundContainer {
     interface Any extends AnyUnboundContainer {}
-    type AnyConstructor = typeof AnyUnboundContainer;
+    interface AnyConstructor extends Identity<typeof AnyUnboundContainer> {}
   }
 
   /**
@@ -26,7 +26,7 @@ declare global {
 
   namespace UnboundTransform {
     interface Any extends AnyUnboundTransform {}
-    type AnyConstructor = typeof AnyUnboundTransform;
+    interface AnyConstructor extends Identity<typeof AnyUnboundTransform> {}
   }
 }
 

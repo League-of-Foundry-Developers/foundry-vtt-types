@@ -249,7 +249,7 @@ declare global {
      * Get the set of ContextMenu options which should be used for JournalEntryPages in the sidebar.
      * @returns The Array of context options passed to the ContextMenu instance.
      */
-    protected _getEntryContextOptions(): ContextMenuEntry[];
+    protected _getEntryContextOptions(): ContextMenu.Entry[];
 
     protected override _updateObject(event: Event, formData: JournalSheet.FormData): Promise<unknown>;
 
@@ -274,11 +274,11 @@ declare global {
   }
 
   namespace JournalSheet {
-    type Any = JournalSheet<any>;
+    interface Any extends JournalSheet<any> {}
 
     type SheetMode = "text" | "image";
 
-    interface Options extends DocumentSheetOptions<JournalEntry.Implementation> {
+    interface Options extends DocumentSheet.Options<JournalEntry.Implementation> {
       /** The current display mode of the journal. Either "text" or "image". */
       sheetMode?: JournalSheet.SheetMode | null;
     }

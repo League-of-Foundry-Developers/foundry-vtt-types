@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -27,14 +27,14 @@ declare global {
       options?: Application.RenderOptions<DocumentDirectory.Options>,
     ): Promise<void>;
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
 
-    protected override _getFolderContextOptions(): ContextMenuEntry[];
+    protected override _getFolderContextOptions(): ContextMenu.Entry[];
   }
 
   namespace SceneDirectory {
-    type Any = AnySceneDirectory;
-    type AnyConstructor = typeof AnySceneDirectory;
+    interface Any extends AnySceneDirectory {}
+    interface AnyConstructor extends Identity<typeof AnySceneDirectory> {}
   }
 }
 

@@ -8,7 +8,7 @@ declare const someEvent: PIXI.FederatedEvent;
 declare const someRegion: Region.Object;
 
 const permissions = {
-  dragLeftStart: (_user: User.ConfiguredInstance, _e: Event | PIXI.FederatedEvent) => true,
+  dragLeftStart: (_user: User.Implementation, _e: Event | PIXI.FederatedEvent) => true,
   dragRightStart: false,
 };
 

@@ -1,11 +1,11 @@
-import type { MaybePromise } from "fvtt-types/utils";
+import type { MaybePromise, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
    * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for Tile objects.
    * @typeParam Options - the type of the options object
    */
-  class TileHUD<Options extends ApplicationOptions = ApplicationOptions> extends BasePlaceableHUD<
+  class TileHUD<Options extends Application.Options = Application.Options> extends BasePlaceableHUD<
     Tile.Object,
     Options
   > {
@@ -18,7 +18,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
@@ -32,11 +32,11 @@ declare global {
   }
 
   namespace TileHUD {
-    type Any = AnyTileHUD;
-    type AnyConstructor = typeof AnyTileHUD;
+    interface Any extends AnyTileHUD {}
+    interface AnyConstructor extends Identity<typeof AnyTileHUD> {}
   }
 }
 
-declare abstract class AnyTileHUD extends TileHUD<ApplicationOptions> {
+declare abstract class AnyTileHUD extends TileHUD<Application.Options> {
   constructor(arg0: never, ...args: never[]);
 }

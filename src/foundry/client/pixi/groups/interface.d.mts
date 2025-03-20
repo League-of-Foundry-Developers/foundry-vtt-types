@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -41,7 +41,7 @@ declare global {
 
   namespace InterfaceCanvasGroup {
     interface Any extends AnyInterfaceCanvasGroup {}
-    type AnyConstructor = typeof AnyInterfaceCanvasGroup;
+    interface AnyConstructor extends Identity<typeof AnyInterfaceCanvasGroup> {}
 
     /** @internal */
     type _CreateScrollingTextOptions = NullishProps<{

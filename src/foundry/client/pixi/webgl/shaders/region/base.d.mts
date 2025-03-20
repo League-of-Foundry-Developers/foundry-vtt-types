@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -70,7 +70,7 @@ declare global {
 
   namespace RegionShader {
     interface Any extends AnyRegionShader {}
-    type AnyConstructor = typeof AnyRegionShader;
+    interface AnyConstructor extends Identity<typeof AnyRegionShader> {}
   }
 }
 

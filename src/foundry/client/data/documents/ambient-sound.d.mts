@@ -8,7 +8,7 @@ declare global {
      * The implementation of the AmbientSoundDocument document instance configured through `CONFIG.AmbientSound.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"AmbientSound">;
+    type Implementation = Document.ImplementationFor<"AmbientSound">;
 
     /**
      * The implementation of the AmbientSoundDocument document configured through `CONFIG.AmbientSound.documentClass` in Foundry and
@@ -34,21 +34,21 @@ declare global {
     interface Stored extends Document.Stored<AmbientSoundDocument.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link AmbientSoundDocument._source | `AmbientSoundDocument#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link AmbientSoundDataModel._source | `AmbientSoundDataModel._source`}. This data is what was
+     * The data put in {@link AmbientSoundDocument._source | `AmbientSoundDocument#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -63,7 +63,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link AmbientSoundDocument.name | `AmbientSoundDocument#name`}.
      *
      * This is data transformed from {@link AmbientSoundDocument.Source | `AmbientSoundDocument.Source`} and turned into more
@@ -182,13 +182,13 @@ declare global {
       effects: fields.SchemaField<{
         /**
          * An effect configuration to apply to the sound when not muffled by walls (either clear of, or fully constrained by, walls)
-         * @defaultValue see properties of {@link EffectsConfigSchema | `EffectsConfigSchema`}
+         * @defaultValue see properties of {@link EffectsConfigSchema | `AmbientSoundDocument.EffectsConfigSchema`}
          */
         base: fields.SchemaField<EffectsConfigSchema>;
 
         /**
          * An effect configuration to apply to the sound when muffled by walls
-         * @defaultValue see properties of {@link EffectsConfigSchema | `EffectsConfigSchema`}
+         * @defaultValue see properties of {@link EffectsConfigSchema | `AmbientSoundDocument.EffectsConfigSchema`}
          */
         muffled: fields.SchemaField<EffectsConfigSchema>;
       }>;
@@ -306,11 +306,13 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<"base", AmbientSoundDocument.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", NonNullable<AmbientSoundDocument.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<AmbientSoundDocument.CreateData>,
-      context: Document.CreateDialogContext<string, AmbientSoundDocument.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<AmbientSoundDocument.Parent>>,
     ): Promise<AmbientSoundDocument.Stored | null | undefined>;
 
     static override fromDropData(

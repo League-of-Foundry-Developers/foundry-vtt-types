@@ -1,10 +1,10 @@
-import type { MaybePromise, GetDataReturnType, EmptyObject } from "fvtt-types/utils";
+import type { MaybePromise, GetDataReturnType, EmptyObject, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
    * An application responsible for configuring how dice are rolled and evaluated.
    */
-  class DiceConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<Options> {
+  class DiceConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -16,7 +16,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): FormApplicationOptions;
+    static get defaultOptions(): FormApplication.Options;
 
     override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<DiceConfig.DiceConfigData>>;
 
@@ -27,7 +27,8 @@ declare global {
   }
 
   namespace DiceConfig {
-    type Any = DiceConfig<any>;
+    interface Any extends AnyDiceConfig {}
+    interface AnyConstructor extends Identity<typeof AnyDiceConfig> {}
 
     interface DiceConfigData {
       dice: DiceConfigDiceData[];
@@ -42,4 +43,8 @@ declare global {
       method: string;
     }
   }
+}
+
+declare abstract class AnyDiceConfig extends DiceConfig<FormApplication.Options> {
+  constructor(arg0: never, ...args: never[]);
 }

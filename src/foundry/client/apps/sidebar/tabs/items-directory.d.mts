@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -9,12 +9,12 @@ declare global {
 
     protected override _canDragDrop(selector: string): boolean;
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
   }
 
   namespace ItemDirectory {
-    type Any = AnyItemDirectory;
-    type AnyConstructor = typeof AnyItemDirectory;
+    interface Any extends AnyItemDirectory {}
+    interface AnyConstructor extends Identity<typeof AnyItemDirectory> {}
   }
 }
 

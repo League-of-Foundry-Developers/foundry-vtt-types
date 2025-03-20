@@ -1,4 +1,4 @@
-import type { NullishProps } from "../../../../utils/index.d.mts";
+import type { Identity, NullishProps } from "fvtt-types/utils";
 import type {
   _ProcessBufferToBase64Options,
   Debug,
@@ -61,8 +61,8 @@ declare global {
   }
 
   namespace TextureCompressor {
-    type Any = AnyTextureCompressor;
-    type AnyConstructor = typeof AnyTextureCompressor;
+    interface Any extends AnyTextureCompressor {}
+    interface AnyConstructor extends Identity<typeof AnyTextureCompressor> {}
 
     /** @internal */
     type _ConstructorOptions = NullishProps<{

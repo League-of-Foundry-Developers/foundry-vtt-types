@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -136,7 +136,7 @@ declare global {
 
   namespace InteractionLayer {
     interface Any extends AnyInteractionLayer {}
-    type AnyConstructor = typeof AnyInteractionLayer;
+    interface AnyConstructor extends Identity<typeof AnyInteractionLayer> {}
 
     interface LayerOptions extends CanvasLayer.LayerOptions {
       zIndex: number;

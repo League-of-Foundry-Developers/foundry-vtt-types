@@ -10,7 +10,7 @@ declare global {
      * The implementation of the PlaylistSound document instance configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylistSound | `fvtt-types/configuration/ConfiguredPlaylistSound`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"PlaylistSound">;
+    type Implementation = Document.ImplementationFor<"PlaylistSound">;
 
     /**
      * The implementation of the PlaylistSound document configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
@@ -31,26 +31,68 @@ declare global {
     type Parent = Playlist.Implementation | null;
 
     /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Playlist">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    type ParentCollectionName = Metadata["collection"];
+
+    /**
      * An instance of `PlaylistSound` that comes from the database.
      */
     interface Stored extends Document.Stored<PlaylistSound.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link PlaylistSound._source | `PlaylistSound#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link PlaylistSound._source | `PlaylistSound._source`}. This data is what was
+     * The data put in {@link PlaylistSound._source | `PlaylistSound#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -65,7 +107,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link PlaylistSound.name | `PlaylistSound#name`}.
      *
      * This is data transformed from {@link PlaylistSound.Source | `PlaylistSound.Source`} and turned into more
@@ -345,11 +387,13 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<"base", PlaylistSound.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", NonNullable<PlaylistSound.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<PlaylistSound.CreateData>,
-      context: Document.CreateDialogContext<string, PlaylistSound.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<PlaylistSound.Parent>>,
     ): Promise<PlaylistSound.Stored | null | undefined>;
 
     static override fromDropData(

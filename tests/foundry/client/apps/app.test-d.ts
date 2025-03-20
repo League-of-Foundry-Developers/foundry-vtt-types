@@ -3,8 +3,8 @@ import type { MaybePromise } from "fvtt-types/utils";
 
 declare const app: Application;
 
-expectTypeOf(Application.defaultOptions).toEqualTypeOf<ApplicationOptions>();
-expectTypeOf(app.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(Application.defaultOptions).toEqualTypeOf<Application.Options>();
+expectTypeOf(app.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(app.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(app.render(true)).toEqualTypeOf<unknown>();
 
@@ -20,7 +20,7 @@ expectTypeOf(app.title).toEqualTypeOf<string>();
 
 expectTypeOf(app.bringToTop()).toEqualTypeOf<void>();
 expectTypeOf(app.getData()).toEqualTypeOf<MaybePromise<object>>();
-expectTypeOf(app.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(app.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(app.close({ force: false })).toEqualTypeOf<Promise<void>>();
 expectTypeOf(app.close()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(app.render(true)).toEqualTypeOf<unknown>();

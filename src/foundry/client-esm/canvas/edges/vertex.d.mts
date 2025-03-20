@@ -1,13 +1,12 @@
-import type { NullishProps } from "../../../../utils/index.d.mts";
+import type { Identity, NullishProps } from "fvtt-types/utils";
 import type Edge from "./edge.d.mts";
 
 /**
  * A specialized point data structure used to represent vertices in the context of the ClockwiseSweepPolygon.
  * This class is not designed or intended for use outside of that context.
- * @internal
  */
 declare class PolygonVertex {
-  constructor(x: number, y: number, options?: PolygonVertex.ConstructorOptions);
+  constructor(x: number, y: number, { distance, index }?: PolygonVertex.ConstructorOptions);
 
   x: number;
 
@@ -108,10 +107,9 @@ declare class PolygonVertex {
   /**
    * Record whether this PolygonVertex has been visited in the sweep
    * @defaultValue `false`
-   * @remarks Set externally during `ClockwiseSweeepPolygon` initialization
-   * @privateRemarks Foundry marked `@internal`
+   * @remarks Foundry marked `@internal`, set externally during `ClockwiseSweepPolygon` initialization
    */
-  _visited: boolean;
+  protected _visited: boolean;
 
   /**
    * Is this vertex limited in type?
@@ -131,7 +129,10 @@ declare class PolygonVertex {
    */
   get isTerminal(): boolean;
 
-  /**declareme point?
+  /**
+   * Is this vertex the same point as some other vertex?
+   * @param other - Some other vertex
+   * @returns Are they the same point?
    */
   equals(other: PolygonVertex): boolean;
 
@@ -141,12 +142,13 @@ declare class PolygonVertex {
    * @param options - Additional options that apply to this vertex
    * @returns The constructed vertex
    */
+  // options: not null (destructured when passed to `new this()`)
   static fromPoint(point: Canvas.Point, options?: PolygonVertex.ConstructorOptions): PolygonVertex;
 }
 
 declare namespace PolygonVertex {
   interface Any extends AnyPolygonVertex {}
-  type AnyConstructor = typeof AnyPolygonVertex;
+  interface AnyConstructor extends Identity<typeof AnyPolygonVertex> {}
 
   /** @internal */
   type _ConstructorOptions = NullishProps<{

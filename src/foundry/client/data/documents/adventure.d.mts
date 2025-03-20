@@ -9,7 +9,7 @@ declare global {
      * The implementation of the Adventure document instance configured through `CONFIG.Adventure.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredAdventure | `fvtt-types/configuration/ConfiguredAdventure`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Adventure">;
+    type Implementation = Document.ImplementationFor<"Adventure">;
 
     /**
      * The implementation of the Adventure document configured through `CONFIG.Adventure.documentClass` in Foundry and
@@ -35,21 +35,21 @@ declare global {
     interface Stored extends Document.Stored<Adventure.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link Adventure._source | `Adventure#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link Adventure._source | `Adventure._source`}. This data is what was
+     * The data put in {@link Adventure._source | `Adventure#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -64,7 +64,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Adventure.name | `Adventure#name`}.
      *
      * This is data transformed from {@link Adventure.Source | `Adventure.Source`} and turned into more
@@ -287,6 +287,17 @@ declare global {
      * @deprecated {@link Adventure.Implementation | `Adventure.Implementation`}
      */
     type ConfiguredInstance = Implementation;
+
+    interface ImportData {
+      toCreate?: DocumentDataRecord;
+      toUpdate?: DocumentDataRecord;
+      documentCount: number;
+    }
+
+    interface ImportResult {
+      created: DocumentResult;
+      updated: DocumentResult;
+    }
   }
 
   /**
@@ -311,19 +322,19 @@ declare global {
      * @param options - Options which configure and customize the import process
      * @returns The import result
      */
-    import(options?: InexactPartial<Adventure.ImportOptions>): Promise<AdventureImportResult>;
+    import(options?: InexactPartial<Adventure.ImportOptions>): Promise<Adventure.ImportResult>;
 
     /**
      * Prepare Adventure data for import into the World.
      * @param options - Options passed in from the import dialog to configure the import behavior
      * @returns A subset of adventure fields to import.
      */
-    prepareImport(options?: InexactPartial<Adventure.PrepareImportOptions>): Promise<AdventureImportData>;
+    prepareImport(options?: InexactPartial<Adventure.PrepareImportOptions>): Promise<Adventure.ImportData>;
 
     /**
      * Execute an Adventure import workflow, creating and updating documents in the World.
      */
-    importContent(data?: InexactPartial<AdventureImportData>): Promise<AdventureImportResult>;
+    importContent(data?: InexactPartial<Adventure.ImportData>): Promise<Adventure.ImportResult>;
 
     /*
      * After this point these are not really overridden methods.
@@ -349,16 +360,11 @@ declare global {
     ): Promise<Adventure.Implementation>;
   }
 
-  interface AdventureImportData {
-    toCreate?: DocumentDataRecord;
-    toUpdate?: DocumentDataRecord;
-    documentCount: number;
-  }
+  /** @deprecated {@link Adventure.ImportData | `Adventure.ImportData`} */
+  type AdventureImportData = Adventure.ImportData;
 
-  interface AdventureImportResult {
-    created: DocumentResult;
-    updated: DocumentResult;
-  }
+  /** @deprecated {@link Adventure.ImportResult | `Adventure.ImportResult`} */
+  type AdventureImportResult = Adventure.ImportResult;
 }
 
 type DocumentDataRecord = {

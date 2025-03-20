@@ -3,9 +3,9 @@ import type { DataModelValidationError } from "../../common/data/validation-fail
 
 declare global {
   /**
-   * An object structure of document types at the top level, with a count of different sub-types for that document type.
+   * @deprecated {@link ClientIssues.ModuleSubTypeCounts | `ClientIssues.ModuleSubTypeCounts`}
    */
-  interface ModuleSubTypeCounts extends Record<Document.Type, Record<string, number>> {}
+  type ModuleSubTypeCounts = ClientIssues.ModuleSubTypeCounts;
 
   /**
    * A class responsible for tracking issues in the current world.
@@ -64,12 +64,12 @@ declare global {
      * Get the Document sub-type counts for a given module.
      * @param module - The module or its ID.
      */
-    getSubTypeCountsFor(module: Module | string): ModuleSubTypeCounts | undefined;
+    getSubTypeCountsFor(module: Module | string): ClientIssues.ModuleSubTypeCounts | undefined;
 
     /**
      * Retrieve all sub-type counts in the world.
      */
-    getAllSubtypeCounts(): IterableIterator<[string, ModuleSubTypeCounts]>;
+    getAllSubtypeCounts(): IterableIterator<[string, ClientIssues.ModuleSubTypeCounts]>;
 
     /**
      * Retrieve the tracked validation failures.
@@ -98,5 +98,10 @@ declare global {
       /** Parameters to supply to the localization. */
       params?: Record<string, object> | undefined;
     }
+
+    /**
+     * An object structure of document types at the top level, with a count of different sub-types for that document type.
+     */
+    interface ModuleSubTypeCounts extends Record<Document.Type, Record<string, number>> {}
   }
 }

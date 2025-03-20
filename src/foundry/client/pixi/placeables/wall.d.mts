@@ -37,15 +37,30 @@ declare global {
      */
     type ImplementationClass = WallDocument.ImplementationClass;
 
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshLine: boolean;
+    interface RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<this>;
 
-      refreshEndpoints: boolean;
+      /** @defaultValue `{ propagate: ["refreshState", "refreshLine"], alias: true }` */
+      refresh: RenderFlag<this>;
 
-      refreshDirection: boolean;
+      /** @defaultValue `{ propagate: ["refreshEndpoints", "refreshHighlight"] }` */
+      refreshState: RenderFlag<this>;
 
-      refreshHighlight: boolean;
+      /** @defaultValue `{ propagate: ["refreshEndpoints", "refreshHighlight", "refreshDirection"] }` */
+      refreshLine: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshEndpoints: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshDirection: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshHighlight: RenderFlag<this>;
     }
+
+    interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
 
     interface ControlOptions extends PlaceableObject.ControlOptions {
       /** @defaultValue `false` */
@@ -66,28 +81,7 @@ declare global {
   class Wall extends PlaceableObject<WallDocument.Implementation> {
     static override embeddedName: "Wall";
 
-    static override RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<Wall.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshState", "refreshLine"], alias: true }` */
-      refresh: RenderFlag<Wall.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshEndpoints", "refreshHighlight"] }` */
-      refreshState: RenderFlag<Wall.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshEndpoints", "refreshHighlight", "refreshDirection"] }` */
-      refreshLine: RenderFlag<Wall.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshEndpoints: RenderFlag<Wall.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshDirection: RenderFlag<Wall.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshHighlight: RenderFlag<Wall.RenderFlags>;
-    };
+    static override RENDER_FLAGS: Wall.RENDER_FLAGS;
 
     /**
      * A reference the Door Control icon associated with this Wall, if any

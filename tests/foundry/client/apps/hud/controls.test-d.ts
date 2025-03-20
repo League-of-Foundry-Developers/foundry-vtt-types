@@ -5,8 +5,8 @@ expectTypeOf(new SceneControls({ width: null })).toEqualTypeOf<SceneControls>();
 expectTypeOf(SceneControls.defaultOptions.width).toEqualTypeOf<number | null>();
 
 const controls = new SceneControls();
-expectTypeOf(controls.options).toEqualTypeOf<ApplicationOptions>();
-expectTypeOf(SceneControls.defaultOptions).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(controls.options).toEqualTypeOf<Application.Options>();
+expectTypeOf(SceneControls.defaultOptions).toEqualTypeOf<Application.Options>();
 
 expectTypeOf(controls.initialize()).toEqualTypeOf<void>();
 expectTypeOf(controls.initialize({ control: "token" })).toEqualTypeOf<void>();

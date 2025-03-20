@@ -1,36 +1,17 @@
 import type { DeepPartial, EmptyObject, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
+import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 
 declare global {
-  interface ManageCompendiumRequest extends SocketInterface.SocketRequest {
-    /**
-     * The request action.
-     */
-    action: string;
+  /**
+   * @deprecated {@link CompendiumCollection.ManageCompendiumRequest | `CompendiumCollection.ManageCompendiumRequest`}
+   */
+  type ManageCompendiumRequest = CompendiumCollection.ManageCompendiumRequest;
 
-    /**
-     * The compendium creation data, or the ID of the compendium to delete.
-     */
-    data: PackageCompendiumData | string;
-
-    /**
-     * Additional options.
-     */
-    options?: Record<string, unknown>;
-  }
-
-  // @ts-expect-error Bad inheritance
-  interface ManageCompendiumResponse extends SocketInterface.SocketResponse {
-    /**
-     * The original request.
-     */
-    request: ManageCompendiumRequest;
-
-    /**
-     * The compendium creation data, or the collection name of the deleted compendium.
-     */
-    result: PackageCompendiumData | string;
-  }
+  /**
+   * @deprecated {@link CompendiumCollection.ManageCompendiumResponse | `CompendiumCollection.ManageCompendiumResponse`}
+   */
+  type ManageCompendiumResponse = CompendiumCollection.ManageCompendiumResponse;
 
   /**
    * A collection of Document objects contained within a specific compendium pack.
@@ -150,7 +131,7 @@ declare global {
 
     // NOTE(LukeAbby): This override was disabled for the time being because it's erroring.
     // Thankfully it doesn't actually change its parent class's signature.
-    // set(id: string, document: Document.Stored<Document.ImplementationInstanceFor<T["type"]>>): this;
+    // set(id: string, document: Document.Stored<Document.ImplementationFor<T["type"]>>): this;
 
     delete: (id: string) => boolean;
 
@@ -168,7 +149,7 @@ declare global {
      * @param id -  The requested Document id
      * @returns The retrieved Document instance
      */
-    getDocument(id: string): Promise<Document.Stored<Document.ImplementationInstanceFor<T["type"]>> | undefined | null>;
+    getDocument(id: string): Promise<Document.Stored<Document.ImplementationFor<T["type"]>> | undefined | null>;
 
     /**
      * Load multiple documents from the Compendium pack using a provided query object.
@@ -191,9 +172,7 @@ declare global {
      * await pack.getDocuments({ type__in: ["weapon", "armor"] });
      * ```
      */
-    getDocuments(
-      query?: Record<string, unknown>,
-    ): Promise<Document.Stored<Document.ImplementationInstanceFor<T["type"]>>[]>;
+    getDocuments(query?: Record<string, unknown>): Promise<Document.Stored<Document.ImplementationFor<T["type"]>>[]>;
 
     /**
      * Get the ownership level that a User has for this Compendium pack.
@@ -229,9 +208,9 @@ declare global {
      * @returns The imported Document instance
      */
     importDocument(
-      document: Document.ImplementationInstanceFor<T["type"]>,
+      document: Document.ImplementationFor<T["type"]>,
       options?: InexactPartial<ClientDocument.ToCompendiumOptions>,
-    ): Promise<Document.Stored<Document.ImplementationInstanceFor<T["type"]>> | undefined>;
+    ): Promise<Document.Stored<Document.ImplementationFor<T["type"]>> | undefined>;
 
     /**
      * Import a Folder into this Compendium Collection.
@@ -285,10 +264,10 @@ declare global {
            * @defaultValue `""`
            * */
           folderName: string;
-        } & Document.OnCreateOptions<this["metadata"]["type"]> &
+        } & Document.Database.CreateOperation<DatabaseCreateOperation> &
           WorldCollection.FromCompendiumOptions
       >,
-    ): Promise<Document.Stored<Document.ImplementationInstanceFor<T["type"]>>[]>;
+    ): Promise<Document.Stored<Document.ImplementationFor<T["type"]>>[]>;
 
     /**
      * Provide a dialog form that prompts the user to import the full contents of a Compendium pack into the World.
@@ -300,13 +279,13 @@ declare global {
      */
     importDialog(
       options?: Dialog.Options,
-    ): Promise<Document.Stored<Document.ImplementationInstanceFor<T["type"]>>[] | null | false>;
+    ): Promise<Document.Stored<Document.ImplementationFor<T["type"]>>[] | null | false>;
 
     /**
      * Add a Document to the index, capturing it's relevant index attributes
      * @param document -The document to index
      */
-    indexDocument(document: Document.Stored<Document.ImplementationInstanceFor<T["type"]>>): void;
+    indexDocument(document: Document.Stored<Document.ImplementationFor<T["type"]>>): void;
 
     /**
      * Prompt the gamemaster with a dialog to configure ownership of this Compendium pack.
@@ -325,12 +304,12 @@ declare global {
      * Create a new Compendium Collection using provided metadata.
      * @param metadata - The compendium metadata used to create the new pack
      * @param options - Additional options which modify the Compendium creation request
-     *                  default `{}`
+     *                  (default: `{}`)
      */
     static createCompendium<T extends CompendiumCollection.Metadata>(
       this: abstract new (arg0: never, ...args: never[]) => CompendiumCollection<T>,
       metadata: CompendiumCollection.CreateCompendiumMetadata<NoInfer<T>>,
-      options?: Document.OnCreateOptions<T["type"]>,
+      options?: unknown,
     ): Promise<CompendiumCollection<T>>;
 
     /**
@@ -385,7 +364,7 @@ declare global {
   }
 
   namespace CompendiumCollection {
-    type Any = CompendiumCollection<any>;
+    interface Any extends CompendiumCollection<any> {}
 
     interface Configuration {
       ownership: InexactPartial<foundry.packages.BasePackage.OwnershipRecord>;
@@ -428,17 +407,47 @@ declare global {
        * An array of fields to return as part of the index
        * @defaultValue `[]`
        */
-      fields?: (keyof Document.ImplementationInstanceFor<T["type"]>["_source"])[];
+      fields?: (keyof Document.ImplementationFor<T["type"]>["_source"])[];
     }
 
     // TODO: Improve automatic index properties based on document type
     type IndexEntry<T extends CompendiumCollection.Metadata> = { _id: string; uuid: string } & DeepPartial<
-      Document.ImplementationInstanceFor<T["type"]>["_source"]
+      Document.ImplementationFor<T["type"]>["_source"]
     >;
 
     type ForDocument<Name extends Document.Type> = Name extends unknown
       ? CompendiumCollection<Metadata & { type: Name }>
       : never;
+
+    interface ManageCompendiumRequest extends SocketInterface.SocketRequest {
+      /**
+       * The request action.
+       */
+      action: string;
+
+      /**
+       * The compendium creation data, or the ID of the compendium to delete.
+       */
+      data: PackageCompendiumData | string;
+
+      /**
+       * Additional options.
+       */
+      options?: Record<string, unknown>;
+    }
+
+    // @ts-expect-error Bad inheritance
+    interface ManageCompendiumResponse extends SocketInterface.SocketResponse {
+      /**
+       * The original request.
+       */
+      request: ManageCompendiumRequest;
+
+      /**
+       * The compendium creation data, or the collection name of the deleted compendium.
+       */
+      result: PackageCompendiumData | string;
+    }
   }
 }
 

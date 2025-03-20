@@ -6,10 +6,25 @@ import type { fields, TextureData } from "../../../common/data/module.d.mts";
 declare global {
   namespace TileDocument {
     /**
+     * The document's name.
+     */
+    type Name = "Tile";
+
+    /**
+     * The arguments to construct the document.
+     */
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+    /**
+     * The documents embedded within Tile.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the TileDocument document instance configured through `CONFIG.Tile.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTileDocument | `fvtt-types/configuration/ConfiguredTileDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Tile">;
+    type Implementation = Document.ImplementationFor<"Tile">;
 
     /**
      * The implementation of the TileDocument document configured through `CONFIG.Tile.documentClass` in Foundry and
@@ -30,26 +45,73 @@ declare global {
     type Parent = Scene.Implementation | null;
 
     /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Scene">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
+
+    /**
      * An instance of `TileDocument` that comes from the database.
      */
     interface Stored extends Document.Stored<TileDocument.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link TileDocument._source | `TileDocument#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link TileDataModel._source | `TileDataModel._source`}. This data is what was
+     * The data put in {@link TileDocument._source | `TileDocument#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -61,10 +123,11 @@ declare global {
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
+    //TODO: ensure `width` and `height` are required for creation
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link TileDocument.name | `TileDocument#name`}.
      *
      * This is data transformed from {@link TileDocument.Source | `TileDocument.Source`} and turned into more
@@ -105,12 +168,14 @@ declare global {
       /**
        * The pixel width of the tile
        */
-      width: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }>;
+      //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      width: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }, number>;
 
       /**
        * The pixel height of the tile
        */
-      height: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }>;
+      //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      height: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }, number>;
 
       /**
        * The x-coordinate position of the top-left corner of the tile
@@ -184,6 +249,7 @@ declare global {
             initial: typeof CONST.OCCLUSION_MODES.NONE;
             validationError: "must be a value in CONST.TILE_OCCLUSION_MODES";
           },
+          //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
           CONST.OCCLUSION_MODES | null | undefined,
           CONST.OCCLUSION_MODES | null,
           CONST.OCCLUSION_MODES | null
@@ -227,9 +293,10 @@ declare global {
       flags: fields.ObjectField.FlagsField<"Tile", InterfaceToObject<CoreFlags>>;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for TileDocuments */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<TileDocument.Parent> {}
+
       /** Options passed along in Create operations for TileDocuments */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<
@@ -237,39 +304,100 @@ declare global {
           TileDocument.Parent,
           Temporary
         > {}
+
       /** Options passed along in Delete operations for TileDocuments */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TileDocument.Parent> {}
+
       /** Options passed along in Update operations for TileDocuments */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<TileDocument.UpdateData, TileDocument.Parent> {}
 
-      /** Options for {@link TileDocument.createDocuments | `TileDocument.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link TileDocument._preCreateOperation | `TileDocument._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link TileDocument.createDocuments | `TileDocument.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<TileDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link TileDocument.updateDocuments | `TileDocument.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<TileDocument.Database.Update> {}
+
+      /** Operation for {@link TileDocument.deleteDocuments | `TileDocument.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<TileDocument.Database.Delete> {}
+
+      /** Operation for {@link TileDocument.create | `TileDocument.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<TileDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link TileDocument.update | `TileDocument#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link TileDocument.get | `TileDocument.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link TileDocument._preCreate | `TileDocument#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link TileDocument._onCreate | `TileDocument#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link TileDocument.updateDocuments | `TileDocument.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link TileDocument._preUpdateOperation | `TileDocument._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link TileDocument._preCreateOperation | `TileDocument._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TileDocument.Database.Create> {}
+
+      /** Operation for {@link TileDocument._onCreateOperation | `TileDocument#_onCreateOperation`} */
+      interface OnCreateOperation extends TileDocument.Database.Create {}
+
       /** Options for {@link TileDocument._preUpdate | `TileDocument#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link TileDocument._onUpdate | `TileDocument#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link TileDocument.deleteDocuments | `TileDocument.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link TileDocument._preDeleteOperation | `TileDocument._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link TileDocument._onUpdate | `TileDocument#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link TileDocument._preUpdateOperation | `TileDocument._preUpdateOperation`} */
+      interface PreUpdateOperation extends TileDocument.Database.Update {}
+
+      /** Operation for {@link TileDocument._onUpdateOperation | `TileDocument._preUpdateOperation`} */
+      interface OnUpdateOperation extends TileDocument.Database.Update {}
+
       /** Options for {@link TileDocument._preDelete | `TileDocument#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link TileDocument._onDelete | `TileDocument#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link TileDocument._preDeleteOperation | `TileDocument#_preDeleteOperation`} */
+      interface PreDeleteOperation extends TileDocument.Database.Delete {}
+
+      /** Options for {@link TileDocument._onDeleteOperation | `TileDocument#_onDeleteOperation`} */
+      interface OnDeleteOperation extends TileDocument.Database.Delete {}
+
+      /** Context for {@link TileDocument._onDeleteOperation | `TileDocument._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<TileDocument.Parent> {}
+
+      /** Context for {@link TileDocument._onCreateDocuments | `TileDocument._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<TileDocument.Parent> {}
+
+      /** Context for {@link TileDocument._onUpdateDocuments | `TileDocument._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<TileDocument.Parent> {}
+
+      /**
+       * Options for {@link TileDocument._preCreateDescendantDocuments | `TileDocument#_preCreateDescendantDocuments`}
+       * and {@link TileDocument._onCreateDescendantDocuments | `TileDocument#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<TileDocument.Database.Create> {}
+
+      /**
+       * Options for {@link TileDocument._preUpdateDescendantDocuments | `TileDocument#_preUpdateDescendantDocuments`}
+       * and {@link TileDocument._onUpdateDescendantDocuments | `TileDocument#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<TileDocument.Database.Update> {}
+
+      /**
+       * Options for {@link TileDocument._preDeleteDescendantDocuments | `TileDocument#_preDeleteDescendantDocuments`}
+       * and {@link TileDocument._onDeleteDescendantDocuments | `TileDocument#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<TileDocument.Database.Delete> {}
     }
 
     interface CoreFlags {
@@ -285,8 +413,16 @@ declare global {
       };
     }
 
+    interface Flags extends Document.ConfiguredFlagsForName<"Tile"> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<"Tile", Scope, Key>;
+    }
+
     /**
-     * @deprecated {@link TileDocument.DatabaseOperation | `TileDocument.DatabaseOperation`}
+     * @deprecated {@link TileDocument.Database | `TileDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<TileDocument> {}
@@ -324,21 +460,29 @@ declare global {
      * You should use {@link TileDocument.implementation | `new TileDocument.implementation(...)`} instead which
      * will give you a system specific implementation of `TileDocument`.
      */
-    constructor(...args: Document.ConstructorParameters<TileDocument.CreateData, TileDocument.Parent>);
+    constructor(...args: TileDocument.ConstructorArgs);
 
     override prepareDerivedData(): void;
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<"base", TileDocument.Parent>): string;
+    // ClientDocument overrides
+
+    // Descendant Document operations have been left out because Tile does not have any descendant documents.
+
+    static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<TileDocument.Parent>>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<TileDocument.CreateData>,
-      context: Document.CreateDialogContext<string, TileDocument.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<TileDocument.Parent>>,
     ): Promise<TileDocument.Stored | null | undefined>;
 
     static override fromDropData(
@@ -350,5 +494,7 @@ declare global {
       source: TileDocument.Source,
       context?: Document.FromImportContext<TileDocument.Parent>,
     ): Promise<TileDocument.Implementation>;
+
+    // Embedded document operations have been left out because Tile does not have any embedded documents.
   }
 }

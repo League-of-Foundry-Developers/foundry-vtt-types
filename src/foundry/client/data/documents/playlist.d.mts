@@ -10,7 +10,7 @@ declare global {
      * The implementation of the Playlist document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylist | `fvtt-types/configuration/ConfiguredPlaylist`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Playlist">;
+    type Implementation = Document.ImplementationFor<"Playlist">;
 
     /**
      * The implementation of the Playlist document configured through `CONFIG.Playlist.documentClass` in Foundry and
@@ -36,21 +36,21 @@ declare global {
     interface Stored extends Document.Stored<Playlist.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link Playlist._source | `Playlist#_source`}.. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link Playlist._source | `Playlist._source`}. This data is what was
+     * The data put in {@link Playlist._source | `Playlist#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -65,7 +65,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Playlist.name | `Playlist#name`}.
      *
      * This is data transformed from {@link Playlist.Source | `Playlist.Source`} and turned into more
@@ -385,29 +385,29 @@ declare global {
      */
 
     protected override _onCreateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      data: unknown[],
-      options: Document.OnCreateOptions<"PlaylistSound">,
+      parent: Playlist.Stored,
+      collection: PlaylistSound.ParentCollectionName,
+      documents: PlaylistSound.Stored[],
+      result: PlaylistSound.CreateData[],
+      options: PlaylistSound.DatabaseOperation.OnCreateOperation,
       userId: string,
     ): void;
 
     protected override _onUpdateDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
-      changes: unknown[],
-      options: Document.OnUpdateOptions<"PlaylistSound">,
+      parent: Playlist.Stored,
+      collection: PlaylistSound.ParentCollectionName,
+      documents: PlaylistSound.Stored[],
+      changes: PlaylistSound.UpdateData[],
+      options: PlaylistSound.DatabaseOperation.OnUpdateOperation,
       userId: string,
     ): void;
 
     protected override _onDeleteDescendantDocuments(
-      parent: ClientDocument,
-      collection: string,
-      documents: ClientDocument[],
+      parent: Playlist.Stored,
+      collection: PlaylistSound.ParentCollectionName,
+      documents: PlaylistSound.Stored[],
       ids: string[],
-      options: Document.OnDeleteOptions<"PlaylistSound">,
+      options: PlaylistSound.DatabaseOperation.OnDeleteOperation,
       userId: string,
     ): void;
 

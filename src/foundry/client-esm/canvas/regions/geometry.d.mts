@@ -6,7 +6,7 @@
 declare class RegionGeometry extends PIXI.Geometry {
   /**
    * Create a RegionGeometry
-   * @internal
+   * @remarks Foundry marked `@internal`
    */
   constructor(region: Region.Object);
 
@@ -15,17 +15,24 @@ declare class RegionGeometry extends PIXI.Geometry {
 
   /**
    * Update the buffers
-   * @internal
+   * @remarks Foundry marked `@internal`, is exclusively called externally in `Region##updateShapes`
    */
   protected _clearBuffers(): void;
 
   /**
    * Update the buffers
-   * @internal
+   * @remarks Foundry marked `@internal`, is exclusively called externally in `Region##updateShapes`
    */
   protected _updateBuffers(): void;
+}
 
-  #regionGeometry: true;
+declare namespace RegionGeometry {
+  interface Any extends AnyRegionGeometry {}
+  type AnyConstructor = typeof AnyRegionGeometry;
+}
+
+declare abstract class AnyRegionGeometry extends RegionGeometry {
+  constructor(arg0: never, ...args: never[]);
 }
 
 export default RegionGeometry;

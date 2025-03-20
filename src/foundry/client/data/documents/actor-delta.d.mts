@@ -10,7 +10,7 @@ declare global {
      * The implementation of the ActorDelta document instance configured through `CONFIG.ActorDelta.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"ActorDelta">;
+    type Implementation = Document.ImplementationFor<"ActorDelta">;
 
     /**
      * The implementation of the ActorDelta document configured through `CONFIG.ActorDelta.documentClass` in Foundry and
@@ -42,21 +42,21 @@ declare global {
     interface Stored extends Document.Stored<ActorDelta.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link ActorDelta._source | `ActorDelta#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link ActorDelta._source | `ActorDelta._source`}. This data is what was
+     * The data put in {@link ActorDelta._source | `ActorDelta#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -71,7 +71,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link ActorDelta.name | `ActorDelta#name`}.
      *
      * This is data transformed from {@link ActorDelta.Source | `ActorDelta.Source`} and turned into more
@@ -288,11 +288,13 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<ActorDelta.SubType, ActorDelta.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<ActorDelta.SubType, NonNullable<ActorDelta.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<ActorDelta.CreateData>,
-      context: Document.CreateDialogContext<ActorDelta.SubType, ActorDelta.Parent>,
+      context: Document.CreateDialogContext<ActorDelta.SubType, NonNullable<ActorDelta.Parent>>,
     ): Promise<ActorDelta.Stored | null | undefined>;
 
     static override fromDropData(

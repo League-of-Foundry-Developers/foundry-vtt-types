@@ -1,14 +1,11 @@
-import type { AnyObject, DeepPartial, EmptyObject } from "fvtt-types/utils";
+import type { AnyObject, Brand, DeepPartial, EmptyObject, Identity } from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
 
-declare const unsetDocument: unique symbol;
-
 declare namespace DocumentSheetV2 {
-  type Any = DocumentSheetV2<any, any, any, any>;
+  interface Any extends AnyDocumentSheetV2 {}
+  interface AnyConstructor extends Identity<typeof AnyDocumentSheetV2> {}
 
-  type AnyConstructor = typeof AnyDocumentSheetV2;
-
-  type UnsetDocument = typeof unsetDocument;
+  type UnsetDocument = Brand<string, "DocumentSheetV2.UnsetDocument">;
 
   interface Configuration<Document extends foundry.abstract.Document.Any | UnsetDocument = UnsetDocument>
     extends ApplicationV2.Configuration {

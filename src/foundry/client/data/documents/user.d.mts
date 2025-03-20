@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/documentConfiguration.d.mts";
-import type { AnyObject, FixedInstanceType, InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, FixedInstanceType, InexactPartial, NullishProps } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -8,10 +8,25 @@ import type { BaseActor } from "../../../common/documents/_module.d.mts";
 declare global {
   namespace User {
     /**
+     * The document's name.
+     */
+    type Name = "User";
+
+    /**
+     * The arguments to construct the document.
+     */
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+    /**
+     * The documents embedded within User.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the User document instance configured through `CONFIG.User.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredUser | `fvtt-types/configuration/ConfiguredUser`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"User">;
+    type Implementation = Document.ImplementationFor<"User">;
 
     /**
      * The implementation of the User document configured through `CONFIG.User.documentClass` in Foundry and
@@ -32,26 +47,73 @@ declare global {
     type Parent = null;
 
     /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = never;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
+
+    /**
      * An instance of `User` that comes from the database.
      */
     interface Stored extends Document.Stored<User.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link User._source | `User#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link User._source | `User._source`}. This data is what was
+     * The data put in {@link User._source | `User$_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -198,44 +260,112 @@ declare global {
       _stats: fields.DocumentStatsField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for Users */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<User.Parent> {}
+
       /** Options passed along in Create operations for Users */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<User.CreateData, User.Parent, Temporary> {}
+
       /** Options passed along in Delete operations for Users */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<User.Parent> {}
+
       /** Options passed along in Update operations for Users */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<User.UpdateData, User.Parent> {}
 
-      /** Options for {@link User.createDocuments | `User.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link User._preCreateOperation | `User._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link User.createDocuments | `User.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<User.Database.Create<Temporary>> {}
+
+      /** Operation for {@link User.updateDocuments | `User.updateDocuments`} */
+      interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<User.Database.Update> {}
+
+      /** Operation for {@link User.deleteDocuments | `User.deleteDocuments`} */
+      interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<User.Database.Delete> {}
+
+      /** Operation for {@link User.create | `User.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<User.Database.Create<Temporary>> {}
+
+      /** Operation for {@link User.update | `User#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link User.get | `User.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link User._preCreate | `User#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link User._onCreate | `User#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link User.updateDocuments | `User.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link User._preUpdateOperation | `User._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link User._preCreateOperation | `User._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<User.Database.Create> {}
+
+      /** Operation for {@link User._onCreateOperation | `User#_onCreateOperation`} */
+      interface OnCreateOperation extends User.Database.Create {}
+
       /** Options for {@link User._preUpdate | `User#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link User._onUpdate | `User#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link User.deleteDocuments | `User.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link User._preDeleteOperation | `User._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link User._onUpdate | `User#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link User._preUpdateOperation | `User._preUpdateOperation`} */
+      interface PreUpdateOperation extends User.Database.Update {}
+
+      /** Operation for {@link User._onUpdateOperation | `User._preUpdateOperation`} */
+      interface OnUpdateOperation extends User.Database.Update {}
+
       /** Options for {@link User._preDelete | `User#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link User._onDelete | `User#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link User._preDeleteOperation | `User#_preDeleteOperation`} */
+      interface PreDeleteOperation extends User.Database.Delete {}
+
+      /** Options for {@link User._onDeleteOperation | `User#_onDeleteOperation`} */
+      interface OnDeleteOperation extends User.Database.Delete {}
+
+      /** Context for {@link User._onDeleteOperation | `User._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<User.Parent> {}
+
+      /** Context for {@link User._onCreateDocuments | `User._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<User.Parent> {}
+
+      /** Context for {@link User._onUpdateDocuments | `User._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<User.Parent> {}
+
+      /**
+       * Options for {@link User._preCreateDescendantDocuments | `User#_preCreateDescendantDocuments`}
+       * and {@link User._onCreateDescendantDocuments | `User#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<User.Database.Create> {}
+
+      /**
+       * Options for {@link User._preUpdateDescendantDocuments | `User#_preUpdateDescendantDocuments`}
+       * and {@link User._onUpdateDescendantDocuments | `User#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<User.Database.Update> {}
+
+      /**
+       * Options for {@link User._preDeleteDescendantDocuments | `User#_preDeleteDescendantDocuments`}
+       * and {@link User._onDeleteDescendantDocuments | `User#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<User.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<"User"> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<"User", Scope, Key>;
     }
 
     // Note(LukeAbby): This namespace exists to break cycles because of extensive usage of `User` in
@@ -245,26 +375,37 @@ declare global {
       type Implementation = FixedInstanceType<ConfiguredDocumentClass["User"]>;
     }
 
-    interface PingData {
+    /** @internal */
+    type _PingData = InexactPartial<{
       /**
-       * Pulls all connected clients' views to the pinged co-ordinates.
+       * The zoom level at which the ping was made.
+       * @defaultValue `1`
+       * @remarks Can't be `null` because it only has a parameter default and is eventually used as a divisor in `Canvas#_constrainView`
        */
-      pull?: false | undefined;
+      zoom: number;
+    }> &
+      NullishProps<{
+        /**
+         * Pulls all connected clients' views to the pinged co-ordinates.
+         */
+        pull: boolean;
 
-      /**
-       * The ping style, see CONFIG.Canvas.pings.
-       */
-      style: string;
+        /**
+         * The ping style, see CONFIG.Canvas.pings.
+         * @defaultValue `"pulse"`
+         * @remarks Overriden with `"arrow"` if the position of the ping is outside the viewport
+         *
+         * Overridden with `CONFIG.Canvas.pings.types.PULL` (`"chevron"` by default) if photosensitive mode is enabled and the ping is within the viewport
+         */
+        style: Ping.ConfiguredStyles;
+      }>;
 
+    /** @privateRemarks Only consumed by {@link ControlsLayer#handlePing} */
+    interface PingData extends _PingData {
       /**
        * The ID of the scene that was pinged.
        */
       scene: string;
-
-      /**
-       * The zoom level at which the ping was made.
-       */
-      zoom: number;
     }
 
     interface ActivityData {
@@ -287,11 +428,11 @@ declare global {
       ping: PingData;
 
       /** The state of the user's AV settings. */
-      av: AVSettingsData;
+      av: AVSettings.Data;
     }
 
     /**
-     * @deprecated {@link User.DatabaseOperation | `User.DatabaseOperation`}
+     * @deprecated {@link User.Database | `User.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<User> {}
@@ -330,7 +471,7 @@ declare global {
      * You should use {@link User.implementation | `new User.implementation(...)`} instead which
      * will give you a system specific implementation of `User`.
      */
-    constructor(...args: Document.ConstructorParameters<User.CreateData, User.Parent>);
+    constructor(...args: User.ConstructorArgs);
 
     /**
      * Track whether the user is currently active in the game
@@ -421,9 +562,17 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    // Descendant Document operations have been left out because User does not have any descendant documents.
 
     static override defaultName(context?: Document.DefaultNameContext<string, User.Parent>): string;
 
@@ -441,5 +590,7 @@ declare global {
       source: User.Source,
       context?: Document.FromImportContext<User.Parent>,
     ): Promise<User.Implementation>;
+
+    // Embedded document operations have been left out because Wall does not have any embedded documents.
   }
 }

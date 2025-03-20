@@ -1,10 +1,10 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
    * The sidebar directory which organizes and displays world-level Combat documents.
    */
-  class CombatTracker<Options extends ApplicationOptions = ApplicationOptions> extends SidebarTab<Options> {
+  class CombatTracker<Options extends Application.Options = Application.Options> extends SidebarTab<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -31,7 +31,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): ApplicationOptions;
+    static get defaultOptions(): Application.Options;
 
     /**
      * Return an array of Combat encounters which occur within the current Scene.
@@ -145,7 +145,7 @@ declare global {
      * @returns The Combatant entry context options
      * @internal
      */
-    protected _getEntryContextOptions(): ContextMenuEntry[];
+    protected _getEntryContextOptions(): ContextMenu.Entry[];
 
     /**
      * Display a dialog which prompts the user to enter a new initiative value for a Combatant
@@ -155,11 +155,11 @@ declare global {
   }
 
   namespace CombatTracker {
-    type Any = AnyCombatTracker;
-    type AnyConstructor = typeof AnyCombatTracker;
+    interface Any extends AnyCombatTracker {}
+    interface AnyConstructor extends Identity<typeof AnyCombatTracker> {}
   }
 }
 
-declare abstract class AnyCombatTracker extends CombatTracker<ApplicationOptions> {
+declare abstract class AnyCombatTracker extends CombatTracker<Application.Options> {
   constructor(arg0: never, ...args: never[]);
 }

@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -42,8 +42,8 @@ declare global {
   }
 
   namespace CombatEncounters {
-    type Any = AnyCombatEncounters;
-    type AnyConstructor = typeof AnyCombatEncounters;
+    interface Any extends AnyCombatEncounters {}
+    interface AnyConstructor extends Identity<typeof AnyCombatEncounters> {}
   }
 }
 

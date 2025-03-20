@@ -150,7 +150,7 @@ declare global {
 
   namespace Dialog {
     /** @internal */
-    type _JQueryOrHTML<IsJQuery extends boolean> = IsJQuery extends true ? JQuery : HTMLElement;
+    type _JQueryOrHTML<IsJQuery extends boolean | undefined> = IsJQuery extends true ? JQuery : HTMLElement;
 
     type JQueryOrHTML<Options extends Partial<Dialog.Options> | undefined> = _JQueryOrHTML<
       Options extends {
@@ -270,7 +270,7 @@ declare global {
       options?: Options;
     }
 
-    interface Options extends ApplicationOptions {
+    interface Options extends Application.Options {
       /**
        * Whether to provide jQuery objects to callback functions (if true) or plain
        * HTMLElement instances (if false). This is currently true by default but in the

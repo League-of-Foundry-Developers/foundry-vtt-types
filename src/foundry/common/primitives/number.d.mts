@@ -1,8 +1,5 @@
 export {};
 
-// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
-type NumberInstance = Number;
-
 declare global {
   interface Number {
     /**

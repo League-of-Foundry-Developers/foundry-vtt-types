@@ -1,4 +1,4 @@
-import type { NullishProps } from "../../../../utils/index.d.mts";
+import type { Identity, NullishProps } from "fvtt-types/utils";
 import type Edge from "./edge.d.mts";
 import type PolygonVertex from "./vertex.d.mts";
 
@@ -7,7 +7,15 @@ import type PolygonVertex from "./vertex.d.mts";
  * This class is not designed or intended for use outside of that context.
  */
 declare class CollisionResult {
-  constructor(values?: CollisionResult.ConstructorValues);
+  constructor({
+    target,
+    collisions,
+    cwEdges,
+    ccwEdges,
+    isBehind,
+    isLimited,
+    wasLimited,
+  }?: CollisionResult.ConstructorValues);
 
   /**
    * The vertex that was the target of this result
@@ -89,7 +97,7 @@ declare class CollisionResult {
 
 declare namespace CollisionResult {
   interface Any extends AnyCollisionResult {}
-  type AnyConstructor = typeof AnyCollisionResult;
+  interface AnyConstructor extends Identity<typeof AnyCollisionResult> {}
 
   type _ConstructorValues = NullishProps<{
     /**

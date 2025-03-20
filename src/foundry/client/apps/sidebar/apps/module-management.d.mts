@@ -7,7 +7,7 @@ declare global {
    * set of modules which are active within the World.
    * @typeParam Options - The type of the options object
    */
-  class ModuleManagement<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
+  class ModuleManagement<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     Options,
     undefined
   > {
@@ -46,7 +46,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplication.Options;
 
     override get isEditable(): boolean;
 
@@ -120,11 +120,11 @@ declare global {
      * @param counts   - An object of sub-type counts.
      * @param isActive - Whether the module is active.
      */
-    protected _formatDocumentSummary(counts: ModuleSubTypeCounts, isActive: boolean): string;
+    protected _formatDocumentSummary(counts: ClientIssues.ModuleSubTypeCounts, isActive: boolean): string;
   }
 
   namespace ModuleManagement {
-    type Any = ModuleManagement<any>;
+    interface Any extends ModuleManagement<any> {}
 
     type FilterName = "all" | "active" | "inactive";
 

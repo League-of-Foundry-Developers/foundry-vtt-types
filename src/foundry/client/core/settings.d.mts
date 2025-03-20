@@ -2,7 +2,6 @@ import type { AnyArray, AnyObject, InexactPartial, FixedInstanceType } from "fvt
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { CustomFormInput } from "../../client-esm/applications/forms/fields.d.mts";
 import type DataModel from "../../common/abstract/data.d.mts";
-import type Document from "../../common/abstract/document.d.mts";
 import type { DataField } from "../../common/data/fields.d.mts";
 
 declare global {
@@ -161,7 +160,7 @@ declare global {
       namespace: N,
       key: K,
       value: ClientSettings.SettingAssignmentType<N, K>,
-      options?: Document.OnUpsertOptions<"Setting">,
+      options?: Setting.Database.CreateOperation<undefined | false> | Setting.Database.UpdateOperation,
     ): Promise<ClientSettings.SettingInitializedType<N, K>>;
   }
 

@@ -1,5 +1,5 @@
 import type { ConfiguredCard } from "../../../../configuration/index.d.mts";
-import type { DeepPartial, InexactPartial } from "fvtt-types/utils";
+import type { DeepPartial } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -13,7 +13,7 @@ declare global {
      * The implementation of the Card document instance configured through `CONFIG.Card.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCard | `fvtt-types/configuration/ConfiguredCard`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Card">;
+    type Implementation = Document.ImplementationFor<"Card">;
 
     /**
      * The implementation of the Card document configured through `CONFIG.Card.documentClass` in Foundry and
@@ -44,21 +44,21 @@ declare global {
     interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link Card._source | `Card#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link Card._source | `Card._source`}. This data is what was
+     * The data put in {@link Card._source | `Card#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -73,7 +73,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Card.name | `Card#name`}.
      *
      * This is data transformed from {@link Card.Source | `Card.Source`} and turned into more
@@ -424,7 +424,7 @@ declare global {
      */
     toMessage(
       messageData?: DeepPartial<foundry.documents.BaseChatMessage.CreateData>,
-      options?: InexactPartial<Document.OnCreateOptions<"ChatMessage">>,
+      options?: ChatMessage.DatabaseOperation.CreateOperation,
     ): Promise<ChatMessage.Implementation | undefined>;
 
     /*
@@ -433,11 +433,11 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<Card.SubType, Card.Parent>): string;
+    static override defaultName(context: Document.DefaultNameContext<Card.SubType, NonNullable<Card.Parent>>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<Card.CreateData>,
-      context: Document.CreateDialogContext<Card.SubType, Card.Parent>,
+      context: Document.CreateDialogContext<Card.SubType, NonNullable<Card.Parent>>,
     ): Promise<Card.Stored | null | undefined>;
 
     static override fromDropData(

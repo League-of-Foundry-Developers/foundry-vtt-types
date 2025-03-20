@@ -1260,6 +1260,6 @@ declare namespace Implementation {
      * @param data    - Initial data from which to construct the `DrawingDocument`
      * @param context - Construction context options
      */
-    constructor(...args: Document.ConstructorParameters<WallDocument.CreateData, WallDocument.Parent>);
+    constructor(...args: WallDocument.ConstructorArgs);
   }
 }

@@ -6,6 +6,7 @@ import Document = foundry.abstract.Document;
 class TestBaseNote extends BaseNote {}
 
 let myNote;
+// Note has no hard required fields for creation
 myNote = new TestBaseNote();
 myNote = new TestBaseNote({});
 myNote = new TestBaseNote({

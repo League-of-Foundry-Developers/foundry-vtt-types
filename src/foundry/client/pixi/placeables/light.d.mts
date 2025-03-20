@@ -39,11 +39,15 @@ declare global {
      */
     type ImplementationClass = AmbientLightDocument.ImplementationClass;
 
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshField: boolean;
+    interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refreshPosition", "refreshState"] }` */
+      refreshField: RenderFlag<this>;
 
-      refreshPosition: boolean;
+      /** @defaultValue `{}` */
+      refreshPosition: RenderFlag<this>;
     }
+
+    interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
   }
 
   /**
@@ -67,22 +71,7 @@ declare global {
 
     static override embeddedName: "AmbientLight";
 
-    static override RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<AmbientLight.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshField"], alias: true }` */
-      refresh: RenderFlag<AmbientLight.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshPosition", "refreshState"] }` */
-      refreshField: RenderFlag<AmbientLight.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshPosition: RenderFlag<AmbientLight.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshState: RenderFlag<AmbientLight.RenderFlags>;
-    };
+    static override RENDER_FLAGS: AmbientLight.RENDER_FLAGS;
 
     override get bounds(): PIXI.Rectangle;
 

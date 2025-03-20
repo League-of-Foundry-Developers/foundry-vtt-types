@@ -5,7 +5,7 @@ declare global {
    * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for Drawing objects.
    * @typeParam Options - the type of the options object
    */
-  class DrawingHUD<Options extends ApplicationOptions = ApplicationOptions> extends BasePlaceableHUD<
+  class DrawingHUD<Options extends Application.Options = Application.Options> extends BasePlaceableHUD<
     Drawing.Object,
     Options
   > {
@@ -18,7 +18,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
@@ -26,6 +26,6 @@ declare global {
   }
 
   namespace DrawingHUD {
-    type Any = DrawingHUD<any>;
+    interface Any extends DrawingHUD<any> {}
   }
 }

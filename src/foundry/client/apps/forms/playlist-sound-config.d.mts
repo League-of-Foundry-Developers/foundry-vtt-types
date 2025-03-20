@@ -10,7 +10,7 @@ declare global {
    */
   class PlaylistSoundConfig<
     Options extends
-      DocumentSheetOptions<PlaylistSound.Implementation> = DocumentSheetOptions<PlaylistSound.Implementation>,
+      DocumentSheet.Options<PlaylistSound.Implementation> = DocumentSheet.Options<PlaylistSound.Implementation>,
   > extends DocumentSheet<Options, PlaylistSound.Implementation> {
     /**
      * @defaultValue
@@ -22,7 +22,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<PlaylistSound.Implementation>;
+    static override get defaultOptions(): DocumentSheet.Options<PlaylistSound.Implementation>;
 
     override get title(): string;
 
@@ -42,7 +42,7 @@ declare global {
   }
 
   namespace PlaylistSoundConfig {
-    type Any = PlaylistSoundConfig<any>;
+    interface Any extends PlaylistSoundConfig<any> {}
 
     interface FormData {
       description: string;
@@ -55,7 +55,7 @@ declare global {
 
     interface PlaylistSoundConfigData<
       Options extends
-        DocumentSheetOptions<PlaylistSound.Implementation> = DocumentSheetOptions<PlaylistSound.Implementation>,
+        DocumentSheet.Options<PlaylistSound.Implementation> = DocumentSheet.Options<PlaylistSound.Implementation>,
     > extends DocumentSheet.DocumentSheetData<Options, PlaylistSound.Implementation> {
       lvolume: number;
     }

@@ -51,6 +51,9 @@ jobs:
       - name: Type Check
         run: npm run typecheck
 
+      - name: Type Check (exactOptionalPropertyTypes = false)
+        run: npx tsc --project src/tsconfig.json --exactOptionalPropertyTypes false
+
   lint:
     # Can run untrusted code so disable all permissions.
     permissions: {}
@@ -278,7 +281,7 @@ jobs:
           fetch-depth: 1
 
       - name: Download Main Test Results
-        uses: dawidd6/action-download-artifact@v8
+        uses: dawidd6/action-download-artifact@v9
         with:
           branch: main
           name: main-test-results

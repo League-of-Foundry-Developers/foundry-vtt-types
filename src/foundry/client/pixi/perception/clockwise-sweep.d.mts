@@ -1,16 +1,11 @@
-import type { IntentionalPartial } from "fvtt-types/utils";
+import type { Identity, IntentionalPartial } from "fvtt-types/utils";
 import type Edge from "../../../client-esm/canvas/edges/edge.d.mts";
 
 declare global {
-  interface PolygonRay extends Ray {
-    /**
-     * @remarks Only set in `ClockwiseSweepPolygon#_switchEdge` and only consumed in `#visualize`,
-     * despite unrelated method(s) having parameters claiming to want a `PolygonRay`
-     *
-     * Tested for truthiness in `#visualize` before use, so a nullish value is fine but never attains in core
-     */
-    result?: foundry.canvas.edges.CollisionResult | undefined | null;
-  }
+  /**
+   * @deprecated {@link ClockwiseSweepPolygon.Ray | `ClockwiseSweepPolygon.Ray`}
+   */
+  type PolygonRay = ClockwiseSweepPolygon.Ray;
 
   /**
    * A PointSourcePolygon implementation that uses CCW (counter-clockwise) geometry orientation.
@@ -38,9 +33,9 @@ declare global {
      * A collection of rays which are fired at vertices
      */
     // @ts-expect-error Getter/setter routine is deprecated functionality as of v11, removed in v13
-    rays: PolygonRay[];
+    rays: ClockwiseSweepPolygon.Ray[];
 
-    override initialize(origin: Canvas.Point, config?: PointSourcePolygon.Config): void;
+    override initialize(origin: Canvas.Point, config: PointSourcePolygon.Config): void;
 
     clone(): this;
 
@@ -167,17 +162,28 @@ declare global {
 
   namespace ClockwiseSweepPolygon {
     interface Any extends AnyClockwiseSweepPolygon {}
-    type AnyConstructor = typeof AnyClockwiseSweepPolygon;
+    interface AnyConstructor extends Identity<typeof AnyClockwiseSweepPolygon> {}
 
     interface StoredConfig extends PointSourcePolygon.StoredConfig {
       /** The computed bounding box for the polygon */
       boundingBox: PIXI.Rectangle;
     }
+
     /**
-     * @privateRemarks Foundry types this as `Record<Edge.EdgeTypes, 0 | 1 | 2>`, but some keys are mutually exclusive,
+     * @remarks Foundry types this as `Record<Edge.EdgeTypes, 0 | 1 | 2>`, but some keys are mutually exclusive,
      * and none are ever set to `0`, they're simply omitted and then tested for truthiness in `#_testEdgeInclusion`
      */
     type DetermineEdgesReturn = IntentionalPartial<Record<Edge.EdgeTypes, 1 | 2>>;
+
+    interface Ray extends globalThis.Ray {
+      /**
+       * @remarks Only set in `ClockwiseSweepPolygon#_switchEdge` and only consumed in `#visualize`,
+       * despite unrelated method(s) having parameters claiming to want a `PolygonRay`
+       *
+       * Tested for truthiness in `#visualize` before use, so a nullish value is fine but never attains in core
+       */
+      result?: foundry.canvas.edges.CollisionResult | undefined | null;
+    }
   }
 }
 

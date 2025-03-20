@@ -7,7 +7,7 @@ declare global {
    */
   class WallConfig<
     Options extends
-      DocumentSheetOptions<WallDocument.Implementation> = DocumentSheetOptions<WallDocument.Implementation>,
+      DocumentSheet.Options<WallDocument.Implementation> = DocumentSheet.Options<WallDocument.Implementation>,
   > extends DocumentSheet<Options, WallDocument.Implementation> {
     /**
      * @defaultValue
@@ -20,7 +20,7 @@ declare global {
      * return options;
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions<WallDocument.Implementation>;
+    static get defaultOptions(): DocumentSheet.Options<WallDocument.Implementation>;
 
     /**
      * An array of Wall ids that should all be edited when changes to this config form are submitted
@@ -49,7 +49,7 @@ declare global {
   }
 
   namespace WallConfig {
-    type Any = WallConfig<any>;
+    interface Any extends WallConfig<any> {}
 
     /** @internal */
     type _FormData = Pick<WallDocument, "dir" | "door" | "doorSound" | "ds" | "light" | "move" | "sight" | "sound">;

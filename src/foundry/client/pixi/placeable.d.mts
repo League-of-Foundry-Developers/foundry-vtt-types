@@ -1,6 +1,18 @@
-import type { HandleEmptyObject, InexactPartial, MakeConform, NullishProps } from "fvtt-types/utils";
+import type {
+  Identity,
+  InterfaceToObject,
+  HandleEmptyObject,
+  InexactPartial,
+  MakeConform,
+  NullishProps,
+} from "fvtt-types/utils";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseDeleteOperation,
+  DatabaseUpdateOperation,
+} from "../../common/abstract/_types.d.mts";
 
 // Gets a key with a required shape to conform to which is also used as a fallback when the key doesn't exist.
 type GetKeyWithShape<T, K, S> = K extends keyof T ? MakeConform<T[K], S> : S;
@@ -55,16 +67,7 @@ declare global {
     /**
      * The flags declared here are required for all PlaceableObject subclasses to also support.
      */
-    static override RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<PlaceableObject.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshState"], alias: true }` */
-      refresh: RenderFlag<PlaceableObject.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshState: RenderFlag<PlaceableObject.RenderFlags>;
-    };
+    static override RENDER_FLAGS: InterfaceToObject<PlaceableObject.RENDER_FLAGS>;
 
     /**
      * The object that this object is a preview of if this object is a preview
@@ -231,7 +234,7 @@ declare global {
      */
     protected _onCreate(
       data: foundry.data.fields.SchemaField.AssignmentData<D["schema"]["fields"]>,
-      options: Document.OnCreateOptions<D["documentName"]>,
+      options: Document.Database.CreateOptions<DatabaseCreateOperation>,
       userId: string,
     ): void;
 
@@ -241,14 +244,14 @@ declare global {
      */
     protected _onUpdate(
       changed: foundry.data.fields.SchemaField.AssignmentData<D["schema"]["fields"]>,
-      options?: Document.OnUpdateOptions<D["documentName"]>,
+      options?: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
       userId?: string,
     ): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is deleted
      */
-    protected _onDelete(options: Document.OnDeleteOptions<D["documentName"]>, userId: string): void;
+    protected _onDelete(options: Document.Database.DeleteOptions<DatabaseDeleteOperation>, userId: string): void;
 
     /**
      * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors
@@ -567,16 +570,19 @@ declare global {
 
   namespace PlaceableObject {
     interface Any extends AnyPlaceableObject {}
-    type AnyConstructor = typeof AnyPlaceableObject;
+    interface AnyConstructor extends Identity<typeof AnyPlaceableObject> {}
 
     type CanvasDocument = Document.ImplementationInstanceFor<Document.PlaceableType>;
 
-    interface RenderFlags {
-      redraw: boolean;
+    interface RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<this>;
 
-      refresh: boolean;
+      /** @defaultValue `{ propagate: ["refreshState"], alias: true }` */
+      refresh: RenderFlag<this>;
 
-      refreshState: boolean;
+      /** @defaultValue `{}` */
+      refreshState: RenderFlag<this>;
     }
 
     type Layer<Doc extends CanvasDocument> = GetKeyWithShape<Doc, "layer", InteractionLayer>;

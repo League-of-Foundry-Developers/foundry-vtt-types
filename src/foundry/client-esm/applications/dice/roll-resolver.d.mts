@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, EmptyObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, EmptyObject, Identity, InexactPartial } from "fvtt-types/utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
@@ -88,8 +88,8 @@ declare class RollResolver<
 }
 
 declare namespace RollResolver {
-  type Any = AnyRollResolver;
-  type AnyConstructor = typeof AnyRollResolver;
+  interface Any extends AnyRollResolver {}
+  interface AnyConstructor extends Identity<typeof AnyRollResolver> {}
 
   interface DiceTermFulfillmentDescriptor {
     id: string;

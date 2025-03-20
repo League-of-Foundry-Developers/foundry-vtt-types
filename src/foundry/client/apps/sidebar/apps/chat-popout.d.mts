@@ -5,7 +5,7 @@ declare global {
    * A simple application which supports popping a ChatMessage out to a separate UI window.
    * @typeParam Options - the type of the options object
    */
-  class ChatPopout<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class ChatPopout<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(message: ChatMessage.Implementation, options?: Partial<Options>);
 
     /**
@@ -23,7 +23,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     override get id(): string;
 
@@ -34,6 +34,6 @@ declare global {
   }
 
   namespace ChatPopout {
-    type Any = ChatPopout<any>;
+    interface Any extends ChatPopout<any> {}
   }
 }

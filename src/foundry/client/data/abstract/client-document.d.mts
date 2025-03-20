@@ -4,7 +4,6 @@ import type {
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
 } from "../../../common/abstract/_types.d.mts";
-import type DataModel from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare class InternalClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
@@ -189,7 +188,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
     event: ClientDocument.LifeCycleEventName,
     collection: string,
     args: unknown[],
-    _parent: ClientDocument,
+    _parent: Document.Any,
   ): void;
 
   // TODO: Improve the data typing
@@ -200,9 +199,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param data       - The source data for new documents that are being created
    * @param options    - Options which modified the creation operation
    * @param userId     - The ID of the User who triggered the operation
+   * @privateRemarks Make generic over `collection`
    */
   protected _preCreateDescendantDocuments(
-    parent: ClientDocument,
+    parent: Document.Any,
     collection: string,
     data: unknown[],
     options: Document.Database.CreateOptions<DatabaseCreateOperation>,
@@ -219,9 +219,9 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId     - The ID of the User who triggered the operation
    */
   protected _onCreateDescendantDocuments(
-    parent: ClientDocument,
+    parent: Document.Any,
     collection: string,
-    documents: ClientDocument[],
+    documents: never,
     data: unknown[],
     options: Document.Database.CreateOptions<DatabaseCreateOperation>,
     userId: string,
@@ -236,7 +236,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId - The ID of the User who triggered the operation
    */
   protected _preUpdateDescendantDocuments(
-    parent: ClientDocument,
+    parent: Document.Any,
     collection: string,
     changes: unknown[],
     options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
@@ -253,9 +253,9 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId - The ID of the User who triggered the operation
    */
   protected _onUpdateDescendantDocuments(
-    parent: ClientDocument,
+    parent: Document.Any,
     collection: string,
-    documents: ClientDocument[],
+    documents: never,
     changes: unknown[],
     options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
     userId: string,
@@ -270,7 +270,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId - The ID of the User who triggered the operation
    */
   protected _preDeleteDescendantDocuments(
-    parent: ClientDocument,
+    parent: Document.Any,
     collection: string,
     ids: string[],
     options: Document.Database.DeleteOptions<DatabaseDeleteOperation>,
@@ -287,9 +287,9 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId - The ID of the User who triggered the operation
    */
   protected _onDeleteDescendantDocuments(
-    parent: ClientDocument,
+    parent: Document.Any,
     collection: string,
-    documents: ClientDocument[],
+    documents: never,
     ids: string[],
     options: Document.Database.DeleteOptions<DatabaseDeleteOperation>,
     userId: string,
@@ -473,7 +473,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
-    documents: Document.Any[],
+    documents: never,
     result: AnyObject[],
     options: Document.ModificationOptions,
     userId: string,
@@ -505,7 +505,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   protected _onUpdateEmbeddedDocuments(
     embeddedName: string,
-    documents: Document.Any[],
+    documents: never,
     result: AnyObject[],
     options: Document.ModificationContext<Document.Any | null>,
     userId: string,
@@ -537,7 +537,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   protected _onDeleteEmbeddedDocuments(
     embeddedName: string,
-    documents: Document.Any[],
+    documents: never,
     result: string[],
     options: Document.ModificationContext<Document.Any | null>,
     userId: string,

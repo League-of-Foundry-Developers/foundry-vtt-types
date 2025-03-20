@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { Identity, InexactPartial } from "fvtt-types/utils";
 
 import type DiceTerm from "./dice.d.mts";
 import type Die from "./die.d.mts";
@@ -31,11 +31,11 @@ declare class FateDie extends DiceTerm {
 }
 
 declare namespace FateDie {
-  type Any = AnyFateDie;
-  type AnyConstructor = typeof AnyFateDie;
+  interface Any extends AnyFateDie {}
+  interface AnyConstructor extends Identity<typeof AnyFateDie> {}
 
   interface TermData extends DiceTerm.TermData {
-    modifiers: Array<keyof typeof FateDie.MODIFIERS>;
+    modifiers: Array<keyof Modifiers>;
   }
 
   interface Modifiers {

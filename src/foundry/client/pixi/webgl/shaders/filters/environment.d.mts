@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -32,7 +32,7 @@ declare global {
 
   namespace PrimaryCanvasGroupAmbienceFilter {
     interface Any extends AnyPrimaryCanvasGroupAmbienceFilter {}
-    type AnyConstructor = typeof AnyPrimaryCanvasGroupAmbienceFilter;
+    interface AnyConstructor extends Identity<typeof AnyPrimaryCanvasGroupAmbienceFilter> {}
   }
 }
 

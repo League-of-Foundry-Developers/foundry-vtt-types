@@ -1,4 +1,4 @@
-import type { Brand, InexactPartial } from "fvtt-types/utils";
+import type { Brand, Identity, InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -9,7 +9,7 @@ declare global {
 
     /**
      * The transition type (see {@link TextureTransitionFilter.TYPES | `TextureTransitionFilter.TYPES`}).
-     * @defaultValue TYPES.FADE
+     * @defaultValue `TYPES.FADE`
      */
     get type(): TextureTransitionFilter.TYPES;
 
@@ -66,7 +66,7 @@ declare global {
 
   namespace TextureTransitionFilter {
     interface Any extends AnyTextureTransitionFilter {}
-    type AnyConstructor = typeof AnyTextureTransitionFilter;
+    interface AnyConstructor extends Identity<typeof AnyTextureTransitionFilter> {}
 
     type TYPES = Brand<string, "TextureTransitionFilter.TYPES">;
 

@@ -9,7 +9,7 @@ declare global {
      * The implementation of the DrawingDocument document instance configured through `CONFIG.Drawing.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredDrawingDocument | `fvtt-types/configuration/ConfiguredDrawingDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationInstanceFor<"Drawing">;
+    type Implementation = Document.ImplementationFor<"Drawing">;
 
     /**
      * The implementation of the DrawingDocument document configured through `CONFIG.DrawingDocument.documentClass` in Foundry and
@@ -35,21 +35,21 @@ declare global {
     interface Stored extends Document.Stored<DrawingDocument.Implementation> {}
 
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@link DrawingDocument._source | `DrawingDocument#_source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface Source extends PersistedData {}
 
     /**
-     * The data put in {@link DrawingDataModel._source | `DrawingDataModel._source`}. This data is what was
+     * The data put in {@link DrawingDocument._source | `DrawingDocument#._source`}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
-     * Both `Source` and `PersistedData` are equivalent.
+     * `Source` and `PersistedData` are equivalent.
      */
     interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
 
@@ -64,7 +64,7 @@ declare global {
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link DrawingDocument.name | `DrawingDocument#name`}.
      *
      * This is data transformed from {@link DrawingDocument.Source | `DrawingDocument.Source`} and turned into more
@@ -166,6 +166,7 @@ declare global {
           label: "DRAWING.FillTypes";
           validationError: "must be a value in CONST.DRAWING_FILL_TYPES";
         },
+        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.DRAWING_FILL_TYPES | null | undefined,
         CONST.DRAWING_FILL_TYPES,
         CONST.DRAWING_FILL_TYPES
@@ -367,11 +368,13 @@ declare global {
      * defined DRY-ly while also being easily overridable.
      */
 
-    static override defaultName(context: Document.DefaultNameContext<"base", DrawingDocument.Parent>): string;
+    static override defaultName(
+      context: Document.DefaultNameContext<"base", NonNullable<DrawingDocument.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<DrawingDocument.CreateData>,
-      context: Document.CreateDialogContext<string, DrawingDocument.Parent>,
+      context: Document.CreateDialogContext<string, NonNullable<DrawingDocument.Parent>>,
     ): Promise<DrawingDocument.Stored | null | undefined>;
 
     static override fromDropData(

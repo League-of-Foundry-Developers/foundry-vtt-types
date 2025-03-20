@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -16,8 +16,8 @@ declare global {
   }
 
   namespace FogExplorations {
-    type Any = AnyFogExplorations;
-    type AnyConstructor = typeof AnyFogExplorations;
+    interface Any extends AnyFogExplorations {}
+    interface AnyConstructor extends Identity<typeof AnyFogExplorations> {}
   }
 }
 

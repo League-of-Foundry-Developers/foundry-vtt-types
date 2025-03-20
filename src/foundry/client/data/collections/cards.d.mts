@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -11,8 +11,8 @@ declare global {
   }
 
   namespace CardStacks {
-    type Any = AnyCardStacks;
-    type AnyConstructor = typeof AnyCardStacks;
+    interface Any extends AnyCardStacks {}
+    interface AnyConstructor extends Identity<typeof AnyCardStacks> {}
   }
 }
 

@@ -6,6 +6,11 @@ import Document = foundry.abstract.Document;
 class TestTile extends BaseTile {}
 
 let myTile;
+// @ts-expect-error Tiles require a provided width and height
+myTile = new TestTile();
+// @ts-expect-error Tiles require a provided width and height
+myTile = new TestTile({});
+
 myTile = new TestTile({
   _id: "XXXXXSomeIDXXXXX",
   texture: {
@@ -21,8 +26,8 @@ myTile = new TestTile({
     scaleX: 0.8,
     scaleY: 1.2,
   },
-  width: 100,
-  height: 200,
+  width: 200, // actually required for construction
+  height: 200, // actually required for construction
   x: 300,
   y: 500,
   elevation: 20,
@@ -66,8 +71,8 @@ myTile = new TestTile({
     scaleX: null,
     scaleY: null,
   },
-  width: null,
-  height: null,
+  width: 200, // actually required for construction
+  height: 200, // actually required for construction
   x: null,
   y: null,
   elevation: null,
@@ -92,6 +97,8 @@ myTile = new TestTile({
   flags: null,
 });
 myTile = new TestTile({
+  width: 200, // actually required for construction
+  height: 200, // actually required for construction
   texture: null,
   restrictions: null,
   occlusion: null,
@@ -113,8 +120,8 @@ myTile = new TestTile({
     scaleX: undefined,
     scaleY: undefined,
   },
-  width: undefined,
-  height: undefined,
+  width: 200, // actually required for construction
+  height: 200, // actually required for construction
   x: undefined,
   y: undefined,
   elevation: undefined,
@@ -139,6 +146,8 @@ myTile = new TestTile({
   flags: undefined,
 });
 myTile = new TestTile({
+  width: 200, // actually required for construction
+  height: 200, // actually required for construction
   texture: undefined,
   restrictions: undefined,
   occlusion: undefined,
@@ -172,7 +181,7 @@ expectTypeOf(myTile.video.loop).toBeBoolean();
 expectTypeOf(myTile.video.autoplay).toBeBoolean();
 expectTypeOf(myTile.video.volume).toBeNumber();
 expectTypeOf(myTile.flags).toEqualTypeOf<
-  InterfaceToObject<BaseTile.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  InterfaceToObject<TileDocument.CoreFlags> & InterfaceToObject<Document.CoreFlags>
 >();
 
 // document-specific flag(s)

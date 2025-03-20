@@ -8,19 +8,19 @@ import type DiceTerm from "./dice.d.mts";
  * A type of RollTerm used to apply a function.
  */
 declare class FunctionTerm extends RollTerm {
-  constructor(termData?: InexactPartial<FunctionTerm.TermData>);
+  constructor(termData: FunctionTerm.TermData);
 
-  /* The name of the configured function, or one in the Math environment, which should be applied to the term. */
+  /** The name of the configured function, or one in the Math environment, which should be applied to the term. **/
   fn: string;
 
   /** An array of string argument terms for the function. */
   terms: string[];
 
-  /* The cached Roll instances for each function argument. */
+  /** The cached Roll instances for each function argument. **/
   rolls: Roll[];
 
-  /* The cached result of evaluating the method arguments. */
-  result: string | number;
+  /** The cached result of evaluating the method arguments. **/
+  result: string | number | undefined; // note: it will be undefined if the function has not yet been evaluated
 
   /** Is this term intermediate, and should be evaluated first as part of the simplification process? */
   override isIntermediate: true;
@@ -59,8 +59,6 @@ declare class FunctionTerm extends RollTerm {
    */
   protected _evaluateSync(options?: InexactPartial<DiceTerm.EvaluationOptions>): this;
 
-  /* -------------------------------------------- */
-
   /**
    * Parse a function argument from its evaluated Roll instance.
    * @param roll - The evaluated Roll instance that wraps the argument.
@@ -75,28 +73,27 @@ declare class FunctionTerm extends RollTerm {
     data: Record<string, unknown>,
   ): FixedInstanceType<T>;
 
-  /* -------------------------------------------- */
   override toJSON(): Record<string, unknown>;
 
-  /* -------------------------------------------- */
   static override fromParseNode(node: FunctionRollParseNode): RollTerm;
 }
 
 declare namespace FunctionTerm {
-  interface Data extends InexactPartial<TermData> {
+  interface Data extends TermData {
+    fn: string;
     class: string | undefined;
     evaluated: boolean;
   }
 
   interface TermData {
-    /* The name of the configured function, or one in the Math environment, which should be applied to the term. */
+    /** The name of the configured function, or one in the Math environment, which should be applied to the term. */
     fn: string;
     /** An array of string argument terms for the function. */
-    terms: string[];
-    /* The cached Roll instances for each function argument. */
-    rolls: Roll[];
-    /* The cached result of evaluating the method arguments. */
-    result: string | number;
+    terms?: string[] | undefined;
+    /** The cached Roll instances for each function argument. */
+    rolls?: Roll[] | undefined;
+    /** The cached result of evaluating the method arguments. */
+    result?: string | number | undefined;
     options?: InexactPartial<FunctionTerm.Options>;
   }
 

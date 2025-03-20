@@ -1,8 +1,9 @@
-import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject, InexactPartial } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The TableResult Document.
@@ -25,7 +26,7 @@ declare abstract class BaseTableResult<
    * You should use {@link TableResult.implementation | `new TableResult.implementation(...)`} instead which will give you
    * a system specific implementation of `TableResult`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseTableResult.CreateData, BaseTableResult.Parent>);
+  constructor(...args: TableResult.ConstructorArgs);
 
   static override metadata: BaseTableResult.Metadata;
 
@@ -47,106 +48,178 @@ declare abstract class BaseTableResult<
 
   /*
    * After this point these are not really overridden methods.
-   * They are here because they're static properties but depend on the instance and so can't be
-   * defined DRY-ly while also being easily overridable.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
    */
+
+  /* Document overrides */
 
   static " fvtt_types_internal_document_name_static": "TableResult";
 
-  static get implementation(): TableResult.ImplementationClass;
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  override parent: BaseTableResult.Parent;
+  readonly parentCollection: TableResult.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static override get implementation(): TableResult.ImplementationClass;
+
+  static get baseDocument(): typeof BaseTableResult;
+
+  static get collectionName(): TableResult.ParentCollectionName;
+
+  static get documentName(): TableResult.Name;
 
   static get TYPES(): BaseTableResult.SubType[];
 
+  static get hasTypeData(): false;
+
+  static get hierarchy(): TableResult.Hierarchy;
+
+  override parent: BaseTableResult.Parent;
+
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<TableResult.Implementation | TableResult.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<TableResult.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<TableResult.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<TableResult.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: TableResult.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<TableResult.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<TableResult.Database.Update>,
   ): Promise<TableResult.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<TableResult.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<TableResult.Database.Delete>,
   ): Promise<TableResult.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: TableResult.CreateData | TableResult.CreateData[],
-    operation?: Document.Database.CreateOperation<TableResult.DatabaseOperation.Create<Temporary>>,
-  ): Promise<TableResult.Implementation | undefined>;
+    operation?: TableResult.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<TableResult.Implementation, Temporary> | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): TableResult.Implementation | null;
+  override update(
+    data: TableResult.UpdateData | undefined,
+    operation?: TableResult.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: TableResult.Database.DeleteOperation): Promise<this | undefined>;
+
+  static get(documentId: string, options?: TableResult.Database.GetOptions): TableResult.Implementation | null;
+
+  static override getCollectionName<CollectionName extends TableResult.EmbeddedName>(
+    name: CollectionName,
+  ): TableResult.CollectionNameOf<CollectionName> | null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends TableResult.Flags.Scope, Key extends TableResult.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<TableResult.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends TableResult.Flags.Scope,
+    Key extends TableResult.Flags.Key<Scope>,
+    Value extends Document.GetFlag<TableResult.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends TableResult.Flags.Scope, Key extends TableResult.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   protected _preCreate(
     data: TableResult.CreateData,
-    options: TableResult.DatabaseOperation.PreCreateOperationInstance,
+    options: TableResult.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onCreate(
     data: TableResult.CreateData,
-    options: TableResult.DatabaseOperation.OnCreateOperation,
+    options: TableResult.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static _preCreateOperation(
     documents: TableResult.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<TableResult.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<TableResult.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: TableResult.Implementation[],
-    operation: TableResult.DatabaseOperation.Create,
+    operation: TableResult.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: TableResult.UpdateData,
-    options: TableResult.DatabaseOperation.PreUpdateOperationInstance,
+    options: TableResult.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onUpdate(
     changed: TableResult.UpdateData,
-    options: TableResult.DatabaseOperation.OnUpdateOperation,
+    options: TableResult.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static _preUpdateOperation(
     documents: TableResult.Implementation[],
-    operation: TableResult.DatabaseOperation.Update,
+    operation: TableResult.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: TableResult.Implementation[],
-    operation: TableResult.DatabaseOperation.Update,
+    operation: TableResult.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preDelete(
-    options: TableResult.DatabaseOperation.PreDeleteOperationInstance,
+    options: TableResult.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: TableResult.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: TableResult.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: TableResult.Implementation[],
-    operation: TableResult.DatabaseOperation.Delete,
+    operation: TableResult.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: TableResult.Implementation[],
-    operation: TableResult.DatabaseOperation.Delete,
+    operation: TableResult.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  static get hasSystemData(): false;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: TableResult.Implementation[],
@@ -162,6 +235,8 @@ declare abstract class BaseTableResult<
     documents: TableResult.Implementation[],
     context: Document.ModificationContext<TableResult.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<TableResult.Schema>;
 
@@ -180,9 +255,17 @@ declare abstract class BaseTableResult<
 export default BaseTableResult;
 
 declare namespace BaseTableResult {
+  export import Name = TableResult.Name;
+  export import ConstructorArgs = TableResult.ConstructorArgs;
+  export import Hierarchy = TableResult.Hierarchy;
   export import Metadata = TableResult.Metadata;
   export import SubType = TableResult.SubType;
   export import Parent = TableResult.Parent;
+  export import Pack = TableResult.Pack;
+  export import Embedded = TableResult.Embedded;
+  export import EmbeddedName = TableResult.EmbeddedName;
+  export import EmbeddedCollectionName = TableResult.EmbeddedCollectionName;
+  export import ParentCollectionName = TableResult.ParentCollectionName;
   export import Stored = TableResult.Stored;
   export import Source = TableResult.Source;
   export import PersistedData = TableResult.PersistedData;
@@ -190,7 +273,9 @@ declare namespace BaseTableResult {
   export import InitializedData = TableResult.InitializedData;
   export import UpdateData = TableResult.UpdateData;
   export import Schema = TableResult.Schema;
-  export import DatabaseOperation = TableResult.DatabaseOperation;
+  export import DatabaseOperation = TableResult.Database;
+  export import Flags = TableResult.Flags;
+
   /**
    * @deprecated This type is used by Foundry too vaguely.
    * In one context the most correct type is after initialization whereas in another one it should be

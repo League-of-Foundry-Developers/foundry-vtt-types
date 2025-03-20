@@ -81,7 +81,7 @@ declare global {
   }
 
   namespace CardsConfig {
-    type Any = CardsConfig<any>;
+    interface Any extends CardsConfig<any> {}
   }
 
   /**
@@ -102,7 +102,7 @@ declare global {
   }
 
   namespace CardsHand {
-    type Any = CardsHand<any>;
+    interface Any extends CardsHand<any> {}
   }
 
   /**
@@ -123,11 +123,11 @@ declare global {
   }
 
   namespace CardsPile {
-    type Any = CardsPile<any>;
+    interface Any extends CardsPile<any> {}
   }
 
   namespace CardsConfig {
-    interface Options extends DocumentSheetOptions<Cards.Implementation> {
+    interface Options extends DocumentSheet.Options<Cards.Implementation> {
       sort: string;
     }
 

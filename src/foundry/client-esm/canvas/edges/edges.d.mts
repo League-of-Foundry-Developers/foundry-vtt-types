@@ -1,3 +1,4 @@
+import type { Identity } from "../../../../utils/index.d.mts";
 import type Edge from "./edge.d.mts";
 
 /**
@@ -22,7 +23,7 @@ declare class CanvasEdges extends Map<string, Edge> {
 
 declare namespace CanvasEdges {
   interface Any extends AnyCanvasEdges {}
-  type AnyConstructor = typeof AnyCanvasEdges;
+  interface AnyConstructor extends Identity<typeof AnyCanvasEdges> {}
 }
 
 declare abstract class AnyCanvasEdges extends CanvasEdges {

@@ -1,20 +1,17 @@
-import type Document from "../../../../common/abstract/document.d.mts";
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
-  interface ChatLogOptions extends ApplicationOptions {
-    /**
-     * Is this chat log being rendered as part of the stream view?
-     * @defaultValue `false`
-     */
-    stream: boolean;
-  }
+  /**
+   * @deprecated {@link ChatLog.Options | `ChatLog.Options`}
+   */
+  type ChatLogOptions = ChatLog.Options;
 
   /**
    * The sidebar directory which organizes and displays world-level ChatMessage documents.
    * @see {@link Sidebar | `Sidebar`}
    */
-  class ChatLog extends SidebarTab<ChatLogOptions> {
-    constructor(options?: Partial<ChatLogOptions>);
+  class ChatLog extends SidebarTab<ChatLog.Options> {
+    constructor(options?: Partial<ChatLog.Options>);
 
     /**
      * Track any pending text which the user has submitted in the chat log textarea
@@ -81,7 +78,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): ChatLogOptions;
+    static override get defaultOptions(): ChatLog.Options;
 
     /**
      * An enumeration of regular expression patterns used to match chat messages.
@@ -99,9 +96,9 @@ declare global {
     get collection(): Messages;
 
     // TODO: Implement GetDataReturnType
-    override getData(options?: Partial<ChatLogOptions>): Promise<object>;
+    override getData(options?: Partial<ChatLog.Options>): Promise<object>;
 
-    protected override _render(force?: boolean, options?: Application.RenderOptions<ChatLogOptions>): Promise<void>;
+    protected override _render(force?: boolean, options?: Application.RenderOptions<ChatLog.Options>): Promise<void>;
 
     protected override _renderInner(data: object): Promise<JQuery>;
 
@@ -196,7 +193,7 @@ declare global {
       command: string,
       match: RegExpMatchArray[],
       chatData: foundry.documents.BaseChatMessage.CreateData,
-      createOptions: Document.OnCreateOptions<"ChatMessage">,
+      createOptions: ChatMessage.DatabaseOperation.CreateOperation,
     ): Promise<void>;
 
     /**
@@ -212,7 +209,7 @@ declare global {
       command: string,
       match: RegExpMatchArray,
       chatData: foundry.documents.BaseChatMessage.CreateData,
-      createOptions: Document.OnCreateOptions<"ChatMessage">,
+      createOptions: ChatMessage.DatabaseOperation.CreateOperation,
     ): void;
 
     /**
@@ -227,7 +224,7 @@ declare global {
       command: string,
       match: RegExpMatchArray,
       chatData: foundry.documents.BaseChatMessage.CreateData,
-      createOptions: Document.OnCreateOptions<"ChatMessage">,
+      createOptions: ChatMessage.DatabaseOperation.CreateOperation,
     ): void;
 
     /**
@@ -260,7 +257,7 @@ declare global {
      * @returns The ChatLog entry context options
      * @internal
      */
-    protected _getEntryContextOptions(): ContextMenuEntry[];
+    protected _getEntryContextOptions(): ContextMenu.Entry[];
 
     /**
      * Handle keydown events in the chat entry textarea
@@ -314,8 +311,8 @@ declare global {
   }
 
   namespace ChatLog {
-    type Any = AnyChatLog;
-    type AnyConstructor = typeof AnyChatLog;
+    interface Any extends AnyChatLog {}
+    interface AnyConstructor extends Identity<typeof AnyChatLog> {}
 
     type Command =
       | "roll"
@@ -362,6 +359,14 @@ declare global {
        * Trigger a notification which shows the log as having a new unread message.
        */
       notify?: boolean | undefined;
+    }
+
+    interface Options extends Application.Options {
+      /**
+       * Is this chat log being rendered as part of the stream view?
+       * @defaultValue `false`
+       */
+      stream: boolean;
     }
   }
 }

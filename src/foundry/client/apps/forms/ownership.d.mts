@@ -7,7 +7,7 @@ declare global {
    * @typeParam ConcreteDocument - the type of the Document which should be managed by this form sheet
    */
   class DocumentOwnershipConfig<
-    Options extends DocumentSheetOptions<ConcreteDocument>,
+    Options extends DocumentSheet.Options<ConcreteDocument>,
     ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
   > extends DocumentSheet<Options, ConcreteDocument> {
     /**
@@ -20,7 +20,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions;
+    static override get defaultOptions(): DocumentSheet.Options;
 
     override get title(): string;
 
@@ -32,7 +32,7 @@ declare global {
   }
 
   namespace DocumentOwnershipConfig {
-    type Any = DocumentOwnershipConfig<any, any>;
+    interface Any extends DocumentOwnershipConfig<any, any> {}
   }
 
   /**

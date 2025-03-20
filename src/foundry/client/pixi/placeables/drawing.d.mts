@@ -36,15 +36,30 @@ declare global {
      */
     type ImplementationClass = DrawingDocument.ImplementationClass;
 
-    interface RenderFlags extends PlaceableObject.RenderFlags {
-      refreshShape: boolean;
+    interface RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<this>;
 
-      refreshFrame: boolean;
+      /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
+      refresh: RenderFlag<this>;
 
-      refreshText: boolean;
+      /** @defaultValue `{ propagate: ["refreshFrame"] }` */
+      refreshState: RenderFlag<this>;
 
-      refreshMesh: boolean;
+      /** @defaultValue `{ propagate: ["refreshFrame", "refreshText", "refreshMesh"] }` */
+      refreshShape: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshFrame: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshText: RenderFlag<this>;
+
+      /** @defaultValue `{}` */
+      refreshMesh: RenderFlag<this>;
     }
+
+    interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
 
     interface TextEditingOptions {
       forceTextEditing?: boolean;
@@ -100,28 +115,7 @@ declare global {
 
     static override embeddedName: "Drawing";
 
-    static override RENDER_FLAGS: {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<Drawing.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
-      refresh: RenderFlag<Drawing.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshFrame"] }` */
-      refreshState: RenderFlag<Drawing.RenderFlags>;
-
-      /** @defaultValue `{ propagate: ["refreshFrame", "refreshText", "refreshMesh"] }` */
-      refreshShape: RenderFlag<Drawing.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshFrame: RenderFlag<Drawing.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshText: RenderFlag<Drawing.RenderFlags>;
-
-      /** @defaultValue `{}` */
-      refreshMesh: RenderFlag<Drawing.RenderFlags>;
-    };
+    static override RENDER_FLAGS: Drawing.RENDER_FLAGS;
 
     /**
      * The rate at which points are sampled (in milliseconds) during a freehand drawing workflow

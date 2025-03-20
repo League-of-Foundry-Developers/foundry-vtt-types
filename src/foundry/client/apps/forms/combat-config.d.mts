@@ -5,7 +5,7 @@ declare global {
    * The Application responsible for configuring the CombatTracker and its contents.
    * @typeParam Options - The type of the options object
    */
-  class CombatTrackerConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
+  class CombatTrackerConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     Options,
     undefined
   > {
@@ -21,7 +21,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplication.Options;
 
     override getData(
       options?: Partial<Options>,
@@ -38,7 +38,7 @@ declare global {
   }
 
   namespace CombatTrackerConfig {
-    type Any = CombatTrackerConfig<any>;
+    interface Any extends CombatTrackerConfig<any> {}
 
     interface CombatTrackerConfigData extends FormApplication.FormApplicationData {
       settings: SettingConfig["core.combatTrackerConfig"];

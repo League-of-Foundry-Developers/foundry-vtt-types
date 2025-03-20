@@ -6,7 +6,7 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class InvitationLinks<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class InvitationLinks<Options extends Application.Options = Application.Options> extends Application<Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -18,7 +18,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     // TODO: Implement GetDataReturnType
     override getData(options?: Partial<Options>): Promise<object>;
@@ -27,6 +27,6 @@ declare global {
   }
 
   namespace InvitationLinks {
-    type Any = InvitationLinks<any>;
+    interface Any extends InvitationLinks<any> {}
   }
 }

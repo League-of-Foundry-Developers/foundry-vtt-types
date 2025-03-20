@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -15,12 +15,12 @@ declare global {
 
     protected override _canDragDrop(selector: string): boolean;
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
   }
 
   namespace ActorDirectory {
-    type Any = AnyActorDirectory;
-    type AnyConstructor = typeof AnyActorDirectory;
+    interface Any extends AnyActorDirectory {}
+    interface AnyConstructor extends Identity<typeof AnyActorDirectory> {}
   }
 }
 

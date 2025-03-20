@@ -7,7 +7,7 @@ declare global {
    */
   class MeasuredTemplateConfig<
     Options extends
-      DocumentSheetOptions<MeasuredTemplateDocument.Implementation> = DocumentSheetOptions<MeasuredTemplateDocument.Implementation>,
+      DocumentSheet.Options<MeasuredTemplateDocument.Implementation> = DocumentSheet.Options<MeasuredTemplateDocument.Implementation>,
   > extends DocumentSheet<Options, MeasuredTemplateDocument.Implementation> {
     /**
      * @defaultValue
@@ -21,7 +21,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<MeasuredTemplateDocument.Implementation>;
+    static override get defaultOptions(): DocumentSheet.Options<MeasuredTemplateDocument.Implementation>;
 
     override getData(): MaybePromise<GetDataReturnType<MeasuredTemplateConfig.MeasuredTemplateConfigData>>;
 
@@ -29,7 +29,7 @@ declare global {
   }
 
   namespace MeasuredTemplateConfig {
-    type Any = MeasuredTemplateConfig<any>;
+    interface Any extends MeasuredTemplateConfig<any> {}
 
     interface FormData {
       angle: number | null;
@@ -47,7 +47,7 @@ declare global {
 
     interface MeasuredTemplateConfigData<
       Options extends
-        DocumentSheetOptions<MeasuredTemplateDocument.Implementation> = DocumentSheetOptions<MeasuredTemplateDocument.Implementation>,
+        DocumentSheet.Options<MeasuredTemplateDocument.Implementation> = DocumentSheet.Options<MeasuredTemplateDocument.Implementation>,
     > extends DocumentSheet.DocumentSheetData<Options, MeasuredTemplateDocument.Implementation> {
       templateTypes: Record<foundry.CONST.MEASURED_TEMPLATE_TYPES, string>;
       gridUnits: string;

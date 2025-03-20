@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
@@ -22,7 +22,7 @@ declare global {
 
   namespace AbstractBaseMaskFilter {
     interface Any extends AnyAbstractBaseMaskFilter {}
-    type AnyConstructor = typeof AnyAbstractBaseMaskFilter;
+    interface AnyConstructor extends Identity<typeof AnyAbstractBaseMaskFilter> {}
   }
 }
 

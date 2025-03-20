@@ -3,11 +3,12 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseWall = foundry.documents.BaseWall;
 import Document = foundry.abstract.Document;
 
-const myScene = new Scene({ name: "foobar" });
-
 class TestBaseWall extends BaseWall {}
 
+//TODO: ensure `c` required for creation
+// @ts-expect-error Wall requires `c` for creation
 let myWall = new TestBaseWall();
+// @ts-expect-error Wall requires `c` for creation
 myWall = new TestBaseWall({});
 
 // @ts-expect-error - c must be a length-4 array of integer coordinates

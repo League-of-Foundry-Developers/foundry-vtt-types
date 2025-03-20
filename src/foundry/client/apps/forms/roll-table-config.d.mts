@@ -6,7 +6,7 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class RollTableConfig<
-    Options extends DocumentSheetOptions<RollTable.Implementation> = DocumentSheetOptions<RollTable.Implementation>,
+    Options extends DocumentSheet.Options<RollTable.Implementation> = DocumentSheet.Options<RollTable.Implementation>,
   > extends DocumentSheet<Options, RollTable.Implementation> {
     /**
      * @defaultValue
@@ -23,7 +23,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<RollTable.Implementation>;
+    static override get defaultOptions(): DocumentSheet.Options<RollTable.Implementation>;
 
     override get title(): string;
 
@@ -125,7 +125,7 @@ declare global {
   }
 
   namespace RollTableConfig {
-    type Any = RollTableConfig<any>;
+    interface Any extends RollTableConfig<any> {}
 
     type FormData = {
       description: string;

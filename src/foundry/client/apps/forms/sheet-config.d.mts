@@ -9,7 +9,7 @@ declare global {
    * @typeParam ConcreteDocument - The type of the Document which is being managed
    */
   class DocumentSheetConfig<
-    Options extends FormApplicationOptions = FormApplicationOptions,
+    Options extends FormApplication.Options = FormApplication.Options,
     ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
   > extends FormApplication<Options, ConcreteDocument> {
     /**
@@ -22,7 +22,7 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): FormApplicationOptions;
+    static get defaultOptions(): FormApplication.Options;
 
     /**
      * An array of pending sheet assignments which are submitted before other elements of the framework are ready.
@@ -85,7 +85,7 @@ declare global {
     static unregisterSheet(
       documentClass: Document.AnyConstructor,
       scope: string,
-      sheetClass: typeof FormApplication<FormApplicationOptions, any>,
+      sheetClass: typeof FormApplication<FormApplication.Options, any>,
       { types }?: { types?: string[] },
     ): void;
 
@@ -104,7 +104,7 @@ declare global {
   }
 
   namespace DocumentSheetConfig {
-    type Any = DocumentSheetConfig<any>;
+    interface Any extends DocumentSheetConfig<any> {}
 
     interface SheetRegistration {
       action: "register";
@@ -183,7 +183,7 @@ declare global {
     interface DocumentSheetConfigData extends SheetClassesForSubType {
       isGM: boolean;
       object: foundry.abstract.Document.Any;
-      options: FormApplicationOptions;
+      options: FormApplication.Options;
       sheetClass: string;
       blankLabel: string;
     }

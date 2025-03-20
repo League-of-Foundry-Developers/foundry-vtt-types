@@ -1,4 +1,4 @@
-export {};
+import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -8,12 +8,12 @@ declare global {
   class JournalDirectory extends DocumentDirectory<"JournalEntry"> {
     static override documentName: "JournalEntry";
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
   }
 
   namespace JournalDirectory {
-    type Any = AnyJournalDirectory;
-    type AnyConstructor = typeof AnyJournalDirectory;
+    interface Any extends AnyJournalDirectory {}
+    interface AnyConstructor extends Identity<typeof AnyJournalDirectory> {}
   }
 }
 
