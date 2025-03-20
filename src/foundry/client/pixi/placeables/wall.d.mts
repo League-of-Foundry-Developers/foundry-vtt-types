@@ -215,9 +215,7 @@ declare global {
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
-    protected override _prepareDragLeftDropUpdates(
-      event: PIXI.FederatedEvent,
-    ): PlaceableObject.DragLeftDropUpdate[] | null;
+    protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): Wall.DragLeftDropUpdate[] | null;
     /**
      * @deprecated since v12, until v14
      * @remarks "`Wall#roof` has been deprecated. There's no replacement"
@@ -378,7 +376,7 @@ declare global {
       endpoints: Canvas.PointTuple[];
     }
 
-    interface DragLeftDropUpdates {
+    interface DragLeftDropUpdate {
       _id: string;
       c: WallDocument.Coordinates;
     }

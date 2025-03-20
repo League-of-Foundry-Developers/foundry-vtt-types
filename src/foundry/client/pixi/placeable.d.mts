@@ -523,7 +523,7 @@ declare global {
      * @returns An array of database updates to perform for documents in this collection
      * @remarks `| null` in the return because of the `Wall` override
      */
-    protected _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.DragLeftDropUpdate[] | null;
+    protected _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.AnyDragLeftDropUpdate[] | null;
 
     /**
      * Callback actions which occur on a mouse-move operation.
@@ -674,6 +674,9 @@ declare global {
      */
     type Action = "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete" | (string & {});
 
+    type AnyDragLeftDropUpdate = DragLeftDropUpdate | Wall.DragLeftDropUpdate;
+
+    /** @remarks The type `#_prepareDragLeftDropUpdates` returns if not overridden by the specific placeable */
     interface DragLeftDropUpdate {
       _id: string;
       x: number;
