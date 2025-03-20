@@ -22,12 +22,12 @@ declare global {
    * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
    */
   abstract class PlaceableObject<
-    D extends PlaceableObject.CanvasDocument = PlaceableObject.CanvasDocument,
+    CanvasDocument extends PlaceableObject.AnyCanvasDocument = PlaceableObject.AnyCanvasDocument,
   > extends RenderFlagsMixin(PIXI.Container) {
     /**
      * @param document - The Document instance which is represented by this object
      */
-    constructor(document: D);
+    constructor(document: CanvasDocument);
 
     /**
      * Retain a reference to the Scene within which this Placeable Object resides
@@ -37,7 +37,7 @@ declare global {
     /**
      * A reference to the Scene embedded Document instance which this object represents
      */
-    document: D;
+    document: CanvasDocument;
 
     /**
      * A control icon for interacting with the object
@@ -124,13 +124,13 @@ declare global {
     /**
      * Provide a reference to the CanvasLayer which contains this PlaceableObject.
      */
-    get layer(): PlaceableObject.Layer<D>;
+    get layer(): PlaceableObject.Layer<CanvasDocument>;
 
     /**
      * A Form Application which is used to configure the properties of this Placeable Object or the Document it
      * represents.
      */
-    get sheet(): PlaceableObject.Sheet<D>;
+    get sheet(): PlaceableObject.Sheet<CanvasDocument>;
 
     /**
      * An indicator for whether the object is currently controlled
@@ -192,7 +192,7 @@ declare global {
      * @param options - Options which may modify the draw workflow
      * @remarks The options passed to {@link PlaceableObject.draw | `PlaceableObject#draw`} get forwarded here
      */
-    protected abstract _draw(options: undefined): Promise<void>;
+    protected abstract _draw(options: HandleEmptyObject<PlaceableObject.DrawOptions> | undefined): Promise<void>;
 
     /**
      * Execute a partial draw.
@@ -233,7 +233,7 @@ declare global {
      * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
      */
     protected _onCreate(
-      data: foundry.data.fields.SchemaField.AssignmentData<D["schema"]["fields"]>,
+      data: foundry.data.fields.SchemaField.AssignmentData<CanvasDocument["schema"]["fields"]>,
       options: Document.Database.CreateOptions<DatabaseCreateOperation>,
       userId: string,
     ): void;
@@ -243,7 +243,7 @@ declare global {
      * @remarks Called without options and userId in Drawing._onUpdate
      */
     protected _onUpdate(
-      changed: foundry.data.fields.SchemaField.AssignmentData<D["schema"]["fields"]>,
+      changed: foundry.data.fields.SchemaField.AssignmentData<CanvasDocument["schema"]["fields"]>,
       options?: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
       userId?: string,
     ): void;
@@ -313,6 +313,8 @@ declare global {
      * @param dx - The number of grid units to shift along the X-axis
      * @param dy - The number of grid units to shift along the Y-axis
      * @returns The shifted target coordinates
+     * @remarks Despite the parameter descriptions saying 'number of grid units', they're only checked for sign.
+     * @privateRemarks Foundry types this correctly and describes it wrong, logged
      */
     protected _getShiftedPosition(dx: -1 | 0 | 1, dy: -1 | 0 | 1): Canvas.Point;
 
@@ -429,9 +431,8 @@ declare global {
      * Actions that should be taken for this Placeable Object when a mouseout event occurs
      * @see `MouseInteractionManager##handlePointerOut`
      * @param event - The triggering canvas interaction event
-     * @returns True if the event was handled, otherwise false
      */
-    protected _onHoverOut(event: PIXI.FederatedEvent): boolean | void;
+    protected _onHoverOut(event: PIXI.FederatedEvent): void;
 
     /**
      * Should the placeable propagate left click downstream?
@@ -572,7 +573,9 @@ declare global {
     interface Any extends AnyPlaceableObject {}
     interface AnyConstructor extends Identity<typeof AnyPlaceableObject> {}
 
-    type CanvasDocument = Document.ImplementationInstanceFor<Document.PlaceableType>;
+    type AnyCanvasDocument = Document.ImplementationFor<Document.PlaceableType>;
+
+    type RenderFlags = RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS>;
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
@@ -585,10 +588,14 @@ declare global {
       refreshState: RenderFlag<this>;
     }
 
-    type Layer<Doc extends CanvasDocument> = GetKeyWithShape<Doc, "layer", InteractionLayer>;
+    type Layer<CanvasDocument extends AnyCanvasDocument> = GetKeyWithShape<
+      CanvasDocument,
+      "layer",
+      PlaceablesLayer.Any
+    >;
 
-    type Sheet<Doc extends CanvasDocument> = GetKeyWithShape<
-      Doc,
+    type Sheet<CanvasDocument extends AnyCanvasDocument> = GetKeyWithShape<
+      CanvasDocument,
       "sheet",
       FormApplication.Any | ApplicationV2.Any | null
     >;
@@ -647,19 +654,23 @@ declare global {
       }>;
     interface UpdateRotationOptions extends __UpdateRotationOptions {}
 
-    interface HoverInOptions {
+    /** @internal */
+    type _HoverInOptions = InexactPartial<{
       /**
        * Trigger hover-out behavior on sibling objects
        * @defaultValue `false`
+       * @remarks Can't be null as it only has a parameter default
        */
       hoverOutOthers: boolean;
-    }
+    }>;
+    interface HoverInOptions extends _HoverInOptions {}
 
     /**
-     * @remarks {@link PlaceableObject.can | `PlaceableObject#can`} calls `#titleCase()` on this before
-     * prepending `"_can"`, rendering `"HUD"` (as there's no `PlaceableObject#_canHud()`), and any
-     * actions with more than a single capital in their name (e.g `"DragLeftStart"`) inert, so they
-     * have been omitted here.
+     * @remarks {@link PlaceableObject.can | `PlaceableObject#can`} calls `#titleCase()` on this
+     * before prepending `"_can"`, rendering any actions with more than a single capital in their
+     * name (e.g `"DragLeftStart"`), including `"HUD"` (as there's no `PlaceableObject#_canHud()`),
+     * effectively inert, so they have been omitted here. This also means these are case
+     * -insensitive at runtime, but TS doesn't have a good way to type that.
      */
     type Action = "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete" | (string & {});
 
@@ -667,25 +678,16 @@ declare global {
       _id: string;
       x: number;
       y: number;
+
+      /**
+       * @remarks Possibly `undefined` as this is set to `clone.document.rotation` and not all canvas documents
+       * have a `rotation` field.
+       */
       rotation: number | undefined;
     }
   }
 }
 
-interface Vision {
-  /**
-   * @privateRemarks Documentation says PIXI.Circle, but determined by Atropos to be out of date.
-   * Likely to be removed in future version as it's no longer used generally.
-   */
-  fov?: PIXI.Polygon | undefined;
-
-  /**
-   * @remarks
-   * This is required but has been set to optional because of PointSource
-   */
-  los?: PointSourcePolygon | undefined;
-}
-
-declare abstract class AnyPlaceableObject extends PlaceableObject<PlaceableObject.CanvasDocument> {
+declare abstract class AnyPlaceableObject extends PlaceableObject<PlaceableObject.AnyCanvasDocument> {
   constructor(arg0: never, ...args: never[]);
 }
