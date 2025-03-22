@@ -7,25 +7,40 @@ import type { DataSchema } from "../../../common/data/fields.d.mts";
 declare global {
   namespace RegionBehavior {
     /**
+     * The document's name.
+     */
+    type Name = "RegionBehavior";
+
+    /**
+     * The arguments to construct the document.
+     */
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+    /**
+     * The documents embedded within RegionBehavior.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the RegionBehavior document instance configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"RegionBehavior">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the RegionBehavior document configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"RegionBehavior">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"RegionBehavior"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<"RegionBehavior">;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"RegionBehavior">;
+    type SubType = Game.Model.TypeNames<Name>;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = RegionBehavior.OfType<RegionBehavior.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<
       ConfiguredRegionBehavior<Type>,
@@ -36,6 +51,53 @@ declare global {
      * For example an `RegionBehavior` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = RegionDocument.Implementation | null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Scene">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `RegionBehavior` that comes from the database.
@@ -130,7 +192,7 @@ declare global {
       /**
        * An object of optional key/value flags
        */
-      flags: fields.ObjectField.FlagsField<"RegionBehavior">;
+      flags: fields.ObjectField.FlagsField<Name>;
 
       /**
        * An object of creation and access information
@@ -139,9 +201,10 @@ declare global {
       _stats: fields.DocumentStatsField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for RegionBehaviors */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<RegionBehavior.Parent> {}
+
       /** Options passed along in Create operations for RegionBehaviors */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<
@@ -149,43 +212,112 @@ declare global {
           RegionBehavior.Parent,
           Temporary
         > {}
+
       /** Options passed along in Delete operations for RegionBehaviors */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RegionBehavior.Parent> {}
+
       /** Options passed along in Update operations for RegionBehaviors */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<RegionBehavior.UpdateData, RegionBehavior.Parent> {}
 
-      /** Options for {@link RegionBehavior.createDocuments | `RegionBehavior.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link RegionBehavior._preCreateOperation | `RegionBehavior._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link RegionBehavior.createDocuments | `RegionBehavior.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<RegionBehavior.Database.Create<Temporary>> {}
+
+      /** Operation for {@link RegionBehavior.updateDocuments | `RegionBehavior.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<RegionBehavior.Database.Update> {}
+
+      /** Operation for {@link RegionBehavior.deleteDocuments | `RegionBehavior.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<RegionBehavior.Database.Delete> {}
+
+      /** Operation for {@link RegionBehavior.create | `RegionBehavior.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<RegionBehavior.Database.Create<Temporary>> {}
+
+      /** Operation for {@link RegionBehavior.update | `RegionBehavior#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link RegionBehavior.get | `RegionBehavior.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link RegionBehavior._preCreate | `RegionBehavior#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link RegionBehavior._onCreate | `RegionBehavior#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link RegionBehavior.updateDocuments | `RegionBehavior.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link RegionBehavior._preUpdateOperation | `RegionBehavior._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link RegionBehavior._preCreateOperation | `RegionBehavior._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RegionBehavior.Database.Create> {}
+
+      /** Operation for {@link RegionBehavior._onCreateOperation | `RegionBehavior#_onCreateOperation`} */
+      interface OnCreateOperation extends RegionBehavior.Database.Create {}
+
       /** Options for {@link RegionBehavior._preUpdate | `RegionBehavior#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link RegionBehavior._onUpdate | `RegionBehavior#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link RegionBehavior.deleteDocuments | `RegionBehavior.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link RegionBehavior._preDeleteOperation | `RegionBehavior._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link RegionBehavior._onUpdate | `RegionBehavior#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link RegionBehavior._preUpdateOperation | `RegionBehavior._preUpdateOperation`} */
+      interface PreUpdateOperation extends RegionBehavior.Database.Update {}
+
+      /** Operation for {@link RegionBehavior._onUpdateOperation | `RegionBehavior._preUpdateOperation`} */
+      interface OnUpdateOperation extends RegionBehavior.Database.Update {}
+
       /** Options for {@link RegionBehavior._preDelete | `RegionBehavior#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link RegionBehavior._onDelete | `RegionBehavior#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link RegionBehavior._preDeleteOperation | `RegionBehavior#_preDeleteOperation`} */
+      interface PreDeleteOperation extends RegionBehavior.Database.Delete {}
+
+      /** Options for {@link RegionBehavior._onDeleteOperation | `RegionBehavior#_onDeleteOperation`} */
+      interface OnDeleteOperation extends RegionBehavior.Database.Delete {}
+
+      /** Context for {@link RegionBehavior._onDeleteOperation | `RegionBehavior._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<RegionBehavior.Parent> {}
+
+      /** Context for {@link RegionBehavior._onCreateDocuments | `RegionBehavior._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<RegionBehavior.Parent> {}
+
+      /** Context for {@link RegionBehavior._onUpdateDocuments | `RegionBehavior._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<RegionBehavior.Parent> {}
+
+      /**
+       * Options for {@link RegionBehavior._preCreateDescendantDocuments | `RegionBehavior#_preCreateDescendantDocuments`}
+       * and {@link RegionBehavior._onCreateDescendantDocuments | `RegionBehavior#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<RegionBehavior.Database.Create> {}
+
+      /**
+       * Options for {@link RegionBehavior._preUpdateDescendantDocuments | `RegionBehavior#_preUpdateDescendantDocuments`}
+       * and {@link RegionBehavior._onUpdateDescendantDocuments | `RegionBehavior#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<RegionBehavior.Database.Update> {}
+
+      /**
+       * Options for {@link RegionBehavior._preDeleteDescendantDocuments | `RegionBehavior#_preDeleteDescendantDocuments`}
+       * and {@link RegionBehavior._onDeleteDescendantDocuments | `RegionBehavior#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<RegionBehavior.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**
-     * @deprecated {@link RegionBehavior.DatabaseOperation | `RegionBehavior.DatabaseOperation`}
+     * @deprecated {@link RegionBehavior.Database | `RegionBehavior.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<RegionBehavior> {}
@@ -221,7 +353,7 @@ declare global {
      * @param data    - Initial data from which to construct the `RegionBehavior`
      * @param context - Construction context options
      */
-    constructor(...args: Document.ConstructorParameters<RegionBehavior.CreateData, RegionBehavior.Parent>);
+    constructor(...args: RegionBehavior.ConstructorArgs);
 
     /** A convenience reference to the RegionDocument which contains this RegionBehavior. */
     get region(): RegionDocument.Implementation | null;
@@ -255,18 +387,19 @@ declare global {
       context: Document.CreateDialogContext<RegionBehavior.SubType, NonNullable<RegionBehavior.Parent>>,
     ): Promise<RegionBehavior.Stored | null | undefined>;
 
-    /**
-     * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
-     * _onUpdateOperation, _onDeleteOperation, _preCreateDescendantDocuments, _preUpdateDescendantDocuments, _preDeleteDescendantDocuments,
-     * _onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
-
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    // Descendant Document operations have been left out because RegionBehavior does not have any descendant documents.
 
     static override defaultName(
       context: Document.DefaultNameContext<RegionBehavior.SubType, NonNullable<RegionBehavior.Parent>>,
@@ -281,5 +414,7 @@ declare global {
       source: RegionBehavior.Source,
       context?: Document.FromImportContext<RegionBehavior.Parent>,
     ): Promise<RegionBehavior.Implementation>;
+
+    // Embedded document operations have been left out because RegionBehavior does not have any embedded documents.
   }
 }

@@ -1,6 +1,8 @@
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The RegionBehavior Document.
@@ -22,7 +24,7 @@ declare abstract class BaseRegionBehavior<
    * You should use {@link RegionBehavior.implementation | `new RegionBehavior.implementation(...)`} instead which will give you
    * a system specific implementation of `RegionBehavior`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseRegionBehavior.CreateData, BaseRegionBehavior.Parent>);
+  constructor(...args: RegionBehavior.ConstructorArgs);
 
   /**
    * @defaultValue
@@ -66,7 +68,24 @@ declare abstract class BaseRegionBehavior<
 
   static " fvtt_types_internal_document_name_static": "RegionBehavior";
 
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: RegionBehavior.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
   static get implementation(): RegionBehavior.ImplementationClass;
+
+  static get baseDocument(): typeof BaseRegionBehavior;
+
+  static get collectionName(): RegionBehavior.ParentCollectionName;
+
+  static get documentName(): RegionBehavior.Name;
+
+  static get hasTypeData(): true;
+
+  static get hierarchy(): RegionBehavior.Hierarchy;
 
   override system: Document.SystemFor<"RegionBehavior", SubType>;
 
@@ -76,92 +95,144 @@ declare abstract class BaseRegionBehavior<
 
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<RegionBehavior.Implementation | RegionBehavior.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<RegionBehavior.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<RegionBehavior.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<RegionBehavior.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: RegionBehavior.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<RegionBehavior.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<RegionBehavior.Database.Update>,
   ): Promise<RegionBehavior.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<RegionBehavior.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<RegionBehavior.Database.Delete>,
   ): Promise<RegionBehavior.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: RegionBehavior.CreateData | RegionBehavior.CreateData[],
-    operation?: Document.Database.CreateOperation<RegionBehavior.DatabaseOperation.Create<Temporary>>,
-  ): Promise<RegionBehavior.Implementation | undefined>;
+    operation?: RegionBehavior.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<RegionBehavior.Implementation, Temporary> | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): RegionBehavior.Implementation | null;
+  override update(
+    data: RegionBehavior.UpdateData | undefined,
+    operation?: RegionBehavior.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: RegionBehavior.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(
+    documentId: string,
+    options?: RegionBehavior.Database.GetOptions,
+  ): RegionBehavior.Implementation | null;
+
+  static override getCollectionName<CollectionName extends RegionBehavior.EmbeddedName>(
+    name: CollectionName,
+  ): RegionBehavior.CollectionNameOf<CollectionName> | null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends RegionBehavior.Flags.Scope, Key extends RegionBehavior.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<RegionBehavior.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends RegionBehavior.Flags.Scope,
+    Key extends RegionBehavior.Flags.Key<Scope>,
+    Value extends Document.GetFlag<RegionBehavior.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends RegionBehavior.Flags.Scope, Key extends RegionBehavior.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   protected _preCreate(
     data: RegionBehavior.CreateData,
-    options: RegionBehavior.DatabaseOperation.PreCreateOperationInstance,
+    options: RegionBehavior.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onCreate(
     data: RegionBehavior.CreateData,
-    options: RegionBehavior.DatabaseOperation.OnCreateOperation,
+    options: RegionBehavior.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static _preCreateOperation(
     documents: RegionBehavior.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<RegionBehavior.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<RegionBehavior.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: RegionBehavior.Implementation[],
-    operation: RegionBehavior.DatabaseOperation.Create,
+    operation: RegionBehavior.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: RegionBehavior.UpdateData,
-    options: RegionBehavior.DatabaseOperation.PreUpdateOperationInstance,
+    options: RegionBehavior.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onUpdate(
     changed: RegionBehavior.UpdateData,
-    options: RegionBehavior.DatabaseOperation.OnUpdateOperation,
+    options: RegionBehavior.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static _preUpdateOperation(
     documents: RegionBehavior.Implementation[],
-    operation: RegionBehavior.DatabaseOperation.Update,
+    operation: RegionBehavior.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: RegionBehavior.Implementation[],
-    operation: RegionBehavior.DatabaseOperation.Update,
+    operation: RegionBehavior.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preDelete(
-    options: RegionBehavior.DatabaseOperation.PreDeleteOperationInstance,
+    options: RegionBehavior.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: RegionBehavior.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: RegionBehavior.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: RegionBehavior.Implementation[],
-    operation: RegionBehavior.DatabaseOperation.Delete,
+    operation: RegionBehavior.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: RegionBehavior.Implementation[],
-    operation: RegionBehavior.DatabaseOperation.Delete,
+    operation: RegionBehavior.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  static get hasSystemData(): false;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: RegionBehavior.Implementation[],
@@ -177,6 +248,8 @@ declare abstract class BaseRegionBehavior<
     documents: RegionBehavior.Implementation[],
     context: Document.ModificationContext<RegionBehavior.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<RegionBehavior.Schema>;
 
@@ -195,9 +268,17 @@ declare abstract class BaseRegionBehavior<
 export default BaseRegionBehavior;
 
 declare namespace BaseRegionBehavior {
-  export import Metadata = RegionBehavior.Metadata;
   export import SubType = RegionBehavior.SubType;
+  export import Name = RegionBehavior.Name;
+  export import ConstructorArgs = RegionBehavior.ConstructorArgs;
+  export import Hierarchy = RegionBehavior.Hierarchy;
+  export import Metadata = RegionBehavior.Metadata;
   export import Parent = RegionBehavior.Parent;
+  export import Pack = RegionBehavior.Pack;
+  export import Embedded = RegionBehavior.Embedded;
+  export import EmbeddedName = RegionBehavior.EmbeddedName;
+  export import EmbeddedCollectionName = RegionBehavior.EmbeddedCollectionName;
+  export import ParentCollectionName = RegionBehavior.ParentCollectionName;
   export import Stored = RegionBehavior.Stored;
   export import Source = RegionBehavior.Source;
   export import PersistedData = RegionBehavior.PersistedData;
@@ -205,7 +286,8 @@ declare namespace BaseRegionBehavior {
   export import InitializedData = RegionBehavior.InitializedData;
   export import UpdateData = RegionBehavior.UpdateData;
   export import Schema = RegionBehavior.Schema;
-  export import DatabaseOperation = RegionBehavior.DatabaseOperation;
+  export import DatabaseOperation = RegionBehavior.Database;
+  export import Flags = RegionBehavior.Flags;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.

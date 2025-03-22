@@ -1862,7 +1862,7 @@ interface DatabaseOperationCreateMap {
   Playlist: Playlist.Database.Create;
   PlaylistSound: PlaylistSound.Database.Create;
   Region: RegionDocument.DatabaseOperation.Create;
-  RegionBehavior: RegionBehavior.DatabaseOperation.Create;
+  RegionBehavior: RegionBehavior.Database.Create;
   RollTable: RollTable.Database.Create;
   Scene: Scene.DatabaseOperation.Create;
   Setting: Setting.Database.Create;
@@ -1897,7 +1897,7 @@ interface DatabaseOperationUpdateMap {
   Playlist: Playlist.Database.Update;
   PlaylistSound: PlaylistSound.Database.Update;
   Region: RegionDocument.DatabaseOperation.Update;
-  RegionBehavior: RegionBehavior.DatabaseOperation.Update;
+  RegionBehavior: RegionBehavior.Database.Update;
   RollTable: RollTable.Database.Update;
   Scene: Scene.DatabaseOperation.Update;
   Setting: Setting.Database.Update;
@@ -1932,7 +1932,7 @@ interface DatabaseOperationDeleteMap {
   Playlist: Playlist.Database.Delete;
   PlaylistSound: PlaylistSound.Database.Delete;
   Region: RegionDocument.DatabaseOperation.Delete;
-  RegionBehavior: RegionBehavior.DatabaseOperation.Delete;
+  RegionBehavior: RegionBehavior.Database.Delete;
   RollTable: RollTable.Database.Delete;
   Scene: Scene.DatabaseOperation.Delete;
   Setting: Setting.Database.Delete;

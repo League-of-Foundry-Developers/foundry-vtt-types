@@ -63,7 +63,7 @@ declare abstract class BaseJournalEntryPage<
 
   static get TYPES(): BaseJournalEntryPage.SubType[];
 
-  static get hasTypeData(): false;
+  static get hasTypeData(): true;
 
   static get hierarchy(): JournalEntryPage.Hierarchy;
 

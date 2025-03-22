@@ -243,8 +243,16 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 export default BaseJournalEntry;
 
 declare namespace BaseJournalEntry {
+  export import Name = JournalEntry.Name;
+  export import ConstructorArgs = JournalEntry.ConstructorArgs;
+  export import Hierarchy = JournalEntry.Hierarchy;
   export import Metadata = JournalEntry.Metadata;
   export import Parent = JournalEntry.Parent;
+  export import Pack = JournalEntry.Pack;
+  export import Embedded = JournalEntry.Embedded;
+  export import EmbeddedName = JournalEntry.EmbeddedName;
+  export import EmbeddedCollectionName = JournalEntry.EmbeddedCollectionName;
+  export import ParentCollectionName = JournalEntry.ParentCollectionName;
   export import Stored = JournalEntry.Stored;
   export import Source = JournalEntry.Source;
   export import PersistedData = JournalEntry.PersistedData;
@@ -253,7 +261,7 @@ declare namespace BaseJournalEntry {
   export import UpdateData = JournalEntry.UpdateData;
   export import Schema = JournalEntry.Schema;
   export import DatabaseOperation = JournalEntry.Database;
-  export import CoreFlags = JournalEntry.CoreFlags;
+  export import Flags = JournalEntry.Flags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.
