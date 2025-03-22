@@ -663,6 +663,7 @@ declare global {
        */
       hoverOutOthers: boolean;
     }>;
+
     interface HoverInOptions extends _HoverInOptions {}
 
     /**
@@ -677,7 +678,7 @@ declare global {
     /** @remarks Foundry does some unsound subclassing around {@link PlaceableObject._prepareDragLeftDropUpdates | `PlaceableObject#_prepareDragLeftDropUpdates`} */
     type AnyDragLeftDropUpdate = DragLeftDropUpdate | Token.DragLeftDropUpdate | Wall.DragLeftDropUpdate;
 
-    /** @remarks The type `#_prepareDragLeftDropUpdates` returns if not overridden by the specific placeable */
+    /** @remarks The type {@link PlaceableObject._prepareDragLeftDropUpdates | `PlaceableObject#_prepareDragLeftDropUpdates`} returns if not overridden by the specific placeable */
     interface DragLeftDropUpdate {
       _id: string;
       x: number;

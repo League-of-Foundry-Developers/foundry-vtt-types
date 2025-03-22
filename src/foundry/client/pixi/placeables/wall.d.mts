@@ -230,7 +230,7 @@ declare global {
 
     /**
      * @deprecated since v12, until v14
-     * @remarks "Wall#identifyInteriorState has been deprecated. It has no effect anymore and there's no replacement."
+     * @remarks "`Wall#identifyInteriorState` has been deprecated. It has no effect anymore and there's no replacement."
      */
     identifyInteriorState(): void;
 
@@ -240,7 +240,7 @@ declare global {
      * @returns An orientation in CONST.WALL_DIRECTIONS which indicates whether the Point is left,
      *          right, or collinear (both) with the Wall
      * @deprecated since v12, until v14
-     * @remarks "`Wall#orientPoint` has been moved to `foundry.canvas.edges.Edge#orientPoint`"
+     * @remarks "`Wall#orientPoint` has been moved to {@link Edge.orientPoint | `foundry.canvas.edges.Edge#orientPoint`}"
      */
     orientPoint(point: Canvas.Point): CONST.WALL_DIRECTIONS;
 
@@ -253,7 +253,7 @@ declare global {
      *                         (default: `0`)
      * @returns True if the wall has a threshold greater than 0 for the source type, and the source type is within that distance.
      * @deprecated since v12, until v14
-     * @remarks "Wall#applyThreshold has been moved to `foundry.canvas.edges.Edge#applyThreshold`"
+     * @remarks "Wall#applyThreshold has been moved to {@link Edge.applyThreshold | `foundry.canvas.edges.Edge#applyThreshold`}"
      */
     applyThreshold(
       sourceType: Edge.AttenuationTypes,
@@ -263,21 +263,21 @@ declare global {
 
     /**
      * @deprecated since v12, until v14
-     * @remarks "`Wall#vertices` is replaced by `Wall#edge`"
+     * @remarks "`Wall#vertices` is replaced by {@link Wall.edge | `Wall#edge`}"
      */
     get vertices(): this["edge"];
 
     /**
      * The initial endpoint of the Wall
      * @deprecated since v12, until v14
-     * @remarks "`Wall#A` is replaced by `Wall#edge#a`"
+     * @remarks "`Wall#A` is replaced by {@link Edge.a | `Wall#edge#a`}"
      */
     get A(): this["edge"]["a"];
 
     /**
      * The second endpoint of the Wall
      * @deprecated since v12, until v14
-     * @remarks "`Wall#B` is replaced by `Wall#edge#b`"
+     * @remarks "`Wall#B` is replaced by {@link Edge.b | `Wall#edge#b`}"
      */
     get B(): this["edge"]["b"];
   }

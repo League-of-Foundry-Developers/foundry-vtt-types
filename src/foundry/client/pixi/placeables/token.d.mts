@@ -189,7 +189,7 @@ declare global {
      * The HTML source element for the primary Tile texture
      * @remarks Returns `undefined` if `this.texture` is `undefined`
      */
-    get sourceElement(): HTMLImageElement | HTMLVideoElement | undefined;
+    get sourceElement(): PIXI.ImageSource | undefined;
 
     override get sourceId(): string;
 
@@ -761,7 +761,7 @@ declare global {
 
     /**
      * @deprecated since v11, will be removed in v13
-     * @remarks "`Token#refreshHUD` is deprecated in favor of `token.renderFlags.set()`"
+     * @remarks "`Token#refreshHUD` is deprecated in favor of {@link RenderFlags.set | `token.renderFlags.set()`}"
      */
     // options: not null (destructured)
     refreshHUD(options?: Token.RefreshHUDOptions): void;
@@ -770,7 +770,7 @@ declare global {
      * Update the light and vision source objects associated with this Token
      * @param options - Options which configure how perception sources are updated
      * @deprecated since v12, until v14
-     * @remarks "`Token#updateSource` has been deprecated in favor of `Token#initializeSources`"
+     * @remarks "`Token#updateSource` has been deprecated in favor of {@link Token.initializeSources | `Token#initializeSources`}"
      */
     // options: not null (destructured)
     updateSource(options?: Token.InitializeSourceOptions): void;
@@ -781,29 +781,30 @@ declare global {
      * @param y - The grid y-coordinate that represents the top-left of the Token
      * @returns The coordinate pair which represents the Token's center at position (x, y)
      * @deprecated since v12, until v14
-     * @remarks "`Token#getCenter(x, y)` has been deprecated in favor of `Token#getCenterPoint(Point)`."
+     * @remarks "`Token#getCenter(x, y)` has been deprecated in favor of {@link Token.getCenterPoint | `Token#getCenterPoint(Point)`}."
      */
     getCenter(x: number, y: number): PIXI.IPointData;
 
     /**
      * A convenient reference for whether the current User has full control over the Token document.
      * @deprecated since v12, until v14
-     * @remarks "`Token#owner` has been deprecated. Use `Token#isOwner` instead."
+     * @remarks "`Token#owner` has been deprecated. Use {@link Token.isOwner | `Token#isOwner`} instead."
      */
     get owner(): boolean;
 
     /**
      * @deprecated since v12, until v14
-     * @remarks "`Token#toggleCombat` is deprecated in favor of `TokenDocument#toggleCombatant`,
-     * `TokenDocument.implementation.createCombatants`, and `TokenDocument.implementation.deleteCombatants`"
+     * @remarks "`Token#toggleCombat` is deprecated in favor of {@link TokenDocument.toggleCombatant | `TokenDocument#toggleCombatant`},
+     * {@link TokenDocument.createCombatants | `TokenDocument.implementation.createCombatants`}, and
+     * {@link TokenDocument.deleteCombatants | `TokenDocument.implementation.deleteCombatants`}"
      *
-     * `combat` is unused. Creates Combatants for every Token controlled, plus the Token this was called on if it wasn't already controlled
+     * The `combat` parameter is unused. Creates Combatants for every Token controlled, plus the Token this was called on if it wasn't already controlled
      */
     toggleCombat(combat?: Combat.Implementation): Promise<Combatant.Implementation[]>;
 
     /**
      * @deprecated since v12, until v14
-     * @remarks "`Token#toggleEffect` is deprecated in favor of `Actor#toggleStatusEffect`"
+     * @remarks "`Token#toggleEffect` is deprecated in favor of {@link Actor.toggleStatusEffect | `Actor#toggleStatusEffect`}"
      */
     // options: not null (destructured)
     toggleEffect(
@@ -813,13 +814,13 @@ declare global {
 
     /**
      * @deprecated since v12, until v14
-     * @remarks "`Token#toggleVisibility` is deprecated without replacement in favor of updating the `hidden` field of the `TokenDocument` directly."
+     * @remarks "`Token#toggleVisibility` is deprecated without replacement in favor of updating the {@link TokenDocument.hidden | `hidden` field of the `TokenDocument`} directly."
      */
     toggleVisibility(): Promise<TokenDocument.Implementation[]>;
 
     /**
      * @deprecated since v12 Stable 4, until v14
-     * @remarks "`Token#_recoverFromPreview` is deprecated without replacement in favor of recovering from preview directly into `TokenConfig#_resetPreview`."
+     * @remarks "`Token#_recoverFromPreview` is deprecated without replacement in favor of recovering from preview directly into {@link TokenConfig._resetPreview | `TokenConfig#_resetPreview`}."
      */
     protected _recoverFromPreview(): void;
   }
