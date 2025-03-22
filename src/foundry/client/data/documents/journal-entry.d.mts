@@ -7,28 +7,90 @@ import type { InterfaceToObject, ValueOf } from "../../../../utils/index.d.mts";
 declare global {
   namespace JournalEntry {
     /**
+     * The document's name.
+     */
+    type Name = "JournalEntry";
+
+    /**
+     * The arguments to construct the document.
+     */
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+    /**
+     * The documents embedded within JournalEntry.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the JournalEntry document instance configured through `CONFIG.JournalEntry.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredJournalEntry | `fvtt-types/configuration/ConfiguredJournalEntry`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"JournalEntry">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the JournalEntry document configured through `CONFIG.JournalEntry.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"JournalEntry">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"JournalEntry"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
     /**
      * A document's parent is something that can contain it.
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = JournalEntryPage.Implementation;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = JournalEntryPage.ImplementationClass;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"JournalEntry">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `JournalEntry` that comes from the database.
@@ -131,7 +193,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"JournalEntry", InterfaceToObject<CoreFlags>>;
+      flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
 
       /**
        * An object of creation and access information
@@ -140,9 +202,10 @@ declare global {
       _stats: fields.DocumentStatsField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for  JournalEntries */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<JournalEntry.Parent> {}
+
       /** Options passed along in Create operations for  JournalEntries */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<
@@ -150,39 +213,108 @@ declare global {
           JournalEntry.Parent,
           Temporary
         > {}
+
       /** Options passed along in Delete operations for  JournalEntries */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<JournalEntry.Parent> {}
+
       /** Options passed along in Update operations for  JournalEntries */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<JournalEntry.UpdateData, JournalEntry.Parent> {}
 
-      /** Options for {@link JournalEntry.createDocuments | `JournalEntry.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link JournalEntry._preCreateOperation | `JournalEntry._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link JournalEntry.createDocuments | `JournalEntry.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<JournalEntry.Database.Create<Temporary>> {}
+
+      /** Operation for {@link JournalEntry.updateDocuments | `JournalEntry.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<JournalEntry.Database.Update> {}
+
+      /** Operation for {@link JournalEntry.deleteDocuments | `JournalEntry.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<JournalEntry.Database.Delete> {}
+
+      /** Operation for {@link JournalEntry.create | `JournalEntry.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<JournalEntry.Database.Create<Temporary>> {}
+
+      /** Operation for {@link JournalEntry.update | `JournalEntry#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link JournalEntry.get | `JournalEntry.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link JournalEntry._preCreate | `JournalEntry#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link JournalEntry._onCreate | `JournalEntry#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link JournalEntry.updateDocuments | `JournalEntry.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link JournalEntry._preUpdateOperation | `JournalEntry._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link JournalEntry._preCreateOperation | `JournalEntry._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<JournalEntry.Database.Create> {}
+
+      /** Operation for {@link JournalEntry._onCreateOperation | `JournalEntry#_onCreateOperation`} */
+      interface OnCreateOperation extends JournalEntry.Database.Create {}
+
       /** Options for {@link JournalEntry._preUpdate | `JournalEntry#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link JournalEntry._onUpdate | `JournalEntry#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link JournalEntry.deleteDocuments | `JournalEntry.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link JournalEntry._preDeleteOperation | `JournalEntry._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link JournalEntry._onUpdate | `JournalEntry#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link JournalEntry._preUpdateOperation | `JournalEntry._preUpdateOperation`} */
+      interface PreUpdateOperation extends JournalEntry.Database.Update {}
+
+      /** Operation for {@link JournalEntry._onUpdateOperation | `JournalEntry._preUpdateOperation`} */
+      interface OnUpdateOperation extends JournalEntry.Database.Update {}
+
       /** Options for {@link JournalEntry._preDelete | `JournalEntry#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link JournalEntry._onDelete | `JournalEntry#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link JournalEntry._preDeleteOperation | `JournalEntry#_preDeleteOperation`} */
+      interface PreDeleteOperation extends JournalEntry.Database.Delete {}
+
+      /** Options for {@link JournalEntry._onDeleteOperation | `JournalEntry#_onDeleteOperation`} */
+      interface OnDeleteOperation extends JournalEntry.Database.Delete {}
+
+      /** Context for {@link JournalEntry._onDeleteOperation | `JournalEntry._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<JournalEntry.Parent> {}
+
+      /** Context for {@link JournalEntry._onCreateDocuments | `JournalEntry._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<JournalEntry.Parent> {}
+
+      /** Context for {@link JournalEntry._onUpdateDocuments | `JournalEntry._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<JournalEntry.Parent> {}
+
+      /**
+       * Options for {@link JournalEntry._preCreateDescendantDocuments | `JournalEntry#_preCreateDescendantDocuments`}
+       * and {@link JournalEntry._onCreateDescendantDocuments | `JournalEntry#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<JournalEntry.Database.Create> {}
+
+      /**
+       * Options for {@link JournalEntry._preUpdateDescendantDocuments | `JournalEntry#_preUpdateDescendantDocuments`}
+       * and {@link JournalEntry._onUpdateDescendantDocuments | `JournalEntry#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<JournalEntry.Database.Update> {}
+
+      /**
+       * Options for {@link JournalEntry._preDeleteDescendantDocuments | `JournalEntry#_preDeleteDescendantDocuments`}
+       * and {@link JournalEntry._onDeleteDescendantDocuments | `JournalEntry#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<JournalEntry.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     interface CoreFlags {
@@ -193,7 +325,7 @@ declare global {
     }
 
     /**
-     * @deprecated {@link JournalEntry.DatabaseOperation | `JournalEntry.DatabaseOperation`}
+     * @deprecated {@link JournalEntry.Database | `JournalEntry.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<JournalEntry> {}
@@ -225,7 +357,7 @@ declare global {
      * @param data    - Initial data from which to construct the `JournalEntry`
      * @param context - Construction context options
      */
-    constructor(...args: Document.ConstructorParameters<JournalEntry.CreateData, JournalEntry.Parent>);
+    constructor(...args: JournalEntry.ConstructorArgs);
 
     /**
      * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
@@ -260,15 +392,99 @@ declare global {
     panToNote(options?: PanToNoteOptions): Promise<void>;
 
     /**
-     * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes from their definition in BaseJournalEntry.
      */
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    protected override _preCreateDescendantDocuments<
+      DescendantDocumentType extends JournalEntry.DescendantClasses,
+      Parent extends JournalEntry.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _onCreateDescendantDocuments<
+      DescendantDocumentType extends JournalEntry.DescendantClasses,
+      Parent extends JournalEntry.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments<
+      DescendantDocumentType extends JournalEntry.DescendantClasses,
+      Parent extends JournalEntry.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments<
+      DescendantDocumentType extends JournalEntry.DescendantClasses,
+      Parent extends JournalEntry.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _preDeleteDescendantDocuments<
+      DescendantDocumentType extends JournalEntry.DescendantClasses,
+      Parent extends JournalEntry.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _onDeleteDescendantDocuments<
+      DescendantDocumentType extends JournalEntry.DescendantClasses,
+      Parent extends JournalEntry.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
 
     static override defaultName(context?: Document.DefaultNameContext<string, JournalEntry.Parent>): string;
 

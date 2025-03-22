@@ -34,9 +34,15 @@ declare abstract class BaseJournalEntryPage<
 
   /*
    * After this point these are not really overridden methods.
-   * They are here because they're static properties but depend on the instance and so can't be
-   * defined DRY-ly while also being easily overridable.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
    */
+
+  /* Document overrides */
 
   static " fvtt_types_internal_document_name_static": "JournalEntryPage";
 
