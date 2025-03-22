@@ -1855,7 +1855,7 @@ interface DatabaseOperationCreateMap {
   Folder: Folder.DatabaseOperation.Create;
   Item: Item.DatabaseOperation.Create;
   JournalEntry: JournalEntry.DatabaseOperation.Create;
-  JournalEntryPage: JournalEntryPage.DatabaseOperation.Create;
+  JournalEntryPage: JournalEntryPage.Database.Create;
   Macro: Macro.DatabaseOperation.Create;
   MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Create;
   Note: NoteDocument.DatabaseOperation.Create;
@@ -1890,7 +1890,7 @@ interface DatabaseOperationUpdateMap {
   Folder: Folder.DatabaseOperation.Update;
   Item: Item.DatabaseOperation.Update;
   JournalEntry: JournalEntry.DatabaseOperation.Update;
-  JournalEntryPage: JournalEntryPage.DatabaseOperation.Update;
+  JournalEntryPage: JournalEntryPage.Database.Update;
   Macro: Macro.DatabaseOperation.Update;
   MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Update;
   Note: NoteDocument.DatabaseOperation.Update;
@@ -1925,7 +1925,7 @@ interface DatabaseOperationDeleteMap {
   Folder: Folder.DatabaseOperation.Delete;
   Item: Item.DatabaseOperation.Delete;
   JournalEntry: JournalEntry.DatabaseOperation.Delete;
-  JournalEntryPage: JournalEntryPage.DatabaseOperation.Delete;
+  JournalEntryPage: JournalEntryPage.Database.Delete;
   Macro: Macro.DatabaseOperation.Delete;
   MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Delete;
   Note: NoteDocument.DatabaseOperation.Delete;

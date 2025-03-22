@@ -1,6 +1,8 @@
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The JournalEntryPage Document.
@@ -20,7 +22,7 @@ declare abstract class BaseJournalEntryPage<
    * You should use {@link JournalEntryPage.implementation | `new JournalEntryPage.implementation(...)`} instead which will give you
    * a system specific implementation of `JournalEntryPage`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseJournalEntryPage.CreateData, BaseJournalEntryPage.Parent>);
+  constructor(...args: JournalEntryPage.ConstructorArgs);
 
   _source: BaseJournalEntryPage.Source;
 
@@ -38,102 +40,171 @@ declare abstract class BaseJournalEntryPage<
 
   static " fvtt_types_internal_document_name_static": "JournalEntryPage";
 
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: JournalEntryPage.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
   static get implementation(): JournalEntryPage.ImplementationClass;
+
+  static get baseDocument(): typeof BaseJournalEntryPage;
+
+  static get collectionName(): JournalEntryPage.ParentCollectionName;
+
+  static get documentName(): JournalEntryPage.Name;
+
+  static get TYPES(): BaseJournalEntryPage.SubType[];
+
+  static get hasTypeData(): false;
+
+  static get hierarchy(): JournalEntryPage.Hierarchy;
 
   override system: Document.SystemFor<"JournalEntryPage", SubType>;
 
   override parent: BaseJournalEntryPage.Parent;
 
-  static get TYPES(): BaseJournalEntryPage.SubType[];
-
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<JournalEntryPage.Implementation | JournalEntryPage.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<JournalEntryPage.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<JournalEntryPage.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<JournalEntryPage.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: JournalEntryPage.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<JournalEntryPage.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<JournalEntryPage.Database.Update>,
   ): Promise<JournalEntryPage.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<JournalEntryPage.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<JournalEntryPage.Database.Delete>,
   ): Promise<JournalEntryPage.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: JournalEntryPage.CreateData | JournalEntryPage.CreateData[],
-    operation?: Document.Database.CreateOperation<JournalEntryPage.DatabaseOperation.Create<Temporary>>,
-  ): Promise<JournalEntryPage.Implementation | undefined>;
+    operation?: JournalEntryPage.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<JournalEntryPage.Implementation, Temporary> | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): JournalEntryPage.Implementation | null;
+  override update(
+    data: JournalEntryPage.UpdateData | undefined,
+    operation?: JournalEntryPage.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: JournalEntryPage.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(
+    documentId: string,
+    options?: JournalEntryPage.Database.GetOptions,
+  ): JournalEntryPage.Implementation | null;
+
+  static override getCollectionName<CollectionName extends JournalEntryPage.EmbeddedName>(
+    name: CollectionName,
+  ): JournalEntryPage.CollectionNameOf<CollectionName> | null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends JournalEntryPage.Flags.Scope, Key extends JournalEntryPage.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<JournalEntryPage.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends JournalEntryPage.Flags.Scope,
+    Key extends JournalEntryPage.Flags.Key<Scope>,
+    Value extends Document.GetFlag<JournalEntryPage.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends JournalEntryPage.Flags.Scope, Key extends JournalEntryPage.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   protected _preCreate(
     data: JournalEntryPage.CreateData,
-    options: JournalEntryPage.DatabaseOperation.PreCreateOperationInstance,
+    options: JournalEntryPage.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onCreate(
     data: JournalEntryPage.CreateData,
-    options: JournalEntryPage.DatabaseOperation.OnCreateOperation,
+    options: JournalEntryPage.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static _preCreateOperation(
     documents: JournalEntryPage.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<JournalEntryPage.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<JournalEntryPage.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: JournalEntryPage.Implementation[],
-    operation: JournalEntryPage.DatabaseOperation.Create,
+    operation: JournalEntryPage.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: JournalEntryPage.UpdateData,
-    options: JournalEntryPage.DatabaseOperation.PreUpdateOperationInstance,
+    options: JournalEntryPage.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onUpdate(
     changed: JournalEntryPage.UpdateData,
-    options: JournalEntryPage.DatabaseOperation.OnUpdateOperation,
+    options: JournalEntryPage.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static _preUpdateOperation(
     documents: JournalEntryPage.Implementation[],
-    operation: JournalEntryPage.DatabaseOperation.Update,
+    operation: JournalEntryPage.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: JournalEntryPage.Implementation[],
-    operation: JournalEntryPage.DatabaseOperation.Update,
+    operation: JournalEntryPage.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preDelete(
-    options: JournalEntryPage.DatabaseOperation.PreDeleteOperationInstance,
+    options: JournalEntryPage.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: JournalEntryPage.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: JournalEntryPage.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: JournalEntryPage.Implementation[],
-    operation: JournalEntryPage.DatabaseOperation.Delete,
+    operation: JournalEntryPage.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: JournalEntryPage.Implementation[],
-    operation: JournalEntryPage.DatabaseOperation.Delete,
+    operation: JournalEntryPage.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  static get hasSystemData(): true;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: JournalEntryPage.Implementation[],
@@ -149,6 +220,8 @@ declare abstract class BaseJournalEntryPage<
     documents: JournalEntryPage.Implementation[],
     context: Document.ModificationContext<JournalEntryPage.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<JournalEntryPage.Schema>;
 
@@ -177,7 +250,7 @@ declare namespace BaseJournalEntryPage {
   export import InitializedData = JournalEntryPage.InitializedData;
   export import UpdateData = JournalEntryPage.UpdateData;
   export import Schema = JournalEntryPage.Schema;
-  export import DatabaseOperation = JournalEntryPage.DatabaseOperation;
+  export import DatabaseOperation = JournalEntryPage.Database;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
