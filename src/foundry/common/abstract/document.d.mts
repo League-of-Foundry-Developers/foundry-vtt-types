@@ -1859,7 +1859,7 @@ interface DatabaseOperationCreateMap {
   Macro: Macro.DatabaseOperation.Create;
   MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Create;
   Note: NoteDocument.DatabaseOperation.Create;
-  Playlist: Playlist.DatabaseOperation.Create;
+  Playlist: Playlist.Database.Create;
   PlaylistSound: PlaylistSound.Database.Create;
   Region: RegionDocument.DatabaseOperation.Create;
   RegionBehavior: RegionBehavior.DatabaseOperation.Create;
@@ -1894,7 +1894,7 @@ interface DatabaseOperationUpdateMap {
   Macro: Macro.DatabaseOperation.Update;
   MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Update;
   Note: NoteDocument.DatabaseOperation.Update;
-  Playlist: Playlist.DatabaseOperation.Update;
+  Playlist: Playlist.Database.Update;
   PlaylistSound: PlaylistSound.Database.Update;
   Region: RegionDocument.DatabaseOperation.Update;
   RegionBehavior: RegionBehavior.DatabaseOperation.Update;
@@ -1929,7 +1929,7 @@ interface DatabaseOperationDeleteMap {
   Macro: Macro.DatabaseOperation.Delete;
   MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Delete;
   Note: NoteDocument.DatabaseOperation.Delete;
-  Playlist: Playlist.DatabaseOperation.Delete;
+  Playlist: Playlist.Database.Delete;
   PlaylistSound: PlaylistSound.Database.Delete;
   Region: RegionDocument.DatabaseOperation.Delete;
   RegionBehavior: RegionBehavior.DatabaseOperation.Delete;

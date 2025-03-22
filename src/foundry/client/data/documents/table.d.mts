@@ -25,19 +25,19 @@ declare global {
      * The implementation of the RollTable document instance configured through `CONFIG.RollTable.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRollTable | `fvtt-types/configuration/ConfiguredRollTable`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"RollTable">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the RollTable document configured through `CONFIG.RollTable.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"RollTable">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"RollTable"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
     /**
      * A document's parent is something that can contain it.
@@ -61,7 +61,7 @@ declare global {
      * Types of CompendiumCollection this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
-    type Pack = CompendiumCollection.ForDocument<"RollTable">;
+    type Pack = CompendiumCollection.ForDocument<Name>;
 
     /**
      * An embedded document is a document contained in another.
@@ -227,7 +227,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"RollTable">;
+      flags: fields.ObjectField.FlagsField<Name>;
 
       /**
        * An object of creation and access information
@@ -352,7 +352,7 @@ declare global {
       results: Document.ToConfiguredInstance<typeof foundry.documents.BaseTableResult>[];
     }
 
-    interface Flags extends Document.ConfiguredFlagsForName<"RollTable"> {}
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
       type Scope = Document.FlagKeyOf<Flags>;

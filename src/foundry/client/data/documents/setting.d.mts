@@ -23,19 +23,19 @@ declare global {
      * The implementation of the Setting document instance configured through `CONFIG.Setting.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredSetting | `fvtt-types/configuration/ConfiguredSetting`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"Setting">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the Setting document configured through `CONFIG.Setting.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"Setting">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"Setting"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
     /**
      * A document's parent is something that can contain it.

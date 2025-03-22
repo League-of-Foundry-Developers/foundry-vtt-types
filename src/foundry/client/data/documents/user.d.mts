@@ -26,19 +26,19 @@ declare global {
      * The implementation of the User document instance configured through `CONFIG.User.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredUser | `fvtt-types/configuration/ConfiguredUser`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"User">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the User document configured through `CONFIG.User.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"User">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"User"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
     /**
      * A document's parent is something that can contain it.
@@ -251,7 +251,7 @@ declare global {
        * An object of optional key/value flags.
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"User">;
+      flags: fields.ObjectField.FlagsField<Name>;
 
       /**
        * An object of creation and access information
@@ -360,12 +360,12 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<User.Database.Delete> {}
     }
 
-    interface Flags extends Document.ConfiguredFlagsForName<"User"> {}
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
       type Scope = Document.FlagKeyOf<Flags>;
       type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
-      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<"User", Scope, Key>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     // Note(LukeAbby): This namespace exists to break cycles because of extensive usage of `User` in

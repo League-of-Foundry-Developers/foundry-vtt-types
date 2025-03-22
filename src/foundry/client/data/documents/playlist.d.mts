@@ -7,6 +7,21 @@ import type { fields } from "../../../common/data/module.d.mts";
 declare global {
   namespace Playlist {
     /**
+     * The document's name.
+     */
+    type Name = "Playlist";
+
+    /**
+     * The arguments to construct the document.
+     */
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+    /**
+     * The documents embedded within Playlist.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the Playlist document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylist | `fvtt-types/configuration/ConfiguredPlaylist`} in fvtt-types.
      */
@@ -29,6 +44,53 @@ declare global {
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = PlaylistSound.Implementation;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = PlaylistSound.ImplementationClass;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Playlist">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `Playlist` that comes from the database.
@@ -192,48 +254,116 @@ declare global {
       _stats: fields.DocumentStatsField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for Playlists */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Playlist.Parent> {}
+
       /** Options passed along in Create operations for Playlists */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<Playlist.CreateData, Playlist.Parent, Temporary> {}
+
       /** Options passed along in Delete operations for Playlists */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Playlist.Parent> {}
+
       /** Options passed along in Update operations for Playlists */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Playlist.UpdateData, Playlist.Parent> {}
 
-      /** Options for {@link Playlist.createDocuments | `Playlist.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Playlist._preCreateOperation | `Playlist._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link Playlist.createDocuments | `Playlist.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Playlist.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Playlist.updateDocuments | `Playlist.updateDocuments`} */
+      interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Playlist.Database.Update> {}
+
+      /** Operation for {@link Playlist.deleteDocuments | `Playlist.deleteDocuments`} */
+      interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Playlist.Database.Delete> {}
+
+      /** Operation for {@link Playlist.create | `Playlist.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Playlist.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Playlist.update | `Playlist#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link Playlist.get | `Playlist.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link Playlist._preCreate | `Playlist#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link Playlist._onCreate | `Playlist#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link Playlist.updateDocuments | `Playlist.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link Playlist._preUpdateOperation | `Playlist._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link Playlist._preCreateOperation | `Playlist._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Playlist.Database.Create> {}
+
+      /** Operation for {@link Playlist._onCreateOperation | `Playlist#_onCreateOperation`} */
+      interface OnCreateOperation extends Playlist.Database.Create {}
+
       /** Options for {@link Playlist._preUpdate | `Playlist#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link Playlist._onUpdate | `Playlist#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link Playlist.deleteDocuments | `Playlist.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link Playlist._preDeleteOperation | `Playlist._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Playlist._onUpdate | `Playlist#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link Playlist._preUpdateOperation | `Playlist._preUpdateOperation`} */
+      interface PreUpdateOperation extends Playlist.Database.Update {}
+
+      /** Operation for {@link Playlist._onUpdateOperation | `Playlist._preUpdateOperation`} */
+      interface OnUpdateOperation extends Playlist.Database.Update {}
+
       /** Options for {@link Playlist._preDelete | `Playlist#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link Playlist._onDelete | `Playlist#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link Playlist._preDeleteOperation | `Playlist#_preDeleteOperation`} */
+      interface PreDeleteOperation extends Playlist.Database.Delete {}
+
+      /** Options for {@link Playlist._onDeleteOperation | `Playlist#_onDeleteOperation`} */
+      interface OnDeleteOperation extends Playlist.Database.Delete {}
+
+      /** Context for {@link Playlist._onDeleteOperation | `Playlist._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<Playlist.Parent> {}
+
+      /** Context for {@link Playlist._onCreateDocuments | `Playlist._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<Playlist.Parent> {}
+
+      /** Context for {@link Playlist._onUpdateDocuments | `Playlist._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<Playlist.Parent> {}
+
+      /**
+       * Options for {@link Playlist._preCreateDescendantDocuments | `Playlist#_preCreateDescendantDocuments`}
+       * and {@link Playlist._onCreateDescendantDocuments | `Playlist#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<Playlist.Database.Create> {}
+
+      /**
+       * Options for {@link Playlist._preUpdateDescendantDocuments | `Playlist#_preUpdateDescendantDocuments`}
+       * and {@link Playlist._onUpdateDescendantDocuments | `Playlist#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<Playlist.Database.Update> {}
+
+      /**
+       * Options for {@link Playlist._preDeleteDescendantDocuments | `Playlist#_preDeleteDescendantDocuments`}
+       * and {@link Playlist._onDeleteDescendantDocuments | `Playlist#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<Playlist.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**
-     * @deprecated {@link Playlist.DatabaseOperation | `Playlist.DatabaseOperation`}
+     * @deprecated {@link Playlist.Database | `Playlist.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Playlist> {}
@@ -274,7 +404,7 @@ declare global {
      * @param data    - Initial data from which to construct the `Playlist`
      * @param context - Construction context options
      */
-    constructor(...args: Document.ConstructorParameters<Playlist.CreateData, Playlist.Parent>);
+    constructor(...args: Playlist.ConstructorArgs);
 
     /**
      * Playlists may have a playback order which defines the sequence of Playlist Sounds
@@ -374,8 +504,7 @@ declare global {
     override _onClickDocumentLink(event: MouseEvent): ReturnType<this["playAll" | "stopAll"]>;
 
     /**
-     * @privateRemarks _preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     * @privateRemarks _preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes from the BasePlaylist class.
      */
 
     protected override _onCreateDescendantDocuments(
@@ -425,9 +554,15 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
 
     static override defaultName(context?: Document.DefaultNameContext<string, Playlist.Parent>): string;
 
