@@ -383,7 +383,7 @@ declare global {
       collection: PlaylistSound.ParentCollectionName,
       documents: PlaylistSound.Stored[],
       result: PlaylistSound.CreateData[],
-      options: PlaylistSound.DatabaseOperation.OnCreateOperation,
+      options: PlaylistSound.Database.OnCreateOperation,
       userId: string,
     ): void;
 
@@ -392,7 +392,7 @@ declare global {
       collection: PlaylistSound.ParentCollectionName,
       documents: PlaylistSound.Stored[],
       changes: PlaylistSound.UpdateData[],
-      options: PlaylistSound.DatabaseOperation.OnUpdateOperation,
+      options: PlaylistSound.Database.OnUpdateOperation,
       userId: string,
     ): void;
 
@@ -401,7 +401,7 @@ declare global {
       collection: PlaylistSound.ParentCollectionName,
       documents: PlaylistSound.Stored[],
       ids: string[],
-      options: PlaylistSound.DatabaseOperation.OnDeleteOperation,
+      options: PlaylistSound.Database.OnDeleteOperation,
       userId: string,
     ): void;
 

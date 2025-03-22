@@ -23,19 +23,19 @@ declare global {
      * The implementation of the WallDocument document instance configured through `CONFIG.Wall.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredWallDocument | `fvtt-types/configuration/ConfiguredWallDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"Wall">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the WallDocument document configured through `CONFIG.Wall.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"Wall">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"Wall"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
     /**
      * A document's parent is something that can contain it.
@@ -337,7 +337,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"Wall">;
+      flags: fields.ObjectField.FlagsField<Name>;
     }
 
     namespace Database {
@@ -447,12 +447,12 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<WallDocument.Database.Delete> {}
     }
 
-    interface Flags extends Document.ConfiguredFlagsForName<"Wall"> {}
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
       type Scope = Document.FlagKeyOf<Flags>;
       type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
-      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<"Wall", Scope, Key>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**

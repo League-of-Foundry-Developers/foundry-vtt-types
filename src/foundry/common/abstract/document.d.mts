@@ -1860,7 +1860,7 @@ interface DatabaseOperationCreateMap {
   MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Create;
   Note: NoteDocument.DatabaseOperation.Create;
   Playlist: Playlist.DatabaseOperation.Create;
-  PlaylistSound: PlaylistSound.DatabaseOperation.Create;
+  PlaylistSound: PlaylistSound.Database.Create;
   Region: RegionDocument.DatabaseOperation.Create;
   RegionBehavior: RegionBehavior.DatabaseOperation.Create;
   RollTable: RollTable.Database.Create;
@@ -1895,7 +1895,7 @@ interface DatabaseOperationUpdateMap {
   MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Update;
   Note: NoteDocument.DatabaseOperation.Update;
   Playlist: Playlist.DatabaseOperation.Update;
-  PlaylistSound: PlaylistSound.DatabaseOperation.Update;
+  PlaylistSound: PlaylistSound.Database.Update;
   Region: RegionDocument.DatabaseOperation.Update;
   RegionBehavior: RegionBehavior.DatabaseOperation.Update;
   RollTable: RollTable.Database.Update;
@@ -1930,7 +1930,7 @@ interface DatabaseOperationDeleteMap {
   MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Delete;
   Note: NoteDocument.DatabaseOperation.Delete;
   Playlist: Playlist.DatabaseOperation.Delete;
-  PlaylistSound: PlaylistSound.DatabaseOperation.Delete;
+  PlaylistSound: PlaylistSound.Database.Delete;
   Region: RegionDocument.DatabaseOperation.Delete;
   RegionBehavior: RegionBehavior.DatabaseOperation.Delete;
   RollTable: RollTable.Database.Delete;
