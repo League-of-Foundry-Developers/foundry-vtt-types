@@ -1,5 +1,5 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { Brand, FixedInstanceType } from "fvtt-types/utils";
+import type { Brand, FixedInstanceType, NullishProps } from "fvtt-types/utils";
 import type RegionShape from "../../../client-esm/canvas/regions/shape.d.mts";
 import type RegionPolygonTree from "../../../client-esm/canvas/regions/polygon-tree.d.mts";
 import type RegionGeometry from "../../../client-esm/canvas/regions/geometry.d.mts";
@@ -97,6 +97,18 @@ declare global {
          */
         ENTER: 1 & MOVEMENT_SEGMENT_TYPES;
       }> {}
+
+    /** @internal */
+    type _SegmentizeMovementOptions = NullishProps<{
+      /**
+       * Is it teleportation?
+       * @defaultValue `false`
+       * @remarks Can't be `null` because it only has a parameter default
+       */
+      teleport: boolean;
+    }>;
+
+    interface SegmentizeMovementOptions extends _SegmentizeMovementOptions {}
   }
 
   class Region extends PlaceableObject<RegionDocument.Implementation> {
@@ -188,17 +200,11 @@ declare global {
      *                                        is considered to be inside the region.
      * @returns                             - The movement split into its segments.
      */
+    // options: not null (destructured)
     segmentizeMovement(
       waypoints: Region.RegionMovementWaypoint[],
       samples: Point[],
-      options?: {
-        /**
-         * Is it teleportation?
-         * @remarks options cannot accept null because defaults are provided with `options={}` in the parameters.
-         * @defaultValue `false`
-         */
-        teleport?: boolean | undefined;
-      },
+      options?: Region.SegmentizeMovementOptions,
     ): Region.RegionMovementSegment[];
 
     /**

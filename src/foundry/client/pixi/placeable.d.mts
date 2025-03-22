@@ -342,7 +342,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canHUD(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
+    protected _canHUD(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to configure the Placeable Object?
@@ -350,7 +350,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canConfigure(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
+    protected _canConfigure(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to control the Placeable Object?
@@ -358,7 +358,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canControl(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
+    protected _canControl(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to view details of the Placeable Object?
@@ -366,7 +366,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canView(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
+    protected _canView(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to create the underlying Document?
@@ -374,7 +374,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canCreate(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
+    protected _canCreate(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to drag this Placeable Object?
@@ -382,7 +382,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canDrag(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
+    protected _canDrag(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to left-click drag this Placeable Object?
@@ -398,7 +398,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canHover(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
+    protected _canHover(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to update the underlying Document?
@@ -406,7 +406,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canUpdate(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
+    protected _canUpdate(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     /**
      * Does the User have permission to delete the underlying Document?
@@ -414,7 +414,7 @@ declare global {
      * @param event - The event object.
      * @returns The returned status.
      */
-    protected _canDelete(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
+    protected _canDelete(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     /**
      * Actions that should be taken for this Placeable Object when a mouseover event occurs.
@@ -674,7 +674,8 @@ declare global {
      */
     type Action = "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete" | (string & {});
 
-    type AnyDragLeftDropUpdate = DragLeftDropUpdate | Wall.DragLeftDropUpdate;
+    /** @remarks Foundry does some unsound subclassing around {@link PlaceableObject._prepareDragLeftDropUpdates | `PlaceableObject#_prepareDragLeftDropUpdates`} */
+    type AnyDragLeftDropUpdate = DragLeftDropUpdate | Token.DragLeftDropUpdate | Wall.DragLeftDropUpdate;
 
     /** @remarks The type `#_prepareDragLeftDropUpdates` returns if not overridden by the specific placeable */
     interface DragLeftDropUpdate {

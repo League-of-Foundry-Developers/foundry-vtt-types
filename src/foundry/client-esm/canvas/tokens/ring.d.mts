@@ -1,4 +1,4 @@
-import type { Brand, InitializedOn } from "fvtt-types/utils";
+import type { Brand, FixedInstanceType, InitializedOn } from "fvtt-types/utils";
 import type DynamicRingData from "./ring-data.d.mts";
 
 /**
@@ -197,6 +197,9 @@ declare class TokenRing {
 declare namespace TokenRing {
   interface Any extends AnyTokenRing {}
   type AnyConstructor = typeof AnyTokenRing;
+
+  type ConfiguredClass = CONFIG["Token"]["ring"]["ringClass"];
+  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
 
   /** @remarks Overrides for default values */
   interface FlashColorOptions extends CanvasAnimation.AnimateOptions {
