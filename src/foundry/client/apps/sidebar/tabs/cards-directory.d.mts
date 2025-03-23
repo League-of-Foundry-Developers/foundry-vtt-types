@@ -17,5 +17,5 @@ declare global {
 }
 
 declare abstract class AnyCardsDirectory extends CardsDirectory {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -118,7 +118,7 @@ declare namespace TypeDataModel {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
-    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
+    type Constructor = (abstract new (...args: never) => Instance.Any) & {
       [__TypeDataModelBrand]: never;
     };
 
@@ -168,7 +168,7 @@ declare namespace TypeDataModel {
 }
 
 declare abstract class AnyTypeDataModel extends TypeDataModel<any, any, any, any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 /**

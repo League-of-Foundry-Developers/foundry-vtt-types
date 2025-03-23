@@ -52,5 +52,5 @@ declare global {
 }
 
 declare abstract class AnyCardConfig extends CardConfig<CardConfig.Options> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

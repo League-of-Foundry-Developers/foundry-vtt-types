@@ -27,9 +27,9 @@ declare global {
 }
 
 declare abstract class AnySunburstColorationShader extends SunburstColorationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnySunburstIlluminationShader extends SunburstIlluminationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -53,5 +53,5 @@ declare global {
 }
 
 declare abstract class AnyWeatherOcclusionMaskFilter extends WeatherOcclusionMaskFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

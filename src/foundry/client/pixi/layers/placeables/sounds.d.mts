@@ -330,5 +330,5 @@ interface PointSourceData {
 }
 
 declare abstract class AnySoundsLayer extends SoundsLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

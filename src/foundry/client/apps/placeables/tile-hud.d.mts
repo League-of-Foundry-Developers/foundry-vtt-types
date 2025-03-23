@@ -38,5 +38,5 @@ declare global {
 }
 
 declare abstract class AnyTileHUD extends TileHUD<Application.Options> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

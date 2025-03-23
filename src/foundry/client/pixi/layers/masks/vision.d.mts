@@ -198,5 +198,5 @@ declare global {
 }
 
 declare abstract class AnyCanvasVisionMask extends CanvasVisionMask {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

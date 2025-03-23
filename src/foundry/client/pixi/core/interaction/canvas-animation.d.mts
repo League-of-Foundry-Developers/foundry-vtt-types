@@ -238,5 +238,5 @@ declare global {
 }
 
 declare abstract class AnyCanvasAnimation extends CanvasAnimation {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

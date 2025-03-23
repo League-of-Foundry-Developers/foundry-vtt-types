@@ -44,5 +44,5 @@ declare global {
 }
 
 declare abstract class AnyAbstractBaseFilter extends AbstractBaseFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

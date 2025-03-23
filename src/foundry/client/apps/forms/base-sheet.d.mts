@@ -49,5 +49,5 @@ declare global {
 }
 
 declare abstract class AnyBaseSheet extends BaseSheet<Document.Any, BaseSheet.Options<Document.Any>> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

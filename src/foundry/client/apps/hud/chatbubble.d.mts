@@ -117,5 +117,5 @@ declare global {
 }
 
 declare abstract class AnyChatBubbles extends ChatBubbles {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

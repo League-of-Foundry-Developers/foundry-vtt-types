@@ -55,9 +55,9 @@ declare global {
 }
 
 declare abstract class AnySirenColorationShader extends SirenColorationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnySirenIlluminationShader extends SirenIlluminationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

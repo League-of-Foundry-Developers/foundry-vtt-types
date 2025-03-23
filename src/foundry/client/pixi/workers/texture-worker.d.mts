@@ -101,5 +101,5 @@ declare global {
 }
 
 declare abstract class AnyTextureCompressor extends TextureCompressor {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

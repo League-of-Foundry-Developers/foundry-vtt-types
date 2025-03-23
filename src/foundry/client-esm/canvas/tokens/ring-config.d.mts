@@ -246,7 +246,7 @@ declare namespace TokenRingConfig {
 }
 
 declare abstract class AnyTokenRingConfig extends TokenRingConfig {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default TokenRingConfig;

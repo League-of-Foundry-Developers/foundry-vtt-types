@@ -103,5 +103,5 @@ declare global {
 }
 
 declare abstract class AnyDepthSamplerShader extends DepthSamplerShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

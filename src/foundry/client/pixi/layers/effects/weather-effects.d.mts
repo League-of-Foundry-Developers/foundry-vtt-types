@@ -295,5 +295,5 @@ declare global {
 }
 
 declare abstract class AnyWeatherEffects extends WeatherEffects {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

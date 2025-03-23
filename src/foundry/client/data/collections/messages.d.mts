@@ -40,5 +40,5 @@ declare global {
 }
 
 declare abstract class AnyMessages extends Messages {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

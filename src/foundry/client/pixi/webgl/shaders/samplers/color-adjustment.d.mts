@@ -110,9 +110,9 @@ declare global {
 }
 
 declare abstract class AnyColorAdjustmentsSamplerShader extends ColorAdjustmentsSamplerShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyAmplificationSamplerShader extends AmplificationSamplerShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

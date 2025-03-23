@@ -185,7 +185,7 @@ declare namespace RollParser {
 }
 
 declare abstract class AnyRollParser extends RollParser {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default RollParser;

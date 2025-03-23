@@ -31,5 +31,5 @@ declare global {
 }
 
 declare abstract class AnySnowShader extends SnowShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

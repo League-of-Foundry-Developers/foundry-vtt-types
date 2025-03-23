@@ -109,5 +109,5 @@ declare global {
 }
 
 declare abstract class AnyGridShader extends GridShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

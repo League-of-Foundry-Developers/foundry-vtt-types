@@ -49,5 +49,5 @@ declare global {
 }
 
 declare abstract class AnyQuadMesh extends QuadMesh {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

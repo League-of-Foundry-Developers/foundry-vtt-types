@@ -488,12 +488,12 @@ declare global {
 }
 
 declare abstract class AnyFormApplication extends FormApplication<any, any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDocumentSheet extends DocumentSheet<
   DocumentSheet.Options<foundry.abstract.Document.Any>,
   foundry.abstract.Document.Any
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

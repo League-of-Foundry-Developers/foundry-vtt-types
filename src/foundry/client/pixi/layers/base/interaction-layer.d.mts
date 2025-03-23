@@ -159,5 +159,5 @@ declare global {
 }
 
 declare abstract class AnyInteractionLayer extends InteractionLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

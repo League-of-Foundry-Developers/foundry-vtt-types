@@ -265,5 +265,5 @@ declare global {
 }
 
 declare abstract class AnyGridLayer extends GridLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

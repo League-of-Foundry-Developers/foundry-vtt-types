@@ -240,5 +240,5 @@ declare global {
 }
 
 declare class AnyVisionMode extends VisionMode {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

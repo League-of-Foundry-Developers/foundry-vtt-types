@@ -241,5 +241,5 @@ declare global {
 }
 
 declare abstract class AnyCanvasVisibility extends CanvasVisibility {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

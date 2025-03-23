@@ -76,5 +76,5 @@ declare global {
 }
 
 declare abstract class AnySmoothNoise extends SmoothNoise {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

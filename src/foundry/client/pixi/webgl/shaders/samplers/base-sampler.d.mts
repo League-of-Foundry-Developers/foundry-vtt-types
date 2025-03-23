@@ -201,5 +201,5 @@ declare global {
 }
 
 declare abstract class AnyBaseSamplerShader extends BaseSamplerShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

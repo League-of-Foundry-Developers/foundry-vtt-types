@@ -26,7 +26,7 @@ declare namespace ApplicationV2 {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
-    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
+    type Constructor = (abstract new (...args: never) => Instance.Any) & {
       [__ApplicationV2Brand]: never;
     };
 
@@ -717,7 +717,7 @@ declare class ApplicationV2<
 }
 
 declare abstract class AnyApplicationV2 extends ApplicationV2<any, any, any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default ApplicationV2;

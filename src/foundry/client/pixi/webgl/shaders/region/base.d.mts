@@ -75,5 +75,5 @@ declare global {
 }
 
 declare abstract class AnyRegionShader extends RegionShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

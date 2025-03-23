@@ -48,5 +48,5 @@ declare global {
 }
 
 declare abstract class AnyCombatEncounters extends CombatEncounters {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

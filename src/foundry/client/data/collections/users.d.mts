@@ -54,5 +54,5 @@ declare global {
 }
 
 declare abstract class AnyUsers extends Users {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

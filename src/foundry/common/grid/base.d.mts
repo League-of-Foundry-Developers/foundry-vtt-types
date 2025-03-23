@@ -651,7 +651,7 @@ declare namespace BaseGrid {
 }
 
 declare abstract class AnyBaseGrid extends BaseGrid {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default BaseGrid;

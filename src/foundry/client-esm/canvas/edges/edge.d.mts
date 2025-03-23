@@ -247,7 +247,7 @@ declare namespace Edge {
 }
 
 declare abstract class AnyEdge extends Edge {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default Edge;

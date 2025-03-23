@@ -39,9 +39,9 @@ declare global {
 }
 
 declare abstract class AnyTorchColorationShader extends TorchColorationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyTorchIlluminationShader extends TorchIlluminationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -94,5 +94,5 @@ declare global {
 }
 
 declare abstract class AnyAVConfig extends AVConfig<FormApplication.Options> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

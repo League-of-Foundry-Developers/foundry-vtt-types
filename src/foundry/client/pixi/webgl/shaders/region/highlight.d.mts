@@ -91,5 +91,5 @@ declare global {
 }
 
 declare abstract class AnyHighlightRegionShader extends HighlightRegionShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

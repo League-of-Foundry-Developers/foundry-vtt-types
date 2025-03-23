@@ -217,7 +217,7 @@ declare abstract class AnyBaseLightSource extends BaseLightSource<
   PIXI.Polygon,
   RenderedEffectSource.Layers
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default BaseLightSource;

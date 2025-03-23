@@ -365,5 +365,5 @@ declare global {
 }
 
 declare abstract class AnySpriteMesh extends SpriteMesh {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -82,9 +82,9 @@ declare global {
 }
 
 declare abstract class AnySettings extends Settings<Application.Options> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyFrameViewer extends FrameViewer<Application.Options> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -102,5 +102,5 @@ declare global {
 }
 
 declare abstract class AnyOccludableSamplerShader extends OccludableSamplerShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

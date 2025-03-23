@@ -11,7 +11,7 @@ declare namespace SMAANeighborhoodBlendingFilter {
 }
 
 declare abstract class AnySMAANeighborhoodBlendingFilter extends SMAANeighborhoodBlendingFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default SMAANeighborhoodBlendingFilter;
