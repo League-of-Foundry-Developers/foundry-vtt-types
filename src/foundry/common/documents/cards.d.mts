@@ -1,7 +1,8 @@
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Cards Document.
@@ -42,104 +43,169 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   /*
    * After this point these are not really overridden methods.
-   * They are here because they're static properties but depend on the instance and so can't be
-   * defined DRY-ly while also being easily overridable.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
    */
+
+  /* Document overrides */
 
   static " fvtt_types_internal_document_name_static": "Cards";
 
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: Cards.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
   static get implementation(): Cards.ImplementationClass;
+
+  static get baseDocument(): typeof BaseCards;
+
+  static get collectionName(): Cards.ParentCollectionName;
+
+  static get documentName(): Cards.Name;
+
+  static get TYPES(): BaseCards.SubType[];
+
+  static get hasTypeData(): true;
+
+  static get hierarchy(): Cards.Hierarchy;
 
   override system: Document.SystemFor<"Cards", SubType>;
 
   override parent: BaseCards.Parent;
 
-  static get TYPES(): BaseCards.SubType[];
-
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Cards.Implementation | Cards.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<Cards.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<Cards.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Cards.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Cards.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<Cards.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Cards.Database.Update>,
   ): Promise<Cards.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<Cards.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Cards.Database.Delete>,
   ): Promise<Cards.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: Cards.CreateData | Cards.CreateData[],
-    operation?: Document.Database.CreateOperation<Cards.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Cards.Implementation | undefined>;
+    operation?: Cards.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<Cards.Implementation, Temporary> | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): Cards.Implementation | null;
+  override update(
+    data: Cards.UpdateData | undefined,
+    operation?: Cards.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: Cards.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(documentId: string, options?: Cards.Database.GetOptions): Cards.Implementation | null;
+
+  static override getCollectionName<CollectionName extends Cards.EmbeddedName>(
+    name: CollectionName,
+  ): Cards.CollectionNameOf<CollectionName> | null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends Cards.Flags.Scope, Key extends Cards.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<Cards.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends Cards.Flags.Scope,
+    Key extends Cards.Flags.Key<Scope>,
+    Value extends Document.GetFlag<Cards.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends Cards.Flags.Scope, Key extends Cards.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   protected _preCreate(
     data: Cards.CreateData,
-    options: Cards.DatabaseOperation.PreCreateOperationInstance,
+    options: Cards.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(data: Cards.CreateData, options: Cards.DatabaseOperation.OnCreateOperation, userId: string): void;
+  protected _onCreate(data: Cards.CreateData, options: Cards.Database.OnCreateOperation, userId: string): void;
 
   protected static _preCreateOperation(
     documents: Cards.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<Cards.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<Cards.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: Cards.Implementation[],
-    operation: Cards.DatabaseOperation.Create,
+    operation: Cards.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: Cards.UpdateData,
-    options: Cards.DatabaseOperation.PreUpdateOperationInstance,
+    options: Cards.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
-    changed: Cards.UpdateData,
-    options: Cards.DatabaseOperation.OnUpdateOperation,
-    userId: string,
-  ): void;
+  protected _onUpdate(changed: Cards.UpdateData, options: Cards.Database.OnUpdateOperation, userId: string): void;
 
   protected static _preUpdateOperation(
     documents: Cards.Implementation[],
-    operation: Cards.DatabaseOperation.Update,
+    operation: Cards.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: Cards.Implementation[],
-    operation: Cards.DatabaseOperation.Update,
+    operation: Cards.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
-    options: Cards.DatabaseOperation.PreDeleteOperationInstance,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
+  protected _preDelete(options: Cards.Database.PreDeleteOptions, user: User.Implementation): Promise<boolean | void>;
 
-  protected _onDelete(options: Cards.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: Cards.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: Cards.Implementation[],
-    operation: Cards.DatabaseOperation.Delete,
+    operation: Cards.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: Cards.Implementation[],
-    operation: Cards.DatabaseOperation.Delete,
+    operation: Cards.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  static get hasSystemData(): true;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: Cards.Implementation[],
@@ -155,6 +221,8 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
     documents: Cards.Implementation[],
     context: Document.ModificationContext<Cards.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<Cards.Schema>;
 
@@ -173,9 +241,17 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 export default BaseCards;
 
 declare namespace BaseCards {
-  export import Metadata = Cards.Metadata;
   export import SubType = Cards.SubType;
+  export import Name = Cards.Name;
+  export import ConstructorArgs = Cards.ConstructorArgs;
+  export import Hierarchy = Cards.Hierarchy;
+  export import Metadata = Cards.Metadata;
   export import Parent = Cards.Parent;
+  export import Pack = Cards.Pack;
+  export import Embedded = Cards.Embedded;
+  export import EmbeddedName = Cards.EmbeddedName;
+  export import EmbeddedCollectionName = Cards.EmbeddedCollectionName;
+  export import ParentCollectionName = Cards.ParentCollectionName;
   export import Stored = Cards.Stored;
   export import Source = Cards.Source;
   export import PersistedData = Cards.PersistedData;
@@ -183,7 +259,8 @@ declare namespace BaseCards {
   export import InitializedData = Cards.InitializedData;
   export import UpdateData = Cards.UpdateData;
   export import Schema = Cards.Schema;
-  export import DatabaseOperation = Cards.DatabaseOperation;
+  export import DatabaseOperation = Cards.Database;
+  export import Flags = Cards.Flags;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.

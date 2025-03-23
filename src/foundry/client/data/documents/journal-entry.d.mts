@@ -49,7 +49,7 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = JournalEntryPage.Implementation;
+    type Descendants = JournalEntryPage.Stored;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
