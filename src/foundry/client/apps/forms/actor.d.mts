@@ -177,5 +177,5 @@ declare global {
 }
 
 declare abstract class AnyActorSheet extends ActorSheet<ActorSheet.Options> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

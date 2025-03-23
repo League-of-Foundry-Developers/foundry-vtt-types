@@ -193,7 +193,7 @@ declare namespace Collection {
 }
 
 declare abstract class AnyCollection extends Collection<unknown, Collection.Methods.Any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default Collection;

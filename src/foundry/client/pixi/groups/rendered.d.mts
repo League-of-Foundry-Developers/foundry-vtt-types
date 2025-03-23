@@ -26,5 +26,5 @@ declare global {
 }
 
 declare abstract class AnyRenderedCanvasGroup extends RenderedCanvasGroup {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

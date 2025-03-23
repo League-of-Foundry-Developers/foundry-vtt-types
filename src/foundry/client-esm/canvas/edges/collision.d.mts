@@ -138,7 +138,7 @@ declare namespace CollisionResult {
 }
 
 declare abstract class AnyCollisionResult extends CollisionResult {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default CollisionResult;

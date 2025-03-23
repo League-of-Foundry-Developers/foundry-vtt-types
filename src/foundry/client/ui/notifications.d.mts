@@ -139,5 +139,5 @@ declare global {
 }
 
 declare abstract class AnyNotifications extends Notifications<Application.Options> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

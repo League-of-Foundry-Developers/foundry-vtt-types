@@ -16,7 +16,7 @@ declare global {
     /**
      * The arguments to construct the document.
      */
-    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
      * The documents embedded within Token.

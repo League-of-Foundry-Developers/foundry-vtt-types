@@ -22,7 +22,7 @@ declare namespace SMAAEdgeDetectionFilter {
 }
 
 declare abstract class AnySMAAEdgeDetectionFilter extends SMAAEdgeDetectionFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default SMAAEdgeDetectionFilter;

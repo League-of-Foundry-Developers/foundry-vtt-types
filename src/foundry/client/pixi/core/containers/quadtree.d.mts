@@ -250,9 +250,9 @@ declare global {
 }
 
 declare abstract class AnyQuadtree extends Quadtree<unknown> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyCanvasQuadtree extends CanvasQuadtree<CanvasQuadtree.CanvasQuadtreeObject> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -104,7 +104,7 @@ declare abstract class AnyRollResolver extends RollResolver<
   ApplicationV2.Configuration,
   ApplicationV2.RenderOptions
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default RollResolver;

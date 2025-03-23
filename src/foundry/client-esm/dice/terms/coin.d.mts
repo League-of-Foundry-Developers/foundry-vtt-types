@@ -65,7 +65,7 @@ declare namespace Coin {
 }
 
 declare abstract class AnyCoin extends Coin {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default Coin;

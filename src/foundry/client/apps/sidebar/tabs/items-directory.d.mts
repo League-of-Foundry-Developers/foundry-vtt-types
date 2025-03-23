@@ -19,5 +19,5 @@ declare global {
 }
 
 declare abstract class AnyItemDirectory extends ItemDirectory {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

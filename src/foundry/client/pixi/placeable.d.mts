@@ -635,5 +635,5 @@ interface Vision {
 }
 
 declare abstract class AnyPlaceableObject extends PlaceableObject<any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -674,7 +674,7 @@ declare namespace DataField {
 }
 
 declare abstract class AnyDataField extends DataField<any, any, any, any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 /**
@@ -4051,9 +4051,7 @@ declare namespace TypeDataField {
 
   /** @internal */
   type _Instances<T> = {
-    [K in keyof T]: T[K] extends (abstract new (arg0: never, ...args: never[]) => infer U extends DataModel.Any)
-      ? U
-      : never;
+    [K in keyof T]: T[K] extends (abstract new (...args: never) => infer U extends DataModel.Any) ? U : never;
   }[keyof T];
 
   /**

@@ -202,5 +202,5 @@ declare global {
 }
 
 declare abstract class AnyWallsLayer extends WallsLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

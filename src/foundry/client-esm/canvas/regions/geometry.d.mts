@@ -32,7 +32,7 @@ declare namespace RegionGeometry {
 }
 
 declare abstract class AnyRegionGeometry extends RegionGeometry {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default RegionGeometry;

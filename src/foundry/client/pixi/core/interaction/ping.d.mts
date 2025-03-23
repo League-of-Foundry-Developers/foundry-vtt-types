@@ -85,5 +85,5 @@ declare global {
 }
 
 declare abstract class AnyPing extends Ping {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

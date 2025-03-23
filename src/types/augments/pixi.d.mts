@@ -1078,25 +1078,25 @@ declare module "pixi.js" {
 }
 
 declare abstract class AnyPIXIBatchGeometry extends PIXI.BatchGeometry {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyPIXIBatchRenderer extends PIXI.BatchRenderer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyPIXIContainer extends PIXI.Container {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyPIXIDisplayObject extends PIXI.DisplayObject {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyPIXIFilter extends PIXI.Filter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyPIXIShader extends PIXI.Shader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

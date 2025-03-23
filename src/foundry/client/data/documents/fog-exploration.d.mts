@@ -279,5 +279,5 @@ declare global {
 }
 
 declare abstract class AnyFogExploration extends FogExploration {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

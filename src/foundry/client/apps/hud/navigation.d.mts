@@ -117,5 +117,5 @@ declare global {
 }
 
 declare abstract class AnySceneNavigation extends SceneNavigation<Application.Options> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

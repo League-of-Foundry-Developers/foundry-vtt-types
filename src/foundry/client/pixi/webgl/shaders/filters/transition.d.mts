@@ -122,5 +122,5 @@ declare global {
 }
 
 declare abstract class AnyTextureTransitionFilter extends TextureTransitionFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

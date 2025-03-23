@@ -21,5 +21,5 @@ declare global {
 }
 
 declare abstract class AnyMacroDirectory extends MacroDirectory {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

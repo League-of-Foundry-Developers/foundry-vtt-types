@@ -52,5 +52,5 @@ declare global {
 }
 
 declare abstract class AnyParticleEffect extends ParticleEffect {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

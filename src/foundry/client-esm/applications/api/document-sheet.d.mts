@@ -134,5 +134,5 @@ declare class DocumentSheetV2<
 export default DocumentSheetV2;
 
 declare abstract class AnyDocumentSheetV2 extends DocumentSheetV2<any, any, any, any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

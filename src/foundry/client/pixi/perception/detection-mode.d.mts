@@ -262,25 +262,25 @@ declare global {
 }
 
 declare abstract class AnyDetectionMode extends DetectionMode {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDetectionModeLightPerception extends DetectionModeLightPerception {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDetectionModeBasicSight extends DetectionModeBasicSight {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDetectionModeInvisibility extends DetectionModeInvisibility {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDetectionModeTremor extends DetectionModeTremor {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDetectionModeAll extends DetectionModeAll {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

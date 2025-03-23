@@ -26,5 +26,5 @@ declare global {
 }
 
 declare abstract class AnyMacros extends Macros {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

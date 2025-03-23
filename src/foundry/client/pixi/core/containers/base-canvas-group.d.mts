@@ -1,6 +1,6 @@
 import type { FixedInstanceType, HandleEmptyObject, PrettifyType, RemoveIndexSignatures } from "fvtt-types/utils";
 
-declare const DynamicClass: new <_Computed extends object>(arg0: never, ...args: never[]) => _Computed;
+declare const DynamicClass: new <_Computed extends object>(...args: never) => _Computed;
 
 // @ts-expect-error - This is a workaround to allow for dynamic top level properties in a class.
 declare class LayersClass<
@@ -151,5 +151,5 @@ declare global {
 }
 
 declare abstract class AnyCanvasGroup extends CanvasGroup<NoLayerGroup> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

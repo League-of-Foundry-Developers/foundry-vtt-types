@@ -435,7 +435,7 @@ declare abstract class AnyRenderedEffectSource extends RenderedEffectSource<
   PIXI.Polygon,
   RenderedEffectSource.Layers
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default RenderedEffectSource;

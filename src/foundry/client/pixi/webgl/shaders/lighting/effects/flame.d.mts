@@ -49,9 +49,9 @@ declare global {
 }
 
 declare abstract class AnyFlameIlluminationShader extends FlameIlluminationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyFlameColorationShader extends FlameColorationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

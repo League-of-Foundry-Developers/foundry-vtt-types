@@ -36,7 +36,7 @@ declare abstract class AnyPointMovementSource extends PointMovementSource<
   PointMovementSource.SourceData,
   PointSourcePolygon
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default PointMovementSource;

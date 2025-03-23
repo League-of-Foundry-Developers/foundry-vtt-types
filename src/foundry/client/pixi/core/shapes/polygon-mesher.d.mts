@@ -134,5 +134,5 @@ declare global {
 }
 
 declare abstract class AnyPolygonMesher extends PolygonMesher {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

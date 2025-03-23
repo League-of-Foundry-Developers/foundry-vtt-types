@@ -70,5 +70,5 @@ declare global {
 }
 
 declare abstract class AnyAdaptiveColorationShader extends AdaptiveColorationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

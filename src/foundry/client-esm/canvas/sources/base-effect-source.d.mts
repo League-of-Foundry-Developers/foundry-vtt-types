@@ -288,7 +288,7 @@ declare namespace BaseEffectSource {
 }
 
 declare abstract class AnyBaseEffectSource extends BaseEffectSource<BaseEffectSource.SourceData, PIXI.Polygon> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default BaseEffectSource;

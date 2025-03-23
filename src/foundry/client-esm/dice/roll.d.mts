@@ -665,7 +665,7 @@ declare namespace Roll {
 }
 
 declare abstract class AnyRoll extends Roll<any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default Roll;

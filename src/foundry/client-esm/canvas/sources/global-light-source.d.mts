@@ -115,7 +115,7 @@ declare namespace GlobalLightSource {
 }
 
 declare abstract class AnyGlobalLightSource extends GlobalLightSource {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default GlobalLightSource;

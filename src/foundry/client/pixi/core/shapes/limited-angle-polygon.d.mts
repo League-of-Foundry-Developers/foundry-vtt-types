@@ -140,5 +140,5 @@ declare global {
 }
 
 declare abstract class AnyLimitedAnglePolygon extends LimitedAnglePolygon {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

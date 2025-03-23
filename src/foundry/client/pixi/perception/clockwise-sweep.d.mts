@@ -188,5 +188,5 @@ declare global {
 }
 
 declare abstract class AnyClockwiseSweepPolygon extends ClockwiseSweepPolygon {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

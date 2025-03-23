@@ -125,5 +125,5 @@ declare abstract class AnyEnvironmentCanvasGroup extends EnvironmentCanvasGroup<
   EnvironmentCanvasGroup.DrawOptions,
   EnvironmentCanvasGroup.TearDownOptions
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

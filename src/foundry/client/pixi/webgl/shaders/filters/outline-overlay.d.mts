@@ -83,5 +83,5 @@ declare global {
 }
 
 declare abstract class AnyOutlineOverlayFilter extends OutlineOverlayFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -32,9 +32,9 @@ declare global {
 }
 
 declare abstract class AnyFairyLightColorationShader extends FairyLightColorationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyFairyLightIlluminationShader extends FairyLightIlluminationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -132,5 +132,5 @@ declare global {
 }
 
 declare abstract class AnyCachedContainer extends CachedContainer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

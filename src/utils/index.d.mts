@@ -816,10 +816,7 @@ export type MutableArray<T> = Array<T>;
  * - `(...args: any[]) => any` - If someone explicitly accesses the parameters or uses the return value you get `any` which is not safe.
  * - `(...args: unknown[]) => unknown` - This allows obviously unsound calls like `fn(1, "foo")` because it indicates it can take any arguments.
  */
-// The explicit arg0 does not prevent a function with no arguments from being assigned to `AnyFunction` because any function that takes less arguments can be assigned to one that takes more.
-// The point of this is to prevent it from being possible to call with 0 arguments.
-// never is used to make it impossible to call with anything besides `never` or `any`. This makes it the most type safe way to define any function.
-export type AnyFunction = (arg0: never, ...args: never[]) => unknown;
+export type AnyFunction = (...args: never) => unknown;
 
 /**
  * Use this type to allow any class, abstract class, or class-like constructor.
@@ -838,7 +835,7 @@ export type AnyFunction = (arg0: never, ...args: never[]) => unknown;
  * const classLike: AnyConstructor = Date;
  * ```
  */
-export type AnyConstructor = abstract new (arg0: never, ...args: never[]) => unknown;
+export type AnyConstructor = abstract new (...args: never) => unknown;
 
 /**
  * Use this type to allow any class or class-like constructor but disallow
@@ -859,7 +856,7 @@ export type AnyConstructor = abstract new (arg0: never, ...args: never[]) => unk
  * const abstract: AnyConcreteConstructor = abstract class Abstract { ... }
  * ```
  */
-export type AnyConcreteConstructor = new (arg0: never, ...args: never[]) => unknown;
+export type AnyConcreteConstructor = new (...args: never) => unknown;
 
 /**
  * This type is equivalent to `Promise<T>` but exists to give an explicit signal

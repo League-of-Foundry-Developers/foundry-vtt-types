@@ -233,5 +233,5 @@ declare abstract class AnyEffectsCanvasGroup extends EffectsCanvasGroup<
   EffectsCanvasGroup.DrawOptions,
   EffectsCanvasGroup.TearDownOptions
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

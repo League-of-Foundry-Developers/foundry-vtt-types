@@ -94,5 +94,5 @@ declare global {
 }
 
 declare abstract class AnyInterfaceCanvasGroup extends InterfaceCanvasGroup {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

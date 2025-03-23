@@ -124,5 +124,5 @@ declare global {
 }
 
 declare abstract class AnyControlIcon extends ControlIcon {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
