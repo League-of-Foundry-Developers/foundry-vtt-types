@@ -1,6 +1,8 @@
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Document definition for an AmbientLight.
@@ -21,7 +23,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    * You should use {@link AmbientLightDocument.implementation | `new AmbientLightDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `AmbientLightDocument`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseAmbientLight.CreateData, BaseAmbientLight.Parent>);
+  constructor(...args: AmbientLightDocument.ConstructorArgs);
 
   /**
    * @defaultValue
@@ -50,98 +52,169 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static " fvtt_types_internal_document_name_static": "AmbientLight";
 
-  static get implementation(): AmbientLightDocument.ImplementationClass;
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: AmbientLightDocument.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static override get implementation(): AmbientLightDocument.ImplementationClass;
+
+  static get baseDocument(): typeof BaseAmbientLight;
+
+  static get collectionName(): AmbientLightDocument.ParentCollectionName;
+
+  static get documentName(): AmbientLightDocument.Name;
+
+  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+
+  static get hasTypeData(): false;
+
+  static get hierarchy(): AmbientLightDocument.Hierarchy;
 
   override parent: BaseAmbientLight.Parent;
 
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<AmbientLightDocument.Implementation | AmbientLightDocument.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<AmbientLightDocument.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<AmbientLightDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<AmbientLightDocument.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: AmbientLightDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<AmbientLightDocument.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<AmbientLightDocument.Database.Update>,
   ): Promise<AmbientLightDocument.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<AmbientLightDocument.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<AmbientLightDocument.Database.Delete>,
   ): Promise<AmbientLightDocument.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: AmbientLightDocument.CreateData | AmbientLightDocument.CreateData[],
-    operation?: Document.Database.CreateOperation<AmbientLightDocument.DatabaseOperation.Create<Temporary>>,
-  ): Promise<AmbientLightDocument.Implementation | undefined>;
+    operation?: AmbientLightDocument.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<AmbientLightDocument.Implementation, Temporary> | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): AmbientLightDocument.Implementation | null;
+  override update(
+    data: AmbientLightDocument.UpdateData | undefined,
+    operation?: AmbientLightDocument.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: AmbientLightDocument.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(
+    documentId: string,
+    options?: AmbientLightDocument.Database.GetOptions,
+  ): AmbientLightDocument.Implementation | null;
+
+  static override getCollectionName<CollectionName extends AmbientLightDocument.EmbeddedName>(
+    name: CollectionName,
+  ): AmbientLightDocument.CollectionNameOf<CollectionName> | null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends AmbientLightDocument.Flags.Scope, Key extends AmbientLightDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<AmbientLightDocument.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends AmbientLightDocument.Flags.Scope,
+    Key extends AmbientLightDocument.Flags.Key<Scope>,
+    Value extends Document.GetFlag<AmbientLightDocument.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends AmbientLightDocument.Flags.Scope, Key extends AmbientLightDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   protected _preCreate(
     data: AmbientLightDocument.CreateData,
-    options: AmbientLightDocument.DatabaseOperation.PreCreateOperationInstance,
+    options: AmbientLightDocument.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onCreate(
     data: AmbientLightDocument.CreateData,
-    options: AmbientLightDocument.DatabaseOperation.OnCreateOperation,
+    options: AmbientLightDocument.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static _preCreateOperation(
     documents: AmbientLightDocument.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<AmbientLightDocument.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<AmbientLightDocument.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: AmbientLightDocument.Implementation[],
-    operation: AmbientLightDocument.DatabaseOperation.Create,
+    operation: AmbientLightDocument.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: AmbientLightDocument.UpdateData,
-    options: AmbientLightDocument.DatabaseOperation.PreUpdateOperationInstance,
+    options: AmbientLightDocument.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onUpdate(
     changed: AmbientLightDocument.UpdateData,
-    options: AmbientLightDocument.DatabaseOperation.OnUpdateOperation,
+    options: AmbientLightDocument.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static _preUpdateOperation(
     documents: AmbientLightDocument.Implementation[],
-    operation: AmbientLightDocument.DatabaseOperation.Update,
+    operation: AmbientLightDocument.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: AmbientLightDocument.Implementation[],
-    operation: AmbientLightDocument.DatabaseOperation.Update,
+    operation: AmbientLightDocument.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preDelete(
-    options: AmbientLightDocument.DatabaseOperation.PreDeleteOperationInstance,
+    options: AmbientLightDocument.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: AmbientLightDocument.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: AmbientLightDocument.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: AmbientLightDocument.Implementation[],
-    operation: AmbientLightDocument.DatabaseOperation.Delete,
+    operation: AmbientLightDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: AmbientLightDocument.Implementation[],
-    operation: AmbientLightDocument.DatabaseOperation.Delete,
+    operation: AmbientLightDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  static get hasSystemData(): false;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: AmbientLightDocument.Implementation[],
@@ -157,6 +230,8 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     documents: AmbientLightDocument.Implementation[],
     context: Document.ModificationContext<AmbientLightDocument.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<AmbientLightDocument.Schema>;
 
@@ -175,8 +250,16 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 export default BaseAmbientLight;
 
 declare namespace BaseAmbientLight {
+  export import Name = AmbientLightDocument.Name;
+  export import ConstructorArgs = AmbientLightDocument.ConstructorArgs;
+  export import Hierarchy = AmbientLightDocument.Hierarchy;
   export import Metadata = AmbientLightDocument.Metadata;
   export import Parent = AmbientLightDocument.Parent;
+  export import Pack = AmbientLightDocument.Pack;
+  export import Embedded = AmbientLightDocument.Embedded;
+  export import EmbeddedName = AmbientLightDocument.EmbeddedName;
+  export import EmbeddedCollectionName = AmbientLightDocument.EmbeddedCollectionName;
+  export import ParentCollectionName = AmbientLightDocument.ParentCollectionName;
   export import Stored = AmbientLightDocument.Stored;
   export import Source = AmbientLightDocument.Source;
   export import PersistedData = AmbientLightDocument.PersistedData;
@@ -184,8 +267,8 @@ declare namespace BaseAmbientLight {
   export import InitializedData = AmbientLightDocument.InitializedData;
   export import UpdateData = AmbientLightDocument.UpdateData;
   export import Schema = AmbientLightDocument.Schema;
-  export import DatabaseOperation = AmbientLightDocument.DatabaseOperation;
-  export import CoreFlags = AmbientLightDocument.CoreFlags;
+  export import DatabaseOperation = AmbientLightDocument.Database;
+  export import Flags = AmbientLightDocument.Flags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.
