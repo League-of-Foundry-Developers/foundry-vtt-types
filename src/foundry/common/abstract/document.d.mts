@@ -1850,7 +1850,7 @@ interface DatabaseOperationCreateMap {
   ChatMessage: ChatMessage.DatabaseOperation.Create;
   Combat: Combat.DatabaseOperation.Create;
   Combatant: Combatant.DatabaseOperation.Create;
-  Drawing: DrawingDocument.DatabaseOperation.Create;
+  Drawing: DrawingDocument.Database.Create;
   FogExploration: FogExploration.DatabaseOperation.Create;
   Folder: Folder.DatabaseOperation.Create;
   Item: Item.DatabaseOperation.Create;
@@ -1885,7 +1885,7 @@ interface DatabaseOperationUpdateMap {
   ChatMessage: ChatMessage.DatabaseOperation.Update;
   Combat: Combat.DatabaseOperation.Update;
   Combatant: Combatant.DatabaseOperation.Update;
-  Drawing: DrawingDocument.DatabaseOperation.Update;
+  Drawing: DrawingDocument.Database.Update;
   FogExploration: FogExploration.DatabaseOperation.Update;
   Folder: Folder.DatabaseOperation.Update;
   Item: Item.DatabaseOperation.Update;
@@ -1920,7 +1920,7 @@ interface DatabaseOperationDeleteMap {
   ChatMessage: ChatMessage.DatabaseOperation.Delete;
   Combat: Combat.DatabaseOperation.Delete;
   Combatant: Combatant.DatabaseOperation.Delete;
-  Drawing: DrawingDocument.DatabaseOperation.Delete;
+  Drawing: DrawingDocument.Database.Delete;
   FogExploration: FogExploration.DatabaseOperation.Delete;
   Folder: Folder.DatabaseOperation.Delete;
   Item: Item.DatabaseOperation.Delete;
