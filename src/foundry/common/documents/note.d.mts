@@ -87,7 +87,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): false;
+  static get hasTypeData(): undefined;
 
   static get hierarchy(): NoteDocument.Hierarchy;
 
@@ -215,7 +215,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): false;
+  static get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

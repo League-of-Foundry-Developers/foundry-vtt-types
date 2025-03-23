@@ -109,7 +109,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): false;
+  static get hasTypeData(): undefined;
 
   static get hierarchy(): TileDocument.Hierarchy;
 

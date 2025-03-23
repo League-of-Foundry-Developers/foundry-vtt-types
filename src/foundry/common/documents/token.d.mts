@@ -130,7 +130,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): false;
+  static get hasTypeData(): undefined;
 
   static get hierarchy(): TokenDocument.Hierarchy;
 

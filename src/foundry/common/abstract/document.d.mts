@@ -175,7 +175,7 @@ declare abstract class Document<
   /**
    * Does this Document support additional subtypes?
    */
-  static get hasTypeData(): boolean;
+  static get hasTypeData(): undefined | true;
 
   /**
    * The Embedded Document hierarchy for this Document.
@@ -786,7 +786,7 @@ declare abstract class Document<
    * @deprecated since v11, will be removed in v13
    * @remarks "You are accessing `Document.hasSystemData` which is deprecated. Please use `Document.hasTypeData` instead."
    */
-  static get hasSystemData(): boolean;
+  static get hasSystemData(): undefined | true;
 
   /**
    * A reusable helper for adding migration shims.
@@ -1852,7 +1852,7 @@ interface DatabaseOperationCreateMap {
   Combatant: Combatant.DatabaseOperation.Create;
   Drawing: DrawingDocument.Database.Create;
   FogExploration: FogExploration.Database.Create;
-  Folder: Folder.DatabaseOperation.Create;
+  Folder: Folder.Database.Create;
   Item: Item.DatabaseOperation.Create;
   JournalEntry: JournalEntry.Database.Create;
   JournalEntryPage: JournalEntryPage.Database.Create;
@@ -1887,7 +1887,7 @@ interface DatabaseOperationUpdateMap {
   Combatant: Combatant.DatabaseOperation.Update;
   Drawing: DrawingDocument.Database.Update;
   FogExploration: FogExploration.Database.Update;
-  Folder: Folder.DatabaseOperation.Update;
+  Folder: Folder.Database.Update;
   Item: Item.DatabaseOperation.Update;
   JournalEntry: JournalEntry.Database.Update;
   JournalEntryPage: JournalEntryPage.Database.Update;
@@ -1922,7 +1922,7 @@ interface DatabaseOperationDeleteMap {
   Combatant: Combatant.DatabaseOperation.Delete;
   Drawing: DrawingDocument.Database.Delete;
   FogExploration: FogExploration.Database.Delete;
-  Folder: Folder.DatabaseOperation.Delete;
+  Folder: Folder.Database.Delete;
   Item: Item.DatabaseOperation.Delete;
   JournalEntry: JournalEntry.Database.Delete;
   JournalEntryPage: JournalEntryPage.Database.Delete;
