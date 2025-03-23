@@ -34,5 +34,5 @@ declare global {
 }
 
 declare abstract class AnyWorldSettings extends WorldSettings {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

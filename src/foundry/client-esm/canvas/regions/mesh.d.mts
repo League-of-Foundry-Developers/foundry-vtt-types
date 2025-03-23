@@ -66,7 +66,7 @@ declare namespace RegionMesh {
 }
 
 declare abstract class AnyRegionMesh extends RegionMesh {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default RegionMesh;

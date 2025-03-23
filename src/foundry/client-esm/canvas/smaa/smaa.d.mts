@@ -148,7 +148,7 @@ declare namespace SMAAFilter {
 }
 
 declare abstract class AnySMAAFilter extends SMAAFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default SMAAFilter;

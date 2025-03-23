@@ -33,5 +33,5 @@ declare global {
 }
 
 declare abstract class AnyIlluminationVisionShader extends IlluminationVisionShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -78,5 +78,5 @@ declare global {
 }
 
 declare abstract class AnyResizeHandle extends ResizeHandle {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

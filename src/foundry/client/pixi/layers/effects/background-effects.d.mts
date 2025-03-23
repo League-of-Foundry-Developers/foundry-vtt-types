@@ -43,5 +43,5 @@ declare global {
 }
 
 declare abstract class AnyCanvasBackgroundAlterationEffects extends CanvasBackgroundAlterationEffects {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

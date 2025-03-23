@@ -7,22 +7,37 @@ import type { fields } from "../../../common/data/module.d.mts";
 declare global {
   namespace PlaylistSound {
     /**
+     * The document's name.
+     */
+    type Name = "PlaylistSound";
+
+    /**
+     * The arguments to construct the document.
+     */
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+    /**
+     * The documents embedded within PlaylistSound.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the PlaylistSound document instance configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylistSound | `fvtt-types/configuration/ConfiguredPlaylistSound`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"PlaylistSound">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the PlaylistSound document configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"PlaylistSound">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"PlaylistSound"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
     /**
      * A document's parent is something that can contain it.
@@ -203,12 +218,13 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"PlaylistSound">;
+      flags: fields.ObjectField.FlagsField<Name>;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for PlaylistSounds */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<PlaylistSound.Parent> {}
+
       /** Options passed along in Create operations for PlaylistSounds */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<
@@ -216,43 +232,112 @@ declare global {
           PlaylistSound.Parent,
           Temporary
         > {}
+
       /** Options passed along in Delete operations for PlaylistSounds */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<PlaylistSound.Parent> {}
+
       /** Options passed along in Update operations for PlaylistSounds */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<PlaylistSound.UpdateData, PlaylistSound.Parent> {}
 
-      /** Options for {@link PlaylistSound.createDocuments | `PlaylistSound.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link PlaylistSound._preCreateOperation | `PlaylistSound._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link PlaylistSound.createDocuments | `PlaylistSound.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<PlaylistSound.Database.Create<Temporary>> {}
+
+      /** Operation for {@link PlaylistSound.updateDocuments | `PlaylistSound.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<PlaylistSound.Database.Update> {}
+
+      /** Operation for {@link PlaylistSound.deleteDocuments | `PlaylistSound.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<PlaylistSound.Database.Delete> {}
+
+      /** Operation for {@link PlaylistSound.create | `PlaylistSound.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<PlaylistSound.Database.Create<Temporary>> {}
+
+      /** Operation for {@link PlaylistSound.update | `PlaylistSound#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link PlaylistSound.get | `PlaylistSound.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link PlaylistSound._preCreate | `PlaylistSound#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link PlaylistSound._onCreate | `PlaylistSound#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link PlaylistSound.updateDocuments | `PlaylistSound.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link PlaylistSound._preUpdateOperation | `PlaylistSound._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link PlaylistSound._preCreateOperation | `PlaylistSound._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<PlaylistSound.Database.Create> {}
+
+      /** Operation for {@link PlaylistSound._onCreateOperation | `PlaylistSound#_onCreateOperation`} */
+      interface OnCreateOperation extends PlaylistSound.Database.Create {}
+
       /** Options for {@link PlaylistSound._preUpdate | `PlaylistSound#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link PlaylistSound._onUpdate | `PlaylistSound#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link PlaylistSound.deleteDocuments | `PlaylistSound.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link PlaylistSound._preDeleteOperation | `PlaylistSound._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link PlaylistSound._onUpdate | `PlaylistSound#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link PlaylistSound._preUpdateOperation | `PlaylistSound._preUpdateOperation`} */
+      interface PreUpdateOperation extends PlaylistSound.Database.Update {}
+
+      /** Operation for {@link PlaylistSound._onUpdateOperation | `PlaylistSound._preUpdateOperation`} */
+      interface OnUpdateOperation extends PlaylistSound.Database.Update {}
+
       /** Options for {@link PlaylistSound._preDelete | `PlaylistSound#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link PlaylistSound._onDelete | `PlaylistSound#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link PlaylistSound._preDeleteOperation | `PlaylistSound#_preDeleteOperation`} */
+      interface PreDeleteOperation extends PlaylistSound.Database.Delete {}
+
+      /** Options for {@link PlaylistSound._onDeleteOperation | `PlaylistSound#_onDeleteOperation`} */
+      interface OnDeleteOperation extends PlaylistSound.Database.Delete {}
+
+      /** Context for {@link PlaylistSound._onDeleteOperation | `PlaylistSound._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<PlaylistSound.Parent> {}
+
+      /** Context for {@link PlaylistSound._onCreateDocuments | `PlaylistSound._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<PlaylistSound.Parent> {}
+
+      /** Context for {@link PlaylistSound._onUpdateDocuments | `PlaylistSound._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<PlaylistSound.Parent> {}
+
+      /**
+       * Options for {@link PlaylistSound._preCreateDescendantDocuments | `PlaylistSound#_preCreateDescendantDocuments`}
+       * and {@link PlaylistSound._onCreateDescendantDocuments | `PlaylistSound#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<PlaylistSound.Database.Create> {}
+
+      /**
+       * Options for {@link PlaylistSound._preUpdateDescendantDocuments | `PlaylistSound#_preUpdateDescendantDocuments`}
+       * and {@link PlaylistSound._onUpdateDescendantDocuments | `PlaylistSound#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<PlaylistSound.Database.Update> {}
+
+      /**
+       * Options for {@link PlaylistSound._preDeleteDescendantDocuments | `PlaylistSound#_preDeleteDescendantDocuments`}
+       * and {@link PlaylistSound._onDeleteDescendantDocuments | `PlaylistSound#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<PlaylistSound.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**
-     * @deprecated {@link PlaylistSound.DatabaseOperation | `PlaylistSound.DatabaseOperation`}
+     * @deprecated {@link PlaylistSound.Database | `PlaylistSound.Database`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<PlaylistSound> {}
@@ -286,14 +371,8 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `PlaylistSound`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `PlaylistSound` directly is not advised. While `new PlaylistSound(...)` would create a
-     * temporary document it would not respect a system's subclass of `PlaylistSound`, if any.
-     *
-     * You should use {@link PlaylistSound.implementation | `new PlaylistSound.implementation(...)`} instead which
-     * will give you a system specific implementation of `PlaylistSound`.
      */
-    constructor(...args: Document.ConstructorParameters<PlaylistSound.CreateData, PlaylistSound.Parent>);
+    constructor(...args: PlaylistSound.ConstructorArgs);
 
     /**
      * The debounce tolerance for processing rapid volume changes into database updates in milliseconds
@@ -383,9 +462,17 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    // Descendant Document operations have been left out because PlaylistSound does not have any descendant documents.
 
     static override defaultName(
       context: Document.DefaultNameContext<"base", NonNullable<PlaylistSound.Parent>>,
@@ -405,5 +492,7 @@ declare global {
       source: PlaylistSound.Source,
       context?: Document.FromImportContext<PlaylistSound.Parent>,
     ): Promise<PlaylistSound.Implementation>;
+
+    // Embedded document operations have been left out because PlaylistSound does not have any embedded documents.
   }
 }

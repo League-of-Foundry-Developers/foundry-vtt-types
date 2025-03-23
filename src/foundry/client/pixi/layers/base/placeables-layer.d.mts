@@ -671,5 +671,5 @@ declare global {
 }
 
 declare abstract class AnyPlaceablesLayer extends PlaceablesLayer<PlaceablesLayer.DocumentNames> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

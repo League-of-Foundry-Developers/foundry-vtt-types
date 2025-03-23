@@ -39,5 +39,5 @@ declare global {
 }
 
 declare abstract class AnySceneDirectory extends SceneDirectory {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

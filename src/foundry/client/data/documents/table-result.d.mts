@@ -14,7 +14,7 @@ declare global {
     /**
      * The arguments to construct the document.
      */
-    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
      * The documents embedded within TableResult.
@@ -25,22 +25,22 @@ declare global {
      * The implementation of the TableResult document instance configured through `CONFIG.TableResult.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTableResult | `fvtt-types/configuration/ConfiguredTableResult`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"TableResult">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the TableResult document configured through `CONFIG.TableResult.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"TableResult">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"TableResult"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<"TableResult">;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"TableResult">;
+    type SubType = Game.Model.TypeNames<Name>;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = TableResult.OfType<TableResult.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredTableResult<Type>, TableResult<SubType>>;
 
@@ -223,7 +223,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"TableResult">;
+      flags: fields.ObjectField.FlagsField<Name>;
     }
 
     namespace Database {
@@ -335,12 +335,12 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<TableResult.Database.Delete> {}
     }
 
-    interface Flags extends Document.ConfiguredFlagsForName<"TableResult"> {}
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
       type Scope = Document.FlagKeyOf<Flags>;
       type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
-      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<"TableResult", Scope, Key>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**
@@ -381,12 +381,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `TableResult`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `TableResult` directly is not advised. While `new TableResult(...)` would create a
-     * temporary document it would not respect a system's subclass of `TableResult`, if any.
-     *
-     * You should use {@link TableResult.implementation | `new TableResult.implementation(...)`} instead which
-     * will give you a system specific implementation of `TableResult`.
      */
     constructor(...args: TableResult.ConstructorArgs);
 

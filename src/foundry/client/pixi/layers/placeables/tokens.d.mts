@@ -203,5 +203,5 @@ declare global {
 }
 
 declare abstract class AnyTokenLayer extends TokenLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

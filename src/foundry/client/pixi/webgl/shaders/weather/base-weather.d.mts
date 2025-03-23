@@ -106,5 +106,5 @@ declare global {
 }
 
 declare abstract class AnyAbstractWeatherShader extends AbstractWeatherShader<AbstractWeatherShader.DefaultUniforms> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

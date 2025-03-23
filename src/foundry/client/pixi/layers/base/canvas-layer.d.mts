@@ -87,5 +87,5 @@ declare global {
 }
 
 declare abstract class AnyCanvasLayer extends CanvasLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

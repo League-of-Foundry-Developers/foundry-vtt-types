@@ -36,5 +36,5 @@ declare global {
 }
 
 declare abstract class AnyPlaylists extends Playlists {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

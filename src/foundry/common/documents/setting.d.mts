@@ -41,6 +41,8 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    * separate like this helps against circularities.
    */
 
+  /* Document overrides */
+
   static " fvtt_types_internal_document_name_static": "Setting";
 
   // Same as Document for now
@@ -60,7 +62,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): false;
+  static get hasTypeData(): undefined;
 
   static get hierarchy(): Setting.Hierarchy;
 
@@ -151,7 +153,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): false;
+  static get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

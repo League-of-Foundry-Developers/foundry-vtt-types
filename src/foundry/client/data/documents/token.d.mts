@@ -16,7 +16,7 @@ declare global {
     /**
      * The arguments to construct the document.
      */
-    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
      * The documents embedded within Token.
@@ -27,19 +27,19 @@ declare global {
      * The implementation of the TokenDocument document instance configured through `CONFIG.Token.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTokenDocument | `fvtt-types/configuration/ConfiguredTokenDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"Token">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the TokenDocument document configured through `CONFIG.Token.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"Token">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"Token"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
     /**
      * A document's parent is something that can contain it.
@@ -506,7 +506,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"Token", InterfaceToObject<CoreFlags>>;
+      flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
     }
 
     /**
@@ -705,12 +705,12 @@ declare global {
       };
     }
 
-    interface Flags extends Document.ConfiguredFlagsForName<"Token"> {}
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
       type Scope = Document.FlagKeyOf<Flags>;
       type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
-      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<"Token", Scope, Key>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**
@@ -773,12 +773,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `TokenDocument`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `TokenDocument` directly is not advised. While `new TokenDocument(...)` would create a
-     * temporary document it would not respect a system's subclass of `TokenDocument`, if any.
-     *
-     * You should use {@link TokenDocument.implementation | `new TokenDocument.implementation(...)`} instead which
-     * will give you a system specific implementation of `TokenDocument`.
      */
     constructor(...args: TokenDocument.ConstructorArgs);
 
@@ -940,7 +934,7 @@ declare global {
 
     protected override _onCreateDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
+      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -954,7 +948,7 @@ declare global {
 
     protected override _preUpdateDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
+      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -967,7 +961,7 @@ declare global {
 
     protected override _onUpdateDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
+      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -981,7 +975,7 @@ declare global {
 
     protected _preDeleteDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
+      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,
@@ -993,7 +987,7 @@ declare global {
 
     protected _onDeleteDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
+      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,

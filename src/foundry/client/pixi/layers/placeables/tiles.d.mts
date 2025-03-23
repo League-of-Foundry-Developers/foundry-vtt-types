@@ -121,5 +121,5 @@ declare global {
 }
 
 declare abstract class AnyTilesLayer extends TilesLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

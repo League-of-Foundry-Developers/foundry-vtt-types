@@ -38,9 +38,9 @@ declare global {
 }
 
 declare abstract class AnyPulseColorationShader extends PulseColorationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyPulseIlluminationShader extends PulseIlluminationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -69,5 +69,5 @@ declare global {
 }
 
 declare abstract class AnyTokenRingSamplerShader extends TokenRingSamplerShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

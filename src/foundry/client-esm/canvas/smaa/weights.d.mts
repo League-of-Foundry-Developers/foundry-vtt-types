@@ -23,7 +23,7 @@ declare namespace SMAABWeightCalculationFilter {
 }
 
 declare abstract class AnySMAABWeightCalculationFilter extends SMAABWeightCalculationFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default SMAABWeightCalculationFilter;

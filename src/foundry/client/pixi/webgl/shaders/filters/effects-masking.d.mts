@@ -121,5 +121,5 @@ declare global {
 }
 
 declare abstract class AnyVisualEffectsMaskingFilter extends VisualEffectsMaskingFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -149,7 +149,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): false;
+  static get hasTypeData(): undefined;
 
   static get hierarchy(): User.Hierarchy;
 
@@ -266,7 +266,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): false;
+  static get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;

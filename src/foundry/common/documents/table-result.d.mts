@@ -77,7 +77,7 @@ declare abstract class BaseTableResult<
 
   static get TYPES(): BaseTableResult.SubType[];
 
-  static get hasTypeData(): false;
+  static get hasTypeData(): undefined;
 
   static get hierarchy(): TableResult.Hierarchy;
 
@@ -202,7 +202,7 @@ declare abstract class BaseTableResult<
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): false;
+  static get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

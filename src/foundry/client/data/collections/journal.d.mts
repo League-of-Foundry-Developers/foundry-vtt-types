@@ -69,5 +69,5 @@ declare global {
 }
 
 declare abstract class AnyJournal extends Journal {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

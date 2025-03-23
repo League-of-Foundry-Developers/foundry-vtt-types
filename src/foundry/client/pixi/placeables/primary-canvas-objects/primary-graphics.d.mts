@@ -56,5 +56,5 @@ declare global {
 }
 
 declare abstract class AnyPrimaryGraphics extends PrimaryGraphics {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

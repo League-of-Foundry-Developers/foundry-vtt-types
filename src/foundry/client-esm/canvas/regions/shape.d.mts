@@ -123,7 +123,7 @@ declare class RegionRectangle<ShapeData extends RegionShape.ShapeData> extends R
 
 // Only RegionShape is exported, so `Any_` classes and types for the subclasses have been omitted
 declare abstract class AnyRegionShape extends RegionShape<RegionShape.ShapeData> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default RegionShape;

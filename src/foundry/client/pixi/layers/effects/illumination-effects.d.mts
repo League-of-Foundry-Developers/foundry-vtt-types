@@ -143,9 +143,9 @@ declare global {
 }
 
 declare abstract class AnyCanvasIlluminationEffects extends CanvasIlluminationEffects {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDarknessLevelContainer extends DarknessLevelContainer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

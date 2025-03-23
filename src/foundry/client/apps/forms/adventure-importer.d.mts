@@ -86,5 +86,5 @@ declare global {
 }
 
 declare abstract class AnyAdventureImporter extends AdventureImporter<AdventureImporter.Options> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

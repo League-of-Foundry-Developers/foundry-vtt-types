@@ -32,5 +32,5 @@ declare global {
 }
 
 declare abstract class AnyVisionMaskFilter extends VisionMaskFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

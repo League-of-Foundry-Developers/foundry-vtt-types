@@ -109,5 +109,5 @@ declare global {
 }
 
 declare abstract class AnyRegionLayer extends RegionLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

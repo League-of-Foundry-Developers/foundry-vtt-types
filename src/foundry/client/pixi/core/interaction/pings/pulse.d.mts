@@ -160,13 +160,13 @@ declare global {
 }
 
 declare abstract class AnyPulsePing extends PulsePing {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyArrowPing extends ArrowPing {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyAlertPing extends AlertPing {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

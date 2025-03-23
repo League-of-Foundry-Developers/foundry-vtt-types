@@ -13,7 +13,7 @@ declare global {
     /**
      * The arguments to construct the document.
      */
-    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
      * The documents embedded within Tile.
@@ -24,19 +24,19 @@ declare global {
      * The implementation of the TileDocument document instance configured through `CONFIG.Tile.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTileDocument | `fvtt-types/configuration/ConfiguredTileDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"Tile">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the TileDocument document configured through `CONFIG.Tile.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"Tile">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"Tile"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
     /**
      * A document's parent is something that can contain it.
@@ -290,7 +290,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"Tile", InterfaceToObject<CoreFlags>>;
+      flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
     }
 
     namespace Database {
@@ -413,12 +413,12 @@ declare global {
       };
     }
 
-    interface Flags extends Document.ConfiguredFlagsForName<"Tile"> {}
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
       type Scope = Document.FlagKeyOf<Flags>;
       type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
-      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<"Tile", Scope, Key>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**
@@ -453,12 +453,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `TileDocument`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `TileDocument` directly is not advised. While `new TileDocument(...)` would create a
-     * temporary document it would not respect a system's subclass of `TileDocument`, if any.
-     *
-     * You should use {@link TileDocument.implementation | `new TileDocument.implementation(...)`} instead which
-     * will give you a system specific implementation of `TileDocument`.
      */
     constructor(...args: TileDocument.ConstructorArgs);
 

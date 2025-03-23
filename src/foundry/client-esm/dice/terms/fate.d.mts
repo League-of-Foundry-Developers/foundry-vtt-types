@@ -51,7 +51,7 @@ declare namespace FateDie {
 }
 
 declare abstract class AnyFateDie extends FateDie {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default FateDie;

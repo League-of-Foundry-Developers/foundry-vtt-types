@@ -266,7 +266,7 @@ declare namespace PoolTerm {
 }
 
 declare abstract class AnyPoolTerm extends PoolTerm {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default PoolTerm;

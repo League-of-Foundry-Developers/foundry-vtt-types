@@ -185,5 +185,5 @@ declare global {
 }
 
 declare abstract class AnyRay extends Ray {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

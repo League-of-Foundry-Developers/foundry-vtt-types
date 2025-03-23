@@ -38,5 +38,5 @@ declare global {
 }
 
 declare abstract class AnyCursor extends Cursor {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

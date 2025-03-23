@@ -6,6 +6,21 @@ import type { fields, ShapeData } from "../../../common/data/module.d.mts";
 declare global {
   namespace DrawingDocument {
     /**
+     * The document's name.
+     */
+    type Name = "Drawing";
+
+    /**
+     * The arguments to construct the document.
+     */
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+
+    /**
+     * The documents embedded within Drawing.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the DrawingDocument document instance configured through `CONFIG.Drawing.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredDrawingDocument | `fvtt-types/configuration/ConfiguredDrawingDocument`} in fvtt-types.
      */
@@ -28,6 +43,53 @@ declare global {
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = Scene.Implementation | null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Scene">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `DrawingDocument` that comes from the database.
@@ -271,9 +333,10 @@ declare global {
       flags: fields.ObjectField.FlagsField<"Drawing">;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for DrawingDocuments */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<DrawingDocument.Parent> {}
+
       /** Options passed along in Create operations for DrawingDocuments */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<
@@ -281,43 +344,113 @@ declare global {
           DrawingDocument.Parent,
           Temporary
         > {}
+
       /** Options passed along in Delete operations for DrawingDocuments */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<DrawingDocument.Parent> {}
+
       /** Options passed along in Update operations for DrawingDocuments */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<DrawingDocument.UpdateData, DrawingDocument.Parent> {}
 
-      /** Options for {@link DrawingDocument.createDocuments | `DrawingDocument.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link DrawingDocument._preCreateOperation | `DrawingDocument._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link DrawingDocument.createDocuments | `DrawingDocument.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<DrawingDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link DrawingDocument.updateDocuments | `DrawingDocument.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<DrawingDocument.Database.Update> {}
+
+      /** Operation for {@link DrawingDocument.deleteDocuments | `DrawingDocument.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<DrawingDocument.Database.Delete> {}
+
+      /** Operation for {@link DrawingDocument.create | `DrawingDocument.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<DrawingDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link DrawingDocument.update | `DrawingDocument#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link DrawingDocument.get | `DrawingDocument.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link DrawingDocument._preCreate | `DrawingDocument#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link DrawingDocument._onCreate | `DrawingDocument#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link DrawingDocument.updateDocuments | `DrawingDocument.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link DrawingDocument._preUpdateOperation | `DrawingDocument._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link DrawingDocument._preCreateOperation | `DrawingDocument._preCreateOperation`} */
+      interface PreCreateOperation
+        extends Document.Database.PreCreateOperationStatic<DrawingDocument.Database.Create> {}
+
+      /** Operation for {@link DrawingDocument._onCreateOperation | `DrawingDocument#_onCreateOperation`} */
+      interface OnCreateOperation extends DrawingDocument.Database.Create {}
+
       /** Options for {@link DrawingDocument._preUpdate | `DrawingDocument#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link DrawingDocument._onUpdate | `DrawingDocument#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link DrawingDocument.deleteDocuments | `DrawingDocument.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link DrawingDocument._preDeleteOperation | `DrawingDocument._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link DrawingDocument._onUpdate | `DrawingDocument#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link DrawingDocument._preUpdateOperation | `DrawingDocument._preUpdateOperation`} */
+      interface PreUpdateOperation extends DrawingDocument.Database.Update {}
+
+      /** Operation for {@link DrawingDocument._onUpdateOperation | `DrawingDocument._preUpdateOperation`} */
+      interface OnUpdateOperation extends DrawingDocument.Database.Update {}
+
       /** Options for {@link DrawingDocument._preDelete | `DrawingDocument#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link DrawingDocument._onDelete | `DrawingDocument#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link DrawingDocument._preDeleteOperation | `DrawingDocument#_preDeleteOperation`} */
+      interface PreDeleteOperation extends DrawingDocument.Database.Delete {}
+
+      /** Options for {@link DrawingDocument._onDeleteOperation | `DrawingDocument#_onDeleteOperation`} */
+      interface OnDeleteOperation extends DrawingDocument.Database.Delete {}
+
+      /** Context for {@link DrawingDocument._onDeleteOperation | `DrawingDocument._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
+
+      /** Context for {@link DrawingDocument._onCreateDocuments | `DrawingDocument._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
+
+      /** Context for {@link DrawingDocument._onUpdateDocuments | `DrawingDocument._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
+
+      /**
+       * Options for {@link DrawingDocument._preCreateDescendantDocuments | `DrawingDocument#_preCreateDescendantDocuments`}
+       * and {@link DrawingDocument._onCreateDescendantDocuments | `DrawingDocument#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<DrawingDocument.Database.Create> {}
+
+      /**
+       * Options for {@link DrawingDocument._preUpdateDescendantDocuments | `DrawingDocument#_preUpdateDescendantDocuments`}
+       * and {@link DrawingDocument._onUpdateDescendantDocuments | `DrawingDocument#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<DrawingDocument.Database.Update> {}
+
+      /**
+       * Options for {@link DrawingDocument._preDeleteDescendantDocuments | `DrawingDocument#_preDeleteDescendantDocuments`}
+       * and {@link DrawingDocument._onDeleteDescendantDocuments | `DrawingDocument#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<DrawingDocument.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**
-     * @deprecated {@link DrawingDocument.DatabaseOperation | `DrawingDocument.DatabaseOperation`}
+     * @deprecated {@link DrawingDocument.Database | `DrawingDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<DrawingDocument> {}
@@ -348,14 +481,8 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `DrawingDocument`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `DrawingDocument` directly is not advised. While `new DrawingDocument(...)` would create a
-     * temporary document it would not respect a system's subclass of `DrawingDocument`, if any.
-     *
-     * You should use {@link DrawingDocument.implementation | `new DrawingDocument.implementation(...)`} instead which
-     * will give you a system specific implementation of `DrawingDocument`.
      */
-    constructor(...args: Document.ConstructorParameters<DrawingDocument.CreateData, DrawingDocument.Parent>);
+    constructor(...args: DrawingDocument.ConstructorArgs);
 
     /**
      * Is the current User the author of this drawing?
@@ -364,9 +491,17 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    // Descendant Document operations have been left out because Drawing does not have any descendant documents.
 
     static override defaultName(
       context: Document.DefaultNameContext<"base", NonNullable<DrawingDocument.Parent>>,

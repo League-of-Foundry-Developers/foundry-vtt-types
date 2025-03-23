@@ -252,7 +252,7 @@ declare abstract class AnyPointVisionSource extends PointVisionSource<
   PointSourcePolygon,
   RenderedEffectSource.Layers
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default PointVisionSource;

@@ -43,5 +43,5 @@ declare global {
 }
 
 declare abstract class AnyActors extends Actors {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

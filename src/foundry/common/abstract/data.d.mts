@@ -5,7 +5,7 @@ import type { DataModelValidationFailure } from "../data/validation-failure.d.mt
 
 type DataSchema = foundry.data.fields.DataSchema;
 
-declare const DynamicClass: new <_Computed extends object>(arg0: never, ...args: never[]) => _Computed;
+declare const DynamicClass: new <_Computed extends object>(...args: never) => _Computed;
 
 // @ts-expect-error - This is a workaround to allow for dynamic top level properties in a class.
 declare class _InternalDataModel<
@@ -341,8 +341,7 @@ declare namespace DataModel {
   // EmbeddedDataField<typeof DataModel<{}>> extends SchemaField<infer SubSchema> ? SubSchema : never
   // ```
   type SchemaOfClass<ConcreteClass extends DataModel.AnyConstructor> = ConcreteClass extends abstract new (
-    arg0: never,
-    ...args: never[]
+    ...args: infer _1
   ) => { schema: { fields: infer Fields extends DataSchema } }
     ? Fields
     : never;
@@ -425,7 +424,7 @@ declare namespace DataModel {
 
 // This uses `any` because `Schema` and `Parent` are invariant
 declare abstract class AnyDataModel extends DataModel<DataSchema, DataModel.Any | null, AnyObject> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 // Matches foundry exporting class as both default and non-default

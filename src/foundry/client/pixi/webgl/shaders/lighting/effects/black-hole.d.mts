@@ -15,5 +15,5 @@ declare global {
 }
 
 declare abstract class AnyBlackHoleDarknessShader extends BlackHoleDarknessShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

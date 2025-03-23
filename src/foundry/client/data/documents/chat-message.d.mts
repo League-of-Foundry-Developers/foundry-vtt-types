@@ -9,25 +9,40 @@ import type BaseChatMessage from "../../../common/documents/chat-message.d.mts";
 declare global {
   namespace ChatMessage {
     /**
+     * The document's name.
+     */
+    type Name = "ChatMessage";
+
+    /**
+     * The arguments to construct the document.
+     */
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+
+    /**
+     * The documents embedded within ChatMessage.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the ChatMessage document instance configured through `CONFIG.ChatMessage.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"ChatMessage">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the ChatMessage document configured through `CONFIG.ChatMessage.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"ChatMessage">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"ChatMessage"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<"ChatMessage">;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"ChatMessage">;
+    type SubType = Game.Model.TypeNames<Name>;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = ChatMessage.OfType<ChatMessage.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredChatMessage<Type>, ChatMessage<SubType>>;
 
@@ -36,6 +51,53 @@ declare global {
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = never;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `ChatMessage` that comes from the database.
@@ -214,53 +276,123 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"ChatMessage", InterfaceToObject<CoreFlags>>;
+      flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
 
       _stats: fields.DocumentStatsField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for ChatMessages */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<ChatMessage.Parent> {}
+
       /** Options passed along in Create operations for ChatMessages */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<ChatMessage.CreateData, ChatMessage.Parent, Temporary> {
         rollMode?: foundry.CONST.DICE_ROLL_MODES;
         chatBubble?: boolean;
       }
+
       /** Options passed along in Delete operations for ChatMessages */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ChatMessage.Parent> {}
+
       /** Options passed along in Update operations for ChatMessages */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<ChatMessage.UpdateData, ChatMessage.Parent> {}
 
-      /** Options for {@link ChatMessage.createDocuments | `ChatMessage.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link ChatMessage._preCreateOperation | `ChatMessage._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link ChatMessage.createDocuments | `ChatMessage.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<ChatMessage.Database.Create<Temporary>> {}
+
+      /** Operation for {@link ChatMessage.updateDocuments | `ChatMessage.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<ChatMessage.Database.Update> {}
+
+      /** Operation for {@link ChatMessage.deleteDocuments | `ChatMessage.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<ChatMessage.Database.Delete> {}
+
+      /** Operation for {@link ChatMessage.create | `ChatMessage.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<ChatMessage.Database.Create<Temporary>> {}
+
+      /** Operation for {@link ChatMessage.update | `ChatMessage#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link ChatMessage.get | `ChatMessage.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link ChatMessage._preCreate | `ChatMessage#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link ChatMessage._onCreate | `ChatMessage#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link ChatMessage.updateDocuments | `ChatMessage.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link ChatMessage._preUpdateOperation | `ChatMessage._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link ChatMessage._preCreateOperation | `ChatMessage._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<ChatMessage.Database.Create> {}
+
+      /** Operation for {@link ChatMessage._onCreateOperation | `ChatMessage#_onCreateOperation`} */
+      interface OnCreateOperation extends ChatMessage.Database.Create {}
+
       /** Options for {@link ChatMessage._preUpdate | `ChatMessage#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link ChatMessage._onUpdate | `ChatMessage#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link ChatMessage.deleteDocuments | `ChatMessage.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link ChatMessage._preDeleteOperation | `ChatMessage._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link ChatMessage._onUpdate | `ChatMessage#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link ChatMessage._preUpdateOperation | `ChatMessage._preUpdateOperation`} */
+      interface PreUpdateOperation extends ChatMessage.Database.Update {}
+
+      /** Operation for {@link ChatMessage._onUpdateOperation | `ChatMessage._preUpdateOperation`} */
+      interface OnUpdateOperation extends ChatMessage.Database.Update {}
+
       /** Options for {@link ChatMessage._preDelete | `ChatMessage#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link ChatMessage._onDelete | `ChatMessage#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link ChatMessage._preDeleteOperation | `ChatMessage#_preDeleteOperation`} */
+      interface PreDeleteOperation extends ChatMessage.Database.Delete {}
+
+      /** Options for {@link ChatMessage._onDeleteOperation | `ChatMessage#_onDeleteOperation`} */
+      interface OnDeleteOperation extends ChatMessage.Database.Delete {}
+
+      /** Context for {@link ChatMessage._onDeleteOperation | `ChatMessage._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<ChatMessage.Parent> {}
+
+      /** Context for {@link ChatMessage._onCreateDocuments | `ChatMessage._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<ChatMessage.Parent> {}
+
+      /** Context for {@link ChatMessage._onUpdateDocuments | `ChatMessage._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<ChatMessage.Parent> {}
+
+      /**
+       * Options for {@link ChatMessage._preCreateDescendantDocuments | `ChatMessage#_preCreateDescendantDocuments`}
+       * and {@link ChatMessage._onCreateDescendantDocuments | `ChatMessage#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<ChatMessage.Database.Create> {}
+
+      /**
+       * Options for {@link ChatMessage._preUpdateDescendantDocuments | `ChatMessage#_preUpdateDescendantDocuments`}
+       * and {@link ChatMessage._onUpdateDescendantDocuments | `ChatMessage#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<ChatMessage.Database.Update> {}
+
+      /**
+       * Options for {@link ChatMessage._preDeleteDescendantDocuments | `ChatMessage#_preDeleteDescendantDocuments`}
+       * and {@link ChatMessage._onDeleteDescendantDocuments | `ChatMessage#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<ChatMessage.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     interface CoreFlags {
@@ -297,7 +429,7 @@ declare global {
       whisperTo: string;
     }
 
-    /**
+    /**Database
      * @deprecated {@link ChatMessage.DatabaseOperation | `ChatMessage.DatabaseOperation`}
      */
     /* eslint-disable @typescript-eslint/no-empty-object-type */
@@ -345,14 +477,8 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `ChatMessage`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `ChatMessage` directly is not advised. While `new ChatMessage(...)` would create a
-     * temporary document it would not respect a system's subclass of `ChatMessage`, if any.
-     *
-     * You should use {@link ChatMessage.implementation | `new ChatMessage.implementation(...)`} instead which
-     * will give you a system specific implementation of `ChatMessage`.
      */
-    constructor(...args: Document.ConstructorParameters<ChatMessage.CreateData, ChatMessage.Parent>);
+    constructor(...args: ChatMessage.ConstructorArgs);
 
     /**
      * Is the display of dice rolls in this message collapsed (false) or expanded (true)
@@ -520,9 +646,17 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
     static override defaultName(context?: Document.DefaultNameContext<ChatMessage.SubType, ChatMessage.Parent>): string;
 

@@ -159,5 +159,5 @@ declare global {
 }
 
 declare abstract class AnyPerceptionManager extends PerceptionManager {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

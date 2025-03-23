@@ -83,5 +83,5 @@ declare global {
 }
 
 declare abstract class AnyPlayerList extends PlayerList<Application.Options> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

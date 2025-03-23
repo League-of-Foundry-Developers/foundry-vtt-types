@@ -70,7 +70,7 @@ declare abstract class Document<
   // sense to try to construct `new Document(...)` directly. Not only is it an abstract class but
   // also it varies based upon the `Schema`. While this could be supported it also simplifies
   // typechecking and helps stymy circularities.
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 
   override parent: Parent;
 
@@ -175,7 +175,7 @@ declare abstract class Document<
   /**
    * Does this Document support additional subtypes?
    */
-  static get hasTypeData(): boolean;
+  static get hasTypeData(): undefined | true;
 
   /**
    * The Embedded Document hierarchy for this Document.
@@ -786,7 +786,7 @@ declare abstract class Document<
    * @deprecated since v11, will be removed in v13
    * @remarks "You are accessing `Document.hasSystemData` which is deprecated. Please use `Document.hasTypeData` instead."
    */
-  static get hasSystemData(): boolean;
+  static get hasSystemData(): undefined | true;
 
   /**
    * A reusable helper for adding migration shims.
@@ -865,7 +865,7 @@ declare abstract class Document<
 // An empty schema is the most accurate because index signatures are stripped.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 declare abstract class AnyDocument extends Document<Document.Type, {}, Document.Any | null> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 
   // Note(LukeAbby): This uses `object` instead of `AnyObject` to avoid more thorough evaluation of
   // the involved types which can cause a loop.
@@ -1069,7 +1069,7 @@ declare namespace Document {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
-    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
+    type Constructor = (abstract new (...args: never) => Instance.Any) & {
       " fvtt_types_internal_document_name_static": Document.Type;
     };
 
@@ -1843,28 +1843,28 @@ interface DatabaseOperationCreateMap {
   Actor: Actor.DatabaseOperation.Create;
   ActorDelta: ActorDelta.DatabaseOperation.Create;
   Adventure: Adventure.DatabaseOperation.Create;
-  AmbientLight: AmbientLightDocument.DatabaseOperation.Create;
-  AmbientSound: AmbientSoundDocument.DatabaseOperation.Create;
-  Card: Card.DatabaseOperation.Create;
-  Cards: Cards.DatabaseOperation.Create;
-  ChatMessage: ChatMessage.DatabaseOperation.Create;
-  Combat: Combat.DatabaseOperation.Create;
-  Combatant: Combatant.DatabaseOperation.Create;
-  Drawing: DrawingDocument.DatabaseOperation.Create;
-  FogExploration: FogExploration.DatabaseOperation.Create;
-  Folder: Folder.DatabaseOperation.Create;
+  AmbientLight: AmbientLightDocument.Database.Create;
+  AmbientSound: AmbientSoundDocument.Database.Create;
+  Card: Card.Database.Create;
+  Cards: Cards.Database.Create;
+  ChatMessage: ChatMessage.Database.Create;
+  Combat: Combat.Database.Create;
+  Combatant: Combatant.Database.Create;
+  Drawing: DrawingDocument.Database.Create;
+  FogExploration: FogExploration.Database.Create;
+  Folder: Folder.Database.Create;
   Item: Item.DatabaseOperation.Create;
-  JournalEntry: JournalEntry.DatabaseOperation.Create;
-  JournalEntryPage: JournalEntryPage.DatabaseOperation.Create;
-  Macro: Macro.DatabaseOperation.Create;
-  MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Create;
-  Note: NoteDocument.DatabaseOperation.Create;
-  Playlist: Playlist.DatabaseOperation.Create;
-  PlaylistSound: PlaylistSound.DatabaseOperation.Create;
-  Region: RegionDocument.DatabaseOperation.Create;
-  RegionBehavior: RegionBehavior.DatabaseOperation.Create;
+  JournalEntry: JournalEntry.Database.Create;
+  JournalEntryPage: JournalEntryPage.Database.Create;
+  Macro: Macro.Database.Create;
+  MeasuredTemplate: MeasuredTemplateDocument.Database.Create;
+  Note: NoteDocument.Database.Create;
+  Playlist: Playlist.Database.Create;
+  PlaylistSound: PlaylistSound.Database.Create;
+  Region: RegionDocument.Database.Create;
+  RegionBehavior: RegionBehavior.Database.Create;
   RollTable: RollTable.Database.Create;
-  Scene: Scene.DatabaseOperation.Create;
+  Scene: Scene.Database.Create;
   Setting: Setting.Database.Create;
   TableResult: TableResult.Database.Create;
   Tile: TileDocument.Database.Create;
@@ -1878,28 +1878,28 @@ interface DatabaseOperationUpdateMap {
   Actor: Actor.DatabaseOperation.Update;
   ActorDelta: ActorDelta.DatabaseOperation.Update;
   Adventure: Adventure.DatabaseOperation.Update;
-  AmbientLight: AmbientLightDocument.DatabaseOperation.Update;
-  AmbientSound: AmbientSoundDocument.DatabaseOperation.Update;
-  Card: Card.DatabaseOperation.Update;
-  Cards: Cards.DatabaseOperation.Update;
-  ChatMessage: ChatMessage.DatabaseOperation.Update;
-  Combat: Combat.DatabaseOperation.Update;
-  Combatant: Combatant.DatabaseOperation.Update;
-  Drawing: DrawingDocument.DatabaseOperation.Update;
-  FogExploration: FogExploration.DatabaseOperation.Update;
-  Folder: Folder.DatabaseOperation.Update;
+  AmbientLight: AmbientLightDocument.Database.Update;
+  AmbientSound: AmbientSoundDocument.Database.Update;
+  Card: Card.Database.Update;
+  Cards: Cards.Database.Update;
+  ChatMessage: ChatMessage.Database.Update;
+  Combat: Combat.Database.Update;
+  Combatant: Combatant.Database.Update;
+  Drawing: DrawingDocument.Database.Update;
+  FogExploration: FogExploration.Database.Update;
+  Folder: Folder.Database.Update;
   Item: Item.DatabaseOperation.Update;
-  JournalEntry: JournalEntry.DatabaseOperation.Update;
-  JournalEntryPage: JournalEntryPage.DatabaseOperation.Update;
-  Macro: Macro.DatabaseOperation.Update;
-  MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Update;
-  Note: NoteDocument.DatabaseOperation.Update;
-  Playlist: Playlist.DatabaseOperation.Update;
-  PlaylistSound: PlaylistSound.DatabaseOperation.Update;
-  Region: RegionDocument.DatabaseOperation.Update;
-  RegionBehavior: RegionBehavior.DatabaseOperation.Update;
+  JournalEntry: JournalEntry.Database.Update;
+  JournalEntryPage: JournalEntryPage.Database.Update;
+  Macro: Macro.Database.Update;
+  MeasuredTemplate: MeasuredTemplateDocument.Database.Update;
+  Note: NoteDocument.Database.Update;
+  Playlist: Playlist.Database.Update;
+  PlaylistSound: PlaylistSound.Database.Update;
+  Region: RegionDocument.Database.Update;
+  RegionBehavior: RegionBehavior.Database.Update;
   RollTable: RollTable.Database.Update;
-  Scene: Scene.DatabaseOperation.Update;
+  Scene: Scene.Database.Update;
   Setting: Setting.Database.Update;
   TableResult: TableResult.Database.Update;
   Tile: TileDocument.Database.Update;
@@ -1913,28 +1913,28 @@ interface DatabaseOperationDeleteMap {
   Actor: Actor.DatabaseOperation.Delete;
   ActorDelta: ActorDelta.DatabaseOperation.Delete;
   Adventure: Adventure.DatabaseOperation.Delete;
-  AmbientLight: AmbientLightDocument.DatabaseOperation.Delete;
-  AmbientSound: AmbientSoundDocument.DatabaseOperation.Delete;
-  Card: Card.DatabaseOperation.Delete;
-  Cards: Cards.DatabaseOperation.Delete;
-  ChatMessage: ChatMessage.DatabaseOperation.Delete;
-  Combat: Combat.DatabaseOperation.Delete;
-  Combatant: Combatant.DatabaseOperation.Delete;
-  Drawing: DrawingDocument.DatabaseOperation.Delete;
-  FogExploration: FogExploration.DatabaseOperation.Delete;
-  Folder: Folder.DatabaseOperation.Delete;
+  AmbientLight: AmbientLightDocument.Database.Delete;
+  AmbientSound: AmbientSoundDocument.Database.Delete;
+  Card: Card.Database.Delete;
+  Cards: Cards.Database.Delete;
+  ChatMessage: ChatMessage.Database.Delete;
+  Combat: Combat.Database.Delete;
+  Combatant: Combatant.Database.Delete;
+  Drawing: DrawingDocument.Database.Delete;
+  FogExploration: FogExploration.Database.Delete;
+  Folder: Folder.Database.Delete;
   Item: Item.DatabaseOperation.Delete;
-  JournalEntry: JournalEntry.DatabaseOperation.Delete;
-  JournalEntryPage: JournalEntryPage.DatabaseOperation.Delete;
-  Macro: Macro.DatabaseOperation.Delete;
-  MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Delete;
-  Note: NoteDocument.DatabaseOperation.Delete;
-  Playlist: Playlist.DatabaseOperation.Delete;
-  PlaylistSound: PlaylistSound.DatabaseOperation.Delete;
-  Region: RegionDocument.DatabaseOperation.Delete;
-  RegionBehavior: RegionBehavior.DatabaseOperation.Delete;
+  JournalEntry: JournalEntry.Database.Delete;
+  JournalEntryPage: JournalEntryPage.Database.Delete;
+  Macro: Macro.Database.Delete;
+  MeasuredTemplate: MeasuredTemplateDocument.Database.Delete;
+  Note: NoteDocument.Database.Delete;
+  Playlist: Playlist.Database.Delete;
+  PlaylistSound: PlaylistSound.Database.Delete;
+  Region: RegionDocument.Database.Delete;
+  RegionBehavior: RegionBehavior.Database.Delete;
   RollTable: RollTable.Database.Delete;
-  Scene: Scene.DatabaseOperation.Delete;
+  Scene: Scene.Database.Delete;
   Setting: Setting.Database.Delete;
   TableResult: TableResult.Database.Delete;
   Tile: TileDocument.Database.Delete;

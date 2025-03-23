@@ -264,11 +264,11 @@ declare global {
 }
 
 declare abstract class AnyTokenConfig extends TokenConfig<DocumentSheet.Options<TokenDocument.Implementation>> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDefaultTokenConfig extends DefaultTokenConfig<
   DocumentSheet.Options<TokenDocument.Implementation>
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -168,7 +168,7 @@ declare namespace RollTerm {
 }
 
 declare abstract class AnyRollTerm extends RollTerm {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default RollTerm;

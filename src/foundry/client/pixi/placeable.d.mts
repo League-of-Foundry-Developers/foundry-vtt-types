@@ -715,5 +715,5 @@ declare global {
 }
 
 declare abstract class AnyPlaceableObject extends PlaceableObject<PlaceableObject.AnyCanvasDocument> {
-  constructor(...args: never[]);
+  constructor(...args: never);
 }

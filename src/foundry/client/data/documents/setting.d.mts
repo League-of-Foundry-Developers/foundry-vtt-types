@@ -12,7 +12,7 @@ declare global {
     /**
      * The arguments to construct the document.
      */
-    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
      * The documents embedded within Setting.
@@ -23,19 +23,19 @@ declare global {
      * The implementation of the Setting document instance configured through `CONFIG.Setting.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredSetting | `fvtt-types/configuration/ConfiguredSetting`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"Setting">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the Setting document configured through `CONFIG.Setting.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"Setting">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"Setting"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
     /**
      * A document's parent is something that can contain it.
@@ -317,12 +317,6 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `Setting`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `Setting` directly is not advised. While `new Setting(...)` would create a
-     * temporary document it would not respect a system's subclass of `Setting`, if any.
-     *
-     * You should use {@link Setting.implementation | `new Setting.implementation(...)`} instead which
-     * will give you a system specific implementation of `Setting`.
      */
     constructor(...args: Setting.ConstructorArgs);
 

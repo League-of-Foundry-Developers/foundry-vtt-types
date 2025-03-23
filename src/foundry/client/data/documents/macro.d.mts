@@ -9,25 +9,40 @@ import type BaseMacro from "../../../common/documents/macro.d.mts";
 declare global {
   namespace Macro {
     /**
+     * The document's name.
+     */
+    type Name = "Macro";
+
+    /**
+     * The arguments to construct the document.
+     */
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+
+    /**
+     * The documents embedded within Macro.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the Macro document instance configured through `CONFIG.Macro.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredMacro | `fvtt-types/configuration/ConfiguredMacro`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"Macro">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the Macro document configured through `CONFIG.Macro.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"Macro">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"Macro"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<"Macro">;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Macro">;
+    type SubType = Game.Model.TypeNames<Name>;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = Macro.OfType<Macro.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredMacro<Type>, Macro<SubType>>;
 
@@ -36,6 +51,53 @@ declare global {
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Scene">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `Macro` that comes from the database.
@@ -188,7 +250,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"Macro">;
+      flags: fields.ObjectField.FlagsField<Name>;
 
       /**
        * An object of creation and access information
@@ -197,44 +259,112 @@ declare global {
       _stats: fields.DocumentStatsField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for Macros */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Macro.Parent> {}
+
       /** Options passed along in Create operations for Macros */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<Macro.CreateData, Macro.Parent, Temporary> {}
+
       /** Options passed along in Delete operations for Macros */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Macro.Parent> {}
+
       /** Options passed along in Update operations for Macros */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Macro.UpdateData, Macro.Parent> {}
 
-      /** Options for {@link Macro.createDocuments | `Macro.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Macro._preCreateOperation | `Macro._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link Macro.createDocuments | `Macro.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Macro.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Macro.updateDocuments | `Macro.updateDocuments`} */
+      interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Macro.Database.Update> {}
+
+      /** Operation for {@link Macro.deleteDocuments | `Macro.deleteDocuments`} */
+      interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Macro.Database.Delete> {}
+
+      /** Operation for {@link Macro.create | `Macro.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Macro.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Macro.update | `Macro#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link Macro.get | `Macro.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link Macro._preCreate | `Macro#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link Macro._onCreate | `Macro#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link Macro.updateDocuments | `Macro.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link Macro._preUpdateOperation | `Macro._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link Macro._preCreateOperation | `Macro._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Macro.Database.Create> {}
+
+      /** Operation for {@link Macro._onCreateOperation | `Macro#_onCreateOperation`} */
+      interface OnCreateOperation extends Macro.Database.Create {}
+
       /** Options for {@link Macro._preUpdate | `Macro#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link Macro._onUpdate | `Macro#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link Macro.deleteDocuments | `Macro.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link Macro._preDeleteOperation | `Macro._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Macro._onUpdate | `Macro#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link Macro._preUpdateOperation | `Macro._preUpdateOperation`} */
+      interface PreUpdateOperation extends Macro.Database.Update {}
+
+      /** Operation for {@link Macro._onUpdateOperation | `Macro._preUpdateOperation`} */
+      interface OnUpdateOperation extends Macro.Database.Update {}
+
       /** Options for {@link Macro._preDelete | `Macro#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link Macro._onDelete | `Macro#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link Macro._preDeleteOperation | `Macro#_preDeleteOperation`} */
+      interface PreDeleteOperation extends Macro.Database.Delete {}
+
+      /** Options for {@link Macro._onDeleteOperation | `Macro#_onDeleteOperation`} */
+      interface OnDeleteOperation extends Macro.Database.Delete {}
+
+      /** Context for {@link Macro._onDeleteOperation | `Macro._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<Macro.Parent> {}
+
+      /** Context for {@link Macro._onCreateDocuments | `Macro._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<Macro.Parent> {}
+
+      /** Context for {@link Macro._onUpdateDocuments | `Macro._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<Macro.Parent> {}
+
+      /**
+       * Options for {@link Macro._preCreateDescendantDocuments | `Macro#_preCreateDescendantDocuments`}
+       * and {@link Macro._onCreateDescendantDocuments | `Macro#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<Macro.Database.Create> {}
+
+      /**
+       * Options for {@link Macro._preUpdateDescendantDocuments | `Macro#_preUpdateDescendantDocuments`}
+       * and {@link Macro._onUpdateDescendantDocuments | `Macro#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<Macro.Database.Update> {}
+
+      /**
+       * Options for {@link Macro._preDeleteDescendantDocuments | `Macro#_preDeleteDescendantDocuments`}
+       * and {@link Macro._onDeleteDescendantDocuments | `Macro#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<Macro.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     interface Scope {
@@ -254,7 +384,7 @@ declare global {
     }
 
     /**
-     * @deprecated {@link Macro.DatabaseOperation | `Macro.DatabaseOperation`}
+     * @deprecated {@link Macro.Database | `Macro.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Macro> {}
@@ -294,14 +424,8 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `Macro`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `Macro` directly is not advised. While `new Macro(...)` would create a
-     * temporary document it would not respect a system's subclass of `Macro`, if any.
-     *
-     * You should use {@link Macro.implementation | `new Macro.implementation(...)`} instead which
-     * will give you a system specific implementation of `Macro`.
      */
-    constructor(...args: Document.ConstructorParameters<Macro.CreateData, Macro.Parent>);
+    constructor(...args: Macro.ConstructorArgs);
 
     /**
      * Is the current User the author of this macro?
@@ -340,9 +464,17 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    // Descendant Document operations have been left out because Macro does not have any descendant documents.
 
     static override defaultName(context?: Document.DefaultNameContext<Macro.SubType, Macro.Parent>): string;
 

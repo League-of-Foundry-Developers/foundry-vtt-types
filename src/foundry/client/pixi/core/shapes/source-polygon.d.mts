@@ -340,5 +340,5 @@ declare global {
 }
 
 declare abstract class AnyPointSourcePolygon extends PointSourcePolygon {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

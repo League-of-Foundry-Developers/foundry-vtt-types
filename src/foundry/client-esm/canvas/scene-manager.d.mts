@@ -97,7 +97,7 @@ declare namespace SceneManager {
 }
 
 declare abstract class AnySceneManager extends SceneManager {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default SceneManager;

@@ -1,7 +1,8 @@
 import type { AnyObject, AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Document definition for a Scene.
@@ -22,7 +23,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * You should use {@link Scene.implementation | `new Scene.implementation(...)`} instead which will give you
    * a system specific implementation of `Scene`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseScene.CreateData, BaseScene.Parent>);
+  constructor(...args: Scene.ConstructorArgs);
 
   static override metadata: BaseScene.Metadata;
 
@@ -43,100 +44,167 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   /*
    * After this point these are not really overridden methods.
-   * They are here because they're static properties but depend on the instance and so can't be
-   * defined DRY-ly while also being easily overridable.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
    */
+
+  /* Document overrides */
 
   static " fvtt_types_internal_document_name_static": "Scene";
 
-  static get implementation(): Scene.ImplementationClass;
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: Scene.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static override get implementation(): Scene.ImplementationClass;
+
+  static get baseDocument(): typeof BaseScene;
+
+  static get collectionName(): Scene.ParentCollectionName;
+
+  static get documentName(): Scene.Name;
+
+  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+
+  static get hasTypeData(): undefined;
+
+  static get hierarchy(): Scene.Hierarchy;
 
   override parent: Scene.Parent;
 
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Scene.Implementation | Scene.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<Scene.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<Scene.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Scene.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Scene.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<Scene.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Scene.Database.Update>,
   ): Promise<Scene.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<Scene.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Scene.Database.Delete>,
   ): Promise<Scene.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: Scene.CreateData | Scene.CreateData[],
-    operation?: Document.Database.CreateOperation<Scene.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Scene.Implementation | undefined>;
+    operation?: Scene.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<Scene.Implementation, Temporary> | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): Scene.Implementation | null;
+  override update(
+    data: Scene.UpdateData | undefined,
+    operation?: Scene.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: Scene.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(documentId: string, options?: Scene.Database.GetOptions): Scene.Implementation | null;
+
+  static override getCollectionName<CollectionName extends Scene.EmbeddedName>(
+    name: CollectionName,
+  ): Scene.CollectionNameOf<CollectionName> | null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends Scene.Flags.Scope, Key extends Scene.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<Scene.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends Scene.Flags.Scope,
+    Key extends Scene.Flags.Key<Scope>,
+    Value extends Document.GetFlag<Scene.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends Scene.Flags.Scope, Key extends Scene.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   protected _preCreate(
     data: Scene.CreateData,
-    options: Scene.DatabaseOperation.PreCreateOperationInstance,
+    options: Scene.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(data: Scene.CreateData, options: Scene.DatabaseOperation.OnCreateOperation, userId: string): void;
+  protected _onCreate(data: Scene.CreateData, options: Scene.Database.OnCreateOperation, userId: string): void;
 
   protected static _preCreateOperation(
     documents: Scene.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<Scene.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<Scene.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: Scene.Implementation[],
-    operation: Scene.DatabaseOperation.Create,
+    operation: Scene.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: Scene.UpdateData,
-    options: Scene.DatabaseOperation.PreUpdateOperationInstance,
+    options: Scene.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
-    changed: Scene.UpdateData,
-    options: Scene.DatabaseOperation.OnUpdateOperation,
-    userId: string,
-  ): void;
+  protected _onUpdate(changed: Scene.UpdateData, options: Scene.Database.OnUpdateOperation, userId: string): void;
 
   protected static _preUpdateOperation(
     documents: Scene.Implementation[],
-    operation: Scene.DatabaseOperation.Update,
+    operation: Scene.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: Scene.Implementation[],
-    operation: Scene.DatabaseOperation.Update,
+    operation: Scene.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
-    options: Scene.DatabaseOperation.PreDeleteOperationInstance,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
+  protected _preDelete(options: Scene.Database.PreDeleteOptions, user: User.Implementation): Promise<boolean | void>;
 
-  protected _onDelete(options: Scene.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: Scene.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: Scene.Implementation[],
-    operation: Scene.DatabaseOperation.Delete,
+    operation: Scene.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: Scene.Implementation[],
-    operation: Scene.DatabaseOperation.Delete,
+    operation: Scene.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  static get hasSystemData(): undefined;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: Scene.Implementation[],
@@ -152,6 +220,8 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     documents: Scene.Implementation[],
     context: Document.ModificationContext<Scene.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<Scene.Schema>;
 
@@ -170,8 +240,16 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 export default BaseScene;
 
 declare namespace BaseScene {
+  export import Name = Scene.Name;
+  export import ConstructorArgs = Scene.ConstructorArgs;
+  export import Hierarchy = Scene.Hierarchy;
   export import Metadata = Scene.Metadata;
   export import Parent = Scene.Parent;
+  export import Pack = Scene.Pack;
+  export import Embedded = Scene.Embedded;
+  export import EmbeddedName = Scene.EmbeddedName;
+  export import EmbeddedCollectionName = Scene.EmbeddedCollectionName;
+  export import ParentCollectionName = Scene.ParentCollectionName;
   export import Stored = Scene.Stored;
   export import Source = Scene.Source;
   export import PersistedData = Scene.PersistedData;
@@ -179,7 +257,8 @@ declare namespace BaseScene {
   export import InitializedData = Scene.InitializedData;
   export import UpdateData = Scene.UpdateData;
   export import Schema = Scene.Schema;
-  export import DatabaseOperation = Scene.DatabaseOperation;
+  export import DatabaseOperation = Scene.Database;
+  export import Flags = Scene.Flags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

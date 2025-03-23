@@ -80,5 +80,5 @@ declare global {
 }
 
 declare abstract class AnyMainMenu extends MainMenu {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -242,7 +242,7 @@ declare namespace Die {
 }
 
 declare abstract class AnyDie extends Die {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default Die;

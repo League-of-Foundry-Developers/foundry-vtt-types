@@ -39,5 +39,5 @@ declare global {
 }
 
 declare abstract class AnyBackgroundVisionShader extends BackgroundVisionShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

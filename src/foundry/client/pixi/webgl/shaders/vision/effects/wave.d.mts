@@ -53,9 +53,9 @@ declare global {
 }
 
 declare abstract class AnyWaveBackgroundVisionShader extends WaveBackgroundVisionShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyWaveColorationVisionShader extends WaveColorationVisionShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

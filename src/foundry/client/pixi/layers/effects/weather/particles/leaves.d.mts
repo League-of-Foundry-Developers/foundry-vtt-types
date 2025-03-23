@@ -45,5 +45,5 @@ declare global {
 }
 
 declare abstract class AnyAutumnLeavesWeatherEffect extends AutumnLeavesWeatherEffect {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

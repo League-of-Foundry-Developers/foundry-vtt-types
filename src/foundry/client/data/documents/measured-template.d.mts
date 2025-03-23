@@ -6,28 +6,90 @@ import type { fields } from "../../../common/data/module.d.mts";
 declare global {
   namespace MeasuredTemplateDocument {
     /**
+     * The document's name.
+     */
+    type Name = "MeasuredTemplate";
+
+    /**
+     * The arguments to construct the document.
+     */
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+
+    /**
+     * The documents embedded within MeasuredTemplate.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the MeasuredTemplateDocument document instance configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredMeasuredTemplateDocument | `fvtt-types/configuration/ConfiguredMeasuredTemplateDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"MeasuredTemplate">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the MeasuredTemplateDocument document configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"MeasuredTemplate">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"MeasuredTemplate"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
     /**
      * A document's parent is something that can contain it.
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Scene">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `MeasuredTemplateDocument` that comes from the database.
@@ -203,12 +265,13 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"MeasuredTemplate">;
+      flags: fields.ObjectField.FlagsField<Name>;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for MeasuredTemplateDocuments */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<MeasuredTemplateDocument.Parent> {}
+
       /** Options passed along in Create operations for MeasuredTemplateDocuments */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<
@@ -216,8 +279,10 @@ declare global {
           MeasuredTemplateDocument.Parent,
           Temporary
         > {}
+
       /** Options passed along in Delete operations for MeasuredTemplateDocuments */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<MeasuredTemplateDocument.Parent> {}
+
       /** Options passed along in Update operations for MeasuredTemplateDocuments */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<
@@ -225,37 +290,105 @@ declare global {
           MeasuredTemplateDocument.Parent
         > {}
 
-      /** Options for {@link MeasuredTemplateDocument.createDocuments | `MeasuredTemplateDocument.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link MeasuredTemplateDocument._preCreateOperation | `MeasuredTemplateDocument._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link MeasuredTemplateDocument.createDocuments | `MeasuredTemplateDocument.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<MeasuredTemplateDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link MeasuredTemplateDocument.updateDocuments | `MeasuredTemplateDocument.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<MeasuredTemplateDocument.Database.Update> {}
+
+      /** Operation for {@link MeasuredTemplateDocument.deleteDocuments | `MeasuredTemplateDocument.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<MeasuredTemplateDocument.Database.Delete> {}
+
+      /** Operation for {@link MeasuredTemplateDocument.create | `MeasuredTemplateDocument.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<MeasuredTemplateDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link MeasuredTemplateDocument.update | `MeasuredTemplateDocument#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link MeasuredTemplateDocument.get | `MeasuredTemplateDocument.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link MeasuredTemplateDocument._preCreate | `MeasuredTemplateDocument#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link MeasuredTemplateDocument._onCreate | `MeasuredTemplateDocument#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link MeasuredTemplateDocument.updateDocuments | `MeasuredTemplateDocument.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link MeasuredTemplateDocument._preUpdateOperation | `MeasuredTemplateDocument._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link MeasuredTemplateDocument._preCreateOperation | `MeasuredTemplateDocument._preCreateOperation`} */
+      interface PreCreateOperation
+        extends Document.Database.PreCreateOperationStatic<MeasuredTemplateDocument.Database.Create> {}
+
+      /** Operation for {@link MeasuredTemplateDocument._onCreateOperation | `MeasuredTemplateDocument#_onCreateOperation`} */
+      interface OnCreateOperation extends MeasuredTemplateDocument.Database.Create {}
+
       /** Options for {@link MeasuredTemplateDocument._preUpdate | `MeasuredTemplateDocument#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link MeasuredTemplateDocument._onUpdate | `MeasuredTemplateDocument#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link MeasuredTemplateDocument.deleteDocuments | `MeasuredTemplateDocument.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link MeasuredTemplateDocument._preDeleteOperation | `MeasuredTemplateDocument._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link MeasuredTemplateDocument._onUpdate | `MeasuredTemplateDocument#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link MeasuredTemplateDocument._preUpdateOperation | `MeasuredTemplateDocument._preUpdateOperation`} */
+      interface PreUpdateOperation extends MeasuredTemplateDocument.Database.Update {}
+
+      /** Operation for {@link MeasuredTemplateDocument._onUpdateOperation | `MeasuredTemplateDocument._preUpdateOperation`} */
+      interface OnUpdateOperation extends MeasuredTemplateDocument.Database.Update {}
+
       /** Options for {@link MeasuredTemplateDocument._preDelete | `MeasuredTemplateDocument#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link MeasuredTemplateDocument._onDelete | `MeasuredTemplateDocument#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link MeasuredTemplateDocument._preDeleteOperation | `MeasuredTemplateDocument#_preDeleteOperation`} */
+      interface PreDeleteOperation extends MeasuredTemplateDocument.Database.Delete {}
+
+      /** Options for {@link MeasuredTemplateDocument._onDeleteOperation | `MeasuredTemplateDocument#_onDeleteOperation`} */
+      interface OnDeleteOperation extends MeasuredTemplateDocument.Database.Delete {}
+
+      /** Context for {@link MeasuredTemplateDocument._onDeleteOperation | `MeasuredTemplateDocument._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<MeasuredTemplateDocument.Parent> {}
+
+      /** Context for {@link MeasuredTemplateDocument._onCreateDocuments | `MeasuredTemplateDocument._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<MeasuredTemplateDocument.Parent> {}
+
+      /** Context for {@link MeasuredTemplateDocument._onUpdateDocuments | `MeasuredTemplateDocument._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<MeasuredTemplateDocument.Parent> {}
+
+      /**
+       * Options for {@link MeasuredTemplateDocument._preCreateDescendantDocuments | `MeasuredTemplateDocument#_preCreateDescendantDocuments`}
+       * and {@link MeasuredTemplateDocument._onCreateDescendantDocuments | `MeasuredTemplateDocument#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<MeasuredTemplateDocument.Database.Create> {}
+
+      /**
+       * Options for {@link MeasuredTemplateDocument._preUpdateDescendantDocuments | `MeasuredTemplateDocument#_preUpdateDescendantDocuments`}
+       * and {@link MeasuredTemplateDocument._onUpdateDescendantDocuments | `MeasuredTemplateDocument#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<MeasuredTemplateDocument.Database.Update> {}
+
+      /**
+       * Options for {@link MeasuredTemplateDocument._preDeleteDescendantDocuments | `MeasuredTemplateDocument#_preDeleteDescendantDocuments`}
+       * and {@link MeasuredTemplateDocument._onDeleteDescendantDocuments | `MeasuredTemplateDocument#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<MeasuredTemplateDocument.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**
-     * @deprecated {@link MeasuredTemplateDocument.DatabaseOperation | `MeasuredTemplateDocument.DatabaseOperation`}
+     * @deprecated {@link MeasuredTemplateDocument.Database | `MeasuredTemplateDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<MeasuredTemplateDocument> {}
@@ -286,16 +419,8 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `MeasuredTemplateDocument`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `MeasuredTemplateDocument` directly is not advised. While `new MeasuredTemplateDocument(...)` would create a
-     * temporary document it would not respect a system's subclass of `MeasuredTemplateDocument`, if any.
-     *
-     * You should use {@link MeasuredTemplateDocument.implementation | `new MeasuredTemplateDocument.implementation(...)`} instead which
-     * will give you a system specific implementation of `MeasuredTemplateDocument`.
      */
-    constructor(
-      ...args: Document.ConstructorParameters<MeasuredTemplateDocument.CreateData, MeasuredTemplateDocument.Parent>
-    );
+    constructor(...args: MeasuredTemplateDocument.ConstructorArgs);
 
     /**
      * Rotation is an alias for direction
@@ -309,9 +434,17 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
     static override defaultName(
       context: Document.DefaultNameContext<"base", NonNullable<MeasuredTemplateDocument.Parent>>,

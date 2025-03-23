@@ -73,5 +73,5 @@ declare global {
 }
 
 declare abstract class AnyVisibilityFilter extends VisibilityFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

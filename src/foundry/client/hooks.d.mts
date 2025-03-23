@@ -1025,7 +1025,9 @@ declare global {
      */
     type PreUpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      changed: DeepPartial<ConstructorParameters<D>[0]>,
+      changed: DeepPartial<
+        D extends abstract new (arg0: infer Data extends object, ...args: infer _1) => unknown ? Data : never
+      >,
       options: Document.Database.PreUpdateOptions<DatabaseUpdateOperation>,
       userId: string,
     ) => boolean | void;
@@ -1091,7 +1093,9 @@ declare global {
      */
     type UpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      change: DeepPartial<ConstructorParameters<D>[0]>,
+      change: DeepPartial<
+        D extends abstract new (arg0: infer Data extends object, ...args: infer _1) => unknown ? Data : never
+      >,
       options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
       userId: string,
     ) => void;

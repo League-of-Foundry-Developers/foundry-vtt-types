@@ -112,7 +112,7 @@ declare abstract class AnyPointDarknessSource extends PointDarknessSource<
   PointSourcePolygon,
   PointDarknessSource.Layers
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default PointDarknessSource;

@@ -252,5 +252,5 @@ declare global {
 }
 
 declare abstract class AnyTextureLoader extends TextureLoader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

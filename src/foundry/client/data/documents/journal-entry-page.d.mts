@@ -8,25 +8,40 @@ import type BaseJournalEntryPage from "../../../common/documents/journal-entry-p
 declare global {
   namespace JournalEntryPage {
     /**
+     * The document's name.
+     */
+    type Name = "JournalEntryPage";
+
+    /**
+     * The arguments to construct the document.
+     */
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+    /**
+     * The documents embedded within JournalEntryPage.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the JournalEntryPage document instance configured through `CONFIG.JournalEntryPage.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"JournalEntryPage">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the JournalEntryPage document configured through `CONFIG.JournalEntryPage.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"JournalEntryPage">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"JournalEntryPage"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<"JournalEntryPage">;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"JournalEntryPage">;
+    type SubType = Game.Model.TypeNames<Name>;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = JournalEntryPage.OfType<JournalEntryPage.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<
       ConfiguredJournalEntryPage<Type>,
@@ -38,6 +53,53 @@ declare global {
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = JournalEntry.Implementation | null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"JournalEntry">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `JournalEntryPage` that comes from the database.
@@ -258,12 +320,12 @@ declare global {
        * An object of optional key/value flags.
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"JournalEntryPage">;
+      flags: fields.ObjectField.FlagsField<Name>;
 
       _stats: fields.DocumentStatsField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for JournalEntryPages */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<JournalEntryPage.Parent> {}
       /** Options passed along in Create operations for JournalEntryPages */
@@ -285,33 +347,101 @@ declare global {
         animate?: boolean;
       }
 
-      /** Options for {@link JournalEntryPage.createDocuments | `JournalEntryPage.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link JournalEntryPage._preCreateOperation | `JournalEntryPage._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link JournalEntryPage.createDocuments | `JournalEntryPage.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<JournalEntryPage.Database.Create<Temporary>> {}
+
+      /** Operation for {@link JournalEntryPage.updateDocuments | `JournalEntryPage.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<JournalEntryPage.Database.Update> {}
+
+      /** Operation for {@link JournalEntryPage.deleteDocuments | `JournalEntryPage.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<JournalEntryPage.Database.Delete> {}
+
+      /** Operation for {@link JournalEntryPage.create | `JournalEntryPage.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<JournalEntryPage.Database.Create<Temporary>> {}
+
+      /** Operation for {@link JournalEntryPage.update | `JournalEntryPage#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link JournalEntryPage.get | `JournalEntryPage.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link JournalEntryPage._preCreate | `JournalEntryPage#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link JournalEntryPage._onCreate | `JournalEntryPage#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link JournalEntryPage.updateDocuments | `JournalEntryPage.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link JournalEntryPage._preUpdateOperation | `JournalEntryPage._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link JournalEntryPage._preCreateOperation | `JournalEntryPage._preCreateOperation`} */
+      interface PreCreateOperation
+        extends Document.Database.PreCreateOperationStatic<JournalEntryPage.Database.Create> {}
+
+      /** Operation for {@link JournalEntryPage._onCreateOperation | `JournalEntryPage#_onCreateOperation`} */
+      interface OnCreateOperation extends JournalEntryPage.Database.Create {}
+
       /** Options for {@link JournalEntryPage._preUpdate | `JournalEntryPage#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link JournalEntryPage._onUpdate | `JournalEntryPage#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link JournalEntryPage.deleteDocuments | `JournalEntryPage.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link JournalEntryPage._preDeleteOperation | `JournalEntryPage._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link JournalEntryPage._onUpdate | `JournalEntryPage#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link JournalEntryPage._preUpdateOperation | `JournalEntryPage._preUpdateOperation`} */
+      interface PreUpdateOperation extends JournalEntryPage.Database.Update {}
+
+      /** Operation for {@link JournalEntryPage._onUpdateOperation | `JournalEntryPage._preUpdateOperation`} */
+      interface OnUpdateOperation extends JournalEntryPage.Database.Update {}
+
       /** Options for {@link JournalEntryPage._preDelete | `JournalEntryPage#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link JournalEntryPage._onDelete | `JournalEntryPage#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link JournalEntryPage._preDeleteOperation | `JournalEntryPage#_preDeleteOperation`} */
+      interface PreDeleteOperation extends JournalEntryPage.Database.Delete {}
+
+      /** Options for {@link JournalEntryPage._onDeleteOperation | `JournalEntryPage#_onDeleteOperation`} */
+      interface OnDeleteOperation extends JournalEntryPage.Database.Delete {}
+
+      /** Context for {@link JournalEntryPage._onDeleteOperation | `JournalEntryPage._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<JournalEntryPage.Parent> {}
+
+      /** Context for {@link JournalEntryPage._onCreateDocuments | `JournalEntryPage._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<JournalEntryPage.Parent> {}
+
+      /** Context for {@link JournalEntryPage._onUpdateDocuments | `JournalEntryPage._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<JournalEntryPage.Parent> {}
+
+      /**
+       * Options for {@link JournalEntryPage._preCreateDescendantDocuments | `JournalEntryPage#_preCreateDescendantDocuments`}
+       * and {@link JournalEntryPage._onCreateDescendantDocuments | `JournalEntryPage#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<JournalEntryPage.Database.Create> {}
+
+      /**
+       * Options for {@link JournalEntryPage._preUpdateDescendantDocuments | `JournalEntryPage#_preUpdateDescendantDocuments`}
+       * and {@link JournalEntryPage._onUpdateDescendantDocuments | `JournalEntryPage#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<JournalEntryPage.Database.Update> {}
+
+      /**
+       * Options for {@link JournalEntryPage._preDeleteDescendantDocuments | `JournalEntryPage#_preDeleteDescendantDocuments`}
+       * and {@link JournalEntryPage._onDeleteDescendantDocuments | `JournalEntryPage#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<JournalEntryPage.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     interface JournalEntryPageHeading {
@@ -335,7 +465,7 @@ declare global {
     }
 
     /**
-     * @deprecated {@link JournalEntryPage.DatabaseOperation | `JournalEntryPage.DatabaseOperation`}
+     * @deprecated {@link JournalEntryPage.Database | `JournalEntryPage.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<JournalEntryPage> {}
@@ -372,14 +502,8 @@ declare global {
     /**
      * @param data    - Initial data from which to construct the `JournalEntryPage`
      * @param context - Construction context options
-     *
-     * @deprecated Constructing `JournalEntryPage` directly is not advised. While `new JournalEntryPage(...)` would create a
-     * temporary document it would not respect a system's subclass of `JournalEntryPage`, if any.
-     *
-     * You should use {@link JournalEntryPage.implementation | `new JournalEntryPage.implementation(...)`} instead which
-     * will give you a system specific implementation of `JournalEntryPage`.
      */
-    constructor(...args: Document.ConstructorParameters<JournalEntryPage.CreateData, JournalEntryPage.Parent>);
+    constructor(...args: JournalEntryPage.ConstructorArgs);
 
     /**
      * The cached table of contents for this JournalEntryPage.
@@ -462,8 +586,7 @@ declare global {
     override _onClickDocumentLink(event: MouseEvent): this;
 
     /**
-     * @privateRemarks _onUpdate is overridden but with no signature changes.
-     * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+     * @privateRemarks _onUpdate is overridden but with no signature changes from the template in BaseJournalEntryPage
      */
 
     protected override _buildEmbedHTML(
@@ -563,9 +686,17 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    // Descendant Document operations have been left out because JournalEntryPage does not have any descendant documents.
 
     static override defaultName(
       context: Document.DefaultNameContext<JournalEntryPage.SubType, NonNullable<JournalEntryPage.Parent>>,
@@ -585,5 +716,7 @@ declare global {
       source: JournalEntryPage.Source,
       context?: Document.FromImportContext<JournalEntryPage.Parent>,
     ): Promise<JournalEntryPage.Implementation>;
+
+    // Embedded document operations have been left out because Wall does not have any embedded documents.
   }
 }

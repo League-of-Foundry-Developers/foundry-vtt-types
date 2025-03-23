@@ -29,5 +29,5 @@ declare global {
 }
 
 declare abstract class AnyCanvasDarknessEffects extends CanvasDarknessEffects {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
