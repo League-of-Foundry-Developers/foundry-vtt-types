@@ -971,7 +971,7 @@ declare global {
      * returns the result. This gets passed to {@link foundry.canvas.sources.PointLightSource.initialize | `Token#light#initialize()`},
      * so this is a `RequiredProps<IntentionalPartial<>>` rather than a `Pick<>`
      */
-    type LightSourceData = foundry.data.fields.SchemaField.PersistedData<foundry.data.LightData.Schema> &
+    type LightSourceData = foundry.data.fields.SchemaField.InitializedData<foundry.data.LightData.Schema> &
       RequiredProps<
         IntentionalPartial<foundry.canvas.sources.PointLightSource.SourceData>,
         "x" | "y" | "elevation" | "rotation" | "dim" | "bright" | "externalRadius" | "seed" | "preview" | "disabled"
