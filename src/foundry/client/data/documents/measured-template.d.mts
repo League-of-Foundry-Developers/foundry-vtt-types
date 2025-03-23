@@ -24,19 +24,19 @@ declare global {
      * The implementation of the MeasuredTemplateDocument document instance configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredMeasuredTemplateDocument | `fvtt-types/configuration/ConfiguredMeasuredTemplateDocument`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"MeasuredTemplate">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the MeasuredTemplateDocument document configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"MeasuredTemplate">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"MeasuredTemplate"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
     /**
      * A document's parent is something that can contain it.
@@ -265,7 +265,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"MeasuredTemplate">;
+      flags: fields.ObjectField.FlagsField<Name>;
     }
 
     namespace Database {
