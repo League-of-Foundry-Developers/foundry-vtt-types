@@ -1,7 +1,9 @@
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Combatant Document.
@@ -24,7 +26,7 @@ declare abstract class BaseCombatant<
    * You should use {@link Combatant.implementation | `new Combatant.implementation(...)`} instead which will give you
    * a system specific implementation of `Combatant`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseCombatant.CreateData, BaseCombatant.Parent>);
+  constructor(...args: Combatant.ConstructorArgs);
 
   static override metadata: BaseCombatant.Metadata;
 
@@ -46,108 +48,176 @@ declare abstract class BaseCombatant<
 
   /*
    * After this point these are not really overridden methods.
-   * They are here because they're static properties but depend on the instance and so can't be
-   * defined DRY-ly while also being easily overridable.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
    */
+
+  /* Document overrides */
 
   static " fvtt_types_internal_document_name_static": "Combatant";
 
-  static get implementation(): Combatant.ImplementationClass;
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: Combatant.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static override get implementation(): Combatant.ImplementationClass;
+
+  static get baseDocument(): typeof BaseCombatant;
+
+  static get collectionName(): Combatant.ParentCollectionName;
+
+  static get documentName(): Combatant.Name;
+
+  static get TYPES(): BaseCombatant.SubType[];
+
+  static get hasTypeData(): true;
+
+  static get hierarchy(): Combatant.Hierarchy;
 
   override system: Document.SystemFor<"Combatant", SubType>;
 
   override parent: BaseCombatant.Parent;
 
-  static get TYPES(): BaseCombatant.SubType[];
-
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Combatant.Implementation | Combatant.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<Combatant.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<Combatant.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Combatant.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Combatant.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<Combatant.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Combatant.Database.Update>,
   ): Promise<Combatant.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<Combatant.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Combatant.Database.Delete>,
   ): Promise<Combatant.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: Combatant.CreateData | Combatant.CreateData[],
-    operation?: Document.Database.CreateOperation<Combatant.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Combatant.Implementation | undefined>;
+    operation?: Combatant.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<Combatant.Implementation, Temporary> | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): Combatant.Implementation | null;
+  override update(
+    data: Combatant.UpdateData | undefined,
+    operation?: Combatant.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: Combatant.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(documentId: string, options?: Combatant.Database.GetOptions): Combatant.Implementation | null;
+
+  static override getCollectionName<CollectionName extends Combatant.EmbeddedName>(
+    name: CollectionName,
+  ): Combatant.CollectionNameOf<CollectionName> | null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends Combatant.Flags.Scope, Key extends Combatant.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<Combatant.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends Combatant.Flags.Scope,
+    Key extends Combatant.Flags.Key<Scope>,
+    Value extends Document.GetFlag<Combatant.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends Combatant.Flags.Scope, Key extends Combatant.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   protected _preCreate(
     data: Combatant.CreateData,
-    options: Combatant.DatabaseOperation.PreCreateOperationInstance,
+    options: Combatant.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
-    data: Combatant.CreateData,
-    options: Combatant.DatabaseOperation.OnCreateOperation,
-    userId: string,
-  ): void;
+  protected _onCreate(data: Combatant.CreateData, options: Combatant.Database.OnCreateOperation, userId: string): void;
 
   protected static _preCreateOperation(
     documents: Combatant.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<Combatant.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<Combatant.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: Combatant.Implementation[],
-    operation: Combatant.DatabaseOperation.Create,
+    operation: Combatant.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: Combatant.UpdateData,
-    options: Combatant.DatabaseOperation.PreUpdateOperationInstance,
+    options: Combatant.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onUpdate(
     changed: Combatant.UpdateData,
-    options: Combatant.DatabaseOperation.OnUpdateOperation,
+    options: Combatant.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static _preUpdateOperation(
     documents: Combatant.Implementation[],
-    operation: Combatant.DatabaseOperation.Update,
+    operation: Combatant.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: Combatant.Implementation[],
-    operation: Combatant.DatabaseOperation.Update,
+    operation: Combatant.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preDelete(
-    options: Combatant.DatabaseOperation.PreDeleteOperationInstance,
+    options: Combatant.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: Combatant.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: Combatant.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: Combatant.Implementation[],
-    operation: Combatant.DatabaseOperation.Delete,
+    operation: Combatant.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: Combatant.Implementation[],
-    operation: Combatant.DatabaseOperation.Delete,
+    operation: Combatant.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  static get hasSystemData(): true;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: Combatant.Implementation[],
@@ -163,6 +233,8 @@ declare abstract class BaseCombatant<
     documents: Combatant.Implementation[],
     context: Document.ModificationContext<Combatant.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<Combatant.Schema>;
 
@@ -183,9 +255,17 @@ declare abstract class BaseCombatant<
 export default BaseCombatant;
 
 declare namespace BaseCombatant {
-  export import Metadata = Combatant.Metadata;
   export import SubType = Combatant.SubType;
+  export import Name = Combatant.Name;
+  export import ConstructorArgs = Combatant.ConstructorArgs;
+  export import Hierarchy = Combatant.Hierarchy;
+  export import Metadata = Combatant.Metadata;
   export import Parent = Combatant.Parent;
+  export import Pack = Combatant.Pack;
+  export import Embedded = Combatant.Embedded;
+  export import EmbeddedName = Combatant.EmbeddedName;
+  export import EmbeddedCollectionName = Combatant.EmbeddedCollectionName;
+  export import ParentCollectionName = Combatant.ParentCollectionName;
   export import Stored = Combatant.Stored;
   export import Source = Combatant.Source;
   export import PersistedData = Combatant.PersistedData;
@@ -193,7 +273,8 @@ declare namespace BaseCombatant {
   export import InitializedData = Combatant.InitializedData;
   export import UpdateData = Combatant.UpdateData;
   export import Schema = Combatant.Schema;
-  export import DatabaseOperation = Combatant.DatabaseOperation;
+  export import DatabaseOperation = Combatant.Database;
+  export import Flags = Combatant.Flags;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.

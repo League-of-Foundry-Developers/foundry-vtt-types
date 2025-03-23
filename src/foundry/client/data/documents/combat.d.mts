@@ -489,7 +489,7 @@ declare global {
       collection: Combatant.ParentCollectionName,
       documents: Combatant.Stored[],
       result: Combatant.CreateData[],
-      options: Combatant.DatabaseOperation.OnCreateOperation,
+      options: Combatant.Database.OnCreateOperation,
       userId: string,
     ): void;
 
@@ -498,7 +498,7 @@ declare global {
       collection: Combatant.ParentCollectionName,
       documents: Combatant.Stored[],
       changes: Combatant.UpdateData[],
-      options: Combatant.DatabaseOperation.OnUpdateOperation,
+      options: Combatant.Database.OnUpdateOperation,
       userId: string,
     ): void;
 
@@ -507,7 +507,7 @@ declare global {
       collection: Combatant.ParentCollectionName,
       documents: Combatant.Stored[],
       ids: string[],
-      options: Combatant.DatabaseOperation.OnDeleteOperation,
+      options: Combatant.Database.OnDeleteOperation,
       userId: string,
     ): void;
 

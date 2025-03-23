@@ -9,25 +9,40 @@ import type BaseCombatant from "../../../common/documents/combatant.d.mts";
 declare global {
   namespace Combatant {
     /**
+     * The document's name.
+     */
+    type Name = "Combatant";
+
+    /**
+     * The arguments to construct the document.
+     */
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+
+    /**
+     * The documents embedded within Combatant.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the Combatant document instance configured through `CONFIG.Combatant.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"Combatant">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the Combatant document configured through `CONFIG.Combatant.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"Combatant">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"Combatant"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<"Combatant">;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Combatant">;
+    type SubType = Game.Model.TypeNames<Name>;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = Combatant.OfType<Combatant.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCombatant<Type>, Combatant<SubType>>;
 
@@ -212,62 +227,132 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"Combatant">;
+      flags: fields.ObjectField.FlagsField<Name>;
 
       _stats: fields.DocumentStatsField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for Combatants */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Combatant.Parent> {}
+
       /** Options passed along in Create operations for Combatants */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<Combatant.CreateData, Combatant.Parent, Temporary> {
         combatTurn?: number;
         turnEvents?: boolean;
       }
+
       /** Options passed along in Delete operations for Combatants */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Combatant.Parent> {
         combatTurn?: number;
         turnEvents?: boolean;
       }
+
       /** Options passed along in Update operations for Combatants */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Combatant.UpdateData, Combatant.Parent> {
         combatTurn?: number;
         turnEvents?: boolean;
       }
 
-      /** Options for {@link Combatant.createDocuments | `Combatant.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Combatant._preCreateOperation | `Combatant._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link Combatant.createDocuments | `Combatant.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Combatant.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Combatant.updateDocuments | `Combatant.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<Combatant.Database.Update> {}
+
+      /** Operation for {@link Combatant.deleteDocuments | `Combatant.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<Combatant.Database.Delete> {}
+
+      /** Operation for {@link Combatant.create | `Combatant.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Combatant.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Combatant.update | `Combatant#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link Combatant.get | `Combatant.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link Combatant._preCreate | `Combatant#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link Combatant._onCreate | `Combatant#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link Combatant.updateDocuments | `Combatant.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link Combatant._preUpdateOperation | `Combatant._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link Combatant._preCreateOperation | `Combatant._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Combatant.Database.Create> {}
+
+      /** Operation for {@link Combatant._onCreateOperation | `Combatant#_onCreateOperation`} */
+      interface OnCreateOperation extends Combatant.Database.Create {}
+
       /** Options for {@link Combatant._preUpdate | `Combatant#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link Combatant._onUpdate | `Combatant#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link Combatant.deleteDocuments | `Combatant.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link Combatant._preDeleteOperation | `Combatant._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Combatant._onUpdate | `Combatant#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link Combatant._preUpdateOperation | `Combatant._preUpdateOperation`} */
+      interface PreUpdateOperation extends Combatant.Database.Update {}
+
+      /** Operation for {@link Combatant._onUpdateOperation | `Combatant._preUpdateOperation`} */
+      interface OnUpdateOperation extends Combatant.Database.Update {}
+
       /** Options for {@link Combatant._preDelete | `Combatant#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link Combatant._onDelete | `Combatant#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link Combatant._preDeleteOperation | `Combatant#_preDeleteOperation`} */
+      interface PreDeleteOperation extends Combatant.Database.Delete {}
+
+      /** Options for {@link Combatant._onDeleteOperation | `Combatant#_onDeleteOperation`} */
+      interface OnDeleteOperation extends Combatant.Database.Delete {}
+
+      /** Context for {@link Combatant._onDeleteOperation | `Combatant._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<Combatant.Parent> {}
+
+      /** Context for {@link Combatant._onCreateDocuments | `Combatant._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<Combatant.Parent> {}
+
+      /** Context for {@link Combatant._onUpdateDocuments | `Combatant._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<Combatant.Parent> {}
+
+      /**
+       * Options for {@link Combatant._preCreateDescendantDocuments | `Combatant#_preCreateDescendantDocuments`}
+       * and {@link Combatant._onCreateDescendantDocuments | `Combatant#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<Combatant.Database.Create> {}
+
+      /**
+       * Options for {@link Combatant._preUpdateDescendantDocuments | `Combatant#_preUpdateDescendantDocuments`}
+       * and {@link Combatant._onUpdateDescendantDocuments | `Combatant#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<Combatant.Database.Update> {}
+
+      /**
+       * Options for {@link Combatant._preDeleteDescendantDocuments | `Combatant#_preDeleteDescendantDocuments`}
+       * and {@link Combatant._onDeleteDescendantDocuments | `Combatant#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<Combatant.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**
-     * @deprecated {@link Combatant.DatabaseOperation | `Combatant.DatabaseOperation`}
+     * @deprecated {@link Combatant.Database | `Combatant.DatabaseOperation`}
      */
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -312,7 +397,7 @@ declare global {
      * @param data    - Initial data from which to construct the `Combatant`
      * @param context - Construction context options
      */
-    constructor(...args: Document.ConstructorParameters<Combatant.CreateData, Combatant.Parent>);
+    constructor(...args: Combatant.ConstructorArgs);
 
     /**
      * The token video source image (if any)
@@ -392,9 +477,17 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    // Descendant Document operations have been left out because Combatant does not have any descendant documents.
 
     static override defaultName(
       context: Document.DefaultNameContext<Combatant.SubType, NonNullable<Combatant.Parent>>,
