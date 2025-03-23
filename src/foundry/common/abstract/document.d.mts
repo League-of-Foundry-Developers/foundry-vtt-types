@@ -1858,7 +1858,7 @@ interface DatabaseOperationCreateMap {
   JournalEntryPage: JournalEntryPage.Database.Create;
   Macro: Macro.DatabaseOperation.Create;
   MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Create;
-  Note: NoteDocument.DatabaseOperation.Create;
+  Note: NoteDocument.Database.Create;
   Playlist: Playlist.Database.Create;
   PlaylistSound: PlaylistSound.Database.Create;
   Region: RegionDocument.Database.Create;
@@ -1893,7 +1893,7 @@ interface DatabaseOperationUpdateMap {
   JournalEntryPage: JournalEntryPage.Database.Update;
   Macro: Macro.DatabaseOperation.Update;
   MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Update;
-  Note: NoteDocument.DatabaseOperation.Update;
+  Note: NoteDocument.Database.Update;
   Playlist: Playlist.Database.Update;
   PlaylistSound: PlaylistSound.Database.Update;
   Region: RegionDocument.Database.Update;
@@ -1928,7 +1928,7 @@ interface DatabaseOperationDeleteMap {
   JournalEntryPage: JournalEntryPage.Database.Delete;
   Macro: Macro.DatabaseOperation.Delete;
   MeasuredTemplate: MeasuredTemplateDocument.DatabaseOperation.Delete;
-  Note: NoteDocument.DatabaseOperation.Delete;
+  Note: NoteDocument.Database.Delete;
   Playlist: Playlist.Database.Delete;
   PlaylistSound: PlaylistSound.Database.Delete;
   Region: RegionDocument.Database.Delete;

@@ -363,7 +363,7 @@ declare global {
     }
 
     /**
-     * @deprecated {@link Playlist.Database | `Playlist.DatabaseOperation`}
+     * @deprecated {@link Playlist.Database.Operation | `Playlist.Database.Operation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Playlist> {}
@@ -563,6 +563,44 @@ declare global {
      */
 
     // ClientDocument overrides
+
+    protected override _preCreateDescendantDocuments<
+      DescendantDocumentType extends Playlist.DescendantClasses,
+      Parent extends Playlist.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments<
+      DescendantDocumentType extends Playlist.DescendantClasses,
+      Parent extends Playlist.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _preDeleteDescendantDocuments<
+      DescendantDocumentType extends Playlist.DescendantClasses,
+      Parent extends Playlist.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
 
     static override defaultName(context?: Document.DefaultNameContext<string, Playlist.Parent>): string;
 

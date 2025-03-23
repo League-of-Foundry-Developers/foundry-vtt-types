@@ -1,6 +1,8 @@
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Document definition for a Note.
@@ -21,7 +23,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    * You should use {@link NoteDocument.implementation | `new NoteDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `NoteDocument`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseNote.CreateData, BaseNote.Parent>);
+  constructor(...args: NoteDocument.ConstructorArgs);
 
   /**
    * @defaultValue
@@ -62,98 +64,169 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   static " fvtt_types_internal_document_name_static": "Note";
 
-  static get implementation(): NoteDocument.ImplementationClass;
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: NoteDocument.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static override get implementation(): NoteDocument.ImplementationClass;
+
+  static get baseDocument(): typeof BaseNote;
+
+  static get collectionName(): NoteDocument.ParentCollectionName;
+
+  static get documentName(): NoteDocument.Name;
+
+  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+
+  static get hasTypeData(): false;
+
+  static get hierarchy(): NoteDocument.Hierarchy;
 
   override parent: NoteDocument.Parent;
 
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<NoteDocument.Implementation | NoteDocument.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<NoteDocument.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<NoteDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<NoteDocument.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: NoteDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<NoteDocument.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<NoteDocument.Database.Update>,
   ): Promise<NoteDocument.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<NoteDocument.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<NoteDocument.Database.Delete>,
   ): Promise<NoteDocument.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: NoteDocument.CreateData | NoteDocument.CreateData[],
-    operation?: Document.Database.CreateOperation<NoteDocument.DatabaseOperation.Create<Temporary>>,
-  ): Promise<NoteDocument.Implementation | undefined>;
+    operation?: NoteDocument.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<NoteDocument.Implementation, Temporary> | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): NoteDocument.Implementation | null;
+  override update(
+    data: NoteDocument.UpdateData | undefined,
+    operation?: NoteDocument.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: NoteDocument.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(
+    documentId: string,
+    options?: NoteDocument.Database.GetOptions,
+  ): NoteDocument.Implementation | null;
+
+  static override getCollectionName<CollectionName extends NoteDocument.EmbeddedName>(
+    name: CollectionName,
+  ): NoteDocument.CollectionNameOf<CollectionName> | null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends NoteDocument.Flags.Scope, Key extends NoteDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<NoteDocument.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends NoteDocument.Flags.Scope,
+    Key extends NoteDocument.Flags.Key<Scope>,
+    Value extends Document.GetFlag<NoteDocument.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends NoteDocument.Flags.Scope, Key extends NoteDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   protected _preCreate(
     data: NoteDocument.CreateData,
-    options: NoteDocument.DatabaseOperation.PreCreateOperationInstance,
+    options: NoteDocument.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onCreate(
     data: NoteDocument.CreateData,
-    options: NoteDocument.DatabaseOperation.OnCreateOperation,
+    options: NoteDocument.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static _preCreateOperation(
     documents: NoteDocument.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<NoteDocument.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<NoteDocument.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: NoteDocument.Implementation[],
-    operation: NoteDocument.DatabaseOperation.Create,
+    operation: NoteDocument.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: NoteDocument.UpdateData,
-    options: NoteDocument.DatabaseOperation.PreUpdateOperationInstance,
+    options: NoteDocument.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onUpdate(
     changed: NoteDocument.UpdateData,
-    options: NoteDocument.DatabaseOperation.OnUpdateOperation,
+    options: NoteDocument.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static _preUpdateOperation(
     documents: NoteDocument.Implementation[],
-    operation: NoteDocument.DatabaseOperation.Update,
+    operation: NoteDocument.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: NoteDocument.Implementation[],
-    operation: NoteDocument.DatabaseOperation.Update,
+    operation: NoteDocument.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preDelete(
-    options: NoteDocument.DatabaseOperation.PreDeleteOperationInstance,
+    options: NoteDocument.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: NoteDocument.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: NoteDocument.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: NoteDocument.Implementation[],
-    operation: NoteDocument.DatabaseOperation.Delete,
+    operation: NoteDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: NoteDocument.Implementation[],
-    operation: NoteDocument.DatabaseOperation.Delete,
+    operation: NoteDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  static get hasSystemData(): false;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: NoteDocument.Implementation[],
@@ -169,6 +242,8 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     documents: NoteDocument.Implementation[],
     context: Document.ModificationContext<NoteDocument.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<NoteDocument.Schema>;
 
@@ -187,8 +262,16 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 export default BaseNote;
 
 declare namespace BaseNote {
+  export import Name = NoteDocument.Name;
+  export import ConstructorArgs = NoteDocument.ConstructorArgs;
+  export import Hierarchy = NoteDocument.Hierarchy;
   export import Metadata = NoteDocument.Metadata;
   export import Parent = NoteDocument.Parent;
+  export import Pack = NoteDocument.Pack;
+  export import Embedded = NoteDocument.Embedded;
+  export import EmbeddedName = NoteDocument.EmbeddedName;
+  export import EmbeddedCollectionName = NoteDocument.EmbeddedCollectionName;
+  export import ParentCollectionName = NoteDocument.ParentCollectionName;
   export import Stored = NoteDocument.Stored;
   export import Source = NoteDocument.Source;
   export import PersistedData = NoteDocument.PersistedData;
@@ -196,7 +279,8 @@ declare namespace BaseNote {
   export import InitializedData = NoteDocument.InitializedData;
   export import UpdateData = NoteDocument.UpdateData;
   export import Schema = NoteDocument.Schema;
-  export import DatabaseOperation = NoteDocument.DatabaseOperation;
+  export import DatabaseOperation = NoteDocument.Database;
+  export import Flags = NoteDocument.Flags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.
