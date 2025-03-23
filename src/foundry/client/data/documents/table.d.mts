@@ -396,7 +396,7 @@ declare global {
     /**
      * Additional options which modify message creation
      */
-    interface ToMessageOptions {
+    interface ToMessageOptions<Temporary extends boolean | undefined = false> {
       /**
        * An optional Roll instance which produced the drawn results
        */
@@ -412,7 +412,7 @@ declare global {
        * Additional options which customize the created messages
        * @defaultValue `{}`
        */
-      messageOptions: ChatMessage.DatabaseOperation.CreateOperation;
+      messageOptions: ChatMessage.Database.CreateOperation<Temporary>;
     }
 
     interface RollOptions {

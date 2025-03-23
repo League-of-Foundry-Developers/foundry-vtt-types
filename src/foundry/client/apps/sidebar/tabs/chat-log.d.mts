@@ -193,7 +193,7 @@ declare global {
       command: string,
       match: RegExpMatchArray[],
       chatData: foundry.documents.BaseChatMessage.CreateData,
-      createOptions: ChatMessage.DatabaseOperation.CreateOperation,
+      createOptions: ChatMessage.Database.CreateOperation<undefined>,
     ): Promise<void>;
 
     /**
@@ -209,7 +209,7 @@ declare global {
       command: string,
       match: RegExpMatchArray,
       chatData: foundry.documents.BaseChatMessage.CreateData,
-      createOptions: ChatMessage.DatabaseOperation.CreateOperation,
+      createOptions: ChatMessage.Database.CreateOperation<undefined>,
     ): void;
 
     /**
@@ -224,7 +224,7 @@ declare global {
       command: string,
       match: RegExpMatchArray,
       chatData: foundry.documents.BaseChatMessage.CreateData,
-      createOptions: ChatMessage.DatabaseOperation.CreateOperation,
+      createOptions: ChatMessage.Database.CreateOperation<undefined>,
     ): void;
 
     /**

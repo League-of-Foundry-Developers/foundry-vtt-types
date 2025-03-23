@@ -416,10 +416,10 @@ declare global {
      *                      (default: `{}`)
      * @returns The created chat message
      */
-    toMessage(
+    toMessage<Temporary extends boolean | undefined = false>(
       messageData?: DeepPartial<foundry.documents.BaseChatMessage.CreateData>,
-      options?: ChatMessage.DatabaseOperation.CreateOperation,
-    ): Promise<ChatMessage.Implementation | undefined>;
+      options?: ChatMessage.Database.CreateOperation<Temporary>,
+    ): Promise<Document.TemporaryIf<ChatMessage.Implementation, Temporary> | undefined>;
 
     /*
      * After this point these are not really overridden methods.
