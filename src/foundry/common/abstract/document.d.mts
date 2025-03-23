@@ -1845,7 +1845,7 @@ interface DatabaseOperationCreateMap {
   Adventure: Adventure.DatabaseOperation.Create;
   AmbientLight: AmbientLightDocument.Database.Create;
   AmbientSound: AmbientSoundDocument.Database.Create;
-  Card: Card.DatabaseOperation.Create;
+  Card: Card.Database.Create;
   Cards: Cards.DatabaseOperation.Create;
   ChatMessage: ChatMessage.Database.Create;
   Combat: Combat.Database.Create;
@@ -1880,7 +1880,7 @@ interface DatabaseOperationUpdateMap {
   Adventure: Adventure.DatabaseOperation.Update;
   AmbientLight: AmbientLightDocument.Database.Update;
   AmbientSound: AmbientSoundDocument.Database.Update;
-  Card: Card.DatabaseOperation.Update;
+  Card: Card.Database.Update;
   Cards: Cards.DatabaseOperation.Update;
   ChatMessage: ChatMessage.Database.Update;
   Combat: Combat.Database.Update;
@@ -1915,7 +1915,7 @@ interface DatabaseOperationDeleteMap {
   Adventure: Adventure.DatabaseOperation.Delete;
   AmbientLight: AmbientLightDocument.Database.Delete;
   AmbientSound: AmbientSoundDocument.Database.Delete;
-  Card: Card.DatabaseOperation.Delete;
+  Card: Card.Database.Delete;
   Cards: Cards.DatabaseOperation.Delete;
   ChatMessage: ChatMessage.Database.Delete;
   Combat: Combat.Database.Delete;
