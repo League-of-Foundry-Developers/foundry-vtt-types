@@ -1,6 +1,8 @@
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Region Document.
@@ -18,7 +20,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    * You should use {@link RegionDocument.implementation | `new RegionDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `RegionDocument`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseRegion.CreateData, BaseRegion.Parent>);
+  constructor(...args: RegionDocument.ConstructorArgs);
 
   /**
    * @defaultValue
@@ -48,98 +50,169 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   static " fvtt_types_internal_document_name_static": "Region";
 
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: RegionDocument.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
   static get implementation(): RegionDocument.ImplementationClass;
+
+  static get baseDocument(): typeof BaseRegion;
+
+  static get collectionName(): RegionDocument.ParentCollectionName;
+
+  static get documentName(): RegionDocument.Name;
+
+  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+
+  static get hasTypeData(): false;
+
+  static get hierarchy(): RegionDocument.Hierarchy;
 
   override parent: BaseRegion.Parent;
 
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<RegionDocument.Implementation | RegionDocument.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<RegionDocument.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<RegionDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<RegionDocument.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: RegionDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<RegionDocument.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<RegionDocument.Database.Update>,
   ): Promise<RegionDocument.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<RegionDocument.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<RegionDocument.Database.Delete>,
   ): Promise<RegionDocument.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: RegionDocument.CreateData | RegionDocument.CreateData[],
-    operation?: Document.Database.CreateOperation<RegionDocument.DatabaseOperation.Create<Temporary>>,
-  ): Promise<RegionDocument.Implementation | undefined>;
+    operation?: RegionDocument.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<RegionDocument.Implementation, Temporary> | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): RegionDocument.Implementation | null;
+  override update(
+    data: RegionDocument.UpdateData | undefined,
+    operation?: RegionDocument.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: RegionDocument.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(
+    documentId: string,
+    options?: RegionDocument.Database.GetOptions,
+  ): RegionDocument.Implementation | null;
+
+  static override getCollectionName<CollectionName extends RegionDocument.EmbeddedName>(
+    name: CollectionName,
+  ): RegionDocument.CollectionNameOf<CollectionName> | null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends RegionDocument.Flags.Scope, Key extends RegionDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<RegionDocument.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends RegionDocument.Flags.Scope,
+    Key extends RegionDocument.Flags.Key<Scope>,
+    Value extends Document.GetFlag<RegionDocument.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends RegionDocument.Flags.Scope, Key extends RegionDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   protected _preCreate(
     data: RegionDocument.CreateData,
-    options: RegionDocument.DatabaseOperation.PreCreateOperationInstance,
+    options: RegionDocument.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onCreate(
     data: RegionDocument.CreateData,
-    options: RegionDocument.DatabaseOperation.OnCreateOperation,
+    options: RegionDocument.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static _preCreateOperation(
     documents: RegionDocument.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<RegionDocument.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<RegionDocument.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: RegionDocument.Implementation[],
-    operation: RegionDocument.DatabaseOperation.Create,
+    operation: RegionDocument.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: RegionDocument.UpdateData,
-    options: RegionDocument.DatabaseOperation.PreUpdateOperationInstance,
+    options: RegionDocument.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onUpdate(
     changed: RegionDocument.UpdateData,
-    options: RegionDocument.DatabaseOperation.OnUpdateOperation,
+    options: RegionDocument.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static _preUpdateOperation(
     documents: RegionDocument.Implementation[],
-    operation: RegionDocument.DatabaseOperation.Update,
+    operation: RegionDocument.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: RegionDocument.Implementation[],
-    operation: RegionDocument.DatabaseOperation.Update,
+    operation: RegionDocument.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preDelete(
-    options: RegionDocument.DatabaseOperation.PreDeleteOperationInstance,
+    options: RegionDocument.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: RegionDocument.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: RegionDocument.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: RegionDocument.Implementation[],
-    operation: RegionDocument.DatabaseOperation.Delete,
+    operation: RegionDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: RegionDocument.Implementation[],
-    operation: RegionDocument.DatabaseOperation.Delete,
+    operation: RegionDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  static get hasSystemData(): false;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: RegionDocument.Implementation[],
@@ -155,6 +228,8 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     documents: RegionDocument.Implementation[],
     context: Document.ModificationContext<RegionDocument.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<RegionDocument.Schema>;
 
@@ -173,8 +248,16 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 export default BaseRegion;
 
 declare namespace BaseRegion {
+  export import Name = RegionDocument.Name;
+  export import ConstructorArgs = RegionDocument.ConstructorArgs;
+  export import Hierarchy = RegionDocument.Hierarchy;
   export import Metadata = RegionDocument.Metadata;
   export import Parent = RegionDocument.Parent;
+  export import Pack = RegionDocument.Pack;
+  export import Embedded = RegionDocument.Embedded;
+  export import EmbeddedName = RegionDocument.EmbeddedName;
+  export import EmbeddedCollectionName = RegionDocument.EmbeddedCollectionName;
+  export import ParentCollectionName = RegionDocument.ParentCollectionName;
   export import Stored = RegionDocument.Stored;
   export import Source = RegionDocument.Source;
   export import PersistedData = RegionDocument.PersistedData;
@@ -182,7 +265,8 @@ declare namespace BaseRegion {
   export import InitializedData = RegionDocument.InitializedData;
   export import UpdateData = RegionDocument.UpdateData;
   export import Schema = RegionDocument.Schema;
-  export import DatabaseOperation = RegionDocument.DatabaseOperation;
+  export import DatabaseOperation = RegionDocument.Database;
+  export import Flags = RegionDocument.Flags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

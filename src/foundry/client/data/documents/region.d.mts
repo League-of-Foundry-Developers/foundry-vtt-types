@@ -6,28 +6,90 @@ import type { DataSchema } from "../../../common/data/fields.d.mts";
 declare global {
   namespace RegionDocument {
     /**
+     * The document's name.
+     */
+    type Name = "Region";
+
+    /**
+     * The arguments to construct the document.
+     */
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+    /**
+     * The documents embedded within Region.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the Region document instance configured through `CONFIG.Region.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRegion | `fvtt-types/configuration/ConfiguredRegion`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"Region">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the Region document configured through `CONFIG.Region.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"Region">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"Region"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
     /**
      * A document's parent is something that can contain it.
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = Scene.Implementation | null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = RegionBehavior.Implementation;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = RegionBehavior.ImplementationClass;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Scene">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `Region` that comes from the database.
@@ -188,12 +250,13 @@ declare global {
       /**
        * An object of optional key/value flags
        */
-      flags: fields.ObjectField.FlagsField<"Region">;
+      flags: fields.ObjectField.FlagsField<Name>;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for Regions */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<RegionDocument.Parent> {}
+
       /** Options passed along in Create operations for Regions */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<
@@ -201,39 +264,108 @@ declare global {
           RegionDocument.Parent,
           Temporary
         > {}
+
       /** Options passed along in Delete operations for Regions */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RegionDocument.Parent> {}
+
       /** Options passed along in Update operations for Regions */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<RegionDocument.UpdateData, RegionDocument.Parent> {}
 
-      /** Options for {@link RegionDocument.createDocuments | `RegionDocument.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link RegionDocument._preCreateOperation | `RegionDocument._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link RegionDocument.createDocuments | `RegionDocument.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<RegionDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link RegionDocument.updateDocuments | `RegionDocument.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<RegionDocument.Database.Update> {}
+
+      /** Operation for {@link RegionDocument.deleteDocuments | `RegionDocument.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<RegionDocument.Database.Delete> {}
+
+      /** Operation for {@link RegionDocument.create | `RegionDocument.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<RegionDocument.Database.Create<Temporary>> {}
+
+      /** Operation for {@link RegionDocument.update | `RegionDocument#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link RegionDocument.get | `RegionDocument.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link RegionDocument._preCreate | `RegionDocument#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link RegionDocument._onCreate | `RegionDocument#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link RegionDocument.updateDocuments | `RegionDocument.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link RegionDocument._preUpdateOperation | `RegionDocument._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link RegionDocument._preCreateOperation | `RegionDocument._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RegionDocument.Database.Create> {}
+
+      /** Operation for {@link RegionDocument._onCreateOperation | `RegionDocument#_onCreateOperation`} */
+      interface OnCreateOperation extends RegionDocument.Database.Create {}
+
       /** Options for {@link RegionDocument._preUpdate | `RegionDocument#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link RegionDocument._onUpdate | `RegionDocument#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link RegionDocument.deleteDocuments | `RegionDocument.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link RegionDocument._preDeleteOperation | `RegionDocument._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link RegionDocument._onUpdate | `RegionDocument#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link RegionDocument._preUpdateOperation | `RegionDocument._preUpdateOperation`} */
+      interface PreUpdateOperation extends RegionDocument.Database.Update {}
+
+      /** Operation for {@link RegionDocument._onUpdateOperation | `RegionDocument._preUpdateOperation`} */
+      interface OnUpdateOperation extends RegionDocument.Database.Update {}
+
       /** Options for {@link RegionDocument._preDelete | `RegionDocument#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link RegionDocument._onDelete | `RegionDocument#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link RegionDocument._preDeleteOperation | `RegionDocument#_preDeleteOperation`} */
+      interface PreDeleteOperation extends RegionDocument.Database.Delete {}
+
+      /** Options for {@link RegionDocument._onDeleteOperation | `RegionDocument#_onDeleteOperation`} */
+      interface OnDeleteOperation extends RegionDocument.Database.Delete {}
+
+      /** Context for {@link RegionDocument._onDeleteOperation | `RegionDocument._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
+
+      /** Context for {@link RegionDocument._onCreateDocuments | `RegionDocument._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
+
+      /** Context for {@link RegionDocument._onUpdateDocuments | `RegionDocument._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
+
+      /**
+       * Options for {@link RegionDocument._preCreateDescendantDocuments | `RegionDocument#_preCreateDescendantDocuments`}
+       * and {@link RegionDocument._onCreateDescendantDocuments | `RegionDocument#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<RegionDocument.Database.Create> {}
+
+      /**
+       * Options for {@link RegionDocument._preUpdateDescendantDocuments | `RegionDocument#_preUpdateDescendantDocuments`}
+       * and {@link RegionDocument._onUpdateDescendantDocuments | `RegionDocument#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<RegionDocument.Database.Update> {}
+
+      /**
+       * Options for {@link RegionDocument._preDeleteDescendantDocuments | `RegionDocument#_preDeleteDescendantDocuments`}
+       * and {@link RegionDocument._onDeleteDescendantDocuments | `RegionDocument#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<RegionDocument.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     interface RegionEvent {
@@ -310,7 +442,7 @@ declare global {
     }
 
     /**
-     * @deprecated {@link RegionDocument.DatabaseOperation | `RegionDocument.DatabaseOperation`}
+     * @deprecated {@link RegionDocument.Database | `RegionDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<RegionDocument> {}
@@ -339,7 +471,7 @@ declare global {
      * @param data    - Initial data from which to construct the `RegionDocument`
      * @param context - Construction context options
      */
-    constructor(...args: Document.ConstructorParameters<RegionDocument.CreateData, RegionDocument.Parent>);
+    constructor(...args: RegionDocument.ConstructorArgs);
 
     /**
      * Activate the Socket event listeners.
@@ -362,13 +494,32 @@ declare global {
       options?: InexactPartial<RegionDocument.UpdateTokenOptions>,
     ): Promise<void>;
 
-    // TODO(Eon): Core overrides these three methods, but the override types are very complex so
-    // I'm unsure if they are needed here, and if so how to type them.
-    // There's also the 'DatabaseOperations' interface which may be for this?
-    // So I'm leaving this for Luke/someone else
-    // static override _onCreateOperation(documents, operation, user): Promise<void>;
-    // static override _onUpdateOperation(documents, operation, user): Promise<void>;
-    // static override _onDeleteOperation(documents, operation, user): Promise<void>;
+    protected override _onCreateDescendantDocuments(
+      parent: RegionDocument.Stored,
+      collection: RegionBehavior.ParentCollectionName,
+      documents: RegionBehavior.Stored[],
+      result: RegionBehavior.CreateData[],
+      options: RegionBehavior.Database.OnCreateOperation,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments(
+      parent: RegionDocument.Stored,
+      collection: RegionBehavior.ParentCollectionName,
+      documents: RegionBehavior.Stored[],
+      changes: RegionBehavior.UpdateData[],
+      options: RegionBehavior.Database.OnUpdateOperation,
+      userId: string,
+    ): void;
+
+    protected override _onDeleteDescendantDocuments(
+      parent: RegionDocument.Stored,
+      collection: RegionBehavior.ParentCollectionName,
+      documents: RegionBehavior.Stored[],
+      ids: string[],
+      options: RegionBehavior.Database.OnDeleteOperation,
+      userId: string,
+    ): void;
 
     /** The tokens inside this region. */
     tokens: Set<TokenDocument>;
@@ -390,18 +541,46 @@ declare global {
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
-     * _onUpdateOperation, _onDeleteOperation, _preCreateDescendantDocuments, _preUpdateDescendantDocuments, _preDeleteDescendantDocuments,
-     * _onUpdateDescendantDocuments, and _onDeleteDescendantDocuments are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     * _onUpdateOperation, _onDeleteOperation, are overridden from BaseRegion without signature changes.
      */
 
     #regionDocument: true;
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    protected override _preCreateDescendantDocuments(
+      parent: RegionDocument.Stored,
+      collection: RegionBehavior.ParentCollectionName,
+      data: RegionBehavior.CreateData[],
+      options: RegionBehavior.Database.CreateOptions,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments(
+      parent: RegionDocument.Stored,
+      collection: RegionBehavior.ParentCollectionName,
+      changes: RegionBehavior.UpdateData[],
+      options: RegionBehavior.Database.UpdateOptions,
+      userId: string,
+    ): void;
+
+    protected override _preDeleteDescendantDocuments(
+      parent: RegionDocument.Stored,
+      collection: RegionBehavior.ParentCollectionName,
+      ids: string[],
+      options: RegionBehavior.Database.DeleteOptions,
+      userId: string,
+    ): void;
 
     static override defaultName(
       context: Document.DefaultNameContext<"base", NonNullable<RegionDocument.Parent>>,
