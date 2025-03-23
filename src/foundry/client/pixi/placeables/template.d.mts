@@ -33,13 +33,6 @@ declare global {
     template: PIXI.Graphics | undefined;
 
     /**
-     * The template control icon
-     * @defaultValue `undefined`
-     * @remarks Only `undefined` prior to first draw.
-     */
-    controlIcon: ControlIcon | undefined;
-
-    /**
      * The measurement ruler label
      * @defaultValue `undefined`
      * @remarks Only `undefined` prior to first draw.

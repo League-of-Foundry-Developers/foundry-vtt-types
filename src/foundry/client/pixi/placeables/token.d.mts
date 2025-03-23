@@ -300,13 +300,13 @@ declare global {
      * @param options - Options which configure how perception sources are updated
      */
     // options: not null (destructured)
-    initializeSources(options?: Token.InitializeSourceOptions): void;
+    initializeSources(options?: Token.InitializeSourcesOptions): void;
 
     /**
      * Update an emitted light source associated with this Token.
      */
     // options: not null (destructured)
-    initializeLightSource(options?: Token.InitializeSourceOptions): void;
+    initializeLightSource(options?: Token.InitializeSourcesOptions): void;
 
     /**
      * Get the light source data.
@@ -317,7 +317,7 @@ declare global {
      * Update the VisionSource instance associated with this Token.
      */
     // options: not null (destructured)
-    initializeVisionSource(options?: Token.InitializeSourceOptions): void;
+    initializeVisionSource(options?: Token.InitializeSourcesOptions): void;
 
     /**
      * Returns a record of blinding state.
@@ -773,7 +773,7 @@ declare global {
      * @remarks "`Token#updateSource` has been deprecated in favor of {@link Token.initializeSources | `Token#initializeSources`}"
      */
     // options: not null (destructured)
-    updateSource(options?: Token.InitializeSourceOptions): void;
+    updateSource(options?: Token.InitializeSourcesOptions): void;
 
     /**
      * Get the center-point coordinate for a given grid position
@@ -1166,7 +1166,8 @@ declare global {
        */
       deleted: boolean;
     }>;
-    interface InitializeSourceOptions extends _InitializeSourcesOptions {}
+
+    interface InitializeSourcesOptions extends _InitializeSourcesOptions {}
 
     /** @internal */
     type _TargetContext = NullishProps<{

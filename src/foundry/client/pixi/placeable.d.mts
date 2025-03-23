@@ -42,9 +42,12 @@ declare global {
     /**
      * A control icon for interacting with the object
      * @defaultValue `null`
-     * @remarks `undefined` is returned by subclasses only
+     * @remarks Set `null` in {@link PlaceableObject | `PlaceableObject#constructor`} and {@link AmbientSound.clear | `AmbientSound#clear`}.
+     *
+     * In placeables which use one ({@link AmbientLight | `AmbientLight`}, {@link AmbientSound | `AmbientSound`},
+     * {@link Note | `Note`}, and {@link MeasuredTemplate | `MeasuredTemplate`}), it's only `null` prior to first draw.
      */
-    controlIcon: ControlIcon | null | undefined;
+    controlIcon: ControlIcon | null;
 
     /**
      * A mouse interaction manager instance which handles mouse workflows related to this object.
