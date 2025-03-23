@@ -1,43 +1,24 @@
 import { assertType, expectTypeOf } from "vitest";
-
 import Document = foundry.abstract.Document;
 
-type EmbeddedInSceneDocumentSheetOptions = DocumentSheet.Options<Document.AnyChild<Scene.Implementation>>;
-
-class EmbeddedInSceneDocumentSheet<
-  Options extends EmbeddedInSceneDocumentSheetOptions = EmbeddedInSceneDocumentSheetOptions,
-> extends DocumentSheet<Options, Document.AnyChild<Scene.Implementation>> {}
-
-class BaseEmbeddedInSceneDocument extends Document<any, any, Scene.Implementation | null> {}
-
-class EmbeddedInSceneDocument extends CanvasDocumentMixin(BaseEmbeddedInSceneDocument) {
-  override get sheet(): EmbeddedInSceneDocumentSheet {
-    return null as unknown as EmbeddedInSceneDocumentSheet;
-  }
-}
-
-class OnePlaceable extends PlaceableObject<EmbeddedInSceneDocument> {
-  get bounds(): Rectangle {
-    return null as unknown as Rectangle;
+class FakeLight extends PlaceableObject<AmbientLightDocument.Implementation> {
+  get bounds(): PIXI.Rectangle {
+    return new PIXI.Rectangle();
   }
 
   protected async _draw(): Promise<void> {}
 }
 
-const placeable = new OnePlaceable(new EmbeddedInSceneDocument());
-assertType<Document.Any>(placeable.document);
-expectTypeOf(placeable.document).toEqualTypeOf<EmbeddedInSceneDocument>();
-expectTypeOf(placeable.sheet).toEqualTypeOf<EmbeddedInSceneDocumentSheet>();
+declare const someLightDoc: AmbientLightDocument.Implementation;
 
-class ConcretePlaceableObject extends PlaceableObject<EmbeddedInSceneDocument> {
-  get bounds(): PIXI.Rectangle {
-    throw new Error("Not implemented");
-  }
-  protected async _draw() {}
-}
-expectTypeOf(
-  new ConcretePlaceableObject(new EmbeddedInSceneDocument()).mouseInteractionManager,
-).toEqualTypeOf<MouseInteractionManager<ConcretePlaceableObject> | null>();
+const placeable = new FakeLight(someLightDoc);
+assertType<Document.Any>(placeable.document);
+
+expectTypeOf(placeable.document).toEqualTypeOf<AmbientLightDocument.Implementation>();
+//TODO: investigate AmbientLightDocument.sheet to see if this should be a more narrowed type
+expectTypeOf(placeable.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();
+
+expectTypeOf(placeable.mouseInteractionManager).toEqualTypeOf<MouseInteractionManager<FakeLight> | null>();
 
 expectTypeOf(PlaceableObject.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
   Array<"redraw" | "refresh" | "refreshState"> | undefined
