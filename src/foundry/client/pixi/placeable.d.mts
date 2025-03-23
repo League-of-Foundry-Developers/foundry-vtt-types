@@ -426,6 +426,7 @@ declare global {
      * @param event   - The triggering canvas interaction event
      * @param options - Options which customize event handling
      *                  (default: `{}`)
+     * @remarks {@link Wall._onHoverIn | `Wall#_onHoverIn`} can return `false`, otherwise this is always `void`
      */
     //options: not null (destructured)
     protected _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
