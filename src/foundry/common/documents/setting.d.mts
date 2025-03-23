@@ -41,6 +41,8 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    * separate like this helps against circularities.
    */
 
+  /* Document overrides */
+
   static " fvtt_types_internal_document_name_static": "Setting";
 
   // Same as Document for now
