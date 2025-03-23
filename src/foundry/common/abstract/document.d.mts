@@ -1839,7 +1839,7 @@ export interface DatabaseOperationMap {
 /* eslint-enable @typescript-eslint/no-deprecated */
 
 interface DatabaseOperationCreateMap {
-  ActiveEffect: ActiveEffect.DatabaseOperation.Create;
+  ActiveEffect: ActiveEffect.Database.Create;
   Actor: Actor.DatabaseOperation.Create;
   ActorDelta: ActorDelta.DatabaseOperation.Create;
   Adventure: Adventure.DatabaseOperation.Create;
@@ -1874,7 +1874,7 @@ interface DatabaseOperationCreateMap {
 }
 
 interface DatabaseOperationUpdateMap {
-  ActiveEffect: ActiveEffect.DatabaseOperation.Update;
+  ActiveEffect: ActiveEffect.Database.Update;
   Actor: Actor.DatabaseOperation.Update;
   ActorDelta: ActorDelta.DatabaseOperation.Update;
   Adventure: Adventure.DatabaseOperation.Update;
@@ -1909,7 +1909,7 @@ interface DatabaseOperationUpdateMap {
 }
 
 interface DatabaseOperationDeleteMap {
-  ActiveEffect: ActiveEffect.DatabaseOperation.Delete;
+  ActiveEffect: ActiveEffect.Database.Delete;
   Actor: Actor.DatabaseOperation.Delete;
   ActorDelta: ActorDelta.DatabaseOperation.Delete;
   Adventure: Adventure.DatabaseOperation.Delete;
