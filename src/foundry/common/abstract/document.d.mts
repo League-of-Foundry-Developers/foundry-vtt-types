@@ -1864,7 +1864,7 @@ interface DatabaseOperationCreateMap {
   Region: RegionDocument.Database.Create;
   RegionBehavior: RegionBehavior.Database.Create;
   RollTable: RollTable.Database.Create;
-  Scene: Scene.DatabaseOperation.Create;
+  Scene: Scene.Database.Create;
   Setting: Setting.Database.Create;
   TableResult: TableResult.Database.Create;
   Tile: TileDocument.Database.Create;
@@ -1899,7 +1899,7 @@ interface DatabaseOperationUpdateMap {
   Region: RegionDocument.Database.Update;
   RegionBehavior: RegionBehavior.Database.Update;
   RollTable: RollTable.Database.Update;
-  Scene: Scene.DatabaseOperation.Update;
+  Scene: Scene.Database.Update;
   Setting: Setting.Database.Update;
   TableResult: TableResult.Database.Update;
   Tile: TileDocument.Database.Update;
@@ -1934,7 +1934,7 @@ interface DatabaseOperationDeleteMap {
   Region: RegionDocument.Database.Delete;
   RegionBehavior: RegionBehavior.Database.Delete;
   RollTable: RollTable.Database.Delete;
-  Scene: Scene.DatabaseOperation.Delete;
+  Scene: Scene.Database.Delete;
   Setting: Setting.Database.Delete;
   TableResult: TableResult.Database.Delete;
   Tile: TileDocument.Database.Delete;

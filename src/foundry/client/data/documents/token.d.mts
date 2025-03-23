@@ -932,7 +932,7 @@ declare global {
 
     protected override _onCreateDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
+      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -946,7 +946,7 @@ declare global {
 
     protected override _preUpdateDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
+      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -959,7 +959,7 @@ declare global {
 
     protected override _onUpdateDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
+      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -973,7 +973,7 @@ declare global {
 
     protected _preDeleteDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
+      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,
@@ -985,7 +985,7 @@ declare global {
 
     protected _onDeleteDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
+      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,

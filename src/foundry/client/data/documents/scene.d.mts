@@ -7,6 +7,21 @@ import type { fields, TextureData } from "../../../common/data/module.d.mts";
 declare global {
   namespace Scene {
     /**
+     * The document's name.
+     */
+    type Name = "Scene";
+
+    /**
+     * The arguments to construct the document.
+     */
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+    /**
+     * The documents embedded within Scene.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the Scene document instance configured through `CONFIG.Scene.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredScene | `fvtt-types/configuration/ConfiguredScene`} in fvtt-types.
      */
@@ -29,6 +44,75 @@ declare global {
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants =
+      | AmbientLightDocument.Implementation
+      | AmbientSoundDocument.Implementation
+      | DrawingDocument.Implementation
+      | MeasuredTemplateDocument.Implementation
+      | NoteDocument.Implementation
+      | RegionDocument.Implementation
+      | RegionDocument.Descendants
+      | TileDocument.Implementation
+      | TokenDocument.Implementation
+      | TokenDocument.Descendants
+      | WallDocument.Implementation;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses =
+      | AmbientLightDocument.ImplementationClass
+      | AmbientSoundDocument.ImplementationClass
+      | DrawingDocument.ImplementationClass
+      | MeasuredTemplateDocument.ImplementationClass
+      | NoteDocument.ImplementationClass
+      | RegionDocument.ImplementationClass
+      | RegionDocument.DescendantClasses
+      | TileDocument.ImplementationClass
+      | TokenDocument.ImplementationClass
+      | TokenDocument.DescendantClasses
+      | WallDocument.ImplementationClass;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Scene">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `Scene` that comes from the database.
@@ -415,14 +499,17 @@ declare global {
       _stats: fields.DocumentStatsField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for Scenes */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Scene.Parent> {}
+
       /** Options passed along in Create operations for Scenes */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<Scene.CreateData, Scene.Parent, Temporary> {}
+
       /** Options passed along in Delete operations for Scenes */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Scene.Parent> {}
+
       /** Options passed along in Update operations for Scenes */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Scene.UpdateData, Scene.Parent> {
         thumb?: (string | null)[];
@@ -430,33 +517,98 @@ declare global {
         animateDarkness?: number;
       }
 
-      /** Options for {@link Scene.createDocuments | `Scene.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Scene._preCreateOperation | `Scene._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link Scene.createDocuments | `Scene.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Scene.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Scene.updateDocuments | `Scene.updateDocuments`} */
+      interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Scene.Database.Update> {}
+
+      /** Operation for {@link Scene.deleteDocuments | `Scene.deleteDocuments`} */
+      interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Scene.Database.Delete> {}
+
+      /** Operation for {@link Scene.create | `Scene.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Scene.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Scene.update | `Scene#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link Scene.get | `Scene.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link Scene._preCreate | `Scene#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link Scene._onCreate | `Scene#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link Scene.updateDocuments | `Scene.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link Scene._preUpdateOperation | `Scene._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link Scene._preCreateOperation | `Scene._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Scene.Database.Create> {}
+
+      /** Operation for {@link Scene._onCreateOperation | `Scene#_onCreateOperation`} */
+      interface OnCreateOperation extends Scene.Database.Create {}
+
       /** Options for {@link Scene._preUpdate | `Scene#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link Scene._onUpdate | `Scene#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link Scene.deleteDocuments | `Scene.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link Scene._preDeleteOperation | `Scene._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Scene._onUpdate | `Scene#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link Scene._preUpdateOperation | `Scene._preUpdateOperation`} */
+      interface PreUpdateOperation extends Scene.Database.Update {}
+
+      /** Operation for {@link Scene._onUpdateOperation | `Scene._preUpdateOperation`} */
+      interface OnUpdateOperation extends Scene.Database.Update {}
+
       /** Options for {@link Scene._preDelete | `Scene#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link Scene._onDelete | `Scene#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link Scene._preDeleteOperation | `Scene#_preDeleteOperation`} */
+      interface PreDeleteOperation extends Scene.Database.Delete {}
+
+      /** Options for {@link Scene._onDeleteOperation | `Scene#_onDeleteOperation`} */
+      interface OnDeleteOperation extends Scene.Database.Delete {}
+
+      /** Context for {@link Scene._onDeleteOperation | `Scene._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<Scene.Parent> {}
+
+      /** Context for {@link Scene._onCreateDocuments | `Scene._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<Scene.Parent> {}
+
+      /** Context for {@link Scene._onUpdateDocuments | `Scene._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<Scene.Parent> {}
+
+      /**
+       * Options for {@link Scene._preCreateDescendantDocuments | `Scene#_preCreateDescendantDocuments`}
+       * and {@link Scene._onCreateDescendantDocuments | `Scene#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<Scene.Database.Create> {}
+
+      /**
+       * Options for {@link Scene._preUpdateDescendantDocuments | `Scene#_preUpdateDescendantDocuments`}
+       * and {@link Scene._onUpdateDescendantDocuments | `Scene#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<Scene.Database.Update> {}
+
+      /**
+       * Options for {@link Scene._preDeleteDescendantDocuments | `Scene#_preDeleteDescendantDocuments`}
+       * and {@link Scene._onDeleteDescendantDocuments | `Scene#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<Scene.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     interface Dimensions {
@@ -549,7 +701,7 @@ declare global {
     interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}
 
     /**
-     * @deprecated {@link Scene.DatabaseOperation | `Scene.DatabaseOperation`}
+     * @deprecated {@link Scene.Database | `Scene.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Scene> {}
@@ -582,7 +734,7 @@ declare global {
      * @param data    - Initial data from which to construct the `Scene`
      * @param context - Construction context options
      */
-    constructor(...args: Document.ConstructorParameters<Scene.CreateData, Scene.Parent>);
+    constructor(...args: Scene.ConstructorArgs);
 
     /**
      * Track the viewed position of each scene (while in memory only, not persisted)
@@ -667,10 +819,57 @@ declare global {
      */
     protected _onActivate(active: boolean): ReturnType<this["view"]> | ReturnType<Canvas["draw"]>;
 
-    /**
-     * @privateRemarks _preCreateDescendantDocuments, _preUpdateDescendantDocuments, _preDeleteDescendantDocuments, and_onUpdateDescendantDocuments are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    protected override _preCreateDescendantDocuments<
+      DescendantDocumentType extends Scene.DescendantClasses,
+      Parent extends Scene.Stored | RegionDocument.Stored | TokenDocument.Stored | Actor.Stored | Item.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments<
+      DescendantDocumentType extends Scene.DescendantClasses,
+      Parent extends Scene.Stored | RegionDocument.Stored | TokenDocument.Stored | Actor.Stored | Item.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments<
+      DescendantDocumentType extends Scene.DescendantClasses,
+      Parent extends Scene.Stored | RegionDocument.Stored | TokenDocument.Stored | Actor.Stored | Item.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _preDeleteDescendantDocuments<
+      DescendantDocumentType extends Scene.DescendantClasses,
+      Parent extends Scene.Stored | RegionDocument.Stored | TokenDocument.Stored | Actor.Stored | Item.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
 
     toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
@@ -686,9 +885,44 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    // Other Descendant Document operations are actually overridden above
+
+    protected override _onCreateDescendantDocuments<
+      DescendantDocumentType extends Scene.DescendantClasses,
+      Parent extends Scene.Stored | RegionDocument.Stored | TokenDocument.Stored | Actor.Stored | Item.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _onDeleteDescendantDocuments<
+      DescendantDocumentType extends Scene.DescendantClasses,
+      Parent extends Scene.Stored | RegionDocument.Stored | TokenDocument.Stored | Actor.Stored | Item.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
 
     static override defaultName(context?: Document.DefaultNameContext<string, Scene.Parent>): string;
 
