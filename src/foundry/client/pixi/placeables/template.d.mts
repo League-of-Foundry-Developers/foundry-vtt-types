@@ -52,7 +52,7 @@ declare global {
     /**
      * A convenient reference for whether the current User is the author of the MeasuredTemplate document.
      */
-    get isAuthor(): this["document"]["isAuthor"];
+    get isAuthor(): boolean;
 
     override get bounds(): PIXI.Rectangle;
 

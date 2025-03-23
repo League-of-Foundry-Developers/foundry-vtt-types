@@ -196,7 +196,7 @@ declare global {
      * @deprecated since v12, until v14
      * @remarks "`Tile#isRoof `has been deprecated without replacement."
      */
-    get isRoof(): this["document"]["roof"];
+    get isRoof(): boolean;
 
     /**
      * @deprecated since v11, will be removed in v13

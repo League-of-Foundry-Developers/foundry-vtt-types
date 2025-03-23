@@ -201,7 +201,7 @@ declare global {
     /**
      * An indicator for whether or not this token is currently involved in the active combat encounter.
      */
-    get inCombat(): this["document"]["inCombat"];
+    get inCombat(): boolean;
 
     /**
      * Return a reference to a Combatant that represents this Token, if one is present in the current encounter.
@@ -241,7 +241,7 @@ declare global {
     /**
      * Test whether the Token has sight (or blindness) at any radius
      */
-    get hasSight(): this["document"]["sight"]["enabled"];
+    get hasSight(): boolean;
 
     /**
      * Does this Token actively emit light given its properties and the current darkness level of the Scene?

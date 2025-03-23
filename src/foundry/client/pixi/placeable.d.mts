@@ -31,11 +31,13 @@ declare global {
 
     /**
      * Retain a reference to the Scene within which this Placeable Object resides
+     * @privateRemarks Not defined in the class body, set during construction
      */
     scene: Scene.Implementation;
 
     /**
      * A reference to the Scene embedded Document instance which this object represents
+     * @privateRemarks Not defined in the class body, set during construction
      */
     document: CanvasDocument;
 
@@ -46,18 +48,22 @@ declare global {
      *
      * In placeables which use one ({@link AmbientLight | `AmbientLight`}, {@link AmbientSound | `AmbientSound`},
      * {@link Note | `Note`}, and {@link MeasuredTemplate | `MeasuredTemplate`}), it's only `null` prior to first draw.
+     *
+     * @privateRemarks Not defined in the class body, set during construction
      */
     controlIcon: ControlIcon | null;
 
     /**
      * A mouse interaction manager instance which handles mouse workflows related to this object.
      * @defaultValue `null`
+     * @privateRemarks Not defined in the class body, set during construction
      */
     mouseInteractionManager: MouseInteractionManager<this> | null;
 
     /**
      * Allow objects to be culled when off-screen
      * @defaultValue `false`
+     * @privateRemarks Override of `PIXI.Container` property in the constructor, only typed here for the defaultValue
      */
     override cullable: boolean;
 
