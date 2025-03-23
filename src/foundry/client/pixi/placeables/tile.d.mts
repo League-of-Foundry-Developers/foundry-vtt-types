@@ -54,6 +54,9 @@ declare global {
 
     /**
      * The HTML source element for the primary Tile texture
+     * @privateRemarks Foundry types this as `HTMLImageElement | HTMLVideoElement`, but this just
+     * returns `this.texture?.baseTexture.resource.source`, which could be any of `PIXI.ImageSource`,
+     * and returns `ImageBitmap`, not `HTMLImageElement`, for static images.
      */
     get sourceElement(): PIXI.ImageSource | undefined;
 
@@ -90,11 +93,11 @@ declare global {
      */
     static createPreview(data: TileDocument.CreateData): TileDocument.Implementation;
 
-    protected override _draw(options: HandleEmptyObject<Tile.DrawOptions> | undefined): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<Tile.DrawOptions>): Promise<void>;
 
     override clear(): void;
 
-    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
     protected override _applyRenderFlags(flags: Tile.RenderFlags): void;
 
@@ -139,10 +142,8 @@ declare global {
      */
     protected _refreshVideo(): void;
 
-    /**
-     * @privateRemarks `_onUpdate` is overridden but with no signature changes.
-     * For type simplicity it is left off. This method historically has been the source of a large amount of computation from tsc.
-     */
+    // _onUpdate is overridden but with no signature changes.
+    // For type simplicity it is left off. This method historically has been the source of a large amount of computation from tsc.
 
     override activateListeners(): void;
 
@@ -231,6 +232,7 @@ declare global {
      */
     _getAlphaBounds(): unknown;
   }
+
   namespace Tile {
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof Tile>;
     type Object = FixedInstanceType<ObjectClass>;

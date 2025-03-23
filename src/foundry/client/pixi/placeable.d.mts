@@ -178,22 +178,26 @@ declare global {
     /**
      * Clear the display of the existing object
      * @returns The cleared object
-     * @remarks Some subclasses return void
+     * @remarks {@link Tile.clear | `Tile`} and {@link Token.clear | `Token`} return void
      */
     clear(): this | void;
 
+    // options: not null (PIXI signature)
     override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
     /**
      * The inner _destroy method which may optionally be defined by each PlaceableObject subclass.
      * @param options - Options passed to the initial destroy call
+     * @remarks The options passed to {@link PlaceableObject.destroy | `PlaceableObject#destroy`} get forwarded here.
+     * `| undefined` since `destroy` has no `={}` for its `options`
      */
-    protected _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
     /**
      * Draw the placeable object into its parent container
      * @returns The drawn object
      */
+    // options: not null (will likely be destructured if any options ever materialize, parameter default)
     draw(options?: HandleEmptyObject<PlaceableObject.DrawOptions>): Promise<this>;
 
     /**
@@ -201,7 +205,7 @@ declare global {
      * @param options - Options which may modify the draw workflow
      * @remarks The options passed to {@link PlaceableObject.draw | `PlaceableObject#draw`} get forwarded here
      */
-    protected abstract _draw(options: HandleEmptyObject<PlaceableObject.DrawOptions> | undefined): Promise<void>;
+    protected abstract _draw(options: HandleEmptyObject<PlaceableObject.DrawOptions>): Promise<void>;
 
     /**
      * Execute a partial draw.
@@ -242,17 +246,17 @@ declare global {
      * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
      */
     protected _onCreate(
-      data: foundry.data.fields.SchemaField.AssignmentData<CanvasDocument["schema"]["fields"]>,
+      data: foundry.data.fields.SchemaField.CreateData<CanvasDocument["schema"]["fields"]>,
       options: Document.Database.CreateOptions<DatabaseCreateOperation>,
       userId: string,
     ): void;
 
     /**
      * Define additional steps taken when an existing placeable object of this type is updated with new data
-     * @remarks Called without options and userId in Drawing._onUpdate
+     * @remarks Called without options and userId in `Drawing#_onUpdate`
      */
     protected _onUpdate(
-      changed: foundry.data.fields.SchemaField.AssignmentData<CanvasDocument["schema"]["fields"]>,
+      changed: foundry.data.fields.SchemaField.UpdateData<CanvasDocument["schema"]["fields"]>,
       options?: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
       userId?: string,
     ): void;
@@ -276,7 +280,7 @@ declare global {
      * @param options - Optional parameters which apply for specific implementations
      * @remarks The options passed to {@link PlaceableObject.control | `PlaceableObject#control`} get forwarded here
      */
-    protected _onControl(options: PlaceableObject.ControlOptions | undefined): void;
+    protected _onControl(options: PlaceableObject.ControlOptions): void;
 
     /**
      * Release control over a PlaceableObject, removing it from the controlled set
@@ -292,7 +296,7 @@ declare global {
      * @param options - Options which modify the releasing workflow
      * @remarks The options passed to {@link PlaceableObject.release | `PlaceableObject#release`} get forwarded here
      */
-    protected _onRelease(options: HandleEmptyObject<PlaceableObject.ReleaseOptions> | undefined): void;
+    protected _onRelease(options: HandleEmptyObject<PlaceableObject.ReleaseOptions>): void;
 
     /**
      * Clone the placeable object, returning a new object with identical attributes.
@@ -315,7 +319,8 @@ declare global {
      * @param options - An object which defines the rotation update parameters
      * @returns The new rotation angle for the object
      */
-    protected _updateRotation({ angle, delta, snap }?: PlaceableObject.UpdateRotationOptions): number;
+    // options: not null (destructured)
+    protected _updateRotation(options?: PlaceableObject.UpdateRotationOptions): number;
 
     /**
      * Obtain a shifted position for the Placeable Object
@@ -342,6 +347,7 @@ declare global {
      * @param user   - The User performing the action
      * @param action - The named action being attempted
      * @returns Does the User have rights to perform the action?
+     * @see {@link PlaceableObject.Action | `PlaceableObject.Action`}
      */
     can(user: User.Implementation, action: PlaceableObject.Action): boolean;
 
@@ -431,7 +437,6 @@ declare global {
      * @see `MouseInteractionManager##handlePointerOver`
      * @param event   - The triggering canvas interaction event
      * @param options - Options which customize event handling
-     *                  (default: `{}`)
      * @remarks {@link Wall._onHoverIn | `Wall#_onHoverIn`} can return `false`, otherwise this is always `void`
      */
     //options: not null (destructured)
@@ -446,8 +451,9 @@ declare global {
 
     /**
      * Should the placeable propagate left click downstream?
+     * @remarks Unconditionally returns `false` in `PlaceableObject`
      */
-    protected _propagateLeftClick(event: PIXI.FederatedEvent): boolean;
+    protected _propagateLeftClick(_event: PIXI.FederatedEvent): boolean;
 
     /**
      * Callback actions which occur on a single left-click event to assume control of the object
@@ -471,8 +477,9 @@ declare global {
 
     /**
      * Should the placeable propagate right click downstream?
+     * @remarks Unconditionally returns `false` in `PlaceableObject`
      */
-    protected _propagateRightClick(event: PIXI.FederatedEvent): boolean;
+    protected _propagateRightClick(_event: PIXI.FederatedEvent): boolean;
 
     /**
      * Callback actions which occur on a single right-click event to configure properties of the object
@@ -583,6 +590,7 @@ declare global {
     interface Any extends AnyPlaceableObject {}
     interface AnyConstructor extends Identity<typeof AnyPlaceableObject> {}
 
+    // TODO: Should maybe be Scene.Embedded once the document template is finished propagating?
     type AnyCanvasDocument = Document.ImplementationFor<Document.PlaceableType>;
 
     type RenderFlags = RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS>;
@@ -639,7 +647,7 @@ declare global {
       /**
        * An explicit angle, either this or delta must be provided
        * @defaultValue `undefined`
-       * @remarks Checked first. If non-numeric, ignored in favour of `delta`
+       * @remarks Checked before `delta`. If non-numeric, ignored in favour of `delta`.
        */
       angle: number;
     }> &
@@ -647,16 +655,16 @@ declare global {
         /**
          * A relative angle delta, either this or the angle must be provided
          * @defaultValue `0`
-         * @remarks Can't be null as it only has a parameter default.
+         * @remarks Can't be `null` as it only has a parameter default.
          *
-         * Only used if `angle` is non-numeric
+         * Only used if `angle` is non-numeric.
          */
         delta: number;
 
         /**
          * A precision (in degrees) to which the resulting angle should snap. Default is 0.
          * @defaultValue `0`
-         * @remarks Can't be null as it only has a parameter default.
+         * @remarks Can't be `null` as it only has a parameter default.
          *
          * @see {@link Number.toNearest | `Number#toNearest`}
          */
@@ -669,7 +677,7 @@ declare global {
       /**
        * Trigger hover-out behavior on sibling objects
        * @defaultValue `false`
-       * @remarks Can't be null as it only has a parameter default
+       * @remarks Can't be `null` as it only has a parameter default
        */
       hoverOutOthers: boolean;
     }>;
@@ -688,7 +696,10 @@ declare global {
     /** @remarks Foundry does some unsound subclassing around {@link PlaceableObject._prepareDragLeftDropUpdates | `PlaceableObject#_prepareDragLeftDropUpdates`} */
     type AnyDragLeftDropUpdate = DragLeftDropUpdate | Token.DragLeftDropUpdate | Wall.DragLeftDropUpdate;
 
-    /** @remarks The type {@link PlaceableObject._prepareDragLeftDropUpdates | `PlaceableObject#_prepareDragLeftDropUpdates`} returns if not overridden by the specific placeable */
+    /**
+     * @remarks The type {@link PlaceableObject._prepareDragLeftDropUpdates | `PlaceableObject#_prepareDragLeftDropUpdates`}
+     * returns if not overridden by the specific placeable
+     */
     interface DragLeftDropUpdate {
       _id: string;
       x: number;
@@ -704,5 +715,5 @@ declare global {
 }
 
 declare abstract class AnyPlaceableObject extends PlaceableObject<PlaceableObject.AnyCanvasDocument> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never[]);
 }

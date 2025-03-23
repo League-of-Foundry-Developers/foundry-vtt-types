@@ -28,12 +28,12 @@ declare global {
     /**
      * The associated JournalEntry which is described by this note
      */
-    get entry(): JournalEntry.Implementation;
+    get entry(): JournalEntry.Stored;
 
     /**
      * The specific JournalEntryPage within the associated JournalEntry referenced by this Note.
      */
-    get page(): JournalEntryPage.Implementation;
+    get page(): JournalEntryPage.Stored;
 
     /**
      * Determine whether the Note is visible to the current user based on their perspective of the Scene.
@@ -42,7 +42,7 @@ declare global {
      */
     get isVisible(): boolean;
 
-    protected override _draw(options: HandleEmptyObject<Note.DrawOptions> | undefined): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<Note.DrawOptions>): Promise<void>;
 
     /**
      * Draw the control icon.

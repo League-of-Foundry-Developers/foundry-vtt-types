@@ -10,6 +10,7 @@ import type {
 } from "fvtt-types/utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import BaseToken = foundry.documents.BaseToken;
+import sources = foundry.canvas.sources;
 
 declare global {
   /**
@@ -25,9 +26,8 @@ declare global {
     /**
      * The shape of this token.
      * @defaultValue `undefined`
-     * @remarks Only `undefined` prior to {@link Token._refreshShape | `Token#_refreshShape`} being called.
-     *
-     * Foundry types this as possibly being `PIXI.Circle` but {@link Token.getShape | `Token#getShape`} only returns `Rectangle` or `Polygon` in v12
+     * @remarks Only `undefined` prior to {@link Token._refreshShape | `Token#_refreshShape`} being called.     *
+     * @privateRemarks Foundry types this as possibly being `PIXI.Circle` but {@link Token.getShape | `Token#getShape`} only returns `Rectangle` or `Polygon` in v12
      */
     shape: PIXI.Rectangle | PIXI.Polygon | undefined;
 
@@ -43,11 +43,14 @@ declare global {
     /**
      * A Graphics instance which renders the border frame for this Token inside the GridLayer.
      * @defaultValue `undefined`
+     * @remarks Only `undefined` prior to first draw
      * */
     border: PIXI.Graphics | undefined;
 
     /**
      * The attribute bars of this Token.
+     * @defaultValue `undefined`
+     * @remarks Only `undefined` prior to first draw
      */
     bars: PIXI.Container | undefined;
 
@@ -113,7 +116,7 @@ declare global {
      * @remarks `undefined` prior to first draw or after {@link Token._destroy | `Token#_destroy`} is called, or
      * {@link Token.initializeVisionSource | `Token#initializeVisionSource`} is called with `{deleted: true}`
      */
-    vision: foundry.canvas.sources.PointVisionSource.ConfiguredInstance | undefined;
+    vision: sources.PointVisionSource.ConfiguredInstance | undefined;
 
     /**
      * A reference to the LightSource object which defines this light source area of effect
@@ -123,10 +126,7 @@ declare global {
      *
      * Whether this is a LightSource or a DarknessSource depends on `this.document.light.negative`
      */
-    light:
-      | foundry.canvas.sources.PointLightSource.ConfiguredInstance
-      | foundry.canvas.sources.PointDarknessSource.ConfiguredInstance
-      | undefined;
+    light: sources.PointLightSource.ConfiguredInstance | sources.PointDarknessSource.ConfiguredInstance | undefined;
 
     /**
      * The current animations of this Token.
@@ -149,7 +149,7 @@ declare global {
     /**
      * A convenient reference to the Actor object associated with the Token embedded document.
      */
-    get actor(): this["document"]["actor"];
+    get actor(): Actor.Implementation;
 
     /**
      * A boolean flag for whether the current game User has observer permission for the Token
@@ -158,7 +158,6 @@ declare global {
 
     /**
      * Convenience access to the token's nameplate string
-     * @remarks Returns `this.document.name`
      */
     get name(): string;
 
@@ -187,7 +186,9 @@ declare global {
 
     /**
      * The HTML source element for the primary Tile texture
-     * @remarks Returns `undefined` if `this.texture` is `undefined`
+     * @privateRemarks Foundry types this as `HTMLImageElement | HTMLVideoElement`, but this just
+     * returns `this.texture?.baseTexture.resource.source`, which could be any of `PIXI.ImageSource`,
+     * and returns `ImageBitmap`, not `HTMLImageElement`, for static images.
      */
     get sourceElement(): PIXI.ImageSource | undefined;
 
@@ -206,7 +207,7 @@ declare global {
     /**
      * Return a reference to a Combatant that represents this Token, if one is present in the current encounter.
      */
-    get combatant(): this["document"]["combatant"];
+    get combatant(): Combatant.Stored;
 
     /**
      * An indicator for whether the Token is currently targeted by the active game User
@@ -216,7 +217,7 @@ declare global {
     /**
      * Return a reference to the detection modes array.
      */
-    get detectionModes(): this["document"]["detectionModes"];
+    get detectionModes(): TokenDocument["detectionModes"];
 
     /**
      * Determine whether the Token is visible to the calling user's perspective.
@@ -342,9 +343,9 @@ declare global {
 
     override clear(): void;
 
-    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
-    protected override _draw(options: HandleEmptyObject<Token.DrawOptions>): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<Token.DrawOptions> | undefined): Promise<void>;
 
     protected override _applyRenderFlags(flags: Token.RenderFlags): void;
 
@@ -451,7 +452,7 @@ declare global {
      * @param data   - Resource data for this bar
      * @remarks Called in {@link Token.drawBars | `Token#drawBars`} only after checking `data` for truthiness.
      *
-     * Unconditionally returns `true` in v12.331.
+     * Unconditionally returns `true`
      */
     protected _drawBar(
       number: number,
@@ -484,7 +485,7 @@ declare global {
      * Draw a status effect icon
      * @param src  - Path to a texture
      * @param tint - A tint to apply to the returned sprite (default: `0xFFFFFF`)
-     * @remarks Returns early if `src` is falsey, but calls {@link loadTexture | `loadTexture`} with `{ fallback: "icons/svg/hazard.svg" }`
+     * @remarks Returns early if `src` is falsey, but otherwise calls {@link loadTexture | `loadTexture`} with `{ fallback: "icons/svg/hazard.svg" }` and returns that
      */
     protected _drawEffect(src: string, tint?: number | null): Promise<PIXI.Sprite | undefined>;
 
@@ -581,9 +582,10 @@ declare global {
     /**
      * Check for collision when attempting a move to a new position
      * @param destination - The central destination point of the attempted movement
-     * @param options     - Additional options forwarded to WallsLayer#checkCollision
-     * @returns The result of the WallsLayer#checkCollision test
+     * @param options     - Additional options forwarded to {@link WallsLayer.checkCollision | `WallsLayer#checkCollision`}
+     * @returns The result of the `WallsLayer#checkCollision` test
      */
+    // options: not null (destructured)
     checkCollision<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>(
       destination: Canvas.Point,
       options?: Token.CheckCollisionOptions<Mode>,
@@ -597,6 +599,8 @@ declare global {
 
     /**
      * Get the shape of this Token.
+     * @privateRemarks Foundry types this as possibly returning a `PIXI.Circle`, but it never does in practice in v12.
+     * Not reported as this has changed in v13.
      */
     getShape(): PIXI.Rectangle | PIXI.Polygon;
 
@@ -619,10 +623,11 @@ declare global {
      *   - If the Token is inside the Region a particular elevation, then the Token is inside the Region at any elevation
      *     within the elevation range of the Region.
      *
-     * If this function is overridden, then {@link Token#segmentizeRegionMovement} must be overridden too.
+     * If this function is overridden, then {@link Token.segmentizeRegionMovement | `Token#segmentizeRegionMovent`} must be overridden too.
      * @param region - The region.
      * @param position - The (x, y) and/or elevation to use instead of the current values.
      * @returns Is the Token inside the Region?
+     * @remarks `position` can be `{x, y}`, `{elevation}`, both, or neither. If either part is omitted, uses the document's value(s)
      */
     testInsideRegion(region: Region.Object, position?: Token.TestablePosition | null): boolean;
 
@@ -656,8 +661,7 @@ declare global {
 
     /**
      * Set this Token as an active target for the current game User
-     * @param targeted - Is the Token now targeted?
-     *                   (default: `true`)
+     * @param targeted - Is the Token now targeted? (default: `true`)
      * @param context  - Additional context options
      */
     // options: not null (destructured)
@@ -679,16 +683,15 @@ declare global {
 
     protected override _getShiftedPosition(dx: number, dy: number): Canvas.Point;
 
-    protected override _updateRotation({ angle, delta, snap }?: PlaceableObject.UpdateRotationOptions): number;
+    // options: not null (destructured)
+    protected override _updateRotation(options?: PlaceableObject.UpdateRotationOptions): number;
 
-    /**
-     * @privateRemarks `_onCreate`, `_onUpdate`, and `_onDelete` are overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    // _onCreate, _onUpdate, and _onDelete are overridden but with no signature changes.
+    // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     /**
      * Handle changes to Token behavior when a significant status effect is applied
-     * @param statusId - The status effect ID being applied, from CONFIG.specialStatusEffects
+     * @param statusId - The status effect ID being applied, from `CONFIG.specialStatusEffects`
      * @param active   - Is the special status effect now active?
      * @remarks Foundry marked `@internal`
      */
@@ -696,7 +699,7 @@ declare global {
 
     /**
      * Add/Modify a filter effect on this token.
-     * @param statusId - The status effect ID being applied, from CONFIG.specialStatusEffects
+     * @param statusId - The status effect ID being applied, from `CONFIG.specialStatusEffects`
      * @param active   - Is the special status effect now active?
      * @remarks Foundry marked `@internal`
      */
@@ -715,9 +718,9 @@ declare global {
      */
     protected _removeAllFilterEffects(): void;
 
-    protected override _onControl(options: Token.ControlOptions | undefined): void;
+    protected override _onControl(options: Token.ControlOptions): void;
 
-    protected override _onRelease(options: HandleEmptyObject<Token.ReleaseOptions> | undefined): void;
+    protected override _onRelease(options: HandleEmptyObject<Token.ReleaseOptions>): void;
 
     protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
 
@@ -733,6 +736,7 @@ declare global {
 
     protected override _canDrag(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
+    // options: not null (destructured)
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): void;
 
     protected override _onHoverOut(event: PIXI.FederatedEvent): void;
@@ -747,7 +751,7 @@ declare global {
 
     protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
-    protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): Token.DragLeftDropUpdate[] | null;
+    protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): Token.DragLeftDropUpdate[];
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
@@ -783,7 +787,7 @@ declare global {
      * @deprecated since v12, until v14
      * @remarks "`Token#getCenter(x, y)` has been deprecated in favor of {@link Token.getCenterPoint | `Token#getCenterPoint(Point)`}."
      */
-    getCenter(x: number, y: number): PIXI.IPointData;
+    getCenter(x: number, y: number): Canvas.Point;
 
     /**
      * A convenient reference for whether the current User has full control over the Token document.
@@ -800,7 +804,7 @@ declare global {
      *
      * The `combat` parameter is unused. Creates Combatants for every Token controlled, plus the Token this was called on if it wasn't already controlled
      */
-    toggleCombat(combat?: Combat.Implementation): Promise<Combatant.Implementation[]>;
+    toggleCombat(combat?: Combat.Implementation): Promise<Combatant.Stored[]>;
 
     /**
      * @deprecated since v12, until v14
@@ -810,13 +814,13 @@ declare global {
     toggleEffect(
       effect: CONFIG.StatusEffect,
       options?: Actor.ToggleStatusEffectOptions,
-    ): Promise<ActiveEffect.Implementation | boolean | undefined>;
+    ): Promise<ActiveEffect.Stored | boolean | undefined>;
 
     /**
      * @deprecated since v12, until v14
      * @remarks "`Token#toggleVisibility` is deprecated without replacement in favor of updating the {@link TokenDocument.hidden | `hidden` field of the `TokenDocument`} directly."
      */
-    toggleVisibility(): Promise<TokenDocument.Implementation[]>;
+    toggleVisibility(): Promise<TokenDocument.Stored[]>;
 
     /**
      * @deprecated since v12 Stable 4, until v14
@@ -1011,13 +1015,13 @@ declare global {
       /**
        * The amount of margin between the targeting arrows and the token's bounding box, expressed as a fraction of an arrow's size.
        * @defaultValue `0`
-       * @remarks This gets `*=`d to before use, so `null` casting to the default of `0` is fine
+       * @remarks This gets assigned to with `*=` before use, so `null` casting to the default of `0` is fine
        */
       margin: number;
 
       /**
        * The color of the arrows.
-       * @defaultValue `this._getBorderColor()`
+       * @defaultValue `this._getBorderColor()` {@link Token._getBorderColor | `Token#_getBorderColor`}
        */
       color: number;
     }> &
@@ -1173,9 +1177,10 @@ declare global {
     type _TargetContext = NullishProps<{
       /**
        * Assign the token as a target for a specific User
-       * @defaultValue `null`
+       * @defaultValue `game.user`
+       * @remarks `null` is the parameter default, but it's `||=`d with `game.user`
        */
-      user: User.Implementation | null;
+      user: User.Implementation;
 
       /**
        * Release other active targets for the same player?
@@ -1194,7 +1199,7 @@ declare global {
 
     interface AnimationContext {
       /** The name of the animation */
-      name: string | symbol;
+      name: PropertyKey;
 
       /**
        * The final animation state

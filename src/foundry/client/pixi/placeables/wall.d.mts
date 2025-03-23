@@ -19,7 +19,7 @@ declare global {
     /**
      * A reference the Door Control icon associated with this Wall, if any
      * @defaultValue `undefined`
-     * @remarks Only undefined prior to first draw. {@link Wall.clearDoorControl | `Wall#clearDoorControl`} sets it `null`.
+     * @remarks Only `undefined` prior to first draw. {@link Wall.clearDoorControl | `Wall#clearDoorControl`} sets it `null`.
      */
     doorControl: DoorControl.ConfiguredInstance | undefined | null;
 
@@ -31,15 +31,15 @@ declare global {
     /**
      * The endpoints of the Wall line segment.
      * @defaultValue `undefined`
-     * @remarks Only undefined prior to first draw.
+     * @remarks Only `undefined` prior to first draw.
      */
     endpoints: PIXI.Graphics | undefined;
 
     /**
      * The icon that indicates the direction of the Wall.
      * @defaultValue `undefined`
-     * @remarks Only undefined prior to first draw. Foundry types this as `| null` as well,
-     * but it is never set that in practice
+     * @remarks Only `undefined` prior to first draw.
+     * @privateRemarks Foundry types this as `| null` as well, but it is never set that in practice
      */
     directionIcon: PIXI.Sprite | undefined;
 
@@ -89,7 +89,7 @@ declare global {
     get direction(): number | null;
 
     /**
-     * @throws "Wall#getSnappedPosition is not supported: WallDocument does not have a (x, y) position"
+     * @throws "`Wall#getSnappedPosition` is not supported: WallDocument does not have a (x, y) position"
      */
     override getSnappedPosition(position: never): never;
 
@@ -106,7 +106,7 @@ declare global {
      */
     toRay(): Ray;
 
-    protected override _draw(options: HandleEmptyObject<Wall.DrawOptions> | undefined): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<Wall.DrawOptions>): Promise<void>;
 
     override clear(): this;
 
@@ -120,10 +120,10 @@ declare global {
      */
     clearDoorControl(): void;
 
+    // options: not null (destructured)
     override control(options?: Wall.ControlOptions): boolean;
 
-    /** @remarks `options` is unused */
-    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
     /**
      * Test whether the Wall direction lies between two provided angles
@@ -178,10 +178,8 @@ declare global {
      */
     protected _getWallColor(): number;
 
-    /**
-     * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+    // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     /**
      * Play a door interaction sound.
@@ -197,8 +195,9 @@ declare global {
      */
     get soundRadius(): number;
 
-    protected override _canControl(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
+    protected override _canControl(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
+    // options: not null (destructured in super)
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 
     protected override _onHoverOut(event: PIXI.FederatedEvent): void;
@@ -216,6 +215,7 @@ declare global {
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): Wall.DragLeftDropUpdate[] | null;
+
     /**
      * @deprecated since v12, until v14
      * @remarks "`Wall#roof` has been deprecated. There's no replacement"
@@ -237,8 +237,7 @@ declare global {
     /**
      * Determine the orientation of this wall with respect to a reference point
      * @param point - Some reference point, relative to which orientation is determined
-     * @returns An orientation in CONST.WALL_DIRECTIONS which indicates whether the Point is left,
-     *          right, or collinear (both) with the Wall
+     * @returns An orientation in CONST.WALL_DIRECTIONS which indicates whether the Point is left, right, or collinear (both) with the Wall
      * @deprecated since v12, until v14
      * @remarks "`Wall#orientPoint` has been moved to {@link Edge.orientPoint | `foundry.canvas.edges.Edge#orientPoint`}"
      */
@@ -249,9 +248,8 @@ declare global {
      * When the proximity threshold is met, this wall is excluded as an edge in perception calculations.
      * @param sourceType     - Sense type for the source
      * @param sourceOrigin   - The origin or position of the source on the canvas
-     * @param externalRadius - The external radius of the source
-     *                         (default: `0`)
-     * @returns True if the wall has a threshold greater than 0 for the source type, and the source type is within that distance.
+     * @param externalRadius - The external radius of the source (default: `0`)
+     * @returns `true` if the wall has a threshold greater than 0 for the source type, and the source type is within that distance.
      * @deprecated since v12, until v14
      * @remarks "Wall#applyThreshold has been moved to {@link Edge.applyThreshold | `foundry.canvas.edges.Edge#applyThreshold`}"
      */
@@ -381,8 +379,4 @@ declare global {
       c: WallDocument.Coordinates;
     }
   }
-}
-
-declare abstract class AnyWall extends Wall {
-  constructor(arg0: never, ...args: never[]);
 }

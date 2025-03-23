@@ -44,5 +44,5 @@ expectTypeOf(PlaceableObject.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
 >();
 
 expectTypeOf(AmbientLight.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
-  Array<"redraw" | "refresh" | "refreshState" | "refreshField" | "refreshPosition"> | undefined
+  Array<"redraw" | "refresh" | "refreshState" | "refreshField" | "refreshPosition" | "refreshElevation"> | undefined
 >();

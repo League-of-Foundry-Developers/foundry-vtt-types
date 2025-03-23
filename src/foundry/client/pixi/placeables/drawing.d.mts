@@ -1,11 +1,4 @@
-import type {
-  ValueOf,
-  FixedInstanceType,
-  AnyFunction,
-  HandleEmptyObject,
-  RequiredProps,
-  NullishProps,
-} from "fvtt-types/utils";
+import type { ValueOf, FixedInstanceType, HandleEmptyObject, RequiredProps, NullishProps } from "fvtt-types/utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -14,8 +7,6 @@ declare global {
    * Each Drawing is a placeable object in the DrawingsLayer.
    */
   class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
-    constructor(document: DrawingDocument.Implementation);
-
     /**
      * The texture that is used to fill this Drawing, if any.
      * @defaultValue `undefined`
@@ -104,7 +95,7 @@ declare global {
      * @defaultValue `null`
      * @remarks Foundry marked `@internal`
      */
-    protected _onkeydown: AnyFunction | null;
+    protected _onkeydown: ((event: KeyboardEvent) => void) | null;
 
     protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
@@ -113,12 +104,14 @@ declare global {
     /**
      * Get the line style used for drawing the shape of this Drawing.
      * @returns The line style options (`PIXI.ILineStyleOptions`).
+     * @privateRemarks Foundry types this return as just `object` and then lists the correct interface this is a partial of in the `@returns`?!
      */
     protected _getLineStyle(): Drawing.LineStyleData;
 
     /**
      * Get the fill style used for drawing the shape of this Drawing.
      * @returns The fill style options (`PIXI.IFillStyleOptions`).
+     * @privateRemarks Foundry types this return as just `object` and then lists the correct interface this is a partial of in the `@returns`?!
      */
     protected _getFillStyle(): Drawing.FillStyleData;
 

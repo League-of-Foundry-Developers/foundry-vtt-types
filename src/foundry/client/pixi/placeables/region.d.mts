@@ -84,7 +84,7 @@ declare global {
      */
     override getSnappedPosition(position?: never): never;
 
-    protected override _draw(options: HandleEmptyObject<Region.DrawOptions> | undefined): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<Region.DrawOptions>): Promise<void>;
 
     protected override _applyRenderFlags(flags: PlaceableObject.RenderFlags): void;
 
@@ -98,9 +98,9 @@ declare global {
 
     protected override _canHUD(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
-    protected override _onControl(options: PlaceableObject.ControlOptions | undefined): void;
+    protected override _onControl(options: Region.ControlOptions): void;
 
-    protected override _onRelease(options: PlaceableObject.ReleaseOptions | undefined): void;
+    protected override _onRelease(options: HandleEmptyObject<Region.ReleaseOptions>): void;
 
     // options: not null (destructured)
     protected override _onHoverIn(event: PIXI.FederatedEvent, options?: Region.HoverInOptions): void;
@@ -117,7 +117,7 @@ declare global {
      * @returns Is the point (at the given elevation) inside this Region?
      */
     // elevation: not null (`=== undefined` check)
-    testPoint(point: Point, elevation?: number): boolean;
+    testPoint(point: Canvas.Point, elevation?: number): boolean;
 
     /**
      * Split the movement into its segments.
@@ -132,10 +132,8 @@ declare global {
       options?: Region.SegmentizeMovementOptions,
     ): Region.RegionMovementSegment[];
 
-    /**
-     * @privateRemarks _onUpdate is overridden but with no signature changes.
-     * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    // _onUpdate is overridden but with no signature changes.
+    // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
   }
 
   namespace Region {

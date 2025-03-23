@@ -1,4 +1,4 @@
-import type { RequiredProps, FixedInstanceType, HandleEmptyObject } from "fvtt-types/utils";
+import type { FixedInstanceType, HandleEmptyObject } from "fvtt-types/utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
@@ -13,8 +13,8 @@ declare global {
      * @defaultValue `undefined`
      * @remarks Only `undefined` prior to {@link MeasuredTemplate._refreshShape | `MeasuredTemplate#_refreshShape`} being called
      *
-     * Foundry also types this as `PIXI.Ellipse | PIXI.RoundedRectangle`, but {@link MeasuredTemplate._computeShape | `MeasuredTemplate#_computeShape`}
-     * never returns either
+     * @privateRemarks Foundry also types this as `| PIXI.Ellipse | PIXI.RoundedRectangle`, but {@link MeasuredTemplate._computeShape | `MeasuredTemplate#_computeShape`}
+     * never returns either in v12
      */
     shape: PIXI.Circle | PIXI.Polygon | PIXI.Rectangle | undefined;
 
@@ -66,9 +66,9 @@ declare global {
      */
     get highlightId(): string;
 
-    protected override _draw(options: HandleEmptyObject<MeasuredTemplate.DrawOptions> | undefined): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<MeasuredTemplate.DrawOptions>): Promise<void>;
 
-    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
     protected _applyRenderFlags(flags: MeasuredTemplate.RenderFlags): void;
 
@@ -149,10 +149,8 @@ declare global {
 
     override rotate(angle: number, snap: number): Promise<this>;
 
-    /**
-     * @privateRemarks _onUpdate is overridden but with no signature changes.
-     * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    // _onUpdate is overridden but with no signature changes.
+    // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
     protected override _canControl(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
@@ -260,20 +258,5 @@ declare global {
     interface ControlOptions extends PlaceableObject.ControlOptions {}
 
     interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
-
-    // TODO: Fix globalThis.ObjectHUD #2962
-    interface ObjectHUD {
-      /**
-       * Template control icon
-       */
-      icon?: ControlIcon;
-
-      /**
-       * Ruler text tooltip
-       */
-      ruler?: PreciseText;
-    }
-
-    type InitializedObjectHUD = RequiredProps<ObjectHUD, "icon" | "ruler">;
   }
 }

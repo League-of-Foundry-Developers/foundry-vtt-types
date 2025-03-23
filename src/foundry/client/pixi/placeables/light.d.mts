@@ -73,13 +73,13 @@ declare global {
 
     /**
      * Check if the point source is a LightSource instance
-     * @remarks Checks against the configured class, not simply PointLightSource
+     * @remarks Checks via `instanceof` against the configured class, not simply PointLightSource
      */
     get isLightSource(): boolean;
 
     /**
      * Check if the point source is a DarknessSource instance
-     * @remarks Checks against the configured class, not simply PointDarknessSource
+     * @remarks Checks via `instanceof` against the configured class, not simply PointDarknessSource
      */
     get isDarknessSource(): boolean;
 
@@ -98,9 +98,9 @@ declare global {
      */
     get emitsLight(): boolean;
 
-    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
-    protected override _draw(options: HandleEmptyObject<AmbientLight.DrawOptions> | undefined): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<AmbientLight.DrawOptions>): Promise<void>;
 
     protected override _applyRenderFlags(flags: AmbientLight.RenderFlags): void;
 
@@ -143,9 +143,9 @@ declare global {
     // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
     // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
-    protected override _canHUD(user: User.Implementation, _event: PIXI.FederatedEvent): boolean;
+    protected override _canHUD(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
-    protected override _canConfigure(_user: User.Implementation, _event: PIXI.FederatedEvent): boolean;
+    protected override _canConfigure(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     protected override _canDragLeftStart(user: User.Implementation, event: DragEvent): boolean;
 
@@ -159,6 +159,7 @@ declare global {
      * @deprecated since v12, until v14
      * @remarks "`AmbientLight#updateSource` has been deprecated in favor of {@link AmbientLight.initializeLightSource | `AmbientLight#initializeLightSource`}"
      */
+    // options: not null (destructured)
     updateSource(options?: AmbientLight.InitializeLightSourceOptions): void;
 
     /**

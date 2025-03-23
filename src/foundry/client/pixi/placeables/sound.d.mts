@@ -83,9 +83,9 @@ declare global {
 
     override clear(): this;
 
-    protected override _draw(options: HandleEmptyObject<AmbientSound.DrawOptions> | undefined): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<AmbientSound.DrawOptions>): Promise<void>;
 
-    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
     protected _applyRenderFlags(flags: AmbientSound.RenderFlags): void;
 
@@ -126,10 +126,8 @@ declare global {
      */
     protected _getSoundSourceData(): AmbientSound.SoundSourceData;
 
-    /**
-     * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+    // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     protected override _canHUD(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
@@ -146,7 +144,7 @@ declare global {
      * @deprecated since v12, until v14
      * @remarks "`AmbientSound#updateSource` has been deprecated in favor of {@link AmbientSound.initializeSoundSource | `AmbientSound#initializeSoundSource`}"
      *
-     * @privateRemarks The `defer` parameter exists in the signature but is not used or forwarded, so we can just reuse the options for `#initializeSoundSource`
+     * @privateRemarks The `defer` parameter exists in this signature but is not used by `#initializeSoundSource`, so we can just reuse that method's options interface
      */
     updateSource(options?: AmbientSound.InitializeSoundSourceOptions): void;
   }
