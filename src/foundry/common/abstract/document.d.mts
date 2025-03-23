@@ -1848,7 +1848,7 @@ interface DatabaseOperationCreateMap {
   Card: Card.DatabaseOperation.Create;
   Cards: Cards.DatabaseOperation.Create;
   ChatMessage: ChatMessage.Database.Create;
-  Combat: Combat.DatabaseOperation.Create;
+  Combat: Combat.Database.Create;
   Combatant: Combatant.Database.Create;
   Drawing: DrawingDocument.Database.Create;
   FogExploration: FogExploration.Database.Create;
@@ -1883,7 +1883,7 @@ interface DatabaseOperationUpdateMap {
   Card: Card.DatabaseOperation.Update;
   Cards: Cards.DatabaseOperation.Update;
   ChatMessage: ChatMessage.Database.Update;
-  Combat: Combat.DatabaseOperation.Update;
+  Combat: Combat.Database.Update;
   Combatant: Combatant.Database.Update;
   Drawing: DrawingDocument.Database.Update;
   FogExploration: FogExploration.Database.Update;
@@ -1918,7 +1918,7 @@ interface DatabaseOperationDeleteMap {
   Card: Card.DatabaseOperation.Delete;
   Cards: Cards.DatabaseOperation.Delete;
   ChatMessage: ChatMessage.Database.Delete;
-  Combat: Combat.DatabaseOperation.Delete;
+  Combat: Combat.Database.Delete;
   Combatant: Combatant.Database.Delete;
   Drawing: DrawingDocument.Database.Delete;
   FogExploration: FogExploration.Database.Delete;

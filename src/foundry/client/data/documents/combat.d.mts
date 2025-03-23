@@ -8,25 +8,40 @@ import type BaseCombat from "../../../common/documents/combat.d.mts";
 declare global {
   namespace Combat {
     /**
+     * The document's name.
+     */
+    type Name = "Combat";
+
+    /**
+     * The arguments to construct the document.
+     */
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+
+    /**
+     * The documents embedded within Combat.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the Combat document instance configured through `CONFIG.Combat.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"Combat">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the Combat document configured through `CONFIG.Combat.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"Combat">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"Combat"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<"Combat">;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Combat">;
+    type SubType = Game.Model.TypeNames<Name>;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = Combat.OfType<Combat.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCombat<Type>, Combat<SubType>>;
 
@@ -197,7 +212,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"Combat">;
+      flags: fields.ObjectField.FlagsField<Name>;
 
       /**
        * An object of creation and access information
@@ -205,7 +220,7 @@ declare global {
        */
       _stats: fields.DocumentStatsField;
     }
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for Combats */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Combat.Parent> {}
       /** Options passed along in Create operations for Combats */
@@ -220,37 +235,102 @@ declare global {
         turnEvents: boolean;
       }
 
-      /** Options for {@link Combat.createDocuments | `Combat.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Combat._preCreateOperation | `Combat._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link Combat.createDocuments | `Combat.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Combat.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Combat.updateDocuments | `Combat.updateDocuments`} */
+      interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Combat.Database.Update> {}
+
+      /** Operation for {@link Combat.deleteDocuments | `Combat.deleteDocuments`} */
+      interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Combat.Database.Delete> {}
+
+      /** Operation for {@link Combat.create | `Combat.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Combat.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Combat.update | `Combat#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link Combat.get | `Combat.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link Combat._preCreate | `Combat#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link Combat._onCreate | `Combat#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link Combat.updateDocuments | `Combat.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link Combat._preUpdateOperation | `Combat._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link Combat._preCreateOperation | `Combat._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Combat.Database.Create> {}
+
+      /** Operation for {@link Combat._onCreateOperation | `Combat#_onCreateOperation`} */
+      interface OnCreateOperation extends Combat.Database.Create {}
+
       /** Options for {@link Combat._preUpdate | `Combat#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link Combat._onUpdate | `Combat#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link Combat.deleteDocuments | `Combat.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link Combat._preDeleteOperation | `Combat._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Combat._onUpdate | `Combat#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link Combat._preUpdateOperation | `Combat._preUpdateOperation`} */
+      interface PreUpdateOperation extends Combat.Database.Update {}
+
+      /** Operation for {@link Combat._onUpdateOperation | `Combat._preUpdateOperation`} */
+      interface OnUpdateOperation extends Combat.Database.Update {}
+
       /** Options for {@link Combat._preDelete | `Combat#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link Combat._onDelete | `Combat#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link Combat._preDeleteOperation | `Combat#_preDeleteOperation`} */
+      interface PreDeleteOperation extends Combat.Database.Delete {}
+
+      /** Options for {@link Combat._onDeleteOperation | `Combat#_onDeleteOperation`} */
+      interface OnDeleteOperation extends Combat.Database.Delete {}
+
+      /** Context for {@link Combat._onDeleteOperation | `Combat._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<Combat.Parent> {}
+
+      /** Context for {@link Combat._onCreateDocuments | `Combat._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<Combat.Parent> {}
+
+      /** Context for {@link Combat._onUpdateDocuments | `Combat._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<Combat.Parent> {}
+
+      /**
+       * Options for {@link Combat._preCreateDescendantDocuments | `Combat#_preCreateDescendantDocuments`}
+       * and {@link Combat._onCreateDescendantDocuments | `Combat#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<Combat.Database.Create> {}
+
+      /**
+       * Options for {@link Combat._preUpdateDescendantDocuments | `Combat#_preUpdateDescendantDocuments`}
+       * and {@link Combat._onUpdateDescendantDocuments | `Combat#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<Combat.Database.Update> {}
+
+      /**
+       * Options for {@link Combat._preDeleteDescendantDocuments | `Combat#_preDeleteDescendantDocuments`}
+       * and {@link Combat._onDeleteDescendantDocuments | `Combat#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<Combat.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**
-     * @deprecated {@link Combat.DatabaseOperation | `Combat.DatabaseOperation`}
+     * @deprecated {@link Combat.Database | `Combat.Database`}
      */
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations
@@ -327,7 +407,7 @@ declare global {
      * @param data    - Initial data from which to construct the `Combat`
      * @param context - Construction context options
      */
-    constructor(...args: Document.ConstructorParameters<Combat.CreateData, Combat.Parent>);
+    constructor(...args: Combat.ConstructorArgs);
 
     /** Track the sorted turn order of this combat encounter */
     turns: Combatant.Implementation[];
@@ -369,7 +449,7 @@ declare global {
      * Deactivate all other Combat encounters within the viewed Scene and set this one as active
      * @param options - Additional context to customize the update workflow
      */
-    activate(options?: Combat.DatabaseOperation.UpdateOperation): Promise<Combat.Implementation[]>;
+    activate(options?: Combat.Database.UpdateOperation): Promise<Combat.Implementation[]>;
 
     override prepareDerivedData(): void;
 
@@ -457,8 +537,7 @@ declare global {
 
     /**
      * Loads the registered Combat Theme (if any) and plays the requested type of sound.
-
-   * If multiple exist for that type, one is chosen at random.
+     * If multiple exist for that type, one is chosen at random.
      * @param announcement - The announcement that should be played: "startEncounter", "nextUp", or "yourTurn".
      */
     protected _playCombatSound(announcement: foundry.CONST.COMBAT_ANNOUNCEMENTS): void;
@@ -478,36 +557,47 @@ declare global {
     protected _refreshTokenHUD(documents: Array<Combatant>): void;
 
     /**
-     * @privateRemarks _onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     * @privateRemarks _onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes from BaseCombat.
      */
 
-    // TODO: Implement generic to support v13 CombatantGroup
-
-    protected override _onCreateDescendantDocuments(
-      parent: Combat.Stored,
-      collection: Combatant.ParentCollectionName,
-      documents: Combatant.Stored[],
-      result: Combatant.CreateData[],
-      options: Combatant.Database.OnCreateOperation,
+    protected override _onCreateDescendantDocuments<
+      DescendantDocumentType extends Combat.DescendantClasses,
+      Parent extends Combat.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
       userId: string,
     ): void;
 
-    protected override _onUpdateDescendantDocuments(
-      parent: Combat.Stored,
-      collection: Combatant.ParentCollectionName,
-      documents: Combatant.Stored[],
-      changes: Combatant.UpdateData[],
-      options: Combatant.Database.OnUpdateOperation,
+    protected override _onUpdateDescendantDocuments<
+      DescendantDocumentType extends Combat.DescendantClasses,
+      Parent extends Combat.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
       userId: string,
     ): void;
 
-    protected override _onDeleteDescendantDocuments(
-      parent: Combat.Stored,
-      collection: Combatant.ParentCollectionName,
-      documents: Combatant.Stored[],
+    protected _onDeleteDescendantDocuments<
+      DescendantDocumentType extends Combat.DescendantClasses,
+      Parent extends Combat.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
       ids: string[],
-      options: Combatant.Database.OnDeleteOperation,
+      options: Document.Database.DeleteOptions<Operation>,
       userId: string,
     ): void;
 
@@ -582,9 +672,53 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    protected override _preCreateDescendantDocuments<
+      DescendantDocumentType extends Combat.DescendantClasses,
+      Parent extends Combat.Stored,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments<
+      DescendantDocumentType extends Combat.DescendantClasses,
+      Parent extends Combat.Stored,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _preDeleteDescendantDocuments<
+      DescendantDocumentType extends Combat.DescendantClasses,
+      Parent extends Combat.Stored,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
 
     static override defaultName(context?: Document.DefaultNameContext<Combat.SubType, Combat.Parent>): string;
 

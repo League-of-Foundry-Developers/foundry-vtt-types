@@ -89,6 +89,8 @@ declare abstract class BaseRegionBehavior<
 
   static get documentName(): RegionBehavior.Name;
 
+  static get TYPES(): BaseRegionBehavior.SubType[];
+
   static get hasTypeData(): true;
 
   static get hierarchy(): RegionBehavior.Hierarchy;
@@ -96,8 +98,6 @@ declare abstract class BaseRegionBehavior<
   override system: Document.SystemFor<"RegionBehavior", SubType>;
 
   override parent: BaseRegionBehavior.Parent;
-
-  static get TYPES(): BaseRegionBehavior.SubType[];
 
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<RegionBehavior.Implementation | RegionBehavior.CreateData> | undefined,
@@ -221,7 +221,7 @@ declare abstract class BaseRegionBehavior<
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): undefined;
+  static get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
