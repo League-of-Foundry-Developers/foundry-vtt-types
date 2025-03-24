@@ -585,6 +585,6 @@ declare global {
       context?: Document.FromImportContext<User.Parent>,
     ): Promise<User.Implementation>;
 
-    // Embedded document operations have been left out because Wall does not have any embedded documents.
+    // Embedded document operations have been left out because User does not have any embedded documents.
   }
 }

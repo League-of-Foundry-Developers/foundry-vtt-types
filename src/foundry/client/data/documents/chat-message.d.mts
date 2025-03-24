@@ -656,7 +656,7 @@ declare global {
 
     // ClientDocument overrides
 
-    // Descendant Document operations have been left out because Wall does not have any descendant documents.
+    // Descendant Document operations have been left out because ChatMessage does not have any descendant documents.
 
     static override defaultName(context?: Document.DefaultNameContext<ChatMessage.SubType, ChatMessage.Parent>): string;
 

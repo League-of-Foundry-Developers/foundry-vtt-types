@@ -27,7 +27,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    * You should use {@link Actor.implementation | `new Actor.implementation(...)`} instead which will give you
    * a system specific implementation of `Actor`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseActor.CreateData, BaseActor.Parent>);
+  constructor(...args: Actor.ConstructorArgs);
 
   static override metadata: BaseActor.Metadata;
 

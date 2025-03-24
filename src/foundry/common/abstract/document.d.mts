@@ -1842,7 +1842,7 @@ interface DatabaseOperationCreateMap {
   ActiveEffect: ActiveEffect.Database.Create;
   Actor: Actor.Database.Create;
   ActorDelta: ActorDelta.Database.Create;
-  Adventure: Adventure.DatabaseOperation.Create;
+  Adventure: Adventure.Database.Create;
   AmbientLight: AmbientLightDocument.Database.Create;
   AmbientSound: AmbientSoundDocument.Database.Create;
   Card: Card.Database.Create;
@@ -1877,7 +1877,7 @@ interface DatabaseOperationUpdateMap {
   ActiveEffect: ActiveEffect.Database.Update;
   Actor: Actor.Database.Update;
   ActorDelta: ActorDelta.Database.Update;
-  Adventure: Adventure.DatabaseOperation.Update;
+  Adventure: Adventure.Database.Update;
   AmbientLight: AmbientLightDocument.Database.Update;
   AmbientSound: AmbientSoundDocument.Database.Update;
   Card: Card.Database.Update;
@@ -1912,7 +1912,7 @@ interface DatabaseOperationDeleteMap {
   ActiveEffect: ActiveEffect.Database.Delete;
   Actor: Actor.Database.Delete;
   ActorDelta: ActorDelta.Database.Delete;
-  Adventure: Adventure.DatabaseOperation.Delete;
+  Adventure: Adventure.Database.Delete;
   AmbientLight: AmbientLightDocument.Database.Delete;
   AmbientSound: AmbientSoundDocument.Database.Delete;
   Card: Card.Database.Delete;
