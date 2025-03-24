@@ -7,26 +7,41 @@ import type { ConfiguredActorDelta } from "../../../../configuration/index.d.mts
 declare global {
   namespace ActorDelta {
     /**
+     * The document's name.
+     */
+    type Name = "ActorDelta";
+
+    /**
+     * The arguments to construct the document.
+     */
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+
+    /**
+     * The documents embedded within ActorDelta.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the ActorDelta document instance configured through `CONFIG.ActorDelta.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"ActorDelta">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the ActorDelta document configured through `CONFIG.ActorDelta.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"ActorDelta">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"ActorDelta"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
     // This is NOT a mistake. Due to the implementation of the ActorDelta document, the SubType is the same as the Actor's SubType.
-    type SubType = Game.Model.TypeNames<"ActorDelta">;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"ActorDelta">;
+    type SubType = Game.Model.TypeNames<Name>;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = ActorDelta.OfType<ActorDelta.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActorDelta<Type>, ActorDelta<Type>>;
 
@@ -34,7 +49,61 @@ declare global {
      * A document's parent is something that can contain it.
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
-    type Parent = null;
+    type Parent = TokenDocument.Implementation | null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     *
+     */
+    type Descendants = Item.Stored | ActiveEffect.Stored;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = Item.ImplementationClass | ActiveEffect.ImplementationClass;
+
+    /**
+     * The valid `parent` entries for descendant document operations.
+     * This includes the current document as well as any descendants that have descendants.
+     */
+    type DescendantParents = Stored | Item.Stored;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Scene">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `ActorDelta` that comes from the database.
@@ -147,33 +216,119 @@ declare global {
       flags: fields.ObjectField.FlagsField<"Actor">;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
+      /** Options passed along in Get operations for ActorDeltas */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<ActorDelta.Parent> {}
+
+      /** Options passed along in Create operations for ActorDeltas */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<ActorDelta.CreateData, ActorDelta.Parent, Temporary> {}
+
+      /** Options passed along in Delete operations for ActorDeltas */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ActorDelta.Parent> {}
+
+      /** Options passed along in Update operations for ActorDeltas */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<ActorDelta.UpdateData, ActorDelta.Parent> {}
 
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      /** Operation for {@link ActorDelta.createDocuments | `ActorDelta.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<ActorDelta.Database.Create<Temporary>> {}
 
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      /** Operation for {@link ActorDelta.updateDocuments | `ActorDelta.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<ActorDelta.Database.Update> {}
 
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      /** Operation for {@link ActorDelta.deleteDocuments | `ActorDelta.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<ActorDelta.Database.Delete> {}
+
+      /** Operation for {@link ActorDelta.create | `ActorDelta.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<ActorDelta.Database.Create<Temporary>> {}
+
+      /** Operation for {@link ActorDelta.update | `ActorDelta#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link ActorDelta.get | `ActorDelta.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
+      /** Options for {@link ActorDelta._preCreate | `ActorDelta#_preCreate`} */
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
+      /** Options for {@link ActorDelta._onCreate | `ActorDelta#_onCreate`} */
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
+
+      /** Operation for {@link ActorDelta._preCreateOperation | `ActorDelta._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<ActorDelta.Database.Create> {}
+
+      /** Operation for {@link ActorDelta._onCreateOperation | `ActorDelta#_onCreateOperation`} */
+      interface OnCreateOperation extends ActorDelta.Database.Create {}
+
+      /** Options for {@link ActorDelta._preUpdate | `ActorDelta#_preUpdate`} */
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
+
+      /** Options for {@link ActorDelta._onUpdate | `ActorDelta#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link ActorDelta._preUpdateOperation | `ActorDelta._preUpdateOperation`} */
+      interface PreUpdateOperation extends ActorDelta.Database.Update {}
+
+      /** Operation for {@link ActorDelta._onUpdateOperation | `ActorDelta._preUpdateOperation`} */
+      interface OnUpdateOperation extends ActorDelta.Database.Update {}
+
+      /** Options for {@link ActorDelta._preDelete | `ActorDelta#_preDelete`} */
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
+      /** Options for {@link ActorDelta._onDelete | `ActorDelta#_onDelete`} */
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link ActorDelta._preDeleteOperation | `ActorDelta#_preDeleteOperation`} */
+      interface PreDeleteOperation extends ActorDelta.Database.Delete {}
+
+      /** Options for {@link ActorDelta._onDeleteOperation | `ActorDelta#_onDeleteOperation`} */
+      interface OnDeleteOperation extends ActorDelta.Database.Delete {}
+
+      /** Context for {@link ActorDelta._onDeleteOperation | `ActorDelta._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<ActorDelta.Parent> {}
+
+      /** Context for {@link ActorDelta._onCreateDocuments | `ActorDelta._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<ActorDelta.Parent> {}
+
+      /** Context for {@link ActorDelta._onUpdateDocuments | `ActorDelta._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<ActorDelta.Parent> {}
+
+      /**
+       * Options for {@link ActorDelta._preCreateDescendantDocuments | `ActorDelta#_preCreateDescendantDocuments`}
+       * and {@link ActorDelta._onCreateDescendantDocuments | `ActorDelta#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<ActorDelta.Database.Create> {}
+
+      /**
+       * Options for {@link ActorDelta._preUpdateDescendantDocuments | `ActorDelta#_preUpdateDescendantDocuments`}
+       * and {@link ActorDelta._onUpdateDescendantDocuments | `ActorDelta#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<ActorDelta.Database.Update> {}
+
+      /**
+       * Options for {@link ActorDelta._preDeleteDescendantDocuments | `ActorDelta#_preDeleteDescendantDocuments`}
+       * and {@link ActorDelta._onDeleteDescendantDocuments | `ActorDelta#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<ActorDelta.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**
-     * @deprecated {@link ActorDelta.DatabaseOperation | `ActorDelta.DatabaseOperation`}
+     * @deprecated {@link ActorDelta.Database | `ActorDelta.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<ActorDelta.Implementation> {}
@@ -210,7 +365,7 @@ declare global {
      * @param data    - Initial data from which to construct the `ActorDelta`
      * @param context - Construction context options
      */
-    constructor(...args: Document.ConstructorParameters<ActorDelta.CreateData, ActorDelta.Parent>);
+    constructor(...args: ActorDelta.ConstructorArgs);
 
     protected override _configure(options?: { pack?: string | null }): void;
 
@@ -265,8 +420,7 @@ declare global {
     _handleDeltaCollectionUpdates(doc: Document.Any): void;
 
     /**
-     * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes from BaseActorDelta.
      */
 
     protected override _dispatchDescendantDocumentEvents(
@@ -278,9 +432,94 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    protected override _preCreateDescendantDocuments<
+      DescendantDocumentType extends ActorDelta.DescendantClasses,
+      Parent extends ActorDelta.DescendantParents,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _onCreateDescendantDocuments<
+      DescendantDocumentType extends ActorDelta.DescendantClasses,
+      Parent extends ActorDelta.DescendantParents,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments<
+      DescendantDocumentType extends ActorDelta.DescendantClasses,
+      Parent extends ActorDelta.DescendantParents,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments<
+      DescendantDocumentType extends ActorDelta.DescendantClasses,
+      Parent extends ActorDelta.DescendantParents,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _preDeleteDescendantDocuments<
+      DescendantDocumentType extends ActorDelta.DescendantClasses,
+      Parent extends ActorDelta.DescendantParents,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _onDeleteDescendantDocuments<
+      DescendantDocumentType extends ActorDelta.DescendantClasses,
+      Parent extends ActorDelta.DescendantParents,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
 
     static override defaultName(
       context: Document.DefaultNameContext<ActorDelta.SubType, NonNullable<ActorDelta.Parent>>,

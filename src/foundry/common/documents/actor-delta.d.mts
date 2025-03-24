@@ -2,8 +2,9 @@ import type { AnyMutableObject, AnyObject, InexactPartial } from "fvtt-types/uti
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
 import type { CONST, documents } from "../../client-esm/client.d.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type DataModel from "../abstract/data.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The ActorDelta Document.
@@ -71,108 +72,180 @@ declare abstract class BaseActorDelta<
 
   /*
    * After this point these are not really overridden methods.
-   * They are here because they're static properties but depend on the instance and so can't be
-   * defined DRY-ly while also being easily overridable.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
    */
+
+  /* Document overrides */
 
   static " fvtt_types_internal_document_name_static": "ActorDelta";
 
-  static get implementation(): ActorDelta.ImplementationClass;
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: ActorDelta.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static override get implementation(): ActorDelta.ImplementationClass;
+
+  static get baseDocument(): typeof BaseActorDelta;
+
+  static get collectionName(): ActorDelta.ParentCollectionName;
+
+  static get documentName(): ActorDelta.Name;
+
+  static get TYPES(): BaseActorDelta.SubType[];
+
+  static get hasTypeData(): true;
+
+  static get hierarchy(): ActorDelta.Hierarchy;
 
   override system: Document.SystemFor<"ActorDelta", SubType>;
 
   override parent: BaseActorDelta.Parent;
 
-  static get TYPES(): BaseActorDelta.SubType[];
-
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<ActorDelta.Implementation | ActorDelta.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<ActorDelta.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<ActorDelta.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<ActorDelta.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: ActorDelta.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<ActorDelta.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<ActorDelta.Database.Update>,
   ): Promise<ActorDelta.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<ActorDelta.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<ActorDelta.Database.Delete>,
   ): Promise<ActorDelta.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: ActorDelta.CreateData | ActorDelta.CreateData[],
-    operation?: Document.Database.CreateOperation<ActorDelta.DatabaseOperation.Create<Temporary>>,
-  ): Promise<ActorDelta.Implementation | undefined>;
+    operation?: ActorDelta.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<ActorDelta.Implementation, Temporary> | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): ActorDelta.Implementation | null;
+  override update(
+    data: ActorDelta.UpdateData | undefined,
+    operation?: ActorDelta.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: ActorDelta.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(documentId: string, options?: ActorDelta.Database.GetOptions): ActorDelta.Implementation | null;
+
+  static override getCollectionName<CollectionName extends ActorDelta.EmbeddedName>(
+    name: CollectionName,
+  ): ActorDelta.CollectionNameOf<CollectionName> | null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends ActorDelta.Flags.Scope, Key extends ActorDelta.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<ActorDelta.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends ActorDelta.Flags.Scope,
+    Key extends ActorDelta.Flags.Key<Scope>,
+    Value extends Document.GetFlag<ActorDelta.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends ActorDelta.Flags.Scope, Key extends ActorDelta.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   protected _preCreate(
     data: ActorDelta.CreateData,
-    options: ActorDelta.DatabaseOperation.PreCreateOperationInstance,
+    options: ActorDelta.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onCreate(
     data: ActorDelta.CreateData,
-    options: ActorDelta.DatabaseOperation.OnCreateOperation,
+    options: ActorDelta.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static _preCreateOperation(
     documents: ActorDelta.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<ActorDelta.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<ActorDelta.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: ActorDelta.Implementation[],
-    operation: ActorDelta.DatabaseOperation.Create,
+    operation: ActorDelta.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: ActorDelta.UpdateData,
-    options: ActorDelta.DatabaseOperation.PreUpdateOperationInstance,
+    options: ActorDelta.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onUpdate(
     changed: ActorDelta.UpdateData,
-    options: ActorDelta.DatabaseOperation.OnUpdateOperation,
+    options: ActorDelta.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static _preUpdateOperation(
     documents: ActorDelta.Implementation[],
-    operation: ActorDelta.DatabaseOperation.Update,
+    operation: ActorDelta.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: ActorDelta.Implementation[],
-    operation: ActorDelta.DatabaseOperation.Update,
+    operation: ActorDelta.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preDelete(
-    options: ActorDelta.DatabaseOperation.PreDeleteOperationInstance,
+    options: ActorDelta.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: ActorDelta.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: ActorDelta.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: ActorDelta.Implementation[],
-    operation: ActorDelta.DatabaseOperation.Delete,
+    operation: ActorDelta.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: ActorDelta.Implementation[],
-    operation: ActorDelta.DatabaseOperation.Delete,
+    operation: ActorDelta.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  static get hasSystemData(): true;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: ActorDelta.Implementation[],
@@ -188,6 +261,8 @@ declare abstract class BaseActorDelta<
     documents: ActorDelta.Implementation[],
     context: Document.ModificationContext<ActorDelta.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<ActorDelta.Schema>;
 
@@ -206,9 +281,17 @@ declare abstract class BaseActorDelta<
 export default BaseActorDelta;
 
 declare namespace BaseActorDelta {
-  export import Metadata = ActorDelta.Metadata;
   export import SubType = ActorDelta.SubType;
+  export import Name = ActorDelta.Name;
+  export import ConstructorArgs = ActorDelta.ConstructorArgs;
+  export import Hierarchy = ActorDelta.Hierarchy;
+  export import Metadata = ActorDelta.Metadata;
   export import Parent = ActorDelta.Parent;
+  export import Pack = ActorDelta.Pack;
+  export import Embedded = ActorDelta.Embedded;
+  export import EmbeddedName = ActorDelta.EmbeddedName;
+  export import EmbeddedCollectionName = ActorDelta.EmbeddedCollectionName;
+  export import ParentCollectionName = ActorDelta.ParentCollectionName;
   export import Stored = ActorDelta.Stored;
   export import Source = ActorDelta.Source;
   export import PersistedData = ActorDelta.PersistedData;
@@ -216,7 +299,8 @@ declare namespace BaseActorDelta {
   export import InitializedData = ActorDelta.InitializedData;
   export import UpdateData = ActorDelta.UpdateData;
   export import Schema = ActorDelta.Schema;
-  export import DatabaseOperation = ActorDelta.DatabaseOperation;
+  export import DatabaseOperation = ActorDelta.Database;
+  export import Flags = ActorDelta.Flags;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
