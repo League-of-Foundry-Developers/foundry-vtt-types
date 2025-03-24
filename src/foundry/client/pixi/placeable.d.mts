@@ -75,6 +75,8 @@ declare global {
 
     /**
      * The flags declared here are required for all PlaceableObject subclasses to also support.
+     * @privateRemarks `InterfaceToObject` is required here, but not in the subclasses, to bridge the assignability gap
+     * between interfaces (subclasses) and an index signature (super)
      */
     static override RENDER_FLAGS: InterfaceToObject<PlaceableObject.RENDER_FLAGS>;
 
@@ -163,7 +165,7 @@ declare global {
      * Get the snapped position for a given position or the current position
      * @param position - The position to be used instead of the current position
      * @returns The snapped position
-     * @remarks Calls the titular method of `this.layer`. If `position` is not provided or nullish, passes `this.document` instead
+     * @remarks Calls `this#layer#getSnappedPoint`. If `position` is not provided or nullish, the document's values are used
      */
     getSnappedPosition(position?: Canvas.Point | null): Canvas.Point;
 
@@ -312,7 +314,8 @@ declare global {
      * @param snap  - Snap the angle of rotation to a certain target degree increment
      * @returns A Promise which resolves once the rotation has completed
      */
-    rotate(angle: number, snap: number): Promise<this>;
+    // snap: not null (forwarded to _updateRotation with only a parameter default)
+    rotate(angle: number, snap?: number): Promise<this>;
 
     /**
      * Determine a new angle of rotation for a PlaceableObject either from an explicit angle or from a delta offset.
@@ -328,7 +331,7 @@ declare global {
      * @param dy - The number of grid units to shift along the Y-axis
      * @returns The shifted target coordinates
      * @remarks Despite the parameter descriptions saying 'number of grid units', they're only checked for sign.
-     * @privateRemarks Foundry types this correctly and describes it wrong, logged
+     * @privateRemarks Foundry types this correctly, but describes it wrong, logged
      */
     protected _getShiftedPosition(dx: -1 | 0 | 1, dy: -1 | 0 | 1): Canvas.Point;
 
@@ -673,11 +676,10 @@ declare global {
     interface UpdateRotationOptions extends __UpdateRotationOptions {}
 
     /** @internal */
-    type _HoverInOptions = InexactPartial<{
+    type _HoverInOptions = NullishProps<{
       /**
        * Trigger hover-out behavior on sibling objects
        * @defaultValue `false`
-       * @remarks Can't be `null` as it only has a parameter default
        */
       hoverOutOthers: boolean;
     }>;

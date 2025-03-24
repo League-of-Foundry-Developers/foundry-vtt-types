@@ -147,6 +147,10 @@ declare global {
 
     override activateListeners(): void;
 
+    // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
+    // options: not null (destructured)
+    protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): void;
+
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
@@ -191,6 +195,9 @@ declare global {
      * Handle cancellation of a drag event for one of the resizing handles
      */
     protected _onHandleDragCancel(event: PIXI.FederatedEvent): void;
+
+    // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
+    protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.DragLeftDropUpdate[];
 
     /**
      * Is this tile a roof?

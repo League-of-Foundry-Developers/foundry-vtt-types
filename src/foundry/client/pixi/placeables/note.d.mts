@@ -96,7 +96,14 @@ declare global {
 
     protected override _canConfigure(user: User.Implementation): boolean;
 
+    // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
+    // options: not null (destructured)
+    protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): void;
+
     protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
+
+    // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
+    protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.DragLeftDropUpdate[];
 
     /**
      * The text label used to annotate this Note

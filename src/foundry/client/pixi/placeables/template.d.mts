@@ -160,7 +160,14 @@ declare global {
 
     protected override _canView(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
+    // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
+    // options: not null (destructured)
+    protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): void;
+
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
+
+    // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
+    protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.DragLeftDropUpdate[];
 
     /**
      * @deprecated since v12, until v14

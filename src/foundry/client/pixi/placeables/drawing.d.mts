@@ -97,7 +97,7 @@ declare global {
      */
     protected _onkeydown: ((event: KeyboardEvent) => void) | null;
 
-    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
     protected override _draw(options: HandleEmptyObject<Drawing.DrawOptions> | undefined): Promise<void>;
 
@@ -176,9 +176,9 @@ declare global {
      */
     protected _removePoint(): void;
 
-    protected override _onControl(options: Drawing.ControlOptions | undefined): void;
+    protected override _onControl(options: Drawing.ControlOptions): void;
 
-    protected override _onRelease(options: HandleEmptyObject<Drawing.ReleaseOptions> | undefined): void;
+    protected override _onRelease(options: HandleEmptyObject<Drawing.ReleaseOptions>): void;
 
     protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
 
@@ -196,6 +196,10 @@ declare global {
 
     protected override _canConfigure(_user: User.Implementation, _event: PIXI.FederatedEvent): boolean;
 
+    // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
+    // options: not null (destructured)
+    protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): void;
+
     /**
      * Handle mouse movement which modifies the dimensions of the drawn shape
      * @remarks Foundry marked `@internal`
@@ -211,6 +215,9 @@ declare global {
     protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
 
     protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;
+
+    // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
+    protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.DragLeftDropUpdate[];
 
     /**
      * Handle mouse-over event on a control handle

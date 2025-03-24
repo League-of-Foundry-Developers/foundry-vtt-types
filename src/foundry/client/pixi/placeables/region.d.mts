@@ -134,6 +134,9 @@ declare global {
 
     // _onUpdate is overridden but with no signature changes.
     // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+
+    // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
+    protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.DragLeftDropUpdate[];
   }
 
   namespace Region {
