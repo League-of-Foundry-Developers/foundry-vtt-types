@@ -1,4 +1,4 @@
-import type { InexactPartial, Mixin } from "fvtt-types/utils";
+import type { AnyConstructor, InexactPartial, Mixin } from "fvtt-types/utils";
 
 /**
  * A mixin class which implements the behavior of EventTarget.
@@ -57,6 +57,6 @@ declare namespace EventEmitter {
  * Augment a base class with EventEmitter behavior.
  * @param BaseClass - Some base class augmented with event emitter functionality
  */
-export default function EventEmitterMixin<ExtendedClass extends abstract new (...args: any[]) => any>(
+export default function EventEmitterMixin<ExtendedClass extends AnyConstructor>(
   BaseClass: ExtendedClass,
 ): Mixin<typeof EventEmitter, ExtendedClass>;
