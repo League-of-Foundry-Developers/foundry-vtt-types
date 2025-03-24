@@ -658,9 +658,9 @@ declare global {
     // options: not null (destructured)
     segmentizeRegionMovement(
       region: Region.Object,
-      waypoints: Region.RegionMovementWaypoint[],
+      waypoints: Region.MovementWaypoint[],
       options?: Region.SegmentizeMovementOptions,
-    ): Region.RegionMovementSegment[];
+    ): Region.MovementSegment[];
 
     /**
      * Set this Token as an active target for the current game User

@@ -8,9 +8,8 @@ expectTypeOf(AmbientLight.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
   Array<"redraw" | "refresh" | "refreshState" | "refreshField" | "refreshPosition" | "refreshElevation"> | undefined
 >();
 
-declare const lightDoc: AmbientLightDocument.Stored;
-
-const light = new CONFIG.AmbientLight.objectClass(lightDoc);
+declare const doc: AmbientLightDocument.Stored;
+const light = new CONFIG.AmbientLight.objectClass(doc);
 
 expectTypeOf(light.field).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(light.lightSource);
@@ -61,7 +60,7 @@ expectTypeOf(light["_refreshElevation"]()).toBeVoid();
 expectTypeOf(light["_refreshState"]()).toBeVoid();
 
 expectTypeOf(
-  light["_onCreate"](lightDoc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
+  light["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
 ).toBeVoid();
 
 expectTypeOf(

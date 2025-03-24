@@ -3,7 +3,6 @@ import type { Brand, FixedInstanceType, HandleEmptyObject, NullishProps } from "
 import type RegionShape from "../../../client-esm/canvas/regions/shape.d.mts";
 import type RegionPolygonTree from "../../../client-esm/canvas/regions/polygon-tree.d.mts";
 import type RegionGeometry from "../../../client-esm/canvas/regions/geometry.d.mts";
-import type { Point } from "../../../common/types.d.mts";
 
 declare global {
   /**
@@ -89,7 +88,7 @@ declare global {
 
     protected override _draw(options: HandleEmptyObject<Region.DrawOptions>): Promise<void>;
 
-    protected override _applyRenderFlags(flags: PlaceableObject.RenderFlags): void;
+    protected override _applyRenderFlags(flags: Region.RenderFlags): void;
 
     /** Refresh the state of the Region. */
     protected _refreshState(): void;
@@ -118,6 +117,7 @@ declare global {
      * @param point       - The point.
      * @param elevation   - The elevation of the point.
      * @returns Is the point (at the given elevation) inside this Region?
+     * @remarks Only tests elevation if provided, always forwards `position` to {@link RegionPolygonTree.testPoint | `RegionPolygonTree#testPoint`}
      */
     // elevation: not null (`=== undefined` check)
     testPoint(point: Canvas.Point, elevation?: number): boolean;
@@ -126,14 +126,15 @@ declare global {
      * Split the movement into its segments.
      * @param waypoints - The waypoints of movement.
      * @param samples   - The points relative to the waypoints that are tested. Whenever one of them is inside the region, the moved object is considered to be inside the region.
+     * @param options   - Additional options
      * @returns The movement split into its segments.
      */
     // options: not null (destructured)
     segmentizeMovement(
-      waypoints: Region.RegionMovementWaypoint[],
+      waypoints: Region.MovementWaypoint[],
       samples: Canvas.Point[],
       options?: Region.SegmentizeMovementOptions,
-    ): Region.RegionMovementSegment[];
+    ): Region.MovementSegment[];
 
     // _onUpdate is overridden but with no signature changes.
     // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
@@ -214,7 +215,7 @@ declare global {
 
     interface HoverOutOptions extends _HoverInOptions {}
 
-    interface RegionMovementWaypoint {
+    interface MovementWaypoint {
       /** The x-coordinates in pixels (integer) */
       x: number;
 
@@ -225,15 +226,15 @@ declare global {
       elevation: number;
     }
 
-    interface RegionMovementSegment {
+    interface MovementSegment {
       /** The type of this segment (see {@link Region.MovementSegmentTypes | `Region.MovementSegmentTypes`}) */
       type: MOVEMENT_SEGMENT_TYPES;
 
       /** The waypoint that this segment starts from */
-      from: RegionMovementWaypoint;
+      from: MovementWaypoint;
 
       /** The waypoint that this segment goes to */
-      to: RegionMovementWaypoint;
+      to: MovementWaypoint;
     }
 
     type MOVEMENT_SEGMENT_TYPES = Brand<number, "Region.MOVEMENT_SEGMENT_TYPES">;

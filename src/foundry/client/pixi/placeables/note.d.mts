@@ -29,12 +29,12 @@ declare global {
     /**
      * The associated JournalEntry which is described by this note
      */
-    get entry(): JournalEntry.Stored;
+    get entry(): JournalEntry.Stored | undefined;
 
     /**
      * The specific JournalEntryPage within the associated JournalEntry referenced by this Note.
      */
-    get page(): JournalEntryPage.Stored;
+    get page(): JournalEntryPage.Stored | undefined;
 
     /**
      * Determine whether the Note is visible to the current user based on their perspective of the Scene.

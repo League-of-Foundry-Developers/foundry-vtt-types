@@ -17,7 +17,7 @@ class FakeLight extends PlaceableObject<AmbientLightDocument.Implementation> {
   protected async _draw(_options: HandleEmptyObject<PlaceableObject.DrawOptions>): Promise<void> {}
 }
 
-declare const someLightDoc: AmbientLightDocument.Implementation;
+declare const someLightDoc: AmbientLightDocument.Stored;
 const placeable = new FakeLight(someLightDoc);
 assertType<Document.Any>(placeable.document);
 
