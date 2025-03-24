@@ -42,11 +42,42 @@ expectTypeOf(sound["_destroy"]({ baseTexture: true, children: true, texture: tru
 expectTypeOf(sound["_destroy"](true)).toBeVoid();
 expectTypeOf(sound["_destroy"](undefined)).toBeVoid();
 
+// @ts-expect-error an object must be passed
+expectTypeOf(sound["_applyRenderFlags"]()).toBeVoid();
+expectTypeOf(sound["_applyRenderFlags"]({})).toBeVoid();
+// all falsey values have no effect
+expectTypeOf(sound["_applyRenderFlags"]({ refreshElevation: null, refreshPosition: undefined })).toBeVoid();
+expectTypeOf(
+  sound["_applyRenderFlags"]({
+    redraw: true,
+    refresh: true,
+    refreshField: true,
+    refreshPosition: true,
+    refreshState: true,
+    refreshElevation: true,
+  }),
+).toBeVoid();
+
 expectTypeOf(sound["_refreshField"]()).toBeVoid();
 expectTypeOf(sound["_refreshPosition"]()).toBeVoid();
 expectTypeOf(sound["_refreshState"]()).toBeVoid();
 expectTypeOf(sound.refreshControl()).toBeVoid();
 expectTypeOf(sound["_refreshElevation"]()).toBeVoid();
+
+expectTypeOf(
+  sound["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
+).toBeVoid();
+
+expectTypeOf(
+  sound["_onUpdate"](
+    // partial source data
+    { easing: true, path: "path/to/sound.ogg", repeat: true, flags: { core: { sheetLock: true } } },
+    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    "XXXXXSomeIDXXXXX",
+  ),
+).toBeVoid();
+
+expectTypeOf(sound["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
 
 expectTypeOf(sound.initializeSoundSource()).toBeVoid();
 expectTypeOf(sound.initializeSoundSource({})).toBeVoid();
@@ -70,4 +101,4 @@ expectTypeOf(sound["_onDragEnd"]()).toBeVoid();
 expectTypeOf(sound["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
 //deprecated since v12, until v14
-expectTypeOf(sound.updateSource()).toEqualTypeOf<void>();
+expectTypeOf(sound.updateSource({ deleted: true })).toEqualTypeOf<void>();

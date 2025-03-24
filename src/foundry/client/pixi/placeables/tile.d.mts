@@ -94,7 +94,7 @@ declare global {
      * Create a preview tile with a background texture instead of an image
      * @param data - Initial data with which to create the preview Tile
      */
-    static createPreview(data: TileDocument.CreateData): TileDocument.Implementation;
+    static createPreview(data: TileDocument.CreateData): Tile.Object;
 
     protected override _draw(options: HandleEmptyObject<Tile.DrawOptions>): Promise<void>;
 
@@ -238,9 +238,9 @@ declare global {
      * @deprecated since v11, will be removed in v13
      * @remarks "`Tile#_getAlphaBounds` has been deprecated in favor of {@link PrimarySpriteMesh._getAlphaBounds | `PrimarySpriteMesh#_getAlphaBounds`}"
      *
-     * The runtime deprecation warning doesn't point anywhere, despite forwarding the call.
+     * The runtime deprecation warning doesn't point anywhere, despite forwarding the call (to `mesh?._getAlphaBounds`, thus the `| undefined`).
      */
-    _getAlphaBounds(): unknown;
+    _getAlphaBounds(): PIXI.Rectangle | undefined;
   }
 
   namespace Tile {
