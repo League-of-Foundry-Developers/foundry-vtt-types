@@ -15,6 +15,9 @@ declare global {
   class Region extends PlaceableObject<RegionDocument.Implementation> {
     constructor(document: RegionDocument.Implementation);
 
+    // fake override; super has to type as if this could be a ControlIcon, but Regions don't use one
+    override controlIcon: null;
+
     static override embeddedName: "Region";
 
     static override RENDER_FLAGS: Region.RENDER_FLAGS;

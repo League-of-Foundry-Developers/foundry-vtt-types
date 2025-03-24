@@ -23,6 +23,9 @@ declare global {
 
     static override RENDER_FLAGS: Token.RENDER_FLAGS;
 
+    // fake override; super has to type as if this could be a ControlIcon, but Tokens don't use one
+    override controlIcon: null;
+
     /**
      * The shape of this token.
      * @defaultValue `undefined`

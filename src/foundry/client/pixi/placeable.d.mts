@@ -255,12 +255,11 @@ declare global {
 
     /**
      * Define additional steps taken when an existing placeable object of this type is updated with new data
-     * @remarks Called without options and userId in `Drawing#_onUpdate`
      */
     protected _onUpdate(
       changed: foundry.data.fields.SchemaField.UpdateData<CanvasDocument["schema"]["fields"]>,
-      options?: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
-      userId?: string,
+      options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
+      userId: string,
     ): void;
 
     /**

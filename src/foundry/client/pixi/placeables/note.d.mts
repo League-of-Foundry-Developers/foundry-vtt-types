@@ -13,8 +13,9 @@ declare global {
 
     static override RENDER_FLAGS: Note.RENDER_FLAGS;
 
-    // `controlIcon` is actually defined in the class body here, but not initialized to a value
-    //  since this doesn't change anything vs PlaceableObject's inferred typing, it has been omitted
+    // `controlIcon` is actually defined in the class body here (unlike in super or any of its siblings),
+    // but not initialized to a value. Since it's still set `null` at construction, and the Foundry
+    // comment here provides no additional info, it's been omitted as there's no change from PlaceableObject
 
     /**
      * The tooltip.

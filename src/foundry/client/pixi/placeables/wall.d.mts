@@ -16,6 +16,9 @@ declare global {
 
     static override RENDER_FLAGS: Wall.RENDER_FLAGS;
 
+    // fake override; super has to type as if this could be a ControlIcon, but Walls don't use one
+    override controlIcon: null;
+
     /**
      * A reference the Door Control icon associated with this Wall, if any
      * @defaultValue `undefined`

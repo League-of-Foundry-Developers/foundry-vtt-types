@@ -26,7 +26,7 @@ expectTypeOf(Drawing.SHAPE_TYPES).toEqualTypeOf<foundry.data.ShapeData.TYPES>();
 expectTypeOf(Drawing.rescaleDimensions(drawingDoc.toObject(), 50, 72)).toEqualTypeOf<DrawingDocument.Source>();
 expectTypeOf(Drawing.normalizeShape(drawingDoc.toObject())).toEqualTypeOf<DrawingDocument.Source>();
 
-declare const drawing: Drawing.Object;
+const drawing = new CONFIG.Drawing.objectClass(drawingDoc);
 
 expectTypeOf(drawing.isAuthor).toBeBoolean();
 expectTypeOf(drawing.isVisible).toBeBoolean();
@@ -91,6 +91,25 @@ expectTypeOf(drawing["_addPoint"]({ x: 50, y: 60 }, {})).toBeVoid();
 expectTypeOf(drawing["_addPoint"]({ x: 50, y: 60 }, { round: true, snap: false, temporary: true })).toBeVoid();
 expectTypeOf(drawing["_addPoint"]({ x: 50, y: 60 }, { round: null, snap: undefined, temporary: null })).toBeVoid();
 expectTypeOf(drawing["_removePoint"]()).toBeVoid();
+
+expectTypeOf(
+  drawing["_onCreate"](
+    drawingDoc.toObject(),
+    { modifiedTime: 7, render: true, renderSheet: false },
+    "XXXXXSomeIDXXXXX",
+  ),
+).toBeVoid();
+
+expectTypeOf(
+  drawing["_onUpdate"](
+    // partial source data
+    { bezierFactor: 2, flags: { core: { sheetLock: true } }, fillColor: "#ABCFEF" },
+    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    "XXXXXSomeIDXXXXX",
+  ),
+).toBeVoid();
+
+expectTypeOf(drawing["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
 
 // @ts-expect-error _onControl is always passed a value
 expectTypeOf(drawing["_onControl"]()).toBeVoid();

@@ -14,6 +14,9 @@ declare global {
 
     static override RENDER_FLAGS: Tile.RENDER_FLAGS;
 
+    // fake override; super has to type as if this could be a ControlIcon, but Tiles don't use one
+    override controlIcon: null;
+
     /**
      * The Tile border frame
      * @defaultValue `undefined`

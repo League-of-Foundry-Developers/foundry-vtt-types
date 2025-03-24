@@ -7,6 +7,9 @@ declare global {
    * Each Drawing is a placeable object in the DrawingsLayer.
    */
   class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
+    // fake override; super has to type as if this could be a ControlIcon, but Drawings don't use one
+    override controlIcon: null;
+
     /**
      * The texture that is used to fill this Drawing, if any.
      * @defaultValue `undefined`
