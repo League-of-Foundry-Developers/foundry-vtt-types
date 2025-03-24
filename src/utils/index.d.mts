@@ -6,7 +6,7 @@ type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig
  * This type exists due to https://github.com/microsoft/TypeScript/issues/55667
  * This will be deprecated once this issue is solved.
  */
-export type FixedInstanceType<T extends abstract new (...args: any[]) => any> = T extends abstract new (
+export type FixedInstanceType<T extends abstract new (...args: never) => any> = T extends abstract new (
   ...args: infer _
 ) => infer R
   ? R
@@ -101,7 +101,7 @@ export type OverlapsWith<T, U> = [Extract<T, U>, any] extends [U, Extract<T, U>]
  * This is safer than what `OverlapsWith` provides as it ensures that if the type is an array it is an array of `Item`.
  * Assumes readonly arrays are permitted.
  *
- * Note that `never[]` and `any[]` are still accepted due to the unsoundness of those types.
+ * Note that `never[]` and `any[]` are still accepted due to the fundamental nature of these types.
  *
  * @example
  * ```ts

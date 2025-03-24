@@ -1,9 +1,7 @@
 import type { InexactPartial, NullishProps, FixedInstanceType } from "fvtt-types/utils";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.d.mts";
 
-type InternalCanvas = new (
-  ...args: never
-) => {
+type InternalCanvas = new (...args: never) => {
   readonly [K in keyof CONFIG.Canvas.Groups]?: FixedInstanceType<CONFIG.Canvas.Groups[K]["groupClass"]> | undefined;
 };
 

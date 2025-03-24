@@ -9,6 +9,7 @@ import type {
   Identity,
   PrettifyType,
   InterfaceToObject,
+  AnyArray,
 } from "fvtt-types/utils";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -1762,7 +1763,7 @@ declare class ArrayField<
    * @returns An array of element-specific errors
    */
   protected _validateElements(
-    value: any[],
+    value: AnyArray,
     options?: DataField.ValidationOptions<DataField.Any>,
   ): DataModelValidationFailure | void;
 
@@ -1773,7 +1774,7 @@ declare class ArrayField<
    * @returns A validation failure if the element failed validation
    */
   protected _validateElement(
-    value: any,
+    value: unknown,
     options: DataField.ValidationOptions<DataField.Any>,
   ): DataModelValidationFailure | void;
 

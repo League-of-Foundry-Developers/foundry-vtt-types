@@ -1,12 +1,12 @@
 // This class exists make it as sound as possible to override these parts of the class and make them
 
-import type { Identity } from "fvtt-types/utils";
+import type { AnyArray, Identity } from "fvtt-types/utils";
 
 // completely unrelated. It's done this way specifically to avoid situations with broken inheritance.
 declare class Map<K, V> extends globalThis.Map<K, V> {
   [Symbol.iterator](): any;
-  forEach(...args: any[]): any;
-  get(...args: any[]): any;
+  forEach(...args: AnyArray): any;
+  get(...args: AnyArray): any;
 }
 
 /**
@@ -156,7 +156,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * Convert the Collection to a primitive array of its contents.
    * @returns An array of contained values
    */
-  toJSON(): Array<V extends { toJSON: (...args: any[]) => infer U } ? U : V>;
+  toJSON(): Array<V extends { toJSON: (...args: infer _1) => infer U } ? U : V>;
 }
 
 declare namespace Collection {
