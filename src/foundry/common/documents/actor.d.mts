@@ -1,7 +1,8 @@
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Actor Document.
@@ -63,104 +64,169 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   /*
    * After this point these are not really overridden methods.
-   * They are here because they're static properties but depend on the instance and so can't be
-   * defined DRY-ly while also being easily overridable.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
    */
+
+  /* Document overrides */
 
   static " fvtt_types_internal_document_name_static": "Actor";
 
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: Actor.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
   static get implementation(): Actor.ImplementationClass;
 
-  override parent: Actor.Parent;
+  static get baseDocument(): typeof BaseActor;
 
-  override system: Document.SystemFor<"Actor", SubType>;
+  static get collectionName(): Actor.ParentCollectionName;
+
+  static get documentName(): Actor.Name;
 
   static get TYPES(): BaseActor.SubType[];
 
+  static get hasTypeData(): true;
+
+  static get hierarchy(): Actor.Hierarchy;
+
+  override system: Document.SystemFor<"Actor", SubType>;
+
+  override parent: BaseActor.Parent;
+
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Actor.Implementation | Actor.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<Actor.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<Actor.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Actor.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Actor.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<Actor.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Actor.Database.Update>,
   ): Promise<Actor.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<Actor.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Actor.Database.Delete>,
   ): Promise<Actor.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: Actor.CreateData | Actor.CreateData[],
-    operation?: Document.Database.CreateOperation<Actor.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Actor.Implementation | undefined>;
+    operation?: Actor.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<Actor.Implementation, Temporary> | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): Actor.Implementation | null;
+  override update(
+    data: Actor.UpdateData | undefined,
+    operation?: Actor.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: Actor.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(documentId: string, options?: Actor.Database.GetOptions): Actor.Implementation | null;
+
+  static override getCollectionName<CollectionName extends Actor.EmbeddedName>(
+    name: CollectionName,
+  ): Actor.CollectionNameOf<CollectionName> | null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends Actor.Flags.Scope, Key extends Actor.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<Actor.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends Actor.Flags.Scope,
+    Key extends Actor.Flags.Key<Scope>,
+    Value extends Document.GetFlag<Actor.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends Actor.Flags.Scope, Key extends Actor.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   protected _preCreate(
     data: Actor.CreateData,
-    options: Actor.DatabaseOperation.PreCreateOperationInstance,
+    options: Actor.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(data: Actor.CreateData, options: Actor.DatabaseOperation.OnCreateOperation, userId: string): void;
+  protected _onCreate(data: Actor.CreateData, options: Actor.Database.OnCreateOperation, userId: string): void;
 
   protected static _preCreateOperation(
     documents: Actor.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<Actor.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<Actor.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: Actor.Implementation[],
-    operation: Actor.DatabaseOperation.Create,
+    operation: Actor.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: Actor.UpdateData,
-    options: Actor.DatabaseOperation.PreUpdateOperationInstance,
+    options: Actor.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
-    changed: Actor.UpdateData,
-    options: Actor.DatabaseOperation.OnUpdateOperation,
-    userId: string,
-  ): void;
+  protected _onUpdate(changed: Actor.UpdateData, options: Actor.Database.OnUpdateOperation, userId: string): void;
 
   protected static _preUpdateOperation(
     documents: Actor.Implementation[],
-    operation: Actor.DatabaseOperation.Update,
+    operation: Actor.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: Actor.Implementation[],
-    operation: Actor.DatabaseOperation.Update,
+    operation: Actor.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
-    options: Actor.DatabaseOperation.PreDeleteOperationInstance,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
+  protected _preDelete(options: Actor.Database.PreDeleteOptions, user: User.Implementation): Promise<boolean | void>;
 
-  protected _onDelete(options: Actor.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: Actor.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: Actor.Implementation[],
-    operation: Actor.DatabaseOperation.Delete,
+    operation: Actor.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: Actor.Implementation[],
-    operation: Actor.DatabaseOperation.Delete,
+    operation: Actor.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  static get hasSystemData(): true;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: Actor.Implementation[],
@@ -176,6 +242,8 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     documents: Actor.Implementation[],
     context: Document.ModificationContext<Actor.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<Actor.Schema>;
 
@@ -194,9 +262,17 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 }
 
 declare namespace BaseActor {
-  export import Metadata = Actor.Metadata;
   export import SubType = Actor.SubType;
+  export import Name = Actor.Name;
+  export import ConstructorArgs = Actor.ConstructorArgs;
+  export import Hierarchy = Actor.Hierarchy;
+  export import Metadata = Actor.Metadata;
   export import Parent = Actor.Parent;
+  export import Pack = Actor.Pack;
+  export import Embedded = Actor.Embedded;
+  export import EmbeddedName = Actor.EmbeddedName;
+  export import EmbeddedCollectionName = Actor.EmbeddedCollectionName;
+  export import ParentCollectionName = Actor.ParentCollectionName;
   export import Stored = Actor.Stored;
   export import Source = Actor.Source;
   export import PersistedData = Actor.PersistedData;
@@ -204,7 +280,8 @@ declare namespace BaseActor {
   export import InitializedData = Actor.InitializedData;
   export import UpdateData = Actor.UpdateData;
   export import Schema = Actor.Schema;
-  export import DatabaseOperation = Actor.DatabaseOperation;
+  export import DatabaseOperation = Actor.Database;
+  export import Flags = Actor.Flags;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.

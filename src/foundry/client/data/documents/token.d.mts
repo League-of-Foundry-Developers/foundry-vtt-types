@@ -1011,7 +1011,7 @@ declare global {
      */
     protected _onUpdateBaseActor(
       update?: DeepPartial<Actor.Implementation["_source"]>,
-      options?: Actor.DatabaseOperation.OnUpdateOperation,
+      options?: Actor.Database.OnUpdateOperation,
     ): void;
 
     /**
@@ -1025,7 +1025,7 @@ declare global {
        * @privateRemarks foundry calls this field operation
        * but it's being passed options (and then ignores them)
        */
-      operation?: Actor.DatabaseOperation.OnUpdateOperation,
+      operation?: Actor.Database.OnUpdateOperation,
     ): void;
 
     /**
