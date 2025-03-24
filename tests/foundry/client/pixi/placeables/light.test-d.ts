@@ -38,6 +38,8 @@ expectTypeOf(light["_destroy"](undefined)).toBeVoid();
 expectTypeOf(light["_draw"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(light["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
+expectTypeOf(light.clear()).toEqualTypeOf<AmbientLight.Object>();
+
 // @ts-expect-error an object must be passed
 expectTypeOf(light["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(light["_applyRenderFlags"]({})).toBeVoid();

@@ -65,6 +65,9 @@ declare global {
      */
     protected _getTextStyle(): PIXI.TextStyle;
 
+    // fake override; super has to account for misbehaving siblings returning void
+    override clear(): this;
+
     protected override _applyRenderFlags(flags: Note.RenderFlags): void;
 
     /**

@@ -33,6 +33,8 @@ expectTypeOf(region.getSnappedPosition()).toBeNever();
 expectTypeOf(region["_draw"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(region["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
+expectTypeOf(region.clear()).toEqualTypeOf<Region.Object>();
+
 // @ts-expect-error an object must be passed
 expectTypeOf(region["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(region["_applyRenderFlags"]({})).toBeVoid();

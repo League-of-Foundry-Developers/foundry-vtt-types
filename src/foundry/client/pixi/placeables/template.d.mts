@@ -70,6 +70,9 @@ declare global {
 
     protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
+    // fake override; super has to account for misbehaving siblings returning void
+    override clear(): this;
+
     protected _applyRenderFlags(flags: MeasuredTemplate.RenderFlags): void;
 
     /**

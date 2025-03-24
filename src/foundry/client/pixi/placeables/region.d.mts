@@ -88,6 +88,9 @@ declare global {
 
     protected override _draw(options: HandleEmptyObject<Region.DrawOptions>): Promise<void>;
 
+    // fake override; super has to account for misbehaving siblings returning void
+    override clear(): this;
+
     protected override _applyRenderFlags(flags: Region.RenderFlags): void;
 
     /** Refresh the state of the Region. */

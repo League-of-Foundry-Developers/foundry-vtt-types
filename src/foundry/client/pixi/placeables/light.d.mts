@@ -102,6 +102,9 @@ declare global {
 
     protected override _draw(options: HandleEmptyObject<AmbientLight.DrawOptions>): Promise<void>;
 
+    // fake override; super has to account for misbehaving siblings returning void
+    override clear(): this;
+
     protected override _applyRenderFlags(flags: AmbientLight.RenderFlags): void;
 
     /**

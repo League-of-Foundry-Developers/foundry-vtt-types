@@ -1,21 +1,73 @@
 import { expectTypeOf } from "vitest";
-
-declare const doc: AmbientSoundDocument;
+import Sound = foundry.audio.Sound;
 
 expectTypeOf(AmbientSound.embeddedName).toEqualTypeOf<"AmbientSound">();
+expectTypeOf(AmbientSound.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
+  // undefined only from the optional chain, not underlying type
+  Array<"redraw" | "refresh" | "refreshField" | "refreshPosition" | "refreshState" | "refreshElevation"> | undefined
+>();
 
-// @ts-expect-error - An AmbientSound requires an AmbientSoundDocument.
-new AmbientSound();
+declare const doc: AmbientSoundDocument.Stored;
+const sound = new CONFIG.AmbientSound.objectClass(doc);
 
-const sound = new AmbientSound(doc);
-expectTypeOf(sound.sound).toEqualTypeOf<Sound | null>();
+expectTypeOf(sound.controlIcon).toEqualTypeOf<ControlIcon | null>();
+expectTypeOf(sound.sound).toEqualTypeOf<Sound | null | undefined>();
+expectTypeOf(sound.source).toEqualTypeOf<foundry.canvas.sources.PointSoundSource.ConfiguredInstance | undefined>();
+expectTypeOf(sound.field).toEqualTypeOf<PIXI.Graphics | undefined>();
+expectTypeOf(sound["_createSound"]()).toEqualTypeOf<Sound | null>();
+
+expectTypeOf(sound.applyEffects()).toBeVoid();
+expectTypeOf(sound.applyEffects({})).toBeVoid();
+expectTypeOf(sound.applyEffects({ muffled: true })).toBeVoid();
+expectTypeOf(sound.applyEffects({ muffled: null })).toBeVoid();
+
 expectTypeOf(sound.isAudible).toEqualTypeOf<boolean>();
+expectTypeOf(sound.bounds).toEqualTypeOf<PIXI.Rectangle>();
 expectTypeOf(sound.radius).toEqualTypeOf<number>();
+
 expectTypeOf(sound.sync(true, 10)).toEqualTypeOf<void>();
 expectTypeOf(sound.sync(true, 10, {})).toEqualTypeOf<void>();
 expectTypeOf(sound.sync(true, 10, { fade: 250 })).toEqualTypeOf<void>();
-expectTypeOf(sound.clear()).toEqualTypeOf<AmbientSound>();
-expectTypeOf(sound.draw()).toEqualTypeOf<Promise<AmbientSound>>();
-expectTypeOf(sound.refresh()).toEqualTypeOf<AmbientSound>();
-expectTypeOf(sound.refreshControl()).toEqualTypeOf<void>();
+
+expectTypeOf(sound.clear()).toEqualTypeOf<AmbientSound.Object>();
+
+// @ts-expect-error _draw always gets passed a value
+expectTypeOf(sound["_draw"]()).toEqualTypeOf<Promise<void>>();
+expectTypeOf(sound["_draw"]({})).toEqualTypeOf<Promise<void>>();
+
+// @ts-expect-error _destroy always gets passed a value, even if that value is `undefined`
+expectTypeOf(sound["_destroy"]()).toBeVoid();
+expectTypeOf(sound["_destroy"]({})).toBeVoid();
+expectTypeOf(sound["_destroy"]({ baseTexture: true, children: true, texture: true })).toBeVoid();
+expectTypeOf(sound["_destroy"](true)).toBeVoid();
+expectTypeOf(sound["_destroy"](undefined)).toBeVoid();
+
+expectTypeOf(sound["_refreshField"]()).toBeVoid();
+expectTypeOf(sound["_refreshPosition"]()).toBeVoid();
+expectTypeOf(sound["_refreshState"]()).toBeVoid();
+expectTypeOf(sound.refreshControl()).toBeVoid();
+expectTypeOf(sound["_refreshElevation"]()).toBeVoid();
+
+expectTypeOf(sound.initializeSoundSource()).toBeVoid();
+expectTypeOf(sound.initializeSoundSource({})).toBeVoid();
+expectTypeOf(sound.initializeSoundSource({ deleted: true })).toBeVoid();
+expectTypeOf(sound.initializeSoundSource({ deleted: null })).toBeVoid();
+expectTypeOf(sound["_getSoundSourceData"]()).toEqualTypeOf<AmbientSound.SoundSourceData>();
+
+declare const someUser: User.Implementation;
+declare const someEvent: PIXI.FederatedEvent;
+expectTypeOf(sound["_canHUD"](someUser, someEvent)).toBeBoolean();
+expectTypeOf(sound["_canConfigure"](someUser, someEvent)).toBeBoolean();
+
+expectTypeOf(sound["_onHoverIn"](someEvent)).toBeVoid();
+expectTypeOf(sound["_onHoverIn"](someEvent, {})).toBeVoid();
+expectTypeOf(sound["_onHoverIn"](someEvent, { hoverOutOthers: true })).toBeVoid();
+expectTypeOf(sound["_onHoverIn"](someEvent, { hoverOutOthers: null })).toBeVoid();
+
+expectTypeOf(sound["_onClickRight"](someEvent)).toBeVoid();
+expectTypeOf(sound["_onDragLeftMove"](someEvent)).toBeVoid();
+expectTypeOf(sound["_onDragEnd"]()).toBeVoid();
+expectTypeOf(sound["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
+
+//deprecated since v12, until v14
 expectTypeOf(sound.updateSource()).toEqualTypeOf<void>();

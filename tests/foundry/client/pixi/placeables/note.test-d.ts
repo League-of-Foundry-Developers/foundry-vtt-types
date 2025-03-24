@@ -35,6 +35,8 @@ expectTypeOf(note["_drawTooltip"]()).toEqualTypeOf<PIXI.Text>();
 expectTypeOf(note["_refreshTooltip"]()).toBeVoid();
 expectTypeOf(note["_getTextStyle"]()).toEqualTypeOf<PIXI.TextStyle>();
 
+expectTypeOf(note.clear()).toEqualTypeOf<Note.Object>();
+
 // @ts-expect-error an object must be passed
 expectTypeOf(note["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(note["_applyRenderFlags"]({})).toBeVoid();

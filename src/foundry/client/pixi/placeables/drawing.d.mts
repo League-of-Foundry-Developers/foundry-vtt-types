@@ -125,6 +125,9 @@ declare global {
 
     override clone(): this;
 
+    // fake override; super has to account for misbehaving siblings returning void
+    override clear(): this;
+
     protected override _applyRenderFlags(flags: Drawing.RenderFlags): void;
 
     /**
