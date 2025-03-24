@@ -1853,7 +1853,7 @@ interface DatabaseOperationCreateMap {
   Drawing: DrawingDocument.Database.Create;
   FogExploration: FogExploration.Database.Create;
   Folder: Folder.Database.Create;
-  Item: Item.DatabaseOperation.Create;
+  Item: Item.Database.Create;
   JournalEntry: JournalEntry.Database.Create;
   JournalEntryPage: JournalEntryPage.Database.Create;
   Macro: Macro.Database.Create;
@@ -1888,7 +1888,7 @@ interface DatabaseOperationUpdateMap {
   Drawing: DrawingDocument.Database.Update;
   FogExploration: FogExploration.Database.Update;
   Folder: Folder.Database.Update;
-  Item: Item.DatabaseOperation.Update;
+  Item: Item.Database.Update;
   JournalEntry: JournalEntry.Database.Update;
   JournalEntryPage: JournalEntryPage.Database.Update;
   Macro: Macro.Database.Update;
@@ -1923,7 +1923,7 @@ interface DatabaseOperationDeleteMap {
   Drawing: DrawingDocument.Database.Delete;
   FogExploration: FogExploration.Database.Delete;
   Folder: Folder.Database.Delete;
-  Item: Item.DatabaseOperation.Delete;
+  Item: Item.Database.Delete;
   JournalEntry: JournalEntry.Database.Delete;
   JournalEntryPage: JournalEntryPage.Database.Delete;
   Macro: Macro.Database.Delete;

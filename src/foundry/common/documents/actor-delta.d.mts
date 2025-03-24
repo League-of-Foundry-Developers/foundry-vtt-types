@@ -28,7 +28,7 @@ declare abstract class BaseActorDelta<
    * You should use {@link ActorDelta.implementation | `new ActorDelta.implementation(...)`} instead which will give you
    * a system specific implementation of `ActorDelta`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseActorDelta.CreateData, BaseActorDelta.Parent>);
+  constructor(...args: ActorDelta.ConstructorArgs);
 
   static override metadata: BaseActorDelta.Metadata;
 

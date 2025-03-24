@@ -25,7 +25,7 @@ declare abstract class BaseActiveEffect<
    * You should use {@link ActiveEffect.implementation | `new ActiveEffect.implementation(...)`} instead which will give you
    * a system specific implementation of `ActiveEffect`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseActiveEffect.CreateData, BaseActiveEffect.Parent>);
+  constructor(...args: ActiveEffect.ConstructorArgs);
 
   override canUserModify(user: User.Implementation, action: "create" | "update" | "delete", data?: AnyObject): boolean;
 
