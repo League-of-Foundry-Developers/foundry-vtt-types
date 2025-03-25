@@ -24,7 +24,7 @@ declare global {
      * This type will permanently exist but is marked deprecated. The reason it exists is because
      * the confusion between `Region` (the `PlaceableObject` that appears on the canvas) and
      * `RegionDocument` (the `Document` that represents the data for a `Region`) is so common that
-     * it is useful to have type to forward to `RegionDocument`.
+     * it is useful to have a type to forward to `RegionDocument`.
      *
      * @deprecated {@link RegionDocument.Implementation | `RegionDocument.Implementation`}
      */
@@ -34,7 +34,7 @@ declare global {
      * This type will permanently exist but is marked deprecated. The reason it exists is because
      * the confusion between `Region` (the `PlaceableObject` that appears on the canvas) and
      * `RegionDocument` (the `Document` that represents the data for a `Region`) is so common that
-     * it is useful to have type to forward to `RegionDocument`.
+     * it is useful to have a type to forward to `RegionDocument`.
      *
      * @deprecated {@link RegionDocument.ImplementationClass | `RegionDocument.ImplementationClass`}
      */

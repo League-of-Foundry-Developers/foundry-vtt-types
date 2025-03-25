@@ -20,7 +20,7 @@ declare global {
      * This type will permanently exist but is marked deprecated. The reason it exists is because
      * the confusion between `Tile` (the `PlaceableObject` that appears on the canvas) and
      * `TileDocument` (the `Document` that represents the data for a `Tile`) is so common that
-     * it is useful to have type to forward to `TileDocument`.
+     * it is useful to have a type to forward to `TileDocument`.
      *
      * @deprecated {@link TileDocument.Implementation | `TileDocument.Implementation`}
      */
@@ -30,7 +30,7 @@ declare global {
      * This type will permanently exist but is marked deprecated. The reason it exists is because
      * the confusion between `Tile` (the `PlaceableObject` that appears on the canvas) and
      * `TileDocument` (the `Document` that represents the data for a `Tile`) is so common that
-     * it is useful to have type to forward to `TileDocument`.
+     * it is useful to have a type to forward to `TileDocument`.
      *
      * @deprecated {@link TileDocument.ImplementationClass | `TileDocument.ImplementationClass`}
      */
