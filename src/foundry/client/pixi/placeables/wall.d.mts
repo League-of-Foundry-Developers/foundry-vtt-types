@@ -24,7 +24,7 @@ declare global {
      * @defaultValue `undefined`
      * @remarks Only `undefined` prior to first draw. {@link Wall.clearDoorControl | `Wall#clearDoorControl`} sets it `null`.
      */
-    doorControl: DoorControl.ConfiguredInstance | undefined | null;
+    doorControl: DoorControl.ConfiguredInstance | null | undefined;
 
     /**
      * The line segment that represents the Wall.
@@ -57,7 +57,7 @@ declare global {
     /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
      */
-    get coords(): WallDocument.Coordinates;
+    get coords(): Wall.Coordinates;
 
     /**
      * The Edge instance which represents this Wall.
@@ -87,7 +87,7 @@ declare global {
     /**
      * Get the direction of effect for a directional Wall
      * @returns The angle of wall effect
-     * @remarks In radians
+     * @remarks In radians. Returns `null` if the document's `dir` is falsey/not set
      */
     get direction(): number | null;
 
@@ -340,6 +340,8 @@ declare global {
     }
 
     interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
+
+    type Coordinates = WallDocument.Coordinates;
 
     type DoorInteraction = "open" | "close" | "lock" | "unlock" | "test";
 

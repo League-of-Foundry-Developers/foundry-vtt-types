@@ -98,6 +98,8 @@ expectTypeOf(placeable["_getTargetAlpha"]()).toBeNumber();
 expectTypeOf(placeable.control()).toBeBoolean();
 expectTypeOf(placeable.control({})).toBeBoolean();
 expectTypeOf(placeable.control({ releaseOthers: true })).toBeBoolean();
+// @ts-expect-error releaseOthers is checked via `!== false` and can't be nullish
+expectTypeOf(placeable.control({ releaseOthers: undefined })).toBeBoolean();
 
 // @ts-expect-error _onControl is always passed a value
 expectTypeOf(placeable["_onControl"]()).toBeVoid();
