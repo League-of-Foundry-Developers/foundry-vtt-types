@@ -9,25 +9,40 @@ import type BaseActiveEffect from "../../../common/documents/active-effect.d.mts
 declare global {
   namespace ActiveEffect {
     /**
+     * The document's name.
+     */
+    type Name = "ActiveEffect";
+
+    /**
+     * The arguments to construct the document.
+     */
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+
+    /**
+     * The documents embedded within ActiveEffect.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the ActiveEffect document instance configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"ActiveEffect">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the ActiveEffect document configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"ActiveEffect">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"ActiveEffect"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<"ActiveEffect">;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"ActiveEffect">;
+    type SubType = Game.Model.TypeNames<Name>;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = ActiveEffect.OfType<ActiveEffect.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActiveEffect<Type>, ActiveEffect<Type>>;
 
@@ -36,6 +51,53 @@ declare global {
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = Actor.Implementation | Item.Implementation | null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = never;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = never;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Actor" | "Item">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `ActiveEffect` that comes from the database.
@@ -247,14 +309,15 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"ActiveEffect", InterfaceToObject<CoreFlags>>;
+      flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
 
       _stats: fields.DocumentStatsField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for ActiveEffects */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<ActiveEffect.Parent> {}
+
       /** Options passed along in Create operations for ActiveEffects */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<
@@ -264,43 +327,112 @@ declare global {
         > {
         animate?: boolean;
       }
+
       /** Options passed along in Delete operations for ActiveEffects */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ActiveEffect.Parent> {
         animate?: boolean;
       }
+
       /** Options passed along in Update operations for ActiveEffects */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<ActiveEffect.UpdateData, ActiveEffect.Parent> {
         animate?: boolean;
       }
 
-      /** Options for {@link ActiveEffect.createDocuments | `ActiveEffect.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link ActiveEffect._preCreateOperation | `ActiveEffect._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link ActiveEffect.createDocuments | `ActiveEffect.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<ActiveEffect.Database.Create<Temporary>> {}
+
+      /** Operation for {@link ActiveEffect.updateDocuments | `ActiveEffect.updateDocuments`} */
+      interface UpdateDocumentsOperation
+        extends Document.Database.UpdateDocumentsOperation<ActiveEffect.Database.Update> {}
+
+      /** Operation for {@link ActiveEffect.deleteDocuments | `ActiveEffect.deleteDocuments`} */
+      interface DeleteDocumentsOperation
+        extends Document.Database.DeleteDocumentsOperation<ActiveEffect.Database.Delete> {}
+
+      /** Operation for {@link ActiveEffect.create | `ActiveEffect.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<ActiveEffect.Database.Create<Temporary>> {}
+
+      /** Operation for {@link ActiveEffect.update | `ActiveEffect#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link ActiveEffect.get | `ActiveEffect.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link ActiveEffect._preCreate | `ActiveEffect#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link ActiveEffect._onCreate | `ActiveEffect#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link ActiveEffect.updateDocuments | `ActiveEffect.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link ActiveEffect._preUpdateOperation | `ActiveEffect._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link ActiveEffect._preCreateOperation | `ActiveEffect._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<ActiveEffect.Database.Create> {}
+
+      /** Operation for {@link ActiveEffect._onCreateOperation | `ActiveEffect#_onCreateOperation`} */
+      interface OnCreateOperation extends ActiveEffect.Database.Create {}
+
       /** Options for {@link ActiveEffect._preUpdate | `ActiveEffect#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link ActiveEffect._onUpdate | `ActiveEffect#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link ActiveEffect.deleteDocuments | `ActiveEffect.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link ActiveEffect._preDeleteOperation | `ActiveEffect._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link ActiveEffect._onUpdate | `ActiveEffect#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link ActiveEffect._preUpdateOperation | `ActiveEffect._preUpdateOperation`} */
+      interface PreUpdateOperation extends ActiveEffect.Database.Update {}
+
+      /** Operation for {@link ActiveEffect._onUpdateOperation | `ActiveEffect._preUpdateOperation`} */
+      interface OnUpdateOperation extends ActiveEffect.Database.Update {}
+
       /** Options for {@link ActiveEffect._preDelete | `ActiveEffect#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link ActiveEffect._onDelete | `ActiveEffect#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link ActiveEffect._preDeleteOperation | `ActiveEffect#_preDeleteOperation`} */
+      interface PreDeleteOperation extends ActiveEffect.Database.Delete {}
+
+      /** Options for {@link ActiveEffect._onDeleteOperation | `ActiveEffect#_onDeleteOperation`} */
+      interface OnDeleteOperation extends ActiveEffect.Database.Delete {}
+
+      /** Context for {@link ActiveEffect._onDeleteOperation | `ActiveEffect._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<ActiveEffect.Parent> {}
+
+      /** Context for {@link ActiveEffect._onCreateDocuments | `ActiveEffect._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<ActiveEffect.Parent> {}
+
+      /** Context for {@link ActiveEffect._onUpdateDocuments | `ActiveEffect._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<ActiveEffect.Parent> {}
+
+      /**
+       * Options for {@link ActiveEffect._preCreateDescendantDocuments | `ActiveEffect#_preCreateDescendantDocuments`}
+       * and {@link ActiveEffect._onCreateDescendantDocuments | `ActiveEffect#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<ActiveEffect.Database.Create> {}
+
+      /**
+       * Options for {@link ActiveEffect._preUpdateDescendantDocuments | `ActiveEffect#_preUpdateDescendantDocuments`}
+       * and {@link ActiveEffect._onUpdateDescendantDocuments | `ActiveEffect#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<ActiveEffect.Database.Update> {}
+
+      /**
+       * Options for {@link ActiveEffect._preDeleteDescendantDocuments | `ActiveEffect#_preDeleteDescendantDocuments`}
+       * and {@link ActiveEffect._onDeleteDescendantDocuments | `ActiveEffect#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<ActiveEffect.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     interface CoreFlags {
@@ -378,7 +510,7 @@ declare global {
     }
 
     /**
-     * @deprecated {@link ActiveEffect.DatabaseOperation | `ActiveEffect.DatabaseOperation`}
+     * @deprecated {@link ActiveEffect.Database | `ActiveEffect.DatabaseOperation`}
      */
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -426,7 +558,7 @@ declare global {
      * @param data    - Initial data from which to construct the `ActiveEffect`
      * @param context - Construction context options
      */
-    constructor(...args: Document.ConstructorParameters<ActiveEffect.CreateData, ActiveEffect.Parent>);
+    constructor(...args: ActiveEffect.ConstructorArgs);
 
     /**
      * Create an ActiveEffect instance from some status effect ID.
@@ -688,8 +820,7 @@ declare global {
     // getFlag(scope: string, key: string): unknown;
 
     /**
-     * @privateRemarks _preCreate, _onCreate, _onUpdate, _preUpdate, and _onDelete are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     * @privateRemarks _preCreate, _onCreate, _onUpdate, _preUpdate, and _onDelete are all overridden but with no signature changes from BaseActiveEffect.
      */
 
     /**
@@ -707,9 +838,17 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    // Descendant Document operations have been left out because ActiveEffect does not have any descendant documents.
 
     static override defaultName(
       context: Document.DefaultNameContext<ActiveEffect.SubType, NonNullable<ActiveEffect.Parent>>,

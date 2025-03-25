@@ -357,7 +357,7 @@ declare global {
 
     // ClientDocument overrides
 
-    // Descendant Document operations have been left out because Wall does not have any descendant documents.
+    // Descendant Document operations have been left out because Setting does not have any descendant documents.
 
     static override defaultName(context?: Document.DefaultNameContext<string, Setting.Parent>): string;
 
@@ -379,6 +379,6 @@ declare global {
       context?: Document.FromImportContext<Setting.Parent>,
     ): Promise<Setting.Implementation>;
 
-    // Embedded document operations have been left out because Wall does not have any embedded documents.
+    // Embedded document operations have been left out because Setting does not have any embedded documents.
   }
 }

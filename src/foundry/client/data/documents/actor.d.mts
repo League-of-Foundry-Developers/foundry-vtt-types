@@ -10,6 +10,21 @@ import type { DataSchema } from "../../../common/data/fields.d.mts";
 declare global {
   namespace Actor {
     /**
+     * The document's name.
+     */
+    type Name = "Actor";
+
+    /**
+     * The arguments to construct the document.
+     */
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+
+    /**
+     * The documents embedded within Actor.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the Actor document instance configured through `CONFIG.Actor.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`} in fvtt-types.
      */
@@ -37,6 +52,59 @@ declare global {
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = TokenDocument.Implementation | null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = Item.Stored | ActiveEffect.Stored;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = Item.ImplementationClass | ActiveEffect.ImplementationClass;
+
+    /**
+     * The valid `parent` entries for descendant document operations.
+     * This includes the current document as well as any descendants that have descendants.
+     */
+    type DescendantParents = Stored | Item.Stored;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Actor">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `Actor` that comes from the database.
@@ -173,44 +241,116 @@ declare global {
       _stats: fields.DocumentStatsField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
+      /** Options passed along in Get operations for Actors */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Actor.Parent> {}
+
+      /** Options passed along in Create operations for Actors */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<Actor.CreateData, Actor.Parent, Temporary> {}
+
+      /** Options passed along in Delete operations for Actors */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Actor.Parent> {}
+
+      /** Options passed along in Update operations for Actors */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Actor.UpdateData, Actor.Parent> {}
 
-      /** Options for {@link Actor.createDocuments | `Actor.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Actor._preCreateOperation | `Actor._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link Actor.createDocuments | `Actor.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Actor.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Actor.updateDocuments | `Actor.updateDocuments`} */
+      interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Actor.Database.Update> {}
+
+      /** Operation for {@link Actor.deleteDocuments | `Actor.deleteDocuments`} */
+      interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Actor.Database.Delete> {}
+
+      /** Operation for {@link Actor.create | `Actor.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Actor.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Actor.update | `Actor#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link Actor.get | `Actor.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link Actor._preCreate | `Actor#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link Actor._onCreate | `Actor#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link Actor.updateDocuments | `Actor.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link Actor._preUpdateOperation | `Actor._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link Actor._preCreateOperation | `Actor._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Actor.Database.Create> {}
+
+      /** Operation for {@link Actor._onCreateOperation | `Actor#_onCreateOperation`} */
+      interface OnCreateOperation extends Actor.Database.Create {}
+
       /** Options for {@link Actor._preUpdate | `Actor#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link Actor._onUpdate | `Actor#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link Actor.deleteDocuments | `Actor.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link Actor._preDeleteOperation | `Actor._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Actor._onUpdate | `Actor#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link Actor._preUpdateOperation | `Actor._preUpdateOperation`} */
+      interface PreUpdateOperation extends Actor.Database.Update {}
+
+      /** Operation for {@link Actor._onUpdateOperation | `Actor._preUpdateOperation`} */
+      interface OnUpdateOperation extends Actor.Database.Update {}
+
       /** Options for {@link Actor._preDelete | `Actor#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link Actor._onDelete | `Actor#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link Actor._preDeleteOperation | `Actor#_preDeleteOperation`} */
+      interface PreDeleteOperation extends Actor.Database.Delete {}
+
+      /** Options for {@link Actor._onDeleteOperation | `Actor#_onDeleteOperation`} */
+      interface OnDeleteOperation extends Actor.Database.Delete {}
+
+      /** Context for {@link Actor._onDeleteOperation | `Actor._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<Actor.Parent> {}
+
+      /** Context for {@link Actor._onCreateDocuments | `Actor._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<Actor.Parent> {}
+
+      /** Context for {@link Actor._onUpdateDocuments | `Actor._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<Actor.Parent> {}
+
+      /**
+       * Options for {@link Actor._preCreateDescendantDocuments | `Actor#_preCreateDescendantDocuments`}
+       * and {@link Actor._onCreateDescendantDocuments | `Actor#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<Actor.Database.Create> {}
+
+      /**
+       * Options for {@link Actor._preUpdateDescendantDocuments | `Actor#_preUpdateDescendantDocuments`}
+       * and {@link Actor._onUpdateDescendantDocuments | `Actor#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<Actor.Database.Update> {}
+
+      /**
+       * Options for {@link Actor._preDeleteDescendantDocuments | `Actor#_preDeleteDescendantDocuments`}
+       * and {@link Actor._onDeleteDescendantDocuments | `Actor#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<Actor.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**
-     * @deprecated {@link Actor.DatabaseOperation | `Actor.DatabaseOperation`}
+     * @deprecated {@link Actor.Database | `Actor.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Actor> {}
@@ -308,7 +448,7 @@ declare global {
      * @param data    - Initial data from which to construct the `Actor`
      * @param context - Construction context options
      */
-    constructor(...args: Document.ConstructorParameters<Actor.CreateData, Actor.Parent>);
+    constructor(...args: Actor.ConstructorArgs);
 
     static override metadata: Actor.Metadata;
 
@@ -520,9 +660,49 @@ declare global {
     protected _unregisterDependentScene(scene: Scene): void;
 
     /**
-     * @privateRemarks _preCreate, _onUpdate, onCreateDescendantDocuments, onUpdateDescendantDocuments, and _onDeleteDescendentDocuments are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     * @privateRemarks _preCreate and _onUpdate are all overridden but with no signature changes from BaseActor.
      */
+
+    protected override _onCreateDescendantDocuments<
+      DescendantDocumentType extends Actor.DescendantClasses,
+      Parent extends Actor.DescendantParents,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments<
+      DescendantDocumentType extends Actor.DescendantClasses,
+      Parent extends Actor.DescendantParents,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _onDeleteDescendantDocuments<
+      DescendantDocumentType extends Actor.DescendantClasses,
+      Parent extends Actor.DescendantParents,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      documents: InstanceType<DescendantDocumentType>,
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
 
     /**
      * Additional workflows to perform when any descendant document within this Actor changes.
@@ -542,9 +722,53 @@ declare global {
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    protected override _preCreateDescendantDocuments<
+      DescendantDocumentType extends Actor.DescendantClasses,
+      Parent extends Actor.DescendantParents,
+      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      data: CreateData[],
+      options: Document.Database.CreateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments<
+      DescendantDocumentType extends Actor.DescendantClasses,
+      Parent extends Actor.DescendantParents,
+      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
+      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      changes: UpdateData[],
+      options: Document.Database.UpdateOptions<Operation>,
+      userId: string,
+    ): void;
+
+    protected _preDeleteDescendantDocuments<
+      DescendantDocumentType extends Actor.DescendantClasses,
+      Parent extends Actor.DescendantParents,
+      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+    >(
+      parent: Parent,
+      collection: DescendantDocumentType["metadata"]["collection"],
+      ids: string[],
+      options: Document.Database.DeleteOptions<Operation>,
+      userId: string,
+    ): void;
 
     static override defaultName(context?: Document.DefaultNameContext<Actor.SubType, Actor.Parent>): string;
 

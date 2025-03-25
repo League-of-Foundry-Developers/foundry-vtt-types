@@ -27,7 +27,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    * You should use {@link Cards.implementation | `new Cards.implementation(...)`} instead which will give you
    * a system specific implementation of `Cards`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseCards.CreateData, BaseCards.Parent>);
+  constructor(...args: Cards.ConstructorArgs);
 
   static override metadata: BaseCards.Metadata;
 

@@ -25,7 +25,6 @@ import type {
   ValueOf,
   PickValue,
 } from "fvtt-types/utils";
-import type { documents } from "../../client-esm/client.d.mts";
 import type * as CONST from "../constants.mts";
 import type {
   DataField,
@@ -1122,49 +1121,79 @@ declare namespace Document {
     T extends { defineSchema: () => infer R extends DataSchema } ? R : never
   >;
 
-  // TODO(LukeAbby): Actually make this distinguishable from `Document.ConstructorDataFor` and `Document.ConstructorDataForSchema`.
-  type UpdateDataFor<T extends Document.Internal.Constructor> = SchemaField.CreateData<
+  type UpdateDataFor<T extends Document.Internal.Constructor> = SchemaField.UpdateData<
     T extends { defineSchema: () => infer R extends DataSchema } ? R : never
   >;
 
   // These helper types exist to help break a loop
 
-  // TODO(LukeAbby): Actually make this distinguishable from `CreateDataForName`.
-  type UpdateDataForName<T extends Document.Type> = CreateData[T];
+  type UpdateDataForName<DocumentType extends Document.Type> =
+    | (DocumentType extends "ActiveEffect" ? ActiveEffect.UpdateData : never)
+    | (DocumentType extends "ActorDelta" ? ActorDelta.UpdateData : never)
+    | (DocumentType extends "Actor" ? Actor.UpdateData : never)
+    | (DocumentType extends "Adventure" ? Adventure.UpdateData : never)
+    | (DocumentType extends "Card" ? Card.UpdateData : never)
+    | (DocumentType extends "Cards" ? Cards.UpdateData : never)
+    | (DocumentType extends "ChatMessage" ? ChatMessage.UpdateData : never)
+    | (DocumentType extends "Combat" ? Combat.UpdateData : never)
+    | (DocumentType extends "Combatant" ? Combatant.UpdateData : never)
+    | (DocumentType extends "FogExploration" ? FogExploration.UpdateData : never)
+    | (DocumentType extends "Folder" ? Folder.UpdateData : never)
+    | (DocumentType extends "Item" ? Item.UpdateData : never)
+    | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.UpdateData : never)
+    | (DocumentType extends "JournalEntry" ? JournalEntry.UpdateData : never)
+    | (DocumentType extends "Macro" ? Macro.UpdateData : never)
+    | (DocumentType extends "PlaylistSound" ? PlaylistSound.UpdateData : never)
+    | (DocumentType extends "Playlist" ? Playlist.UpdateData : never)
+    | (DocumentType extends "RegionBehavior" ? RegionBehavior.UpdateData : never)
+    | (DocumentType extends "Region" ? RegionDocument.UpdateData : never)
+    | (DocumentType extends "RollTable" ? RollTable.UpdateData : never)
+    | (DocumentType extends "Scene" ? Scene.UpdateData : never)
+    | (DocumentType extends "Setting" ? Setting.UpdateData : never)
+    | (DocumentType extends "TableResult" ? TableResult.UpdateData : never)
+    | (DocumentType extends "User" ? User.UpdateData : never)
+    | (DocumentType extends "AmbientLight" ? AmbientLightDocument.UpdateData : never)
+    | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.UpdateData : never)
+    | (DocumentType extends "Drawing" ? DrawingDocument.UpdateData : never)
+    | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.UpdateData : never)
+    | (DocumentType extends "Note" ? NoteDocument.UpdateData : never)
+    | (DocumentType extends "Tile" ? TileDocument.UpdateData : never)
+    | (DocumentType extends "Token" ? TokenDocument.UpdateData : never)
+    | (DocumentType extends "Wall" ? WallDocument.UpdateData : never);
 
   type CreateDataForName<DocumentType extends Document.Type> =
-    | (DocumentType extends "ActiveEffect" ? documents.BaseActiveEffect.CreateData : never)
-    | (DocumentType extends "ActorDelta" ? documents.BaseActorDelta.CreateData : never)
-    | (DocumentType extends "Actor" ? documents.BaseActor.CreateData : never)
-    | (DocumentType extends "Adventure" ? documents.BaseAdventure.CreateData : never)
-    | (DocumentType extends "Card" ? documents.BaseCard.CreateData : never)
-    | (DocumentType extends "Cards" ? documents.BaseCards.CreateData : never)
-    | (DocumentType extends "ChatMessage" ? documents.BaseChatMessage.CreateData : never)
-    | (DocumentType extends "Combat" ? documents.BaseCombat.CreateData : never)
-    | (DocumentType extends "Combatant" ? documents.BaseCombatant.CreateData : never)
-    | (DocumentType extends "FogExploration" ? documents.BaseFogExploration.CreateData : never)
-    | (DocumentType extends "Folder" ? documents.BaseFolder.CreateData : never)
-    | (DocumentType extends "Item" ? documents.BaseItem.CreateData : never)
-    | (DocumentType extends "JournalEntryPage" ? documents.BaseJournalEntryPage.CreateData : never)
-    | (DocumentType extends "JournalEntry" ? documents.BaseJournalEntry.CreateData : never)
-    | (DocumentType extends "Macro" ? documents.BaseMacro.CreateData : never)
-    | (DocumentType extends "PlaylistSound" ? documents.BasePlaylistSound.CreateData : never)
-    | (DocumentType extends "Playlist" ? documents.BasePlaylist.CreateData : never)
-    | (DocumentType extends "RegionBehavior" ? documents.BaseRegionBehavior.CreateData : never)
-    | (DocumentType extends "Region" ? documents.BaseRegion.CreateData : never)
-    | (DocumentType extends "RollTable" ? documents.BaseRollTable.CreateData : never)
-    | (DocumentType extends "Scene" ? documents.BaseScene.CreateData : never)
-    | (DocumentType extends "Setting" ? documents.BaseSetting.CreateData : never)
-    | (DocumentType extends "TableResult" ? documents.BaseTableResult.CreateData : never)
-    | (DocumentType extends "User" ? documents.BaseUser.CreateData : never)
-    | (DocumentType extends "AmbientLight" ? documents.BaseAmbientLight.CreateData : never)
-    | (DocumentType extends "AmbientSound" ? documents.BaseAmbientSound.CreateData : never)
-    | (DocumentType extends "Drawing" ? documents.BaseDrawing.CreateData : never)
-    | (DocumentType extends "MeasuredTemplate" ? documents.BaseMeasuredTemplate.CreateData : never)
-    | (DocumentType extends "Note" ? documents.BaseNote.CreateData : never)
-    | (DocumentType extends "Tile" ? documents.BaseTile.CreateData : never)
-    | (DocumentType extends "Token" ? documents.BaseToken.CreateData : never)
-    | (DocumentType extends "Wall" ? documents.BaseWall.CreateData : never);
+    | (DocumentType extends "ActiveEffect" ? ActiveEffect.CreateData : never)
+    | (DocumentType extends "ActorDelta" ? ActorDelta.CreateData : never)
+    | (DocumentType extends "Actor" ? Actor.CreateData : never)
+    | (DocumentType extends "Adventure" ? Adventure.CreateData : never)
+    | (DocumentType extends "Card" ? Card.CreateData : never)
+    | (DocumentType extends "Cards" ? Cards.CreateData : never)
+    | (DocumentType extends "ChatMessage" ? ChatMessage.CreateData : never)
+    | (DocumentType extends "Combat" ? Combat.CreateData : never)
+    | (DocumentType extends "Combatant" ? Combatant.CreateData : never)
+    | (DocumentType extends "FogExploration" ? FogExploration.CreateData : never)
+    | (DocumentType extends "Folder" ? Folder.CreateData : never)
+    | (DocumentType extends "Item" ? Item.CreateData : never)
+    | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.CreateData : never)
+    | (DocumentType extends "JournalEntry" ? JournalEntry.CreateData : never)
+    | (DocumentType extends "Macro" ? Macro.CreateData : never)
+    | (DocumentType extends "PlaylistSound" ? PlaylistSound.CreateData : never)
+    | (DocumentType extends "Playlist" ? Playlist.CreateData : never)
+    | (DocumentType extends "RegionBehavior" ? RegionBehavior.CreateData : never)
+    | (DocumentType extends "Region" ? RegionDocument.CreateData : never)
+    | (DocumentType extends "RollTable" ? RollTable.CreateData : never)
+    | (DocumentType extends "Scene" ? Scene.CreateData : never)
+    | (DocumentType extends "Setting" ? Setting.CreateData : never)
+    | (DocumentType extends "TableResult" ? TableResult.CreateData : never)
+    | (DocumentType extends "User" ? User.CreateData : never)
+    | (DocumentType extends "AmbientLight" ? AmbientLightDocument.CreateData : never)
+    | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.CreateData : never)
+    | (DocumentType extends "Drawing" ? DrawingDocument.CreateData : never)
+    | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.CreateData : never)
+    | (DocumentType extends "Note" ? NoteDocument.CreateData : never)
+    | (DocumentType extends "Tile" ? TileDocument.CreateData : never)
+    | (DocumentType extends "Token" ? TokenDocument.CreateData : never)
+    | (DocumentType extends "Wall" ? WallDocument.CreateData : never);
 
   /**
    * @deprecated {@link SchemaField.CreateData | `SchemaField.CreateData`}
@@ -1769,6 +1798,9 @@ declare namespace Document {
     | (Action extends "update" ? SchemaField.UpdateData<Schema> : never)
     | (Action extends "delete" ? EmptyObject : never);
 
+  /**
+   * @internal
+   */
   type _GetEmbeddedDocumentOptions = InexactPartial<{
     /**
      * Throw an Error if the requested id does not exist. See {@link Collection.get | `Collection#get`}
@@ -1839,10 +1871,10 @@ export interface DatabaseOperationMap {
 /* eslint-enable @typescript-eslint/no-deprecated */
 
 interface DatabaseOperationCreateMap {
-  ActiveEffect: ActiveEffect.DatabaseOperation.Create;
-  Actor: Actor.DatabaseOperation.Create;
-  ActorDelta: ActorDelta.DatabaseOperation.Create;
-  Adventure: Adventure.DatabaseOperation.Create;
+  ActiveEffect: ActiveEffect.Database.Create;
+  Actor: Actor.Database.Create;
+  ActorDelta: ActorDelta.Database.Create;
+  Adventure: Adventure.Database.Create;
   AmbientLight: AmbientLightDocument.Database.Create;
   AmbientSound: AmbientSoundDocument.Database.Create;
   Card: Card.Database.Create;
@@ -1853,7 +1885,7 @@ interface DatabaseOperationCreateMap {
   Drawing: DrawingDocument.Database.Create;
   FogExploration: FogExploration.Database.Create;
   Folder: Folder.Database.Create;
-  Item: Item.DatabaseOperation.Create;
+  Item: Item.Database.Create;
   JournalEntry: JournalEntry.Database.Create;
   JournalEntryPage: JournalEntryPage.Database.Create;
   Macro: Macro.Database.Create;
@@ -1874,10 +1906,10 @@ interface DatabaseOperationCreateMap {
 }
 
 interface DatabaseOperationUpdateMap {
-  ActiveEffect: ActiveEffect.DatabaseOperation.Update;
-  Actor: Actor.DatabaseOperation.Update;
-  ActorDelta: ActorDelta.DatabaseOperation.Update;
-  Adventure: Adventure.DatabaseOperation.Update;
+  ActiveEffect: ActiveEffect.Database.Update;
+  Actor: Actor.Database.Update;
+  ActorDelta: ActorDelta.Database.Update;
+  Adventure: Adventure.Database.Update;
   AmbientLight: AmbientLightDocument.Database.Update;
   AmbientSound: AmbientSoundDocument.Database.Update;
   Card: Card.Database.Update;
@@ -1888,7 +1920,7 @@ interface DatabaseOperationUpdateMap {
   Drawing: DrawingDocument.Database.Update;
   FogExploration: FogExploration.Database.Update;
   Folder: Folder.Database.Update;
-  Item: Item.DatabaseOperation.Update;
+  Item: Item.Database.Update;
   JournalEntry: JournalEntry.Database.Update;
   JournalEntryPage: JournalEntryPage.Database.Update;
   Macro: Macro.Database.Update;
@@ -1909,10 +1941,10 @@ interface DatabaseOperationUpdateMap {
 }
 
 interface DatabaseOperationDeleteMap {
-  ActiveEffect: ActiveEffect.DatabaseOperation.Delete;
-  Actor: Actor.DatabaseOperation.Delete;
-  ActorDelta: ActorDelta.DatabaseOperation.Delete;
-  Adventure: Adventure.DatabaseOperation.Delete;
+  ActiveEffect: ActiveEffect.Database.Delete;
+  Actor: Actor.Database.Delete;
+  ActorDelta: ActorDelta.Database.Delete;
+  Adventure: Adventure.Database.Delete;
   AmbientLight: AmbientLightDocument.Database.Delete;
   AmbientSound: AmbientSoundDocument.Database.Delete;
   Card: Card.Database.Delete;
@@ -1923,7 +1955,7 @@ interface DatabaseOperationDeleteMap {
   Drawing: DrawingDocument.Database.Delete;
   FogExploration: FogExploration.Database.Delete;
   Folder: Folder.Database.Delete;
-  Item: Item.DatabaseOperation.Delete;
+  Item: Item.Database.Delete;
   JournalEntry: JournalEntry.Database.Delete;
   JournalEntryPage: JournalEntryPage.Database.Delete;
   Macro: Macro.Database.Delete;

@@ -1,7 +1,9 @@
+import type { AnyObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Adventure Document.
@@ -22,7 +24,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    * You should use {@link Adventure.implementation | `new Adventure.implementation(...)`} instead which will give you
    * a system specific implementation of `Adventure`.
    */
-  constructor(...args: Document.ConstructorParameters<BaseAdventure.CreateData, BaseAdventure.Parent>);
+  constructor(...args: Adventure.ConstructorArgs);
 
   static override metadata: Adventure.Metadata;
 
@@ -40,104 +42,174 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   /*
    * After this point these are not really overridden methods.
-   * They are here because they're static properties but depend on the instance and so can't be
-   * defined DRY-ly while also being easily overridable.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
    */
+
+  /* Document overrides */
 
   static " fvtt_types_internal_document_name_static": "Adventure";
 
-  static get implementation(): Adventure.ImplementationClass;
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: Adventure.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static override get implementation(): Adventure.ImplementationClass;
+
+  static get baseDocument(): typeof BaseAdventure;
+
+  static get collectionName(): Adventure.ParentCollectionName;
+
+  static get documentName(): Adventure.Name;
+
+  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+
+  static get hasTypeData(): undefined;
+
+  static get hierarchy(): Adventure.Hierarchy;
 
   override parent: Adventure.Parent;
 
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Adventure.Implementation | Adventure.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<Adventure.DatabaseOperation.Create<Temporary>>,
+    operation?: Document.Database.CreateOperation<Adventure.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Adventure.Implementation, Temporary>>>;
 
   static updateDocuments(
     updates: Adventure.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<Adventure.DatabaseOperation.Update>,
+    operation?: Document.Database.UpdateDocumentsOperation<Adventure.Database.Update>,
   ): Promise<Adventure.Implementation[]>;
 
   static deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<Adventure.DatabaseOperation.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<Adventure.Database.Delete>,
   ): Promise<Adventure.Implementation[]>;
 
-  static create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = false>(
     data: Adventure.CreateData | Adventure.CreateData[],
-    operation?: Document.Database.CreateOperation<Adventure.DatabaseOperation.Create<Temporary>>,
-  ): Promise<Adventure.Implementation | undefined>;
+    operation?: Adventure.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<Adventure.Implementation, Temporary> | undefined>;
 
-  static get(documentId: string, options?: Document.Database.GetOptions): Adventure.Implementation | null;
+  override update(
+    data: Adventure.UpdateData | undefined,
+    operation?: Adventure.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: Adventure.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(documentId: string, options?: Adventure.Database.GetOptions): Adventure.Implementation | null;
+
+  static override getCollectionName<CollectionName extends Adventure.EmbeddedName>(
+    name: CollectionName,
+  ): Adventure.CollectionNameOf<CollectionName> | null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends Adventure.Flags.Scope, Key extends Adventure.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<Adventure.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends Adventure.Flags.Scope,
+    Key extends Adventure.Flags.Key<Scope>,
+    Value extends Document.GetFlag<Adventure.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends Adventure.Flags.Scope, Key extends Adventure.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   protected _preCreate(
     data: Adventure.CreateData,
-    options: Adventure.DatabaseOperation.PreCreateOperationInstance,
+    options: Adventure.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
-    data: Adventure.CreateData,
-    options: Adventure.DatabaseOperation.OnCreateOperation,
-    userId: string,
-  ): void;
+  protected _onCreate(data: Adventure.CreateData, options: Adventure.Database.OnCreateOperation, userId: string): void;
 
   protected static _preCreateOperation(
     documents: Adventure.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<Adventure.DatabaseOperation.Create>,
+    operation: Document.Database.PreCreateOperationStatic<Adventure.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
     documents: Adventure.Implementation[],
-    operation: Adventure.DatabaseOperation.Create,
+    operation: Adventure.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preUpdate(
     changed: Adventure.UpdateData,
-    options: Adventure.DatabaseOperation.PreUpdateOperationInstance,
+    options: Adventure.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected _onUpdate(
     changed: Adventure.UpdateData,
-    options: Adventure.DatabaseOperation.OnUpdateOperation,
+    options: Adventure.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static _preUpdateOperation(
     documents: Adventure.Implementation[],
-    operation: Adventure.DatabaseOperation.Update,
+    operation: Adventure.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
     documents: Adventure.Implementation[],
-    operation: Adventure.DatabaseOperation.Update,
+    operation: Adventure.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected _preDelete(
-    options: Adventure.DatabaseOperation.PreDeleteOperationInstance,
+    options: Adventure.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: Adventure.DatabaseOperation.OnDeleteOperation, userId: string): void;
+  protected _onDelete(options: Adventure.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
     documents: Adventure.Implementation[],
-    operation: Adventure.DatabaseOperation.Delete,
+    operation: Adventure.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
     documents: Adventure.Implementation[],
-    operation: Adventure.DatabaseOperation.Delete,
+    operation: Adventure.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
+
+  static get hasSystemData(): undefined;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
 
   protected static _onCreateDocuments(
     documents: Adventure.Implementation[],
@@ -153,6 +225,8 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     documents: Adventure.Implementation[],
     context: Document.ModificationContext<Adventure.Parent>,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static _schema: SchemaField<Adventure.Schema>;
 
@@ -171,8 +245,16 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 export default BaseAdventure;
 
 declare namespace BaseAdventure {
+  export import Name = Adventure.Name;
+  export import ConstructorArgs = Adventure.ConstructorArgs;
+  export import Hierarchy = Adventure.Hierarchy;
   export import Metadata = Adventure.Metadata;
   export import Parent = Adventure.Parent;
+  export import Pack = Adventure.Pack;
+  export import Embedded = Adventure.Embedded;
+  export import EmbeddedName = Adventure.EmbeddedName;
+  export import EmbeddedCollectionName = Adventure.EmbeddedCollectionName;
+  export import ParentCollectionName = Adventure.ParentCollectionName;
   export import Stored = Adventure.Stored;
   export import Source = Adventure.Source;
   export import PersistedData = Adventure.PersistedData;
@@ -180,7 +262,8 @@ declare namespace BaseAdventure {
   export import InitializedData = Adventure.InitializedData;
   export import UpdateData = Adventure.UpdateData;
   export import Schema = Adventure.Schema;
-  export import DatabaseOperation = Adventure.DatabaseOperation;
+  export import DatabaseOperation = Adventure.Database;
+  export import Flags = Adventure.Flags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

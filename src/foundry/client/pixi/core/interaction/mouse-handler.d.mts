@@ -1,4 +1,4 @@
-import type { Brand, Identity, NullishProps } from "fvtt-types/utils";
+import type { AnyArray, Brand, Identity, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -195,7 +195,7 @@ declare global {
      *          Events which do not specify a callback are assumed to have been handled as no-op.
      * @remarks
      */
-    callback(action: MouseInteractionManager.Action, event: Event | PIXI.FederatedEvent, ...args: any[]): boolean;
+    callback(action: MouseInteractionManager.Action, event: Event | PIXI.FederatedEvent, ...args: AnyArray): boolean;
 
     /**
      * A reference to the possible interaction states which can be observed
@@ -300,7 +300,7 @@ declare global {
      *   - For Regions specifically, `hoverOut` takes an `options: { updateLegend: boolean }` object, and that key is also added to Region `hoverIn` options
      * - `longPress` receives `origin: PIXI.Point`
      */
-    type CallbackFunction = (event: Event | PIXI.FederatedEvent, ...args: any[]) => boolean | null | void;
+    type CallbackFunction = (event: Event | PIXI.FederatedEvent, ...args: AnyArray) => boolean | null | void;
 
     type Callbacks = Partial<Record<Action, CallbackFunction>>;
 

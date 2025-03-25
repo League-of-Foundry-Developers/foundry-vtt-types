@@ -7,25 +7,40 @@ import type { DataSchema } from "../../../common/data/fields.d.mts";
 declare global {
   namespace Item {
     /**
+     * The document's name.
+     */
+    type Name = "Item";
+
+    /**
+     * The arguments to construct the document.
+     */
+    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+
+    /**
+     * The documents embedded within Item.
+     */
+    type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+
+    /**
      * The implementation of the Item document instance configured through `CONFIG.Item.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`} in fvtt-types.
      */
-    type Implementation = Document.ImplementationFor<"Item">;
+    type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the Item document configured through `CONFIG.Item.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
-    type ImplementationClass = Document.ImplementationClassFor<"Item">;
+    type ImplementationClass = Document.ImplementationClassFor<Name>;
 
     /**
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"Item"> {}
+    interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<"Item">;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Item">;
+    type SubType = Game.Model.TypeNames<Name>;
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = Item.OfType<Item.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredItem<Type>, Item<SubType>>;
 
@@ -34,6 +49,53 @@ declare global {
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
      */
     type Parent = Actor.Implementation | null;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendants = ActiveEffect.Stored;
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all classes, or never if the document doesn't have any descendants.
+     */
+    type DescendantClasses = ActiveEffect.ImplementationClass;
+
+    /**
+     * Types of CompendiumCollection this document might be contained in.
+     * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     */
+    type Pack = CompendiumCollection.ForDocument<"Actor" | "Item">;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type Embedded = Document.ImplementationFor<EmbeddedName>;
+
+    /**
+     * An embedded document is a document contained in another.
+     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+     *
+     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     */
+    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+
+    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
+      ? Metadata["embedded"][CollectionName]
+      : CollectionName;
+
+    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
+    type ParentCollectionName = Metadata["collection"];
 
     /**
      * An instance of `Item` that comes from the database.
@@ -152,7 +214,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"Item">;
+      flags: fields.ObjectField.FlagsField<Name>;
 
       /**
        * An object of creation and access information
@@ -161,48 +223,116 @@ declare global {
       _stats: fields.DocumentStatsField;
     }
 
-    namespace DatabaseOperation {
+    namespace Database {
       /** Options passed along in Get operations for Items */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Item.Parent> {}
+
       /** Options passed along in Create operations for Items */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<Item.CreateData, Item.Parent, Temporary> {}
+
       /** Options passed along in Delete operations for Items */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Item.Parent> {}
+
       /** Options passed along in Update operations for Items */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Item.UpdateData, Item.Parent> {}
 
-      /** Options for {@link Item.createDocuments | `Item.createDocuments`} */
-      type CreateOperation<Temporary extends boolean | undefined = boolean | undefined> =
-        Document.Database.CreateOperation<Create<Temporary>>;
-      /** Options for {@link Item._preCreateOperation | `Item._preCreateOperation`} */
-      type PreCreateOperationStatic = Document.Database.PreCreateOperationStatic<Create>;
+      /** Operation for {@link Item.createDocuments | `Item.createDocuments`} */
+      interface CreateDocumentsOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Item.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Item.updateDocuments | `Item.updateDocuments`} */
+      interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Item.Database.Update> {}
+
+      /** Operation for {@link Item.deleteDocuments | `Item.deleteDocuments`} */
+      interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Item.Database.Delete> {}
+
+      /** Operation for {@link Item.create | `Item.create`} */
+      interface CreateOperation<Temporary extends boolean | undefined>
+        extends Document.Database.CreateOperation<Item.Database.Create<Temporary>> {}
+
+      /** Operation for {@link Item.update | `Item#update`} */
+      interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+
+      interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+
+      /** Options for {@link Item.get | `Item.get`} */
+      interface GetOptions extends Document.Database.GetOptions {}
+
       /** Options for {@link Item._preCreate | `Item#_preCreate`} */
-      type PreCreateOperationInstance = Document.Database.PreCreateOptions<Create>;
+      interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+
       /** Options for {@link Item._onCreate | `Item#_onCreate`} */
-      type OnCreateOperation = Document.Database.CreateOptions<Create>;
+      interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Options for {@link Item.updateDocuments | `Item.updateDocuments`} */
-      type UpdateOperation = Document.Database.UpdateDocumentsOperation<Update>;
-      /** Options for {@link Item._preUpdateOperation | `Item._preUpdateOperation`} */
-      type PreUpdateOperationStatic = Document.Database.PreUpdateOperationStatic<Update>;
+      /** Operation for {@link Item._preCreateOperation | `Item._preCreateOperation`} */
+      interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Item.Database.Create> {}
+
+      /** Operation for {@link Item._onCreateOperation | `Item#_onCreateOperation`} */
+      interface OnCreateOperation extends Item.Database.Create {}
+
       /** Options for {@link Item._preUpdate | `Item#_preUpdate`} */
-      type PreUpdateOperationInstance = Document.Database.PreUpdateOptions<Update>;
-      /** Options for {@link Item._onUpdate | `Item#_onUpdate`} */
-      type OnUpdateOperation = Document.Database.UpdateOptions<Update>;
+      interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-      /** Options for {@link Item.deleteDocuments | `Item.deleteDocuments`} */
-      type DeleteOperation = Document.Database.DeleteDocumentsOperation<Delete>;
-      /** Options for {@link Item._preDeleteOperation | `Item._preDeleteOperation`} */
-      type PreDeleteOperationStatic = Document.Database.PreDeleteOperationStatic<Delete>;
+      /** Options for {@link Item._onUpdate | `Item#_onUpdate`} */
+      interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+
+      /** Operation for {@link Item._preUpdateOperation | `Item._preUpdateOperation`} */
+      interface PreUpdateOperation extends Item.Database.Update {}
+
+      /** Operation for {@link Item._onUpdateOperation | `Item._preUpdateOperation`} */
+      interface OnUpdateOperation extends Item.Database.Update {}
+
       /** Options for {@link Item._preDelete | `Item#_preDelete`} */
-      type PreDeleteOperationInstance = Document.Database.PreDeleteOperationInstance<Delete>;
+      interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+
       /** Options for {@link Item._onDelete | `Item#_onDelete`} */
-      type OnDeleteOperation = Document.Database.DeleteOptions<Delete>;
+      interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+
+      /** Options for {@link Item._preDeleteOperation | `Item#_preDeleteOperation`} */
+      interface PreDeleteOperation extends Item.Database.Delete {}
+
+      /** Options for {@link Item._onDeleteOperation | `Item#_onDeleteOperation`} */
+      interface OnDeleteOperation extends Item.Database.Delete {}
+
+      /** Context for {@link Item._onDeleteOperation | `Item._onDeleteOperation`} */
+      interface OnDeleteDocumentsContext extends Document.ModificationContext<Item.Parent> {}
+
+      /** Context for {@link Item._onCreateDocuments | `Item._onCreateDocuments`} */
+      interface OnCreateDocumentsContext extends Document.ModificationContext<Item.Parent> {}
+
+      /** Context for {@link Item._onUpdateDocuments | `Item._onUpdateDocuments`} */
+      interface OnUpdateDocumentsContext extends Document.ModificationContext<Item.Parent> {}
+
+      /**
+       * Options for {@link Item._preCreateDescendantDocuments | `Item#_preCreateDescendantDocuments`}
+       * and {@link Item._onCreateDescendantDocuments | `Item#_onCreateDescendantDocuments`}
+       */
+      interface CreateOptions extends Document.Database.CreateOptions<Item.Database.Create> {}
+
+      /**
+       * Options for {@link Item._preUpdateDescendantDocuments | `Item#_preUpdateDescendantDocuments`}
+       * and {@link Item._onUpdateDescendantDocuments | `Item#_onUpdateDescendantDocuments`}
+       */
+      interface UpdateOptions extends Document.Database.UpdateOptions<Item.Database.Update> {}
+
+      /**
+       * Options for {@link Item._preDeleteDescendantDocuments | `Item#_preDeleteDescendantDocuments`}
+       * and {@link Item._onDeleteDescendantDocuments | `Item#_onDeleteDescendantDocuments`}
+       */
+      interface DeleteOptions extends Document.Database.DeleteOptions<Item.Database.Delete> {}
+    }
+
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      type Scope = Document.FlagKeyOf<Flags>;
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     /**
-     * @deprecated {@link Item.DatabaseOperation | `Item.DatabaseOperation`}
+     * @deprecated {@link Item.Database | `Item.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Item> {}
@@ -245,7 +375,7 @@ declare global {
      * @param data    - Initial data from which to construct the `Item`
      * @param context - Construction context options
      */
-    constructor(...args: Document.ConstructorParameters<Item.CreateData, Item.Parent>);
+    constructor(...args: Item.ConstructorArgs);
 
     /**
      * A convenience alias of Item#parent which is more semantically intuitive
@@ -275,15 +405,71 @@ declare global {
     getRollData(): Record<string, unknown>;
 
     /**
-     * @privateRemarks _preCreate, _onCreateDocuments and _onDeleteDocuments are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+     * @privateRemarks _preCreate, _onCreateDocuments and _onDeleteDocuments are all overridden but with no signature changes from BaseItem.
      */
 
     /*
      * After this point these are not really overridden methods.
-     * They are here because they're static properties but depend on the instance and so can't be
-     * defined DRY-ly while also being easily overridable.
+     * They are here because Foundry's documents are complex and have lots of edge cases.
+     * There are DRY ways of representing this but this ends up being harder to understand
+     * for end users extending these functions, especially for static methods. There are also a
+     * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+     * as there is no data that can safely construct every possible document. Finally keeping definitions
+     * separate like this helps against circularities.
      */
+
+    // ClientDocument overrides
+
+    protected override _preCreateDescendantDocuments(
+      parent: Item.Stored,
+      collection: ActiveEffect.ParentCollectionName,
+      data: ActiveEffect.CreateData[],
+      options: ActiveEffect.Database.OnCreateOperation,
+      userId: string,
+    ): void;
+
+    protected override _onCreateDescendantDocuments(
+      parent: Item.Stored,
+      collection: ActiveEffect.ParentCollectionName,
+      documents: ActiveEffect.Stored[],
+      result: ActiveEffect.CreateData[],
+      options: ActiveEffect.Database.OnCreateOperation,
+      userId: string,
+    ): void;
+
+    protected override _preUpdateDescendantDocuments(
+      parent: Item.Stored,
+      collection: ActiveEffect.ParentCollectionName,
+      changes: ActiveEffect.UpdateData[],
+      options: ActiveEffect.Database.OnUpdateOperation,
+      userId: string,
+    ): void;
+
+    protected override _onUpdateDescendantDocuments(
+      parent: Item.Stored,
+      collection: ActiveEffect.ParentCollectionName,
+      documents: ActiveEffect.Stored[],
+      changes: ActiveEffect.UpdateData[],
+      options: ActiveEffect.Database.OnUpdateOperation,
+      userId: string,
+    ): void;
+
+    protected _preDeleteDescendantDocuments(
+      parent: Item.Stored,
+      collection: ActiveEffect.ParentCollectionName,
+      ids: string[],
+      options: ActiveEffect.Database.OnDeleteOperation,
+      userId: string,
+    ): void;
+
+    protected override _onDeleteDescendantDocuments(
+      parent: Item.Stored,
+      collection: ActiveEffect.ParentCollectionName,
+      documents: ActiveEffect.Stored[],
+      ids: string[],
+      options: ActiveEffect.Database.OnDeleteOperation,
+      userId: string,
+    ): void;
 
     static override defaultName(context?: Document.DefaultNameContext<Item.SubType, Item.Parent>): string;
 

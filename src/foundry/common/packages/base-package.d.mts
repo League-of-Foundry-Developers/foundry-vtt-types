@@ -1,4 +1,4 @@
-import type { GetKey, AnyObject, InexactPartial, AnyMutableObject, Identity } from "fvtt-types/utils";
+import type { GetKey, AnyObject, InexactPartial, AnyMutableObject, Identity, AnyArray } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -482,12 +482,12 @@ export class PackageCompendiumPacks<
     | (() => Set<fields.ArrayField.InitializedElementType<ElementFieldType>> | null);
 
   protected override _validateElements(
-    value: any[],
+    value: AnyArray,
     options?: fields.DataField.ValidationOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 
   protected override _validateElement(
-    value: any,
+    value: unknown,
     options: fields.DataField.ValidationOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 }

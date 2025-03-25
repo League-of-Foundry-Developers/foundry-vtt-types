@@ -1,4 +1,4 @@
-import type { ValueOf } from "fvtt-types/utils";
+import type { AnyArray, ValueOf } from "fvtt-types/utils";
 
 // TODO: smarter types for named functions
 declare global {
@@ -54,7 +54,7 @@ declare global {
      *                       (default: `[]`)
      * @returns A Promise which resolves with the returned result of the function once complete.
      */
-    executeFunction(functionName: string, args?: any[], transfer?: any[]): Promise<unknown>;
+    executeFunction(functionName: string, args?: AnyArray, transfer?: AnyArray): Promise<unknown>;
   }
 
   namespace AsyncWorker {

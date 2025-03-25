@@ -80,6 +80,12 @@ declare global {
       | WallDocument.ImplementationClass;
 
     /**
+     * The valid `parent` entries for descendant document operations.
+     * This includes the current document as well as any descendants that have descendants.
+     */
+    type DescendantParents = Stored | RegionDocument.Stored | TokenDocument.DescendantParents;
+
+    /**
      * Types of CompendiumCollection this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */

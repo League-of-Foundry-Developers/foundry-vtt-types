@@ -51,17 +51,19 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = Actor.Stored | Item.Stored | ActiveEffect.Stored | ActorDelta.Stored;
+    type Descendants = ActorDelta.Stored | ActorDelta.Descendants;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses =
-      | Actor.ImplementationClass
-      | Item.ImplementationClass
-      | ActiveEffect.ImplementationClass
-      | ActorDelta.ImplementationClass;
+    type DescendantClasses = ActorDelta.ImplementationClass | ActorDelta.DescendantClasses;
+
+    /**
+     * The valid `parent` entries for descendant document operations.
+     * This includes the current document as well as any descendants that have descendants.
+     */
+    type DescendantParents = Stored | ActorDelta.DescendantParents;
 
     /**
      * Types of CompendiumCollection this document might be contained in.
@@ -921,7 +923,7 @@ declare global {
 
     protected override _preCreateDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored,
+      Parent extends TokenDocument.DescendantParents,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -934,7 +936,7 @@ declare global {
 
     protected override _onCreateDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
+      Parent extends TokenDocument.DescendantParents,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -948,7 +950,7 @@ declare global {
 
     protected override _preUpdateDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
+      Parent extends TokenDocument.DescendantParents,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -961,7 +963,7 @@ declare global {
 
     protected override _onUpdateDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
+      Parent extends TokenDocument.DescendantParents,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -975,7 +977,7 @@ declare global {
 
     protected _preDeleteDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
+      Parent extends TokenDocument.DescendantParents,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,
@@ -987,7 +989,7 @@ declare global {
 
     protected _onDeleteDescendantDocuments<
       DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.Stored | Actor.Stored | Item.Stored,
+      Parent extends TokenDocument.DescendantParents,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,
@@ -1011,7 +1013,7 @@ declare global {
      */
     protected _onUpdateBaseActor(
       update?: DeepPartial<Actor.Implementation["_source"]>,
-      options?: Actor.DatabaseOperation.OnUpdateOperation,
+      options?: Actor.Database.OnUpdateOperation,
     ): void;
 
     /**
@@ -1025,7 +1027,7 @@ declare global {
        * @privateRemarks foundry calls this field operation
        * but it's being passed options (and then ignores them)
        */
-      operation?: Actor.DatabaseOperation.OnUpdateOperation,
+      operation?: Actor.Database.OnUpdateOperation,
     ): void;
 
     /**
