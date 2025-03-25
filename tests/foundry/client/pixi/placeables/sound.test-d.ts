@@ -101,4 +101,7 @@ expectTypeOf(sound["_onDragEnd"]()).toBeVoid();
 expectTypeOf(sound["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
 //deprecated since v12, until v14
-expectTypeOf(sound.updateSource({ deleted: true })).toEqualTypeOf<void>();
+expectTypeOf(sound.updateSource()).toBeVoid();
+expectTypeOf(sound.updateSource({})).toBeVoid();
+expectTypeOf(sound.updateSource({ deleted: true })).toBeVoid();
+expectTypeOf(sound.updateSource({ deleted: null })).toBeVoid();

@@ -55,7 +55,7 @@ declare global {
      * @defaultValue `undefined`
      * @remarks Only `undefined` prior to first draw
      */
-    bars: PIXI.Container | undefined;
+    bars: Token.Bars | undefined;
 
     /**
      * The tooltip text of this Token, which contains its elevation.
@@ -81,7 +81,7 @@ declare global {
     /**
      * Track the set of User documents which are currently targeting this Token
      */
-    targeted: Set<User.Implementation>;
+    targeted: Set<User.Stored>;
 
     /**
      * A reference to the SpriteMesh which displays this Token in the PrimaryCanvasGroup.
@@ -152,7 +152,7 @@ declare global {
     /**
      * A convenient reference to the Actor object associated with the Token embedded document.
      */
-    get actor(): Actor.Implementation;
+    get actor(): TokenDocument["actor"];
 
     /**
      * A boolean flag for whether the current game User has observer permission for the Token
@@ -576,7 +576,7 @@ declare global {
      */
     // options: not null (property access)
     protected _prepareAnimation(
-      from: Token.AnimationDataForDuration,
+      from: Token.AnimationDataForRotation,
       changes: Token.PartialAnimationData,
       context: Token.AnimationContext,
       options?: Token.PrepareAnimationOptions,
@@ -609,10 +609,10 @@ declare global {
 
     /**
      * Get the center point for a given position or the current position.
-     * @param position - The position to be used instead of the current position
+     * @param position - The position to be used instead of the current position (default: `this.document`)
      * @returns The center point
      */
-    getCenterPoint(position: Canvas.Point): Canvas.Point;
+    getCenterPoint(position?: Canvas.Point | null): Canvas.Point;
 
     override getSnappedPosition(position?: Canvas.Point | null): Canvas.Point;
 
@@ -667,7 +667,7 @@ declare global {
      * @param targeted - Is the Token now targeted? (default: `true`)
      * @param context  - Additional context options
      */
-    // options: not null (destructured)
+    // targeted: not null (!== check with a boolean), context: not null (destructured)
     setTarget(targeted?: boolean, context?: Token.TargetContext): void;
 
     /**
@@ -947,6 +947,11 @@ declare global {
 
     interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
 
+    interface Bars extends PIXI.Container {
+      bar1: PIXI.Graphics;
+      bar2: PIXI.Graphics;
+    }
+
     /** @internal */
     type _GetMovementAdjustedPointOffsets = NullishProps<{
       /** @defaultValue `this.#priorMovement.ox` */
@@ -1164,7 +1169,16 @@ declare global {
 
     interface CheckCollisionOptions<Mode> extends _CheckCollisionOptions<Mode> {}
 
-    type TestablePosition = (Canvas.Point & { elevation?: number }) | { elevation: number };
+    /**
+     * @privateRemarks Foundry types this as `Point | (Point & {elevation: number}) | {elevation: number}`,
+     * but this is misleading, as if an object is passed for the 2nd param of {@link Token.testInsideRegion | `Token#testInsideRegion`}
+     * then it must contain `{x, y}` data, only if the value is nullish does the document's data get used.
+     * Passing just `{elevation: number}` would result in `{x: undefined, y: undefined}`, causing
+     * `PIXI.Rectangle#contains()` to always return false.
+     *
+     * Not reported, as `testInsideRegion` is deprecated and thus untyped in v13.
+     */
+    type TestablePosition = Canvas.Point & { elevation?: number };
 
     type _InitializeSourcesOptions = NullishProps<{
       /**
