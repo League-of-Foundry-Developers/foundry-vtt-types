@@ -36,7 +36,8 @@
     "eslint:report": "eslint --cache --output-file eslint_report.json --format json .",
     "test": "vitest --typecheck",
     "typecheck": "tsc -b tsconfig.main.json",
-    "prepare": "is-ci || husky"
+    "prepare": "is-ci || husky",
+    "betterer": "betterer"
   },
   "repository": {
     "type": "git",
@@ -111,6 +112,8 @@
   "devDependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
+    "@betterer/betterer": "^6.0.0-alpha.1",
+    "@betterer/cli": "^6.0.0-alpha.1",
     "@eslint/compat": "^1.2.6",
     "@eslint/js": "^9.19.0",
     "@ts-morph/common": "^0.26.1",
@@ -119,7 +122,9 @@
     "@types/picomatch": "^3.0.2",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.23.0",
+    "@typescript-eslint/scope-manager": "^8.27.0",
     "@typescript-eslint/utils": "^8.26.1",
+    "enhanced-resolve": "^5.18.1",
     "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-import-resolver-typescript": "^4.0.0",
