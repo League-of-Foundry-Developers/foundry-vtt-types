@@ -1,7 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type { DeepPartial } from "fvtt-types/utils";
 
-const DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
+import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 
 declare const documentSheetV2: foundry.applications.api.DocumentSheetV2<foundry.abstract.Document.Any>;
 
@@ -18,5 +17,5 @@ expectTypeOf(documentSheetV2._processSubmitData(event, form, formData)).toEqualT
 expectTypeOf(documentSheetV2.submit()).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(DocumentSheetV2.DEFAULT_OPTIONS).toEqualTypeOf<
-  DeepPartial<foundry.applications.api.DocumentSheetV2.Configuration> & object
+  DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration> & object
 >();
