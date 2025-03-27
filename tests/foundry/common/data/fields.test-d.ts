@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import DataField = foundry.data.fields.DataField;
 
 type DataSchema = foundry.data.fields.DataSchema;
@@ -168,3 +168,16 @@ stringField.toInput({ blank: "blank option" });
 
 // Because this `StringField` has options it doesn't need to be passed in to `toInput` anymore.
 withChoices.toInput({ blank: "blank option" });
+
+// Regression test for a "type instantation is excessively deep" error reported by @Eon.
+// Reduction case: https://tsplay.dev/W4964w
+test("circular data model heritage regression test", () => {
+  class EmbeddedModel extends foundry.abstract.DataModel<any, MyActorSystem> {}
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const schema = {
+    test: new foundry.data.fields.EmbeddedDataField(EmbeddedModel),
+  };
+
+  class MyActorSystem extends foundry.abstract.TypeDataModel<typeof schema, Actor.Implementation> {}
+});
