@@ -296,7 +296,7 @@ declare global {
      * This type will permanently exist but is marked deprecated. The reason it exists is because
      * the confusion between `Drawing` (the `PlaceableObject` that appears on the canvas) and
      * `DrawingDocument` (the `Document` that represents the data for a `Drawing`) is so common that
-     * it is useful to have type to forward to `DrawingDocument`.
+     * it is useful to have a type to forward to `DrawingDocument`.
      *
      * @deprecated {@link DrawingDocument.Implementation | `DrawingDocument.Implementation`}
      */
@@ -306,7 +306,7 @@ declare global {
      * This type will permanently exist but is marked deprecated. The reason it exists is because
      * the confusion between `Drawing` (the `PlaceableObject` that appears on the canvas) and
      * `DrawingDocument` (the `Document` that represents the data for a `Drawing`) is so common that
-     * it is useful to have type to forward to `DrawingDocument`.
+     * it is useful to have a type to forward to `DrawingDocument`.
      *
      * @deprecated {@link DrawingDocument.ImplementationClass | `DrawingDocument.ImplementationClass`}
      */

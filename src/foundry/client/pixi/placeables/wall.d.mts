@@ -300,7 +300,7 @@ declare global {
      * This type will permanently exist but is marked deprecated. The reason it exists is because
      * the confusion between `Wall` (the `PlaceableObject` that appears on the canvas) and
      * `WallDocument` (the `Document` that represents the data for a `Wall`) is so common that
-     * it is useful to have type to forward to `WallDocument`.
+     * it is useful to have a type to forward to `WallDocument`.
      *
      * @deprecated {@link WallDocument.Implementation | `WallDocument.Implementation`}
      */
@@ -310,7 +310,7 @@ declare global {
      * This type will permanently exist but is marked deprecated. The reason it exists is because
      * the confusion between `Wall` (the `PlaceableObject` that appears on the canvas) and
      * `WallDocument` (the `Document` that represents the data for a `Wall`) is so common that
-     * it is useful to have type to forward to `WallDocument`.
+     * it is useful to have a type to forward to `WallDocument`.
      *
      * @deprecated {@link WallDocument.ImplementationClass | `WallDocument.ImplementationClass`}
      */

@@ -230,7 +230,7 @@ declare global {
      * This type will permanently exist but is marked deprecated. The reason it exists is because
      * the confusion between `MeasuredTemplate` (the `PlaceableObject` that appears on the canvas) and
      * `MeasuredTemplateDocument` (the `Document` that represents the data for a `MeasuredTemplate`) is so common that
-     * it is useful to have type to forward to `MeasuredTemplateDocument`.
+     * it is useful to have a type to forward to `MeasuredTemplateDocument`.
      *
      * @deprecated {@link MeasuredTemplateDocument.Implementation | `MeasuredTemplateDocument.Implementation`}
      */
@@ -240,7 +240,7 @@ declare global {
      * This type will permanently exist but is marked deprecated. The reason it exists is because
      * the confusion between `MeasuredTemplate` (the `PlaceableObject` that appears on the canvas) and
      * `MeasuredTemplateDocument` (the `Document` that represents the data for a `MeasuredTemplate`) is so common that
-     * it is useful to have type to forward to `MeasuredTemplateDocument`.
+     * it is useful to have a type to forward to `MeasuredTemplateDocument`.
      *
      * @deprecated {@link MeasuredTemplateDocument.ImplementationClass | `MeasuredTemplateDocument.ImplementationClass`}
      */

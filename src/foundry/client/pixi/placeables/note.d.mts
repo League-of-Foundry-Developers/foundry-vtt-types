@@ -142,7 +142,7 @@ declare global {
      * This type will permanently exist but is marked deprecated. The reason it exists is because
      * the confusion between `Note` (the `PlaceableObject` that appears on the canvas) and
      * `NoteDocument` (the `Document` that represents the data for a `Note`) is so common that
-     * it is useful to have type to forward to `NoteDocument`.
+     * it is useful to have a type to forward to `NoteDocument`.
      *
      * @deprecated {@link NoteDocument.Implementation | `NoteDocument.Implementation`}
      */
@@ -152,7 +152,7 @@ declare global {
      * This type will permanently exist but is marked deprecated. The reason it exists is because
      * the confusion between `Note` (the `PlaceableObject` that appears on the canvas) and
      * `NoteDocument` (the `Document` that represents the data for a `Note`) is so common that
-     * it is useful to have type to forward to `NoteDocument`.
+     * it is useful to have a type to forward to `NoteDocument`.
      *
      * @deprecated {@link NoteDocument.ImplementationClass | `NoteDocument.ImplementationClass`}
      */

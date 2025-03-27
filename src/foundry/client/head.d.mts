@@ -1,4 +1,4 @@
-import type { HooksRan, FixedInstanceType, InitializationHook } from "fvtt-types/utils";
+import type { EarlierHook, FixedInstanceType, InitializationHook } from "fvtt-types/utils";
 
 type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationHook>;
 
@@ -16,7 +16,7 @@ interface Games {
 }
 
 // Needs to include the current hook as well as all hooks that can run after it.
-type GameHooks = Exclude<InitializationHook, HooksRan<ValidRanHooks>>;
+type GameHooks = Exclude<InitializationHook, EarlierHook[ValidRanHooks]>;
 
 type MaybeUI = Extract<ValidRanHooks, "ready"> extends never ? Partial<UiApplications> : UiApplications;
 

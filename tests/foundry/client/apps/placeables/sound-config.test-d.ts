@@ -1,6 +1,9 @@
 import { expectTypeOf } from "vitest";
 import type { MaybePromise } from "fvtt-types/utils";
 
+// TODO: This file appears to be testing the old version of AmbientLightConfig
+import AmbientSoundDocument = foundry.applications.sheets.AmbientSoundDocument;
+
 declare const sound: AmbientSoundDocument;
 const ambientSoundConfig = new AmbientSoundConfig(sound);
 

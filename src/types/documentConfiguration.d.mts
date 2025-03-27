@@ -19,73 +19,73 @@ import type { InterfaceToObject, MakeConform, MustConform, Merge, FixedInstanceT
 type DocumentConform<T> = MakeConform<T, Document.AnyConstructor>;
 
 interface DefaultDocumentClasses {
-  ActiveEffect: typeof Implementation.ActiveEffect;
-  ActorDelta: typeof Implementation.ActorDelta;
-  Actor: typeof Implementation.Actor;
-  Adventure: typeof Implementation.Adventure;
-  Card: typeof Implementation.Card;
-  Cards: typeof Implementation.Cards;
-  ChatMessage: typeof Implementation.ChatMessage;
-  Combat: typeof Implementation.Combat;
-  Combatant: typeof Implementation.Combatant;
-  FogExploration: typeof Implementation.FogExploration;
-  Folder: typeof Implementation.Folder;
-  Item: typeof Implementation.Item;
-  JournalEntryPage: typeof Implementation.JournalEntryPage;
-  JournalEntry: typeof Implementation.JournalEntry;
-  Macro: typeof Implementation.Macro;
-  PlaylistSound: typeof Implementation.PlaylistSound;
-  Playlist: typeof Implementation.Playlist;
-  RegionBehavior: typeof Implementation.RegionBehavior;
-  RollTable: typeof Implementation.RollTable;
-  Scene: typeof Implementation.Scene;
-  Setting: typeof Implementation.Setting;
-  TableResult: typeof Implementation.TableResult;
-  User: typeof Implementation.User;
-  AmbientLight: typeof Implementation.AmbientLightDocument;
-  AmbientSound: typeof Implementation.AmbientSoundDocument;
-  Drawing: typeof Implementation.DrawingDocument;
-  MeasuredTemplate: typeof Implementation.MeasuredTemplateDocument;
-  Region: typeof Implementation.RegionDocument;
-  Note: typeof Implementation.NoteDocument;
-  Tile: typeof Implementation.TileDocument;
-  Token: typeof Implementation.TokenDocument;
-  Wall: typeof Implementation.WallDocument;
+  ActiveEffect: typeof ActiveEffect;
+  ActorDelta: typeof ActorDelta;
+  Actor: typeof Actor;
+  Adventure: typeof Adventure;
+  Card: typeof Card;
+  Cards: typeof Cards;
+  ChatMessage: typeof ChatMessage;
+  Combat: typeof Combat;
+  Combatant: typeof Combatant;
+  FogExploration: typeof FogExploration;
+  Folder: typeof Folder;
+  Item: typeof Item;
+  JournalEntryPage: typeof JournalEntryPage;
+  JournalEntry: typeof JournalEntry;
+  Macro: typeof Macro;
+  PlaylistSound: typeof PlaylistSound;
+  Playlist: typeof Playlist;
+  RegionBehavior: typeof RegionBehavior;
+  RollTable: typeof RollTable;
+  Scene: typeof Scene;
+  Setting: typeof Setting;
+  TableResult: typeof TableResult;
+  User: typeof User;
+  AmbientLight: typeof AmbientLightDocument;
+  AmbientSound: typeof AmbientSoundDocument;
+  Drawing: typeof DrawingDocument;
+  MeasuredTemplate: typeof MeasuredTemplateDocument;
+  Region: typeof RegionDocument;
+  Note: typeof NoteDocument;
+  Tile: typeof TileDocument;
+  Token: typeof TokenDocument;
+  Wall: typeof WallDocument;
 }
 
 interface DefaultDocumentInstance {
-  ActiveEffect: Implementation.ActiveEffect;
-  ActorDelta: Implementation.ActorDelta;
-  Actor: Implementation.Actor;
-  Adventure: Implementation.Adventure;
-  Card: Implementation.Card;
-  Cards: Implementation.Cards;
-  ChatMessage: Implementation.ChatMessage;
-  Combat: Implementation.Combat;
-  Combatant: Implementation.Combatant;
-  FogExploration: Implementation.FogExploration;
-  Folder: Implementation.Folder;
-  Item: Implementation.Item;
-  JournalEntryPage: Implementation.JournalEntryPage;
-  JournalEntry: Implementation.JournalEntry;
-  Macro: Implementation.Macro;
-  PlaylistSound: Implementation.PlaylistSound;
-  Playlist: Implementation.Playlist;
-  RegionBehavior: Implementation.RegionBehavior;
-  RollTable: Implementation.RollTable;
-  Scene: Implementation.Scene;
-  Setting: Implementation.Setting;
-  TableResult: Implementation.TableResult;
-  User: Implementation.User;
-  AmbientLight: Implementation.AmbientLightDocument;
-  AmbientSound: Implementation.AmbientSoundDocument;
-  Drawing: Implementation.DrawingDocument;
-  MeasuredTemplate: Implementation.MeasuredTemplateDocument;
-  Note: Implementation.NoteDocument;
-  Region: Implementation.RegionDocument;
-  Tile: Implementation.TileDocument;
-  Token: Implementation.TokenDocument;
-  Wall: Implementation.WallDocument;
+  ActiveEffect: ActiveEffect;
+  ActorDelta: ActorDelta;
+  Actor: Actor;
+  Adventure: Adventure;
+  Card: Card;
+  Cards: Cards;
+  ChatMessage: ChatMessage;
+  Combat: Combat;
+  Combatant: Combatant;
+  FogExploration: FogExploration;
+  Folder: Folder;
+  Item: Item;
+  JournalEntryPage: JournalEntryPage;
+  JournalEntry: JournalEntry;
+  Macro: Macro;
+  PlaylistSound: PlaylistSound;
+  Playlist: Playlist;
+  RegionBehavior: RegionBehavior;
+  RollTable: RollTable;
+  Scene: Scene;
+  Setting: Setting;
+  TableResult: TableResult;
+  User: User;
+  AmbientLight: AmbientLightDocument;
+  AmbientSound: AmbientSoundDocument;
+  Drawing: DrawingDocument;
+  MeasuredTemplate: MeasuredTemplateDocument;
+  Note: NoteDocument;
+  Region: RegionDocument;
+  Tile: TileDocument;
+  Token: TokenDocument;
+  Wall: WallDocument;
 }
 
 type ResolvedDefaultDocuments = {
@@ -959,307 +959,4 @@ export interface ConfigurationFailure {
   Tile: MisconfiguredTile;
   Token: MisconfiguredToken;
   Wall: MisconfiguredWall;
-}
-
-// Writing `new Wall(...)` is not recommended because it doesn't respect the system's document.
-// Instead one should write `new Wall.implementation(...)`. To achieve this the document
-// constructors are marked as deprecated and point to their implementation.
-//
-// However for this scheme to work the implementation constructor can't be deprecated, hence this namespace.
-declare namespace Implementation {
-  // These annoying re-exports are because `class ActiveEffect extends globalThis.ActiveEffect { ... }` doesn't work.
-  import _ActiveEffect = globalThis.ActiveEffect;
-  import _ActorDelta = globalThis.ActorDelta;
-  import _Actor = globalThis.Actor;
-  import _Adventure = globalThis.Adventure;
-  import _Card = globalThis.Card;
-  import _Cards = globalThis.Cards;
-  import _ChatMessage = globalThis.ChatMessage;
-  import _Combat = globalThis.Combat;
-  import _Combatant = globalThis.Combatant;
-  import _FogExploration = globalThis.FogExploration;
-  import _Folder = globalThis.Folder;
-  import _Item = globalThis.Item;
-  import _JournalEntryPage = globalThis.JournalEntryPage;
-  import _JournalEntry = globalThis.JournalEntry;
-  import _Macro = globalThis.Macro;
-  import _PlaylistSound = globalThis.PlaylistSound;
-  import _Playlist = globalThis.Playlist;
-  import _RegionBehavior = globalThis.RegionBehavior;
-  import _RollTable = globalThis.RollTable;
-  import _Scene = globalThis.Scene;
-  import _Setting = globalThis.Setting;
-  import _TableResult = globalThis.TableResult;
-  import _User = globalThis.User;
-  import _AmbientLightDocument = globalThis.AmbientLightDocument;
-  import _AmbientSoundDocument = globalThis.AmbientSoundDocument;
-  import _DrawingDocument = globalThis.DrawingDocument;
-  import _MeasuredTemplateDocument = globalThis.MeasuredTemplateDocument;
-  import _RegionDocument = globalThis.RegionDocument;
-  import _NoteDocument = globalThis.NoteDocument;
-  import _TileDocument = globalThis.TileDocument;
-  import _TokenDocument = globalThis.TokenDocument;
-  import _WallDocument = globalThis.WallDocument;
-
-  class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends _ActiveEffect<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<ActiveEffect.CreateData, ActiveEffect.Parent>);
-  }
-
-  class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.SubType> extends _ActorDelta<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<ActorDelta.CreateData, ActorDelta.Parent>);
-  }
-
-  class Actor<out SubType extends Actor.SubType = Actor.SubType> extends _Actor<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<Actor.CreateData, Actor.Parent>);
-  }
-
-  class Adventure extends _Adventure {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<Adventure.CreateData, Adventure.Parent>);
-  }
-
-  class Card<out SubType extends Card.SubType = Card.SubType> extends _Card<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<Card.CreateData, Card.Parent>);
-  }
-
-  class Cards<out SubType extends Cards.SubType = Cards.SubType> extends _Cards<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<Cards.CreateData, Cards.Parent>);
-  }
-
-  class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.SubType> extends _ChatMessage<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<ChatMessage.CreateData, ChatMessage.Parent>);
-  }
-
-  class Combat<out SubType extends Combat.SubType = Combat.SubType> extends _Combat<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<Combat.CreateData, Combat.Parent>);
-  }
-
-  class Combatant<out SubType extends Combatant.SubType = Combatant.SubType> extends _Combatant<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<Combatant.CreateData, Combatant.Parent>);
-  }
-
-  class FogExploration extends _FogExploration {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<FogExploration.CreateData, FogExploration.Parent>);
-  }
-
-  class Folder<out SubType extends Folder.SubType = Folder.SubType> extends _Folder<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<Folder.CreateData, Folder.Parent>);
-  }
-
-  class Item<out SubType extends Item.SubType = Item.SubType> extends _Item<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<Item.CreateData, Item.Parent>);
-  }
-
-  class JournalEntryPage<
-    out SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType,
-  > extends _JournalEntryPage<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<JournalEntryPage.CreateData, JournalEntryPage.Parent>);
-  }
-
-  class JournalEntry extends _JournalEntry {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<JournalEntry.CreateData, JournalEntry.Parent>);
-  }
-
-  class Macro<out SubType extends Macro.SubType = Macro.SubType> extends _Macro<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<Macro.CreateData, Macro.Parent>);
-  }
-
-  class PlaylistSound extends _PlaylistSound {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<PlaylistSound.CreateData, PlaylistSound.Parent>);
-  }
-
-  class Playlist extends _Playlist {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<Playlist.CreateData, Playlist.Parent>);
-  }
-
-  class RegionBehavior<
-    out SubType extends RegionBehavior.SubType = RegionBehavior.SubType,
-  > extends _RegionBehavior<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<RegionBehavior.CreateData, RegionBehavior.Parent>);
-  }
-
-  class RollTable extends _RollTable {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<RollTable.CreateData, RollTable.Parent>);
-  }
-
-  class Scene extends _Scene {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<Scene.CreateData, Scene.Parent>);
-  }
-
-  class Setting extends _Setting {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<Setting.CreateData, Setting.Parent>);
-  }
-
-  class TableResult<out SubType extends TableResult.SubType = TableResult.SubType> extends _TableResult<SubType> {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<TableResult.CreateData, TableResult.Parent>);
-  }
-
-  class User extends _User {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<User.CreateData, User.Parent>);
-  }
-
-  class AmbientLightDocument extends _AmbientLightDocument {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<AmbientLightDocument.CreateData, AmbientLightDocument.Parent>);
-  }
-
-  class AmbientSoundDocument extends _AmbientSoundDocument {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<AmbientSoundDocument.CreateData, AmbientSoundDocument.Parent>);
-  }
-
-  class DrawingDocument extends _DrawingDocument {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<DrawingDocument.CreateData, DrawingDocument.Parent>);
-  }
-
-  class MeasuredTemplateDocument extends _MeasuredTemplateDocument {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(
-      ...args: Document.ConstructorParameters<MeasuredTemplateDocument.CreateData, MeasuredTemplateDocument.Parent>
-    );
-  }
-
-  class RegionDocument extends _RegionDocument {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<RegionDocument.CreateData, RegionDocument.Parent>);
-  }
-
-  class NoteDocument extends _NoteDocument {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<NoteDocument.CreateData, NoteDocument.Parent>);
-  }
-
-  class TileDocument extends _TileDocument {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<TileDocument.CreateData, TileDocument.Parent>);
-  }
-
-  class TokenDocument extends _TokenDocument {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: Document.ConstructorParameters<TokenDocument.CreateData, TokenDocument.Parent>);
-  }
-
-  class WallDocument extends _WallDocument {
-    /**
-     * @param data    - Initial data from which to construct the `DrawingDocument`
-     * @param context - Construction context options
-     */
-    constructor(...args: WallDocument.ConstructorArgs);
-  }
 }

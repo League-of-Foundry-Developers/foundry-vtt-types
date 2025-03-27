@@ -36,7 +36,10 @@ declare namespace DocumentSheetV2 {
     (Configuration extends DocumentSheetV2.Configuration<infer _ extends foundry.abstract.Document.Any>
       ? // If a document is already specified in the config, don't allow it to be set in subclasses
         // because `Object.apply(new Item(...), new Actor(...))` is clearly nonsensical
-        { document?: never }
+        {
+          /** @deprecated Document is not an allowed property in this DocumentSheetV2 subclass */
+          document?: never;
+        }
       : { document?: foundry.abstract.Document.Any | undefined });
 
   interface RenderOptions extends ApplicationV2.RenderOptions {

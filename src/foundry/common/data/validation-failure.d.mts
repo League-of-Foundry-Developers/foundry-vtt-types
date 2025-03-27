@@ -1,7 +1,7 @@
 /**
  * A class responsible for recording information about a validation failure.
  */
-export class DataModelValidationFailure {
+declare class DataModelValidationFailure {
   constructor(options: DataModelValidationFailure.ConstructorArgs);
 
   /**
@@ -68,7 +68,7 @@ export class DataModelValidationFailure {
 /**
  * A specialised Error to indicate a model validation failure.
  */
-export class DataModelValidationError extends Error {
+declare class DataModelValidationError extends Error {
   /**
    * @param failure - The failure that triggered this error or an error message
    * @param params  - Additional Error constructor parameters
@@ -170,3 +170,5 @@ declare namespace DataModelValidationFailure {
     message?: string | undefined;
   }
 }
+
+export { DataModelValidationFailure, DataModelValidationError };
