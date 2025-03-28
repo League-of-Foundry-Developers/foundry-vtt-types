@@ -378,7 +378,7 @@ declare global {
      * Apply this ActorDelta to the base Actor and return a synthetic Actor.
      * @param context - Context to supply to synthetic Actor instantiation.
      */
-    apply(context: unknown): Actor.Implementation;
+    apply(context: unknown): Actor.Implementation | null;
 
     /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
     override prepareEmbeddedDocuments(): void;

@@ -1,7 +1,6 @@
 import { expectTypeOf } from "vitest";
 import DataModel = foundry.abstract.DataModel;
 import type { ValueOf } from "fvtt-types/utils";
-import type { ObjectAttributeBar, SingleAttributeBar } from "../../../../src/foundry/client/data/documents/token.d.mts";
 
 const myLight = new foundry.data.LightData();
 
@@ -81,7 +80,7 @@ expectTypeOf(myProtoToken.randomImg).toBeBoolean();
 
 expectTypeOf(myProtoToken.actor).toEqualTypeOf<foundry.documents.BaseActor>();
 expectTypeOf(myProtoToken.toObject().actorId).toEqualTypeOf<string | undefined>();
-expectTypeOf(myProtoToken.getBarAttribute("foo")).toEqualTypeOf<SingleAttributeBar | ObjectAttributeBar | null>();
+expectTypeOf(myProtoToken.getBarAttribute("foo")).toEqualTypeOf<TokenDocument.GetBarAttributeReturn>();
 expectTypeOf(myProtoToken.getBarAttribute("foo")?.attribute).toEqualTypeOf<string | undefined>();
 
 /******************************************************************/

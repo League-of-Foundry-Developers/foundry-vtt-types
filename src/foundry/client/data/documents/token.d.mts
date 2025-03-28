@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, InexactPartial, InterfaceToObject } from "fvtt-types/utils";
+import type { AnyObject, InterfaceToObject, NullishProps } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema, SchemaField } from "../../../common/data/fields.d.mts";
@@ -745,21 +745,54 @@ declare global {
       value: string[][];
     }
 
-    interface CreateCombatantOptions {
+    /** @internal */
+    type _CreateCombatantOptions = NullishProps<{
       /**
        * A specific Combat instance which should be modified. If undefined,
        * the current active combat will be modified if one exists. Otherwise, a new
        * Combat encounter will be created if the requesting user is a Gamemaster.
+       * @remarks `null` behaves as `undefined` above
        */
-      combat?: Combat | undefined;
-    }
+      combat: Combat;
+    }>;
 
-    interface ToggleCombatantOptions extends InexactPartial<TokenDocument.CreateCombatantOptions> {
+    interface CreateCombatantOptions extends _CreateCombatantOptions {}
+
+    /** @internal */
+    type _ToggleCombatantOptions = NullishProps<{
       /**
        * Require this token to be an active Combatant or to be removed.
        * Otherwise, the current combat state of the Token is toggled.
+       * @defaultValue `!this.inCombat`
        */
       active: boolean;
+    }>;
+
+    interface ToggleCombatantOptions extends _ToggleCombatantOptions, _CreateCombatantOptions {}
+
+    /** @internal */
+    type _GetBarAttributeOptions = NullishProps<{
+      /**
+       * An alternative attribute path to get instead of the default one
+       */
+      alternative: string;
+    }>;
+
+    interface GetBarAttributeOptions extends _GetBarAttributeOptions {}
+
+    interface SingleAttributeBar {
+      type: "value";
+      attribute: string;
+      value: number;
+      editable: boolean;
+    }
+
+    interface ObjectAttributeBar {
+      type: "bar";
+      attribute: string;
+      value: number;
+      max: number;
+      editable: boolean;
     }
 
     type GetBarAttributeReturn = SingleAttributeBar | ObjectAttributeBar | null;
@@ -781,7 +814,7 @@ declare global {
     /**
      * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
      */
-    actors(): Collection<Actor.Implementation>;
+    actors: Collection<Actor.Implementation>;
 
     /**
      * A lazily evaluated reference to the Actor this Token modifies.
@@ -793,7 +826,7 @@ declare global {
     /**
      * A reference to the base, World-level Actor this token represents.
      */
-    get baseActor(): Actor | undefined;
+    get baseActor(): Actor.Implementation | undefined;
 
     /**
      * An indicator for whether or not the current User has full control over this Token document.
@@ -851,14 +884,10 @@ declare global {
      * @param barName     - The named bar to retrieve the attribute for
      * @returns The attribute displayed on the Token bar, if any
      */
+    // options: not null (destructured)
     getBarAttribute(
       barName: string,
-      options?: InexactPartial<{
-        /**
-         * An alternative attribute path to get instead of the default one
-         */
-        alternative: string;
-      }>,
+      options?: TokenDocument.GetBarAttributeOptions,
     ): TokenDocument.GetBarAttributeReturn;
 
     /**
@@ -873,9 +902,12 @@ declare global {
      * @param options - Additional options passed to TokenDocument.createCombatants or
      *                  TokenDocument.deleteCombatants
      *                  Default: `{}`
-     *  @returns Is this Token now an active Combatant?
+     * @returns Is this Token now an active Combatant?
+     * @throws If there is no current combat and the calling user  is not a GM (via {@link TokenDocument.createCombatants | `TokenDocument.createCombatants`})
+     * @remarks Calls either `TokenDocument.createCombatants` or {@link TokenDocument.deleteCombatants | `.deleteCombatants`} as appropriate
      */
-    toggleCombatant({ active, ...options }?: TokenDocument.ToggleCombatantOptions): Promise<boolean>;
+    // options: not null (destructured)
+    toggleCombatant(options?: TokenDocument.ToggleCombatantOptions): Promise<boolean>;
 
     /**
      * Create or remove Combatants for an array of provided Token objects.
@@ -883,9 +915,10 @@ declare global {
      * @param options - Options which modify the toggle operation
      *                  Default: `{}`
      * @returns An array of created Combatant documents
+     * @throws If there is no current combat and the calling user is not a GM
      */
     static createCombatants(
-      tokens: TokenDocument[],
+      tokens: TokenDocument.Implementation[],
       options?: TokenDocument.CreateCombatantOptions,
     ): Promise<Combatant.Implementation[]>;
 
@@ -896,21 +929,19 @@ declare global {
      *                  Default: `{}`
      * @returns An array of deleted Combatant documents
      */
+    // options: not null (destructured)
     static deleteCombatants(
-      tokens: TokenDocument[],
+      tokens: TokenDocument.Implementation[],
       options?: TokenDocument.CreateCombatantOptions,
     ): Promise<Combatant.Implementation[]>;
 
     /**
      * Convenience method to change a token vision mode.
      * @param visionMode - The vision mode to apply to this token.
-     * @param defaults   - If the vision mode should be updated with its defaults.
-     *                     Default = `true`
+     * @param defaults   - If the vision mode should be updated with its defaults. (default: `true`)
+     * @throws If `visionMode` is not in {@link CONFIG.Canvas.visionModes | `CONFIG.Canvas.visionModes`}
      */
-    updateVisionMode(
-      visionMode: typeof CONFIG.Canvas.visionModes,
-      defaults?: boolean,
-    ): Promise<ReturnType<this["update"]>>;
+    updateVisionMode(visionMode: string, defaults?: boolean | null): Promise<this | undefined>;
 
     override getEmbeddedCollection<DocType extends Document.Type>(
       embeddedName: DocType,
@@ -1011,18 +1042,16 @@ declare global {
     /**
      * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
      */
-    protected _onUpdateBaseActor(
-      update?: DeepPartial<Actor.Implementation["_source"]>,
-      options?: Actor.Database.OnUpdateOperation,
-    ): void;
+    // update and options: not null (parameter default only, property access)
+    protected _onUpdateBaseActor(update?: Actor.UpdateData, options?: Actor.Database.OnUpdateOperation): void;
 
     /**
      * Whenever the token's actor delta changes, or the base actor changes, perform associated refreshes.
      * @param update  - The update delta.
-     * @param options - The options provided to the update.
+     * @param operation - The options provided to the update.
      */
     protected _onRelatedUpdate(
-      update?: DeepPartial<Actor.Implementation["_source"]>,
+      update?: Actor.UpdateData,
       /**
        * @privateRemarks foundry calls this field operation
        * but it's being passed options (and then ignores them)
@@ -1032,18 +1061,22 @@ declare global {
 
     /**
      * Get an Array of attribute choices which could be tracked for Actors in the Combat Tracker
+     * @param data  - The object to explore for attributes, or an Actor type.
      * @param _path - (default: `[]`)
      */
     // TODO: There's some very complex handling for non-datamodel Actor system implementations if we want
+    // _path: not null (parameter default only)
     static getTrackedAttributes(
-      data?: Actor.Implementation["system"],
+      data?: Actor.Implementation["system"] | AnyObject | null,
       _path?: string[],
     ): TokenDocument.TrackedAttributesDescription;
 
     /**
      * Retrieve an Array of attribute choices from a plain object.
-     * @param schema - The schema to explore for attributes.
+     * @param data   - The object to explore for attributes.
+     * @param _path - (default: `[]`)
      */
+    // _path: not null (parameter default only)
     protected static _getTrackedAttributesFromObject(
       data: object,
       _path?: string[],
@@ -1053,6 +1086,7 @@ declare global {
      * Retrieve an Array of attribute choices from a SchemaField.
      * @param schema - The schema to explore for attributes.
      */
+    // _path: not null (parameter default only)
     protected static _getTrackedAttributesFromSchema(
       schema: foundry.data.fields.SchemaField.Any,
       _path?: string[],
@@ -1061,6 +1095,7 @@ declare global {
     /**
      * Retrieve any configured attributes for a given Actor type.
      * @param type - The Actor type.
+     * @remarks Returns early if there's nothing in `CONFIG.Actor.trackableAttributes`
      */
     static _getConfiguredTrackedAttributes(type: string): TokenDocument.TrackedAttributesDescription | void;
 
@@ -1068,42 +1103,44 @@ declare global {
      * Inspect the Actor data model and identify the set of attributes which could be used for a Token Bar
      * @param attributes - The tracked attributes which can be chosen from
      * @returns A nested object of attribute choices to display
+     * @remarks If `attributes` is falsey, uses {@link TokenDocument.getTrackedAttributes | `this.getTrackedAttributes()`}
      */
     static getTrackedAttributeChoices(
-      attributes?: TokenDocument.TrackedAttributesDescription,
-    ): Record<string, string[]>;
+      attributes?: TokenDocument.TrackedAttributesDescription | null,
+    ): Array<{ group: string; label: string; value: string }>; // TODO: This should be part of a SelectOptionsData or some such type
 
     /**
-     * @deprecated since v11
-     * @remarks `"TokenDocument#getActor has been deprecated. Please use the`
-     * `TokenDocument#actor getter to retrieve the Actor instance that the TokenDocument represents, or use`
-     * `TokenDocument#delta#apply to generate a new synthetic Actor instance."`
+     * @deprecated since v11, until v13
+     * @remarks "`TokenDocument#getActor` has been deprecated. Please use the {@link TokenDocument.actor | `TokenDocument#actor`}
+     * getter to retrieve the Actor instance that the TokenDocument represents, or use {@link ActorDelta.apply | `TokenDocument#delta#apply`}
+     * to generate a new synthetic Actor instance."
+     *
+     * @privateRemarks Foundry omits the options object on this deprecation warning,
+     * but as it's been removed in v13, seems it was effectively standard
      */
-    getActor(): Actor.Implementation;
+    getActor(): Actor.Implementation | null;
 
     /**
-     * @deprecated since v11
+     * @deprecated since v11, until v13
+     * @remarks "You are accessing `TokenDocument#actorData` which is deprecated.
+     * Source data may be retrieved via {@link TokenDocument.delta | `TokenDocument#delta`}
+     * but all modifications/access should be done via the synthetic Actor at
+     * {@link TokenDocument.actor | `TokenDocument#actor`} if possible."
      */
     get actorData(): this["delta"]["_source"];
 
-    /**
-     * @deprecated since v11
-     */
     set actorData(actorData: this["delta"]["_source"]);
 
     /**
      * A helper function to toggle a status effect which includes an Active Effect template
      * @param effectData - The Active Effect data, including statusId
      * @param options    - Options to configure application of the Active Effect
-     *                     (default: `{}`)
      * @returns Whether the Active Effect is now on or off
-     * @deprecated since v12
-     * @remarks `TokenDocument#toggleActiveEffect is deprecated in favor of Actor#toggleStatusEffect"`
+     * @deprecated since v12, until v14
+     * @remarks "`TokenDocument#toggleActiveEffect` is deprecated in favor of {@link Actor.toggleStatusEffect | `Actor#toggleStatusEffect`}"
      */
-    toggleActiveEffect(
-      effectData: CONFIG.StatusEffect,
-      options?: InexactPartial<ToggleActiveEffectOptions>,
-    ): Promise<boolean>;
+    // options: not null (destructured)
+    toggleActiveEffect(effectData: CONFIG.StatusEffect, options?: Actor.ToggleStatusEffectOptions): Promise<boolean>;
 
     /*
      * After this point these are not really overridden methods.
@@ -1148,30 +1185,4 @@ declare global {
    * @deprecated {@link TokenDocument.CreateCombatantOptions | `TokenDocument.CreateCombatantOptions`}
    */
   type CreateCombatantOptions = TokenDocument.CreateCombatantOptions;
-}
-
-interface SingleAttributeBar {
-  type: "value";
-  attribute: string;
-  value: number;
-  editable: boolean;
-}
-
-interface ObjectAttributeBar {
-  type: "bar";
-  attribute: string;
-  value: number;
-  max: number;
-  editable: boolean;
-}
-
-interface ToggleActiveEffectOptions {
-  /**
-   * Should the Active Effect icon be displayed as an overlay on the token?
-   * @defaultValue `false`
-   */
-  overlay: boolean;
-
-  /** Force a certain active state for the effect. */
-  active: boolean;
 }
