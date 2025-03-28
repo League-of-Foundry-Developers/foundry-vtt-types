@@ -142,6 +142,11 @@ declare global {
      */
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
+    /**
+     * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
+     */
+    type Coordinates = [x0: number, y0: number, x1: number, y1: number];
+
     interface ThresholdSchema extends DataSchema {
       /**
        * Minimum distance from a light source for which this wall blocks light
@@ -187,7 +192,7 @@ declare global {
       c: fields.ArrayField<
         fields.NumberField<{ required: true; integer: true; nullable: false }>,
         {
-          validate: (c: unknown) => c is [x0: number, y0: number, x1: number, y1: number];
+          validate: (c: unknown) => c is Coordinates;
           validationError: "must be a length-4 array of integer coordinates";
         },
         // TODO(LukeAbby): Make the array shape easier to override.
@@ -196,10 +201,10 @@ declare global {
           fields.NumberField<{ required: true; integer: true; nullable: false }>
         >,
         //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-        [x0: number, y0: number, x1: number, y1: number],
-        [x0: number, y0: number, x1: number, y1: number],
+        Coordinates,
+        Coordinates,
         fields.ArrayField.PersistedElementType<fields.NumberField<{ required: true; integer: true; nullable: false }>>,
-        [x0: number, y0: number, x1: number, y1: number]
+        Coordinates
       >;
 
       /**

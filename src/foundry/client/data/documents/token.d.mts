@@ -761,6 +761,8 @@ declare global {
        */
       active: boolean;
     }
+
+    type GetBarAttributeReturn = SingleAttributeBar | ObjectAttributeBar | null;
   }
 
   /**
@@ -857,7 +859,7 @@ declare global {
          */
         alternative: string;
       }>,
-    ): SingleAttributeBar | ObjectAttributeBar | null;
+    ): TokenDocument.GetBarAttributeReturn;
 
     /**
      * Test whether a Token has a specific status effect.

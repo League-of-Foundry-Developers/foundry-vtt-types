@@ -428,7 +428,7 @@ declare global {
           };
           teleport: boolean;
           forced: boolean;
-          segments: Region.RegionMovementSegment[];
+          segments: Region.MovementSegment[];
         }
       | {
           token: TokenDocument.Implementation;
