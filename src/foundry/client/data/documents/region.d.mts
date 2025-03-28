@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { NullishProps } from "fvtt-types/utils";
 import type { BaseShapeData, fields } from "../../../common/data/module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -393,13 +393,14 @@ declare global {
       eventName: string;
 
       /** The data of the event */
-      eventData: object;
+      eventData: EventData;
 
       /** The keys of the event data that are Documents */
       eventDataUuids: string[];
     }
 
-    interface UpdateTokenOptions {
+    /** @internal */
+    type _UpdateTokenOptions = NullishProps<{
       /**
        * Are the Region documents deleted?
        * @defaultValue `false`
@@ -411,7 +412,9 @@ declare global {
        * @defaultValue `true`
        */
       reset: boolean;
-    }
+    }>;
+
+    interface UpdateTokenOptions extends _UpdateTokenOptions {}
 
     type EventData =
       | {
@@ -475,23 +478,25 @@ declare global {
 
     /**
      * Activate the Socket event listeners.
-     * @param socket    - The active game socket
-     * @internal
+     * @param socket - The active game socket
+     *@remarks Foundry marked `@internal`
      */
     protected static _activateSocketListeners(socket: WebSocket): void;
 
     /**
      * Update the tokens of the given regions.
      * @param regions   - The regions to update the tokens for
-     * @remarks
-     *  If called during Region/Scene create/update/delete workflows, the Token documents are always reset and
+     * @remarks Foundry's remarks:
+     *
+     * "If called during Region/Scene create/update/delete workflows, the Token documents are always reset and
      *  so never in an animated state, which means the reset option may be false. It is important that the
-     *  containment test is not done in an animated state.
-     * @internal
+     *  containment test is not done in an animated state."
+     *
+     * Foundry marked `@internal`
      */
     protected static _updateTokens(
       regions: RegionDocument[],
-      options?: InexactPartial<RegionDocument.UpdateTokenOptions>,
+      options?: RegionDocument.UpdateTokenOptions,
     ): Promise<void>;
 
     protected override _onCreateDescendantDocuments(
@@ -526,16 +531,16 @@ declare global {
 
     /**
      * Trigger the Region event.
-     * @param eventName     - The event name
-     * @param eventData     - The event data
-     * @internal
+     * @param eventName - The event name
+     * @param eventData - The event data
+     * @remarks Foundry marked `@internal`
      */
     protected _triggerEvent(eventName: string, eventData: RegionDocument.EventData): Promise<void>;
 
     /**
      * Handle the Region event.
-     * @param event     - The Region event
-     * @internal
+     * @param event - The Region event
+     * @remarks Foundry marked `@internal`
      */
     protected _handleEvent(event: RegionDocument.RegionEvent): Promise<void>;
 
@@ -543,8 +548,6 @@ declare global {
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
      * _onUpdateOperation, _onDeleteOperation, are overridden from BaseRegion without signature changes.
      */
-
-    #regionDocument: true;
 
     /*
      * After this point these are not really overridden methods.
