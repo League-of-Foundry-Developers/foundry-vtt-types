@@ -207,7 +207,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
     options?: Document.DataFieldShimOptions,
   ): void;
 
-  protected static _addDataFieldMigration(
+  protected static override _addDataFieldMigration(
     data: AnyMutableObject,
     oldKey: string,
     newKey: string,
@@ -215,7 +215,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   ): boolean;
 
   // options: not null (destructured where forwarded)
-  protected static _logDataFieldMigration(
+  protected static override _logDataFieldMigration(
     oldKey: string,
     newKey: string,
     options?: LogCompatibilityWarningOptions,

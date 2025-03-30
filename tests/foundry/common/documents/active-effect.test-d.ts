@@ -198,6 +198,7 @@ expectTypeOf(myAE.canUserModify(someUser, "create")).toBeBoolean();
 expectTypeOf(myAE.canUserModify(someUser, "delete")).toBeBoolean();
 expectTypeOf(myAE.canUserModify(someUser, "update")).toBeBoolean();
 expectTypeOf(myAE.canUserModify(someUser, "create", {})).toBeBoolean();
+//TODO: why does this error?
 expectTypeOf(myAE.canUserModify(someUser, "create", myAE.toObject())).toBeBoolean();
 
 expectTypeOf(myAE.testUserPermission(someUser, "OBSERVER")).toBeBoolean();

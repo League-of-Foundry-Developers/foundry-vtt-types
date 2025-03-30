@@ -71,6 +71,7 @@ declare abstract class BaseActiveEffect<
    * - `label` to `name`, since v11, until v13
    * - `icon` to `img`, since v12, until v14
    */
+  // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
@@ -269,7 +270,7 @@ declare abstract class BaseActiveEffect<
     options?: Document.DataFieldShimOptions,
   ): void;
 
-  protected static _addDataFieldMigration(
+  protected static override _addDataFieldMigration(
     data: AnyMutableObject,
     oldKey: string,
     newKey: string,
@@ -277,7 +278,7 @@ declare abstract class BaseActiveEffect<
   ): boolean;
 
   // options: not null (destructured where forwarded)
-  protected static _logDataFieldMigration(
+  protected static override _logDataFieldMigration(
     oldKey: string,
     newKey: string,
     options?: LogCompatibilityWarningOptions,
