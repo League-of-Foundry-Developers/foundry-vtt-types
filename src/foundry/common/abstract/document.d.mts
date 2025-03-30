@@ -24,6 +24,7 @@ import type {
   ConcreteKeys,
   ValueOf,
   PickValue,
+  AnyMutableObject,
 } from "fvtt-types/utils";
 import type * as CONST from "../constants.mts";
 import type {
@@ -184,6 +185,9 @@ declare abstract class Document<
   /**
    * Identify the collection in a parent Document that this Document exists belongs to, if any.
    * @param parentCollection - An explicitly provided parent collection name.
+   * @remarks If passed a value for `parentCollection`, simply returns that value
+   *
+   * Foundry marked `@internal`
    */
   _getParentCollection(parentCollection?: string): string | null;
 
@@ -206,18 +210,18 @@ declare abstract class Document<
    * Test whether a given User has a sufficient role in order to create Documents of this type in general.
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
+   * @throws If this document's `metadata.permissions.create instanceof Function`
    */
   static canUserCreate(user: User.Internal.Implementation): boolean;
 
   /**
-   * Get the explicit permission level that a specific User has over this Document, a value in CONST.DOCUMENT_OWNERSHIP_LEVELS.
+   * Get the explicit permission level that a specific User has over this Document, a value in {@link CONST.DOCUMENT_OWNERSHIP_LEVELS | `CONST.DOCUMENT_OWNERSHIP_LEVELS`}.
    * This method returns the value recorded in Document ownership, regardless of the User's role.
    * To test whether a user has a certain capability over the document, testUserPermission should be used.
-   * @param user - The User being tested
-   *               (default: `game.user`)
+   * @param user - The User being tested (default: `game.user`)
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
    */
-  getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -241,6 +245,7 @@ declare abstract class Document<
    *                 (default: `{}`)
    * @returns Does the User have permission?
    */
+  // data: not null (parameter default only)
   canUserModify<Action extends "create" | "update" | "delete">(
     user: User.Internal.Implementation,
     action: Action,
@@ -254,18 +259,21 @@ declare abstract class Document<
    * @param context - Additional context options passed to the create method
    * @returns The cloned Document instance
    */
+  // data: not null (property access), context: not null (destructured)
   override clone<Save extends boolean = false>(
     data?: fields.SchemaField.UpdateData<Schema>,
-    context?: Document.CloneContext<Save> & InexactPartial<Document.ConstructionContext<Parent>>,
+    context?: Document.CloneContext<Save> & Document.ConstructionContext<Parent>,
   ): Save extends true ? Promise<this> : this;
 
   /**
    * For Documents which include game system data, migrate the system data object to conform to its latest data model.
    * The data model is defined by the template.json specification included by the game system.
    * @returns The migrated system data object
+   * @throws If this document type either doesn't have subtypes or it does but the one on this document is a DataModel
    */
   migrateSystemData(): object;
 
+  /** @remarks `Document#toObject` calls `this.constructor.shimData()` on the data before returning */
   override toObject<Source extends boolean | undefined>(
     source?: Source,
   ): Source extends false ? SchemaField.PersistedData<Schema> : Readonly<SchemaField.PersistedData<Schema>>;
@@ -501,10 +509,11 @@ declare abstract class Document<
    * @throws If the embedded collection does not exist, or if strict is true and the Embedded Document could not be found.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#getEmbeddedDocument` directly.
+  // options: not null (destructured)
   getEmbeddedDocument(
     embeddedName: never,
     id: string,
-    options: Document.GetEmbeddedDocumentOptions,
+    options?: Document.GetEmbeddedDocumentOptions,
   ): Document.AnyChild<this> | undefined;
 
   /**
@@ -783,20 +792,26 @@ declare abstract class Document<
 
   /**
    * @deprecated since v11, will be removed in v13
-   * @remarks "You are accessing `Document.hasSystemData` which is deprecated. Please use `Document.hasTypeData` instead."
+   * @remarks "You are accessing `Document.hasSystemData` which is deprecated. Please use {@link Document.hasTypeData | `Document.hasTypeData`} instead."
    */
   static get hasSystemData(): undefined | true;
 
   /**
    * A reusable helper for adding migration shims.
    */
-  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
   /**
    * A reusable helper for adding a migration shim
    */
+  // options: not null (parameter default only)
   protected static _addDataFieldShim(
-    data: AnyObject,
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
     options?: Document.DataFieldShimOptions,
@@ -809,15 +824,16 @@ declare abstract class Document<
    * @param oldKey - The old field name
    * @param newKey - The new field name
    * @param apply  - An application function, otherwise the old value is applied
-   * @internal
+   * @remarks Foundry marked `@internal`
    */
   protected static _addDataFieldMigration(
-    data: AnyObject,
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyObject) => unknown,
-  ): unknown;
+    apply?: ((data: AnyMutableObject) => unknown) | null,
+  ): boolean;
 
+  // options: not null (destructured where forwarded)
   protected static _logDataFieldMigration(
     oldKey: string,
     newKey: string,
@@ -1689,7 +1705,7 @@ declare namespace Document {
 
   interface DataFieldShimOptions {
     /**
-     * Apply shims to embedded models?
+     * A string to log as a compatibility warning on accessing the `oldKey`
      */
     warning?: string | null | undefined;
 
@@ -1801,7 +1817,7 @@ declare namespace Document {
   /**
    * @internal
    */
-  type _GetEmbeddedDocumentOptions = InexactPartial<{
+  type _GetEmbeddedDocumentOptions = NullishProps<{
     /**
      * Throw an Error if the requested id does not exist. See {@link Collection.get | `Collection#get`}
      * @defaultValue `false`

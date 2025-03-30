@@ -174,16 +174,19 @@ declare global {
 
       /**
        * The name override, if any.
+       * @defaultValue `null`
        */
       name: fields.StringField<{ required: false; nullable: true; initial: null }>;
 
       /**
        * The type override, if any.
+       * @defaultValue `null`
        */
       type: fields.StringField<{ required: false; nullable: true; initial: null }>;
 
       /**
        * The image override, if any.
+       * @defaultValue `null`
        */
       img: fields.FilePathField<{ categories: ["IMAGE"]; nullable: true; initial: null; required: false }>;
 
@@ -207,6 +210,7 @@ declare global {
 
       /**
        * Ownership overrides.
+       * @defaultValue `null`
        */
       ownership: fields.DocumentOwnershipField<{ required: false; nullable: true; initial: null }>;
 

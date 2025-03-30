@@ -171,13 +171,14 @@ declare global {
        * The name of the ActiveEffect
        * @defaultValue `""`
        */
-      name: fields.StringField<{ required: true; label: "EFFECT.Label" }>;
+      //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      name: fields.StringField<{ required: true; blank: false; label: "EFFECT.Name"; textSearch: true }, string>;
 
       /**
        * An image path used to depict the ActiveEffect as an icon
        * @defaultValue `null`
        */
-      img: fields.FilePathField<{ categories: "IMAGE"[]; label: "EFFECT.Image" }>;
+      img: fields.FilePathField<{ categories: ["IMAGE"]; label: "EFFECT.Image" }>;
 
       type: fields.DocumentTypeField<typeof BaseActiveEffect, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
 
@@ -205,11 +206,17 @@ declare global {
            * The modification mode with which the change is applied
            * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
            */
-          mode: fields.NumberField<{
-            integer: true;
-            initial: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
-            label: "EFFECT.ChangeMode";
-          }>;
+          mode: fields.NumberField<
+            {
+              integer: true;
+              initial: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
+              label: "EFFECT.ChangeMode";
+            },
+            // FIXME: Overrides required to enforce the branded type
+            CONST.ACTIVE_EFFECT_MODES | null | undefined,
+            CONST.ACTIVE_EFFECT_MODES | null,
+            CONST.ACTIVE_EFFECT_MODES | null
+          >;
 
           /**
            * The priority level with which this change is applied
