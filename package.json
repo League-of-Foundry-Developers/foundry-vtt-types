@@ -119,7 +119,7 @@
     "@ts-morph/common": "^0.26.1",
     "@types/debug": "^4.1.12",
     "@types/fvtt-types": "file:.",
-    "@types/picomatch": "^3.0.2",
+    "@types/picomatch": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.23.0",
     "@typescript-eslint/scope-manager": "^8.27.0",
