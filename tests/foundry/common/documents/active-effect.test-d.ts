@@ -47,14 +47,9 @@ myAE = new TestAE({
     },
   },
   _stats: {
+    // coreVersion, systemId, systemVersion, createdTime, modifiedTime, and lastModifiedBy are managed by the server and ignored if passed
     compendiumSource: "Compendium.mysystem.pack-id.Item.YYYYYSomeIDYYYYY.ActiveEffect.ZZZZZSomeIDZZZZZ",
-    coreVersion: "12",
-    createdTime: 123456789,
     duplicateSource: "Item.WWWWWSomeIDWWWWW.ActiveEffect.VVVVVSomeIDVVVVV",
-    lastModifiedBy: "UUUUUSomeIDUUUUU",
-    modifiedTime: 987654321,
-    systemId: "pf2e",
-    systemVersion: "6.10.2",
   },
 });
 myAE = new TestAE({
@@ -89,14 +84,9 @@ myAE = new TestAE({
   sort: null,
   flags: null,
   _stats: {
+    // coreVersion, systemId, systemVersion, createdTime, modifiedTime, and lastModifiedBy are managed by the server and ignored if passed
     compendiumSource: null,
-    coreVersion: null,
-    createdTime: null,
     duplicateSource: null,
-    lastModifiedBy: null,
-    modifiedTime: null,
-    systemId: null,
-    systemVersion: null,
   },
 });
 myAE = new TestAE({
@@ -137,14 +127,9 @@ myAE = new TestAE({
   sort: undefined,
   flags: undefined,
   _stats: {
+    // coreVersion, systemId, systemVersion, createdTime, modifiedTime, and lastModifiedBy are managed by the server and ignored if passed
     compendiumSource: undefined,
-    coreVersion: undefined,
-    createdTime: undefined,
     duplicateSource: undefined,
-    lastModifiedBy: undefined,
-    modifiedTime: undefined,
-    systemId: undefined,
-    systemVersion: undefined,
   },
 });
 myAE = new TestAE({
@@ -198,7 +183,6 @@ expectTypeOf(myAE.canUserModify(someUser, "create")).toBeBoolean();
 expectTypeOf(myAE.canUserModify(someUser, "delete")).toBeBoolean();
 expectTypeOf(myAE.canUserModify(someUser, "update")).toBeBoolean();
 expectTypeOf(myAE.canUserModify(someUser, "create", {})).toBeBoolean();
-//TODO: why does this error?
 expectTypeOf(myAE.canUserModify(someUser, "create", myAE.toObject())).toBeBoolean();
 
 expectTypeOf(myAE.testUserPermission(someUser, "OBSERVER")).toBeBoolean();

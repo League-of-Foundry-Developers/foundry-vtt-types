@@ -1,4 +1,4 @@
-import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -353,10 +353,11 @@ export class ActorDeltaField<
   DocumentType extends Document.AnyConstructor,
   Options extends fields.EmbeddedDocumentField.Options<DocumentType> = fields.EmbeddedDocumentField.DefaultOptions,
 > extends fields.EmbeddedDocumentField<DocumentType, Options> {
+  // options: not null (parameter default only)
   override initialize(
     value: fields.EmbeddedDocumentField.PersistedType<DocumentType, Options>,
     model: DataModel.Any,
-    options?: InexactPartial<DataModel.DataValidationOptions>,
+    options?: DataField.InitializeOptions,
   ):
     | fields.EmbeddedDocumentField.InitializedType<DocumentType, Options>
     | (() => fields.EmbeddedDocumentField.InitializedType<DocumentType, Options> | null);

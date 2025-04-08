@@ -36,17 +36,18 @@ declare abstract class BaseActiveEffect<
    *   label: "DOCUMENT.ActiveEffect",
    *   labelPlural: "DOCUMENT.ActiveEffects",
    *   schemaVersion: "12.324"
-   * }
+   * });
    * ```
    */
   static override metadata: BaseActiveEffect.Metadata;
 
   static override defineSchema(): BaseActiveEffect.Schema;
 
+  // data: not null (parameter default only)
   override canUserModify<Action extends "create" | "update" | "delete">(
     user: User.Internal.Implementation,
     action: Action,
-    data?: Document.CanUserModifyData<BaseActiveEffect.Schema, Action>,
+    data?: Document.CanUserModifyData<BaseActiveEffect._Schema, Action>,
   ): boolean;
 
   // options: not null (destructured)

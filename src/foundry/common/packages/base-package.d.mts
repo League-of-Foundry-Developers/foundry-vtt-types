@@ -455,6 +455,7 @@ export class CompendiumOwnershipField extends fields.ObjectField<
     validationError: string;
   };
 
+  // options: unused
   protected override _validateType(
     value: Record<keyof typeof foundry.CONST.USER_ROLES, keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>,
     options?: any,
@@ -467,28 +468,31 @@ export class CompendiumOwnershipField extends fields.ObjectField<
 export class PackageCompendiumPacks<
   ElementFieldType extends fields.DataField.Any,
 > extends fields.SetField<ElementFieldType> {
+  // options: not null (parameter default only, property access)
   protected override _cleanType(
     value: Set<fields.ArrayField.InitializedElementType<ElementFieldType>>,
     options?: fields.DataField.CleanOptions,
   ): Set<fields.ArrayField.InitializedElementType<ElementFieldType>>;
 
+  // options: not null (parameter default only)
   override initialize(
     value: fields.ArrayField.PersistedElementType<ElementFieldType>[],
     // In Foundry itself, this field is only used in `BasePackage`, however it should be able to accept any model.
     // NOTE(LukeAbby): This also has been seen in a circularity `Type of property 'packs' circularly references itself in mapped type ...`.
     model: DataModel.Any,
+    options?: fields.DataField.InitializeOptions,
   ):
     | Set<fields.ArrayField.InitializedElementType<ElementFieldType>>
     | (() => Set<fields.ArrayField.InitializedElementType<ElementFieldType>> | null);
 
   protected override _validateElements(
     value: AnyArray,
-    options?: fields.DataField.ValidationOptions<fields.DataField.Any>,
+    options?: fields.DataField.ValidateOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 
   protected override _validateElement(
     value: unknown,
-    options: fields.DataField.ValidationOptions<fields.DataField.Any>,
+    options: fields.DataField.ValidateOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 }
 

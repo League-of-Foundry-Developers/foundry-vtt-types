@@ -175,16 +175,18 @@ declare global {
       _id: fields.DocumentIdField;
 
       /** The name of this Actor */
+      //FIXME: This field is `required` with no `initial`, so actually required for construction;
+      // Currently an AssignmentType override is required to enforce this, but that breaks UpdateData
       name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
-
-      /** An Actor subtype which configures the system data model applied */
-      type: fields.DocumentTypeField<typeof BaseActor>;
 
       /**
        * An image file path which provides the artwork for this Actor
-       * @defaultValue `null`
+       * @defaultValue `this.implementation.getDefaultArtwork(data).img`
        */
       img: fields.FilePathField<{ categories: "IMAGE"[]; initial: (data: unknown) => string }>;
+
+      /** An Actor subtype which configures the system data model applied */
+      type: fields.DocumentTypeField<typeof BaseActor>;
 
       /**
        * The system data object which is defined by the system template.json model
@@ -434,16 +436,18 @@ declare global {
 
     static override metadata: Actor.Metadata;
 
-    protected override _configure(options?: { pack?: string | null }): void;
+    // options: not null (parameter default only, destructured in super)
+    protected override _configure(options?: Document.ConfigureOptions): void;
 
     /**
      * Maintain a list of Token Documents that represent this Actor, stored by Scene.
      */
     protected _dependentTokens: foundry.utils.IterableWeakMap<Scene.Implementation, TokenDocument.Implementation>;
 
+    // options: not null (parameter default only)
     protected override _initializeSource(
       data: this | Actor.CreateData,
-      options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
+      options?: Document.InitializeSourceOptions,
     ): Actor.Source;
 
     /**

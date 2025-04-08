@@ -40,6 +40,7 @@ import type {
   DatabaseAction,
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
+  DatabaseGetOperation,
   DatabaseUpdateOperation,
   DocumentSocketRequest,
 } from "./_types.d.mts";
@@ -74,10 +75,8 @@ declare abstract class Document<
 
   override parent: Parent;
 
-  protected override _configure(options?: {
-    pack?: string | null | undefined;
-    parentCollection?: string | null | undefined;
-  }): void;
+  // options: not null (destructured)
+  protected override _configure(options?: Document.ConfigureOptions): void;
 
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
@@ -99,7 +98,8 @@ declare abstract class Document<
    */
   static get schema(): foundry.data.fields.SchemaField.Any;
 
-  protected _initialize(options?: any): void;
+  // options: not null (parameter default only)
+  protected _initialize(options?: Document.InitializeOptions): void;
 
   /**
    * A mapping of singleton embedded Documents which exist in this model.
@@ -260,9 +260,9 @@ declare abstract class Document<
    * @returns The cloned Document instance
    */
   // data: not null (property access), context: not null (destructured)
-  override clone<Save extends boolean = false>(
+  override clone<Save extends boolean | null | undefined = false>(
     data?: fields.SchemaField.UpdateData<Schema>,
-    context?: Document.CloneContext<Save> & Document.ConstructionContext<Parent>,
+    context?: Document.CloneContext<Save>,
   ): Save extends true ? Promise<this> : this;
 
   /**
@@ -274,9 +274,9 @@ declare abstract class Document<
   migrateSystemData(): object;
 
   /** @remarks `Document#toObject` calls `this.constructor.shimData()` on the data before returning */
-  override toObject<Source extends boolean | undefined>(
+  override toObject<Source extends boolean | null | undefined>(
     source?: Source,
-  ): Source extends false ? SchemaField.PersistedData<Schema> : Readonly<SchemaField.PersistedData<Schema>>;
+  ): Source extends true ? Readonly<SchemaField.PersistedData<Schema>> : SchemaField.PersistedData<Schema>;
 
   /**
    * Create multiple Documents using provided input data.
@@ -786,9 +786,13 @@ declare abstract class Document<
   ): Promise<unknown>;
 
   /**
-   * Configure whether V10 Document Model migration warnings should be logged for this class.
+   * @deprecated since v10
+   * @remarks "You are accessing the "data" field of which was deprecated in v10 and replaced with "system".
+   * Continued usage of pre-v10 ".data" paths is no longer supported"
+   *
+   * @throws An error with the above deprecation warning, if this Document's schema has a `system` field
    */
-  static LOG_V10_COMPATIBILITY_WARNINGS: boolean;
+  get data(): never;
 
   /**
    * @deprecated since v11, will be removed in v13
@@ -1343,30 +1347,59 @@ declare namespace Document {
     };
   }
 
-  interface ConstructionContext<Parent extends Document.Any | null> {
+  /** @internal */
+  type _ConstructionContext<Parent extends Document.Any | null> = NullishProps<{
     /**
      * The parent Document of this one, if this one is embedded
      * @defaultValue `null`
      */
-    parent?: Parent | null | undefined;
+    parent: Parent;
 
     /**
      * The compendium collection ID which contains this Document, if any
      * @defaultValue `null`
      */
-    pack?: string | null | undefined;
+    pack: string;
 
     /**
      * Whether to validate initial data strictly?
      * @defaultValue `true`
      */
-    strict?: boolean | null | undefined;
+    strict: boolean;
 
     /**
-     * An immutable reverse-reference to the name of the collection that thi8s Document exists in on its parent, if any.
+     * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
+     * @privateRemarks Omitted from the typedef, inferred from usage in {@link Document._configure | `Document#_configure`}
+     * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
+     * {@link foundry.abstract.EmbeddedCollection.createDocument | `EmbeddedCollection#createDocument`})
      */
-    parentCollection?: string | null | undefined;
-  }
+    parentCollection: string;
+  }>;
+
+  /**
+   * Foundry does not include the properties from the DataModel construction context in `DocumentConstructionContext`,
+   * but they're all still valid.
+   *
+   * `strict` is omitted from the DataModel interface so the Document interface's property
+   * description takes precedence.
+   */
+  interface ConstructionContext<Parent extends Document.Any | null = Document.Any | null>
+    extends Omit<DataModel._ConstructionContext, "strict">,
+      _ConstructionContext<Parent> {}
+
+  /** `DataModel#constructor` pulls `parent` and `strict` out of the passed context before forwarding to `#_configure` */
+  interface ConfigureOptions extends Omit<ConstructionContext, "parent" | "strict"> {}
+
+  /** `DataModel#constructor` pulls `parent` out of the passed context before forwarding to `#_initializeSource` */
+  interface InitializeOptions extends Omit<ConstructionContext, "parent"> {}
+
+  /**
+   * `DataModel#constructor` pulls `parent` out of the passed context before forwarding to `#_initializeSource`
+   * @privateRemarks `Document` doesn't override `_initializeSource`, but at least one specific document does (Actor only, as of v12);
+   * Without an override, this is handled by the `& ExtraConstructorOptions` in the `DataModel` signature, but with one,
+   * a manually combined interface is needed.
+   */
+  interface InitializeSourceOptions extends DataModel.InitializeSourceOptions, Omit<ConstructionContext, "parent"> {}
 
   interface ModificationContext<Parent extends Document.Any | null> {
     /**
@@ -1452,25 +1485,34 @@ declare namespace Document {
     deleteAll?: boolean | undefined;
   }
 
-  interface CloneContext<Save extends boolean | undefined = boolean | undefined> {
+  /** @internal */
+  type _CloneContext<Save extends boolean | null | undefined = boolean | null | undefined> = NullishProps<{
     /**
      * Save the clone to the World database?
      * @defaultValue `false`
      */
-    save?: Save;
+    save: Save;
 
     /**
      * Keep the same ID of the original document
      * @defaultValue `false`
      */
-    keepId?: boolean | undefined;
+    keepId: boolean;
 
     /**
      * Track the clone source
      * @defaultValue `false`
      */
-    addSource?: boolean | undefined;
-  }
+    addSource: boolean;
+  }>;
+
+  /**
+   * @privateRemarks Since we've lost the ExtraConstructorOptions type param, we have to extend
+   * the (parentless) construction context
+   */
+  interface CloneContext<Save extends boolean | null | undefined = boolean | null | undefined>
+    extends _CloneContext<Save>,
+      Omit<Document.ConstructionContext, "parent"> {}
 
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
@@ -1589,9 +1631,11 @@ declare namespace Document {
   namespace Database {
     type Operation = "create" | "update" | "delete";
 
-    interface GetOptions {
-      pack?: string | null;
-    }
+    /**
+     * @privateRemarks Foundry types {@link Document.get | `Document.get`} as taking a {@link DatabaseGetOperation | `DatabaseGetOperation`}
+     * but it only ever looks for `pack`
+     */
+    interface GetOptions extends Pick<DatabaseGetOperation, "pack"> {}
 
     /** Used for {@link Document.createDocuments | `Document.createDocuments`} */
     type CreateOperation<Op extends DatabaseCreateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;
@@ -1759,9 +1803,7 @@ declare namespace Document {
     types?: SubType[] | null | undefined;
   } & ParentContext<Parent>;
 
-  interface FromImportContext<Parent extends Document.Any | null>
-    extends ConstructionContext<Parent>,
-      DataModel.DataValidationOptions<Parent> {}
+  interface FromImportContext<Parent extends Document.Any | null> extends ConstructionContext<Parent> {}
 
   type TestableOwnershipLevel = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
@@ -1841,6 +1883,8 @@ declare namespace Document {
     Schema,
     EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
   >;
+
+  // interface InitializeOptions extends D
 }
 
 /** @deprecated {@link Document.Database.Operation | `Document.Database.Operation`} */
