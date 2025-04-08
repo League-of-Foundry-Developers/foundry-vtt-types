@@ -791,9 +791,9 @@ declare global {
      * @param createData - (default: `{}`)
      * @param options    - (default: `{}`)
      */
-    override clone<Save extends boolean = false>(
+    override clone<Save extends boolean | null | undefined = false>(
       createData?: Scene.CreateData,
-      context?: Document.CloneContext<Save> & InexactPartial<Document.ConstructionContext<Scene.Parent>>,
+      context?: Document.CloneContext<Save>,
     ): Save extends true ? Promise<this> : this;
 
     override reset(): void;

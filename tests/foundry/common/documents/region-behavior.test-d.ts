@@ -26,7 +26,7 @@ myRB = new TestRegionBehavior({
     coreVersion: "12",
     createdTime: 123456789,
     duplicateSource: "Scene.ZZZZZSomeIDZZZZZ.Region.WWWWWSomeIDWWWWW.RegionBehavior.VVVVVSomeIDVVVVV",
-    lastModifiedBy: "User.UUUUUSomeIDUUUUU",
+    lastModifiedBy: "UUUUUSomeIDUUUUU",
     modifiedTime: 987654321,
     systemId: "pf2e",
     systemVersion: "6.10.2",
