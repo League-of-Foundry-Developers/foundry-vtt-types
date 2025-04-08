@@ -175,9 +175,8 @@ declare global {
       _id: fields.DocumentIdField;
 
       /** The name of this Actor */
-      //FIXME: This field is `required` with no `initial`, so actually required for construction;
-      // Currently an AssignmentType override is required to enforce this, but that breaks UpdateData
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+      //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
 
       /**
        * An image file path which provides the artwork for this Actor
