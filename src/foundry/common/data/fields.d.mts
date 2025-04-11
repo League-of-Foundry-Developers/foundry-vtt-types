@@ -2666,7 +2666,7 @@ declare namespace EmbeddedDocumentField {
  * InitialValue: `null`
  */
 declare class DocumentIdField<
-  Options extends StringField.Options<unknown> = DocumentIdField.DefaultOptions,
+  Options extends DocumentIdField.Options = DocumentIdField.DefaultOptions,
   AssignmentType = DocumentIdField.AssignmentType<Options>,
   InitializedType = DocumentIdField.InitializedType<Options>,
   PersistedType extends string | null | undefined = DocumentIdField.InitializedType<Options>,
@@ -2700,6 +2700,10 @@ declare class DocumentIdField<
 }
 
 declare namespace DocumentIdField {
+  type Options = StringField.Options<unknown> & {
+    readonly?: boolean;
+  };
+
   /** The type of the default options for the {@link DocumentIdField | `DocumentIdField`} class. */
   type DefaultOptions = SimpleMerge<
     StringField.DefaultOptions,
