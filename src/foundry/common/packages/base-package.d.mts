@@ -243,8 +243,6 @@ declare namespace BasePackage {
 
   type PackageCompendiumFolderSchema<Depth> = Depth extends number
     ? PackageCompendiumFolderSchemaHelper & {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore The recursion works correctly due to helper array. The in-file checker doesn't pick up on this so using ts-ignore
         folders: fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<FolderRecursion[Depth]>>>;
       }
     : PackageCompendiumFolderSchemaHelper;
