@@ -1,4 +1,5 @@
 import type { DeepPartial, Identity } from "fvtt-types/utils";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -32,6 +33,9 @@ declare global {
   namespace Playlists {
     interface Any extends AnyPlaylists {}
     interface AnyConstructor extends Identity<typeof AnyPlaylists> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Playlist"> {}
+    interface Configured extends Document.ConfiguredCollection<"Playlist"> {}
   }
 }
 

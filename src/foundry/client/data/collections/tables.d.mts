@@ -1,4 +1,5 @@
 import type { Identity } from "fvtt-types/utils";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -22,6 +23,9 @@ declare global {
   namespace RollTables {
     interface Any extends AnyRollTables {}
     interface AnyConstructor extends Identity<typeof AnyRollTables> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"RollTable"> {}
+    interface Configured extends Document.ConfiguredCollection<"RollTable"> {}
   }
 }
 

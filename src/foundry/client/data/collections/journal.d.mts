@@ -1,4 +1,5 @@
 import type { InexactPartial, Identity } from "fvtt-types/utils";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -65,6 +66,9 @@ declare global {
   namespace Journal {
     interface Any extends AnyJournal {}
     interface AnyConstructor extends Identity<typeof AnyJournal> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"JournalEntry"> {}
+    interface Configured extends Document.ConfiguredCollection<"JournalEntry"> {}
   }
 }
 

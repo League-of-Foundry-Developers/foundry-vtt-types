@@ -1,4 +1,5 @@
 import type { Identity } from "fvtt-types/utils";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -18,6 +19,9 @@ declare global {
   namespace FogExplorations {
     interface Any extends AnyFogExplorations {}
     interface AnyConstructor extends Identity<typeof AnyFogExplorations> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"FogExploration"> {}
+    interface Configured extends Document.ConfiguredCollection<"FogExploration"> {}
   }
 }
 

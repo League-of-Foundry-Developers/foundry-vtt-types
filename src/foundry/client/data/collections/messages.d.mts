@@ -1,4 +1,5 @@
 import type { Identity } from "fvtt-types/utils";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -36,6 +37,9 @@ declare global {
   namespace Messages {
     interface Any extends AnyMessages {}
     interface AnyConstructor extends Identity<typeof AnyMessages> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"ChatMessage"> {}
+    interface Configured extends Document.ConfiguredCollection<"ChatMessage"> {}
   }
 }
 
