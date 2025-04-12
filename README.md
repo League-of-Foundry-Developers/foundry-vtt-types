@@ -86,16 +86,18 @@ Add foundry-vtt-types to your types section in your `tsconfig.json`:
 {
   "compilerOptions": {
     "types": ["fvtt-types"],
-    "module": "esnext",
+    "target": "esnext",
     "moduleResolution": "bundler",
     "strict": true
   }
 }
 ```
 
-This will make the type definitions available globally in your project.
-
-We recommend using `"strict": true` because it enables a whole host of useful options. However if you want to check that your config supports foundry-vtt-types, the most important settings under `strict` would be `strictNullChecks` and `strictFunctionTypes` are the most important.
+Compiler Option Notes:
+- `types` is set to make fvtt-types globally available in your project. Without it global variables like `game` and `CONFIG` won't appear.
+- `"target": "esnext"` is recommended because Foundry lives on the bleeding edge of JavaScript features. If you want to downlevel your code setting `"lib": ["esnext", "dom"]` and `"target": "..."` is reasonable but TypeScript's downlevelling is not the most advanced and so it's probably a good idea to leave this to other tools. It's a bad idea to lower the `lib` version as Foundry will frequently use new JavaScript features. Nevertheless the minimum lib is `es2022` as before that types like `WeakRef` won't exist. If for some reason you want the bare minimum then `es2015` is possible but only if you manually enable other `lib` files.
+- We recommend using `"strict": true` because it enables a whole host of useful options. However if you want to check that your config supports foundry-vtt-types, the most important settings under `strict` would be `strictNullChecks` and `strictFunctionTypes`.
+- Changing the `moduleResolution` is generally not recommended. The Node `moduleResolutions` above `node16` may work but have additional Node-only constraints.
 
 You can find some information about how to actually work with the type definitions in the
 [Wiki](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/wiki). A good starting point is
