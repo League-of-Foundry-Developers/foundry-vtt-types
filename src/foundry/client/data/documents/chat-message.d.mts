@@ -41,10 +41,51 @@ declare global {
      */
     interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
+    /**
+     * Allowed subtypes of ChatMessage. This is configured through various methods. Modern Foundry
+     * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
+     * under {@link CONFIG.ChatMessage.dataModels | `CONFIG.ChatMessage.dataModels`}. This corresponds to
+     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     *
+     * However subtypes can also be registered through a `template.json` though this is discouraged.
+     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
+     * {@link DataConfig | `DataConfig`}.
+     */
+    type SubType = Game.Model.TypeNames<"ChatMessage">;
+
+    /**
+     * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+     * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
+     * module subtypes `${string}.${string}`.
+     *
+     * @see {@link SubType} for more information.
+     */
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"ChatMessage">;
+
+    /**
+     * `Known` represents the types of ChatMessage that a user explicitly registered.
+     *
+     * @see {@link ConfiguredSubTypes} for more information.
+     */
     type Known = ChatMessage.OfType<ChatMessage.ConfiguredSubTypes>;
+
+    /**
+     * `OfType` returns an instance of `ChatMessage` with the corresponding type. This works with both the
+     * builtin `ChatMessage` class and custom subclasses provided you set it up in
+     * {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`}.
+     * up.
+     */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredChatMessage<Type>, ChatMessage<Type>>;
+
+    /**
+     * `SystemOfType` returns the system property for a specific `ChatMessage` subtype.
+     */
+    type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+
+    /**
+     * @internal
+     */
+    interface _SystemMap extends Document.Internal.SystemMap<"ChatMessage"> {}
 
     /**
      * A document's parent is something that can contain it.

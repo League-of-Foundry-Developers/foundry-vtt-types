@@ -39,10 +39,52 @@ declare global {
      */
     interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
+    /**
+     * Allowed subtypes of RegionBehavior. This is configured through various methods. Modern Foundry
+     * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
+     * under {@link CONFIG.RegionBehavior.dataModels | `CONFIG.RegionBehavior.dataModels`}. This corresponds to
+     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     *
+     * However subtypes can also be registered through a `template.json` though this is discouraged.
+     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
+     * {@link DataConfig | `DataConfig`}.
+     */
+    type SubType = Game.Model.TypeNames<"RegionBehavior">;
+
+    /**
+     * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+     * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
+     * module subtypes `${string}.${string}`.
+     *
+     * @see {@link SubType} for more information.
+     */
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"RegionBehavior">;
+
+    /**
+     * `Known` represents the types of RegionBehavior that a user explicitly registered.
+     *
+     * @see {@link ConfiguredSubTypes} for more information.
+     */
     type Known = RegionBehavior.OfType<RegionBehavior.ConfiguredSubTypes>;
+
+    /**
+     * `OfType` returns an instance of `RegionBehavior` with the corresponding type. This works with both the
+     * builtin `RegionBehavior` class and custom subclasses provided you set it up in
+     * {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`}.
+     * up.
+     */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredRegionBehavior<Type>, RegionBehavior<Type>>;
+
+    /**
+     * `SystemOfType` returns the system property for a specific `RegionBehavior` subtype.
+     */
+    type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+
+    /**
+     * @internal
+     */
+    interface _SystemMap extends Document.Internal.SystemMap<"RegionBehavior"> {}
+
     /**
      * A document's parent is something that can contain it.
      * For example an `RegionBehavior` can be contained by an `Actor` which makes `Actor` one of its possible parents.

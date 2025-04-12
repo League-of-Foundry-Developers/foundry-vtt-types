@@ -42,10 +42,51 @@ declare global {
      */
     interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
+    /**
+     * Allowed subtypes of Card. This is configured through various methods. Modern Foundry
+     * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
+     * under {@link CONFIG.Card.dataModels | `CONFIG.Card.dataModels`}. This corresponds to
+     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     *
+     * However subtypes can also be registered through a `template.json` though this is discouraged.
+     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
+     * {@link DataConfig | `DataConfig`}.
+     */
+    type SubType = Game.Model.TypeNames<"Card">;
+
+    /**
+     * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+     * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
+     * module subtypes `${string}.${string}`.
+     *
+     * @see {@link SubType} for more information.
+     */
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Card">;
+
+    /**
+     * `Known` represents the types of Card that a user explicitly registered.
+     *
+     * @see {@link ConfiguredSubTypes} for more information.
+     */
     type Known = Card.OfType<Card.ConfiguredSubTypes>;
+
+    /**
+     * `OfType` returns an instance of `Card` with the corresponding type. This works with both the
+     * builtin `Card` class and custom subclasses provided you set it up in
+     * {@link ConfiguredCard | `fvtt-types/configuration/ConfiguredCard`}.
+     * up.
+     */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCard<Type>, Card<Type>>;
+
+    /**
+     * `SystemOfType` returns the system property for a specific `Card` subtype.
+     */
+    type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+
+    /**
+     * @internal
+     */
+    interface _SystemMap extends Document.Internal.SystemMap<"Card"> {}
 
     /**
      * A document's parent is something that can contain it.

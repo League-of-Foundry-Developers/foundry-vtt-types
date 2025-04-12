@@ -40,10 +40,51 @@ declare global {
      */
     interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
+    /**
+     * Allowed subtypes of Item. This is configured through various methods. Modern Foundry
+     * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
+     * under {@link CONFIG.Item.dataModels | `CONFIG.Item.dataModels`}. This corresponds to
+     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     *
+     * However subtypes can also be registered through a `template.json` though this is discouraged.
+     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
+     * {@link DataConfig | `DataConfig`}.
+     */
+    type SubType = Game.Model.TypeNames<"Item">;
+
+    /**
+     * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+     * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
+     * module subtypes `${string}.${string}`.
+     *
+     * @see {@link SubType} for more information.
+     */
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Item">;
+
+    /**
+     * `Known` represents the types of Item that a user explicitly registered.
+     *
+     * @see {@link ConfiguredSubTypes} for more information.
+     */
     type Known = Item.OfType<Item.ConfiguredSubTypes>;
+
+    /**
+     * `OfType` returns an instance of `Item` with the corresponding type. This works with both the
+     * builtin `Item` class and custom subclasses provided you set it up in
+     * {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`}.
+     * up.
+     */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredItem<Type>, Item<Type>>;
+
+    /**
+     * `SystemOfType` returns the system property for a specific `Item` subtype.
+     */
+    type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+
+    /**
+     * @internal
+     */
+    interface _SystemMap extends Document.Internal.SystemMap<"Item"> {}
 
     /**
      * A document's parent is something that can contain it.

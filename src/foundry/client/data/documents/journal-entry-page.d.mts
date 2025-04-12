@@ -40,13 +40,54 @@ declare global {
      */
     interface Metadata extends Document.MetadataFor<Name> {}
 
-    type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
+    /**
+     * Allowed subtypes of JournalEntryPage. This is configured through various methods. Modern Foundry
+     * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
+     * under {@link CONFIG.JournalEntryPage.dataModels | `CONFIG.JournalEntryPage.dataModels`}. This corresponds to
+     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     *
+     * However subtypes can also be registered through a `template.json` though this is discouraged.
+     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
+     * {@link DataConfig | `DataConfig`}.
+     */
+    type SubType = Game.Model.TypeNames<"JournalEntryPage">;
+
+    /**
+     * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+     * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
+     * module subtypes `${string}.${string}`.
+     *
+     * @see {@link SubType} for more information.
+     */
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"JournalEntryPage">;
+
+    /**
+     * `Known` represents the types of JournalEntryPage that a user explicitly registered.
+     *
+     * @see {@link ConfiguredSubTypes} for more information.
+     */
     type Known = JournalEntryPage.OfType<JournalEntryPage.ConfiguredSubTypes>;
+
+    /**
+     * `OfType` returns an instance of `JournalEntryPage` with the corresponding type. This works with both the
+     * builtin `JournalEntryPage` class and custom subclasses provided you set it up in
+     * {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`}.
+     * up.
+     */
     type OfType<Type extends SubType> = Document.Internal.OfType<
       ConfiguredJournalEntryPage<Type>,
       JournalEntryPage<Type>
     >;
+
+    /**
+     * `SystemOfType` returns the system property for a specific `JournalEntryPage` subtype.
+     */
+    type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+
+    /**
+     * @internal
+     */
+    interface _SystemMap extends Document.Internal.SystemMap<"JournalEntryPage"> {}
 
     /**
      * A document's parent is something that can contain it.
