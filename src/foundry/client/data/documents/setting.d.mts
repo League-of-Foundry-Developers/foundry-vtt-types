@@ -91,6 +91,16 @@ declare global {
     type ParentCollectionName = Metadata["collection"];
 
     /**
+     * The world collection that contains `Setting`s. Will be `never` if none exists.
+     */
+    type CollectionClass = WorldSettings.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Setting`s. Will be `never` if none exists.
+     */
+    type Collection = WorldSettings.Configured;
+
+    /**
      * An instance of `Setting` that comes from the database.
      */
     interface Stored extends Document.Stored<Setting.Implementation> {}

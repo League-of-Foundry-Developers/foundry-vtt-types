@@ -93,6 +93,16 @@ declare global {
     type ParentCollectionName = Metadata["collection"];
 
     /**
+     * The world collection that contains `JournalEntry`s. Will be `never` if none exists.
+     */
+    type CollectionClass = Journal.ConfiguredClass;
+
+    /**
+     * The world collection that contains `JournalEntry`s. Will be `never` if none exists.
+     */
+    type Collection = Journal.Configured;
+
+    /**
      * An instance of `JournalEntry` that comes from the database.
      */
     interface Stored extends Document.Stored<JournalEntry.Implementation> {}

@@ -93,6 +93,16 @@ declare global {
     type ParentCollectionName = Metadata["collection"];
 
     /**
+     * The world collection that contains `Playlist`s. Will be `never` if none exists.
+     */
+    type CollectionClass = Playlists.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Playlist`s. Will be `never` if none exists.
+     */
+    type Collection = Playlists.Configured;
+
+    /**
      * An instance of `Playlist` that comes from the database.
      */
     interface Stored extends Document.Stored<Playlist.Implementation> {}

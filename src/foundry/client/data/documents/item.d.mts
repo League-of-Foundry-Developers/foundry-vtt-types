@@ -140,6 +140,16 @@ declare global {
     type ParentCollectionName = Metadata["collection"];
 
     /**
+     * The world collection that contains `Item`s. Will be `never` if none exists.
+     */
+    type CollectionClass = Items.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Item`s. Will be `never` if none exists.
+     */
+    type Collection = Items.Configured;
+
+    /**
      * An instance of `Item` that comes from the database.
      */
     interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}

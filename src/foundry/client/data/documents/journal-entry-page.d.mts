@@ -143,6 +143,16 @@ declare global {
     type ParentCollectionName = Metadata["collection"];
 
     /**
+     * The world collection that contains this document type. Will be `never` if none exists.
+     */
+    type CollectionClass = never;
+
+    /**
+     * The world collection that contains this document type. Will be `never` if none exists.
+     */
+    type Collection = never;
+
+    /**
      * An instance of `JournalEntryPage` that comes from the database.
      */
     interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}

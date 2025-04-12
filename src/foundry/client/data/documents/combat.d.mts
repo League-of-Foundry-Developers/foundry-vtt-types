@@ -132,7 +132,22 @@ declare global {
 
     type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
 
+    /**
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+     */
     type ParentCollectionName = Metadata["collection"];
+
+    /**
+     * The world collection that contains `Combat`s. Will be `never` if none exists.
+     */
+    type CollectionClass = CombatEncounters.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Combat`s. Will be `never` if none exists.
+     */
+    type Collection = CombatEncounters.Configured;
 
     /**
      * An instance of `Combat` that comes from the database.

@@ -121,6 +121,16 @@ declare global {
     type ParentCollectionName = Metadata["collection"];
 
     /**
+     * The world collection that contains `Scene`s. Will be `never` if none exists.
+     */
+    type CollectionClass = Scenes.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Scene`s. Will be `never` if none exists.
+     */
+    type Collection = Scenes.Configured;
+
+    /**
      * An instance of `Scene` that comes from the database.
      */
     interface Stored extends Document.Stored<Scene.Implementation> {}

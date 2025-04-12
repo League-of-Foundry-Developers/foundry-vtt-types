@@ -93,6 +93,16 @@ declare global {
     type ParentCollectionName = Metadata["collection"];
 
     /**
+     * The world collection that contains `RollTable`s. Will be `never` if none exists.
+     */
+    type CollectionClass = RollTables.ConfiguredClass;
+
+    /**
+     * The world collection that contains `RollTable`s. Will be `never` if none exists.
+     */
+    type Collection = RollTables.Configured;
+
+    /**
      * An instance of `RollTable` that comes from the database.
      */
     interface Stored extends Document.Stored<RollTable.Implementation> {}

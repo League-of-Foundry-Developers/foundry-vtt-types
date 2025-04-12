@@ -94,6 +94,16 @@ declare global {
     type ParentCollectionName = Metadata["collection"];
 
     /**
+     * The world collection that contains `FogExploration`s. Will be `never` if none exists.
+     */
+    type CollectionClass = FogExplorations.ConfiguredClass;
+
+    /**
+     * The world collection that contains `FogExploration`s. Will be `never` if none exists.
+     */
+    type Collection = FogExplorations.Configured;
+
+    /**
      * An instance of `FogExploration` that comes from the database.
      */
     interface Stored extends Document.Stored<FogExploration.Implementation> {}

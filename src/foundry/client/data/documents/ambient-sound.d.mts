@@ -91,6 +91,16 @@ declare global {
     type ParentCollectionName = Metadata["collection"];
 
     /**
+     * The world collection that contains this document type. Will be `never` if none exists.
+     */
+    type CollectionClass = never;
+
+    /**
+     * The world collection that contains this document type. Will be `never` if none exists.
+     */
+    type Collection = never;
+
+    /**
      * An instance of `AmbientSoundDocument` that comes from the database.
      */
     interface Stored extends Document.Stored<AmbientSoundDocument.Implementation> {}

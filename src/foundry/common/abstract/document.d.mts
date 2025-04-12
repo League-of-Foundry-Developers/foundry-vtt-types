@@ -1080,7 +1080,7 @@ declare namespace Document {
     Folder: Folders;
     Item: Items;
     JournalEntry: Journal;
-    Macro: Macro;
+    Macro: Macros;
     ChatMessage: Messages;
     Playlist: Playlists;
     Scene: Scenes;

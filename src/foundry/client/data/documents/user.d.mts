@@ -94,6 +94,16 @@ declare global {
     type ParentCollectionName = Metadata["collection"];
 
     /**
+     * The world collection that contains `User`s. Will be `never` if none exists.
+     */
+    type CollectionClass = Users.ConfiguredClass;
+
+    /**
+     * The world collection that contains `User`s. Will be `never` if none exists.
+     */
+    type Collection = Users.Configured;
+
+    /**
      * An instance of `User` that comes from the database.
      */
     interface Stored extends Document.Stored<User.Implementation> {}

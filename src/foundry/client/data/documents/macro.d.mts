@@ -100,6 +100,16 @@ declare global {
     type ParentCollectionName = Metadata["collection"];
 
     /**
+     * The world collection that contains `Macro`s. Will be `never` if none exists.
+     */
+    type CollectionClass = Macros.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Folder`s. Will be `never` if none exists.
+     */
+    type Collection = Macros.Configured;
+
+    /**
      * An instance of `Macro` that comes from the database.
      */
     interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}

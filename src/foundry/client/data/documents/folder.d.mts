@@ -99,6 +99,16 @@ declare global {
     type ParentCollectionName = Metadata["collection"];
 
     /**
+     * The world collection that contains `Folder`s. Will be `never` if none exists.
+     */
+    type CollectionClass = Folders.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Folder`s. Will be `never` if none exists.
+     */
+    type Collection = Folders.Configured;
+
+    /**
      * An instance of `Folder` that comes from the database.
      */
     interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}

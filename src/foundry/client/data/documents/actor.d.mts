@@ -148,12 +148,12 @@ declare global {
     type ParentCollectionName = Metadata["collection"];
 
     /**
-     * The world collection that contains `Actor`s. Will be `never` if none exist.
+     * The world collection that contains `Actor`s. Will be `never` if none exists.
      */
     type CollectionClass = Actors.ConfiguredClass;
 
     /**
-     * The world collection that contains `Actor`s. Will be `never` if none exist.
+     * The world collection that contains `Actor`s. Will be `never` if none exists.
      */
     type Collection = Actors.Configured;
 
