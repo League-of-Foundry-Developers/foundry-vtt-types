@@ -117,7 +117,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   static get hierarchy(): Actor.Hierarchy;
 
-  override system: Document.SystemFor<"Actor", SubType>;
+  override system: Actor.SystemOfType<SubType>;
 
   override parent: BaseActor.Parent;
 
@@ -296,17 +296,26 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 }
 
 declare namespace BaseActor {
-  export import SubType = Actor.SubType;
   export import Name = Actor.Name;
   export import ConstructorArgs = Actor.ConstructorArgs;
   export import Hierarchy = Actor.Hierarchy;
   export import Metadata = Actor.Metadata;
+  export import SubType = Actor.SubType;
+  export import ConfiguredSubTypes = Actor.ConfiguredSubTypes;
+  export import Known = Actor.Known;
+  export import OfType = Actor.OfType;
+  export import SystemOfType = Actor.SystemOfType;
   export import Parent = Actor.Parent;
+  export import Descendants = Actor.Descendants;
+  export import DescendantClasses = Actor.DescendantClasses;
+  export import DescendantParents = Actor.DescendantParents;
   export import Pack = Actor.Pack;
   export import Embedded = Actor.Embedded;
   export import EmbeddedName = Actor.EmbeddedName;
   export import EmbeddedCollectionName = Actor.EmbeddedCollectionName;
   export import ParentCollectionName = Actor.ParentCollectionName;
+  export import CollectionClass = Actor.CollectionClass;
+  export import Collection = Actor.Collection;
   export import Stored = Actor.Stored;
   export import Source = Actor.Source;
   export import PersistedData = Actor.PersistedData;

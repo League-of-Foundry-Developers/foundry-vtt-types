@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";
@@ -42,10 +42,51 @@ declare global {
      */
     interface Metadata extends Document.MetadataFor<"Actor"> {}
 
+    /**
+     * Allowed subtypes of Actor. This is configured through various methods. Modern Foundry
+     * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
+     * under {@link CONFIG.Actor.dataModels | `CONFIG.Actor.dataModels`}. This corresponds to
+     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     *
+     * However subtypes can also be registered through a `template.json` though this is discouraged.
+     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
+     * {@link DataConfig | `DataConfig`}.
+     */
     type SubType = Game.Model.TypeNames<"Actor">;
+
+    /**
+     * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+     * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
+     * module subtypes `${string}.${string}`.
+     *
+     * @see {@link SubType} for more information.
+     */
     type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Actor">;
+
+    /**
+     * `Known` represents the types of Actor that a user explicitly registered.
+     *
+     * @see {@link ConfiguredSubTypes} for more information.
+     */
     type Known = Actor.OfType<Actor.ConfiguredSubTypes>;
+
+    /**
+     * `OfType` returns an instance of `Actor` with the corresponding type. This works with both the
+     * builtin `Actor` class and custom subclasses provided you set it up in
+     * {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`}.
+     * up.
+     */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActor<Type>, Actor<Type>>;
+
+    /**
+     * `SystemOfType` returns the system property for a specific `Actor` subtype.
+     */
+    type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+
+    /**
+     * @internal
+     */
+    interface _SystemMap extends Document.Internal.SystemMap<"Actor"> {}
 
     /**
      * A document's parent is something that can contain it.
@@ -105,6 +146,16 @@ declare global {
      * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
      */
     type ParentCollectionName = Metadata["collection"];
+
+    /**
+     * The world collection that contains `Actor`s. Will be `never` if none exist.
+     */
+    type CollectionClass = Actors.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Actor`s. Will be `never` if none exist.
+     */
+    type Collection = Actors.Configured;
 
     /**
      * An instance of `Actor` that comes from the database.
@@ -523,10 +574,10 @@ declare global {
      * @param document - Return the Document instance rather than the PlaceableObject (default: `false`)
      * @returns An array of Token instances in the current Scene which reference this Actor.
      */
-    getActiveTokens<ReturnDocument extends boolean = false>(
+    getActiveTokens<ReturnDocument extends boolean | undefined = undefined>(
       linked?: boolean,
       document?: ReturnDocument,
-    ): ReturnDocument extends true ? TokenDocument.Implementation[] : TokenDocument.Implementation[];
+    ): ReturnDocument extends true ? TokenDocument.Implementation[] : Token.Object[];
 
     /**
      * Get all ActiveEffects that may apply to this Actor.
@@ -540,7 +591,7 @@ declare global {
      * Prepare a data object which defines the data schema used by dice roll commands against this Actor
      * @remarks defaults to this.system, but provided as object for flexible overrides
      */
-    getRollData(): object;
+    getRollData(): AnyObject;
 
     /**
      * Create a new TokenData object which can be used to create a Token representation of the Actor.

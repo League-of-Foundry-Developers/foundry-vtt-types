@@ -11,7 +11,6 @@ import type BaseMeasuredTemplate from "../foundry/common/documents/measured-temp
 import type BaseRegionBehavior from "../foundry/common/documents/region-behavior.d.mts";
 import type BaseSetting from "../foundry/common/documents/setting.d.mts";
 import type BaseTableResult from "../foundry/common/documents/table-result.d.mts";
-import type BaseToken from "../foundry/common/documents/token.d.mts";
 import type BaseUser from "../foundry/common/documents/user.d.mts";
 import type BaseWall from "../foundry/common/documents/wall.d.mts";
 import type { InterfaceToObject, MakeConform, MustConform, Merge, FixedInstanceType } from "fvtt-types/utils";
@@ -740,31 +739,6 @@ interface TileMetadata
     }>
   > {}
 
-interface TokenMetadata
-  extends Merge<
-    Document.Metadata.Default,
-    Readonly<{
-      name: "Token";
-      collection: "tokens";
-      label: string;
-      labelPlural: string;
-      isEmbedded: true;
-      embedded: {
-        ActorDelta: "delta";
-      };
-      permissions: {
-        create: "TOKEN_CREATE";
-        update(
-          user: User.Internal.Implementation,
-          doc: TokenDocument.Implementation,
-          data: BaseToken.UpdateData,
-        ): boolean;
-        delete: "TOKEN_DELETE";
-      };
-      schemaVersion: string;
-    }>
-  > {}
-
 interface UserMetadata
   extends Merge<
     Document.Metadata.Default,
@@ -839,7 +813,7 @@ export interface ConfiguredMetadata {
   Setting: SettingMetadata;
   TableResult: TableResultMetadata;
   Tile: TileMetadata;
-  Token: TokenMetadata;
+  Token: TokenDocument.Metadata;
   User: UserMetadata;
   Wall: WallMetadata;
 }

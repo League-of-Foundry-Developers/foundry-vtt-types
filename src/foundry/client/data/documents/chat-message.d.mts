@@ -1,5 +1,5 @@
 import type { ConfiguredChatMessage } from "../../../../configuration/index.d.mts";
-import type { InexactPartial, InterfaceToObject } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, InterfaceToObject } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -44,7 +44,7 @@ declare global {
     type SubType = Game.Model.TypeNames<Name>;
     type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = ChatMessage.OfType<ChatMessage.ConfiguredSubTypes>;
-    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredChatMessage<Type>, ChatMessage<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredChatMessage<Type>, ChatMessage<Type>>;
 
     /**
      * A document's parent is something that can contain it.
@@ -605,7 +605,7 @@ declare global {
     /**
      * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
      */
-    getRollData(): Record<string, unknown>;
+    getRollData(): AnyObject;
 
     /**
      * Given a string whisper target, return an Array of the user IDs which should be targeted for the whisper

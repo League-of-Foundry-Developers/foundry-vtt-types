@@ -21,10 +21,11 @@ import type {
   IntentionalPartial,
   DiscriminatedUnion,
   SimpleMerge,
-  ConcreteKeys,
   ValueOf,
   PickValue,
   AnyMutableObject,
+  Identity,
+  ConcreteKeys,
 } from "fvtt-types/utils";
 import type * as CONST from "../constants.mts";
 import type {
@@ -46,6 +47,7 @@ import type {
 } from "./_types.d.mts";
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
+import type EmbeddedCollection from "./embedded-collection.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -514,7 +516,7 @@ declare abstract class Document<
     embeddedName: never,
     id: string,
     options?: Document.GetEmbeddedDocumentOptions,
-  ): Document.AnyChild<this> | undefined;
+  ): Document.Any | undefined;
 
   /**
    * Create multiple embedded Document instances within this parent Document using provided input data.
@@ -527,12 +529,13 @@ declare abstract class Document<
    * @returns An array of created Document instances
    */
   // Note: This uses `never` because it's unsound to try to call `Document#createEmbeddedDocuments` directly.
+  // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
   createEmbeddedDocuments(
     embeddedName: never,
     // Note: Not optional because `createEmbeddedDocuments("Actor")` does effectively nothing.
     data: never,
     operation?: never,
-  ): Promise<Array<Document.AnyStored> | undefined>;
+  ): unknown;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
@@ -545,12 +548,13 @@ declare abstract class Document<
    * @returns An array of updated Document instances
    */
   // Note: This uses `never` because it's unsound to try to call `Document#updateEmbeddedDocuments` directly.
+  // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
   updateEmbeddedDocuments(
     embeddedName: never,
     // Note: Not optional because `updateEmbeddedDocuments("Actor")` does effectively nothing.
     updates: never,
     context?: never,
-  ): Promise<Array<Document.AnyStored> | undefined>;
+  ): unknown;
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
@@ -561,11 +565,9 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of deleted Document instances
    */
-  deleteEmbeddedDocuments(
-    embeddedName: never,
-    ids: Array<string>,
-    operation?: never,
-  ): Promise<Array<Document.AnyStored>>;
+  // Note: This uses `never` because it's unsound to try to call `Document#deleteEmbeddedDocuments` directly.
+  // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
+  deleteEmbeddedDocuments(embeddedName: never, ids: Array<string>, operation?: never): unknown;
 
   /**
    * Iterate over all embedded Documents that are hierarchical children of this Document.
@@ -903,32 +905,7 @@ declare namespace Document {
   interface AnyValid extends AnyDocument {}
   interface AnyConstructor extends AnyDocumentClass {}
 
-  type Type =
-    | "ActiveEffect"
-    | "ActorDelta"
-    | "Actor"
-    | "Adventure"
-    | "Card"
-    | "Cards"
-    | "ChatMessage"
-    | "Combat"
-    | "Combatant"
-    | "FogExploration"
-    | "Folder"
-    | "Item"
-    | "JournalEntryPage"
-    | "JournalEntry"
-    | "Macro"
-    | "PlaylistSound"
-    | "Playlist"
-    | "RegionBehavior"
-    | "RollTable"
-    | "Scene"
-    | "Setting"
-    | "TableResult"
-    | "User"
-    // All placeables also have a corresponding document class.
-    | PlaceableType;
+  type Type = CONST.ALL_DOCUMENT_TYPES;
 
   type PlaceableType =
     | "AmbientLight"
@@ -940,6 +917,11 @@ declare namespace Document {
     | "Tile"
     | "Token"
     | "Wall";
+
+  type PrimaryType = CONST.PRIMARY_DOCUMENT_TYPES;
+  type EmbeddedType = CONST.EMBEDDED_DOCUMENT_TYPES;
+  type WorldType = CONST.WORLD_DOCUMENT_TYPES;
+  type CompendiumType = CONST.COMPENDIUM_DOCUMENT_TYPES;
 
   type WithSubTypes = WithSystem | "Folder" | "Macro" | "TableResult";
 
@@ -1004,6 +986,7 @@ declare namespace Document {
   };
 
   // Note(LukeAbby): This is written this way to make it more obviously covariant over `SubType`.
+  // TO BE DELETED
   type SystemFor<Name extends WithSystem, SubType extends SubTypesOf<Name>> = Name extends "ActorDelta"
     ? _ActorDeltaSystemData[ActorDelta.SubType]
     :
@@ -1072,11 +1055,73 @@ declare namespace Document {
     | "JournalEntryPage"
     | "RegionBehavior";
 
+  /**
+   * To be deleted before merging documents-v2. This was from an older version of the template.
+   */
   type EmbeddableNamesFor<Metadata extends Document.Metadata.Any> = Document.Type & ConcreteKeys<Metadata["embedded"]>;
 
+  /**
+   * To be deleted before merging documents-v2. This was from an older version of the template.
+   */
   type CollectionNamesFor<Metadata extends Document.Metadata.Any> =
     | EmbeddableNamesFor<Metadata>
     | ValueOf<Metadata["embedded"]>;
+
+  namespace Embedded {
+    type CollectionNameFor<
+      Embedded extends Document.Metadata.Embedded,
+      CollectionName extends Document.Embedded.CollectionName<Embedded>,
+    > = Extract<GetKey<Metadata.Embedded, CollectionName, CollectionName>, Document.Type>;
+
+    type DocumentFor<
+      Embedded extends Document.Metadata.Embedded,
+      CollectionName extends Document.Embedded.CollectionName<Embedded>,
+    > = Document.ImplementationFor<CollectionNameFor<Embedded, CollectionName>>;
+
+    type CollectionFor<
+      Parent extends Document.Any,
+      Embedded extends Document.Metadata.Embedded,
+      CollectionName extends Document.Embedded.CollectionName<Embedded>,
+    > = EmbeddedCollection<DocumentFor<Embedded, CollectionName>, Parent>;
+
+    type CollectionName<Embedded extends Document.Metadata.Embedded> = {
+      [K in keyof Embedded]: K extends Document.Type ? Extract<K | Embedded[K], string> : never;
+    }[keyof Embedded];
+  }
+
+  /**
+   * @internal
+   */
+  interface _WorldCollectionMap {
+    Actor: Actors.Configured;
+    Cards: CardStacks;
+    Combat: CombatEncounters;
+    FogExploration: FogExplorations;
+    Folder: Folders;
+    Item: Items;
+    JournalEntry: Journal;
+    Macro: Macro;
+    ChatMessage: Messages;
+    Playlist: Playlists;
+    Scene: Scenes;
+    Setting: WorldSettings;
+    RollTable: RollTables;
+    User: Users;
+  }
+
+  type WorldCollectionFor<Name extends Document.WorldType> = _WorldCollectionMap[Name];
+
+  // Note(LukeAbby): Will be updated with the CONFIG revamp.
+  type ConfiguredCollectionClass<Name extends Document.Type> = CONFIG extends {
+    readonly [K in Name]: {
+      readonly documentClass?: infer DocumentClass;
+    };
+  }
+    ? DocumentClass
+    : never;
+
+  // Note(LukeAbby): Will be updated with the CONFIG revamp.
+  type ConfiguredCollection<Name extends Document.Type> = FixedInstanceType<ConfiguredCollectionClass<Name>>;
 
   type IsParentOf<
     ParentDocument extends Document.Internal.Instance.Any,
@@ -1120,6 +1165,16 @@ declare namespace Document {
         ? D
         : FixedInstanceType<ConfigurationFailure[Document["documentName"]]>
       : Document;
+
+    type SystemMap<Name extends Document.WithSystem> = SystemData extends {
+      readonly [K in Name]: infer Data;
+    }
+      ? Data
+      : never;
+
+    type SystemOfType<SystemMap extends Record<SubType, object>, SubType extends string> =
+      | DiscriminatedUnion<SystemMap[SubType]>
+      | (SubType extends `${string}.${string}` ? UnknownSystem : never);
   }
 
   /** Any Document, that is a child of the given parent Document. */
@@ -1600,6 +1655,8 @@ declare namespace Document {
       };
       readonly preserveOnImport: ["_id", "sort", "ownership"];
     }
+
+    interface Embedded extends Identity<{ [K in Document.Type]?: string }> {}
   }
 
   type ConfiguredSheetClassFor<Name extends Document.Type> = MakeConform<
@@ -1745,6 +1802,108 @@ declare namespace Document {
       update: AnyObject;
       delete: AnyObject;
     }
+
+    type CreateForName<DocumentType extends Document.Type> =
+      | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.Create : never)
+      | (DocumentType extends "ActorDelta" ? ActorDelta.Database.Create : never)
+      | (DocumentType extends "Actor" ? Actor.Database.Create : never)
+      | (DocumentType extends "Adventure" ? Adventure.Database.Create : never)
+      | (DocumentType extends "Card" ? Card.Database.Create : never)
+      | (DocumentType extends "Cards" ? Cards.Database.Create : never)
+      | (DocumentType extends "ChatMessage" ? ChatMessage.Database.Create : never)
+      | (DocumentType extends "Combat" ? Combat.Database.Create : never)
+      | (DocumentType extends "Combatant" ? Combatant.Database.Create : never)
+      | (DocumentType extends "FogExploration" ? FogExploration.Database.Create : never)
+      | (DocumentType extends "Folder" ? Folder.Database.Create : never)
+      | (DocumentType extends "Item" ? Item.Database.Create : never)
+      | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.Create : never)
+      | (DocumentType extends "JournalEntry" ? JournalEntry.Database.Create : never)
+      | (DocumentType extends "Macro" ? Macro.Database.Create : never)
+      | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database.Create : never)
+      | (DocumentType extends "Playlist" ? Playlist.Database.Create : never)
+      | (DocumentType extends "RegionBehavior" ? RegionBehavior.Database.Create : never)
+      | (DocumentType extends "Region" ? RegionDocument.Database.Create : never)
+      | (DocumentType extends "RollTable" ? RollTable.Database.Create : never)
+      | (DocumentType extends "Scene" ? Scene.Database.Create : never)
+      | (DocumentType extends "Setting" ? Setting.Database.Create : never)
+      | (DocumentType extends "TableResult" ? TableResult.Database.Create : never)
+      | (DocumentType extends "User" ? User.Database.Create : never)
+      | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Database.Create : never)
+      | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Database.Create : never)
+      | (DocumentType extends "Drawing" ? DrawingDocument.Database.Create : never)
+      | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Database.Create : never)
+      | (DocumentType extends "Note" ? NoteDocument.Database.Create : never)
+      | (DocumentType extends "Tile" ? TileDocument.Database.Create : never)
+      | (DocumentType extends "Token" ? TokenDocument.Database.Create : never)
+      | (DocumentType extends "Wall" ? WallDocument.Database.Create : never);
+
+    type UpdateOperationForName<DocumentType extends Document.Type> =
+      | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.UpdateOperation : never)
+      | (DocumentType extends "ActorDelta" ? ActorDelta.Database.UpdateOperation : never)
+      | (DocumentType extends "Actor" ? Actor.Database.UpdateOperation : never)
+      | (DocumentType extends "Adventure" ? Adventure.Database.UpdateOperation : never)
+      | (DocumentType extends "Card" ? Card.Database.UpdateOperation : never)
+      | (DocumentType extends "Cards" ? Cards.Database.UpdateOperation : never)
+      | (DocumentType extends "ChatMessage" ? ChatMessage.Database.UpdateOperation : never)
+      | (DocumentType extends "Combat" ? Combat.Database.UpdateOperation : never)
+      | (DocumentType extends "Combatant" ? Combatant.Database.UpdateOperation : never)
+      | (DocumentType extends "FogExploration" ? FogExploration.Database.UpdateOperation : never)
+      | (DocumentType extends "Folder" ? Folder.Database.UpdateOperation : never)
+      | (DocumentType extends "Item" ? Item.Database.UpdateOperation : never)
+      | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.UpdateOperation : never)
+      | (DocumentType extends "JournalEntry" ? JournalEntry.Database.UpdateOperation : never)
+      | (DocumentType extends "Macro" ? Macro.Database.UpdateOperation : never)
+      | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database.UpdateOperation : never)
+      | (DocumentType extends "Playlist" ? Playlist.Database.UpdateOperation : never)
+      | (DocumentType extends "RegionBehavior" ? RegionBehavior.Database.UpdateOperation : never)
+      | (DocumentType extends "Region" ? RegionDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "RollTable" ? RollTable.Database.UpdateOperation : never)
+      | (DocumentType extends "Scene" ? Scene.Database.UpdateOperation : never)
+      | (DocumentType extends "Setting" ? Setting.Database.UpdateOperation : never)
+      | (DocumentType extends "TableResult" ? TableResult.Database.UpdateOperation : never)
+      | (DocumentType extends "User" ? User.Database.UpdateOperation : never)
+      | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "Drawing" ? DrawingDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "Note" ? NoteDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "Tile" ? TileDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "Token" ? TokenDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "Wall" ? WallDocument.Database.UpdateOperation : never);
+
+    type DeleteOperationForName<DocumentType extends Document.Type> =
+      | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.DeleteOperation : never)
+      | (DocumentType extends "ActorDelta" ? ActorDelta.Database.DeleteOperation : never)
+      | (DocumentType extends "Actor" ? Actor.Database.DeleteOperation : never)
+      | (DocumentType extends "Adventure" ? Adventure.Database.DeleteOperation : never)
+      | (DocumentType extends "Card" ? Card.Database.DeleteOperation : never)
+      | (DocumentType extends "Cards" ? Cards.Database.DeleteOperation : never)
+      | (DocumentType extends "ChatMessage" ? ChatMessage.Database.DeleteOperation : never)
+      | (DocumentType extends "Combat" ? Combat.Database.DeleteOperation : never)
+      | (DocumentType extends "Combatant" ? Combatant.Database.DeleteOperation : never)
+      | (DocumentType extends "FogExploration" ? FogExploration.Database.DeleteOperation : never)
+      | (DocumentType extends "Folder" ? Folder.Database.DeleteOperation : never)
+      | (DocumentType extends "Item" ? Item.Database.DeleteOperation : never)
+      | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.DeleteOperation : never)
+      | (DocumentType extends "JournalEntry" ? JournalEntry.Database.DeleteOperation : never)
+      | (DocumentType extends "Macro" ? Macro.Database.DeleteOperation : never)
+      | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database.DeleteOperation : never)
+      | (DocumentType extends "Playlist" ? Playlist.Database.DeleteOperation : never)
+      | (DocumentType extends "RegionBehavior" ? RegionBehavior.Database.DeleteOperation : never)
+      | (DocumentType extends "Region" ? RegionDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "RollTable" ? RollTable.Database.DeleteOperation : never)
+      | (DocumentType extends "Scene" ? Scene.Database.DeleteOperation : never)
+      | (DocumentType extends "Setting" ? Setting.Database.DeleteOperation : never)
+      | (DocumentType extends "TableResult" ? TableResult.Database.DeleteOperation : never)
+      | (DocumentType extends "User" ? User.Database.DeleteOperation : never)
+      | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "Drawing" ? DrawingDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "Note" ? NoteDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "Tile" ? TileDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "Token" ? TokenDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "Wall" ? WallDocument.Database.DeleteOperation : never);
   }
 
   interface DataFieldShimOptions {

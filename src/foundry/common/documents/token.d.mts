@@ -165,38 +165,36 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   static get(documentId: string, options?: TokenDocument.Database.GetOptions): TokenDocument.Implementation | null;
 
-  // TODO: @LukeAbby More Implementation Nonsense
-  // override getEmbeddedCollection<EmbeddedName extends TokenDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  // ): Document.EmbeddedCollectionFor<TokenDocument.Name, EmbeddedName>;
+  override getEmbeddedCollection<EmbeddedName extends TokenDocument.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): TokenDocument.Embedded.CollectionFor<EmbeddedName>;
 
-  // // options: not null (destructured)
-  // override getEmbeddedDocument<EmbeddedName extends TokenDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  //   id: string,
-  //   options?: Document.GetEmbeddedDocumentOptions, // TODO: Actually get the specific embedded name.
-  // ): TokenDocument.Embedded | undefined;
+  override getEmbeddedDocument<EmbeddedName extends TokenDocument.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): TokenDocument.Embedded.DocumentFor<EmbeddedName> | undefined;
 
-  // override createEmbeddedDocuments<EmbeddedName extends TokenDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  //   data: Document.CreateDataFor<EmbeddedName>[] | undefined,
-  //   // TODO: Generic over the EmbeddedName
-  //   operation?: never,
-  // ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  override createEmbeddedDocuments<EmbeddedName extends TokenDocument.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
 
-  // override updateEmbeddedDocuments<EmbeddedName extends TokenDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  //   updates: Document.UpdateDataFor<EmbeddedName>[] | undefined,
-  //   // TODO: Generic over the EmbeddedName
-  //   operation?: never,
-  // ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  override updateEmbeddedDocuments<EmbeddedName extends TokenDocument.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
 
-  // override deleteEmbeddedDocuments<EmbeddedName extends TokenDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  //   ids: Array<string>,
-  //   // TODO: Generic over the EmbeddedName
-  //   operation?: never,
-  // ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
+  override deleteEmbeddedDocuments<EmbeddedName extends TokenDocument.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -373,8 +371,6 @@ declare namespace BaseToken {
   export import Parent = TokenDocument.Parent;
   export import Pack = TokenDocument.Pack;
   export import Embedded = TokenDocument.Embedded;
-  export import EmbeddedName = TokenDocument.EmbeddedName;
-  export import EmbeddedCollectionName = TokenDocument.EmbeddedCollectionName;
   export import ParentCollectionName = TokenDocument.ParentCollectionName;
   export import Stored = TokenDocument.Stored;
   export import Source = TokenDocument.Source;

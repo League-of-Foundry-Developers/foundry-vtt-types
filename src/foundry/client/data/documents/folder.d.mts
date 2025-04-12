@@ -43,7 +43,7 @@ declare global {
     type SubType = Game.Model.TypeNames<Name>;
     type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = Folder.OfType<Folder.ConfiguredSubTypes>;
-    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredFolder<Type>, Folder<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredFolder<Type>, Folder<Type>>;
 
     /**
      * A document's parent is something that can contain it.

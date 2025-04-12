@@ -28,7 +28,7 @@ const tests = {
         const bettererFile = fileTestResult.addFile(vitestFile.filepath, contents);
         for (const error of errors) {
           const stack = error.stacks?.[0];
-          bettererFile.addIssue(stack?.column ?? 1, stack?.line ?? 1, 1, error.message);
+          bettererFile.addIssue(stack?.line ?? 0, stack?.column ?? 0, 1, error.message);
         }
       }
 

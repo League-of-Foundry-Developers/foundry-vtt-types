@@ -45,7 +45,7 @@ declare global {
     type Known = JournalEntryPage.OfType<JournalEntryPage.ConfiguredSubTypes>;
     type OfType<Type extends SubType> = Document.Internal.OfType<
       ConfiguredJournalEntryPage<Type>,
-      JournalEntryPage<SubType>
+      JournalEntryPage<Type>
     >;
 
     /**

@@ -42,10 +42,7 @@ declare global {
     type SubType = Game.Model.TypeNames<Name>;
     type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = RegionBehavior.OfType<RegionBehavior.ConfiguredSubTypes>;
-    type OfType<Type extends SubType> = Document.Internal.OfType<
-      ConfiguredRegionBehavior<Type>,
-      RegionBehavior<SubType>
-    >;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredRegionBehavior<Type>, RegionBehavior<Type>>;
     /**
      * A document's parent is something that can contain it.
      * For example an `RegionBehavior` can be contained by an `Actor` which makes `Actor` one of its possible parents.
