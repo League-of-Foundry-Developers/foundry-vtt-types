@@ -1,7 +1,7 @@
-import type { AnyObject, DeepPartial, InexactPartial, InterfaceToObject } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, InexactPartial, InterfaceToObject, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DataSchema, SchemaField } from "../../../common/data/fields.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields, LightData, TextureData } from "../../../common/data/module.d.mts";
 import type { ActorDeltaField } from "../../../common/documents/token.d.mts";
 import type BaseToken from "../../../common/documents/token.d.mts";
@@ -39,7 +39,42 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Token";
+          collection: "tokens";
+          label: string;
+          labelPlural: string;
+          isEmbedded: true;
+          embedded: TokenDocument.Metadata.Embedded;
+          permissions: TokenDocument.Metadata.Permissions;
+          schemaVersion: string;
+        }>
+      > {}
+
+    namespace Metadata {
+      /**
+       * The embedded metadata
+       */
+      interface Embedded {
+        ActorDelta: "delta";
+      }
+
+      /**
+       * The permissions for whether a certain user can create, update, or delete this document.
+       */
+      interface Permissions {
+        create: "TOKEN_CREATE";
+        update(
+          user: User.Internal.Implementation,
+          doc: TokenDocument.Implementation,
+          data: BaseToken.UpdateData,
+        ): boolean;
+        delete: "TOKEN_DELETE";
+      }
+    }
 
     /**
      * A document's parent is something that can contain it.
@@ -77,21 +112,49 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<Embedded.Name>;
 
-    /**
-     * An embedded document is a document contained in another.
-     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
-     *
-     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
-     */
-    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+    namespace Embedded {
+      /**
+       * An embedded document is a document contained in another.
+       * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+       *
+       * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+       */
+      type Name = keyof Metadata.Embedded;
 
-    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
-      ? Metadata["embedded"][CollectionName]
-      : CollectionName;
+      /**
+       * Gets the collection name for an embedded document.
+       */
+      type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionNameFor<
+        Metadata.Embedded,
+        CollectionName
+      >;
 
-    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+      /**
+       * Gets the collection document for an embedded document.
+       */
+      // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+
+      /**
+       * Gets the collection for an embedded document.
+       */
+      type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
+        // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
+        Document.Any,
+        Metadata.Embedded,
+        CollectionName
+      >;
+
+      /**
+       * A valid name to refer to a collection embedded in this document. For example an `Actor`
+       * has the key `"items"` which contains `Item` instance which would make both `"Item" | "Items"`
+       * valid keys (amongst others).
+       */
+      type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
+    }
 
     /**
      * The name of the world or embedded collection this document can find itself in.
@@ -910,9 +973,9 @@ declare global {
       defaults?: boolean,
     ): Promise<ReturnType<this["update"]>>;
 
-    override getEmbeddedCollection<DocType extends Document.Type>(
-      embeddedName: DocType,
-    ): Collection<Document.ImplementationFor<DocType>>;
+    override getEmbeddedCollection<EmbeddedName extends TokenDocument.Embedded.CollectionName>(
+      embeddedName: EmbeddedName,
+    ): TokenDocument.Embedded.CollectionFor<EmbeddedName>;
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
