@@ -571,10 +571,10 @@ declare global {
      * @param document - Return the Document instance rather than the PlaceableObject (default: `false`)
      * @returns An array of Token instances in the current Scene which reference this Actor.
      */
-    getActiveTokens<ReturnDocument extends boolean = false>(
+    getActiveTokens<ReturnDocument extends boolean | undefined = undefined>(
       linked?: boolean,
       document?: ReturnDocument,
-    ): ReturnDocument extends true ? TokenDocument.Implementation[] : TokenDocument.Implementation[];
+    ): ReturnDocument extends true ? TokenDocument.Implementation[] : Token.Object[];
 
     /**
      * Get all ActiveEffects that may apply to this Actor.

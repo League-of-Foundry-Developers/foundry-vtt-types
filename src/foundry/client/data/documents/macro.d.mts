@@ -44,7 +44,7 @@ declare global {
     type SubType = Game.Model.TypeNames<Name>;
     type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
     type Known = Macro.OfType<Macro.ConfiguredSubTypes>;
-    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredMacro<Type>, Macro<SubType>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredMacro<Type>, Macro<Type>>;
 
     /**
      * A document's parent is something that can contain it.
