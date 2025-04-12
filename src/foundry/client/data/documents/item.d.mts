@@ -3,6 +3,7 @@ import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { AnyObject } from "fvtt-types/utils";
 
 declare global {
   namespace Item {
@@ -402,7 +403,7 @@ declare global {
      * Prepare a data object which defines the data schema used by dice roll commands against this Item
      * @remarks defaults to this.system, but provided as object for flexible overrides
      */
-    getRollData(): Record<string, unknown>;
+    getRollData(): AnyObject;
 
     /**
      * @privateRemarks _preCreate, _onCreateDocuments and _onDeleteDocuments are all overridden but with no signature changes from BaseItem.

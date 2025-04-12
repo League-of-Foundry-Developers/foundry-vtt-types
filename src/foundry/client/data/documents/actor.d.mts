@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";
@@ -537,7 +537,7 @@ declare global {
      * Prepare a data object which defines the data schema used by dice roll commands against this Actor
      * @remarks defaults to this.system, but provided as object for flexible overrides
      */
-    getRollData(): object;
+    getRollData(): AnyObject;
 
     /**
      * Create a new TokenData object which can be used to create a Token representation of the Actor.
