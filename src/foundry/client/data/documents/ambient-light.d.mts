@@ -1,4 +1,4 @@
-import type { InterfaceToObject } from "../../../../utils/index.d.mts";
+import type { InterfaceToObject, Merge } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields, LightData } from "../../../common/data/module.d.mts";
@@ -36,7 +36,19 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "AmbientLight";
+          collection: "lights";
+          label: string;
+          labelPlural: string;
+          schemaVersion: string;
+        }>
+      > {}
+
+    // No need for Metadata namespace
 
     /**
      * A document's parent is something that can contain it.

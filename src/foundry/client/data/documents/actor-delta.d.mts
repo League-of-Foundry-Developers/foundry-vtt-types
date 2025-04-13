@@ -3,6 +3,7 @@ import type { BaseActor, BaseActorDelta } from "../../../common/documents/_modul
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { ConfiguredActorDelta } from "../../../../configuration/index.d.mts";
+import type { Merge } from "../../../../utils/index.d.mts";
 
 declare global {
   namespace ActorDelta {
@@ -37,12 +38,60 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "ActorDelta";
+          collection: "delta";
+          label: string;
+          labelPlural: string;
+          isEmbedded: true;
+          embedded: Metadata.Embedded;
+          schemaVersion: string;
+        }>
+      > {}
 
-    // This is NOT a mistake. Due to the implementation of the ActorDelta document, the SubType is the same as the Actor's SubType.
-    type SubType = Game.Model.TypeNames<Name>;
+    namespace Metadata {
+      /**
+       * The embedded metadata
+       */
+      interface Embedded {
+        Item: "items";
+        ActiveEffect: "effects";
+      }
+    }
+
+    /**
+     * Allowed subtypes of ActorDelta. Due to the implementation of the ActorDelta document,
+     * the SubType is the same as the Actor's SubType.
+     *
+     * {@link Actor.SubType}
+     */
+    type SubType = Game.Model.TypeNames<"Actor">;
+
+    /**
+     * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+     * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
+     * module subtypes `${string}.${string}`.
+     *
+     * @see {@link SubType} for more information.
+     */
     type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
+
+    /**
+     * `Known` represents the types of ActorDelta that a user explicitly registered.
+     *
+     * @see {@link ConfiguredSubTypes} for more information.
+     */
     type Known = ActorDelta.OfType<ActorDelta.ConfiguredSubTypes>;
+
+    /**
+     * `OfType` returns an instance of `ActorDelta` with the corresponding type. This works with both the
+     * builtin `ActorDelta` class and custom subclasses provided you set it up in
+     * {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`}.
+     * up.
+     */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActorDelta<Type>, ActorDelta<Type>>;
 
     /**
@@ -54,6 +103,7 @@ declare global {
      * @internal
      */
     interface _SystemMap extends Document.Internal.SystemMap<"ActorDelta"> {}
+
     /**
      * A document's parent is something that can contain it.
      * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.

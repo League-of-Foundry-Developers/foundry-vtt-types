@@ -1,5 +1,5 @@
 import type { ConfiguredChatMessage } from "../../../../configuration/index.d.mts";
-import type { AnyObject, InexactPartial, InterfaceToObject } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, InterfaceToObject, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -39,7 +39,30 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "ChatMessage";
+          collection: "messages";
+          label: string;
+          labelPlural: string;
+          hasTypeData: true;
+          isPrimary: true;
+          permissions: Metadata.Permissions;
+          schemaVersion: string;
+        }>
+      > {}
+
+    namespace Metadata {
+      /**
+       * The permissions for whether a certain user can create, update, or delete this document.
+       */
+      interface Permissions {
+        create(user: User.Internal.Implementation, doc: Implementation): boolean;
+        update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      }
+    }
 
     /**
      * Allowed subtypes of ChatMessage. This is configured through various methods. Modern Foundry

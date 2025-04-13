@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";
@@ -40,7 +40,40 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"Actor"> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Actor";
+          collection: "actors";
+          indexed: true;
+          compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
+          embedded: Metadata.Embedded;
+          hasTypeData: true;
+          label: string;
+          labelPlural: string;
+          permissions: Metadata.Permissions;
+          schemaVersion: string;
+        }>
+      > {}
+
+    namespace Metadata {
+      /**
+       * The embedded metadata
+       */
+      interface Embedded {
+        ActiveEffect: "effects";
+        Item: "items";
+      }
+
+      /**
+       * The permissions for whether a certain user can create, update, or delete this document.
+       */
+      interface Permissions {
+        create(user: User.Internal.Implementation, doc: Implementation): boolean;
+        update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      }
+    }
 
     /**
      * Allowed subtypes of Actor. This is configured through various methods. Modern Foundry

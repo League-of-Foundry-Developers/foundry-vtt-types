@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial, Merge } from "fvtt-types/utils";
 import type { BaseShapeData, fields } from "../../../common/data/module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -36,7 +36,28 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Region";
+          collection: "regions";
+          label: string;
+          labelPlural: string;
+          isEmbedded: true;
+          embedded: Metadata.Embedded;
+          schemaVersion: string;
+        }>
+      > {}
+
+    namespace Metadata {
+      /**
+       * The embedded metadata
+       */
+      interface Embedded {
+        RegionBehavior: "behaviors";
+      }
+    }
 
     /**
      * A document's parent is something that can contain it.

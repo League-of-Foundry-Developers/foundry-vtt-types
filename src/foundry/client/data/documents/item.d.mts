@@ -3,7 +3,7 @@ import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyObject, Merge } from "fvtt-types/utils";
 
 declare global {
   namespace Item {
@@ -38,7 +38,38 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Item";
+          collection: "items";
+          hasTypeData: true;
+          indexed: true;
+          compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
+          embedded: Metadata.Embedded;
+          label: string;
+          labelPlural: string;
+          permissions: Metadata.Permissions;
+          schemaVersion: string;
+        }>
+      > {}
+
+    namespace Metadata {
+      /**
+       * The embedded metadata
+       */
+      interface Embedded {
+        ActiveEffect: "effects";
+      }
+
+      /**
+       * The permissions for whether a certain user can create, update, or delete this document.
+       */
+      interface Permissions {
+        create: "ITEM_CREATE";
+      }
+    }
 
     /**
      * Allowed subtypes of Item. This is configured through various methods. Modern Foundry

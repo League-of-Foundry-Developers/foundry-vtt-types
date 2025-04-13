@@ -3,6 +3,7 @@ import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type BaseRegionBehavior from "../../../common/documents/region-behavior.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { Merge } from "../../../../utils/index.d.mts";
 
 declare global {
   namespace RegionBehavior {
@@ -37,7 +38,40 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "RegionBehavior";
+          collection: "behaviors";
+          label: string;
+          labelPlural: string;
+          coreTypes: [
+            "adjustDarknessLevel",
+            "displayScrollingText",
+            "executeMacro",
+            "executeScript",
+            "pauseGame",
+            "suppressWeather",
+            "teleportToken",
+            "toggleBehavior",
+          ];
+          hasTypeData: true;
+          isEmbedded: true;
+          permissions: Metadata.Permissions;
+          schemaVersion: string;
+        }>
+      > {}
+
+    namespace Metadata {
+      /**
+       * The permissions for whether a certain user can create, update, or delete this document.
+       */
+      interface Permissions {
+        create(user: User.Internal.Implementation, doc: Implementation): boolean;
+        update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      }
+    }
 
     /**
      * Allowed subtypes of RegionBehavior. This is configured through various methods. Modern Foundry

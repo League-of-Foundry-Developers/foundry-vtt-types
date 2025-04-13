@@ -1,5 +1,5 @@
 import type { ConfiguredCombatant } from "../../../../configuration/index.d.mts";
-import type { ValueOf } from "fvtt-types/utils";
+import type { Merge, ValueOf } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -39,7 +39,30 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Combatant";
+          collection: "combatants";
+          label: string;
+          labelPlural: string;
+          isEmbedded: true;
+          hasTypeData: true;
+          schemaVersion: string;
+          permissions: Metadata.Permissions;
+        }>
+      > {}
+
+    namespace Metadata {
+      /**
+       * The permissions for whether a certain user can create, update, or delete this document.
+       */
+      interface Permissions {
+        create(user: User.Internal.Implementation, doc: Implementation): boolean;
+        update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      }
+    }
 
     /**
      * Allowed subtypes of Combatant. This is configured through various methods. Modern Foundry

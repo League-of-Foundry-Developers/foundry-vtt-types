@@ -1,5 +1,5 @@
 import type { ConfiguredCards } from "../../../../configuration/index.d.mts";
-import type { DeepPartial, InexactPartial } from "fvtt-types/utils";
+import type { DeepPartial, InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -39,7 +39,31 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Cards";
+          collection: "cards";
+          indexed: true;
+          compendiumIndexFields: ["_id", "name", "description", "img", "type", "sort", "folder"];
+          embedded: Metadata.Embedded;
+          hasTypeData: true;
+          label: string;
+          labelPlural: string;
+          coreTypes: ["deck", "hand", "pile"];
+          schemaVersion: string;
+        }>
+      > {}
+
+    namespace Metadata {
+      /**
+       * The embedded metadata
+       */
+      interface Embedded {
+        Card: "cards";
+      }
+    }
 
     /**
      * Allowed subtypes of Cards. This is configured through various methods. Modern Foundry

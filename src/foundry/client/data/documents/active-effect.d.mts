@@ -1,5 +1,5 @@
 import type { ConfiguredActiveEffect } from "../../../../configuration/index.d.mts";
-import type { AnyObject, InterfaceToObject } from "fvtt-types/utils";
+import type { AnyObject, InterfaceToObject, Merge } from "fvtt-types/utils";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField, DataSchema } from "../../../common/data/fields.d.mts";
@@ -39,7 +39,20 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "ActiveEffect";
+          collection: "effects";
+          hasTypeData: true;
+          label: string;
+          labelPlural: string;
+          schemaVersion: string;
+        }>
+      > {}
+
+    // No need for Metadata namespace
 
     /**
      * Allowed subtypes of ActiveEffect. This is configured through various methods. Modern Foundry
