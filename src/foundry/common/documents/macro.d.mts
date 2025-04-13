@@ -249,17 +249,24 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
 export default BaseMacro;
 
 declare namespace BaseMacro {
-  export import SubType = Macro.SubType;
   export import Name = Macro.Name;
   export import ConstructorArgs = Macro.ConstructorArgs;
   export import Hierarchy = Macro.Hierarchy;
   export import Metadata = Macro.Metadata;
+  export import SubType = Macro.SubType;
+  export import ConfiguredSubTypes = Macro.ConfiguredSubTypes;
+  export import Known = Macro.Known;
+  export import OfType = Macro.OfType;
   export import Parent = Macro.Parent;
+  export import Descendants = Macro.Descendants;
+  export import DescendantClasses = Macro.DescendantClasses;
   export import Pack = Macro.Pack;
   export import Embedded = Macro.Embedded;
   export import EmbeddedName = Macro.EmbeddedName;
   export import EmbeddedCollectionName = Macro.EmbeddedCollectionName;
   export import ParentCollectionName = Macro.ParentCollectionName;
+  export import CollectionClass = Macro.CollectionClass;
+  export import Collection = Macro.Collection;
   export import Stored = Macro.Stored;
   export import Source = Macro.Source;
   export import PersistedData = Macro.PersistedData;

@@ -89,7 +89,7 @@ declare abstract class BaseChatMessage<
 
   static get hierarchy(): ChatMessage.Hierarchy;
 
-  override system: Document.SystemFor<"ChatMessage", SubType>;
+  override system: ChatMessage.SystemOfType<SubType>;
 
   override parent: BaseChatMessage.Parent;
 
@@ -267,17 +267,25 @@ declare abstract class BaseChatMessage<
 export default BaseChatMessage;
 
 declare namespace BaseChatMessage {
-  export import SubType = ChatMessage.SubType;
   export import Name = ChatMessage.Name;
   export import ConstructorArgs = ChatMessage.ConstructorArgs;
   export import Hierarchy = ChatMessage.Hierarchy;
   export import Metadata = ChatMessage.Metadata;
+  export import SubType = ChatMessage.SubType;
+  export import ConfiguredSubTypes = ChatMessage.ConfiguredSubTypes;
+  export import Known = ChatMessage.Known;
+  export import OfType = ChatMessage.OfType;
+  export import SystemOfType = ChatMessage.SystemOfType;
   export import Parent = ChatMessage.Parent;
+  export import Descendants = ChatMessage.Descendants;
+  export import DescendantClasses = ChatMessage.DescendantClasses;
   export import Pack = ChatMessage.Pack;
   export import Embedded = ChatMessage.Embedded;
   export import EmbeddedName = ChatMessage.EmbeddedName;
   export import EmbeddedCollectionName = ChatMessage.EmbeddedCollectionName;
   export import ParentCollectionName = ChatMessage.ParentCollectionName;
+  export import CollectionClass = ChatMessage.CollectionClass;
+  export import Collection = ChatMessage.Collection;
   export import Stored = ChatMessage.Stored;
   export import Source = ChatMessage.Source;
   export import PersistedData = ChatMessage.PersistedData;

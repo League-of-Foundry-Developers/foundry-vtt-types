@@ -76,7 +76,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   static get hierarchy(): Cards.Hierarchy;
 
-  override system: Document.SystemFor<"Cards", SubType>;
+  override system: Cards.SystemOfType<SubType>;
 
   override parent: BaseCards.Parent;
 
@@ -241,17 +241,25 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 export default BaseCards;
 
 declare namespace BaseCards {
-  export import SubType = Cards.SubType;
   export import Name = Cards.Name;
   export import ConstructorArgs = Cards.ConstructorArgs;
   export import Hierarchy = Cards.Hierarchy;
   export import Metadata = Cards.Metadata;
+  export import SubType = Cards.SubType;
+  export import ConfiguredSubTypes = Cards.ConfiguredSubTypes;
+  export import Known = Cards.Known;
+  export import OfType = Cards.OfType;
+  export import SystemOfType = Cards.SystemOfType;
   export import Parent = Cards.Parent;
+  export import Descendants = Cards.Descendants;
+  export import DescendantClasses = Cards.DescendantClasses;
   export import Pack = Cards.Pack;
   export import Embedded = Cards.Embedded;
   export import EmbeddedName = Cards.EmbeddedName;
   export import EmbeddedCollectionName = Cards.EmbeddedCollectionName;
   export import ParentCollectionName = Cards.ParentCollectionName;
+  export import CollectionClass = Cards.CollectionClass;
+  export import Collection = Cards.Collection;
   export import Stored = Cards.Stored;
   export import Source = Cards.Source;
   export import PersistedData = Cards.PersistedData;

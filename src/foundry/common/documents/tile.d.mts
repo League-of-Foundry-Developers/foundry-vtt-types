@@ -290,11 +290,15 @@ declare namespace BaseTile {
   export import Hierarchy = TileDocument.Hierarchy;
   export import Metadata = TileDocument.Metadata;
   export import Parent = TileDocument.Parent;
+  export import Descendants = TileDocument.Descendants;
+  export import DescendantClasses = TileDocument.DescendantClasses;
   export import Pack = TileDocument.Pack;
   export import Embedded = TileDocument.Embedded;
   export import EmbeddedName = TileDocument.EmbeddedName;
   export import EmbeddedCollectionName = TileDocument.EmbeddedCollectionName;
   export import ParentCollectionName = TileDocument.ParentCollectionName;
+  export import CollectionClass = TileDocument.CollectionClass;
+  export import Collection = TileDocument.Collection;
   export import Stored = TileDocument.Stored;
   export import Source = TileDocument.Source;
   export import PersistedData = TileDocument.PersistedData;

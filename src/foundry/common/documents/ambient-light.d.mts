@@ -255,11 +255,15 @@ declare namespace BaseAmbientLight {
   export import Hierarchy = AmbientLightDocument.Hierarchy;
   export import Metadata = AmbientLightDocument.Metadata;
   export import Parent = AmbientLightDocument.Parent;
+  export import Descendants = AmbientLightDocument.Descendants;
+  export import DescendantClasses = AmbientLightDocument.DescendantClasses;
   export import Pack = AmbientLightDocument.Pack;
   export import Embedded = AmbientLightDocument.Embedded;
   export import EmbeddedName = AmbientLightDocument.EmbeddedName;
   export import EmbeddedCollectionName = AmbientLightDocument.EmbeddedCollectionName;
   export import ParentCollectionName = AmbientLightDocument.ParentCollectionName;
+  export import CollectionClass = AmbientLightDocument.CollectionClass;
+  export import Collection = AmbientLightDocument.Collection;
   export import Stored = AmbientLightDocument.Stored;
   export import Source = AmbientLightDocument.Source;
   export import PersistedData = AmbientLightDocument.PersistedData;

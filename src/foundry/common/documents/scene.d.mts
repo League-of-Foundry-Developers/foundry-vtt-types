@@ -245,11 +245,15 @@ declare namespace BaseScene {
   export import Hierarchy = Scene.Hierarchy;
   export import Metadata = Scene.Metadata;
   export import Parent = Scene.Parent;
+  export import Descendants = Scene.Descendants;
+  export import DescendantClasses = Scene.DescendantClasses;
   export import Pack = Scene.Pack;
   export import Embedded = Scene.Embedded;
   export import EmbeddedName = Scene.EmbeddedName;
   export import EmbeddedCollectionName = Scene.EmbeddedCollectionName;
   export import ParentCollectionName = Scene.ParentCollectionName;
+  export import CollectionClass = Scene.CollectionClass;
+  export import Collection = Scene.Collection;
   export import Stored = Scene.Stored;
   export import Source = Scene.Source;
   export import PersistedData = Scene.PersistedData;

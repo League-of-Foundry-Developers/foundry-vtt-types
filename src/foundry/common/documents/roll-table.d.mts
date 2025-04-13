@@ -246,11 +246,15 @@ declare namespace BaseRollTable {
   export import Hierarchy = RollTable.Hierarchy;
   export import Metadata = RollTable.Metadata;
   export import Parent = RollTable.Parent;
+  export import Descendants = RollTable.Descendants;
+  export import DescendantClasses = RollTable.DescendantClasses;
   export import Pack = RollTable.Pack;
   export import Embedded = RollTable.Embedded;
   export import EmbeddedName = RollTable.EmbeddedName;
   export import EmbeddedCollectionName = RollTable.EmbeddedCollectionName;
   export import ParentCollectionName = RollTable.ParentCollectionName;
+  export import CollectionClass = RollTable.CollectionClass;
+  export import Collection = RollTable.Collection;
   export import Stored = RollTable.Stored;
   export import Source = RollTable.Source;
   export import PersistedData = RollTable.PersistedData;

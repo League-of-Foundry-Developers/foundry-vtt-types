@@ -248,11 +248,15 @@ declare namespace BaseFogExploration {
   export import Hierarchy = FogExploration.Hierarchy;
   export import Metadata = FogExploration.Metadata;
   export import Parent = FogExploration.Parent;
+  export import Descendants = FogExploration.Descendants;
+  export import DescendantClasses = FogExploration.DescendantClasses;
   export import Pack = FogExploration.Pack;
   export import Embedded = FogExploration.Embedded;
   export import EmbeddedName = FogExploration.EmbeddedName;
   export import EmbeddedCollectionName = FogExploration.EmbeddedCollectionName;
   export import ParentCollectionName = FogExploration.ParentCollectionName;
+  export import CollectionClass = FogExploration.CollectionClass;
+  export import Collection = FogExploration.Collection;
   export import Stored = FogExploration.Stored;
   export import Source = FogExploration.Source;
   export import PersistedData = FogExploration.PersistedData;

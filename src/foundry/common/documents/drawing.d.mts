@@ -285,11 +285,15 @@ declare namespace BaseDrawing {
   export import Hierarchy = DrawingDocument.Hierarchy;
   export import Metadata = DrawingDocument.Metadata;
   export import Parent = DrawingDocument.Parent;
+  export import Descendants = DrawingDocument.Descendants;
+  export import DescendantClasses = DrawingDocument.DescendantClasses;
   export import Pack = DrawingDocument.Pack;
   export import Embedded = DrawingDocument.Embedded;
   export import EmbeddedName = DrawingDocument.EmbeddedName;
   export import EmbeddedCollectionName = DrawingDocument.EmbeddedCollectionName;
   export import ParentCollectionName = DrawingDocument.ParentCollectionName;
+  export import CollectionClass = DrawingDocument.CollectionClass;
+  export import Collection = DrawingDocument.Collection;
   export import Stored = DrawingDocument.Stored;
   export import Source = DrawingDocument.Source;
   export import PersistedData = DrawingDocument.PersistedData;

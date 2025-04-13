@@ -261,11 +261,15 @@ declare namespace BaseWall {
   export import Hierarchy = WallDocument.Hierarchy;
   export import Metadata = WallDocument.Metadata;
   export import Parent = WallDocument.Parent;
+  export import Descendants = WallDocument.Descendants;
+  export import DescendantClasses = WallDocument.DescendantClasses;
   export import Pack = WallDocument.Pack;
   export import Embedded = WallDocument.Embedded;
   export import EmbeddedName = WallDocument.EmbeddedName;
   export import EmbeddedCollectionName = WallDocument.EmbeddedCollectionName;
   export import ParentCollectionName = WallDocument.ParentCollectionName;
+  export import CollectionClass = WallDocument.CollectionClass;
+  export import Collection = WallDocument.Collection;
   export import Stored = WallDocument.Stored;
   export import Source = WallDocument.Source;
   export import PersistedData = WallDocument.PersistedData;

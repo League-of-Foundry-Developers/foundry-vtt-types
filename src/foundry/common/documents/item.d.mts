@@ -91,7 +91,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   static get hierarchy(): Item.Hierarchy;
 
-  override system: Document.SystemFor<"Item", SubType>;
+  override system: Item.SystemOfType<SubType>;
 
   override parent: BaseItem.Parent;
 
@@ -256,17 +256,25 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 export default BaseItem;
 
 declare namespace BaseItem {
-  export import SubType = Item.SubType;
   export import Name = Item.Name;
   export import ConstructorArgs = Item.ConstructorArgs;
   export import Hierarchy = Item.Hierarchy;
   export import Metadata = Item.Metadata;
+  export import SubType = Item.SubType;
+  export import ConfiguredSubTypes = Item.ConfiguredSubTypes;
+  export import Known = Item.Known;
+  export import OfType = Item.OfType;
+  export import SystemOfType = Item.SystemOfType;
   export import Parent = Item.Parent;
+  export import Descendants = Item.Descendants;
+  export import DescendantClasses = Item.DescendantClasses;
   export import Pack = Item.Pack;
   export import Embedded = Item.Embedded;
   export import EmbeddedName = Item.EmbeddedName;
   export import EmbeddedCollectionName = Item.EmbeddedCollectionName;
   export import ParentCollectionName = Item.ParentCollectionName;
+  export import CollectionClass = Item.CollectionClass;
+  export import Collection = Item.Collection;
   export import Stored = Item.Stored;
   export import Source = Item.Source;
   export import PersistedData = Item.PersistedData;

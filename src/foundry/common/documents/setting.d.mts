@@ -211,11 +211,15 @@ declare namespace BaseSetting {
   export import Hierarchy = Setting.Hierarchy;
   export import Metadata = Setting.Metadata;
   export import Parent = Setting.Parent;
+  export import Descendants = Setting.Descendants;
+  export import DescendantClasses = Setting.DescendantClasses;
   export import Pack = Setting.Pack;
   export import Embedded = Setting.Embedded;
   export import EmbeddedName = Setting.EmbeddedName;
   export import EmbeddedCollectionName = Setting.EmbeddedCollectionName;
   export import ParentCollectionName = Setting.ParentCollectionName;
+  export import CollectionClass = Setting.CollectionClass;
+  export import Collection = Setting.Collection;
   export import Stored = Setting.Stored;
   export import Source = Setting.Source;
   export import PersistedData = Setting.PersistedData;

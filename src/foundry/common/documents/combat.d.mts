@@ -88,7 +88,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   static get hierarchy(): Combat.Hierarchy;
 
-  override system: Document.SystemFor<"Combat", SubType>;
+  override system: Combat.SystemOfType<SubType>;
 
   override parent: BaseCombat.Parent;
 
@@ -253,17 +253,25 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 export default BaseCombat;
 
 declare namespace BaseCombat {
-  export import SubType = Combat.SubType;
   export import Name = Combat.Name;
   export import ConstructorArgs = Combat.ConstructorArgs;
   export import Hierarchy = Combat.Hierarchy;
   export import Metadata = Combat.Metadata;
+  export import SubType = Combat.SubType;
+  export import ConfiguredSubTypes = Combat.ConfiguredSubTypes;
+  export import Known = Combat.Known;
+  export import OfType = Combat.OfType;
+  export import SystemOfType = Combat.SystemOfType;
   export import Parent = Combat.Parent;
+  export import Descendants = Combat.Descendants;
+  export import DescendantClasses = Combat.DescendantClasses;
   export import Pack = Combat.Pack;
   export import Embedded = Combat.Embedded;
   export import EmbeddedName = Combat.EmbeddedName;
   export import EmbeddedCollectionName = Combat.EmbeddedCollectionName;
   export import ParentCollectionName = Combat.ParentCollectionName;
+  export import CollectionClass = Combat.CollectionClass;
+  export import Collection = Combat.Collection;
   export import Stored = Combat.Stored;
   export import Source = Combat.Source;
   export import PersistedData = Combat.PersistedData;

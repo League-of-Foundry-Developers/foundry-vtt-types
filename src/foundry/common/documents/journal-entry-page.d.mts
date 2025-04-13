@@ -67,7 +67,7 @@ declare abstract class BaseJournalEntryPage<
 
   static get hierarchy(): JournalEntryPage.Hierarchy;
 
-  override system: Document.SystemFor<"JournalEntryPage", SubType>;
+  override system: JournalEntryPage.SystemOfType<SubType>;
 
   override parent: BaseJournalEntryPage.Parent;
 
@@ -246,9 +246,25 @@ declare abstract class BaseJournalEntryPage<
 export default BaseJournalEntryPage;
 
 declare namespace BaseJournalEntryPage {
+  export import Name = JournalEntryPage.Name;
+  export import ConstructorArgs = JournalEntryPage.ConstructorArgs;
+  export import Hierarchy = JournalEntryPage.Hierarchy;
   export import Metadata = JournalEntryPage.Metadata;
   export import SubType = JournalEntryPage.SubType;
+  export import ConfiguredSubTypes = JournalEntryPage.ConfiguredSubTypes;
+  export import Known = JournalEntryPage.Known;
+  export import OfType = JournalEntryPage.OfType;
+  export import SystemOfType = JournalEntryPage.SystemOfType;
   export import Parent = JournalEntryPage.Parent;
+  export import Descendants = JournalEntryPage.Descendants;
+  export import DescendantClasses = JournalEntryPage.DescendantClasses;
+  export import Pack = JournalEntryPage.Pack;
+  export import Embedded = JournalEntryPage.Embedded;
+  export import EmbeddedName = JournalEntryPage.EmbeddedName;
+  export import EmbeddedCollectionName = JournalEntryPage.EmbeddedCollectionName;
+  export import ParentCollectionName = JournalEntryPage.ParentCollectionName;
+  export import CollectionClass = JournalEntryPage.CollectionClass;
+  export import Collection = JournalEntryPage.Collection;
   export import Stored = JournalEntryPage.Stored;
   export import Source = JournalEntryPage.Source;
   export import PersistedData = JournalEntryPage.PersistedData;
@@ -257,6 +273,7 @@ declare namespace BaseJournalEntryPage {
   export import UpdateData = JournalEntryPage.UpdateData;
   export import Schema = JournalEntryPage.Schema;
   export import DatabaseOperation = JournalEntryPage.Database;
+  export import Flags = JournalEntryPage.Flags;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.

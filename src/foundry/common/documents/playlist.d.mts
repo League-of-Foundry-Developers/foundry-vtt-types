@@ -245,11 +245,15 @@ declare namespace BasePlaylist {
   export import Hierarchy = Playlist.Hierarchy;
   export import Metadata = Playlist.Metadata;
   export import Parent = Playlist.Parent;
+  export import Descendants = Playlist.Descendants;
+  export import DescendantClasses = Playlist.DescendantClasses;
   export import Pack = Playlist.Pack;
   export import Embedded = Playlist.Embedded;
   export import EmbeddedName = Playlist.EmbeddedName;
   export import EmbeddedCollectionName = Playlist.EmbeddedCollectionName;
   export import ParentCollectionName = Playlist.ParentCollectionName;
+  export import CollectionClass = Playlist.CollectionClass;
+  export import Collection = Playlist.Collection;
   export import Stored = Playlist.Stored;
   export import Source = Playlist.Source;
   export import PersistedData = Playlist.PersistedData;

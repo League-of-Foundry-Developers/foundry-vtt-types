@@ -81,7 +81,7 @@ declare abstract class BaseCombatant<
 
   static get hierarchy(): Combatant.Hierarchy;
 
-  override system: Document.SystemFor<"Combatant", SubType>;
+  override system: Combatant.SystemOfType<SubType>;
 
   override parent: BaseCombatant.Parent;
 
@@ -255,17 +255,25 @@ declare abstract class BaseCombatant<
 export default BaseCombatant;
 
 declare namespace BaseCombatant {
-  export import SubType = Combatant.SubType;
   export import Name = Combatant.Name;
   export import ConstructorArgs = Combatant.ConstructorArgs;
   export import Hierarchy = Combatant.Hierarchy;
   export import Metadata = Combatant.Metadata;
+  export import SubType = Combatant.SubType;
+  export import ConfiguredSubTypes = Combatant.ConfiguredSubTypes;
+  export import Known = Combatant.Known;
+  export import OfType = Combatant.OfType;
+  export import SystemOfType = Combatant.SystemOfType;
   export import Parent = Combatant.Parent;
+  export import Descendants = Combatant.Descendants;
+  export import DescendantClasses = Combatant.DescendantClasses;
   export import Pack = Combatant.Pack;
   export import Embedded = Combatant.Embedded;
   export import EmbeddedName = Combatant.EmbeddedName;
   export import EmbeddedCollectionName = Combatant.EmbeddedCollectionName;
   export import ParentCollectionName = Combatant.ParentCollectionName;
+  export import CollectionClass = Combatant.CollectionClass;
+  export import Collection = Combatant.Collection;
   export import Stored = Combatant.Stored;
   export import Source = Combatant.Source;
   export import PersistedData = Combatant.PersistedData;

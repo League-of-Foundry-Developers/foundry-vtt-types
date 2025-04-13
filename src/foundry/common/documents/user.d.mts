@@ -323,11 +323,15 @@ declare namespace BaseUser {
   export import Hierarchy = User.Hierarchy;
   export import Metadata = User.Metadata;
   export import Parent = User.Parent;
+  export import Descendants = User.Descendants;
+  export import DescendantClasses = User.DescendantClasses;
   export import Pack = User.Pack;
   export import Embedded = User.Embedded;
   export import EmbeddedName = User.EmbeddedName;
   export import EmbeddedCollectionName = User.EmbeddedCollectionName;
   export import ParentCollectionName = User.ParentCollectionName;
+  export import CollectionClass = User.CollectionClass;
+  export import Collection = User.Collection;
   export import Stored = User.Stored;
   export import Source = User.Source;
   export import PersistedData = User.PersistedData;
