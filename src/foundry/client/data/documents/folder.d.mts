@@ -272,6 +272,7 @@ declare global {
        */
       _stats: fields.DocumentStatsField;
     }
+
     namespace Database {
       /** Options passed along in Get operations for Folders */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Folder.Parent> {}
@@ -415,6 +416,14 @@ declare global {
       /** Update existing entries in the Compendium pack, matching by name */
       updateByName?: boolean | undefined;
     }
+
+    // TODO: Handle compendium. This requires the index to be configured.
+    type Contents<SubType extends Folder.SubType> = Document.ImplementationFor<Extract<SubType, Document.Type>>[];
+
+    // TODO: Compendium Pack index
+    type DocumentClass<SubType extends Folder.SubType> = Document.ImplementationClassFor<
+      Extract<SubType, Document.Type>
+    >;
   }
 
   /**
@@ -456,16 +465,14 @@ declare global {
      * unless it's a Folder inside a Compendium pack, in which case it's the array
      * of objects inside the index of the pack that are contained in this Folder.
      */
-    // TODO: Handle compendium. This requires the index to be configured.
-    get contents(): Document.ImplementationFor<Extract<SubType, Document.Type>>[];
+    get contents(): Folder.Contents<SubType>;
 
     set contents(value);
 
     /**
      * The reference to the Document type which is contained within this Folder.
      */
-    // TODO: Compendium Pack index
-    get documentClass(): Document.ImplementationClassFor<Extract<SubType, Document.Type>>;
+    get documentClass(): Folder.DocumentClass<SubType>;
 
     /**
      * The reference to the WorldCollection instance which provides Documents to this Folder,
