@@ -66,18 +66,18 @@ declare global {
      * Allowed subtypes of ActorDelta. Due to the implementation of the ActorDelta document,
      * the SubType is the same as the Actor's SubType.
      *
-     * {@link Actor.SubType}
+     * {@link Actor.SubType | `Actor.SubType`}
      */
-    type SubType = Game.Model.TypeNames<"Actor">;
+    type SubType = Actor.SubType;
 
     /**
      * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
      * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
      * module subtypes `${string}.${string}`.
      *
-     * @see {@link SubType} for more information.
+     * @see {@link ActorDelta.SubType | `ActorDelta.SubType`} for more information.
      */
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
+    type ConfiguredSubTypes = Actor.SubType;
 
     /**
      * `Known` represents the types of ActorDelta that a user explicitly registered.
