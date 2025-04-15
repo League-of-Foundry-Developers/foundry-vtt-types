@@ -281,34 +281,34 @@ declare abstract class BaseActorDelta<
 export default BaseActorDelta;
 
 declare namespace BaseActorDelta {
-  export import Name = ActiveEffect.Name;
-  export import ConstructorArgs = ActiveEffect.ConstructorArgs;
-  export import Hierarchy = ActiveEffect.Hierarchy;
-  export import Metadata = ActiveEffect.Metadata;
-  export import SubType = ActiveEffect.SubType;
-  export import ConfiguredSubTypes = ActiveEffect.ConfiguredSubTypes;
-  export import Known = ActiveEffect.Known;
-  export import OfType = ActiveEffect.OfType;
-  export import SystemOfType = ActiveEffect.SystemOfType;
-  export import Parent = ActiveEffect.Parent;
-  export import Descendants = ActiveEffect.Descendants;
-  export import DescendantClasses = ActiveEffect.DescendantClasses;
-  export import Pack = ActiveEffect.Pack;
-  export import Embedded = ActiveEffect.Embedded;
-  export import EmbeddedName = ActiveEffect.EmbeddedName;
-  export import EmbeddedCollectionName = ActiveEffect.EmbeddedCollectionName;
-  export import ParentCollectionName = ActiveEffect.ParentCollectionName;
-  export import CollectionClass = ActiveEffect.CollectionClass;
-  export import Collection = ActiveEffect.Collection;
-  export import Stored = ActiveEffect.Stored;
-  export import Source = ActiveEffect.Source;
-  export import PersistedData = ActiveEffect.PersistedData;
-  export import CreateData = ActiveEffect.CreateData;
-  export import InitializedData = ActiveEffect.InitializedData;
-  export import UpdateData = ActiveEffect.UpdateData;
-  export import Schema = ActiveEffect.Schema;
-  export import DatabaseOperation = ActiveEffect.Database;
-  export import Flags = ActiveEffect.Flags;
+  export import Name = ActorDelta.Name;
+  export import ConstructorArgs = ActorDelta.ConstructorArgs;
+  export import Hierarchy = ActorDelta.Hierarchy;
+  export import Metadata = ActorDelta.Metadata;
+  export import SubType = ActorDelta.SubType;
+  export import ConfiguredSubTypes = ActorDelta.ConfiguredSubTypes;
+  export import Known = ActorDelta.Known;
+  export import OfType = ActorDelta.OfType;
+  export import SystemOfType = ActorDelta.SystemOfType;
+  export import Parent = ActorDelta.Parent;
+  export import Descendants = ActorDelta.Descendants;
+  export import DescendantClasses = ActorDelta.DescendantClasses;
+  export import Pack = ActorDelta.Pack;
+  export import Embedded = ActorDelta.Embedded;
+  export import EmbeddedName = ActorDelta.EmbeddedName;
+  export import EmbeddedCollectionName = ActorDelta.EmbeddedCollectionName;
+  export import ParentCollectionName = ActorDelta.ParentCollectionName;
+  export import CollectionClass = ActorDelta.CollectionClass;
+  export import Collection = ActorDelta.Collection;
+  export import Stored = ActorDelta.Stored;
+  export import Source = ActorDelta.Source;
+  export import PersistedData = ActorDelta.PersistedData;
+  export import CreateData = ActorDelta.CreateData;
+  export import InitializedData = ActorDelta.InitializedData;
+  export import UpdateData = ActorDelta.UpdateData;
+  export import Schema = ActorDelta.Schema;
+  export import DatabaseOperation = ActorDelta.Database;
+  export import Flags = ActorDelta.Flags;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
