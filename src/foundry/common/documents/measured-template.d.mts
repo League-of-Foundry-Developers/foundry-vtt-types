@@ -141,9 +141,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
     options?: MeasuredTemplateDocument.Database.GetOptions,
   ): MeasuredTemplateDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends MeasuredTemplateDocument.EmbeddedName>(
-    name: CollectionName,
-  ): MeasuredTemplateDocument.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -291,8 +289,6 @@ declare namespace BaseMeasuredTemplate {
   export import DescendantClasses = MeasuredTemplateDocument.DescendantClasses;
   export import Pack = MeasuredTemplateDocument.Pack;
   export import Embedded = MeasuredTemplateDocument.Embedded;
-  export import EmbeddedName = MeasuredTemplateDocument.EmbeddedName;
-  export import EmbeddedCollectionName = MeasuredTemplateDocument.EmbeddedCollectionName;
   export import ParentCollectionName = MeasuredTemplateDocument.ParentCollectionName;
   export import CollectionClass = MeasuredTemplateDocument.CollectionClass;
   export import Collection = MeasuredTemplateDocument.Collection;

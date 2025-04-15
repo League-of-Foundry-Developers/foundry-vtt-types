@@ -114,9 +114,7 @@ declare abstract class BaseCombatant<
 
   static override get(documentId: string, options?: Combatant.Database.GetOptions): Combatant.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Combatant.EmbeddedName>(
-    name: CollectionName,
-  ): Combatant.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -269,8 +267,6 @@ declare namespace BaseCombatant {
   export import DescendantClasses = Combatant.DescendantClasses;
   export import Pack = Combatant.Pack;
   export import Embedded = Combatant.Embedded;
-  export import EmbeddedName = Combatant.EmbeddedName;
-  export import EmbeddedCollectionName = Combatant.EmbeddedCollectionName;
   export import ParentCollectionName = Combatant.ParentCollectionName;
   export import CollectionClass = Combatant.CollectionClass;
   export import Collection = Combatant.Collection;

@@ -122,9 +122,7 @@ declare abstract class BaseChatMessage<
 
   static override get(documentId: string, options?: ChatMessage.Database.GetOptions): ChatMessage.Implementation | null;
 
-  static override getCollectionName<CollectionName extends ChatMessage.EmbeddedName>(
-    name: CollectionName,
-  ): ChatMessage.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -281,8 +279,6 @@ declare namespace BaseChatMessage {
   export import DescendantClasses = ChatMessage.DescendantClasses;
   export import Pack = ChatMessage.Pack;
   export import Embedded = ChatMessage.Embedded;
-  export import EmbeddedName = ChatMessage.EmbeddedName;
-  export import EmbeddedCollectionName = ChatMessage.EmbeddedCollectionName;
   export import ParentCollectionName = ChatMessage.ParentCollectionName;
   export import CollectionClass = ChatMessage.CollectionClass;
   export import Collection = ChatMessage.Collection;

@@ -129,21 +129,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationFor<EmbeddedName>;
-
-    /**
-     * An embedded document is a document contained in another.
-     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
-     *
-     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
-     */
-    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
-
-    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
-      ? Metadata["embedded"][CollectionName]
-      : CollectionName;
-
-    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+    type Embedded = never;
 
     /**
      * The name of the world or embedded collection this document can find itself in.

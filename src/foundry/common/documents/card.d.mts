@@ -130,9 +130,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   static override get(documentId: string, options?: Card.Database.GetOptions): Card.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Card.EmbeddedName>(
-    name: CollectionName,
-  ): Card.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -276,8 +274,6 @@ declare namespace BaseCard {
   export import DescendantClasses = Card.DescendantClasses;
   export import Pack = Card.Pack;
   export import Embedded = Card.Embedded;
-  export import EmbeddedName = Card.EmbeddedName;
-  export import EmbeddedCollectionName = Card.EmbeddedCollectionName;
   export import ParentCollectionName = Card.ParentCollectionName;
   export import CollectionClass = Card.CollectionClass;
   export import Collection = Card.Collection;

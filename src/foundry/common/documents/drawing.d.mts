@@ -137,9 +137,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     options?: DrawingDocument.Database.GetOptions,
   ): DrawingDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends DrawingDocument.EmbeddedName>(
-    name: CollectionName,
-  ): DrawingDocument.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -289,8 +287,6 @@ declare namespace BaseDrawing {
   export import DescendantClasses = DrawingDocument.DescendantClasses;
   export import Pack = DrawingDocument.Pack;
   export import Embedded = DrawingDocument.Embedded;
-  export import EmbeddedName = DrawingDocument.EmbeddedName;
-  export import EmbeddedCollectionName = DrawingDocument.EmbeddedCollectionName;
   export import ParentCollectionName = DrawingDocument.ParentCollectionName;
   export import CollectionClass = DrawingDocument.CollectionClass;
   export import Collection = DrawingDocument.Collection;

@@ -107,9 +107,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     options?: AmbientLightDocument.Database.GetOptions,
   ): AmbientLightDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends AmbientLightDocument.EmbeddedName>(
-    name: CollectionName,
-  ): AmbientLightDocument.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -259,8 +257,6 @@ declare namespace BaseAmbientLight {
   export import DescendantClasses = AmbientLightDocument.DescendantClasses;
   export import Pack = AmbientLightDocument.Pack;
   export import Embedded = AmbientLightDocument.Embedded;
-  export import EmbeddedName = AmbientLightDocument.EmbeddedName;
-  export import EmbeddedCollectionName = AmbientLightDocument.EmbeddedCollectionName;
   export import ParentCollectionName = AmbientLightDocument.ParentCollectionName;
   export import CollectionClass = AmbientLightDocument.CollectionClass;
   export import Collection = AmbientLightDocument.Collection;

@@ -139,9 +139,7 @@ declare abstract class BaseActiveEffect<
     options?: ActiveEffect.Database.GetOptions,
   ): ActiveEffect.Implementation | null;
 
-  static override getCollectionName<CollectionName extends ActiveEffect.EmbeddedName>(
-    name: CollectionName,
-  ): ActiveEffect.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -296,8 +294,6 @@ declare namespace BaseActiveEffect {
   export import DescendantClasses = ActiveEffect.DescendantClasses;
   export import Pack = ActiveEffect.Pack;
   export import Embedded = ActiveEffect.Embedded;
-  export import EmbeddedName = ActiveEffect.EmbeddedName;
-  export import EmbeddedCollectionName = ActiveEffect.EmbeddedCollectionName;
   export import ParentCollectionName = ActiveEffect.ParentCollectionName;
   export import CollectionClass = ActiveEffect.CollectionClass;
   export import Collection = ActiveEffect.Collection;

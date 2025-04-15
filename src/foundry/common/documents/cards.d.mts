@@ -109,9 +109,40 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   static override get(documentId: string, options?: Cards.Database.GetOptions): Cards.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Cards.EmbeddedName>(
+  static override getCollectionName<CollectionName extends Cards.Embedded.Name>(
     name: CollectionName,
-  ): Cards.CollectionNameOf<CollectionName> | null;
+  ): Cards.Embedded.CollectionNameOf<CollectionName> | null;
+
+  override getEmbeddedCollection<EmbeddedName extends Cards.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): Cards.Embedded.CollectionFor<EmbeddedName>;
+
+  override getEmbeddedDocument<EmbeddedName extends Cards.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): Cards.Embedded.DocumentFor<EmbeddedName> | undefined;
+
+  override createEmbeddedDocuments<EmbeddedName extends Cards.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override updateEmbeddedDocuments<EmbeddedName extends Cards.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends Cards.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -255,8 +286,6 @@ declare namespace BaseCards {
   export import DescendantClasses = Cards.DescendantClasses;
   export import Pack = Cards.Pack;
   export import Embedded = Cards.Embedded;
-  export import EmbeddedName = Cards.EmbeddedName;
-  export import EmbeddedCollectionName = Cards.EmbeddedCollectionName;
   export import ParentCollectionName = Cards.ParentCollectionName;
   export import CollectionClass = Cards.CollectionClass;
   export import Collection = Cards.Collection;

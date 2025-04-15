@@ -110,9 +110,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     options?: PlaylistSound.Database.GetOptions,
   ): PlaylistSound.Implementation | null;
 
-  static override getCollectionName<CollectionName extends PlaylistSound.EmbeddedName>(
-    name: CollectionName,
-  ): PlaylistSound.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -262,8 +260,6 @@ declare namespace BasePlaylistSound {
   export import DescendantClasses = PlaylistSound.DescendantClasses;
   export import Pack = PlaylistSound.Pack;
   export import Embedded = PlaylistSound.Embedded;
-  export import EmbeddedName = PlaylistSound.EmbeddedName;
-  export import EmbeddedCollectionName = PlaylistSound.EmbeddedCollectionName;
   export import ParentCollectionName = PlaylistSound.ParentCollectionName;
   export import CollectionClass = PlaylistSound.CollectionClass;
   export import Collection = PlaylistSound.Collection;

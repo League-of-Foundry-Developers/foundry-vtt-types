@@ -138,9 +138,40 @@ declare abstract class BaseActorDelta<
 
   static override get(documentId: string, options?: ActorDelta.Database.GetOptions): ActorDelta.Implementation | null;
 
-  static override getCollectionName<CollectionName extends ActorDelta.EmbeddedName>(
+  static override getCollectionName<CollectionName extends ActorDelta.Embedded.Name>(
     name: CollectionName,
-  ): ActorDelta.CollectionNameOf<CollectionName> | null;
+  ): ActorDelta.Embedded.CollectionNameOf<CollectionName> | null;
+
+  override getEmbeddedCollection<EmbeddedName extends ActorDelta.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): ActorDelta.Embedded.CollectionFor<EmbeddedName>;
+
+  override getEmbeddedDocument<EmbeddedName extends ActorDelta.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): ActorDelta.Embedded.DocumentFor<EmbeddedName> | undefined;
+
+  override createEmbeddedDocuments<EmbeddedName extends ActorDelta.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override updateEmbeddedDocuments<EmbeddedName extends ActorDelta.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends ActorDelta.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -295,8 +326,6 @@ declare namespace BaseActorDelta {
   export import DescendantClasses = ActorDelta.DescendantClasses;
   export import Pack = ActorDelta.Pack;
   export import Embedded = ActorDelta.Embedded;
-  export import EmbeddedName = ActorDelta.EmbeddedName;
-  export import EmbeddedCollectionName = ActorDelta.EmbeddedCollectionName;
   export import ParentCollectionName = ActorDelta.ParentCollectionName;
   export import CollectionClass = ActorDelta.CollectionClass;
   export import Collection = ActorDelta.Collection;

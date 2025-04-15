@@ -108,9 +108,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     options?: AmbientSoundDocument.Database.GetOptions,
   ): AmbientSoundDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends AmbientSoundDocument.EmbeddedName>(
-    name: CollectionName,
-  ): AmbientSoundDocument.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -260,8 +258,6 @@ declare namespace BaseAmbientSound {
   export import DescendantClasses = AmbientSoundDocument.DescendantClasses;
   export import Pack = AmbientSoundDocument.Pack;
   export import Embedded = AmbientSoundDocument.Embedded;
-  export import EmbeddedName = AmbientSoundDocument.EmbeddedName;
-  export import EmbeddedCollectionName = AmbientSoundDocument.EmbeddedCollectionName;
   export import ParentCollectionName = AmbientSoundDocument.ParentCollectionName;
   export import CollectionClass = AmbientSoundDocument.CollectionClass;
   export import Collection = AmbientSoundDocument.Collection;

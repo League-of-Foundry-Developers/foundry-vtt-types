@@ -106,9 +106,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static override get(documentId: string, options?: Adventure.Database.GetOptions): Adventure.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Adventure.EmbeddedName>(
-    name: CollectionName,
-  ): Adventure.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -254,8 +252,6 @@ declare namespace BaseAdventure {
   export import DescendantClasses = Adventure.DescendantClasses;
   export import Pack = Adventure.Pack;
   export import Embedded = Adventure.Embedded;
-  export import EmbeddedName = Adventure.EmbeddedName;
-  export import EmbeddedCollectionName = Adventure.EmbeddedCollectionName;
   export import ParentCollectionName = Adventure.ParentCollectionName;
   export import CollectionClass = Adventure.CollectionClass;
   export import Collection = Adventure.Collection;

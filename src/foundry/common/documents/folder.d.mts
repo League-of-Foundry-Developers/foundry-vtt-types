@@ -108,9 +108,7 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 
   static override get(documentId: string, options?: Folder.Database.GetOptions): Folder.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Folder.EmbeddedName>(
-    name: CollectionName,
-  ): Folder.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -248,8 +246,6 @@ declare namespace BaseFolder {
   export import Parent = Folder.Parent;
   export import Pack = Folder.Pack;
   export import Embedded = Folder.Embedded;
-  export import EmbeddedName = Folder.EmbeddedName;
-  export import EmbeddedCollectionName = Folder.EmbeddedCollectionName;
   export import ParentCollectionName = Folder.ParentCollectionName;
   export import Stored = Folder.Stored;
   export import Source = Folder.Source;

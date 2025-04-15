@@ -103,9 +103,7 @@ declare abstract class BaseJournalEntryPage<
     options?: JournalEntryPage.Database.GetOptions,
   ): JournalEntryPage.Implementation | null;
 
-  static override getCollectionName<CollectionName extends JournalEntryPage.EmbeddedName>(
-    name: CollectionName,
-  ): JournalEntryPage.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -260,8 +258,6 @@ declare namespace BaseJournalEntryPage {
   export import DescendantClasses = JournalEntryPage.DescendantClasses;
   export import Pack = JournalEntryPage.Pack;
   export import Embedded = JournalEntryPage.Embedded;
-  export import EmbeddedName = JournalEntryPage.EmbeddedName;
-  export import EmbeddedCollectionName = JournalEntryPage.EmbeddedCollectionName;
   export import ParentCollectionName = JournalEntryPage.ParentCollectionName;
   export import CollectionClass = JournalEntryPage.CollectionClass;
   export import Collection = JournalEntryPage.Collection;

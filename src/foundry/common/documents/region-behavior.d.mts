@@ -131,9 +131,7 @@ declare abstract class BaseRegionBehavior<
     options?: RegionBehavior.Database.GetOptions,
   ): RegionBehavior.Implementation | null;
 
-  static override getCollectionName<CollectionName extends RegionBehavior.EmbeddedName>(
-    name: CollectionName,
-  ): RegionBehavior.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -288,8 +286,6 @@ declare namespace BaseRegionBehavior {
   export import DescendantClasses = RegionBehavior.DescendantClasses;
   export import Pack = RegionBehavior.Pack;
   export import Embedded = RegionBehavior.Embedded;
-  export import EmbeddedName = RegionBehavior.EmbeddedName;
-  export import EmbeddedCollectionName = RegionBehavior.EmbeddedCollectionName;
   export import ParentCollectionName = RegionBehavior.ParentCollectionName;
   export import CollectionClass = RegionBehavior.CollectionClass;
   export import Collection = RegionBehavior.Collection;

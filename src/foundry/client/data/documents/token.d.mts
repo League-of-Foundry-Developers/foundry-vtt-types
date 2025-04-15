@@ -997,6 +997,7 @@ declare global {
       defaults?: boolean,
     ): Promise<ReturnType<this["update"]>>;
 
+    // TODO(LukeAbby): Special handling because `"Items"` and `"ActiveEffect"` return `this.actor.items` and `this.actor.effects` respectively.
     override getEmbeddedCollection<EmbeddedName extends TokenDocument.Embedded.CollectionName>(
       embeddedName: EmbeddedName,
     ): TokenDocument.Embedded.CollectionFor<EmbeddedName>;

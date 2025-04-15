@@ -118,9 +118,7 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
 
   static override get(documentId: string, options?: Macro.Database.GetOptions): Macro.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Macro.EmbeddedName>(
-    name: CollectionName,
-  ): Macro.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -262,8 +260,6 @@ declare namespace BaseMacro {
   export import DescendantClasses = Macro.DescendantClasses;
   export import Pack = Macro.Pack;
   export import Embedded = Macro.Embedded;
-  export import EmbeddedName = Macro.EmbeddedName;
-  export import EmbeddedCollectionName = Macro.EmbeddedCollectionName;
   export import ParentCollectionName = Macro.ParentCollectionName;
   export import CollectionClass = Macro.CollectionClass;
   export import Collection = Macro.Collection;
