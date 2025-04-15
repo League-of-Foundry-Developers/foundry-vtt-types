@@ -219,6 +219,7 @@ declare global {
        */
       _stats: fields.DocumentStatsField;
     }
+
     namespace Database {
       /** Options passed along in Get operations for Settings */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Setting.Parent> {}
@@ -317,6 +318,36 @@ declare global {
        * and {@link Setting._onDeleteDescendantDocuments | `Setting#_onDeleteDescendantDocuments`}
        */
       interface DeleteOptions extends Document.Database.DeleteOptions<Setting.Database.Delete> {}
+    }
+
+    /**
+     * @deprecated `Settings` does not have any flags.
+     *
+     * This permenantly deprecated type helps to alleviate confusion as a user might expect it to exist.
+     */
+    type Flags = never;
+
+    namespace Flags {
+      /**
+       * @deprecated `Settings` does not have any flags.
+       *
+       * This permenantly deprecated type helps to alleviate confusion as a user might expect it to exist.
+       */
+      type Scope = never;
+
+      /**
+       * @deprecated `Settings` does not have any flags.
+       *
+       * This permenantly deprecated type helps to alleviate confusion as a user might expect it to exist.
+       */
+      type Key<_Scope> = never;
+
+      /**
+       * @deprecated `Settings` does not have any flags.
+       *
+       * This permenantly deprecated type helps to alleviate confusion as a user might expect it to exist.
+       */
+      type Get<_Scope, _Key> = never;
     }
 
     /**

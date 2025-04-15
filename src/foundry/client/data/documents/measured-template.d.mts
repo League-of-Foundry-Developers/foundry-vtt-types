@@ -413,11 +413,25 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<MeasuredTemplateDocument.Database.Delete> {}
     }
 
+    /**
+     * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
+     */
     interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
+      /**
+       * The valid scopes for the flags on this document e.g. `"core"` or `"dnd5e"`.
+       */
       type Scope = Document.FlagKeyOf<Flags>;
+
+      /**
+       * The valid keys for a certain scope for example if the scope is "core" then a valid key may be `"sheetLock"` or `"viewMode"`.
+       */
       type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+
+      /**
+       * Gets the type of a particular flag given a `Scope` and a `Key`.
+       */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
