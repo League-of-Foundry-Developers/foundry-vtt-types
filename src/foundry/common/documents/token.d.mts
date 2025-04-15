@@ -172,9 +172,14 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     name: CollectionName,
   ): TokenDocument.Embedded.CollectionNameOf<CollectionName> | null;
 
-  override getEmbeddedCollection<EmbeddedName extends TokenDocument.Embedded.CollectionName>(
-    embeddedName: EmbeddedName,
-  ): TokenDocument.Embedded.CollectionFor<EmbeddedName>;
+  /**
+   * @remarks Calling `BaseToken#getEmbeddedCollection` would result in entirely typical results at
+   * runtime, namely returning a `EmbeddedCollection` corresponding to a field in `BaseToken`'s
+   * schema. However {@link TokenDocument.getEmbeddedCollection | `TokenDocument#getEmbeddedCollection`}
+   * is overridden to add new cases and since `BaseToken` is a superclass it had to be widened to
+   * accomodate that.
+   */
+  override getEmbeddedCollection(embeddedName: TokenDocument.Embedded.CollectionName): Collection.Any;
 
   override getEmbeddedDocument<EmbeddedName extends TokenDocument.Embedded.CollectionName>(
     embeddedName: EmbeddedName,

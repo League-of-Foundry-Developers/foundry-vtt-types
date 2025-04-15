@@ -848,6 +848,16 @@ declare global {
        */
       active: boolean;
     }
+
+    type GetEmbeddedCollectionName = Embedded.CollectionName | "Actor" | "Item" | "ActiveEffect";
+
+    // Note(LukeAbby): Simplified for now to prevent circularities. The correct implementation would
+    // be this:
+    // | (Name extends "Actor" ? globalThis.Collection<Actor.Implementation> : never)
+    // | (Name extends "Item" ? globalThis.Collection<Item.Implementation> : never)
+    // | (Name extends "ActiveEffect" ? globalThis.Collection<ActiveEffect.Implementation> : never)
+    // | (Name extends Embedded.CollectionName ? Embedded.CollectionFor<Name> : never);
+    type GetEmbeddedCollectionResult<_Name extends GetEmbeddedCollectionName> = Collection.Any;
   }
 
   /**
@@ -997,10 +1007,16 @@ declare global {
       defaults?: boolean,
     ): Promise<ReturnType<this["update"]>>;
 
-    // TODO(LukeAbby): Special handling because `"Items"` and `"ActiveEffect"` return `this.actor.items` and `this.actor.effects` respectively.
-    override getEmbeddedCollection<EmbeddedName extends TokenDocument.Embedded.CollectionName>(
+    /**
+     * @remarks Foundry specifically overrides this method such that unlinked `TokenDocument` instances
+     * handles 3 extra cases:
+     * - Passing `"Actor"` returns `this.actors`.
+     * - Passing `"Item"` returns `this.actor.items`.
+     * - Passing `"ActiveEffect"` returns `this.actor.effects`.
+     */
+    override getEmbeddedCollection<EmbeddedName extends TokenDocument.GetEmbeddedCollectionName>(
       embeddedName: EmbeddedName,
-    ): TokenDocument.Embedded.CollectionFor<EmbeddedName>;
+    ): TokenDocument.GetEmbeddedCollectionResult<EmbeddedName>;
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
