@@ -155,18 +155,13 @@ declare global {
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
-     *
-     * Both `Source` and `PersistedData` are equivalent.
      */
-    interface Source extends PersistedData {}
+    interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * The data put in {@link TableResult._source | `TableResult#_source`}. This data is what was
-     * persisted to the database and therefore it must be valid JSON.
-     *
-     * Both `Source` and `PersistedData` are equivalent.
+     * @deprecated {@link TableResult.Source | `TableResult.Source`}
      */
-    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+    type PersistedData = Source;
 
     /**
      * The data necessary to create a document. Used in places like {@link TableResult.create | `TableResult.create`}

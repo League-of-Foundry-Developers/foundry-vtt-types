@@ -715,7 +715,7 @@ declare global {
         message: ChatMessage,
         html: JQuery,
         messageData: {
-          message: ChatMessage.PersistedData;
+          message: ChatMessage.Source;
           user: Game["user"];
           author: User.Implementation | null;
           alias: string;

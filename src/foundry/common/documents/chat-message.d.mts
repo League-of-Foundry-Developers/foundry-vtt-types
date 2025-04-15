@@ -284,7 +284,7 @@ declare namespace BaseChatMessage {
   export import Collection = ChatMessage.Collection;
   export import Stored = ChatMessage.Stored;
   export import Source = ChatMessage.Source;
-  export import PersistedData = ChatMessage.PersistedData;
+  export import PersistedData = ChatMessage.Source;
   export import CreateData = ChatMessage.CreateData;
   export import InitializedData = ChatMessage.InitializedData;
   export import UpdateData = ChatMessage.UpdateData;

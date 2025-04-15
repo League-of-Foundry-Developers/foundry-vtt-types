@@ -228,7 +228,7 @@ declare namespace TokenRingConfig {
    * ```
    * after {@link TokenRingConfig.initialize | `TokenRingConfig#initialize`} has been called, which happens between the `setup` and `ready` hooks
    */
-  interface SourceCoreRingData extends foundry.data.fields.SchemaField.PersistedData<DynamicRingData.Schema> {}
+  interface SourceCoreRingData extends foundry.data.fields.SchemaField.SourceData<DynamicRingData.Schema> {}
 
   interface SourceCoreRings extends Record<CoreRingIDs, SourceCoreRingData> {}
 

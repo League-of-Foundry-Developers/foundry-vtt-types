@@ -173,18 +173,13 @@ declare global {
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
-     *
-     * Both `Source` and `PersistedData` are equivalent.
      */
-    interface Source extends PersistedData {}
+    interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * The data put in {@link Module._source | `Module._source`}. This data is what was
-     * persisted to the database and therefore it must be valid JSON.
-     *
-     * Both `Source` and `PersistedData` are equivalent.
+     * @deprecated {@link Module.Source | `Module.Source`}
      */
-    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+    type PersistedData = Source;
 
     /**
      * The data necessary to create a data model. Used in places like {@link Module.create | `Module.create`}
@@ -266,18 +261,13 @@ declare global {
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
-     *
-     * Both `Source` and `PersistedData` are equivalent.
      */
-    interface Source extends PersistedData {}
+    interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * The data put in {@link System._source | `System._source`}. This data is what was
-     * persisted to the database and therefore it must be valid JSON.
-     *
-     * Both `Source` and `PersistedData` are equivalent.
+     * @deprecated {@link System.Source | `System.Source`}
      */
-    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+    type PersistedData = Source;
 
     /**
      * The data necessary to create a data model. Used in places like {@link System.create | `System.create`}
@@ -421,18 +411,13 @@ declare global {
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
-     *
-     * Both `Source` and `PersistedData` are equivalent.
      */
-    interface Source extends PersistedData {}
+    interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * The data put in {@link World._source | `World._source`}. This data is what was
-     * persisted to the database and therefore it must be valid JSON.
-     *
-     * Both `Source` and `PersistedData` are equivalent.
+     * @deprecated {@link World.Source | `World.Source`}
      */
-    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+    type PersistedData = Source;
 
     /**
      * The data necessary to create a data model. Used in places like {@link World.create | `World.create`}

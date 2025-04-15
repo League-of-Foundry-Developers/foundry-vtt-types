@@ -19,7 +19,7 @@ const item = await Item.create({ name: "Some Item", type: "base" });
 if (item) {
   expectTypeOf(item.toObject(false).effects[0]!.changes).toEqualTypeOf<ActiveEffect.EffectChangeData[]>();
   expectTypeOf(item.toObject().effects).toEqualTypeOf<
-    foundry.data.fields.SchemaField.PersistedData<BaseActiveEffect["schema"]["fields"]>[]
+    foundry.data.fields.SchemaField.SourceData<BaseActiveEffect["schema"]["fields"]>[]
   >();
 }
 

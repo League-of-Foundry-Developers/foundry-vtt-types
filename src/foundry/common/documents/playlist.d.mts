@@ -285,7 +285,7 @@ declare namespace BasePlaylist {
   export import Collection = Playlist.Collection;
   export import Stored = Playlist.Stored;
   export import Source = Playlist.Source;
-  export import PersistedData = Playlist.PersistedData;
+  export import PersistedData = Playlist.Source;
   export import CreateData = Playlist.CreateData;
   export import InitializedData = Playlist.InitializedData;
   export import UpdateData = Playlist.UpdateData;

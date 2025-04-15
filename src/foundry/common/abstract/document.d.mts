@@ -270,7 +270,7 @@ declare abstract class Document<
 
   override toObject<Source extends boolean | undefined>(
     source?: Source,
-  ): Source extends false ? SchemaField.PersistedData<Schema> : Readonly<SchemaField.PersistedData<Schema>>;
+  ): Source extends false ? SchemaField.SourceData<Schema> : Readonly<SchemaField.SourceData<Schema>>;
 
   /**
    * Create multiple Documents using provided input data.
@@ -1930,7 +1930,7 @@ declare namespace Document {
   type ConfiguredClassForName<Name extends Type> = ImplementationClassFor<Name>;
 
   /**
-   * @deprecated {@link SchemaField.PersistedData | `SchemaField.PersistedData<Schema>`}
+   * @deprecated {@link SchemaField.SourceData | `SchemaField.SourceData<Schema>`}
    */
   type ToObjectFalseType<T extends Document.Internal.Instance.Any> = T extends {
     toObject: (source: false) => infer U;
