@@ -23,7 +23,7 @@ expectTypeOf(user.avatar).toEqualTypeOf<string | null | undefined>();
 
 expectTypeOf(user.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();
 
-expectTypeOf(user.color).toEqualTypeOf<string>();
+expectTypeOf(user.color).toEqualTypeOf<Color>();
 
 declare class ConfiguredUser extends User {}
 

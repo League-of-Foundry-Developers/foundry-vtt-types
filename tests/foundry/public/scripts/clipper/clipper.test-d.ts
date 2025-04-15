@@ -33,5 +33,5 @@ expectTypeOf(clipper.Execute(ClipperLib.ClipType.ctDifference, paths)).toEqualTy
 const clipperOffset = new ClipperLib.ClipperOffset(20, 0.25);
 
 expectTypeOf(
-  clipperOffset.AddPath(paths[0], ClipperLib.JoinType.jtMiter, ClipperLib.EndType.etClosedPolygon),
+  clipperOffset.AddPath(paths[0]!, ClipperLib.JoinType.jtMiter, ClipperLib.EndType.etClosedPolygon),
 ).toEqualTypeOf<void>();

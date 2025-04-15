@@ -16,11 +16,14 @@ if (myScene) {
   expectTypeOf(myScene).toEqualTypeOf<Scene>();
 }
 
-// @ts-expect-error - A BaseScene requires a name.
-new foundry.documents.BaseScene({});
+// Subclass `BaseScene` to avoid it being abstract.
+class BaseScene extends foundry.documents.BaseScene {}
 
-const scene = new foundry.documents.BaseScene({ name: "My third scene" });
-expectTypeOf(scene).toEqualTypeOf<foundry.documents.BaseScene>();
+// @ts-expect-error - A BaseScene requires a name.
+new BaseScene({});
+
+const scene = new BaseScene({ name: "My third scene" });
+expectTypeOf(scene).toEqualTypeOf<BaseScene>();
 
 expectTypeOf(scene.drawings).toEqualTypeOf<EmbeddedCollection<DrawingDocument, Scene>>();
 expectTypeOf(scene.lights).toEqualTypeOf<EmbeddedCollection<AmbientLightDocument, Scene>>();
@@ -37,11 +40,9 @@ new foundry.documents.BaseScene();
 // @ts-expect-error A SceneData requires a name.
 new foundry.documents.BaseScene({});
 
+expectTypeOf(new BaseScene({ name: "A long expected journey" })).toEqualTypeOf<BaseScene>();
 expectTypeOf(
-  new foundry.documents.BaseScene({ name: "A long expected journey" }),
-).toEqualTypeOf<foundry.documents.BaseScene>();
-expectTypeOf(
-  new foundry.documents.BaseScene({
+  new BaseScene({
     _id: undefined,
     name: "A long expected journey",
     active: undefined,
@@ -80,9 +81,9 @@ expectTypeOf(
     ownership: undefined,
     flags: undefined,
   }),
-).toEqualTypeOf<foundry.documents.BaseScene>();
+).toEqualTypeOf<BaseScene>();
 expectTypeOf(
-  new foundry.documents.BaseScene({
+  new BaseScene({
     _id: null,
     name: "A long expected journey",
     active: null,
@@ -121,4 +122,4 @@ expectTypeOf(
     ownership: null,
     flags: null,
   }),
-).toEqualTypeOf<foundry.documents.BaseScene>();
+).toEqualTypeOf<BaseScene>();
