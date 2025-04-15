@@ -53,9 +53,44 @@ declare global {
 
     // No need for Metadata namespace
 
+    /**
+     * The subtypes of `Folder` that Foundry provides. `Folder` does not have `system` and therefore
+     * there is no way for a user to configure custom subtypes. Nevertheless Foundry has a number of
+     * built in subtypes usable for `Folder`.
+     *
+     * Each of `Folder`'s subtypes correspond to something that it is intended to contain. This
+     * includes various documents as well as a {@link Compendium | `Compendium`}. The documents a
+     * `Folder` can contain specifically are an {@link Actor | `Actor`}, {@link Adventure | `Adventure`},
+     * {@link Item | `Item`}, {@link Scene | `Scene`}, {@link JournalEntry | `JournalEntry`},
+     * {@link Playlist | `Playlist`}, {@link RollTable | `RollTable`}, {@link Cards | `Cards`}, or a
+     * {@link Macro | `Macro`}
+     */
     type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
-    type Known = Folder.OfType<Folder.ConfiguredSubTypes>;
+
+    /**
+     * @deprecated `Folder` does not have `system` and therefore there is no way for a user to
+     * configure custom subtypes.
+     *
+     * This type exists only to be informative.
+     */
+    type ConfiguredSubTypes = never;
+
+    /**
+     * @deprecated `Folder` does not have `system` and therefore there is no way for a user to
+     * configure custom subtypes. This means `Known` as a concept does not apply to it.
+     *
+     * This type exists only to be informative.
+     */
+    type Known = never;
+
+    /**
+     * `OfType` returns an instance of `Folder` with the corresponding type. This works with both the
+     * builtin `Folder` class or a custom subclass if that is set up in
+     * {@link ConfiguredFolder | `fvtt-types/configuration/ConfiguredFolder`}.
+     *
+     * Note that `Folder` does not have a `system` property and therefore there is no way for a user
+     * to configure custom subtypes. See {@link Folder.SubType | `Folder.SubType`} for more information.
+     */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredFolder<Type>, Folder<Type>>;
 
     /**

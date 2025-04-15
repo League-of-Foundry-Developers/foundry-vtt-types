@@ -62,9 +62,37 @@ declare global {
       }
     }
 
+    /**
+     * The subtypes of `TableResult` that Foundry provides. `TableResult` does not have `system` and therefore
+     * there is no way for a user to configure custom subtypes. Nevertheless Foundry has a number of
+     * built in subtypes usable for `TableResult`.
+     */
     type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
-    type Known = TableResult.OfType<TableResult.ConfiguredSubTypes>;
+
+    /**
+     * @deprecated `TableResult` does not have `system` and therefore there is no way for a user to
+     * configure custom subtypes.
+     *
+     * This type exists only to be informative.
+     */
+    type ConfiguredSubTypes = never;
+
+    /**
+     * @deprecated `TableResult` does not have `system` and therefore there is no way for a user to
+     * configure custom subtypes. This means `Known` as a concept does not apply to it.
+     *
+     * This type exists only to be informative.
+     */
+    type Known = never;
+
+    /**
+     * `OfType` returns an instance of `TableResult` with the corresponding type. This works with both the
+     * builtin `TableResult` class or a custom subclass if that is set up in
+     * {@link ConfiguredTableResult | `fvtt-types/configuration/ConfiguredTableResult`}.
+     *
+     * Note that `TableResult` does not have a `system` property and therefore there is no way for a user
+     * to configure custom subtypes. See {@link TableResult.SubType | `TableResult.SubType`} for more information.
+     */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredTableResult<Type>, TableResult<Type>>;
 
     /**

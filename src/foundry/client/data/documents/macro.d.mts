@@ -65,9 +65,40 @@ declare global {
       }
     }
 
+    /**
+     * The subtypes of `Macro` that Foundry provides. `Macro` does not have `system` and therefore
+     * there is no way for a user to configure custom subtypes. Nevertheless Foundry has a number of
+     * built in subtypes usable for `Macro`.
+     *
+     * `Macro` has two subtypes `"chat"` and `"script"`. A `Macro` with type `"chat"` will create a
+     * `ChatMessage` whereas a `"script"` allows executing arbitrary JavaScript code
+     */
     type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
-    type Known = Macro.OfType<Macro.ConfiguredSubTypes>;
+
+    /**
+     * @deprecated `Macro` does not have `system` and therefore there is no way for a user to
+     * configure custom subtypes.
+     *
+     * This type exists only to be informative.
+     */
+    type ConfiguredSubTypes = never;
+
+    /**
+     * @deprecated `Macro` does not have `system` and therefore there is no way for a user to
+     * configure custom subtypes. This means `Known` as a concept does not apply to it.
+     *
+     * This type exists only to be informative.
+     */
+    type Known = never;
+
+    /**
+     * `OfType` returns an instance of `Macro` with the corresponding type. This works with both the
+     * builtin `Macro` class or a custom subclass if that is set up in
+     * {@link ConfiguredMacro | `fvtt-types/configuration/ConfiguredMacro`}.
+     *
+     * Note that `Macro` does not have a `system` property and therefore there is no way for a user
+     * to configure custom subtypes. See {@link Macro.SubType | `Macro.SubType`} for more information.
+     */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredMacro<Type>, Macro<Type>>;
 
     /**
