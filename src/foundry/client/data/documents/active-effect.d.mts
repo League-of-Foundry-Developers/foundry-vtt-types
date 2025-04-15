@@ -562,17 +562,21 @@ declare global {
        */
       value: string;
 
+      // TODO (@LukeAbby): `undefined` is not valid. We can't pull directly from the schema because this interface is used inside of field methods.
+
       /**
        * The modification mode with which the change is applied
        * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
+       * @privateRemarks `undefined` is not actually a possible value, included here due to fvtt-types handling of `initial` values
        */
-      mode: number | null;
+      mode: number | null | undefined;
 
       /**
        * The priority level with which this change is applied
        * @defaultValue `null`
+       * @privateRemarks `undefined` is not actually a possible value, included here due to fvtt-types handling of `initial` values
        */
-      priority: number | null;
+      priority: number | null | undefined;
     }
 
     /**

@@ -1,10 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { DatabaseOperationsFor } from "fvtt-types/utils";
 import Document = foundry.abstract.Document;
-import DatabaseCreateOperation = Document.DatabaseCreateOperation;
-import DatabaseDeleteOperation = Document.DatabaseDeleteOperation;
-import DatabaseUpdateOperation = Document.DatabaseUpdateOperation;
-import EffectChangeData = foundry.data.EffectChangeData;
 import BaseActiveEffect = foundry.documents.BaseActiveEffect;
 
 declare const configuredActiveEffect: Document.ToConfiguredInstance<typeof foundry.documents.BaseActiveEffect>;
@@ -13,35 +8,39 @@ expectTypeOf(configuredActiveEffect).toEqualTypeOf<ActiveEffect>();
 declare const helperConfigAE: Document.ToConfiguredInstance<typeof foundry.documents.BaseActiveEffect>;
 expectTypeOf(helperConfigAE).toEqualTypeOf<ActiveEffect>();
 
-const baseActiveEffect = new foundry.documents.BaseActiveEffect();
+declare const baseActiveEffect: foundry.documents.BaseActiveEffect;
 
-expectTypeOf(baseActiveEffect.toJSON().changes).toEqualTypeOf<EffectChangeData[]>();
-expectTypeOf(baseActiveEffect.toObject().changes).toEqualTypeOf<EffectChangeData[]>();
-expectTypeOf(baseActiveEffect.toObject(true).changes).toEqualTypeOf<EffectChangeData[]>();
-expectTypeOf(baseActiveEffect.toObject(false).changes).toEqualTypeOf<EffectChangeData[]>();
+expectTypeOf(baseActiveEffect.toJSON().changes).toEqualTypeOf<ActiveEffect.EffectChangeData[]>();
+expectTypeOf(baseActiveEffect.toObject().changes).toEqualTypeOf<ActiveEffect.EffectChangeData[]>();
+expectTypeOf(baseActiveEffect.toObject(true).changes).toEqualTypeOf<ActiveEffect.EffectChangeData[]>();
+expectTypeOf(baseActiveEffect.toObject(false).changes).toEqualTypeOf<ActiveEffect.EffectChangeData[]>();
 
 const item = await Item.create({ name: "Some Item", type: "base" });
 if (item) {
-  expectTypeOf(item.toObject(false).effects[0].changes).toEqualTypeOf<EffectChangeData[]>();
+  expectTypeOf(item.toObject(false).effects[0]!.changes).toEqualTypeOf<ActiveEffect.EffectChangeData[]>();
   expectTypeOf(item.toObject().effects).toEqualTypeOf<
     foundry.data.fields.SchemaField.PersistedData<BaseActiveEffect["schema"]["fields"]>[]
   >();
 }
 
-expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).toEqualTypeOf<Promise<Macro.Stored | undefined>>();
-expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: false })).toEqualTypeOf<
+expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).branded.toEqualTypeOf<
+  Promise<Macro.Stored | undefined>
+>();
+expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: false })).branded.toEqualTypeOf<
   Promise<Macro.Stored | undefined>
 >();
 expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true })).toEqualTypeOf<
   Promise<Macro | undefined>
 >();
 
-expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: true })).toEqualTypeOf<
-  Promise<Macro[] | undefined>
+const _foo = await foundry.documents.BaseMacro.createDocuments([]);
+
+expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: true })).toEqualTypeOf<Promise<Macro[]>>();
+expectTypeOf(foundry.documents.BaseMacro.createDocuments([])).branded.toEqualTypeOf<
+  Promise<Macro.Stored<Macro.SubType>[]>
 >();
-expectTypeOf(foundry.documents.BaseMacro.createDocuments([])).toEqualTypeOf<Promise<Macro.Stored[] | undefined>>();
-expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: false })).toEqualTypeOf<
-  Promise<Macro.Stored[] | undefined>
+expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: false })).branded.toEqualTypeOf<
+  Promise<Macro.Stored<Macro.SubType>[]>
 >();
 
 expectTypeOf(foundry.documents.BaseMacro.updateDocuments([])).toEqualTypeOf<Promise<Macro[]>>();
@@ -57,7 +56,7 @@ if (user) {
 // test creation of embedded documents
 declare const scene: Scene;
 expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: true })).toEqualTypeOf<
-  Promise<NoteDocument[] | undefined>
+  Promise<NoteDocument[] | undefined> // See #3271
 >();
 expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: false })).toEqualTypeOf<
   Promise<NoteDocument.Stored[] | undefined>
@@ -71,7 +70,7 @@ if (item) {
   expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<Item.Stored | undefined>>();
   expectTypeOf(Item.updateDocuments([item.toObject()])).toEqualTypeOf<Promise<Item[]>>();
   expectTypeOf(item.update(item.toObject())).toEqualTypeOf<Promise<Item.Stored | undefined>>();
-  expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item.Stored>();
+  expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item.Implementation>();
 }
 
 declare global {
@@ -98,29 +97,29 @@ expectTypeOf(dbo.delete).toEqualTypeOf<DatabaseDeleteOperation & { animate?: boo
 expectTypeOf(dbo.delete).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "delete">>();
 
 // test the options
-declare const pco: Document.PreCreateOptions<"ActiveEffect">;
+declare const pco: Document.Database.PreCreateOptions<"ActiveEffect">;
 expectTypeOf(pco).toEqualTypeOf<
   Omit<DatabaseOperationsFor<"ActiveEffect", "create">, "data" | "noHook" | "pack" | "parent">
 >();
-declare const oco: Document.OnCreateOptions<"ActiveEffect">;
+declare const oco: Document.Database.OnCreateOptions<"ActiveEffect">;
 expectTypeOf(oco).toEqualTypeOf<
   Omit<DatabaseOperationsFor<"ActiveEffect", "create">, "pack" | "parentUuid" | "syntheticActorUpdate">
 >();
 
-declare const puo: Document.PreUpdateOptions<"ActiveEffect">;
+declare const puo: Document.Database.PreUpdateOptions<"ActiveEffect">;
 expectTypeOf(puo).toEqualTypeOf<
   Omit<DatabaseOperationsFor<"ActiveEffect", "update">, "updates" | "restoreDelta" | "noHook" | "parent" | "pack">
 >();
-declare const ouo: Document.OnUpdateOptions<"ActiveEffect">;
+declare const ouo: Document.Database.OnUpdateOptions<"ActiveEffect">;
 expectTypeOf(ouo).toEqualTypeOf<
   Omit<DatabaseOperationsFor<"ActiveEffect", "update">, "pack" | "parentUuid" | "syntheticActorUpdate">
 >();
 
-declare const pdo: Document.PreDeleteOptions<"ActiveEffect">;
+declare const pdo: Document.Database.PreDeleteOptions<"ActiveEffect">;
 expectTypeOf(pdo).toEqualTypeOf<
   Omit<DatabaseOperationsFor<"ActiveEffect", "delete">, "ids" | "deleteAll" | "noHook" | "pack" | "parent">
 >();
-declare const odo: Document.OnDeleteOptions<"ActiveEffect">;
+declare const odo: Document.Database.OnDeleteOptions<"ActiveEffect">;
 expectTypeOf(odo).toEqualTypeOf<
   Omit<DatabaseOperationsFor<"ActiveEffect", "delete">, "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate">
 >();
