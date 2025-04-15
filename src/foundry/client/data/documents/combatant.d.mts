@@ -94,9 +94,8 @@ declare global {
 
     /**
      * `OfType` returns an instance of `Combatant` with the corresponding type. This works with both the
-     * builtin `Combatant` class and custom subclasses provided you set it up in
+     * builtin `Combatant` class or a custom subclass if that is set up in
      * {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`}.
-     * up.
      */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCombatant<Type>, Combatant<Type>>;
 

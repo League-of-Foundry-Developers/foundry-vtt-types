@@ -101,9 +101,8 @@ declare global {
 
     /**
      * `OfType` returns an instance of `Item` with the corresponding type. This works with both the
-     * builtin `Item` class and custom subclasses provided you set it up in
+     * builtin `Item` class or a custom subclass if that is set up in
      * {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`}.
-     * up.
      */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredItem<Type>, Item<Type>>;
 

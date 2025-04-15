@@ -95,9 +95,8 @@ declare global {
 
     /**
      * `OfType` returns an instance of `Cards` with the corresponding type. This works with both the
-     * builtin `Cards` class and custom subclasses provided you set it up in
+     * builtin `Cards` class or a custom subclass if that is set up in
      * {@link ConfiguredCards | `fvtt-types/configuration/ConfiguredCards`}.
-     * up.
      */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCards<Type>, Cards<Type>>;
 

@@ -105,9 +105,8 @@ declare global {
 
     /**
      * `OfType` returns an instance of `Actor` with the corresponding type. This works with both the
-     * builtin `Actor` class and custom subclasses provided you set it up in
+     * builtin `Actor` class or a custom subclass if that is set up in
      * {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`}.
-     * up.
      */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActor<Type>, Actor<Type>>;
 

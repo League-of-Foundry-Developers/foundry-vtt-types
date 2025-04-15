@@ -94,9 +94,8 @@ declare global {
 
     /**
      * `OfType` returns an instance of `ChatMessage` with the corresponding type. This works with both the
-     * builtin `ChatMessage` class and custom subclasses provided you set it up in
+     * builtin `ChatMessage` class or a custom subclass if that is set up in
      * {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`}.
-     * up.
      */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredChatMessage<Type>, ChatMessage<Type>>;
 

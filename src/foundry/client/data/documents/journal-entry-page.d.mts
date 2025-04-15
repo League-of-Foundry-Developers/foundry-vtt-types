@@ -86,7 +86,7 @@ declare global {
 
     /**
      * `OfType` returns an instance of `JournalEntryPage` with the corresponding type. This works with both the
-     * builtin `JournalEntryPage` class and custom subclasses provided you set it up in
+     * builtin `JournalEntryPage` class or a custom subclass if that is set up in
      * {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`}.
      * up.
      */

@@ -84,9 +84,8 @@ declare global {
 
     /**
      * `OfType` returns an instance of `ActiveEffect` with the corresponding type. This works with both the
-     * builtin `ActiveEffect` class and custom subclasses provided you set it up in
+     * builtin `ActiveEffect` class or a custom subclass if that is set up in
      * {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`}.
-     * up.
      */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActiveEffect<Type>, ActiveEffect<Type>>;
 

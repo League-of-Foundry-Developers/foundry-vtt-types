@@ -103,9 +103,8 @@ declare global {
 
     /**
      * `OfType` returns an instance of `RegionBehavior` with the corresponding type. This works with both the
-     * builtin `RegionBehavior` class and custom subclasses provided you set it up in
+     * builtin `RegionBehavior` class or a custom subclass if that is set up in
      * {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`}.
-     * up.
      */
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredRegionBehavior<Type>, RegionBehavior<Type>>;
 
