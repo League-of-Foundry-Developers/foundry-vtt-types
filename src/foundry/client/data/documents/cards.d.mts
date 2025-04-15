@@ -19,18 +19,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within Cards.
+     * The documents embedded within `Cards`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the Cards document instance configured through `CONFIG.Cards.documentClass` in Foundry and
+     * The implementation of the `Cards` document instance configured through `CONFIG.Cards.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCards | `fvtt-types/configuration/ConfiguredCards`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the Cards document configured through `CONFIG.Cards.documentClass` in Foundry and
+     * The implementation of the `Cards` document configured through `CONFIG.Cards.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -66,7 +66,7 @@ declare global {
     }
 
     /**
-     * Allowed subtypes of Cards. This is configured through various methods. Modern Foundry
+     * Allowed subtypes of `Cards`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
      * under {@link CONFIG.Cards.dataModels | `CONFIG.Cards.dataModels`}. This corresponds to
      * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
@@ -87,7 +87,7 @@ declare global {
     type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Cards">;
 
     /**
-     * `Known` represents the types of Cards that a user explicitly registered.
+     * `Known` represents the types of `Cards` that a user explicitly registered.
      *
      * @see {@link ConfiguredSubTypes} for more information.
      */
@@ -129,7 +129,7 @@ declare global {
     type DescendantClasses = Card.ImplementationClass;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Cards">;

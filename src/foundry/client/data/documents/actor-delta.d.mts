@@ -18,18 +18,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within ActorDelta.
+     * The documents embedded within `ActorDelta`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the ActorDelta document instance configured through `CONFIG.ActorDelta.documentClass` in Foundry and
+     * The implementation of the `ActorDelta` document instance configured through `CONFIG.ActorDelta.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the ActorDelta document configured through `CONFIG.ActorDelta.documentClass` in Foundry and
+     * The implementation of the `ActorDelta` document configured through `CONFIG.ActorDelta.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -63,8 +63,8 @@ declare global {
     }
 
     /**
-     * Allowed subtypes of ActorDelta. Due to the implementation of the ActorDelta document,
-     * the SubType is the same as the Actor's SubType.
+     * Allowed subtypes of `ActorDelta`. Due to the implementation of the `ActorDelta` document,
+     * the SubType is the same as the `Actor`'s SubType.
      *
      * {@link Actor.SubType | `Actor.SubType`}
      */
@@ -80,7 +80,7 @@ declare global {
     type ConfiguredSubTypes = Actor.SubType;
 
     /**
-     * `Known` represents the types of ActorDelta that a user explicitly registered.
+     * `Known` represents the types of `ActorDelta` that a user explicitly registered.
      *
      * @see {@link ConfiguredSubTypes} for more information.
      */
@@ -129,7 +129,7 @@ declare global {
     type DescendantParents = Stored | Item.Stored;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Scene">;

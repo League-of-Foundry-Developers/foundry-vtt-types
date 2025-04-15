@@ -17,18 +17,18 @@ declare global {
     type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 
     /**
-     * The documents embedded within Playlist.
+     * The documents embedded within `Playlist`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the Playlist document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
+     * The implementation of the `Playlist` document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylist | `fvtt-types/configuration/ConfiguredPlaylist`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<"Playlist">;
 
     /**
-     * The implementation of the Playlist document configured through `CONFIG.Playlist.documentClass` in Foundry and
+     * The implementation of the `Playlist` document configured through `CONFIG.Playlist.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<"Playlist">;
@@ -88,7 +88,7 @@ declare global {
     type DescendantClasses = PlaylistSound.ImplementationClass;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Playlist">;

@@ -20,18 +20,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within Actor.
+     * The documents embedded within `Actor`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the Actor document instance configured through `CONFIG.Actor.documentClass` in Foundry and
+     * The implementation of the `Actor` document instance configured through `CONFIG.Actor.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<"Actor">;
 
     /**
-     * The implementation of the Actor document configured through `CONFIG.Actor.documentClass` in Foundry and
+     * The implementation of the `Actor` document configured through `CONFIG.Actor.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<"Actor">;
@@ -76,7 +76,7 @@ declare global {
     }
 
     /**
-     * Allowed subtypes of Actor. This is configured through various methods. Modern Foundry
+     * Allowed subtypes of `Actor`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
      * under {@link CONFIG.Actor.dataModels | `CONFIG.Actor.dataModels`}. This corresponds to
      * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
@@ -97,7 +97,7 @@ declare global {
     type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Actor">;
 
     /**
-     * `Known` represents the types of Actor that a user explicitly registered.
+     * `Known` represents the types of `Actor` that a user explicitly registered.
      *
      * @see {@link ConfiguredSubTypes} for more information.
      */
@@ -145,7 +145,7 @@ declare global {
     type DescendantParents = Stored | Item.Stored;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Actor">;

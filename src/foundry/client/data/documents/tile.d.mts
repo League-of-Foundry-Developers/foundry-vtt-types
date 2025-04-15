@@ -16,18 +16,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within Tile.
+     * The documents embedded within `Tile`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the TileDocument document instance configured through `CONFIG.Tile.documentClass` in Foundry and
+     * The implementation of the `TileDocument` document instance configured through `CONFIG.Tile.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTileDocument | `fvtt-types/configuration/ConfiguredTileDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the TileDocument document configured through `CONFIG.Tile.documentClass` in Foundry and
+     * The implementation of the `TileDocument` document configured through `CONFIG.Tile.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -69,7 +69,7 @@ declare global {
     type DescendantClasses = never;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Scene">;

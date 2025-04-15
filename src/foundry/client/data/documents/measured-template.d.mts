@@ -17,18 +17,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within MeasuredTemplate.
+     * The documents embedded within `MeasuredTemplateDocument`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the MeasuredTemplateDocument document instance configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
+     * The implementation of the `MeasuredTemplateDocument` document instance configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredMeasuredTemplateDocument | `fvtt-types/configuration/ConfiguredMeasuredTemplateDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the MeasuredTemplateDocument document configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
+     * The implementation of the `MeasuredTemplateDocument` document configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -81,7 +81,7 @@ declare global {
     type DescendantClasses = never;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Scene">;

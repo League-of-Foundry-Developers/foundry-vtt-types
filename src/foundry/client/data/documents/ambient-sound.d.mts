@@ -16,18 +16,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within AmbientSound.
+     * The documents embedded within `AmbientSoundDocument`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the AmbientSoundDocument document instance configured through `CONFIG.AmbientSound.documentClass` in Foundry and
+     * The implementation of the `AmbientSoundDocument` document instance configured through `CONFIG.AmbientSound.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the AmbientSoundDocument document configured through `CONFIG.AmbientSound.documentClass` in Foundry and
+     * The implementation of the `AmbientSoundDocument` document configured through `CONFIG.AmbientSound.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -70,7 +70,7 @@ declare global {
     type DescendantClasses = never;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Scene">;

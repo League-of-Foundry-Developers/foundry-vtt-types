@@ -18,18 +18,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within Item.
+     * The documents embedded within `Item`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the Item document instance configured through `CONFIG.Item.documentClass` in Foundry and
+     * The implementation of the `Item` document instance configured through `CONFIG.Item.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the Item document configured through `CONFIG.Item.documentClass` in Foundry and
+     * The implementation of the `Item` document configured through `CONFIG.Item.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -72,7 +72,7 @@ declare global {
     }
 
     /**
-     * Allowed subtypes of Item. This is configured through various methods. Modern Foundry
+     * Allowed subtypes of `Item`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
      * under {@link CONFIG.Item.dataModels | `CONFIG.Item.dataModels`}. This corresponds to
      * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
@@ -93,7 +93,7 @@ declare global {
     type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Item">;
 
     /**
-     * `Known` represents the types of Item that a user explicitly registered.
+     * `Known` represents the types of `Item` that a user explicitly registered.
      *
      * @see {@link ConfiguredSubTypes} for more information.
      */
@@ -135,7 +135,7 @@ declare global {
     type DescendantClasses = ActiveEffect.ImplementationClass;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Actor" | "Item">;

@@ -17,18 +17,18 @@ declare global {
     type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 
     /**
-     * The documents embedded within Scene.
+     * The documents embedded within `Scene`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the Scene document instance configured through `CONFIG.Scene.documentClass` in Foundry and
+     * The implementation of the `Scene` document instance configured through `CONFIG.Scene.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredScene | `fvtt-types/configuration/ConfiguredScene`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<"Scene">;
 
     /**
-     * The implementation of the Scene document configured through `CONFIG.Scene.documentClass` in Foundry and
+     * The implementation of the `Scene` document configured through `CONFIG.Scene.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<"Scene">;
@@ -117,7 +117,7 @@ declare global {
     type DescendantParents = Stored | RegionDocument.Stored | TokenDocument.DescendantParents;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Scene">;

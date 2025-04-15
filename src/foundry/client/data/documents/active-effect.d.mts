@@ -19,18 +19,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within ActiveEffect.
+     * The documents embedded within `ActiveEffect`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the ActiveEffect document instance configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
+     * The implementation of the `ActiveEffect` document instance configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the ActiveEffect document configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
+     * The implementation of the `ActiveEffect` document configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -55,7 +55,7 @@ declare global {
     // No need for Metadata namespace
 
     /**
-     * Allowed subtypes of ActiveEffect. This is configured through various methods. Modern Foundry
+     * Allowed subtypes of `ActiveEffect`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
      * under {@link CONFIG.ActiveEffect.dataModels | `CONFIG.ActiveEffect.dataModels`}. This corresponds to
      * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
@@ -76,7 +76,7 @@ declare global {
     type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"ActiveEffect">;
 
     /**
-     * `Known` represents the types of ActiveEffect that a user explicitly registered.
+     * `Known` represents the types of `ActiveEffect` that a user explicitly registered.
      *
      * @see {@link ConfiguredSubTypes} for more information.
      */
@@ -118,7 +118,7 @@ declare global {
     type DescendantClasses = never;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Actor" | "Item">;

@@ -18,18 +18,18 @@ declare global {
     type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 
     /**
-     * The documents embedded within RegionBehavior.
+     * The documents embedded within `RegionBehavior`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the RegionBehavior document instance configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
+     * The implementation of the `RegionBehavior` document instance configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the RegionBehavior document configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
+     * The implementation of the `RegionBehavior` document configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -74,7 +74,7 @@ declare global {
     }
 
     /**
-     * Allowed subtypes of RegionBehavior. This is configured through various methods. Modern Foundry
+     * Allowed subtypes of `RegionBehavior`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
      * under {@link CONFIG.RegionBehavior.dataModels | `CONFIG.RegionBehavior.dataModels`}. This corresponds to
      * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
@@ -95,7 +95,7 @@ declare global {
     type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"RegionBehavior">;
 
     /**
-     * `Known` represents the types of RegionBehavior that a user explicitly registered.
+     * `Known` represents the types of `RegionBehavior` that a user explicitly registered.
      *
      * @see {@link ConfiguredSubTypes} for more information.
      */
@@ -137,7 +137,7 @@ declare global {
     type DescendantClasses = never;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Scene">;

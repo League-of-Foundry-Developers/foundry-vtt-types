@@ -17,18 +17,18 @@ declare global {
     type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 
     /**
-     * The documents embedded within JournalEntry.
+     * The documents embedded within `JournalEntry`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the JournalEntry document instance configured through `CONFIG.JournalEntry.documentClass` in Foundry and
+     * The implementation of the `JournalEntry` document instance configured through `CONFIG.JournalEntry.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredJournalEntry | `fvtt-types/configuration/ConfiguredJournalEntry`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the JournalEntry document configured through `CONFIG.JournalEntry.documentClass` in Foundry and
+     * The implementation of the `JournalEntry` document configured through `CONFIG.JournalEntry.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -81,7 +81,7 @@ declare global {
     type DescendantClasses = JournalEntryPage.ImplementationClass;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"JournalEntry">;

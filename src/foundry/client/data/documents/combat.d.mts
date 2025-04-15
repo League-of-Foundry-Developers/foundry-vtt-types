@@ -19,18 +19,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within Combat.
+     * The documents embedded within `Combat`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the Combat document instance configured through `CONFIG.Combat.documentClass` in Foundry and
+     * The implementation of the `Combat` document instance configured through `CONFIG.Combat.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the Combat document configured through `CONFIG.Combat.documentClass` in Foundry and
+     * The implementation of the `Combat` document configured through `CONFIG.Combat.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -71,7 +71,7 @@ declare global {
     }
 
     /**
-     * Allowed subtypes of Combat. This is configured through various methods. Modern Foundry
+     * Allowed subtypes of `Combat`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
      * under {@link CONFIG.Combat.dataModels | `CONFIG.Combat.dataModels`}. This corresponds to
      * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
@@ -92,7 +92,7 @@ declare global {
     type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Combat">;
 
     /**
-     * `Known` represents the types of Combat that a user explicitly registered.
+     * `Known` represents the types of `Combat` that a user explicitly registered.
      *
      * @see {@link ConfiguredSubTypes} for more information.
      */
@@ -134,7 +134,7 @@ declare global {
     type DescendantClasses = Combatant.ImplementationClass;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = never;
