@@ -910,7 +910,7 @@ declare global {
 
     protected override _preCreateDescendantDocuments<
       DescendantDocumentType extends Scene.DescendantClasses,
-      Parent extends Scene.Stored | RegionDocument.Stored | TokenDocument.Stored | Actor.Stored | Item.Stored,
+      Parent extends Scene.DescendantParents,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -923,7 +923,7 @@ declare global {
 
     protected override _preUpdateDescendantDocuments<
       DescendantDocumentType extends Scene.DescendantClasses,
-      Parent extends Scene.Stored | RegionDocument.Stored | TokenDocument.Stored | Actor.Stored | Item.Stored,
+      Parent extends Scene.DescendantParents,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -936,7 +936,7 @@ declare global {
 
     protected override _onUpdateDescendantDocuments<
       DescendantDocumentType extends Scene.DescendantClasses,
-      Parent extends Scene.Stored | RegionDocument.Stored | TokenDocument.Stored | Actor.Stored | Item.Stored,
+      Parent extends Scene.DescendantParents,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -950,7 +950,7 @@ declare global {
 
     protected _preDeleteDescendantDocuments<
       DescendantDocumentType extends Scene.DescendantClasses,
-      Parent extends Scene.Stored | RegionDocument.Stored | TokenDocument.Stored | Actor.Stored | Item.Stored,
+      Parent extends Scene.DescendantParents,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,
@@ -988,7 +988,7 @@ declare global {
 
     protected override _onCreateDescendantDocuments<
       DescendantDocumentType extends Scene.DescendantClasses,
-      Parent extends Scene.Stored | RegionDocument.Stored | TokenDocument.Stored | Actor.Stored | Item.Stored,
+      Parent extends Scene.DescendantParents,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -1002,7 +1002,7 @@ declare global {
 
     protected _onDeleteDescendantDocuments<
       DescendantDocumentType extends Scene.DescendantClasses,
-      Parent extends Scene.Stored | RegionDocument.Stored | TokenDocument.Stored | Actor.Stored | Item.Stored,
+      Parent extends Scene.DescendantParents,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,

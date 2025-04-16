@@ -646,41 +646,27 @@ declare global {
 
     // ClientDocument overrides
 
-    protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends Playlist.DescendantClasses,
-      Parent extends Playlist.Stored,
-      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      data: CreateData[],
-      options: Document.Database.CreateOptions<Operation>,
+    protected override _preCreateDescendantDocuments(
+      parent: Playlist.Stored,
+      collection: PlaylistSound.ParentCollectionName,
+      data: PlaylistSound.CreateData[],
+      options: PlaylistSound.Database.CreateOptions,
       userId: string,
     ): void;
 
-    protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends Playlist.DescendantClasses,
-      Parent extends Playlist.Stored,
-      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      changes: UpdateData[],
-      options: Document.Database.UpdateOptions<Operation>,
+    protected override _preUpdateDescendantDocuments(
+      parent: Playlist.Stored,
+      collection: PlaylistSound.ParentCollectionName,
+      changes: PlaylistSound.UpdateData[],
+      options: PlaylistSound.Database.UpdateOptions,
       userId: string,
     ): void;
 
-    protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends Playlist.DescendantClasses,
-      Parent extends Playlist.Stored,
-      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
+    protected _preDeleteDescendantDocuments(
+      parent: Playlist.Stored,
+      collection: PlaylistSound.ParentCollectionName,
       ids: string[],
-      options: Document.Database.DeleteOptions<Operation>,
+      options: PlaylistSound.Database.DeleteOptions,
       userId: string,
     ): void;
 

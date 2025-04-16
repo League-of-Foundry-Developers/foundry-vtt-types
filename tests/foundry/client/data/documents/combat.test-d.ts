@@ -45,8 +45,7 @@ class MyCombatDocumentSubclass extends Combat {
     DescendantDocumentType extends Combat.DescendantClasses,
     Parent extends Combat.Stored,
     CreateData extends Document.CreateDataFor<DescendantDocumentType>,
-    Temporary extends boolean | undefined,
-    Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, Temporary>,
+    Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
   >(
     parent: Parent,
     collection: DescendantDocumentType["metadata"]["collection"],
@@ -56,10 +55,13 @@ class MyCombatDocumentSubclass extends Combat {
   ): void {
     super._preCreateDescendantDocuments(parent, collection, data, options, userId);
 
+    expectTypeOf(options.keepId).toEqualTypeOf<boolean | undefined>();
+
     switch (collection) {
       case "combatants":
+        expectTypeOf(options.combatTurn).toEqualTypeOf<number | undefined>();
         for (const d of data) {
-          expectTypeOf(d.initiative).toEqualTypeOf<number>();
+          expectTypeOf(d.initiative).toEqualTypeOf<number | null | undefined>();
         }
         break;
       // @ts-expect-error "foobar" is not a valid collection
@@ -69,4 +71,4 @@ class MyCombatDocumentSubclass extends Combat {
   }
 }
 
-declare const _myWall: MyCombatDocumentSubclass;
+declare const _myCombat: MyCombatDocumentSubclass;
