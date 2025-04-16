@@ -125,13 +125,19 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = Combatant.Stored;
+    type DescendantName = "Combatant";
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendant = Combatant.Stored;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = Combatant.ImplementationClass;
+    type DescendantClass = Combatant.ImplementationClass;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.
@@ -328,14 +334,18 @@ declare global {
        */
       _stats: fields.DocumentStatsField;
     }
+
     namespace Database {
       /** Options passed along in Get operations for Combats */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Combat.Parent> {}
+
       /** Options passed along in Create operations for Combats */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<Combat.CreateData, Combat.Parent, Temporary> {}
+
       /** Options passed along in Delete operations for Combats */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Combat.Parent> {}
+
       /** Options passed along in Update operations for Combats */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Combat.UpdateData, Combat.Parent> {
         direction: -1 | 1;
@@ -683,7 +693,7 @@ declare global {
      */
 
     protected override _onCreateDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClasses,
+      DescendantDocumentType extends Combat.DescendantClass,
       Parent extends Combat.Stored,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
@@ -697,7 +707,7 @@ declare global {
     ): void;
 
     protected override _onUpdateDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClasses,
+      DescendantDocumentType extends Combat.DescendantClass,
       Parent extends Combat.Stored,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
@@ -711,7 +721,7 @@ declare global {
     ): void;
 
     protected _onDeleteDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClasses,
+      DescendantDocumentType extends Combat.DescendantClass,
       Parent extends Combat.Stored,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
@@ -805,7 +815,7 @@ declare global {
     // ClientDocument overrides
 
     protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClasses,
+      DescendantDocumentType extends Combat.DescendantClass,
       Parent extends Combat.Stored,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
@@ -818,7 +828,7 @@ declare global {
     ): void;
 
     protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClasses,
+      DescendantDocumentType extends Combat.DescendantClass,
       Parent extends Combat.Stored,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
@@ -831,7 +841,7 @@ declare global {
     ): void;
 
     protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClasses,
+      DescendantDocumentType extends Combat.DescendantClass,
       Parent extends Combat.Stored,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(

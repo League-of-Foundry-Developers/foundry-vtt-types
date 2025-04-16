@@ -63,13 +63,13 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = never;
+    type Descendant = never;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = never;
+    type DescendantClass = never;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.

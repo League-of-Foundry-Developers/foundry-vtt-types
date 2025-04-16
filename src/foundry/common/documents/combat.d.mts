@@ -294,8 +294,8 @@ declare namespace BaseCombat {
   export import OfType = Combat.OfType;
   export import SystemOfType = Combat.SystemOfType;
   export import Parent = Combat.Parent;
-  export import Descendants = Combat.Descendants;
-  export import DescendantClasses = Combat.DescendantClasses;
+  export import Descendant = Combat.Descendant;
+  export import DescendantClass = Combat.DescendantClass;
   export import Pack = Combat.Pack;
   export import Embedded = Combat.Embedded;
   export import ParentCollectionName = Combat.ParentCollectionName;

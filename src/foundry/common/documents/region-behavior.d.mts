@@ -282,8 +282,8 @@ declare namespace BaseRegionBehavior {
   export import OfType = RegionBehavior.OfType;
   export import SystemOfType = RegionBehavior.SystemOfType;
   export import Parent = RegionBehavior.Parent;
-  export import Descendants = RegionBehavior.Descendants;
-  export import DescendantClasses = RegionBehavior.DescendantClasses;
+  export import Descendant = RegionBehavior.Descendant;
+  export import DescendantClass = RegionBehavior.DescendantClass;
   export import Pack = RegionBehavior.Pack;
   export import Embedded = RegionBehavior.Embedded;
   export import ParentCollectionName = RegionBehavior.ParentCollectionName;

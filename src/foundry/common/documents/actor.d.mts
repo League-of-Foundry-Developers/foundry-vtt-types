@@ -303,9 +303,9 @@ declare namespace BaseActor {
   export import OfType = Actor.OfType;
   export import SystemOfType = Actor.SystemOfType;
   export import Parent = Actor.Parent;
-  export import Descendants = Actor.Descendants;
-  export import DescendantClasses = Actor.DescendantClasses;
-  export import DescendantParents = Actor.DescendantParents;
+  export import Descendant = Actor.Descendant;
+  export import DescendantClass = Actor.DescendantClass;
+  export import DescendantParent = Actor.DescendantParent;
   export import Pack = Actor.Pack;
   export import Embedded = Actor.Embedded;
   export import ParentCollectionName = Actor.ParentCollectionName;

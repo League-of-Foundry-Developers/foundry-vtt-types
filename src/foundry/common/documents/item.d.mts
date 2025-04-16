@@ -297,8 +297,8 @@ declare namespace BaseItem {
   export import OfType = Item.OfType;
   export import SystemOfType = Item.SystemOfType;
   export import Parent = Item.Parent;
-  export import Descendants = Item.Descendants;
-  export import DescendantClasses = Item.DescendantClasses;
+  export import Descendant = Item.Descendant;
+  export import DescendantClass = Item.DescendantClass;
   export import Pack = Item.Pack;
   export import Embedded = Item.Embedded;
   export import ParentCollectionName = Item.ParentCollectionName;

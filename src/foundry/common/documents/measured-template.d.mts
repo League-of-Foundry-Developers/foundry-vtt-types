@@ -285,8 +285,8 @@ declare namespace BaseMeasuredTemplate {
   export import Hierarchy = MeasuredTemplateDocument.Hierarchy;
   export import Metadata = MeasuredTemplateDocument.Metadata;
   export import Parent = MeasuredTemplateDocument.Parent;
-  export import Descendants = MeasuredTemplateDocument.Descendants;
-  export import DescendantClasses = MeasuredTemplateDocument.DescendantClasses;
+  export import Descendant = MeasuredTemplateDocument.Descendant;
+  export import DescendantClass = MeasuredTemplateDocument.DescendantClass;
   export import Pack = MeasuredTemplateDocument.Pack;
   export import Embedded = MeasuredTemplateDocument.Embedded;
   export import ParentCollectionName = MeasuredTemplateDocument.ParentCollectionName;

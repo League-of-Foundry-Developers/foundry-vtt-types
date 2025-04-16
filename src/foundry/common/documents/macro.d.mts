@@ -256,8 +256,8 @@ declare namespace BaseMacro {
   export import Known = Macro.Known;
   export import OfType = Macro.OfType;
   export import Parent = Macro.Parent;
-  export import Descendants = Macro.Descendants;
-  export import DescendantClasses = Macro.DescendantClasses;
+  export import Descendant = Macro.Descendant;
+  export import DescendantClass = Macro.DescendantClass;
   export import Pack = Macro.Pack;
   export import Embedded = Macro.Embedded;
   export import ParentCollectionName = Macro.ParentCollectionName;

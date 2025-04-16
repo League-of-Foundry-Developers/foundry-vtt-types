@@ -322,8 +322,9 @@ declare namespace BaseActorDelta {
   export import OfType = ActorDelta.OfType;
   export import SystemOfType = ActorDelta.SystemOfType;
   export import Parent = ActorDelta.Parent;
-  export import Descendants = ActorDelta.Descendants;
-  export import DescendantClasses = ActorDelta.DescendantClasses;
+  export import Descendant = ActorDelta.Descendant;
+  export import DescendantClass = ActorDelta.DescendantClass;
+  export import DescendantParent = ActorDelta.DescendantParent;
   export import Pack = ActorDelta.Pack;
   export import Embedded = ActorDelta.Embedded;
   export import ParentCollectionName = ActorDelta.ParentCollectionName;

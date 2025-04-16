@@ -262,8 +262,8 @@ declare namespace BaseTableResult {
   export import Known = TableResult.Known;
   export import OfType = TableResult.OfType;
   export import Parent = TableResult.Parent;
-  export import Descendants = TableResult.Descendants;
-  export import DescendantClasses = TableResult.DescendantClasses;
+  export import Descendant = TableResult.Descendant;
+  export import DescendantClass = TableResult.DescendantClass;
   export import Pack = TableResult.Pack;
   export import Embedded = TableResult.Embedded;
   export import ParentCollectionName = TableResult.ParentCollectionName;

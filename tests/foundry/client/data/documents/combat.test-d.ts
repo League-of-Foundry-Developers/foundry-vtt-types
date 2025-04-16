@@ -42,7 +42,7 @@ expectTypeOf(combat.updateCombatantActors()).toEqualTypeOf<void>();
 // but it shows narrowing BUT it also shows that the CreateData is odd.
 class MyCombatDocumentSubclass extends Combat {
   protected override _preCreateDescendantDocuments<
-    DescendantDocumentType extends Combat.DescendantClasses,
+    DescendantDocumentType extends Combat.DescendantClass,
     Parent extends Combat.Stored,
     CreateData extends Document.CreateDataFor<DescendantDocumentType>,
     Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,

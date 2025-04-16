@@ -290,8 +290,8 @@ declare namespace BaseRegion {
   export import Hierarchy = RegionDocument.Hierarchy;
   export import Metadata = RegionDocument.Metadata;
   export import Parent = RegionDocument.Parent;
-  export import Descendants = RegionDocument.Descendants;
-  export import DescendantClasses = RegionDocument.DescendantClasses;
+  export import Descendant = RegionDocument.Descendant;
+  export import DescendantClass = RegionDocument.DescendantClass;
   export import Pack = RegionDocument.Pack;
   export import Embedded = RegionDocument.Embedded;
   export import ParentCollectionName = RegionDocument.ParentCollectionName;

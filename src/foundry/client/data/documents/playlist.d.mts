@@ -79,13 +79,13 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = PlaylistSound.Stored;
+    type Descendant = PlaylistSound.Stored;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = PlaylistSound.ImplementationClass;
+    type DescendantClass = PlaylistSound.ImplementationClass;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.

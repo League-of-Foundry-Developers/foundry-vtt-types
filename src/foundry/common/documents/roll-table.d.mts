@@ -277,8 +277,8 @@ declare namespace BaseRollTable {
   export import Hierarchy = RollTable.Hierarchy;
   export import Metadata = RollTable.Metadata;
   export import Parent = RollTable.Parent;
-  export import Descendants = RollTable.Descendants;
-  export import DescendantClasses = RollTable.DescendantClasses;
+  export import Descendant = RollTable.Descendant;
+  export import DescendantClass = RollTable.DescendantClass;
   export import Pack = RollTable.Pack;
   export import Embedded = RollTable.Embedded;
   export import ParentCollectionName = RollTable.ParentCollectionName;

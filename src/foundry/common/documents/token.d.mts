@@ -366,8 +366,9 @@ declare namespace BaseToken {
   export import Hierarchy = TokenDocument.Hierarchy;
   export import Metadata = TokenDocument.Metadata;
   export import Parent = TokenDocument.Parent;
-  export import Descendants = TokenDocument.Descendants;
-  export import DescendantClasses = TokenDocument.DescendantClasses;
+  export import Descendant = TokenDocument.Descendant;
+  export import DescendantClass = TokenDocument.DescendantClass;
+  export import DescendantParent = TokenDocument.DescendantParent;
   export import Pack = TokenDocument.Pack;
   export import Embedded = TokenDocument.Embedded;
   export import ParentCollectionName = TokenDocument.ParentCollectionName;

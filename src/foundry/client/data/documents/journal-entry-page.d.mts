@@ -115,13 +115,13 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = never;
+    type Descendant = never;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = never;
+    type DescendantClass = never;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.
@@ -376,6 +376,7 @@ declare global {
     namespace Database {
       /** Options passed along in Get operations for JournalEntryPages */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<JournalEntryPage.Parent> {}
+
       /** Options passed along in Create operations for JournalEntryPages */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<
@@ -385,10 +386,12 @@ declare global {
         > {
         animate?: boolean;
       }
+
       /** Options passed along in Delete operations for JournalEntryPages */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<JournalEntryPage.Parent> {
         animate?: boolean;
       }
+
       /** Options passed along in Update operations for JournalEntryPages */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<JournalEntryPage.UpdateData, JournalEntryPage.Parent> {

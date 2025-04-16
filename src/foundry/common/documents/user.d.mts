@@ -321,8 +321,8 @@ declare namespace BaseUser {
   export import Hierarchy = User.Hierarchy;
   export import Metadata = User.Metadata;
   export import Parent = User.Parent;
-  export import Descendants = User.Descendants;
-  export import DescendantClasses = User.DescendantClasses;
+  export import Descendant = User.Descendant;
+  export import DescendantClass = User.DescendantClass;
   export import Pack = User.Pack;
   export import Embedded = User.Embedded;
   export import ParentCollectionName = User.ParentCollectionName;

@@ -86,19 +86,19 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = ActorDelta.Stored | ActorDelta.Descendants;
+    type Descendant = ActorDelta.Stored | ActorDelta.Descendant;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = ActorDelta.ImplementationClass | ActorDelta.DescendantClasses;
+    type DescendantClass = ActorDelta.ImplementationClass | ActorDelta.DescendantClass;
 
     /**
      * The valid `parent` entries for descendant document operations.
      * This includes the current document as well as any descendants that have descendants.
      */
-    type DescendantParents = Stored | ActorDelta.DescendantParents;
+    type DescendantParent = Stored | ActorDelta.DescendantParent;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.
@@ -655,6 +655,7 @@ declare global {
     namespace Database {
       /** Options passed along in Get operations for TokenDocuments */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<TokenDocument.Parent> {}
+
       /** Options passed along in Create operations for TokenDocuments */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<
@@ -662,8 +663,10 @@ declare global {
           TokenDocument.Parent,
           Temporary
         > {}
+
       /** Options passed along in Delete operations for TokenDocuments */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TokenDocument.Parent> {}
+
       /** Options passed along in Update operations for TokenDocuments */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<TokenDocument.UpdateData, TokenDocument.Parent> {
@@ -1019,8 +1022,8 @@ declare global {
      */
 
     protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.DescendantParents,
+      DescendantDocumentType extends TokenDocument.DescendantClass,
+      Parent extends TokenDocument.DescendantParent,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -1032,8 +1035,8 @@ declare global {
     ): void;
 
     protected override _onCreateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.DescendantParents,
+      DescendantDocumentType extends TokenDocument.DescendantClass,
+      Parent extends TokenDocument.DescendantParent,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -1046,8 +1049,8 @@ declare global {
     ): void;
 
     protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.DescendantParents,
+      DescendantDocumentType extends TokenDocument.DescendantClass,
+      Parent extends TokenDocument.DescendantParent,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -1059,8 +1062,8 @@ declare global {
     ): void;
 
     protected override _onUpdateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.DescendantParents,
+      DescendantDocumentType extends TokenDocument.DescendantClass,
+      Parent extends TokenDocument.DescendantParent,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -1073,8 +1076,8 @@ declare global {
     ): void;
 
     protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.DescendantParents,
+      DescendantDocumentType extends TokenDocument.DescendantClass,
+      Parent extends TokenDocument.DescendantParent,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,
@@ -1085,8 +1088,8 @@ declare global {
     ): void;
 
     protected _onDeleteDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.DescendantParents,
+      DescendantDocumentType extends TokenDocument.DescendantClass,
+      Parent extends TokenDocument.DescendantParent,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,

@@ -114,19 +114,19 @@ declare global {
      * This is a union of all instances, or never if the document doesn't have any descendants.
      *
      */
-    type Descendants = Item.Stored | ActiveEffect.Stored;
+    type Descendant = Item.Stored | ActiveEffect.Stored;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = Item.ImplementationClass | ActiveEffect.ImplementationClass;
+    type DescendantClass = Item.ImplementationClass | ActiveEffect.ImplementationClass;
 
     /**
      * The valid `parent` entries for descendant document operations.
      * This includes the current document as well as any descendants that have descendants.
      */
-    type DescendantParents = Stored | Item.Stored;
+    type DescendantParent = Stored | Item.Stored;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.
@@ -548,8 +548,8 @@ declare global {
     // ClientDocument overrides
 
     protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends ActorDelta.DescendantClasses,
-      Parent extends ActorDelta.DescendantParents,
+      DescendantDocumentType extends ActorDelta.DescendantClass,
+      Parent extends ActorDelta.DescendantParent,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -561,8 +561,8 @@ declare global {
     ): void;
 
     protected override _onCreateDescendantDocuments<
-      DescendantDocumentType extends ActorDelta.DescendantClasses,
-      Parent extends ActorDelta.DescendantParents,
+      DescendantDocumentType extends ActorDelta.DescendantClass,
+      Parent extends ActorDelta.DescendantParent,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -575,8 +575,8 @@ declare global {
     ): void;
 
     protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends ActorDelta.DescendantClasses,
-      Parent extends ActorDelta.DescendantParents,
+      DescendantDocumentType extends ActorDelta.DescendantClass,
+      Parent extends ActorDelta.DescendantParent,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -588,8 +588,8 @@ declare global {
     ): void;
 
     protected override _onUpdateDescendantDocuments<
-      DescendantDocumentType extends ActorDelta.DescendantClasses,
-      Parent extends ActorDelta.DescendantParents,
+      DescendantDocumentType extends ActorDelta.DescendantClass,
+      Parent extends ActorDelta.DescendantParent,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -602,8 +602,8 @@ declare global {
     ): void;
 
     protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends ActorDelta.DescendantClasses,
-      Parent extends ActorDelta.DescendantParents,
+      DescendantDocumentType extends ActorDelta.DescendantClass,
+      Parent extends ActorDelta.DescendantParent,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,
@@ -614,8 +614,8 @@ declare global {
     ): void;
 
     protected _onDeleteDescendantDocuments<
-      DescendantDocumentType extends ActorDelta.DescendantClasses,
-      Parent extends ActorDelta.DescendantParents,
+      DescendantDocumentType extends ActorDelta.DescendantClass,
+      Parent extends ActorDelta.DescendantParent,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,

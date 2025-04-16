@@ -79,13 +79,13 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = JournalEntryPage.Stored;
+    type Descendant = JournalEntryPage.Stored;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = JournalEntryPage.ImplementationClass;
+    type DescendantClass = JournalEntryPage.ImplementationClass;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.
@@ -485,7 +485,7 @@ declare global {
     // ClientDocument overrides
 
     protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends JournalEntry.DescendantClasses,
+      DescendantDocumentType extends JournalEntry.DescendantClass,
       Parent extends JournalEntry.Stored,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
@@ -498,7 +498,7 @@ declare global {
     ): void;
 
     protected override _onCreateDescendantDocuments<
-      DescendantDocumentType extends JournalEntry.DescendantClasses,
+      DescendantDocumentType extends JournalEntry.DescendantClass,
       Parent extends JournalEntry.Stored,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
@@ -512,7 +512,7 @@ declare global {
     ): void;
 
     protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends JournalEntry.DescendantClasses,
+      DescendantDocumentType extends JournalEntry.DescendantClass,
       Parent extends JournalEntry.Stored,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
@@ -525,7 +525,7 @@ declare global {
     ): void;
 
     protected override _onUpdateDescendantDocuments<
-      DescendantDocumentType extends JournalEntry.DescendantClasses,
+      DescendantDocumentType extends JournalEntry.DescendantClass,
       Parent extends JournalEntry.Stored,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
@@ -539,7 +539,7 @@ declare global {
     ): void;
 
     protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends JournalEntry.DescendantClasses,
+      DescendantDocumentType extends JournalEntry.DescendantClass,
       Parent extends JournalEntry.Stored,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
@@ -551,7 +551,7 @@ declare global {
     ): void;
 
     protected _onDeleteDescendantDocuments<
-      DescendantDocumentType extends JournalEntry.DescendantClasses,
+      DescendantDocumentType extends JournalEntry.DescendantClass,
       Parent extends JournalEntry.Stored,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(

@@ -270,8 +270,8 @@ declare namespace BaseCard {
   export import OfType = Card.OfType;
   export import SystemOfType = Card.SystemOfType;
   export import Parent = Card.Parent;
-  export import Descendants = Card.Descendants;
-  export import DescendantClasses = Card.DescendantClasses;
+  export import Descendant = Card.Descendant;
+  export import DescendantClass = Card.DescendantClass;
   export import Pack = Card.Pack;
   export import Embedded = Card.Embedded;
   export import ParentCollectionName = Card.ParentCollectionName;

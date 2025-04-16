@@ -248,8 +248,8 @@ declare namespace BaseAdventure {
   export import Hierarchy = Adventure.Hierarchy;
   export import Metadata = Adventure.Metadata;
   export import Parent = Adventure.Parent;
-  export import Descendants = Adventure.Descendants;
-  export import DescendantClasses = Adventure.DescendantClasses;
+  export import Descendant = Adventure.Descendant;
+  export import DescendantClass = Adventure.DescendantClass;
   export import Pack = Adventure.Pack;
   export import Embedded = Adventure.Embedded;
   export import ParentCollectionName = Adventure.ParentCollectionName;

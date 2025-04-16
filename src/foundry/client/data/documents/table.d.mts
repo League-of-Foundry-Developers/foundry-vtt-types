@@ -71,13 +71,13 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = TableResult.Stored;
+    type Descendant = TableResult.Stored;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = TableResult.ImplementationClass;
+    type DescendantClass = TableResult.ImplementationClass;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.
@@ -290,6 +290,7 @@ declare global {
        */
       _stats: fields.DocumentStatsField;
     }
+
     namespace Database {
       /** Options passed along in Get operations for RollTables */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<RollTable.Parent> {}
@@ -689,7 +690,7 @@ declare global {
     ): Promise<HTMLElement | null>;
 
     protected override _onCreateDescendantDocuments<
-      DescendantDocumentType extends RollTable.DescendantClasses,
+      DescendantDocumentType extends RollTable.DescendantClass,
       Parent extends RollTable.Stored,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
@@ -703,7 +704,7 @@ declare global {
     ): void;
 
     protected _onDeleteDescendantDocuments<
-      DescendantDocumentType extends RollTable.DescendantClasses,
+      DescendantDocumentType extends RollTable.DescendantClass,
       Parent extends RollTable.Stored,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
@@ -743,7 +744,7 @@ declare global {
     // ClientDocument overrides
 
     protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends RollTable.DescendantClasses,
+      DescendantDocumentType extends RollTable.DescendantClass,
       Parent extends RollTable.Stored,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
@@ -756,7 +757,7 @@ declare global {
     ): void;
 
     protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends RollTable.DescendantClasses,
+      DescendantDocumentType extends RollTable.DescendantClass,
       Parent extends RollTable.Stored,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
@@ -769,7 +770,7 @@ declare global {
     ): void;
 
     protected override _onUpdateDescendantDocuments<
-      DescendantDocumentType extends RollTable.DescendantClasses,
+      DescendantDocumentType extends RollTable.DescendantClass,
       Parent extends RollTable.Stored,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
@@ -783,7 +784,7 @@ declare global {
     ): void;
 
     protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends RollTable.DescendantClasses,
+      DescendantDocumentType extends RollTable.DescendantClass,
       Parent extends RollTable.Stored,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(

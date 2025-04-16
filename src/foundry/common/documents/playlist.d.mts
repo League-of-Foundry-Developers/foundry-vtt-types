@@ -276,8 +276,8 @@ declare namespace BasePlaylist {
   export import Hierarchy = Playlist.Hierarchy;
   export import Metadata = Playlist.Metadata;
   export import Parent = Playlist.Parent;
-  export import Descendants = Playlist.Descendants;
-  export import DescendantClasses = Playlist.DescendantClasses;
+  export import Descendant = Playlist.Descendant;
+  export import DescendantClass = Playlist.DescendantClass;
   export import Pack = Playlist.Pack;
   export import Embedded = Playlist.Embedded;
   export import ParentCollectionName = Playlist.ParentCollectionName;

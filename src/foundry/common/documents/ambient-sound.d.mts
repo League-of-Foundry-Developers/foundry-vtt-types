@@ -254,8 +254,8 @@ declare namespace BaseAmbientSound {
   export import Hierarchy = AmbientSoundDocument.Hierarchy;
   export import Metadata = AmbientSoundDocument.Metadata;
   export import Parent = AmbientSoundDocument.Parent;
-  export import Descendants = AmbientSoundDocument.Descendants;
-  export import DescendantClasses = AmbientSoundDocument.DescendantClasses;
+  export import Descendant = AmbientSoundDocument.Descendant;
+  export import DescendantClass = AmbientSoundDocument.DescendantClass;
   export import Pack = AmbientSoundDocument.Pack;
   export import Embedded = AmbientSoundDocument.Embedded;
   export import ParentCollectionName = AmbientSoundDocument.ParentCollectionName;

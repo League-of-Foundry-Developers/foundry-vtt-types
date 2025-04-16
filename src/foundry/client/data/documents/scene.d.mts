@@ -80,41 +80,41 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants =
+    type Descendant =
       | AmbientLightDocument.Implementation
       | AmbientSoundDocument.Implementation
       | DrawingDocument.Implementation
       | MeasuredTemplateDocument.Implementation
       | NoteDocument.Implementation
       | RegionDocument.Implementation
-      | RegionDocument.Descendants
+      | RegionDocument.Descendant
       | TileDocument.Implementation
       | TokenDocument.Implementation
-      | TokenDocument.Descendants
+      | TokenDocument.Descendant
       | WallDocument.Implementation;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses =
+    type DescendantClass =
       | AmbientLightDocument.ImplementationClass
       | AmbientSoundDocument.ImplementationClass
       | DrawingDocument.ImplementationClass
       | MeasuredTemplateDocument.ImplementationClass
       | NoteDocument.ImplementationClass
       | RegionDocument.ImplementationClass
-      | RegionDocument.DescendantClasses
+      | RegionDocument.DescendantClass
       | TileDocument.ImplementationClass
       | TokenDocument.ImplementationClass
-      | TokenDocument.DescendantClasses
+      | TokenDocument.DescendantClass
       | WallDocument.ImplementationClass;
 
     /**
      * The valid `parent` entries for descendant document operations.
      * This includes the current document as well as any descendants that have descendants.
      */
-    type DescendantParents = Stored | RegionDocument.Stored | TokenDocument.DescendantParents;
+    type DescendantParent = Stored | RegionDocument.Stored | TokenDocument.DescendantParent;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.
@@ -904,8 +904,8 @@ declare global {
     protected _onActivate(active: boolean): ReturnType<this["view"]> | ReturnType<Canvas["draw"]>;
 
     protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends Scene.DescendantClasses,
-      Parent extends Scene.DescendantParents,
+      DescendantDocumentType extends Scene.DescendantClass,
+      Parent extends Scene.DescendantParent,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -917,8 +917,8 @@ declare global {
     ): void;
 
     protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends Scene.DescendantClasses,
-      Parent extends Scene.DescendantParents,
+      DescendantDocumentType extends Scene.DescendantClass,
+      Parent extends Scene.DescendantParent,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -930,8 +930,8 @@ declare global {
     ): void;
 
     protected override _onUpdateDescendantDocuments<
-      DescendantDocumentType extends Scene.DescendantClasses,
-      Parent extends Scene.DescendantParents,
+      DescendantDocumentType extends Scene.DescendantClass,
+      Parent extends Scene.DescendantParent,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -944,8 +944,8 @@ declare global {
     ): void;
 
     protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends Scene.DescendantClasses,
-      Parent extends Scene.DescendantParents,
+      DescendantDocumentType extends Scene.DescendantClass,
+      Parent extends Scene.DescendantParent,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,
@@ -982,8 +982,8 @@ declare global {
     // Other Descendant Document operations are actually overridden above
 
     protected override _onCreateDescendantDocuments<
-      DescendantDocumentType extends Scene.DescendantClasses,
-      Parent extends Scene.DescendantParents,
+      DescendantDocumentType extends Scene.DescendantClass,
+      Parent extends Scene.DescendantParent,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -996,8 +996,8 @@ declare global {
     ): void;
 
     protected _onDeleteDescendantDocuments<
-      DescendantDocumentType extends Scene.DescendantClasses,
-      Parent extends Scene.DescendantParents,
+      DescendantDocumentType extends Scene.DescendantClass,
+      Parent extends Scene.DescendantParent,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,

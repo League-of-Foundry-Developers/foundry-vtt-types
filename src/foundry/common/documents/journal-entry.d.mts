@@ -279,8 +279,8 @@ declare namespace BaseJournalEntry {
   export import Hierarchy = JournalEntry.Hierarchy;
   export import Metadata = JournalEntry.Metadata;
   export import Parent = JournalEntry.Parent;
-  export import Descendants = Folder.Descendants;
-  export import DescendantClasses = Folder.DescendantClasses;
+  export import Descendant = Folder.Descendant;
+  export import DescendantClass = Folder.DescendantClass;
   export import Pack = Folder.Pack;
   export import Embedded = Folder.Embedded;
   export import ParentCollectionName = Folder.ParentCollectionName;

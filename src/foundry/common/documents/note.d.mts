@@ -271,8 +271,8 @@ declare namespace BaseNote {
   export import Hierarchy = NoteDocument.Hierarchy;
   export import Metadata = NoteDocument.Metadata;
   export import Parent = NoteDocument.Parent;
-  export import Descendants = NoteDocument.Descendants;
-  export import DescendantClasses = NoteDocument.DescendantClasses;
+  export import Descendant = NoteDocument.Descendant;
+  export import DescendantClass = NoteDocument.DescendantClass;
   export import Pack = NoteDocument.Pack;
   export import Embedded = NoteDocument.Embedded;
   export import ParentCollectionName = NoteDocument.ParentCollectionName;

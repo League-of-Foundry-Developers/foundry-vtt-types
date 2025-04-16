@@ -263,8 +263,8 @@ declare namespace BaseCombatant {
   export import OfType = Combatant.OfType;
   export import SystemOfType = Combatant.SystemOfType;
   export import Parent = Combatant.Parent;
-  export import Descendants = Combatant.Descendants;
-  export import DescendantClasses = Combatant.DescendantClasses;
+  export import Descendant = Combatant.Descendant;
+  export import DescendantClass = Combatant.DescendantClass;
   export import Pack = Combatant.Pack;
   export import Embedded = Combatant.Embedded;
   export import ParentCollectionName = Combatant.ParentCollectionName;
