@@ -35,8 +35,8 @@ scene.toCompendium(null)._id;
 // TODO(@LukeAbby): More advanced version
 class MySceneDocumentSubclass extends Scene {
   protected override _onUpdateDescendantDocuments<
-    DescendantDocumentType extends Scene.DescendantClasses,
-    Parent extends Scene.DescendantParents,
+    DescendantDocumentType extends Scene.DescendantClass,
+    Parent extends Scene.DescendantParent,
     UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
     Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
   >(
