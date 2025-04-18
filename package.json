@@ -38,7 +38,7 @@
     "typecheck": "tsc -b tsconfig.main.json",
     "prepare": "is-ci || husky",
     "betterer": "betterer",
-    "betterer:force": "betterer --update"
+    "betterer:update": "betterer --update"
   },
   "repository": {
     "type": "git",

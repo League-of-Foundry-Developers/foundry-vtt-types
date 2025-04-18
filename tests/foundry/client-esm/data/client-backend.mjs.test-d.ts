@@ -7,7 +7,7 @@ expectTypeOf(myBackend.create(Item, { data: [{ name: "foo" }], broadcast: true, 
 >();
 
 expectTypeOf(myBackend.update(Actor, { updates: [{ name: "foo" }], broadcast: false, pack: null })).toEqualTypeOf<
-  Promise<Actor[]>
+  Promise<Actor.Implementation[]>
 >();
 
 expectTypeOf(myBackend.delete(Scene, { ids: [], broadcast: true, pack: "some.pack" })).toEqualTypeOf<

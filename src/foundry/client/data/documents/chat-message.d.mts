@@ -497,7 +497,7 @@ declare global {
       whisperTo: string;
     }
 
-    /**Database
+    /**
      * @deprecated {@link ChatMessage.DatabaseOperation | `ChatMessage.DatabaseOperation`}
      */
     /* eslint-disable @typescript-eslint/no-empty-object-type */

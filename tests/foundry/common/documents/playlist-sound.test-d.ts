@@ -1,10 +1,14 @@
 import { expectTypeOf } from "vitest";
 
-// @ts-expect-error name is a required field
-new foundry.documents.BasePlaylistSound();
-// @ts-expect-error name is a required field
-new foundry.documents.BasePlaylistSound({});
+// This exists to make the class non-abstract.
+class TestBasePlaylistSound extends foundry.documents.BasePlaylistSound {}
 
-const myPlaylistSound = new foundry.documents.BasePlaylistSound({ name: "foo" });
+// @ts-expect-error name is a required field
+new TestBasePlaylistSound();
+
+// @ts-expect-error name is a required field
+new TestBasePlaylistSound({});
+
+const myPlaylistSound = new TestBasePlaylistSound({ name: "foo" });
 
 expectTypeOf(myPlaylistSound.description).toEqualTypeOf<string | undefined>();

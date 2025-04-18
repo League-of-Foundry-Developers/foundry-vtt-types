@@ -1,13 +1,16 @@
 import { expectTypeOf } from "vitest";
 
+// This exists to make the class non-abstract.
+class TestBaseMacro extends foundry.documents.BaseMacro {}
+
 // @ts-expect-error - a MacroData requires data.
-new foundry.documents.BaseMacro();
+new TestBaseMacro();
 
 // @ts-expect-error - a MacroData requires a name.
-new foundry.documents.BaseMacro({});
+new TestBaseMacro({});
 
-expectTypeOf(new foundry.documents.BaseMacro({ name: "foo" })).toEqualTypeOf<foundry.documents.BaseMacro>();
+expectTypeOf(new TestBaseMacro({ name: "foo" })).toEqualTypeOf<TestBaseMacro>();
 
-const myMacro = new foundry.documents.BaseMacro({ name: "foo" });
+const myMacro = new TestBaseMacro({ name: "foo" });
 
 expectTypeOf(myMacro.type).toEqualTypeOf<"chat" | "script">();

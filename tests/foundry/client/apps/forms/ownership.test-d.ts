@@ -4,6 +4,8 @@ import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 declare const actor: Actor.Implementation;
 const actorDocumentOwnershipConfig = new DocumentOwnershipConfig(actor);
 
+type ActorDocumentOwnershipConfig = typeof actorDocumentOwnershipConfig;
+
 expectTypeOf(actorDocumentOwnershipConfig.object).toEqualTypeOf<Actor>();
 expectTypeOf(actorDocumentOwnershipConfig.document).toEqualTypeOf<Actor>();
 expectTypeOf(DocumentOwnershipConfig.defaultOptions).toEqualTypeOf<DocumentSheet.Options>();
@@ -11,7 +13,7 @@ expectTypeOf(actorDocumentOwnershipConfig.options).toEqualTypeOf<DocumentSheet.O
 expectTypeOf(actorDocumentOwnershipConfig.getData()).toEqualTypeOf<
   MaybePromise<GetDataReturnType<DocumentOwnershipConfig.DocumentOwnershipConfigData>>
 >();
-expectTypeOf(actorDocumentOwnershipConfig.render(true)).toEqualTypeOf<DocumentOwnershipConfig>();
+expectTypeOf(actorDocumentOwnershipConfig.render(true)).toEqualTypeOf<ActorDocumentOwnershipConfig>();
 
 expectTypeOf(actorDocumentOwnershipConfig.title).toEqualTypeOf<string>();
 
@@ -25,4 +27,4 @@ expectTypeOf(itemDocumentOwnershipConfig.options).toEqualTypeOf<DocumentSheet.Op
 expectTypeOf(itemDocumentOwnershipConfig.getData()).toEqualTypeOf<
   MaybePromise<GetDataReturnType<DocumentOwnershipConfig.DocumentOwnershipConfigData>>
 >();
-expectTypeOf(itemDocumentOwnershipConfig.render(true)).toEqualTypeOf<DocumentOwnershipConfig>();
+expectTypeOf(itemDocumentOwnershipConfig.render(true)).toEqualTypeOf<ActorDocumentOwnershipConfig>();

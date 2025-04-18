@@ -8,6 +8,7 @@ class TestBaseWall extends BaseWall {}
 //TODO: ensure `c` required for creation
 // @ts-expect-error Wall requires `c` for creation
 let myWall = new TestBaseWall();
+
 // @ts-expect-error Wall requires `c` for creation
 myWall = new TestBaseWall({});
 

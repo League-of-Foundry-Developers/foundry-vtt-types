@@ -2,10 +2,14 @@ import { expectTypeOf } from "vitest";
 import type { DeepPartial, EmptyObject } from "fvtt-types/utils";
 
 import fields = foundry.data.fields;
-import BaseUser = foundry.documents.BaseUser;
 import BaseJournalEntryPage = foundry.documents.BaseJournalEntryPage;
 
 import TypeDataModel = foundry.abstract.TypeDataModel;
+import type Document from "../../../../src/foundry/common/abstract/document.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseUpdateOperation,
+} from "../../../../src/foundry/common/abstract/_types.d.mts";
 
 /* attempting to use the example as a test */
 
@@ -77,25 +81,19 @@ class QuestModel extends TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQu
   }
 
   protected override async _preCreate(
-    data: TypeDataModel.ParentAssignmentType<this>,
-    options: TypeDataModel.TypeDataModelModificationOptions,
-    user: User.Implementation,
+    data: TypeDataModel.ParentAssignmentType<QuestSchema, BaseJournalEntryPage>,
+    _options: Document.Database.PreCreateOptions<DatabaseCreateOperation>,
+    _user: User.Implementation,
   ): Promise<boolean | void> {
     expectTypeOf(data.system.steps).toEqualTypeOf<string[]>();
-
-    expectTypeOf(options).toEqualTypeOf<TypeDataModel.TypeDataModelModificationOptions>();
-    expectTypeOf(user).toEqualTypeOf<BaseUser>();
   }
 
   protected override async _preUpdate(
-    data: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
-    options: TypeDataModel.TypeDataModelModificationOptions,
-    userId: string,
+    data: DeepPartial<TypeDataModel.ParentAssignmentType<QuestSchema, BaseJournalEntryPage>>,
+    _options: Document.Database.PreCreateOptions<DatabaseUpdateOperation>,
+    _userId: string,
   ): Promise<boolean | void> {
     expectTypeOf(data.system?.steps).toEqualTypeOf<string[] | undefined>();
-
-    expectTypeOf(options).toEqualTypeOf<TypeDataModel.TypeDataModelModificationOptions>();
-    expectTypeOf(userId).toEqualTypeOf<string>();
   }
 }
 

@@ -71,7 +71,9 @@ expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<Token
 
 //deprecated since v12, until v14
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<1>();
-declare const someCombat: Combat.Object;
-expectTypeOf(layer.toggleCombat()).toEqualTypeOf<Promise<Combatant.Object[]>>();
-expectTypeOf(layer.toggleCombat(null, null, { token: null })).toEqualTypeOf<Promise<Combatant.Object[]>>();
-expectTypeOf(layer.toggleCombat(true, someCombat, { token: someToken })).toEqualTypeOf<Promise<Combatant.Object[]>>();
+declare const someCombat: Combat.ConfiguredInstance;
+expectTypeOf(layer.toggleCombat()).toEqualTypeOf<Promise<Combatant.ConfiguredInstance[]>>();
+expectTypeOf(layer.toggleCombat(null, null, { token: null })).toEqualTypeOf<Promise<Combatant.ConfiguredInstance[]>>();
+expectTypeOf(layer.toggleCombat(true, someCombat, { token: someToken })).toEqualTypeOf<
+  Promise<Combatant.ConfiguredInstance[]>
+>();

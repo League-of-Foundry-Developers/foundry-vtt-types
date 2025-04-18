@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type Sound from "../../../../../src/foundry/client-esm/audio/sound.d.mts";
 
 declare const doc: AmbientSoundDocument;
 

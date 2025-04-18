@@ -383,6 +383,7 @@ declare namespace BaseToken {
   export import Schema = TokenDocument.Schema;
   export import DatabaseOperation = TokenDocument.Database;
   export import Flags = TokenDocument.Flags;
+  export import CoreFlags = TokenDocument.CoreFlags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

@@ -25,14 +25,20 @@ new BaseScene({});
 const scene = new BaseScene({ name: "My third scene" });
 expectTypeOf(scene).toEqualTypeOf<BaseScene>();
 
-expectTypeOf(scene.drawings).toEqualTypeOf<EmbeddedCollection<DrawingDocument, Scene>>();
-expectTypeOf(scene.lights).toEqualTypeOf<EmbeddedCollection<AmbientLightDocument, Scene>>();
-expectTypeOf(scene.notes).toEqualTypeOf<EmbeddedCollection<NoteDocument, Scene>>();
-expectTypeOf(scene.sounds).toEqualTypeOf<EmbeddedCollection<AmbientSoundDocument, Scene>>();
-expectTypeOf(scene.templates).toEqualTypeOf<EmbeddedCollection<MeasuredTemplateDocument, Scene>>();
-expectTypeOf(scene.tokens).toEqualTypeOf<EmbeddedCollection<TokenDocument, Scene>>();
-expectTypeOf(scene.tiles).toEqualTypeOf<EmbeddedCollection<TileDocument, Scene>>();
-expectTypeOf(scene.walls).toEqualTypeOf<EmbeddedCollection<WallDocument, Scene>>();
+expectTypeOf(scene.drawings).toEqualTypeOf<EmbeddedCollection<DrawingDocument.Implementation, Scene.Implementation>>();
+expectTypeOf(scene.lights).toEqualTypeOf<
+  EmbeddedCollection<AmbientLightDocument.Implementation, Scene.Implementation>
+>();
+expectTypeOf(scene.notes).toEqualTypeOf<EmbeddedCollection<NoteDocument.Implementation, Scene.Implementation>>();
+expectTypeOf(scene.sounds).toEqualTypeOf<
+  EmbeddedCollection<AmbientSoundDocument.Implementation, Scene.Implementation>
+>();
+expectTypeOf(scene.templates).toEqualTypeOf<
+  EmbeddedCollection<MeasuredTemplateDocument.Implementation, Scene.Implementation>
+>();
+expectTypeOf(scene.tokens).toEqualTypeOf<EmbeddedCollection<TokenDocument.Implementation, Scene.Implementation>>();
+expectTypeOf(scene.tiles).toEqualTypeOf<EmbeddedCollection<TileDocument.Implementation, Scene.Implementation>>();
+expectTypeOf(scene.walls).toEqualTypeOf<EmbeddedCollection<WallDocument.Implementation, Scene.Implementation>>();
 
 // @ts-expect-error A SceneData requires data.
 new foundry.documents.BaseScene();

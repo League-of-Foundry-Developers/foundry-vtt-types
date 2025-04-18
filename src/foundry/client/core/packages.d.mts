@@ -218,7 +218,7 @@ declare global {
      * starting as an array in the database, initialized as a set, and allows updates with any
      * iterable.
      */
-    interface Schema extends ReturnType<typeof BasePackage.defineSchema> {
+    interface Schema extends BasePackage.Schema {
       /**
        * The current package version
        * @remarks Actually defined in BasePackage but defined here to avoid conflict with BaseWorld
@@ -306,7 +306,7 @@ declare global {
      * starting as an array in the database, initialized as a set, and allows updates with any
      * iterable.
      */
-    interface Schema extends ReturnType<typeof BasePackage.defineSchema> {
+    interface Schema extends BasePackage.Schema {
       /**
        * The current package version
        * @remarks Actually defined in BasePackage but defined here to avoid conflict with BaseWorld
@@ -456,7 +456,7 @@ declare global {
      * starting as an array in the database, initialized as a set, and allows updates with any
      * iterable.
      */
-    interface Schema extends ReturnType<typeof BasePackage.defineSchema> {
+    interface Schema extends BasePackage.Schema {
       /**
        * The game system name which this world relies upon
        */

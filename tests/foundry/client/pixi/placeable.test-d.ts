@@ -8,7 +8,9 @@ class EmbeddedInSceneDocumentSheet<
   Options extends EmbeddedInSceneDocumentSheetOptions = EmbeddedInSceneDocumentSheetOptions,
 > extends DocumentSheet<Options, Document.AnyChild<Scene.Implementation>> {}
 
-class BaseEmbeddedInSceneDocument extends Document<any, any, Scene.Implementation | null> {}
+declare class BaseEmbeddedInSceneDocument extends Document<any, any, Scene.Implementation | null> {
+  constructor();
+}
 
 class EmbeddedInSceneDocument extends CanvasDocumentMixin(BaseEmbeddedInSceneDocument) {
   override get sheet(): EmbeddedInSceneDocumentSheet {
@@ -17,8 +19,8 @@ class EmbeddedInSceneDocument extends CanvasDocumentMixin(BaseEmbeddedInSceneDoc
 }
 
 class OnePlaceable extends PlaceableObject<EmbeddedInSceneDocument> {
-  get bounds(): Rectangle {
-    return null as unknown as Rectangle;
+  get bounds(): PIXI.Rectangle {
+    return null as unknown as PIXI.Rectangle;
   }
 
   protected async _draw(): Promise<void> {}

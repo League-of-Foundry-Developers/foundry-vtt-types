@@ -4,7 +4,7 @@ expectTypeOf(Drawing.embeddedName).toEqualTypeOf<"Drawing">();
 
 const drawing = new Drawing(new DrawingDocument());
 
-expectTypeOf(drawing.shape).toEqualTypeOf<DrawingShape>();
+expectTypeOf(drawing.shape).toEqualTypeOf<PrimaryGraphics | PIXI.Graphics>();
 expectTypeOf(drawing.text).toEqualTypeOf<PIXI.Text | null>();
 expectTypeOf(drawing.frame).toEqualTypeOf<PIXI.Container>();
 

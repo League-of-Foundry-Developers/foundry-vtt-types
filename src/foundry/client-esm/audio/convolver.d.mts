@@ -46,12 +46,7 @@ declare class ConvolverEffect extends ConvolverNode {
    * Update the state of the effect node given the active flag and numeric intensity.
    * @param options - Options which are updated
    */
-  update(
-    options?: InexactPartial<{
-      /** A new effect intensity */
-      intensity: number;
-    }>,
-  ): void;
+  update(options?: ConvolverEffect.UpdateOptions): void;
 
   override disconnect(output?: number): void;
   override disconnect(destinationNode?: AudioNode, output?: number, input?: number): void;
@@ -66,6 +61,13 @@ declare class ConvolverEffect extends ConvolverNode {
    * @param sourceNode - An upstream source node that is connecting to this one
    */
   onConnectFrom(sourceNode: AudioNode): void;
+}
+
+declare namespace ConvolverEffect {
+  interface UpdateOptions {
+    /** A new effect intensity */
+    intensity?: number | undefined;
+  }
 }
 
 export default ConvolverEffect;

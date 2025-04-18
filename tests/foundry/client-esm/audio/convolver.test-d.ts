@@ -4,7 +4,7 @@ declare const context: AudioContext;
 const effect = new foundry.audio.ConvolverEffect(context);
 
 expectTypeOf(effect.intensity).toEqualTypeOf<number>();
-expectTypeOf(effect.update(4)).toEqualTypeOf<void>();
+expectTypeOf(effect.update({ intensity: 4 })).toEqualTypeOf<void>();
 
 declare const audioNode: AudioNode;
 declare const audioParam: AudioParam;

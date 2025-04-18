@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { LightSource } from "../../../../../src/foundry/client/pixi/placeables/light.d.mts";
 
 declare const doc: AmbientLightDocument;
 

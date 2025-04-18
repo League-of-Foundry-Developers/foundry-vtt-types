@@ -403,19 +403,6 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<TileDocument.Database.Delete> {}
     }
 
-    interface CoreFlags {
-      core?: {
-        /**
-         * @deprecated since v12, until 14
-         * @remarks "Tiling Sprites are deprecated without replacement."
-         */
-        isTilingSprite?: boolean;
-
-        /** @remarks If true, and texture.src is a video, it will jump to a random timestamp every time the tile is drawn */
-        randomizeVideo?: boolean;
-      };
-    }
-
     /**
      * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
      */
@@ -436,6 +423,19 @@ declare global {
        * Gets the type of a particular flag given a `Scope` and a `Key`.
        */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
+    }
+
+    interface CoreFlags {
+      core?: {
+        /**
+         * @deprecated since v12, until 14
+         * @remarks "Tiling Sprites are deprecated without replacement."
+         */
+        isTilingSprite?: boolean;
+
+        /** @remarks If true, and texture.src is a video, it will jump to a random timestamp every time the tile is drawn */
+        randomizeVideo?: boolean;
+      };
     }
 
     /**

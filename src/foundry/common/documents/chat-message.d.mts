@@ -291,6 +291,9 @@ declare namespace BaseChatMessage {
   export import Schema = ChatMessage.Schema;
   export import DatabaseOperation = ChatMessage.Database;
   export import Flags = ChatMessage.Flags;
+  export import CoreFlags = ChatMessage.CoreFlags;
+  export import GetSpeakerOptions = ChatMessage.GetSpeakerOptions;
+  export import MessageData = ChatMessage.MessageData;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.

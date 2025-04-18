@@ -2,8 +2,8 @@ import { expectTypeOf } from "vitest";
 
 class TestShader extends AbstractBaseShader {}
 
-expectTypeOf(TestShader.defaultUniforms.foo).toEqualTypeOf<AbstractBaseShader.UniformValue>();
-expectTypeOf(TestShader.defaultUniforms.bar).toEqualTypeOf<AbstractBaseShader.UniformValue>();
+expectTypeOf(TestShader.defaultUniforms.foo).toEqualTypeOf<AbstractBaseShader.UniformValue | undefined>();
+expectTypeOf(TestShader.defaultUniforms.bar).toEqualTypeOf<AbstractBaseShader.UniformValue | undefined>();
 
 //BaseShaderMixin tests
 expectTypeOf(TestShader.WAVE()).toEqualTypeOf<string>();

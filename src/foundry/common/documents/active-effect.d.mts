@@ -306,6 +306,10 @@ declare namespace BaseActiveEffect {
   export import Schema = ActiveEffect.Schema;
   export import DatabaseOperation = ActiveEffect.Database;
   export import Flags = ActiveEffect.Flags;
+  export import CoreFlags = ActiveEffect.CoreFlags;
+  export import DurationData = ActiveEffect.DurationData;
+  export import Duration = ActiveEffect.Duration;
+  export import EffectChangeData = ActiveEffect.EffectChangeData;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.

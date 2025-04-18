@@ -6,7 +6,7 @@ expectTypeOf(tagsElement.type).toEqualTypeOf<string | null>();
 expectTypeOf(tagsElement.single).toEqualTypeOf<boolean>();
 expectTypeOf(tagsElement.max).toEqualTypeOf<number>();
 
-declare const doc: Actor;
+declare const doc: Actor.Implementation;
 expectTypeOf(tagsElement._validateDocument(doc)).toEqualTypeOf<void>();
 
 expectTypeOf(foundry.applications.elements.HTMLDocumentTagsElement.tagName).toEqualTypeOf<"document-tags">();

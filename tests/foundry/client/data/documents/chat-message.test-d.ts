@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { AnyObject } from "../../../../../src/utils/index.d.mts";
 
 type ChatSpeakerData = foundry.documents.BaseChatMessage.Properties["speaker"];
 

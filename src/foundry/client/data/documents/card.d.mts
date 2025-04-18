@@ -4,7 +4,6 @@ import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
-import type { CardFaceData } from "../../../common/documents/_types.d.mts";
 import type BaseCard from "../../../common/documents/card.d.mts";
 
 declare global {
@@ -285,31 +284,7 @@ declare global {
         img: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; label: "CARD.BackImage" }>;
       }>;
 
-      faces: fields.ArrayField<
-        fields.SchemaField<{
-          /**
-           * A name for this card face
-           * @defaultValue `""`
-           */
-          name: fields.StringField<{ label: "CARD.FaceName" }>;
-
-          /**
-           * Displayed text that belongs to this face
-           * @defaultValue `""`
-           */
-          text: fields.HTMLField<{ label: "CARD.FaceText" }>;
-
-          /**
-           * A displayed image or video file which depicts the face
-           * @defaultValue `BaseCard.DEFAULT_ICON`
-           */
-          img: fields.FilePathField<{
-            categories: ["IMAGE", "VIDEO"];
-            initial: () => typeof BaseCard.DEFAULT_ICON;
-            label: "CARD.FaceImage";
-          }>;
-        }>
-      >;
+      faces: fields.ArrayField<fields.SchemaField<Card.FaceSchema>>;
 
       /**
        * The index of the currently displayed face, or null if the card is face-down
@@ -361,6 +336,32 @@ declare global {
 
       _stats: fields.DocumentStatsField;
     }
+
+    interface FaceSchema extends DataSchema {
+      /**
+       * A name for this card face
+       * @defaultValue `""`
+       */
+      name: fields.StringField<{ label: "CARD.FaceName" }>;
+
+      /**
+       * Displayed text that belongs to this face
+       * @defaultValue `""`
+       */
+      text: fields.HTMLField<{ label: "CARD.FaceText" }>;
+
+      /**
+       * A displayed image or video file which depicts the face
+       * @defaultValue `BaseCard.DEFAULT_ICON`
+       */
+      img: fields.FilePathField<{
+        categories: ["IMAGE", "VIDEO"];
+        initial: () => typeof BaseCard.DEFAULT_ICON;
+        label: "CARD.FaceImage";
+      }>;
+    }
+
+    interface FaceData extends fields.SchemaField.InitializedData<Schema> {}
 
     namespace Database {
       /** Options passed along in Get operations for Card Documents */
@@ -528,7 +529,7 @@ declare global {
     /**
      * The current card face
      */
-    get currentFace(): CardFaceData | null;
+    get currentFace(): Card.FaceData | null;
 
     /**
      * The image of the currently displayed card face or back

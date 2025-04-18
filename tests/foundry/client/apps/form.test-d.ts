@@ -1,9 +1,9 @@
 import { assertType, expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
-declare const formApplication: FormApplication<FormApplication.Options, Actor>;
+declare const formApplication: FormApplication<FormApplication.Options, Actor.Implementation>;
 
-expectTypeOf(formApplication.object).toEqualTypeOf<X>();
+expectTypeOf(formApplication.object).toEqualTypeOf<Actor.Implementation>();
 expectTypeOf(FormApplication.defaultOptions).toEqualTypeOf<FormApplication.Options>();
 expectTypeOf(formApplication.options).toEqualTypeOf<FormApplication.Options>();
 expectTypeOf(formApplication.getData()).toEqualTypeOf<

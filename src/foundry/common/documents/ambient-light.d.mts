@@ -269,6 +269,7 @@ declare namespace BaseAmbientLight {
   export import Schema = AmbientLightDocument.Schema;
   export import DatabaseOperation = AmbientLightDocument.Database;
   export import Flags = AmbientLightDocument.Flags;
+  export import CoreFlags = AmbientLightDocument.CoreFlags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

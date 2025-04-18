@@ -768,16 +768,6 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<TokenDocument.Database.Delete> {}
     }
 
-    interface CoreFlags {
-      core?: {
-        /** @remarks If provided, will be used for any light animations emanating from this token */
-        animationSeed?: number;
-
-        /** @remarks If true, and texture.src is a video, it will jump to a random timestamp every time the token is drawn */
-        randomizeVideo?: boolean;
-      };
-    }
-
     /**
      * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
      */
@@ -798,6 +788,16 @@ declare global {
        * Gets the type of a particular flag given a `Scope` and a `Key`.
        */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
+    }
+
+    interface CoreFlags {
+      core?: {
+        /** @remarks If provided, will be used for any light animations emanating from this token */
+        animationSeed?: number;
+
+        /** @remarks If true, and texture.src is a video, it will jump to a random timestamp every time the token is drawn */
+        randomizeVideo?: boolean;
+      };
     }
 
     /**
