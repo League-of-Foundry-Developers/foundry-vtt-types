@@ -598,7 +598,7 @@ declare global {
      * Get the width and height of the Token in pixels.
      * @returns The size in pixels
      */
-    getSize(): { width: number; height: number };
+    getSize(): Token.Size;
 
     /**
      * Get the shape of this Token.
@@ -627,7 +627,7 @@ declare global {
      *     within the elevation range of the Region.
      *
      * If this function is overridden, then {@link Token.segmentizeRegionMovement | `Token#segmentizeRegionMovement`} must be overridden too.
-     * @param region - The region.
+     * @param region   - The region.
      * @param position - The (x, y) and/or elevation to use instead of the current values.
      * @returns Is the Token inside the Region?
      * @remarks `position` can be `{x, y}`, `{elevation}`, both, or neither. If either part is omitted, uses the document's value(s)
@@ -1072,6 +1072,11 @@ declare global {
       }>;
     interface ReticuleOptions extends _ReticuleOptions {}
 
+    /**
+     * The return type of {@link Token.getRingColors | `Token#getRingColors`}. Core's implementation returns `{}`.
+     * Values returned by subclasses should not be nullish, as they are `mergeObject`'d into the default color values
+     * from {@link TokenRing.ConfiguredClass | `TokenRing.ConfiguredClass`}
+     */
     interface RingColors {
       ring?: Color;
       background?: Color;
@@ -1147,31 +1152,39 @@ declare global {
     interface StopAnimationOptions extends _StopAnimationOptions {}
 
     /** @internal */
-    type _CheckCollisionOptions<Mode> = InexactPartial<{
-      /**
-       * The collision mode to test: "any", "all", or "closest"
-       * @defaultValue `"any"`
-       * @remarks Can't be `null` as it only has a parameter default
-       */
-      mode: Mode;
-
-      /**
-       * The collision type
-       * @defaultValue `"move"`
-       * @remarks Can't be `null` as it only has a parameter default
-       *
-       * `"sound"` is a valid source type but explicitly throws if passed, so omitted here
-       */
-      type: "move" | "sight" | "light";
-    }> &
-      NullishProps<{
+    type _CheckCollisionOptions<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined> =
+      InexactPartial<{
         /**
-         * The origin to be used instead of the current origin
+         * The collision mode to test: "any", "all", or "closest"
+         * @defaultValue `"any"`
+         * @remarks Can't be `null` as it only has a parameter default
          */
-        origin: Canvas.Point;
-      }>;
+        mode: Mode;
 
-    interface CheckCollisionOptions<Mode> extends _CheckCollisionOptions<Mode> {}
+        /**
+         * The collision type
+         * @defaultValue `"move"`
+         * @remarks Can't be `null` as it only has a parameter default
+         *
+         * `"sound"` is a valid source type but explicitly throws if passed, so omitted here
+         */
+        type: "move" | "sight" | "light";
+      }> &
+        NullishProps<{
+          /**
+           * The origin to be used instead of the current origin
+           */
+          origin: Canvas.Point;
+        }>;
+
+    interface CheckCollisionOptions<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>
+      extends _CheckCollisionOptions<Mode> {}
+
+    /** Return type of {@link Token.getSize | `Token#getSize`} */
+    interface Size {
+      width: number;
+      height: number;
+    }
 
     /**
      * @privateRemarks Foundry types this as `Point | (Point & {elevation: number}) | {elevation: number}`,

@@ -1,8 +1,9 @@
 import { expectTypeOf } from "vitest";
 
+declare const doc: TileDocument.Stored;
+
 expectTypeOf(Tile.embeddedName).toEqualTypeOf<"Tile">();
-expectTypeOf(Tile.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
-  // undefined only from the optional chain, not underlying type
+expectTypeOf(Tile.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
       | "redraw"
       | "refresh"
@@ -21,7 +22,6 @@ expectTypeOf(Tile.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
 >();
 expectTypeOf(Tile.createPreview(doc.toObject())).toEqualTypeOf<Tile.Object>();
 
-declare const doc: TileDocument.Stored;
 const tile = new CONFIG.Tile.objectClass(doc);
 
 expectTypeOf(tile.controlIcon).toBeNull();

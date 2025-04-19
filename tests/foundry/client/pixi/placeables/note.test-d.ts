@@ -1,8 +1,7 @@
 import { expectTypeOf } from "vitest";
 
 expectTypeOf(Note.embeddedName).toEqualTypeOf<"Note">();
-expectTypeOf(Note.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
-  // undefined only from the optional chain, not underlying type
+expectTypeOf(Note.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
       | "redraw"
       | "refresh"

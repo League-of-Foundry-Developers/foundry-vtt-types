@@ -12,7 +12,7 @@ expectTypeOf((myFS = FS.create())).toEqualTypeOf<FogShader>();
 expectTypeOf(myFS.speed).toEqualTypeOf<number>();
 expectTypeOf(myFS["_preRender"]).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();
 
-//dynamic properties from `FogShader.DefaultUniforms`
+// dynamic properties from `FogShader.DefaultUniforms`
 expectTypeOf(myFS.intensity).toBeNumber();
 expectTypeOf(myFS.rotation).toBeNumber();
 expectTypeOf(myFS.slope).toBeNumber();

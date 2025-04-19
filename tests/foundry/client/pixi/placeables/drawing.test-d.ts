@@ -3,8 +3,7 @@ import { expectTypeOf } from "vitest";
 declare const drawingDoc: DrawingDocument.Stored;
 
 expectTypeOf(Drawing.embeddedName).toEqualTypeOf<"Drawing">();
-expectTypeOf(Drawing.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
-  // undefined only from the optional chain, not underlying type
+expectTypeOf(Drawing.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
       | "redraw"
       | "refresh"

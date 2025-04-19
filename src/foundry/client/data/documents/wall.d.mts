@@ -134,7 +134,7 @@ declare global {
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
-    //TODO: ensure `c` is required for creation
+    // TODO: ensure `c` is required for creation
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
@@ -212,7 +212,7 @@ declare global {
         fields.ArrayField.InitializedElementType<
           fields.NumberField<{ required: true; integer: true; nullable: false }>
         >,
-        //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+        // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
         Coordinates,
         Coordinates,
         fields.ArrayField.PersistedElementType<fields.NumberField<{ required: true; integer: true; nullable: false }>>,
@@ -230,7 +230,7 @@ declare global {
           initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_SENSE_TYPES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_SENSE_TYPES | null | undefined,
         CONST.WALL_SENSE_TYPES | null,
         CONST.WALL_SENSE_TYPES | null
@@ -247,7 +247,7 @@ declare global {
           initial: typeof CONST.WALL_MOVEMENT_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_MOVEMENT_TYPES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_MOVEMENT_TYPES | null | undefined,
         CONST.WALL_MOVEMENT_TYPES | null,
         CONST.WALL_MOVEMENT_TYPES | null
@@ -264,7 +264,7 @@ declare global {
           initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_SENSE_TYPES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_SENSE_TYPES | null | undefined,
         CONST.WALL_SENSE_TYPES | null,
         CONST.WALL_SENSE_TYPES | null
@@ -281,7 +281,7 @@ declare global {
           initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_SENSE_TYPES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_SENSE_TYPES | null | undefined,
         CONST.WALL_SENSE_TYPES | null,
         CONST.WALL_SENSE_TYPES | null
@@ -298,7 +298,7 @@ declare global {
           initial: typeof CONST.WALL_DIRECTIONS.BOTH;
           validationError: "must be a value in CONST.WALL_DIRECTIONS";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_DIRECTIONS | null | undefined,
         CONST.WALL_DIRECTIONS | null,
         CONST.WALL_DIRECTIONS | null
@@ -315,7 +315,7 @@ declare global {
           initial: typeof CONST.WALL_DOOR_TYPES.NONE;
           validationError: "must be a value in CONST.WALL_DOOR_TYPES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_DOOR_TYPES | null | undefined,
         CONST.WALL_DOOR_TYPES | null,
         CONST.WALL_DOOR_TYPES | null
@@ -332,7 +332,7 @@ declare global {
           initial: typeof CONST.WALL_DOOR_STATES.CLOSED;
           validationError: "must be a value in CONST.WALL_DOOR_STATES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_DOOR_STATES | null | undefined,
         CONST.WALL_DOOR_STATES | null,
         CONST.WALL_DOOR_STATES | null

@@ -17,7 +17,7 @@ expectTypeOf(HandlebarsHelpers.formInput(myNumField, {})).toEqualTypeOf<Handleba
 expectTypeOf(HandlebarsHelpers.formGroup(myNumField, {})).toEqualTypeOf<Handlebars.SafeString>();
 expectTypeOf(HandlebarsHelpers.rangePicker({})).toEqualTypeOf<Handlebars.SafeString>();
 
-//@ts-expect-error bar is not a valid formInput property
+// @ts-expect-error bar is not a valid formInput property
 HandlebarsHelpers.formInput(myNumField, { hash: { bar: 3 } });
 
 expectTypeOf(getTemplate("")).toEqualTypeOf<Promise<Handlebars.TemplateDelegate>>();

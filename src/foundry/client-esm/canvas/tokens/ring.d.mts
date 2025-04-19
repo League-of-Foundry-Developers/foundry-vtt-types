@@ -1,4 +1,4 @@
-import type { Brand, FixedInstanceType, InitializedOn } from "fvtt-types/utils";
+import type { Brand, FixedInstanceType, Identity, InitializedOn } from "fvtt-types/utils";
 import type DynamicRingData from "./ring-data.d.mts";
 
 /**
@@ -196,7 +196,7 @@ declare class TokenRing {
 
 declare namespace TokenRing {
   interface Any extends AnyTokenRing {}
-  type AnyConstructor = typeof AnyTokenRing;
+  interface AnyConstructor extends Identity<typeof AnyTokenRing> {}
 
   type ConfiguredClass = CONFIG["Token"]["ring"]["ringClass"];
   type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;

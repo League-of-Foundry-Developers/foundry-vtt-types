@@ -18,7 +18,7 @@ expectTypeOf(myPrimaryGroup.addToken(someToken)).toEqualTypeOf<PrimarySpriteMesh
 expectTypeOf(myPrimaryGroup.addTile(someTile)).toEqualTypeOf<PrimarySpriteMesh>();
 expectTypeOf(myPrimaryGroup.addDrawing(someDrawing)).toEqualTypeOf<PrimaryGraphics>();
 
-//deprecated since v11, until v13
+// deprecated since v11, until v13
 expectTypeOf(myPrimaryGroup.mapElevationAlpha(20)).toEqualTypeOf<number>();
-//depcated since v12, until v14
+// deprecated since v12, until v14
 expectTypeOf(myPrimaryGroup.mapElevationToDepth(20)).toEqualTypeOf<number>();

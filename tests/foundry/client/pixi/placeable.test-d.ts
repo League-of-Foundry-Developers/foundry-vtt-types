@@ -4,8 +4,7 @@ import type { HandleEmptyObject } from "../../../../src/utils/index.d.mts";
 
 expectTypeOf(PlaceableObject.embeddedName).toBeString();
 
-expectTypeOf(PlaceableObject.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
-  // undefined only from the optional chain, not underlying type
+expectTypeOf(PlaceableObject.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   Array<"redraw" | "refresh" | "refreshState"> | undefined
 >();
 
@@ -37,10 +36,10 @@ expectTypeOf(placeable.sourceId).toBeString();
 expectTypeOf(placeable.isPreview).toBeBoolean();
 expectTypeOf(placeable.hasPreview).toBeBoolean();
 
-//TODO: investigate AmbientLightDocument#layer to see if this should be a more narrowed type
+// TODO: investigate AmbientLightDocument#layer to see if this should be a more narrowed type
 expectTypeOf(placeable.layer).toEqualTypeOf<PlaceablesLayer.Any>();
 
-//TODO: investigate AmbientLightDocument#sheet to see if this should be a more narrowed type
+// TODO: investigate AmbientLightDocument#sheet to see if this should be a more narrowed type
 expectTypeOf(placeable.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();
 
 expectTypeOf(placeable.controlled).toBeBoolean();
@@ -132,7 +131,7 @@ expectTypeOf(placeable["_createInteractionManager"]()).toEqualTypeOf<MouseIntera
 declare const someUser: User.Implementation;
 declare const someEvent: PIXI.FederatedEvent;
 declare const dragEvent: DragEvent;
-// arbitrary actions are allowed, because subclasses might have new `_con*` methods
+// arbitrary actions are allowed, because subclasses might have new `_can*` methods
 expectTypeOf(placeable.can(someUser, "asfs")).toBeBoolean();
 expectTypeOf(placeable.can(someUser, "control")).toBeBoolean();
 // this doesn't actually work because HUD gets `.titleCase()`ed, but its a valid call

@@ -1,8 +1,7 @@
 import { expectTypeOf } from "vitest";
 
 expectTypeOf(Token.embeddedName).toEqualTypeOf<"Token">();
-expectTypeOf(Token.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
-  // undefined only from the optional chain, not underlying type
+expectTypeOf(Token.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
       | "redraw"
       | "redrawEffects"
@@ -515,7 +514,7 @@ expectTypeOf(
   token.refreshHUD({ bars: null, border: null, effects: null, elevation: null, nameplate: null }),
 ).toBeVoid();
 
-//deprecated since v12, until v14
+// deprecated since v12, until v14
 expectTypeOf(token.updateSource()).toBeVoid();
 expectTypeOf(token.updateSource({})).toBeVoid();
 expectTypeOf(token.updateSource({ deleted: true })).toBeVoid();

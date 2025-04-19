@@ -73,10 +73,10 @@ expectTypeOf(
   ),
 ).toEqualTypeOf<MyEffectSource>();
 
-//@ts-expect-error `#_initialize` takes and mutates data, not passing it anything doesn't make sense
+// @ts-expect-error `#_initialize` takes and mutates data, not passing it anything doesn't make sense
 expectTypeOf(mySource["_initialize"]()).toBeVoid();
 expectTypeOf(
-  //@ts-expect-error `#initialize` will have already applied the defaults from `.defaultData` before calling `#_initialize`
+  // @ts-expect-error `#initialize` will have already applied the defaults from `.defaultData` before calling `#_initialize`
   mySource["_initialize"]({
     y: undefined,
   }),
@@ -102,7 +102,7 @@ expectTypeOf(
   }),
 );
 expectTypeOf(
-  //@ts-expect-error data passed to `#_configure` will have had excess keys stripped and default values applied
+  // @ts-expect-error data passed to `#_configure` will have had excess keys stripped and default values applied
   mySource["_configure"]({
     y: undefined,
   }),
@@ -117,9 +117,9 @@ expectTypeOf(mySource["_destroy"]()).toBeVoid();
 expectTypeOf(mySource.add()).toBeVoid();
 expectTypeOf(mySource.remove()).toBeVoid();
 
-//deprecated since v11, until v13
+// deprecated since v11, until v13
 expectTypeOf(mySource.sourceType).toBeString();
 
-//deprecated since v12, until v14
+// deprecated since v12, until v14
 expectTypeOf(mySource["_createShape"]()).toBeVoid();
 expectTypeOf(mySource.disabled).toBeBoolean();

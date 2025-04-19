@@ -69,7 +69,7 @@ expectTypeOf(
 expectTypeOf(layer["_onClickLeft"](someEvent)).toBeVoid();
 expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<Token.Object[] | void>>();
 
-//deprecated since v12, until v14
+// deprecated since v12, until v14
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<1>();
 declare const someCombat: Combat.ConfiguredInstance;
 expectTypeOf(layer.toggleCombat()).toEqualTypeOf<Promise<Combatant.ConfiguredInstance[]>>();

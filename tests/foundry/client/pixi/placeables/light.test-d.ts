@@ -96,7 +96,7 @@ expectTypeOf(light["_onDragLeftMove"](someEvent)).toBeVoid();
 expectTypeOf(light["_onDragEnd"]()).toBeVoid();
 expectTypeOf(light["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
-//deprecated since v12, until v14
+// deprecated since v12, until v14
 expectTypeOf(light.updateSource()).toBeVoid();
 expectTypeOf(light.updateSource({})).toBeVoid();
 expectTypeOf(light.updateSource({ deleted: true })).toBeVoid();

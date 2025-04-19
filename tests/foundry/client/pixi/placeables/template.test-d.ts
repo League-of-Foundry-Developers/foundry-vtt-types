@@ -1,8 +1,7 @@
 import { expectTypeOf } from "vitest";
 
 expectTypeOf(MeasuredTemplate.embeddedName).toEqualTypeOf<"MeasuredTemplate">();
-expectTypeOf(MeasuredTemplate.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
-  // undefined only from the optional chain, not underlying type
+expectTypeOf(MeasuredTemplate.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
       | "redraw"
       | "refresh"

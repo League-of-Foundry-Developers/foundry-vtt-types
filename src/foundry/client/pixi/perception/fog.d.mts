@@ -44,13 +44,13 @@ declare global {
     /**
      * Does the currently viewed Scene support Token field of vision?
      */
-    //TODO: make `Scene.Implementation["tokenVision"]` when docsv2 is done
+    // TODO: make `Scene.Implementation["tokenVision"]` when docsv2 is done
     get tokenVision(): boolean;
 
     /**
      * Does the currently viewed Scene support fog of war exploration?
      */
-    //TODO: make `Scene.Implementation["fog"]["exploration"]` when docsv2 is done
+    // TODO: make `Scene.Implementation["fog"]["exploration"]` when docsv2 is done
     get fogExploration(): boolean;
 
     /**

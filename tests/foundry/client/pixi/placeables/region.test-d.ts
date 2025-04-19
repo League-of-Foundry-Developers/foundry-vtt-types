@@ -2,8 +2,7 @@ import { expectTypeOf } from "vitest";
 import regions = foundry.canvas.regions;
 
 expectTypeOf(Region.embeddedName).toEqualTypeOf<"Region">();
-expectTypeOf(Region.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
-  // undefined only from the optional chain, not underlying type
+expectTypeOf(Region.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   Array<"redraw" | "refresh" | "refreshState" | "refreshBorder"> | undefined
 >();
 expectTypeOf(Region.CLIPPER_SCALING_FACTOR).toEqualTypeOf<100>();

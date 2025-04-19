@@ -5,6 +5,7 @@ import type {
   InexactPartial,
   MakeConform,
   NullishProps,
+  Titlecase,
 } from "fvtt-types/utils";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
@@ -44,7 +45,7 @@ declare global {
     /**
      * A control icon for interacting with the object
      * @defaultValue `null`
-     * @remarks Set `null` in {@link PlaceableObject | `PlaceableObject#constructor`} and {@link AmbientSound.clear | `AmbientSound#clear`}.
+     * @remarks Set to `null` in {@link PlaceableObject | `PlaceableObject#constructor`} and {@link AmbientSound.clear | `AmbientSound#clear`}.
      *
      * In placeables which use one ({@link AmbientLight | `AmbientLight`}, {@link AmbientSound | `AmbientSound`},
      * {@link Note | `Note`}, and {@link MeasuredTemplate | `MeasuredTemplate`}), it's only `null` prior to first draw.
@@ -441,7 +442,7 @@ declare global {
      * @param options - Options which customize event handling
      * @remarks {@link Wall._onHoverIn | `Wall#_onHoverIn`} can return `false`, otherwise this is always `void`
      */
-    //options: not null (destructured)
+    // options: not null (destructured)
     protected _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
 
     /**
@@ -592,8 +593,7 @@ declare global {
     interface Any extends AnyPlaceableObject {}
     interface AnyConstructor extends Identity<typeof AnyPlaceableObject> {}
 
-    // TODO: Should maybe be Scene.Embedded once the document template is finished propagating?
-    type AnyCanvasDocument = Document.ImplementationFor<Document.PlaceableType>;
+    type AnyCanvasDocument = Scene.Embedded;
 
     type RenderFlags = RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS>;
 
@@ -690,9 +690,20 @@ declare global {
      * before prepending `"_can"`, rendering any actions with more than a single capital in their
      * name (e.g `"DragLeftStart"`), including `"HUD"` (as there's no `PlaceableObject#_canHud()`),
      * effectively inert, so they have been omitted here. This also means these are case
-     * -insensitive at runtime, but TS doesn't have a good way to type that.
+     * -insensitive at runtime, but TS doesn't have a good way to type that. Allowing lowercase or
+     * title case is the best we can do.
      */
-    type Action = "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete" | (string & {});
+    type BaseAction =
+      | "configure"
+      | "control"
+      | "view"
+      | "create"
+      | "drag"
+      | "hover"
+      | "update"
+      | "delete"
+      | (string & {});
+    type Action = Titlecase<BaseAction> | BaseAction;
 
     /** @remarks Foundry does some unsound subclassing around {@link PlaceableObject._prepareDragLeftDropUpdates | `PlaceableObject#_prepareDragLeftDropUpdates`} */
     type AnyDragLeftDropUpdate = DragLeftDropUpdate | Token.DragLeftDropUpdate | Wall.DragLeftDropUpdate;

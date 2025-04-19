@@ -2,8 +2,7 @@ import { expectTypeOf } from "vitest";
 import Sound = foundry.audio.Sound;
 
 expectTypeOf(AmbientSound.embeddedName).toEqualTypeOf<"AmbientSound">();
-expectTypeOf(AmbientSound.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
-  // undefined only from the optional chain, not underlying type
+expectTypeOf(AmbientSound.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   Array<"redraw" | "refresh" | "refreshField" | "refreshPosition" | "refreshState" | "refreshElevation"> | undefined
 >();
 
@@ -100,7 +99,7 @@ expectTypeOf(sound["_onDragLeftMove"](someEvent)).toBeVoid();
 expectTypeOf(sound["_onDragEnd"]()).toBeVoid();
 expectTypeOf(sound["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
-//deprecated since v12, until v14
+// deprecated since v12, until v14
 expectTypeOf(sound.updateSource()).toBeVoid();
 expectTypeOf(sound.updateSource({})).toBeVoid();
 expectTypeOf(sound.updateSource({ deleted: true })).toBeVoid();

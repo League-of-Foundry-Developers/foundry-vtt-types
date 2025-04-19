@@ -26,9 +26,9 @@ expectTypeOf(layer["_createBackgroundColorTexture"]()).toEqualTypeOf<PIXI.Textur
 expectTypeOf(layer.draw()).toEqualTypeOf<Promise<CanvasIlluminationEffects>>();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
-//deprecated until v13
+// deprecated until v13
 expectTypeOf(layer.updateGlobalLight()).toEqualTypeOf<false>();
-//deprecated until v14
+// deprecated until v14
 expectTypeOf(layer.background()).toBeNull();
 expectTypeOf(layer.globalLight).toBeBoolean();
 

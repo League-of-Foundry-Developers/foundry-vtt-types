@@ -126,7 +126,7 @@ declare global {
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
-    //TODO: ensure `width` and `height` are required for creation
+    // TODO: ensure `width` and `height` are required for creation
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
@@ -171,13 +171,13 @@ declare global {
       /**
        * The pixel width of the tile
        */
-      //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
       width: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }, number>;
 
       /**
        * The pixel height of the tile
        */
-      //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
       height: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }, number>;
 
       /**
@@ -252,7 +252,7 @@ declare global {
             initial: typeof CONST.OCCLUSION_MODES.NONE;
             validationError: "must be a value in CONST.TILE_OCCLUSION_MODES";
           },
-          //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+          // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
           CONST.OCCLUSION_MODES | null | undefined,
           CONST.OCCLUSION_MODES | null,
           CONST.OCCLUSION_MODES | null

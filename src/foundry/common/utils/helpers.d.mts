@@ -416,7 +416,7 @@ export interface MergeObjectOptions {
    * Control whether to perform deletions on the original object if deletion keys are present in the other object.
    * @defaultValue `false`
    */
-  performDeletions?: boolean | undefined; //TODO: implement this in the mergeObject return type
+  performDeletions?: boolean | undefined; // TODO: implement this in the mergeObject return type
 }
 
 /**

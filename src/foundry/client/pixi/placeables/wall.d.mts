@@ -266,22 +266,23 @@ declare global {
      * @deprecated since v12, until v14
      * @remarks "`Wall#vertices` is replaced by {@link Wall.edge | `Wall#edge`}"
      */
-    get vertices(): this["edge"];
+    get vertices(): Edge;
 
     /**
      * The initial endpoint of the Wall
      * @deprecated since v12, until v14
      * @remarks "`Wall#A` is replaced by {@link Edge.a | `Wall#edge#a`}"
      */
-    get A(): this["edge"]["a"];
+    get A(): Edge["a"];
 
     /**
      * The second endpoint of the Wall
      * @deprecated since v12, until v14
      * @remarks "`Wall#B` is replaced by {@link Edge.b | `Wall#edge#b`}"
      */
-    get B(): this["edge"]["b"];
+    get B(): Edge["b"];
   }
+
   namespace Wall {
     // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof Wall>;
@@ -355,6 +356,7 @@ declare global {
       /** @defaultValue `false` */
       chain: boolean;
     }>;
+
     interface ControlOptions extends _ControlOptions, PlaceableObject.ControlOptions {}
 
     interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
@@ -367,6 +369,7 @@ declare global {
        */
       deleted: boolean;
     }>;
+
     interface InitializeEdgeOptions extends _InitializeEdgeOptions {}
 
     interface GetLinkedSegmentsReturn {
