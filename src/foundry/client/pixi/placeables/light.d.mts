@@ -180,6 +180,7 @@ declare global {
   }
 
   namespace AmbientLight {
+    // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;
     type Object = FixedInstanceType<ObjectClass>;
 

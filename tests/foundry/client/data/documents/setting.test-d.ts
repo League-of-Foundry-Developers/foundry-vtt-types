@@ -2,12 +2,12 @@ import { expectTypeOf } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
 // @ts-expect-error - requires key
-new Setting();
+new Setting.implementation();
 
 // @ts-expect-error - requires key
-new Setting({});
+new Setting.implementation({});
 
-const setting = new Setting({ key: "foo.bar", value: "bar" });
+const setting = new Setting.implementation({ key: "foo.bar", value: "bar" });
 
 expectTypeOf(setting.config).toEqualTypeOf<SettingsConfig | undefined>();
 

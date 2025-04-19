@@ -19,7 +19,7 @@ declare global {
      * @param html - The HTML content of the message.
      * @internal
      */
-    protected _activateListeners(msg: ChatMessage, html: JQuery): void;
+    protected _activateListeners(msg: ChatMessage.Implementation, html: JQuery): void;
 
     /**
      * Perform some special action triggered by clicking on a link in a NUE chat card.

@@ -48,7 +48,7 @@ declare global {
      * @param render - Whether to re-render the sidebar after initialization
      *                 (default: `true`)
      */
-    initialize({ combat, render }?: { combat?: Combat | null; render?: boolean }): void;
+    initialize({ combat, render }?: { combat?: Combat.Implementation | null; render?: boolean }): void;
 
     /**
      * Scroll the combat log container to ensure the current Combatant turn is centered vertically

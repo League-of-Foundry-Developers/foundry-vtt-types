@@ -108,9 +108,40 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   static override get(documentId: string, options?: Playlist.Database.GetOptions): Playlist.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Playlist.EmbeddedName>(
+  static override getCollectionName<CollectionName extends Playlist.Embedded.Name>(
     name: CollectionName,
-  ): Playlist.CollectionNameOf<CollectionName> | null;
+  ): Playlist.Embedded.CollectionNameOf<CollectionName> | null;
+
+  override getEmbeddedCollection<EmbeddedName extends Playlist.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): Playlist.Embedded.CollectionFor<EmbeddedName>;
+
+  override getEmbeddedDocument<EmbeddedName extends Playlist.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): Playlist.Embedded.DocumentFor<EmbeddedName> | undefined;
+
+  override createEmbeddedDocuments<EmbeddedName extends Playlist.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override updateEmbeddedDocuments<EmbeddedName extends Playlist.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends Playlist.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -245,14 +276,16 @@ declare namespace BasePlaylist {
   export import Hierarchy = Playlist.Hierarchy;
   export import Metadata = Playlist.Metadata;
   export import Parent = Playlist.Parent;
+  export import Descendant = Playlist.Descendant;
+  export import DescendantClass = Playlist.DescendantClass;
   export import Pack = Playlist.Pack;
   export import Embedded = Playlist.Embedded;
-  export import EmbeddedName = Playlist.EmbeddedName;
-  export import EmbeddedCollectionName = Playlist.EmbeddedCollectionName;
   export import ParentCollectionName = Playlist.ParentCollectionName;
+  export import CollectionClass = Playlist.CollectionClass;
+  export import Collection = Playlist.Collection;
   export import Stored = Playlist.Stored;
   export import Source = Playlist.Source;
-  export import PersistedData = Playlist.PersistedData;
+  export import PersistedData = Playlist.Source;
   export import CreateData = Playlist.CreateData;
   export import InitializedData = Playlist.InitializedData;
   export import UpdateData = Playlist.UpdateData;

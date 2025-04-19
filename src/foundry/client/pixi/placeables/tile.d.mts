@@ -244,6 +244,7 @@ declare global {
   }
 
   namespace Tile {
+    // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof Tile>;
     type Object = FixedInstanceType<ObjectClass>;
 

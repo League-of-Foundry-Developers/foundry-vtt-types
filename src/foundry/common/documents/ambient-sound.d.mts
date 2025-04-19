@@ -51,7 +51,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " fvtt_types_internal_document_name_static": "AmbientLight";
+  static " fvtt_types_internal_document_name_static": "AmbientSound";
 
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
@@ -108,9 +108,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     options?: AmbientSoundDocument.Database.GetOptions,
   ): AmbientSoundDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends AmbientSoundDocument.EmbeddedName>(
-    name: CollectionName,
-  ): AmbientSoundDocument.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -256,11 +254,13 @@ declare namespace BaseAmbientSound {
   export import Hierarchy = AmbientSoundDocument.Hierarchy;
   export import Metadata = AmbientSoundDocument.Metadata;
   export import Parent = AmbientSoundDocument.Parent;
+  export import Descendant = AmbientSoundDocument.Descendant;
+  export import DescendantClass = AmbientSoundDocument.DescendantClass;
   export import Pack = AmbientSoundDocument.Pack;
   export import Embedded = AmbientSoundDocument.Embedded;
-  export import EmbeddedName = AmbientSoundDocument.EmbeddedName;
-  export import EmbeddedCollectionName = AmbientSoundDocument.EmbeddedCollectionName;
   export import ParentCollectionName = AmbientSoundDocument.ParentCollectionName;
+  export import CollectionClass = AmbientSoundDocument.CollectionClass;
+  export import Collection = AmbientSoundDocument.Collection;
   export import Stored = AmbientSoundDocument.Stored;
   export import Source = AmbientSoundDocument.Source;
   export import PersistedData = AmbientSoundDocument.PersistedData;

@@ -147,6 +147,7 @@ declare global {
   }
 
   namespace Region {
+    // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof Region>;
     type Object = FixedInstanceType<ObjectClass>;
 

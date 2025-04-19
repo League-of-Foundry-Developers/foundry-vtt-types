@@ -1,7 +1,7 @@
-import type { AnyObject, DeepPartial, InexactPartial, InterfaceToObject } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, InexactPartial, InterfaceToObject, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DataSchema, SchemaField } from "../../../common/data/fields.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields, LightData, TextureData } from "../../../common/data/module.d.mts";
 import type { ActorDeltaField } from "../../../common/documents/token.d.mts";
 import type BaseToken from "../../../common/documents/token.d.mts";
@@ -19,18 +19,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within Token.
+     * The documents embedded within `TokenDocument`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the TokenDocument document instance configured through `CONFIG.Token.documentClass` in Foundry and
+     * The implementation of the `TokenDocument` document instance configured through `CONFIG.Token.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTokenDocument | `fvtt-types/configuration/ConfiguredTokenDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the TokenDocument document configured through `CONFIG.Token.documentClass` in Foundry and
+     * The implementation of the `TokenDocument` document configured through `CONFIG.Token.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -39,7 +39,42 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Token";
+          collection: "tokens";
+          label: string;
+          labelPlural: string;
+          isEmbedded: true;
+          embedded: TokenDocument.Metadata.Embedded;
+          permissions: TokenDocument.Metadata.Permissions;
+          schemaVersion: string;
+        }>
+      > {}
+
+    namespace Metadata {
+      /**
+       * The embedded metadata
+       */
+      interface Embedded {
+        ActorDelta: "delta";
+      }
+
+      /**
+       * The permissions for whether a certain user can create, update, or delete this document.
+       */
+      interface Permissions {
+        create: "TOKEN_CREATE";
+        update(
+          user: User.Internal.Implementation,
+          doc: TokenDocument.Implementation,
+          data: BaseToken.UpdateData,
+        ): boolean;
+        delete: "TOKEN_DELETE";
+      }
+    }
 
     /**
      * A document's parent is something that can contain it.
@@ -51,22 +86,22 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = ActorDelta.Stored | ActorDelta.Descendants;
+    type Descendant = ActorDelta.Stored | ActorDelta.Descendant;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = ActorDelta.ImplementationClass | ActorDelta.DescendantClasses;
+    type DescendantClass = ActorDelta.ImplementationClass | ActorDelta.DescendantClass;
 
     /**
      * The valid `parent` entries for descendant document operations.
      * This includes the current document as well as any descendants that have descendants.
      */
-    type DescendantParents = Stored | ActorDelta.DescendantParents;
+    type DescendantParent = Stored | ActorDelta.DescendantParent;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Scene">;
@@ -77,21 +112,49 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<Embedded.Name>;
 
-    /**
-     * An embedded document is a document contained in another.
-     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
-     *
-     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
-     */
-    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+    namespace Embedded {
+      /**
+       * An embedded document is a document contained in another.
+       * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+       *
+       * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+       */
+      type Name = keyof Metadata.Embedded;
 
-    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
-      ? Metadata["embedded"][CollectionName]
-      : CollectionName;
+      /**
+       * Gets the collection name for an embedded document.
+       */
+      type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionNameFor<
+        Metadata.Embedded,
+        CollectionName
+      >;
 
-    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+      /**
+       * Gets the collection document for an embedded document.
+       */
+      // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+
+      /**
+       * Gets the collection for an embedded document.
+       */
+      type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
+        // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
+        Document.Any,
+        Metadata.Embedded,
+        CollectionName
+      >;
+
+      /**
+       * A valid name to refer to a collection embedded in this document. For example an `Actor`
+       * has the key `"items"` which contains `Item` instance which would make both `"Item" | "Items"`
+       * valid keys (amongst others).
+       */
+      type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
+    }
 
     /**
      * The name of the world or embedded collection this document can find itself in.
@@ -99,6 +162,16 @@ declare global {
      * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
      */
     type ParentCollectionName = Metadata["collection"];
+
+    /**
+     * The world collection that contains this document type. Will be `never` if none exists.
+     */
+    type CollectionClass = never;
+
+    /**
+     * The world collection that contains this document type. Will be `never` if none exists.
+     */
+    type Collection = never;
 
     /**
      * An instance of `TokenDocument` that comes from the database.
@@ -111,18 +184,13 @@ declare global {
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
-     *
-     * `Source` and `PersistedData` are equivalent.
      */
-    interface Source extends PersistedData {}
+    interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * The data put in {@link TokenDocument._source | `TokenDocument#_source`}. This data is what was
-     * persisted to the database and therefore it must be valid JSON.
-     *
-     * `Source` and `PersistedData` are equivalent.
+     * @deprecated {@link TokenDocument.Source | `TokenDocument.Source`}
      */
-    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+    type PersistedData = Source;
 
     /**
      * The data necessary to create a document. Used in places like {@link TokenDocument.create | `TokenDocument.create`}
@@ -587,6 +655,7 @@ declare global {
     namespace Database {
       /** Options passed along in Get operations for TokenDocuments */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<TokenDocument.Parent> {}
+
       /** Options passed along in Create operations for TokenDocuments */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<
@@ -594,8 +663,10 @@ declare global {
           TokenDocument.Parent,
           Temporary
         > {}
+
       /** Options passed along in Delete operations for TokenDocuments */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TokenDocument.Parent> {}
+
       /** Options passed along in Update operations for TokenDocuments */
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<TokenDocument.UpdateData, TokenDocument.Parent> {
@@ -697,6 +768,28 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<TokenDocument.Database.Delete> {}
     }
 
+    /**
+     * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
+     */
+    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+
+    namespace Flags {
+      /**
+       * The valid scopes for the flags on this document e.g. `"core"` or `"dnd5e"`.
+       */
+      type Scope = Document.FlagKeyOf<Flags>;
+
+      /**
+       * The valid keys for a certain scope for example if the scope is "core" then a valid key may be `"sheetLock"` or `"viewMode"`.
+       */
+      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+
+      /**
+       * Gets the type of a particular flag given a `Scope` and a `Key`.
+       */
+      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
+    }
+
     interface CoreFlags {
       core?: {
         /** @remarks If provided, will be used for any light animations emanating from this token */
@@ -707,19 +800,11 @@ declare global {
       };
     }
 
-    interface Flags extends Document.ConfiguredFlagsForName<Name> {}
-
-    namespace Flags {
-      type Scope = Document.FlagKeyOf<Flags>;
-      type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
-      type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
-    }
-
     /**
      * @deprecated {@link TokenDocument.Database | `TokenDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<TokenDocument> {}
+    interface DatabaseOperations extends Document.Database.Operations<TokenDocument.Implementation> {}
 
     /**
      * @deprecated {@link TokenDocument.CreateData | `TokenDocument.CreateData`}
@@ -751,7 +836,7 @@ declare global {
        * the current active combat will be modified if one exists. Otherwise, a new
        * Combat encounter will be created if the requesting user is a Gamemaster.
        */
-      combat?: Combat | undefined;
+      combat?: Combat.Implementation | undefined;
     }
 
     interface ToggleCombatantOptions extends InexactPartial<TokenDocument.CreateCombatantOptions> {
@@ -763,6 +848,16 @@ declare global {
     }
 
     type GetBarAttributeReturn = SingleAttributeBar | ObjectAttributeBar | null;
+
+    type GetEmbeddedCollectionName = Embedded.CollectionName | "Actor" | "Item" | "ActiveEffect";
+
+    // Note(LukeAbby): Simplified for now to prevent circularities. The correct implementation would
+    // be this:
+    // | (Name extends "Actor" ? globalThis.Collection<Actor.Implementation> : never)
+    // | (Name extends "Item" ? globalThis.Collection<Item.Implementation> : never)
+    // | (Name extends "ActiveEffect" ? globalThis.Collection<ActiveEffect.Implementation> : never)
+    // | (Name extends Embedded.CollectionName ? Embedded.CollectionFor<Name> : never);
+    type GetEmbeddedCollectionResult<_Name extends GetEmbeddedCollectionName> = Collection.Any;
   }
 
   /**
@@ -793,7 +888,7 @@ declare global {
     /**
      * A reference to the base, World-level Actor this token represents.
      */
-    get baseActor(): Actor | undefined;
+    get baseActor(): Actor.Implementation | undefined;
 
     /**
      * An indicator for whether or not the current User has full control over this Token document.
@@ -885,7 +980,7 @@ declare global {
      * @returns An array of created Combatant documents
      */
     static createCombatants(
-      tokens: TokenDocument[],
+      tokens: TokenDocument.Implementation[],
       options?: TokenDocument.CreateCombatantOptions,
     ): Promise<Combatant.Implementation[]>;
 
@@ -897,7 +992,7 @@ declare global {
      * @returns An array of deleted Combatant documents
      */
     static deleteCombatants(
-      tokens: TokenDocument[],
+      tokens: TokenDocument.Implementation[],
       options?: TokenDocument.CreateCombatantOptions,
     ): Promise<Combatant.Implementation[]>;
 
@@ -912,9 +1007,16 @@ declare global {
       defaults?: boolean,
     ): Promise<ReturnType<this["update"]>>;
 
-    override getEmbeddedCollection<DocType extends Document.Type>(
-      embeddedName: DocType,
-    ): Collection<Document.ImplementationFor<DocType>>;
+    /**
+     * @remarks Foundry specifically overrides this method such that unlinked `TokenDocument` instances
+     * handles 3 extra cases:
+     * - Passing `"Actor"` returns `this.actors`.
+     * - Passing `"Item"` returns `this.actor.items`.
+     * - Passing `"ActiveEffect"` returns `this.actor.effects`.
+     */
+    override getEmbeddedCollection<EmbeddedName extends TokenDocument.GetEmbeddedCollectionName>(
+      embeddedName: EmbeddedName,
+    ): TokenDocument.GetEmbeddedCollectionResult<EmbeddedName>;
 
     /**
      * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
@@ -922,8 +1024,8 @@ declare global {
      */
 
     protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.DescendantParents,
+      DescendantDocumentType extends TokenDocument.DescendantClass,
+      Parent extends TokenDocument.DescendantParent,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -935,8 +1037,8 @@ declare global {
     ): void;
 
     protected override _onCreateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.DescendantParents,
+      DescendantDocumentType extends TokenDocument.DescendantClass,
+      Parent extends TokenDocument.DescendantParent,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
     >(
@@ -949,8 +1051,8 @@ declare global {
     ): void;
 
     protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.DescendantParents,
+      DescendantDocumentType extends TokenDocument.DescendantClass,
+      Parent extends TokenDocument.DescendantParent,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -962,8 +1064,8 @@ declare global {
     ): void;
 
     protected override _onUpdateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.DescendantParents,
+      DescendantDocumentType extends TokenDocument.DescendantClass,
+      Parent extends TokenDocument.DescendantParent,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
     >(
@@ -976,8 +1078,8 @@ declare global {
     ): void;
 
     protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.DescendantParents,
+      DescendantDocumentType extends TokenDocument.DescendantClass,
+      Parent extends TokenDocument.DescendantParent,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,
@@ -988,8 +1090,8 @@ declare global {
     ): void;
 
     protected _onDeleteDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClasses,
-      Parent extends TokenDocument.DescendantParents,
+      DescendantDocumentType extends TokenDocument.DescendantClass,
+      Parent extends TokenDocument.DescendantParent,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
       parent: Parent,

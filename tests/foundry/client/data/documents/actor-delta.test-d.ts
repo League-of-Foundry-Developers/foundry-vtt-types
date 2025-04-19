@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 // import type { ArmorData, WeaponData } from "./item.test-d";
 
-const actorDelta = new ActorDelta();
+const actorDelta = new ActorDelta.implementation();
 expectTypeOf(actorDelta).toEqualTypeOf<ActorDelta.Implementation>();
 
 expectTypeOf(actorDelta.apply("")).toEqualTypeOf<Actor.Implementation>();

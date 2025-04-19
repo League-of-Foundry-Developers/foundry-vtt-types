@@ -97,7 +97,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   static get hierarchy(): Actor.Hierarchy;
 
-  override system: Document.SystemFor<"Actor", SubType>;
+  override system: Actor.SystemOfType<SubType>;
 
   override parent: BaseActor.Parent;
 
@@ -130,9 +130,40 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   static override get(documentId: string, options?: Actor.Database.GetOptions): Actor.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Actor.EmbeddedName>(
+  static override getCollectionName<CollectionName extends Actor.Embedded.Name>(
     name: CollectionName,
-  ): Actor.CollectionNameOf<CollectionName> | null;
+  ): Actor.Embedded.CollectionNameOf<CollectionName> | null;
+
+  override getEmbeddedCollection<EmbeddedName extends Actor.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): Actor.Embedded.CollectionFor<EmbeddedName>;
+
+  override getEmbeddedDocument<EmbeddedName extends Actor.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): Actor.Embedded.DocumentFor<EmbeddedName> | undefined;
+
+  override createEmbeddedDocuments<EmbeddedName extends Actor.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override updateEmbeddedDocuments<EmbeddedName extends Actor.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends Actor.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -262,17 +293,24 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 }
 
 declare namespace BaseActor {
-  export import SubType = Actor.SubType;
   export import Name = Actor.Name;
   export import ConstructorArgs = Actor.ConstructorArgs;
   export import Hierarchy = Actor.Hierarchy;
   export import Metadata = Actor.Metadata;
+  export import SubType = Actor.SubType;
+  export import ConfiguredSubTypes = Actor.ConfiguredSubTypes;
+  export import Known = Actor.Known;
+  export import OfType = Actor.OfType;
+  export import SystemOfType = Actor.SystemOfType;
   export import Parent = Actor.Parent;
+  export import Descendant = Actor.Descendant;
+  export import DescendantClass = Actor.DescendantClass;
+  export import DescendantParent = Actor.DescendantParent;
   export import Pack = Actor.Pack;
   export import Embedded = Actor.Embedded;
-  export import EmbeddedName = Actor.EmbeddedName;
-  export import EmbeddedCollectionName = Actor.EmbeddedCollectionName;
   export import ParentCollectionName = Actor.ParentCollectionName;
+  export import CollectionClass = Actor.CollectionClass;
+  export import Collection = Actor.Collection;
   export import Stored = Actor.Stored;
   export import Source = Actor.Source;
   export import PersistedData = Actor.PersistedData;

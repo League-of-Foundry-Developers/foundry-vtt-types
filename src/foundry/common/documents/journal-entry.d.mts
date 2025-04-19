@@ -100,9 +100,40 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     options?: JournalEntry.Database.GetOptions,
   ): JournalEntry.Implementation | null;
 
-  static override getCollectionName<CollectionName extends JournalEntry.EmbeddedName>(
+  static override getCollectionName<CollectionName extends JournalEntry.Embedded.Name>(
     name: CollectionName,
-  ): JournalEntry.CollectionNameOf<CollectionName> | null;
+  ): JournalEntry.Embedded.CollectionNameOf<CollectionName> | null;
+
+  override getEmbeddedCollection<EmbeddedName extends JournalEntry.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): JournalEntry.Embedded.CollectionFor<EmbeddedName>;
+
+  override getEmbeddedDocument<EmbeddedName extends JournalEntry.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): JournalEntry.Embedded.DocumentFor<EmbeddedName> | undefined;
+
+  override createEmbeddedDocuments<EmbeddedName extends JournalEntry.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override updateEmbeddedDocuments<EmbeddedName extends JournalEntry.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends JournalEntry.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -248,11 +279,13 @@ declare namespace BaseJournalEntry {
   export import Hierarchy = JournalEntry.Hierarchy;
   export import Metadata = JournalEntry.Metadata;
   export import Parent = JournalEntry.Parent;
-  export import Pack = JournalEntry.Pack;
-  export import Embedded = JournalEntry.Embedded;
-  export import EmbeddedName = JournalEntry.EmbeddedName;
-  export import EmbeddedCollectionName = JournalEntry.EmbeddedCollectionName;
-  export import ParentCollectionName = JournalEntry.ParentCollectionName;
+  export import Descendant = Folder.Descendant;
+  export import DescendantClass = Folder.DescendantClass;
+  export import Pack = Folder.Pack;
+  export import Embedded = Folder.Embedded;
+  export import ParentCollectionName = Folder.ParentCollectionName;
+  export import CollectionClass = Folder.CollectionClass;
+  export import Collection = Folder.Collection;
   export import Stored = JournalEntry.Stored;
   export import Source = JournalEntry.Source;
   export import PersistedData = JournalEntry.PersistedData;
@@ -262,6 +295,7 @@ declare namespace BaseJournalEntry {
   export import Schema = JournalEntry.Schema;
   export import DatabaseOperation = JournalEntry.Database;
   export import Flags = JournalEntry.Flags;
+  export import CoreFlags = JournalEntry.CoreFlags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

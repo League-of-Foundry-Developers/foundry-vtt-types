@@ -95,7 +95,7 @@ declare abstract class BaseRegionBehavior<
 
   static get hierarchy(): RegionBehavior.Hierarchy;
 
-  override system: Document.SystemFor<"RegionBehavior", SubType>;
+  override system: RegionBehavior.SystemOfType<SubType>;
 
   override parent: BaseRegionBehavior.Parent;
 
@@ -131,9 +131,7 @@ declare abstract class BaseRegionBehavior<
     options?: RegionBehavior.Database.GetOptions,
   ): RegionBehavior.Implementation | null;
 
-  static override getCollectionName<CollectionName extends RegionBehavior.EmbeddedName>(
-    name: CollectionName,
-  ): RegionBehavior.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -274,17 +272,23 @@ declare abstract class BaseRegionBehavior<
 export default BaseRegionBehavior;
 
 declare namespace BaseRegionBehavior {
-  export import SubType = RegionBehavior.SubType;
   export import Name = RegionBehavior.Name;
   export import ConstructorArgs = RegionBehavior.ConstructorArgs;
   export import Hierarchy = RegionBehavior.Hierarchy;
   export import Metadata = RegionBehavior.Metadata;
+  export import SubType = RegionBehavior.SubType;
+  export import ConfiguredSubTypes = RegionBehavior.ConfiguredSubTypes;
+  export import Known = RegionBehavior.Known;
+  export import OfType = RegionBehavior.OfType;
+  export import SystemOfType = RegionBehavior.SystemOfType;
   export import Parent = RegionBehavior.Parent;
+  export import Descendant = RegionBehavior.Descendant;
+  export import DescendantClass = RegionBehavior.DescendantClass;
   export import Pack = RegionBehavior.Pack;
   export import Embedded = RegionBehavior.Embedded;
-  export import EmbeddedName = RegionBehavior.EmbeddedName;
-  export import EmbeddedCollectionName = RegionBehavior.EmbeddedCollectionName;
   export import ParentCollectionName = RegionBehavior.ParentCollectionName;
+  export import CollectionClass = RegionBehavior.CollectionClass;
+  export import Collection = RegionBehavior.Collection;
   export import Stored = RegionBehavior.Stored;
   export import Source = RegionBehavior.Source;
   export import PersistedData = RegionBehavior.PersistedData;

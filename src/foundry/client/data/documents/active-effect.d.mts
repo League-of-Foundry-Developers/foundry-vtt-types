@@ -1,5 +1,5 @@
 import type { ConfiguredActiveEffect } from "../../../../configuration/index.d.mts";
-import type { AnyObject, InterfaceToObject } from "fvtt-types/utils";
+import type { AnyObject, InterfaceToObject, Merge } from "fvtt-types/utils";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField, DataSchema } from "../../../common/data/fields.d.mts";
@@ -19,18 +19,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within ActiveEffect.
+     * The documents embedded within `ActiveEffect`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the ActiveEffect document instance configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
+     * The implementation of the `ActiveEffect` document instance configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the ActiveEffect document configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
+     * The implementation of the `ActiveEffect` document configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -39,12 +39,66 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "ActiveEffect";
+          collection: "effects";
+          hasTypeData: true;
+          label: string;
+          labelPlural: string;
+          schemaVersion: string;
+        }>
+      > {}
 
-    type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
+    // No need for Metadata namespace
+
+    /**
+     * Allowed subtypes of `ActiveEffect`. This is configured through various methods. Modern Foundry
+     * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
+     * under {@link CONFIG.ActiveEffect.dataModels | `CONFIG.ActiveEffect.dataModels`}. This corresponds to
+     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     *
+     * However subtypes can also be registered through a `template.json` though this is discouraged.
+     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
+     * {@link DataConfig | `DataConfig`}.
+     */
+    type SubType = Game.Model.TypeNames<"ActiveEffect">;
+
+    /**
+     * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+     * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
+     * module subtypes `${string}.${string}`.
+     *
+     * @see {@link SubType} for more information.
+     */
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"ActiveEffect">;
+
+    /**
+     * `Known` represents the types of `ActiveEffect` that a user explicitly registered.
+     *
+     * @see {@link ConfiguredSubTypes} for more information.
+     */
     type Known = ActiveEffect.OfType<ActiveEffect.ConfiguredSubTypes>;
+
+    /**
+     * `OfType` returns an instance of `ActiveEffect` with the corresponding type. This works with both the
+     * builtin `ActiveEffect` class or a custom subclass if that is set up in
+     * {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`}.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActiveEffect<Type>, ActiveEffect<Type>>;
+
+    /**
+     * `SystemOfType` returns the system property for a specific `ActiveEffect` subtype.
+     */
+    type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+
+    /**
+     * @internal
+     */
+    interface _SystemMap extends Document.Internal.SystemMap<"ActiveEffect"> {}
 
     /**
      * A document's parent is something that can contain it.
@@ -56,16 +110,16 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = never;
+    type Descendant = never;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = never;
+    type DescendantClass = never;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Actor" | "Item">;
@@ -76,21 +130,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationFor<EmbeddedName>;
-
-    /**
-     * An embedded document is a document contained in another.
-     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
-     *
-     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
-     */
-    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
-
-    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
-      ? Metadata["embedded"][CollectionName]
-      : CollectionName;
-
-    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+    type Embedded = never;
 
     /**
      * The name of the world or embedded collection this document can find itself in.
@@ -98,6 +138,16 @@ declare global {
      * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
      */
     type ParentCollectionName = Metadata["collection"];
+
+    /**
+     * The world collection that contains this document type. Will be `never` if none exists.
+     */
+    type CollectionClass = never;
+
+    /**
+     * The world collection that contains this document type. Will be `never` if none exists.
+     */
+    type Collection = never;
 
     /**
      * An instance of `ActiveEffect` that comes from the database.
@@ -110,18 +160,13 @@ declare global {
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
-     *
-     * `Source` and `PersistedData` are equivalent.
      */
-    interface Source extends PersistedData {}
+    interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * The data put in {@link ActiveEffect._source | `ActiveEffect#_source`}. This data is what was
-     * persisted to the database and therefore it must be valid JSON.
-     *
-     * `Source` and `PersistedData` are equivalent.
+     * @deprecated {@link ActiveEffect.Source | `ActiveEffect.Source`}
      */
-    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+    type PersistedData = Source;
 
     /**
      * The data necessary to create a document. Used in places like {@link ActiveEffect.create | `ActiveEffect.create`}
@@ -427,14 +472,31 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<ActiveEffect.Database.Delete> {}
     }
 
+    /**
+     * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
+     */
     interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
+      /**
+       * The valid scopes for the flags on this document e.g. `"core"` or `"dnd5e"`.
+       */
       type Scope = Document.FlagKeyOf<Flags>;
+
+      /**
+       * The valid keys for a certain scope for example if the scope is "core" then a valid key may be `"sheetLock"` or `"viewMode"`.
+       */
       type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+
+      /**
+       * Gets the type of a particular flag given a `Scope` and a `Key`.
+       */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    /**
+     * The flags provided by Foundry itself for this document.
+     */
     interface CoreFlags {
       core?: { overlay?: boolean };
     }
@@ -496,17 +558,21 @@ declare global {
        */
       value: string;
 
+      // TODO (@LukeAbby): `undefined` is not valid. We can't pull directly from the schema because this interface is used inside of field methods.
+
       /**
        * The modification mode with which the change is applied
        * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
+       * @privateRemarks `undefined` is not actually a possible value, included here due to fvtt-types handling of `initial` values
        */
-      mode: number | null;
+      mode: number | null | undefined;
 
       /**
        * The priority level with which this change is applied
        * @defaultValue `null`
+       * @privateRemarks `undefined` is not actually a possible value, included here due to fvtt-types handling of `initial` values
        */
-      priority: number | null;
+      priority: number | null | undefined;
     }
 
     /**
@@ -515,7 +581,7 @@ declare global {
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated
       extends Document.Database.Operations<
-        ActiveEffect,
+        ActiveEffect.Implementation,
         { animate: boolean },
         { animate: boolean },
         { animate: boolean }

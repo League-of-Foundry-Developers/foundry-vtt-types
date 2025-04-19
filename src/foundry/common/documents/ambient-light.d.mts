@@ -107,9 +107,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     options?: AmbientLightDocument.Database.GetOptions,
   ): AmbientLightDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends AmbientLightDocument.EmbeddedName>(
-    name: CollectionName,
-  ): AmbientLightDocument.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -255,11 +253,13 @@ declare namespace BaseAmbientLight {
   export import Hierarchy = AmbientLightDocument.Hierarchy;
   export import Metadata = AmbientLightDocument.Metadata;
   export import Parent = AmbientLightDocument.Parent;
+  export import Descendant = AmbientLightDocument.Descendant;
+  export import DescendantClass = AmbientLightDocument.DescendantClass;
   export import Pack = AmbientLightDocument.Pack;
   export import Embedded = AmbientLightDocument.Embedded;
-  export import EmbeddedName = AmbientLightDocument.EmbeddedName;
-  export import EmbeddedCollectionName = AmbientLightDocument.EmbeddedCollectionName;
   export import ParentCollectionName = AmbientLightDocument.ParentCollectionName;
+  export import CollectionClass = AmbientLightDocument.CollectionClass;
+  export import Collection = AmbientLightDocument.Collection;
   export import Stored = AmbientLightDocument.Stored;
   export import Source = AmbientLightDocument.Source;
   export import PersistedData = AmbientLightDocument.PersistedData;
@@ -269,6 +269,7 @@ declare namespace BaseAmbientLight {
   export import Schema = AmbientLightDocument.Schema;
   export import DatabaseOperation = AmbientLightDocument.Database;
   export import Flags = AmbientLightDocument.Flags;
+  export import CoreFlags = AmbientLightDocument.CoreFlags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

@@ -116,41 +116,41 @@ declare global {
     interface Any extends SceneConfig<any> {}
 
     interface FormData {
-      backgroundColor: Scene["backgroundColor"];
-      "background.src": Scene["background"]["src"];
-      "background.offsetX": Scene["background"]["offsetX"];
-      "background.offsetY": Scene["background"]["offsetY"];
-      darkness: Scene["darkness"];
-      fogExploration: Scene["fogExploration"];
-      fogOverlay: Scene["fogOverlay"];
-      fogUnexploredColor: Scene["fogUnexploredColor"];
-      foreground: Scene["foreground"];
-      foregroundElevation: Scene["foregroundElevation"];
-      globalLight: Scene["globalLight"];
-      globalLightThreshold: Scene["globalLightThreshold"];
-      grid: Scene["grid"];
-      "grid.alpha": Scene["grid"]["alpha"];
-      "grid.color": Scene["grid"]["color"];
-      "grid.distance": Scene["grid"]["distance"];
-      "grid.type": Scene["grid"]["type"];
-      "grid.units": Scene["grid"]["units"];
+      backgroundColor: Scene.Implementation["backgroundColor"];
+      "background.src": Scene.Implementation["background"]["src"];
+      "background.offsetX": Scene.Implementation["background"]["offsetX"];
+      "background.offsetY": Scene.Implementation["background"]["offsetY"];
+      darkness: Scene.Implementation["darkness"];
+      fogExploration: Scene.Implementation["fogExploration"];
+      fogOverlay: Scene.Implementation["fogOverlay"];
+      fogUnexploredColor: Scene.Implementation["fogUnexploredColor"];
+      foreground: Scene.Implementation["foreground"];
+      foregroundElevation: Scene.Implementation["foregroundElevation"];
+      globalLight: Scene.Implementation["globalLight"];
+      globalLightThreshold: Scene.Implementation["globalLightThreshold"];
+      grid: Scene.Implementation["grid"];
+      "grid.alpha": Scene.Implementation["grid"]["alpha"];
+      "grid.color": Scene.Implementation["grid"]["color"];
+      "grid.distance": Scene.Implementation["grid"]["distance"];
+      "grid.type": Scene.Implementation["grid"]["type"];
+      "grid.units": Scene.Implementation["grid"]["units"];
       hasGlobalThreshold: boolean;
-      height: Scene["height"];
-      "initial.scale": Scene["initial"]["scale"];
-      "initial.x": Scene["initial"]["x"];
-      "initial.y": Scene["initial"]["y"];
-      journal: Scene["_source"]["journal"];
-      journalEntryPage: Scene["journalEntryPage"];
-      name: Scene["name"];
-      navName: Scene["navName"];
-      navigation: Scene["navigation"];
-      padding: Scene["padding"];
-      "ownership.default": Scene["ownership"]["default"];
-      playlist: Scene["playlist"];
-      playlistSound: Scene["playlistSound"];
-      tokenVision: Scene["tokenVision"];
-      weather: Scene["weather"];
-      width: Scene["width"];
+      height: Scene.Implementation["height"];
+      "initial.scale": Scene.Implementation["initial"]["scale"];
+      "initial.x": Scene.Implementation["initial"]["x"];
+      "initial.y": Scene.Implementation["initial"]["y"];
+      journal: Scene.Implementation["_source"]["journal"];
+      journalEntryPage: Scene.Implementation["journalEntryPage"];
+      name: Scene.Implementation["name"];
+      navName: Scene.Implementation["navName"];
+      navigation: Scene.Implementation["navigation"];
+      padding: Scene.Implementation["padding"];
+      "ownership.default": Scene.Implementation["ownership"]["default"];
+      playlist: Scene.Implementation["playlist"];
+      playlistSound: Scene.Implementation["playlistSound"];
+      tokenVision: Scene.Implementation["tokenVision"];
+      weather: Scene.Implementation["weather"];
+      width: Scene.Implementation["width"];
     }
   }
 }

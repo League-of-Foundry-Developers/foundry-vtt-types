@@ -283,6 +283,7 @@ declare global {
     get B(): this["edge"]["b"];
   }
   namespace Wall {
+    // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof Wall>;
     type Object = FixedInstanceType<ObjectClass>;
 

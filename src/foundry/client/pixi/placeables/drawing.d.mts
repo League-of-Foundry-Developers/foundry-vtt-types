@@ -279,6 +279,7 @@ declare global {
   }
 
   namespace Drawing {
+    // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof Drawing>;
     type Object = FixedInstanceType<ObjectClass>;
 

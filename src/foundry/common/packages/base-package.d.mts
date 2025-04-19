@@ -226,7 +226,8 @@ declare namespace BasePackage {
     reason: fields.StringField<{ required: false; blank: false; initial: undefined }>;
   }
 
-  interface PackageCompendiumFolderSchemaHelper extends DataSchema {
+  /** @internal */
+  interface _PackageCompendiumFolderSchema extends DataSchema {
     name: fields.StringField<{ required: true; blank: false }>;
     sorting: fields.StringField<{
       required: false;
@@ -242,12 +243,10 @@ declare namespace BasePackage {
   type FolderRecursion = [never, 2, 3];
 
   type PackageCompendiumFolderSchema<Depth> = Depth extends number
-    ? PackageCompendiumFolderSchemaHelper & {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore The recursion works correctly due to helper array. The in-file checker doesn't pick up on this so using ts-ignore
+    ? _PackageCompendiumFolderSchema & {
         folders: fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<FolderRecursion[Depth]>>>;
       }
-    : PackageCompendiumFolderSchemaHelper;
+    : _PackageCompendiumFolderSchema;
 
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 

@@ -1,5 +1,5 @@
 import type { ConfiguredCards } from "../../../../configuration/index.d.mts";
-import type { DeepPartial, InexactPartial } from "fvtt-types/utils";
+import type { DeepPartial, InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -19,18 +19,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within Cards.
+     * The documents embedded within `Cards`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the Cards document instance configured through `CONFIG.Cards.documentClass` in Foundry and
+     * The implementation of the `Cards` document instance configured through `CONFIG.Cards.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCards | `fvtt-types/configuration/ConfiguredCards`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the Cards document configured through `CONFIG.Cards.documentClass` in Foundry and
+     * The implementation of the `Cards` document configured through `CONFIG.Cards.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -39,12 +39,77 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Cards";
+          collection: "cards";
+          indexed: true;
+          compendiumIndexFields: ["_id", "name", "description", "img", "type", "sort", "folder"];
+          embedded: Metadata.Embedded;
+          hasTypeData: true;
+          label: string;
+          labelPlural: string;
+          coreTypes: ["deck", "hand", "pile"];
+          schemaVersion: string;
+        }>
+      > {}
 
-    type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
+    namespace Metadata {
+      /**
+       * The embedded metadata
+       */
+      interface Embedded {
+        Card: "cards";
+      }
+    }
+
+    /**
+     * Allowed subtypes of `Cards`. This is configured through various methods. Modern Foundry
+     * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
+     * under {@link CONFIG.Cards.dataModels | `CONFIG.Cards.dataModels`}. This corresponds to
+     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     *
+     * However subtypes can also be registered through a `template.json` though this is discouraged.
+     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
+     * {@link DataConfig | `DataConfig`}.
+     */
+    type SubType = Game.Model.TypeNames<"Cards">;
+
+    /**
+     * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+     * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
+     * module subtypes `${string}.${string}`.
+     *
+     * @see {@link SubType} for more information.
+     */
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Cards">;
+
+    /**
+     * `Known` represents the types of `Cards` that a user explicitly registered.
+     *
+     * @see {@link ConfiguredSubTypes} for more information.
+     */
     type Known = Cards.OfType<Cards.ConfiguredSubTypes>;
-    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCards<Type>, Cards<SubType>>;
+
+    /**
+     * `OfType` returns an instance of `Cards` with the corresponding type. This works with both the
+     * builtin `Cards` class or a custom subclass if that is set up in
+     * {@link ConfiguredCards | `fvtt-types/configuration/ConfiguredCards`}.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCards<Type>, Cards<Type>>;
+
+    /**
+     * `SystemOfType` returns the system property for a specific `Cards` subtype.
+     */
+    type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+
+    /**
+     * @internal
+     */
+    interface _SystemMap extends Document.Internal.SystemMap<"Cards"> {}
 
     /**
      * A document's parent is something that can contain it.
@@ -56,16 +121,16 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = Card.Stored;
+    type Descendant = Card.Stored;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = Card.ImplementationClass;
+    type DescendantClass = Card.ImplementationClass;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Cards">;
@@ -76,21 +141,49 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<Embedded.Name>;
 
-    /**
-     * An embedded document is a document contained in another.
-     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
-     *
-     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
-     */
-    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+    namespace Embedded {
+      /**
+       * An embedded document is a document contained in another.
+       * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+       *
+       * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+       */
+      type Name = keyof Metadata.Embedded;
 
-    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
-      ? Metadata["embedded"][CollectionName]
-      : CollectionName;
+      /**
+       * Gets the collection name for an embedded document.
+       */
+      type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionNameFor<
+        Metadata.Embedded,
+        CollectionName
+      >;
 
-    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+      /**
+       * Gets the collection document for an embedded document.
+       */
+      // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+
+      /**
+       * Gets the collection for an embedded document.
+       */
+      type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
+        // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
+        Document.Any,
+        Metadata.Embedded,
+        CollectionName
+      >;
+
+      /**
+       * A valid name to refer to a collection embedded in this document. For example an `Actor`
+       * has the key `"items"` which contains `Item` instance which would make both `"Item" | "Items"`
+       * valid keys (amongst others).
+       */
+      type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
+    }
 
     /**
      * The name of the world or embedded collection this document can find itself in.
@@ -98,6 +191,16 @@ declare global {
      * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
      */
     type ParentCollectionName = Metadata["collection"];
+
+    /**
+     * The world collection that contains `Cards`s. Will be `never` if none exists.
+     */
+    type CollectionClass = CardStacks.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Cards`s. Will be `never` if none exists.
+     */
+    type Collection = CardStacks.Configured;
 
     /**
      * An instance of `Cards` that comes from the database.
@@ -110,18 +213,13 @@ declare global {
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
-     *
-     * `Source` and `PersistedData` are equivalent.
      */
-    interface Source extends PersistedData {}
+    interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * The data put in {@link Cards._source | `Cards#_source`}. This data is what was
-     * persisted to the database and therefore it must be valid JSON.
-     *
-     * `Source` and `PersistedData` are equivalent.
+     * @deprecated {@link Cards.Source | `Cards.Source`}
      */
-    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+    type PersistedData = Source;
 
     /**
      * The data necessary to create a document. Used in places like {@link Cards.create | `Cards.create`}
@@ -365,11 +463,25 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<Cards.Database.Delete> {}
     }
 
+    /**
+     * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
+     */
     interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
+      /**
+       * The valid scopes for the flags on this document e.g. `"core"` or `"dnd5e"`.
+       */
       type Scope = Document.FlagKeyOf<Flags>;
+
+      /**
+       * The valid keys for a certain scope for example if the scope is "core" then a valid key may be `"sheetLock"` or `"viewMode"`.
+       */
       type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+
+      /**
+       * Gets the type of a particular flag given a `Scope` and a `Key`.
+       */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
@@ -395,7 +507,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData: DeepPartial<Cards["_source"]>;
+      updateData: DeepPartial<Cards.Implementation["_source"]>;
 
       /**
        * The name of the action being performed, used as part of the dispatched Hook event
@@ -410,7 +522,7 @@ declare global {
       action: CardsAction;
 
       /** An array of Card creation operations to be performed in each destination Cards document */
-      toCreate: Card["_source"][][];
+      toCreate: Card.Implementation["_source"][][];
 
       /** Card update operations to be performed in the origin Cards document */
       fromUpdate: { _id: string; drawn: true }[];
@@ -425,7 +537,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData: DeepPartial<Card["_source"]> | undefined;
+      updateData: DeepPartial<Card.Implementation["_source"]> | undefined;
 
       /**
        * The name of the action being performed, used as part of the dispatched Hook event
@@ -452,7 +564,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData: DeepPartial<Card["_source"]>;
+      updateData: DeepPartial<Card.Implementation["_source"]>;
     }
 
     interface ShuffleOptions extends BaseOperationOptions {
@@ -461,7 +573,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData: DeepPartial<Card["_source"]>;
+      updateData: DeepPartial<Card.Implementation["_source"]>;
 
       /** Create a ChatMessage which notifies that this action has occurred
        *  @defaultValue `true`
@@ -476,7 +588,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData: DeepPartial<Card["_source"]>;
+      updateData: DeepPartial<Card.Implementation["_source"]>;
     }
 
     /** Additional context which describes the operation. */
@@ -485,7 +597,7 @@ declare global {
        * A mapping of Card deck IDs to the update operations that
        * will be performed on them.
        */
-      toUpdate: Record<string, DeepPartial<Card["_source"]>[]>;
+      toUpdate: Record<string, DeepPartial<Card.Implementation["_source"]>[]>;
 
       /**
        * Card deletion operations to be performed on the origin Cards
@@ -498,7 +610,7 @@ declare global {
      * @deprecated {@link Cards.Database | `Cards.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Cards> {}
+    interface DatabaseOperations extends Document.Database.Operations<Cards.Implementation> {}
 
     /**
      * @deprecated {@link Cards.Types | `Cards.SubType`}
@@ -636,14 +748,14 @@ declare global {
      * @param a - The card being sorted
      * @param b - Another card being sorted against
      */
-    protected sortStandard(a: Card, b: Card): number;
+    protected sortStandard(a: Card.Implementation, b: Card.Implementation): number;
 
     /**
      * A sorting function that is used to determine the order of Card documents within a shuffled stack.
      * @param a - The card being sorted
      * @param b - Another card being sorted against
      */
-    protected sortShuffled(a: Card, b: Card): number;
+    protected sortShuffled(a: Card.Implementation, b: Card.Implementation): number;
 
     /**
      * An internal helper method for drawing a certain number of Card documents from this Cards stack.

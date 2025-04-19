@@ -112,9 +112,7 @@ declare abstract class BaseTableResult<
 
   static get(documentId: string, options?: TableResult.Database.GetOptions): TableResult.Implementation | null;
 
-  static override getCollectionName<CollectionName extends TableResult.EmbeddedName>(
-    name: CollectionName,
-  ): TableResult.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -260,12 +258,17 @@ declare namespace BaseTableResult {
   export import Hierarchy = TableResult.Hierarchy;
   export import Metadata = TableResult.Metadata;
   export import SubType = TableResult.SubType;
+  export import ConfiguredSubTypes = TableResult.ConfiguredSubTypes;
+  export import Known = TableResult.Known;
+  export import OfType = TableResult.OfType;
   export import Parent = TableResult.Parent;
+  export import Descendant = TableResult.Descendant;
+  export import DescendantClass = TableResult.DescendantClass;
   export import Pack = TableResult.Pack;
   export import Embedded = TableResult.Embedded;
-  export import EmbeddedName = TableResult.EmbeddedName;
-  export import EmbeddedCollectionName = TableResult.EmbeddedCollectionName;
   export import ParentCollectionName = TableResult.ParentCollectionName;
+  export import CollectionClass = TableResult.CollectionClass;
+  export import Collection = TableResult.Collection;
   export import Stored = TableResult.Stored;
   export import Source = TableResult.Source;
   export import PersistedData = TableResult.PersistedData;

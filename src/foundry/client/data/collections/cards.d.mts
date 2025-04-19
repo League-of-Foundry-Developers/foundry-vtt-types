@@ -1,4 +1,5 @@
 import type { Identity } from "fvtt-types/utils";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -13,6 +14,9 @@ declare global {
   namespace CardStacks {
     interface Any extends AnyCardStacks {}
     interface AnyConstructor extends Identity<typeof AnyCardStacks> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Cards"> {}
+    interface Configured extends Document.ConfiguredCollection<"Cards"> {}
   }
 }
 

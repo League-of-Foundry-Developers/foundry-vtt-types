@@ -103,7 +103,7 @@ declare abstract class BaseActiveEffect<
 
   static get hierarchy(): ActiveEffect.Hierarchy;
 
-  override system: Document.SystemFor<"ActiveEffect", SubType>;
+  override system: ActiveEffect.SystemOfType<SubType>;
 
   override parent: BaseActiveEffect.Parent;
 
@@ -139,9 +139,7 @@ declare abstract class BaseActiveEffect<
     options?: ActiveEffect.Database.GetOptions,
   ): ActiveEffect.Implementation | null;
 
-  static override getCollectionName<CollectionName extends ActiveEffect.EmbeddedName>(
-    name: CollectionName,
-  ): ActiveEffect.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -282,17 +280,23 @@ declare abstract class BaseActiveEffect<
 export default BaseActiveEffect;
 
 declare namespace BaseActiveEffect {
-  export import SubType = ActiveEffect.SubType;
   export import Name = ActiveEffect.Name;
   export import ConstructorArgs = ActiveEffect.ConstructorArgs;
   export import Hierarchy = ActiveEffect.Hierarchy;
   export import Metadata = ActiveEffect.Metadata;
+  export import SubType = ActiveEffect.SubType;
+  export import ConfiguredSubTypes = ActiveEffect.ConfiguredSubTypes;
+  export import Known = ActiveEffect.Known;
+  export import OfType = ActiveEffect.OfType;
+  export import SystemOfType = ActiveEffect.SystemOfType;
   export import Parent = ActiveEffect.Parent;
+  export import Descendant = ActiveEffect.Descendant;
+  export import DescendantClass = ActiveEffect.DescendantClass;
   export import Pack = ActiveEffect.Pack;
   export import Embedded = ActiveEffect.Embedded;
-  export import EmbeddedName = ActiveEffect.EmbeddedName;
-  export import EmbeddedCollectionName = ActiveEffect.EmbeddedCollectionName;
   export import ParentCollectionName = ActiveEffect.ParentCollectionName;
+  export import CollectionClass = ActiveEffect.CollectionClass;
+  export import Collection = ActiveEffect.Collection;
   export import Stored = ActiveEffect.Stored;
   export import Source = ActiveEffect.Source;
   export import PersistedData = ActiveEffect.PersistedData;
@@ -302,6 +306,10 @@ declare namespace BaseActiveEffect {
   export import Schema = ActiveEffect.Schema;
   export import DatabaseOperation = ActiveEffect.Database;
   export import Flags = ActiveEffect.Flags;
+  export import CoreFlags = ActiveEffect.CoreFlags;
+  export import DurationData = ActiveEffect.DurationData;
+  export import Duration = ActiveEffect.Duration;
+  export import EffectChangeData = ActiveEffect.EffectChangeData;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.

@@ -14,7 +14,7 @@ import documents = foundry.documents;
 type DataSchema = foundry.data.fields.DataSchema;
 
 declare namespace LightData {
-  type Parent = TokenDocument | AmbientLightDocument;
+  type Parent = TokenDocument.Implementation | AmbientLightDocument.Implementation;
 
   interface LightAnimationDataSchema extends DataSchema {
     /**
@@ -729,7 +729,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
    *
    * @remarks This is monkey patched in from `token.js`, put here due to issues with the merge process
    */
-  getBarAttribute: ToMethod<TokenDocument["getBarAttribute"]>;
+  getBarAttribute: ToMethod<TokenDocument.Implementation["getBarAttribute"]>;
 }
 
 declare namespace TombstoneData {

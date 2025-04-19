@@ -16,11 +16,11 @@ expectTypeOf(layer.debug).toEqualTypeOf<PIXI.Graphics>();
 expectTypeOf(layer.select).toEqualTypeOf<PIXI.Graphics | undefined>();
 
 expectTypeOf(layer._cursors).toEqualTypeOf<Record<string, Cursor>>();
-expectTypeOf(layer["_rulers"]).toEqualTypeOf<Record<string, Ruler.Object>>();
+expectTypeOf(layer["_rulers"]).toEqualTypeOf<Record<string, Ruler.ConfiguredInstance>>();
 expectTypeOf(layer["_offscreenPings"]).toEqualTypeOf<Record<string, Canvas.Point>>();
 
-expectTypeOf(layer.ruler).toEqualTypeOf<Ruler.Object | null>();
-expectTypeOf(layer.getRulerForUser("afasfasg")).toEqualTypeOf<Ruler.Object | null>();
+expectTypeOf(layer.ruler).toEqualTypeOf<Ruler.ConfiguredInstance | null>();
+expectTypeOf(layer.getRulerForUser("afasfasg")).toEqualTypeOf<Ruler.ConfiguredInstance | null>();
 
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(layer["_tearDown"]({})).toEqualTypeOf<Promise<void>>();

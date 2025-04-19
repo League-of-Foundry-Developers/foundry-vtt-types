@@ -1,10 +1,9 @@
 import type { ConfiguredCard } from "../../../../configuration/index.d.mts";
-import type { DeepPartial } from "fvtt-types/utils";
+import type { DeepPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
-import type { CardFaceData } from "../../../common/documents/_types.d.mts";
 import type BaseCard from "../../../common/documents/card.d.mts";
 
 declare global {
@@ -20,18 +19,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within Card.
+     * The documents embedded within `Card`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the Card document instance configured through `CONFIG.Card.documentClass` in Foundry and
+     * The implementation of the `Card` document instance configured through `CONFIG.Card.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCard | `fvtt-types/configuration/ConfiguredCard`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the Card document configured through `CONFIG.Card.documentClass` in Foundry and
+     * The implementation of the `Card` document configured through `CONFIG.Card.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -40,12 +39,77 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Card";
+          collection: "cards";
+          hasTypeData: true;
+          indexed: true;
+          label: string;
+          labelPlural: string;
+          permissions: Metadata.Permissions;
+          compendiumIndexFields: ["name", "type", "suit", "sort"];
+          schemaVersion: string;
+        }>
+      > {}
 
-    type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
+    namespace Metadata {
+      /**
+       * The permissions for whether a certain user can create, update, or delete this document.
+       */
+      interface Permissions {
+        create(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+        update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      }
+    }
+
+    /**
+     * Allowed subtypes of `Card`. This is configured through various methods. Modern Foundry
+     * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
+     * under {@link CONFIG.Card.dataModels | `CONFIG.Card.dataModels`}. This corresponds to
+     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     *
+     * However subtypes can also be registered through a `template.json` though this is discouraged.
+     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
+     * {@link DataConfig | `DataConfig`}.
+     */
+    type SubType = Game.Model.TypeNames<"Card">;
+
+    /**
+     * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+     * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
+     * module subtypes `${string}.${string}`.
+     *
+     * @see {@link SubType} for more information.
+     */
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Card">;
+
+    /**
+     * `Known` represents the types of `Card` that a user explicitly registered.
+     *
+     * @see {@link ConfiguredSubTypes} for more information.
+     */
     type Known = Card.OfType<Card.ConfiguredSubTypes>;
+
+    /**
+     * `OfType` returns an instance of `Card` with the corresponding type. This works with both the
+     * builtin `Card` class or a custom subclass if that is set up in
+     * {@link ConfiguredCard | `fvtt-types/configuration/ConfiguredCard`}.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCard<Type>, Card<Type>>;
+
+    /**
+     * `SystemOfType` returns the system property for a specific `Card` subtype.
+     */
+    type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+
+    /**
+     * @internal
+     */
+    interface _SystemMap extends Document.Internal.SystemMap<"Card"> {}
 
     /**
      * A document's parent is something that can contain it.
@@ -57,16 +121,16 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = never;
+    type Descendant = never;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = never;
+    type DescendantClass = never;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Cards">;
@@ -77,21 +141,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationFor<EmbeddedName>;
-
-    /**
-     * An embedded document is a document contained in another.
-     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
-     *
-     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
-     */
-    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
-
-    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
-      ? Metadata["embedded"][CollectionName]
-      : CollectionName;
-
-    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+    type Embedded = never;
 
     /**
      * The name of the world or embedded collection this document can find itself in.
@@ -99,6 +149,16 @@ declare global {
      * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
      */
     type ParentCollectionName = Metadata["collection"];
+
+    /**
+     * The world collection that contains this document type. Will be `never` if none exists.
+     */
+    type CollectionClass = never;
+
+    /**
+     * The world collection that contains this document type. Will be `never` if none exists.
+     */
+    type Collection = never;
 
     /**
      * An instance of `Card` that comes from the database.
@@ -111,18 +171,13 @@ declare global {
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
-     *
-     * `Source` and `PersistedData` are equivalent.
      */
-    interface Source extends PersistedData {}
+    interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * The data put in {@link Card._source | `Card#_source`}. This data is what was
-     * persisted to the database and therefore it must be valid JSON.
-     *
-     * `Source` and `PersistedData` are equivalent.
+     * @deprecated {@link Card.Source | `Card.Source`}
      */
-    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+    type PersistedData = Source;
 
     /**
      * The data necessary to create a document. Used in places like {@link Card.create | `Card.create`}
@@ -230,31 +285,7 @@ declare global {
         img: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; label: "CARD.BackImage" }>;
       }>;
 
-      faces: fields.ArrayField<
-        fields.SchemaField<{
-          /**
-           * A name for this card face
-           * @defaultValue `""`
-           */
-          name: fields.StringField<{ label: "CARD.FaceName" }>;
-
-          /**
-           * Displayed text that belongs to this face
-           * @defaultValue `""`
-           */
-          text: fields.HTMLField<{ label: "CARD.FaceText" }>;
-
-          /**
-           * A displayed image or video file which depicts the face
-           * @defaultValue `BaseCard.DEFAULT_ICON`
-           */
-          img: fields.FilePathField<{
-            categories: ["IMAGE", "VIDEO"];
-            initial: () => typeof BaseCard.DEFAULT_ICON;
-            label: "CARD.FaceImage";
-          }>;
-        }>
-      >;
+      faces: fields.ArrayField<fields.SchemaField<Card.FaceSchema>>;
 
       /**
        * The index of the currently displayed face, or null if the card is face-down
@@ -306,6 +337,32 @@ declare global {
 
       _stats: fields.DocumentStatsField;
     }
+
+    interface FaceSchema extends DataSchema {
+      /**
+       * A name for this card face
+       * @defaultValue `""`
+       */
+      name: fields.StringField<{ label: "CARD.FaceName" }>;
+
+      /**
+       * Displayed text that belongs to this face
+       * @defaultValue `""`
+       */
+      text: fields.HTMLField<{ label: "CARD.FaceText" }>;
+
+      /**
+       * A displayed image or video file which depicts the face
+       * @defaultValue `BaseCard.DEFAULT_ICON`
+       */
+      img: fields.FilePathField<{
+        categories: ["IMAGE", "VIDEO"];
+        initial: () => typeof BaseCard.DEFAULT_ICON;
+        label: "CARD.FaceImage";
+      }>;
+    }
+
+    interface FaceData extends fields.SchemaField.InitializedData<Schema> {}
 
     namespace Database {
       /** Options passed along in Get operations for Card Documents */
@@ -407,11 +464,25 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<Card.Database.Delete> {}
     }
 
+    /**
+     * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
+     */
     interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
+      /**
+       * The valid scopes for the flags on this document e.g. `"core"` or `"dnd5e"`.
+       */
       type Scope = Document.FlagKeyOf<Flags>;
+
+      /**
+       * The valid keys for a certain scope for example if the scope is "core" then a valid key may be `"sheetLock"` or `"viewMode"`.
+       */
       type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+
+      /**
+       * Gets the type of a particular flag given a `Scope` and a `Key`.
+       */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
@@ -419,7 +490,7 @@ declare global {
      * @deprecated {@link Card.Database | `Card.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Card> {}
+    interface DatabaseOperations extends Document.Database.Operations<Card.Implementation> {}
 
     /**
      * @deprecated {@link Card.Types | `Card.SubType`}
@@ -459,7 +530,7 @@ declare global {
     /**
      * The current card face
      */
-    get currentFace(): CardFaceData | null;
+    get currentFace(): Card.FaceData | null;
 
     /**
      * The image of the currently displayed card face or back

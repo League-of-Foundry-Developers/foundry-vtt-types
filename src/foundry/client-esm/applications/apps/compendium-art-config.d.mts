@@ -1,9 +1,7 @@
 import type { ConformRecord, InterfaceToObject, MustConform, DeepPartial } from "fvtt-types/utils";
-import type { CompendiumArtDescriptor } from "../../helpers/_types.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
-
-type CompendiumArtConfigRenderContext = InterfaceToObject<CompendiumArtConfig.RenderContext>;
+import type CompendiumArt from "../../helpers/compendium-art.d.mts";
 
 type CompendiumArtConfigParts = ConformRecord<
   CompendiumArtConfig.Parts,
@@ -14,7 +12,8 @@ type CompendiumArtConfigParts = ConformRecord<
  * An application for configuring compendium art priorities.
  */
 declare class CompendiumArtConfig<
-  RenderContext extends CompendiumArtConfigRenderContext = CompendiumArtConfigRenderContext,
+  RenderContext extends
+    InterfaceToObject<CompendiumArtConfig.RenderContext> = InterfaceToObject<CompendiumArtConfig.RenderContext>,
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
   RenderOptions extends
     HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
@@ -36,7 +35,7 @@ declare class CompendiumArtConfig<
 
 declare namespace CompendiumArtConfig {
   interface RenderContext {
-    config: CompendiumArtDescriptor[];
+    config: CompendiumArt.Descriptor[];
     buttons: ApplicationV2.FormFooterButton[];
   }
 

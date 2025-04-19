@@ -125,6 +125,7 @@ declare global {
   }
 
   namespace Note {
+    // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof Note>;
     type Object = FixedInstanceType<ObjectClass>;
 

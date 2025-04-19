@@ -56,7 +56,7 @@ declare namespace ApplicationV2 {
     }
   }
 
-  export interface Configuration {
+  interface Configuration {
     /**
      * An HTML element identifier used for this Application instance
      */

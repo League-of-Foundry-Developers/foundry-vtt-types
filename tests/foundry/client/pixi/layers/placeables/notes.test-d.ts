@@ -4,13 +4,13 @@ expectTypeOf(NotesLayer.documentName).toEqualTypeOf<"Note">();
 expectTypeOf(NotesLayer.instance).toEqualTypeOf<NotesLayer | undefined>();
 expectTypeOf(NotesLayer.layerOptions).toEqualTypeOf<NotesLayer.LayerOptions>();
 expectTypeOf(NotesLayer.layerOptions.name).toEqualTypeOf<"notes">();
-expectTypeOf(NotesLayer.layerOptions.objectClass).toEqualTypeOf<typeof Note>();
+expectTypeOf(NotesLayer.layerOptions.objectClass).toEqualTypeOf<Note.ObjectClass>();
 expectTypeOf(NotesLayer.TOGGLE_SETTING).toEqualTypeOf<"notesDisplayToggle">();
 expectTypeOf(NotesLayer.registerSettings()).toBeVoid();
 
 const layer = new NotesLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof Note>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Note.ObjectClass>();
 expectTypeOf(layer.options).toEqualTypeOf<NotesLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"notes">();
 

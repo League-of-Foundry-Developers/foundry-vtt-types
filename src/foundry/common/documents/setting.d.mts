@@ -95,7 +95,12 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   override delete(operation?: Setting.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: Setting.Database.GetOptions): Setting.Implementation | null;
+  static override get(documentId: string, options?: Setting.Database.GetOptions): Setting.Implementation | null;
+
+  static override getCollectionName(name: string): null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
 
   protected _preCreate(
     data: Setting.CreateData,
@@ -211,11 +216,13 @@ declare namespace BaseSetting {
   export import Hierarchy = Setting.Hierarchy;
   export import Metadata = Setting.Metadata;
   export import Parent = Setting.Parent;
+  export import Descendant = Setting.Descendant;
+  export import DescendantClass = Setting.DescendantClass;
   export import Pack = Setting.Pack;
   export import Embedded = Setting.Embedded;
-  export import EmbeddedName = Setting.EmbeddedName;
-  export import EmbeddedCollectionName = Setting.EmbeddedCollectionName;
   export import ParentCollectionName = Setting.ParentCollectionName;
+  export import CollectionClass = Setting.CollectionClass;
+  export import Collection = Setting.Collection;
   export import Stored = Setting.Stored;
   export import Source = Setting.Source;
   export import PersistedData = Setting.PersistedData;

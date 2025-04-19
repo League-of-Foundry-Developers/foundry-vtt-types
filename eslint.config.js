@@ -16,6 +16,228 @@ import * as url from "url";
 const dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 /**
+ * @type {Record<string, { name: string; hasSubtype: boolean }>}
+ */
+const documents = {
+  ActiveEffect: {
+    name: "ActiveEffect",
+    hasSubtype: true,
+  },
+  ActorDelta: {
+    name: "ActorDelta",
+    hasSubtype: true,
+  },
+  Actor: {
+    name: "Actor",
+    hasSubtype: true,
+  },
+  Adventure: {
+    name: "Adventure",
+    hasSubtype: false,
+  },
+  Card: {
+    name: "Card",
+    hasSubtype: false,
+  },
+  Cards: {
+    name: "Cards",
+    hasSubtype: false,
+  },
+  ChatMessage: {
+    name: "ChatMessage",
+    hasSubtype: true,
+  },
+  Combat: {
+    name: "Combat",
+    hasSubtype: false,
+  },
+  Combatant: {
+    name: "Combatant",
+    hasSubtype: false,
+  },
+  FogExploration: {
+    name: "FogExploration",
+    hasSubtype: false,
+  },
+  Folder: {
+    name: "Folder",
+    hasSubtype: true,
+  },
+  Item: {
+    name: "Item",
+    hasSubtype: true,
+  },
+  JournalEntryPage: {
+    name: "JournalEntryPage",
+    hasSubtype: true,
+  },
+  JournalEntry: {
+    name: "JournalEntry",
+    hasSubtype: false,
+  },
+  Macro: {
+    name: "Macro",
+    hasSubtype: true,
+  },
+  PlaylistSound: {
+    name: "PlaylistSound",
+    hasSubtype: false,
+  },
+  Playlist: {
+    name: "Playlist",
+    hasSubtype: false,
+  },
+  RegionBehavior: {
+    name: "RegionBehavior",
+    hasSubtype: true,
+  },
+  RollTable: {
+    name: "RollTable",
+    hasSubtype: false,
+  },
+  Scene: {
+    name: "Scene",
+    hasSubtype: false,
+  },
+  Setting: {
+    name: "Setting",
+    hasSubtype: false,
+  },
+  TableResult: {
+    name: "TableResult",
+    hasSubtype: true,
+  },
+  User: {
+    name: "User",
+    hasSubtype: false,
+  },
+  AmbientLight: {
+    name: "AmbientLightDocument",
+    hasSubtype: false,
+  },
+  AmbientSound: {
+    name: "AmbientSoundDocument",
+    hasSubtype: false,
+  },
+  Drawing: {
+    name: "DrawingDocument",
+    hasSubtype: false,
+  },
+  MeasuredTemplate: {
+    name: "MeasuredTemplateDocument",
+    hasSubtype: false,
+  },
+  Region: {
+    name: "RegionDocument",
+    hasSubtype: false,
+  },
+  Note: {
+    name: "NoteDocument",
+    hasSubtype: false,
+  },
+  Tile: {
+    name: "TileDocument",
+    hasSubtype: false,
+  },
+  Token: {
+    name: "TokenDocument",
+    hasSubtype: false,
+  },
+  Wall: {
+    name: "WallDocument",
+    hasSubtype: false,
+  },
+};
+
+const placeables = [
+  "AmbientLight",
+  "AmbientSound",
+  "Drawing",
+  "MeasuredTemplate",
+  "Note",
+  "Region",
+  "Tile",
+  "Token",
+  "Wall",
+];
+
+/** @type {{ selector: string; message: string }[]} */
+const noRestrictedSyntax = [];
+
+/** @type {Record<string, { message: string; fixWith?: string }>} */
+const noRestrictedTypes = {};
+
+/**
+ * @param {string} name
+ * @returns {string}
+ */
+function typeofSelector(name) {
+  return `TSTypeQuery > Identifier[name=${JSON.stringify(name)}]`;
+}
+
+/**
+ * Direct uses of a `Document` or a `PlaceableObject` are not okay.
+ * Ok: `Actor.implementation`
+ *
+ * @param {string} name
+ * @param {string} allowedPropsRegex
+ * @returns {string}
+ */
+function directExpressionSelector(name, allowedPropsRegex) {
+  let _allowed = "";
+  if (allowedPropsRegex != "") {
+    _allowed = `:not([property.name=/${allowedPropsRegex}/])`;
+  }
+
+  // Note(LukeAbby): currently `allowedPropsRegex` does nothing.
+  // This is because I disable the checks against `X.prop` as I found it too noisy in practice.
+  // If this were to be re-enabled the correct expression would be this:
+  // `MemberExpression[object.type = "Identifier"][object.name = ${JSON.stringify(name)}]${allowed}`
+
+  return `:expression > Identifier[name = ${JSON.stringify(name)}]:not([parent.type = "MemberExpression"])`;
+}
+
+for (const [documentType, documentData] of Object.entries(documents)) {
+  const documentName = documentData.name;
+  const hasSubtype = documentData.hasSubtype;
+
+  noRestrictedSyntax.push({
+    selector: typeofSelector(documentName),
+    message: `Prefer \`${documentName}.Implementation\` or \`typeof CONFIG.${documentName}.documentClass\` as \`typeof ${documentName}\` does not account for a document class configured in \`CONFIG.${documentType}.documentClass\`.`,
+  });
+
+  noRestrictedSyntax.push({
+    selector: directExpressionSelector(
+      documentName,
+      "^implementation|create|createDocuments|updateDocuments|deleteDocuments$",
+    ),
+    message: `Prefer \`${documentName}.implementation\` as \`${documentName}\` does not account for a document class configured in \`CONFIG.${documentType}.documentClass\`.`,
+  });
+
+  const ofType = hasSubtype ? ` or \`${documentName}.OfType\`` : "";
+
+  noRestrictedTypes[documentName] = {
+    message: `Prefer \`${documentName}.Implementation\`${ofType} as \`${documentName}\` does not account for a document class configured in \`CONFIG.${documentType}.documentClass\`.`,
+  };
+}
+
+for (const placeable of placeables) {
+  noRestrictedSyntax.push({
+    selector: typeofSelector(placeable),
+    message: `Prefer \`${placeable}.ObjectClass\` or \`typeof CONFIG.${placeable}.objectClass\` as \`typeof ${placeable}\` does not account for any packages that may have configured the placeable class.`,
+  });
+
+  noRestrictedSyntax.push({
+    selector: directExpressionSelector(placeable, "^embeddedName$"),
+    message: `Prefer \`CONFIG.${placeable}.objectClass\` as \`typeof ${placeable}\` does not account for any packages that may have configured the placeable class.`,
+  });
+
+  noRestrictedTypes[placeable] = {
+    message: `Prefer \`${placeable}.Object\` as \`${placeable}\` does not account for any packages that may have configured the placeable class.`,
+  };
+}
+
+/**
  * @type {import("@typescript-eslint/utils").TSESLint.FlatConfig.ConfigArray}
  */
 const rules = [
@@ -138,6 +360,14 @@ const rules = [
       "import-x/no-named-as-default-member": "off",
 
       "tsdoc/syntax": "warn",
+
+      "no-restricted-syntax": ["warn", ...noRestrictedSyntax],
+      "@typescript-eslint/no-restricted-types": [
+        "warn",
+        {
+          types: noRestrictedTypes,
+        },
+      ],
     },
     settings: {
       "import-x/parsers": {

@@ -1,4 +1,5 @@
 import type { DeepPartial, Identity } from "fvtt-types/utils";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -26,12 +27,15 @@ declare global {
      * @param scene - The Scene document being updated
      * @param data  - The incremental update data
      */
-    protected _onChangeScene(scene: Scene.Stored, data: DeepPartial<Scene["_source"]>): Promise<void>;
+    protected _onChangeScene(scene: Scene.Stored, data: DeepPartial<Scene.Implementation["_source"]>): Promise<void>;
   }
 
   namespace Playlists {
     interface Any extends AnyPlaylists {}
     interface AnyConstructor extends Identity<typeof AnyPlaylists> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Playlist"> {}
+    interface Configured extends Document.ConfiguredCollection<"Playlist"> {}
   }
 }
 

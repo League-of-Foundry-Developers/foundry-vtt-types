@@ -59,7 +59,7 @@ declare global {
 
     /** @internal */
     type _FormData = Pick<
-      DrawingDocument,
+      DrawingDocument.Implementation,
       | "author"
       | "bezierFactor"
       | "elevation"
@@ -81,8 +81,8 @@ declare global {
       | "y"
     >;
     interface FormData extends _FormData {
-      "shape.height": DrawingDocument["shape"]["height"];
-      "shape.width": DrawingDocument["shape"]["width"];
+      "shape.height": DrawingDocument.Implementation["shape"]["height"];
+      "shape.width": DrawingDocument.Implementation["shape"]["width"];
     }
   }
 }

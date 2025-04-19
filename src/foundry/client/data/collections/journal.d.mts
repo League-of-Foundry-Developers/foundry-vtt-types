@@ -1,4 +1,5 @@
 import type { InexactPartial, Identity } from "fvtt-types/utils";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -15,7 +16,9 @@ declare global {
      * Display a dialog which prompts the user to show a JournalEntry or JournalEntryPage to other players.
      * @param doc - The JournalEntry or JournalEntryPage to show.
      */
-    static showDialog<T extends JournalEntry | JournalEntryPage>(doc: T): Promise<T | void>;
+    static showDialog<T extends JournalEntry.Implementation | JournalEntryPage.Implementation>(
+      doc: T,
+    ): Promise<T | void>;
 
     /**
      * Show the JournalEntry or JournalEntryPage to connected players.
@@ -26,7 +29,7 @@ declare global {
      * @returns A Promise that resolves back to the shown document once the request is processed.
      * @throws If the user does not own the document they are trying to show.
      */
-    static show<T extends JournalEntry | JournalEntryPage>(
+    static show<T extends JournalEntry.Implementation | JournalEntryPage.Implementation>(
       doc: T,
       options?: InexactPartial<{
         /**
@@ -65,6 +68,9 @@ declare global {
   namespace Journal {
     interface Any extends AnyJournal {}
     interface AnyConstructor extends Identity<typeof AnyJournal> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"JournalEntry"> {}
+    interface Configured extends Document.ConfiguredCollection<"JournalEntry"> {}
   }
 }
 

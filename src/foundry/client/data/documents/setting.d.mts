@@ -1,3 +1,4 @@
+import type { Merge } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -15,18 +16,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within Setting.
+     * The documents embedded within `Setting`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the Setting document instance configured through `CONFIG.Setting.documentClass` in Foundry and
+     * The implementation of the `Setting` document instance configured through `CONFIG.Setting.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredSetting | `fvtt-types/configuration/ConfiguredSetting`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the Setting document configured through `CONFIG.Setting.documentClass` in Foundry and
+     * The implementation of the `Setting` document configured through `CONFIG.Setting.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -35,7 +36,29 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Setting";
+          collection: "settings";
+          label: string;
+          labelPlural: string;
+          permissions: Metadata.Permissions;
+          schemaVersion: string;
+        }>
+      > {}
+
+    namespace Metadata {
+      /**
+       * The permissions for whether a certain user can create, update, or delete this document.
+       */
+      interface Permissions {
+        create(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+        update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+        delete(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      }
+    }
 
     /**
      * A document's parent is something that can contain it.
@@ -47,16 +70,16 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = never;
+    type Descendant = never;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = never;
+    type DescendantClass = never;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = never;
@@ -67,21 +90,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationFor<EmbeddedName>;
-
-    /**
-     * An embedded document is a document contained in another.
-     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
-     *
-     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
-     */
-    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
-
-    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
-      ? Metadata["embedded"][CollectionName]
-      : CollectionName;
-
-    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+    type Embedded = never;
 
     /**
      * The name of the world or embedded collection this document can find itself in.
@@ -89,6 +98,16 @@ declare global {
      * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
      */
     type ParentCollectionName = Metadata["collection"];
+
+    /**
+     * The world collection that contains `Setting`s. Will be `never` if none exists.
+     */
+    type CollectionClass = WorldSettings.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Setting`s. Will be `never` if none exists.
+     */
+    type Collection = WorldSettings.Configured;
 
     /**
      * An instance of `Setting` that comes from the database.
@@ -101,18 +120,13 @@ declare global {
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
-     *
-     * `Source` and `PersistedData` are equivalent.
      */
-    interface Source extends PersistedData {}
+    interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * The data put in {@link Setting._source | `Setting#_source`}. This data is what was
-     * persisted to the database and therefore it must be valid JSON.
-     *
-     * `Source` and `PersistedData` are equivalent.
+     * @deprecated {@link Setting.Source | `Setting.Source`}
      */
-    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+    type PersistedData = Source;
 
     /**
      * The data necessary to create a document. Used in places like {@link Setting.create | `Setting.create`}
@@ -186,6 +200,7 @@ declare global {
        */
       _stats: fields.DocumentStatsField;
     }
+
     namespace Database {
       /** Options passed along in Get operations for Settings */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Setting.Parent> {}
@@ -287,10 +302,40 @@ declare global {
     }
 
     /**
+     * @deprecated `Settings` does not have any flags.
+     *
+     * This permenantly deprecated type helps to alleviate confusion as a user might expect it to exist.
+     */
+    type Flags = never;
+
+    namespace Flags {
+      /**
+       * @deprecated `Settings` does not have any flags.
+       *
+       * This permenantly deprecated type helps to alleviate confusion as a user might expect it to exist.
+       */
+      type Scope = never;
+
+      /**
+       * @deprecated `Settings` does not have any flags.
+       *
+       * This permenantly deprecated type helps to alleviate confusion as a user might expect it to exist.
+       */
+      type Key<_Scope> = never;
+
+      /**
+       * @deprecated `Settings` does not have any flags.
+       *
+       * This permenantly deprecated type helps to alleviate confusion as a user might expect it to exist.
+       */
+      type Get<_Scope, _Key> = never;
+    }
+
+    /**
      * @deprecated {@link Setting.Database | `Setting.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Setting> {}
+    interface DatabaseOperations extends Document.Database.Operations<Setting.Implementation> {}
 
     /**
      * @deprecated {@link Setting.CreateData | `Setting.CreateData`}

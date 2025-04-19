@@ -119,14 +119,14 @@ declare global {
      * Handle adding a detection mode.
      * @param modes - The existing detection modes
      */
-    protected _onAddDetectionMode(modes: TokenDocument["detectionModes"]): void;
+    protected _onAddDetectionMode(modes: TokenDocument.Implementation["detectionModes"]): void;
 
     /**
      * Handle removing a detection mode.
      * @param index - The index of the detection mode to remove.
      * @param modes - The existing detection modes.
      */
-    protected _onRemoveDetectionMode(index: number, modes: TokenDocument["detectionModes"]): void;
+    protected _onRemoveDetectionMode(index: number, modes: TokenDocument.Implementation["detectionModes"]): void;
 
     /**
      * Disable the user's ability to edit the token image field if wildcard images are enabled and that user does not have
@@ -142,7 +142,7 @@ declare global {
 
     /** @internal */
     type _FormData = Pick<
-      TokenDocument,
+      TokenDocument.Implementation,
       | "actorId"
       | "actorLink"
       | "alpha"
@@ -160,41 +160,41 @@ declare global {
     >;
 
     interface FormData extends _FormData {
-      "bar1.attribute": TokenDocument["bar1"]["attribute"];
-      "bar2.attribute": TokenDocument["bar2"]["attribute"];
-      "light.alpha": TokenDocument["light"]["alpha"];
-      "light.angle": TokenDocument["light"]["angle"];
-      "light.animation.intensity": TokenDocument["light"]["animation"]["intensity"];
-      "light.animation.reverse": TokenDocument["light"]["animation"]["reverse"];
-      "light.animation.speed": TokenDocument["light"]["animation"]["speed"];
-      "light.animation.type": TokenDocument["light"]["animation"]["type"];
-      "light.attenuation": TokenDocument["light"]["attenuation"];
-      "light.bright": TokenDocument["light"]["bright"];
-      "light.color": TokenDocument["light"]["color"];
-      "light.coloration": TokenDocument["light"]["coloration"];
-      "light.contrast": TokenDocument["light"]["contrast"];
-      "light.dim": TokenDocument["light"]["dim"];
-      "light.luminosity": TokenDocument["light"]["luminosity"];
-      "light.saturation": TokenDocument["light"]["saturation"];
-      "light.shadows": TokenDocument["light"]["shadows"];
-      "occludable.radius": TokenDocument["occludable"]["radius"];
-      "ring.colors.background": TokenDocument["ring"]["colors"]["background"];
-      "ring.colors.ring": TokenDocument["ring"]["colors"]["ring"];
-      "ring.effects": TokenDocument["ring"]["effects"];
-      "ring.enabled": TokenDocument["ring"]["enabled"];
-      "ring.subject.scale": TokenDocument["ring"]["subject"]["scale"];
-      "ring.subject.texture": TokenDocument["ring"]["subject"]["texture"];
-      "sight.attenuation": TokenDocument["sight"]["attenuation"];
-      "sight.color": TokenDocument["sight"]["color"];
-      "sight.contrast": TokenDocument["sight"]["contrast"];
-      "sight.enabled": TokenDocument["sight"]["enabled"];
-      "texture.anchorX": TokenDocument["texture"]["anchorX"];
-      "texture.anchorY": TokenDocument["texture"]["anchorY"];
-      "texture.fit": TokenDocument["texture"]["fit"];
-      "texture.scaleX": TokenDocument["texture"]["scaleX"];
-      "texture.scaleY": TokenDocument["texture"]["scaleY"];
-      "texture.src": TokenDocument["texture"]["src"];
-      "texture.tint": TokenDocument["texture"]["tint"];
+      "bar1.attribute": TokenDocument.Implementation["bar1"]["attribute"];
+      "bar2.attribute": TokenDocument.Implementation["bar2"]["attribute"];
+      "light.alpha": TokenDocument.Implementation["light"]["alpha"];
+      "light.angle": TokenDocument.Implementation["light"]["angle"];
+      "light.animation.intensity": TokenDocument.Implementation["light"]["animation"]["intensity"];
+      "light.animation.reverse": TokenDocument.Implementation["light"]["animation"]["reverse"];
+      "light.animation.speed": TokenDocument.Implementation["light"]["animation"]["speed"];
+      "light.animation.type": TokenDocument.Implementation["light"]["animation"]["type"];
+      "light.attenuation": TokenDocument.Implementation["light"]["attenuation"];
+      "light.bright": TokenDocument.Implementation["light"]["bright"];
+      "light.color": TokenDocument.Implementation["light"]["color"];
+      "light.coloration": TokenDocument.Implementation["light"]["coloration"];
+      "light.contrast": TokenDocument.Implementation["light"]["contrast"];
+      "light.dim": TokenDocument.Implementation["light"]["dim"];
+      "light.luminosity": TokenDocument.Implementation["light"]["luminosity"];
+      "light.saturation": TokenDocument.Implementation["light"]["saturation"];
+      "light.shadows": TokenDocument.Implementation["light"]["shadows"];
+      "occludable.radius": TokenDocument.Implementation["occludable"]["radius"];
+      "ring.colors.background": TokenDocument.Implementation["ring"]["colors"]["background"];
+      "ring.colors.ring": TokenDocument.Implementation["ring"]["colors"]["ring"];
+      "ring.effects": TokenDocument.Implementation["ring"]["effects"];
+      "ring.enabled": TokenDocument.Implementation["ring"]["enabled"];
+      "ring.subject.scale": TokenDocument.Implementation["ring"]["subject"]["scale"];
+      "ring.subject.texture": TokenDocument.Implementation["ring"]["subject"]["texture"];
+      "sight.attenuation": TokenDocument.Implementation["sight"]["attenuation"];
+      "sight.color": TokenDocument.Implementation["sight"]["color"];
+      "sight.contrast": TokenDocument.Implementation["sight"]["contrast"];
+      "sight.enabled": TokenDocument.Implementation["sight"]["enabled"];
+      "texture.anchorX": TokenDocument.Implementation["texture"]["anchorX"];
+      "texture.anchorY": TokenDocument.Implementation["texture"]["anchorY"];
+      "texture.fit": TokenDocument.Implementation["texture"]["fit"];
+      "texture.scaleX": TokenDocument.Implementation["texture"]["scaleX"];
+      "texture.scaleY": TokenDocument.Implementation["texture"]["scaleY"];
+      "texture.src": TokenDocument.Implementation["texture"]["src"];
+      "texture.tint": TokenDocument.Implementation["texture"]["tint"];
     }
   }
 
@@ -252,9 +252,12 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onBarChange(): Promise<void>;
 
-    protected override _onAddDetectionMode(modes: TokenDocument["detectionModes"]): void;
+    protected override _onAddDetectionMode(modes: TokenDocument.Implementation["detectionModes"]): void;
 
-    protected override _onRemoveDetectionMode(index: number, modes: TokenDocument["detectionModes"]): void;
+    protected override _onRemoveDetectionMode(
+      index: number,
+      modes: TokenDocument.Implementation["detectionModes"],
+    ): void;
   }
 
   namespace DefaultTokenConfig {

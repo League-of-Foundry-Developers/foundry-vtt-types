@@ -1,14 +1,20 @@
 import { expectTypeOf } from "vitest";
 
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
-import CardData = foundry.documents.CardData;
-import CardFaceData = foundry.types.CardFaceData;
+
+// This exists to make the class non-abstract.
+class TestBaseCards extends foundry.documents.BaseCards {}
 
 // @ts-expect-error data argument is non-optional
-const baseCards = new foundry.documents.BaseCards();
+new TestBaseCards();
+
+const baseCards = new TestBaseCards();
+
 expectTypeOf(baseCards.cards).toEqualTypeOf<EmbeddedCollection<Card.Implementation, Cards.Implementation>>();
-expectTypeOf(baseCards._source.cards[0]._id).toEqualTypeOf<CardData["_id"]>();
-expectTypeOf(baseCards._source.cards[0].faces[0]).toEqualTypeOf<CardFaceData>();
+
+const card = baseCards._source.cards[0]!;
+expectTypeOf(card._id).toEqualTypeOf<Card.Source["_id"]>();
+expectTypeOf(card.faces[0]!).toEqualTypeOf<Card.Face.Source>();
 
 // interface GermanDeckDataSourceData {
 //   mostUsedGame: "Skat";

@@ -42,7 +42,7 @@ declare global {
 
     interface CombatTrackerConfigData extends FormApplication.FormApplicationData {
       settings: SettingConfig["core.combatTrackerConfig"];
-      attributeChoices: ReturnType<(typeof TokenDocument)["getTrackedAttributeChoices"]>;
+      attributeChoices: ReturnType<typeof TokenDocument.getTrackedAttributeChoices>;
       combatTheme: ClientSettings.SettingConfig<string>;
       selectedTheme: SettingConfig["core.combatTheme"];
       user: User.Implementation;

@@ -184,9 +184,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static get(documentId: string, options?: User.Database.GetOptions): User.Implementation | null;
 
-  static override getCollectionName<CollectionName extends User.EmbeddedName>(
-    name: CollectionName,
-  ): User.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -323,11 +321,13 @@ declare namespace BaseUser {
   export import Hierarchy = User.Hierarchy;
   export import Metadata = User.Metadata;
   export import Parent = User.Parent;
+  export import Descendant = User.Descendant;
+  export import DescendantClass = User.DescendantClass;
   export import Pack = User.Pack;
   export import Embedded = User.Embedded;
-  export import EmbeddedName = User.EmbeddedName;
-  export import EmbeddedCollectionName = User.EmbeddedCollectionName;
   export import ParentCollectionName = User.ParentCollectionName;
+  export import CollectionClass = User.CollectionClass;
+  export import Collection = User.Collection;
   export import Stored = User.Stored;
   export import Source = User.Source;
   export import PersistedData = User.PersistedData;

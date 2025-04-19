@@ -156,7 +156,7 @@ declare class DialogV2 extends ApplicationV2<EmptyObject, DialogV2.Configuration
 }
 
 declare namespace DialogV2 {
-  export interface Button<CallbackReturn> {
+  interface Button<CallbackReturn> {
     /**
      * The button action identifier.
      */
@@ -192,13 +192,13 @@ declare namespace DialogV2 {
     callback?: ButtonCallback<CallbackReturn>;
   }
 
-  export type ButtonCallback<T> = (
+  type ButtonCallback<T> = (
     event: PointerEvent | SubmitEvent,
     button: HTMLButtonElement,
     dialog: HTMLDialogElement,
   ) => MaybePromise<T>;
 
-  export interface Configuration extends ApplicationV2.Configuration {
+  interface Configuration extends ApplicationV2.Configuration {
     /**
      * Modal dialogs prevent interaction with the rest of the UI until they
      * are dismissed or submitted.
@@ -208,7 +208,7 @@ declare namespace DialogV2 {
     /**
      * Button configuration.
      */
-    buttons: Button<any>[];
+    buttons: Button<unknown>[];
 
     /**
      * The dialog content.
@@ -224,13 +224,13 @@ declare namespace DialogV2 {
 
   // TODO(LukeAbby): I moved these types over from `_types.d.mts` mostly as-is. However this usage of `any` is suspicious and needs auditing.
 
-  export type RenderCallback = (event: Event, dialog: HTMLDialogElement) => any;
+  type RenderCallback = (event: Event, dialog: HTMLDialogElement) => any;
 
-  export type CloseCallback = (event: Event, dialog: DialogV2) => any;
+  type CloseCallback = (event: Event, dialog: DialogV2) => any;
 
-  export type SubmitCallback = (result: any) => Promise<void>;
+  type SubmitCallback = (result: any) => Promise<void>;
 
-  export interface WaitOptions extends Configuration {
+  interface WaitOptions extends Configuration {
     /**
      * A synchronous function to invoke whenever the dialog is rendered.
      */

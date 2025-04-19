@@ -111,9 +111,40 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     options?: RegionDocument.Database.GetOptions,
   ): RegionDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends RegionDocument.EmbeddedName>(
+  static override getCollectionName<CollectionName extends RegionDocument.Embedded.Name>(
     name: CollectionName,
-  ): RegionDocument.CollectionNameOf<CollectionName> | null;
+  ): RegionDocument.Embedded.CollectionNameOf<CollectionName> | null;
+
+  override getEmbeddedCollection<EmbeddedName extends RegionDocument.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): RegionDocument.Embedded.CollectionFor<EmbeddedName>;
+
+  override getEmbeddedDocument<EmbeddedName extends RegionDocument.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): RegionDocument.Embedded.DocumentFor<EmbeddedName> | undefined;
+
+  override createEmbeddedDocuments<EmbeddedName extends RegionDocument.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override updateEmbeddedDocuments<EmbeddedName extends RegionDocument.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends RegionDocument.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -259,11 +290,13 @@ declare namespace BaseRegion {
   export import Hierarchy = RegionDocument.Hierarchy;
   export import Metadata = RegionDocument.Metadata;
   export import Parent = RegionDocument.Parent;
+  export import Descendant = RegionDocument.Descendant;
+  export import DescendantClass = RegionDocument.DescendantClass;
   export import Pack = RegionDocument.Pack;
   export import Embedded = RegionDocument.Embedded;
-  export import EmbeddedName = RegionDocument.EmbeddedName;
-  export import EmbeddedCollectionName = RegionDocument.EmbeddedCollectionName;
   export import ParentCollectionName = RegionDocument.ParentCollectionName;
+  export import CollectionClass = RegionDocument.CollectionClass;
+  export import Collection = RegionDocument.Collection;
   export import Stored = RegionDocument.Stored;
   export import Source = RegionDocument.Source;
   export import PersistedData = RegionDocument.PersistedData;

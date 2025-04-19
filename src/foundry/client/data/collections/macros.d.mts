@@ -1,4 +1,5 @@
 import type { Identity } from "fvtt-types/utils";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -22,6 +23,9 @@ declare global {
   namespace Macros {
     interface Any extends AnyMacros {}
     interface AnyConstructor extends Identity<typeof AnyMacros> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Macro"> {}
+    interface Configured extends Document.ConfiguredCollection<"Macro"> {}
   }
 }
 

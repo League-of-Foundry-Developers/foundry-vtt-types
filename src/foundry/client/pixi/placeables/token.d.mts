@@ -152,7 +152,7 @@ declare global {
     /**
      * A convenient reference to the Actor object associated with the Token embedded document.
      */
-    get actor(): TokenDocument["actor"];
+    get actor(): TokenDocument.Implementation["actor"];
 
     /**
      * A boolean flag for whether the current game User has observer permission for the Token
@@ -220,7 +220,7 @@ declare global {
     /**
      * Return a reference to the detection modes array.
      */
-    get detectionModes(): TokenDocument["detectionModes"];
+    get detectionModes(): TokenDocument.Implementation["detectionModes"];
 
     /**
      * Determine whether the Token is visible to the calling user's perspective.
@@ -626,7 +626,7 @@ declare global {
      *   - If the Token is inside the Region a particular elevation, then the Token is inside the Region at any elevation
      *     within the elevation range of the Region.
      *
-     * If this function is overridden, then {@link Token.segmentizeRegionMovement | `Token#segmentizeRegionMovent`} must be overridden too.
+     * If this function is overridden, then {@link Token.segmentizeRegionMovement | `Token#segmentizeRegionMovement`} must be overridden too.
      * @param region - The region.
      * @param position - The (x, y) and/or elevation to use instead of the current values.
      * @returns Is the Token inside the Region?
@@ -839,6 +839,7 @@ declare global {
   let _token: Token.Object | null;
 
   namespace Token {
+    // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof Token>;
     type Object = FixedInstanceType<ObjectClass>;
 
@@ -1077,14 +1078,17 @@ declare global {
     }
 
     /** @internal */
-    type _AnimationData = Pick<TokenDocument, "x" | "y" | "width" | "height" | "rotation" | "alpha"> & {
+    type _AnimationData = Pick<TokenDocument.Implementation, "x" | "y" | "width" | "height" | "rotation" | "alpha"> & {
       /** The texture data. */
-      texture: Pick<TokenDocument["texture"], "src" | "anchorX" | "anchorY" | "scaleX" | "scaleY" | "tint">;
+      texture: Pick<
+        TokenDocument.Implementation["texture"],
+        "src" | "anchorX" | "anchorY" | "scaleX" | "scaleY" | "tint"
+      >;
     } & {
       /** The ring data. */
       ring: {
         /** The ring subject data */
-        subject: Pick<TokenDocument["ring"]["subject"], "texture" | "scale">;
+        subject: Pick<TokenDocument.Implementation["ring"]["subject"], "texture" | "scale">;
       };
     };
 

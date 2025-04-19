@@ -81,7 +81,7 @@ declare abstract class BaseCombatant<
 
   static get hierarchy(): Combatant.Hierarchy;
 
-  override system: Document.SystemFor<"Combatant", SubType>;
+  override system: Combatant.SystemOfType<SubType>;
 
   override parent: BaseCombatant.Parent;
 
@@ -114,9 +114,7 @@ declare abstract class BaseCombatant<
 
   static override get(documentId: string, options?: Combatant.Database.GetOptions): Combatant.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Combatant.EmbeddedName>(
-    name: CollectionName,
-  ): Combatant.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -255,17 +253,23 @@ declare abstract class BaseCombatant<
 export default BaseCombatant;
 
 declare namespace BaseCombatant {
-  export import SubType = Combatant.SubType;
   export import Name = Combatant.Name;
   export import ConstructorArgs = Combatant.ConstructorArgs;
   export import Hierarchy = Combatant.Hierarchy;
   export import Metadata = Combatant.Metadata;
+  export import SubType = Combatant.SubType;
+  export import ConfiguredSubTypes = Combatant.ConfiguredSubTypes;
+  export import Known = Combatant.Known;
+  export import OfType = Combatant.OfType;
+  export import SystemOfType = Combatant.SystemOfType;
   export import Parent = Combatant.Parent;
+  export import Descendant = Combatant.Descendant;
+  export import DescendantClass = Combatant.DescendantClass;
   export import Pack = Combatant.Pack;
   export import Embedded = Combatant.Embedded;
-  export import EmbeddedName = Combatant.EmbeddedName;
-  export import EmbeddedCollectionName = Combatant.EmbeddedCollectionName;
   export import ParentCollectionName = Combatant.ParentCollectionName;
+  export import CollectionClass = Combatant.CollectionClass;
+  export import Collection = Combatant.Collection;
   export import Stored = Combatant.Stored;
   export import Source = Combatant.Source;
   export import PersistedData = Combatant.PersistedData;

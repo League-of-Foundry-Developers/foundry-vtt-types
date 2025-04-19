@@ -163,39 +163,50 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   override delete(operation?: TokenDocument.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: TokenDocument.Database.GetOptions): TokenDocument.Implementation | null;
+  static override get(
+    documentId: string,
+    options?: TokenDocument.Database.GetOptions,
+  ): TokenDocument.Implementation | null;
 
-  // TODO: @LukeAbby More Implementation Nonsense
-  // override getEmbeddedCollection<EmbeddedName extends TokenDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  // ): Document.EmbeddedCollectionFor<TokenDocument.Name, EmbeddedName>;
+  static override getCollectionName<CollectionName extends TokenDocument.Embedded.Name>(
+    name: CollectionName,
+  ): TokenDocument.Embedded.CollectionNameOf<CollectionName> | null;
 
-  // override getEmbeddedDocument<EmbeddedName extends TokenDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  //   id: string,
-  //   options: Document.GetEmbeddedDocumentOptions, // TODO: Actually get the specific embedded name.
-  // ): TokenDocument.Embedded | undefined;
+  /**
+   * @remarks Calling `BaseToken#getEmbeddedCollection` would result in entirely typical results at
+   * runtime, namely returning a `EmbeddedCollection` corresponding to a field in `BaseToken`'s
+   * schema. However {@link TokenDocument.getEmbeddedCollection | `TokenDocument#getEmbeddedCollection`}
+   * is overridden to add new cases and since `BaseToken` is a superclass it had to be widened to
+   * accomodate that.
+   */
+  override getEmbeddedCollection(embeddedName: TokenDocument.Embedded.CollectionName): Collection.Any;
 
-  // override createEmbeddedDocuments<EmbeddedName extends TokenDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  //   data: Document.CreateDataFor<EmbeddedName>[] | undefined,
-  //   // TODO: Generic over the EmbeddedName
-  //   operation?: never,
-  // ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  override getEmbeddedDocument<EmbeddedName extends TokenDocument.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): TokenDocument.Embedded.DocumentFor<EmbeddedName> | undefined;
 
-  // override updateEmbeddedDocuments<EmbeddedName extends TokenDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  //   updates: Document.UpdateDataFor<EmbeddedName>[] | undefined,
-  //   // TODO: Generic over the EmbeddedName
-  //   operation?: never,
-  // ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  override createEmbeddedDocuments<EmbeddedName extends TokenDocument.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
 
-  // override deleteEmbeddedDocuments<EmbeddedName extends TokenDocument.EmbeddedName>(
-  //   embeddedName: EmbeddedName,
-  //   ids: Array<string>,
-  //   // TODO: Generic over the EmbeddedName
-  //   operation?: never,
-  // ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
+  override updateEmbeddedDocuments<EmbeddedName extends TokenDocument.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends TokenDocument.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -355,11 +366,14 @@ declare namespace BaseToken {
   export import Hierarchy = TokenDocument.Hierarchy;
   export import Metadata = TokenDocument.Metadata;
   export import Parent = TokenDocument.Parent;
+  export import Descendant = TokenDocument.Descendant;
+  export import DescendantClass = TokenDocument.DescendantClass;
+  export import DescendantParent = TokenDocument.DescendantParent;
   export import Pack = TokenDocument.Pack;
   export import Embedded = TokenDocument.Embedded;
-  export import EmbeddedName = TokenDocument.EmbeddedName;
-  export import EmbeddedCollectionName = TokenDocument.EmbeddedCollectionName;
   export import ParentCollectionName = TokenDocument.ParentCollectionName;
+  export import CollectionClass = TokenDocument.CollectionClass;
+  export import Collection = TokenDocument.Collection;
   export import Stored = TokenDocument.Stored;
   export import Source = TokenDocument.Source;
   export import PersistedData = TokenDocument.PersistedData;
@@ -369,6 +383,7 @@ declare namespace BaseToken {
   export import Schema = TokenDocument.Schema;
   export import DatabaseOperation = TokenDocument.Database;
   export import Flags = TokenDocument.Flags;
+  export import CoreFlags = TokenDocument.CoreFlags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

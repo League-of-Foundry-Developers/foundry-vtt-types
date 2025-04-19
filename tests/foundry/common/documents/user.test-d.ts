@@ -8,7 +8,7 @@ expectTypeOf(foundry.documents.BaseUser.deleteDocuments([])).toEqualTypeOf<Promi
 const user = await foundry.documents.BaseUser.create({ name: "Another User" }, { temporary: true });
 if (user) {
   // Note(LukeAbby): At one point there was a regression in `ForeignDocumentField` that would have caused this to fail.
-  expectTypeOf(user.character).toEqualTypeOf<Actor | null>();
+  expectTypeOf(user.character).toEqualTypeOf<Actor.Implementation | null>();
 }
 
 // @ts-expect-error name may not be undefined

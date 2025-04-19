@@ -32,7 +32,7 @@ await foundry.documents.BaseNote.create({ textAnchor: 2 });
 await foundry.documents.BaseMeasuredTemplate.create({ t: "foobar" });
 
 // Flags
-declare const myEffect: ActiveEffect;
+declare const myEffect: ActiveEffect.Implementation;
 // @ts-expect-error Invalid flag in the space
 myEffect.getFlag("core", "foobar");
 // All documents have a sheetClass flag
@@ -49,7 +49,7 @@ declare const JEPSystemTypes: Game.Model.TypeNames<"JournalEntryPage">;
 declare global {
   interface DataModelConfig {
     JournalEntryPage: {
-      headquarters: typeof foundry.abstract.TypeDataModel<DataSchema, JournalEntryPage>;
+      headquarters: typeof foundry.abstract.TypeDataModel<DataSchema, JournalEntryPage.Implementation>;
     };
   }
 }
@@ -57,7 +57,7 @@ declare global {
 expectTypeOf(JEPCoreTypes).toEqualTypeOf<"base" | "image" | "pdf" | "text" | "video">();
 expectTypeOf(JEPSystemTypes).toEqualTypeOf<"headquarters">();
 
-declare const myJournalEntryPage: JournalEntryPage;
+declare const myJournalEntryPage: JournalEntryPage.Implementation;
 if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {
   expectTypeOf(myJournalEntryPage.system?.prepareBaseData()).toEqualTypeOf<void>();
 }
@@ -125,7 +125,7 @@ expectTypeOf(ElementFieldType.hasTypeData).toEqualTypeOf<boolean>();
 expectTypeOf(ParentDataModel.name).toEqualTypeOf<string>();
 expectTypeOf(AssignmentElementType.documentName).toEqualTypeOf<"ActiveEffect">();
 expectTypeOf(InitializedElementType.collectionName).toEqualTypeOf<"effects">();
-expectTypeOf(InitializedType.get("", { strict: true })).toEqualTypeOf<ActiveEffect>();
+expectTypeOf(InitializedType.get("", { strict: true })).toEqualTypeOf<ActiveEffect.Implementation>();
 
 const stringField = new foundry.data.fields.StringField();
 

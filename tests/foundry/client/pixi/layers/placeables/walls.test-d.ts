@@ -5,14 +5,14 @@ expectTypeOf(WallsLayer.documentName).toEqualTypeOf<"Wall">();
 expectTypeOf(WallsLayer.instance).toEqualTypeOf<WallsLayer | undefined>();
 expectTypeOf(WallsLayer.layerOptions).toEqualTypeOf<WallsLayer.LayerOptions>();
 expectTypeOf(WallsLayer.layerOptions.name).toEqualTypeOf<"walls">();
-expectTypeOf(WallsLayer.layerOptions.objectClass).toEqualTypeOf<typeof Wall>();
+expectTypeOf(WallsLayer.layerOptions.objectClass).toEqualTypeOf<Wall.ObjectClass>();
 declare const somePoint: PIXI.Point;
 declare const someWall: Wall.Object;
 expectTypeOf(WallsLayer.getClosestEndpoint(somePoint, someWall)).toEqualTypeOf<Canvas.PointTuple>();
 
 const layer = new WallsLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof Wall>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Wall.ObjectClass>();
 expectTypeOf(layer.options).toEqualTypeOf<WallsLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"walls">();
 

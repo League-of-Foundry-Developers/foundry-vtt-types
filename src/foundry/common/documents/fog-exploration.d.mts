@@ -100,9 +100,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     options?: FogExploration.Database.GetOptions,
   ): FogExploration.Implementation | null;
 
-  static override getCollectionName<CollectionName extends FogExploration.EmbeddedName>(
-    name: CollectionName,
-  ): FogExploration.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -248,11 +246,13 @@ declare namespace BaseFogExploration {
   export import Hierarchy = FogExploration.Hierarchy;
   export import Metadata = FogExploration.Metadata;
   export import Parent = FogExploration.Parent;
+  export import Descendant = FogExploration.Descendant;
+  export import DescendantClass = FogExploration.DescendantClass;
   export import Pack = FogExploration.Pack;
   export import Embedded = FogExploration.Embedded;
-  export import EmbeddedName = FogExploration.EmbeddedName;
-  export import EmbeddedCollectionName = FogExploration.EmbeddedCollectionName;
   export import ParentCollectionName = FogExploration.ParentCollectionName;
+  export import CollectionClass = FogExploration.CollectionClass;
+  export import Collection = FogExploration.Collection;
   export import Stored = FogExploration.Stored;
   export import Source = FogExploration.Source;
   export import PersistedData = FogExploration.PersistedData;

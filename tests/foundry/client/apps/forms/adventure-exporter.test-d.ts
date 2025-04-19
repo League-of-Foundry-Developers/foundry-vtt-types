@@ -1,11 +1,11 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType } from "fvtt-types/utils";
 
-declare const adventure: Adventure & { pack: string };
+declare const adventure: Adventure.Implementation & { pack: string };
 const adventureExporter = new AdventureExporter(adventure);
 
-expectTypeOf(adventureExporter.object).toEqualTypeOf<Adventure>();
-expectTypeOf(adventureExporter.document).toEqualTypeOf<Adventure>();
+expectTypeOf(adventureExporter.object).toEqualTypeOf<Adventure.Implementation>();
+expectTypeOf(adventureExporter.document).toEqualTypeOf<Adventure.Implementation>();
 expectTypeOf(AdventureExporter.defaultOptions).toEqualTypeOf<AdventureExporter.Options>();
 expectTypeOf(adventureExporter.options).toEqualTypeOf<AdventureExporter.Options>();
 expectTypeOf(adventureExporter.getData()).toEqualTypeOf<
@@ -13,5 +13,5 @@ expectTypeOf(adventureExporter.getData()).toEqualTypeOf<
 >();
 expectTypeOf(adventureExporter.render(true)).toEqualTypeOf<AdventureExporter>();
 
-expectTypeOf(adventureExporter.adventure).toEqualTypeOf<Adventure>();
+expectTypeOf(adventureExporter.adventure).toEqualTypeOf<Adventure.Implementation>();
 expectTypeOf(adventureExporter.contentTree).toEqualTypeOf<Record<string, AdventureExporter.AdventureContentTreeRoot>>();

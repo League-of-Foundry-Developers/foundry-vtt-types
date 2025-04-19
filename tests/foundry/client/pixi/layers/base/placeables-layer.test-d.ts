@@ -43,11 +43,11 @@ if (firstHistoryEntry.type === "create") {
   >();
 }
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof AmbientLight>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<AmbientLight.ObjectClass>();
 expectTypeOf(layer.objects).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.preview).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.quadtree).toMatchTypeOf<CanvasQuadtree<AmbientLight.Object> | null>();
-expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<CALDoc, Scene> | null>();
+expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<CALDoc, Scene.Implementation> | null>();
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<number>();
 expectTypeOf(layer.hud).toEqualTypeOf<BasePlaceableHUD<CAL> | null>();
 expectTypeOf(layer.placeables).toEqualTypeOf<CAL[]>();
@@ -118,12 +118,12 @@ expectTypeOf(
 ).toEqualTypeOf<void>();
 
 // @ts-expect-error - "new" is not a valid history type.
-layer.storeHistory("new", new AmbientLightDocument());
+layer.storeHistory("new", new AmbientLightDocument.implementation());
 
 expectTypeOf(layer.copyObjects()).toEqualTypeOf<CAL[]>();
 expectTypeOf(layer.pasteObjects({ x: 10, y: 10 })).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.pasteObjects({ x: 10, y: 10 }, { hidden: true, snap: false })).toEqualTypeOf<
-  Promise<AmbientLightDocument[]>
+  Promise<AmbientLightDocument.Implementation[]>
 >();
 expectTypeOf(layer.pasteObjects({ x: 10, y: 10 }, { hidden: false })).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.pasteObjects({ x: 10, y: 10 }, { snap: true })).toEqualTypeOf<Promise<CALDoc[]>>();

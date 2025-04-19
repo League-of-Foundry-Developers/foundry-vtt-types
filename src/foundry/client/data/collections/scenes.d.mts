@@ -1,4 +1,5 @@
 import type { Identity } from "fvtt-types/utils";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -53,6 +54,9 @@ declare global {
   namespace Scenes {
     interface Any extends AnyScenes {}
     interface AnyConstructor extends Identity<typeof AnyScenes> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Scene"> {}
+    interface Configured extends Document.ConfiguredCollection<"Scene"> {}
   }
 }
 

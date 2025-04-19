@@ -1,13 +1,13 @@
 import { expectTypeOf } from "vitest";
 
 // @ts-expect-error - A Folder requires name.
-new Folder();
+new Folder.implementation();
 
 // @ts-expect-error - A Folder requires name.
-new Folder({});
+new Folder.implementation({});
 
-const folder = new Folder({ name: "foo", type: "JournalEntry" });
-expectTypeOf(folder).toEqualTypeOf<Folder>();
+const folder = new Folder.implementation({ name: "foo", type: "JournalEntry" });
+expectTypeOf(folder).toEqualTypeOf<Folder.Implementation>();
 
 expectTypeOf(folder.depth).toEqualTypeOf<number | undefined>();
 expectTypeOf(folder.children).toEqualTypeOf<Folder.Implementation[]>();

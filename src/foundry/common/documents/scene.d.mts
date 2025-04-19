@@ -108,9 +108,40 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   static override get(documentId: string, options?: Scene.Database.GetOptions): Scene.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Scene.EmbeddedName>(
+  static override getCollectionName<CollectionName extends Scene.Embedded.Name>(
     name: CollectionName,
-  ): Scene.CollectionNameOf<CollectionName> | null;
+  ): Scene.Embedded.CollectionNameOf<CollectionName> | null;
+
+  override getEmbeddedCollection<EmbeddedName extends Scene.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): Scene.Embedded.CollectionFor<EmbeddedName>;
+
+  override getEmbeddedDocument<EmbeddedName extends Scene.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): Scene.Embedded.DocumentFor<EmbeddedName> | undefined;
+
+  override createEmbeddedDocuments<EmbeddedName extends Scene.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override updateEmbeddedDocuments<EmbeddedName extends Scene.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends Scene.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -245,11 +276,14 @@ declare namespace BaseScene {
   export import Hierarchy = Scene.Hierarchy;
   export import Metadata = Scene.Metadata;
   export import Parent = Scene.Parent;
+  export import Descendant = Scene.Descendant;
+  export import DescendantClass = Scene.DescendantClass;
+  export import DescendantParent = Scene.DescendantParent;
   export import Pack = Scene.Pack;
   export import Embedded = Scene.Embedded;
-  export import EmbeddedName = Scene.EmbeddedName;
-  export import EmbeddedCollectionName = Scene.EmbeddedCollectionName;
   export import ParentCollectionName = Scene.ParentCollectionName;
+  export import CollectionClass = Scene.CollectionClass;
+  export import Collection = Scene.Collection;
   export import Stored = Scene.Stored;
   export import Source = Scene.Source;
   export import PersistedData = Scene.PersistedData;

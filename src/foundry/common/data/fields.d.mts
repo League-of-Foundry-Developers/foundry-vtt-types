@@ -884,15 +884,20 @@ declare namespace SchemaField {
   >;
 
   /**
+   * @deprecated {@link SourceData | `SourceData`}
+   */
+  type PersistedData<Fields extends DataSchema> = SourceData<Fields>;
+
+  /**
    * Get the persisted type for the given DataSchema. This is the type used for source.
    * @typeParam Fields - the DataSchema fields of the SchemaField
    */
-  type PersistedData<Fields extends DataSchema> = PrettifyType<
+  type SourceData<Fields extends DataSchema> = PrettifyType<
     RemoveIndexSignatures<{
       [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<any, any, any, any, infer PersistType>
         ? PersistType
         : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-          ? PersistedData<SubSchema>
+          ? SourceData<SubSchema>
           : Fields[Key] extends DataField<any, any, any, infer PersistType>
             ? PersistType
             : never;
@@ -904,7 +909,7 @@ declare namespace SchemaField {
       [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<any, any, any, any, infer PersistType>
         ? PersistType
         : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-          ? PersistedData<SubSchema>
+          ? SourceData<SubSchema>
           : Fields[Key] extends DataField<any, any, any, infer PersistType>
             ? PersistType
             : never;
@@ -961,7 +966,7 @@ declare namespace SchemaField {
     type PersistedType<
       Fields extends DataSchema,
       Opts extends Options<Fields> = DefaultOptions,
-    > = DataField.DerivedInitializedType<PersistedData<Fields>, MergedOptions<Fields, Opts>>;
+    > = DataField.DerivedInitializedType<SourceData<Fields>, MergedOptions<Fields, Opts>>;
   }
 
   /**
@@ -1012,9 +1017,9 @@ declare namespace SchemaField {
   type InnerUpdateData<Fields extends DataSchema> = UpdateData<Fields>;
 
   /**
-   * @deprecated {@link SchemaField.PersistedData | `SchemaField.PersistedData`}
+   * @deprecated {@link SchemaField.SourceData | `SchemaField.SourceData`}
    */
-  type InnerPersistedType<Fields extends DataSchema> = PersistedData<Fields>;
+  type InnerPersistedType<Fields extends DataSchema> = SourceData<Fields>;
 }
 
 /**
@@ -1878,7 +1883,7 @@ declare namespace ArrayField {
     ElementFieldType extends DataField<infer _1, infer _2, infer _3, infer Persist>
       ? Persist
       : ElementFieldType extends abstract new (...args: infer _4) => DataModel<infer Schema, infer _5, infer _6>
-        ? SchemaField.PersistedData<Schema>
+        ? SchemaField.SourceData<Schema>
         : never;
 
   /**
@@ -2166,7 +2171,7 @@ declare namespace EmbeddedDataField {
     ModelType extends DataModel.AnyConstructor,
     Opts extends Options<ModelType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.PersistedData<DataModel.SchemaOfClass<ModelType>>,
+    SchemaField.SourceData<DataModel.SchemaOfClass<ModelType>>,
     MergedOptions<ModelType, Opts>
   >;
 }
@@ -2336,7 +2341,7 @@ declare namespace EmbeddedCollectionField {
   type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends abstract new (
     ...args: infer _1
   ) => DataModel<infer Schema, infer _2, infer _3>
-    ? SchemaField.PersistedData<Schema>
+    ? SchemaField.SourceData<Schema>
     : never;
 
   /**
@@ -2489,7 +2494,7 @@ declare namespace EmbeddedCollectionDeltaField {
   type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends abstract new (
     ...args: infer _1
   ) => DataModel<infer Schema, infer _2, infer _3>
-    ? SchemaField.PersistedData<Schema>
+    ? SchemaField.SourceData<Schema>
     : never;
 
   /**
@@ -2646,7 +2651,7 @@ declare namespace EmbeddedDocumentField {
     DocumentType extends Document.AnyConstructor,
     Opts extends Options<DocumentType>,
   > = DataField.DerivedInitializedType<
-    SchemaField.PersistedData<DataModel.SchemaOfClass<DocumentType>>,
+    SchemaField.SourceData<DataModel.SchemaOfClass<DocumentType>>,
     MergedOptions<DocumentType, Opts>
   >;
 }
@@ -2666,7 +2671,7 @@ declare namespace EmbeddedDocumentField {
  * InitialValue: `null`
  */
 declare class DocumentIdField<
-  Options extends StringField.Options<unknown> = DocumentIdField.DefaultOptions,
+  Options extends DocumentIdField.Options = DocumentIdField.DefaultOptions,
   AssignmentType = DocumentIdField.AssignmentType<Options>,
   InitializedType = DocumentIdField.InitializedType<Options>,
   PersistedType extends string | null | undefined = DocumentIdField.InitializedType<Options>,
@@ -2700,6 +2705,10 @@ declare class DocumentIdField<
 }
 
 declare namespace DocumentIdField {
+  type Options = StringField.Options<unknown> & {
+    readonly?: boolean;
+  };
+
   /** The type of the default options for the {@link DocumentIdField | `DocumentIdField`} class. */
   type DefaultOptions = SimpleMerge<
     StringField.DefaultOptions,
@@ -3789,13 +3798,13 @@ declare namespace DocumentStatsField {
    * @typeParam Opts - the options that override the default options
    */
   type PersistedType<Opts extends Options = DefaultOptions> = DataField.DerivedInitializedType<
-    SchemaField.PersistedData<Schema>,
+    SchemaField.SourceData<Schema>,
     MergedOptions<Opts>
   >;
 
   type ConstructorData = SchemaField.CreateData<Schema>;
   type Properties = SchemaField.InitializedData<Schema>;
-  type Source = SchemaField.PersistedData<Schema>;
+  type Source = SchemaField.SourceData<Schema>;
 
   interface Schema extends DataSchema {
     /**

@@ -38,20 +38,23 @@ declare global {
     interface Any extends TileConfig<any> {}
 
     /** @internal */
-    type _FormData = Pick<TileDocument, "alpha" | "elevation" | "height" | "rotation" | "sort" | "width" | "x" | "y">;
+    type _FormData = Pick<
+      TileDocument.Implementation,
+      "alpha" | "elevation" | "height" | "rotation" | "sort" | "width" | "x" | "y"
+    >;
 
     interface FormData extends _FormData {
-      "occlusion.alpha": TileDocument["occlusion"]["alpha"];
-      "occlusion.mode": TileDocument["occlusion"]["mode"];
-      "restrictions.light": TileDocument["restrictions"]["light"];
-      "restrictions.weather": TileDocument["restrictions"]["weather"];
-      "texture.src": TileDocument["texture"]["src"];
-      "texture.scaleX": TileDocument["texture"]["scaleX"];
-      "texture.scaleY": TileDocument["texture"]["scaleY"];
-      "texture.tint": TileDocument["texture"]["tint"];
-      "video.autoplay": TileDocument["video"]["autoplay"];
-      "video.loop": TileDocument["video"]["loop"];
-      "video.volume": TileDocument["video"]["volume"];
+      "occlusion.alpha": TileDocument.Implementation["occlusion"]["alpha"];
+      "occlusion.mode": TileDocument.Implementation["occlusion"]["mode"];
+      "restrictions.light": TileDocument.Implementation["restrictions"]["light"];
+      "restrictions.weather": TileDocument.Implementation["restrictions"]["weather"];
+      "texture.src": TileDocument.Implementation["texture"]["src"];
+      "texture.scaleX": TileDocument.Implementation["texture"]["scaleX"];
+      "texture.scaleY": TileDocument.Implementation["texture"]["scaleY"];
+      "texture.tint": TileDocument.Implementation["texture"]["tint"];
+      "video.autoplay": TileDocument.Implementation["video"]["autoplay"];
+      "video.loop": TileDocument.Implementation["video"]["loop"];
+      "video.volume": TileDocument.Implementation["video"]["volume"];
     }
 
     interface Options extends DocumentSheet.Options<TileDocument.Implementation> {
