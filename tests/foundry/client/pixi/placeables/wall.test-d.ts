@@ -17,7 +17,7 @@ expectTypeOf(Wall.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
 
 declare const doc: WallDocument.Stored;
 
-const wall = new Wall(doc);
+const wall = new CONFIG.Wall.objectClass(doc);
 
 expectTypeOf(wall.controlIcon).toBeNull();
 expectTypeOf(wall.doorControl).toEqualTypeOf<DoorControl.ConfiguredInstance | null | undefined>();
