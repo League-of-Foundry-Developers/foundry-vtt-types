@@ -43,7 +43,10 @@ declare global {
 
     protected override _getSecretContent(secret: HTMLElement): string;
 
-    protected override _updateSecret(secret: HTMLElement, content: string): Promise<void | JournalEntryPage>;
+    protected override _updateSecret(
+      secret: HTMLElement,
+      content: string,
+    ): Promise<void | JournalEntryPage.Implementation>;
 
     override activateEditor(
       name: string,

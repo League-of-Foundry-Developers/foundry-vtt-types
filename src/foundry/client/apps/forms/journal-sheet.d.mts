@@ -182,7 +182,7 @@ declare global {
      * Determine whether a page is visible to the current user.
      * @param page - The Page
      */
-    isPageVisible(page: JournalEntryPage): boolean;
+    isPageVisible(page: JournalEntryPage.Implementation): boolean;
 
     /**
      * Toggle the collapsed or expanded state of the Journal Entry table-of-contents sidebar.

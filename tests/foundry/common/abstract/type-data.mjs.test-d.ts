@@ -162,4 +162,4 @@ class CustomTypeDataModel extends foundry.abstract.TypeDataModel<any, Item.Imple
 // This is a regression test for a case where `TypeDataModel` was written as `...args: ConstructorParameters<typeof DataModel>` instead of `...args: ConstructorParameters<typeof DataModel<Schema, Parent>>`.
 // Thus causing the constructor to be typed with no respect to the `Parent`.
 // @ts-expect-error - This should not work as it is attempting to give an `Actor` to `TypeDataModel` where it's configured with a parent of `Item`.
-new CustomTypeDataModel({}, { parent: new Actor({ name: "test" }) });
+new CustomTypeDataModel({}, { parent: new Actor.implementation({ name: "test" }) });

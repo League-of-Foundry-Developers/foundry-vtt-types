@@ -97,6 +97,7 @@ declare global {
      * builtin `ChatMessage` class or a custom subclass if that is set up in
      * {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`}.
      */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredChatMessage<Type>, ChatMessage<Type>>;
 
     /**
@@ -474,13 +475,13 @@ declare global {
 
     interface GetSpeakerOptions {
       /** The Scene in which the speaker resides */
-      scene: Scene | null;
+      scene: Scene.Implementation | null;
 
       /** The Actor whom is speaking */
-      actor: Actor | null | undefined;
+      actor: Actor.Implementation | null | undefined;
 
       /** The Token whom is speaking */
-      token: TokenDocument | Token | null | undefined;
+      token: TokenDocument.Implementation | Token.Object | null | undefined;
 
       /** The name of the speaker to display */
       alias: string | undefined;
@@ -504,7 +505,7 @@ declare global {
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated
       extends Document.Database.Operations<
-        ChatMessage,
+        ChatMessage.Implementation,
         { rollMode: foundry.CONST.DICE_ROLL_MODES; chatBubble: boolean },
         {},
         {}
@@ -617,7 +618,9 @@ declare global {
      *
      * @returns The identified speaker data
      */
-    static getSpeaker(options?: InexactPartial<ChatMessage.GetSpeakerOptions>): ChatMessage["_source"]["speaker"];
+    static getSpeaker(
+      options?: InexactPartial<ChatMessage.GetSpeakerOptions>,
+    ): ChatMessage.Implementation["_source"]["speaker"];
 
     /**
      * A helper to prepare the speaker object based on a target TokenDocument
@@ -626,11 +629,11 @@ declare global {
      */
     protected static _getSpeakerFromToken(options: {
       /** The TokenDocument of the speaker */
-      token: TokenDocument;
+      token: TokenDocument.Implementation;
 
       /** The name of the speaker to display */
       alias?: string | undefined;
-    }): ChatMessage["_source"]["speaker"];
+    }): ChatMessage.Implementation["_source"]["speaker"];
 
     /**
      * A helper to prepare the speaker object based on a target Actor
@@ -639,14 +642,14 @@ declare global {
      */
     protected static _getSpeakerFromActor(options: {
       /** The Scene is which the speaker resides */
-      scene?: Scene | undefined;
+      scene?: Scene.Implementation | undefined;
 
       /** The Actor that is speaking */
-      actor: Actor;
+      actor: Actor.Implementation;
 
       /** The name of the speaker to display */
       alias?: string | undefined;
-    }): ChatMessage["_source"]["speaker"];
+    }): ChatMessage.Implementation["_source"]["speaker"];
 
     /**
      * A helper to prepare the speaker object based on a target User
@@ -655,20 +658,20 @@ declare global {
      */
     protected static _getSpeakerFromUser(options: {
       /** The Scene in which the speaker resides */
-      scene?: Scene | undefined;
+      scene?: Scene.Implementation | undefined;
 
       /** The User who is speaking */
       user: User.Implementation;
 
       /** The name of the speaker to display */
       alias?: string | undefined;
-    }): ChatMessage["_source"]["speaker"];
+    }): ChatMessage.Implementation["_source"]["speaker"];
 
     /**
      * Obtain an Actor instance which represents the speaker of this message (if any)
      * @param speaker - The speaker data object
      */
-    static getSpeakerActor(speaker: ChatMessage["_source"]["speaker"]): Actor.Implementation | null;
+    static getSpeakerActor(speaker: ChatMessage.Implementation["_source"]["speaker"]): Actor.Implementation | null;
 
     /**
      * Obtain a data object used to evaluate any dice rolls associated with this particular chat message

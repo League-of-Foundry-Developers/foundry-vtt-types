@@ -114,12 +114,17 @@ declare global {
      * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
      * @param itemData - The item data requested for creation
      */
-    protected _onDropItemCreate(itemData: Item["_source"][] | Item["_source"]): Promise<Item.Implementation[]>;
+    protected _onDropItemCreate(
+      itemData: Item.Implementation["_source"][] | Item.Implementation["_source"],
+    ): Promise<Item.Implementation[]>;
 
     /**
      * Handle a drop event for an existing embedded Item to sort that Item relative to its siblings
      */
-    protected _onSortItem(event: DragEvent, itemData: Item["_source"]): undefined | Promise<Item.Implementation[]>;
+    protected _onSortItem(
+      event: DragEvent,
+      itemData: Item.Implementation["_source"],
+    ): undefined | Promise<Item.Implementation[]>;
 
     /**
      * Is the drop data coming from the same actor?
@@ -152,9 +157,9 @@ declare global {
         type: "Actor";
       }
 
-      type Item = Document.DropData<Item.Implementation> & {
+      interface Item extends Document.DropData<Item.Implementation> {
         type: "Item";
-      };
+      }
 
       interface Folder {
         type: "Folder";

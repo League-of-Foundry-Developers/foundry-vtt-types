@@ -4,12 +4,12 @@ expectTypeOf(DrawingsLayer.documentName).toEqualTypeOf<"Drawing">();
 expectTypeOf(DrawingsLayer.instance).toEqualTypeOf<DrawingsLayer | undefined>();
 expectTypeOf(DrawingsLayer.layerOptions).toEqualTypeOf<DrawingsLayer.LayerOptions>();
 expectTypeOf(DrawingsLayer.layerOptions.name).toEqualTypeOf<"drawings">();
-expectTypeOf(DrawingsLayer.layerOptions.objectClass).toEqualTypeOf<typeof Drawing>();
+expectTypeOf(DrawingsLayer.layerOptions.objectClass).toEqualTypeOf<Drawing.ObjectClass>();
 expectTypeOf(DrawingsLayer.DEFAULT_CONFIG_SETTING).toEqualTypeOf<"defaultDrawingConfig">();
 
 const layer = new DrawingsLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof Drawing>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Drawing.ObjectClass>();
 expectTypeOf(layer.options).toEqualTypeOf<DrawingsLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"drawings">();
 

@@ -108,7 +108,7 @@ declare global {
       children: TreeNode<T>[];
       depth: number;
       entries: T[];
-      folder: Folder;
+      folder: Folder.Implementation;
       root: boolean;
       visible: boolean;
     }

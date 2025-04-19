@@ -1,3 +1,6 @@
+// This file pertains to setting up documents, including defaults. For this reason there's a lot of references to `SomeDocument` instead of `SomeDocument.implementation`.
+/* eslint-disable @typescript-eslint/no-restricted-types, no-restricted-syntax */
+
 import type { documents } from "../foundry/client-esm/client.d.mts";
 import type { Document } from "../foundry/common/abstract/module.d.mts";
 import type { InterfaceToObject, MakeConform, MustConform, FixedInstanceType } from "fvtt-types/utils";
@@ -308,6 +311,8 @@ interface MisconfiguredRegion extends ConformToDocumentConstructor<typeof Region
 interface MisconfiguredTile extends ConformToDocumentConstructor<typeof TileDocument> {}
 interface MisconfiguredToken extends ConformToDocumentConstructor<typeof TokenDocument> {}
 interface MisconfiguredWall extends ConformToDocumentConstructor<typeof WallDocument> {}
+
+/* eslint-enable */
 
 export interface ConfigurationFailure {
   ActiveEffect: MisconfiguredActiveEffect;

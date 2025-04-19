@@ -56,7 +56,7 @@ declare abstract class BaseActorDelta<
    * Retrieve the base actor's collection, if it exists.
    * @param collectionName - The collection name.
    */
-  getBaseCollection(collectionName: string): Collection<Actor> | undefined;
+  getBaseCollection(collectionName: string): Collection<Actor.Implementation> | undefined;
 
   static applyDelta(
     delta: BaseActorDelta,

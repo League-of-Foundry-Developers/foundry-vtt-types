@@ -2,13 +2,13 @@ import { expectTypeOf } from "vitest";
 import Document = foundry.abstract.Document;
 
 // @ts-expect-error - A Scene requires name.
-new Scene();
+new Scene.implementation();
 
 // @ts-expect-error - A Scene requires name.
-new Scene({});
+new Scene.implementation({});
 
-const scene = new Scene({ name: "My scene" });
-expectTypeOf(scene).toEqualTypeOf<Scene>();
+const scene = new Scene.implementation({ name: "My scene" });
+expectTypeOf(scene).toEqualTypeOf<Scene.Implementation>();
 
 expectTypeOf(scene.dimensions).toEqualTypeOf<SceneDimensions>();
 expectTypeOf(scene.active).toEqualTypeOf<boolean>();
@@ -17,9 +17,9 @@ expectTypeOf(scene.isView).toEqualTypeOf<boolean>();
 expectTypeOf(scene.journal).toEqualTypeOf<JournalEntry.Implementation | null>();
 expectTypeOf(scene.playlist).toEqualTypeOf<Playlist.Implementation | null>();
 expectTypeOf(scene.playlistSound).toEqualTypeOf<string | null>();
-expectTypeOf(scene.activate()).toEqualTypeOf<Promise<Scene | undefined>>();
-expectTypeOf(scene.view()).toEqualTypeOf<Promise<Scene | undefined>>();
-expectTypeOf(scene.clone()).toEqualTypeOf<Scene>();
+expectTypeOf(scene.activate()).toEqualTypeOf<Promise<Scene.Implementation | undefined>>();
+expectTypeOf(scene.view()).toEqualTypeOf<Promise<Scene.Implementation | undefined>>();
+expectTypeOf(scene.clone()).toEqualTypeOf<Scene.Implementation>();
 expectTypeOf(scene.prepareBaseData()).toEqualTypeOf<void>();
 expectTypeOf(scene.createThumbnail()).toEqualTypeOf<Promise<ImageHelper.ThumbnailReturn>>();
 expectTypeOf(scene.createThumbnail({})).toEqualTypeOf<Promise<ImageHelper.ThumbnailReturn>>();

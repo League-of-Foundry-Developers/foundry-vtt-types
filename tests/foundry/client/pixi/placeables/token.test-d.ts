@@ -1,8 +1,8 @@
 import { expectTypeOf } from "vitest";
 
-const token = new Token(new TokenDocument());
+const token = new CONFIG.Token.objectClass(new TokenDocument.implementation());
 expectTypeOf(token.id).toEqualTypeOf<string>();
-expectTypeOf(token.actor).toEqualTypeOf<Actor | null>();
+expectTypeOf(token.actor).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(token.document.actorId).toEqualTypeOf<string | null>();
 expectTypeOf(token.document.actorLink).toEqualTypeOf<boolean>();
 expectTypeOf(token.document.x).toEqualTypeOf<number>();

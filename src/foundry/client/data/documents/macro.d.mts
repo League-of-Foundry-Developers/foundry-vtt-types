@@ -99,6 +99,7 @@ declare global {
      * Note that `Macro` does not have a `system` property and therefore there is no way for a user
      * to configure custom subtypes. See {@link Macro.SubType | `Macro.SubType`} for more information.
      */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredMacro<Type>, Macro<Type>>;
 
     /**
@@ -429,10 +430,10 @@ declare global {
 
     interface Scope {
       /** An Actor who is the protagonist of the executed action. */
-      actor: Actor;
+      actor: Actor.Implementation;
 
       /**  A Token which is the protagonist of the executed action. */
-      token: Token;
+      token: Token.Object;
 
       /** An optional event passed to the executed macro. */
       event: Event | RegionDocument.RegionEvent;
@@ -447,7 +448,7 @@ declare global {
      * @deprecated {@link Macro.Database | `Macro.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Macro> {}
+    interface DatabaseOperations extends Document.Database.Operations<Macro.Implementation> {}
 
     /**
      * @deprecated {@link Macro.Types | `Macro.SubType`}
@@ -516,7 +517,7 @@ declare global {
      *          macro or the return value if a script macro. A void return is possible if the user
      *          is not permitted to execute macros or a script macro execution fails.
      */
-    execute(scope?: InexactPartial<Macro.Scope>): Promise<ChatMessage | void> | Promise<unknown> | void;
+    execute(scope?: InexactPartial<Macro.Scope>): Promise<ChatMessage.Implementation | void> | Promise<unknown> | void;
 
     #executeScript();
 

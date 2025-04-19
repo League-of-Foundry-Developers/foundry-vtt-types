@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-const combatant = new Combatant({}, {});
+const combatant = new Combatant.implementation({}, {});
 
 // properties
 expectTypeOf(combatant.pack).toEqualTypeOf<string | null>();

@@ -108,6 +108,7 @@ declare global {
      * builtin `Actor` class or a custom subclass if that is set up in
      * {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`}.
      */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActor<Type>, Actor<Type>>;
 
     /**
@@ -473,7 +474,7 @@ declare global {
      * @deprecated {@link Actor.Database | `Actor.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Actor> {}
+    interface DatabaseOperations extends Document.Database.Operations<Actor.Implementation> {}
 
     /**
      * @deprecated {@link Actor.Types | `Actor.SubType`}
@@ -738,7 +739,7 @@ declare global {
         /**
          * A single Scene, or list of Scenes to filter by.
          */
-        scenes: Scene | Scene[];
+        scenes: Scene.Implementation | Scene.Implementation[];
         /**
          * Limit the results to tokens that are linked to the actor.
          * @defaultValue `false`
@@ -751,19 +752,19 @@ declare global {
      * Register a token as a dependent of this actor.
      * @param token - The Token
      */
-    protected _registerDependantToken(token: TokenDocument): void;
+    protected _registerDependantToken(token: TokenDocument.Implementation): void;
 
     /**
      * Remove a token from this actor's dependents.
      * @param token - The Token
      */
-    protected _unregisterDependentToken(token: TokenDocument): void;
+    protected _unregisterDependentToken(token: TokenDocument.Implementation): void;
 
     /**
      * Prune a whole scene from this actor's dependent tokens.
      * @param scene - The scene
      */
-    protected _unregisterDependentScene(scene: Scene): void;
+    protected _unregisterDependentScene(scene: Scene.Implementation): void;
 
     /**
      * @privateRemarks _preCreate and _onUpdate are all overridden but with no signature changes from BaseActor.

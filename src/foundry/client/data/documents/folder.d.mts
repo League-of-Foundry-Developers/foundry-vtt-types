@@ -91,6 +91,7 @@ declare global {
      * Note that `Folder` does not have a `system` property and therefore there is no way for a user
      * to configure custom subtypes. See {@link Folder.SubType | `Folder.SubType`} for more information.
      */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredFolder<Type>, Folder<Type>>;
 
     /**
@@ -380,7 +381,7 @@ declare global {
      * @deprecated {@link Folder.Database | `Folder.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Folder> {}
+    interface DatabaseOperations extends Document.Database.Operations<Folder.Implementation> {}
 
     /**
      * @deprecated {@link Folder.Types | `Folder.SubType`}

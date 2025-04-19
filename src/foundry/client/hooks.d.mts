@@ -313,7 +313,7 @@ declare global {
        * @see {@link ChatBubbles.say | `ChatBubbles#say`}
        */
       chatBubble: (
-        token: Token,
+        token: Token.Object,
         html: JQuery,
         message: string,
         options: {
@@ -712,7 +712,7 @@ declare global {
        * @see {@link ChatMessage.render | `ChatMessage#render`}
        */
       renderChatMessage: (
-        message: ChatMessage,
+        message: ChatMessage.Implementation,
         html: JQuery,
         messageData: {
           message: ChatMessage.Source;

@@ -82,7 +82,7 @@ declare global {
      * @param folder - The desired Folder within the World or null to clear the folder
      * @returns A promise which resolves once the transaction is complete
      */
-    setFolder(folder: Folder | string | null): Promise<void>;
+    setFolder(folder: Folder.Implementation | string | null): Promise<void>;
 
     /**
      * Get the sort order for this Compendium
@@ -218,7 +218,7 @@ declare global {
      * @param options - Additional options which modify how the data is imported.
      */
     importFolder(
-      folder: Folder,
+      folder: Folder.Implementation,
       options?: InexactPartial<{
         /**
          * Import any parent folders which are not already present in the Compendium
@@ -234,7 +234,7 @@ declare global {
      * @param options - Additional options which modify how the data is imported.
      */
     importFolders(
-      folders: Folder[],
+      folders: Folder.Implementation[],
       options?: InexactPartial<{
         /**
          * Import any parent folders which are not already present in the Compendium
@@ -381,7 +381,7 @@ declare global {
     // The type that's passed to `new CompendiumCollection(...)`
     type ConstructorMetadata<T extends CompendiumCollection.Metadata> = T & {
       index: IndexTypeForMetadata<T>;
-      folders: Folder[];
+      folders: Folder.Implementation[];
     };
 
     // The type that appears in `compendium.metadata` after initialization.

@@ -449,7 +449,7 @@ declare global {
        * One or more table results which have been drawn
        * @defaultValue `[]`
        */
-      results: TableResult[];
+      results: TableResult.Implementation[];
 
       /**
        * Whether to automatically display the results in chat
@@ -516,7 +516,7 @@ declare global {
      * @deprecated {@link RollTable.Database | `RollTable.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<RollTable> {}
+    interface DatabaseOperations extends Document.Database.Operations<RollTable.Implementation> {}
 
     /**
      * @deprecated {@link RollTable.CreateData | `RollTable.CreateData`}
@@ -727,7 +727,7 @@ declare global {
      * @param options - Additional options passed to the RollTable.create method
      */
     static fromFolder<Temporary extends boolean | undefined = false>(
-      folder: Folder,
+      folder: Folder.Implementation,
       options?: RollTable.Database.CreateOperation<Temporary>,
     ): Promise<Document.TemporaryIf<WallDocument.Implementation, Temporary> | undefined>;
 

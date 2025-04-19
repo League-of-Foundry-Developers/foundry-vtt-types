@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 
-declare const token: Token;
-declare const tokenDocument: TokenDocument;
+declare const token: Token.Object;
+declare const tokenDocument: TokenDocument.Implementation;
 
 const bubbles = new ChatBubbles();
 expectTypeOf(bubbles.template).toEqualTypeOf<string>();

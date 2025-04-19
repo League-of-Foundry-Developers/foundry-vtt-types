@@ -7,8 +7,7 @@ import type { BaseShapeData } from "../../../../src/foundry/common/data/data.d.m
 
 class TestRegion extends BaseRegion {}
 
-// Not sure know how to make this a specific type of behaviour *and* `.Implementation`
-declare const someScriptBehavior: RegionBehavior<"executeScript">;
+declare const someScriptBehavior: RegionBehavior.OfType<"executeScript">;
 let myRegion;
 // @ts-expect-error Region construction requires a `name`
 myRegion = new TestRegion();

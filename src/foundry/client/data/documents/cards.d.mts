@@ -98,6 +98,7 @@ declare global {
      * builtin `Cards` class or a custom subclass if that is set up in
      * {@link ConfiguredCards | `fvtt-types/configuration/ConfiguredCards`}.
      */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCards<Type>, Cards<Type>>;
 
     /**
@@ -506,7 +507,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData: DeepPartial<Cards["_source"]>;
+      updateData: DeepPartial<Cards.Implementation["_source"]>;
 
       /**
        * The name of the action being performed, used as part of the dispatched Hook event
@@ -521,7 +522,7 @@ declare global {
       action: CardsAction;
 
       /** An array of Card creation operations to be performed in each destination Cards document */
-      toCreate: Card["_source"][][];
+      toCreate: Card.Implementation["_source"][][];
 
       /** Card update operations to be performed in the origin Cards document */
       fromUpdate: { _id: string; drawn: true }[];
@@ -536,7 +537,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData: DeepPartial<Card["_source"]> | undefined;
+      updateData: DeepPartial<Card.Implementation["_source"]> | undefined;
 
       /**
        * The name of the action being performed, used as part of the dispatched Hook event
@@ -563,7 +564,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData: DeepPartial<Card["_source"]>;
+      updateData: DeepPartial<Card.Implementation["_source"]>;
     }
 
     interface ShuffleOptions extends BaseOperationOptions {
@@ -572,7 +573,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData: DeepPartial<Card["_source"]>;
+      updateData: DeepPartial<Card.Implementation["_source"]>;
 
       /** Create a ChatMessage which notifies that this action has occurred
        *  @defaultValue `true`
@@ -587,7 +588,7 @@ declare global {
        * for example the displayed face
        * @defaultValue `{}`
        */
-      updateData: DeepPartial<Card["_source"]>;
+      updateData: DeepPartial<Card.Implementation["_source"]>;
     }
 
     /** Additional context which describes the operation. */
@@ -596,7 +597,7 @@ declare global {
        * A mapping of Card deck IDs to the update operations that
        * will be performed on them.
        */
-      toUpdate: Record<string, DeepPartial<Card["_source"]>[]>;
+      toUpdate: Record<string, DeepPartial<Card.Implementation["_source"]>[]>;
 
       /**
        * Card deletion operations to be performed on the origin Cards
@@ -609,7 +610,7 @@ declare global {
      * @deprecated {@link Cards.Database | `Cards.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Cards> {}
+    interface DatabaseOperations extends Document.Database.Operations<Cards.Implementation> {}
 
     /**
      * @deprecated {@link Cards.Types | `Cards.SubType`}
@@ -747,14 +748,14 @@ declare global {
      * @param a - The card being sorted
      * @param b - Another card being sorted against
      */
-    protected sortStandard(a: Card, b: Card): number;
+    protected sortStandard(a: Card.Implementation, b: Card.Implementation): number;
 
     /**
      * A sorting function that is used to determine the order of Card documents within a shuffled stack.
      * @param a - The card being sorted
      * @param b - Another card being sorted against
      */
-    protected sortShuffled(a: Card, b: Card): number;
+    protected sortShuffled(a: Card.Implementation, b: Card.Implementation): number;
 
     /**
      * An internal helper method for drawing a certain number of Card documents from this Cards stack.

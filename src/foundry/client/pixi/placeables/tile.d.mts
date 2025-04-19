@@ -3,6 +3,7 @@ import type { FixedInstanceType } from "fvtt-types/utils";
 
 declare global {
   namespace Tile {
+    // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof Tile>;
     type Object = FixedInstanceType<ObjectClass>;
 
@@ -195,7 +196,7 @@ declare global {
      * Create a preview tile with a background texture instead of an image
      * @param data - Initial data with which to create the preview Tile
      */
-    static createPreview(data: TileDocument.CreateData): TileDocument.Implementation;
+    static createPreview(data: TileDocument.CreateData): Tile.Object;
 
     protected override _draw(options?: Record<string, unknown>): Promise<void>;
 

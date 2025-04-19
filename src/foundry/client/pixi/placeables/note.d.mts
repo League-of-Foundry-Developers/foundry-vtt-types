@@ -3,6 +3,7 @@ import type { FixedInstanceType } from "fvtt-types/utils";
 
 declare global {
   namespace Note {
+    // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof Note>;
     type Object = FixedInstanceType<ObjectClass>;
 
@@ -89,7 +90,7 @@ declare global {
     /**
      * The specific JournalEntryPage within the associated JournalEntry referenced by this Note.
      */
-    get page(): JournalEntryPage;
+    get page(): JournalEntryPage.Implementation;
 
     /**
      * The text label used to annotate this Note

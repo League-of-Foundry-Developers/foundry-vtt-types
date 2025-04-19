@@ -443,7 +443,7 @@ declare global {
      * @deprecated {@link Playlist.Database.Operation | `Playlist.Database.Operation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Playlist> {}
+    interface DatabaseOperations extends Document.Database.Operations<Playlist.Implementation> {}
 
     /**
      * @deprecated {@link Playlist.CreateData | `Playlist.CreateData`}
@@ -502,7 +502,7 @@ declare global {
      * Find all content links belonging to a given {@link Playlist | `Playlist`} or {@link PlaylistSound | `PlaylistSound`}.
      * @param doc - The Playlist or PlaylistSound.
      */
-    static _getSoundContentLinks(doc: Playlist | PlaylistSound): NodeListOf<Element>;
+    static _getSoundContentLinks(doc: Playlist.Implementation | PlaylistSound.Implementation): NodeListOf<Element>;
 
     override prepareDerivedData(): void;
 

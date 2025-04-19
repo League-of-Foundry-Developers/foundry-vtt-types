@@ -98,6 +98,7 @@ declare global {
      * builtin `Card` class or a custom subclass if that is set up in
      * {@link ConfiguredCard | `fvtt-types/configuration/ConfiguredCard`}.
      */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCard<Type>, Card<Type>>;
 
     /**
@@ -489,7 +490,7 @@ declare global {
      * @deprecated {@link Card.Database | `Card.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Card> {}
+    interface DatabaseOperations extends Document.Database.Operations<Card.Implementation> {}
 
     /**
      * @deprecated {@link Card.Types | `Card.SubType`}

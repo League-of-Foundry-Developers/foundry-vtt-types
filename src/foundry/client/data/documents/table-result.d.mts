@@ -93,6 +93,7 @@ declare global {
      * Note that `TableResult` does not have a `system` property and therefore there is no way for a user
      * to configure custom subtypes. See {@link TableResult.SubType | `TableResult.SubType`} for more information.
      */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredTableResult<Type>, TableResult<Type>>;
 
     /**
@@ -408,7 +409,7 @@ declare global {
      * @deprecated {@link TableResult.Database | `TableResult.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<TableResult> {}
+    interface DatabaseOperations extends Document.Database.Operations<TableResult.Implementation> {}
 
     /**
      * @deprecated {@link TableResult.Types | `TableResult.SubType`}

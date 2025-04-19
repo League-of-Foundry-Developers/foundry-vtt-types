@@ -52,13 +52,16 @@ declare global {
     interface Any extends WallConfig<any> {}
 
     /** @internal */
-    type _FormData = Pick<WallDocument, "dir" | "door" | "doorSound" | "ds" | "light" | "move" | "sight" | "sound">;
+    type _FormData = Pick<
+      WallDocument.Implementation,
+      "dir" | "door" | "doorSound" | "ds" | "light" | "move" | "sight" | "sound"
+    >;
 
     interface FormData extends _FormData {
-      "threshold.light": WallDocument["threshold"]["light"];
-      "threshold.sight": WallDocument["threshold"]["sight"];
-      "threshold.sound": WallDocument["threshold"]["sound"];
-      "threshold.attenuation": WallDocument["threshold"]["attenuation"];
+      "threshold.light": WallDocument.Implementation["threshold"]["light"];
+      "threshold.sight": WallDocument.Implementation["threshold"]["sight"];
+      "threshold.sound": WallDocument.Implementation["threshold"]["sound"];
+      "threshold.attenuation": WallDocument.Implementation["threshold"]["attenuation"];
     }
   }
 }

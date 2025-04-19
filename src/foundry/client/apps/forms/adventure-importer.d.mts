@@ -48,7 +48,10 @@ declare global {
 
     protected override _getHeaderButtons(): Application.HeaderButton[];
 
-    protected override _updateObject(event: Event, formData: object): Promise<void | ReturnType<Adventure["import"]>>;
+    protected override _updateObject(
+      event: Event,
+      formData: object,
+    ): Promise<void | ReturnType<Adventure.Implementation["import"]>>;
 
     /**
      * Mirror Adventure#import but call AdventureImporter#_importContent and AdventureImport#_prepareImportData

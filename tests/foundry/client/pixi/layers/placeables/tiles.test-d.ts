@@ -4,11 +4,11 @@ expectTypeOf(TilesLayer.documentName).toEqualTypeOf<"Tile">();
 expectTypeOf(TilesLayer.instance).toEqualTypeOf<TilesLayer | undefined>();
 expectTypeOf(TilesLayer.layerOptions).toEqualTypeOf<TilesLayer.LayerOptions>();
 expectTypeOf(TilesLayer.layerOptions.name).toEqualTypeOf<"tiles">();
-expectTypeOf(TilesLayer.layerOptions.objectClass).toEqualTypeOf<typeof Tile>();
+expectTypeOf(TilesLayer.layerOptions.objectClass).toEqualTypeOf<Tile.ObjectClass>();
 
 const layer = new TilesLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof Tile>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Tile.ObjectClass>();
 expectTypeOf(layer.options).toEqualTypeOf<TilesLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"tiles">();
 

@@ -364,7 +364,7 @@ declare global {
      */
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated, @typescript-eslint/no-empty-object-type
-      extends Document.Database.Operations<AmbientLightDocument, {}, { animate: boolean }, {}> {}
+      extends Document.Database.Operations<AmbientLightDocument.Implementation, {}, { animate: boolean }, {}> {}
 
     /**
      * @deprecated {@link AmbientLightDocument.CreateData | `AmbientLightDocument.CreateData`}

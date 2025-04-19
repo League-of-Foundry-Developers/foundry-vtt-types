@@ -2,14 +2,14 @@ import { expectTypeOf } from "vitest";
 
 const myBackend = new foundry.data.ClientDatabaseBackend();
 
-expectTypeOf(myBackend.create(Item, { data: [{ name: "foo" }], broadcast: true, pack: null })).toEqualTypeOf<
-  Promise<Item[]>
->();
+expectTypeOf(
+  myBackend.create(Item.implementation, { data: [{ name: "foo" }], broadcast: true, pack: null }),
+).toEqualTypeOf<Promise<Item.Implementation[]>>();
 
-expectTypeOf(myBackend.update(Actor, { updates: [{ name: "foo" }], broadcast: false, pack: null })).toEqualTypeOf<
-  Promise<Actor.Implementation[]>
->();
+expectTypeOf(
+  myBackend.update(Actor.implementation, { updates: [{ name: "foo" }], broadcast: false, pack: null }),
+).toEqualTypeOf<Promise<Actor.Implementation[]>>();
 
-expectTypeOf(myBackend.delete(Scene, { ids: [], broadcast: true, pack: "some.pack" })).toEqualTypeOf<
-  Promise<Scene[]>
+expectTypeOf(myBackend.delete(Scene.implementation, { ids: [], broadcast: true, pack: "some.pack" })).toEqualTypeOf<
+  Promise<Scene.Implementation[]>
 >();

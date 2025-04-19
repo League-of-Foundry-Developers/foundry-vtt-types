@@ -17,7 +17,7 @@ declare global {
    * @see {@link SettingsConfig | `SettingsConfig`}
    */
   class ClientSettings {
-    constructor(worldSettings?: Setting["_source"][]);
+    constructor(worldSettings?: Setting.Implementation["_source"][]);
 
     /**
      * A object of registered game settings for this scope

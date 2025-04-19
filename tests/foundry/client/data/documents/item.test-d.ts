@@ -15,9 +15,9 @@ declare namespace WeaponData {
   }
 }
 
-export class ArmorData extends foundry.abstract.TypeDataModel<ArmorData.Schema, Item> {}
+export class ArmorData extends foundry.abstract.TypeDataModel<ArmorData.Schema, Item.Implementation> {}
 
-export class WeaponData extends foundry.abstract.TypeDataModel<WeaponData.Schema, Item> {}
+export class WeaponData extends foundry.abstract.TypeDataModel<WeaponData.Schema, Item.Implementation> {}
 
 declare global {
   interface DataModelConfig {
@@ -29,18 +29,18 @@ declare global {
 }
 
 // @ts-expect-error - Item requires name and type.
-new Item();
+new Item.implementation();
 
 // @ts-expect-error - Item requires name and type.
 await Item.create();
 
 // @ts-expect-error - Item requires name and type.
-new Item({});
+new Item.implementation({});
 
 // @ts-expect-error - Item requires name and type.
 await Item.create({});
 
-const item = new Item({ name: "Mighty Axe of Killing", type: "weapon" });
+const item = new Item.implementation({ name: "Mighty Axe of Killing", type: "weapon" });
 await Item.create({ name: "Mighty Axe of Killing", type: "weapon" });
 
 expectTypeOf(item.actor).toEqualTypeOf<Actor.Implementation | null>();

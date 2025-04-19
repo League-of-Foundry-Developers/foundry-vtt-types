@@ -804,7 +804,7 @@ declare global {
      * @deprecated {@link TokenDocument.Database | `TokenDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<TokenDocument> {}
+    interface DatabaseOperations extends Document.Database.Operations<TokenDocument.Implementation> {}
 
     /**
      * @deprecated {@link TokenDocument.CreateData | `TokenDocument.CreateData`}
@@ -836,7 +836,7 @@ declare global {
        * the current active combat will be modified if one exists. Otherwise, a new
        * Combat encounter will be created if the requesting user is a Gamemaster.
        */
-      combat?: Combat | undefined;
+      combat?: Combat.Implementation | undefined;
     }
 
     interface ToggleCombatantOptions extends InexactPartial<TokenDocument.CreateCombatantOptions> {
@@ -886,7 +886,7 @@ declare global {
     /**
      * A reference to the base, World-level Actor this token represents.
      */
-    get baseActor(): Actor | undefined;
+    get baseActor(): Actor.Implementation | undefined;
 
     /**
      * An indicator for whether or not the current User has full control over this Token document.
@@ -978,7 +978,7 @@ declare global {
      * @returns An array of created Combatant documents
      */
     static createCombatants(
-      tokens: TokenDocument[],
+      tokens: TokenDocument.Implementation[],
       options?: TokenDocument.CreateCombatantOptions,
     ): Promise<Combatant.Implementation[]>;
 
@@ -990,7 +990,7 @@ declare global {
      * @returns An array of deleted Combatant documents
      */
     static deleteCombatants(
-      tokens: TokenDocument[],
+      tokens: TokenDocument.Implementation[],
       options?: TokenDocument.CreateCombatantOptions,
     ): Promise<Combatant.Implementation[]>;
 

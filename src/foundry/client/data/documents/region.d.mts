@@ -444,7 +444,7 @@ declare global {
       data: object;
 
       /** The Region the event was triggered on */
-      region: RegionDocument;
+      region: RegionDocument.Implementation;
 
       /** The User that triggered the event */
       user: User.Implementation;
@@ -513,7 +513,7 @@ declare global {
      * @deprecated {@link RegionDocument.Database | `RegionDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<RegionDocument> {}
+    interface DatabaseOperations extends Document.Database.Operations<RegionDocument.Implementation> {}
 
     /**
      * @deprecated {@link RegionDocument.CreateData | `RegionDocument.CreateData`}
@@ -558,7 +558,7 @@ declare global {
      * @internal
      */
     protected static _updateTokens(
-      regions: RegionDocument[],
+      regions: RegionDocument.Implementation[],
       options?: InexactPartial<RegionDocument.UpdateTokenOptions>,
     ): Promise<void>;
 
@@ -590,7 +590,7 @@ declare global {
     ): void;
 
     /** The tokens inside this region. */
-    tokens: Set<TokenDocument>;
+    tokens: Set<TokenDocument.Implementation>;
 
     /**
      * Trigger the Region event.

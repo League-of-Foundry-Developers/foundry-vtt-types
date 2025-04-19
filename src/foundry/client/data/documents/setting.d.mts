@@ -335,7 +335,7 @@ declare global {
      * @deprecated {@link Setting.Database | `Setting.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Setting> {}
+    interface DatabaseOperations extends Document.Database.Operations<Setting.Implementation> {}
 
     /**
      * @deprecated {@link Setting.CreateData | `Setting.CreateData`}

@@ -420,7 +420,7 @@ declare global {
      * @deprecated {@link MeasuredTemplateDocument.Database | `MeasuredTemplateDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<MeasuredTemplateDocument> {}
+    interface DatabaseOperations extends Document.Database.Operations<MeasuredTemplateDocument.Implementation> {}
 
     /**
      * @deprecated {@link MeasuredTemplateDocument.CreateData | `MeasuredTemplateDocument.CreateData`}

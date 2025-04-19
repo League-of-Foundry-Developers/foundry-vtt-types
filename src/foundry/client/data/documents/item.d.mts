@@ -104,6 +104,7 @@ declare global {
      * builtin `Item` class or a custom subclass if that is set up in
      * {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`}.
      */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredItem<Type>, Item<Type>>;
 
     /**
@@ -454,7 +455,7 @@ declare global {
      * @deprecated {@link Item.Database | `Item.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Item> {}
+    interface DatabaseOperations extends Document.Database.Operations<Item.Implementation> {}
 
     /**
      * @deprecated {@link Item.Types | `Item.SubType`}

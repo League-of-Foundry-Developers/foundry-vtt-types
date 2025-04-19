@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import Document = foundry.abstract.Document;
 
-const combat = new Combat();
+const combat = new Combat.implementation();
 
 // properties
 expectTypeOf(combat.turns).toEqualTypeOf<Combatant.Implementation[]>();
@@ -10,7 +10,7 @@ expectTypeOf(combat.previous).toEqualTypeOf<Combat.HistoryData>();
 
 expectTypeOf(Combat.CONFIG_SETTING).toEqualTypeOf<"combatTrackerConfig">();
 
-expectTypeOf(combat.combatant).toEqualTypeOf<Combat["turns"][number] | undefined>();
+expectTypeOf(combat.combatant).toEqualTypeOf<Combat.Implementation["turns"][number] | undefined>();
 expectTypeOf(combat.started).toEqualTypeOf<boolean>();
 expectTypeOf(combat.visible).toEqualTypeOf<true>();
 expectTypeOf(combat.isActive).toEqualTypeOf<boolean>();
@@ -34,7 +34,7 @@ expectTypeOf(combat.rollInitiative("")).toEqualTypeOf<Promise<Combat.Implementat
 expectTypeOf(combat.rollAll()).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.rollNPC()).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.setInitiative("", 1)).toEqualTypeOf<Promise<void>>();
-expectTypeOf(combat.setupTurns()).toEqualTypeOf<Combat["turns"]>();
+expectTypeOf(combat.setupTurns()).toEqualTypeOf<Combat.Implementation["turns"]>();
 expectTypeOf(combat.debounceSetup()).toEqualTypeOf<ReturnType<typeof foundry.utils.debounce>>();
 expectTypeOf(combat.updateCombatantActors()).toEqualTypeOf<void>();
 

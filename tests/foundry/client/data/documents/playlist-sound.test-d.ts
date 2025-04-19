@@ -1,12 +1,12 @@
 import { expectTypeOf } from "vitest";
 
 // @ts-expect-error - requires name.
-new PlaylistSound();
+new PlaylistSound.implementation();
 
 // @ts-expect-error - requires name.
-new PlaylistSound({});
+new PlaylistSound.implementation({});
 
-const sound = new PlaylistSound({ name: "my sound" });
+const sound = new PlaylistSound.implementation({ name: "my sound" });
 
 expectTypeOf(sound.sound).toEqualTypeOf<foundry.audio.Sound | null>();
 expectTypeOf(sound.debounceVolume).toEqualTypeOf<(volume: number) => void>();

@@ -415,7 +415,7 @@ declare global {
      * @deprecated {@link AmbientSoundDocument.Database | `AmbientSoundDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<AmbientSoundDocument> {}
+    interface DatabaseOperations extends Document.Database.Operations<AmbientSoundDocument.Implementation> {}
 
     /**
      * @deprecated {@link AmbientSoundDocument.CreateData | `AmbientSoundDocument.CreateData`}

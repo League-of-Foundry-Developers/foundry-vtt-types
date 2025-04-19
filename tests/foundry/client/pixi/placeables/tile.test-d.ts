@@ -1,10 +1,10 @@
 import { expectTypeOf } from "vitest";
 
 expectTypeOf(Tile.embeddedName).toEqualTypeOf<"Tile">();
-expectTypeOf(Tile.createPreview({ x: 100, y: null })).toEqualTypeOf<Tile>();
+expectTypeOf(Tile.createPreview({ x: 100, y: null })).toEqualTypeOf<Tile.Object>();
 
-declare const doc: TileDocument;
-const tile = new Tile(doc);
+declare const doc: TileDocument.Implementation;
+const tile = new CONFIG.Tile.objectClass(doc);
 // declare const token: Token;
 
 expectTypeOf(tile.frame).toEqualTypeOf<
@@ -22,8 +22,8 @@ expectTypeOf(tile.aspectRatio).toEqualTypeOf<number>();
 expectTypeOf(tile.sourceElement).toEqualTypeOf<HTMLImageElement | HTMLVideoElement | undefined>();
 expectTypeOf(tile.isVideo).toEqualTypeOf<boolean>();
 expectTypeOf(tile.isRoof).toEqualTypeOf<boolean>();
-expectTypeOf(tile.draw()).toEqualTypeOf<Promise<Tile>>();
-expectTypeOf(tile.refresh()).toEqualTypeOf<Tile>();
+expectTypeOf(tile.draw()).toEqualTypeOf<Promise<Tile.Object>>();
+expectTypeOf(tile.refresh()).toEqualTypeOf<Tile.Object>();
 
 // expectTypeOf(tile.play(true)).toEqualTypeOf<void>();
 // expectTypeOf(tile.play(false, {})).toEqualTypeOf<void>();

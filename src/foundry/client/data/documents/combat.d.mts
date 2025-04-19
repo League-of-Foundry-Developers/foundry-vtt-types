@@ -103,6 +103,7 @@ declare global {
      * builtin `Combat` class or a custom subclass if that is set up in
      * {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`}.
      */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCombat<Type>, Combat<Type>>;
 
     /**
@@ -468,7 +469,7 @@ declare global {
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated
       extends Document.Database.Operations<
-        Combat,
+        Combat.Implementation,
         {},
         { direction: -1 | 1; worldTime: { delta: number }; turnEvents: boolean },
         {}
@@ -590,13 +591,13 @@ declare global {
      * @param token - A Token ID or a TokenDocument instance
      * @returns An array of Combatants which represent the Token.
      */
-    getCombatantsByToken(token: string | TokenDocument): Combatant.Implementation[];
+    getCombatantsByToken(token: string | TokenDocument.Implementation): Combatant.Implementation[];
 
     /**
      * Get a Combatant that represents the given Actor or Actor ID.
      * @param actorOrId - An Actor ID or an Actor instance.
      */
-    getCombatantsByActor(actorOrId: string | Actor): Combatant.Implementation[];
+    getCombatantsByActor(actorOrId: string | Actor.Implementation): Combatant.Implementation[];
 
     /** Begin the combat encounter, advancing to round 1 and turn 1 */
     startCombat(): Promise<this>;
@@ -686,7 +687,7 @@ declare global {
      * Refresh the Token HUD under certain circumstances.
      * @param documents - A list of Combatant documents that were added or removed.
      */
-    protected _refreshTokenHUD(documents: Array<Combatant>): void;
+    protected _refreshTokenHUD(documents: Array<Combatant.Implementation>): void;
 
     /**
      * @privateRemarks _onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes from BaseCombat.
@@ -739,7 +740,7 @@ declare global {
      * Get the current history state of the Combat encounter.
      * @param combatant - The new active combatant
      */
-    protected _getCurrentState(combatant: Combatant): Combat.HistoryData;
+    protected _getCurrentState(combatant: Combatant.Implementation): Combat.HistoryData;
 
     /**
      * Manage the execution of Combat lifecycle events.
@@ -760,7 +761,7 @@ declare global {
      * This method only executes for one designated GM user. If no GM users are present this method will not be called.
      * @param combatant - The Combatant whose turn just ended
      */
-    protected _onEndTurn(combatant: Combatant): Promise<void>;
+    protected _onEndTurn(combatant: Combatant.Implementation): Promise<void>;
 
     /**
      * A workflow that occurs at the end of each Combat Round.
@@ -785,7 +786,7 @@ declare global {
      * This method only executes for one designated GM user. If no GM users are present this method will not be called.
      * @param combatant - The Combatant whose turn just started
      */
-    protected _onStartTurn(combatant: Combatant): Promise<void>;
+    protected _onStartTurn(combatant: Combatant.Implementation): Promise<void>;
 
     /**
      * @deprecated Since v11 until v13. Use {@link Combat.updateCombatantActors | `Combat#updateCombatantActors`} instead.
@@ -795,12 +796,12 @@ declare global {
     /**
      * @deprecated Since v12. Use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
      */
-    getCombatantByActor(actor: Actor): Combatant[];
+    getCombatantByActor(actor: Actor.Implementation): Combatant.Implementation[];
 
     /**
      * @deprecated Since v12. Use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
      */
-    getCombatantByToken(token: Token): Combatant[];
+    getCombatantByToken(token: Token.Object): Combatant.Implementation[];
 
     /*
      * After this point these are not really overridden methods.

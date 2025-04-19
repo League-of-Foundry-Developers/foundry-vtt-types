@@ -97,6 +97,7 @@ declare global {
      * builtin `Combatant` class or a custom subclass if that is set up in
      * {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`}.
      */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCombatant<Type>, Combatant<Type>>;
 
     /**
@@ -430,7 +431,7 @@ declare global {
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated
       extends Document.Database.Operations<
-        Combatant,
+        Combatant.Implementation,
         { combatTurn: number },
         { combatTurn: number },
         { combatTurn: number }

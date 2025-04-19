@@ -1,9 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-new DrawingDocument();
-new DrawingDocument({});
+new DrawingDocument.implementation();
+new DrawingDocument.implementation({});
 
-const doc = new DrawingDocument();
+const doc = new DrawingDocument.implementation();
 expectTypeOf(doc).toEqualTypeOf<DrawingDocument.Implementation>();
 
 expectTypeOf(doc.isAuthor).toEqualTypeOf<boolean>();

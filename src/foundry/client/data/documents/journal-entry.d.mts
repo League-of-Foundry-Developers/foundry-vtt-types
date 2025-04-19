@@ -405,7 +405,7 @@ declare global {
      * @deprecated {@link JournalEntry.Database | `JournalEntry.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<JournalEntry> {}
+    interface DatabaseOperations extends Document.Database.Operations<JournalEntry.Implementation> {}
 
     /**
      * @deprecated {@link JournalEntry.CreateData | `JournalEntry.CreateData`}
@@ -447,7 +447,7 @@ declare global {
      * Return a reference to the Note instance for this Journal Entry in the current Scene, if any.
      * If multiple notes are placed for this Journal Entry, only the first will be returned.
      */
-    get sceneNote(): Note | null;
+    get sceneNote(): Note.Object | null;
 
     /**
      * Show the JournalEntry to connected players.

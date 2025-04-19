@@ -353,7 +353,7 @@ declare global {
      * @deprecated {@link FogExploration.Database | `FogExploration.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<FogExploration> {}
+    interface DatabaseOperations extends Document.Database.Operations<FogExploration.Implementation> {}
 
     /**
      * @deprecated {@link FogExploration.CreateData | `FogExploration.CreateData`}
@@ -396,7 +396,7 @@ declare global {
         user: string;
       }>,
       options?: InexactPartial<DatabaseGetOperation>,
-    ): Promise<FogExploration | null>;
+    ): Promise<FogExploration.Implementation | null>;
 
     /**
      * Transform the explored base64 data into a PIXI.Texture object

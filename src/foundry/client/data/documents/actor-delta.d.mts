@@ -91,6 +91,7 @@ declare global {
      * builtin `ActorDelta` class or a custom subclass if that is set up in
      * {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`}.
      */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActorDelta<Type>, ActorDelta<Type>>;
 
     /**

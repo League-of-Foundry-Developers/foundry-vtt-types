@@ -87,6 +87,7 @@ declare global {
      * builtin `ActiveEffect` class or a custom subclass if that is set up in
      * {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`}.
      */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActiveEffect<Type>, ActiveEffect<Type>>;
 
     /**
@@ -580,7 +581,7 @@ declare global {
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated
       extends Document.Database.Operations<
-        ActiveEffect,
+        ActiveEffect.Implementation,
         { animate: boolean },
         { animate: boolean },
         { animate: boolean }

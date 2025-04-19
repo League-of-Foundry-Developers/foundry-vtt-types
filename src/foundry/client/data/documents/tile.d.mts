@@ -442,7 +442,7 @@ declare global {
      * @deprecated {@link TileDocument.Database | `TileDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<TileDocument> {}
+    interface DatabaseOperations extends Document.Database.Operations<TileDocument.Implementation> {}
 
     /**
      * @deprecated {@link TileDocument.CreateData | `TileDocument.CreateData`}

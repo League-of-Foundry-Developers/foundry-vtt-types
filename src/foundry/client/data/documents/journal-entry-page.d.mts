@@ -92,6 +92,7 @@ declare global {
      */
     type OfType<Type extends SubType> = Document.Internal.OfType<
       ConfiguredJournalEntryPage<Type>,
+      // eslint-disable-next-line @typescript-eslint/no-restricted-types
       JournalEntryPage<Type>
     >;
 
@@ -533,7 +534,7 @@ declare global {
      * @deprecated {@link JournalEntryPage.Database | `JournalEntryPage.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<JournalEntryPage> {}
+    interface DatabaseOperations extends Document.Database.Operations<JournalEntryPage.Implementation> {}
 
     /**
      * @deprecated {@link JournalEntryPage.Types | `JournalEntryPage.SubType`}
@@ -586,7 +587,7 @@ declare global {
      * Return a reference to the Note instance for this Journal Entry Page in the current Scene, if any.
      * If multiple notes are placed for this Journal Entry, only the first will be returned.
      */
-    get sceneNote(): Note | null;
+    get sceneNote(): Note.Object | null;
 
     /**
      * Convert a heading into slug suitable for use as an identifier.

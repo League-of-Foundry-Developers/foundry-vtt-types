@@ -128,8 +128,8 @@ export type OverlapsWith<T, U> = [Extract<T, U>, any] extends [U, Extract<T, U>]
  * takesNumericArray(Math.random() > 0.5 ? [1, 2, 3] : ["foo", "bar"]); // Error, at runtime it could be an array of the wrong type and that isn't handled. Notably this would succeed with `OverlapsWith`.
  * ```
  */
-export type ArrayOverlaps<T, Item> =
-  Extract<T, readonly unknown[]> extends readonly Item[] ? OverlapsWith<T, readonly Item[]> : readonly Item[];
+export type ArrayOverlaps<Arr, T> =
+  Extract<Arr, readonly unknown[]> extends readonly T[] ? OverlapsWith<Arr, readonly T[]> : readonly T[];
 
 /**
  * Use this whenever a type is given that should match some constraint but is

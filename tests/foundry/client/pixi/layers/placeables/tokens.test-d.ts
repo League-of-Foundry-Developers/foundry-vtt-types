@@ -5,11 +5,11 @@ expectTypeOf(TokenLayer.documentName).toEqualTypeOf<"Token">();
 expectTypeOf(TokenLayer.instance).toEqualTypeOf<TokenLayer | undefined>();
 expectTypeOf(TokenLayer.layerOptions).toEqualTypeOf<TokenLayer.LayerOptions>();
 expectTypeOf(TokenLayer.layerOptions.name).toEqualTypeOf<"tokens">();
-expectTypeOf(TokenLayer.layerOptions.objectClass).toEqualTypeOf<typeof Token>();
+expectTypeOf(TokenLayer.layerOptions.objectClass).toEqualTypeOf<Token.ObjectClass>();
 
 const layer = new TokenLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof Token>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Token.ObjectClass>();
 expectTypeOf(layer.options).toEqualTypeOf<TokenLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"tokens">();
 

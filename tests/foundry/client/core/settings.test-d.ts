@@ -18,7 +18,7 @@ declare global {
     "some.numberSetting": number;
     "some.stringSetting": string;
 
-    "data-model.setting": typeof Actor;
+    "data-model.setting": Actor.Implementation;
   }
 }
 
@@ -76,16 +76,20 @@ clientSettings.register("data-model", "setting", {
   type: Actor,
 });
 
-expectTypeOf(clientSettings.set("data-model", "setting", { name: "Test Actor" })).toEqualTypeOf<Promise<Actor>>();
-expectTypeOf(clientSettings.get("data-model", "setting")).toEqualTypeOf<Actor>();
+expectTypeOf(clientSettings.set("data-model", "setting", { name: "Test Actor" })).toEqualTypeOf<
+  Promise<Actor.Implementation>
+>();
+expectTypeOf(clientSettings.get("data-model", "setting")).toEqualTypeOf<Actor.Implementation>();
 
 clientSettings.register("data-model", "setting", {
   scope: "client",
   type: Actor,
 });
 
-expectTypeOf(clientSettings.set("data-model", "setting", { name: "Test Actor" })).toEqualTypeOf<Promise<Actor>>();
-expectTypeOf(clientSettings.get("data-model", "setting")).toEqualTypeOf<Actor>();
+expectTypeOf(clientSettings.set("data-model", "setting", { name: "Test Actor" })).toEqualTypeOf<
+  Promise<Actor.Implementation>
+>();
+expectTypeOf(clientSettings.get("data-model", "setting")).toEqualTypeOf<Actor.Implementation>();
 
 // core settings
 

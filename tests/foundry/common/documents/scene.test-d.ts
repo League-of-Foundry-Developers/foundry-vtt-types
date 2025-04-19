@@ -13,7 +13,7 @@ expectTypeOf(foundry.documents.BaseScene.create({ name: "My scene" })).toEqualTy
 
 const myScene = await foundry.documents.BaseScene.create({ name: "My second scene" }, { temporary: true });
 if (myScene) {
-  expectTypeOf(myScene).toEqualTypeOf<Scene>();
+  expectTypeOf(myScene).toEqualTypeOf<Scene.Implementation>();
 }
 
 // Subclass `BaseScene` to avoid it being abstract.

@@ -3,8 +3,8 @@ import type { AnyObject } from "../../../../../src/utils/index.d.mts";
 
 type ChatSpeakerData = foundry.documents.BaseChatMessage.Properties["speaker"];
 
-expectTypeOf(new ChatMessage()).toEqualTypeOf<ChatMessage.Implementation>();
-expectTypeOf(new ChatMessage({})).toEqualTypeOf<ChatMessage.Implementation>();
+expectTypeOf(new ChatMessage.implementation()).toEqualTypeOf<ChatMessage.Implementation>();
+expectTypeOf(new ChatMessage.implementation({})).toEqualTypeOf<ChatMessage.Implementation>();
 
 expectTypeOf(
   ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.BLIND),
@@ -45,18 +45,18 @@ if (game instanceof Game) {
     ChatMessage.getSpeaker({
       scene: game.scenes?.active,
       actor: game.user?.character,
-      token: new TokenDocument(),
+      token: new TokenDocument.implementation(),
       alias: "Mario",
     }),
   ).toEqualTypeOf<ChatSpeakerData>();
 }
-expectTypeOf(ChatMessage.getSpeaker({ token: new TokenDocument() })).toEqualTypeOf<ChatSpeakerData>();
+expectTypeOf(ChatMessage.getSpeaker({ token: new TokenDocument.implementation() })).toEqualTypeOf<ChatSpeakerData>();
 expectTypeOf(ChatMessage.getSpeaker({ alias: "Mario" })).toEqualTypeOf<ChatSpeakerData>();
 
 expectTypeOf(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker())).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(ChatMessage.getWhisperRecipients("Mario")).toEqualTypeOf<User.Stored[]>();
 
-const chat = new ChatMessage();
+const chat = new ChatMessage.implementation();
 expectTypeOf(chat.alias).toEqualTypeOf<string>();
 expectTypeOf(chat.isAuthor).toEqualTypeOf<boolean>();
 expectTypeOf(chat.isContentVisible).toEqualTypeOf<boolean>();

@@ -27,7 +27,7 @@ declare global {
      * @param scene - The Scene document being updated
      * @param data  - The incremental update data
      */
-    protected _onChangeScene(scene: Scene.Stored, data: DeepPartial<Scene["_source"]>): Promise<void>;
+    protected _onChangeScene(scene: Scene.Stored, data: DeepPartial<Scene.Implementation["_source"]>): Promise<void>;
   }
 
   namespace Playlists {
