@@ -692,17 +692,12 @@ declare global {
      * effectively inert, so they have been omitted here. This also means these are case
      * -insensitive at runtime, but TS doesn't have a good way to type that. Allowing lowercase or
      * title case is the best we can do.
+     *
+     * While in theory a custom action could be added through a custom `_can*` method method Atropos
+     * has indicated that this is not intended to be user-extensible.
      */
-    type BaseAction =
-      | "configure"
-      | "control"
-      | "view"
-      | "create"
-      | "drag"
-      | "hover"
-      | "update"
-      | "delete"
-      | (string & {});
+    type BaseAction = "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete";
+
     type Action = Titlecase<BaseAction> | BaseAction;
 
     /** @remarks Foundry does some unsound subclassing around {@link PlaceableObject._prepareDragLeftDropUpdates | `PlaceableObject#_prepareDragLeftDropUpdates`} */
