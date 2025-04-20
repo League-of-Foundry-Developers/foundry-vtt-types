@@ -10,7 +10,7 @@ expectTypeOf((myRS = RS.create())).toEqualTypeOf<RainShader>();
 expectTypeOf(myRS.speed).toEqualTypeOf<number>();
 expectTypeOf(myRS["_preRender"]).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();
 
-//dynamic properties from `RainShader.DefaultUniforms`
+// dynamic properties from `RainShader.DefaultUniforms`
 expectTypeOf(myRS.opacity).toBeNumber();
 expectTypeOf(myRS.intensity).toBeNumber();
 expectTypeOf(myRS.strength).toBeNumber();

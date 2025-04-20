@@ -243,7 +243,7 @@ declare global {
           label: "DRAWING.FillTypes";
           validationError: "must be a value in CONST.DRAWING_FILL_TYPES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.DRAWING_FILL_TYPES | null | undefined,
         CONST.DRAWING_FILL_TYPES,
         CONST.DRAWING_FILL_TYPES

@@ -36,5 +36,5 @@ expectTypeOf(layer["_onDragLeftDrop"](someEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftCancel"](somePointerEvent)).toBeVoid();
 expectTypeOf(layer["_onClickRight"](someEvent)).toBeVoid();
 
-//deprecated since v12 until v14
+// deprecated since v12 until v14
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<16 | 8 | 0>();

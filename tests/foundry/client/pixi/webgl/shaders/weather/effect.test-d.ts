@@ -9,7 +9,7 @@ const myWSE = new WeatherShaderEffect(
   RainShader,
 );
 
-//not a whole lot to test here not covered by QuadMesh tests
+// not a whole lot to test here not covered by QuadMesh tests
 expectTypeOf(
   myWSE.configure({
     foo: { x: 1, y: 1 },

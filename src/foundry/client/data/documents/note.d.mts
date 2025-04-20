@@ -467,12 +467,12 @@ declare global {
     /**
      * The associated JournalEntry which is referenced by this Note
      */
-    get entry(): JournalEntry.ImplementationClass | undefined;
+    get entry(): JournalEntry.Implementation | undefined;
 
     /**
      * The specific JournalEntryPage within the associated JournalEntry referenced by this Note.
      */
-    get page(): JournalEntryPage.ImplementationClass | undefined;
+    get page(): JournalEntryPage.Implementation | undefined;
 
     /**
      * The text label used to annotate this Note

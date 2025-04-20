@@ -66,7 +66,7 @@ declare abstract class BaseActorDelta<
 
   static migrateData(source: AnyMutableObject): AnyMutableObject;
 
-  //TODO: Figure out if this override still applies
+  // TODO: Figure out if this override still applies
   toObject(source: true): this["_source"];
   toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
 

@@ -24,7 +24,7 @@ expectTypeOf(
   myFogManager["_prepareFogUpdateData"]("base64:asfasgad252345+=5236236adfa"),
 ).toEqualTypeOf<FogExploration.UpdateData>();
 
-//deprecated since v11 until v13
+// deprecated since v11 until v13
 expectTypeOf(myFogManager.pending).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(myFogManager.revealed).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(myFogManager.update("garbage", true)).toEqualTypeOf<true>();

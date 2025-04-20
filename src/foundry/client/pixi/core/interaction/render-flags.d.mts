@@ -146,7 +146,7 @@ declare global {
     type _KeyOf<T> = keyof T;
 
     type ToBooleanFlags<RenderFlags extends object> = {
-      [K in _KeyOf<RenderFlags>]: boolean;
+      [K in _KeyOf<RenderFlags>]?: boolean | null | undefined;
     };
   }
 }

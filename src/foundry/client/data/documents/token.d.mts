@@ -238,7 +238,7 @@ declare global {
           choices: CONST.TOKEN_DISPLAY_MODES[];
           validationError: "must be a value in CONST.TOKEN_DISPLAY_MODES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.TOKEN_DISPLAY_MODES | null | undefined,
         CONST.TOKEN_DISPLAY_MODES,
         CONST.TOKEN_DISPLAY_MODES
@@ -288,7 +288,7 @@ declare global {
           initial: typeof CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1;
           choices: CONST.TOKEN_HEXAGONAL_SHAPES[];
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.TOKEN_HEXAGONAL_SHAPES | null | undefined,
         CONST.TOKEN_HEXAGONAL_SHAPES,
         CONST.TOKEN_HEXAGONAL_SHAPES
@@ -323,7 +323,7 @@ declare global {
           initial: typeof CONST.TOKEN_DISPOSITIONS.HOSTILE;
           validationError: "must be a value in CONST.TOKEN_DISPOSITIONS";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.TOKEN_DISPOSITIONS | null | undefined,
         CONST.TOKEN_DISPOSITIONS,
         CONST.TOKEN_DISPOSITIONS
@@ -340,7 +340,7 @@ declare global {
           initial: typeof CONST.TOKEN_DISPLAY_MODES.NONE;
           validationError: "must be a value in CONST.TOKEN_DISPLAY_MODES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.TOKEN_DISPLAY_MODES | null | undefined,
         CONST.TOKEN_DISPLAY_MODES,
         CONST.TOKEN_DISPLAY_MODES
@@ -847,6 +847,8 @@ declare global {
       active: boolean;
     }
 
+    type GetBarAttributeReturn = SingleAttributeBar | ObjectAttributeBar | null;
+
     type GetEmbeddedCollectionName = Embedded.CollectionName | "Actor" | "Item" | "ActiveEffect";
 
     // Note(LukeAbby): Simplified for now to prevent circularities. The correct implementation would
@@ -952,7 +954,7 @@ declare global {
          */
         alternative: string;
       }>,
-    ): SingleAttributeBar | ObjectAttributeBar | null;
+    ): TokenDocument.GetBarAttributeReturn;
 
     /**
      * Test whether a Token has a specific status effect.

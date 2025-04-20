@@ -12,9 +12,9 @@ expectTypeOf(
     fogExploredColor: null,
     fogUnexploredColor: undefined,
     environment: {
-      //TODO: expand test once SceneEnvironmentData is properly typed (dependant on BaseScene schema)
+      // TODO: expand test once SceneEnvironmentData is properly typed (dependant on BaseScene schema)
     },
-    darknessLevel: 5, //deprecated since v12 until v14
+    darknessLevel: 5, // deprecated since v12 until v14
   }),
 ).toEqualTypeOf<void>();
 expectTypeOf(myEnvironmentGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor<"environment">>();
@@ -25,5 +25,5 @@ expectTypeOf(myEnvironmentGroup.darknessLevel).toEqualTypeOf<number>();
 expectTypeOf(myEnvironmentGroup.colors.ambientBrightest).toEqualTypeOf<Color | undefined>();
 expectTypeOf(myEnvironmentGroup.weights.bright).toEqualTypeOf<number | undefined>();
 
-//deprecated since v12 until v14
+// deprecated since v12 until v14
 expectTypeOf(myEnvironmentGroup.darknessPenalty).toEqualTypeOf<0>();

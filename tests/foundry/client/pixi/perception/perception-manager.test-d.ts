@@ -29,7 +29,7 @@ expectTypeOf(
     refreshOcclusionStates: true,
     refreshPrimary: undefined,
     refreshVisionSources: null,
-    //deprecated
+    // deprecated
     identifyInteriorWalls: undefined,
     refreshTiles: false,
     // deprecated *and* the call it would have triggered was prematurely removed
@@ -39,5 +39,5 @@ expectTypeOf(
 
 expectTypeOf(manager.initialize()).toEqualTypeOf<void>();
 
-//deprecated
+// deprecated
 expectTypeOf(manager.refresh()).toEqualTypeOf<void>();

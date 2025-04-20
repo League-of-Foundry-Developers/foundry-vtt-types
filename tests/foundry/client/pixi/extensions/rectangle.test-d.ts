@@ -26,10 +26,10 @@ expectTypeOf(rect.leftEdge).toEqualTypeOf<PIXI.Rectangle.Edge>();
 expectTypeOf(rect.lineSegmentIntersects(somePoint, { x: 40, y: 20 })).toEqualTypeOf<boolean>();
 expectTypeOf<PIXI.Rectangle.CS_ZONES>().toMatchTypeOf<number>();
 
-//no options
+// no options
 expectTypeOf(rect.intersectPolygon(somePolygon)).toEqualTypeOf<PIXI.Polygon>();
 
-//regular options, split by weilerAtherton truthiness
+// regular options, split by weilerAtherton truthiness
 expectTypeOf(
   rect.intersectPolygon(somePolygon, {
     weilerAtherton: true,
@@ -45,7 +45,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<PIXI.Polygon>();
 
-//the two WAC CLIP_TYPES map exactly to equivalents in ClipperLib.ClipTypes, so they're allowed, as is the partial inverse
+// the two WAC CLIP_TYPES map exactly to equivalents in ClipperLib.ClipTypes, so they're allowed, as is the partial inverse
 expectTypeOf(
   rect.intersectPolygon(somePolygon, {
     weilerAtherton: false,
@@ -61,7 +61,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<PIXI.Polygon>();
 
-//This return type (`| []`) is very probably a Foundry bug in v12.
+// This return type (`| []`) is very probably a Foundry bug in v12.
 expectTypeOf(
   rect.intersectClipper(clipperPoints, { clipType: ClipperLib.ClipType.ctDifference, scalingFactor: 3 }),
 ).toEqualTypeOf<PIXI.Polygon | []>();

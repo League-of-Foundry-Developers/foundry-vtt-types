@@ -152,6 +152,6 @@ const meshes = mySource.drawMeshes();
 expectTypeOf(mySource.active).toEqualTypeOf<boolean>();
 expectTypeOf(meshes.background?.visible).toEqualTypeOf<boolean | undefined>();
 
-//deprecated since v11, until v13
+// deprecated since v11, until v13
 expectTypeOf(mySource.preview).toBeBoolean();
 expectTypeOf((mySource.preview = false)).toBeBoolean();

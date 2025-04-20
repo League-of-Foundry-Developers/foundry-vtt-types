@@ -134,7 +134,7 @@ declare global {
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
-    //TODO: ensure `c` is required for creation
+    // TODO: ensure `c` is required for creation
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
@@ -153,6 +153,11 @@ declare global {
      * it has different rules for `null` and `undefined`.
      */
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+    /**
+     * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
+     */
+    type Coordinates = [x0: number, y0: number, x1: number, y1: number];
 
     interface ThresholdSchema extends DataSchema {
       /**
@@ -199,7 +204,7 @@ declare global {
       c: fields.ArrayField<
         fields.NumberField<{ required: true; integer: true; nullable: false }>,
         {
-          validate: (c: unknown) => c is [x0: number, y0: number, x1: number, y1: number];
+          validate: (c: unknown) => c is Coordinates;
           validationError: "must be a length-4 array of integer coordinates";
         },
         // TODO(LukeAbby): Make the array shape easier to override.
@@ -207,11 +212,11 @@ declare global {
         fields.ArrayField.InitializedElementType<
           fields.NumberField<{ required: true; integer: true; nullable: false }>
         >,
-        //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-        [x0: number, y0: number, x1: number, y1: number],
-        [x0: number, y0: number, x1: number, y1: number],
+        // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+        Coordinates,
+        Coordinates,
         fields.ArrayField.PersistedElementType<fields.NumberField<{ required: true; integer: true; nullable: false }>>,
-        [x0: number, y0: number, x1: number, y1: number]
+        Coordinates
       >;
 
       /**
@@ -225,7 +230,7 @@ declare global {
           initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_SENSE_TYPES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_SENSE_TYPES | null | undefined,
         CONST.WALL_SENSE_TYPES | null,
         CONST.WALL_SENSE_TYPES | null
@@ -242,7 +247,7 @@ declare global {
           initial: typeof CONST.WALL_MOVEMENT_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_MOVEMENT_TYPES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_MOVEMENT_TYPES | null | undefined,
         CONST.WALL_MOVEMENT_TYPES | null,
         CONST.WALL_MOVEMENT_TYPES | null
@@ -259,7 +264,7 @@ declare global {
           initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_SENSE_TYPES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_SENSE_TYPES | null | undefined,
         CONST.WALL_SENSE_TYPES | null,
         CONST.WALL_SENSE_TYPES | null
@@ -276,7 +281,7 @@ declare global {
           initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
           validationError: "must be a value in CONST.WALL_SENSE_TYPES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_SENSE_TYPES | null | undefined,
         CONST.WALL_SENSE_TYPES | null,
         CONST.WALL_SENSE_TYPES | null
@@ -293,7 +298,7 @@ declare global {
           initial: typeof CONST.WALL_DIRECTIONS.BOTH;
           validationError: "must be a value in CONST.WALL_DIRECTIONS";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_DIRECTIONS | null | undefined,
         CONST.WALL_DIRECTIONS | null,
         CONST.WALL_DIRECTIONS | null
@@ -310,7 +315,7 @@ declare global {
           initial: typeof CONST.WALL_DOOR_TYPES.NONE;
           validationError: "must be a value in CONST.WALL_DOOR_TYPES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_DOOR_TYPES | null | undefined,
         CONST.WALL_DOOR_TYPES | null,
         CONST.WALL_DOOR_TYPES | null
@@ -327,7 +332,7 @@ declare global {
           initial: typeof CONST.WALL_DOOR_STATES.CLOSED;
           validationError: "must be a value in CONST.WALL_DOOR_STATES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.WALL_DOOR_STATES | null | undefined,
         CONST.WALL_DOOR_STATES | null,
         CONST.WALL_DOOR_STATES | null

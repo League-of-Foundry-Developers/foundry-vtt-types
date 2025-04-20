@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, NullishProps, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";
@@ -519,6 +519,24 @@ declare global {
        */
       initiativeOptions?: Combat.InitiativeOptions;
     }
+
+    /** @internal */
+    type _ToggleStatusEffectOptions = NullishProps<{
+      /**
+       * Force a certain active state for the effect
+       * @defaultValue `undefined`
+       * @remarks `null` is treated as `false`, `undefined` or omitted is treated as `true` *if no status
+       * with the given ID already exists*, otherwise also as `false`
+       */
+      active: boolean;
+
+      /**
+       * Whether to set the effect as the overlay effect?
+       * @defaultValue `false`
+       */
+      overlay: boolean;
+    }>;
+    interface ToggleStatusEffectOptions extends _ToggleStatusEffectOptions {}
   }
 
   /**
@@ -707,14 +725,10 @@ declare global {
      *            - false if an existing effect needed to be removed
      *            - undefined if no changes need to be made
      */
+    // options: not null (destructured)
     toggleStatusEffect(
       statusId: string,
-      options?: InexactPartial<{
-        /** Force the effect to be active or inactive regardless of its current state. */
-        active: boolean;
-        /** Display the toggled effect as an overlay. Default `false`. */
-        overlay: boolean;
-      }>,
+      options?: Actor.ToggleStatusEffectOptions,
     ): Promise<ActiveEffect.Implementation | boolean | undefined>;
 
     /**
