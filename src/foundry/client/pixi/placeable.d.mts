@@ -47,8 +47,8 @@ declare global {
      * @defaultValue `null`
      * @remarks Set to `null` in {@link PlaceableObject | `PlaceableObject#constructor`} and {@link AmbientSound.clear | `AmbientSound#clear`}.
      *
-     * In placeables which use one ({@link AmbientLight | `AmbientLight`}, {@link AmbientSound | `AmbientSound`},
-     * {@link Note | `Note`}, and {@link MeasuredTemplate | `MeasuredTemplate`}), it's only `null` prior to first draw.
+     * In placeables which render an icon ({@link AmbientLight | `AmbientLight`}, {@link AmbientSound | `AmbientSound`},
+     * {@link Note | `Note`}, and {@link MeasuredTemplate | `MeasuredTemplate`}), it's only `null` prior to first draw; In all others, it is never set to other than `null`
      *
      * @privateRemarks Not defined in the class body, set during construction
      */
