@@ -1,6 +1,7 @@
 import type { Document } from "../foundry/common/abstract/module.d.mts";
 
-type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig ? ModuleConfig[Name] : EmptyObject;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig ? ModuleConfig[Name] : {};
 
 /**
  * This type exists due to https://github.com/microsoft/TypeScript/issues/55667
