@@ -55,7 +55,7 @@ declare global {
      * A Quadtree which partitions and organizes Walls into quadrants for efficient target identification.
      * @remarks Is `new CanvasQuadtree()` if `quadtree` is truthy in `this.constructor.layerOptions`, else `null`
      */
-    //TODO: If dynamic static stuff can be worked out, this can be conditional on `options.quadtree`
+    // TODO: If dynamic static stuff can be worked out, this can be conditional on `options.quadtree`
     quadtree: CanvasQuadtree<Document.ObjectFor<DocumentName>> | null;
 
     /**

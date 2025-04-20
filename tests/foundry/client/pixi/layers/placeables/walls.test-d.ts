@@ -40,7 +40,7 @@ expectTypeOf(layer["_getWallEndpointCoordinates"](somePoint, { snap: null })).to
 
 expectTypeOf(layer["_getWallDataFromActiveTool"]()).toEqualTypeOf<Document.ConfiguredSourceForName<"Wall">>();
 expectTypeOf(layer["_getWallDataFromActiveTool"]("ethereal")).toEqualTypeOf<Document.ConfiguredSourceForName<"Wall">>();
-//@ts-expect-error foobar is not a handled Wall tool
+// @ts-expect-error foobar is not a handled Wall tool
 expectTypeOf(layer["_getWallDataFromActiveTool"]("foobar")).toEqualTypeOf<Document.ConfiguredSourceForName<"Wall">>();
 
 expectTypeOf(layer.identifyInteriorArea([someWall, someWall])).toEqualTypeOf<PIXI.Polygon[]>();
@@ -55,7 +55,7 @@ expectTypeOf(layer["_onClickRight"](someEvent)).toBeVoid();
 
 declare const someRay: Ray;
 
-//deprecated since v11 until v13
+// deprecated since v11 until v13
 expectTypeOf(layer.checkCollision(someRay, { type: "move" })).toEqualTypeOf<PointSourcePolygon.TestCollision<"all">>();
 expectTypeOf(layer.checkCollision(someRay, { type: "sight", mode: "any" })).toEqualTypeOf<
   PointSourcePolygon.TestCollision<"any">
@@ -69,7 +69,7 @@ expectTypeOf(layer.checkCollision(someRay, { type: "sound", mode: "all" })).toEq
 
 expectTypeOf(layer.highlightControlledSegments()).toBeVoid();
 
-//deprecated since v12 until v14
+// deprecated since v12 until v14
 expectTypeOf(layer.initialize()).toBeVoid();
 expectTypeOf(layer.identifyInteriorWalls()).toBeVoid();
 expectTypeOf(layer.identifyWallIntersections()).toBeVoid();

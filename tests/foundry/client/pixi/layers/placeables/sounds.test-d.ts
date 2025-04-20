@@ -39,7 +39,7 @@ expectTypeOf(
     source: somePSS, // only actually required property
     listener: somePoint, // not technically required but will cause 0 volume/playback failure if omitted
     walls: false,
-    //all other parts of the AmbientSoundPlaybackConfig are unused in this, the one place its used as a parameter
+    // all other parts of the AmbientSoundPlaybackConfig are unused in this, the one place its used as a parameter
   }),
 ).toBeVoid();
 

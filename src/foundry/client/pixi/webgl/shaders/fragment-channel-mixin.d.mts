@@ -15,7 +15,7 @@ declare class AdaptiveFragmentChannel {
    * A factory method for creating the filter using its defined default values
    * @param options - Options which affect filter construction
    */
-  //TODO: See if we can get this to return the mixed shader class, as it calls `super.create()`
+  // TODO: See if we can get this to return the mixed shader class, as it calls `super.create()`
   static create<T extends AnyObject>({
     /**
      * A color channel to target for masking.

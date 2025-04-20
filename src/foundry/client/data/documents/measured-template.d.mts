@@ -192,7 +192,7 @@ declare global {
           initial: typeof CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
           validationError: "must be a value in CONST.MEASURED_TEMPLATE_TYPES";
         },
-        //FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
         CONST.MEASURED_TEMPLATE_TYPES | null | undefined,
         CONST.MEASURED_TEMPLATE_TYPES,
         CONST.MEASURED_TEMPLATE_TYPES

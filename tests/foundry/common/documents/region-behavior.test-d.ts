@@ -83,7 +83,7 @@ expectTypeOf(myRB).toEqualTypeOf<BaseRegionBehavior>();
 
 expectTypeOf(myRB._id).toEqualTypeOf<string | null>();
 expectTypeOf(myRB.name).toBeString();
-//TODO: fix somehow
+// TODO: fix somehow
 // excessively deep error
 // expectTypeOf(myRB.type).toEqualTypeOf<
 //   foundry.data.fields.DocumentTypeField.InitializedType<

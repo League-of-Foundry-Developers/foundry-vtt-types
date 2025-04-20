@@ -30,7 +30,7 @@ export declare namespace ProseMirrorMenu {
     /** The node to wrap the selected text in. */
     node?: NodeType;
     /** An object of attributes for the node or mark. */
-    attrs?: Attrs; //object
+    attrs?: Attrs; // object
     /** A numeric priority which determines whether this item is displayed as the dropdown title. Lower priority takes precedence. */
     priority?: number;
     /** The command to run when the menu item is clicked. */

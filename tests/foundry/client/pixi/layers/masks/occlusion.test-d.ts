@@ -9,7 +9,7 @@ expectTypeOf(myOcclusionMask.tokens).toEqualTypeOf<PIXI.LegacyGraphics>();
 expectTypeOf(myOcclusionMask.clearColor).toEqualTypeOf<Color.RGBAColorVector>();
 expectTypeOf(myOcclusionMask.autoRender).toBeBoolean();
 expectTypeOf(myOcclusionMask.vision).toBeBoolean();
-//@ts-expect-error No setter is provided for `vision`
+// @ts-expect-error No setter is provided for `vision`
 myOcclusionMask.vision = false;
 expectTypeOf(myOcclusionMask.clear()).toBeVoid();
 expectTypeOf(myOcclusionMask.mapElevation(20)).toBeNumber();
@@ -19,5 +19,5 @@ expectTypeOf(myOcclusionMask["_updateOcclusionStates"]()).toBeVoid();
 declare const someTokens: Token.Object[];
 expectTypeOf(myOcclusionMask["_identifyOccludedObjects"](someTokens));
 
-//deprecated since v11 until v13
+// deprecated since v11 until v13
 expectTypeOf(myOcclusionMask._identifyOccludedTiles()).toEqualTypeOf<Set<PrimaryCanvasObjectMixin.AnyMixed>>();

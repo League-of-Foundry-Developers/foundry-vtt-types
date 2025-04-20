@@ -67,7 +67,7 @@ expectTypeOf(
       blendMode: PIXI.BLEND_MODES.DIFFERENCE,
     },
     effects: [
-      //@ts-expect-error `AutumnLeavesWeatherEffect` does not take a config object as it overrides that path and uses its `static LEAF_CONFIG` instead
+      // @ts-expect-error `AutumnLeavesWeatherEffect` does not take a config object as it overrides that path and uses its `static LEAF_CONFIG` instead
       {
         id: "leaves2",
         effectClass: SomeLeavesEffect,
@@ -116,5 +116,5 @@ expectTypeOf(
 
 expectTypeOf(layer.clearEffects()).toBeVoid();
 
-//deprecated until v13
+// deprecated until v13
 expectTypeOf(layer.weather).toEqualTypeOf<typeof layer>();

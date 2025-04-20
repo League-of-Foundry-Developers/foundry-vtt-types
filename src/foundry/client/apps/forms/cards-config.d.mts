@@ -134,7 +134,7 @@ declare global {
     interface CardsConfigData<Options extends CardsConfig.Options = CardsConfig.Options>
       extends DocumentSheet.DocumentSheetData<Options, Cards.Implementation> {
       cards: Card.Implementation[];
-      //TODO: Find if we can better type this
+      // TODO: Find if we can better type this
       types: Record<string, string>;
       inCompendium: boolean;
     }

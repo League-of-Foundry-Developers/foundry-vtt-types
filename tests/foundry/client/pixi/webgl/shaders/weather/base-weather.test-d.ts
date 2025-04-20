@@ -15,6 +15,6 @@ expectTypeOf((myAWS = AWS.create())).toEqualTypeOf<AbstractWeatherShader>();
 expectTypeOf(myAWS.speed).toEqualTypeOf<number>();
 expectTypeOf(myAWS["_preRender"]).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();
 
-//dynamic properties
+// dynamic properties
 expectTypeOf(myAWS.foo).toBeNumber();
 expectTypeOf(myAWS.bar).toEqualTypeOf<[number, number]>();

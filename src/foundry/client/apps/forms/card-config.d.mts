@@ -45,7 +45,7 @@ declare global {
     interface CardConfigData<
       Options extends DocumentSheet.Options<Card.Implementation> = DocumentSheet.Options<Card.Implementation>,
     > extends DocumentSheet.DocumentSheetData<Options, Card.Implementation> {
-      //TODO: Find if we can better type this
+      // TODO: Find if we can better type this
       types: Record<string, string>;
     }
   }

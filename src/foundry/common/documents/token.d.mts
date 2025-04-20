@@ -69,7 +69,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
   ): TokenDocument.UpdateData;
 
-  //TODO: Update with the Delta conditionality
+  // TODO: Update with the Delta conditionality
   toObject(source: true): this["_source"];
   toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
 

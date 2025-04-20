@@ -18,7 +18,7 @@ myRegion = new TestRegion({
   _id: "XXXXXSomeIDXXXXX",
   name: "Some Region",
   color: "#ABEFCD",
-  //TODO: fix TypedSchemaField typing?
+  // TODO: fix TypedSchemaField typing?
   shapes: [
     {
       type: "rectangle",
@@ -34,7 +34,7 @@ myRegion = new TestRegion({
     bottom: 0,
     top: 50,
   },
-  //TODO: this errors intermittently. circularities?
+  // TODO: this errors intermittently. circularities?
   behaviors: [someScriptBehavior],
   visibility: CONST.REGION_VISIBILITY.GAMEMASTER,
   locked: true,
@@ -89,14 +89,14 @@ expectTypeOf(myRegion._id).toEqualTypeOf<string | null>();
 expectTypeOf(myRegion.name).toBeString();
 expectTypeOf(myRegion.color).toEqualTypeOf<Color>();
 
-//TODO: why is this wrong
+// TODO: why is this wrong
 expectTypeOf(myRegion.shapes).toEqualTypeOf<FixedInstanceType<ValueOf<RemoveIndexSignatures<BaseShapeData.Types>>>>();
 
 expectTypeOf(myRegion.elevation.bottom).toEqualTypeOf<number | null>();
 expectTypeOf(myRegion.elevation.top).toEqualTypeOf<number | null>();
 
 expectTypeOf(myRegion.behaviors).toEqualTypeOf<
-  //TODO: why is this is resolving as EmbeddedCollection<any, ...
+  // TODO: why is this is resolving as EmbeddedCollection<any, ...
   EmbeddedCollection<typeof foundry.documents.BaseRegionBehavior, Region.Implementation>
 >();
 

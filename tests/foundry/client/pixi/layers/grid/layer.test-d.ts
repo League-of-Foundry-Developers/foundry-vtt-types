@@ -20,7 +20,7 @@ expectTypeOf(layer.draw({})).toEqualTypeOf<Promise<GridLayer>>();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(layer["_drawMesh"]()).toEqualTypeOf<GridMesh>();
-//@ts-expect-error `initializeMesh` lacks a default for its one parameter, despite all its properties being optional
+// @ts-expect-error `initializeMesh` lacks a default for its one parameter, despite all its properties being optional
 expectTypeOf(layer.initializeMesh()).toBeVoid();
 expectTypeOf(layer.initializeMesh({})).toBeVoid();
 expectTypeOf(
@@ -45,7 +45,7 @@ expectTypeOf(layer.getHighlightLayer("some")).toEqualTypeOf<GridHighlight | unde
 expectTypeOf(layer.clearHighlightLayer("some")).toEqualTypeOf<void>();
 expectTypeOf(layer.destroyHighlightLayer("some")).toEqualTypeOf<void>();
 
-//@ts-expect-error `highlightPosition` requires `x` and `y` properties in its options
+// @ts-expect-error `highlightPosition` requires `x` and `y` properties in its options
 expectTypeOf(layer.highlightPosition("some", {}));
 expectTypeOf(layer.highlightPosition("some", { x: 50, y: 50 })).toEqualTypeOf<void>();
 expectTypeOf(
@@ -69,7 +69,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<void>();
 
-//deprecated since v12 until v14
+// deprecated since v12 until v14
 expectTypeOf(layer.type).toEqualTypeOf<foundry.CONST.GRID_TYPES>();
 expectTypeOf(layer.size).toEqualTypeOf<number>();
 expectTypeOf(layer.grid).toEqualTypeOf<BaseGrid | null>();
