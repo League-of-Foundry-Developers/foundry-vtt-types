@@ -840,8 +840,8 @@ declare global {
 
   namespace Token {
     // eslint-disable-next-line no-restricted-syntax
-    type ObjectClass = ConfiguredObjectClassOrDefault<typeof Token>;
-    type Object = FixedInstanceType<ObjectClass>;
+    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof Token> {}
+    interface Object extends FixedInstanceType<ObjectClass> {}
 
     /**
      * @deprecated {@link Token.ObjectClass | `Token.ObjectClass`}
@@ -1014,6 +1014,7 @@ declare global {
       | "disabled"
     >;
 
+    // TODO: (LukeAbby) possible candidate for `-=` key handling
     interface BlindedStates extends Record<string, boolean> {
       blind: boolean;
       burrow: boolean;

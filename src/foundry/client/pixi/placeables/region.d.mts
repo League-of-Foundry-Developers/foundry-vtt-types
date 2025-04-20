@@ -148,8 +148,8 @@ declare global {
 
   namespace Region {
     // eslint-disable-next-line no-restricted-syntax
-    type ObjectClass = ConfiguredObjectClassOrDefault<typeof Region>;
-    type Object = FixedInstanceType<ObjectClass>;
+    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof Region> {}
+    interface Object extends FixedInstanceType<ObjectClass> {}
 
     /**
      * @deprecated {@link Region.ObjectClass | `Region.ObjectClass`}

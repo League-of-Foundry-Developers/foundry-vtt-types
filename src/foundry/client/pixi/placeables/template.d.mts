@@ -214,8 +214,8 @@ declare global {
 
   namespace MeasuredTemplate {
     // eslint-disable-next-line no-restricted-syntax
-    type ObjectClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
-    type Object = FixedInstanceType<ObjectClass>;
+    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof MeasuredTemplate> {}
+    interface Object extends FixedInstanceType<ObjectClass> {}
 
     /**
      * @deprecated {@link MeasuredTemplate.ObjectClass | `MeasuredTemplate.ObjectClass`}

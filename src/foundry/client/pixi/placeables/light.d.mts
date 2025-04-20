@@ -181,8 +181,8 @@ declare global {
 
   namespace AmbientLight {
     // eslint-disable-next-line no-restricted-syntax
-    type ObjectClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;
-    type Object = FixedInstanceType<ObjectClass>;
+    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof AmbientLight> {}
+    interface Object extends FixedInstanceType<ObjectClass> {}
 
     /**
      * @deprecated {@link AmbientLight.ObjectClass | `AmbientLight.ObjectClass`}

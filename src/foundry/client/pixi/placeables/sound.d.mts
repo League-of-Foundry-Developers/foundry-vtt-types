@@ -158,8 +158,8 @@ declare global {
 
   namespace AmbientSound {
     // eslint-disable-next-line no-restricted-syntax
-    type ObjectClass = ConfiguredObjectClassOrDefault<typeof AmbientSound>;
-    type Object = FixedInstanceType<ObjectClass>;
+    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof AmbientSound> {}
+    interface Object extends FixedInstanceType<ObjectClass> {}
 
     /**
      * @deprecated {@link AmbientSound.ObjectClass | `AmbientSound.ObjectClass`}

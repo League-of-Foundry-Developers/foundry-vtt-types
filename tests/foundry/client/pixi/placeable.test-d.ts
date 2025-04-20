@@ -44,7 +44,7 @@ expectTypeOf(placeable.sheet).toEqualTypeOf<FormApplication.Any | foundry.applic
 
 expectTypeOf(placeable.controlled).toBeBoolean();
 expectTypeOf(placeable.hover).toBeBoolean();
-expectTypeOf((placeable.hover = false)).toBeBoolean();
+placeable.hover = false; // setter
 
 expectTypeOf(placeable.getSnappedPosition()).toEqualTypeOf<Canvas.Point>();
 // @ts-expect-error if passed an object, must be a valid point

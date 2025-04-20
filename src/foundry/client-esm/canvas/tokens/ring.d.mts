@@ -198,8 +198,8 @@ declare namespace TokenRing {
   interface Any extends AnyTokenRing {}
   interface AnyConstructor extends Identity<typeof AnyTokenRing> {}
 
-  type ConfiguredClass = CONFIG["Token"]["ring"]["ringClass"];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+  interface ConfiguredClass extends Identity<CONFIG["Token"]["ring"]["ringClass"]> {}
+  interface ConfiguredInstance extends FixedInstanceType<ConfiguredClass> {}
 
   /** @remarks Overrides for default values */
   interface FlashColorOptions extends CanvasAnimation.AnimateOptions {
