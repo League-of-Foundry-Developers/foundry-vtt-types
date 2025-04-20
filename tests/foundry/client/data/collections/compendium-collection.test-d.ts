@@ -57,7 +57,7 @@ expectTypeOf((await compendiumCollection.getIndex()).get("some id", { strict: tr
   { _id: string; uuid: string } & DeepPartial<foundry.documents.BaseJournalEntry["_source"]>
 >();
 
-expectTypeOf(compendiumCollection.documentClass).toEqualTypeOf<typeof JournalEntry>();
+expectTypeOf(compendiumCollection.documentClass).toEqualTypeOf<JournalEntry.ConfiguredClass>();
 
 const itemCollection = new CompendiumCollection({
   ...metadata,

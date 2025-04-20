@@ -163,11 +163,23 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   override delete(operation?: TokenDocument.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: TokenDocument.Database.GetOptions): TokenDocument.Implementation | null;
+  static override get(
+    documentId: string,
+    options?: TokenDocument.Database.GetOptions,
+  ): TokenDocument.Implementation | null;
 
-  override getEmbeddedCollection<EmbeddedName extends TokenDocument.Embedded.CollectionName>(
-    embeddedName: EmbeddedName,
-  ): TokenDocument.Embedded.CollectionFor<EmbeddedName>;
+  static override getCollectionName<CollectionName extends TokenDocument.Embedded.Name>(
+    name: CollectionName,
+  ): TokenDocument.Embedded.CollectionNameOf<CollectionName> | null;
+
+  /**
+   * @remarks Calling `BaseToken#getEmbeddedCollection` would result in entirely typical results at
+   * runtime, namely returning a `EmbeddedCollection` corresponding to a field in `BaseToken`'s
+   * schema. However {@link TokenDocument.getEmbeddedCollection | `TokenDocument#getEmbeddedCollection`}
+   * is overridden to add new cases and since `BaseToken` is a superclass it had to be widened to
+   * accomodate that.
+   */
+  override getEmbeddedCollection(embeddedName: TokenDocument.Embedded.CollectionName): Collection.Any;
 
   override getEmbeddedDocument<EmbeddedName extends TokenDocument.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
@@ -369,9 +381,14 @@ declare namespace BaseToken {
   export import Hierarchy = TokenDocument.Hierarchy;
   export import Metadata = TokenDocument.Metadata;
   export import Parent = TokenDocument.Parent;
+  export import Descendant = TokenDocument.Descendant;
+  export import DescendantClass = TokenDocument.DescendantClass;
+  export import DescendantParent = TokenDocument.DescendantParent;
   export import Pack = TokenDocument.Pack;
   export import Embedded = TokenDocument.Embedded;
   export import ParentCollectionName = TokenDocument.ParentCollectionName;
+  export import CollectionClass = TokenDocument.CollectionClass;
+  export import Collection = TokenDocument.Collection;
   export import Stored = TokenDocument.Stored;
   export import Source = TokenDocument.Source;
   export import PersistedData = TokenDocument.PersistedData;
@@ -381,6 +398,7 @@ declare namespace BaseToken {
   export import Schema = TokenDocument.Schema;
   export import DatabaseOperation = TokenDocument.Database;
   export import Flags = TokenDocument.Flags;
+  export import CoreFlags = TokenDocument.CoreFlags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

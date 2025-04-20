@@ -88,7 +88,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   static get hierarchy(): Combat.Hierarchy;
 
-  override system: Document.SystemFor<"Combat", SubType>;
+  override system: Combat.SystemOfType<SubType>;
 
   override parent: BaseCombat.Parent;
 
@@ -121,9 +121,40 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   static override get(documentId: string, options?: Combat.Database.GetOptions): Combat.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Combat.EmbeddedName>(
+  static override getCollectionName<CollectionName extends Combat.Embedded.Name>(
     name: CollectionName,
-  ): Combat.CollectionNameOf<CollectionName> | null;
+  ): Combat.Embedded.CollectionNameOf<CollectionName> | null;
+
+  override getEmbeddedCollection<EmbeddedName extends Combat.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): Combat.Embedded.CollectionFor<EmbeddedName>;
+
+  override getEmbeddedDocument<EmbeddedName extends Combat.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): Combat.Embedded.DocumentFor<EmbeddedName> | undefined;
+
+  override createEmbeddedDocuments<EmbeddedName extends Combat.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override updateEmbeddedDocuments<EmbeddedName extends Combat.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends Combat.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -266,17 +297,23 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 export default BaseCombat;
 
 declare namespace BaseCombat {
-  export import SubType = Combat.SubType;
   export import Name = Combat.Name;
   export import ConstructorArgs = Combat.ConstructorArgs;
   export import Hierarchy = Combat.Hierarchy;
   export import Metadata = Combat.Metadata;
+  export import SubType = Combat.SubType;
+  export import ConfiguredSubTypes = Combat.ConfiguredSubTypes;
+  export import Known = Combat.Known;
+  export import OfType = Combat.OfType;
+  export import SystemOfType = Combat.SystemOfType;
   export import Parent = Combat.Parent;
+  export import Descendant = Combat.Descendant;
+  export import DescendantClass = Combat.DescendantClass;
   export import Pack = Combat.Pack;
   export import Embedded = Combat.Embedded;
-  export import EmbeddedName = Combat.EmbeddedName;
-  export import EmbeddedCollectionName = Combat.EmbeddedCollectionName;
   export import ParentCollectionName = Combat.ParentCollectionName;
+  export import CollectionClass = Combat.CollectionClass;
+  export import Collection = Combat.Collection;
   export import Stored = Combat.Stored;
   export import Source = Combat.Source;
   export import PersistedData = Combat.PersistedData;

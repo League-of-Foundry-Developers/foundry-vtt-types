@@ -1,14 +1,15 @@
 import { expectTypeOf } from "vitest";
 
 // @ts-expect-error data is required
-new JournalEntryPage();
-// @ts-expect-error name is required
-new JournalEntryPage({});
+new JournalEntryPage.implementation();
 
-const myJournalEntryPage = new JournalEntryPage({ name: "foo" });
+// @ts-expect-error name is required
+new JournalEntryPage.implementation({});
+
+const myJournalEntryPage = new JournalEntryPage.implementation({ name: "foo" });
 
 expectTypeOf(myJournalEntryPage.toc).toEqualTypeOf<Record<string, JournalEntryPage.JournalEntryPageHeading>>();
-expectTypeOf(myJournalEntryPage.sceneNote).toEqualTypeOf<Note | null>();
+expectTypeOf(myJournalEntryPage.sceneNote).toEqualTypeOf<Note.Object | null>();
 
 const headingElement = new HTMLHeadingElement();
 expectTypeOf(JournalEntryPage.slugifyHeading(headingElement)).toEqualTypeOf<string>();

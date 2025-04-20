@@ -8,16 +8,16 @@ declare global {
   }
 }
 
-declare const scene: Scene;
+declare const scene: Scene.Implementation;
 
 // @ts-expect-error requires 'c'
-new WallDocument();
+new WallDocument.implementation();
 
 // @ts-expect-error requires 'c'
-new WallDocument({});
+new WallDocument.implementation({});
 
-new WallDocument({ c: [0, 0, 0, 0] });
-new WallDocument({ c: [0, 0, 0, 0] }, { parent: scene });
+new WallDocument.implementation({ c: [0, 0, 0, 0] });
+new WallDocument.implementation({ c: [0, 0, 0, 0] }, { parent: scene });
 
 declare const myWall: WallDocument.Stored;
 

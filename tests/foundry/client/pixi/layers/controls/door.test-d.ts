@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-declare const wall: Wall;
+declare const wall: Wall.Object;
 
 // @ts-expect-error - A DoorControl requires a wall.
 new DoorControl();

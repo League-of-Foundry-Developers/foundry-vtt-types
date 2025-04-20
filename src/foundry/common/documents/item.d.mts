@@ -91,7 +91,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   static get hierarchy(): Item.Hierarchy;
 
-  override system: Document.SystemFor<"Item", SubType>;
+  override system: Item.SystemOfType<SubType>;
 
   override parent: BaseItem.Parent;
 
@@ -124,9 +124,40 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   static override get(documentId: string, options?: Item.Database.GetOptions): Item.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Item.EmbeddedName>(
+  static override getCollectionName<CollectionName extends Item.Embedded.Name>(
     name: CollectionName,
-  ): Item.CollectionNameOf<CollectionName> | null;
+  ): Item.Embedded.CollectionNameOf<CollectionName> | null;
+
+  override getEmbeddedCollection<EmbeddedName extends Item.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): Item.Embedded.CollectionFor<EmbeddedName>;
+
+  override getEmbeddedDocument<EmbeddedName extends Item.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): Item.Embedded.DocumentFor<EmbeddedName> | undefined;
+
+  override createEmbeddedDocuments<EmbeddedName extends Item.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override updateEmbeddedDocuments<EmbeddedName extends Item.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends Item.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -270,17 +301,23 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 export default BaseItem;
 
 declare namespace BaseItem {
-  export import SubType = Item.SubType;
   export import Name = Item.Name;
   export import ConstructorArgs = Item.ConstructorArgs;
   export import Hierarchy = Item.Hierarchy;
   export import Metadata = Item.Metadata;
+  export import SubType = Item.SubType;
+  export import ConfiguredSubTypes = Item.ConfiguredSubTypes;
+  export import Known = Item.Known;
+  export import OfType = Item.OfType;
+  export import SystemOfType = Item.SystemOfType;
   export import Parent = Item.Parent;
+  export import Descendant = Item.Descendant;
+  export import DescendantClass = Item.DescendantClass;
   export import Pack = Item.Pack;
   export import Embedded = Item.Embedded;
-  export import EmbeddedName = Item.EmbeddedName;
-  export import EmbeddedCollectionName = Item.EmbeddedCollectionName;
   export import ParentCollectionName = Item.ParentCollectionName;
+  export import CollectionClass = Item.CollectionClass;
+  export import Collection = Item.Collection;
   export import Stored = Item.Stored;
   export import Source = Item.Source;
   export import PersistedData = Item.PersistedData;

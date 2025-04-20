@@ -1,10 +1,10 @@
 import { expectTypeOf } from "vitest";
 import type { MaybePromise } from "fvtt-types/utils";
 
-declare const drawing: DrawingDocument;
+declare const drawing: DrawingDocument.Implementation;
 const drawingConfig = new DrawingConfig(drawing);
 
-expectTypeOf(drawingConfig.object).toEqualTypeOf<DrawingDocument>();
+expectTypeOf(drawingConfig.object).toEqualTypeOf<DrawingDocument.Implementation>();
 expectTypeOf(DrawingConfig.defaultOptions).toEqualTypeOf<DrawingConfigOptions>();
 expectTypeOf(drawingConfig.options).toEqualTypeOf<DrawingConfigOptions>();
 expectTypeOf(drawingConfig.getData()).toEqualTypeOf<MaybePromise<object>>();

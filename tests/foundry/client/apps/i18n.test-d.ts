@@ -17,5 +17,5 @@ expectTypeOf(localization.localize("WORLD.DetailTab")).toEqualTypeOf<string>();
 expectTypeOf(localization.format("DICE.ErrorNonNumeric")).toEqualTypeOf<string>();
 expectTypeOf(localization.format("DICE.ErrorNonNumeric", { formula: "2d10" })).toEqualTypeOf<string>();
 
-declare const itemArray: Item[];
-expectTypeOf(localization.sortObjects(itemArray, "name")).toEqualTypeOf<Item[]>();
+declare const itemArray: Item.Implementation[];
+expectTypeOf(localization.sortObjects(itemArray, "name")).toEqualTypeOf<Item.Implementation[]>();

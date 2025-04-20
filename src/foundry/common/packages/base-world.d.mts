@@ -3,12 +3,12 @@ import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
 import type { ReleaseData } from "../config.d.mts";
 
 declare namespace BaseWorld {
-  export import Source = Module.Source;
-  export import PersistedData = Module.PersistedData;
-  export import CreateData = Module.CreateData;
-  export import InitializedData = Module.InitializedData;
-  export import UpdateData = Module.UpdateData;
-  export import Schema = Module.Schema;
+  export import Source = World.Source;
+  export import PersistedData = World.Source;
+  export import CreateData = World.CreateData;
+  export import InitializedData = World.InitializedData;
+  export import UpdateData = World.UpdateData;
+  export import Schema = World.Schema;
 }
 
 /**

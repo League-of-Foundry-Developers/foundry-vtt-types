@@ -1,5 +1,6 @@
 import type { Identity } from "fvtt-types/utils";
 import type { DatabaseAction, DatabaseOperationMap } from "../../../common/abstract/_types.d.mts";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -35,6 +36,9 @@ declare global {
   namespace Folders {
     interface Any extends AnyFolders {}
     interface AnyConstructor extends Identity<typeof AnyFolders> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Folder"> {}
+    interface Configured extends Document.ConfiguredCollection<"Folder"> {}
   }
 }
 

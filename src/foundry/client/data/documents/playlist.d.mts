@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -17,18 +17,18 @@ declare global {
     type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 
     /**
-     * The documents embedded within Playlist.
+     * The documents embedded within `Playlist`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the Playlist document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
+     * The implementation of the `Playlist` document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylist | `fvtt-types/configuration/ConfiguredPlaylist`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<"Playlist">;
 
     /**
-     * The implementation of the Playlist document configured through `CONFIG.Playlist.documentClass` in Foundry and
+     * The implementation of the `Playlist` document configured through `CONFIG.Playlist.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<"Playlist">;
@@ -37,7 +37,37 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<"Playlist"> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Playlist";
+          collection: "playlists";
+          indexed: true;
+          compendiumIndexFields: ["_id", "name", "sort", "folder"];
+          embedded: Metadata.Embedded;
+          label: string;
+          labelPlural: string;
+          permissions: Metadata.Permissions;
+          schemaVersion: string;
+        }>
+      > {}
+
+    namespace Metadata {
+      /**
+       * The embedded metadata
+       */
+      interface Embedded {
+        PlaylistSound: "sounds";
+      }
+
+      /**
+       * The permissions for whether a certain user can create, update, or delete this document.
+       */
+      interface Permissions {
+        create: "PLAYLIST_CREATE";
+      }
+    }
 
     /**
      * A document's parent is something that can contain it.
@@ -49,16 +79,16 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = PlaylistSound.Stored;
+    type Descendant = PlaylistSound.Stored;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = PlaylistSound.ImplementationClass;
+    type DescendantClass = PlaylistSound.ImplementationClass;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Playlist">;
@@ -69,21 +99,49 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<Embedded.Name>;
 
-    /**
-     * An embedded document is a document contained in another.
-     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
-     *
-     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
-     */
-    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
+    namespace Embedded {
+      /**
+       * An embedded document is a document contained in another.
+       * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+       *
+       * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+       */
+      type Name = keyof Metadata.Embedded;
 
-    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
-      ? Metadata["embedded"][CollectionName]
-      : CollectionName;
+      /**
+       * Gets the collection name for an embedded document.
+       */
+      type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionNameFor<
+        Metadata.Embedded,
+        CollectionName
+      >;
 
-    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+      /**
+       * Gets the collection document for an embedded document.
+       */
+      // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+
+      /**
+       * Gets the collection for an embedded document.
+       */
+      type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
+        // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
+        Document.Any,
+        Metadata.Embedded,
+        CollectionName
+      >;
+
+      /**
+       * A valid name to refer to a collection embedded in this document. For example an `Actor`
+       * has the key `"items"` which contains `Item` instance which would make both `"Item" | "Items"`
+       * valid keys (amongst others).
+       */
+      type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
+    }
 
     /**
      * The name of the world or embedded collection this document can find itself in.
@@ -91,6 +149,16 @@ declare global {
      * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
      */
     type ParentCollectionName = Metadata["collection"];
+
+    /**
+     * The world collection that contains `Playlist`s. Will be `never` if none exists.
+     */
+    type CollectionClass = Playlists.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Playlist`s. Will be `never` if none exists.
+     */
+    type Collection = Playlists.Configured;
 
     /**
      * An instance of `Playlist` that comes from the database.
@@ -103,18 +171,13 @@ declare global {
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
-     *
-     * `Source` and `PersistedData` are equivalent.
      */
-    interface Source extends PersistedData {}
+    interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * The data put in {@link Playlist._source | `Playlist#_source`}. This data is what was
-     * persisted to the database and therefore it must be valid JSON.
-     *
-     * `Source` and `PersistedData` are equivalent.
+     * @deprecated {@link Playlist.Source | `Playlist.Source`}
      */
-    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+    type PersistedData = Source;
 
     /**
      * The data necessary to create a document. Used in places like {@link Playlist.create | `Playlist.create`}
@@ -354,11 +417,25 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<Playlist.Database.Delete> {}
     }
 
+    /**
+     * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
+     */
     interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
+      /**
+       * The valid scopes for the flags on this document e.g. `"core"` or `"dnd5e"`.
+       */
       type Scope = Document.FlagKeyOf<Flags>;
+
+      /**
+       * The valid keys for a certain scope for example if the scope is "core" then a valid key may be `"sheetLock"` or `"viewMode"`.
+       */
       type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+
+      /**
+       * Gets the type of a particular flag given a `Scope` and a `Key`.
+       */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
@@ -366,7 +443,7 @@ declare global {
      * @deprecated {@link Playlist.Database.Operation | `Playlist.Database.Operation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Playlist> {}
+    interface DatabaseOperations extends Document.Database.Operations<Playlist.Implementation> {}
 
     /**
      * @deprecated {@link Playlist.CreateData | `Playlist.CreateData`}
@@ -425,7 +502,7 @@ declare global {
      * Find all content links belonging to a given {@link Playlist | `Playlist`} or {@link PlaylistSound | `PlaylistSound`}.
      * @param doc - The Playlist or PlaylistSound.
      */
-    static _getSoundContentLinks(doc: Playlist | PlaylistSound): NodeListOf<Element>;
+    static _getSoundContentLinks(doc: Playlist.Implementation | PlaylistSound.Implementation): NodeListOf<Element>;
 
     override prepareDerivedData(): void;
 
@@ -564,41 +641,27 @@ declare global {
 
     // ClientDocument overrides
 
-    protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends Playlist.DescendantClasses,
-      Parent extends Playlist.Stored,
-      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      data: CreateData[],
-      options: Document.Database.CreateOptions<Operation>,
+    protected override _preCreateDescendantDocuments(
+      parent: Playlist.Stored,
+      collection: PlaylistSound.ParentCollectionName,
+      data: PlaylistSound.CreateData[],
+      options: PlaylistSound.Database.CreateOptions,
       userId: string,
     ): void;
 
-    protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends Playlist.DescendantClasses,
-      Parent extends Playlist.Stored,
-      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      changes: UpdateData[],
-      options: Document.Database.UpdateOptions<Operation>,
+    protected override _preUpdateDescendantDocuments(
+      parent: Playlist.Stored,
+      collection: PlaylistSound.ParentCollectionName,
+      changes: PlaylistSound.UpdateData[],
+      options: PlaylistSound.Database.UpdateOptions,
       userId: string,
     ): void;
 
-    protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends Playlist.DescendantClasses,
-      Parent extends Playlist.Stored,
-      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
+    protected _preDeleteDescendantDocuments(
+      parent: Playlist.Stored,
+      collection: PlaylistSound.ParentCollectionName,
       ids: string[],
-      options: Document.Database.DeleteOptions<Operation>,
+      options: PlaylistSound.Database.DeleteOptions,
       userId: string,
     ): void;
 

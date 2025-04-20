@@ -13,23 +13,32 @@ expectTypeOf(foundry.documents.BaseScene.create({ name: "My scene" })).toEqualTy
 
 const myScene = await foundry.documents.BaseScene.create({ name: "My second scene" }, { temporary: true });
 if (myScene) {
-  expectTypeOf(myScene).toEqualTypeOf<Scene>();
+  expectTypeOf(myScene).toEqualTypeOf<Scene.Implementation>();
 }
 
+// Subclass `BaseScene` to avoid it being abstract.
+class BaseScene extends foundry.documents.BaseScene {}
+
 // @ts-expect-error - A BaseScene requires a name.
-new foundry.documents.BaseScene({});
+new BaseScene({});
 
-const scene = new foundry.documents.BaseScene({ name: "My third scene" });
-expectTypeOf(scene).toEqualTypeOf<foundry.documents.BaseScene>();
+const scene = new BaseScene({ name: "My third scene" });
+expectTypeOf(scene).toEqualTypeOf<BaseScene>();
 
-expectTypeOf(scene.drawings).toEqualTypeOf<EmbeddedCollection<DrawingDocument, Scene>>();
-expectTypeOf(scene.lights).toEqualTypeOf<EmbeddedCollection<AmbientLightDocument, Scene>>();
-expectTypeOf(scene.notes).toEqualTypeOf<EmbeddedCollection<NoteDocument, Scene>>();
-expectTypeOf(scene.sounds).toEqualTypeOf<EmbeddedCollection<AmbientSoundDocument, Scene>>();
-expectTypeOf(scene.templates).toEqualTypeOf<EmbeddedCollection<MeasuredTemplateDocument, Scene>>();
-expectTypeOf(scene.tokens).toEqualTypeOf<EmbeddedCollection<TokenDocument, Scene>>();
-expectTypeOf(scene.tiles).toEqualTypeOf<EmbeddedCollection<TileDocument, Scene>>();
-expectTypeOf(scene.walls).toEqualTypeOf<EmbeddedCollection<WallDocument, Scene>>();
+expectTypeOf(scene.drawings).toEqualTypeOf<EmbeddedCollection<DrawingDocument.Implementation, Scene.Implementation>>();
+expectTypeOf(scene.lights).toEqualTypeOf<
+  EmbeddedCollection<AmbientLightDocument.Implementation, Scene.Implementation>
+>();
+expectTypeOf(scene.notes).toEqualTypeOf<EmbeddedCollection<NoteDocument.Implementation, Scene.Implementation>>();
+expectTypeOf(scene.sounds).toEqualTypeOf<
+  EmbeddedCollection<AmbientSoundDocument.Implementation, Scene.Implementation>
+>();
+expectTypeOf(scene.templates).toEqualTypeOf<
+  EmbeddedCollection<MeasuredTemplateDocument.Implementation, Scene.Implementation>
+>();
+expectTypeOf(scene.tokens).toEqualTypeOf<EmbeddedCollection<TokenDocument.Implementation, Scene.Implementation>>();
+expectTypeOf(scene.tiles).toEqualTypeOf<EmbeddedCollection<TileDocument.Implementation, Scene.Implementation>>();
+expectTypeOf(scene.walls).toEqualTypeOf<EmbeddedCollection<WallDocument.Implementation, Scene.Implementation>>();
 
 // @ts-expect-error A SceneData requires data.
 new foundry.documents.BaseScene();
@@ -37,11 +46,9 @@ new foundry.documents.BaseScene();
 // @ts-expect-error A SceneData requires a name.
 new foundry.documents.BaseScene({});
 
+expectTypeOf(new BaseScene({ name: "A long expected journey" })).toEqualTypeOf<BaseScene>();
 expectTypeOf(
-  new foundry.documents.BaseScene({ name: "A long expected journey" }),
-).toEqualTypeOf<foundry.documents.BaseScene>();
-expectTypeOf(
-  new foundry.documents.BaseScene({
+  new BaseScene({
     _id: undefined,
     name: "A long expected journey",
     active: undefined,
@@ -80,9 +87,9 @@ expectTypeOf(
     ownership: undefined,
     flags: undefined,
   }),
-).toEqualTypeOf<foundry.documents.BaseScene>();
+).toEqualTypeOf<BaseScene>();
 expectTypeOf(
-  new foundry.documents.BaseScene({
+  new BaseScene({
     _id: null,
     name: "A long expected journey",
     active: null,
@@ -121,4 +128,4 @@ expectTypeOf(
     ownership: null,
     flags: null,
   }),
-).toEqualTypeOf<foundry.documents.BaseScene>();
+).toEqualTypeOf<BaseScene>();

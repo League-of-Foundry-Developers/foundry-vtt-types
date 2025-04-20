@@ -1,10 +1,10 @@
 import { expectTypeOf } from "vitest";
 
-declare const tokenDoc: TokenDocument;
+declare const tokenDoc: TokenDocument.Implementation;
 const tokenConfig = new TokenConfig(tokenDoc);
 
-expectTypeOf(tokenConfig.object).toEqualTypeOf<TokenDocument | Actor>();
-expectTypeOf(tokenConfig.document).toEqualTypeOf<TokenDocument | Actor>();
+expectTypeOf(tokenConfig.object).toEqualTypeOf<TokenDocument.Implementation | Actor.Implementation>();
+expectTypeOf(tokenConfig.document).toEqualTypeOf<TokenDocument.Implementation | Actor.Implementation>();
 expectTypeOf(TokenConfig.defaultOptions).toEqualTypeOf<DocumentSheet.Options<TokenDocument.Implementation>>();
 expectTypeOf(tokenConfig.options).toEqualTypeOf<DocumentSheet.Options<TokenDocument.Implementation>>();
 expectTypeOf(tokenConfig.getData()).toEqualTypeOf<Promise<object>>();

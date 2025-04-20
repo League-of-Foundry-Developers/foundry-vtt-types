@@ -64,12 +64,14 @@ type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infe
  *   The most common time this shows up is with the pattern
  *   `exampleFunction({ prop = "foo" } = {}) { ... }`.
  */
-export type IntentionalPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = {
-  [K2 in keyof T as Extract<K2, K>]?: T[K2];
-} & {
-  // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for slightly better type display.
-  [K2 in keyof T as Exclude<K2, K>]: T[K2];
-};
+export type IntentionalPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
+  {
+    [K2 in keyof T as Extract<K2, K>]?: T[K2];
+  } & {
+    // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for
+    [K2 in keyof T as Exclude<K2, K>]: T[K2];
+  }
+>;
 
 /**
  * This type is used to make a constraint where `T` must be statically known to overlap with `U`.
@@ -126,8 +128,8 @@ export type OverlapsWith<T, U> = [Extract<T, U>, any] extends [U, Extract<T, U>]
  * takesNumericArray(Math.random() > 0.5 ? [1, 2, 3] : ["foo", "bar"]); // Error, at runtime it could be an array of the wrong type and that isn't handled. Notably this would succeed with `OverlapsWith`.
  * ```
  */
-export type ArrayOverlaps<T, Item> =
-  Extract<T, readonly unknown[]> extends readonly Item[] ? OverlapsWith<T, readonly Item[]> : readonly Item[];
+export type ArrayOverlaps<Arr, T> =
+  Extract<Arr, readonly unknown[]> extends readonly T[] ? OverlapsWith<Arr, readonly T[]> : readonly T[];
 
 /**
  * Use this whenever a type is given that should match some constraint but is
@@ -399,9 +401,12 @@ export type Brand<BaseType, BrandName extends string> = BaseType & Branded<Brand
  * ```
  */
 // Note(LukeAbby): This uses `AnyObject` as a constraint rather than in the body due to this circularity: https://tsplay.dev/NDpRRN
-export type PrettifyType<T extends AnyObject> = {
-  [K in keyof T]: T[K];
-};
+export type PrettifyType<T extends AnyObject> = T extends unknown
+  ? {
+      [K in keyof T]: T[K];
+      // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    } & unknown
+  : never;
 
 /**
  * Convert a union of the form `T1 | T2 | T3 | ...` into an intersection of the form `T1 & T2 & T3 & ...`.
@@ -543,12 +548,14 @@ export type AllKeysOf<T extends object> = T extends unknown ? keyof T : never;
  *
  * @internal
  */
-export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = {
-  [K2 in keyof T as Extract<K2, K>]?: T[K2] | undefined;
-} & {
-  // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for slightly better type display.
-  [K2 in keyof T as Exclude<K2, K>]: T[K2];
-};
+export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
+  {
+    [K2 in keyof T as Extract<K2, K>]?: T[K2] | undefined;
+  } & {
+    // Note(LukeAbby): This effectively inlines `Omit<T, K>` hoping for slightly better performance.
+    [K2 in keyof T as Exclude<K2, K>]: T[K2];
+  }
+>;
 
 /**
  * Makes select properties in `T` optional and explicitly allows both `null` and
@@ -582,12 +589,14 @@ export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<
  *
  * @internal
  */
-export type NullishProps<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = {
-  [K2 in keyof T as Extract<K2, K>]?: T[K2] | null | undefined;
-} & {
-  // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for slightly better type display.
-  [K2 in keyof T as Exclude<K2, K>]: T[K2];
-};
+export type NullishProps<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
+  {
+    [K2 in keyof T as Extract<K2, K>]?: T[K2] | null | undefined;
+  } & {
+    // Note(LukeAbby): This effectively inlines `Omit<T, K>` hoping for slightly better performance.
+    [K2 in keyof T as Exclude<K2, K>]: T[K2];
+  }
+>;
 
 /**
  * Expand an object that contains keys in dotted notation

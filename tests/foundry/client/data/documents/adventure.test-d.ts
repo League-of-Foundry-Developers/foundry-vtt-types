@@ -4,12 +4,12 @@ import DataModel = foundry.abstract.DataModel;
 import fields = foundry.data.fields;
 
 // @ts-expect-error - Adventure requires name.
-new Adventure();
+new Adventure.implementation();
 
 // @ts-expect-error - Adventure requires name.
-new Adventure({});
+new Adventure.implementation({});
 
-const adventure = new Adventure({ name: "My adventure" });
+const adventure = new Adventure.implementation({ name: "My adventure" });
 expectTypeOf(adventure).toEqualTypeOf<Adventure.Implementation>();
 
 expectTypeOf(adventure.import()).toEqualTypeOf<Promise<AdventureImportResult>>();

@@ -113,9 +113,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     options?: WallDocument.Database.GetOptions,
   ): WallDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends WallDocument.EmbeddedName>(
-    name: CollectionName,
-  ): WallDocument.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -275,11 +273,13 @@ declare namespace BaseWall {
   export import Hierarchy = WallDocument.Hierarchy;
   export import Metadata = WallDocument.Metadata;
   export import Parent = WallDocument.Parent;
+  export import Descendant = WallDocument.Descendant;
+  export import DescendantClass = WallDocument.DescendantClass;
   export import Pack = WallDocument.Pack;
   export import Embedded = WallDocument.Embedded;
-  export import EmbeddedName = WallDocument.EmbeddedName;
-  export import EmbeddedCollectionName = WallDocument.EmbeddedCollectionName;
   export import ParentCollectionName = WallDocument.ParentCollectionName;
+  export import CollectionClass = WallDocument.CollectionClass;
+  export import Collection = WallDocument.Collection;
   export import Stored = WallDocument.Stored;
   export import Source = WallDocument.Source;
   export import PersistedData = WallDocument.PersistedData;

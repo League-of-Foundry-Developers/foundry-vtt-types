@@ -129,7 +129,7 @@ declare global {
      * Create a Macro which rolls a RollTable when executed
      * @param table - The RollTable document
      */
-    protected _createRollTableRollMacro(table: RollTable): Promise<Macro.Implementation>;
+    protected _createRollTableRollMacro(table: RollTable.Implementation): Promise<Macro.Implementation>;
 
     /**
      * Create a Macro document which can be used to toggle display of a Journal Entry.

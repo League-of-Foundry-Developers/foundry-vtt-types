@@ -56,7 +56,7 @@ expectTypeOf<GetKey<{ abc: string }, "abc">>().toEqualTypeOf<string>();
 
 expectTypeOf<GetKey<{ abc: number }, "abc">>().toEqualTypeOf<number>();
 
-expectTypeOf<IntentionalPartial<{ abc: number }>>().toEqualTypeOf<Partial<{ abc: number }>>();
+expectTypeOf<IntentionalPartial<{ abc: number }>>().toEqualTypeOf<{ abc?: number }>();
 
 expectTypeOf<OverlapsWith<7, number>>().toEqualTypeOf<7>();
 expectTypeOf<OverlapsWith<"abc", number>>().toEqualTypeOf<number>();

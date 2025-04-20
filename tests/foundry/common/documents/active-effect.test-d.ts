@@ -203,7 +203,9 @@ expectTypeOf((myAE.icon = "path/to/tex.png")).toBeString();
 // expectTypeOf(foundry.documents.BaseActiveEffect.updateDocuments([])).toEqualTypeOf<Promise<ActiveEffect[]>>();
 // expectTypeOf(foundry.documents.BaseActiveEffect.deleteDocuments([])).toEqualTypeOf<Promise<ActiveEffect[]>>();
 
-// const activeEffect = await foundry.documents.BaseActiveEffect.create({}, { temporary: true });
-// if (activeEffect) {
-//   expectTypeOf(activeEffect.parent).toEqualTypeOf<Actor | Item | null>();
-// }
+const activeEffect = await foundry.documents.BaseActiveEffect.create({}, { temporary: true });
+if (activeEffect) {
+  expectTypeOf(activeEffect.parent).toEqualTypeOf<Actor.Implementation | Item.Implementation | null>();
+
+  expectTypeOf(activeEffect.changes).toEqualTypeOf<ActiveEffect.EffectChangeData[]>();
+}

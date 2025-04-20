@@ -313,7 +313,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, typeof DataModel<any, Actor>>;
+      dataModels: Record<string, typeof DataModel<any, Actor.Implementation>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -382,7 +382,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, typeof DataModel<any, Cards>>;
+      dataModels: Record<string, typeof DataModel<any, Cards.Implementation>>;
 
       /**
        * @defaultValue
@@ -446,7 +446,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, typeof DataModel<any, ChatMessage>>;
+      dataModels: Record<string, typeof DataModel<any, ChatMessage.Implementation>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -483,7 +483,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, typeof DataModel<any, Combat>>;
+      dataModels: Record<string, typeof DataModel<any, Combat.Implementation>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -602,7 +602,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, typeof DataModel<any, Item>>;
+      dataModels: Record<string, typeof DataModel<any, Item.Implementation>>;
 
       /**
        * @defaultValue `{}`
@@ -2235,7 +2235,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, typeof DataModel<any, ActiveEffect>>;
+      dataModels: Record<string, typeof DataModel<any, ActiveEffect.Implementation>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2290,7 +2290,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, typeof DataModel<any, Card>>;
+      dataModels: Record<string, typeof DataModel<any, Card.Implementation>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2333,7 +2333,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, typeof DataModel<any, JournalEntryPage>>;
+      dataModels: Record<string, typeof DataModel<any, JournalEntryPage.Implementation>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2402,6 +2402,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof AmbientLightDocument` */
+      // eslint-disable-next-line no-restricted-syntax
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientLight>;
 
       /** @defaultValue `typeof LightingLayer` */
@@ -2426,6 +2427,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof AmbientSound` */
+      // eslint-disable-next-line no-restricted-syntax
       objectClass: ConfiguredObjectClassOrDefault<typeof AmbientSound>;
 
       /** @defaultValue `typeof SoundsLayer` */
@@ -2443,7 +2445,7 @@ declare global {
        * @defaultValue `{}`
        * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
        */
-      dataModels: Record<string, typeof DataModel<any, Combatant>>;
+      dataModels: Record<string, typeof DataModel<any, Combatant.Implementation>>;
 
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -2478,6 +2480,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Drawing` */
+      // eslint-disable-next-line no-restricted-syntax
       objectClass: ConfiguredObjectClassOrDefault<typeof Drawing>;
 
       /** @defaultValue `typeof DrawingsLayer` */
@@ -2527,6 +2530,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof MeasuredTemplate` */
+      // eslint-disable-next-line no-restricted-syntax
       objectClass: ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
 
       /** @defaultValue `typeof TemplateLayer` */
@@ -2551,6 +2555,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Note` */
+      // eslint-disable-next-line no-restricted-syntax
       objectClass: ConfiguredObjectClassOrDefault<typeof Note>;
 
       /** @defaultValue `typeof NotesLayer` */
@@ -2562,6 +2567,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Region">;
 
       /** @defaultValue `Region` */
+      // eslint-disable-next-line no-restricted-syntax
       objectClass: ConfiguredObjectClassOrDefault<typeof Region>;
 
       /** @defaultValue `RegionLayer` */
@@ -2596,6 +2602,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Tile` */
+      // eslint-disable-next-line no-restricted-syntax
       objectClass: ConfiguredObjectClassOrDefault<typeof Tile>;
 
       /** @defaultValue `typeof TilesLayer` */
@@ -2623,6 +2630,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Token` */
+      // eslint-disable-next-line no-restricted-syntax
       objectClass: ConfiguredObjectClassOrDefault<typeof Token>;
 
       /** @defaultValue `typeof TokenLayer` */
@@ -2663,6 +2671,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Wall` */
+      // eslint-disable-next-line no-restricted-syntax
       objectClass: ConfiguredObjectClassOrDefault<typeof Wall>;
 
       /** @defaultValue `typeof WallsLayer` */

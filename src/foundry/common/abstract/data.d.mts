@@ -46,7 +46,7 @@ declare abstract class DataModel<
    * The source data object for this DataModel instance.
    * Once constructed, the source object is sealed such that no keys may be added nor removed.
    */
-  readonly _source: Readonly<fields.SchemaField.PersistedData<Schema>>;
+  readonly _source: Readonly<fields.SchemaField.SourceData<Schema>>;
 
   /**
    * The defined and cached Data Schema for all instances of this DataModel.
@@ -107,7 +107,7 @@ declare abstract class DataModel<
   protected _initializeSource(
     data: fields.SchemaField.CreateData<Schema> | this,
     options?: DataModel.InitializeSourceOptions & ExtraConstructorOptions,
-  ): fields.SchemaField.PersistedData<Schema>;
+  ): fields.SchemaField.SourceData<Schema>;
 
   /**
    * Clean a data source object to conform to a specific provided schema.
@@ -177,6 +177,12 @@ declare abstract class DataModel<
   static validateJoint(data: AnyObject): void;
 
   /**
+   * @deprecated since v11; Use the validateJoint static method instead.
+   */
+  // TODO(LukeAbby): Should be SourceType
+  protected _validateModel(data: fields.SchemaField.SourceData<Schema>): void;
+
+  /**
    * Update the DataModel locally by applying an object of changes to its source data.
    * The provided changes are cleaned, validated, and stored to the source data object for this model.
    * The source data is then re-initialized to apply those changes to the prepared data.
@@ -199,13 +205,13 @@ declare abstract class DataModel<
    */
   toObject<Source extends boolean | null | undefined>(
     source?: Source,
-  ): Source extends true ? Readonly<SchemaField.PersistedData<Schema>> : SchemaField.PersistedData<Schema>;
+  ): Source extends true ? Readonly<SchemaField.SourceData<Schema>> : SchemaField.SourceData<Schema>;
 
   /**
    * Extract the source data for the DataModel into a simple object format that can be serialized.
    * @returns The document source data expressed as a plain object
    */
-  toJSON(): fields.SchemaField.PersistedData<Schema>;
+  toJSON(): fields.SchemaField.SourceData<Schema>;
 
   /**
    * Create a new instance of this DataModel from a source record.

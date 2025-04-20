@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { AnyObject } from "../../../../../src/utils/index.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -14,9 +15,9 @@ declare namespace WeaponData {
   }
 }
 
-export class ArmorData extends foundry.abstract.TypeDataModel<ArmorData.Schema, Item> {}
+export class ArmorData extends foundry.abstract.TypeDataModel<ArmorData.Schema, Item.Implementation> {}
 
-export class WeaponData extends foundry.abstract.TypeDataModel<WeaponData.Schema, Item> {}
+export class WeaponData extends foundry.abstract.TypeDataModel<WeaponData.Schema, Item.Implementation> {}
 
 declare global {
   interface DataModelConfig {
@@ -28,16 +29,18 @@ declare global {
 }
 
 // @ts-expect-error - Item requires name and type.
-new Item();
+new Item.implementation();
+
 // @ts-expect-error - Item requires name and type.
 await Item.create();
 
 // @ts-expect-error - Item requires name and type.
-new Item({});
+new Item.implementation({});
+
 // @ts-expect-error - Item requires name and type.
 await Item.create({});
 
-const item = new Item({ name: "Mighty Axe of Killing", type: "weapon" });
+const item = new Item.implementation({ name: "Mighty Axe of Killing", type: "weapon" });
 await Item.create({ name: "Mighty Axe of Killing", type: "weapon" });
 
 expectTypeOf(item.actor).toEqualTypeOf<Actor.Implementation | null>();
@@ -45,12 +48,12 @@ expectTypeOf(item.img).toEqualTypeOf<string | null | undefined>();
 expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
 expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
 expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor" | "base" | `${string}.${string}`>();
-expectTypeOf(item.getRollData()).toEqualTypeOf<Record<string, unknown>>();
+expectTypeOf(item.getRollData()).toEqualTypeOf<AnyObject>();
 
 // Configured Item Usage
 declare global {
   namespace Item {
-    namespace DatabaseOperation {
+    namespace Database {
       interface Create {
         foo?: string;
       }
@@ -71,11 +74,11 @@ Item.deleteDocuments([foundry.utils.randomID()], { foobar: false });
 class BoilerplateItem extends Item {
   protected static override async _onUpdateOperation(
     documents: Item.Implementation[],
-    operation: Item.DatabaseOperation.Update,
+    operation: Item.Database.Update,
     user: User.Implementation,
   ): Promise<void> {
     if (operation.bar) {
-      console.log(documents[0].id, operation.diff, user.id);
+      console.log(documents[0]!.id, operation.diff, user.id);
     }
   }
 }

@@ -102,9 +102,40 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   static get(documentId: string, options?: RollTable.Database.GetOptions): RollTable.Implementation | null;
 
-  static override getCollectionName<CollectionName extends RollTable.EmbeddedName>(
+  static override getCollectionName<CollectionName extends RollTable.Embedded.Name>(
     name: CollectionName,
-  ): RollTable.CollectionNameOf<CollectionName> | null;
+  ): RollTable.Embedded.CollectionNameOf<CollectionName> | null;
+
+  override getEmbeddedCollection<EmbeddedName extends RollTable.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): RollTable.Embedded.CollectionFor<EmbeddedName>;
+
+  override getEmbeddedDocument<EmbeddedName extends RollTable.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): RollTable.Embedded.DocumentFor<EmbeddedName> | undefined;
+
+  override createEmbeddedDocuments<EmbeddedName extends RollTable.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override updateEmbeddedDocuments<EmbeddedName extends RollTable.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends RollTable.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -260,11 +291,13 @@ declare namespace BaseRollTable {
   export import Hierarchy = RollTable.Hierarchy;
   export import Metadata = RollTable.Metadata;
   export import Parent = RollTable.Parent;
+  export import Descendant = RollTable.Descendant;
+  export import DescendantClass = RollTable.DescendantClass;
   export import Pack = RollTable.Pack;
   export import Embedded = RollTable.Embedded;
-  export import EmbeddedName = RollTable.EmbeddedName;
-  export import EmbeddedCollectionName = RollTable.EmbeddedCollectionName;
   export import ParentCollectionName = RollTable.ParentCollectionName;
+  export import CollectionClass = RollTable.CollectionClass;
+  export import Collection = RollTable.Collection;
   export import Stored = RollTable.Stored;
   export import Source = RollTable.Source;
   export import PersistedData = RollTable.PersistedData;

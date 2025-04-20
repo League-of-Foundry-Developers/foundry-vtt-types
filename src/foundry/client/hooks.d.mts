@@ -5,12 +5,12 @@ import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
 import type PointVisionSource from "../client-esm/canvas/sources/point-vision-source.d.mts";
 import type RenderedEffectSource from "../client-esm/canvas/sources/rendered-effect-source.d.mts";
-import type { CompendiumArtInfo } from "../client-esm/helpers/_types.d.mts";
 import type {
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
 } from "../common/abstract/_types.d.mts";
+import type CompendiumArt from "../client-esm/helpers/compendium-art.d.mts";
 
 declare global {
   /**
@@ -325,7 +325,7 @@ declare global {
        * @see {@link ChatBubbles.say | `ChatBubbles#say`}
        */
       chatBubble: (
-        token: Token,
+        token: Token.Object,
         html: JQuery,
         message: string,
         options: {
@@ -440,7 +440,7 @@ declare global {
         documentClass: Actor.ImplementationClass,
         source: foundry.documents.BaseActor.CreateData,
         pack: CompendiumCollection.Any,
-        art: CompendiumArtInfo,
+        art: CompendiumArt.Info,
       ) => void;
 
       /** ActorSheet */
@@ -724,10 +724,10 @@ declare global {
        * @see {@link ChatMessage.render | `ChatMessage#render`}
        */
       renderChatMessage: (
-        message: ChatMessage,
+        message: ChatMessage.Implementation,
         html: JQuery,
         messageData: {
-          message: ChatMessage.PersistedData;
+          message: ChatMessage.Source;
           user: Game["user"];
           author: User.Implementation | null;
           alias: string;

@@ -1,4 +1,5 @@
 import type { Identity } from "fvtt-types/utils";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -30,6 +31,9 @@ declare global {
   namespace WorldSettings {
     interface Any extends AnyWorldSettings {}
     interface AnyConstructor extends Identity<typeof AnyWorldSettings> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Setting"> {}
+    interface Configured extends Document.ConfiguredCollection<"Setting"> {}
   }
 }
 

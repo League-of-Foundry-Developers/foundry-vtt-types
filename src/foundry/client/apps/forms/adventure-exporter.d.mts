@@ -86,7 +86,7 @@ declare global {
       name: string;
 
       /** The Folder at this node level */
-      folder: Folder;
+      folder: Folder.Implementation;
 
       /** The modification state of the Folder */
       state: string;

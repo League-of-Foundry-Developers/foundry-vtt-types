@@ -278,7 +278,7 @@ declare abstract class Document<
   /** @remarks `Document#toObject` calls `this.constructor.shimData()` on the data before returning */
   override toObject<Source extends boolean | null | undefined>(
     source?: Source,
-  ): Source extends true ? Readonly<SchemaField.PersistedData<Schema>> : SchemaField.PersistedData<Schema>;
+  ): Source extends true ? Readonly<SchemaField.SourceData<Schema>> : SchemaField.SourceData<Schema>;
 
   /**
    * Create multiple Documents using provided input data.
@@ -1100,7 +1100,7 @@ declare namespace Document {
     Folder: Folders;
     Item: Items;
     JournalEntry: Journal;
-    Macro: Macro;
+    Macro: Macros;
     ChatMessage: Messages;
     Playlist: Playlists;
     Scene: Scenes;
@@ -1221,7 +1221,6 @@ declare namespace Document {
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.UpdateData : never)
     | (DocumentType extends "Playlist" ? Playlist.UpdateData : never)
     | (DocumentType extends "RegionBehavior" ? RegionBehavior.UpdateData : never)
-    | (DocumentType extends "Region" ? RegionDocument.UpdateData : never)
     | (DocumentType extends "RollTable" ? RollTable.UpdateData : never)
     | (DocumentType extends "Scene" ? Scene.UpdateData : never)
     | (DocumentType extends "Setting" ? Setting.UpdateData : never)
@@ -1232,6 +1231,7 @@ declare namespace Document {
     | (DocumentType extends "Drawing" ? DrawingDocument.UpdateData : never)
     | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.UpdateData : never)
     | (DocumentType extends "Note" ? NoteDocument.UpdateData : never)
+    | (DocumentType extends "Region" ? NoteDocument.UpdateData : never)
     | (DocumentType extends "Tile" ? TileDocument.UpdateData : never)
     | (DocumentType extends "Token" ? TokenDocument.UpdateData : never)
     | (DocumentType extends "Wall" ? WallDocument.UpdateData : never);
@@ -1255,7 +1255,6 @@ declare namespace Document {
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.CreateData : never)
     | (DocumentType extends "Playlist" ? Playlist.CreateData : never)
     | (DocumentType extends "RegionBehavior" ? RegionBehavior.CreateData : never)
-    | (DocumentType extends "Region" ? RegionDocument.CreateData : never)
     | (DocumentType extends "RollTable" ? RollTable.CreateData : never)
     | (DocumentType extends "Scene" ? Scene.CreateData : never)
     | (DocumentType extends "Setting" ? Setting.CreateData : never)
@@ -1266,6 +1265,7 @@ declare namespace Document {
     | (DocumentType extends "Drawing" ? DrawingDocument.CreateData : never)
     | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.CreateData : never)
     | (DocumentType extends "Note" ? NoteDocument.CreateData : never)
+    | (DocumentType extends "Region" ? RegionDocument.CreateData : never)
     | (DocumentType extends "Tile" ? TileDocument.CreateData : never)
     | (DocumentType extends "Token" ? TokenDocument.CreateData : never)
     | (DocumentType extends "Wall" ? WallDocument.CreateData : never);
@@ -1822,7 +1822,6 @@ declare namespace Document {
       | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database.Create : never)
       | (DocumentType extends "Playlist" ? Playlist.Database.Create : never)
       | (DocumentType extends "RegionBehavior" ? RegionBehavior.Database.Create : never)
-      | (DocumentType extends "Region" ? RegionDocument.Database.Create : never)
       | (DocumentType extends "RollTable" ? RollTable.Database.Create : never)
       | (DocumentType extends "Scene" ? Scene.Database.Create : never)
       | (DocumentType extends "Setting" ? Setting.Database.Create : never)
@@ -1833,6 +1832,7 @@ declare namespace Document {
       | (DocumentType extends "Drawing" ? DrawingDocument.Database.Create : never)
       | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Database.Create : never)
       | (DocumentType extends "Note" ? NoteDocument.Database.Create : never)
+      | (DocumentType extends "Region" ? RegionDocument.Database.Create : never)
       | (DocumentType extends "Tile" ? TileDocument.Database.Create : never)
       | (DocumentType extends "Token" ? TokenDocument.Database.Create : never)
       | (DocumentType extends "Wall" ? WallDocument.Database.Create : never);
@@ -1856,7 +1856,6 @@ declare namespace Document {
       | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database.UpdateOperation : never)
       | (DocumentType extends "Playlist" ? Playlist.Database.UpdateOperation : never)
       | (DocumentType extends "RegionBehavior" ? RegionBehavior.Database.UpdateOperation : never)
-      | (DocumentType extends "Region" ? RegionDocument.Database.UpdateOperation : never)
       | (DocumentType extends "RollTable" ? RollTable.Database.UpdateOperation : never)
       | (DocumentType extends "Scene" ? Scene.Database.UpdateOperation : never)
       | (DocumentType extends "Setting" ? Setting.Database.UpdateOperation : never)
@@ -1867,6 +1866,7 @@ declare namespace Document {
       | (DocumentType extends "Drawing" ? DrawingDocument.Database.UpdateOperation : never)
       | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Database.UpdateOperation : never)
       | (DocumentType extends "Note" ? NoteDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "Region" ? RegionDocument.Database.UpdateOperation : never)
       | (DocumentType extends "Tile" ? TileDocument.Database.UpdateOperation : never)
       | (DocumentType extends "Token" ? TokenDocument.Database.UpdateOperation : never)
       | (DocumentType extends "Wall" ? WallDocument.Database.UpdateOperation : never);
@@ -1890,7 +1890,6 @@ declare namespace Document {
       | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database.DeleteOperation : never)
       | (DocumentType extends "Playlist" ? Playlist.Database.DeleteOperation : never)
       | (DocumentType extends "RegionBehavior" ? RegionBehavior.Database.DeleteOperation : never)
-      | (DocumentType extends "Region" ? RegionDocument.Database.DeleteOperation : never)
       | (DocumentType extends "RollTable" ? RollTable.Database.DeleteOperation : never)
       | (DocumentType extends "Scene" ? Scene.Database.DeleteOperation : never)
       | (DocumentType extends "Setting" ? Setting.Database.DeleteOperation : never)
@@ -1901,6 +1900,7 @@ declare namespace Document {
       | (DocumentType extends "Drawing" ? DrawingDocument.Database.DeleteOperation : never)
       | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Database.DeleteOperation : never)
       | (DocumentType extends "Note" ? NoteDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "Region" ? RegionDocument.Database.DeleteOperation : never)
       | (DocumentType extends "Tile" ? TileDocument.Database.DeleteOperation : never)
       | (DocumentType extends "Token" ? TokenDocument.Database.DeleteOperation : never)
       | (DocumentType extends "Wall" ? WallDocument.Database.DeleteOperation : never);
@@ -1988,7 +1988,7 @@ declare namespace Document {
   type ConfiguredClassForName<Name extends Type> = ImplementationClassFor<Name>;
 
   /**
-   * @deprecated {@link SchemaField.PersistedData | `SchemaField.PersistedData<Schema>`}
+   * @deprecated {@link SchemaField.SourceData | `SchemaField.SourceData<Schema>`}
    */
   type ToObjectFalseType<T extends Document.Internal.Instance.Any> = T extends {
     toObject: (source: false) => infer U;

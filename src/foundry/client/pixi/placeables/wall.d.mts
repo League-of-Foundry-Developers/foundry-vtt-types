@@ -4,6 +4,7 @@ import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
   namespace Wall {
+    // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof Wall>;
     type Object = FixedInstanceType<ObjectClass>;
 
@@ -108,7 +109,7 @@ declare global {
     /**
      * A convenience reference to the coordinates Array for the Wall endpoints, [x0,y0,x1,y1].
      */
-    get coords(): Wall["document"]["c"];
+    get coords(): Wall.Object["document"]["c"];
 
     /**
      * The endpoints of the wall expressed as {@link foundry.canvas.edges.PolygonVertex | `foundry.canvas.edges.PolygonVertex`} instances.

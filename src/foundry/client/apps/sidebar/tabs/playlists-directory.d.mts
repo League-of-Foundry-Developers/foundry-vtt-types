@@ -253,7 +253,7 @@ declare global {
     interface Any extends AnyPlaylistDirectory {}
     interface AnyConstructor extends Identity<typeof AnyPlaylistDirectory> {}
 
-    interface PlaylistData extends Playlist.PersistedData {
+    interface PlaylistData extends Playlist.Source {
       modeTooltip: string;
       modeIcon: string;
       disabled: boolean;
@@ -263,7 +263,7 @@ declare global {
       sounds: SoundData[];
     }
 
-    interface SoundData extends PlaylistSound.PersistedData {
+    interface SoundData extends PlaylistSound.Source {
       playlistId: string | null;
       css: string;
       controlCSS: string;

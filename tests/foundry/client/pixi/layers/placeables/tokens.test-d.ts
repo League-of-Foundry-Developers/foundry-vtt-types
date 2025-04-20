@@ -5,11 +5,11 @@ expectTypeOf(TokenLayer.documentName).toEqualTypeOf<"Token">();
 expectTypeOf(TokenLayer.instance).toEqualTypeOf<TokenLayer | undefined>();
 expectTypeOf(TokenLayer.layerOptions).toEqualTypeOf<TokenLayer.LayerOptions>();
 expectTypeOf(TokenLayer.layerOptions.name).toEqualTypeOf<"tokens">();
-expectTypeOf(TokenLayer.layerOptions.objectClass).toEqualTypeOf<typeof Token>();
+expectTypeOf(TokenLayer.layerOptions.objectClass).toEqualTypeOf<Token.ObjectClass>();
 
 const layer = new TokenLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof Token>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Token.ObjectClass>();
 expectTypeOf(layer.options).toEqualTypeOf<TokenLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"tokens">();
 
@@ -71,7 +71,9 @@ expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<Token
 
 //deprecated since v12, until v14
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<1>();
-declare const someCombat: Combat.Object;
-expectTypeOf(layer.toggleCombat()).toEqualTypeOf<Promise<Combatant.Object[]>>();
-expectTypeOf(layer.toggleCombat(null, null, { token: null })).toEqualTypeOf<Promise<Combatant.Object[]>>();
-expectTypeOf(layer.toggleCombat(true, someCombat, { token: someToken })).toEqualTypeOf<Promise<Combatant.Object[]>>();
+declare const someCombat: Combat.ConfiguredInstance;
+expectTypeOf(layer.toggleCombat()).toEqualTypeOf<Promise<Combatant.ConfiguredInstance[]>>();
+expectTypeOf(layer.toggleCombat(null, null, { token: null })).toEqualTypeOf<Promise<Combatant.ConfiguredInstance[]>>();
+expectTypeOf(layer.toggleCombat(true, someCombat, { token: someToken })).toEqualTypeOf<
+  Promise<Combatant.ConfiguredInstance[]>
+>();

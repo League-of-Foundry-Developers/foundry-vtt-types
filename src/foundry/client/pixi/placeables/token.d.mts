@@ -5,6 +5,7 @@ import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
   namespace Token {
+    // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof Token>;
     type Object = FixedInstanceType<ObjectClass>;
 
@@ -681,7 +682,11 @@ declare global {
      * @param bar    - The Bar container
      * @param data   - Resource data for this bar
      */
-    protected _drawBar(number: number, bar: PIXI.Graphics, data: ReturnType<TokenDocument["getBarAttribute"]>): void;
+    protected _drawBar(
+      number: number,
+      bar: PIXI.Graphics,
+      data: ReturnType<TokenDocument.Implementation["getBarAttribute"]>,
+    ): void;
 
     /**
      * Return the text which should be displayed in a token's tooltip field
@@ -837,7 +842,7 @@ declare global {
      * @returns Was the texture applied (true) or removed (false)
      */
     toggleEffect(
-      effect: string | Parameters<TokenDocument["toggleActiveEffect"]>[0],
+      effect: string | Parameters<TokenDocument.Implementation["toggleActiveEffect"]>[0],
       options?: Token.EffectToggleOptions,
     ): Promise<boolean>;
 

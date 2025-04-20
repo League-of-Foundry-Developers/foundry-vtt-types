@@ -125,9 +125,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     options?: NoteDocument.Database.GetOptions,
   ): NoteDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends NoteDocument.EmbeddedName>(
-    name: CollectionName,
-  ): NoteDocument.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -287,11 +285,13 @@ declare namespace BaseNote {
   export import Hierarchy = NoteDocument.Hierarchy;
   export import Metadata = NoteDocument.Metadata;
   export import Parent = NoteDocument.Parent;
+  export import Descendant = NoteDocument.Descendant;
+  export import DescendantClass = NoteDocument.DescendantClass;
   export import Pack = NoteDocument.Pack;
   export import Embedded = NoteDocument.Embedded;
-  export import EmbeddedName = NoteDocument.EmbeddedName;
-  export import EmbeddedCollectionName = NoteDocument.EmbeddedCollectionName;
   export import ParentCollectionName = NoteDocument.ParentCollectionName;
+  export import CollectionClass = NoteDocument.CollectionClass;
+  export import Collection = NoteDocument.Collection;
   export import Stored = NoteDocument.Stored;
   export import Source = NoteDocument.Source;
   export import PersistedData = NoteDocument.PersistedData;

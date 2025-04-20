@@ -1,5 +1,5 @@
 import type { ConfiguredFolder } from "../../../../configuration/index.d.mts";
-import type { InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -18,18 +18,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within Folder.
+     * The documents embedded within `Folder`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the Folder document instance configured through `CONFIG.Folder.documentClass` in Foundry and
+     * The implementation of the `Folder` document instance configured through `CONFIG.Folder.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredFolder | `fvtt-types/configuration/ConfiguredFolder`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the Folder document configured through `CONFIG.Folder.documentClass` in Foundry and
+     * The implementation of the `Folder` document configured through `CONFIG.Folder.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -38,11 +38,60 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Folder";
+          collection: "folders";
+          label: string;
+          labelPlural: string;
+          coreTypes: typeof CONST.FOLDER_DOCUMENT_TYPES;
+          schemaVersion: string;
+        }>
+      > {}
 
+    // No need for Metadata namespace
+
+    /**
+     * The subtypes of `Folder` that Foundry provides. `Folder` does not have `system` and therefore
+     * there is no way for a user to configure custom subtypes. Nevertheless Foundry has a number of
+     * built in subtypes usable for `Folder`.
+     *
+     * Each of `Folder`'s subtypes correspond to something that it is intended to contain. This
+     * includes various documents as well as a {@link Compendium | `Compendium`}. The documents a
+     * `Folder` can contain specifically are an {@link Actor | `Actor`}, {@link Adventure | `Adventure`},
+     * {@link Item | `Item`}, {@link Scene | `Scene`}, {@link JournalEntry | `JournalEntry`},
+     * {@link Playlist | `Playlist`}, {@link RollTable | `RollTable`}, {@link Cards | `Cards`}, or a
+     * {@link Macro | `Macro`}
+     */
     type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
-    type Known = Folder.OfType<Folder.ConfiguredSubTypes>;
+
+    /**
+     * @deprecated `Folder` does not have `system` and therefore there is no way for a user to
+     * configure custom subtypes.
+     *
+     * This type exists only to be informative.
+     */
+    type ConfiguredSubTypes = never;
+
+    /**
+     * @deprecated `Folder` does not have `system` and therefore there is no way for a user to
+     * configure custom subtypes. This means `Known` as a concept does not apply to it.
+     *
+     * This type exists only to be informative.
+     */
+    type Known = never;
+
+    /**
+     * `OfType` returns an instance of `Folder` with the corresponding type. This works with both the
+     * builtin `Folder` class or a custom subclass if that is set up in
+     * {@link ConfiguredFolder | `fvtt-types/configuration/ConfiguredFolder`}.
+     *
+     * Note that `Folder` does not have a `system` property and therefore there is no way for a user
+     * to configure custom subtypes. See {@link Folder.SubType | `Folder.SubType`} for more information.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredFolder<Type>, Folder<Type>>;
 
     /**
@@ -55,16 +104,16 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = never;
+    type Descendant = never;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = never;
+    type DescendantClass = never;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<CONST.COMPENDIUM_DOCUMENT_TYPES>;
@@ -75,21 +124,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationFor<EmbeddedName>;
-
-    /**
-     * An embedded document is a document contained in another.
-     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
-     *
-     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
-     */
-    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
-
-    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
-      ? Metadata["embedded"][CollectionName]
-      : CollectionName;
-
-    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+    type Embedded = never;
 
     /**
      * The name of the world or embedded collection this document can find itself in.
@@ -97,6 +132,16 @@ declare global {
      * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
      */
     type ParentCollectionName = Metadata["collection"];
+
+    /**
+     * The world collection that contains `Folder`s. Will be `never` if none exists.
+     */
+    type CollectionClass = Folders.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Folder`s. Will be `never` if none exists.
+     */
+    type Collection = Folders.Configured;
 
     /**
      * An instance of `Folder` that comes from the database.
@@ -109,18 +154,13 @@ declare global {
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
-     *
-     * `Source` and `PersistedData` are equivalent.
      */
-    interface Source extends PersistedData {}
+    interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * The data put in {@link Folder._source | `Folder#_source`}. This data is what was
-     * persisted to the database and therefore it must be valid JSON.
-     *
-     * `Source` and `PersistedData` are equivalent.
+     * @deprecated {@link Folder.Source | `Folder.Source`}
      */
-    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+    type PersistedData = Source;
 
     /**
      * The data necessary to create a document. Used in places like {@link Folder.create | `Folder.create`}
@@ -214,6 +254,7 @@ declare global {
        */
       _stats: fields.DocumentStatsField;
     }
+
     namespace Database {
       /** Options passed along in Get operations for Folders */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Folder.Parent> {}
@@ -314,11 +355,25 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<Folder.Database.Delete> {}
     }
 
+    /**
+     * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
+     */
     interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
+      /**
+       * The valid scopes for the flags on this document e.g. `"core"` or `"dnd5e"`.
+       */
       type Scope = Document.FlagKeyOf<Flags>;
+
+      /**
+       * The valid keys for a certain scope for example if the scope is "core" then a valid key may be `"sheetLock"` or `"viewMode"`.
+       */
       type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+
+      /**
+       * Gets the type of a particular flag given a `Scope` and a `Key`.
+       */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
@@ -326,7 +381,7 @@ declare global {
      * @deprecated {@link Folder.Database | `Folder.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Folder> {}
+    interface DatabaseOperations extends Document.Database.Operations<Folder.Implementation> {}
 
     /**
      * @deprecated {@link Folder.Types | `Folder.SubType`}
@@ -357,6 +412,14 @@ declare global {
       /** Update existing entries in the Compendium pack, matching by name */
       updateByName?: boolean | undefined;
     }
+
+    // TODO: Handle compendium. This requires the index to be configured.
+    type Contents<SubType extends Folder.SubType> = Document.ImplementationFor<Extract<SubType, Document.Type>>[];
+
+    // TODO: Compendium Pack index
+    type DocumentClass<SubType extends Folder.SubType> = Document.ImplementationClassFor<
+      Extract<SubType, Document.Type>
+    >;
   }
 
   /**
@@ -398,16 +461,14 @@ declare global {
      * unless it's a Folder inside a Compendium pack, in which case it's the array
      * of objects inside the index of the pack that are contained in this Folder.
      */
-    // TODO: Handle compendium. This requires the index to be configured.
-    get contents(): Document.ImplementationFor<Extract<SubType, Document.Type>>[];
+    get contents(): Folder.Contents<SubType>;
 
     set contents(value);
 
     /**
      * The reference to the Document type which is contained within this Folder.
      */
-    // TODO: Compendium Pack index
-    get documentClass(): Document.ImplementationClassFor<Extract<SubType, Document.Type>>;
+    get documentClass(): Folder.DocumentClass<SubType>;
 
     /**
      * The reference to the WorldCollection instance which provides Documents to this Folder,

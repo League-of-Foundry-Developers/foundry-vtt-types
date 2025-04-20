@@ -4,11 +4,11 @@ expectTypeOf(LightingLayer.documentName).toEqualTypeOf<"AmbientLight">();
 expectTypeOf(LightingLayer.instance).toEqualTypeOf<LightingLayer | undefined>();
 expectTypeOf(LightingLayer.layerOptions).toEqualTypeOf<LightingLayer.LayerOptions>();
 expectTypeOf(LightingLayer.layerOptions.name).toEqualTypeOf<"lighting">();
-expectTypeOf(LightingLayer.layerOptions.objectClass).toEqualTypeOf<typeof AmbientLight>();
+expectTypeOf(LightingLayer.layerOptions.objectClass).toEqualTypeOf<AmbientLight.ObjectClass>();
 
 const layer = new LightingLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof AmbientLight>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<AmbientLight.ObjectClass>();
 expectTypeOf(layer.options).toEqualTypeOf<LightingLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"lighting">();
 

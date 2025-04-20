@@ -3,6 +3,7 @@ import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
   namespace MeasuredTemplate {
+    // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
     type Object = FixedInstanceType<ObjectClass>;
 

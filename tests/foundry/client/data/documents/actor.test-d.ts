@@ -3,10 +3,10 @@ import type { AnyObject } from "../../../../../src/utils/index.d.mts";
 // import type { ArmorData, WeaponData } from "./item.test-d";
 
 // @ts-expect-error - Actor requires name.
-new Actor();
+new Actor.implementation();
 
 // @ts-expect-error - Actor requires name.
-new Actor({});
+new Actor.implementation({});
 
 const actor = new Actor.implementation({ name: "Beren", type: "base" });
 expectTypeOf(actor).toEqualTypeOf<Actor.Implementation>();
@@ -17,7 +17,7 @@ expectTypeOf(actor.thumbnail).toEqualTypeOf<typeof actor.img>();
 expectTypeOf(actor.itemTypes).toEqualTypeOf<Actor.ItemTypes>();
 
 expectTypeOf(actor.isToken).toEqualTypeOf<boolean>();
-expectTypeOf(actor.appliedEffects).toEqualTypeOf<ActiveEffect[]>();
+expectTypeOf(actor.appliedEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
 expectTypeOf(actor.temporaryEffects).toEqualTypeOf<ReturnType<(typeof actor)["effects"]["filter"]>>();
 expectTypeOf(actor.token).toEqualTypeOf<TokenDocument.Implementation | null>();
 expectTypeOf(actor.inCombat).toEqualTypeOf<boolean>();
@@ -36,7 +36,7 @@ expectTypeOf(actor.itemTypes.weapon[0]!.type).toEqualTypeOf<"weapon">();
 expectTypeOf(actor.itemTypes.armor[0]!.type).toEqualTypeOf<"armor">();
 // expectTypeOf(actor.itemTypes.armor[0]!.system).toEqualTypeOf<ArmorData>();
 for (const effect of actor.allApplicableEffects()) {
-  expectTypeOf(effect).toEqualTypeOf<ActiveEffect>();
+  expectTypeOf(effect).toEqualTypeOf<ActiveEffect.Implementation>();
 }
 
 expectTypeOf(actor.getRollData()).toEqualTypeOf<AnyObject>();

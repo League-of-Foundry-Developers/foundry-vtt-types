@@ -4,12 +4,12 @@ expectTypeOf(TemplateLayer.documentName).toEqualTypeOf<"MeasuredTemplate">();
 expectTypeOf(TemplateLayer.instance).toEqualTypeOf<TemplateLayer | undefined>();
 expectTypeOf(TemplateLayer.layerOptions).toEqualTypeOf<TemplateLayer.LayerOptions>();
 expectTypeOf(TemplateLayer.layerOptions.name).toEqualTypeOf<"templates">();
-expectTypeOf(TemplateLayer.layerOptions.objectClass).toEqualTypeOf<typeof MeasuredTemplate>();
+expectTypeOf(TemplateLayer.layerOptions.objectClass).toEqualTypeOf<MeasuredTemplate.ObjectClass>();
 expectTypeOf(TemplateLayer.registerSettings()).toEqualTypeOf<void>();
 
 const layer = new TemplateLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof MeasuredTemplate>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<MeasuredTemplate.ObjectClass>();
 expectTypeOf(layer.options).toEqualTypeOf<TemplateLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"templates">();
 
@@ -22,4 +22,4 @@ declare const someEvent: PIXI.FederatedEvent;
 declare const someWheelEvent: WheelEvent;
 expectTypeOf(layer["_onDragLeftStart"](someEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftMove"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<MeasuredTemplate.Implementation> | void>();
+expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<MeasuredTemplate.Object> | void>();

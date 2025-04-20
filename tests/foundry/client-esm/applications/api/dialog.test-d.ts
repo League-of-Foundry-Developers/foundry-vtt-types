@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-const DialogV2 = foundry.applications.api.DialogV2;
+import DialogV2 = foundry.applications.api.DialogV2;
 
 expectTypeOf(await DialogV2.confirm()).toEqualTypeOf<boolean>();
 expectTypeOf(await DialogV2.confirm({ rejectClose: true })).toEqualTypeOf<boolean>();
@@ -24,7 +24,6 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<number | null>();
 
-// note: despite the numeric callback, clicking "ok" returns the string "ok"
 expectTypeOf(
   await DialogV2.prompt({
     ok: okButton,
@@ -41,7 +40,7 @@ expectTypeOf(
       },
     ],
   }),
-).toEqualTypeOf<number | boolean | string>();
+).toEqualTypeOf<number | boolean>();
 
 expectTypeOf(
   await DialogV2.prompt({

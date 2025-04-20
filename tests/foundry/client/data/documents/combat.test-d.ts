@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import Document = foundry.abstract.Document;
 
-const combat = new Combat();
+const combat = new Combat.implementation();
 
 // properties
 expectTypeOf(combat.turns).toEqualTypeOf<Combatant.Implementation[]>();
@@ -10,7 +10,7 @@ expectTypeOf(combat.previous).toEqualTypeOf<Combat.HistoryData>();
 
 expectTypeOf(Combat.CONFIG_SETTING).toEqualTypeOf<"combatTrackerConfig">();
 
-expectTypeOf(combat.combatant).toEqualTypeOf<Combat["turns"][number] | undefined>();
+expectTypeOf(combat.combatant).toEqualTypeOf<Combat.Implementation["turns"][number] | undefined>();
 expectTypeOf(combat.started).toEqualTypeOf<boolean>();
 expectTypeOf(combat.visible).toEqualTypeOf<true>();
 expectTypeOf(combat.isActive).toEqualTypeOf<boolean>();
@@ -34,7 +34,7 @@ expectTypeOf(combat.rollInitiative("")).toEqualTypeOf<Promise<Combat.Implementat
 expectTypeOf(combat.rollAll()).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.rollNPC()).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.setInitiative("", 1)).toEqualTypeOf<Promise<void>>();
-expectTypeOf(combat.setupTurns()).toEqualTypeOf<Combat["turns"]>();
+expectTypeOf(combat.setupTurns()).toEqualTypeOf<Combat.Implementation["turns"]>();
 expectTypeOf(combat.debounceSetup()).toEqualTypeOf<ReturnType<typeof foundry.utils.debounce>>();
 expectTypeOf(combat.updateCombatantActors()).toEqualTypeOf<void>();
 
@@ -42,11 +42,10 @@ expectTypeOf(combat.updateCombatantActors()).toEqualTypeOf<void>();
 // but it shows narrowing BUT it also shows that the CreateData is odd.
 class MyCombatDocumentSubclass extends Combat {
   protected override _preCreateDescendantDocuments<
-    DescendantDocumentType extends Combat.DescendantClasses,
+    DescendantDocumentType extends Combat.DescendantClass,
     Parent extends Combat.Stored,
     CreateData extends Document.CreateDataFor<DescendantDocumentType>,
-    Temporary extends boolean | undefined,
-    Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, Temporary>,
+    Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
   >(
     parent: Parent,
     collection: DescendantDocumentType["metadata"]["collection"],
@@ -56,10 +55,13 @@ class MyCombatDocumentSubclass extends Combat {
   ): void {
     super._preCreateDescendantDocuments(parent, collection, data, options, userId);
 
+    expectTypeOf(options.keepId).toEqualTypeOf<boolean | undefined>();
+
     switch (collection) {
       case "combatants":
+        expectTypeOf(options.combatTurn).toEqualTypeOf<number | undefined>();
         for (const d of data) {
-          expectTypeOf(d.initiative).toEqualTypeOf<number>();
+          expectTypeOf(d.initiative).toEqualTypeOf<number | null | undefined>();
         }
         break;
       // @ts-expect-error "foobar" is not a valid collection
@@ -69,4 +71,4 @@ class MyCombatDocumentSubclass extends Combat {
   }
 }
 
-declare const _myWall: MyCombatDocumentSubclass;
+declare const _myCombat: MyCombatDocumentSubclass;

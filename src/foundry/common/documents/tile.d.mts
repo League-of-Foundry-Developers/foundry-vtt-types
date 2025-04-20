@@ -144,9 +144,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   static get(documentId: string, options?: TileDocument.Database.GetOptions): TileDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends TileDocument.EmbeddedName>(
-    name: CollectionName,
-  ): TileDocument.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName(name: string): null;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -304,11 +302,13 @@ declare namespace BaseTile {
   export import Hierarchy = TileDocument.Hierarchy;
   export import Metadata = TileDocument.Metadata;
   export import Parent = TileDocument.Parent;
+  export import Descendant = TileDocument.Descendant;
+  export import DescendantClass = TileDocument.DescendantClass;
   export import Pack = TileDocument.Pack;
   export import Embedded = TileDocument.Embedded;
-  export import EmbeddedName = TileDocument.EmbeddedName;
-  export import EmbeddedCollectionName = TileDocument.EmbeddedCollectionName;
   export import ParentCollectionName = TileDocument.ParentCollectionName;
+  export import CollectionClass = TileDocument.CollectionClass;
+  export import Collection = TileDocument.Collection;
   export import Stored = TileDocument.Stored;
   export import Source = TileDocument.Source;
   export import PersistedData = TileDocument.PersistedData;
@@ -318,6 +318,7 @@ declare namespace BaseTile {
   export import Schema = TileDocument.Schema;
   export import DatabaseOperation = TileDocument.Database;
   export import Flags = TileDocument.Flags;
+  export import CoreFlags = TileDocument.CoreFlags;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

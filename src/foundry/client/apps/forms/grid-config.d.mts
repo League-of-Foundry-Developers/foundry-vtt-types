@@ -123,11 +123,11 @@ declare global {
     interface Any extends GridConfig<any> {}
 
     interface FormData {
-      "grid.type": Scene["grid"]["type"];
-      "grid.size": Scene["grid"]["size"];
-      scale: Scene["width"];
-      "background.offsetX": Scene["background"]["offsetX"];
-      "background.offsetY": Scene["background"]["offsetY"];
+      "grid.type": Scene.Implementation["grid"]["type"];
+      "grid.size": Scene.Implementation["grid"]["size"];
+      scale: Scene.Implementation["width"];
+      "background.offsetX": Scene.Implementation["background"]["offsetX"];
+      "background.offsetY": Scene.Implementation["background"]["offsetY"];
     }
 
     interface GridConfigData {

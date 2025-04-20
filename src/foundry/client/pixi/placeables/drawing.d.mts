@@ -3,6 +3,7 @@ import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
   namespace Drawing {
+    // eslint-disable-next-line no-restricted-syntax
     type ObjectClass = ConfiguredObjectClassOrDefault<typeof Drawing>;
     type Object = FixedInstanceType<ObjectClass>;
 
@@ -94,7 +95,7 @@ declare global {
     /**
      * Each Drawing object provides an interface for a DrawingDocument
      */
-    document: DrawingDocument;
+    document: DrawingDocument.Implementation;
 
     /**
      * The border frame and resizing handles for the drawing.

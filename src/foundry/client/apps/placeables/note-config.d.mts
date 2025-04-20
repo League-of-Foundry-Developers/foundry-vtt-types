@@ -49,7 +49,7 @@ declare global {
 
     /** @internal */
     type _FormData = Pick<
-      NoteDocument,
+      NoteDocument.Implementation,
       | "elevation"
       | "entryId"
       | "fontFamily"
@@ -66,10 +66,10 @@ declare global {
     >;
 
     interface FormData extends _FormData {
-      "icon.selected": NoteDocument["texture"]["src"];
+      "icon.selected": NoteDocument.Implementation["texture"]["src"];
 
       /** @remarks Only appears in the form data if `icon.selected` is set to "Custom" (`""` value) */
-      "icon.custom"?: NoteDocument["texture"]["src"];
+      "icon.custom"?: NoteDocument.Implementation["texture"]["src"];
     }
   }
 }

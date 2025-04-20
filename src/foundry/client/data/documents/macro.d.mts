@@ -1,5 +1,5 @@
 import type { ConfiguredMacro } from "../../../../configuration/index.d.mts";
-import type { InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -19,18 +19,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within Macro.
+     * The documents embedded within `Macro`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the Macro document instance configured through `CONFIG.Macro.documentClass` in Foundry and
+     * The implementation of the `Macro` document instance configured through `CONFIG.Macro.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredMacro | `fvtt-types/configuration/ConfiguredMacro`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the Macro document configured through `CONFIG.Macro.documentClass` in Foundry and
+     * The implementation of the `Macro` document configured through `CONFIG.Macro.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -39,11 +39,67 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Macro";
+          collection: "macros";
+          indexed: true;
+          compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
+          label: string;
+          labelPlural: string;
+          coreTypes: CONST.MACRO_TYPES[];
+          permissions: Metadata.Permissions;
+          schemaVersion: string;
+        }>
+      > {}
 
+    namespace Metadata {
+      /**
+       * The permissions for whether a certain user can create, update, or delete this document.
+       */
+      interface Permissions {
+        create(user: User.Internal.Implementation, doc: Implementation): boolean;
+        update(user: User.Internal.Implementation, doc: Implementation): boolean;
+      }
+    }
+
+    /**
+     * The subtypes of `Macro` that Foundry provides. `Macro` does not have `system` and therefore
+     * there is no way for a user to configure custom subtypes. Nevertheless Foundry has a number of
+     * built in subtypes usable for `Macro`.
+     *
+     * `Macro` has two subtypes `"chat"` and `"script"`. A `Macro` with type `"chat"` will create a
+     * `ChatMessage` whereas a `"script"` allows executing arbitrary JavaScript code
+     */
     type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
-    type Known = Macro.OfType<Macro.ConfiguredSubTypes>;
+
+    /**
+     * @deprecated `Macro` does not have `system` and therefore there is no way for a user to
+     * configure custom subtypes.
+     *
+     * This type exists only to be informative.
+     */
+    type ConfiguredSubTypes = never;
+
+    /**
+     * @deprecated `Macro` does not have `system` and therefore there is no way for a user to
+     * configure custom subtypes. This means `Known` as a concept does not apply to it.
+     *
+     * This type exists only to be informative.
+     */
+    type Known = never;
+
+    /**
+     * `OfType` returns an instance of `Macro` with the corresponding type. This works with both the
+     * builtin `Macro` class or a custom subclass if that is set up in
+     * {@link ConfiguredMacro | `fvtt-types/configuration/ConfiguredMacro`}.
+     *
+     * Note that `Macro` does not have a `system` property and therefore there is no way for a user
+     * to configure custom subtypes. See {@link Macro.SubType | `Macro.SubType`} for more information.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredMacro<Type>, Macro<Type>>;
 
     /**
@@ -56,16 +112,16 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = never;
+    type Descendant = never;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = never;
+    type DescendantClass = never;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = CompendiumCollection.ForDocument<"Scene">;
@@ -76,21 +132,7 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationFor<EmbeddedName>;
-
-    /**
-     * An embedded document is a document contained in another.
-     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
-     *
-     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
-     */
-    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
-
-    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
-      ? Metadata["embedded"][CollectionName]
-      : CollectionName;
-
-    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
+    type Embedded = never;
 
     /**
      * The name of the world or embedded collection this document can find itself in.
@@ -98,6 +140,16 @@ declare global {
      * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
      */
     type ParentCollectionName = Metadata["collection"];
+
+    /**
+     * The world collection that contains `Macro`s. Will be `never` if none exists.
+     */
+    type CollectionClass = Macros.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Folder`s. Will be `never` if none exists.
+     */
+    type Collection = Macros.Configured;
 
     /**
      * An instance of `Macro` that comes from the database.
@@ -110,18 +162,13 @@ declare global {
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
-     *
-     * `Source` and `PersistedData` are equivalent.
      */
-    interface Source extends PersistedData {}
+    interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * The data put in {@link Macro._source | `Macro#_source`}. This data is what was
-     * persisted to the database and therefore it must be valid JSON.
-     *
-     * `Source` and `PersistedData` are equivalent.
+     * @deprecated {@link Macro.Source | `Macro.Source`}
      */
-    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+    type PersistedData = Source;
 
     /**
      * The data necessary to create a document. Used in places like {@link Macro.create | `Macro.create`}
@@ -359,20 +406,34 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<Macro.Database.Delete> {}
     }
 
+    /**
+     * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
+     */
     interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
+      /**
+       * The valid scopes for the flags on this document e.g. `"core"` or `"dnd5e"`.
+       */
       type Scope = Document.FlagKeyOf<Flags>;
+
+      /**
+       * The valid keys for a certain scope for example if the scope is "core" then a valid key may be `"sheetLock"` or `"viewMode"`.
+       */
       type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+
+      /**
+       * Gets the type of a particular flag given a `Scope` and a `Key`.
+       */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
     interface Scope {
       /** An Actor who is the protagonist of the executed action. */
-      actor: Actor;
+      actor: Actor.Implementation;
 
       /**  A Token which is the protagonist of the executed action. */
-      token: Token;
+      token: Token.Object;
 
       /** An optional event passed to the executed macro. */
       event: Event | RegionDocument.RegionEvent;
@@ -387,7 +448,7 @@ declare global {
      * @deprecated {@link Macro.Database | `Macro.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Macro> {}
+    interface DatabaseOperations extends Document.Database.Operations<Macro.Implementation> {}
 
     /**
      * @deprecated {@link Macro.Types | `Macro.SubType`}
@@ -456,7 +517,7 @@ declare global {
      *          macro or the return value if a script macro. A void return is possible if the user
      *          is not permitted to execute macros or a script macro execution fails.
      */
-    execute(scope?: InexactPartial<Macro.Scope>): Promise<ChatMessage | void> | Promise<unknown> | void;
+    execute(scope?: InexactPartial<Macro.Scope>): Promise<ChatMessage.Implementation | void> | Promise<unknown> | void;
 
     #executeScript();
 

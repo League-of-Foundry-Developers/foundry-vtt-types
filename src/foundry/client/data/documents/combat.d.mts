@@ -1,4 +1,5 @@
 import type { ConfiguredCombat } from "../../../../configuration/index.d.mts";
+import type { Merge } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -18,18 +19,18 @@ declare global {
     interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
 
     /**
-     * The documents embedded within Combat.
+     * The documents embedded within `Combat`.
      */
     type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
     /**
-     * The implementation of the Combat document instance configured through `CONFIG.Combat.documentClass` in Foundry and
+     * The implementation of the `Combat` document instance configured through `CONFIG.Combat.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
-     * The implementation of the Combat document configured through `CONFIG.Combat.documentClass` in Foundry and
+     * The implementation of the `Combat` document configured through `CONFIG.Combat.documentClass` in Foundry and
      * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
@@ -38,12 +39,82 @@ declare global {
      * A document's metadata is special information about the document ranging anywhere from its name,
      * whether it's indexed, or to the permissions a user has over it.
      */
-    interface Metadata extends Document.MetadataFor<Name> {}
+    interface Metadata
+      extends Merge<
+        Document.Metadata.Default,
+        Readonly<{
+          name: "Combat";
+          collection: "combats";
+          label: string;
+          labelPlural: string;
+          embedded: Metadata.Embedded;
+          hasTypeData: true;
+          permissions: Metadata.Permissions;
+          schemaVersion: string;
+        }>
+      > {}
 
-    type SubType = Game.Model.TypeNames<Name>;
-    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<Name>;
+    namespace Metadata {
+      /**
+       * The embedded metadata
+       */
+      interface Embedded {
+        Combatant: "combatants";
+      }
+
+      /**
+       * The permissions for whether a certain user can create, update, or delete this document.
+       */
+      interface Permissions {
+        update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      }
+    }
+
+    /**
+     * Allowed subtypes of `Combat`. This is configured through various methods. Modern Foundry
+     * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
+     * under {@link CONFIG.Combat.dataModels | `CONFIG.Combat.dataModels`}. This corresponds to
+     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     *
+     * However subtypes can also be registered through a `template.json` though this is discouraged.
+     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
+     * {@link DataConfig | `DataConfig`}.
+     */
+    type SubType = Game.Model.TypeNames<"Combat">;
+
+    /**
+     * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+     * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
+     * module subtypes `${string}.${string}`.
+     *
+     * @see {@link SubType} for more information.
+     */
+    type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Combat">;
+
+    /**
+     * `Known` represents the types of `Combat` that a user explicitly registered.
+     *
+     * @see {@link ConfiguredSubTypes} for more information.
+     */
     type Known = Combat.OfType<Combat.ConfiguredSubTypes>;
+
+    /**
+     * `OfType` returns an instance of `Combat` with the corresponding type. This works with both the
+     * builtin `Combat` class or a custom subclass if that is set up in
+     * {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`}.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCombat<Type>, Combat<Type>>;
+
+    /**
+     * `SystemOfType` returns the system property for a specific `Combat` subtype.
+     */
+    type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+
+    /**
+     * @internal
+     */
+    interface _SystemMap extends Document.Internal.SystemMap<"Combat"> {}
 
     /**
      * A document's parent is something that can contain it.
@@ -55,16 +126,22 @@ declare global {
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all instances, or never if the document doesn't have any descendants.
      */
-    type Descendants = Combatant.Stored;
+    type DescendantName = "Combatant";
+
+    /**
+     * A document's descendants are any child documents, grandchild documents, etc.
+     * This is a union of all instances, or never if the document doesn't have any descendants.
+     */
+    type Descendant = Combatant.Stored;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClasses = Combatant.ImplementationClass;
+    type DescendantClass = Combatant.ImplementationClass;
 
     /**
-     * Types of CompendiumCollection this document might be contained in.
+     * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
     type Pack = never;
@@ -75,23 +152,66 @@ declare global {
      *
      * If this is `never` it is because there are no embeddable documents (or there's a bug!).
      */
-    type Embedded = Document.ImplementationFor<EmbeddedName>;
+    type Embedded = Document.ImplementationFor<Embedded.Name>;
+
+    namespace Embedded {
+      /**
+       * An embedded document is a document contained in another.
+       * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
+       *
+       * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+       */
+      type Name = keyof Metadata.Embedded;
+
+      /**
+       * Gets the collection name for an embedded document.
+       */
+      type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionNameFor<
+        Metadata.Embedded,
+        CollectionName
+      >;
+
+      /**
+       * Gets the collection document for an embedded document.
+       */
+      // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+
+      /**
+       * Gets the collection for an embedded document.
+       */
+      type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
+        // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
+        Document.Any,
+        Metadata.Embedded,
+        CollectionName
+      >;
+
+      /**
+       * A valid name to refer to a collection embedded in this document. For example an `Actor`
+       * has the key `"items"` which contains `Item` instance which would make both `"Item" | "Items"`
+       * valid keys (amongst others).
+       */
+      type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
+    }
 
     /**
-     * An embedded document is a document contained in another.
-     * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
-     *
-     * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+     * The name of the world or embedded collection this document can find itself in.
+     * For example an `Item` is always going to be inside a collection with a key of `items`.
+     * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
      */
-    type EmbeddedName = Document.EmbeddableNamesFor<Metadata>;
-
-    type CollectionNameOf<CollectionName extends EmbeddedName> = CollectionName extends keyof Metadata["embedded"]
-      ? Metadata["embedded"][CollectionName]
-      : CollectionName;
-
-    type EmbeddedCollectionName = Document.CollectionNamesFor<Metadata>;
-
     type ParentCollectionName = Metadata["collection"];
+
+    /**
+     * The world collection that contains `Combat`s. Will be `never` if none exists.
+     */
+    type CollectionClass = CombatEncounters.ConfiguredClass;
+
+    /**
+     * The world collection that contains `Combat`s. Will be `never` if none exists.
+     */
+    type Collection = CombatEncounters.Configured;
 
     /**
      * An instance of `Combat` that comes from the database.
@@ -104,18 +224,13 @@ declare global {
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
      * but initialized as a {@link Set | `Set`}.
-     *
-     * `Source` and `PersistedData` are equivalent.
      */
-    interface Source extends PersistedData {}
+    interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * The data put in {@link Combat._source | `Combat#_source`}. This data is what was
-     * persisted to the database and therefore it must be valid JSON.
-     *
-     * `Source` and `PersistedData` are equivalent.
+     * @deprecated {@link Combat.Source | `Combat.Source`}
      */
-    interface PersistedData extends fields.SchemaField.PersistedData<Schema> {}
+    type PersistedData = Source;
 
     /**
      * The data necessary to create a document. Used in places like {@link Combat.create | `Combat.create`}
@@ -220,14 +335,18 @@ declare global {
        */
       _stats: fields.DocumentStatsField;
     }
+
     namespace Database {
       /** Options passed along in Get operations for Combats */
       interface Get extends foundry.abstract.types.DatabaseGetOperation<Combat.Parent> {}
+
       /** Options passed along in Create operations for Combats */
       interface Create<Temporary extends boolean | undefined = boolean | undefined>
         extends foundry.abstract.types.DatabaseCreateOperation<Combat.CreateData, Combat.Parent, Temporary> {}
+
       /** Options passed along in Delete operations for Combats */
       interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Combat.Parent> {}
+
       /** Options passed along in Update operations for Combats */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Combat.UpdateData, Combat.Parent> {
         direction: -1 | 1;
@@ -321,11 +440,25 @@ declare global {
       interface DeleteOptions extends Document.Database.DeleteOptions<Combat.Database.Delete> {}
     }
 
+    /**
+     * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
+     */
     interface Flags extends Document.ConfiguredFlagsForName<Name> {}
 
     namespace Flags {
+      /**
+       * The valid scopes for the flags on this document e.g. `"core"` or `"dnd5e"`.
+       */
       type Scope = Document.FlagKeyOf<Flags>;
+
+      /**
+       * The valid keys for a certain scope for example if the scope is "core" then a valid key may be `"sheetLock"` or `"viewMode"`.
+       */
       type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+
+      /**
+       * Gets the type of a particular flag given a `Scope` and a `Key`.
+       */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
@@ -336,7 +469,7 @@ declare global {
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated
       extends Document.Database.Operations<
-        Combat,
+        Combat.Implementation,
         {},
         { direction: -1 | 1; worldTime: { delta: number }; turnEvents: boolean },
         {}
@@ -458,13 +591,13 @@ declare global {
      * @param token - A Token ID or a TokenDocument instance
      * @returns An array of Combatants which represent the Token.
      */
-    getCombatantsByToken(token: string | TokenDocument): Combatant.Implementation[];
+    getCombatantsByToken(token: string | TokenDocument.Implementation): Combatant.Implementation[];
 
     /**
      * Get a Combatant that represents the given Actor or Actor ID.
      * @param actorOrId - An Actor ID or an Actor instance.
      */
-    getCombatantsByActor(actorOrId: string | Actor): Combatant.Implementation[];
+    getCombatantsByActor(actorOrId: string | Actor.Implementation): Combatant.Implementation[];
 
     /** Begin the combat encounter, advancing to round 1 and turn 1 */
     startCombat(): Promise<this>;
@@ -554,14 +687,14 @@ declare global {
      * Refresh the Token HUD under certain circumstances.
      * @param documents - A list of Combatant documents that were added or removed.
      */
-    protected _refreshTokenHUD(documents: Array<Combatant>): void;
+    protected _refreshTokenHUD(documents: Array<Combatant.Implementation>): void;
 
     /**
      * @privateRemarks _onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes from BaseCombat.
      */
 
     protected override _onCreateDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClasses,
+      DescendantDocumentType extends Combat.DescendantClass,
       Parent extends Combat.Stored,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
@@ -575,7 +708,7 @@ declare global {
     ): void;
 
     protected override _onUpdateDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClasses,
+      DescendantDocumentType extends Combat.DescendantClass,
       Parent extends Combat.Stored,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
@@ -589,7 +722,7 @@ declare global {
     ): void;
 
     protected _onDeleteDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClasses,
+      DescendantDocumentType extends Combat.DescendantClass,
       Parent extends Combat.Stored,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(
@@ -607,7 +740,7 @@ declare global {
      * Get the current history state of the Combat encounter.
      * @param combatant - The new active combatant
      */
-    protected _getCurrentState(combatant: Combatant): Combat.HistoryData;
+    protected _getCurrentState(combatant: Combatant.Implementation): Combat.HistoryData;
 
     /**
      * Manage the execution of Combat lifecycle events.
@@ -628,7 +761,7 @@ declare global {
      * This method only executes for one designated GM user. If no GM users are present this method will not be called.
      * @param combatant - The Combatant whose turn just ended
      */
-    protected _onEndTurn(combatant: Combatant): Promise<void>;
+    protected _onEndTurn(combatant: Combatant.Implementation): Promise<void>;
 
     /**
      * A workflow that occurs at the end of each Combat Round.
@@ -653,7 +786,7 @@ declare global {
      * This method only executes for one designated GM user. If no GM users are present this method will not be called.
      * @param combatant - The Combatant whose turn just started
      */
-    protected _onStartTurn(combatant: Combatant): Promise<void>;
+    protected _onStartTurn(combatant: Combatant.Implementation): Promise<void>;
 
     /**
      * @deprecated Since v11 until v13. Use {@link Combat.updateCombatantActors | `Combat#updateCombatantActors`} instead.
@@ -663,12 +796,12 @@ declare global {
     /**
      * @deprecated Since v12. Use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
      */
-    getCombatantByActor(actor: Actor): Combatant[];
+    getCombatantByActor(actor: Actor.Implementation): Combatant.Implementation[];
 
     /**
      * @deprecated Since v12. Use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
      */
-    getCombatantByToken(token: Token): Combatant[];
+    getCombatantByToken(token: Token.Object): Combatant.Implementation[];
 
     /*
      * After this point these are not really overridden methods.
@@ -683,7 +816,7 @@ declare global {
     // ClientDocument overrides
 
     protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClasses,
+      DescendantDocumentType extends Combat.DescendantClass,
       Parent extends Combat.Stored,
       CreateData extends Document.CreateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
@@ -696,7 +829,7 @@ declare global {
     ): void;
 
     protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClasses,
+      DescendantDocumentType extends Combat.DescendantClass,
       Parent extends Combat.Stored,
       UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
       Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
@@ -709,7 +842,7 @@ declare global {
     ): void;
 
     protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClasses,
+      DescendantDocumentType extends Combat.DescendantClass,
       Parent extends Combat.Stored,
       Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
     >(

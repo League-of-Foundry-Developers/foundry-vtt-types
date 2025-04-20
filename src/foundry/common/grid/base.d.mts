@@ -352,7 +352,7 @@ declare abstract class BaseGrid {
       /**
        * The token that is being shifted.
        */
-      token: Token;
+      token: Token.Object;
     }>,
   ): Canvas.PointTuple;
 

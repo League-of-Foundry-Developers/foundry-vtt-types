@@ -3,15 +3,15 @@ import { expectTypeOf } from "vitest";
 import FilePathField = foundry.data.fields.FilePathField;
 
 // @ts-expect-error - Cards requires name.
-new Cards();
+new Cards.implementation();
 
 // @ts-expect-error - Cards requires name.
-new Cards({});
+new Cards.implementation({});
 
 // @ts-expect-error - "german" is not a valid type
-new Cards({ name: "Just a deck of cards", type: "german" });
+new Cards.implementation({ name: "Just a deck of cards", type: "german" });
 
-const cards = new Cards({ name: "Just a deck of cards", type: "deck" });
+const cards = new Cards.implementation({ name: "Just a deck of cards", type: "deck" });
 expectTypeOf(cards).toEqualTypeOf<Cards.Implementation>();
 
 expectTypeOf(cards.thumbnail).toEqualTypeOf<FilePathField.InitializedType<any>>();
@@ -130,7 +130,7 @@ expectTypeOf(cards.drawDialog()).toEqualTypeOf<Promise<Card.Implementation[] | n
 expectTypeOf(cards.passDialog()).toEqualTypeOf<Promise<Cards.Implementation | null>>();
 
 // playDialog
-expectTypeOf(cards.playDialog(new Card({ name: "Some Card" }))).toEqualTypeOf<
+expectTypeOf(cards.playDialog(new Card.implementation({ name: "Some Card" }))).toEqualTypeOf<
   Promise<Card.Implementation[] | void | null>
 >();
 
