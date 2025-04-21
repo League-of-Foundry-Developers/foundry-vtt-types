@@ -1,5 +1,5 @@
 import type { Brand, Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
-import type EventEmitterMixin from "../../common/utils/event-emitter.mjs";
+import EventEmitterMixin = foundry.utils.EventEmitterMixin;
 
 /**
  * A container around an AudioNode which manages sound playback in Foundry Virtual Tabletop.
