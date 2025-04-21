@@ -5,6 +5,8 @@ import type { AnyConstructor, FixedInstanceType, InexactPartial, Mixin } from "f
  * This is useful in cases where a class wants EventTarget-like behavior but needs to extend some other class.
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/EventTarget}
  */
+// ESLint doesn't like this class "only being used as a type"
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class EventEmitter {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
@@ -67,6 +69,8 @@ declare namespace EventEmitterMixin {
  * Augment a base class with EventEmitter behavior.
  * @param BaseClass - Some base class augmented with event emitter functionality
  */
-export default function EventEmitterMixin<ExtendedClass extends EventEmitterMixin.BaseClass>(
+declare function EventEmitterMixin<ExtendedClass extends EventEmitterMixin.BaseClass>(
   BaseClass: ExtendedClass,
 ): Mixin<typeof EventEmitter, ExtendedClass>;
+
+export default EventEmitterMixin;

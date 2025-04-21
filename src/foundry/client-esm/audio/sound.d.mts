@@ -312,7 +312,7 @@ declare class Sound extends EventEmitterMixin(Object) {
   on(
     eventName: string,
     fn: EventEmitterMixin.EmittedEventListener,
-    options?: EventEmitterMixin.AddEventListenerOptions,
+    options?: EventEmitterMixin.AddListenerOptions,
   ): number;
 
   /**
