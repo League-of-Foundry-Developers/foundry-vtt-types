@@ -1,4 +1,4 @@
-import type { AnyConstructor, InexactPartial, Mixin } from "fvtt-types/utils";
+import type { AnyConstructor, FixedInstanceType, InexactPartial, Mixin } from "fvtt-types/utils";
 
 /**
  * A mixin class which implements the behavior of EventTarget.
@@ -6,7 +6,7 @@ import type { AnyConstructor, InexactPartial, Mixin } from "fvtt-types/utils";
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/EventTarget}
  */
 declare class EventEmitter {
-  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /**
@@ -21,16 +21,11 @@ declare class EventEmitter {
    * @param listener - The listener function called when the event occurs
    * @param options  - Options which configure the event listener
    */
+  // options: not null (destructured)
   addEventListener(
     type: string,
-    listener: EventEmitter.EmittedEventListener,
-    options?: InexactPartial<{
-      /**
-       * Should the event only be responded to once and then removed
-       * @defaultValue `false`
-       */
-      once: boolean;
-    }>,
+    listener: EventEmitterMixin.EmittedEventListener,
+    options?: EventEmitterMixin.AddListenerOptions,
   ): void;
 
   /**
@@ -38,7 +33,7 @@ declare class EventEmitter {
    * @param type     - The type of event being removed
    * @param listener - The listener function being removed
    */
-  removeEventListener(type: string, listener: EventEmitter.EmittedEventListener): void;
+  removeEventListener(type: string, listener: EventEmitterMixin.EmittedEventListener): void;
 
   /**
    * Dispatch an event on this target.
@@ -49,7 +44,22 @@ declare class EventEmitter {
   dispatchEvent(event: Event): boolean;
 }
 
-declare namespace EventEmitter {
+declare namespace EventEmitterMixin {
+  interface AnyMixedConstructor extends ReturnType<typeof EventEmitterMixin<BaseClass>> {}
+  interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
+
+  type BaseClass = AnyConstructor;
+
+  type _AddListenerOptions = InexactPartial<{
+    /**
+     * Should the event only be responded to once and then removed
+     * @defaultValue `false`
+     */
+    once: boolean;
+  }>;
+
+  interface AddListenerOptions extends _AddListenerOptions {}
+
   type EmittedEventListener = (event: Event) => void;
 }
 
@@ -57,6 +67,6 @@ declare namespace EventEmitter {
  * Augment a base class with EventEmitter behavior.
  * @param BaseClass - Some base class augmented with event emitter functionality
  */
-export default function EventEmitterMixin<ExtendedClass extends AnyConstructor>(
+export default function EventEmitterMixin<ExtendedClass extends EventEmitterMixin.BaseClass>(
   BaseClass: ExtendedClass,
 ): Mixin<typeof EventEmitter, ExtendedClass>;

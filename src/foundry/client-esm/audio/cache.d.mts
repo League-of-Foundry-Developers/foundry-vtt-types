@@ -1,22 +1,4 @@
-declare namespace AudioBufferCache {
-  interface Entry {
-    src: string;
-    buffer: AudioBuffer;
-    size: number;
-    locked?: boolean;
-    next?: Entry;
-    previous?: Entry;
-  }
-
-  interface Usage {
-    current: number;
-    max: number;
-    pct: number;
-    currentString: string;
-    maxString: string;
-    pctString: string;
-  }
-}
+import type { Identity } from "../../../utils/index.d.mts";
 
 /**
  * A specialized cache used for audio buffers.
@@ -65,4 +47,32 @@ declare class AudioBufferCache extends Map {
   override toString(): string;
 }
 
+declare namespace AudioBufferCache {
+  interface Any extends AnyAudioBufferCache {}
+  interface AnyConstructor extends Identity<typeof AnyAudioBufferCache> {}
+
+  interface Entry {
+    src: string;
+    buffer: AudioBuffer;
+    size: number;
+    locked?: boolean;
+    next?: Entry;
+    previous?: Entry;
+  }
+
+  /** Return type of {@link AudioBufferCache.usage | `AudioBufferCache#usage`} */
+  interface Usage {
+    current: number;
+    max: number;
+    pct: number;
+    currentString: string;
+    maxString: string;
+    pctString: string;
+  }
+}
+
 export default AudioBufferCache;
+
+declare abstract class AnyAudioBufferCache extends AudioBufferCache {
+  constructor(...args: never);
+}

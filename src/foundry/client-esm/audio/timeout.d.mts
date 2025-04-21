@@ -2,16 +2,11 @@
  * A special error class used for cancellation.
  * @privateRemarks Yes this is a straight up empty class extension by Foundry used exclusively internally
  */
+
+import type { Identity, NullishProps } from "../../../utils/index.d.mts";
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class AudioTimeoutCancellation extends Error {}
-
-declare namespace AudioTimeout {
-  interface Options<Return> {
-    context?: AudioContext | undefined;
-
-    callback?: (() => Return) | undefined;
-  }
-}
 
 /**
  * A framework for scheduled audio events with more precise and synchronized timing than using window.setTimeout.
@@ -52,7 +47,8 @@ declare class AudioTimeout<CallbackReturn = unknown> {
    * @param delayMS - A desired delay timing in milliseconds
    * @param options - Additional options which modify timeout behavior
    */
-  constructor(delayMS: number, options?: AudioTimeout.Options<CallbackReturn>);
+  // options: not null (destructured)
+  constructor(delayMS: number, options?: AudioTimeout.ConstructorOptions<CallbackReturn>);
 
   /**
    * Is the timeout complete?
@@ -77,10 +73,30 @@ declare class AudioTimeout<CallbackReturn = unknown> {
    * @param options - Additional options which modify timeout behavior
    * @returns A promise which resolves as a returned value of the callback or void
    */
+  // options: not null (destructured where forwarded)
   static wait<CallbackReturn = unknown>(
     delayMS: number,
-    options?: AudioTimeout.Options<CallbackReturn>,
+    options?: AudioTimeout.ConstructorOptions<CallbackReturn>,
   ): Promise<CallbackReturn>;
 }
 
+declare namespace AudioTimeout {
+  interface Any extends AnyAudioTimeout {}
+  interface AnyConstructor extends Identity<typeof AnyAudioTimeout> {}
+
+  /** @internal */
+  type _ConstructorOptions<Return> = NullishProps<{
+    /** @defaultValue `game.audio.music` */
+    context: AudioContext;
+
+    callback: () => Return;
+  }>;
+
+  interface ConstructorOptions<Return> extends _ConstructorOptions<Return> {}
+}
+
 export default AudioTimeout;
+
+declare abstract class AnyAudioTimeout extends AudioTimeout<unknown> {
+  constructor(...args: never);
+}
