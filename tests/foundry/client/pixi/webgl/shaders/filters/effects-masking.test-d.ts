@@ -2,8 +2,8 @@ import { expectTypeOf } from "vitest";
 
 const VEMF = VisualEffectsMaskingFilter;
 
-expectTypeOf(VEMF.FILTER_MODES).toMatchTypeOf<Record<string, number & VisualEffectsMaskingFilter.FILTER_MODES>>();
-expectTypeOf(VEMF.POST_PROCESS_TECHNIQUES).toMatchTypeOf<
+expectTypeOf(VEMF.FILTER_MODES).toExtend<Record<string, number & VisualEffectsMaskingFilter.FILTER_MODES>>();
+expectTypeOf(VEMF.POST_PROCESS_TECHNIQUES).toExtend<
   Record<string, { id: string & VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES_ID; glsl: string }>
 >();
 expectTypeOf(VEMF.fragmentPostProcess(["CONTRAST"])).toEqualTypeOf<string>();

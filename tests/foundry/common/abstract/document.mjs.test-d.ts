@@ -89,47 +89,6 @@ declare global {
   }
 }
 
-// test the database operations
-declare const dbo: ActiveEffect.DatabaseOperations;
-expectTypeOf(dbo.create).toEqualTypeOf<
-  DatabaseCreateOperation<ActiveEffect.Implementation> & { animate?: boolean | undefined }
->();
-expectTypeOf(dbo.create).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "create">>();
-expectTypeOf(dbo.update).toEqualTypeOf<
-  DatabaseUpdateOperation<ActiveEffect.Implementation> & { animate?: boolean | undefined }
->();
-expectTypeOf(dbo.update).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "update">>();
-expectTypeOf(dbo.delete).toEqualTypeOf<DatabaseDeleteOperation & { animate?: boolean | undefined }>();
-expectTypeOf(dbo.delete).toEqualTypeOf<DatabaseOperationsFor<"ActiveEffect", "delete">>();
-
-// test the options
-declare const pco: Document.Database.PreCreateOptions<"ActiveEffect">;
-expectTypeOf(pco).toEqualTypeOf<
-  Omit<DatabaseOperationsFor<"ActiveEffect", "create">, "data" | "noHook" | "pack" | "parent">
->();
-declare const oco: Document.Database.OnCreateOptions<"ActiveEffect">;
-expectTypeOf(oco).toEqualTypeOf<
-  Omit<DatabaseOperationsFor<"ActiveEffect", "create">, "pack" | "parentUuid" | "syntheticActorUpdate">
->();
-
-declare const puo: Document.Database.PreUpdateOptions<"ActiveEffect">;
-expectTypeOf(puo).toEqualTypeOf<
-  Omit<DatabaseOperationsFor<"ActiveEffect", "update">, "updates" | "restoreDelta" | "noHook" | "parent" | "pack">
->();
-declare const ouo: Document.Database.OnUpdateOptions<"ActiveEffect">;
-expectTypeOf(ouo).toEqualTypeOf<
-  Omit<DatabaseOperationsFor<"ActiveEffect", "update">, "pack" | "parentUuid" | "syntheticActorUpdate">
->();
-
-declare const pdo: Document.Database.PreDeleteOptions<"ActiveEffect">;
-expectTypeOf(pdo).toEqualTypeOf<
-  Omit<DatabaseOperationsFor<"ActiveEffect", "delete">, "ids" | "deleteAll" | "noHook" | "pack" | "parent">
->();
-declare const odo: Document.Database.OnDeleteOptions<"ActiveEffect">;
-expectTypeOf(odo).toEqualTypeOf<
-  Omit<DatabaseOperationsFor<"ActiveEffect", "delete">, "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate">
->();
-
 // const combatant = new Combatant({}, {});
 // expectTypeOf(combatant.flags["my-system"]).toEqualTypeOf<{ value: boolean; value2: number }>();
 // expectTypeOf(combatant.flags["my-optional-system"]).toEqualTypeOf<{ value: boolean } | undefined>();

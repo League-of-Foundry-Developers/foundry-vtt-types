@@ -30,7 +30,7 @@ const points = [
   new PIXI.Point(0, 3),
 ] satisfies Canvas.Point[];
 
-expectTypeOf(foundry.utils.polygonCentroid(points)).toMatchTypeOf<Canvas.Point>();
+expectTypeOf(foundry.utils.polygonCentroid(points)).toExtend<Canvas.Point>();
 
 expectTypeOf(foundry.utils.pathCircleIntersects(points, true, a, 1)).toEqualTypeOf<boolean>();
 

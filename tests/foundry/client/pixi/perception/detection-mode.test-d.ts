@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 
 expectTypeOf(DetectionMode.getDetectionFilter()).toEqualTypeOf<PIXI.Filter | undefined>();
-expectTypeOf(DetectionMode.DETECTION_TYPES).toMatchTypeOf<
+expectTypeOf(DetectionMode.DETECTION_TYPES).toExtend<
   Record<keyof DetectionMode.DetectionTypes, DetectionMode.DETECTION_TYPES>
 >();
 expectTypeOf(DetectionMode.BASIC_MODE_ID).toEqualTypeOf<"basicSight">();

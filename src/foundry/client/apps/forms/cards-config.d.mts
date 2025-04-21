@@ -11,7 +11,7 @@ declare global {
     Options,
     Cards.Implementation
   > {
-    constructor(object: Document.ImplementationClassFor<"Cards">, options: Options);
+    constructor(object: Document.ImplementationClassFor<"Cards">, options?: Options);
 
     /**
      * The allowed sorting methods which can be used for this sheet

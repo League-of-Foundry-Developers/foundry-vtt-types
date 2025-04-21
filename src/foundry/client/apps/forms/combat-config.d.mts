@@ -7,7 +7,7 @@ declare global {
    */
   class CombatTrackerConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     Options,
-    undefined
+    FormApplication.NoObject
   > {
     /**
      * @defaultValue

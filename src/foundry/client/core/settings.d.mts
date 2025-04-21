@@ -306,7 +306,29 @@ declare global {
       restricted?: boolean | undefined;
     }
 
-    type RegisterSubmenu = Omit<SettingSubmenuConfig, "key" | "namespace">;
+    interface RegisterSubmenu {
+      /** The human readable name */
+      name: string;
+
+      /** The human readable label */
+      label: string;
+
+      /** An additional human readable hint */
+      hint: string;
+
+      /** The classname of an Icon to render */
+      icon: string;
+
+      /**
+       * The FormApplication class to render
+       *
+       * @privateRemarks The phrase "TODO better typing" in the original documentation was stripped.
+       */
+      type: (new () => FormApplication.Any) | (new () => ApplicationV2.Any);
+
+      /** If true, only a GM can edit this Setting */
+      restricted: boolean;
+    }
   }
 }
 

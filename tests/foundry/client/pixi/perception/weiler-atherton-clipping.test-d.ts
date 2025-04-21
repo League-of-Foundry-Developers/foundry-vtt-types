@@ -1,9 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(WeilerAthertonClipper.CLIP_TYPES).toMatchTypeOf<
+expectTypeOf(WeilerAthertonClipper.CLIP_TYPES).toExtend<
   Record<keyof WeilerAthertonClipper.ClipTypes, WeilerAthertonClipper.CLIP_TYPES>
 >();
-expectTypeOf(WeilerAthertonClipper.INTERSECTION_TYPES).toMatchTypeOf<
+expectTypeOf(WeilerAthertonClipper.INTERSECTION_TYPES).toExtend<
   Record<keyof WeilerAthertonClipper.IntersectionTypes, WeilerAthertonClipper.INTERSECTION_TYPES>
 >();
 
@@ -46,7 +46,7 @@ const myWAC = new WeilerAthertonClipper(somePolygon, someCircle, WeilerAthertonC
 });
 
 expectTypeOf(myWAC.clipObject).toEqualTypeOf<PIXI.Rectangle | PIXI.Circle>();
-expectTypeOf(myWAC.config.clipType).toMatchTypeOf<WeilerAthertonClipper.CLIP_TYPES>();
+expectTypeOf(myWAC.config.clipType).toExtend<WeilerAthertonClipper.CLIP_TYPES>();
 if (myWAC.config.clipOpts.includeEndpoints) {
   expectTypeOf(myWAC.config.clipOpts.includeEndpoints).toEqualTypeOf<true>();
 } else {

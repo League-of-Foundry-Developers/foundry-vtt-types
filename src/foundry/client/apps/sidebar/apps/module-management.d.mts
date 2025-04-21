@@ -9,7 +9,7 @@ declare global {
    */
   class ModuleManagement<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     Options,
-    undefined
+    FormApplication.NoObject
   > {
     /**
      * @param options - Module Management application options.

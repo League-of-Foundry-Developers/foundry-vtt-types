@@ -5,7 +5,7 @@ class FakePrimaryGroup<
   TearDownOptions extends PrimaryCanvasGroup.TearDownOptions = PrimaryCanvasGroup.TearDownOptions,
 > extends CanvasGroupMixin<typeof PIXI.Container, "primary">(PIXI.Container)<DrawOptions, TearDownOptions> {}
 
-expectTypeOf(FakePrimaryGroup.groupName).toMatchTypeOf<keyof CONFIG.Canvas.Groups>();
+expectTypeOf(FakePrimaryGroup.groupName).toExtend<keyof CONFIG.Canvas.Groups>();
 expectTypeOf(FakePrimaryGroup.tearDownChildren).toEqualTypeOf<boolean>();
 
 const MyGroup = new FakePrimaryGroup();

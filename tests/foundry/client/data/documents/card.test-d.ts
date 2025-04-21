@@ -1,7 +1,5 @@
 import { expectTypeOf } from "vitest";
 
-import CardFaceData = foundry.data.CardFaceData;
-
 // @ts-expect-error - Card requires name.
 new Card.implementation();
 
@@ -12,7 +10,7 @@ new Card.implementation({});
 const card = new Card.implementation({ name: "Just a single card", type: "base" });
 const cards = new Cards.implementation({ name: "Some Card Deck", type: "deck" });
 
-expectTypeOf(card.currentFace).toEqualTypeOf<CardFaceData | null>();
+expectTypeOf(card.currentFace).toEqualTypeOf<Card.FaceData | null>();
 expectTypeOf(card.img).toEqualTypeOf<string>();
 expectTypeOf(card.name).toEqualTypeOf<string>();
 expectTypeOf(card.source).toEqualTypeOf<Cards.Implementation | undefined | null>();

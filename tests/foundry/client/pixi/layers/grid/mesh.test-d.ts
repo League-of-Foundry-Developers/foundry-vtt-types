@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 
 const myGridMesh = new GridMesh(GridShader);
 
-expectTypeOf(myGridMesh.data.type).toMatchTypeOf<CONST.GRID_TYPES>();
+expectTypeOf(myGridMesh.data.type).toExtend<CONST.GRID_TYPES>();
 
 const myGridMeshData = {
   type: CONST.GRID_TYPES.HEXEVENQ,

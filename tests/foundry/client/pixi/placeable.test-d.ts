@@ -131,11 +131,18 @@ expectTypeOf(placeable["_createInteractionManager"]()).toEqualTypeOf<MouseIntera
 declare const someUser: User.Implementation;
 declare const someEvent: PIXI.FederatedEvent;
 declare const dragEvent: DragEvent;
-// arbitrary actions are allowed, because subclasses might have new `_can*` methods
-expectTypeOf(placeable.can(someUser, "asfs")).toBeBoolean();
+
+// @ts-expect-error - Arbitrary actions are not allowed based upon authorial intent. Even though
+// subclasses might have new `_can*` methods Atropos has stated that they aren't meant to be
+// user-extensible. See https://discord.com/channels/170995199584108546/811676497965613117/1363481705406533684
+placeable.can(someUser, "asfs");
+
 expectTypeOf(placeable.can(someUser, "control")).toBeBoolean();
-// this doesn't actually work because HUD gets `.titleCase()`ed, but its a valid call
-expectTypeOf(placeable.can(someUser, "HUD")).toBeBoolean();
+
+// @ts-expect-error - This doesn't actually work because HUD gets title cased to `Hud` and expects a
+// method named `_canHud` which won't exsit.
+// This means it's impossible to call `_canHUD` through `can`
+placeable.can(someUser, "HUD");
 
 expectTypeOf(placeable["_canHUD"](someUser, someEvent)).toBeBoolean();
 expectTypeOf(placeable["_canConfigure"](someUser, someEvent)).toBeBoolean();

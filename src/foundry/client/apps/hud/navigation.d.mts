@@ -33,7 +33,7 @@ declare global {
      */
     get scenes(): Scene.Implementation[];
 
-    override render(force?: boolean, context?: Application.RenderOptions<Options>): this | void;
+    override render(force?: boolean, context?: Application.RenderOptions<Options>): this;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 

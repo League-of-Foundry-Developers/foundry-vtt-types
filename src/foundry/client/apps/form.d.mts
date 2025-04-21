@@ -17,9 +17,12 @@ declare global {
    * 3) This abstract layer has no knowledge of what is being updated, so the implementation must define _updateObject
    *
    * @typeParam Options        - the type of the options object
-   * @typeParam ConcreteObject - the type of the object or {@link foundry.abstract.Document | `foundry.abstract.Document`} which is modified by this form
+   * @typeParam ConcreteObject - while this is called object this can actually be any arbitrary value.
+   * For example `ImagePopout` sets this to a string. This is still typically a
+   * {@link Document | `Document`} instance or an object in general which is modified by this form
    */
   abstract class FormApplication<
+    // TODO(LukeAbby): The generic parameters here will be swapped.
     Options extends FormApplication.Options = FormApplication.Options,
     ConcreteObject = unknown,
   > extends Application<Options> {
@@ -31,12 +34,7 @@ declare global {
      *                  (default: `{}`)
      * @remarks Foundry allows passing no value to the constructor at all.
      */
-    constructor(object: ConcreteObject, options?: Partial<Options>);
-    constructor(
-      ...args: ConcreteObject extends undefined
-        ? [ConcreteObject?, Partial<Options>?]
-        : [ConcreteObject, Partial<Options>?]
-    );
+    constructor(...args: FormApplication.ConstructorArguments<ConcreteObject, Options>);
 
     /**
      * The object target which we are using this form to modify
@@ -238,6 +236,21 @@ declare global {
   namespace FormApplication {
     interface Any extends AnyFormApplication {}
     interface AnyConstructor extends Identity<typeof AnyFormApplication> {}
+
+    type ConstructorArguments<ConcreteObject, Options extends FormApplication.Options> =
+      // Note(LukeAbby): Uses a strict equality test to avoid `object` and `{}` counting as the same.
+      // See {@link HandleEmptyObject | `HandleEmptyObject`} for more information.
+      (<T>() => T extends FormApplication.NoObject ? 1 : 0) extends <T>() => T extends ConcreteObject ? 1 : 0
+        ? [object?: ConcreteObject, options?: Partial<Options>]
+        : [ConcreteObject] extends [undefined]
+          ? [object?: ConcreteObject, options?: Partial<Options>]
+          : [object: ConcreteObject, options?: Partial<Options>];
+
+    /**
+     * The type for when a form application has no object. Equivalent to `{}` but more semantically appropriate.
+     */
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/no-empty-object-type
+    type NoObject = {};
 
     interface Options extends Application.Options {
       /**

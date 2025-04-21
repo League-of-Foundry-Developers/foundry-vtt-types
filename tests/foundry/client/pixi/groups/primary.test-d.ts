@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(PrimaryCanvasGroup.groupName).toMatchTypeOf<keyof CONFIG.Canvas.Groups>();
+expectTypeOf(PrimaryCanvasGroup.groupName).toExtend<keyof CONFIG.Canvas.Groups>();
 expectTypeOf(PrimaryCanvasGroup.tearDownChildren).toEqualTypeOf<boolean>();
 expectTypeOf(PrimaryCanvasGroup.BACKGROUND_ELEVATION).toEqualTypeOf<number>();
 

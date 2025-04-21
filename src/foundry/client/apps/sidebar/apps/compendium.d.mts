@@ -51,7 +51,7 @@ declare global {
 
     override initialize(): void;
 
-    override render(force?: boolean, options?: Application.RenderOptions<Application.Options>): unknown;
+    override render(force?: boolean, options?: Application.RenderOptions<Application.Options>): this;
 
     // TODO: Implement GetDataReturnType
     override getData(options?: Partial<Options>): Promise<object>;

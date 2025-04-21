@@ -6,7 +6,7 @@ declare const app: Application;
 expectTypeOf(Application.defaultOptions).toEqualTypeOf<Application.Options>();
 expectTypeOf(app.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(app.getData()).toEqualTypeOf<MaybePromise<object>>();
-expectTypeOf(app.render(true)).toEqualTypeOf<unknown>();
+expectTypeOf(app.render(true)).toEqualTypeOf<Application>();
 
 expectTypeOf(app.appId).toEqualTypeOf<number>();
 expectTypeOf(app.position).toEqualTypeOf<Application.Position>();
@@ -23,5 +23,5 @@ expectTypeOf(app.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(app.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(app.close({ force: false })).toEqualTypeOf<Promise<void>>();
 expectTypeOf(app.close()).toEqualTypeOf<Promise<void>>();
-expectTypeOf(app.render(true)).toEqualTypeOf<unknown>();
-expectTypeOf(app.render(false, { height: "auto" })).toEqualTypeOf<unknown>();
+expectTypeOf(app.render(true)).toEqualTypeOf<Application>();
+expectTypeOf(app.render(false, { height: "auto" })).toEqualTypeOf<Application>();

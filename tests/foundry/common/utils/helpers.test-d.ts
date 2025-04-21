@@ -43,31 +43,31 @@ expectTypeOf(
   foundry.utils.throttle((a: number) => {
     console.log(a);
   }, 1),
-).toMatchTypeOf<(a: number) => void>();
+).toExtend<(a: number) => void>();
 
 expectTypeOf(
   foundry.utils.throttle((a: number, b: string) => {
     console.log(a, b);
   }, 1),
-).toMatchTypeOf<(a: number, b: string) => void>();
+).toExtend<(a: number, b: string) => void>();
 
 expectTypeOf(
   foundry.utils.throttle((a: number, b: string, c: boolean) => {
     console.log(a, b, c);
   }, 1),
-).toMatchTypeOf<(a: number, b: string, c: boolean) => void>();
+).toExtend<(a: number, b: string, c: boolean) => void>();
 
 expectTypeOf(
   foundry.utils.throttle((a: number, b: string, c: boolean, d: symbol) => {
     console.log(a, b, c, d);
   }, 1),
-).toMatchTypeOf<(a: number, b: string, c: boolean, d: symbol) => void>();
+).toExtend<(a: number, b: string, c: boolean, d: symbol) => void>();
 
 expectTypeOf(
   foundry.utils.throttle((a: number, b: string, c: boolean, d: symbol, e: bigint) => {
     console.log(a, b, c, d, e);
   }, 1),
-).toMatchTypeOf<(a: number, b: string, c: boolean, d: symbol, e: bigint) => void>();
+).toExtend<(a: number, b: string, c: boolean, d: symbol, e: bigint) => void>();
 
 // debouncedReoload
 expectTypeOf(foundry.utils.debouncedReload).toEqualTypeOf<() => void>();

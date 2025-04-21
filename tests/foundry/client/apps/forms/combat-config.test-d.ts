@@ -3,7 +3,7 @@ import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
 const combatTrackerConfig = new CombatTrackerConfig();
 
-expectTypeOf(combatTrackerConfig.object).toEqualTypeOf<undefined>();
+expectTypeOf(combatTrackerConfig.object).toEqualTypeOf<FormApplication.NoObject>();
 expectTypeOf(CombatTrackerConfig.defaultOptions).toEqualTypeOf<FormApplication.Options>();
 expectTypeOf(combatTrackerConfig.options).toEqualTypeOf<FormApplication.Options>();
 expectTypeOf(combatTrackerConfig.getData()).toEqualTypeOf<

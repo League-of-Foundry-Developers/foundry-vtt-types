@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import SMAAFilter = foundry.canvas.SMAAFilter;
 
-expectTypeOf(SMAAFilter.PRESETS).toMatchTypeOf<Record<keyof SMAAFilter.Presets, SMAAFilter.PRESETS>>();
+expectTypeOf(SMAAFilter.PRESETS).toExtend<Record<keyof SMAAFilter.Presets, SMAAFilter.PRESETS>>();
 
 let smaaFilter = new SMAAFilter();
 smaaFilter = new SMAAFilter({});

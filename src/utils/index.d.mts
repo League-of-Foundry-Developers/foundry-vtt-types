@@ -735,13 +735,11 @@ export type GetDataReturnType<T extends object> = GetDataConfigOptions<T>[GetDat
  * removes all properties rom an object, because an empty interface was given,
  * or so on.
  *
- * Type params extend `object` instead of `AnyObject` to allow interfaces
- *
  * @example
  * ```ts
  * type ObjectArray<T extends Record<string, unknown>> = T[];
  *
- * // As you would hope a union can't be assigned. It errors with:
+ * // As you would hope a string can't be assigned in a union or not. It errors with:
  * // "type 'string' is not assignable to type 'Record<string, unknown>'."
  * type UnionErrors = ObjectArray<string | { x: number }>;
  *
@@ -758,8 +756,13 @@ export type GetDataReturnType<T extends object> = GetDataConfigOptions<T>[GetDat
  * const emptyObject: EmptyObjectArray = [1, "foo", () => 3];
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type HandleEmptyObject<T extends object, D extends object = EmptyObject> = [{}] extends [T] ? D : T;
+export type HandleEmptyObject<O, D = EmptyObject> =
+  // Note(LukeAbby): This uses a strict equality test to differentiate types like `{ onlyOptional?: true }`
+  // and `object` from `{}`. More naive tests like `[{}] extends [O] ? ... : ...` fails these cases
+  // due to particular unsoundness rules around `{}`.
+  //
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  (<T>() => T extends {} ? true : false) extends <T>() => T extends O ? true : false ? D : O;
 
 /**
  * This type allows any plain objects. In other words it disallows functions
