@@ -276,9 +276,9 @@ declare abstract class Document<
   migrateSystemData(): object;
 
   /** @remarks `Document#toObject` calls `this.constructor.shimData()` on the data before returning */
-  override toObject<Source extends boolean | null | undefined>(
+  override toObject<Source extends boolean | null | undefined = true>(
     source?: Source,
-  ): Source extends true ? Readonly<SchemaField.SourceData<Schema>> : SchemaField.SourceData<Schema>;
+  ): DataModel.ToObject<Schema, Source>;
 
   /**
    * Create multiple Documents using provided input data.
@@ -2042,8 +2042,6 @@ declare namespace Document {
     Schema,
     EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
   >;
-
-  // interface InitializeOptions extends D
 }
 
 /** @deprecated {@link Document.Database.Operation | `Document.Database.Operation`} */

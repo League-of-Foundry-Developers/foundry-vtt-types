@@ -457,7 +457,7 @@ export class CompendiumOwnershipField extends fields.ObjectField<
   // options: unused
   protected override _validateType(
     value: Record<keyof typeof foundry.CONST.USER_ROLES, keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>,
-    options?: any,
+    options?: unknown,
   ): boolean | void;
 }
 

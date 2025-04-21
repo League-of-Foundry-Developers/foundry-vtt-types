@@ -216,7 +216,8 @@ declare global {
        * The name of the ActiveEffect
        * @defaultValue `""`
        */
-      //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      // TODO: (LukeAbby): fix this when redoing DataField
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
       name: fields.StringField<{ required: true; blank: false; label: "EFFECT.Name"; textSearch: true }, string>;
 
       /**
@@ -257,6 +258,7 @@ declare global {
               initial: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
               label: "EFFECT.ChangeMode";
             },
+            // TODO: (LukeAbby): fix this when redoing DataField
             // FIXME: Overrides required to enforce the branded type
             CONST.ACTIVE_EFFECT_MODES | null | undefined,
             CONST.ACTIVE_EFFECT_MODES | null,

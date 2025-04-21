@@ -139,7 +139,7 @@ declare abstract class DataModel<
    * Clone a model, creating a new data model by combining current data with provided overrides.
    * @param data    - Additional data which overrides current document data at the time of creation
    * @param context - Context options passed to the data model constructor
-   * @returns The cloned Document instance [sic]
+   * @returns The cloned Document [sic] instance
    * @remarks Obviously returns not necessarily a `Document`, just a `DataModel`.
    *
    * @privateRemarks Foundry types `context` as simply `object`, but given usage, it's a `DataValidationOptions`,
@@ -193,6 +193,7 @@ declare abstract class DataModel<
    * @returns An object containing the changed keys and values
    * @privateRemarks `changes` is `AnyObject` to allow dotkeys and prevent breakage in ActorDelta
    */
+  // TODO: (LukeAbby) FIXME: this use of AnyObject forces DataModel subclasses to override `updateSource` if they want stricter typing/intellisense of their UpdateData
   // options: not null (property access)
   updateSource(changes: AnyObject, options?: DataModel.UpdateOptions): fields.SchemaField.UpdateData<Schema>;
 
@@ -203,9 +204,7 @@ declare abstract class DataModel<
    *                 (default: `true`)
    * @returns The extracted primitive object
    */
-  toObject<Source extends boolean | null | undefined>(
-    source?: Source,
-  ): Source extends true ? Readonly<SchemaField.SourceData<Schema>> : SchemaField.SourceData<Schema>;
+  toObject<Source extends boolean | null | undefined = true>(source?: Source): DataModel.ToObject<Schema, Source>;
 
   /**
    * Extract the source data for the DataModel into a simple object format that can be serialized.
@@ -218,13 +217,10 @@ declare abstract class DataModel<
    * The source is presumed to be trustworthy and is not strictly validated.
    * @param source  - Initial document data which comes from a trusted source.
    * @param context - Model construction context
-   * @remarks The generic parameters should fit the DataModel implementation that this method is called on.
+   * @remarks Subclasses must implement an override to get useable typing
    */
-  // TODO: This loses the ExtraConstructorOptions type param, options may need to just be AnyObject?
-  static fromSource(
-    source: never, // TODO: Why is this never?
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<any, DataModel.Any | null>;
+
+  static fromSource(source: never, options?: never): DataModel<any, DataModel.Any | null>;
 
   /**
    * Create a DataModel instance using a provided serialized JSON string.
@@ -393,6 +389,13 @@ declare namespace DataModel {
 
   interface UpdateOptions extends _UpdateOptions {}
 
+  /**
+   * Not actually sure the Readonly is accurate, or that there's any meaningful difference
+   * as far as our types can tell between the two possible returns
+   */
+  type ToObject<Schema extends DataSchema, Source extends boolean | undefined | null = true> = Source extends true
+    ? Readonly<SchemaField.SourceData<Schema>>
+    : SchemaField.SourceData<Schema>;
   /**
    * @internal
    * Only necessary to change the default value of `strict`

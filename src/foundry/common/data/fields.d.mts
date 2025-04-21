@@ -519,13 +519,20 @@ declare namespace DataField {
     validationError?: string | undefined;
   }
 
-  interface ConstructionContext {
+  /** @internal */
+  type _ConstructionContext = NullishProps<{
     /** A field name to assign to the constructed field */
     name?: string;
+  }> &
+    InexactPartial<{
+      /**
+       * Another data field which is a hierarchical parent of this one
+       * @remarks Can't be `null` as there's a `!== undefined` check in {@link SchemaField._initialize | `SchemaField#_initialize`}
+       */
+      parent?: DataField.Any;
+    }>;
 
-    /** Another data field which is a hierarchical parent of this one */
-    parent?: DataField.Any;
-  }
+  interface ConstructionContext extends _ConstructionContext {}
 
   namespace Options {
     /** Any DataField.Options. */
@@ -577,6 +584,11 @@ declare namespace DataField {
     }>;
 
   interface ValidationOptions extends _ValidationOptions {}
+
+  /**
+   * @deprecated Use {@link DataField.ValidationOptions | `DataField.ValidationOptions`} instead
+   */
+  interface DataValidationOptions extends ValidationOptions {}
 
   /**
    * A helper type for the given options type merged into the default options of the DataField class.

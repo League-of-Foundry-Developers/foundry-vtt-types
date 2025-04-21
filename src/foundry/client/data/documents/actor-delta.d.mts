@@ -3,7 +3,7 @@ import type { BaseActorDelta } from "../../../common/documents/_module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { ConfiguredActorDelta } from "../../../../configuration/index.d.mts";
-import type { Merge, NullishProps, RequiredProps } from "../../../../utils/index.d.mts";
+import type { Identity, Merge, NullishProps, RequiredProps } from "../../../../utils/index.d.mts";
 import type DataModel from "../../../common/abstract/data.d.mts";
 
 declare global {
@@ -18,10 +18,13 @@ declare global {
      * @privateRemarks This is off-template, as ActorDelta throws if not provided a valid TokenDocument
      * parent in the construction context
      */
-    type ConstructorArgs = [
-      data: CreateData | undefined,
-      context: RequiredProps<Document.ConstructionContext<TokenDocument.Implementation>, "parent">,
-    ];
+    interface ConstructorArgs
+      extends Identity<
+        [
+          data: CreateData | undefined,
+          context: RequiredProps<Document.ConstructionContext<TokenDocument.Implementation>, "parent">,
+        ]
+      > {}
 
     /**
      * The documents embedded within `ActorDelta`.
@@ -513,8 +516,6 @@ declare global {
     /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
     override prepareEmbeddedDocuments(): void;
 
-    // TODO: This is erroring because of a mismatch between AssignmentType<ActorDelta.Schema> and AssignmentType<Actor.Schema> I think?
-    // TODO: Switching to ActorDelta.Schema changes the complaint to being about system being `unknown`
     override updateSource(changes?: Actor.UpdateData, options?: DataModel.UpdateOptions): Actor.UpdateData;
 
     override reset(): void;
