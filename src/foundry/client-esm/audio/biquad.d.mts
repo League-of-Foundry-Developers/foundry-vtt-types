@@ -22,7 +22,7 @@ declare class BiquadFilterEffect extends BiquadFilterNode {
   /**
    * Update the state of the effect node given the active flag and numeric intensity.
    * @param options - Options which are updated
-   * @throws If `type` is set to anything other than `"highpass"` or `"lowpass"`
+   * @throws If `type` is set to any value in {@link BiquadFilterEffect.AllowedFilterType} other than `"highpass"` or `"lowpass"`
    */
   // options: not null (destructured)
   update(options?: BiquadFilterEffect.UpdateOptions): void;

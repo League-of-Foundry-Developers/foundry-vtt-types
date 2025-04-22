@@ -26,7 +26,7 @@ declare class EventEmitter {
   // options: not null (destructured)
   addEventListener(
     type: string,
-    listener: EventEmitterMixin.EmittedEventListener,
+    listener: EventEmitterMixin.EventListener,
     options?: EventEmitterMixin.AddListenerOptions,
   ): void;
 
@@ -35,7 +35,7 @@ declare class EventEmitter {
    * @param type     - The type of event being removed
    * @param listener - The listener function being removed
    */
-  removeEventListener(type: string, listener: EventEmitterMixin.EmittedEventListener): void;
+  removeEventListener(type: string, listener: EventEmitterMixin.EventListener): void;
 
   /**
    * Dispatch an event on this target.
@@ -52,6 +52,7 @@ declare namespace EventEmitterMixin {
 
   type BaseClass = AnyConstructor;
 
+  /** @internal */
   type _AddListenerOptions = InexactPartial<{
     /**
      * Should the event only be responded to once and then removed
@@ -62,7 +63,7 @@ declare namespace EventEmitterMixin {
 
   interface AddListenerOptions extends _AddListenerOptions {}
 
-  type EmittedEventListener = (event: Event) => void;
+  type EventListener = (event: Event) => void;
 }
 
 /**

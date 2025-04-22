@@ -188,6 +188,11 @@ declare class Sound extends EventEmitterMixin(Object) {
    * @returns A Promise which resolves once playback has started (excluding fade)
    */
   play(options?: Sound.PlaybackOptions): Promise<this>;
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "`Sound#play` now takes an object of playback options instead of positional arguments."
+   */
+  play(offset: number, onended?: Sound.ScheduleCallback | null): Promise<this>;
 
   /**
    * Begin playback for the configured pipeline and playback options.
@@ -217,6 +222,7 @@ declare class Sound extends EventEmitterMixin(Object) {
    * @param options - Options which configure the stopping of sound playback
    * @returns A Promise which resolves once playback is fully stopped (including fade)
    */
+  // options: not null (parameter default only, destructured where forwarded)
   stop(options?: Sound.PlaybackOptions): Promise<this>;
 
   /**
@@ -309,17 +315,13 @@ declare class Sound extends EventEmitterMixin(Object) {
    * @deprecated since v12, will be removed in v14
    * @remarks "`Sound#on` is deprecated in favor of {@link Sound.addEventListener | `Sound#addEventListener`}"
    */
-  on(
-    eventName: string,
-    fn: EventEmitterMixin.EmittedEventListener,
-    options?: EventEmitterMixin.AddListenerOptions,
-  ): number;
+  on(eventName: string, fn: EventEmitterMixin.EventListener, options?: EventEmitterMixin.AddListenerOptions): number;
 
   /**
    * @deprecated since v12, will be removed in v14
    * @remarks "`Sound#off` is deprecated in favor of {@link Sound.removeEventListener | `Sound#removeEventListener`}"
    */
-  off(eventName: string, fn: EventEmitterMixin.EmittedEventListener): void;
+  off(eventName: string, fn: EventEmitterMixin.EventListener): void;
 
   /**
    * @deprecated since v12, will be removed in v14
@@ -386,42 +388,84 @@ declare namespace Sound {
 
   interface LoadOptions extends _LoadOptions {}
 
-  /** @internal */
-  type _PlaybackOptions = InexactPartial<{
+  /**
+   * @internal
+   * Since `Sound##playback` isn't exposed, this interface can *just* be accurate to wht's allowable to pass
+   * to {@link Sound.play | `Sound#play`} or {@link Sound.stop | `#stop`}, which in reality is what's allowed
+   * by `Sound##configurePlayback`
+   */
+  type _PlaybackOptions = NullishProps<{
     /**
      * A delay in seconds by which to delay playback
      * @defaultValue `0`
+     * @remarks Unlike other properties of this interface, the above default is static.
      */
     delay: number;
 
-    /** A limited duration in seconds for which to play */
+    /**
+     * A limited duration in seconds for which to play
+     * @defaultValue `undefined`
+     */
     duration: number;
 
     /**
      * A duration in milliseconds over which to fade in playback
      * @defaultValue `0`
+     * @remarks Unlike other properties of this interface, the above default is static.
      */
     fade: number;
 
-    /** Should sound playback loop? */
+    /**
+     * Should sound playback loop?
+     * @defaultValue `false`
+     * @remarks The above default is true for initial calls, but the actual default
+     * value, if this is passed nullish or omitted, is whatever the current value is
+     */
     loop: boolean;
 
-    /** Seconds of the AudioBuffer when looped playback should start. Only works for AudioBufferSourceNode. */
+    /**
+     * Seconds of the AudioBuffer when looped playback should start. Only works for AudioBufferSourceNode.
+     * @defaultValue `0`
+     * @remarks The above default is true for initial calls, but the actual default
+     * value, if this is passed nullish or omitted, is whatever the current value is
+     */
     loopStart: number;
 
-    /** Seconds of the Audio buffer when looped playback should restart. Only works for AudioBufferSourceNode. */
-    loopEn: number;
+    /**
+     * Seconds of the Audio buffer when looped playback should restart. Only works for AudioBufferSourceNode.
+     * @defaultValue `undefined`
+     * @remarks The above default is true for initial calls, but the actual default
+     * value, if this is passed nullish or omitted, is whatever the current value is
+     */
+    loopEnd: number;
 
-    /** An offset in seconds at which to start playback */
+    /**
+     * An offset in seconds at which to start playback
+     * @defaultValue `0`
+     * @remarks The above default is true for initial calls, but the actual default
+     * value, if this is passed nullish or omitted, is whatever the current value of
+     * `loopStart` is
+     */
     offset: number;
 
-    /** A callback function attached to the source node */
-    onended: ((sound: Sound) => void) | null;
+    /**
+     * A callback function attached to the source node
+     * @defaultValue `null`
+     * @remarks The above default is true for initial calls, but the actual default
+     * value, if this is passed nullish or omitted, is whatever the current value is
+     */
+    onended: ScheduleCallback | null;
 
-    /** The volume at which to play the sound */
+    /**
+     * The volume at which to play the sound
+     * @defaultValue `1.0`
+     * @remarks The above default is true for initial calls, but the actual default
+     * value, if this is passed nullish or omitted, is whatever the current value is
+     */
     volume: number;
   }>;
 
+  /** @remarks Default values here are what `Sound##configurePlayback` would use if passed an empty object with no prior calls */
   interface PlaybackOptions extends _PlaybackOptions {}
 
   /** @internal */
