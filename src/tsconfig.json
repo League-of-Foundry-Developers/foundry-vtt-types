@@ -6,7 +6,11 @@
     "outDir": "../.typescript-build/src",
     "composite": true,
     "noEmit": false,
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "paths": {
+      "@common/*": ["./foundry/common/*"],
+      "@client/*": ["./foundry/client/*"]
+    }
   },
   // Note: `**/*` is used to work around a bug with `eslint`. This will be removed once it's fixed.
   "include": ["index.d.mts", "**/*"],
