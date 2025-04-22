@@ -260,7 +260,7 @@ declare global {
      * @returns The ChatLog entry context options
      * @internal
      */
-    protected _getEntryContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
+    protected _getEntryContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
 
     /**
      * Handle keydown events in the chat entry textarea

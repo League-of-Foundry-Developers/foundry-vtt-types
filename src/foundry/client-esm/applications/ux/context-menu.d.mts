@@ -3,7 +3,7 @@ import type ApplicationV2 from "../api/application.d.mts";
 
 declare global {
   /**
-   * @deprecated Use {@link foundry.applications.ui.ContextMenu.Entry | `foundry.applications.ui.ContextMenu.Entry`}
+   * @deprecated Use {@link foundry.applications.ux.ContextMenu.Entry | `foundry.applications.ux.ContextMenu.Entry`}
    */
   type ContextMenuEntry = ContextMenu.Entry<JQuery>;
 }
@@ -12,6 +12,7 @@ declare global {
  * Display a right-click activated Context Menu which provides a dropdown menu of options.
  * A ContextMenu is constructed by designating a parent HTML container and a target selector.
  * An Array of menuItems defines the entries of the menu which is displayed.
+ * TODO: Rework again; this was written for 13.337
  */
 declare class ContextMenu<UsesJQuery extends boolean = true> {
   /**

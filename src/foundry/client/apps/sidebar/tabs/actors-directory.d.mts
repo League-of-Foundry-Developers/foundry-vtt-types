@@ -15,7 +15,7 @@ declare global {
 
     protected override _canDragDrop(selector: string): boolean;
 
-    protected override _getEntryContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
+    protected override _getEntryContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
   }
 
   namespace ActorDirectory {

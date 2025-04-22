@@ -65,9 +65,9 @@ declare global {
   let ui: {
     /**
      * @remarks
-     * Initialized whenever a {@link foundry.applications.ui.ContextMenu | `ContextMenu`} is opened, deleted when it's closed again.
+     * Initialized whenever a {@link foundry.applications.ux.ContextMenu | `ContextMenu`} is opened, deleted when it's closed again.
      */
-    context?: foundry.applications.ui.ContextMenu;
+    context?: foundry.applications.ux.ContextMenu;
 
     /**
      * @defaultValue `{}`

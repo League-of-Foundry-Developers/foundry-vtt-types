@@ -232,16 +232,16 @@ declare global {
 
     protected override _contextMenu(html: JQuery): void;
 
-    protected override _getFolderContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
+    protected override _getFolderContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
 
-    protected override _getEntryContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
+    protected override _getEntryContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
 
     /**
      * Get context menu options for individual sound effects
      * @returns The context options for each sound
      * @internal
      */
-    protected _getSoundContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
+    protected _getSoundContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
 
     protected override _onDragStart(event: DragEvent): void;
 

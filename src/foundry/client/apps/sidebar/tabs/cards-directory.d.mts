@@ -7,7 +7,7 @@ declare global {
   class CardsDirectory extends DocumentDirectory<"Cards"> {
     static override documentName: "Cards";
 
-    protected override _getEntryContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
+    protected override _getEntryContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
   }
 
   namespace CardsDirectory {
