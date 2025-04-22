@@ -8,7 +8,8 @@ import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.
 declare class PrototypeOverridesConfig<
   RenderContext extends PrototypeOverridesConfig.RenderContext = PrototypeOverridesConfig.RenderContext,
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
-  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+  RenderOptions extends
+    HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {}
 
 declare namespace PrototypeOverridesConfig {

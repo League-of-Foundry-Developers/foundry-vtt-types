@@ -3,4 +3,5 @@
 // While `.mts` could work, to avoid `import/no-unresolved` from erroring `.mjs` is used.
 /* eslint-disable import-x/extensions */
 
+export { default as SettingsConfig } from "./config.mjs";
 export * as menus from "./menus/_module.mjs";
