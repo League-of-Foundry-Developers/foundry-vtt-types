@@ -23,10 +23,10 @@ export * as documents from "./documents/_module.mjs";
  * A module which defines data architecture components.
  */
 export * as data from "./data/_module.mjs";
-// /**
-//  * Package data definitions, validations, and schema.
-//  */
-// export * as packages from "./packages/_module.mjs";
+/**
+ * Package data definitions, validations, and schema.
+ */
+export * as packages from "./packages/_module.mjs";
 
 // /**
 //  * Abstract class definitions for fundamental concepts used throughout the Foundry Virtual Tabletop framework.
