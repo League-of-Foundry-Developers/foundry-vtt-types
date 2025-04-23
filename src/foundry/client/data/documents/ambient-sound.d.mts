@@ -13,7 +13,7 @@ declare global {
     /**
      * The arguments to construct the document.
      */
-    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 
     /**
      * The documents embedded within `AmbientSoundDocument`.
