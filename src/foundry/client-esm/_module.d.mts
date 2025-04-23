@@ -81,11 +81,12 @@ export * as dice from "./dice/_module.mjs";
  * A submodule containing core helper classes.
  */
 export * as helpers from "./helpers/_module.mjs";
-// /**
-//  * A module containing utilities and tools for improving new user experience.
-//  */
-// export * as nue from "./nue/_module.mjs";
-// export {default as Game} from "./game.mjs";
+/**
+ * A module containing utilities and tools for improving new user experience.
+ */
+export * as nue from "./nue/_module.mjs";
+
+export { default as Game } from "./game.mjs";
 // /**
 //  * A collection of application instances
 //  */
