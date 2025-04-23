@@ -1,5 +1,5 @@
 import type { DeepPartial, InexactPartial, FixedInstanceType } from "fvtt-types/utils";
-import type { fields } from "../../../common/data/module.d.mts";
+import type { fields } from "../../../common/data/_module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type BaseCards from "../../../common/documents/cards.d.mts";
 

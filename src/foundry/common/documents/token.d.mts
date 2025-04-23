@@ -3,7 +3,7 @@ import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type { LightData, TextureData } from "../data/data.mts";
-import type { fields } from "../data/module.d.mts";
+import type { fields } from "../data/_module.d.mts";
 import type * as documents from "./_module.mts";
 import type { TokenDetectionMode } from "./_types.d.mts";
 

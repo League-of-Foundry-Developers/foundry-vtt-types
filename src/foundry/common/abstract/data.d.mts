@@ -1,6 +1,6 @@
 import type { AnyMutableObject, AnyObject, EmptyObject } from "fvtt-types/utils";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { fields } from "../data/module.d.mts";
+import type { fields } from "../data/_module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;

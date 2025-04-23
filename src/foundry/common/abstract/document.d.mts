@@ -19,7 +19,7 @@ import type {
 } from "../../../utils/index.d.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField } from "../data/fields.d.mts";
-import type { fields } from "../data/module.mts";
+import type { fields } from "../data/_module.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type {
   DatabaseAction,

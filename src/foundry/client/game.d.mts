@@ -1,7 +1,7 @@
 import type { Socket } from "socket.io-client";
 import type { ConfiguredModule, GetKey, EmptyObject, ValueOf, FixedInstanceType } from "fvtt-types/utils";
 import type BasePackage from "../common/packages/base-package.d.mts";
-import type { Document } from "../common/abstract/module.d.mts";
+import type { Document } from "../common/abstract/_module.d.mts";
 
 interface EarlierEvents {
   none: never;

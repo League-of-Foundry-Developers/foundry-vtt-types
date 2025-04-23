@@ -3,5 +3,5 @@
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 /* eslint-disable import-x/extensions */
 
-export * from "../../common/utils/module.mjs";
+export * from "../../common/utils/_module.mjs";
 export * from "./helpers.mjs";

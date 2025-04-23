@@ -2,7 +2,7 @@ import type { AnyObject, InexactPartial } from "fvtt-types/utils";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type * as fields from "../data/fields.d.mts";
-import type { ShapeData } from "../data/module.mts";
+import type { ShapeData } from "../data/_module.d.mts";
 import type * as documents from "./_module.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;

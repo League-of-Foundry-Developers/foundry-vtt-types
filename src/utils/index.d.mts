@@ -1,4 +1,4 @@
-import type { Document } from "../foundry/common/abstract/module.d.mts";
+import type { Document } from "../foundry/common/abstract/_module.d.mts";
 
 type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig ? ModuleConfig[Name] : EmptyObject;
 

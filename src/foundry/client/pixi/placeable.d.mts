@@ -1,6 +1,6 @@
 import type { MakeConform, ValueOf } from "fvtt-types/utils";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
-import type { Document } from "../../common/abstract/module.d.mts";
+import type { Document } from "../../common/abstract/_module.d.mts";
 
 // Gets a key with a required shape to conform to which is also used as a fallback when the key doesn't exist.
 type GetKeyWithShape<T, K, S> = K extends keyof T ? MakeConform<T[K], S> : S;
