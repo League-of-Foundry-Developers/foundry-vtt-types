@@ -62,7 +62,7 @@ declare global {
      * under {@link CONFIG.JournalEntryPage.dataModels | `CONFIG.JournalEntryPage.dataModels`}. This corresponds to
      * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
      *
-     * However subtypes can also be registered through a `template.json` though this is discouraged.
+     * Subtypes can also be registered through a `template.json` though this is discouraged.
      * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
      * {@link DataConfig | `DataConfig`}.
      */
