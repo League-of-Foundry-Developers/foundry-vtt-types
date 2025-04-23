@@ -9,6 +9,8 @@ declare class NewUserExperienceManager {
    * Currently, this generates some chat messages with hints for getting started if we detect this is a new world.
    */
   initialize(): void;
+
+  #private: true;
 }
 
 declare namespace NewUserExperienceManager {}
