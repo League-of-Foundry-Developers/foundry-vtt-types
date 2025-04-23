@@ -221,7 +221,7 @@ declare global {
     /**
      * An instance of `Actor` that comes from the database.
      */
-    interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
+    interface Stored<out SubType extends Actor.SubType = Actor.SubType> extends Document.Stored<OfType<SubType>> {}
 
     /**
      * The data put in {@link Actor._source | `Actor#_source`}. This data is what was

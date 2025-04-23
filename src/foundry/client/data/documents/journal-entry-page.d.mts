@@ -158,7 +158,8 @@ declare global {
     /**
      * An instance of `JournalEntryPage` that comes from the database.
      */
-    interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
+    interface Stored<out SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType>
+      extends Document.Stored<OfType<SubType>> {}
 
     /**
      * The data put in {@link JournalEntryPage._source | `JournalEntryPage#_source`}. This data is what was

@@ -162,7 +162,8 @@ declare global {
     /**
      * An instance of `ChatMessage` that comes from the database.
      */
-    interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
+    interface Stored<out SubType extends ChatMessage.SubType = ChatMessage.SubType>
+      extends Document.Stored<OfType<SubType>> {}
 
     /**
      * The data put in {@link ChatMessage._source | `ChatMessage#_source`}. This data is what was
@@ -265,31 +266,7 @@ declare global {
        * A ChatSpeakerData object which describes the origin of the ChatMessage
        * @defaultValue see properties
        */
-      speaker: fields.SchemaField<{
-        /**
-         * The _id of the Scene where this message was created
-         * @defaultValue `null`
-         */
-        scene: fields.ForeignDocumentField<typeof documents.BaseScene, { idOnly: true }>;
-
-        /**
-         * The _id of the Actor who generated this message
-         * @defaultValue `null`
-         */
-        actor: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
-
-        /**
-         * The _id of the Token who generated this message
-         * @defaultValue `null`
-         */
-        token: fields.ForeignDocumentField<typeof documents.BaseToken, { idOnly: true }>;
-
-        /**
-         * An overridden alias name used instead of the Actor or Token name
-         * @defaultValue `""`
-         */
-        alias: fields.StringField;
-      }>;
+      speaker: fields.SchemaField<SpeakerSchema>;
 
       /**
        * An array of User _id values to whom this message is privately whispered
@@ -335,6 +312,34 @@ declare global {
 
       _stats: fields.DocumentStatsField;
     }
+
+    interface SpeakerSchema extends DataSchema {
+      /**
+       * The _id of the Scene where this message was created
+       * @defaultValue `null`
+       */
+      scene: fields.ForeignDocumentField<typeof documents.BaseScene, { idOnly: true }>;
+
+      /**
+       * The _id of the Actor who generated this message
+       * @defaultValue `null`
+       */
+      actor: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
+
+      /**
+       * The _id of the Token who generated this message
+       * @defaultValue `null`
+       */
+      token: fields.ForeignDocumentField<typeof documents.BaseToken, { idOnly: true }>;
+
+      /**
+       * An overridden alias name used instead of the Actor or Token name
+       * @defaultValue `""`
+       */
+      alias: fields.StringField;
+    }
+
+    interface SpeakerData extends fields.SchemaField.InitializedData<SpeakerSchema> {}
 
     namespace Database {
       /** Options passed along in Get operations for ChatMessages */

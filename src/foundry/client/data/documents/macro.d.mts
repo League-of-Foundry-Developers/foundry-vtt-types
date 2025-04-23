@@ -154,7 +154,7 @@ declare global {
     /**
      * An instance of `Macro` that comes from the database.
      */
-    interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
+    interface Stored<out SubType extends Macro.SubType = Macro.SubType> extends Document.Stored<OfType<SubType>> {}
 
     /**
      * The data put in {@link Macro._source | `Macro#_source`}. This data is what was
@@ -428,7 +428,15 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
-    interface Scope {
+    /**
+     * @deprecated This type always required properties for both a `"script"` and a `"chat"` message
+     * even when necessary. It has been superceded by {@link ScriptScope | `ScriptScope`},
+     * {@link ChatScope | `ChatScope`}, and {@link UnknownScope | `UnknownScope`}
+     */
+    type Scope = ScriptScope;
+
+    /** @internal */
+    interface _ScriptScope {
       /** An Actor who is the protagonist of the executed action. */
       actor: Actor.Implementation;
 
@@ -443,6 +451,24 @@ declare global {
        */
       [arg: string]: unknown;
     }
+
+    interface ScriptScope extends InexactPartial<_ScriptScope> {}
+
+    interface ChatScope {
+      speaker?: ChatMessage.SpeakerData | undefined;
+    }
+
+    interface UnknownScope extends ScriptScope, ChatScope {}
+
+    type ExecuteScope<SubType extends Macro.SubType> = SubType extends "chat" | "script"
+      ? UnknownScope
+      : (SubType extends "script" ? ScriptScope : never) | (SubType extends "chat" ? ScriptScope : never);
+
+    // Note: If extra types ever get added this will need to be updated to account for them, even if
+    // just to return `undefined`.
+    type ExecuteReturn<SubType extends Macro.SubType> =
+      | (SubType extends "chat" ? Promise<ChatMessage.Implementation | void> : never)
+      | (SubType extends "script" ? Promise<unknown> | void : never);
 
     /**
      * @deprecated {@link Macro.Database | `Macro.DatabaseOperation`}
@@ -517,7 +543,7 @@ declare global {
      *          macro or the return value if a script macro. A void return is possible if the user
      *          is not permitted to execute macros or a script macro execution fails.
      */
-    execute(scope?: InexactPartial<Macro.Scope>): Promise<ChatMessage.Implementation | void> | Promise<unknown> | void;
+    execute(scope?: Macro.ExecuteScope<SubType>): Macro.ExecuteReturn<SubType>;
 
     #executeScript();
 

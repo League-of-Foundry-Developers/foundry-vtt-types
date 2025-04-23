@@ -171,7 +171,8 @@ declare global {
     /**
      * An instance of `RegionBehavior` that comes from the database.
      */
-    interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
+    interface Stored<out SubType extends RegionBehavior.SubType = RegionBehavior.SubType>
+      extends Document.Stored<OfType<SubType>> {}
 
     /**
      * The data put in {@link RegionBehavior._source | `RegionBehavior#_source`}. This data is what was

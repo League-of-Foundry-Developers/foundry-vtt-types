@@ -205,7 +205,7 @@ declare global {
     /**
      * An instance of `Cards` that comes from the database.
      */
-    interface Stored<out Subtype extends SubType = SubType> extends Document.Stored<OfType<Subtype>> {}
+    interface Stored<out SubType extends Cards.SubType = Cards.SubType> extends Document.Stored<OfType<SubType>> {}
 
     /**
      * The data put in {@link Cards._source | `Cards#_source`}. This data is what was
