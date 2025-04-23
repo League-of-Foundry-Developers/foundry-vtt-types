@@ -20,16 +20,18 @@ declare namespace CategoryBrowser {
     initialCategory: string | null;
 
     /** Additional Template partials for specific use with this class */
-    subtemplates: {
-      /** The markup used for each category: required to be set by any subclass */
-      category: string;
+    subtemplates: Subtemplates;
+  }
 
-      /** Optional template for secondary filtering (aside from text search) */
-      filter: string | null;
+  interface Subtemplates {
+    /** The markup used for each category: required to be set by any subclass */
+    category: string;
 
-      /** Optional sidebar footer content */
-      sidebarFooter: string | null;
-    };
+    /** Optional template for secondary filtering (aside from text search) */
+    filter: string | null;
+
+    /** Optional sidebar footer content */
+    sidebarFooter: string | null;
   }
 
   interface RenderContext extends ApplicationV2.RenderContext {}

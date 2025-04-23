@@ -12,9 +12,10 @@ declare class FontConfig<
     HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   /** Font types */
-  static readonly FONT_TYPES: Readonly<{
+  static FONT_TYPES: Readonly<{
     /** Font is a file */
     FILE: "file";
+
     /** Font is from the system */
     SYSTEM: "system";
   }>;
@@ -23,10 +24,13 @@ declare class FontConfig<
 declare namespace FontConfig {
   interface NewFontDefinition {
     family: string;
+
     /** @defaultValue `400` */
     weight?: number;
+
     /** @defaultValue `"normal"` */
     style?: string;
+
     /** @defaultValue `""` */
     src?: string;
 

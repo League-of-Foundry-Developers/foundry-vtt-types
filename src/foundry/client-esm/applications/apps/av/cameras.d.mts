@@ -24,47 +24,71 @@ declare namespace CameraViews {
   interface UserContext {
     /** The User instance. */
     user: User;
+
     /** The user's AV settings. */
     settings: AVSettingsData;
+
     /** Whether the user's AV stream is local. */
     local: boolean;
+
     /** The user's character name. */
     charname: string;
+
     /** The CSS class of the user's camera dock. */
     css: string;
+
     /** Whether the user is broadcasting video. */
     hasVideo: boolean;
+
     /** Whether the user is broadcasting audio. */
     hasAudio: boolean;
+
     /** Whether the main camera dock is hidden. */
     hidden: boolean;
-    nameplates: {
-      /** Whether camera nameplates are entirely hidden. */
-      hidden: boolean;
-      /** Nameplate CSS classes. */
-      css: string;
-      /** Whether to show player names on nameplates. */
-      playerName: string;
-      /** Whether to show character names on nameplates. */
-      charname: string;
-    };
-    video: {
-      /** The video stream's volume. */
-      volume: number;
-      /** Whether to mute the video stream's audio. */
-      muted: boolean;
-      /** Whether to show this user's camera. */
-      show: boolean;
-    };
-    volume: {
-      /** The user's configured volume level. */
-      value: number;
-      /** The volume range field. */
-      field: foundry.data.fields.DataField.Any;
-      /** Whether to show a volume bar for this user. */
-      show: boolean;
-    };
+
+    nameplates: Nameplates;
+
+    video: Video;
+
+    volume: Volume;
+
     controls: Record<string, ControlContext>;
+  }
+
+  interface Nameplates {
+    /** Whether camera nameplates are entirely hidden. */
+    hidden: boolean;
+
+    /** Nameplate CSS classes. */
+    css: string;
+
+    /** Whether to show player names on nameplates. */
+    playerName: string;
+
+    /** Whether to show character names on nameplates. */
+    charname: string;
+  }
+
+  interface Video {
+    /** The video stream's volume. */
+    volume: number;
+
+    /** Whether to mute the video stream's audio. */
+    muted: boolean;
+
+    /** Whether to show this user's camera. */
+    show: boolean;
+  }
+
+  interface Volume {
+    /** The user's configured volume level. */
+    value: number;
+
+    /** The volume range field. */
+    field: foundry.data.fields.DataField.Any;
+
+    /** Whether to show a volume bar for this user. */
+    show: boolean;
   }
 }
 
