@@ -23,6 +23,10 @@ declare global {
 
     static override RENDER_FLAGS: Token.RENDER_FLAGS;
 
+    // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
+    // `RENDER_FLAGS` and so it has to be adjusted here.
+    renderFlags: RenderFlags<Token.RENDER_FLAGS>;
+
     // fake override; super has to type as if this could be a ControlIcon, but Tokens don't use one
     override controlIcon: null;
 
@@ -886,64 +890,64 @@ declare global {
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<this>;
+      redraw: RenderFlag<this, "redraw">;
 
       /** @defaultValue `{}` */
-      redrawEffects: RenderFlag<this>;
+      redrawEffects: RenderFlag<this, "redrawEffects">;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshTransform", "refreshMesh", "refreshNameplate", "refreshElevation", "refreshRingVisuals"], alias: true }` */
-      refresh: RenderFlag<this>;
+      refresh: RenderFlag<this, "refresh">;
 
       /** @defaultValue `{ propagate: ["refreshVisibility", "refreshTarget"] }` */
-      refreshState: RenderFlag<this>;
+      refreshState: RenderFlag<this, "refreshState">;
 
       /** @defaultValue `{}` */
-      refreshVisibility: RenderFlag<this>;
+      refreshVisibility: RenderFlag<this, "refreshVisibility">;
 
       /** @defaultValue `{ propagate: ["refreshPosition", "refreshRotation", "refreshSize"], alias: true }` */
-      refreshTransform: RenderFlag<this>;
+      refreshTransform: RenderFlag<this, "refreshTransform">;
 
       /** @defaultValue `{}` */
-      refreshPosition: RenderFlag<this>;
+      refreshPosition: RenderFlag<this, "refreshPosition">;
 
       /** @defaultValue `{}` */
-      refreshRotation: RenderFlag<this>;
+      refreshRotation: RenderFlag<this, "refreshRotation">;
 
       /** @defaultValue `{ propagate: ["refreshPosition", "refreshShape", "refreshBars", "refreshEffects", "refreshNameplate", "refreshTarget", "refreshTooltip"] }` */
-      refreshSize: RenderFlag<this>;
+      refreshSize: RenderFlag<this, "refreshSize">;
 
       /** @defaultValue `{ propagate: ["refreshTooltip"] }` */
-      refreshElevation: RenderFlag<this>;
+      refreshElevation: RenderFlag<this, "refreshElevation">;
 
       /** @defaultValue `{}` */
-      refreshMesh: RenderFlag<this>;
+      refreshMesh: RenderFlag<this, "refreshMesh">;
 
       /** @defaultValue `{}` */
-      refreshShader: RenderFlag<this>;
+      refreshShader: RenderFlag<this, "refreshShader">;
 
       /** @defaultValue `{ propagate: ["refreshVisibility", "refreshPosition", "refreshBorder", "refreshEffects"] }` */
-      refreshShape: RenderFlag<this>;
+      refreshShape: RenderFlag<this, "refreshShape">;
 
       /** @defaultValue `{}` */
-      refreshBorder: RenderFlag<this>;
+      refreshBorder: RenderFlag<this, "refreshBorder">;
 
       /** @defaultValue `{}` */
-      refreshBars: RenderFlag<this>;
+      refreshBars: RenderFlag<this, "refreshBars">;
 
       /** @defaultValue `{}` */
-      refreshEffects: RenderFlag<this>;
+      refreshEffects: RenderFlag<this, "refreshEffects">;
 
       /** @defaultValue `{}` */
-      refreshNameplate: RenderFlag<this>;
+      refreshNameplate: RenderFlag<this, "refreshNameplate">;
 
       /** @defaultValue `{}` */
-      refreshTarget: RenderFlag<this>;
+      refreshTarget: RenderFlag<this, "refreshTarget">;
 
       /** @defaultValue `{}` */
-      refreshTooltip: RenderFlag<this>;
+      refreshTooltip: RenderFlag<this, "refreshTooltip">;
 
       /** @defaultValue `{}` */
-      refreshRingVisuals: RenderFlag<this>;
+      refreshRingVisuals: RenderFlag<this, "refreshRingVisuals">;
     }
 
     interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}

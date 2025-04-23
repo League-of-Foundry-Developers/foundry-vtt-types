@@ -49,6 +49,10 @@ declare global {
 
     static override RENDER_FLAGS: MeasuredTemplate.RENDER_FLAGS;
 
+    // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
+    // `RENDER_FLAGS` and so it has to be adjusted here.
+    renderFlags: RenderFlags<MeasuredTemplate.RENDER_FLAGS>;
+
     /**
      * A convenient reference for whether the current User is the author of the MeasuredTemplate document.
      */
@@ -249,31 +253,31 @@ declare global {
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<this>;
+      redraw: RenderFlag<this, "redraw">;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshPosition", "refreshShape", "refreshElevation"], alias: true }` */
-      refresh: RenderFlag<this>;
+      refresh: RenderFlag<this, "refresh">;
 
       /** @defaultValue `{}` */
-      refreshState: RenderFlag<this>;
+      refreshState: RenderFlag<this, "refreshState">;
 
       /** @defaultValue `{ propagate: ["refreshGrid"] }` */
-      refreshPosition: RenderFlag<this>;
+      refreshPosition: RenderFlag<this, "refreshPosition">;
 
       /** @defaultValue `{ propagate: ["refreshTemplate", "refreshGrid", "refreshText"] }` */
-      refreshShape: RenderFlag<this>;
+      refreshShape: RenderFlag<this, "refreshShape">;
 
       /** @defaultValue `{}` */
-      refreshTemplate: RenderFlag<this>;
+      refreshTemplate: RenderFlag<this, "refreshTemplate">;
 
       /** @defaultValue `{}` */
-      refreshGrid: RenderFlag<this>;
+      refreshGrid: RenderFlag<this, "refreshGrid">;
 
       /** @defaultValue `{}` */
-      refreshText: RenderFlag<this>;
+      refreshText: RenderFlag<this, "refreshText">;
 
       /** @defaultValue `{}` */
-      refreshElevation: RenderFlag<this>;
+      refreshElevation: RenderFlag<this, "refreshElevation">;
     }
 
     interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}

@@ -3,7 +3,7 @@ import regions = foundry.canvas.regions;
 
 expectTypeOf(Region.embeddedName).toEqualTypeOf<"Region">();
 expectTypeOf(Region.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
-  Array<"redraw" | "refresh" | "refreshState" | "refreshBorder"> | undefined
+  Array<"refresh" | "refreshState" | "refreshBorder"> | undefined
 >();
 expectTypeOf(Region.CLIPPER_SCALING_FACTOR).toEqualTypeOf<100>();
 expectTypeOf(Region.MOVEMENT_SEGMENT_TYPES).toEqualTypeOf<Region.MovementSegmentTypes>();

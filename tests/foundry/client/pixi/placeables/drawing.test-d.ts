@@ -5,7 +5,6 @@ declare const drawingDoc: DrawingDocument.Stored;
 expectTypeOf(Drawing.embeddedName).toEqualTypeOf<"Drawing">();
 expectTypeOf(Drawing.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
-      | "redraw"
       | "refresh"
       | "refreshState"
       | "refreshTransform"

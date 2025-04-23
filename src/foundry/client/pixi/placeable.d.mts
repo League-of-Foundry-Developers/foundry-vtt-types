@@ -81,6 +81,10 @@ declare global {
      */
     static override RENDER_FLAGS: InterfaceToObject<PlaceableObject.RENDER_FLAGS>;
 
+    // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
+    // `RENDER_FLAGS` and so it has to be adjusted here.
+    renderFlags: RenderFlags<PlaceableObject.RENDER_FLAGS>;
+
     /**
      * The object that this object is a preview of if this object is a preview
      */
@@ -599,13 +603,13 @@ declare global {
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<this>;
+      redraw: RenderFlag<this, "redraw">;
 
       /** @defaultValue `{ propagate: ["refreshState"], alias: true }` */
-      refresh: RenderFlag<this>;
+      refresh: RenderFlag<this, "refresh">;
 
       /** @defaultValue `{}` */
-      refreshState: RenderFlag<this>;
+      refreshState: RenderFlag<this, "refreshState">;
     }
 
     type Layer<CanvasDocument extends AnyCanvasDocument> = GetKeyWithShape<

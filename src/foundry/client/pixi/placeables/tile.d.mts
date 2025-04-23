@@ -14,6 +14,10 @@ declare global {
 
     static override RENDER_FLAGS: Tile.RENDER_FLAGS;
 
+    // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
+    // `RENDER_FLAGS` and so it has to be adjusted here.
+    renderFlags: RenderFlags<Tile.RENDER_FLAGS>;
+
     // fake override; super has to type as if this could be a ControlIcon, but Tiles don't use one
     override controlIcon: null;
 
@@ -280,37 +284,37 @@ declare global {
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<this>;
+      redraw: RenderFlag<this, "redraw">;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshTransform", "refreshMesh", "refreshElevation", "refreshVideo"], alias: true }` */
-      refresh: RenderFlag<this>;
+      refresh: RenderFlag<this, "refresh">;
 
       /** @defaultValue `{ propagate: ["refreshPerception"] }` */
-      refreshState: RenderFlag<this>;
+      refreshState: RenderFlag<this, "refreshState">;
 
       /** @defaultValue `{ propagate: ["refreshPosition", "refreshRotation", "refreshSize"], alias: true }` */
-      refreshTransform: RenderFlag<this>;
+      refreshTransform: RenderFlag<this, "refreshTransform">;
 
       /** @defaultValue `{ propagate: ["refreshPerception"] }` */
-      refreshPosition: RenderFlag<this>;
+      refreshPosition: RenderFlag<this, "refreshPosition">;
 
       /** @defaultValue `{ propagate: ["refreshPerception", "refreshFrame"] }` */
-      refreshRotation: RenderFlag<this>;
+      refreshRotation: RenderFlag<this, "refreshRotation">;
 
       /** @defaultValue `{}` */
-      refreshMesh: RenderFlag<this>;
+      refreshMesh: RenderFlag<this, "refreshMesh">;
 
       /** @defaultValue `{}` */
-      refreshFrame: RenderFlag<this>;
+      refreshFrame: RenderFlag<this, "refreshFrame">;
 
       /** @defaultValue `{ propagate: ["refreshPerception"] }` */
-      refreshElevation: RenderFlag<this>;
+      refreshElevation: RenderFlag<this, "refreshElevation">;
 
       /** @defaultValue `{}` */
-      refreshPerception: RenderFlag<this>;
+      refreshPerception: RenderFlag<this, "refreshPerception">;
 
       /** @defaultValue `{}` */
-      refreshVideo: RenderFlag<this>;
+      refreshVideo: RenderFlag<this, "refreshVideo">;
 
       /**
        * @defaultValue
@@ -323,7 +327,7 @@ declare global {
        * @deprecated since v12, until v14
        * @remarks The `alias: true` should be a sibling of `deprecated`, not a child, this is a Foundry bug in 12.331
        */
-      refreshShape: RenderFlag<this>;
+      refreshShape: RenderFlag<this, "refreshShape">;
     }
 
     interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}

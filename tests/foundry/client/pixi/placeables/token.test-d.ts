@@ -3,7 +3,6 @@ import { expectTypeOf } from "vitest";
 expectTypeOf(Token.embeddedName).toEqualTypeOf<"Token">();
 expectTypeOf(Token.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
-      | "redraw"
       | "redrawEffects"
       | "refresh"
       | "refreshState"

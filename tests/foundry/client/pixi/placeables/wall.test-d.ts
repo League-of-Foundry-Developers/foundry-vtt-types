@@ -2,15 +2,7 @@ import { expectTypeOf } from "vitest";
 
 expectTypeOf(Wall.embeddedName).toEqualTypeOf<"Wall">();
 expectTypeOf(Wall.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
-  | Array<
-      | "redraw"
-      | "refresh"
-      | "refreshState"
-      | "refreshLine"
-      | "refreshEndpoints"
-      | "refreshDirection"
-      | "refreshHighlight"
-    >
+  | Array<"refresh" | "refreshState" | "refreshLine" | "refreshEndpoints" | "refreshDirection" | "refreshHighlight">
   | undefined
 >();
 

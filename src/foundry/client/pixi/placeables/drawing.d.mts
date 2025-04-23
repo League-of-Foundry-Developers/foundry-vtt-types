@@ -41,6 +41,10 @@ declare global {
 
     static override RENDER_FLAGS: Drawing.RENDER_FLAGS;
 
+    // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
+    // `RENDER_FLAGS` and so it has to be adjusted here.
+    renderFlags: RenderFlags<Drawing.RENDER_FLAGS>;
+
     /**
      * The rate at which points are sampled (in milliseconds) during a freehand drawing workflow
      * @defaultValue `75`
@@ -315,37 +319,37 @@ declare global {
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<this>;
+      redraw: RenderFlag<this, "redraw">;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshTransform", "refreshText", "refreshElevation"], alias: true }` */
-      refresh: RenderFlag<this>;
+      refresh: RenderFlag<this, "refresh">;
 
       /** @defaultValue `{}` */
-      refreshState: RenderFlag<this>;
+      refreshState: RenderFlag<this, "refreshState">;
 
       /** @defaultValue `{ propagate: ["refreshPosition", "refreshRotation", "refreshSize"], alias: true }` */
-      refreshTransform: RenderFlag<this>;
+      refreshTransform: RenderFlag<this, "refreshTransform">;
 
       /** @defaultValue `{}` */
-      refreshPosition: RenderFlag<this>;
+      refreshPosition: RenderFlag<this, "refreshPosition">;
 
       /** @defaultValue `{ propagate: ["refreshFrame"] }` */
-      refreshRotation: RenderFlag<this>;
+      refreshRotation: RenderFlag<this, "refreshRotation">;
 
       /** @defaultValue `{ propagate: ["refreshPosition", "refreshFrame", "refreshShape", "refreshText"] }` */
-      refreshSize: RenderFlag<this>;
+      refreshSize: RenderFlag<this, "refreshSize">;
 
       /** @defaultValue `{}` */
-      refreshShape: RenderFlag<this>;
+      refreshShape: RenderFlag<this, "refreshShape">;
 
       /** @defaultValue `{}` */
-      refreshText: RenderFlag<this>;
+      refreshText: RenderFlag<this, "refreshText">;
 
       /** @defaultValue `{}` */
-      refreshFrame: RenderFlag<this>;
+      refreshFrame: RenderFlag<this, "refreshFrame">;
 
       /** @defaultValue `{}` */
-      refreshElevation: RenderFlag<this>;
+      refreshElevation: RenderFlag<this, "refreshElevation">;
 
       /**
        * @defaultValue
@@ -358,7 +362,7 @@ declare global {
        * @deprecated since v12, until v14
        * @remarks The `alias: true` should be a sibling of `deprecated`, not a child, this is a Foundry bug in 12.331
        */
-      refreshMesh: RenderFlag<this>;
+      refreshMesh: RenderFlag<this, "refreshMesh">;
     }
 
     interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}

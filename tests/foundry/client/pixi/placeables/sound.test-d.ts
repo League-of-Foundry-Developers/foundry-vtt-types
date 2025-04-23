@@ -3,7 +3,7 @@ import Sound = foundry.audio.Sound;
 
 expectTypeOf(AmbientSound.embeddedName).toEqualTypeOf<"AmbientSound">();
 expectTypeOf(AmbientSound.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
-  Array<"redraw" | "refresh" | "refreshField" | "refreshPosition" | "refreshState" | "refreshElevation"> | undefined
+  Array<"refresh" | "refreshField" | "refreshPosition" | "refreshState" | "refreshElevation"> | undefined
 >();
 
 declare const doc: AmbientSoundDocument.Stored;

@@ -21,6 +21,10 @@ declare global {
 
     static override RENDER_FLAGS: Region.RENDER_FLAGS;
 
+    // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
+    // `RENDER_FLAGS` and so it has to be adjusted here.
+    renderFlags: RenderFlags<Region.RENDER_FLAGS>;
+
     /**
      * The scaling factor used for Clipper paths.
      * @defaultValue `100`
@@ -183,16 +187,16 @@ declare global {
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<this>;
+      redraw: RenderFlag<this, "redraw">;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshBorder"], alias: true }` */
-      refresh: RenderFlag<this>;
+      refresh: RenderFlag<this, "refresh">;
 
       /** @defaultValue `{}` */
-      refreshState: RenderFlag<this>;
+      refreshState: RenderFlag<this, "refreshState">;
 
       /** @defaultValue `{}` */
-      refreshBorder: RenderFlag<this>;
+      refreshBorder: RenderFlag<this, "refreshBorder">;
     }
 
     interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}

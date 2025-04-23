@@ -13,6 +13,10 @@ declare global {
 
     static override RENDER_FLAGS: Note.RENDER_FLAGS;
 
+    // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
+    // `RENDER_FLAGS` and so it has to be adjusted here.
+    renderFlags: RenderFlags<Note.RENDER_FLAGS>;
+
     // `controlIcon` is actually defined in the class body here (unlike in super or any of its siblings),
     // but not initialized to a value. Since it's still set `null` at construction, and the Foundry
     // comment here provides no additional info, it's been omitted as there's no change from PlaceableObject
@@ -161,31 +165,31 @@ declare global {
 
     interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<this>;
+      redraw: RenderFlag<this, "redraw">;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshPosition", "refreshTooltip", "refreshElevation"], alias: true }` */
-      refresh: RenderFlag<this>;
+      refresh: RenderFlag<this, "refresh">;
 
       /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
-      refreshState: RenderFlag<this>;
+      refreshState: RenderFlag<this, "refreshState">;
 
       /** @defaultValue `{}` */
-      refreshVisibility: RenderFlag<this>;
+      refreshVisibility: RenderFlag<this, "refreshVisibility">;
 
       /** @defaultValue `{}` */
-      refreshPosition: RenderFlag<this>;
+      refreshPosition: RenderFlag<this, "refreshPosition">;
 
       /** @defaultValue `{}` */
-      refreshTooltip: RenderFlag<this>;
+      refreshTooltip: RenderFlag<this, "refreshTooltip">;
 
       /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
-      refreshElevation: RenderFlag<this>;
+      refreshElevation: RenderFlag<this, "refreshElevation">;
 
       /**
        * @defaultValue `{ propagate: ["refreshTooltip"], deprecated: { since: 12, until: 14 }, alias: true }`
        * @deprecated since v12, until v14
        */
-      refreshText: RenderFlag<this>;
+      refreshText: RenderFlag<this, "refreshText">;
     }
 
     interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}

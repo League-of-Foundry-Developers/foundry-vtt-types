@@ -16,6 +16,10 @@ declare global {
 
     static override RENDER_FLAGS: Wall.RENDER_FLAGS;
 
+    // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
+    // `RENDER_FLAGS` and so it has to be adjusted here.
+    renderFlags: RenderFlags<Wall.RENDER_FLAGS>;
+
     // fake override; super has to type as if this could be a ControlIcon, but Walls don't use one
     override controlIcon: null;
 
@@ -320,25 +324,25 @@ declare global {
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<this>;
+      redraw: RenderFlag<this, "redraw">;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshLine"], alias: true }` */
-      refresh: RenderFlag<this>;
+      refresh: RenderFlag<this, "refresh">;
 
       /** @defaultValue `{ propagate: ["refreshEndpoints", "refreshHighlight"] }` */
-      refreshState: RenderFlag<this>;
+      refreshState: RenderFlag<this, "refreshState">;
 
       /** @defaultValue `{ propagate: ["refreshEndpoints", "refreshHighlight", "refreshDirection"] }` */
-      refreshLine: RenderFlag<this>;
+      refreshLine: RenderFlag<this, "refreshLine">;
 
       /** @defaultValue `{}` */
-      refreshEndpoints: RenderFlag<this>;
+      refreshEndpoints: RenderFlag<this, "refreshEndpoints">;
 
       /** @defaultValue `{}` */
-      refreshDirection: RenderFlag<this>;
+      refreshDirection: RenderFlag<this, "refreshDirection">;
 
       /** @defaultValue `{}` */
-      refreshHighlight: RenderFlag<this>;
+      refreshHighlight: RenderFlag<this, "refreshHighlight">;
     }
 
     interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}

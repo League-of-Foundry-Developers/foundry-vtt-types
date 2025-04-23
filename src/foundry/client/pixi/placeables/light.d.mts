@@ -37,6 +37,10 @@ declare global {
 
     static override RENDER_FLAGS: AmbientLight.RENDER_FLAGS;
 
+    // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
+    // `RENDER_FLAGS` and so it has to be adjusted here.
+    renderFlags: RenderFlags<AmbientLight.RENDER_FLAGS>;
+
     override get bounds(): PIXI.Rectangle;
 
     override get sourceId(): string;
@@ -216,22 +220,22 @@ declare global {
 
     interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<this>;
+      redraw: RenderFlag<this, "redraw">;
 
       /** @defaultValue `{ propagate: ["refreshState", "refreshField", "refreshElevation"], alias: true }` */
-      refresh: RenderFlag<this>;
+      refresh: RenderFlag<this, "refresh">;
 
       /** @defaultValue `{ propagate: ["refreshPosition"] }` */
-      refreshField: RenderFlag<this>;
+      refreshField: RenderFlag<this, "refreshField">;
 
       /** @defaultValue `{}` */
-      refreshPosition: RenderFlag<this>;
+      refreshPosition: RenderFlag<this, "refreshPosition">;
 
       /** @defaultValue `{}` */
-      refreshState: RenderFlag<this>;
+      refreshState: RenderFlag<this, "refreshState">;
 
       /** @defaultValue `{}` */
-      refreshElevation: RenderFlag<this>;
+      refreshElevation: RenderFlag<this, "refreshElevation">;
     }
 
     interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}

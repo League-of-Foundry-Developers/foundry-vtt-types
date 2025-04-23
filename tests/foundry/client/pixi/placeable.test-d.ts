@@ -5,7 +5,7 @@ import type { HandleEmptyObject } from "../../../../src/utils/index.d.mts";
 expectTypeOf(PlaceableObject.embeddedName).toBeString();
 
 expectTypeOf(PlaceableObject.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
-  Array<"redraw" | "refresh" | "refreshState"> | undefined
+  Array<"refresh" | "refreshState"> | undefined
 >();
 
 class FakeLight extends PlaceableObject<AmbientLightDocument.Implementation> {

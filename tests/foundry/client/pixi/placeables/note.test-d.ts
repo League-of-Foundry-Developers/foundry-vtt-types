@@ -3,7 +3,6 @@ import { expectTypeOf } from "vitest";
 expectTypeOf(Note.embeddedName).toEqualTypeOf<"Note">();
 expectTypeOf(Note.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
-      | "redraw"
       | "refresh"
       | "refreshState"
       | "refreshVisibility"

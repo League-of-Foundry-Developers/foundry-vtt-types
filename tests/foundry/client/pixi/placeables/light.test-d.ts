@@ -5,7 +5,7 @@ import type PointLightSource from "../../../../../src/foundry/client-esm/canvas/
 expectTypeOf(AmbientLight.embeddedName).toEqualTypeOf<"AmbientLight">();
 expectTypeOf(AmbientLight.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
   // undefined only from the optional chain, not underlying type
-  Array<"redraw" | "refresh" | "refreshState" | "refreshField" | "refreshPosition" | "refreshElevation"> | undefined
+  Array<"refresh" | "refreshState" | "refreshField" | "refreshPosition" | "refreshElevation"> | undefined
 >();
 
 declare const doc: AmbientLightDocument.Stored;

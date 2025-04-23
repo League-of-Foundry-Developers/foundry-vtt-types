@@ -5,7 +5,6 @@ declare const doc: TileDocument.Stored;
 expectTypeOf(Tile.embeddedName).toEqualTypeOf<"Tile">();
 expectTypeOf(Tile.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
-      | "redraw"
       | "refresh"
       | "refreshState"
       | "refreshTransform"
