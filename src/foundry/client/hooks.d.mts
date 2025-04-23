@@ -785,7 +785,7 @@ declare global {
        */
       getSceneNavigationContext: (
         app: foundry.applications.ui.SceneNavigation,
-        contextOptions: foundry.applications.ui.ContextMenu.Entry<HTMLElement>[],
+        contextOptions: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[],
       ) => boolean | void;
 
       /**
@@ -797,7 +797,7 @@ declare global {
        */
       getUserContextOptions: (
         app: foundry.applications.ui.Players,
-        contextOptions: foundry.applications.ui.ContextMenu.Entry<HTMLElement>[],
+        contextOptions: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[],
       ) => boolean | void;
     }
 
@@ -1152,7 +1152,7 @@ declare global {
      */
     type GetEntryContext = (
       app: Application.Any | foundry.applications.api.ApplicationV2.Any,
-      entryOptions: foundry.applications.ui.ContextMenu.Entry<HTMLElement | JQuery>[],
+      entryOptions: foundry.applications.ux.ContextMenu.Entry<HTMLElement | JQuery>[],
     ) => boolean | void;
 
     /**
@@ -1166,7 +1166,7 @@ declare global {
      */
     type GetSoundContextPlaylistDirectory = (
       app: foundry.applications.sidebar.tabs.PlaylistDirectory,
-      entryOptions: foundry.applications.ui.ContextMenu.Entry<HTMLElement>[],
+      entryOptions: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[],
     ) => boolean | void;
 
     /**
@@ -1182,7 +1182,7 @@ declare global {
      */
     type GetSidebarDirectoryFolderContext = (
       app: foundry.applications.sidebar.DocumentDirectory,
-      entryOptions: foundry.applications.ui.ContextMenu.Entry<HTMLElement>[],
+      entryOptions: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[],
     ) => boolean | void;
 
     type DynamicCallbacks =

@@ -103,7 +103,7 @@ declare global {
      * @returns The Macro entry context options
      * @internal
      */
-    protected _getEntryContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
+    protected _getEntryContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
 
     /**
      * Handle left-click events to

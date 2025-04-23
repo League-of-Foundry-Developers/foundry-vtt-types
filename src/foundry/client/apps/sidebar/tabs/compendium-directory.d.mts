@@ -84,7 +84,7 @@ declare global {
      * @returns The sidebar entry context options
      * @internal
      */
-    protected override _getEntryContextOptions(): foundry.applications.ui.ContextMenu.Entry<JQuery>[];
+    protected override _getEntryContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
 
     protected override _onClickEntryName(event: PointerEvent): Promise<void>;
 
