@@ -7,3 +7,5 @@
 // Well this is the file in which Foundry defines these types. We don't house
 // them here because it has poor discoverability. The names Foundry has chosen
 // also overlaps with other existing names, such as SettingConfig vs. ClientSetting.SettingConfig
+
+export {};
