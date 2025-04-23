@@ -15,10 +15,10 @@
 // //   const logger: typeof console;
 // // }
 
-// /**
-//  * Document definitions used throughout the Foundry Virtual Tabletop framework.
-//  */
-// export * as documents from "./documents/_module.mjs";
+/**
+ * Document definitions used throughout the Foundry Virtual Tabletop framework.
+ */
+export * as documents from "./documents/_module.mjs";
 /**
  * A module which defines data architecture components.
  */
