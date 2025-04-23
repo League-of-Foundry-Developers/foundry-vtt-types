@@ -54,8 +54,11 @@ declare global {
   }
 }
 
-expectTypeOf(JEPCoreTypes).toEqualTypeOf<"base" | "image" | "pdf" | "text" | "video">();
-expectTypeOf(JEPSystemTypes).toEqualTypeOf<"headquarters">();
+expectTypeOf(JEPCoreTypes).toEqualTypeOf<
+  "base",
+  "image" | "pdf" | "text" | "video" | foundry.abstract.Document.ModuleSubtype
+>();
+expectTypeOf(JEPSystemTypes).toEqualTypeOf<"headquarters" | foundry.abstract.Document.ModuleSubtype>();
 
 declare const myJournalEntryPage: JournalEntryPage.Implementation;
 if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {

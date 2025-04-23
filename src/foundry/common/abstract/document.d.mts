@@ -942,7 +942,7 @@ declare namespace Document {
         | ConfiguredSubTypesOf<Name>
         | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubtype : never);
 
-  type ModuleSubtype = `${string}.${string}`;
+  type ModuleSubtype = `${string}.${string}` & {};
 
   type OfType<Name extends WithSubTypes, SubType extends SubTypesOf<Name>> =
     | (Name extends "ActiveEffect" ? ActiveEffect.OfType<SubType & ActiveEffect.SubType> : never)
@@ -981,7 +981,7 @@ declare namespace Document {
                 : never
               : never
           >
-        | (SubType extends `${string}.${string}` ? UnknownSystem : never);
+        | (SubType extends ModuleSubtype ? UnknownSystem : never);
 
   interface SystemData extends _SystemData {}
 
@@ -1014,7 +1014,7 @@ declare namespace Document {
    * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
    */
   interface UnknownSourceData extends AnyObject {
-    type: `${string}.${string}`;
+    type: ModuleSubtype;
   }
 
   /**
@@ -1154,7 +1154,7 @@ declare namespace Document {
 
     type SystemOfType<SystemMap extends Record<SubType, object>, SubType extends string> =
       | DiscriminatedUnion<SystemMap[SubType]>
-      | (SubType extends `${string}.${string}` ? UnknownSystem : never);
+      | (SubType extends ModuleSubtype ? UnknownSystem : never);
   }
 
   /** Any Document, that is a child of the given parent Document. */

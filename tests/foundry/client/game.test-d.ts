@@ -89,9 +89,9 @@ if (game.ready) {
 
 // Game model
 type ItemType = Game.Model.TypeNames<"Item">;
-expectTypeOf<ItemType>().toEqualTypeOf<"weapon" | "armor" | "base" | `${string}.${string}`>();
+expectTypeOf<ItemType>().toEqualTypeOf<"weapon" | "armor" | "base" | Document.ModuleSubtype>();
 expectTypeOf<foundry.abstract.Document.ImplementationClassFor<"Item">>().toEqualTypeOf<Item.ImplementationClass>();
-expectTypeOf(game.documentTypes!.Item).toEqualTypeOf<Array<"weapon" | "armor" | "base" | `${string}.${string}`>>();
+expectTypeOf(game.documentTypes!.Item).toEqualTypeOf<Array<"weapon" | "armor" | "base" | Document.ModuleSubtype>>();
 
 if (game instanceof Game) {
   const tokenModel = game.model.Token;

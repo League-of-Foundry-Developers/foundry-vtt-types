@@ -11,7 +11,7 @@ declare const baseItem: foundry.documents.BaseItem;
 
 expectTypeOf(baseItem.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect.Implementation, Item.Implementation>>();
 expectTypeOf(baseItem._source.effects[0]!.duration.seconds).toEqualTypeOf<number | null | undefined>();
-expectTypeOf(baseItem.type).toEqualTypeOf<"base" | "armor" | "weapon" | `${string}.${string}`>();
+expectTypeOf(baseItem.type).toEqualTypeOf<"base" | "armor" | "weapon" | Document.ModuleSubtype>();
 
 type ItemFlags = {
   "my-system": {

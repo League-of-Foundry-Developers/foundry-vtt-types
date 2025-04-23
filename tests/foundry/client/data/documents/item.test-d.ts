@@ -47,7 +47,7 @@ expectTypeOf(item.actor).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(item.img).toEqualTypeOf<string | null | undefined>();
 expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
 expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
-expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor" | "base" | `${string}.${string}`>();
+expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor" | "base" | Document.ModuleSubtype>();
 expectTypeOf(item.getRollData()).toEqualTypeOf<AnyObject>();
 
 // Configured Item Usage
