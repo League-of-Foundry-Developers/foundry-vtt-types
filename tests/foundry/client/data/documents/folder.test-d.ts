@@ -15,6 +15,6 @@ expectTypeOf(folder.displayed).toEqualTypeOf<boolean>();
 expectTypeOf(folder.expanded).toEqualTypeOf<boolean>();
 expectTypeOf(folder.ancestors).toEqualTypeOf<Folder.Implementation[]>();
 
-expectTypeOf(await Folder.createDialog()).toEqualTypeOf<Folder.Implementation | undefined | null>();
+expectTypeOf(await Folder.createDialog()).toEqualTypeOf<Folder.Stored | undefined | null>();
 expectTypeOf(folder.getSubfolders(true)).toEqualTypeOf<Folder.Implementation[]>();
 expectTypeOf(folder.getParentFolders()).toEqualTypeOf<Folder.Implementation[]>();

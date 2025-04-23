@@ -5,7 +5,7 @@ import { expectTypeOf } from "vitest";
 const actorSheet = new foundry.applications.sheets.ActorSheetV2({
   document: new Actor.implementation({ name: "Test Actor" }),
 });
-expectTypeOf(actorSheet.actor.type).toEqualTypeOf<foundry.documents.BaseActor.TypeNames>();
+expectTypeOf(actorSheet.actor.type).toEqualTypeOf<Actor.SubType>();
 
 expectTypeOf(actorSheet.actor).toEqualTypeOf<Actor.Implementation>();
 expectTypeOf(actorSheet.token).toEqualTypeOf<Actor.Implementation["token"]>();

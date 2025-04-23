@@ -68,7 +68,7 @@ expectTypeOf(scene.createEmbeddedDocuments("Note", [])).toEqualTypeOf<Promise<No
 // verify that document lifecycle methods work with source data is possible
 
 if (item) {
-  expectTypeOf(Item.createDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Stored[] | undefined>>();
+  expectTypeOf(Item.createDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Stored[]>>();
   expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<Item.Stored | undefined>>();
   expectTypeOf(Item.updateDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Implementation[]>>();
   expectTypeOf(item.update(item.toObject())).toEqualTypeOf<Promise<Item.Stored | undefined>>();
