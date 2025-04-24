@@ -1,4 +1,4 @@
-import type ProseMirrorPlugin from "../../../common/prosemirror/plugin.d.mts";
+import type ProseMirrorPlugin from "@common/prosemirror/plugin.d.mts";
 import type { FormInputConfig } from "../forms/fields.d.mts";
 import type AbstractFormInputElement from "./form-element.d.mts";
 

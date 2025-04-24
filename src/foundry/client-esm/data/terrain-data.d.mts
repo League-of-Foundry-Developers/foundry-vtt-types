@@ -1,4 +1,4 @@
-import type DataModel from "../../common/abstract/data.d.mts";
+import type DataModel from "@common/abstract/data.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 

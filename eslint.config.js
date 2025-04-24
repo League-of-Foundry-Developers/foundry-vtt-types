@@ -98,6 +98,8 @@ const rules = [
       "@typescript-eslint/restrict-plus-operands": "off",
       "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
 
+      // Necessary for `@client/*` and `@common/*` import paths to not error
+      "import-x/no-unresolved": "off",
       "import-x/consistent-type-specifier-style": ["warn", "prefer-top-level"],
       "import-x/extensions": [
         "error",
