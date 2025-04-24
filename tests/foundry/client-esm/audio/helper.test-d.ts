@@ -19,14 +19,14 @@ const playData = {
   channel: "music",
   loop: true,
   volume: 0.5,
-} satisfies AudioHelper.PlayData;
+} as const;
 const playDataNullish = {
   src: path,
   // autoplay is `false` or omitted
   // channel cannot be nullish because mergeObject
   loop: null,
   volume: null,
-} satisfies AudioHelper.PlayData;
+} as const;
 
 // @ts-expect-error Must pass a `PlayData` with a `src` prop
 expectTypeOf(AudioHelper.play()).toEqualTypeOf<Promise<Sound>>();
