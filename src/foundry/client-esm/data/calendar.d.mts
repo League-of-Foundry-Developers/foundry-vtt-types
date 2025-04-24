@@ -1,5 +1,6 @@
 import type DataModel from "@common/abstract/data.d.mts";
 import type * as fields from "@common/data/fields.mjs";
+import type { AnyObject, EmptyObject, NullishProps } from "../../../utils/index.d.mts";
 
 declare namespace CalendarData {
   interface Schema extends fields.DataSchema {
@@ -201,12 +202,125 @@ declare namespace CalendarData {
     // TODO: Replace with CreateData and convert to interface
     type CreateData = fields.SchemaField.AssignmentType<Schema>;
   }
+
+  /**
+   * A decomposition of the integer world time in seconds into component parts.
+   * Each component expresses the number of that temporal unit since the time=0 epoch.
+   */
+  interface TimeComponents {
+    /** The number of years completed since zero */
+    year: number;
+
+    /** The number of days completed within the year */
+    day: number;
+
+    /** The number of hours completed within the year */
+    hour: number;
+
+    /** The number of minutes completed within the hour */
+    minute: number;
+
+    /** The number of seconds completed within the minute */
+    second: number;
+
+    /** The month, an index of the months.values array */
+    month: number;
+
+    /** The day of the month, starting from zero */
+    dayOfMonth: number;
+
+    /** The weekday, an index of the days.values array */
+    dayOfWeek: number;
+
+    /** The season, an index of the seasons.values array */
+    season: number;
+
+    /** Is it a leap year? */
+    leapYear: boolean;
+  }
+
+  // TODO: Reference CONFIG
+  type Formatters = "formatTimestamp" | "formatAgo";
+
+  /**
+   * @returns The returned string format
+   */
+  type TimeFormatter<Options> = (
+    /** The configured calendar */
+    calendar: CalendarData,
+    /** Time components to format */
+    components: TimeComponents,
+    /** Additional formatting options */
+    options: Options,
+  ) => string;
+
+  interface FormatAgoOptions {
+    short?: boolean | undefined;
+
+    maxTerms?: number | undefined | null;
+  }
 }
 
 /**
  * Game Time Calendar configuration data model.
  */
-declare class CalendarData extends DataModel<CalendarData.Schema> {}
+declare class CalendarData extends DataModel<CalendarData.Schema> {
+  /**
+   * Expand a world time integer into an object containing the relevant time components.
+   * @param components - An amount of time expressed as components
+   * @returns The cumulative time in seconds
+   */
+  componentsToTime(components: NullishProps<CalendarData.TimeComponents>): number;
+
+  /**
+   * Compute the difference between some new time and some other time.
+   * @param endTime   - A time to difference relative to the start time.
+   * @param startTime - The starting time. If not provided the current world time is used.
+   * @returns The time difference expressed as components
+   */
+  difference(
+    endTime: NullishProps<CalendarData.TimeComponents>,
+    startTime?: NullishProps<CalendarData.TimeComponents>,
+  ): CalendarData.TimeComponents;
+
+  /**
+   * Format a time using one of several supported display formats.
+   * @param time      - The time components to format, by default the current world time.
+   * @param formatter - The formatter function applied to the time. If a string is provided, it must be a function configured in CONFIG.time.formatters.
+   * @param options   - Options passed to the formatter function
+   * @returns The formatted date and time string
+   */
+  format<Options extends EmptyObject>(
+    time: number | NullishProps<CalendarData.TimeComponents>,
+    formatter?: CalendarData.Formatters | CalendarData.TimeFormatter<Options>,
+    options?: Options,
+  ): string;
+
+  /**
+   * Test whether a year is a leap year.
+   * @param year - The year to test
+   * @returns Is it a leap year?
+   */
+  isLeapYear(year: number): boolean;
+
+  /**
+   * Expand a world time integer into an object containing the relevant time components.
+   * @param time - A time in seconds
+   *               (default: `0`)
+   * @returns The time expressed as components
+   */
+  timeToComponents(time?: number): CalendarData.TimeComponents;
+
+  /**
+   * Format time components as a YYYY-MM-DD HH:MM:SS timestamp.
+   */
+  static formatTimeStamp: CalendarData.TimeFormatter<AnyObject>;
+
+  /**
+   * Format time components as "\{years\}, \{days\}, \{hours\}, \{minutes\}, \{seconds\} ago".
+   */
+  static formatAgo: CalendarData.TimeFormatter<CalendarData.FormatAgoOptions>;
+}
 
 export const SIMPLIFIED_GREGORIAN_CALENDAR_CONFIG: CalendarData.CreateData;
 
