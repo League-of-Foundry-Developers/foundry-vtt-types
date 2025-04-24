@@ -33,13 +33,15 @@ declare class ConvolverEffect extends ConvolverNode {
   // options: not null (destructured)
   update(options?: ConvolverEffect.UpdateOptions): void;
 
+  /** @privateRemarks This override only does side effects then forwards args to super, no type changes */
   override disconnect(output?: number): void;
   override disconnect(destinationNode?: AudioNode, output?: number, input?: number): void;
   override disconnect(destinationParam?: AudioParam, output?: number): void;
 
-  /** @remarks Foundry only supports the "pass a node, get returned a node" override */
-  override connect(destinationParam: AudioParam, output?: number): AudioParam;
+  /** @remarks Foundry only supports the "pass a node, get that node returned" signature */
   override connect(destinationNode: AudioNode, output?: number, input?: number): AudioNode;
+  /** @deprecated Foundry does not support this signature, only the other overload */
+  override connect(destinationParam: AudioParam, output?: number): AudioParam;
 
   /**
    * Additional side effects performed when some other AudioNode connects to this one.

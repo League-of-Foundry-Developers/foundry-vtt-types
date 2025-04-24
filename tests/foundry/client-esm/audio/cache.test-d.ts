@@ -1,12 +1,14 @@
 import { expectTypeOf } from "vitest";
+import AudioBufferCache = foundry.audio.AudioBufferCache;
 
-const cache = new foundry.audio.AudioBufferCache();
+let cache = new AudioBufferCache();
+cache = new AudioBufferCache(655360); // 640k of audio buffer ought to be enough for anyone
 
-expectTypeOf(cache.usage).toEqualTypeOf<foundry.audio.AudioBufferCache.Usage>();
-expectTypeOf(cache.getBuffer("")).toEqualTypeOf<AudioBuffer>();
+expectTypeOf(cache.usage).toEqualTypeOf<AudioBufferCache.Usage>();
+expectTypeOf(cache.getBuffer("foo")).toEqualTypeOf<AudioBuffer | undefined>();
 
 declare const buffer: AudioBuffer;
-expectTypeOf(cache.setBuffer("", buffer)).toEqualTypeOf<foundry.audio.AudioBufferCache>();
-expectTypeOf(cache.delete("")).toEqualTypeOf<boolean>();
-expectTypeOf(cache.lock("")).toEqualTypeOf<void>();
+expectTypeOf(cache.setBuffer("bar", buffer)).toEqualTypeOf<AudioBufferCache>();
+expectTypeOf(cache.delete("baz")).toEqualTypeOf<boolean>();
+expectTypeOf(cache.lock("foobar")).toEqualTypeOf<void>();
 expectTypeOf(cache.toString()).toEqualTypeOf<string>();

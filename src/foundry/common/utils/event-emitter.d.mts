@@ -1,4 +1,4 @@
-import type { AnyConstructor, FixedInstanceType, InexactPartial, Mixin } from "fvtt-types/utils";
+import type { AnyConstructor, FixedInstanceType, Mixin, NullishProps } from "fvtt-types/utils";
 
 /**
  * A mixin class which implements the behavior of EventTarget.
@@ -53,7 +53,7 @@ declare namespace EventEmitterMixin {
   type BaseClass = AnyConstructor;
 
   /** @internal */
-  type _AddListenerOptions = InexactPartial<{
+  type _AddListenerOptions = NullishProps<{
     /**
      * Should the event only be responded to once and then removed
      * @defaultValue `false`

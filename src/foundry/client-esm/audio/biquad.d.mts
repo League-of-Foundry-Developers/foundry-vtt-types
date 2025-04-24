@@ -51,6 +51,7 @@ declare namespace BiquadFilterEffect {
      * @remarks Can't be `null` as it only has a parameter default
      */
     intensity: number;
+
     /**
      * The filter type to apply
      * @defaultValue `"lowpass"`

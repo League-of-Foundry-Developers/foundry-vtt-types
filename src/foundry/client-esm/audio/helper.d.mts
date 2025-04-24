@@ -1,6 +1,6 @@
 import type Sound from "./sound.d.mts";
 import type AudioBufferCache from "./cache.d.mts";
-import type { Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Identity, InexactPartial, IntentionalPartial, NullishProps } from "fvtt-types/utils";
 
 /**
  * A helper class to provide common functionality for working with the Web Audio API.
@@ -59,19 +59,22 @@ declare class AudioHelper {
 
   /**
    * A singleton audio context used for playback of music
-   * @remarks Not initialized to a value, set in {@link AudioHelper._onFirstGesture | `AudioHelper#_onFirstGesture`}
+   * @remarks Not initialized to a value, set in {@link AudioHelper._onFirstGesture | `AudioHelper#_onFirstGesture`};
+   * In practice, `undefined` until the first audio is played after page load
    */
   music: AudioContext | undefined;
 
   /**
    * A singleton audio context used for playback of environmental audio.
-   * @remarks Not initialized to a value, set in {@link AudioHelper._onFirstGesture | `AudioHelper#_onFirstGesture`}
+   * @remarks Not initialized to a value, set in {@link AudioHelper._onFirstGesture | `AudioHelper#_onFirstGesture`};
+   * In practice, `undefined` until the first audio is played after page load
    */
   environment: AudioContext | undefined;
 
   /**
    * A singleton audio context used for playback of interface sounds and effects.
-   * @remarks Not initialized to a value, set in {@link AudioHelper._onFirstGesture | `AudioHelper#_onFirstGesture`}
+   * @remarks Not initialized to a value, set in {@link AudioHelper._onFirstGesture | `AudioHelper#_onFirstGesture`};
+   * In practice, `undefined` until the first audio is played after page load
    */
   interface: AudioContext | undefined;
 
@@ -171,7 +174,7 @@ declare class AudioHelper {
    * This is using an exponential approximation of the logarithmic nature of audio level perception
    * @param value - Value between [0, 1] of the range input
    * @param order - The exponent of the curve (default: `1.5`)
-   * @remarks String `value`s will be `parseFloat`ed
+   * @remarks String `value`s will be `parseFloat`ed, so an empty string produces `NaN`
    */
   static inputToVolume(value: number | string, order?: number): number;
 
@@ -307,41 +310,58 @@ declare namespace AudioHelper {
    */
   interface PlayOptions extends Pick<SoundCreationOptions, "context">, Sound.PlaybackOptions {}
 
-  interface PlayData {
+  /** @internal */
+  type _PlayData = IntentionalPartial<{
+    /**
+     * An audio channel in CONST.AUDIO_CHANNELS where the sound should play
+     * @defaultValue `"interface"`
+     * @remarks Can't be nullish as the only default is provided by `mergeObject`
+     */
+    channel: keyof typeof CONST.AUDIO_CHANNELS;
+
+    /**
+     * Begin playback of the audio effect immediately once it is loaded.
+     * @remarks Can't be nullish as it has no default and is checked for `=== false`
+     * @privateRemarks This formerly (some time before v11) had a deprecation warning associated with it:
+     *
+     * "You are using the autoplay option of AudioHelper.play which is no longer supported in 0.8.0"
+     *
+     * In v11+, it's simply checked for an early return with `=== false`, with a comment that doesn't indicate a deprecation period:
+     *
+     * "// Backwards compatibility, if autoplay was passed as false take no further action"
+     */
+    autoplay: false;
+  }> &
+    NullishProps<{
+      /**
+       * The volume level at which to play the audio, between 0 and 1.
+       * @defaultValue `1.0`
+       * @privateRemarks Despite the initial default being via `mergeObject`, there's a second `??` default so it's allowed to be nullish
+       */
+      volume: number;
+
+      /**
+       * Loop the audio effect and continue playing it until it is manually stopped.
+       * @defaultValue `false`
+       * @privateRemarks Despite the default being via `mergeObject`, {@link Sound.PlaybackOptions.loop | `Sound.PlaybackOptions["loop"]`} can be nullish, therefor so can this
+       */
+      loop: boolean;
+    }>;
+
+  interface PlayData extends _PlayData {
     /**
      * The audio source file path, either a public URL or a local path relative to the public directory
      */
     src: string;
-
-    /** An audio channel in CONST.AUDIO_CHANNELS where the sound should play */
-    channel?: keyof typeof CONST.AUDIO_CHANNELS;
-
-    /**
-     * The volume level at which to play the audio, between 0 and 1.
-     * @defaultValue `1.0`
-     */
-    volume?: number;
-
-    /**
-     * Begin playback of the audio effect immediately once it is loaded.
-     * @deprecated You are using the autoplay option of AudioHelper.play which is no longer supported in 0.8.0
-     */
-    autoplay?: boolean;
-
-    /**
-     * Loop the audio effect and continue playing it until it is manually stopped.
-     * @defaultValue `false`
-     */
-    loop?: boolean;
   }
 
-  /** @internal */
-  type _SocketOptions = NullishProps<{
-    /** An array of user IDs to push audio playback to. All users by default. */
-    recipients: string[];
-  }>;
-
-  interface SocketOptions extends _SocketOptions {}
+  interface SocketOptions {
+    /**
+     * An array of user IDs to push audio playback to. All users by default.
+     * @remarks Nullish values cause errors, but omitting this key (passing an empty object) is the same as passing `true` (all players)
+     */
+    recipients?: string[];
+  }
 
   type LevelReportCallback = (maxDecibel: number, fftArray: Float32Array) => void;
 }

@@ -47,8 +47,10 @@ declare class Sound extends EventEmitterMixin(Object) {
 
   /**
    * The audio context within which this Sound is played.
+   * @remarks Can return `undefined` if no context was passed at construction *and* `game.audio.music` hasn't been initialized yet,
+   * which doesn't happen until the first sound is played
    */
-  get context(): AudioContext;
+  get context(): AudioContext | undefined;
 
   /**
    * The AudioSourceNode used to control sound playback.
@@ -157,12 +159,14 @@ declare class Sound extends EventEmitterMixin(Object) {
 
   /**
    * An internal reference to some object which is managing this Sound instance.
+   * @defaultValue `null`
    * @remarks Foundry marked `@internal`
    *
-   * Foundry types this as `Object|null` but the only place in Core this gets set is in `AmbientSound`, to `this`
+   * Only ever set *or* read externally by core, so not protected
    *
+   * @privateRemarks Foundry types this as `Object|null` but the only place in Core this gets set is in `AmbientSound`, to `this`
    */
-  protected _manager: AmbientSound.Object | null;
+  _manager: AmbientSound.Object | null;
 
   /**
    * Load the audio source and prepare it for playback, either using an AudioBuffer or a streamed HTMLAudioElement.
@@ -297,7 +301,7 @@ declare class Sound extends EventEmitterMixin(Object) {
    * @deprecated since v12, will be removed in v14
    * @remarks "`AudioContainer#loadState` is deprecated in favor of {@link Sound._state | `Sound#_state`}"
    */
-  get loadState(): number;
+  get loadState(): Sound.STATES;
 
   /**
    * @deprecated since v12, will be removed in v14
@@ -315,7 +319,7 @@ declare class Sound extends EventEmitterMixin(Object) {
    * @deprecated since v12, will be removed in v14
    * @remarks "`Sound#on` is deprecated in favor of {@link Sound.addEventListener | `Sound#addEventListener`}"
    */
-  on(eventName: string, fn: EventEmitterMixin.EventListener, options?: EventEmitterMixin.AddListenerOptions): number;
+  on(eventName: string, fn: EventEmitterMixin.EventListener, options?: EventEmitterMixin.AddListenerOptions): void;
 
   /**
    * @deprecated since v12, will be removed in v14
@@ -337,21 +341,19 @@ declare namespace Sound {
   interface AnyConstructor extends Identity<typeof AnySound> {}
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  type _ConstructorOptions = NullishProps<{
     /**
      * Force use of an AudioBufferSourceNode even if the audio duration is long
      * @defaultValue `false`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     forceBuffer: boolean;
-  }> &
-    NullishProps<{
-      /**
-       * A non-default audio context within which the sound should play
-       * @defaultValue `game.audio.music`
-       */
-      context: AudioContext;
-    }>;
+
+    /**
+     * A non-default audio context within which the sound should play
+     * @defaultValue `game.audio.music`
+     */
+    context: AudioContext;
+  }>;
 
   interface ConstructorOptions extends _ConstructorOptions {}
 
@@ -370,21 +372,21 @@ declare namespace Sound {
   }
 
   /** @internal */
-  type _LoadOptions = InexactPartial<{
+  type _LoadOptions = NullishProps<{
     /**
      * Automatically begin playback of the sound once loaded
      * @defaultValue `false`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     autoplay: boolean;
-
-    /**
-     * Playback options passed to Sound#play, if autoplay
-     * @defaultValue `{}`
-     * @remarks Can't be `null` as it only has a parameter default
-     */
-    autoplayOptions: Sound.PlaybackOptions;
-  }>;
+  }> &
+    InexactPartial<{
+      /**
+       * Playback options passed to Sound#play, if autoplay
+       * @defaultValue `{}`
+       * @remarks Can't be `null` as it only has a parameter default
+       */
+      autoplayOptions: Sound.PlaybackOptions;
+    }>;
 
   interface LoadOptions extends _LoadOptions {}
 

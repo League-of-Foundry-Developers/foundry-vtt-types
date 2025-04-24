@@ -1,43 +1,117 @@
 import { expectTypeOf } from "vitest";
-import type Sound from "../../../../src/foundry/client-esm/audio/sound.d.mts";
+import Sound = foundry.audio.Sound;
+import AudioHelper = foundry.audio.AudioHelper;
 
-const helper = new foundry.audio.AudioHelper();
+const path = "a/path/to/some/sound/file.ogg";
 
-expectTypeOf(helper.sounds).toEqualTypeOf<Map<string, Sound>>();
+expectTypeOf(AudioHelper.levelAnalyserNativeInterval).toBeNumber();
+expectTypeOf(AudioHelper.THRESHOLD_CACHE_SIZE_BYTES).toBeNumber();
+expectTypeOf(AudioHelper.hasAudioExtension(path)).toBeBoolean();
+expectTypeOf(AudioHelper.getDefaultSoundName(path)).toBeString();
+expectTypeOf(AudioHelper.registerSettings()).toBeVoid();
+
+declare const socket: io.Socket;
+expectTypeOf(AudioHelper._activateSocketListeners(socket)).toEqualTypeOf<void>();
+
+const playData = {
+  src: path,
+  autoplay: false,
+  channel: "music",
+  loop: true,
+  volume: 0.5,
+} satisfies AudioHelper.PlayData;
+const playDataNullish = {
+  src: path,
+  // autoplay is `false` or omitted
+  // channel cannot be nullish because mergeObject
+  loop: null,
+  volume: null,
+} satisfies AudioHelper.PlayData;
+
+// @ts-expect-error Must pass a `PlayData` with a `src` prop
+expectTypeOf(AudioHelper.play()).toEqualTypeOf<Promise<Sound>>();
+expectTypeOf(AudioHelper.play({ src: path })).toEqualTypeOf<Promise<Sound>>();
+expectTypeOf(AudioHelper.play(playData)).toEqualTypeOf<Promise<Sound>>();
+expectTypeOf(AudioHelper.play(playDataNullish)).toEqualTypeOf<Promise<Sound>>();
+
+expectTypeOf(AudioHelper.play(playData, true)).toEqualTypeOf<Promise<Sound>>();
+// all falsey values for `socketOptions` are equivalent
+expectTypeOf(AudioHelper.play(playData, null)).toEqualTypeOf<Promise<Sound>>();
+expectTypeOf(AudioHelper.play(playData, {})).toEqualTypeOf<Promise<Sound>>();
+// @ts-expect-error If provided, `recipients` can't be nullish
+expectTypeOf(AudioHelper.play(playData, { recipients: undefined })).toEqualTypeOf<Promise<Sound>>();
+expectTypeOf(AudioHelper.play(playData, { recipients: ["XXXXXSomeIDXXXXX", "UUUUUSomeIDUUUUU"] })).toEqualTypeOf<
+  Promise<Sound>
+>();
+
+expectTypeOf(AudioHelper.preloadSound(path)).toEqualTypeOf<Promise<Sound>>();
+
+expectTypeOf(AudioHelper.inputToVolume(0.873)).toEqualTypeOf<number>();
+// a valid call that returns NaN, to be avoided:
+expectTypeOf(AudioHelper.inputToVolume("")).toEqualTypeOf<number>();
+expectTypeOf(AudioHelper.inputToVolume("0.42")).toEqualTypeOf<number>();
+expectTypeOf(AudioHelper.inputToVolume(0.873, 1.7)).toEqualTypeOf<number>();
+
+expectTypeOf(AudioHelper.volumeToInput(0.215)).toEqualTypeOf<number>();
+expectTypeOf(AudioHelper.volumeToInput(0.215, 1.2)).toEqualTypeOf<number>();
+
+const helper = new AudioHelper();
+
+expectTypeOf(helper.sounds).toEqualTypeOf<Map<string, WeakRef<Sound>>>();
 expectTypeOf(helper.playing).toEqualTypeOf<Map<number, Sound>>();
 expectTypeOf(helper.pending).toEqualTypeOf<(() => void)[]>();
 expectTypeOf(helper.unlock).toEqualTypeOf<Promise<void>>();
 expectTypeOf(helper.locked).toEqualTypeOf<boolean>();
-expectTypeOf(helper.music).toEqualTypeOf<AudioContext>();
-expectTypeOf(helper.environment).toEqualTypeOf<AudioContext>();
-expectTypeOf(helper.interface).toEqualTypeOf<AudioContext>();
+expectTypeOf(helper.music).toEqualTypeOf<AudioContext | undefined>();
+expectTypeOf(helper.environment).toEqualTypeOf<AudioContext | undefined>();
+expectTypeOf(helper.interface).toEqualTypeOf<AudioContext | undefined>();
 expectTypeOf(helper.context).toEqualTypeOf<AudioContext | undefined>();
 expectTypeOf(helper.buffers).toEqualTypeOf<foundry.audio.AudioBufferCache>();
 
 declare const context: AudioContext;
-expectTypeOf(helper.create({ src: "", context: context })).toEqualTypeOf<Sound>();
-expectTypeOf(helper.play("", {})).toEqualTypeOf<Promise<Sound>>();
+declare const autoplayOptions: Sound.PlaybackOptions; // full testing of this is in Sound's file
+// @ts-expect-error Must pass a `PlaybackOptions` with a `src` prop
+expectTypeOf(helper.create()).toEqualTypeOf<Sound>();
+expectTypeOf(helper.create({ src: path })).toEqualTypeOf<Sound>();
+expectTypeOf(
+  helper.create({ src: path, context, autoplay: true, preload: false, singleton: true, autoplayOptions }),
+).toEqualTypeOf<Sound>();
+expectTypeOf(
+  helper.create({
+    src: path,
+    context: null,
+    autoplay: null,
+    preload: null,
+    singleton: null,
+    autoplayOptions: undefined,
+  }),
+).toEqualTypeOf<Sound>();
+
+// this is just the options for `Sound.play`, plus `context`
+const playOptions = { context, ...autoplayOptions };
+expectTypeOf(helper.play(path)).toEqualTypeOf<Promise<Sound>>();
+expectTypeOf(helper.play(path, {})).toEqualTypeOf<Promise<Sound>>();
+expectTypeOf(helper.play(path, playOptions)).toEqualTypeOf<Promise<Sound>>();
+
 expectTypeOf(helper.awaitFirstGesture()).toEqualTypeOf<Promise<void>>();
-expectTypeOf(helper.preload("")).toEqualTypeOf<Promise<Sound>>();
-expectTypeOf(helper.getAnalyzerContext()).toEqualTypeOf<AudioContext | null>();
+expectTypeOf(helper.preload(path)).toEqualTypeOf<Promise<Sound>>();
+expectTypeOf(helper.getAnalyzerContext()).toEqualTypeOf<AudioContext>();
 
 declare const mediaStream: MediaStream;
-declare const cb: (maxDecibel: number, fftArray: Float32Array) => void;
-expectTypeOf(helper.startLevelReports("", mediaStream, cb)).toEqualTypeOf<boolean | undefined>();
-expectTypeOf(helper.debug("")).toEqualTypeOf<void>();
+declare const levelReportingCallback: (maxDecibel: number, fftArray: Float32Array) => void;
+expectTypeOf(helper.startLevelReports("foo", mediaStream, levelReportingCallback)).toEqualTypeOf<boolean>();
+expectTypeOf(helper.startLevelReports("foo", mediaStream, levelReportingCallback, 25)).toEqualTypeOf<boolean>();
+expectTypeOf(helper.startLevelReports("foo", mediaStream, levelReportingCallback, 25, 0.2)).toEqualTypeOf<boolean>();
+expectTypeOf(helper.stopLevelReports("foo")).toBeVoid();
 
-expectTypeOf(foundry.audio.AudioHelper.levelAnalyserNativeInterval).toEqualTypeOf<number>();
-expectTypeOf(foundry.audio.AudioHelper.THRESHOLD_CACHE_SIZE_BYTES).toEqualTypeOf<number>();
-expectTypeOf(foundry.audio.AudioHelper.hasAudioExtension("")).toEqualTypeOf<boolean>();
-expectTypeOf(foundry.audio.AudioHelper.getDefaultSoundName("")).toEqualTypeOf<string>();
-expectTypeOf(foundry.audio.AudioHelper.registerSettings()).toEqualTypeOf<void>();
+declare const event: Event;
+declare const resolveCB: () => void;
+expectTypeOf(helper["_onFirstGesture"](event, resolveCB)).toBeVoid();
 
-declare const socket: io.Socket;
-expectTypeOf(foundry.audio.AudioHelper._activateSocketListeners(socket)).toEqualTypeOf<void>();
+expectTypeOf(helper.debug("a debug message")).toEqualTypeOf<void>();
 
-declare const data: foundry.audio.AudioHelper.PlayData;
-expectTypeOf(foundry.audio.AudioHelper.play(data)).toEqualTypeOf<Promise<Sound>>();
-expectTypeOf(foundry.audio.AudioHelper.inputToVolume(1)).toEqualTypeOf<number>();
-expectTypeOf(foundry.audio.AudioHelper.inputToVolume("")).toEqualTypeOf<number>();
-expectTypeOf(foundry.audio.AudioHelper.volumeToInput(1)).toEqualTypeOf<number>();
-expectTypeOf(foundry.audio.AudioHelper.play(data)).toEqualTypeOf<Promise<Sound>>();
+// deprecated since v12, until v14
+expectTypeOf(helper.getCache("bar")).toEqualTypeOf<AudioBuffer | undefined>();
+expectTypeOf(helper.updateCache("baz", true)).toBeVoid();
+declare const buffer: AudioBuffer;
+expectTypeOf(helper.setCache("fizz", buffer)).toBeVoid();

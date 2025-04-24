@@ -40,7 +40,7 @@ declare class AudioTimeoutCancellation extends Error {}
  * }
  * ```
  */
-declare class AudioTimeout<CallbackReturn = unknown> {
+declare class AudioTimeout<CallbackReturn = undefined> {
   /**
    * Create an AudioTimeout by providing a delay and callback.
    * @param delayMS - A desired delay timing in milliseconds
@@ -73,7 +73,7 @@ declare class AudioTimeout<CallbackReturn = unknown> {
    * @returns A promise which resolves as a returned value of the callback or void
    */
   // options: not null (destructured where forwarded)
-  static wait<CallbackReturn = unknown>(
+  static wait<CallbackReturn = undefined>(
     delayMS: number,
     options?: AudioTimeout.ConstructorOptions<CallbackReturn>,
   ): Promise<CallbackReturn>;
@@ -84,14 +84,14 @@ declare namespace AudioTimeout {
   interface AnyConstructor extends Identity<typeof AnyAudioTimeout> {}
 
   /** @internal */
-  type _ConstructorOptions<Return> = NullishProps<{
+  type _ConstructorOptions<Return = undefined> = NullishProps<{
     /** @defaultValue `game.audio.music` */
     context: AudioContext;
 
     callback: () => Return;
   }>;
 
-  interface ConstructorOptions<Return> extends _ConstructorOptions<Return> {}
+  interface ConstructorOptions<Return = undefined> extends _ConstructorOptions<Return> {}
 }
 
 export default AudioTimeout;
