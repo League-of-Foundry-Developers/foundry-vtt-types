@@ -1,5 +1,5 @@
 import type { InexactPartial } from "fvtt-types/utils";
-import type { Document } from "../../../common/abstract/module.d.mts";
+import type { Document } from "../../../common/abstract/_module.d.mts";
 import type BasePlaylist from "../../../common/documents/playlist.d.mts";
 
 declare global {

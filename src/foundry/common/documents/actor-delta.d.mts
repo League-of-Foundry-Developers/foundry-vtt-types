@@ -1,6 +1,6 @@
 import type { AnyMutableObject, AnyObject, InexactPartial } from "fvtt-types/utils";
 import type Document from "../abstract/document.mts";
-import type { fields } from "../data/module.d.mts";
+import type { fields } from "../data/_module.d.mts";
 import type { CONST, documents } from "../../client-esm/client.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;

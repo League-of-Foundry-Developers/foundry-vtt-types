@@ -1,5 +1,5 @@
 import type { AnyObject, InexactPartial, ValueOf } from "fvtt-types/utils";
-import type EventEmitterMixin from "../../common/utils/event-emitter.d.mts";
+import type EventEmitterMixin from "@common/utils/event-emitter.d.mts";
 
 declare namespace Sound {
   interface PlaybackOptions extends _PlaybackOptions {}

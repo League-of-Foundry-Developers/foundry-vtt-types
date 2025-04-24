@@ -1,4 +1,4 @@
-import type { SchemaField } from "../../common/data/fields.d.mts";
+import type { SchemaField } from "@common/data/fields.d.mts";
 import type { PrototypeToken } from "../data/_module.d.mts";
 
 export interface CompendiumArtInfo {

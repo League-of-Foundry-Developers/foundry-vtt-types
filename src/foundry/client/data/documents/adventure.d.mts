@@ -1,6 +1,6 @@
 import type { FolderDocumentTypes, InexactPartial, FixedInstanceType } from "fvtt-types/utils";
 import type DataModel from "../../../common/abstract/data.d.mts";
-import type { fields } from "../../../common/data/module.d.mts";
+import type { fields } from "../../../common/data/_module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type BaseAdventure from "../../../common/documents/adventure.d.mts";
 

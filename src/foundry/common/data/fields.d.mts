@@ -10,7 +10,7 @@ import type {
 } from "../../../utils/index.d.mts";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
-import type { EmbeddedCollection, EmbeddedCollectionDelta, TypeDataModel } from "../abstract/module.d.mts";
+import type { EmbeddedCollection, EmbeddedCollectionDelta, TypeDataModel } from "../abstract/_module.d.mts";
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
 import type { CONST } from "../../client-esm/client.d.mts";
 import type { DataModelValidationFailure } from "./validation-failure.mts";

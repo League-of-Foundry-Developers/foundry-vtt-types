@@ -1,5 +1,5 @@
 import type { InexactPartial, ValueOf } from "fvtt-types/utils";
-import type { fields } from "../../../common/data/module.d.mts";
+import type { fields } from "../../../common/data/_module.d.mts";
 import type { TokenDetectionMode } from "../../../common/documents/_types.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;

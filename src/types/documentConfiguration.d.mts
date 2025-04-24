@@ -1,5 +1,5 @@
 import type { CONST, documents } from "../foundry/client-esm/client.d.mts";
-import type { Document } from "../foundry/common/abstract/module.d.mts";
+import type { Document } from "../foundry/common/abstract/_module.d.mts";
 import type BaseActor from "../foundry/common/documents/actor.d.mts";
 import type BaseCard from "../foundry/common/documents/card.d.mts";
 import type BaseChatMessage from "../foundry/common/documents/chat-message.d.mts";
