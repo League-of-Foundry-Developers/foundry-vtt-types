@@ -5,7 +5,7 @@ expectTypeOf(FogManager.COMMIT_THRESHOLD).toBeNumber();
 declare const someTex: PIXI.Texture;
 const myFogManager = new FogManager();
 
-expectTypeOf(myFogManager.exploration).toEqualTypeOf<FogExploration.Object | null>();
+expectTypeOf(myFogManager.exploration).toEqualTypeOf<FogExploration.Implementation | null>();
 expectTypeOf(myFogManager.sprite).toEqualTypeOf<SpriteMesh>();
 expectTypeOf(myFogManager.extractor).toEqualTypeOf<TextureExtractor | undefined | null>();
 expectTypeOf(myFogManager.textureConfiguration).toEqualTypeOf<CanvasVisibility.TextureConfiguration | undefined>();

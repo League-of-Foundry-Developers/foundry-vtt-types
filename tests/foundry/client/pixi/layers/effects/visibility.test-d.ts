@@ -9,7 +9,7 @@ expectTypeOf(layer.visibilityOverlay).toEqualTypeOf<PIXI.Sprite | undefined>();
 expectTypeOf(layer.filter).toEqualTypeOf<VisibilityFilter.ConfiguredInstance | undefined>();
 expectTypeOf(layer.visionModeData).toEqualTypeOf<CanvasVisibility.VisionModeData>();
 expectTypeOf(layer.lightingVisibility).toEqualTypeOf<CanvasVisibility.LightingVisibility>();
-expectTypeOf(layer.lightingVisibility.background).toMatchTypeOf<VisionMode.LIGHTING_VISIBILITY>();
+expectTypeOf(layer.lightingVisibility.background).toExtend<VisionMode.LIGHTING_VISIBILITY>();
 
 expectTypeOf(layer.initialized).toBeBoolean();
 expectTypeOf(layer.needsContainment).toBeBoolean();

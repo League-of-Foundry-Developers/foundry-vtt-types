@@ -193,7 +193,7 @@ declare global {
      * @returns The rendered Application instance
      * @remarks Some subclasses return other results.
      */
-    render(force?: boolean, options?: Application.RenderOptions<Options>): unknown;
+    render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
     /**
      * An asynchronous inner function which handles the rendering of the Application

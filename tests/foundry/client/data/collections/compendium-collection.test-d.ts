@@ -50,7 +50,7 @@ type CompendiumCollectionType = typeof compendiumCollection;
 
 if (compendiumCollection instanceof DocumentCollection) {
   // This test makes sure the mixin doesn't destroy the inheritance chain.
-  expectTypeOf(compendiumCollection).toMatchTypeOf<CompendiumCollectionType>();
+  expectTypeOf(compendiumCollection).toExtend<CompendiumCollectionType>();
 }
 
 expectTypeOf((await compendiumCollection.getIndex()).get("some id", { strict: true })).toEqualTypeOf<

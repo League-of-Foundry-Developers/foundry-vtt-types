@@ -16,4 +16,4 @@ if (MyFragmentChannelShader.adaptiveFragmentShader) {
 
 declare const someProgram: PIXI.Program;
 const myFCSInstance = new MyFragmentChannelShader(someProgram, { baz: 32 });
-expectTypeOf(myFCSInstance.uniforms).toMatchTypeOf<AbstractBaseShader.Uniforms>();
+expectTypeOf(myFCSInstance.uniforms).toExtend<AbstractBaseShader.Uniforms>();

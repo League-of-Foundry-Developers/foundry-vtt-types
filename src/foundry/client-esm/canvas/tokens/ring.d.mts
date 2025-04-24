@@ -163,7 +163,7 @@ declare class TokenRing {
    * @param animationOptions - Options to customize the animation. (default: `{}`)
    * @remarks Only returns `Promise<void>` if `color` is `NaN`ish
    */
-  flashColor(Color: Color, animationOptions: TokenRing.FlashColorOptions | null): Promise<boolean | void>;
+  flashColor(Color: Color, animationOptions?: TokenRing.FlashColorOptions | null): Promise<boolean | void>;
 
   /**
    * Create an easing function that spikes in the center. Ideal duration is around 1600ms.

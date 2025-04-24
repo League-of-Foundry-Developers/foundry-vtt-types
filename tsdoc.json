@@ -6,11 +6,12 @@
       "syntaxKind": "modifier"
     },
     {
-      "tagName": "@immediate",
+      "tagName": "@yields",
       "syntaxKind": "modifier"
     },
     {
-      "tagName": "@yields",
+      // See https://github.com/microsoft/TypeScript/pull/58729
+      "tagName": "@immediate",
       "syntaxKind": "modifier"
     }
   ]

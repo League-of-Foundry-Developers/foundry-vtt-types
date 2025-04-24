@@ -83,7 +83,10 @@ declare global {
     // TODO: Implement GetDataReturnType
     override getData(options?: Partial<Options>): Promise<object>;
 
-    override render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<unknown>;
+    // NOTE(LukeAbby): In v12 this is async for no apparent reason given that it doesn't call
+    // anything that is async. However given that v13 fixes this I decided to prematurely fix it
+    // to fix tests (e.g. allow superclasses to return `this`).
+    override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
     /**
      * Get the sidebar directory entry context options

@@ -14,7 +14,7 @@ expectTypeOf(layer.options).toEqualTypeOf<TokenLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"tokens">();
 
 expectTypeOf(layer["_tabIndex"]).toEqualTypeOf<number | null>();
-expectTypeOf(layer.occlusionMode).toMatchTypeOf<foundry.CONST.OCCLUSION_MODES>();
+expectTypeOf(layer.occlusionMode).toExtend<foundry.CONST.OCCLUSION_MODES>();
 layer.occlusionMode = CONST.OCCLUSION_MODES.RADIAL;
 expectTypeOf(layer.hookName).toEqualTypeOf<"TokenLayer">();
 expectTypeOf(layer.hud).toEqualTypeOf<TokenHUD>();

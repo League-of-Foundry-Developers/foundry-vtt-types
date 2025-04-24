@@ -7,7 +7,7 @@ expectTypeOf(Region.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
 >();
 expectTypeOf(Region.CLIPPER_SCALING_FACTOR).toEqualTypeOf<100>();
 expectTypeOf(Region.MOVEMENT_SEGMENT_TYPES).toEqualTypeOf<Region.MovementSegmentTypes>();
-expectTypeOf(Region.MOVEMENT_SEGMENT_TYPES.ENTER).toMatchTypeOf<Region.MOVEMENT_SEGMENT_TYPES>();
+expectTypeOf(Region.MOVEMENT_SEGMENT_TYPES.ENTER).toExtend<Region.MOVEMENT_SEGMENT_TYPES>();
 
 declare const doc: RegionDocument.Stored;
 const region = new CONFIG.Region.objectClass(doc);

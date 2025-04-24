@@ -13,7 +13,7 @@ expectTypeOf(MyRenderedSource.defaultData).toEqualTypeOf<RenderedEffectSource.So
 
 expectTypeOf(
   MyRenderedSource.getCorrectedLevel(CONST.LIGHTING_LEVELS.BRIGHT),
-).toMatchTypeOf<foundry.CONST.LIGHTING_LEVELS>();
+).toExtend<foundry.CONST.LIGHTING_LEVELS>();
 expectTypeOf(
   MyRenderedSource.getCorrectedColor(
     CONST.LIGHTING_LEVELS.HALFDARK,

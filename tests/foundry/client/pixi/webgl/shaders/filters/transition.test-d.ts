@@ -4,7 +4,7 @@ declare const someSprite: PIXI.Sprite;
 declare const someTex: PIXI.Texture;
 let myTTF;
 
-expectTypeOf(TextureTransitionFilter.TYPES.CROSSHATCH).toMatchTypeOf<TextureTransitionFilter.TYPES>();
+expectTypeOf(TextureTransitionFilter.TYPES.CROSSHATCH).toExtend<TextureTransitionFilter.TYPES>();
 expectTypeOf(
   TextureTransitionFilter.animate(someSprite, someTex, {
     duration: 400,

@@ -3,7 +3,7 @@ import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
 const defaultSheetsConfig = new DefaultSheetsConfig({});
 
-expectTypeOf(defaultSheetsConfig.object).toEqualTypeOf<object>();
+expectTypeOf(defaultSheetsConfig.object).toEqualTypeOf<FormApplication.NoObject>();
 expectTypeOf(DefaultSheetsConfig.defaultOptions).toEqualTypeOf<DefaultSheetsConfig.Options>();
 expectTypeOf(defaultSheetsConfig.options).toEqualTypeOf<DefaultSheetsConfig.Options>();
 expectTypeOf(defaultSheetsConfig.getData()).toEqualTypeOf<

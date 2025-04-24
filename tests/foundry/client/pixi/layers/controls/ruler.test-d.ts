@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(Ruler.STATES).toMatchTypeOf<Record<keyof Ruler.States, Ruler.STATES>>();
+expectTypeOf(Ruler.STATES).toExtend<Record<keyof Ruler.States, Ruler.STATES>>();
 expectTypeOf(Ruler.canMeasure).toBeBoolean();
 
 if (game.ready) {

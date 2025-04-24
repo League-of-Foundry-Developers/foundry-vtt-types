@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 
 import TokenRing = foundry.canvas.tokens.TokenRing;
 
-expectTypeOf(TokenRing.effects).toMatchTypeOf<Record<keyof TokenRing.Effects, TokenRing.EFFECTS>>();
+expectTypeOf(TokenRing.effects).toExtend<Record<keyof TokenRing.Effects, TokenRing.EFFECTS>>();
 
 if (game.ready) {
   expectTypeOf(TokenRing.initialized).toBeBoolean();
@@ -27,7 +27,7 @@ expectTypeOf(TokenRing.createSpikeEasing()).toEqualTypeOf<CanvasAnimation.Easing
 expectTypeOf(TokenRing.createSpikeEasing(0.72)).toEqualTypeOf<CanvasAnimation.EasingFunction>();
 
 expectTypeOf(TokenRing.easeTwoPeaks(0.34)).toBeNumber();
-expectTypeOf(TokenRing.easeTwoPeaks).toMatchTypeOf<CanvasAnimation.EasingFunction>();
+expectTypeOf(TokenRing.easeTwoPeaks).toExtend<CanvasAnimation.EasingFunction>();
 
 declare const someToken: Token.Object;
 const myTR = new TokenRing(someToken);
@@ -57,7 +57,7 @@ expectTypeOf(myTR.subjectScaleAdjustment).toEqualTypeOf<number | null>();
 expectTypeOf(myTR.colorBand).toEqualTypeOf<TokenRing.ColorBand | undefined>();
 expectTypeOf(myTR.token).toEqualTypeOf<Token.Object | undefined>();
 
-expectTypeOf(myTR.configure(someToken.mesh)).toBeVoid();
+expectTypeOf(myTR.configure(someToken.mesh!)).toBeVoid();
 expectTypeOf(myTR.clear()).toBeVoid();
 expectTypeOf(myTR.configureSize()).toBeVoid();
 expectTypeOf(myTR.configureVisuals()).toBeVoid();
@@ -65,6 +65,7 @@ expectTypeOf(myTR.configureVisuals()).toBeVoid();
 declare const someColor: Color;
 declare const somePromise: Promise<void>;
 declare const someOnTickFunction: CanvasAnimation.OnTickFunction;
+
 expectTypeOf(myTR.flashColor(someColor)).toEqualTypeOf<Promise<boolean | void>>();
 expectTypeOf(myTR.flashColor(someColor, null)).toEqualTypeOf<Promise<boolean | void>>();
 expectTypeOf(

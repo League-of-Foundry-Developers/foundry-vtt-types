@@ -16,4 +16,4 @@ expectTypeOf(
     bar: false,
     baz: [1, 1, 1],
   }),
-).toMatchTypeOf<void>();
+).toExtend<void>();

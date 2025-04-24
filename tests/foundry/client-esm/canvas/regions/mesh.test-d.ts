@@ -7,8 +7,8 @@ const myRM = new foundry.canvas.regions.RegionMesh(someRegion, RegionShader);
 expectTypeOf(myRM.region).toEqualTypeOf<Region.Object>();
 expectTypeOf(myRM.shader).toEqualTypeOf<AbstractBaseShader>();
 
-expectTypeOf(myRM.blendMode).toMatchTypeOf<PIXI.BLEND_MODES>();
-expectTypeOf((myRM.blendMode = PIXI.BLEND_MODES.DST_ATOP)).toMatchTypeOf<PIXI.BLEND_MODES>();
+expectTypeOf(myRM.blendMode).toExtend<PIXI.BLEND_MODES>();
+expectTypeOf((myRM.blendMode = PIXI.BLEND_MODES.DST_ATOP)).toExtend<PIXI.BLEND_MODES>();
 
 expectTypeOf(myRM.tint).toBeNumber();
 expectTypeOf((myRM.tint = 0xabcedf)).toBeNumber();

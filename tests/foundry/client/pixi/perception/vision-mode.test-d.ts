@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(VisionMode.LIGHTING_VISIBILITY).toMatchTypeOf<
+expectTypeOf(VisionMode.LIGHTING_VISIBILITY).toExtend<
   Record<keyof VisionMode.LightingVisibility, VisionMode.LIGHTING_VISIBILITY>
 >();
 expectTypeOf(VisionMode.LIGHTING_LEVELS).toEqualTypeOf<typeof foundry.CONST.LIGHTING_LEVELS>();

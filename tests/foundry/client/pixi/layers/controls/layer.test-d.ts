@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { LineIntersection } from "../../../../../../src/foundry/common/utils/geometry.d.mts";
 
-expectTypeOf(ControlsLayer.instance).toMatchTypeOf<ControlsLayer.Implementation | undefined>();
+expectTypeOf(ControlsLayer.instance).toExtend<ControlsLayer.Implementation | undefined>();
 expectTypeOf(ControlsLayer.layerOptions).toEqualTypeOf<ControlsLayer.LayerOptions>();
 
 const layer = new ControlsLayer();

@@ -22,5 +22,5 @@ if (game instanceof Game) {
 const diceConfig = new DiceConfig({ name: "foo" });
 
 expectTypeOf(DiceConfig.defaultOptions).toEqualTypeOf<FormApplication.Options>();
-expectTypeOf(diceConfig.getData()).toEqualTypeOf<MaybePromise<GetDataReturnType<DiceConfig.DiceConfigData>>>();
+expectTypeOf(diceConfig.getData()).toEqualTypeOf<MaybePromise<GetDataReturnType<DiceConfig.Data>>>();
 expectTypeOf(diceConfig.render(true)).toEqualTypeOf<DiceConfig>();

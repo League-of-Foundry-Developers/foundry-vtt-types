@@ -39,7 +39,7 @@ declare global {
      * The configured options used for the saved fog-of-war texture.
      * @remarks Only `undefined` prior to the first time the canvas visibility layer is `#draw()`n
      */
-    get textureConfiguration(): CanvasVisibility.TextureConfiguration;
+    get textureConfiguration(): CanvasVisibility.TextureConfiguration | undefined;
 
     /**
      * Does the currently viewed Scene support Token field of vision?

@@ -584,20 +584,7 @@ declare global {
     /**
      * Get a texture with the required configuration and clear color.
      */
-    static getRenderTexture(
-      options?: InexactPartial<{
-        /**
-         * The clear color to use for this texture. Transparent by default.
-         */
-        clearColor: number[] | null;
-
-        /**
-         * The render texture configuration.
-         * @privateRemarks forwarded to `PIXI.RenderTexture.create`
-         */
-        textureConfiguration: Parameters<(typeof PIXI.RenderTexture)["create"]>[0];
-      }>,
-    ): PIXI.RenderTexture;
+    static getRenderTexture(options?: Canvas.GetRenderTextureOptions): PIXI.RenderTexture;
 
     /**
      * Handle right-mouse start drag events occurring on the Canvas.
@@ -800,6 +787,19 @@ declare global {
 
       /** Is the OffscreenCanvas supported? */
       offscreenCanvas: boolean;
+    }
+
+    interface GetRenderTextureOptions {
+      /**
+       * The clear color to use for this texture. Transparent by default.
+       */
+      clearColor?: number[] | null | undefined;
+
+      /**
+       * The render texture configuration.
+       * @privateRemarks forwarded to {@link PIXI.RenderTexture.create | `PIXI.RenderTexture.create`}
+       */
+      textureConfiguration?: PIXI.IBaseTextureOptions | undefined;
     }
   }
 }

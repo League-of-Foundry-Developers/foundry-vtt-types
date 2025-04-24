@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(Quadtree.INDICES).toMatchTypeOf<Record<keyof Quadtree.Indices, Quadtree.INDICES>>();
+expectTypeOf(Quadtree.INDICES).toExtend<Record<keyof Quadtree.Indices, Quadtree.INDICES>>();
 
 type TCI = Token.Object;
 declare const someToken: TCI;
