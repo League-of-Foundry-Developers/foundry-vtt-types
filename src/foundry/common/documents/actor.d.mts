@@ -305,12 +305,12 @@ declare namespace BaseActor {
   export import Parent = Actor.Parent;
   export import Descendant = Actor.Descendant;
   export import DescendantClass = Actor.DescendantClass;
-  export import DescendantParent = Actor.DescendantParent;
   export import Pack = Actor.Pack;
   export import Embedded = Actor.Embedded;
   export import ParentCollectionName = Actor.ParentCollectionName;
   export import CollectionClass = Actor.CollectionClass;
   export import Collection = Actor.Collection;
+  export import Invalid = Actor.Invalid;
   export import Stored = Actor.Stored;
   export import Source = Actor.Source;
   export import PersistedData = Actor.PersistedData;

@@ -283,6 +283,7 @@ declare namespace BasePlaylist {
   export import ParentCollectionName = Playlist.ParentCollectionName;
   export import CollectionClass = Playlist.CollectionClass;
   export import Collection = Playlist.Collection;
+  export import Invalid = Playlist.Invalid;
   export import Stored = Playlist.Stored;
   export import Source = Playlist.Source;
   export import PersistedData = Playlist.Source;

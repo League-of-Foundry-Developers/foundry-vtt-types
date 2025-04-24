@@ -260,6 +260,7 @@ declare namespace BaseAmbientLight {
   export import ParentCollectionName = AmbientLightDocument.ParentCollectionName;
   export import CollectionClass = AmbientLightDocument.CollectionClass;
   export import Collection = AmbientLightDocument.Collection;
+  export import Invalid = AmbientLightDocument.Invalid;
   export import Stored = AmbientLightDocument.Stored;
   export import Source = AmbientLightDocument.Source;
   export import PersistedData = AmbientLightDocument.PersistedData;

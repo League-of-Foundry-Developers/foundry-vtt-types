@@ -324,12 +324,12 @@ declare namespace BaseActorDelta {
   export import Parent = ActorDelta.Parent;
   export import Descendant = ActorDelta.Descendant;
   export import DescendantClass = ActorDelta.DescendantClass;
-  export import DescendantParent = ActorDelta.DescendantParent;
   export import Pack = ActorDelta.Pack;
   export import Embedded = ActorDelta.Embedded;
   export import ParentCollectionName = ActorDelta.ParentCollectionName;
   export import CollectionClass = ActorDelta.CollectionClass;
   export import Collection = ActorDelta.Collection;
+  export import Invalid = ActorDelta.Invalid;
   export import Stored = ActorDelta.Stored;
   export import Source = ActorDelta.Source;
   export import PersistedData = ActorDelta.PersistedData;

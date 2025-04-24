@@ -266,6 +266,7 @@ declare namespace BaseWall {
   export import ParentCollectionName = WallDocument.ParentCollectionName;
   export import CollectionClass = WallDocument.CollectionClass;
   export import Collection = WallDocument.Collection;
+  export import Invalid = WallDocument.Invalid;
   export import Stored = WallDocument.Stored;
   export import Source = WallDocument.Source;
   export import PersistedData = WallDocument.PersistedData;

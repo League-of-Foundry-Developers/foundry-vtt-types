@@ -112,6 +112,12 @@ declare global {
     type Collection = Users.Configured;
 
     /**
+     * An instance of `User` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid extends Document.Invalid<User.Implementation> {}
+
+    /**
      * An instance of `User` that comes from the database.
      */
     interface Stored extends Document.Stored<User.Implementation> {}

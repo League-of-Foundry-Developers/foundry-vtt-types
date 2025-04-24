@@ -284,6 +284,7 @@ declare namespace BaseRollTable {
   export import ParentCollectionName = RollTable.ParentCollectionName;
   export import CollectionClass = RollTable.CollectionClass;
   export import Collection = RollTable.Collection;
+  export import Invalid = RollTable.Invalid;
   export import Stored = RollTable.Stored;
   export import Source = RollTable.Source;
   export import PersistedData = RollTable.PersistedData;

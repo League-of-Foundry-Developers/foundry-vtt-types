@@ -304,6 +304,7 @@ declare namespace BaseItem {
   export import ParentCollectionName = Item.ParentCollectionName;
   export import CollectionClass = Item.CollectionClass;
   export import Collection = Item.Collection;
+  export import Invalid = Item.Invalid;
   export import Stored = Item.Stored;
   export import Source = Item.Source;
   export import PersistedData = Item.PersistedData;

@@ -297,6 +297,7 @@ declare namespace BaseActiveEffect {
   export import ParentCollectionName = ActiveEffect.ParentCollectionName;
   export import CollectionClass = ActiveEffect.CollectionClass;
   export import Collection = ActiveEffect.Collection;
+  export import Invalid = ActiveEffect.Invalid;
   export import Stored = ActiveEffect.Stored;
   export import Source = ActiveEffect.Source;
   export import PersistedData = ActiveEffect.PersistedData;

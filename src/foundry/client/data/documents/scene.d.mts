@@ -190,6 +190,12 @@ declare global {
     type Collection = Scenes.Configured;
 
     /**
+     * An instance of `Scene` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid extends Document.Invalid<Scene.Implementation> {}
+
+    /**
      * An instance of `Scene` that comes from the database.
      */
     interface Stored extends Document.Stored<Scene.Implementation> {}

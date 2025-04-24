@@ -277,6 +277,7 @@ declare namespace BaseCard {
   export import ParentCollectionName = Card.ParentCollectionName;
   export import CollectionClass = Card.CollectionClass;
   export import Collection = Card.Collection;
+  export import Invalid = Card.Invalid;
   export import Stored = Card.Stored;
   export import Source = Card.Source;
   export import PersistedData = Card.PersistedData;

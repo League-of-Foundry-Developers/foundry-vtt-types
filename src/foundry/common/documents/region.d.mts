@@ -297,6 +297,7 @@ declare namespace BaseRegion {
   export import ParentCollectionName = RegionDocument.ParentCollectionName;
   export import CollectionClass = RegionDocument.CollectionClass;
   export import Collection = RegionDocument.Collection;
+  export import Invalid = RegionDocument.Invalid;
   export import Stored = RegionDocument.Stored;
   export import Source = RegionDocument.Source;
   export import PersistedData = RegionDocument.PersistedData;

@@ -101,6 +101,12 @@ declare global {
     type Collection = never;
 
     /**
+     * An instance of `Adventure` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid extends Document.Invalid<Adventure.Implementation> {}
+
+    /**
      * An instance of `Adventure` that comes from the database.
      */
     interface Stored extends Document.Stored<Adventure.Implementation> {}

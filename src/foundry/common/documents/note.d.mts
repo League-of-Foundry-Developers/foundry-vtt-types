@@ -278,6 +278,7 @@ declare namespace BaseNote {
   export import ParentCollectionName = NoteDocument.ParentCollectionName;
   export import CollectionClass = NoteDocument.CollectionClass;
   export import Collection = NoteDocument.Collection;
+  export import Invalid = NoteDocument.Invalid;
   export import Stored = NoteDocument.Stored;
   export import Source = NoteDocument.Source;
   export import PersistedData = NoteDocument.PersistedData;

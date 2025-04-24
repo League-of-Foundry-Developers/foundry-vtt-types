@@ -160,6 +160,13 @@ declare global {
     type Collection = never;
 
     /**
+     * An instance of `Combatant` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid<out SubType extends Combatant.SubType = Combatant.SubType>
+      extends Document.Invalid<OfType<SubType>> {}
+
+    /**
      * An instance of `Combatant` that comes from the database.
      */
     interface Stored<out SubType extends Combatant.SubType = Combatant.SubType>

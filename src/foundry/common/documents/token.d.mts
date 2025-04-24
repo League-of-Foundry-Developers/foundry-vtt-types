@@ -374,6 +374,7 @@ declare namespace BaseToken {
   export import ParentCollectionName = TokenDocument.ParentCollectionName;
   export import CollectionClass = TokenDocument.CollectionClass;
   export import Collection = TokenDocument.Collection;
+  export import Invalid = TokenDocument.Invalid;
   export import Stored = TokenDocument.Stored;
   export import Source = TokenDocument.Source;
   export import PersistedData = TokenDocument.PersistedData;

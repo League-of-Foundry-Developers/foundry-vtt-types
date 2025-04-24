@@ -284,6 +284,7 @@ declare namespace BaseScene {
   export import ParentCollectionName = Scene.ParentCollectionName;
   export import CollectionClass = Scene.CollectionClass;
   export import Collection = Scene.Collection;
+  export import Invalid = Scene.Invalid;
   export import Stored = Scene.Stored;
   export import Source = Scene.Source;
   export import PersistedData = Scene.PersistedData;

@@ -160,6 +160,13 @@ declare global {
     type Collection = Messages.Configured;
 
     /**
+     * An instance of `ChatMessage` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid<out SubType extends ChatMessage.SubType = ChatMessage.SubType>
+      extends Document.Invalid<OfType<SubType>> {}
+
+    /**
      * An instance of `ChatMessage` that comes from the database.
      */
     interface Stored<out SubType extends ChatMessage.SubType = ChatMessage.SubType>

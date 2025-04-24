@@ -253,6 +253,7 @@ declare namespace BaseFogExploration {
   export import ParentCollectionName = FogExploration.ParentCollectionName;
   export import CollectionClass = FogExploration.CollectionClass;
   export import Collection = FogExploration.Collection;
+  export import Invalid = FogExploration.Invalid;
   export import Stored = FogExploration.Stored;
   export import Source = FogExploration.Source;
   export import PersistedData = FogExploration.PersistedData;

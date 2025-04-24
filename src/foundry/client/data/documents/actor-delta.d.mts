@@ -203,6 +203,12 @@ declare global {
     type Collection = never;
 
     /**
+     * An instance of `ActorDelta` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid extends Document.Invalid<ActorDelta.Implementation> {}
+
+    /**
      * An instance of `ActorDelta` that comes from the database.
      */
     interface Stored extends Document.Stored<ActorDelta.Implementation> {}

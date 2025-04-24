@@ -146,6 +146,13 @@ declare global {
     type Collection = never;
 
     /**
+     * An instance of `TableResult` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid<out SubType extends TableResult.SubType = TableResult.SubType>
+      extends Document.Invalid<OfType<SubType>> {}
+
+    /**
      * An instance of `TableResult` that comes from the database.
      */
     interface Stored<out SubType extends TableResult.SubType = TableResult.SubType>

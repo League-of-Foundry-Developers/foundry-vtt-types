@@ -110,6 +110,12 @@ declare global {
     type Collection = never;
 
     /**
+     * An instance of `NoteDocument` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid extends Document.Invalid<NoteDocument.Implementation> {}
+
+    /**
      * An instance of `NoteDocument` that comes from the database.
      */
     interface Stored extends Document.Stored<NoteDocument.Implementation> {}

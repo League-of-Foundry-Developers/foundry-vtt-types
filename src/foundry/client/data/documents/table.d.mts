@@ -153,6 +153,12 @@ declare global {
     type Collection = RollTables.Configured;
 
     /**
+     * An instance of `RollTable` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid extends Document.Invalid<RollTable.Implementation> {}
+
+    /**
      * An instance of `RollTable` that comes from the database.
      */
     interface Stored extends Document.Stored<RollTable.Implementation> {}

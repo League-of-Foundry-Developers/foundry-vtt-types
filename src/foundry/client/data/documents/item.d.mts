@@ -209,6 +209,12 @@ declare global {
     type Collection = Items.Configured;
 
     /**
+     * An instance of `Item` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid<out SubType extends Item.SubType = Item.SubType> extends Document.Invalid<OfType<SubType>> {}
+
+    /**
      * An instance of `Item` that comes from the database.
      */
     interface Stored<out SubType extends Item.SubType = Item.SubType> extends Document.Stored<OfType<SubType>> {}

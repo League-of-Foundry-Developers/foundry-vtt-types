@@ -144,6 +144,12 @@ declare global {
     type Collection = Folders.Configured;
 
     /**
+     * An instance of `Folder` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid<out SubType extends Folder.SubType = Folder.SubType> extends Document.Invalid<OfType<SubType>> {}
+
+    /**
      * An instance of `Folder` that comes from the database.
      */
     interface Stored<out SubType extends Folder.SubType = Folder.SubType> extends Document.Stored<OfType<SubType>> {}

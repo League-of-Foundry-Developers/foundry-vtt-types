@@ -263,6 +263,7 @@ declare namespace BaseMacro {
   export import ParentCollectionName = Macro.ParentCollectionName;
   export import CollectionClass = Macro.CollectionClass;
   export import Collection = Macro.Collection;
+  export import Invalid = Macro.Invalid;
   export import Stored = Macro.Stored;
   export import Source = Macro.Source;
   export import PersistedData = Macro.PersistedData;

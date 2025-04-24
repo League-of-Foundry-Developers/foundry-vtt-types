@@ -282,6 +282,7 @@ declare namespace BaseChatMessage {
   export import ParentCollectionName = ChatMessage.ParentCollectionName;
   export import CollectionClass = ChatMessage.CollectionClass;
   export import Collection = ChatMessage.Collection;
+  export import Invalid = ChatMessage.Invalid;
   export import Stored = ChatMessage.Stored;
   export import Source = ChatMessage.Source;
   export import PersistedData = ChatMessage.Source;

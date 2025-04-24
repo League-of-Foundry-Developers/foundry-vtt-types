@@ -223,6 +223,7 @@ declare namespace BaseSetting {
   export import ParentCollectionName = Setting.ParentCollectionName;
   export import CollectionClass = Setting.CollectionClass;
   export import Collection = Setting.Collection;
+  export import Invalid = Setting.Invalid;
   export import Stored = Setting.Stored;
   export import Source = Setting.Source;
   export import PersistedData = Setting.PersistedData;

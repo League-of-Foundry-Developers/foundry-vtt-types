@@ -255,6 +255,7 @@ declare namespace BaseAdventure {
   export import ParentCollectionName = Adventure.ParentCollectionName;
   export import CollectionClass = Adventure.CollectionClass;
   export import Collection = Adventure.Collection;
+  export import Invalid = Adventure.Invalid;
   export import Stored = Adventure.Stored;
   export import Source = Adventure.Source;
   export import PersistedData = Adventure.PersistedData;

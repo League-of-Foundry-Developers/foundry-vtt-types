@@ -161,6 +161,12 @@ declare global {
     type Collection = Playlists.Configured;
 
     /**
+     * An instance of `Playlist` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid extends Document.Invalid<Playlist.Implementation> {}
+
+    /**
      * An instance of `Playlist` that comes from the database.
      */
     interface Stored extends Document.Stored<Playlist.Implementation> {}

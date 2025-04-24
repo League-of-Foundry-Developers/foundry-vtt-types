@@ -292,6 +292,7 @@ declare namespace BaseMeasuredTemplate {
   export import ParentCollectionName = MeasuredTemplateDocument.ParentCollectionName;
   export import CollectionClass = MeasuredTemplateDocument.CollectionClass;
   export import Collection = MeasuredTemplateDocument.Collection;
+  export import Invalid = MeasuredTemplateDocument.Invalid;
   export import Stored = MeasuredTemplateDocument.Stored;
   export import Source = MeasuredTemplateDocument.Source;
   export import PersistedData = MeasuredTemplateDocument.PersistedData;

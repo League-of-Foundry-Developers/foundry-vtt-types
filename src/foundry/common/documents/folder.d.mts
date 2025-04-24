@@ -238,15 +238,20 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 export default BaseFolder;
 
 declare namespace BaseFolder {
-  export import SubType = Folder.SubType;
   export import Name = Folder.Name;
   export import ConstructorArgs = Folder.ConstructorArgs;
   export import Hierarchy = Folder.Hierarchy;
   export import Metadata = Folder.Metadata;
+  export import SubType = Folder.SubType;
   export import Parent = Folder.Parent;
+  export import Descendant = Folder.Descendant;
+  export import DescendantClass = Folder.DescendantClass;
   export import Pack = Folder.Pack;
   export import Embedded = Folder.Embedded;
   export import ParentCollectionName = Folder.ParentCollectionName;
+  export import CollectionClass = Folder.CollectionClass;
+  export import Collection = Folder.Collection;
+  export import Invalid = Folder.Invalid;
   export import Stored = Folder.Stored;
   export import Source = Folder.Source;
   export import PersistedData = Folder.PersistedData;

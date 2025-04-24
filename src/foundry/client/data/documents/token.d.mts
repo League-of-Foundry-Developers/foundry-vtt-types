@@ -174,6 +174,12 @@ declare global {
     type Collection = never;
 
     /**
+     * An instance of `TokenDocument` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid extends Document.Invalid<TokenDocument.Implementation> {}
+
+    /**
      * An instance of `TokenDocument` that comes from the database.
      */
     interface Stored extends Document.Stored<TokenDocument.Implementation> {}

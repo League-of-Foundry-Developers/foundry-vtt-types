@@ -112,6 +112,12 @@ declare global {
     type Collection = never;
 
     /**
+     * An instance of `MeasuredTemplateDocument` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid extends Document.Invalid<MeasuredTemplateDocument.Implementation> {}
+
+    /**
      * An instance of `MeasuredTemplateDocument` that comes from the database.
      */
     interface Stored extends Document.Stored<MeasuredTemplateDocument.Implementation> {}

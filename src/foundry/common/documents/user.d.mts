@@ -328,6 +328,7 @@ declare namespace BaseUser {
   export import ParentCollectionName = User.ParentCollectionName;
   export import CollectionClass = User.CollectionClass;
   export import Collection = User.Collection;
+  export import Invalid = User.Invalid;
   export import Stored = User.Stored;
   export import Source = User.Source;
   export import PersistedData = User.PersistedData;

@@ -289,6 +289,7 @@ declare namespace BaseCards {
   export import ParentCollectionName = Cards.ParentCollectionName;
   export import CollectionClass = Cards.CollectionClass;
   export import Collection = Cards.Collection;
+  export import Invalid = Cards.Invalid;
   export import Stored = Cards.Stored;
   export import Source = Cards.Source;
   export import PersistedData = Cards.PersistedData;

@@ -161,6 +161,12 @@ declare global {
     type Collection = Journal.Configured;
 
     /**
+     * An instance of `JournalEntry` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid extends Document.Invalid<JournalEntry.Implementation> {}
+
+    /**
      * An instance of `JournalEntry` that comes from the database.
      */
     interface Stored extends Document.Stored<JournalEntry.Implementation> {}

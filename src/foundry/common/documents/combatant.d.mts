@@ -270,6 +270,7 @@ declare namespace BaseCombatant {
   export import ParentCollectionName = Combatant.ParentCollectionName;
   export import CollectionClass = Combatant.CollectionClass;
   export import Collection = Combatant.Collection;
+  export import Invalid = Combatant.Invalid;
   export import Stored = Combatant.Stored;
   export import Source = Combatant.Source;
   export import PersistedData = Combatant.PersistedData;

@@ -203,6 +203,12 @@ declare global {
     type Collection = CardStacks.Configured;
 
     /**
+     * An instance of `Cards` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid<out SubType extends Cards.SubType = Cards.SubType> extends Document.Invalid<OfType<SubType>> {}
+
+    /**
      * An instance of `Cards` that comes from the database.
      */
     interface Stored<out SubType extends Cards.SubType = Cards.SubType> extends Document.Stored<OfType<SubType>> {}

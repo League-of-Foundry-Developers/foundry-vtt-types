@@ -219,6 +219,12 @@ declare global {
     type Collection = Actors.Configured;
 
     /**
+     * An instance of `Actor` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid<out SubType extends Actor.SubType = Actor.SubType> extends Document.Invalid<OfType<SubType>> {}
+
+    /**
      * An instance of `Actor` that comes from the database.
      */
     interface Stored<out SubType extends Actor.SubType = Actor.SubType> extends Document.Stored<OfType<SubType>> {}

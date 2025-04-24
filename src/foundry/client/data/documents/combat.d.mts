@@ -214,6 +214,12 @@ declare global {
     type Collection = CombatEncounters.Configured;
 
     /**
+     * An instance of `Combat` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid<out SubType extends Combat.SubType = Combat.SubType> extends Document.Invalid<OfType<SubType>> {}
+
+    /**
      * An instance of `Combat` that comes from the database.
      */
     interface Stored<out SubType extends Combat.SubType = Combat.SubType> extends Document.Stored<OfType<SubType>> {}

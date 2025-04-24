@@ -152,6 +152,12 @@ declare global {
     type Collection = Macros.Configured;
 
     /**
+     * An instance of `Macro` that comes from the database but failed validation meaining that
+     * its `system` and `_source` could theoretically be anything.
+     */
+    interface Invalid<out SubType extends Macro.SubType = Macro.SubType> extends Document.Invalid<OfType<SubType>> {}
+
+    /**
      * An instance of `Macro` that comes from the database.
      */
     interface Stored<out SubType extends Macro.SubType = Macro.SubType> extends Document.Stored<OfType<SubType>> {}

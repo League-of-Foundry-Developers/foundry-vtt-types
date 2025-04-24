@@ -261,6 +261,7 @@ declare namespace BaseJournalEntryPage {
   export import ParentCollectionName = JournalEntryPage.ParentCollectionName;
   export import CollectionClass = JournalEntryPage.CollectionClass;
   export import Collection = JournalEntryPage.Collection;
+  export import Invalid = JournalEntryPage.Invalid;
   export import Stored = JournalEntryPage.Stored;
   export import Source = JournalEntryPage.Source;
   export import PersistedData = JournalEntryPage.PersistedData;
