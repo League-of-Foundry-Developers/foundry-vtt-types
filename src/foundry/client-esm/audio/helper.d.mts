@@ -100,9 +100,6 @@ declare class AudioHelper {
    * @param src - A requested audio source path
    * @returns Does the filename end with a valid audio extension?
    */
-  // TODO: investigate implementing pf2e-style types for path strings with valid extensions
-  // https://github.com/foundryvtt/pf2e/blob/master/types/foundry/common/data/fields.d.ts#L1505
-  // https://github.com/foundryvtt/pf2e/blob/master/types/foundry/common/data/validators.d.ts#L40
   static hasAudioExtension(src: string): boolean;
 
   /**

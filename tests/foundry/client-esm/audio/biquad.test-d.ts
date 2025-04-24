@@ -10,7 +10,7 @@ bqf = new BiquadFilterEffect(context, {});
 // all possible properties, most of which are deep magic as far as the test author is concerned
 bqf = new BiquadFilterEffect(context, {
   intensity: 5,
-  type: "highshelf", // TODO: Still not sure if values other than "highpass" or "lowpass" are valid for construction (they're not for #update)
+  type: "highpass",
   channelCount: 3,
   channelCountMode: "clamped-max",
   channelInterpretation: "discrete",

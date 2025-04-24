@@ -9,6 +9,8 @@ expectTypeOf(Sound.emittedEvents).toEqualTypeOf<string[]>();
 const path = "a/path/to/some/sound/file.ogg";
 declare const context: AudioContext;
 
+// @ts-expect-error A sound requires a `src` path
+new Sound();
 let sound = new Sound(path);
 sound = new Sound(path, {});
 sound = new Sound(path, { context, forceBuffer: true });
@@ -120,7 +122,7 @@ expectTypeOf(sound.wait(1)).toEqualTypeOf<Promise<void>>();
 expectTypeOf(sound.schedule(callback, 42)).toEqualTypeOf<Promise<void>>();
 expectTypeOf(sound.schedule(() => 3, 3)).toEqualTypeOf<Promise<number>>();
 expectTypeOf(sound.schedule(() => "a", 3)).toEqualTypeOf<Promise<string>>();
-expectTypeOf(sound.schedule(async () => "a", 3)).toEqualTypeOf<Promise<Promise<string>>>();
+expectTypeOf(sound.schedule(async () => "a", 3)).toEqualTypeOf<Promise<string>>();
 expectTypeOf(sound.applyEffects()).toEqualTypeOf<void>();
 
 expectTypeOf(sound["_createNodes"]()).toBeVoid();

@@ -33,15 +33,22 @@ declare namespace BiquadFilterEffect {
   interface AnyConstructor extends Identity<typeof AnyBiquadFilterEffect> {}
 
   /**
-   * @remarks Foundry keeps this specific list in a private static property of {@link BiquadFilterEffect | `BiquadFilterEffect`}.
+   * @internal
+   * Foundry keeps this specific list in a private static property of {@link BiquadFilterEffect | `BiquadFilterEffect`}.
    * It is typed as it is to make obvious where it comes from.
    *
    * @privateRemarks An `Exclude` would have been shorter but for all we know the lib type might change, this is reliable
    */
-  type AllowedFilterType = Extract<
+  type AspirationalAllowedFilterType = Extract<
     "lowpass" | "highpass" | "bandpass" | "lowshelf" | "highshelf" | "peaking" | "notch",
     BiquadFilterType
   >;
+
+  /**
+   * @remarks Despite `BiquadFilterEffect.#ALLOWED_TYPES` containing everything in the Aspirational
+   * type, the runtime logic will throw on anything but these two values
+   */
+  type AllowedFilterType = Extract<"highpass" | "lowpass", AspirationalAllowedFilterType>;
 
   /** @internal */
   type _ConstructorOptions = InexactPartial<{
@@ -78,8 +85,8 @@ declare namespace BiquadFilterEffect {
 
     /**
      * A new filter type
-     * @remarks Despite this property allowing any of Foundry's allowed filter types, if you set it to
-     * anything other than `"highpass"` or `"lowpass"`, `update` throws.
+     * @see {@link BiquadFilterEffect.AllowedFilterType | `BiquadFilterEffect.AllowedFilterType`}
+     * @see {@link BiquadFilterEffect.AspirationalAllowedFilterType | `BiquadFilterEffect.AspirationalAllowedFilterType`}
      */
     type: AllowedFilterType;
   }>;

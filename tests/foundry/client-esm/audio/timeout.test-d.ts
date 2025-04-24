@@ -6,8 +6,8 @@ declare const context: AudioContext;
 declare const callback: () => NonsenseReturn;
 
 // @ts-expect-error construction requires a delay in ms to be passed
-let timeout = new AudioTimeout();
-timeout = new AudioTimeout(300);
+new AudioTimeout();
+let timeout = new AudioTimeout(300);
 timeout = new AudioTimeout(300, {});
 timeout = new AudioTimeout(300, { context: null, callback: null });
 timeout = new AudioTimeout(300, { context: undefined, callback: undefined });

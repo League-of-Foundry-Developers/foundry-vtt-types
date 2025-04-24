@@ -29,7 +29,7 @@ const playDataNullish = {
 } as const;
 
 // @ts-expect-error Must pass a `PlayData` with a `src` prop
-expectTypeOf(AudioHelper.play()).toEqualTypeOf<Promise<Sound>>();
+AudioHelper.play();
 expectTypeOf(AudioHelper.play({ src: path })).toEqualTypeOf<Promise<Sound>>();
 expectTypeOf(AudioHelper.play(playData)).toEqualTypeOf<Promise<Sound>>();
 expectTypeOf(AudioHelper.play(playDataNullish)).toEqualTypeOf<Promise<Sound>>();

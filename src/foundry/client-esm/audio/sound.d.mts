@@ -1,4 +1,4 @@
-import type { Brand, Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Brand, Identity, InexactPartial, MaybePromise, NullishProps } from "fvtt-types/utils";
 import EventEmitterMixin = foundry.utils.EventEmitterMixin;
 
 /**
@@ -264,7 +264,7 @@ declare class Sound extends EventEmitterMixin(Object) {
    * sound.schedule(() => console.log("Do something 5 seconds before the end of the track"), sound.duration - 5);
    * ```
    */
-  schedule<R extends Sound.ScheduleCallback>(fn: R, playbackTime: number): Promise<ReturnType<R>>;
+  schedule<R extends Sound.ScheduleCallback>(fn: R, playbackTime: number): Promise<Awaited<ReturnType<R>>>;
 
   /**
    * Update the array of effects applied to a Sound instance.
@@ -392,7 +392,7 @@ declare namespace Sound {
 
   /**
    * @internal
-   * Since `Sound##playback` isn't exposed, this interface can *just* be accurate to wht's allowable to pass
+   * Since `Sound##playback` isn't exposed, this interface can *just* be accurate to what's allowable to pass
    * to {@link Sound.play | `Sound#play`} or {@link Sound.stop | `#stop`}, which in reality is what's allowed
    * by `Sound##configurePlayback`
    */
@@ -496,7 +496,7 @@ declare namespace Sound {
 
   interface FadeOptions extends _FadeOptions {}
 
-  type ScheduleCallback = (sound: Sound) => void;
+  type ScheduleCallback = (sound: Sound) => MaybePromise<unknown>;
 }
 export default Sound;
 
