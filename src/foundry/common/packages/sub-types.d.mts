@@ -18,9 +18,10 @@ declare class AdditionalTypesField<
 > {
   static get _defaults(): AdditionalTypesField.DefaultOptions;
 
+  // options: not null (parameter default only, property access)
   protected _validateType(
     value: ObjectField.InitializedType<Options>,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | void;
 }
 

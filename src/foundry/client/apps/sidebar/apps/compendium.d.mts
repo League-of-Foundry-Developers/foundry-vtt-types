@@ -86,6 +86,8 @@ declare global {
   namespace Compendium {
     interface Any extends Compendium<any, any> {}
 
+    type PackID = `${string}.${string}`;
+
     interface Options<Metadata extends CompendiumCollection.Metadata = CompendiumCollection.Metadata>
       extends DocumentDirectory.Options<Document.ImplementationClassFor<Metadata["type"]>> {
       // TODO(LukeAbby): Replace with `CompendiumCollection<Metadata>` when possible.

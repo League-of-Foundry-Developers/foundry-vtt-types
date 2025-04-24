@@ -1,9 +1,10 @@
-import type { SchemaField, DataSchema } from "../../../common/data/fields.d.mts";
-import type { BaseActor, BaseActorDelta } from "../../../common/documents/_module.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { BaseActorDelta } from "../../../common/documents/_module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { ConfiguredActorDelta } from "../../../../configuration/index.d.mts";
-import type { Merge } from "../../../../utils/index.d.mts";
+import type { Identity, Merge, NullishProps, RequiredProps } from "../../../../utils/index.d.mts";
+import type DataModel from "../../../common/abstract/data.d.mts";
 
 declare global {
   namespace ActorDelta {
@@ -14,8 +15,16 @@ declare global {
 
     /**
      * The arguments to construct the document.
+     * @privateRemarks This is off-template, as ActorDelta throws if not provided a valid TokenDocument
+     * parent in the construction context
      */
-    interface ConstructorArgs extends Document.ConstructorParameters<CreateData, Parent> {}
+    interface ConstructorArgs
+      extends Identity<
+        [
+          data: CreateData | undefined,
+          context: RequiredProps<Document.ConstructionContext<TokenDocument.Implementation>, "parent">,
+        ]
+      > {}
 
     /**
      * The documents embedded within `ActorDelta`.
@@ -266,16 +275,19 @@ declare global {
 
       /**
        * The name override, if any.
+       * @defaultValue `null`
        */
       name: fields.StringField<{ required: false; nullable: true; initial: null }>;
 
       /**
        * The type override, if any.
+       * @defaultValue `null`
        */
       type: fields.StringField<{ required: false; nullable: true; initial: null }>;
 
       /**
        * The image override, if any.
+       * @defaultValue `null`
        */
       img: fields.FilePathField<{ categories: ["IMAGE"]; nullable: true; initial: null; required: false }>;
 
@@ -299,6 +311,7 @@ declare global {
 
       /**
        * Ownership overrides.
+       * @defaultValue `null`
        */
       ownership: fields.DocumentOwnershipField<{ required: false; nullable: true; initial: null }>;
 
@@ -458,6 +471,17 @@ declare global {
      * @deprecated {@link ActorDelta.Implementation | `ActorDelta.Implementation`}
      */
     type ConfiguredInstance = Implementation;
+
+    /** @internal */
+    type _InitializeOptions = NullishProps<{
+      /**
+       * @remarks Is this initialization part of a {@link Scene.reset | `Scene#reset`} call? (skips further initialization if truthy)
+       * @defaultValue `false`
+       */
+      sceneReset: boolean;
+    }>;
+
+    interface InitializeOptions extends Document.InitializeOptions, _InitializeOptions {}
   }
 
   /**
@@ -473,9 +497,11 @@ declare global {
      */
     constructor(...args: ActorDelta.ConstructorArgs);
 
-    protected override _configure(options?: { pack?: string | null }): void;
+    // options: not null (parameter default only, destructured in super)
+    protected override _configure(options?: Document.ConfigureOptions): void;
 
-    protected override _initialize(options?: any): void;
+    // options: not null (destructured)
+    protected override _initialize(options?: ActorDelta.InitializeOptions): void;
 
     /** Pass-through the type from the synthetic Actor, if it exists. */
     _type: string;
@@ -483,16 +509,14 @@ declare global {
     /**
      * Apply this ActorDelta to the base Actor and return a synthetic Actor.
      * @param context - Context to supply to synthetic Actor instantiation.
+     * @remarks Forwards `context` to {@link BaseActorDelta.applyDelta | `this.constructor.applyDelta(this, this.parent.baseActor, context)`}
      */
-    apply(context: unknown): Actor.Implementation;
+    apply(context?: BaseActorDelta.ApplyDeltaContext | null): Actor.Implementation | null;
 
     /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
     override prepareEmbeddedDocuments(): void;
 
-    override updateSource(
-      changes?: SchemaField.AssignmentData<BaseActor.Schema>,
-      options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
-    ): object;
+    override updateSource(changes?: Actor.UpdateData, options?: DataModel.UpdateOptions): Actor.UpdateData;
 
     override reset(): void;
 

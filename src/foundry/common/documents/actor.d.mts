@@ -1,4 +1,4 @@
-import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -29,28 +29,48 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    */
   constructor(...args: Actor.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Actor",
+   *   collection: "actors",
+   *   indexed: true,
+   *   compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"],
+   *   embedded: {ActiveEffect: "effects", Item: "items"},
+   *   hasTypeData: true,
+   *   label: "DOCUMENT.Actor",
+   *   labelPlural: "DOCUMENT.Actors",
+   *   permissions: {
+   *     create: this.#canCreate,
+   *     update: this.#canUpdate
+   *   },
+   *   schemaVersion: "12.324"
+   * });
+   * ```
+   */
   static override metadata: BaseActor.Metadata;
 
   static override defineSchema(): BaseActor.Schema;
 
   /**
    * The default icon used for newly created Actor documents.
-   * @defaultValue `CONST.DEFAULT_TOKEN`
+   * @defaultValue `CONST.DEFAULT_TOKEN` (`"icons/svg/mystery-man.svg"`)
    */
   static DEFAULT_ICON: string;
 
   /**
    * Determine default artwork based on the provided actor data
    * @param actorData - The source actor data
+   * @remarks Foundry's implementation does not use `actorData`
    */
-  static getDefaultArtwork(actorData: BaseActor.CreateData): {
-    img: string;
-    texture: { src: string };
-  };
+  static getDefaultArtwork(actorData?: BaseActor.CreateData): BaseActor.GetDefaultArtworkReturn;
 
+  /** @remarks `||=`s the `prototypeToken`'s `name` and `texture.src` fields with the main actor's values */
+  // options: not null (parameter default only)
   protected override _initializeSource(
     data: BaseActor.CreateData | this,
-    options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
+    options?: Document.InitializeSourceOptions,
   ): BaseActor.Source;
 
   static override canUserCreate(user: User.Implementation): boolean;
@@ -244,16 +264,30 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static override _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
-  protected static _addDataFieldMigration(
-    data: AnyObject,
+  // options: not null (parameter default only)
+  protected static override _addDataFieldShim(
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyObject) => unknown,
-  ): unknown;
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
-  protected static _logDataFieldMigration(
+  protected static override _addDataFieldMigration(
+    data: AnyMutableObject,
+    oldKey: string,
+    newKey: string,
+    apply?: ((data: AnyMutableObject) => unknown) | null,
+  ): boolean;
+
+  // options: not null (destructured where forwarded)
+  protected static override _logDataFieldMigration(
     oldKey: string,
     newKey: string,
     options?: LogCompatibilityWarningOptions,
@@ -351,6 +385,11 @@ declare namespace BaseActor {
    * @deprecated {@link BaseActor.CreateData | `BaseActor.CreateData`}
    */
   interface ConstructorData extends SchemaField.CreateData<Schema> {}
+
+  interface GetDefaultArtworkReturn {
+    img: string;
+    texture: { src: string };
+  }
 }
 
 export default BaseActor;

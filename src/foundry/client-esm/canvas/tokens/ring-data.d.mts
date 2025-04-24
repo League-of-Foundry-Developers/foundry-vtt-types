@@ -91,6 +91,7 @@ declare class ClassReferenceField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
+  // data: not null (passed to user-provided initialization functions)
   override getInitialValue(data: DataField.CleanOptions["source"]): InitializedType;
 }
 

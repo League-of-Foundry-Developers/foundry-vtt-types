@@ -658,7 +658,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
   // options: not null (destructured when passed to super)
   constructor(
     data?: PrototypeToken.ConstructorData | null,
-    options?: DataModel.DataValidationOptions<PrototypeToken.Parent>,
+    options?: DataModel.ConstructionContext<PrototypeToken.Parent>,
   );
 
   /**
