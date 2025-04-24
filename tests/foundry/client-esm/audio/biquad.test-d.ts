@@ -20,7 +20,7 @@ bqf = new BiquadFilterEffect(context, {
   Q: 7,
 });
 
-// what Foundry actually expects to effectively pass, based on CONFIG.soundEffects defaults
+// what Foundry actually expects you to pass, based on CONFIG.soundEffects defaults
 // and the examples for `SoundsLayer#playAtPosition`
 bqf = new BiquadFilterEffect(context, {
   intensity: 4,
