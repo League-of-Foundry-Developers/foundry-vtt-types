@@ -2319,11 +2319,11 @@ declare namespace EmbeddedCollectionField {
    * A type to infer the assignment element type of an EmbeddedCollectionField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
    */
-  // Note(LukeAbby): For some reason checking `extends Document` causes issues where `extends DataModel` doesn't.
+  // Note(LukeAbby): For some reason checking `extends Document` causes issues where this doesn't.
   type AssignmentElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends abstract new (
     ...args: infer _1
-  ) => DataModel<infer Schema, infer _2, infer _3>
-    ? SchemaField.AssignmentData<Schema>
+  ) => { " __fvtt_types_internal_assignment_data": infer AssignmentData }
+    ? AssignmentData
     : never;
 
   /**
@@ -2337,11 +2337,11 @@ declare namespace EmbeddedCollectionField {
    * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
    */
-  // Note(LukeAbby): For some reason checking `extends Document` causes issues where `extends DataModel` doesn't.
+  // Note(LukeAbby): For some reason checking `extends Document` causes issues where this doesn't.
   type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends abstract new (
     ...args: infer _1
-  ) => DataModel<infer Schema, infer _2, infer _3>
-    ? SchemaField.SourceData<Schema>
+  ) => { " __fvtt_types_internal_source_data": infer AssignmentData }
+    ? AssignmentData
     : never;
 
   /**
