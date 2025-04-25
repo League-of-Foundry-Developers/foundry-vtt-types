@@ -1,5 +1,7 @@
+export {};
+
 // Copied implementation from Foundry's calendar.mjs
-const _gregorian: foundry.data.CalendarData.CreateData = {
+const _gregorian = {
   name: "Simplified Gregorian",
   description: "The Gregorian calendar with some simplifications regarding leap years or seasonal timing.",
   years: {
@@ -60,4 +62,4 @@ const _gregorian: foundry.data.CalendarData.CreateData = {
       { name: "CALENDAR.Gregorian.Winter", monthStart: 12, monthEnd: 2 },
     ],
   },
-};
+} satisfies foundry.data.CalendarData.CreateData;

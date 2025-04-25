@@ -1,6 +1,6 @@
 import type DataModel from "@common/abstract/data.d.mts";
 import type * as fields from "@common/data/fields.mjs";
-import type { AnyObject, EmptyObject, NullishProps } from "../../../utils/index.d.mts";
+import type { AnyObject, NullishProps } from "../../../utils/index.d.mts";
 
 declare namespace CalendarData {
   interface Schema extends fields.DataSchema {
@@ -239,6 +239,8 @@ declare namespace CalendarData {
     leapYear: boolean;
   }
 
+  type InputTimeComponent = NullishProps<TimeComponents>;
+
   // TODO: Reference CONFIG
   type Formatters = "formatTimestamp" | "formatAgo";
 
@@ -248,8 +250,10 @@ declare namespace CalendarData {
   type TimeFormatter<Options> = (
     /** The configured calendar */
     calendar: CalendarData,
+
     /** Time components to format */
     components: TimeComponents,
+
     /** Additional formatting options */
     options: Options,
   ) => string;
@@ -265,12 +269,14 @@ declare namespace CalendarData {
  * Game Time Calendar configuration data model.
  */
 declare class CalendarData extends DataModel<CalendarData.Schema> {
+  static defineSchema(): CalendarData.Schema;
+
   /**
    * Expand a world time integer into an object containing the relevant time components.
    * @param components - An amount of time expressed as components
    * @returns The cumulative time in seconds
    */
-  componentsToTime(components: NullishProps<CalendarData.TimeComponents>): number;
+  componentsToTime(components: CalendarData.InputTimeComponent): number;
 
   /**
    * Compute the difference between some new time and some other time.
@@ -279,8 +285,8 @@ declare class CalendarData extends DataModel<CalendarData.Schema> {
    * @returns The time difference expressed as components
    */
   difference(
-    endTime: NullishProps<CalendarData.TimeComponents>,
-    startTime?: NullishProps<CalendarData.TimeComponents>,
+    endTime: CalendarData.InputTimeComponent,
+    startTime?: CalendarData.InputTimeComponent,
   ): CalendarData.TimeComponents;
 
   /**
@@ -290,8 +296,8 @@ declare class CalendarData extends DataModel<CalendarData.Schema> {
    * @param options   - Options passed to the formatter function
    * @returns The formatted date and time string
    */
-  format<Options extends EmptyObject>(
-    time: number | NullishProps<CalendarData.TimeComponents>,
+  format<Options extends AnyObject>(
+    time: number | CalendarData.InputTimeComponent,
     formatter?: CalendarData.Formatters | CalendarData.TimeFormatter<Options>,
     options?: Options,
   ): string;
