@@ -70,7 +70,5 @@ declare global {
 declare class AnyDocument extends Document<Document.Type, {}, Document.Any | null> {
   constructor(...args: any[]);
 
-  flags?: unknown;
-
   getFlag(scope: never, key: never): any;
 }

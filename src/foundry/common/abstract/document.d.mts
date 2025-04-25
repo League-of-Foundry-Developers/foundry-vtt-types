@@ -28,6 +28,7 @@ import type {
 import type * as CONST from "../constants.mts";
 import type {
   DataField,
+  DocumentStatsField,
   EmbeddedCollectionField,
   EmbeddedDocumentField,
   SchemaField,
@@ -71,6 +72,20 @@ declare abstract class Document<
   // also it varies based upon the `Schema`. While this could be supported it also simplifies
   // typechecking and helps stymy circularities.
   constructor(...args: never);
+
+  name?: string;
+  system?: object;
+  _stats?: DocumentStatsField.InitializedData;
+  flags?: object;
+
+  /** @internal */
+  " __fvtt_types_internal_source_data": SchemaField.SourceData<Schema>;
+
+  /** @internal */
+  " __fvtt_types_internal_assignment_data": SchemaField.AssignmentData<Schema>;
+
+  /** @internal */
+  " __fvtt_types_internal_initialized_data": SchemaField.InitializedData<Schema>;
 
   override parent: Parent;
 
@@ -870,19 +885,14 @@ declare abstract class AnyDocument extends Document<Document.Type, {}, Document.
   // Note(LukeAbby): This uses `object` instead of `AnyObject` to avoid more thorough evaluation of
   // the involved types which can cause a loop.
   _source: object;
-  system?: object;
-
-  flags?: unknown;
 }
-
-type AnyDocumentClass = typeof AnyDocument;
 
 declare namespace Document {
   /** Any Document, except for Settings */
   interface Any extends AnyDocument {}
   interface AnyStored extends Stored<Any> {}
   interface AnyValid extends AnyDocument {}
-  interface AnyConstructor extends AnyDocumentClass {}
+  interface AnyConstructor extends Identity<typeof AnyDocument> {}
 
   type Type = CONST.ALL_DOCUMENT_TYPES;
 
