@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import Document = foundry.abstract.Document;
+
 const combatTracker = new CombatTracker();
 expectTypeOf(CombatTracker.defaultOptions).toEqualTypeOf<Application.Options>();
 expectTypeOf(combatTracker.options).toEqualTypeOf<Application.Options>();
