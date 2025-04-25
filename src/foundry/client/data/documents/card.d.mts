@@ -544,11 +544,6 @@ declare global {
     get img(): string;
 
     /**
-     * The name of the current card face, or the name of the card itself
-     */
-    get name(): string;
-
-    /**
      * A reference to the source Cards document which defines this Card.
      */
     get source(): Cards.Implementation | undefined | null;
