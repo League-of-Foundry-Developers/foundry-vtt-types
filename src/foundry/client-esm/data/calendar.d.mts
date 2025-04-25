@@ -239,7 +239,7 @@ declare namespace CalendarData {
     leapYear: boolean;
   }
 
-  type InputTimeComponent = NullishProps<TimeComponents>;
+  interface InputTimeComponent extends NullishProps<TimeComponents> {}
 
   // TODO: Reference CONFIG
   type Formatters = "formatTimestamp" | "formatAgo";
