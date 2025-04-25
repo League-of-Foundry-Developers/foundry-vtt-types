@@ -3802,8 +3802,19 @@ declare namespace DocumentStatsField {
     MergedOptions<Opts>
   >;
 
-  type ConstructorData = SchemaField.CreateData<Schema>;
+  interface CreateData extends SchemaField.CreateData<Schema> {}
+
+  interface InitializedData extends SchemaField.InitializedData<Schema> {}
+
+  interface SourceData extends SchemaField.SourceData<Schema> {}
+
+  /** @deprecated {@link DocumentStatsField.CreateData | `DocumentStatsField.CreateData`} */
+  type ConstructorData = CreateData;
+
+  /** @deprecated {@link DocumentStatsField.InitializedData | `DocumentStatsField.InitializedData`} */
   type Properties = SchemaField.InitializedData<Schema>;
+
+  /** @deprecated {@link DocumentStatsField.SourceData | `DocumentStatsField.SourceData`} */
   type Source = SchemaField.SourceData<Schema>;
 
   interface Schema extends DataSchema {
