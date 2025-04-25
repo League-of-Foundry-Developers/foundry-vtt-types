@@ -1,9 +1,10 @@
-import type { SchemaField, DataSchema } from "../../../common/data/fields.d.mts";
-import type { BaseActor, BaseActorDelta } from "../../../common/documents/_module.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { BaseActorDelta } from "../../../common/documents/_module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { ConfiguredActorDelta } from "../../../../configuration/index.d.mts";
 import type { Merge } from "../../../../utils/index.d.mts";
+import type DataModel from "../../../common/abstract/data.d.mts";
 
 declare global {
   namespace ActorDelta {
@@ -496,8 +497,10 @@ declare global {
     override prepareEmbeddedDocuments(): void;
 
     override updateSource(
-      changes?: SchemaField.AssignmentData<BaseActor.Schema>,
-      options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
+      // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });` and `super.updateSource`.
+      // However it's likely the overlap between these two types is pretty high.
+      changes?: ActorDelta.Source,
+      options?: DataModel.UpdateSourceOptions,
     ): object;
 
     override reset(): void;

@@ -177,7 +177,7 @@ declare abstract class DataModel<
    */
   updateSource(
     changes?: fields.SchemaField.UpdateData<Schema>,
-    options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
+    options?: DataModel.UpdateSourceOptions,
   ): fields.SchemaField.UpdateData<Schema>;
 
   /**
@@ -419,6 +419,12 @@ declare namespace DataModel {
      * example testing a complete data model) by explicitly passing true.
      */
     joint?: boolean;
+  }
+
+  interface UpdateSourceOptions {
+    dryRun?: boolean;
+    fallback?: boolean;
+    recursive?: boolean;
   }
 }
 

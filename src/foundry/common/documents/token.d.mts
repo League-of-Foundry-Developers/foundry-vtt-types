@@ -64,10 +64,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
-  updateSource(
-    changes?: TokenDocument.UpdateData,
-    options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
-  ): TokenDocument.UpdateData;
+  updateSource(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateSourceOptions): TokenDocument.UpdateData;
 
   // TODO: Update with the Delta conditionality
   toObject(source: true): this["_source"];
