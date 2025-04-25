@@ -18,7 +18,6 @@ import type {
   FixedInstanceType,
   NullishProps,
   AllKeysOf,
-  IntentionalPartial,
   DiscriminatedUnion,
   SimpleMerge,
   ValueOf,
@@ -960,51 +959,6 @@ declare namespace Document {
     | (Name extends "RegionBehavior" ? RegionBehavior.OfType<SubType & RegionBehavior.SubType> : never)
     | (Name extends "TableResult" ? TableResult.OfType<SubType & TableResult.SubType> : never);
 
-  /** @internal */
-  type _ActorDeltaSystemData = {
-    [SubType in keyof SystemData["Actor"]]: IntentionalPartial<SystemData["Actor"][SubType]>;
-  };
-
-  // Note(LukeAbby): This is written this way to make it more obviously covariant over `SubType`.
-  // TO BE DELETED
-  type SystemFor<Name extends WithSystem, SubType extends SubTypesOf<Name>> = Name extends "ActorDelta"
-    ? _ActorDeltaSystemData[ActorDelta.SubType]
-    :
-        | DiscriminatedUnion<
-            SystemData extends {
-              readonly [K in Name]: infer Data;
-            }
-              ? SubType extends keyof Data
-                ? Data[SubType] extends object
-                  ? Data[SubType]
-                  : never
-                : never
-              : never
-          >
-        | (SubType extends ModuleSubtype ? UnknownSystem : never);
-
-  interface SystemData extends _SystemData {}
-
-  /** @internal */
-  type _SystemData = {
-    [Name in Type]: {
-      [SubType in SubTypesOf<Name>]: DataModelConfig extends _SubTypeShape<
-        Name,
-        SubType,
-        abstract new (...args: infer _) => infer Model
-      >
-        ? Model
-        : SourceConfig extends _SubTypeShape<Name, SubType, infer Source>
-          ? Source
-          : UnknownSystem;
-    };
-  };
-
-  /** @internal */
-  type _SubTypeShape<Name extends PropertyKey, SubType extends PropertyKey, T> = {
-    readonly [_ in Name]: { readonly [_ in SubType]: T };
-  };
-
   /**
    * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
    * A module can provide its own custom type though it is always of the form `${moduleName}.${subType}` so the `.` is a pretty
@@ -1146,11 +1100,26 @@ declare namespace Document {
         : FixedInstanceType<ConfigurationFailure[Document["documentName"]]>
       : Document;
 
-    type SystemMap<Name extends Document.WithSystem> = SystemData extends {
-      readonly [K in Name]: infer Data;
-    }
-      ? Data
-      : never;
+    type SystemMap<Name extends Document.WithSystem> = _SystemMap<
+      Name,
+      GetKey<DataModelConfig, Name>,
+      GetKey<SourceConfig, Name>
+    >;
+
+    type _SystemMap<Name extends Document.WithSystem, DataModel, SourceData> = {
+      [SubType in SubTypesOf<Name>]: DataModel extends {
+        [K in SubType]: abstract new (...args: infer _) => infer Model;
+      }
+        ? Model
+        : SourceData extends {
+              [K in SubType]: infer Source;
+            }
+          ? Source
+          : SubType extends Document.ModuleSubtype
+            ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+              {}
+            : UnknownSystem;
+    };
 
     type SystemOfType<SystemMap extends Record<SubType, object>, SubType extends string> =
       | DiscriminatedUnion<SystemMap[SubType]>
@@ -1306,7 +1275,7 @@ declare namespace Document {
   type NameFor<ConcreteDocument extends Document.Internal.Constructor> =
     ConcreteDocument[" fvtt_types_internal_document_name_static"];
 
-  type ImplementationFor<Name extends Type> = MakeConform<ConfiguredDocumentInstance[Name], Document.Any>;
+  type ImplementationFor<Name extends Type> = ConfiguredDocumentInstance[Name];
   type ImplementationClassFor<Name extends Type> = ConfiguredDocumentClass[Name];
 
   type ObjectClassFor<Name extends PlaceableType> = CONFIG[Name]["objectClass"];

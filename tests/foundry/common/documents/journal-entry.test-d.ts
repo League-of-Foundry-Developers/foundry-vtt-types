@@ -18,3 +18,28 @@ const journalEntry = await foundry.documents.BaseJournalEntry.create(
 if (journalEntry) {
   expectTypeOf(journalEntry).toEqualTypeOf<JournalEntry.Implementation>();
 }
+
+// Regression test for issue with circular schemas reported by @Eon
+// https://tsplay.dev/mpYKXW
+
+class SpeciesSystem extends foundry.abstract.TypeDataModel<any, Item.Implementation> {
+  static override defineSchema(): any {}
+}
+
+const _actorSystemSchema = {
+  species: new foundry.data.fields.SchemaField(SpeciesSystem.defineSchema()),
+};
+
+class ActorSystem extends foundry.abstract.TypeDataModel<typeof _actorSystemSchema, any> {}
+
+class _PokemonActorSystem extends ActorSystem {
+  method() {}
+}
+
+declare global {
+  interface DataModelConfig {
+    JournalEntry: {
+      pokemon: typeof _PokemonActorSystem;
+    };
+  }
+}
