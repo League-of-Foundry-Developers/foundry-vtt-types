@@ -37,10 +37,10 @@ declare const myEffect: ActiveEffect.Implementation;
 myEffect.getFlag("core", "foobar");
 // All documents have a sheetClass flag
 expectTypeOf(myEffect.getFlag("core", "sheetClass")).toEqualTypeOf<string | undefined>();
-expectTypeOf(myEffect.flags.core!.sheetClass!).toEqualTypeOf<string>();
+expectTypeOf(myEffect.flags.core!.sheetClass).toEqualTypeOf<string | undefined>();
 // Document-specific flag
 expectTypeOf(myEffect.getFlag("core", "overlay")).toEqualTypeOf<boolean | undefined>();
-expectTypeOf(myEffect.flags.core!.overlay!).toEqualTypeOf<boolean>();
+expectTypeOf(myEffect.flags.core!.overlay).toEqualTypeOf<boolean | undefined>();
 
 // TypeDataField
 declare const JEPCoreTypes: JournalEntryPage.SubType;
