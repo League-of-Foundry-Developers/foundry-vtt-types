@@ -30,11 +30,7 @@ declare abstract class DataModel<
    *                  will be owned by the constructed model instance and may be mutated.
    * @param options - Options which affect DataModel construction
    */
-  // TODO(LukeAbby): Make optional only if `{}` is assignable to `AssignmentData`.
-  constructor(
-    data?: DataModel.CreateData<Schema>,
-    { parent, strict, ...options }?: DataModel.DataValidationOptions<Parent> & ExtraConstructorOptions,
-  );
+  constructor(...args: DataModel.ConstructorArgs<Schema, Parent>);
 
   /**
    * Configure the data model instance before validation and initialization workflows are performed.
@@ -280,6 +276,13 @@ declare namespace DataModel {
 
   type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = CreateData<SchemaOf<ConcreteDataModel>>;
 
+  // TODO(LukeAbby): Make optional only if `{}` is assignable to `AssignmentData`.
+  type ConstructorArgs<Schema extends DataSchema, Parent extends DataModel.Any | null = null> = [
+    data?: DataModel.CreateData<Schema>,
+
+    // Note(LukeAbby): `{ parent, strict, ...options }`
+    options?: DataModel.DataValidationOptions<Parent>,
+  ];
   /**
    * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
    *

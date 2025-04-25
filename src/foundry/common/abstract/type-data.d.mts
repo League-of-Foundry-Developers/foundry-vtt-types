@@ -17,8 +17,8 @@ import type Document from "./document.d.mts";
 type DataSchema = foundry.data.fields.DataSchema;
 
 interface _InternalTypeDataModelInterface extends DataModel.AnyConstructor {
-  new <Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends DataModel<Schema, Parent>>(
-    ...args: ConstructorParameters<typeof DataModel<Schema, Parent>>
+  new <Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends object>(
+    ...args: DataModel.ConstructorArgs<Schema, Parent>
 
     // Note(LukeAbby): This seemingly redundant `DataModel<Schema, Parent>` is to
     // Ensure that TypeScript allows overriding `protected` methods in subclasses.
@@ -35,14 +35,7 @@ declare class _InternalTypeDataModel<
   BaseData extends AnyObject = EmptyObject,
   DerivedData extends AnyObject = EmptyObject,
   // This does not work if inlined. It's weird to put it here but it works.
-  _ComputedInstance extends DataModel<Schema, Parent> = SimpleMerge<
-    Merge<RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>,
-    // The merge is written this way because properties in the data model _cannot_ be allowed to be overridden by the base or derived data.
-    // In theory this could be allowed but it causes a few difficulties.
-    // The fundamental issue is that allowing this would cause subclasses to no longer guaranteed to be valid subtypes.
-    // A particularly thorny but not fully fundamental issue is that it also causes difficulties with `this` inside of classes generic over `BaseData`.
-    DataModel<Schema, Parent>
-  >,
+  _ComputedInstance extends object = Merge<RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>,
 > extends _InternalTypeDataModelConst<Schema, Parent, _ComputedInstance> {}
 
 declare const __TypeDataModelBrand: unique symbol;
