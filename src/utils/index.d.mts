@@ -1263,3 +1263,17 @@ type _DiscriminatedUnion<U extends object, AllKeys extends AllKeysOf<U>> = U ext
 export type PickValue<T extends object, Value> = {
   [K in keyof T as T[K] extends Value ? K : never]: T[K];
 };
+
+/**
+ * Represnts a valid JSON value.
+ */
+export type JSONValue =
+  | {
+      readonly [K: string]: JSONValue;
+    }
+  | readonly JSONValue[]
+  | number
+  | string
+  | boolean
+  | null
+  | undefined;

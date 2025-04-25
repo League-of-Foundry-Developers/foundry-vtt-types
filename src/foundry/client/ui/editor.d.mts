@@ -1,6 +1,5 @@
 import type { EditorView } from "prosemirror-view";
-import type { AnyObject, InexactPartial, MaybePromise } from "fvtt-types/utils";
-import type Document from "../../common/abstract/document.d.mts";
+import type { AnyObject, JSONValue, MaybePromise } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -119,10 +118,7 @@ declare global {
      * @param suffix     - A suffix string to append to denote that the text was truncated.
      *                     (default: `"…"`)
      */
-    static truncateText(
-      text: string,
-      { maxLength, splitWords, suffix }?: { maxLength?: number; splitWords?: boolean; suffix?: string },
-    ): string;
+    static truncateText(text: string, { maxLength, splitWords, suffix }?: TextEditor.TruncateTextOptions): string;
 
     /**
      * Recursively identify the text nodes within a parent HTML node for potential content replacement.
@@ -166,10 +162,7 @@ declare global {
      */
     protected static _createContentLink(
       match: RegExpMatchArray,
-      options?: InexactPartial<{
-        /** A document to resolve relative UUIDs against.*/
-        relativeTo: foundry.abstract.Document.Any;
-      }>,
+      options?: TextEditor.CreateContentLinkOptions,
     ): Promise<HTMLAnchorElement>;
 
     /**
@@ -288,9 +281,7 @@ declare global {
      * @remarks `TokensLayer#_onDropActorData` returns a number - a notification ID - the  if the user lacks permissions
      * @remarks `User#assignHotbarMacro` returns a promise to a user document
      */
-    static getDragEventData(
-      event: DragEvent,
-    ): PlaceableObject | number | Promise<Document.ImplementationClassFor<"User">>;
+    static getDragEventData(event: DragEvent): JSONValue;
 
     /**
      * Given a Drop event, returns a Content link if possible such as `@Actor[ABC123]`, else null
@@ -298,13 +289,7 @@ declare global {
      * @param options   - Additional options to configure link creation.
      */
     // TODO: improve as part of https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/928
-    static getContentLink(
-      eventData: object,
-      options?: InexactPartial<{
-        /** A document to generate the link relative to. */
-        relativeTo: foundry.abstract.Document.Any;
-      }>,
-    ): Promise<string | null>;
+    static getContentLink(eventData: object, options?: TextEditor.GetContentLinkOptions): Promise<string | null>;
 
     /**
      * Upload an image to a document's asset path.
@@ -436,6 +421,13 @@ declare global {
       rolls?: boolean | undefined;
 
       /**
+       * Replace embedded content?
+       */
+      embeds?: boolean | undefined;
+
+      _embedDepth?: number | null | undefined;
+
+      /**
        * The data object providing context for inline rolls, or a function that produces it.
        */
       rollData?: AnyObject | (() => AnyObject) | undefined;
@@ -541,6 +533,22 @@ declare global {
        * to be inserted into the final enriched content.
        */
       enricher: Enricher;
+    }
+
+    interface TruncateTextOptions {
+      maxLength?: number;
+      splitWords?: boolean;
+      suffix?: string;
+    }
+
+    interface GetContentLinkOptions {
+      /** A document to generate the link relative to. */
+      relativeTo?: foundry.abstract.Document.Any | undefined;
+    }
+
+    interface CreateContentLinkOptions {
+      /** A document to resolve relative UUIDs against.*/
+      relativeTo?: foundry.abstract.Document.Any | undefined;
     }
   }
 }
