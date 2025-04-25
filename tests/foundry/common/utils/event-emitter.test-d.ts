@@ -1,14 +1,19 @@
 import { expectTypeOf } from "vitest";
-import type EventEmitterMixin from "../../../../src/foundry/common/utils/event-emitter.d.mts";
+import EventEmitterMixin = foundry.utils.EventEmitterMixin;
 
 declare class EventEmitter extends EventEmitterMixin(Object) {}
-declare const eventEmitter: EventEmitter;
-
-declare const listener: (event: Event) => void;
-expectTypeOf(eventEmitter.addEventListener("", listener)).toEqualTypeOf<void>();
-expectTypeOf(eventEmitter.removeEventListener("", listener)).toEqualTypeOf<void>();
-
-declare const event: Event;
-expectTypeOf(eventEmitter.dispatchEvent(event)).toEqualTypeOf<boolean>();
 
 expectTypeOf(EventEmitter.emittedEvents).toEqualTypeOf<string[]>();
+
+declare const listener: (event: Event) => void;
+const eventEmitter = new EventEmitter();
+
+expectTypeOf(eventEmitter.addEventListener("eventName", listener)).toBeVoid();
+expectTypeOf(eventEmitter.addEventListener("eventName", listener, {})).toBeVoid();
+expectTypeOf(eventEmitter.addEventListener("eventName", listener, { once: true })).toBeVoid();
+expectTypeOf(eventEmitter.addEventListener("eventName", listener, { once: null })).toBeVoid();
+
+expectTypeOf(eventEmitter.removeEventListener("eventName", listener)).toBeVoid();
+
+declare const event: Event;
+expectTypeOf(eventEmitter.dispatchEvent(event)).toBeBoolean();

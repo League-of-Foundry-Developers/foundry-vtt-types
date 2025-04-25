@@ -1,22 +1,4 @@
-declare namespace AudioBufferCache {
-  interface Entry {
-    src: string;
-    buffer: AudioBuffer;
-    size: number;
-    locked?: boolean;
-    next?: Entry;
-    previous?: Entry;
-  }
-
-  interface Usage {
-    current: number;
-    max: number;
-    pct: number;
-    currentString: string;
-    maxString: string;
-    pctString: string;
-  }
-}
+import type { Identity } from "../../../utils/index.d.mts";
 
 /**
  * A specialized cache used for audio buffers.
@@ -39,7 +21,7 @@ declare class AudioBufferCache extends Map {
    * @param src - The audio buffer source path
    * @returns The cached audio buffer, or undefined
    */
-  getBuffer(src: string): AudioBuffer;
+  getBuffer(src: string): AudioBuffer | undefined;
 
   /**
    * Insert an AudioBuffer into the buffers cache.
@@ -60,9 +42,38 @@ declare class AudioBufferCache extends Map {
    * @param src    - The audio buffer source path
    * @param locked - Lock the buffer, preventing its expiration?
    */
+  // locked: not null (put directly into an Entry)
   lock(src: string, locked?: boolean): void;
 
   override toString(): string;
 }
 
+declare namespace AudioBufferCache {
+  interface Any extends AnyAudioBufferCache {}
+  interface AnyConstructor extends Identity<typeof AnyAudioBufferCache> {}
+
+  interface Entry {
+    src: string;
+    buffer: AudioBuffer;
+    size: number;
+    locked?: boolean;
+    next?: Entry;
+    previous?: Entry;
+  }
+
+  /** Return type of {@link AudioBufferCache.usage | `AudioBufferCache#usage`} */
+  interface Usage {
+    current: number;
+    max: number;
+    pct: number;
+    currentString: string;
+    maxString: string;
+    pctString: string;
+  }
+}
+
 export default AudioBufferCache;
+
+declare abstract class AnyAudioBufferCache extends AudioBufferCache {
+  constructor(...args: never);
+}
