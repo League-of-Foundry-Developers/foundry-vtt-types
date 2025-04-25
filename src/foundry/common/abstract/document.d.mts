@@ -54,6 +54,22 @@ export default Document;
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
 type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
 
+// Note(LukeAbby): Properties from `Schema` technically derive from `DataModel`. This means that if
+// `name?: string` etc. were to be put in `Document` directly they'd actually override the schema.
+// Therefore this workaround is used to force `DataModel` to override the properties.
+declare const _InternalDocument: (new (...args: any[]) => {
+  name?: string | undefined;
+
+  // `{}` is used so that `{}` and the actual shape of `system` are merged.
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  system?: {} | undefined;
+  _stats?: DocumentStatsField.InitializedData | undefined;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  flags?: {} | undefined;
+}) &
+  typeof DataModel;
+
 /**
  * An extension of the base DataModel which defines a Document.
  * Documents are special in that they are persisted to the database and referenced by _id.
@@ -62,7 +78,7 @@ declare abstract class Document<
   DocumentName extends Document.Type,
   Schema extends DataSchema,
   Parent extends Document.Any | null = null,
-> extends DataModel<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
+> extends _InternalDocument<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
   /**
    * @param data    - Initial data provided to construct the Document
    * @param context - Construction context options
@@ -72,11 +88,6 @@ declare abstract class Document<
   // also it varies based upon the `Schema`. While this could be supported it also simplifies
   // typechecking and helps stymy circularities.
   constructor(...args: never);
-
-  name?: string;
-  system?: object;
-  _stats?: DocumentStatsField.InitializedData;
-  flags?: object;
 
   /** @internal */
   " __fvtt_types_internal_source_data": SchemaField.SourceData<Schema>;
