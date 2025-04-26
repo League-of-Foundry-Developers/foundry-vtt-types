@@ -1,12 +1,11 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const combatTracker = new CombatTracker();
-expectTypeOf(CombatTracker.defaultOptions).toEqualTypeOf<ApplicationOptions>();
-expectTypeOf(combatTracker.options).toEqualTypeOf<ApplicationOptions>();
+expectTypeOf(CombatTracker.defaultOptions).toEqualTypeOf<Application.Options>();
+expectTypeOf(combatTracker.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(combatTracker.getData()).toEqualTypeOf<Promise<object>>();
 expectTypeOf(combatTracker.render(true)).toEqualTypeOf<CombatTracker>();
 
-expectTypeOf(combatTracker.viewed).toEqualTypeOf<Document.Stored<Combat> | null>();
-expectTypeOf(combatTracker.combats).toEqualTypeOf<Document.Stored<Combat>[]>();
+expectTypeOf(combatTracker.viewed).toEqualTypeOf<Combat.Stored | null>();
+expectTypeOf(combatTracker.combats).toEqualTypeOf<Combat.Stored[]>();
 expectTypeOf(combatTracker.createPopout()).toEqualTypeOf<CombatTracker>();

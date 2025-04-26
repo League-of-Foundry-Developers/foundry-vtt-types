@@ -7,7 +7,7 @@ declare global {
    */
   class UserConfig<Options extends UserConfig.Options = UserConfig.Options> extends DocumentSheet<
     Options,
-    User.ConfiguredInstance
+    User.Implementation
   > {
     /**
      * @defaultValue
@@ -37,36 +37,36 @@ declare global {
   namespace UserConfig {
     interface Any extends UserConfig<any> {}
 
-    interface Options extends DocumentSheetOptions<User.ConfiguredInstance> {
+    interface Options extends DocumentSheet.Options<User.Implementation> {
       /**
        * @defaultValue `["sheet", "user-config"]`
        */
-      classes: DocumentSheetOptions["classes"];
+      classes: DocumentSheet.Options["classes"];
 
       /**
        * @defaultValue `"templates/user/user-config.html"`
        */
-      template: DocumentSheetOptions["template"];
+      template: DocumentSheet.Options["template"];
 
       /**
        * @defaultValue `400`
        */
-      width: DocumentSheetOptions["width"];
+      width: DocumentSheet.Options["width"];
 
       /**
        * @defaultValue `"auto"`
        */
-      height: DocumentSheetOptions["height"];
+      height: DocumentSheet.Options["height"];
     }
 
     interface UserConfigData<
-      Options extends DocumentSheetOptions<User.ConfiguredInstance> = DocumentSheetOptions<User.ConfiguredInstance>,
+      Options extends DocumentSheet.Options<User.Implementation> = DocumentSheet.Options<User.Implementation>,
     > {
       user: UserConfig<Options>["object"];
-      actors: Actor.ConfiguredClass[];
+      actors: Actor.ImplementationClass[];
       options: UserConfig<Options>["options"];
     }
   }
 }
 
-type FormData = Pick<User["_source"], "avatar" | "character" | "color">;
+interface FormData extends Pick<User.Implementation["_source"], "avatar" | "character" | "color"> {}

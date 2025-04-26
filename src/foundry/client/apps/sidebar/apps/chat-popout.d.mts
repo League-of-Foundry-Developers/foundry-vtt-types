@@ -5,13 +5,13 @@ declare global {
    * A simple application which supports popping a ChatMessage out to a separate UI window.
    * @typeParam Options - the type of the options object
    */
-  class ChatPopout<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
-    constructor(message: ChatMessage.ConfiguredInstance, options?: Partial<Options>);
+  class ChatPopout<Options extends Application.Options = Application.Options> extends Application<Options> {
+    constructor(message: ChatMessage.Implementation, options?: Partial<Options>);
 
     /**
      * The displayed Chat Message document
      */
-    message: ChatMessage.ConfiguredInstance;
+    message: ChatMessage.Implementation;
 
     /**
      * @defaultValue
@@ -23,7 +23,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     override get id(): string;
 

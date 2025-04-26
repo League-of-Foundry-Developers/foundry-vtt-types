@@ -6,10 +6,10 @@ declare global {
    * The singleton collection of Playlist documents which exist within the active World.
    * This Collection is accessible within the Game object as game.playlists.
    *
-   * @see {@link Playlist} The Playlist document
-   * @see {@link PlaylistDirectory} The PlaylistDirectory sidebar directory
+   * @see {@link Playlist | `Playlist`} The Playlist document
+   * @see {@link PlaylistDirectory | `PlaylistDirectory`} The PlaylistDirectory sidebar directory
    */
-  class Playlists extends WorldCollection<typeof foundry.documents.BasePlaylist, "Playlists"> {
+  class Playlists extends WorldCollection<Playlist.ImplementationClass, "Playlists"> {
     static documentName: "Playlist";
 
     /**
@@ -27,15 +27,18 @@ declare global {
      * @param scene - The Scene document being updated
      * @param data  - The incremental update data
      */
-    protected _onChangeScene(scene: Document.Stored<Scene>, data: DeepPartial<Scene["_source"]>): Promise<void>;
+    protected _onChangeScene(scene: Scene.Stored, data: DeepPartial<Scene.Implementation["_source"]>): Promise<void>;
   }
 
   namespace Playlists {
     interface Any extends AnyPlaylists {}
     interface AnyConstructor extends Identity<typeof AnyPlaylists> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Playlist"> {}
+    interface Configured extends Document.ConfiguredCollection<"Playlist"> {}
   }
 }
 
 declare abstract class AnyPlaylists extends Playlists {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

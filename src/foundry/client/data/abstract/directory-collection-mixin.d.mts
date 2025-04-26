@@ -1,43 +1,25 @@
 import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
-import type Document from "../../../common/abstract/document.d.mts";
-
-type DirectoryCollectionMixin_DocumentCollection_Static = DirectoryCollection<DirectoryCollectionMixin.DirectoryTypes> &
-  DocumentCollection<Document.AnyConstructor, string>;
-
-export interface DirectoryCollectionMixin_DocumentCollection_Interface
-  extends DirectoryCollectionMixin_DocumentCollection_Static {
-  new <T extends Document.AnyConstructor, Name extends string>(
-    ...args: ConstructorParameters<typeof DocumentCollection>
-  ): DirectoryCollection<Document.ToConfiguredInstance<T>> & DocumentCollection<Document.ToConfiguredClass<T>, Name>;
-}
-
-type DirectoryCollectionMixin_Collection_Static = DirectoryCollection<DirectoryCollectionMixin.DirectoryTypes> &
-  Collection<CompendiumCollection<CompendiumCollection.Metadata>>;
-
-export interface DirectoryCollectionMixin_Collection_Interface extends DirectoryCollectionMixin_Collection_Static {
-  new (
-    ...args: ConstructorParameters<typeof Collection>
-  ): DirectoryCollection<CompendiumCollection<CompendiumCollection.Metadata>> &
-    Collection<CompendiumCollection<CompendiumCollection.Metadata>>;
-}
 
 /**
  * An extension of the Collection class which adds behaviors specific to tree-based collections of entries and folders.
  */
-// TODO: T should probably extend a subset of documents | CompendiumCollection
-declare class DirectoryCollection<T extends DirectoryCollectionMixin.DirectoryTypes> {
+declare class DirectoryCollection {
   /** @privateRemarks All mixin classses need a constructor like this */
   constructor(...args: any[]);
+
+  // Note(LukeAbby): This isn't really a property on this class but rather it exists on `Collection`.
+  // However since this is only used when merged with a Collection class, it's fine to define it here.
+  contents: readonly unknown[];
 
   /**
    * Reference the set of Folders which contain documents in this collection
    */
-  get folders(): Collection<Folder.Stored>;
+  get folders(): Collection<Folder.Stored, Collection.Methods.Any>;
 
   /**
    * The built tree structure of the DocumentCollection
    */
-  get tree(): DirectoryCollectionMixin.TreeNode<T>;
+  get tree(): DirectoryCollectionMixin.TreeNode<this["contents"]>;
 
   /**
    * The current search mode for this collection
@@ -69,7 +51,7 @@ declare class DirectoryCollection<T extends DirectoryCollectionMixin.DirectoryTy
   /**
    * Return a reference to list of entries which are visible to the User in this tree
    */
-  protected _getVisibleTreeContents(): T[];
+  protected _getVisibleTreeContents(): this["contents"];
 
   /**
    * Initialize the tree by categorizing folders and entries into a hierarchical tree structure.
@@ -111,26 +93,22 @@ declare global {
    * @param BaseCollection - The base collection class to extend
    * @returns A Collection mixed with DirectoryCollection functionality
    */
-  function DirectoryCollectionMixin<
-    T extends DirectoryCollectionMixin.DirectoryTypes,
-    BaseCollection extends DirectoryCollectionMixin.BaseClass,
-  >(BaseCollection: BaseCollection): Mixin<typeof DirectoryCollection<T>, BaseCollection>;
+  function DirectoryCollectionMixin<BaseCollection extends foundry.utils.Collection.AnyConstructor>(
+    BaseCollection: BaseCollection,
+  ): Mixin<typeof DirectoryCollection, BaseCollection>;
 
   namespace DirectoryCollectionMixin {
-    type AnyMixedConstructor = ReturnType<
-      typeof DirectoryCollectionMixin<DirectoryCollectionMixin.DirectoryTypes, DirectoryCollectionMixin.BaseClass>
-    >;
+    interface AnyMixedConstructor
+      extends ReturnType<typeof DirectoryCollectionMixin<foundry.utils.Collection.AnyConstructor>> {}
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = foundry.utils.Collection.AnyConstructor;
-    // TODO: Refine type based on CONST.FOLDER_DOCUMENT_TYPES
-    type DirectoryTypes = object;
 
     interface TreeNode<T> {
       children: TreeNode<T>[];
       depth: number;
       entries: T[];
-      folder: Folder;
+      folder: Folder.Implementation;
       root: boolean;
       visible: boolean;
     }

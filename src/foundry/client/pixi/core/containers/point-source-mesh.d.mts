@@ -68,5 +68,5 @@ declare global {
 }
 
 declare abstract class AnyPointSourceMesh extends PointSourceMesh<PIXI.Shader.Any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

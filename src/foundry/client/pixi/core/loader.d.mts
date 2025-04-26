@@ -47,7 +47,7 @@ declare global {
      *                  (default: `{}`)
      */
     static loadSceneTextures(
-      scene: Scene.ConfiguredInstance,
+      scene: Scene.Implementation,
       options?: TextureLoader.LoadSceneTexturesOptions,
     ): Promise<void>;
 
@@ -170,12 +170,12 @@ declare global {
       /**
        * The maximum number of textures that can be loaded concurrently
        * @remarks Can't be `null` becuase it is eventually passed to the constructor of
-       * {@link foundry.utils.Semaphore}, with only a parameter deafult.
+       * {@link foundry.utils.Semaphore | `foundry.utils.Semaphore`}, with only a parameter deafult.
        */
       maxConcurrent: number;
     }>;
 
-    /** Options for {@link TextureLoader.loadSceneTextures}*/
+    /** Options for {@link TextureLoader.loadSceneTextures | `TextureLoader.loadSceneTextures`}*/
     interface LoadSceneTexturesOptions extends _LoadSceneTexturesOptions {}
 
     /** @internal */
@@ -183,7 +183,7 @@ declare global {
       /**
        * The status message to display in the load bar
        * @remarks Allowed to be null or undefined because ultimately `HTMLElement.textContent = undefined`
-       * or `= null` (via {@link SceneNavigation.displayProgressBar}) does not error and simply blanks textContent.
+       * or `= null` (via {@link SceneNavigation.displayProgressBar | `SceneNavigation.displayProgressBar`}) does not error and simply blanks textContent.
        */
       message: string;
 
@@ -202,7 +202,7 @@ declare global {
       /** @privateRemarks Can't Pick `expireCache`, despite it existing on `LoadSceneTexturesOptions`, as it has a different default here */
       Pick<LoadSceneTexturesOptions, "maxConcurrent">;
 
-    /** Options for {@link TextureLoader#load} */
+    /** Options for {@link TextureLoader.load | `TextureLoader#load`} */
     interface LoadOptions extends _LoadOptions {}
 
     /** @internal */
@@ -252,5 +252,5 @@ declare global {
 }
 
 declare abstract class AnyTextureLoader extends TextureLoader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

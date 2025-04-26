@@ -78,7 +78,7 @@ declare global {
 
     protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
 
-    protected override _canDragLeftStart(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
+    protected override _canDragLeftStart(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
@@ -97,7 +97,7 @@ declare global {
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Region"> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Region.ObjectClass> {
       name: "regions";
       controllableObjects: true;
       confirmDeleteKey: true;
@@ -109,5 +109,5 @@ declare global {
 }
 
 declare abstract class AnyRegionLayer extends RegionLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

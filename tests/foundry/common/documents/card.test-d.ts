@@ -1,11 +1,13 @@
 import { expectTypeOf } from "vitest";
-import CardFaceData = foundry.types.CardFaceData;
+
+// This exists to make the class non-abstract.
+class TestBaseCard extends foundry.documents.BaseCard {}
 
 // @ts-expect-error Name is required
-new foundry.documents.BaseCard();
+new TestBaseCard();
 
-const baseCard = new foundry.documents.BaseCard({ name: "foo", type: "base" });
-expectTypeOf(baseCard._source.faces[0]).toEqualTypeOf<CardFaceData>();
+const baseCard = new TestBaseCard({ name: "foo", type: "base" });
+expectTypeOf(baseCard.faces).toEqualTypeOf<Card.FaceData[]>();
 
 // interface OldCardDataSourceData {
 //   condition: "grubby";

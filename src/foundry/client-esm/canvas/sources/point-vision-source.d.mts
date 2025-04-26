@@ -236,7 +236,7 @@ declare namespace PointVisionSource {
   }
 
   /** @privateRemarks Foundry types this as just the Record, but only ever checks the one key */
-  interface BlindedReasons extends Record<string, boolean> {
+  interface BlindedReasons extends Record<string, boolean | undefined> {
     darkness?: boolean;
   }
 
@@ -252,7 +252,7 @@ declare abstract class AnyPointVisionSource extends PointVisionSource<
   PointSourcePolygon,
   RenderedEffectSource.Layers
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default PointVisionSource;

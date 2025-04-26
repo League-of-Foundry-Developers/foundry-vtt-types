@@ -1,11 +1,12 @@
 // This class exists make it as sound as possible to override these parts of the class and make them
 
-import type { Identity } from "fvtt-types/utils";
+import type { AnyArray, Identity } from "fvtt-types/utils";
 
 // completely unrelated. It's done this way specifically to avoid situations with broken inheritance.
 declare class Map<K, V> extends globalThis.Map<K, V> {
   [Symbol.iterator](): any;
-  forEach(...args: any[]): any;
+  forEach(...args: AnyArray): any;
+  get(...args: AnyArray): any;
 }
 
 /**
@@ -13,7 +14,7 @@ declare class Map<K, V> extends globalThis.Map<K, V> {
  * This concept is reused throughout Foundry VTT where a collection of uniquely identified elements is required.
  * @typeParam T - The type of the objects contained in the Collection
  */
-declare class Collection<V> extends Map<string, V> {
+declare class Collection<V, Methods extends Collection.Methods.Any = Collection.Methods<V>> extends Map<string, V> {
   constructor(entries?: Iterable<readonly [string, V]> | null);
 
   /**
@@ -28,7 +29,7 @@ declare class Collection<V> extends Map<string, V> {
 
   /**
    * Find an entry in the Map using an functional condition.
-   * @see {@link Array#find}
+   * @see {@link Array.find | `Array#find`}
    *
    * @param condition - The functional condition to test. Positional arguments are the value, the index of
    *                    iteration, and the collection being searched.
@@ -47,7 +48,7 @@ declare class Collection<V> extends Map<string, V> {
 
   /**
    * Filter the Collection, returning an Array of entries which match a functional condition.
-   * @see {@link Array#filter}
+   * @see {@link Array.filter | `Array#filter`}
    *
    * @param condition - The functional condition to test. Positional arguments are the value, the
    *                    index of iteration, and the collection being filtered.
@@ -64,7 +65,7 @@ declare class Collection<V> extends Map<string, V> {
 
   /**
    * Apply a function to each element of the collection
-   * @see Array#forEach
+   * @see {@link Array.forEach | `Array#forEach`}
    * @param fn - The function to apply to each element
    *
    * @example Apply a function to each value in the collection
@@ -90,8 +91,7 @@ declare class Collection<V> extends Map<string, V> {
    * c.get("d", {strict: true}); // throws Error
    * ```
    */
-  get(key: string, { strict }: { strict: true }): V;
-  get(key: string, { strict }?: { strict?: false }): V | undefined;
+  get: Methods["get"];
 
   /**
    * Get an entry from the Collection by name.
@@ -123,7 +123,7 @@ declare class Collection<V> extends Map<string, V> {
 
   /**
    * Reduce the Collection by applying an evaluator function and accumulating entries
-   * @see {@link Array#reduce}
+   * @see {@link Array.reduce | `Array#reduce`}
    * @param reducer   - A reducer function applied to each entry value. Positional arguments are the accumulator, the
    *                    value, the index of iteration, and the collection being reduced.
    * @param initial   - An initial value which accumulates with each iteration
@@ -145,7 +145,7 @@ declare class Collection<V> extends Map<string, V> {
 
   /**
    * Test whether a condition is met by some entry in the Collection.
-   * @see Array#some
+   * @see {@link Array.some | `Array#some`}
    * @param condition - The functional condition to test. Positional arguments are the value, the index of iteration,
    *                    and the collection being tested.
    * @returns Was the test condition passed by at least one entry?
@@ -156,16 +156,44 @@ declare class Collection<V> extends Map<string, V> {
    * Convert the Collection to a primitive array of its contents.
    * @returns An array of contained values
    */
-  toJSON(): Array<V extends { toJSON: (...args: any[]) => infer U } ? U : V>;
+  toJSON(): Array<V extends { toJSON: (...args: infer _1) => infer U } ? U : V>;
 }
 
 declare namespace Collection {
   interface Any extends AnyCollection {}
   interface AnyConstructor extends Identity<typeof AnyCollection> {}
+
+  interface GetOptions {
+    /**
+     * Throw an Error if the requested Embedded Document does not exist.
+     * @defaultValue `false`
+     */
+    strict?: boolean | undefined;
+  }
+
+  interface Methods<V> {
+    get<Options extends DocumentCollection.GetOptions>(
+      key: string,
+      { strict }?: Options,
+    ): Collection.GetReturnType<V, Options>;
+  }
+
+  namespace Methods {
+    interface Any {
+      get(key: string, options?: never): unknown;
+    }
+  }
+
+  type GetReturnType<T, Options extends GetOptions> = _ApplyStrict<T, Options["strict"]>;
+
+  /** @internal */
+  type _ApplyStrict<ConcreteDocument, Strict extends boolean | undefined> =
+    | (Strict extends false | undefined ? undefined : never)
+    | ConcreteDocument;
 }
 
-declare abstract class AnyCollection extends Collection<any> {
-  constructor(arg0: never, ...args: never[]);
+declare abstract class AnyCollection extends Collection<unknown, Collection.Methods.Any> {
+  constructor(...args: never);
 }
 
 export default Collection;

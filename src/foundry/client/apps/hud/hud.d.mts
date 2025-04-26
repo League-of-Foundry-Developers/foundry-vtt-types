@@ -8,7 +8,7 @@ declare global {
    */
   abstract class BasePlaceableHUD<
     Object extends PlaceableObject.Any = PlaceableObject,
-    Options extends ApplicationOptions = ApplicationOptions,
+    Options extends Application.Options = Application.Options,
   > extends Application<Options> {
     /**
      * Reference a PlaceableObject this HUD is currently bound to
@@ -25,13 +25,13 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     /**
      * Convenience access for the canvas layer which this HUD modifies
      * @remarks Returns undefined only if there's no object
      */
-    get layer(): Object["layer"] | undefined;
+    get layer(): Object["layer"];
 
     /**
      * Bind the HUD to a new PlaceableObject and display it

@@ -118,7 +118,7 @@ declare class PrimaryOccludableObject {
    * @param options - Additional options that affect testing
    * @returns Is the Token occluded by the PCO?
    */
-  testOcclusion(token: Token.ConfiguredInstance, options?: PrimaryOccludableObjectMixin.TestOcclusionOptions): boolean;
+  testOcclusion(token: Token.Object, options?: PrimaryOccludableObjectMixin.TestOcclusionOptions): boolean;
 
   /**
    * @deprecated since v12, will be removed in v14
@@ -151,7 +151,7 @@ declare global {
   ): Mixin<typeof PrimaryOccludableObject, ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>>;
 
   namespace PrimaryOccludableObjectMixin {
-    type AnyMixedConstructor = ReturnType<typeof PrimaryOccludableObjectMixin<BaseClass>>;
+    interface AnyMixedConstructor extends ReturnType<typeof PrimaryOccludableObjectMixin<BaseClass>> {}
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = PIXI.Container.AnyConstructor;

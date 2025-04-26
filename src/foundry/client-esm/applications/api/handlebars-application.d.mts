@@ -10,7 +10,7 @@ declare function HandlebarsApplicationMixin<BaseClass extends HandlebarsApplicat
 ): Mixin<typeof HandlebarsApplicationMixin.HandlebarsApplication, BaseClass>;
 
 declare namespace HandlebarsApplicationMixin {
-  type AnyMixedConstructor = ReturnType<typeof HandlebarsApplicationMixin<BaseClass>>;
+  interface AnyMixedConstructor extends ReturnType<typeof HandlebarsApplicationMixin<BaseClass>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = ApplicationV2.Internal.Constructor;

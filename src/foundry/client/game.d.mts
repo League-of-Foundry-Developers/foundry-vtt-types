@@ -463,7 +463,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    *
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  get user(): SimpleInitializedOn<Document.Stored<User.ConfiguredInstance>, "setup", RunEvents, null>;
+  get user(): SimpleInitializedOn<User.Stored, "setup", RunEvents, null>;
 
   /**
    * A convenience accessor for the currently viewed Combat encounter
@@ -618,29 +618,15 @@ declare global {
   interface SetupGame extends _SetupGame {}
   interface ReadyGame extends _ReadyGame {}
 
-  interface HotReloadData {
-    /** The type of package which was modified */
-    packageType: string;
-
-    /** The id of the package which was modified */
-    packageId: string;
-
-    /** The updated stringified file content */
-    content: string;
-
-    /** The relative file path which was modified */
-    path: string;
-
-    /** The file extension which was modified, e.g. "js", "css", "html" */
-    extension: string;
-  }
+  /** @deprecated {@link Hooks.HotReloadData | `HotReloadData`} */
+  type HotReloadData = Hooks.HotReloadData;
 
   namespace Game {
     interface ModuleCollection extends Collection<Module> {
       /**
        * Gets the module requested for by ID
-       * @see {@link ModuleConfig} to add custom properties to modules like APIs.
-       * @see {@link RequiredModules} to remove `undefined` from the return type for a given module
+       * @see {@link ModuleConfig | `ModuleConfig`} to add custom properties to modules like APIs.
+       * @see {@link RequiredModules | `RequiredModules`} to remove `undefined` from the return type for a given module
        * @param id - The module ID to look up
        */
       get<T extends string>(id: T): Module & ConfiguredModule<T>;
@@ -655,28 +641,18 @@ declare global {
        *
        * @typeParam DocumentName - the type of the Document this data is for
        */
-      type TypeNames<DocumentName extends Document.Type> =
-        | (string & keyof Model[DocumentName])
-        | (Document.Internal.SimpleMetadata<DocumentName> extends { readonly hasTypeData: true }
-            ? `${string}.${string}` & {}
-            : never);
+      type TypeNames<DocumentType extends Document.Type> = Document.SubTypesOf<DocumentType>;
     }
 
-    type Model = {
+    type _Model = {
       [DocumentType in Document.Type]: {
         // The `& string` is helpful even though there should never be any numeric/symbol keys.
         // This is because when `keyof Config<...>` is deferred then TypeScript does a bunch of proofs under the assumption that `SystemTypeNames` could be a `string | number` until proven otherwise.
         // This causes issues where there shouldn't be, for example it has been observed to obstruct the resolution of the `Actor` class.
-        [SubType in
-          | Document.CoreTypesForName<DocumentType>
-          | keyof GetKey<DataModelConfig, DocumentType, unknown>
-          | keyof GetKey<SourceConfig, DocumentType, unknown> as SubType & string]: GetKey<
-          GetKey<SourceConfig, DocumentType>,
-          SubType,
-          EmptyObject
-        >;
+        [SubType in Model.TypeNames<DocumentType>]: GetKey<GetKey<SourceConfig, DocumentType>, SubType, EmptyObject>;
       };
     };
+    interface Model extends _Model {}
 
     type Data = {
       activeUsers: string[];
@@ -745,8 +721,8 @@ declare global {
     } & {
       [DocumentType in  // eslint-disable-next-line @typescript-eslint/no-deprecated
         | foundry.CONST.DOCUMENT_TYPES
-        | "Setting" as Document.ConfiguredClassForName<DocumentType>["metadata"]["collection"]]?: FixedInstanceType<
-        Document.ConfiguredClassForName<DocumentType>
+        | "Setting" as Document.ImplementationClassFor<DocumentType>["metadata"]["collection"]]?: FixedInstanceType<
+        Document.ImplementationClassFor<DocumentType>
       >["_source"][];
     };
 

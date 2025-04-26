@@ -6,8 +6,8 @@ type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;
 declare global {
   /**
    * The primary Canvas group which generally contains tangible physical objects which exist within the Scene.
-   * This group is a {@link CachedContainer} which is rendered to the Scene as a {@link SpriteMesh}.
-   * This allows the rendered result of the Primary Canvas Group to be affected by a {@link BaseSamplerShader}.
+   * This group is a {@link CachedContainer | `CachedContainer`} which is rendered to the Scene as a {@link SpriteMesh | `SpriteMesh`}.
+   * This allows the rendered result of the Primary Canvas Group to be affected by a {@link BaseSamplerShader | `BaseSamplerShader`}.
    */
   class PrimaryCanvasGroup<
     DrawOptions extends PrimaryCanvasGroup.DrawOptions = PrimaryCanvasGroup.DrawOptions,
@@ -138,39 +138,39 @@ declare global {
      * @param token - The Token being added
      * @returns The added PrimarySpriteMesh
      */
-    addToken(token: Token.ConfiguredInstance): PrimarySpriteMesh;
+    addToken(token: Token.Object): PrimarySpriteMesh;
 
     /**
      * Remove a TokenMesh from the group.
      * @param token - The Token being removed
      */
-    removeToken(token: Token.ConfiguredInstance): void;
+    removeToken(token: Token.Object): void;
 
     /**
      * Draw the SpriteMesh for a specific Token object.
      * @param tile - The Tile being added
      * @returns The added PrimarySpriteMesh
      */
-    addTile(tile: Tile.ConfiguredInstance): PrimarySpriteMesh;
+    addTile(tile: Tile.Object): PrimarySpriteMesh;
 
     /**
      * Remove a TokenMesh from the group.
      * @param tile - The Tile being removed
      */
-    removeTile(tile: Tile.ConfiguredInstance): void;
+    removeTile(tile: Tile.Object): void;
 
     /**
      * Add a PrimaryGraphics to the group.
      * @param drawing - The Drawing being added
      * @returns The created PrimaryGraphics instance
      */
-    addDrawing(drawing: Drawing.ConfiguredInstance): PrimaryGraphics;
+    addDrawing(drawing: Drawing.Object): PrimaryGraphics;
 
     /**
      * Remove a PrimaryGraphics from the group.
      * @param drawing - The Drawing being removed
      */
-    removeDrawing(drawing: Drawing.ConfiguredInstance): void;
+    removeDrawing(drawing: Drawing.Object): void;
 
     /**
      * Override the default PIXI.Container behavior for how objects in this container are sorted.
@@ -218,5 +218,5 @@ declare global {
 }
 
 declare abstract class AnyPrimaryCanvasGroup extends PrimaryCanvasGroup {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

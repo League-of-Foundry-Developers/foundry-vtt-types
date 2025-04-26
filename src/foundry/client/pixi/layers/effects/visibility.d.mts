@@ -4,7 +4,7 @@ declare global {
   /**
    * The visibility Layer which implements dynamic vision, lighting, and fog of war
    * This layer uses an event-driven workflow to perform the minimal required calculation in response to changes.
-   * @see {@link PointSource}
+   * @see {@link PointSource | `PointSource`}
    */
   class CanvasVisibility extends CanvasLayer {
     /**
@@ -68,8 +68,7 @@ declare global {
     /**
      * Does the currently viewed Scene support Token field of vision?
      */
-    // TODO: make `Scene.Implementation["tokenVision"]` when docs v2 is done
-    get tokenVision(): boolean;
+    get tokenVision(): Scene.Implementation["tokenVision"];
 
     /**
      * The configured options used for the saved fog-of-war texture.
@@ -242,5 +241,5 @@ declare global {
 }
 
 declare abstract class AnyCanvasVisibility extends CanvasVisibility {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

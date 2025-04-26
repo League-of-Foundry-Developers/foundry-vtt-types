@@ -2,7 +2,6 @@ import type { AnyArray, AnyObject, InexactPartial, FixedInstanceType } from "fvt
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { CustomFormInput } from "../../client-esm/applications/forms/fields.d.mts";
 import type DataModel from "../../common/abstract/data.d.mts";
-import type Document from "../../common/abstract/document.d.mts";
 import type { DataField } from "../../common/data/fields.d.mts";
 
 declare global {
@@ -13,12 +12,12 @@ declare global {
    * When Foundry Virtual Tabletop is initialized, a singleton instance of this class is constructed within the global
    * Game object as as game.settings.
    *
-   * @see {@link Game#settings}
-   * @see {@link Settings}
-   * @see {@link SettingsConfig}
+   * @see {@link Game.settings | `Game#settings`}
+   * @see {@link Settings | `Settings`}
+   * @see {@link SettingsConfig | `SettingsConfig`}
    */
   class ClientSettings {
-    constructor(worldSettings?: Setting["_source"][]);
+    constructor(worldSettings?: Setting.Implementation["_source"][]);
 
     /**
      * A object of registered game settings for this scope
@@ -161,7 +160,7 @@ declare global {
       namespace: N,
       key: K,
       value: ClientSettings.SettingAssignmentType<N, K>,
-      options?: Document.OnUpsertOptions<"Setting">,
+      options?: Setting.Database.CreateOperation<undefined | false> | Setting.Database.UpdateOperation,
     ): Promise<ClientSettings.SettingInitializedType<N, K>>;
   }
 
@@ -271,7 +270,7 @@ declare global {
     /**
      * A Client Setting
      * @remarks Copied from `resources/app/common/types.mjs`
-     * @remarks Not to be confused with {@link globalThis.SettingConfig} which is how you register setting types in this project
+     * @remarks Not to be confused with {@link globalThis.SettingConfig | `globalThis.SettingConfig`} which is how you register setting types in this project
      */
     interface SettingConfig<T extends Type = (value: unknown) => unknown>
       extends _SettingConfig<ToRuntimeType<T>, ToSettingAssignmentType<T>> {}
@@ -307,7 +306,29 @@ declare global {
       restricted?: boolean | undefined;
     }
 
-    type RegisterSubmenu = Omit<SettingSubmenuConfig, "key" | "namespace">;
+    interface RegisterSubmenu {
+      /** The human readable name */
+      name: string;
+
+      /** The human readable label */
+      label: string;
+
+      /** An additional human readable hint */
+      hint: string;
+
+      /** The classname of an Icon to render */
+      icon: string;
+
+      /**
+       * The FormApplication class to render
+       *
+       * @privateRemarks The phrase "TODO better typing" in the original documentation was stripped.
+       */
+      type: (new () => FormApplication.Any) | (new () => ApplicationV2.Any);
+
+      /** If true, only a GM can edit this Setting */
+      restricted: boolean;
+    }
   }
 }
 

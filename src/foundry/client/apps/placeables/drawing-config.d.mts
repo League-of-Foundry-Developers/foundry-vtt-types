@@ -1,21 +1,16 @@
 import type { MaybePromise } from "fvtt-types/utils";
 
 declare global {
-  interface DrawingConfigOptions extends FormApplicationOptions {
-    /**
-     * Configure the default drawing settings, instead of a specific Drawing
-     * @defaultValue `false`
-     */
-    configureDefault: boolean;
-  }
+  /** @deprecated {@link DrawingConfig.Options | `DrawingConfig.Options`} */
+  type DrawingConfigOptions = DrawingConfig.Options;
 
   /**
    * The Application responsible for configuring a single Drawing document within a parent Scene.
    * @typeParam Options - the type of the options object
    */
-  class DrawingConfig<Options extends DrawingConfigOptions = DrawingConfigOptions> extends FormApplication<
+  class DrawingConfig<Options extends DrawingConfig.Options = DrawingConfig.Options> extends FormApplication<
     Options,
-    DrawingDocument.ConfiguredInstance
+    DrawingDocument.Implementation
   > {
     /**
      * @defaultValue
@@ -30,7 +25,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DrawingConfigOptions;
+    static override get defaultOptions(): DrawingConfig.Options;
 
     override get title(): string;
 
@@ -54,27 +49,40 @@ declare global {
   namespace DrawingConfig {
     interface Any extends DrawingConfig<any> {}
 
-    interface FormData {
-      author: string;
-      bezierFactor: DrawingDocument["bezierFactor"];
-      fillAlpha: DrawingDocument["fillAlpha"];
-      fillColor: DrawingDocument["fillColor"];
-      fillType: DrawingDocument["fillType"];
-      fontFamily: DrawingDocument["fontFamily"];
-      fontSize: DrawingDocument["fontSize"];
-      "shape.height": DrawingDocument["shape"]["height"];
-      rotation: DrawingDocument["rotation"];
-      strokeAlpha: DrawingDocument["strokeAlpha"];
-      strokeColor: DrawingDocument["strokeColor"];
-      strokeWidth: DrawingDocument["strokeWidth"];
-      text: DrawingDocument["text"];
-      textAlpha: DrawingDocument["textAlpha"];
-      textColor: DrawingDocument["textColor"];
-      texture: DrawingDocument["texture"];
-      "shape.width": DrawingDocument["shape"]["width"];
-      x: DrawingDocument["x"];
-      y: DrawingDocument["y"];
-      z: DrawingDocument["z"];
+    interface Options extends FormApplication.Options {
+      /**
+       * Configure the default drawing settings, instead of a specific Drawing
+       * @defaultValue `false`
+       */
+      configureDefault: boolean;
+    }
+
+    /** @internal */
+    type _FormData = Pick<
+      DrawingDocument.Implementation,
+      | "author"
+      | "bezierFactor"
+      | "elevation"
+      | "fillAlpha"
+      | "fillColor"
+      | "fillType"
+      | "fontFamily"
+      | "fontSize"
+      | "rotation"
+      | "sort"
+      | "strokeAlpha"
+      | "strokeColor"
+      | "strokeWidth"
+      | "text"
+      | "textAlpha"
+      | "textColor"
+      | "texture"
+      | "x"
+      | "y"
+    >;
+    interface FormData extends _FormData {
+      "shape.height": DrawingDocument.Implementation["shape"]["height"];
+      "shape.width": DrawingDocument.Implementation["shape"]["width"];
     }
   }
 }

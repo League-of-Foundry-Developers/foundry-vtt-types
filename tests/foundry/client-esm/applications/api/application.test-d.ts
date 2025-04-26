@@ -1,39 +1,45 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 const ApplicationV2 = foundry.applications.api.ApplicationV2;
 
 // Regression test for issue where synchronous actions were not being allowed.
 // Reported by @ethaks on Discord, see https://discord.com/channels/732325252788387980/793933527065690184/1266523231188422727.
-class _TestApp extends ApplicationV2 {
-  static override DEFAULT_OPTIONS = {
-    actions: {
-      someAction: this.someAction,
-    },
-  };
+test("synchronous action regression test", () => {
+  class _TestApp extends ApplicationV2 {
+    static override DEFAULT_OPTIONS = {
+      actions: {
+        someAction: this.someAction,
+      },
+    };
 
-  static someAction(): void {
-    return;
+    static someAction(): void {
+      return;
+    }
   }
-}
+});
 
 // Regression test for `DEFAULT_OPTIONS` not being overrideable with unrelated options.
-class _UnrelatedOptions extends ApplicationV2 {
-  static override DEFAULT_OPTIONS = { dragDrop: [] };
-}
+test("unrelated options regression test", () => {
+  class _UnrelatedOptions extends ApplicationV2 {
+    static override DEFAULT_OPTIONS = { dragDrop: [] };
+  }
+});
 
 // Regression test for `DeepPartial` not making interfaces partial.
-class DeeplyOptional extends ApplicationV2 {
-  static override DEFAULT_OPTIONS = {
-    window: {
-      minimizable: true,
-    },
-  };
-}
+test("regression test interface partial", () => {
+  class DeeplyOptional extends ApplicationV2 {
+    static override DEFAULT_OPTIONS = {
+      window: {
+        minimizable: true,
+      },
+    };
+  }
 
-declare const x: DeeplyOptional;
+  const deeplyOptional = new DeeplyOptional();
 
-x.render({
-  parts: ["part-name"],
+  deeplyOptional.render({
+    parts: ["part-name"],
+  });
 });
 
 declare const applicationV2: foundry.applications.api.ApplicationV2;

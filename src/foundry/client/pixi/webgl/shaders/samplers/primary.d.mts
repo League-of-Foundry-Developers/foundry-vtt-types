@@ -2,7 +2,7 @@ import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
-   * The base shader class of {@link PrimarySpriteMesh}.
+   * The base shader class of {@link PrimarySpriteMesh | `PrimarySpriteMesh`}.
    */
   class PrimaryBaseSamplerShader extends OccludableSamplerShader {
     /**
@@ -31,5 +31,5 @@ declare global {
 }
 
 declare abstract class AnyPrimaryBaseSamplerShader extends PrimaryBaseSamplerShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

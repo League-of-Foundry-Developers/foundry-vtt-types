@@ -1,4 +1,4 @@
-import type { MaybePromise } from "fvtt-types/utils";
+import type { AnyObject, InterfaceToObject, MaybePromise } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -7,8 +7,8 @@ declare global {
    */
   class WallConfig<
     Options extends
-      DocumentSheetOptions<WallDocument.ConfiguredInstance> = DocumentSheetOptions<WallDocument.ConfiguredInstance>,
-  > extends DocumentSheet<Options, WallDocument.ConfiguredInstance> {
+      DocumentSheet.Options<WallDocument.Implementation> = DocumentSheet.Options<WallDocument.Implementation>,
+  > extends DocumentSheet<Options, WallDocument.Implementation> {
     /**
      * @defaultValue
      * ```typescript
@@ -20,7 +20,7 @@ declare global {
      * return options;
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions<WallDocument.ConfiguredInstance>;
+    static get defaultOptions(): DocumentSheet.Options<WallDocument.Implementation>;
 
     /**
      * An array of Wall ids that should all be edited when changes to this config form are submitted
@@ -33,7 +33,7 @@ declare global {
     override render(
       force?: boolean,
       options?: Application.RenderOptions<Options> & {
-        walls?: Wall.ConfiguredInstance[] | undefined;
+        walls?: Wall.Object[] | undefined;
       },
     ): this;
 
@@ -43,7 +43,7 @@ declare global {
 
     protected _onChangeInput(event: JQuery.ChangeEvent<any, any, any, any>): Promise<void | object>;
 
-    protected _getSubmitData(updateData?: object | null): WallConfig.FormData;
+    protected _getSubmitData(updateData?: AnyObject | null): InterfaceToObject<WallConfig.FormData>;
 
     protected override _updateObject(event: Event, formData: WallConfig.FormData): Promise<unknown>;
   }
@@ -51,14 +51,17 @@ declare global {
   namespace WallConfig {
     interface Any extends WallConfig<any> {}
 
-    type FormData = Pick<
-      WallDocument["_source"],
-      "move" | "light" | "sight" | "sound" | "dir" | "door" | "ds" | "doorSound"
-    > & {
-      "threshold.light": WallDocument["_source"]["threshold"]["light"];
-      "threshold.sight": WallDocument["_source"]["threshold"]["sight"];
-      "threshold.sound": WallDocument["_source"]["threshold"]["sound"];
-      "threshold.attenuation": WallDocument["_source"]["threshold"]["attenuation"];
-    };
+    /** @internal */
+    type _FormData = Pick<
+      WallDocument.Implementation,
+      "dir" | "door" | "doorSound" | "ds" | "light" | "move" | "sight" | "sound"
+    >;
+
+    interface FormData extends _FormData {
+      "threshold.light": WallDocument.Implementation["threshold"]["light"];
+      "threshold.sight": WallDocument.Implementation["threshold"]["sight"];
+      "threshold.sound": WallDocument.Implementation["threshold"]["sound"];
+      "threshold.attenuation": WallDocument.Implementation["threshold"]["attenuation"];
+    }
   }
 }

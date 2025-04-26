@@ -100,7 +100,7 @@ declare class MersenneTwister {
    * Same as .rnd() method - for consistency with Math.random() interface.
    *
    * since: 0.2.0
-   * @see {@link MersenneTwister#rnd}
+   * @see {@link MersenneTwister.rnd | `MersenneTwister#rnd`}
    */
   random(): number;
 
@@ -120,13 +120,13 @@ declare class MersenneTwister {
 
   /**
    * A factory method for generating random uniform rolls
-   * @see {@link MersenneTwister#random}
+   * @see {@link MersenneTwister.random | `MersenneTwister#random`}
    */
   static random(): number;
 
   /**
    * A factory method for generating random normal rolls
-   * @see {@link MersenneTwister#normal}
+   * @see {@link MersenneTwister.normal | `MersenneTwister#normal`}
    */
   static normal(mu: number, sigma: number): number;
 }

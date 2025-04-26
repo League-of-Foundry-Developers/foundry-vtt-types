@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { LineIntersection } from "../../../../../../src/foundry/common/utils/geometry.d.mts";
 
-expectTypeOf(ControlsLayer.instance).toMatchTypeOf<ControlsLayer.Implementation | undefined>();
+expectTypeOf(ControlsLayer.instance).toExtend<ControlsLayer.Implementation | undefined>();
 expectTypeOf(ControlsLayer.layerOptions).toEqualTypeOf<ControlsLayer.LayerOptions>();
 
 const layer = new ControlsLayer();
@@ -39,7 +39,7 @@ declare const somePoint: PIXI.Point;
 expectTypeOf(layer["_onLongPress"](someEvent, somePoint)).toEqualTypeOf<Promise<boolean>>();
 expectTypeOf(layer["_onCanvasPan"]()).toBeVoid();
 
-declare const someUser: User.ConfiguredInstance;
+declare const someUser: User.Implementation;
 expectTypeOf(layer.drawCursor(someUser)).toEqualTypeOf<Cursor>();
 expectTypeOf(layer.updateCursor(someUser, somePoint)).toBeVoid();
 expectTypeOf(layer.updateCursor(someUser, null)).toBeVoid();

@@ -42,7 +42,7 @@ export default class RegionLegend<
    * @param region - The Region
    * @internal
    */
-  _isRegionVisible(region: RegionDocument.ConfiguredInstance): boolean;
+  _isRegionVisible(region: RegionDocument.Implementation): boolean;
 
   /**
    * Highlight a hovered region in the legend.
@@ -50,5 +50,5 @@ export default class RegionLegend<
    * @param hover   - Whether they are being hovered in or out
    * @internal
    */
-  _hoverRegion(region: RegionDocument.ConfiguredInstance, hover: boolean): void;
+  _hoverRegion(region: RegionDocument.Implementation, hover: boolean): void;
 }

@@ -56,7 +56,7 @@ declare namespace PointSoundSource {
 }
 
 declare abstract class AnyPointSoundSource extends PointSoundSource<PointSoundSource.SourceData, PointSourcePolygon> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default PointSoundSource;

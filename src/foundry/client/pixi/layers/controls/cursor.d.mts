@@ -5,7 +5,7 @@ declare global {
    * A single Mouse Cursor
    */
   class Cursor extends PIXI.Container {
-    constructor(user: User.ConfiguredInstance);
+    constructor(user: User.Implementation);
 
     /**
      * @defaultValue `{x: 0, y: 0}`
@@ -16,12 +16,12 @@ declare global {
      * Update visibility and animations
      * @param user - The user
      */
-    refreshVisibility(user: User.ConfiguredInstance): void;
+    refreshVisibility(user: User.Implementation): void;
 
     /**
      * Draw the user's cursor as a small dot with their user name attached as text
      */
-    draw(user: User.ConfiguredInstance): void;
+    draw(user: User.Implementation): void;
 
     /**
      * Move an existing cursor to a new position smoothly along the animation loop
@@ -38,5 +38,5 @@ declare global {
 }
 
 declare abstract class AnyCursor extends Cursor {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

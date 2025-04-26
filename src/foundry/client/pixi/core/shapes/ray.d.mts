@@ -2,19 +2,10 @@ import type { Identity } from "fvtt-types/utils";
 import type { LineIntersection } from "../../../../common/utils/geometry.d.mts";
 
 declare global {
-  interface RayIntersection {
-    /** The x-coordinate of intersection */
-    x: number;
-
-    /** The y-coordinate of intersection */
-    y: number;
-
-    /** The proximity to the Ray origin, as a ratio of distance */
-    t0: number;
-
-    /** The proximity to the Ray destination, as a ratio of distance */
-    t1: number;
-  }
+  /**
+   * @deprecated {@link Ray.Intersection | `Ray.Intersection`}
+   */
+  type RayIntersection = Ray.Intersection;
 
   /**
    * A ray for the purposes of computing sight and collision
@@ -168,7 +159,7 @@ declare global {
 
     /**
      * Find the point I[x,y] and distance t* on ray R(t) which intersects another ray
-     * @see foundry.utils.lineLineIntersection
+     * @see {@link foundry.utils.lineLineIntersection | `foundry.utils.lineLineIntersection`}
      */
     intersectSegment(coords: Canvas.PairOfPointsTuple): LineIntersection | null;
   }
@@ -176,9 +167,23 @@ declare global {
   namespace Ray {
     interface Any extends AnyRay {}
     interface AnyConstructor extends Identity<typeof AnyRay> {}
+
+    interface Intersection {
+      /** The x-coordinate of intersection */
+      x: number;
+
+      /** The y-coordinate of intersection */
+      y: number;
+
+      /** The proximity to the Ray origin, as a ratio of distance */
+      t0: number;
+
+      /** The proximity to the Ray destination, as a ratio of distance */
+      t1: number;
+    }
   }
 }
 
 declare abstract class AnyRay extends Ray {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

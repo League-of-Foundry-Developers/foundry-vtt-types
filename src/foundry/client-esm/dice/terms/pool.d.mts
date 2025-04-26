@@ -113,13 +113,13 @@ declare class PoolTerm extends RollTerm {
 
   /**
    * Use the same logic as for the DiceTerm to avoid duplication
-   * @see DiceTerm#_evaluateModifiers
+   * @see {@link DiceTerm._evaluateModifiers | `DiceTerm#_evaluateModifiers`}
    */
   protected _evaluateModifiers(): void;
 
   /**
    * Use the same logic as for the DiceTerm to avoid duplication
-   * @see DiceTerm#_evaluateModifier
+   * @see {@link DiceTerm._evaluateModifier | `DiceTerm#_evaluateModifier`}
    */
   protected _evaluateModifier(command: string, modifier: string): void;
 
@@ -220,7 +220,7 @@ declare namespace PoolTerm {
   /**
    * @remarks This interface is not defined by foundry itself. It only exists
    * to allow module and system authors to use it for declaration merging,
-   * enabling them to add additional modifiers for {@link PoolTerm}s.
+   * enabling them to add additional modifiers for {@link PoolTerm | `PoolTerm`}s.
    */
   interface Modifiers {
     k: "keep";
@@ -266,7 +266,7 @@ declare namespace PoolTerm {
 }
 
 declare abstract class AnyPoolTerm extends PoolTerm {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default PoolTerm;

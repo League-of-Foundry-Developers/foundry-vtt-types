@@ -27,9 +27,9 @@ declare global {
 }
 
 declare abstract class AnySmokePatchColorationShader extends SmokePatchColorationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnySmokePatchIlluminationShader extends SmokePatchIlluminationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -1,12 +1,15 @@
 import type { Document } from "../foundry/common/abstract/module.d.mts";
 
-type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig ? ModuleConfig[Name] : EmptyObject;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig ? ModuleConfig[Name] : {};
 
 /**
  * This type exists due to https://github.com/microsoft/TypeScript/issues/55667
  * This will be deprecated once this issue is solved.
  */
-export type FixedInstanceType<T extends AnyConstructor> = T extends abstract new (...args: infer _) => infer R
+export type FixedInstanceType<T extends abstract new (...args: never) => any> = T extends abstract new (
+  ...args: infer _
+) => infer R
   ? R
   : never;
 
@@ -26,14 +29,15 @@ export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";
  */
 // Note(LukeAbby): There are two tricky cases:
 // - `T = {}` would regularly always return `unknown`. The fix here adding a single dummy property with `{ _?: unknown } & T`.
-// - `T = never` would regularly always return `unknown`. The fix here is adding `_GetKey` which makes the type distributive and therefore `never` as an input becomes `never` in the output.
-export type GetKey<T, K extends PropertyKey, D = never> = _GetKey<{ _?: unknown } & T, K, D>;
+// - `T = never` would regularly always return `unknown`. The fix here is checking if `any` is assignable to it.
+export type GetKey<T, K extends PropertyKey, D = never> = [any] extends [T] ? _GetKey<{ _?: unknown } & T, K, D> : D;
 
 type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infer V } ? V : D;
 
 /**
  * `Partial` is usually the wrong type.
  * In order to make it easier to audit unintentional uses of `Partial` this type is provided.
+ * Also allows specifying certain keys to make partial.
  *
  * ### Picking the right helper type
  * - Favor `NullishProps` whenever it is valid. Allowing both `null` and
@@ -61,7 +65,14 @@ type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infe
  *   The most common time this shows up is with the pattern
  *   `exampleFunction({ prop = "foo" } = {}) { ... }`.
  */
-export type IntentionalPartial<T> = Partial<T>;
+export type IntentionalPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
+  {
+    [K2 in keyof T as Extract<K2, K>]?: T[K2];
+  } & {
+    // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for
+    [K2 in keyof T as Exclude<K2, K>]: T[K2];
+  }
+>;
 
 /**
  * This type is used to make a constraint where `T` must be statically known to overlap with `U`.
@@ -93,7 +104,7 @@ export type OverlapsWith<T, U> = [Extract<T, U>, any] extends [U, Extract<T, U>]
  * This is safer than what `OverlapsWith` provides as it ensures that if the type is an array it is an array of `Item`.
  * Assumes readonly arrays are permitted.
  *
- * Note that `never[]` and `any[]` are still accepted due to the unsoundness of those types.
+ * Note that `never[]` and `any[]` are still accepted due to the fundamental nature of these types.
  *
  * @example
  * ```ts
@@ -118,8 +129,8 @@ export type OverlapsWith<T, U> = [Extract<T, U>, any] extends [U, Extract<T, U>]
  * takesNumericArray(Math.random() > 0.5 ? [1, 2, 3] : ["foo", "bar"]); // Error, at runtime it could be an array of the wrong type and that isn't handled. Notably this would succeed with `OverlapsWith`.
  * ```
  */
-export type ArrayOverlaps<T, Item> =
-  Extract<T, readonly unknown[]> extends readonly Item[] ? OverlapsWith<T, readonly Item[]> : readonly Item[];
+export type ArrayOverlaps<Arr, T> =
+  Extract<Arr, readonly unknown[]> extends readonly T[] ? OverlapsWith<Arr, readonly T[]> : readonly T[];
 
 /**
  * Use this whenever a type is given that should match some constraint but is
@@ -250,6 +261,11 @@ export type ConformRecord<T extends object, V, D extends V = V> = {
  * this behavior is disabled for functions in most codebases (including this one)
  * because of the `strictFunctionTypes` compiler flag, implicit under `strict: true`.
  * See: https://github.com/Microsoft/TypeScript/wiki/FAQ#why-are-function-parameters-bivariant
+ *
+ * Note that this does not work well with exotic functions. Unexpected behavior may occur with:
+ * - Overloaded functions.
+ * - Functions with additional properties, e.g. `(() => number) & { prop: string }`.
+ * - Functions of the shape `(...args: never[]) => T`.
  */
 export type ToMethod<T extends AnyFunction> = {
   method(...args: Parameters<T>): ReturnType<T>;
@@ -375,33 +391,23 @@ export type Brand<BaseType, BrandName extends string> = BaseType & Branded<Brand
  * //   ^ { x: string, y: number }
  *
  * function example<T extends { someProp: number } | { anotherProp: string }>(t: T) {
- *   Object.assign(t, { a: "foo" }, {b: 2}) satisfies ObjectIntersection
- *   Object.assign(t, { a: "foo" }, {b: 2}) satisfies PrettyObjectIntersection
- *   //                                     ^ Type 'T & { a: string; } & { b: number; }' does not satisfy the expected type '{ a: string; b: number; }'.
+ *   Object.assign(t, { a: "foo" }, { b: 2 }) satisfies ObjectIntersection
+ *   Object.assign(t, { a: "foo" }, { b: 2 }) satisfies PrettyObjectIntersection
+ *   //                                       ^ Type 'T & { a: string; } & { b: number; }' does not satisfy the expected type '{ a: string; b: number; }'.
  *   // This is an example of changing type behavior. The first line is allowed but the second errors.
  *   // This type of situation will realistically never come up in real code because it's so contrived.
- *   // Note that this difference only appears when generic, specifically `T extends Object | NonObject`.
+ *   // Note that this difference only appears when generic, specifically `T extends SomeConcreteObject | U`.
  *   // See https://github.com/microsoft/TypeScript/pull/60726 for some context.
  * }
  * ```
  */
-export type PrettifyType<T> = T extends AnyObject
+// Note(LukeAbby): This uses `AnyObject` as a constraint rather than in the body due to this circularity: https://tsplay.dev/NDpRRN
+export type PrettifyType<T extends AnyObject> = T extends unknown
   ? {
       [K in keyof T]: T[K];
-    }
-  : // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-    T & unknown;
-
-/**
- * This behaves the same as {@link PrettifyType | `PrettifyType`} except instead
- * of prettifying only the first level it prettifies all levels of an object. of prettifying only the first level it prettifies all levels of an object.
- */
-export type PrettifyTypeDeep<T> = T extends AnyObject
-  ? {
-      [K in keyof T]: PrettifyTypeDeep<T[K]>;
-    }
-  : // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-    T & unknown;
+      // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    } & unknown
+  : never;
 
 /**
  * Convert a union of the form `T1 | T2 | T3 | ...` into an intersection of the form `T1 & T2 & T3 & ...`.
@@ -543,12 +549,14 @@ export type AllKeysOf<T extends object> = T extends unknown ? keyof T : never;
  *
  * @internal
  */
-export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = {
-  [K2 in keyof T as Extract<K2, K>]?: T[K2] | undefined;
-} & {
-  // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for slightly better type display.
-  [K2 in keyof T as Exclude<K2, K>]: T[K2];
-};
+export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
+  {
+    [K2 in keyof T as Extract<K2, K>]?: T[K2] | undefined;
+  } & {
+    // Note(LukeAbby): This effectively inlines `Omit<T, K>` hoping for slightly better performance.
+    [K2 in keyof T as Exclude<K2, K>]: T[K2];
+  }
+>;
 
 /**
  * Makes select properties in `T` optional and explicitly allows both `null` and
@@ -582,12 +590,14 @@ export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<
  *
  * @internal
  */
-export type NullishProps<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = {
-  [K2 in keyof T as Extract<K2, K>]?: T[K2] | null | undefined;
-} & {
-  // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for slightly better type display.
-  [K2 in keyof T as Exclude<K2, K>]: T[K2];
-};
+export type NullishProps<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
+  {
+    [K2 in keyof T as Extract<K2, K>]?: T[K2] | null | undefined;
+  } & {
+    // Note(LukeAbby): This effectively inlines `Omit<T, K>` hoping for slightly better performance.
+    [K2 in keyof T as Exclude<K2, K>]: T[K2];
+  }
+>;
 
 /**
  * Expand an object that contains keys in dotted notation
@@ -605,7 +615,7 @@ export type Expanded<O> = O extends AnyObject
  * Union type of the types of the values in `T`
  * @internal
  */
-export type ValueOf<T> = T extends ReadonlyArray<infer V> ? V : T[keyof T];
+export type ValueOf<T extends object> = T extends ReadonlyArray<infer V> ? V : T[keyof T];
 
 type OmitIndex<K extends PropertyKey> = string extends K
   ? never
@@ -618,7 +628,7 @@ type OmitIndex<K extends PropertyKey> = string extends K
 /**
  * Gets the keys of `T` but excluding index signatures unlike `keyof T`. For example `Record<string, any> & { foo: number }` will produce `string` with `keyof` but `foo` with `ConcreteKeys`.
  */
-export type ConcreteKeys<T> = T extends never
+export type ConcreteKeys<T> = [T] extends [never]
   ? never
   : keyof {
       [K in keyof T as OmitIndex<K>]: never;
@@ -629,7 +639,7 @@ export type ConcreteKeys<T> = T extends never
  */
 // NOTE(LukeAbby): It may seem easier to write `Pick<T, ConcreteKeys<T>>` but this stops it from being a homomorphic mapped type and regresses its power when given a generic type parameter or `this`.
 // See: https://www.typescriptlang.org/play/?#code/KYDwDg9gTgLgBDAnmYcDCEB2BjKwbADSwiAzgDwAqAfHALxwDWJEAZnAN4BQccA2oTgBLTExbtKcAIak4pGFBEBzOKAKYAJrMEB+OJmAA3YFDgAufQFcAtgCMTqkOq1xd+ow4ulEdiABtHZ204PQNjUwtCAF0LMJMAbi4AX0SuJBQ4ACVgawhjAElNUABlISVMKRhLPAoaejgABSFsRioAGnQsXHwiElrqalTsPxlZABFKqQBZCA1gP3Ji7AALHKlabl454ak8OFy5vwts3IKikFLyyurgCiXV63Xkri4d0lliy1sZw8WVtcCwE0sg4cCUQJMzQaUAgYAsUkwiHi-EIXgUyhiVjsDiStDUQJcExg01m8z+D3WnB4+3wy1mAAoAJRU3i8AD0bLglGWQlkYBhKCgiDkdMsfg0jl58FslngGggt0wAHIYAA6am8GA80iqg7zVXggyKbDQ2GpVkIbW60l+VVSWzYRK8JLJIA
-export type RemoveIndexSignatures<T extends AnyObject> = {
+export type RemoveIndexSignatures<T extends object> = {
   [K in keyof T as OmitIndex<K>]: T[K];
 };
 
@@ -664,7 +674,7 @@ export type Merge<T, U> =
     : U;
 
 /**
- * Returns whether the type is a plain object. Excludes functions and arrays while still being friendly to interfaces.
+ * Returns whether the type is a plain object. Excludes functions, arrays, and constructors while still being friendly to interfaces.
  *
  * @example
  * ```ts
@@ -681,11 +691,7 @@ export type Merge<T, U> =
  * type RecordFails = Interface extends Record<string, unknown> ? true : false; // false
  * ```
  */
-export type IsObject<T> = T extends { readonly [K: string]: any }
-  ? T extends AnyArray | AnyFunction
-    ? false
-    : true
-  : false;
+export type IsObject<T> = T extends object ? (T extends AnyArray | AnyFunction | AnyConstructor ? false : true) : false;
 
 /**
  * A simple, non-recursive merge type.
@@ -729,13 +735,11 @@ export type GetDataReturnType<T extends object> = GetDataConfigOptions<T>[GetDat
  * removes all properties rom an object, because an empty interface was given,
  * or so on.
  *
- * Type params extend `object` instead of `AnyObject` to allow interfaces
- *
  * @example
  * ```ts
  * type ObjectArray<T extends Record<string, unknown>> = T[];
  *
- * // As you would hope a union can't be assigned. It errors with:
+ * // As you would hope a string can't be assigned in a union or not. It errors with:
  * // "type 'string' is not assignable to type 'Record<string, unknown>'."
  * type UnionErrors = ObjectArray<string | { x: number }>;
  *
@@ -752,8 +756,13 @@ export type GetDataReturnType<T extends object> = GetDataConfigOptions<T>[GetDat
  * const emptyObject: EmptyObjectArray = [1, "foo", () => 3];
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type HandleEmptyObject<T extends object, D extends object = EmptyObject> = [{}] extends [T] ? D : T;
+export type HandleEmptyObject<O, D = EmptyObject> =
+  // Note(LukeAbby): This uses a strict equality test to differentiate types like `{ onlyOptional?: true }`
+  // and `object` from `{}`. More naive tests like `[{}] extends [O] ? ... : ...` fails these cases
+  // due to particular unsoundness rules around `{}`.
+  //
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  (<T>() => T extends {} ? true : false) extends <T>() => T extends O ? true : false ? D : O;
 
 /**
  * This type allows any plain objects. In other words it disallows functions
@@ -820,10 +829,7 @@ export type MutableArray<T> = Array<T>;
  * - `(...args: any[]) => any` - If someone explicitly accesses the parameters or uses the return value you get `any` which is not safe.
  * - `(...args: unknown[]) => unknown` - This allows obviously unsound calls like `fn(1, "foo")` because it indicates it can take any arguments.
  */
-// The explicit arg0 does not prevent a function with no arguments from being assigned to `AnyFunction` because any function that takes less arguments can be assigned to one that takes more.
-// The point of this is to prevent it from being possible to call with 0 arguments.
-// never is used to make it impossible to call with anything besides `never` or `any`. This makes it the most type safe way to define any function.
-export type AnyFunction = (arg0: never, ...args: never[]) => unknown;
+export type AnyFunction = (...args: never) => unknown;
 
 /**
  * Use this type to allow any class, abstract class, or class-like constructor.
@@ -842,7 +848,7 @@ export type AnyFunction = (arg0: never, ...args: never[]) => unknown;
  * const classLike: AnyConstructor = Date;
  * ```
  */
-export type AnyConstructor = abstract new (arg0: never, ...args: never[]) => unknown;
+export type AnyConstructor = abstract new (...args: never) => unknown;
 
 /**
  * Use this type to allow any class or class-like constructor but disallow
@@ -863,7 +869,7 @@ export type AnyConstructor = abstract new (arg0: never, ...args: never[]) => unk
  * const abstract: AnyConcreteConstructor = abstract class Abstract { ... }
  * ```
  */
-export type AnyConcreteConstructor = new (arg0: never, ...args: never[]) => unknown;
+export type AnyConcreteConstructor = new (...args: never) => unknown;
 
 /**
  * This type is equivalent to `Promise<T>` but exists to give an explicit signal
@@ -1136,3 +1142,138 @@ export type InitializedOn<
  * so to work around this you can write `interface Example extends Identity<typeof SomeClass> {}`
  */
 export type Identity<T extends object> = T;
+
+/**
+ * ### Usage
+ *
+ * Note: See "Background" for an explanation of what a "Discriminated Union" is.
+ *
+ * Use `DiscriminatedUnion` when you want to turn a regular union into a discriminated union. The form
+ * this helper type chooses is
+ * `{ prop1: number; readonly prop2?: never } | { readonly prop1?: never; prop2: string }` as this
+ * is the strictest form of a discriminated union. `readonly prop1?: never` is very similar to
+ * `prop1?: undefined` but `never` is used because with
+ * [`exactOptionalPropertyTypes`](https://www.typescriptlang.org/tsconfig/exactOptionalPropertyTypes.html)
+ * there is an actual difference and `readonly` is there because it prevents erroneous mutation.
+ *
+ * Please note that this type is unsound when you don't know for sure the union can't have
+ * excess properties that interfere with other constituents. For a basic example of this unsoundness:
+ * ```ts
+ * function selectRandom<T, U>(array1: T, array2: U): DiscrimatedUnion<T | U> {
+ *   return (Math.random() > 0.5 ? array1 : array2) as DiscrimatedUnion<T | U>;
+ * }
+ *
+ * const obj1 = { prop1: "foo" };
+ * const obj2: { prop2: number } = { prop1: 1, prop2: "bar" };
+ *
+ * const discriminatedUnion = selectRandom(obj1, obj2)
+ *
+ * // If `selectRandom` returned `T | U` then `discriminatedUnion.prop1` would error.
+ * // However because of unsoundly using `DiscrimatedUnion` it doesn't.
+ * const prop1 = discriminatedUnion.prop1;
+ * //    ^ `string | undefined`.
+ *
+ * console.log(prop1 !== undefined ? prop1.length : 0);
+ * //                                ^ Runtime error the 50% of the time that `prop1` is actually `1` at runtime
+ * ```
+ *
+ * ### Background
+ *
+ * A common unintuitive behavior of unions in TypeScript is that if a property only exists on some
+ * members of the union access is not allowed:
+ * ```typescript
+ * const member1 = { prop1: "foo" };
+ * const member2 = { prop2: 1 };
+ * const union = Math.random() > 0.5 ? member1 : member2;
+ * //    ^ { prop1: string; } | { prop2: number; }
+ *
+ * const prop1 = union.prop1;
+ * ```
+ *
+ * This snippet errors with:
+ * ```
+ * Property 'prop1' does not exist on type '{ prop1: number; } | { prop2: number; }'.
+ *   Property 'prop1' does not exist on type '{ prop2: number; }'.`
+ * ```
+ *
+ * This error is not very good at explaining why the result can't simply be `number | undefined` but
+ * it can't simply be relaxed. To understand why you need to know that excess properties can always
+ * be assigned to an object. To demonstrate:
+ * ```ts
+ * function takesObj(obj: { prop1: number }) { ... }
+ *
+ * // You may think excess properties aren't allowed because when you try to write code like this,
+ * // it errors.
+ * takesObj({ prop1: 1, prop2: "foo" });
+ * //                   ^ Object literal may only specify known properties, but 'prop2' does not exist in type '{ prop1: number; }'. Did you mean to write 'prop1'?
+ *
+ * // However this is more of a "lint" than a hard error.
+ * const obj = { prop1: 1, prop2: "foo" };
+ * takesObj(obj); // No error
+ * ```
+ *
+ * This means that the type of `union.prop1` would have to be `unknown` at best because at runtime
+ * there could be any excess properties of any type.
+ *
+ * ### Discriminated Unions
+ *
+ * Discriminated unions are a way to get around this issue. There's several possible ways to express
+ * discriminated unions but the most common version is
+ * `{ prop1: number; prop2?: undefined } | { prop1?: undefined; prop1: number }`. The key idea is to
+ * put a property that
+ *
+ * In fact TypeScript will automatically create a discriminated union in some cases. For example if
+ * you simplify the snippet above:
+ * ```typescript
+ * const discriminatedUnion = Math.random() > 0.5 ? { prop1: 1 } : { prop2: 2 };
+ * //    ^ { prop1: number; prop2?: undefined } | { prop2: number; }
+ *
+ * const prop1 = discriminatedUnion.prop1;
+ * //    ^ number | undefined
+ * ```
+ *
+ * You'll see TypeScript now has enough information to give `discriminatedUnion` a better type than
+ * `union` had which now makes `discriminatedUnion.prop1` work.
+ *
+ * See:
+ *
+ * {@link https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions}
+ *
+ * {@link https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions}
+ */
+export type DiscriminatedUnion<U extends object> = _DiscriminatedUnion<U, AllKeysOf<U>>;
+
+type _DiscriminatedUnion<U extends object, AllKeys extends AllKeysOf<U>> = U extends unknown
+  ? {
+      [K in keyof U]: U[K];
+    } & {
+      readonly [K in Exclude<AllKeys, keyof U>]?: never;
+    }
+  : never;
+
+/**
+ * Picks keys where the value extends `Value`
+ *
+ * @example
+ * ```typescript
+ * type Picked = PickValue<{ type: "coordinates"; x: 123; y: 456; }, number>;
+ * //   ^ { x: 123; y: 456 }
+ * ```
+ */
+export type PickValue<T extends object, Value> = {
+  [K in keyof T as T[K] extends Value ? K : never]: T[K];
+};
+
+/**
+ * Represnts a valid JSON value.
+ */
+export type JSONValue =
+  | {
+      readonly [K: string]: JSONValue;
+    }
+  | readonly JSONValue[]
+  | number
+  | string
+  | boolean
+  | null
+  | undefined;

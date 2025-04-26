@@ -1,8 +1,8 @@
-import type Document from "../../common/abstract/document.d.mts";
+export {};
 
 declare global {
   /**
-   * A singleton class {@link game#time} which keeps the official Server and World time stamps.
+   * A singleton class {@link game.time | `game#time`} which keeps the official Server and World time stamps.
    * Uses a basic implementation of https://www.geeksforgeeks.org/cristians-algorithm/ for synchronization.
    */
   class GameTime {
@@ -48,7 +48,10 @@ declare global {
      * @param options - Additional options passed to game.settings.set
      * @returns The new game time
      */
-    advance(seconds: number, options?: Document.OnUpsertOptions<"Setting">): Promise<number>;
+    advance(
+      seconds: number,
+      options?: Setting.Database.CreateOperation<false | undefined> | Setting.Database.UpdateOperation,
+    ): Promise<number>;
 
     /**
      * Synchronize the local client game time with the official time kept by the server

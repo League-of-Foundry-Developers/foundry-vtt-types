@@ -1,4 +1,4 @@
-/** A mesh of a {@link Region} */
+/** A mesh of a {@link Region | `Region`} */
 declare class RegionMesh extends PIXI.Container {
   /**
    * Create a RegionMesh
@@ -6,10 +6,10 @@ declare class RegionMesh extends PIXI.Container {
    * @param shaderClass   - The shader class to use. (default: `RegionShader`)
    */
   // shaderClass: not null (parameter default only)
-  constructor(region: Region.ConfiguredInstance, shaderClass?: AbstractBaseShader.AnyConstructor);
+  constructor(region: Region.Object, shaderClass?: AbstractBaseShader.AnyConstructor);
 
   /** The Region of this RegionMesh */
-  get region(): Region.ConfiguredInstance;
+  get region(): Region.Object;
 
   /** The shader bound to this RegionMesh */
   get shader(): AbstractBaseShader;
@@ -66,7 +66,7 @@ declare namespace RegionMesh {
 }
 
 declare abstract class AnyRegionMesh extends RegionMesh {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default RegionMesh;

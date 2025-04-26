@@ -1,4 +1,4 @@
-import type { Brand, InitializedOn } from "fvtt-types/utils";
+import type { Brand, FixedInstanceType, Identity, InitializedOn } from "fvtt-types/utils";
 import type DynamicRingData from "./ring-data.d.mts";
 
 /**
@@ -6,7 +6,7 @@ import type DynamicRingData from "./ring-data.d.mts";
  */
 declare class TokenRing {
   /** A `TokenRing` is constructed by providing a reference to a `Token` object. */
-  constructor(token: Token.ConfiguredInstance);
+  constructor(token: Token.Object);
 
   /** The effects which could be applied to a token ring (using bitwise operations) */
   static effects: TokenRing.Effects;
@@ -140,7 +140,7 @@ declare class TokenRing {
    * @remarks This getter is the return of calling {@link WeakRef.deref | `deref`} on the stored {@link WeakRef | `WeakRef`}
    * of the Token passed at construction; If the Token has been garbage collected, will return undefined.
    */
-  get token(): Token.ConfiguredInstance | undefined;
+  get token(): Token.Object | undefined;
 
   /**
    * Configure the sprite mesh.
@@ -159,12 +159,11 @@ declare class TokenRing {
 
   /**
    * Flash the ring briefly with a certain color.
-   * @param color             - Color to flash.
-   * @param animationOptions  - Options to customize the animation. (default: `{}`)
+   * @param color            - Color to flash.
+   * @param animationOptions - Options to customize the animation. (default: `{}`)
    * @remarks Only returns `Promise<void>` if `color` is `NaN`ish
    */
-  // animationOptions: `null` allowed because it's used as the 2nd argument in a `mergeObject` before being passed along
-  flashColor(color: Color, animationOptions?: TokenRing.FlashColorOptions | null): Promise<boolean | void>;
+  flashColor(Color: Color, animationOptions?: TokenRing.FlashColorOptions | null): Promise<boolean | void>;
 
   /**
    * Create an easing function that spikes in the center. Ideal duration is around 1600ms.
@@ -197,10 +196,13 @@ declare class TokenRing {
 
 declare namespace TokenRing {
   interface Any extends AnyTokenRing {}
-  type AnyConstructor = typeof AnyTokenRing;
+  interface AnyConstructor extends Identity<typeof AnyTokenRing> {}
+
+  interface ConfiguredClass extends Identity<CONFIG["Token"]["ring"]["ringClass"]> {}
+  interface ConfiguredInstance extends FixedInstanceType<ConfiguredClass> {}
 
   /** @remarks Overrides for default values */
-  interface FlashColorOptions extends CanvasAnimationOptions {
+  interface FlashColorOptions extends CanvasAnimation.AnimateOptions {
     /**
      * @defaultValue `1600`
      * @remarks Can't be `null` because it only has a parameter default, and is used as a divisor in `CanvasAnimation.#animateFrame`
@@ -279,7 +281,7 @@ declare namespace TokenRing {
 }
 
 declare abstract class AnyTokenRing extends TokenRing {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default TokenRing;

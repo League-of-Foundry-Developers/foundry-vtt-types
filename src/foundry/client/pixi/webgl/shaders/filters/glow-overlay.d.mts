@@ -72,5 +72,5 @@ declare global {
 }
 
 declare abstract class AnyGlowOverlayFilter extends GlowOverlayFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

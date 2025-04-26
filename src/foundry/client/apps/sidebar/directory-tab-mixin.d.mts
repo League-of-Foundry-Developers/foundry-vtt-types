@@ -14,7 +14,7 @@ declare class DirectoryApplication {
    */
   static folderPartial: string;
 
-  static get defaultOptions(): DocumentDirectoryOptions;
+  static get defaultOptions(): DocumentDirectory.Options;
 
   /**
    * The type of Entry that is contained in this DirectoryTab.
@@ -46,7 +46,7 @@ declare class DirectoryApplication {
    */
   protected _matchSearchFolders(
     query: RegExp,
-    /** @immediate */ includeFolder: (folder: Folder.ConfiguredInstance, autoExpand?: boolean) => boolean,
+    /** @immediate */ includeFolder: (folder: Folder.Implementation, autoExpand?: boolean) => boolean,
   ): void;
 
   /**
@@ -61,7 +61,7 @@ declare class DirectoryApplication {
     query: RegExp,
     entryIds: Set<string>,
     folderIds: Set<string>,
-    /** @immediate */ includeFolder: (folder: Folder.ConfiguredInstance, autoExpand?: boolean) => boolean,
+    /** @immediate */ includeFolder: (folder: Folder.Implementation, autoExpand?: boolean) => boolean,
   ): void;
 
   /**
@@ -78,9 +78,9 @@ declare class DirectoryApplication {
    */
   protected _getEntryId(entry: object): string;
 
-  getData(options?: Partial<ApplicationOptions>): Promise<object>; // TODO: Implement GetDataReturnType
+  getData(options?: Partial<Application.Options>): Promise<object>; // TODO: Implement GetDataReturnType
 
-  protected _render(force?: boolean, options?: Application.RenderOptions<ApplicationOptions>): Promise<void>;
+  protected _render(force?: boolean, options?: Application.RenderOptions<Application.Options>): Promise<void>;
 
   activateListeners(html: JQuery): void;
 
@@ -152,7 +152,7 @@ declare class DirectoryApplication {
    * @param sortData        - The sort data for the Folder
    */
   protected _handleDroppedForeignFolder(
-    folder: Folder.ConfiguredInstance,
+    folder: Folder.Implementation,
     closestFolderId: string,
     sortData: {
       /**
@@ -164,7 +164,7 @@ declare class DirectoryApplication {
        */
       sortBefore: boolean;
     },
-  ): Promise<{ folder: Folder.ConfiguredInstance; sortNeeded: boolean } | null>;
+  ): Promise<{ folder: Folder.Implementation; sortNeeded: boolean } | null>;
 
   /**
    * Handle Entry data being dropped into the directory.
@@ -179,7 +179,7 @@ declare class DirectoryApplication {
    * @param otherEntry - The other Entry
    * @returns Is the Entry being compared to itself?
    */
-  protected _entryIsSelf(entry: DirectoryMixinEntry, otherEntry: DirectoryMixinEntry): boolean;
+  protected _entryIsSelf(entry: DirectoryApplicationMixin.Entry, otherEntry: DirectoryApplicationMixin.Entry): boolean;
 
   /**
    * Determine whether an Entry belongs to the target folder
@@ -187,21 +187,21 @@ declare class DirectoryApplication {
    * @param folder - The target Folder
    * @returns Is the Entry a sibling?
    */
-  protected _entryBelongsToFolder(entry: DirectoryMixinEntry, folder: Folder.ConfiguredInstance): boolean;
+  protected _entryBelongsToFolder(entry: DirectoryApplicationMixin.Entry, folder: Folder.Implementation): boolean;
 
   /**
    * Check if an Entry is already present in the Collection
    * @param entry - The entry being dropped
    * @returns Is the Entry already present?
    */
-  protected _entryAlreadyExists(entry: DirectoryMixinEntry): boolean;
+  protected _entryAlreadyExists(entry: DirectoryApplicationMixin.Entry): boolean;
 
   /**
    * Get the dropped Entry from the drop data
    * @param data - The data being dropped
    * @returns The dropped Entry
    */
-  protected _getDroppedEntryFromData(data: object): Promise<DirectoryMixinEntry>;
+  protected _getDroppedEntryFromData(data: object): Promise<DirectoryApplicationMixin.Entry>;
 
   /**
    * Create a dropped Entry in this Collection
@@ -209,7 +209,10 @@ declare class DirectoryApplication {
    * @param folderId - The ID of the Folder to which the Entry should be added
    * @returns THe created Entry
    */
-  protected _createDroppedEntry(entry: DirectoryMixinEntry, folderId?: string): Promise<DirectoryMixinEntry>;
+  protected _createDroppedEntry(
+    entry: DirectoryApplicationMixin.Entry,
+    folderId?: string,
+  ): Promise<DirectoryApplicationMixin.Entry>;
 
   /**
    * Sort a relative entry within a collection
@@ -218,7 +221,7 @@ declare class DirectoryApplication {
    * @returns The sorted entry
    */
   protected _sortRelative(
-    entry: DirectoryMixinEntry,
+    entry: DirectoryApplicationMixin.Entry,
     sortData: {
       /**
        * The sort key to use for sorting
@@ -241,43 +244,48 @@ declare class DirectoryApplication {
    * Get the set of ContextMenu options which should be used for Folders in a SidebarDirectory
    * @returns The Array of context options passed to the ContextMenu instance
    */
-  protected _getFolderContextOptions(): ContextMenuEntry[];
+  protected _getFolderContextOptions(): ContextMenu.Entry[];
 
   /**
    * Get the set of ContextMenu options which should be used for Entries in a SidebarDirectory
    * @returns The array of context options passed to the ContextMenu instance
    */
-  protected _getEntryContextOptions(): ContextMenuEntry[];
+  protected _getEntryContextOptions(): ContextMenu.Entry[];
 }
 
 declare global {
-  interface DirectoryMixinEntry {
-    /**
-     * The unique id of the entry
-     */
-    id: string;
-    /**
-     * The folder id or folder object to which this entry belongs
-     */
-    folder: Folder.ConfiguredInstance | string;
-    /**
-     * An image path to display for the entry
-     */
-    img?: string;
-    /**
-     * A numeric sort value which orders this entry relative to others
-     */
-    sort?: string;
-  }
+  /**
+   * @deprecated {@link DirectoryApplicationMixin.Entry | `DirectoryApplicationMixin.Entry`}
+   */
+  type DirectoryMixinEntry = DirectoryApplicationMixin.Entry;
 
   function DirectoryApplicationMixin<BaseApplication extends DirectoryApplicationMixin.BaseClass>(
     Base: BaseApplication,
   ): Mixin<typeof DirectoryApplication, BaseApplication>;
 
   namespace DirectoryApplicationMixin {
-    type AnyMixedConstructor = ReturnType<typeof DirectoryApplicationMixin<BaseClass>>;
+    interface AnyMixedConstructor extends ReturnType<typeof DirectoryApplicationMixin<BaseClass>> {}
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = Application.AnyConstructor;
+
+    interface Entry {
+      /**
+       * The unique id of the entry
+       */
+      id: string;
+      /**
+       * The folder id or folder object to which this entry belongs
+       */
+      folder: Folder.Implementation | string;
+      /**
+       * An image path to display for the entry
+       */
+      img?: string;
+      /**
+       * A numeric sort value which orders this entry relative to others
+       */
+      sort?: string;
+    }
   }
 }

@@ -1,36 +1,14 @@
 export {};
 
 declare global {
-  interface TabsConfiguration {
-    /**
-     * The name of the tabs group
-     */
-    group?: string;
-
-    /**
-     * The CSS selector used to target the navigation element for these tabs
-     */
-    navSelector: string;
-
-    /**
-     * The CSS selector used to target the content container for these tabs
-     */
-    contentSelector?: string;
-
-    /**
-     * The tab name of the initially active tab
-     */
-    initial?: string;
-
-    /**
-     * An optional callback function that executes when the active tab is changed
-     */
-    callback?: ((event: MouseEvent | null, tabs: Tabs, tabName: string) => unknown) | null;
-  }
+  /**
+   * @deprecated {@link Tabs.Configuration | `Tabs.Configuration`}
+   */
+  type TabsConfiguration = Tabs.Configuration;
 
   /**
    * A controller class for managing tabbed navigation within an Application instance.
-   * @see {@link Application}
+   * @see {@link Application | `Application`}
    *
    * @example Configure tab-control for a set of HTML elements
    * ```html
@@ -56,27 +34,27 @@ declare global {
     /**
      * @param config - The Tabs Configuration to use for this tabbed container
      */
-    constructor(config: TabsConfiguration);
+    constructor(config: Tabs.Configuration);
 
     /**
      * The name of the tabs group
      */
-    group: TabsConfiguration["group"];
+    group: Tabs.Configuration["group"];
 
     /**
      * The value of the active tab
      */
-    active: TabsConfiguration["initial"];
+    active: Tabs.Configuration["initial"];
 
     /**
      * A callback function to trigger when the tab is changed
      */
-    callback: TabsConfiguration["callback"];
+    callback: Tabs.Configuration["callback"];
 
     /**
      * The CSS selector used to target the tab navigation element
      */
-    protected _navSelector: TabsConfiguration["navSelector"];
+    protected _navSelector: Tabs.Configuration["navSelector"];
 
     /**
      * A reference to the HTML navigation element the tab controller is bound to
@@ -87,7 +65,7 @@ declare global {
     /**
      * The CSS selector used to target the tab content element
      */
-    protected _contentSelector: TabsConfiguration["contentSelector"];
+    protected _contentSelector: Tabs.Configuration["contentSelector"];
 
     /**
      * A reference to the HTML container element of the tab content
@@ -111,6 +89,35 @@ declare global {
      * @param event - A left click event
      */
     protected _onClickNav(event: MouseEvent): void;
+  }
+
+  namespace Tabs {
+    interface Configuration {
+      /**
+       * The name of the tabs group
+       */
+      group?: string;
+
+      /**
+       * The CSS selector used to target the navigation element for these tabs
+       */
+      navSelector: string;
+
+      /**
+       * The CSS selector used to target the content container for these tabs
+       */
+      contentSelector?: string;
+
+      /**
+       * The tab name of the initially active tab
+       */
+      initial?: string;
+
+      /**
+       * An optional callback function that executes when the active tab is changed
+       */
+      callback?: ((event: MouseEvent | null, tabs: Tabs, tabName: string) => unknown) | null;
+    }
   }
 
   const TabsV2: typeof Tabs;

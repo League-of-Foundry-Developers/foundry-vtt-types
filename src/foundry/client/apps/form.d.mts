@@ -1,46 +1,12 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { AnyObject, GetDataReturnType, InexactPartial, MaybePromise, Identity } from "fvtt-types/utils";
+import type { AnyObject, GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "../../common/prosemirror/_module.d.mts";
 import type Document from "../../common/abstract/document.d.mts";
 
 declare global {
-  interface FormApplicationOptions extends ApplicationOptions {
-    /**
-     * Whether to automatically close the application when it's contained
-     * form is submitted.
-     * @defaultValue `true`
-     */
-    closeOnSubmit: boolean;
-
-    /**
-     * Whether to automatically submit the contained HTML form when an input
-     * or select element is changed.
-     * @defaultValue `false`
-     */
-    submitOnChange: boolean;
-
-    /**
-     * Whether to automatically submit the contained HTML form when the
-     * application window is manually closed.
-     * @defaultValue `false`
-     */
-    submitOnClose: boolean;
-
-    /**
-     * Whether the application form is editable - if true, it's fields will
-     * be unlocked and the form can be submitted. If false, all form fields
-     * will be disabled and the form cannot be submitted.
-     * @defaultValue `true`
-     */
-    editable: boolean;
-
-    /**
-     * Support configuration of the sheet type used for this application.
-     * @defaultValue `false`
-     */
-    sheetConfig: boolean;
-  }
+  /** @deprecated {@link FormApplication.Options | `FormApplication.Options`} */
+  type FormApplicationOptions = FormApplication.Options;
 
   /**
    * An abstract pattern for defining an Application responsible for updating some object using an HTML form
@@ -51,10 +17,13 @@ declare global {
    * 3) This abstract layer has no knowledge of what is being updated, so the implementation must define _updateObject
    *
    * @typeParam Options        - the type of the options object
-   * @typeParam ConcreteObject - the type of the object or {@link foundry.abstract.Document} which is modified by this form
+   * @typeParam ConcreteObject - while this is called object this can actually be any arbitrary value.
+   * For example `ImagePopout` sets this to a string. This is still typically a
+   * {@link Document | `Document`} instance or an object in general which is modified by this form
    */
   abstract class FormApplication<
-    Options extends FormApplicationOptions = FormApplicationOptions,
+    // TODO(LukeAbby): The generic parameters here will be swapped.
+    Options extends FormApplication.Options = FormApplication.Options,
     ConcreteObject = unknown,
   > extends Application<Options> {
     /**
@@ -65,12 +34,7 @@ declare global {
      *                  (default: `{}`)
      * @remarks Foundry allows passing no value to the constructor at all.
      */
-    constructor(object: ConcreteObject, options?: Partial<Options>);
-    constructor(
-      ...args: ConcreteObject extends undefined
-        ? [ConcreteObject?, Partial<Options>?]
-        : [ConcreteObject, Partial<Options>?]
-    );
+    constructor(...args: FormApplication.ConstructorArguments<ConcreteObject, Options>);
 
     /**
      * The object target which we are using this form to modify
@@ -98,7 +62,7 @@ declare global {
     /**
      * Assign the default options which are supported by the entity edit sheet.
      * @returns The default options for this FormApplication class
-     * @see {@link Application.defaultOptions}
+     * @see {@link Application.defaultOptions | `Application.defaultOptions`}
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -111,7 +75,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplication.Options;
 
     /**
      * Is the Form Application currently editable?
@@ -196,7 +160,7 @@ declare global {
     /**
      * Activate a named TinyMCE text editor
      * @param name           - The named data field which the editor modifies.
-     * @param options        - Editor initialization options passed to {@link TextEditor.create}.
+     * @param options        - Editor initialization options passed to {@link TextEditor.create | `TextEditor.create`}.
      *                         (default: `{}`)
      * @param initialContent - Initial text content for the editor area.
      *                         (default: `""`)
@@ -211,21 +175,7 @@ declare global {
      * Handle saving the content of a specific editor by name
      * @param name - The named editor to save
      */
-    saveEditor(
-      name: string,
-      options?: InexactPartial<{
-        /**
-         * Remove the editor after saving its content
-         * @defaultValue `true`
-         */
-        remove: boolean;
-
-        /**
-         * Prevent normal re-rendering of the sheet after saving.
-         */
-        preventRender: boolean;
-      }>,
-    ): Promise<void>;
+    saveEditor(name: string, options?: FormApplication.SaveEditorOptions): Promise<void>;
 
     /**
      * Activate an editor instance present within the form
@@ -275,7 +225,7 @@ declare global {
     /**
      * @deprecated since v12, will be removed in v14
      */
-    protected _getFilePickerOptions(event: PointerEvent): FilePickerOptions;
+    protected _getFilePickerOptions(event: PointerEvent): FilePicker.Options;
 
     /**
      * @deprecated since v12, will be removed in v14
@@ -286,6 +236,58 @@ declare global {
   namespace FormApplication {
     interface Any extends AnyFormApplication {}
     interface AnyConstructor extends Identity<typeof AnyFormApplication> {}
+
+    type ConstructorArguments<ConcreteObject, Options extends FormApplication.Options> =
+      // Note(LukeAbby): Uses a strict equality test to avoid `object` and `{}` counting as the same.
+      // See {@link HandleEmptyObject | `HandleEmptyObject`} for more information.
+      (<T>() => T extends FormApplication.NoObject ? 1 : 0) extends <T>() => T extends ConcreteObject ? 1 : 0
+        ? [object?: ConcreteObject, options?: Partial<Options>]
+        : [ConcreteObject] extends [undefined]
+          ? [object?: ConcreteObject, options?: Partial<Options>]
+          : [object: ConcreteObject, options?: Partial<Options>];
+
+    /**
+     * The type for when a form application has no object. Equivalent to `{}` but more semantically appropriate.
+     */
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/no-empty-object-type
+    type NoObject = {};
+
+    interface Options extends Application.Options {
+      /**
+       * Whether to automatically close the application when it's contained
+       * form is submitted.
+       * @defaultValue `true`
+       */
+      closeOnSubmit: boolean;
+
+      /**
+       * Whether to automatically submit the contained HTML form when an input
+       * or select element is changed.
+       * @defaultValue `false`
+       */
+      submitOnChange: boolean;
+
+      /**
+       * Whether to automatically submit the contained HTML form when the
+       * application window is manually closed.
+       * @defaultValue `false`
+       */
+      submitOnClose: boolean;
+
+      /**
+       * Whether the application form is editable - if true, it's fields will
+       * be unlocked and the form can be submitted. If false, all form fields
+       * will be disabled and the form cannot be submitted.
+       * @defaultValue `true`
+       */
+      editable: boolean;
+
+      /**
+       * Support configuration of the sheet type used for this application.
+       * @defaultValue `false`
+       */
+      sheetConfig: boolean;
+    }
 
     interface CloseOptions extends Application.CloseOptions {
       submit?: boolean;
@@ -326,27 +328,33 @@ declare global {
     }
 
     interface FormApplicationData<
-      Options extends FormApplicationOptions = FormApplicationOptions,
+      Options extends FormApplication.Options = FormApplication.Options,
       ConcreteObject = unknown,
     > {
       object: ConcreteObject;
       options: Options;
       title: string;
     }
+
+    interface SaveEditorOptions {
+      /**
+       * Remove the editor after saving its content
+       * @defaultValue `true`
+       */
+      remove?: boolean | undefined;
+
+      /**
+       * Prevent normal re-rendering of the sheet after saving.
+       */
+      preventRender?: boolean | undefined;
+    }
   }
 
-  interface DocumentSheetOptions<
-    ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
-  > extends FormApplicationOptions {
-    /**
-     * The default permissions required to view this Document sheet.
-     * @defaultValue {@link CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED}
-     */
-    viewPermission: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
-
-    /** An array of {@link HTMLSecret} configuration objects. */
-    secrets: HTMLSecretConfiguration<ConcreteDocument>[];
-  }
+  /**
+   * @deprecated {@link DocumentSheet.Options | `DocumentSheet.Options`}
+   */
+  type DocumentSheetOptions<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> =
+    DocumentSheet.Options<ConcreteDocument>;
 
   /**
    * Extend the FormApplication pattern to incorporate specific logic for viewing or editing Document instances.
@@ -356,7 +364,7 @@ declare global {
    * @typeParam ConcreteDocument - the type of the Document which should be managed by this form sheet
    */
   abstract class DocumentSheet<
-    Options extends DocumentSheetOptions<ConcreteDocument>,
+    Options extends DocumentSheet.Options<ConcreteDocument>,
     ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
   > extends FormApplication<Options, ConcreteDocument> {
     /**
@@ -381,7 +389,7 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): DocumentSheetOptions;
+    static get defaultOptions(): DocumentSheet.Options;
 
     /**
      * A semantic convenience reference to the Document instance which is the target object for this form.
@@ -422,7 +430,7 @@ declare global {
      * @param user - The user requesting to render the sheet
      * @returns Does the User have permission to view this sheet?
      */
-    protected _canUserView(user: User): boolean;
+    protected _canUserView(user: User.Implementation): boolean;
 
     /**
      * Create objects for managing the functionality of secret blocks within this Document's content.
@@ -465,7 +473,7 @@ declare global {
     interface AnyConstructor extends Identity<typeof AnyDocumentSheet> {}
 
     interface DocumentSheetData<
-      Options extends DocumentSheetOptions<ConcreteDocument>,
+      Options extends DocumentSheet.Options<ConcreteDocument>,
       ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
     > extends FormApplication.FormApplicationData {
       cssClass: string;
@@ -477,16 +485,28 @@ declare global {
       title: DocumentSheet<Options, ConcreteDocument>["title"];
       document: DocumentSheet<Options, ConcreteDocument>["document"];
     }
+
+    interface Options<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any>
+      extends FormApplication.Options {
+      /**
+       * The default permissions required to view this Document sheet.
+       * @defaultValue {@link CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED | `CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED`}
+       */
+      viewPermission: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+      /** An array of {@link HTMLSecret | `HTMLSecret`} configuration objects. */
+      secrets: HTMLSecret.Configuration<ConcreteDocument>[];
+    }
   }
 }
 
 declare abstract class AnyFormApplication extends FormApplication<any, any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDocumentSheet extends DocumentSheet<
-  DocumentSheetOptions<foundry.abstract.Document.Any>,
+  DocumentSheet.Options<foundry.abstract.Document.Any>,
   foundry.abstract.Document.Any
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

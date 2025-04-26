@@ -1,15 +1,18 @@
 import { expectTypeOf } from "vitest";
 import type { MaybePromise } from "fvtt-types/utils";
 
-declare const lightDoc: AmbientLightDocument;
+// TODO: This file appears to be testing the old version of AmbientLightConfig
+import AmbientLightConfig = foundry.applications.sheets.AmbientLightConfig;
+
+declare const lightDoc: AmbientLightDocument.Implementation;
 const ambientLightConfig = new AmbientLightConfig(lightDoc);
 
-expectTypeOf(ambientLightConfig.object).toEqualTypeOf<AmbientLightDocument>();
+expectTypeOf(ambientLightConfig.object).toEqualTypeOf<AmbientLightDocument.Implementation>();
 expectTypeOf(AmbientLightConfig.defaultOptions).toEqualTypeOf<
-  DocumentSheetOptions<AmbientLightDocument.ConfiguredInstance>
+  DocumentSheet.Options<AmbientLightDocument.Implementation>
 >();
-expectTypeOf(ambientLightConfig.options).toEqualTypeOf<DocumentSheetOptions<AmbientLightDocument.ConfiguredInstance>>();
+expectTypeOf(ambientLightConfig.options).toEqualTypeOf<DocumentSheet.Options<AmbientLightDocument.Implementation>>();
 expectTypeOf(ambientLightConfig.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(ambientLightConfig.render(true)).toEqualTypeOf<AmbientLightConfig>();
 
-expectTypeOf(ambientLightConfig.preview).toEqualTypeOf<AmbientLightDocument>();
+expectTypeOf(ambientLightConfig.preview).toEqualTypeOf<AmbientLightDocument.Implementation>();

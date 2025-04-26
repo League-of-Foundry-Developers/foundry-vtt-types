@@ -1,5 +1,4 @@
 import type { Brand, FixedInstanceType, Identity, IntentionalPartial, NullishProps } from "fvtt-types/utils";
-import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -11,13 +10,13 @@ declare global {
      *                  (default: `game.user`)
      * @param options - Additional options
      */
-    constructor(user?: User.ConfiguredInstance, options?: Ruler.ConstructorOptions);
+    constructor(user?: User.Implementation, options?: Ruler.ConstructorOptions);
 
     /**
      * Record the User which this Ruler references
      * @defaultValue `game.user`
      */
-    user: User.ConfiguredInstance;
+    user: User.Implementation;
 
     /**
      * The ruler name - used to differentiate between players
@@ -94,12 +93,12 @@ declare global {
     totalCost: number;
 
     /**
-     * The current state of the Ruler (one of {@link Ruler.States}).
+     * The current state of the Ruler (one of {@link Ruler.States | `Ruler.States`}).
      */
     get state(): Ruler.STATES;
 
     /**
-     * The current state of the Ruler (one of {@link Ruler.States}).
+     * The current state of the Ruler (one of {@link Ruler.States | `Ruler.States`}).
      * @defaultValue `Ruler.STATES.INACTIVE`
      */
     protected _state: Ruler.STATES;
@@ -117,7 +116,7 @@ declare global {
     /**
      * The Token that is moved by the Ruler.
      */
-    get token(): Token.ConfiguredInstance | null;
+    get token(): Token.Object | null;
 
     /**
      * Clear display of the current Ruler
@@ -232,7 +231,7 @@ declare global {
      * @returns The Token that is to be moved, if any
      *
      */
-    protected _getMovementToken(origin: Canvas.Point): Token.ConfiguredInstance | null;
+    protected _getMovementToken(origin: Canvas.Point): Token.Object | null;
 
     /**
      * Get the current measurement history.
@@ -253,14 +252,14 @@ declare global {
      * @returns Whether the movement is allowed
      * @throws  A specific Error message used instead of returning false
      */
-    protected _canMove(token: Token.ConfiguredInstance): boolean;
+    protected _canMove(token: Token.Object): boolean;
 
     /**
      * Animate piecewise Token movement along the measured segment path.
      * @param token - The Token being animated
      * @returns A Promise which resolves once all animation is completed
      */
-    protected _animateMovement(token: Token.ConfiguredInstance): Promise<void>;
+    protected _animateMovement(token: Token.Object): Promise<void>;
 
     /**
      * Update Token position and configure its animation properties for the next leg of its animation.
@@ -271,7 +270,7 @@ declare global {
      * @returns A Promise that resolves once the animation for this segment is done
      */
     protected _animateSegment(
-      token: Token.ConfiguredInstance,
+      token: Token.Object,
       segment: Ruler.PartialSegmentForAnimating,
       destination: Canvas.Point,
       updateOptions?: Ruler.PartialTokenUpdateOptions, // not:null (used as first param in mergeObject)
@@ -281,13 +280,13 @@ declare global {
      * An method which can be extended by a subclass of Ruler to define custom behaviors before a confirmed movement.
      * @param token - The Token that will be moving
      */
-    protected _preMove(token: Token.ConfiguredInstance): Promise<void>;
+    protected _preMove(token: Token.Object): Promise<void>;
 
     /**
      * An event which can be extended by a subclass of Ruler to define custom behaviors before a confirmed movement.
      * @param token - The Token that finished moving
      */
-    protected _postMove(token: Token.ConfiguredInstance): Promise<void>;
+    protected _postMove(token: Token.Object): Promise<void>;
 
     /**
      * Broadcast Ruler measurement if its User is the connected client.
@@ -309,35 +308,35 @@ declare global {
     /**
      * Handle the beginning of a new Ruler measurement workflow
      * @param event - The drag start event
-     * @see Canvas.#onDragLeftStart
+     * @see {@link Canvas.#onDragLeftStart | `Canvas.#onDragLeftStart`}
      */
     protected _onDragStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle left-click events on the Canvas during Ruler measurement.
      * @param event - The pointer-down event
-     * @see Canvas._onClickLeft
+     * @see {@link Canvas._onClickLeft | `Canvas._onClickLeft`}
      */
     protected _onClickLeft(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle right-click events on the Canvas during Ruler measurement.
      * @param event - The pointer-down event
-     * @see Canvas._onClickRight
+     * @see {@link Canvas._onClickRight | `Canvas._onClickRight`}
      */
     protected _onClickRight(event: PIXI.FederatedEvent): void;
 
     /**
      * Continue a Ruler measurement workflow for left-mouse movements on the Canvas.
      * @param event - The mouse move event
-     * @see Canvas.#onDragLeftMove
+     * @see {@link Canvas.#onDragLeftMove | `Canvas.#onDragLeftMove`}
      */
     protected _onMouseMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Conclude a Ruler measurement workflow by releasing the left-mouse button.
      * @param event - The pointer-up event
-     * @see Canvas.#onDragLeftDrop
+     * @see {@link Canvas.#onDragLeftDrop | `Canvas.#onDragLeftDrop`}
      */
     protected _onMouseUp(event: PIXI.FederatedEvent): void;
 
@@ -405,8 +404,8 @@ declare global {
       /** Is this segment the last one? */
       last: boolean;
 
-      /** Animation options passed to {@link TokenDocument#update} */
-      animation: Document.Database.OperationOf<"Token", "update">["animation"];
+      /** Animation options passed to {@link TokenDocument.update | `TokenDocument#update`} */
+      animation: TokenDocument.Database.Update["animation"];
     }
 
     interface MeasurementHistoryWaypoint {
@@ -426,19 +425,19 @@ declare global {
     type MeasurementHistory = MeasurementHistoryWaypoint[];
 
     interface MeasurementData {
-      /** The state ({@link Ruler#state}) */
+      /** The state ({@link Ruler.state | `Ruler#state`}) */
       state: Ruler.STATES;
 
-      /** The token ID ({@link Ruler#token}) */
+      /** The token ID ({@link Ruler.token | `Ruler#token`}) */
       token: string | null;
 
-      /** The measurement history ({@link Ruler#history}) */
+      /** The measurement history ({@link Ruler.history | `Ruler#history`}) */
       history: MeasurementHistory;
 
-      /** The waypoints ({@link Ruler#waypoints}) */
+      /** The waypoints ({@link Ruler.waypoints | `Ruler#waypoints`}) */
       waypoints: Canvas.Point[];
 
-      /** The destination ({@link Ruler#destination}) */
+      /** The destination ({@link Ruler.destination | `Ruler#destination`}) */
       destination: Canvas.Point | null;
     }
 
@@ -471,7 +470,7 @@ declare global {
       /**
        * The token that is moved (defaults to {@link Ruler#_getMovementToken})
        */
-      token: Token.ConfiguredInstance | null;
+      token: Token.Object | null;
     }>;
 
     interface StartMeasurementOptions extends _StartMeasurementOptions, _Snap {}
@@ -479,7 +478,7 @@ declare global {
     interface AddWaypointOptions extends _Snap {}
 
     // TODO: revisit after docs v2
-    type PartialTokenUpdateOptions = IntentionalPartial<Document.Database.OperationOf<"Token", "update">>;
+    type PartialTokenUpdateOptions = IntentionalPartial<TokenDocument.Database.Update>;
 
     // TODO: also revisit after docs v2 merges with new and improved IntentionalPartial
     interface PartialSegmentForLabelling
@@ -497,5 +496,5 @@ declare global {
 }
 
 declare abstract class AnyRuler extends Ruler {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

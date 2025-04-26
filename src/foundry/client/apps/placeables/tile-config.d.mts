@@ -7,7 +7,7 @@ declare global {
    */
   class TileConfig<Options extends TileConfig.Options = TileConfig.Options> extends DocumentSheet<
     Options,
-    TileDocument.ConfiguredInstance
+    TileDocument.Implementation
   > {
     /**
      * @defaultValue
@@ -37,14 +37,27 @@ declare global {
   namespace TileConfig {
     interface Any extends TileConfig<any> {}
 
-    type FormData = Pick<TileDocument, "alpha" | "height" | "rotation" | "width" | "x" | "y" | "overhead" | "roof"> & {
-      "texture.src": string | null;
-      "texture.scaleX": number | null;
-      "texture.scaleY": number | null;
-      "texture.tint": string;
-    };
+    /** @internal */
+    type _FormData = Pick<
+      TileDocument.Implementation,
+      "alpha" | "elevation" | "height" | "rotation" | "sort" | "width" | "x" | "y"
+    >;
 
-    interface Options extends DocumentSheetOptions<TileDocument.ConfiguredInstance> {
+    interface FormData extends _FormData {
+      "occlusion.alpha": TileDocument.Implementation["occlusion"]["alpha"];
+      "occlusion.mode": TileDocument.Implementation["occlusion"]["mode"];
+      "restrictions.light": TileDocument.Implementation["restrictions"]["light"];
+      "restrictions.weather": TileDocument.Implementation["restrictions"]["weather"];
+      "texture.src": TileDocument.Implementation["texture"]["src"];
+      "texture.scaleX": TileDocument.Implementation["texture"]["scaleX"];
+      "texture.scaleY": TileDocument.Implementation["texture"]["scaleY"];
+      "texture.tint": TileDocument.Implementation["texture"]["tint"];
+      "video.autoplay": TileDocument.Implementation["video"]["autoplay"];
+      "video.loop": TileDocument.Implementation["video"]["loop"];
+      "video.volume": TileDocument.Implementation["video"]["volume"];
+    }
+
+    interface Options extends DocumentSheet.Options<TileDocument.Implementation> {
       /**
        * Configure a preview version of a tile which is not yet saved
        */

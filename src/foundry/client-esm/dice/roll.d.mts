@@ -242,15 +242,15 @@ declare class Roll<D extends AnyObject = EmptyObject> {
 
   /**
    * Alias for evaluate.
-   * @see Roll#evaluate
-   * @param options - Options passed to Roll#evaluate.
+   * @see {@link Roll.evaluate | `Roll#evaluate`}
+   * @param options - Options passed to {@link Roll.evaluate | `Roll#evaluate`}.
    */
   roll(options?: Roll.Options): Promise<Roll.Evaluated<this>>;
 
   /**
    * Create a new Roll object using the original provided formula and data.
    * Each roll is immutable, so this method returns a new Roll instance using the same data.
-   * @param options - Evaluation options passed to Roll#evaluate
+   * @param options - Evaluation options passed to {@link Roll.evaluate | `Roll#evaluate`}
    * @returns A new Roll object, rolled using the same formula and data
    */
   reroll(options?: Roll.Options): Promise<Roll.Evaluated<this>>;
@@ -613,31 +613,28 @@ declare namespace Roll {
   interface ClassifyStringTermOptions extends _ClassifyStringTermOptions {}
 
   // TODO(LukeAbby): When shims are added then `"user"` should also be added here #3065. Specifically `user` should be added as partial.
-  // Also use `IntentionalPartial<ChatMessageCreateData, "content" | "sound" | "rolls">` once `documents-v2` is merged.
   //
   // This is `IntentionalPartial` because Foundry merges in defaults with `mergeObject`.
-  interface _MessageData
-    extends Omit<ChatMessageCreateData, "content" | "sound" | "rolls">,
-      IntentionalPartial<Pick<ChatMessageCreateData, "content" | "sound" | "rolls">> {
+  interface _MessageData extends IntentionalPartial<ChatMessage.CreateData, "content" | "sound" | "rolls"> {
     /**
      * The HTML content of this chat message
      * @defaultValue `String(this.total)`
      */
-    content?: ChatMessageCreateData["content"];
+    content?: ChatMessage.CreateData["content"];
 
     /**
      * The URL of an audio file which plays when this message is received
      * @defaultValue `CONFIG.sounds.dice`
      */
-    sound?: ChatMessageCreateData["sound"];
+    sound?: ChatMessage.CreateData["sound"];
 
     /**
      * The URL of an audio file which plays when this message is received
      *
-     * @deprecated - In `Roll.MessageData`, Foundry always overrides `rolls` to `[this]`.
+     * @deprecated In `Roll.MessageData`, Foundry always overrides `rolls` to `[this]`.
      * This makes it useless to set. Do not use.
      */
-    rolls?: ChatMessageCreateData["rolls"];
+    rolls?: ChatMessage.CreateData["rolls"];
   }
 
   interface MessageData extends InexactPartial<_MessageData> {}
@@ -662,16 +659,13 @@ declare namespace Roll {
     Create extends boolean | null | undefined,
     ConcreteMessageData extends Roll.MessageData | null | undefined = undefined,
   > =
-    | (ConcreteMessageData extends undefined ? ChatMessage.ConfiguredInstance | undefined : never)
-    | (Create extends true | undefined ? ChatMessage.ConfiguredInstance | undefined : never)
-    | (Create extends false | null ? ChatMessageCreateData : never);
+    | (ConcreteMessageData extends undefined ? ChatMessage.Implementation | undefined : never)
+    | (Create extends true | undefined ? ChatMessage.Implementation | undefined : never)
+    | (Create extends false | null ? ChatMessage.CreateData : never);
 }
 
-// TODO: Replace when `documents-v2` is merged.
-type ChatMessageCreateData = foundry.data.fields.SchemaField.InnerPersistedType<ChatMessage.Schema>;
-
 declare abstract class AnyRoll extends Roll<any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default Roll;

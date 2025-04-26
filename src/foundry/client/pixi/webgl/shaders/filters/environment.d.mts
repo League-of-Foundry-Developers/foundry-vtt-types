@@ -37,5 +37,5 @@ declare global {
 }
 
 declare abstract class AnyPrimaryCanvasGroupAmbienceFilter extends PrimaryCanvasGroupAmbienceFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

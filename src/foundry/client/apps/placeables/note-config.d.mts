@@ -7,8 +7,8 @@ declare global {
    */
   class NoteConfig<
     Options extends
-      DocumentSheetOptions<NoteDocument.ConfiguredInstance> = DocumentSheetOptions<NoteDocument.ConfiguredInstance>,
-  > extends DocumentSheet<Options, NoteDocument.ConfiguredInstance> {
+      DocumentSheet.Options<NoteDocument.Implementation> = DocumentSheet.Options<NoteDocument.Implementation>,
+  > extends DocumentSheet<Options, NoteDocument.Implementation> {
     /**
      * @defaultValue
      * ```typescript
@@ -19,7 +19,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<NoteDocument.ConfiguredInstance>;
+    static override get defaultOptions(): DocumentSheet.Options<NoteDocument.Implementation>;
 
     override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: Implement GetDataReturnType
 
@@ -47,19 +47,29 @@ declare global {
   namespace NoteConfig {
     interface Any extends NoteConfig<any> {}
 
-    interface FormData {
-      entryId: NoteDocument["entryId"];
-      fontFamily: NoteDocument["fontFamily"];
-      fontSize: NoteDocument["fontSize"];
-      "icon.selected": NoteDocument["texture"]["src"];
-      "icon.custom": NoteDocument["texture"]["src"];
-      iconSize: NoteDocument["iconSize"];
-      iconTint: NoteDocument["texture"]["tint"];
-      text: NoteDocument["text"];
-      textAnchor: NoteDocument["textAnchor"];
-      textColor: NoteDocument["textColor"];
-      x: NoteDocument["x"];
-      y: NoteDocument["y"];
+    /** @internal */
+    type _FormData = Pick<
+      NoteDocument.Implementation,
+      | "elevation"
+      | "entryId"
+      | "fontFamily"
+      | "fontSize"
+      | "global"
+      | "iconSize"
+      | "pageId"
+      | "sort"
+      | "text"
+      | "textAnchor"
+      | "textColor"
+      | "x"
+      | "y"
+    >;
+
+    interface FormData extends _FormData {
+      "icon.selected": NoteDocument.Implementation["texture"]["src"];
+
+      /** @remarks Only appears in the form data if `icon.selected` is set to "Custom" (`""` value) */
+      "icon.custom"?: NoteDocument.Implementation["texture"]["src"];
     }
   }
 }

@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise, ValueOf } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -7,8 +7,8 @@ declare global {
    */
   class MeasuredTemplateConfig<
     Options extends
-      DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance> = DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance>,
-  > extends DocumentSheet<Options, MeasuredTemplateDocument.ConfiguredInstance> {
+      DocumentSheet.Options<MeasuredTemplateDocument.Implementation> = DocumentSheet.Options<MeasuredTemplateDocument.Implementation>,
+  > extends DocumentSheet<Options, MeasuredTemplateDocument.Implementation> {
     /**
      * @defaultValue
      * ```typescript
@@ -21,7 +21,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance>;
+    static override get defaultOptions(): DocumentSheet.Options<MeasuredTemplateDocument.Implementation>;
 
     override getData(): MaybePromise<GetDataReturnType<MeasuredTemplateConfig.MeasuredTemplateConfigData>>;
 
@@ -38,7 +38,7 @@ declare global {
       distance: number | null;
       fillColor: string;
       hidden: boolean;
-      t: ValueOf<foundry.CONST.MEASURED_TEMPLATE_TYPES>;
+      t: foundry.CONST.MEASURED_TEMPLATE_TYPES;
       texture: string;
       width: number | null;
       x: number | null;
@@ -47,8 +47,8 @@ declare global {
 
     interface MeasuredTemplateConfigData<
       Options extends
-        DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance> = DocumentSheetOptions<MeasuredTemplateDocument.ConfiguredInstance>,
-    > extends DocumentSheet.DocumentSheetData<Options, MeasuredTemplateDocument.ConfiguredInstance> {
+        DocumentSheet.Options<MeasuredTemplateDocument.Implementation> = DocumentSheet.Options<MeasuredTemplateDocument.Implementation>,
+    > extends DocumentSheet.DocumentSheetData<Options, MeasuredTemplateDocument.Implementation> {
       templateTypes: Record<foundry.CONST.MEASURED_TEMPLATE_TYPES, string>;
       gridUnits: string;
       submitText: string;

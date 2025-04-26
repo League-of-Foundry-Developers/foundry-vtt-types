@@ -6,10 +6,10 @@ declare global {
    * The singleton collection of Combat documents which exist within the active World.
    * This Collection is accessible within the Game object as game.combats.
    *
-   * @see {@link Combat} The Combat document
-   * @see {@link CombatTracker} The CombatTracker sidebar directory
+   * @see {@link Combat | `Combat`} The Combat document
+   * @see {@link CombatTracker | `CombatTracker`} The CombatTracker sidebar directory
    */
-  class CombatEncounters extends WorldCollection<typeof foundry.documents.BaseCombat, "CombatEncounters"> {
+  class CombatEncounters extends WorldCollection<Combat.ImplementationClass, "CombatEncounters"> {
     static documentName: "Combat";
 
     /**
@@ -32,7 +32,7 @@ declare global {
     /**
      * The currently viewed Combat encounter
      */
-    get viewed(): Document.Stored<Combat.ConfiguredInstance> | null;
+    get viewed(): Combat.Stored | null;
 
     /**
      * When a Token is deleted, remove it as a combatant from any combat encounters which included the Token
@@ -45,9 +45,12 @@ declare global {
   namespace CombatEncounters {
     interface Any extends AnyCombatEncounters {}
     interface AnyConstructor extends Identity<typeof AnyCombatEncounters> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Combat"> {}
+    interface Configured extends Document.ConfiguredCollection<"Combat"> {}
   }
 }
 
 declare abstract class AnyCombatEncounters extends CombatEncounters {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

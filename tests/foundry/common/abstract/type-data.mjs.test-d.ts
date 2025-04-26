@@ -1,11 +1,15 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { DeepPartial, EmptyObject } from "fvtt-types/utils";
 
 import fields = foundry.data.fields;
-import BaseUser = foundry.documents.BaseUser;
 import BaseJournalEntryPage = foundry.documents.BaseJournalEntryPage;
 
 import TypeDataModel = foundry.abstract.TypeDataModel;
+import type Document from "../../../../src/foundry/common/abstract/document.d.mts";
+import type {
+  DatabaseCreateOperation,
+  DatabaseUpdateOperation,
+} from "../../../../src/foundry/common/abstract/_types.d.mts";
 
 /* attempting to use the example as a test */
 
@@ -77,25 +81,19 @@ class QuestModel extends TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQu
   }
 
   protected override async _preCreate(
-    data: TypeDataModel.ParentAssignmentType<this>,
-    options: TypeDataModel.TypeDataModelModificationOptions,
-    user: User,
+    data: TypeDataModel.ParentAssignmentType<QuestSchema, BaseJournalEntryPage>,
+    _options: Document.Database.PreCreateOptions<DatabaseCreateOperation>,
+    _user: User.Implementation,
   ): Promise<boolean | void> {
     expectTypeOf(data.system.steps).toEqualTypeOf<string[]>();
-
-    expectTypeOf(options).toEqualTypeOf<TypeDataModel.TypeDataModelModificationOptions>();
-    expectTypeOf(user).toEqualTypeOf<BaseUser>();
   }
 
   protected override async _preUpdate(
-    data: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
-    options: TypeDataModel.TypeDataModelModificationOptions,
-    userId: string,
+    data: DeepPartial<TypeDataModel.ParentAssignmentType<QuestSchema, BaseJournalEntryPage>>,
+    _options: Document.Database.PreCreateOptions<DatabaseUpdateOperation>,
+    _userId: string,
   ): Promise<boolean | void> {
     expectTypeOf(data.system?.steps).toEqualTypeOf<string[] | undefined>();
-
-    expectTypeOf(options).toEqualTypeOf<TypeDataModel.TypeDataModelModificationOptions>();
-    expectTypeOf(userId).toEqualTypeOf<string>();
   }
 }
 
@@ -159,9 +157,11 @@ class QuestModel3 extends foundry.abstract.TypeDataModel<QuestSchema, BaseJourna
   }
 }
 
-class CustomTypeDataModel extends foundry.abstract.TypeDataModel<any, Item.ConfiguredInstance> {}
-
 // This is a regression test for a case where `TypeDataModel` was written as `...args: ConstructorParameters<typeof DataModel>` instead of `...args: ConstructorParameters<typeof DataModel<Schema, Parent>>`.
 // Thus causing the constructor to be typed with no respect to the `Parent`.
-// @ts-expect-error - This should not work as it is attempting to give an `Actor` to `TypeDataModel` where it's configured with a parent of `Item`.
-new CustomTypeDataModel({}, { parent: new Actor({ name: "test" }) });
+test("TypeDataModel parent regression test", () => {
+  class CustomTypeDataModel extends foundry.abstract.TypeDataModel<any, Item.Implementation> {}
+
+  // @ts-expect-error - This should not work as it is attempting to give an `Actor` to `TypeDataModel` where it's configured with a parent of `Item`.
+  new CustomTypeDataModel({}, { parent: new Actor.implementation({ name: "test" }) });
+});

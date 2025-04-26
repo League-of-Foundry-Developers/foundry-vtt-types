@@ -1,7 +1,7 @@
 import type EmbeddedCollection from "./embedded-collection.d.mts";
 
 /**
- * This class provides a {@link Collection} wrapper around a singleton embedded Document so that it can be interacted
+ * This class provides a {@link Collection | `Collection`} wrapper around a singleton embedded Document so that it can be interacted
  * with via a common interface.
  */
 export default class SingletonEmbeddedCollection<

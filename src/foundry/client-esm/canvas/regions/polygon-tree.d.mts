@@ -120,11 +120,11 @@ declare namespace RegionPolygonTree {
 }
 
 declare abstract class AnyRegionPolygonTreeNode extends RegionPolygonTreeNode {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyRegionPolygonTree extends RegionPolygonTree {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default RegionPolygonTree;

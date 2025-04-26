@@ -247,7 +247,7 @@ declare class EmbeddedCollection<
     documents: foundry.abstract.Document.Any[],
     result: unknown,
     operation: DatabaseOperation,
-    user: User,
+    user: User.Implementation,
   ): void;
 
   /**
@@ -269,7 +269,7 @@ declare class EmbeddedCollection<
        * An array of filters to apply
        * @defaultValue `[]`
        */
-      filters: FieldFilter[];
+      filters: SearchFilter.FieldFilter[];
       /**
        * An array of document IDs to exclude from search results
        * @defaultValue `[]`

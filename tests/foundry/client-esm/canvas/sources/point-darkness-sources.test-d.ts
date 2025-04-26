@@ -5,10 +5,10 @@ import type PointDarknessSource from "../../../../../src/foundry/client-esm/canv
 const { PointDarknessSource: PDS } = foundry.canvas.sources;
 
 expectTypeOf(PDS.effectsCollection).toBeString();
-expectTypeOf(PDS["_dimLightingLevel"]).toMatchTypeOf<foundry.CONST.LIGHTING_LEVELS>();
-expectTypeOf(PDS["_brightLightingLevel"]).toMatchTypeOf<foundry.CONST.LIGHTING_LEVELS>();
+expectTypeOf(PDS["_dimLightingLevel"]).toExtend<foundry.CONST.LIGHTING_LEVELS>();
+expectTypeOf(PDS["_brightLightingLevel"]).toExtend<foundry.CONST.LIGHTING_LEVELS>();
 expectTypeOf(PDS["ANIMATIONS"]).toEqualTypeOf<typeof CONFIG.Canvas.darknessAnimations>();
-expectTypeOf(PDS["_layers"]).toMatchTypeOf<Record<string, RenderedEffectSource.LayerConfig>>();
+expectTypeOf(PDS["_layers"]).toExtend<Record<string, RenderedEffectSource.LayerConfig>>();
 expectTypeOf(PDS.defaultData).toEqualTypeOf<PointDarknessSource.SourceData>();
 
 const mySource = new foundry.canvas.sources.PointDarknessSource();

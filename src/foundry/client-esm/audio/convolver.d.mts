@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare namespace ConvolverEffect {}
 
@@ -16,24 +16,8 @@ declare class ConvolverEffect extends ConvolverNode {
    * @param context - The audio context required by the ConvolverNode
    * @param options - Additional options which modify the ConvolverEffect behavior
    */
-  constructor(
-    context: AudioContext,
-    options?: InexactPartial<
-      {
-        /**
-         * The file path to the impulse response buffer to use
-         * @defaultValue `"sounds/impulse-responses/ir-full.wav"`
-         */
-        impulseResponsePath: string;
-
-        /**
-         * The initial intensity of the effect
-         * @defaultValue `5`
-         */
-        intensity: number;
-      } & ConvolverOptions
-    >,
-  );
+  // options: not null (destructured)
+  constructor(context: AudioContext, options?: ConvolverEffect.ConstructorOptions);
 
   /**
    * Adjust the intensity of the effect on a scale of 0 to 10.
@@ -46,18 +30,17 @@ declare class ConvolverEffect extends ConvolverNode {
    * Update the state of the effect node given the active flag and numeric intensity.
    * @param options - Options which are updated
    */
-  update(
-    options?: InexactPartial<{
-      /** A new effect intensity */
-      intensity: number;
-    }>,
-  ): void;
+  // options: not null (destructured)
+  update(options?: ConvolverEffect.UpdateOptions): void;
 
+  /** @privateRemarks This override only does side effects then forwards args to super, no type changes */
   override disconnect(output?: number): void;
   override disconnect(destinationNode?: AudioNode, output?: number, input?: number): void;
   override disconnect(destinationParam?: AudioParam, output?: number): void;
 
+  /** @remarks Foundry only supports the "pass a node, get that node returned" signature */
   override connect(destinationNode: AudioNode, output?: number, input?: number): AudioNode;
+  /** @deprecated Foundry does not support this signature, only the other overload */
   override connect(destinationParam: AudioParam, output?: number): AudioParam;
 
   /**
@@ -68,4 +51,43 @@ declare class ConvolverEffect extends ConvolverNode {
   onConnectFrom(sourceNode: AudioNode): void;
 }
 
+declare namespace ConvolverEffect {
+  interface Any extends AnyConvolverEffect {}
+  interface AnyConstructor extends Identity<typeof AnyConvolverEffect> {}
+
+  /** @internal */
+  type _ConstructorOptions = InexactPartial<{
+    /**
+     * The file path to the impulse response buffer to use
+     * @defaultValue `"sounds/impulse-responses/ir-full.wav"`
+     * @remarks Can't be `null` as it only has a parameter default
+     */
+    impulseResponsePath: string;
+
+    /**
+     * The initial intensity of the effect
+     * @defaultValue `5`
+     * @remarks Can't be `null` as it only has a parameter default
+     */
+    intensity: number;
+  }>;
+
+  interface ConstructorOptions extends _ConstructorOptions, ConvolverOptions {}
+
+  /** @internal */
+  type _UpdateOptions = NullishProps<{
+    /**
+     * A new effect intensity
+     * @remarks This is ignored if it fails a `Number.isFinite` check
+     */
+    intensity: number;
+  }>;
+
+  interface UpdateOptions extends _UpdateOptions {}
+}
+
 export default ConvolverEffect;
+
+declare abstract class AnyConvolverEffect extends ConvolverEffect {
+  constructor(...args: never);
+}

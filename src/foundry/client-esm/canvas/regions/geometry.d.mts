@@ -8,10 +8,10 @@ declare class RegionGeometry extends PIXI.Geometry {
    * Create a RegionGeometry
    * @remarks Foundry marked `@internal`
    */
-  constructor(region: Region.ConfiguredInstance);
+  constructor(region: Region.Object);
 
   /** The Region this geometry belongs to */
-  get region(): Region.ConfiguredInstance;
+  get region(): Region.Object;
 
   /**
    * Update the buffers
@@ -32,7 +32,7 @@ declare namespace RegionGeometry {
 }
 
 declare abstract class AnyRegionGeometry extends RegionGeometry {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default RegionGeometry;

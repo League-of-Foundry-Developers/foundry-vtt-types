@@ -113,7 +113,7 @@ export function objectsEqual<B extends object>(a: object, b: B): a is B;
 export function duplicate<T>(original: T): Duplicated<T>;
 
 /**
- * The resulting type when using {@link duplicate} on some data of type `T`.
+ * The resulting type when using {@link duplicate | `duplicate`} on some data of type `T`.
  *
  * @typeParam T - Original type.
  * @internal
@@ -416,7 +416,7 @@ export interface MergeObjectOptions {
    * Control whether to perform deletions on the original object if deletion keys are present in the other object.
    * @defaultValue `false`
    */
-  performDeletions?: boolean | undefined; //TODO: implement this in the mergeObject return type
+  performDeletions?: boolean | undefined; // TODO: implement this in the mergeObject return type
 }
 
 /**
@@ -580,7 +580,7 @@ declare function _resolveRelativeUuid(uuid: string, relative: Document.Any): Res
  * @param g - The green color value
  * @param b - The blue color value
  * @returns The HSV representation
- * @deprecated since v10 until v12, rgbToHsv is deprecated in favor of {@link foundry.utils.Color#hsv}
+ * @deprecated since v10 until v12, rgbToHsv is deprecated in favor of {@link foundry.utils.Color.hsv | `foundry.utils.Color#hsv`}
  */
 export function rgbToHsv(r: number, g: number, b: number): [h: number, s: number, v: number];
 
@@ -591,7 +591,7 @@ export function rgbToHsv(r: number, g: number, b: number): [h: number, s: number
  * @param s - The saturation
  * @param v - The value
  * @returns The RGB representation
- * @deprecated since v10 until v12, hsvToRgb is deprecated in favor of {@link foundry.utils.Color.fromHSV}
+ * @deprecated since v10 until v12, hsvToRgb is deprecated in favor of {@link foundry.utils.Color.fromHSV | `foundry.utils.Color.fromHSV`}
  */
 export function hsvToRgb(h: number, s: number, v: number): [r: number, g: number, b: number];
 
@@ -599,7 +599,7 @@ export function hsvToRgb(h: number, s: number, v: number): [r: number, g: number
  * Converts a color as an [R, G, B] array of normalized floats to a hexadecimal number.
  * @param rgb - Array of numbers where all values are normalized floats from 0.0 to 1.0.
  * @returns The numeric color as hexadecimal
- * @deprecated since v10 until v12, rgbToHex is deprecated in favor of {@link foundry.utils.Color.fromRGB}
+ * @deprecated since v10 until v12, rgbToHex is deprecated in favor of {@link foundry.utils.Color.fromRGB | `foundry.utils.Color.fromRGB`}
  */
 export function rgbToHex(rgb: [r: number, g: number, b: number]): number;
 
@@ -607,7 +607,7 @@ export function rgbToHex(rgb: [r: number, g: number, b: number]): number;
  * Convert a hex color code to an RGB array
  * @param hex - A hex color number
  * @returns An array of [r,g,b] colors normalized on the range of [0,1]
- * @deprecated since v10 until v12, hexToRGB is deprecated in favor of {@link foundry.utils.Color#rgb}
+ * @deprecated since v10 until v12, hexToRGB is deprecated in favor of {@link foundry.utils.Color.rgb | `foundry.utils.Color#rgb`}
  */
 export function hexToRGB(hex: number): [r: number, g: number, b: number];
 
@@ -617,7 +617,7 @@ export function hexToRGB(hex: number): [r: number, g: number, b: number];
  * @param alpha - An optional level of transparency
  *                (default: `1.0`)
  * @returns An rgba style string
- * @deprecated since v10 until v12, hexToRGBAString is deprecated in favor of {@link foundry.utils.Color#toRGBA}
+ * @deprecated since v10 until v12, hexToRGBAString is deprecated in favor of {@link foundry.utils.Color.toRGBA | `foundry.utils.Color#toRGBA`}
  */
 export function hexToRGBAString(hex: number, alpha?: number): `rgba(${number}, ${number}, ${number})`;
 
@@ -625,19 +625,19 @@ export function hexToRGBAString(hex: number, alpha?: number): `rgba(${number}, $
  * Convert a string color to a hex integer
  * @param color - The string color
  * @returns The hexadecimal color code
- * @deprecated since v10 until v12, colorStringToHex is deprecated in favor of {@link foundry.utils.Color.from}
+ * @deprecated since v10 until v12, colorStringToHex is deprecated in favor of {@link foundry.utils.Color.from | `foundry.utils.Color.from`}
  */
 export function colorStringToHex(color: string): number | null;
 
 /**
- * Internal Helper for {@link Duplicated}. A union type of all types that do not have a JSON representation.
+ * Internal Helper for {@link Duplicated | `Duplicated`}. A union type of all types that do not have a JSON representation.
  *
  * @internal
  */
 type NonStringifiable = undefined | AnyFunction | AnyConstructor | symbol;
 
 /**
- * Internal helper for {@link InnerDuplicated}. Maps the properties of `T` to their duplicated types.
+ * Internal helper for {@link InnerDuplicated | `InnerDuplicated`}. Maps the properties of `T` to their duplicated types.
  *
  * @typeParam T - The object type that should have its properties mapped.
  * @internal
@@ -654,7 +654,7 @@ type MapToInnerDuplicated<T extends object> = { [k in keyof T]: InnerDuplicated<
 type OmitOfType<T extends object, U> = { [k in keyof T as T[k] extends U ? never : k]: T[k] };
 
 /**
- * Internal helper type for {@link Duplicated}. It is the main part of the implementation, which does the recursion.
+ * Internal helper type for {@link Duplicated | `Duplicated`}. It is the main part of the implementation, which does the recursion.
  *
  * @typeParam T - Type currently being converted.
  * @internal

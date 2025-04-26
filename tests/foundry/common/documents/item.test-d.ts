@@ -4,18 +4,14 @@ import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 import BaseItem = foundry.documents.BaseItem;
 import Document = foundry.abstract.Document;
 
-// @ts-expect-error Item requires a name and type
-new foundry.documents.BaseItem();
+// @ts-expect-error Base Documents should never be directly created so they are marked as abstract in fvtt-types
+new foundry.documents.BaseItem({ name: "foo", type: "base" });
 
-// @ts-expect-error Item requires a name and type
-new foundry.documents.BaseItem({});
+declare const baseItem: foundry.documents.BaseItem;
 
-const baseItem = new foundry.documents.BaseItem({ name: "foo", type: "base" });
-expectTypeOf(baseItem.effects).toEqualTypeOf<
-  EmbeddedCollection<ActiveEffect.ConfiguredInstance, Item.ConfiguredInstance>
->();
+expectTypeOf(baseItem.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect.Implementation, Item.Implementation>>();
 expectTypeOf(baseItem._source.effects[0]!.duration.seconds).toEqualTypeOf<number | null | undefined>();
-expectTypeOf(baseItem.type).toEqualTypeOf<"base" | "armor" | "weapon">();
+expectTypeOf(baseItem.type).toEqualTypeOf<"base" | "armor" | "weapon" | Document.ModuleSubtype>();
 
 type ItemFlags = {
   "my-system": {

@@ -1,51 +1,17 @@
-import type { SchemaField } from "../../common/data/fields.d.mts";
-import type { PrototypeToken } from "../data/_module.d.mts";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import type CompendiumArt from "./compendium-art.d.mts";
 
-export interface CompendiumArtInfo {
-  /**
-   * The path to the Actor's portrait image.
-   */
-  actor?: string | undefined;
+export {};
 
-  /**
-   * The path to the token image, or an object to merge into the Actor's prototype token.
-   */
-  token?: string | SchemaField.InnerAssignmentType<PrototypeToken.Schema> | undefined;
+// After seeing that none of these types add anything or are even exported a
+// very reasonable question may be: Why on earth does this file exist?
+//
+// Well this is the file in which Foundry defines these types. We don't house
+// them here because it has poor discoverability. It's also just nice to
+// have as reference to keep us synced with the latest version of Foundry.
 
-  /**
-   *An optional credit string for use by the game system to apply in an appropriate place.
-   */
-  credit?: string | undefined;
-}
+type CompendiumArtInfo = CompendiumArt.Info;
 
-/**
- * A mapping of compendium pack IDs to Document IDs to art information.
- */
-export type CompendiumArtMapping = Record<string, Record<string, CompendiumArtInfo>>;
+type CompendiumArtMapping = CompendiumArt.Mapping;
 
-export interface CompendiumArtDescriptor {
-  /**
-   * The ID of the package providing the art.
-   */
-  packageId: string;
-
-  /**
-   * The title of the package providing the art.
-   */
-  title: string;
-
-  /**
-   * The path to the art mapping file.
-   */
-  mapping: string;
-
-  /**
-   * An optional credit string for use by the game system to apply in an appropriate place.
-   */
-  credit?: string | undefined;
-
-  /**
-   * The package's user-configured priority.
-   */
-  priority: number;
-}
+type CompendiumArtDescriptor = CompendiumArt.Descriptor;

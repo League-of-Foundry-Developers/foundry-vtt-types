@@ -1,9 +1,8 @@
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Cards Document.
@@ -12,22 +11,23 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseCards extends Document<"Cards", BaseCards.Schema, any> {
+declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCards.SubType> extends Document<
+  "Cards",
+  BaseCards._Schema,
+  any
+> {
   /**
-   * @privateRemarks Manual override of the return due to TS limitations with static `this`
-   */
-  static get TYPES(): BaseCards.TypeNames[];
-
-  /**
-   * @param data    - Initial data from which to construct the Cards
+   * @param data    - Initial data from which to construct the `BaseCards`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseCards` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link Cards.implementation | `new Cards.implementation(...)`} instead which will give you
+   * a system specific implementation of `Cards`.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseCards.ConstructorData, context?: Document.ConstructionContext<BaseCards.Parent>);
-
-  override parent: BaseCards.Parent;
-
-  override _source: BaseCards.Source;
+  constructor(...args: Cards.ConstructorArgs);
 
   static override metadata: BaseCards.Metadata;
 
@@ -39,120 +39,291 @@ declare class BaseCards extends Document<"Cards", BaseCards.Schema, any> {
    */
   static DEFAULT_ICON: string;
 
-  static override migrateData(source: AnyObject): AnyObject;
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
+   */
+
+  /* Document overrides */
+
+  static " fvtt_types_internal_document_name_static": "Cards";
+
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: Cards.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static get implementation(): Cards.ImplementationClass;
+
+  static get baseDocument(): typeof BaseCards;
+
+  static get collectionName(): Cards.ParentCollectionName;
+
+  static get documentName(): Cards.Name;
+
+  static get TYPES(): BaseCards.SubType[];
+
+  static get hasTypeData(): true;
+
+  static get hierarchy(): Cards.Hierarchy;
+
+  override system: Cards.SystemOfType<SubType>;
+
+  override parent: BaseCards.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined = false>(
+    data: Array<Cards.Implementation | Cards.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<Cards.Database.Create<Temporary>>,
+  ): Promise<Array<Document.TemporaryIf<Cards.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: Cards.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<Cards.Database.Update>,
+  ): Promise<Cards.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteDocumentsOperation<Cards.Database.Delete>,
+  ): Promise<Cards.Implementation[]>;
+
+  static override create<Temporary extends boolean | undefined = false>(
+    data: Cards.CreateData | Cards.CreateData[],
+    operation?: Cards.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<Cards.Implementation, Temporary> | undefined>;
+
+  override update(
+    data: Cards.UpdateData | undefined,
+    operation?: Cards.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: Cards.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(documentId: string, options?: Cards.Database.GetOptions): Cards.Implementation | null;
+
+  static override getCollectionName<CollectionName extends Cards.Embedded.Name>(
+    name: CollectionName,
+  ): Cards.Embedded.CollectionNameOf<CollectionName> | null;
+
+  override getEmbeddedCollection<EmbeddedName extends Cards.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): Cards.Embedded.CollectionFor<EmbeddedName>;
+
+  override getEmbeddedDocument<EmbeddedName extends Cards.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): Cards.Embedded.DocumentFor<EmbeddedName> | undefined;
+
+  override createEmbeddedDocuments<EmbeddedName extends Cards.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override updateEmbeddedDocuments<EmbeddedName extends Cards.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends Cards.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends Cards.Flags.Scope, Key extends Cards.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<Cards.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends Cards.Flags.Scope,
+    Key extends Cards.Flags.Key<Scope>,
+    Value extends Document.GetFlag<Cards.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends Cards.Flags.Scope, Key extends Cards.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
+
+  protected _preCreate(
+    data: Cards.CreateData,
+    options: Cards.Database.PreCreateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(data: Cards.CreateData, options: Cards.Database.OnCreateOperation, userId: string): void;
+
+  protected static _preCreateOperation(
+    documents: Cards.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<Cards.Database.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: Cards.Implementation[],
+    operation: Cards.Database.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: Cards.UpdateData,
+    options: Cards.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(changed: Cards.UpdateData, options: Cards.Database.OnUpdateOperation, userId: string): void;
+
+  protected static _preUpdateOperation(
+    documents: Cards.Implementation[],
+    operation: Cards.Database.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: Cards.Implementation[],
+    operation: Cards.Database.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(options: Cards.Database.PreDeleteOptions, user: User.Implementation): Promise<boolean | void>;
+
+  protected _onDelete(options: Cards.Database.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: Cards.Implementation[],
+    operation: Cards.Database.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: Cards.Implementation[],
+    operation: Cards.Database.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  static get hasSystemData(): true;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
+
+  protected static _onCreateDocuments(
+    documents: Cards.Implementation[],
+    context: Document.ModificationContext<Cards.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: Cards.Implementation[],
+    context: Document.ModificationContext<Cards.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: Cards.Implementation[],
+    context: Document.ModificationContext<Cards.Parent>,
+  ): Promise<void>;
+
+  /* DataModel overrides */
+
+  protected static _schema: SchemaField<Cards.Schema>;
+
+  static get schema(): SchemaField<Cards.Schema>;
+
+  static validateJoint(data: Cards.Source): void;
+
+  static override fromSource(
+    source: Cards.CreateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): Cards.Implementation;
+
+  static override fromJSON(json: string): Cards.Implementation;
 }
 
 export default BaseCards;
 
 declare namespace BaseCards {
-  type Parent = null;
+  export import Name = Cards.Name;
+  export import ConstructorArgs = Cards.ConstructorArgs;
+  export import Hierarchy = Cards.Hierarchy;
+  export import Metadata = Cards.Metadata;
+  export import SubType = Cards.SubType;
+  export import ConfiguredSubTypes = Cards.ConfiguredSubTypes;
+  export import Known = Cards.Known;
+  export import OfType = Cards.OfType;
+  export import SystemOfType = Cards.SystemOfType;
+  export import Parent = Cards.Parent;
+  export import Descendant = Cards.Descendant;
+  export import DescendantClass = Cards.DescendantClass;
+  export import Pack = Cards.Pack;
+  export import Embedded = Cards.Embedded;
+  export import ParentCollectionName = Cards.ParentCollectionName;
+  export import CollectionClass = Cards.CollectionClass;
+  export import Collection = Cards.Collection;
+  export import Invalid = Cards.Invalid;
+  export import Stored = Cards.Stored;
+  export import Source = Cards.Source;
+  export import PersistedData = Cards.PersistedData;
+  export import CreateData = Cards.CreateData;
+  export import InitializedData = Cards.InitializedData;
+  export import UpdateData = Cards.UpdateData;
+  export import Schema = Cards.Schema;
+  export import DatabaseOperation = Cards.Database;
+  export import Flags = Cards.Flags;
 
-  type TypeNames = Game.Model.TypeNames<"Cards">;
-
-  type Metadata = Document.MetadataFor<BaseCards>;
-
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
-  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
-  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
-  type Source = fields.SchemaField.InnerPersistedType<Schema>;
-
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this stack of Cards document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /** The text name of this stack */
-    name: fields.StringField<{ required: true; blank: false; label: "CARDS.Name"; textSearch: true }>;
-
-    /**
-     * The type of this stack, in BaseCards.metadata.types
-     * @defaultValue `BaseCards.TYPES[0]`
-     */
-    type: fields.DocumentTypeField<typeof BaseCards>;
-
-    /**
-     * A text description of this stack
-     * @defaultValue `""`
-     */
-    description: fields.HTMLField<{ label: "CARDS.Description"; textSearch: true }>;
-
-    /**
-     * An image or video which is used to represent the stack of cards
-     * @defaultValue `BaseCards.DEFAULT_ICON`
-     */
-    img: fields.FilePathField<{
-      categories: ["IMAGE", "VIDEO"];
-      initial: () => typeof BaseCards.DEFAULT_ICON;
-      label: "CARDS.Image";
-    }>;
-
-    /**
-     * Game system data which is defined by the system template.json model
-     * @defaultValue `{}`
-     */
-    system: fields.TypeDataField<typeof BaseCards>;
-
-    /**
-     * A collection of Card documents which currently belong to this stack
-     * @defaultValue `[]`
-     */
-    cards: fields.EmbeddedCollectionField<typeof documents.BaseCard, Cards.ConfiguredInstance>;
-
-    /**
-     * The visible width of this stack
-     * @defaultValue `null`
-     */
-    width: fields.NumberField<{ integer: true; positive: true; label: "Width" }>;
-
-    /**
-     * The visible height of this stack
-     * @defaultValue `null`
-     */
-    height: fields.NumberField<{ integer: true; positive: true; label: "Height" }>;
-
-    /**
-     * The angle of rotation of this stack
-     * @defaultValue `0`
-     */
-    rotation: fields.AngleField<{ label: "Rotation" }>;
-
-    /**
-     * Whether or not to publicly display the number of cards in this stack
-     * @defaultValue `false`
-     */
-    displayCount: fields.BooleanField;
-
-    /**
-     * The _id of a Folder which contains this document
-     * @defaultValue `null`
-     */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
-
-    /**
-     * The sort order of this stack relative to others in its parent collection
-     * @defaultValue `0`
-     */
-    sort: fields.IntegerSortField;
-
-    /**
-     * An object which configures ownership of this Cards
-     * @defaultValue see {@link fields.DocumentOwnershipField}
-     */
-    ownership: fields.DocumentOwnershipField;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"Cards">;
-
-    /**
-     * An object of creation and access information
-     * @defaultValue see {@link fields.DocumentStatsField}
-     */
-    _stats: fields.DocumentStatsField;
+  // The document subclasses override `system` anyways.
+  // There's no point in doing expensive computation work comparing the base class system.
+  /** @internal */
+  interface _Schema extends Cards.Schema {
+    system: any;
   }
+
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
+
+  /** @deprecated {@link BaseCards.SubType | `BaseCards.SubType`} */
+  type TypeNames = SubType;
+
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseCards.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
+
+  /**
+   * @deprecated {@link BaseCards.CreateData | `BaseCards.CreateData`}
+   */
+  type ConstructorData = BaseCards.CreateData;
 }

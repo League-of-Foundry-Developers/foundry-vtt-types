@@ -6,7 +6,7 @@ declare global {
    * The Camera UI View that displays all the camera feeds as individual video elements.
    * @typeParam Options - the type of the options object
    */
-  class CameraViews<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class CameraViews<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options: Options);
 
     /** @defaultValue `undefined` */
@@ -24,7 +24,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     /**
      * A reference to the master AV orchestrator instance
@@ -66,7 +66,7 @@ declare global {
     /**
      * @param force   - Render and display the application even if it is not currently displayed.
      *                  (default: `false`)
-     * @param options - Additional options which update the current values of the @see Application#options object
+     * @param options - Additional options which update the current values of the @see {@link Application.options | `Application#options`} object
      * @internal
      */
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
@@ -165,9 +165,9 @@ declare global {
     interface AnyConstructor extends Identity<typeof AnyCameraViews> {}
 
     interface User {
-      user: Document.Stored<globalThis.User>;
+      user: Document.Stored<globalThis.User.Implementation>;
       settings: AVSettings.UserSettings;
-      local: Document.Stored<globalThis.User>["isSelf"];
+      local: Document.Stored<globalThis.User.Implementation>["isSelf"];
       charname: string;
       volume: number;
       cameraViewClass: string;
@@ -189,6 +189,6 @@ declare global {
   }
 }
 
-declare abstract class AnyCameraViews extends CameraViews<ApplicationOptions> {
-  constructor(arg0: never, ...args: never[]);
+declare abstract class AnyCameraViews extends CameraViews<Application.Options> {
+  constructor(...args: never);
 }

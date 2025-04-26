@@ -39,10 +39,8 @@ export import AlertPing = globalThis.AlertPing;
 export import AlphaBlurFilter = globalThis.AlphaBlurFilter;
 export import AlphaBlurFilterPass = globalThis.AlphaBlurFilterPass;
 export import AmbientLight = globalThis.AmbientLight;
-export import AmbientLightConfig = globalThis.AmbientLightConfig;
 export import AmbientLightDocument = globalThis.AmbientLightDocument;
 export import AmbientSound = globalThis.AmbientSound;
-export import AmbientSoundConfig = globalThis.AmbientSoundConfig;
 export import AmbientSoundDocument = globalThis.AmbientSoundDocument;
 export import AmplificationBackgroundVisionShader = globalThis.AmplificationBackgroundVisionShader;
 export import AmplificationSamplerShader = globalThis.AmplificationSamplerShader;
@@ -349,3 +347,11 @@ export import WorldSettings = globalThis.WorldSettings;
 export import foundry = globalThis.foundry;
 export import io = globalThis.io;
 export import tinyMCE = globalThis.tinyMCE;
+
+export import I18nInitGame = globalThis.I18nInitGame;
+export import InitGame = globalThis.InitGame;
+export import SetupGame = globalThis.SetupGame;
+export import ReadyGame = globalThis.ReadyGame;
+
+export import EarcutEdges = globalThis.EarcutEdges;
+export import PackageManifestData = globalThis.PackageManifestData;

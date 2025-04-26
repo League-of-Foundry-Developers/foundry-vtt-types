@@ -1,10 +1,9 @@
 import type { Brand, InterfaceToObject, RemoveIndexSignatures, SimpleMerge } from "fvtt-types/utils";
 import type { fields } from "../../../common/data/module.d.mts";
+import type { DataSchema } from "../../../common/data/fields.d.mts";
 import DataField = foundry.data.fields.DataField;
 import type DataModel from "../../../common/abstract/data.d.mts";
 import type PointVisionSource from "../../../client-esm/canvas/sources/point-vision-source.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
 
 declare global {
   class ShaderField<
@@ -241,5 +240,5 @@ declare global {
 }
 
 declare class AnyVisionMode extends VisionMode {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

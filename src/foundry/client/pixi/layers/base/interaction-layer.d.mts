@@ -65,14 +65,14 @@ declare global {
 
     /**
      * Handle left mouse-click events which originate from the Canvas stage.
-     * @see {@link Canvas#_onClickLeft}
+     * @see {@link Canvas._onClickLeft | `Canvas#_onClickLeft`}
      * @param event - The PIXI InteractionEvent which wraps a PointerEvent
      */
     protected _onClickLeft(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle double left-click events which originate from the Canvas stage.
-     * @see {@link Canvas.#onClickLeft2}
+     * @see {@link Canvas.#onClickLeft2 | `Canvas.#onClickLeft2`}
      * @param event - The PIXI InteractionEvent which wraps a PointerEvent
      */
     protected _onClickLeft2(event: PIXI.FederatedEvent): void;
@@ -82,53 +82,53 @@ declare global {
      * @param user  - The User performing the action.
      * @param event - The event object.
      */
-    protected _canDragLeftStart(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
+    protected _canDragLeftStart(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     /**
      * Start a left-click drag workflow originating from the Canvas stage.
-     * @see {@link Canvas.#onDragLeftStart}
+     * @see {@link Canvas.#onDragLeftStart | `Canvas.#onDragLeftStart`}
      * @param event - The PIXI InteractionEvent which wraps a PointerEvent
      */
     protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Continue a left-click drag workflow originating from the Canvas stage.
-     * @see {@link Canvas.#onDragLeftMove}
+     * @see {@link Canvas.#onDragLeftMove | `Canvas.#onDragLeftMove`}
      * @param event - The PIXI InteractionEvent which wraps a PointerEvent
      */
     protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Conclude a left-click drag workflow originating from the Canvas stage.
-     * @see {@link Canvas.#onDragLeftDrop}
+     * @see {@link Canvas.#onDragLeftDrop | `Canvas.#onDragLeftDrop`}
      * @param vent - The PIXI InteractionEvent which wraps a PointerEvent
      */
     protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
 
     /**
      * Cancel a left-click drag workflow originating from the Canvas stage.
-     * @see {@link Canvas.#onDragLeftDrop}
+     * @see {@link Canvas.#onDragLeftDrop | `Canvas.#onDragLeftDrop`}
      * @param event - A right-click pointer event on the document.
      */
     protected _onDragLeftCancel(event: PointerEvent): void;
 
     /**
      * Handle right mouse-click events which originate from the Canvas stage.
-     * @see {@link Canvas._onClickRight}
+     * @see {@link Canvas._onClickRight | `Canvas._onClickRight`}
      * @param event - The PIXI InteractionEvent which wraps a PointerEvent
      */
     protected _onClickRight(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle mouse-wheel events which occur for this active layer.
-     * @see {@link MouseManager._onWheel}
+     * @see {@link MouseManager._onWheel | `MouseManager._onWheel`}
      * @param event - The WheelEvent initiated on the document
      */
     protected _onMouseWheel(event: WheelEvent): void;
 
     /**
      * Handle a DELETE keypress while this layer is active.
-     * @see {@link ClientKeybindings._onDelete}
+     * @see {@link ClientKeybindings._onDelete | `ClientKeybindings._onDelete`}
      * @param event - The delete key press event
      */
     protected _onDeleteKey(event: KeyboardEvent): Promise<void>;
@@ -159,5 +159,5 @@ declare global {
 }
 
 declare abstract class AnyInteractionLayer extends InteractionLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

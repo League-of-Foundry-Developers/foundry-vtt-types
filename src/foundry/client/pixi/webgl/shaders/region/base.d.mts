@@ -2,7 +2,7 @@ import type { Identity } from "../../../../../../utils/index.d.mts";
 
 declare global {
   /**
-   * The shader used by {@link RegionMesh}.
+   * The shader used by {@link RegionMesh | `RegionMesh`}.
    */
   class RegionShader extends AbstractBaseShader {
     /**
@@ -75,5 +75,5 @@ declare global {
 }
 
 declare abstract class AnyRegionShader extends RegionShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

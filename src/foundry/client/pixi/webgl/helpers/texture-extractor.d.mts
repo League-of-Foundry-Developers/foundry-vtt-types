@@ -66,7 +66,7 @@ declare global {
       format: PIXI.FORMATS;
     }>;
 
-    /** Options for the constructor of {@link TextureExtractor} */
+    /** Options for the constructor of {@link TextureExtractor | `TextureExtractor`} */
     interface ConstructorOptions extends _ConstructorOptions {}
 
     /** @internal */
@@ -102,7 +102,7 @@ declare global {
       debug: boolean | null;
     }>;
 
-    /** Options for {@link TextureExtractor#extract} */
+    /** Options for {@link TextureExtractor.extract | `TextureExtractor#extract`} */
     interface TextureExtractionOptions extends _ExtractOptions {}
 
     type COMPRESSION_MODES = Brand<number, "TextureExtractor.COMPRESSION_MODES">;
@@ -115,5 +115,5 @@ declare global {
 }
 
 declare abstract class AnyTextureExtractor extends TextureExtractor {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

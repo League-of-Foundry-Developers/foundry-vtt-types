@@ -58,8 +58,8 @@ expectTypeOf(basePackage.id).toEqualTypeOf<string>();
 expectTypeOf(basePackage.changelog).toEqualTypeOf<string | undefined>();
 
 // Checking the sets
-expectTypeOf(basePackage._source.packs[0].banner).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage._source.authors[0].discord).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage._source.packs[0]!.banner).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage._source.authors[0]!.discord).toEqualTypeOf<string | undefined>();
 expectTypeOf(basePackage.languages.first()!.lang).toEqualTypeOf<string>();
 
 // Checking packFolders

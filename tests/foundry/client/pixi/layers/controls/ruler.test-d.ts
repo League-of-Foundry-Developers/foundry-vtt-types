@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(Ruler.STATES).toMatchTypeOf<Record<keyof Ruler.States, Ruler.STATES>>();
+expectTypeOf(Ruler.STATES).toExtend<Record<keyof Ruler.States, Ruler.STATES>>();
 expectTypeOf(Ruler.canMeasure).toBeBoolean();
 
 if (game.ready) {
@@ -12,7 +12,7 @@ if (game.ready) {
 const ruler = new Ruler();
 declare const somePoint: PIXI.Point;
 
-expectTypeOf(ruler.user).toEqualTypeOf<User.ConfiguredInstance>();
+expectTypeOf(ruler.user).toEqualTypeOf<User.Implementation>();
 expectTypeOf(ruler.name).toEqualTypeOf<string>();
 expectTypeOf(ruler.color).toEqualTypeOf<Color>();
 
@@ -34,7 +34,7 @@ expectTypeOf(ruler["_state"]).toEqualTypeOf<Ruler.STATES>();
 
 expectTypeOf(ruler.active).toEqualTypeOf<boolean>();
 expectTypeOf(ruler.highlightLayer).toEqualTypeOf<GridHighlight>();
-expectTypeOf(ruler.token).toEqualTypeOf<Token.ConfiguredInstance | null>();
+expectTypeOf(ruler.token).toEqualTypeOf<Token.Object | null>();
 
 expectTypeOf(ruler.clear()).toBeVoid();
 
@@ -78,12 +78,12 @@ expectTypeOf(ruler["_highlightMeasurementSegment"](fullRulerSegment)).toBeVoid()
 expectTypeOf(ruler["_highlightMeasurementSegment"]({ teleport: true, ray: someRay })).toBeVoid();
 
 expectTypeOf(ruler.moveToken()).toEqualTypeOf<Promise<boolean>>();
-expectTypeOf(ruler["_getMovementToken"](somePoint)).toEqualTypeOf<Token.ConfiguredInstance | null>();
+expectTypeOf(ruler["_getMovementToken"](somePoint)).toEqualTypeOf<Token.Object | null>();
 
 expectTypeOf(ruler["_getMeasurementHistory"]()).toEqualTypeOf<Ruler.MeasurementHistory | void>();
 expectTypeOf(ruler["_createMeasurementHistory"]()).toEqualTypeOf<Ruler.MeasurementHistory>();
 
-declare const someToken: Token.ConfiguredInstance;
+declare const someToken: Token.Object;
 expectTypeOf(ruler["_canMove"](someToken)).toBeBoolean();
 expectTypeOf(ruler["_animateMovement"](someToken)).toEqualTypeOf<Promise<void>>();
 

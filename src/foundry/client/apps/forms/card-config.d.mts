@@ -8,7 +8,7 @@ declare global {
    */
   class CardConfig<Options extends CardConfig.Options = CardConfig.Options> extends DocumentSheet<
     Options,
-    Card.ConfiguredInstance
+    Card.Implementation
   > {
     /**
      * @defaultValue
@@ -40,17 +40,17 @@ declare global {
     interface Any extends AnyCardConfig {}
     interface AnyConstructor extends Identity<typeof AnyCardConfig> {}
 
-    interface Options extends DocumentSheetOptions<Card.ConfiguredInstance> {}
+    interface Options extends DocumentSheet.Options<Card.Implementation> {}
 
     interface CardConfigData<
-      Options extends DocumentSheetOptions<Card.ConfiguredInstance> = DocumentSheetOptions<Card.ConfiguredInstance>,
-    > extends DocumentSheet.DocumentSheetData<Options, Card.ConfiguredInstance> {
-      //TODO: Find if we can better type this
+      Options extends DocumentSheet.Options<Card.Implementation> = DocumentSheet.Options<Card.Implementation>,
+    > extends DocumentSheet.DocumentSheetData<Options, Card.Implementation> {
+      // TODO: Find if we can better type this
       types: Record<string, string>;
     }
   }
 }
 
 declare abstract class AnyCardConfig extends CardConfig<CardConfig.Options> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -9,7 +9,7 @@ expectTypeOf(layer.visibilityOverlay).toEqualTypeOf<PIXI.Sprite | undefined>();
 expectTypeOf(layer.filter).toEqualTypeOf<VisibilityFilter.ConfiguredInstance | undefined>();
 expectTypeOf(layer.visionModeData).toEqualTypeOf<CanvasVisibility.VisionModeData>();
 expectTypeOf(layer.lightingVisibility).toEqualTypeOf<CanvasVisibility.LightingVisibility>();
-expectTypeOf(layer.lightingVisibility.background).toMatchTypeOf<VisionMode.LIGHTING_VISIBILITY>();
+expectTypeOf(layer.lightingVisibility.background).toExtend<VisionMode.LIGHTING_VISIBILITY>();
 
 expectTypeOf(layer.initialized).toBeBoolean();
 expectTypeOf(layer.needsContainment).toBeBoolean();
@@ -33,7 +33,7 @@ expectTypeOf(layer.resetExploration()).toBeVoid();
 expectTypeOf(layer.restrictVisibility()).toBeVoid();
 
 declare const somePoint: PIXI.Point;
-declare const someToken: Token.ConfiguredInstance;
+declare const someToken: Token.Object;
 expectTypeOf(layer.testVisibility({ x: 0, y: 0 })).toBeBoolean();
 expectTypeOf(layer.testVisibility(somePoint, {})).toBeBoolean();
 expectTypeOf(

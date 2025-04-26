@@ -216,9 +216,9 @@ declare namespace TokenRingConfig {
    * @remarks The type of any given {@link TokenRingConfig.CORE_TOKEN_RINGS | `TokenRingConfig.CORE_TOKEN_RINGS`} entry prior to
    * {@link TokenRingConfig.initialize | `TokenRingConfig#initialize`} being called between the `setup` and `ready` hooks; Plain objects at this point
    */
-  type InitialCoreRingData = Required<Pick<SourceCoreRingData, "id" | "label" | "spritesheet">>;
+  interface InitialCoreRingData extends Required<Pick<SourceCoreRingData, "id" | "label" | "spritesheet">> {}
 
-  type InitialCoreRings = Record<CoreRingIDs, InitialCoreRingData>;
+  interface InitialCoreRings extends Record<CoreRingIDs, InitialCoreRingData> {}
 
   /**
    * @remarks Due to the way the core configs are initialized, {@link TokenRingConfig.CORE_TOKEN_RINGS | `TokenRingConfig.CORE_TOKEN_RINGS`}
@@ -228,9 +228,9 @@ declare namespace TokenRingConfig {
    * ```
    * after {@link TokenRingConfig.initialize | `TokenRingConfig#initialize`} has been called, which happens between the `setup` and `ready` hooks
    */
-  type SourceCoreRingData = foundry.data.fields.SchemaField.InnerPersistedType<DynamicRingData.Schema>;
+  interface SourceCoreRingData extends foundry.data.fields.SchemaField.SourceData<DynamicRingData.Schema> {}
 
-  type SourceCoreRings = Record<CoreRingIDs, SourceCoreRingData>;
+  interface SourceCoreRings extends Record<CoreRingIDs, SourceCoreRingData> {}
 
   /**
    * Core token rings used in Foundry VTT.
@@ -246,7 +246,7 @@ declare namespace TokenRingConfig {
 }
 
 declare abstract class AnyTokenRingConfig extends TokenRingConfig {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default TokenRingConfig;

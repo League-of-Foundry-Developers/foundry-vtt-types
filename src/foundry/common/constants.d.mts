@@ -88,6 +88,7 @@ export type ACTIVE_EFFECT_MODES = Brand<number, "constants.ACTIVE_EFFECT_MODES">
  * Define the string name used for the base document type when specific sub-types are not defined by the system
  */
 export declare const BASE_DOCUMENT_TYPE: "base";
+export type BASE_DOCUMENT_TYPE = "base";
 
 /**
  * Define the methods by which a Card can be drawn from a Cards stack
@@ -96,25 +97,25 @@ export declare const BASE_DOCUMENT_TYPE: "base";
 export declare const CARD_DRAW_MODES: Readonly<{
   /**
    * Draw the first card from the stack
-   * Synonymous with @see CARD_DRAW_MODES.TOP
+   * Synonymous with @see {@link CARD_DRAW_MODES.TOP | `CARD_DRAW_MODES.TOP`}
    */
   FIRST: 0 & CARD_DRAW_MODES;
 
   /**
    * Draw the top card from the stack
-   * Synonymous with @see CARD_DRAW_MODES.FIRST
+   * Synonymous with @see {@link CARD_DRAW_MODES.FIRST | `CARD_DRAW_MODES.FIRST`}
    */
   TOP: 0 & CARD_DRAW_MODES;
 
   /**
    * Draw the last card from the stack
-   * Synonymous with @see CARD_DRAW_MODES.BOTTOM
+   * Synonymous with @see {@link CARD_DRAW_MODES.BOTTOM | `CARD_DRAW_MODES.BOTTOM`}
    */
   LAST: 1 & CARD_DRAW_MODES;
 
   /**
    * Draw the bottom card from the stack
-   * Synonymous with @see CARD_DRAW_MODES.LAST
+   * Synonymous with @see {@link CARD_DRAW_MODES.LAST | `CARD_DRAW_MODES.LAST`}
    */
   BOTTOM: 1 & CARD_DRAW_MODES;
 
@@ -331,7 +332,7 @@ export type COMPENDIUM_DOCUMENT_TYPES = ValueOf<typeof COMPENDIUM_DOCUMENT_TYPES
  * Define the allowed ownership levels for a Document.
  * Each level is assigned a value in ascending order.
  * Higher levels grant more permissions.
- * @see https://foundryvtt.com/article/users/
+ * @see {@link https://foundryvtt.com/article/users/}
  */
 export declare const DOCUMENT_OWNERSHIP_LEVELS: Readonly<{
   /**
@@ -387,7 +388,7 @@ export type DOCUMENT_LINK_TYPES = ValueOf<typeof DOCUMENT_LINK_TYPES>;
 
 /**
  * The supported dice roll visibility modes
- * @see https://foundryvtt.com/article/dice/
+ * @see {@link https://foundryvtt.com/article/dice/}
  */
 export declare const DICE_ROLL_MODES: Readonly<{
   /**
@@ -414,7 +415,7 @@ export type DICE_ROLL_MODES = ValueOf<typeof DICE_ROLL_MODES>;
 
 /**
  * The allowed fill types which a Drawing object may display
- * @see https://foundryvtt.com/article/drawings/
+ * @see {@link https://foundryvtt.com/article/drawings/}
  */
 export declare const DRAWING_FILL_TYPES: Readonly<{
   /**
@@ -483,7 +484,7 @@ export declare const GRID_MIN_SIZE: number;
 
 /**
  * The allowed Grid types which are supported by the software
- * @see https://foundryvtt.com/article/scenes/
+ * @see {@link https://foundryvtt.com/article/scenes/}
  */
 export declare const GRID_TYPES: Readonly<{
   /**
@@ -673,7 +674,7 @@ export type MACRO_SCOPES = ValueOf<typeof MACRO_SCOPES>;
 
 /**
  * An enumeration of valid Macro types
- * @see https://foundryvtt.com/article/macros/
+ * @see {@link https://foundryvtt.com/article/macros/}
  */
 export declare const MACRO_TYPES: Readonly<{
   /**
@@ -700,7 +701,7 @@ export type AUDIO_CHANNELS = ValueOf<typeof AUDIO_CHANNELS>;
 
 /**
  * The allowed playback modes for an audio Playlist
- * @see https://foundryvtt.com/article/playlists/
+ * @see {@link https://foundryvtt.com/article/playlists/}
  */
 export declare const PLAYLIST_MODES: Readonly<{
   /**
@@ -728,7 +729,7 @@ export type PLAYLIST_MODES = Brand<number, "constants.PLAYLIST_MODES">;
 /**
  * The available sort modes for an audio Playlist.
  * @defaultValue `"a"`
- * @see https://foundryvtt.com/article/playlists/
+ * @see {@link https://foundryvtt.com/article/playlists/}
  */
 export declare const PLAYLIST_SORT_MODES: Readonly<{
   /**
@@ -858,7 +859,7 @@ export declare const SORT_INTEGER_DENSITY: number;
 
 /**
  * The allowed types of a TableResult document
- * @see https://foundryvtt.com/article/roll-tables/
+ * @see {@link https://foundryvtt.com/article/roll-tables/}
  */
 export declare const TABLE_RESULT_TYPES: Readonly<{
   /**
@@ -880,7 +881,7 @@ export type TABLE_RESULT_TYPES = ValueOf<typeof TABLE_RESULT_TYPES>;
 
 /**
  * The allowed formats of a Journal Entry Page.
- * @see https://foundryvtt.com/article/journal/
+ * @see {@link https://foundryvtt.com/article/journal/}
  */
 export declare const JOURNAL_ENTRY_PAGE_FORMATS: Readonly<{
   /**
@@ -897,7 +898,7 @@ export type JOURNAL_ENTRY_PAGE_FORMATS = Brand<number, "constants.JOURNAL_ENTRY_
 
 /**
  * Define the valid anchor locations for a Tooltip displayed on a Placeable Object
- * @see TooltipManager
+ * @see {@link TooltipManager | `TooltipManager`}
  */
 export declare const TEXT_ANCHOR_POINTS: Readonly<{
   /**
@@ -930,7 +931,7 @@ export type TEXT_ANCHOR_POINTS = Brand<number, "constants.TEXT_ANCHOR_POINTS">;
 /**
  * Define the valid occlusion modes which a tile can use
  * @defaultValue `1`
- * @see https://foundryvtt.com/article/tiles/
+ * @see {@link https://foundryvtt.com/article/tiles/}
  */
 export declare const OCCLUSION_MODES: Readonly<{
   /**
@@ -1000,7 +1001,7 @@ export type TOKEN_OCCLUSION_MODES = Brand<number, "constants.TOKEN_OCCLUSION_MOD
 
 /**
  * Describe the various thresholds of token control upon which to show certain pieces of information
- * @see https://foundryvtt.com/article/tokens/
+ * @see {@link https://foundryvtt.com/article/tokens/}
  */
 export declare const TOKEN_DISPLAY_MODES: Readonly<{
   /**
@@ -1037,7 +1038,7 @@ export type TOKEN_DISPLAY_MODES = Brand<number, "constants.TOKEN_DISPLAY_MODES">
 
 /**
  * The allowed Token disposition types
- * @see https://foundryvtt.com/article/tokens/
+ * @see {@link https://foundryvtt.com/article/tokens/}
  */
 export declare const TOKEN_DISPOSITIONS: Readonly<{
   /**
@@ -1101,7 +1102,7 @@ export type TOKEN_HEXAGONAL_SHAPES = Brand<number, "constants.TOKEN_HEXAGONAL_SH
 /**
  * Define the allowed User permission levels.
  * Each level is assigned a value in ascending order. Higher levels grant more permissions.
- * @see https://foundryvtt.com/article/users/
+ * @see {@link https://foundryvtt.com/article/users/}
  */
 export declare const USER_ROLES: Readonly<{
   /**
@@ -1170,7 +1171,7 @@ export type USER_ROLE_NAMES = ValueOf<typeof USER_ROLE_NAMES>;
 
 /**
  * An enumeration of the allowed types for a MeasuredTemplate embedded document
- * @see https://foundryvtt.com/article/measurement/
+ * @see {@link https://foundryvtt.com/article/measurement/}
  */
 export declare const MEASURED_TEMPLATE_TYPES: Readonly<{
   /**
@@ -1509,7 +1510,7 @@ export declare const USER_PERMISSIONS: Readonly<{
 
 /**
  * The allowed directions of effect that a Wall can have
- * @see https://foundryvtt.com/article/walls/
+ * @see {@link https://foundryvtt.com/article/walls/}
  */
 export declare const WALL_DIRECTIONS: Readonly<{
   /**
@@ -1531,7 +1532,7 @@ export type WALL_DIRECTIONS = Brand<number, "constants.WALL_DIRECTIONS">;
 
 /**
  * The allowed door types which a Wall may contain
- * @see https://foundryvtt.com/article/walls/
+ * @see {@link https://foundryvtt.com/article/walls/}
  */
 export declare const WALL_DOOR_TYPES: Readonly<{
   /**
@@ -1553,7 +1554,7 @@ export type WALL_DOOR_TYPES = Brand<number, "constants.WALL_DOOR_TYPES">;
 
 /**
  * The allowed door states which may describe a Wall that contains a door
- * @see https://foundryvtt.com/article/walls/
+ * @see {@link https://foundryvtt.com/article/walls/}
  */
 export declare const WALL_DOOR_STATES: Readonly<{
   /**
@@ -1587,7 +1588,7 @@ export type WALL_RESTRICTION_TYPES = ValueOf<typeof WALL_RESTRICTION_TYPES>;
 
 /**
  * The types of sensory collision which a Wall may impose
- * @see https://foundryvtt.com/article/walls/
+ * @see {@link https://foundryvtt.com/article/walls/}
  */
 export declare const WALL_SENSE_TYPES: Readonly<{
   /**
@@ -1619,7 +1620,7 @@ export type WALL_SENSE_TYPES = Brand<number, "constants.WALL_SENSE_TYPES">;
 
 /**
  * The types of movement collision which a Wall may impose
- * @see https://foundryvtt.com/article/walls/
+ * @see {@link https://foundryvtt.com/article/walls/}
  */
 export declare const WALL_MOVEMENT_TYPES: Readonly<{
   /**
@@ -1636,7 +1637,7 @@ export type WALL_MOVEMENT_TYPES = ValueOf<typeof WALL_MOVEMENT_TYPES>;
 
 /**
  * The possible precedence values a Keybinding might run in
- * @see https://foundryvtt.com/article/keybinds/
+ * @see {@link https://foundryvtt.com/article/keybinds/}
  */
 export declare const KEYBINDING_PRECEDENCE: Readonly<{
   /**
@@ -1980,7 +1981,7 @@ export declare const COMBAT_ANNOUNCEMENTS: readonly ["startEncounter", "nextUp",
 export type COMBAT_ANNOUNCEMENTS = ValueOf<typeof COMBAT_ANNOUNCEMENTS>;
 
 /**
- * The fit modes of {@link foundry.data.TextureData#fit}.
+ * The fit modes of {@link foundry.data.TextureData.fit | `foundry.data.TextureData#fit`}.
  */
 export declare const TEXTURE_DATA_FIT_MODES: readonly ["fill", "contain", "cover", "width", "height"];
 export type TEXTURE_DATA_FIT_MODES = ValueOf<typeof TEXTURE_DATA_FIT_MODES>;

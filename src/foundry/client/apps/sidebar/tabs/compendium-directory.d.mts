@@ -7,7 +7,7 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class CompendiumDirectory<
-    Options extends DocumentDirectoryOptions = DocumentDirectoryOptions,
+    Options extends DocumentDirectory.Options = DocumentDirectory.Options,
   > extends DirectoryApplicationMixin(SidebarTab)<Options> {
     /**
      * @defaultValue
@@ -21,7 +21,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): DocumentDirectoryOptions;
+    static override get defaultOptions(): DocumentDirectory.Options;
 
     get activeFilters(): string[];
 
@@ -30,14 +30,17 @@ declare global {
 
     static override entryPartial: "templates/sidebar/partials/pack-partial.html";
 
-    protected override _entryAlreadyExists(entry: DirectoryMixinEntry): boolean;
+    protected override _entryAlreadyExists(entry: DirectoryApplicationMixin.Entry): boolean;
 
     protected override _getEntryDragData(entryId: string): object;
 
-    protected override _entryIsSelf(entry: DirectoryMixinEntry, otherEntry: DirectoryMixinEntry): boolean;
+    protected override _entryIsSelf(
+      entry: DirectoryApplicationMixin.Entry,
+      otherEntry: DirectoryApplicationMixin.Entry,
+    ): boolean;
 
     protected override _sortRelative(
-      entry: DirectoryMixinEntry,
+      entry: DirectoryApplicationMixin.Entry,
       sortData: { sortKey: string; sortBefore: boolean; updateData: object },
     ): Promise<object>;
 
@@ -66,9 +69,12 @@ declare global {
      * @param data - The data being dropped
      * @returns The dropped Entry
      */
-    protected _getDroppedEntryFromData(data: object): Promise<DirectoryMixinEntry>;
+    protected _getDroppedEntryFromData(data: object): Promise<DirectoryApplicationMixin.Entry>;
 
-    protected override _createDroppedEntry(entry: DirectoryMixinEntry, folderId?: string): Promise<DirectoryMixinEntry>;
+    protected override _createDroppedEntry(
+      entry: DirectoryApplicationMixin.Entry,
+      folderId?: string,
+    ): Promise<DirectoryApplicationMixin.Entry>;
 
     protected override _getEntryName(entry: object): string;
 
@@ -77,14 +83,17 @@ declare global {
     // TODO: Implement GetDataReturnType
     override getData(options?: Partial<Options>): Promise<object>;
 
-    override render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<unknown>;
+    // NOTE(LukeAbby): In v12 this is async for no apparent reason given that it doesn't call
+    // anything that is async. However given that v13 fixes this I decided to prematurely fix it
+    // to fix tests (e.g. allow superclasses to return `this`).
+    override render(force?: boolean, options?: Application.RenderOptions<Options>): this;
 
     /**
      * Get the sidebar directory entry context options
      * @returns The sidebar entry context options
      * @internal
      */
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
 
     protected override _onClickEntryName(event: PointerEvent): Promise<void>;
 
@@ -106,6 +115,6 @@ declare global {
   }
 }
 
-declare abstract class AnyCompendiumDirectory extends CompendiumDirectory<DocumentDirectoryOptions> {
+declare abstract class AnyCompendiumDirectory extends CompendiumDirectory<DocumentDirectory.Options> {
   constructor(...args: ConstructorParameters<typeof CompendiumDirectory>);
 }

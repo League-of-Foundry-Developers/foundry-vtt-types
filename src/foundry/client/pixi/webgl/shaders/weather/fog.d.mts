@@ -47,5 +47,5 @@ declare global {
 }
 
 declare abstract class AnyFogShader extends FogShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

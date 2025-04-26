@@ -35,5 +35,5 @@ declare global {
 }
 
 declare abstract class AnyBaselineIlluminationSamplerShader extends BaselineIlluminationSamplerShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

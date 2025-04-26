@@ -1,13 +1,10 @@
-import type { AnyObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject, InexactPartial } from "fvtt-types/utils";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
-import type { LightData, TextureData } from "../data/data.mts";
+import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
-import type * as documents from "./_module.mts";
-import type { TokenDetectionMode } from "./_types.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The base Token model definition which defines common behavior of an Token document between both client and server.
@@ -15,68 +12,331 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseToken extends Document<"Token", BaseToken.Schema, any> {
-  // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data?: BaseToken.ConstructorData, context?: Document.ConstructionContext<BaseToken.Parent>);
+declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any> {
+  /**
+   * @param data    - Initial data from which to construct the `BaseToken`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseToken` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link TokenDocument.implementation | `new TokenDocument.implementation(...)`} instead which will give you
+   * a system specific implementation of `TokenDocument`.
+   */
+  constructor(...args: TokenDocument.ConstructorArgs);
 
-  override parent: BaseToken.Parent;
-
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Token",
+   *   collection: "tokens",
+   *   label: "DOCUMENT.Token",
+   *   labelPlural: "DOCUMENT.Tokens",
+   *   isEmbedded: true,
+   *   embedded: {
+   *     ActorDelta: "delta"
+   *   },
+   *   permissions: {
+   *     create: "TOKEN_CREATE",
+   *     update: this.#canUpdate,
+   *     delete: "TOKEN_DELETE"
+   *   },
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseToken.Metadata;
 
   static override defineSchema(): BaseToken.Schema;
 
   /**
-   * Validate the structure of the detection modes array
-   * @param modes - Configured detection modes
-   * @throws An error if the array is invalid
-   */
-  static #validateDetectionModes(modes: TokenDetectionMode[]): void;
-
-  /**
    * The default icon used for newly created Token documents
-   * @defaultValue `CONST.DEFAULT_TOKEN`
+   * @defaultValue `CONST.DEFAULT_TOKEN` (`"icons/svg/mystery-man.svg"`)
    */
   static DEFAULT_ICON: string;
 
-  /**
-   * Is a user able to update an existing Token?
-   * @internal
-   */
-  static #canUpdate(user: User, doc: BaseToken, data: BaseToken.UpdateData): boolean;
-
+  // options: not null (destructured)
   override testUserPermission(
-    user: User,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    user: User.Implementation,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
-  updateSource(
-    changes?: BaseToken.ConstructorData,
-    options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
-  ): AnyObject;
+  updateSource(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateSourceOptions): TokenDocument.UpdateData;
 
-  static override migrateData(source: AnyObject): AnyObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
-
-  //TODO: Update with the Delta conditionality
+  // TODO: Update with the Delta conditionality
   toObject(source: true): this["_source"];
   toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+
+  /**
+   * @remarks Migrates:
+   * - `actorData` to `delta`
+   */
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /**
+   * @remarks Shims:
+   * - `actorData` to `delta` since v11, until v13
+   * - `effects` to nothing since v12, until v14 ("TokenDocument#effects is deprecated in favor of using ActiveEffect documents on the associated Actor")
+   * - `overlayEffect` to nothing since v12, until v14 ("TokenDocument#overlayEffect is deprecated in favor of using ActiveEffect documents on the associated Actor")
+   */
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "TokenDocument#overlayEffect is deprecated in favor of using ActiveEffect documents on the associated Actor"
+   */
+  get effects(): [];
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "TokenDocument# is deprecated in favor of using ActiveEffect documents on the associated Actor"
+   */
+  get overlayEffect(): "";
+
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
+   */
+
+  /* Document overrides */
+
+  static " fvtt_types_internal_document_name_static": "Token";
+
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: TokenDocument.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static override get implementation(): TokenDocument.ImplementationClass;
+
+  static get baseDocument(): typeof BaseToken;
+
+  static get collectionName(): TokenDocument.ParentCollectionName;
+
+  static get documentName(): TokenDocument.Name;
+
+  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+
+  static get hasTypeData(): undefined;
+
+  static get hierarchy(): TokenDocument.Hierarchy;
+
+  override parent: TokenDocument.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined = false>(
+    data: Array<TokenDocument.Implementation | TokenDocument.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>>,
+  ): Promise<Array<Document.TemporaryIf<TokenDocument.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: TokenDocument.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<TokenDocument.Database.Update>,
+  ): Promise<TokenDocument.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteDocumentsOperation<TokenDocument.Database.Delete>,
+  ): Promise<TokenDocument.Implementation[]>;
+
+  static override create<Temporary extends boolean | undefined = false>(
+    data: TokenDocument.CreateData | TokenDocument.CreateData[],
+    operation?: TokenDocument.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<TokenDocument.Implementation, Temporary> | undefined>;
+
+  override update(
+    data: TokenDocument.UpdateData | undefined,
+    operation?: TokenDocument.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: TokenDocument.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(
+    documentId: string,
+    options?: TokenDocument.Database.GetOptions,
+  ): TokenDocument.Implementation | null;
+
+  static override getCollectionName<CollectionName extends TokenDocument.Embedded.Name>(
+    name: CollectionName,
+  ): TokenDocument.Embedded.CollectionNameOf<CollectionName> | null;
+
+  /**
+   * @remarks Calling `BaseToken#getEmbeddedCollection` would result in entirely typical results at
+   * runtime, namely returning a `EmbeddedCollection` corresponding to a field in `BaseToken`'s
+   * schema. However {@link TokenDocument.getEmbeddedCollection | `TokenDocument#getEmbeddedCollection`}
+   * is overridden to add new cases and since `BaseToken` is a superclass it had to be widened to
+   * accomodate that.
+   */
+  override getEmbeddedCollection(embeddedName: TokenDocument.Embedded.CollectionName): Collection.Any;
+
+  override getEmbeddedDocument<EmbeddedName extends TokenDocument.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): TokenDocument.Embedded.DocumentFor<EmbeddedName> | undefined;
+
+  override createEmbeddedDocuments<EmbeddedName extends TokenDocument.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override updateEmbeddedDocuments<EmbeddedName extends TokenDocument.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends TokenDocument.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends TokenDocument.Flags.Scope, Key extends TokenDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<TokenDocument.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends TokenDocument.Flags.Scope,
+    Key extends TokenDocument.Flags.Key<Scope>,
+    Value extends Document.GetFlag<TokenDocument.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends TokenDocument.Flags.Scope, Key extends TokenDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
+
+  protected _preCreate(
+    data: TokenDocument.CreateData,
+    options: TokenDocument.Database.PreCreateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: TokenDocument.CreateData,
+    options: TokenDocument.Database.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: TokenDocument.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<TokenDocument.Database.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: TokenDocument.Implementation[],
+    operation: TokenDocument.Database.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: TokenDocument.UpdateData,
+    options: TokenDocument.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: TokenDocument.UpdateData,
+    options: TokenDocument.Database.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: TokenDocument.Implementation[],
+    operation: TokenDocument.Database.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: TokenDocument.Implementation[],
+    operation: TokenDocument.Database.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: TokenDocument.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: TokenDocument.Database.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: TokenDocument.Implementation[],
+    operation: TokenDocument.Database.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: TokenDocument.Implementation[],
+    operation: TokenDocument.Database.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
+
+  protected static _onCreateDocuments(
+    documents: TokenDocument.Implementation[],
+    context: Document.ModificationContext<TokenDocument.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: TokenDocument.Implementation[],
+    context: Document.ModificationContext<TokenDocument.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: TokenDocument.Implementation[],
+    context: Document.ModificationContext<TokenDocument.Parent>,
+  ): Promise<void>;
+
+  /* DataModel overrides */
+
+  protected static _schema: SchemaField<TokenDocument.Schema>;
+
+  static get schema(): SchemaField<TokenDocument.Schema>;
+
+  static validateJoint(data: TokenDocument.Source): void;
+
+  static override fromSource(
+    source: TokenDocument.CreateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): TokenDocument.Implementation;
+
+  static override fromJSON(json: string): TokenDocument.Implementation;
 }
 
 /**
@@ -98,408 +358,46 @@ export class ActorDeltaField<
 export default BaseToken;
 
 declare namespace BaseToken {
-  type Parent = Scene.ConfiguredInstance | null;
+  export import Name = TokenDocument.Name;
+  export import ConstructorArgs = TokenDocument.ConstructorArgs;
+  export import Hierarchy = TokenDocument.Hierarchy;
+  export import Metadata = TokenDocument.Metadata;
+  export import Parent = TokenDocument.Parent;
+  export import Descendant = TokenDocument.Descendant;
+  export import DescendantClass = TokenDocument.DescendantClass;
+  export import Pack = TokenDocument.Pack;
+  export import Embedded = TokenDocument.Embedded;
+  export import ParentCollectionName = TokenDocument.ParentCollectionName;
+  export import CollectionClass = TokenDocument.CollectionClass;
+  export import Collection = TokenDocument.Collection;
+  export import Invalid = TokenDocument.Invalid;
+  export import Stored = TokenDocument.Stored;
+  export import Source = TokenDocument.Source;
+  export import PersistedData = TokenDocument.PersistedData;
+  export import CreateData = TokenDocument.CreateData;
+  export import InitializedData = TokenDocument.InitializedData;
+  export import UpdateData = TokenDocument.UpdateData;
+  export import Schema = TokenDocument.Schema;
+  export import DatabaseOperation = TokenDocument.Database;
+  export import Flags = TokenDocument.Flags;
+  export import CoreFlags = TokenDocument.CoreFlags;
 
-  type Metadata = Document.MetadataFor<BaseToken>;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
-  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
-  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
-  type Source = fields.SchemaField.InnerPersistedType<Schema>;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseToken.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  // Needed because Omit wasn't working with schemas
-  export interface SharedProtoSchema extends DataSchema {
-    /**
-     * The name used to describe the Token
-     * @defaultValue `""`
-     */
-    name: fields.StringField<{ required: true; blank: true }>;
-
-    /**
-     * The display mode of the Token nameplate, from CONST.TOKEN_DISPLAY_MODES
-     * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
-     */
-    displayName: fields.NumberField<
-      {
-        required: true;
-        initial: typeof CONST.TOKEN_DISPLAY_MODES.NONE;
-        choices: CONST.TOKEN_DISPLAY_MODES[];
-        validationError: "must be a value in CONST.TOKEN_DISPLAY_MODES";
-      },
-      CONST.TOKEN_DISPLAY_MODES | null | undefined,
-      CONST.TOKEN_DISPLAY_MODES,
-      CONST.TOKEN_DISPLAY_MODES
-    >;
-
-    /**
-     * Does this Token uniquely represent a singular Actor, or is it one of many?
-     * @defaultValue `false`
-     */
-    actorLink: fields.BooleanField;
-
-    appendNumber: fields.BooleanField;
-
-    prependAdjective: fields.BooleanField;
-
-    /**
-     * The width of the Token in grid units
-     * @defaultValue `1`
-     */
-    width: fields.NumberField<{ positive: true; initial: 1; label: "Width" }>;
-
-    /**
-     * The height of the Token in grid units
-     * @defaultValue `1`
-     */
-    height: fields.NumberField<{ positive: true; initial: 1; label: "Height" }>;
-
-    /**
-     * The token's texture on the canvas.
-     * @defaultValue `BaseToken.DEFAULT_ICON`
-     */
-    texture: TextureData<{ initial: () => typeof BaseToken.DEFAULT_ICON; wildcard: true }>;
-
-    /**
-     * @defaultValue `CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1`
-     */
-    hexagonalShape: fields.NumberField<{
-      initial: typeof CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1;
-      choices: CONST.TOKEN_HEXAGONAL_SHAPES[];
-    }>;
-
-    /**
-     * Prevent the Token image from visually rotating?
-     * @defaultValue `false`
-     */
-    lockRotation: fields.BooleanField;
-
-    /**
-     * The rotation of the Token in degrees, from 0 to 360. A value of 0 represents a southward-facing Token.
-     * @defaultValue `0`
-     */
-    rotation: fields.AngleField;
-
-    /**
-     * The opacity of the token image
-     * @defaultValue `1`
-     */
-    alpha: fields.AlphaField;
-
-    /**
-     * A displayed Token disposition from CONST.TOKEN_DISPOSITIONS
-     * @defaultValue `CONST.TOKEN_DISPOSITIONS.HOSTILE`
-     */
-    disposition: fields.NumberField<
-      {
-        required: true;
-        choices: CONST.TOKEN_DISPOSITIONS[];
-        initial: typeof CONST.TOKEN_DISPOSITIONS.HOSTILE;
-        validationError: "must be a value in CONST.TOKEN_DISPOSITIONS";
-      },
-      CONST.TOKEN_DISPOSITIONS | null | undefined,
-      CONST.TOKEN_DISPOSITIONS,
-      CONST.TOKEN_DISPOSITIONS
-    >;
-
-    /**
-     * The display mode of Token resource bars, from CONST.TOKEN_DISPLAY_MODES
-     * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
-     */
-    displayBars: fields.NumberField<
-      {
-        required: true;
-        choices: CONST.TOKEN_DISPLAY_MODES[];
-        initial: typeof CONST.TOKEN_DISPLAY_MODES.NONE;
-        validationError: "must be a value in CONST.TOKEN_DISPLAY_MODES";
-      },
-      CONST.TOKEN_DISPLAY_MODES | null | undefined,
-      CONST.TOKEN_DISPLAY_MODES,
-      CONST.TOKEN_DISPLAY_MODES
-    >;
-
-    /**
-     * The configuration of the Token's primary resource bar
-     * @defaultValue
-     * ```typescript
-     * { attribute: null }
-     * ```
-     */
-    bar1: fields.SchemaField<{
-      /**
-       * The attribute path within the Token's Actor data which should be displayed
-       * @defaultValue `game?.system.primaryTokenAttribute || null`
-       */
-      attribute: fields.StringField<{ required: true; nullable: true; blank: false; initial: () => string | null }>;
-    }>;
-
-    /**
-     * The configuration of the Token's secondary resource bar
-     * @defaultValue
-     * ```typescript
-     * { attribute: null }
-     * ```
-     */
-    bar2: fields.SchemaField<{
-      /**
-       * The attribute path within the Token's Actor data which should be displayed
-       * @defaultValue `game?.system.secondaryTokenAttribute`
-       */
-      attribute: fields.StringField<{ required: true; nullable: true; blank: false; initial: () => string | null }>;
-    }>;
-
-    /**
-     * Configuration of the light source that this Token emits
-     * @defaultValue see {@link LightData}
-     */
-    light: fields.EmbeddedDataField<typeof LightData>;
-
-    /**
-     * Configuration of sight and vision properties for the Token
-     * @defaultValue see properties
-     */
-    sight: fields.SchemaField<{
-      /**
-       * Should vision computation and rendering be active for this Token?
-       * @defaultValue true, when the token's sight range is greater than 0
-       */
-      enabled: fields.BooleanField<{ initial: () => boolean }>;
-
-      /**
-       * How far in distance units the Token can see without the aid of a light source
-       * @defaultValue `null`
-       */
-      range: fields.NumberField<{ required: true; nullable: false; min: 0; step: 0.01; initial: 0 }>;
-
-      /**
-       * An angle at which the Token can see relative to their direction of facing
-       * @defaultValue `360`
-       */
-      angle: fields.AngleField<{ initial: 360; base: 360 }>;
-
-      /**
-       * The vision mode which is used to render the appearance of the visible area
-       * @defaultValue `"basic"`
-       */
-      visionMode: fields.StringField<{
-        required: true;
-        blank: false;
-        initial: "basic";
-        label: "TOKEN.VisionMode";
-        hint: "TOKEN.VisionModeHint";
-      }>;
-
-      /**
-       * A special color which applies a hue to the visible area
-       * @defaultValue `null`
-       */
-      color: fields.ColorField<{ label: "TOKEN.VisionColor" }>;
-
-      /**
-       * A degree of attenuation which gradually fades the edges of the visible area
-       * @defaultValue `0.1`
-       */
-      attenuation: fields.AlphaField<{
-        initial: 0.1;
-        label: "TOKEN.VisionAttenuation";
-        hint: "TOKEN.VisionAttenuationHint";
-      }>;
-
-      /**
-       * An advanced customization for the perceived brightness of the visible area
-       * @defaultValue `0`
-       */
-      brightness: fields.NumberField<{
-        required: true;
-        nullable: false;
-        initial: 0;
-        min: -1;
-        max: 1;
-        label: "TOKEN.VisionBrightness";
-        hint: "TOKEN.VisionBrightnessHint";
-      }>;
-
-      /**
-       * An advanced customization of color saturation within the visible area
-       * @defaultValue `0`
-       */
-      saturation: fields.NumberField<{
-        required: true;
-        nullable: false;
-        initial: 0;
-        min: -1;
-        max: 1;
-        label: "TOKEN.VisionSaturation";
-        hint: "TOKEN.VisionSaturationHint";
-      }>;
-
-      /**
-       * An advanced customization for contrast within the visible area
-       * @defaultValue `0`
-       */
-      contrast: fields.NumberField<{
-        required: true;
-        nullable: false;
-        initial: 0;
-        min: -1;
-        max: 1;
-        label: "TOKEN.VisionContrast";
-        hint: "TOKEN.VisionContrastHint";
-      }>;
-    }>;
-
-    /**
-     * An array of detection modes which are available to this Token
-     * @defaultValue `[]`
-     */
-    detectionModes: fields.ArrayField<
-      fields.SchemaField<{
-        /**
-         * The id of the detection mode, a key from CONFIG.Canvas.detectionModes
-         * @defaultValue `""`
-         */
-        id: fields.StringField;
-
-        /**
-         * Whether or not this detection mode is presently enabled
-         * @defaultValue `true`
-         */
-        enabled: fields.BooleanField<{ initial: true }>;
-
-        /**
-         * The maximum range in distance units at which this mode can detect targets
-         * @defaultValue `0`
-         */
-        range: fields.NumberField<{ required: true; nullable: false; min: 0; step: 0.01; initial: 0 }>;
-      }>,
-      {
-        validate: () => void;
-      }
-    >;
-
-    /**
-     * @defaultValue see properties
-     */
-    occludable: fields.SchemaField<{
-      /**
-       * @defaultValue `0`
-       */
-      radius: fields.NumberField<{ nullable: false; min: 0; step: 0.01; initial: 0 }>;
-    }>;
-
-    /**
-     * @defaultValue see properties
-     */
-    ring: fields.SchemaField<{
-      /**
-       * @defaultValue `false`
-       */
-      enabled: fields.BooleanField;
-
-      /**
-       * @defaultValue see properties
-       */
-      colors: fields.SchemaField<{
-        /**
-         * @defaultValue `null`
-         */
-        ring: fields.ColorField;
-
-        /**
-         * @defaultValue `null`
-         */
-        background: fields.ColorField;
-      }>;
-
-      /**
-       * @defaultValue `1`
-       */
-      effects: fields.NumberField<{ initial: 1; min: 0; max: 8388607; integer: true }>;
-
-      /**
-       * @defaultValue see properties
-       */
-      subject: fields.SchemaField<{
-        /**
-         * @defaultValue `1`
-         */
-        scale: fields.NumberField<{ initial: 1; min: 0.5 }>;
-
-        /**
-         * @defaultValue `null`
-         */
-        texture: fields.FilePathField<{ categories: ["IMAGE"] }>;
-      }>;
-    }>;
-
-    /**
-     * @internal
-     */
-    // TODO(Eon): Causes an 'Excessively Deep' error.
-    _regions: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseRegion, { idOnly: true }>>;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"Token">;
-  }
-
-  interface Schema extends SharedProtoSchema {
-    /**
-     * The Token _id which uniquely identifies it within its parent Scene
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * The _id of an Actor document which this Token represents
-     * @defaultValue `null`
-     */
-    actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
-
-    /**
-     * The ActorDelta embedded document which stores the differences between this
-     * token and the base actor it represents.
-     */
-    delta: ActorDeltaField<typeof documents.BaseActor>;
-
-    /**
-     * The x-coordinate of the top-left corner of the Token
-     * @defaultValue `0`
-     */
-    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
-
-    /**
-     * The y-coordinate of the top-left corner of the Token
-     * @defaultValue `0`
-     */
-    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
-
-    /**
-     * The vertical elevation of the Token, in distance units
-     * @defaultValue `0`
-     */
-    elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
-
-    /**
-     * An array of effect icon paths which are displayed on the Token
-     * @defaultValue `[]`
-     */
-    effects: fields.ArrayField<fields.StringField>;
-
-    /**
-     * A single icon path which is displayed as an overlay on the Token
-     * @defaultValue `""`
-     */
-    overlayEffect: fields.StringField;
-
-    /**
-     * Is the Token currently hidden from player view?
-     * @defaultValue `false`
-     */
-    hidden: fields.BooleanField;
-  }
+  /**
+   * @deprecated {@link BaseToken.CreateData | `BaseToken.CreateData`}
+   */
+  type ConstructorData = BaseToken.CreateData;
 }
 
 declare namespace ActorDeltaField {}

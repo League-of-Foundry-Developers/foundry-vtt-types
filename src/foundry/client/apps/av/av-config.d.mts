@@ -6,12 +6,12 @@ declare global {
    *
    * @typeParam Options - The type of the options object
    */
-  class AVConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
+  class AVConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     Options,
     AVMaster
   > {
     /**
-     * @param object  - The {@link AVMaster} instance being configured.
+     * @param object  - The {@link AVMaster | `AVMaster`} instance being configured.
      * @param options - Application configuration options.
      */
     constructor(object?: AVMaster, options?: Partial<Options>);
@@ -30,7 +30,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplication.Options;
 
     override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<AVConfig.AVConfigData>>;
 
@@ -70,7 +70,7 @@ declare global {
     interface AnyConstructor extends Identity<typeof AnyAVConfig> {}
 
     interface AVConfigData {
-      user: User;
+      user: User.Implementation;
       modes: Record<AVSettings.AV_MODES, string>;
       voiceModes: Record<AVSettings.VOICE_MODES, string>;
       serverTypes: { FVTT: "WEBRTC.FVTTSignalingServer"; custom: "WEBRTC.CustomSignalingServer" };
@@ -93,6 +93,6 @@ declare global {
   }
 }
 
-declare abstract class AnyAVConfig extends AVConfig<FormApplicationOptions> {
-  constructor(arg0: never, ...args: never[]);
+declare abstract class AnyAVConfig extends AVConfig<FormApplication.Options> {
+  constructor(...args: never);
 }

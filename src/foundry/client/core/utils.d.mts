@@ -12,7 +12,7 @@ declare class InvalidUuid extends foundry.abstract.Document<any, any, any> {}
 type FromUuid<Uuid extends string> = Uuid extends `${string}.${string}.${infer Rest}`
   ? FromUuid<Rest>
   : Uuid extends `${infer DocumentType extends Document.Type}.${string}`
-    ? Document.ConfiguredInstanceForName<DocumentType>
+    ? Document.ImplementationFor<DocumentType>
     : InvalidUuid;
 
 // TODO(LukeAbby): The usage of `Document.Type` when it's unset will not be necessary once `Document.Any` is more type safe.
@@ -90,5 +90,5 @@ declare global {
    * @param documentName - The canonical Document name, for example "Actor"
    * @returns configured Document class implementation
    */
-  function getDocumentClass<Name extends Document.Type>(documentName: Name): Document.ConfiguredClassForName<Name>;
+  function getDocumentClass<Name extends Document.Type>(documentName: Name): Document.ImplementationClassFor<Name>;
 }

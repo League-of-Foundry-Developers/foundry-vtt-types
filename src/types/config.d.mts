@@ -8,18 +8,18 @@ import type { InterfaceToObject, MustConform } from "fvtt-types/utils";
 import * as configuration from "fvtt-types/configuration";
 
 declare global {
-  export import AssumeHookRan = configuration.AssumeHookRan;
-  export import DocumentClassConfig = configuration.DocumentClassConfig;
-  export import PlaceableObjectClassConfig = configuration.PlaceableObjectClassConfig;
-  export import DataConfig = configuration.DataConfig;
-  export import GetDataConfig = configuration.GetDataConfig;
-  export import DataModelConfig = configuration.DataModelConfig;
-  export import SourceConfig = configuration.SourceConfig;
-  export import FlagConfig = configuration.FlagConfig;
-  export import WebRTCConfig = configuration.WebRTCConfig;
-  export import ModuleConfig = configuration.ModuleConfig;
-  export import RequiredModules = configuration.RequiredModules;
-  export import SettingConfig = configuration.SettingConfig;
+  interface AssumeHookRan extends configuration.AssumeHookRan {}
+  interface DocumentClassConfig extends configuration.DocumentClassConfig {}
+  interface PlaceableObjectClassConfig extends configuration.PlaceableObjectClassConfig {}
+  interface DataConfig extends configuration.DataConfig {}
+  interface GetDataConfig extends configuration.GetDataConfig {}
+  interface DataModelConfig extends configuration.DataModelConfig {}
+  interface SourceConfig extends configuration.SourceConfig {}
+  interface FlagConfig extends configuration.FlagConfig {}
+  interface WebRTCConfig extends configuration.WebRTCConfig {}
+  interface ModuleConfig extends configuration.ModuleConfig {}
+  interface RequiredModules extends configuration.RequiredModules {}
+  interface SettingConfig extends configuration.SettingConfig {}
 }
 
 type ValidDataModel = {

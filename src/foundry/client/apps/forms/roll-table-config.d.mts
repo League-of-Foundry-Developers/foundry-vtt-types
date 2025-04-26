@@ -6,9 +6,8 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class RollTableConfig<
-    Options extends
-      DocumentSheetOptions<RollTable.ConfiguredInstance> = DocumentSheetOptions<RollTable.ConfiguredInstance>,
-  > extends DocumentSheet<Options, RollTable.ConfiguredInstance> {
+    Options extends DocumentSheet.Options<RollTable.Implementation> = DocumentSheet.Options<RollTable.Implementation>,
+  > extends DocumentSheet<Options, RollTable.Implementation> {
     /**
      * @defaultValue
      * ```typescript
@@ -24,7 +23,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<RollTable.ConfiguredInstance>;
+    static override get defaultOptions(): DocumentSheet.Options<RollTable.Implementation>;
 
     override get title(): string;
 
@@ -40,8 +39,8 @@ declare global {
      */
     protected _onCreateResult(
       event: JQuery.ClickEvent | DragEvent,
-      resultData?: foundry.documents.BaseTableResult.ConstructorData,
-    ): Promise<TableResult.ConfiguredInstance[]>;
+      resultData?: foundry.documents.BaseTableResult.CreateData,
+    ): Promise<TableResult.Implementation[]>;
 
     /**
      * Submit the entire form when a table result type is changed, in case there are other active changes
@@ -55,10 +54,10 @@ declare global {
      * @returns The deleted TableResult document
      * @internal
      */
-    protected _onDeleteResult(event: JQuery.ClickEvent): Promise<TableResult.ConfiguredInstance>;
+    protected _onDeleteResult(event: JQuery.ClickEvent): Promise<TableResult.Implementation>;
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    protected override _onDrop(event: DragEvent): Promise<TableResult.ConfiguredInstance[]> | void;
+    protected override _onDrop(event: DragEvent): Promise<TableResult.Implementation[]> | void;
 
     /**
      * Handle changing the actor profile image by opening a FilePicker
@@ -104,7 +103,7 @@ declare global {
      * @param results - An Array of drawn table results to highlight
      * @returns A Promise which resolves once the animation is complete
      */
-    protected _animateRoll(results: TableResult.ConfiguredInstance[]): Promise<void[]>;
+    protected _animateRoll(results: TableResult.Implementation[]): Promise<void[]>;
 
     /**
      * Animate a "roulette" through the table until arriving at the final loop and a drawn result

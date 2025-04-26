@@ -19,7 +19,7 @@ const contextMenu = new ContextMenu(element, ".some-class", [
 expectTypeOf(contextMenu.element).toEqualTypeOf<JQuery>();
 expectTypeOf(contextMenu.selector).toEqualTypeOf<string>();
 expectTypeOf(contextMenu.eventName).toEqualTypeOf<string>();
-expectTypeOf(contextMenu.menuItems).toEqualTypeOf<ContextMenuEntry[]>();
+expectTypeOf(contextMenu.menuItems).toEqualTypeOf<ContextMenu.Entry[]>();
 expectTypeOf(contextMenu.onOpen).toEqualTypeOf<ContextMenu.ContextMenuCallback>();
 expectTypeOf(contextMenu.onClose).toEqualTypeOf<ContextMenu.ContextMenuCallback>();
 expectTypeOf(contextMenu.menu).toEqualTypeOf<JQuery>();
@@ -29,4 +29,4 @@ expectTypeOf(ContextMenu.create(app, new HTMLElement(), ".class", [])).toEqualTy
 expectTypeOf(contextMenu.bind()).toEqualTypeOf<void>();
 expectTypeOf(contextMenu.close()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(contextMenu.render(element)).toEqualTypeOf<void | Promise<JQuery | void>>();
-expectTypeOf(contextMenu.menuItems).toEqualTypeOf<ContextMenuEntry[]>();
+expectTypeOf(contextMenu.menuItems).toEqualTypeOf<ContextMenu.Entry[]>();

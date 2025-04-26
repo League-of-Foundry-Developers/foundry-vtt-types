@@ -4,7 +4,10 @@ declare global {
   /**
    * An application responsible for configuring how dice are rolled and evaluated.
    */
-  class DiceConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<Options> {
+  class DiceConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
+    Options,
+    FormApplication.NoObject
+  > {
     /**
      * @defaultValue
      * ```typescript
@@ -16,9 +19,9 @@ declare global {
      * });
      * ```
      */
-    static get defaultOptions(): FormApplicationOptions;
+    static get defaultOptions(): FormApplication.Options;
 
-    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<DiceConfig.DiceConfigData>>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<DiceConfig.Data>>;
 
     protected override _updateObject(
       event: Event,
@@ -30,13 +33,19 @@ declare global {
     interface Any extends AnyDiceConfig {}
     interface AnyConstructor extends Identity<typeof AnyDiceConfig> {}
 
-    interface DiceConfigData {
-      dice: DiceConfigDiceData[];
+    /** @deprecated {@link DiceConfig.Data | `DiceConfig.Data`} */
+    type DiceConfigData = Data;
+
+    /** @deprecated {@link DiceConfig.DiceDat | `DiceConfig.DiceDat`} */
+    type DiceConfigDiceData = DiceData;
+
+    interface Data {
+      dice: DiceData[];
       methods: Record<string, CONFIG.Dice.FulfillmentMethod>;
       object: EmptyObject;
     }
 
-    interface DiceConfigDiceData {
+    interface DiceData {
       label: string;
       icon: string;
       denomination: CONFIG.Dice.DTermDiceStrings;
@@ -45,6 +54,6 @@ declare global {
   }
 }
 
-declare abstract class AnyDiceConfig extends DiceConfig<FormApplicationOptions> {
-  constructor(arg0: never, ...args: never[]);
+declare abstract class AnyDiceConfig extends DiceConfig<FormApplication.Options> {
+  constructor(...args: never);
 }

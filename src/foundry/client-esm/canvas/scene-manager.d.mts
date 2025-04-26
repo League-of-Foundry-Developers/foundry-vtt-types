@@ -47,12 +47,12 @@ declare class SceneManager {
   /**
    * The SceneManager is constructed by passing a reference to the active Scene document.
    */
-  constructor(scene: Scene.ConfiguredInstance);
+  constructor(scene: Scene.Implementation);
 
   /**
    * The managed Scene
    */
-  get scene(): Scene.ConfiguredInstance;
+  get scene(): Scene.Implementation;
 
   /**
    * Additional behaviors to perform when the Canvas is first initialized for the Scene.
@@ -97,7 +97,7 @@ declare namespace SceneManager {
 }
 
 declare abstract class AnySceneManager extends SceneManager {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default SceneManager;

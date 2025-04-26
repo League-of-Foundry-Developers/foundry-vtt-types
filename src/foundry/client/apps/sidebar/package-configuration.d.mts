@@ -4,7 +4,7 @@ declare global {
   /** An application for configuring data across all installed and active packages. */
   abstract class PackageConfiguration<
     Options extends PackageConfiguration.Options = PackageConfiguration.Options,
-  > extends FormApplication<Options, object> {
+  > extends FormApplication<Options, FormApplication.NoObject> {
     /** @returns `["all", "core", "system", "module", "unmapped"]` */
     static get categoryOrder(): string[];
 
@@ -68,7 +68,7 @@ declare global {
   namespace PackageConfiguration {
     interface Any extends PackageConfiguration<any> {}
 
-    interface Options extends FormApplicationOptions {
+    interface Options extends FormApplication.Options {
       categoryTemplate?: string;
       submitButton?: boolean;
     }

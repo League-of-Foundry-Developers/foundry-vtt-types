@@ -23,7 +23,7 @@ declare abstract class DatabaseBackend {
   get<T extends Document.AnyConstructor>(
     documentClass: T,
     operation: DatabaseGetOperation,
-    user?: User,
+    user?: User.Implementation,
   ): Promise<FixedInstanceType<T>>[];
 
   /**
@@ -36,12 +36,12 @@ declare abstract class DatabaseBackend {
   protected abstract _getDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
     operation: DatabaseGetOperation,
-    user?: User,
+    user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
    * Create new Documents using provided data and context.
-   * It is recommended to use {@link Document.createDocuments} or {@link Document.create} rather than calling this
+   * It is recommended to use {@link Document.createDocuments | `Document.createDocuments`} or {@link Document.create | `Document.create`} rather than calling this
    * method directly.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the create operation
@@ -50,8 +50,8 @@ declare abstract class DatabaseBackend {
    */
   create<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseCreateOperation<FixedInstanceType<T>>,
-    user?: User,
+    operation: DatabaseBackend.CreateOperation<T>,
+    user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
@@ -64,12 +64,12 @@ declare abstract class DatabaseBackend {
   protected abstract _createDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
     operation: DatabaseCreateOperation<FixedInstanceType<T>>,
-    user?: User,
+    user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
    * Update Documents using provided data and context.
-   * It is recommended to use {@link Document.updateDocuments} or {@link Document#update} rather than calling this
+   * It is recommended to use {@link Document.updateDocuments | `Document.updateDocuments`} or {@link Document.update | `Document#update`} rather than calling this
    * method directly.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the update operation
@@ -78,8 +78,8 @@ declare abstract class DatabaseBackend {
    */
   update<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseUpdateOperation<FixedInstanceType<T>>,
-    user?: User,
+    operation: DatabaseBackend.UpdateOperation<T>,
+    user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
@@ -92,13 +92,13 @@ declare abstract class DatabaseBackend {
   protected abstract _updateDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
     operation: DatabaseUpdateOperation<FixedInstanceType<T>>,
-    user: User,
+    user: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
    * Delete Documents using provided ids and context.
-   * It is recommended to use {@link foundry.abstract.Document.deleteDocuments} or
-   * {@link foundry.abstract.Document#delete} rather than calling this method directly.
+   * It is recommended to use {@link foundry.abstract.Document.deleteDocuments | `foundry.abstract.Document.deleteDocuments`} or
+   * {@link foundry.abstract.Document.delete | `foundry.abstract.Document#delete`} rather than calling this method directly.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the delete operation
    * @param user          - The requesting User
@@ -106,8 +106,8 @@ declare abstract class DatabaseBackend {
    */
   delete<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseDeleteOperation,
-    user?: User,
+    operation: DatabaseBackend.DeleteOperation,
+    user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
@@ -119,7 +119,7 @@ declare abstract class DatabaseBackend {
   protected abstract _deleteDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
     operation: DatabaseDeleteOperation,
-    user: User,
+    user: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**
@@ -178,7 +178,19 @@ declare abstract class DatabaseBackend {
   /**
    * Construct a standardized error message given the context of an attempted operation
    */
-  protected _logError(user: User, action: string, { parent, pack }?: { parent?: Document.Any; pack?: string }): string;
+  protected _logError(
+    user: User.Implementation,
+    action: string,
+    { parent, pack }?: { parent?: Document.Any; pack?: string },
+  ): string;
+}
+
+declare namespace DatabaseBackend {
+  type CreateOperation<T extends Document.AnyConstructor> =
+    Document.Database.CreateOperation<DatabaseCreateOperation> & { data: Document.CreateDataFor<T>[] };
+  type UpdateOperation<T extends Document.AnyConstructor> =
+    Document.Database.UpdateDocumentsOperation<DatabaseUpdateOperation> & { updates: Document.UpdateDataFor<T>[] };
+  type DeleteOperation = Document.Database.DeleteDocumentsOperation<DatabaseDeleteOperation> & { ids: string[] };
 }
 
 export default DatabaseBackend;

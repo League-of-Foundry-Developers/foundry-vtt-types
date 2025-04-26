@@ -1,5 +1,6 @@
 import type {
   Brand,
+  FixedInstanceType,
   HandleEmptyObject,
   Identity,
   InexactPartial,
@@ -16,6 +17,7 @@ declare global {
    * @typeParam DocumentName - The key of the configuration which defines the object and document class.
    * @typeParam Options      - The type of the options in this layer.
    */
+  // TODO(LukeAbby): Make `DocumentName` covariant.
   class PlaceablesLayer<DocumentName extends PlaceablesLayer.DocumentNames> extends InteractionLayer {
     /**
      * Sort order for placeables belonging to this layer
@@ -49,14 +51,14 @@ declare global {
      * @defaultValue `[]`
      * @privateRemarks Accessed externally in `ClientKeybinds#_onPaste`, which is marked `@private`
      */
-    protected _copy: Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    protected _copy: Document.ObjectFor<DocumentName>[];
 
     /**
      * A Quadtree which partitions and organizes Walls into quadrants for efficient target identification.
      * @remarks Is `new CanvasQuadtree()` if `quadtree` is truthy in `this.constructor.layerOptions`, else `null`
      */
-    //TODO: If dynamic static stuff can be worked out, this can be conditional on `options.quadtree`
-    quadtree: CanvasQuadtree<Document.ConfiguredObjectInstanceForName<DocumentName>> | null;
+    // TODO: If dynamic static stuff can be worked out, this can be conditional on `options.quadtree`
+    quadtree: CanvasQuadtree<Document.ObjectFor<DocumentName>> | null;
 
     /**
      * @remarks Override not in foundry docs but implicit from layerOptions
@@ -94,10 +96,7 @@ declare global {
      * Obtain a reference to the Collection of embedded Document instances within the currently viewed Scene
      * @remarks Returns `null` if `canvas.scene` does not have an EmbeddedCollection for the layer's `static documentName`
      */
-    get documentCollection(): EmbeddedCollection<
-      Document.ConfiguredInstanceForName<DocumentName>,
-      Scene.ConfiguredInstance
-    > | null;
+    get documentCollection(): EmbeddedCollection<Document.ImplementationFor<DocumentName>, Scene.Implementation> | null;
 
     /**
      * Define a Container implementation used to render placeable objects contained in this layer
@@ -109,34 +108,33 @@ declare global {
      * If objects on this PlaceablesLayer have a HUD UI, provide a reference to its instance
      * @remarks Returns `null` unless overridden by subclass
      */
-    get hud(): BasePlaceableHUD<Document.ConfiguredObjectInstanceForName<DocumentName>> | null;
+    get hud(): BasePlaceableHUD<Document.ObjectFor<DocumentName>> | null;
 
     /**
      * A convenience method for accessing the placeable object instances contained in this layer
      */
-    get placeables(): Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    get placeables(): Document.ObjectFor<DocumentName>[];
 
     /**
      * An Array of placeable objects in this layer which have the _controlled attribute
      */
-    get controlled(): Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    get controlled(): Document.ObjectFor<DocumentName>[];
 
     /**
      * Iterates over placeable objects that are eligible for control/select.
-     * @remarks yields A placeable object
+     * @yields A placeable object
      */
-    // TODO: Update remark with proper @yields tag https://github.com/microsoft/tsdoc/issues/234
     controllableObjects(): Generator<PlaceableObject.Any>;
 
     /**
      * Track the set of PlaceableObjects on this layer which are currently controlled.
      */
-    get controlledObjects(): Map<string, Document.ConfiguredObjectInstanceForName<DocumentName>>;
+    get controlledObjects(): Map<string, Document.ObjectFor<DocumentName>>;
 
     /**
      * Track the PlaceableObject on this layer which is currently hovered upon.
      */
-    get hover(): Document.ConfiguredObjectInstanceForName<DocumentName> | null;
+    get hover(): Document.ObjectFor<DocumentName> | null;
 
     set hover(object);
 
@@ -181,9 +179,7 @@ declare global {
      * Draw a single placeable object
      * @param document - The Document instance used to create the placeable object
      */
-    createObject(
-      document: Document.ConfiguredInstanceForName<DocumentName>,
-    ): Document.ConfiguredObjectInstanceForName<DocumentName>;
+    createObject(document: Document.ImplementationFor<DocumentName>): Document.ObjectFor<DocumentName>;
 
     protected override _tearDown(options: HandleEmptyObject<PlaceablesLayer.TearDownOptions>): Promise<void>;
 
@@ -202,7 +198,7 @@ declare global {
      * @param objectId - The ID of the contained object to retrieve
      * @returns The object instance, or undefined
      */
-    get(objectId: string): Document.ConfiguredObjectInstanceForName<DocumentName> | undefined;
+    get(objectId: string): Document.ObjectFor<DocumentName> | undefined;
 
     /**
      * Acquire control over all PlaceableObject instances which are visible and controllable within the layer.
@@ -213,7 +209,7 @@ declare global {
      */
     controlAll(
       options?: PlaceableObject.ControlOptions, // not:null (property set on it without checks)
-    ): Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    ): Document.ObjectFor<DocumentName>[];
 
     /**
      * Release all controlled PlaceableObject instance from this layer.
@@ -237,12 +233,8 @@ declare global {
      * @throws If both `options.angle` and `options.delta` are nullish
      * @remarks Overload is necessary to ensure that one of `angle` or `delta` are numeric in `options`, as neither has a parameter default
      */
-    rotateMany(
-      options: PlaceablesLayer.RotateManyOptionsWithAngle,
-    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]>;
-    rotateMany(
-      options: PlaceablesLayer.RotateManyOptionsWithDelta,
-    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]>;
+    rotateMany(options: PlaceablesLayer.RotateManyOptionsWithAngle): Promise<Document.ObjectFor<DocumentName>[]>;
+    rotateMany(options: PlaceablesLayer.RotateManyOptionsWithDelta): Promise<Document.ObjectFor<DocumentName>[]>;
 
     /**
      * Simultaneously move multiple PlaceableObjects via keyboard movement offsets.
@@ -255,7 +247,7 @@ declare global {
      */
     moveMany(
       options?: PlaceablesLayer.MoveManyOptions, // not:null (destructured)
-    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[]> | undefined;
+    ): Promise<Document.ObjectFor<DocumentName>[]> | undefined;
 
     /**
      * An internal helper method to identify the array of PlaceableObjects which can be moved or rotated.
@@ -268,13 +260,13 @@ declare global {
     protected _getMovableObjects(
       ids?: string[] | null,
       includeLocked?: boolean | null,
-    ): Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    ): Document.ObjectFor<DocumentName>[];
 
     /**
      * Undo a change to the objects in this layer
      * This method is typically activated using CTRL+Z while the layer is active
      */
-    undoHistory(): Promise<Document.ConfiguredInstanceForName<DocumentName>[]>;
+    undoHistory(): Promise<Document.ImplementationFor<DocumentName>[]>;
 
     /**
      * A helper method to prompt for deletion of all PlaceableObject instances within the Scene
@@ -301,7 +293,7 @@ declare global {
      * @returns The Array of copied PlaceableObject instances
      * @remarks If the current layer doesn't allow objects to be controlled, copies the hovered object.
      */
-    copyObjects(): Document.ConfiguredObjectInstanceForName<DocumentName>[];
+    copyObjects(): Document.ObjectFor<DocumentName>[];
 
     /**
      * Paste currently copied PlaceableObjects back to the layer by creating new copies
@@ -312,7 +304,7 @@ declare global {
     pasteObjects(
       position: Canvas.Point,
       options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
-    ): Promise<Document.ConfiguredInstanceForName<DocumentName>[]>;
+    ): Promise<Document.ImplementationFor<DocumentName>[]>;
 
     /**
      * Get the data of the copied object pasted at the position given by the offset.
@@ -323,10 +315,10 @@ declare global {
      * @returns The update data
      */
     protected _pasteObject(
-      copy: Document.ConfiguredObjectInstanceForName<DocumentName>,
+      copy: Document.ObjectFor<DocumentName>,
       offset: Canvas.Point,
       options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
-    ): Document.ConfiguredSourceForName<DocumentName>;
+    ): Omit<Document.ImplementationFor<DocumentName>["_source"], "_id">;
 
     /**
      * Select all PlaceableObject instances which fall within a coordinate rectangle.
@@ -354,13 +346,11 @@ declare global {
      */
     updateAll(
       transformation:
-        | ((
-            placeable: Document.ConfiguredObjectInstanceForName<DocumentName>,
-          ) => Document.UpdateDataForName<DocumentName>)
+        | ((placeable: Document.ObjectFor<DocumentName>) => Document.UpdateDataForName<DocumentName>)
         | Document.UpdateDataForName<DocumentName>,
-      condition?: ((placeable: Document.ConfiguredObjectInstanceForName<DocumentName>) => boolean) | null,
+      condition?: ((placeable: Document.ObjectFor<DocumentName>) => boolean) | null,
       options?: PlaceablesLayer.UpdateAllOptions<DocumentName>, // not:null (updateEmbeddedDocuments tries to set `parent` on it)
-    ): Promise<Array<Document.ConfiguredInstanceForName<DocumentName>>>;
+    ): Promise<Array<Document.ImplementationFor<DocumentName>>>;
 
     /**
      * Get the world-transformed drop position.
@@ -379,13 +369,13 @@ declare global {
      * @remarks Returns a temporary (`new PlaceableDocument()`) document
      */
     protected _createPreview(
-      createData: Document.ConstructorDataFor<Document.ConfiguredClassForName<DocumentName>>,
+      createData: Document.CreateDataForName<DocumentName>,
       options?: PlaceablesLayer.CreatePreviewOptions, // not:null (destructured)
-    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>>;
+    ): Promise<Document.ObjectFor<DocumentName>>;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
-    protected override _canDragLeftStart(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
+    protected override _canDragLeftStart(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
@@ -399,9 +389,7 @@ declare global {
 
     /** @privateRemarks `void` added to return union for TokenLayer reasons */
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    protected override _onMouseWheel(
-      event: WheelEvent,
-    ): Promise<Document.ConfiguredObjectInstanceForName<DocumentName>[] | void>;
+    protected override _onMouseWheel(event: WheelEvent): Promise<Document.ObjectFor<DocumentName>[] | void>;
 
     protected override _onDeleteKey(event: KeyboardEvent): Promise<void>;
 
@@ -424,14 +412,17 @@ declare global {
     set _highlight(state);
   }
 
+  /** @deprecated {@link PlaceablesLayer.LayerOptions | `PlaceablesLayer.LayerOptions`} */
+  export import PlaceablesLayerOptions = PlaceablesLayer.LayerOptions;
+
   namespace PlaceablesLayer {
     interface Any extends AnyPlaceablesLayer {}
     interface AnyConstructor extends Identity<typeof AnyPlaceablesLayer> {}
 
     type DocumentNames = Document.PlaceableType;
 
-    /** @privateRemarks Only used in types in `CanvasDocument#layer` */
-    type ConfiguredClassForName<Name extends DocumentNames> = CONFIG[Name]["layerClass"];
+    type ImplementationClassFor<Name extends DocumentNames> = CONFIG[Name]["layerClass"];
+    type ImplementationFor<Name extends DocumentNames> = FixedInstanceType<CONFIG[Name]["layerClass"]>;
 
     interface DrawOptions extends InteractionLayer.DrawOptions {}
 
@@ -447,10 +438,8 @@ declare global {
       COMPLETED: 3 & CREATION_STATES;
     }
 
-    /**
-     * @typeParam DocumentName - The key of the configuration which defines the object and document class.
-     */
-    interface LayerOptions<DocumentName extends DocumentNames> extends InteractionLayer.LayerOptions {
+    interface LayerOptions<ConcretePlaceable extends PlaceableObject.AnyConstructor>
+      extends InteractionLayer.LayerOptions {
       baseClass: typeof PlaceablesLayer;
 
       /**
@@ -475,7 +464,7 @@ declare global {
        * The class used to represent an object on this layer.
        * @defaultValue `CONFIG[this.documentName]?.objectClass`
        */
-      objectClass: Document.ConfiguredObjectClassForName<DocumentName>;
+      objectClass: ConcretePlaceable;
 
       /**
        * Does this layer use a quadtree to track object positions?
@@ -574,12 +563,8 @@ declare global {
     /** @privateRemarks Handled like this rather than an interface mapping to avoid extraneous type calculation */
     type HistoryDataFor<Operation extends Document.Database.Operation, DocumentName extends DocumentNames> =
       | (Operation extends "create" ? { _id: string } : never)
-      | (Operation extends "update"
-          ? Document.UpdateDataFor<Document.ConfiguredClassForName<DocumentName>> & { _id: string }
-          : never)
-      | (Operation extends "delete"
-          ? Document.ConstructorDataFor<Document.ConfiguredClassForName<DocumentName>> & { _id: string }
-          : never);
+      | (Operation extends "update" ? Document.UpdateDataForName<DocumentName> & { _id: string } : never)
+      | (Operation extends "delete" ? Document.CreateDataForName<DocumentName> & { _id: string } : never);
 
     type HistoryEntry<DocumentName extends DocumentNames> =
       | { type: "create"; data: HistoryDataFor<"create", DocumentName>[] }
@@ -647,9 +632,8 @@ declare global {
 
     interface SelectObjectsAdditionalOptions extends _SelectObjectAdditionalOptions {}
 
-    // TODO: revisit this after docs v2
     type UpdateAllOptions<DocumentName extends DocumentNames> = IntentionalPartial<
-      Document.Database.OperationOf<DocumentName, "update">
+      Document.UpdateDataForName<DocumentName>
     >;
 
     /** @internal */
@@ -689,5 +673,5 @@ declare global {
 }
 
 declare abstract class AnyPlaceablesLayer extends PlaceablesLayer<PlaceablesLayer.DocumentNames> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

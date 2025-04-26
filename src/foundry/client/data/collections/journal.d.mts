@@ -1,21 +1,24 @@
 import type { InexactPartial, Identity } from "fvtt-types/utils";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
    * The singleton collection of JournalEntry documents which exist within the active World.
    * This Collection is accessible within the Game object as game.journal.
    *
-   * @see {@link JournalEntry} The JournalEntry document
-   * @see {@link JournalDirectory} The JournalDirectory sidebar directory
+   * @see {@link JournalEntry | `JournalEntry`} The JournalEntry document
+   * @see {@link JournalDirectory | `JournalDirectory`} The JournalDirectory sidebar directory
    */
-  class Journal extends WorldCollection<typeof foundry.documents.BaseJournalEntry, "Journal"> {
+  class Journal extends WorldCollection<JournalEntry.ImplementationClass, "Journal"> {
     static documentName: "JournalEntry";
 
     /**
      * Display a dialog which prompts the user to show a JournalEntry or JournalEntryPage to other players.
      * @param doc - The JournalEntry or JournalEntryPage to show.
      */
-    static showDialog<T extends JournalEntry | JournalEntryPage>(doc: T): Promise<T | void>;
+    static showDialog<T extends JournalEntry.Implementation | JournalEntryPage.Implementation>(
+      doc: T,
+    ): Promise<T | void>;
 
     /**
      * Show the JournalEntry or JournalEntryPage to connected players.
@@ -26,7 +29,7 @@ declare global {
      * @returns A Promise that resolves back to the shown document once the request is processed.
      * @throws If the user does not own the document they are trying to show.
      */
-    static show<T extends JournalEntry | JournalEntryPage>(
+    static show<T extends JournalEntry.Implementation | JournalEntryPage.Implementation>(
       doc: T,
       options?: InexactPartial<{
         /**
@@ -49,7 +52,7 @@ declare global {
 
     /**
      * Open Socket listeners which transact JournalEntry data
-     * @remarks This is not marked as protected because it is used in {@link Game#activateSocketListeners}
+     * @remarks This is not marked as protected because it is used in {@link Game.activateSocketListeners | `Game#activateSocketListeners`}
      */
     protected static _activateSocketListeners(socket: io.Socket): void;
 
@@ -65,9 +68,12 @@ declare global {
   namespace Journal {
     interface Any extends AnyJournal {}
     interface AnyConstructor extends Identity<typeof AnyJournal> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"JournalEntry"> {}
+    interface Configured extends Document.ConfiguredCollection<"JournalEntry"> {}
   }
 }
 
 declare abstract class AnyJournal extends Journal {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -5,13 +5,13 @@ import type { DataModelValidationFailure } from "../data/validation-failure.d.mt
 
 type DataSchema = foundry.data.fields.DataSchema;
 
-declare const DynamicClass: new <_Computed extends object>(arg0: never, ...args: never[]) => _Computed;
+declare const DynamicClass: new <_Computed extends object>(...args: never) => _Computed;
 
 // @ts-expect-error - This is a workaround to allow for dynamic top level properties in a class.
 declare class _InternalDataModel<
   out Schema extends DataSchema,
   // Do not inline. Being a type parameter is an important part of the circumvention of TypeScript's detection of dynamic classes.
-  out _Computed extends object = SchemaField.InnerInitializedType<Schema>,
+  out _Computed extends object = SchemaField.InitializedData<Schema>,
 > extends DynamicClass<_Computed> {}
 
 export default DataModel;
@@ -30,11 +30,16 @@ declare abstract class DataModel<
    *                  will be owned by the constructed model instance and may be mutated.
    * @param options - Options which affect DataModel construction
    */
-  // TODO(LukeAbby): Make only optional if `{}` is assignable to `InnerAssignmentType`.
-  constructor(
-    data?: DataModel.ConstructorData<Schema>,
-    { parent, strict, ...options }?: DataModel.DataValidationOptions<Parent> & ExtraConstructorOptions,
-  );
+  constructor(...args: DataModel.ConstructorArgs<Schema, Parent>);
+
+  /** @internal */
+  " __fvtt_types_internal_source_data": SchemaField.SourceData<Schema>;
+
+  /** @internal */
+  " __fvtt_types_internal_assignment_data": SchemaField.AssignmentData<Schema>;
+
+  /** @internal */
+  " __fvtt_types_internal_initialized_data": SchemaField.InitializedData<Schema>;
 
   /**
    * Configure the data model instance before validation and initialization workflows are performed.
@@ -45,7 +50,7 @@ declare abstract class DataModel<
    * The source data object for this DataModel instance.
    * Once constructed, the source object is sealed such that no keys may be added nor removed.
    */
-  readonly _source: Readonly<fields.SchemaField.InnerPersistedType<Schema>>;
+  readonly _source: Readonly<fields.SchemaField.SourceData<Schema>>;
 
   /**
    * The defined and cached Data Schema for all instances of this DataModel.
@@ -103,9 +108,9 @@ declare abstract class DataModel<
    * @returns Migrated and cleaned source data which will be stored to the model instance
    */
   protected _initializeSource(
-    data: fields.SchemaField.InnerConstructorType<Schema> | this,
+    data: fields.SchemaField.CreateData<Schema> | this,
     options?: Omit<DataModel.DataValidationOptions, "parent">,
-  ): fields.SchemaField.InnerPersistedType<Schema>;
+  ): fields.SchemaField.SourceData<Schema>;
 
   /**
    * Clean a data source object to conform to a specific provided schema.
@@ -113,7 +118,7 @@ declare abstract class DataModel<
    * @param options - Additional options which are passed to field cleaning methods
    * @returns The cleaned source data
    */
-  static cleanData(source?: object, options?: Parameters<SchemaField.Any["clean"]>[1]): object;
+  static cleanData(source?: AnyMutableObject, options?: Parameters<SchemaField.Any["clean"]>[1]): AnyMutableObject;
 
   /**
    * A generator that orders the DataFields in the DataSchema into an expected initialization order.
@@ -139,7 +144,7 @@ declare abstract class DataModel<
    * @param context - Context options passed to the data model constructor
    * @returns The cloned Document instance
    */
-  clone(data?: fields.SchemaField.InnerAssignmentType<Schema>, context?: DataModel.DataValidationOptions<Parent>): this;
+  clone(data?: fields.SchemaField.AssignmentData<Schema>, context?: DataModel.DataValidationOptions<Parent>): this;
 
   /**
    * Validate the data contained in the document to check for type and content
@@ -148,60 +153,7 @@ declare abstract class DataModel<
    * @param options - Optional parameters which customize how validation occurs.
    * @returns An indicator for whether the document contains valid data
    */
-  validate({
-    changes,
-    clean,
-    fallback,
-    strict,
-    fields,
-    joint,
-  }?: {
-    /**
-     * A specific set of proposed changes to validate, rather than the full source data of the model.
-     */
-    changes?: fields.SchemaField.InnerAssignmentType<Schema>;
-
-    /**
-     * If changes are provided, attempt to clean the changes before validating them?
-     * @defaultValue `false`
-     */
-    clean?: boolean;
-
-    /**
-     * Allow replacement of invalid values with valid defaults?
-     * @defaultValue `false`
-     */
-    fallback?: boolean;
-
-    /**
-     * If true, invalid embedded documents will emit a warning and
-     * be placed in the invalidDocuments collection rather than
-     * causing the parent to be considered invalid.
-     * @defaultValue `false`
-     */
-    dropInvalidEmbedded: boolean;
-
-    /**
-     * Throw if an invalid value is encountered, otherwise log a warning?
-     * @defaultValue `true`
-     */
-    strict?: boolean;
-
-    /**
-     * Perform validation on individual fields?
-     * @defaultValue `true`
-     */
-    fields?: boolean;
-
-    /**
-     * Perform joint validation on the full data model?
-     * Joint validation will be performed by default if no changes are passed.
-     * Joint validation will be disabled by default if changes are passed.
-     * Joint validation can be performed on a complete set of changes (for
-     * example testing a complete data model) by explicitly passing true.
-     */
-    joint?: boolean;
-  }): boolean;
+  validate({ changes, clean, fallback, strict, fields, joint }?: DataModel.ValidateOptions<Schema>): boolean;
 
   /**
    * Evaluate joint validation rules which apply validation conditions across multiple fields of the model.
@@ -210,14 +162,13 @@ declare abstract class DataModel<
    * @param data - Candidate data for the model
    * @throws An error if a validation failure is detected
    */
-  // TODO(LukeAbby): Should be SourceType
-  static validateJoint(data: Record<string, unknown>): void;
+  static validateJoint(data: never): void;
 
   /**
    * @deprecated since v11; Use the validateJoint static method instead.
    */
   // TODO(LukeAbby): Should be SourceType
-  protected _validateModel(data: fields.SchemaField.InnerAssignmentType<Schema>): void;
+  protected _validateModel(data: fields.SchemaField.SourceData<Schema>): void;
 
   /**
    * Update the DataModel locally by applying an object of changes to its source data.
@@ -229,11 +180,10 @@ declare abstract class DataModel<
    * @param options - Options which determine how the new data is merged
    * @returns An object containing the changed keys and values
    */
-  // TODO(LukeAbby): Should be SourceType
   updateSource(
-    changes?: fields.SchemaField.InnerAssignmentType<Schema>,
-    options?: { dryRun?: boolean; fallback?: boolean; recursive?: boolean },
-  ): object;
+    changes?: fields.SchemaField.UpdateData<Schema>,
+    options?: DataModel.UpdateSourceOptions,
+  ): fields.SchemaField.UpdateData<Schema>;
 
   /**
    * Update the source data for a specific DataSchema.
@@ -276,42 +226,32 @@ declare abstract class DataModel<
    *                 (default: `true`)
    * @returns The extracted primitive object
    */
-  toObject(source: true): fields.SchemaField.InnerPersistedType<Schema>;
-  toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+  toObject<Source extends boolean | undefined>(
+    source?: Source,
+  ): Source extends false ? SchemaField.SourceData<Schema> : Readonly<SchemaField.SourceData<Schema>>;
 
   /**
    * Extract the source data for the DataModel into a simple object format that can be serialized.
    * @returns The document source data expressed as a plain object
    */
-  toJSON(): fields.SchemaField.InnerPersistedType<Schema>;
+  toJSON(): fields.SchemaField.SourceData<Schema>;
 
   /**
    * Create a new instance of this DataModel from a source record.
    * The source is presumed to be trustworthy and is not strictly validated.
    * @param source  - Initial document data which comes from a trusted source.
    * @param context - Model construction context
-   * @remarks The generic parameters should fit the DataModel implementation that this method is called on.
+   * @remarks Returns `new this()` so needs an override per subclass.
    */
-  static fromSource<Schema extends DataSchema>(
-    source: fields.SchemaField.InnerAssignmentType<Schema>,
-    {
-      strict,
-      ...context
-    }?: DataModel.DataValidationOptions & {
-      /**
-       * Models created from trusted source data are validated non-strictly
-       * @defaultValue `false`
-       */
-      strict?: boolean;
-    },
-  ): DataModel<Schema, DataModel.Any | null>;
+  static fromSource(source: never, { strict, ...context }?: DataModel.FromSourceOptions): DataModel.Any;
 
   /**
    * Create a DataModel instance using a provided serialized JSON string.
    * @param json - Serialized document data in string format
    * @returns A constructed data model instance
+   * @remarks Returns `new this()` so needs an override per subclass.
    */
-  static fromJSON(json: string): ReturnType<(typeof DataModel)["fromSource"]>;
+  static fromJSON(json: string): DataModel.Any;
 
   /**
    * Migrate candidate source data for this DataModel which may require initial cleaning or transformations.
@@ -334,26 +274,33 @@ declare abstract class DataModel<
    * @param options - Additional shimming options
    * @returns Data with added backwards-compatible properties
    */
-  static shimData(
-    data: object,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): object;
+  // options: not null (destructured)
+  static shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 }
 
 declare namespace DataModel {
-  type ConstructorData<Schema extends DataSchema> =
-    | fields.SchemaField.InnerAssignmentType<Schema>
-    | DataModel<Schema, any>;
+  type CreateData<Schema extends DataSchema> = fields.SchemaField.AssignmentData<Schema> | DataModel<Schema, any>;
 
-  type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = ConstructorData<SchemaOf<ConcreteDataModel>>;
+  type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = CreateData<SchemaOf<ConcreteDataModel>>;
 
-  interface DataValidationOptions<Parent extends Any | null = null> {
+  // TODO(LukeAbby): Make optional only if `{}` is assignable to `AssignmentData`.
+  type ConstructorArgs<Schema extends DataSchema, Parent extends DataModel.Any | null = null> = [
+    data?: DataModel.CreateData<Schema>,
+
+    // Note(LukeAbby): `{ parent, strict, ...options }`
+    options?: DataModel.DataValidationOptions<Parent>,
+  ];
+  /**
+   * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
+   *
+   * `UnknownDataModel` covers the case where it's configured with a {@link DataModel | `DataModel`}.
+   * Using a {@link TypeDataModel | `TypeDataModel`} is recommended by Foundry but a {@link DataModel | `DataModel`} is
+   * always possible.
+   * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
+   */
+  interface UnknownDataModel extends DataModel<any, any, any> {}
+
+  interface DataValidationOptions<Parent extends Any | null = Any | null> {
     /**
      * Throw an error if validation fails.
      * @defaultValue `true`
@@ -394,7 +341,7 @@ declare namespace DataModel {
   interface AnyConstructor extends Identity<typeof AnyDataModel> {}
 
   /**
-   * A helper type to extract the {@link SchemaOf} from a {@link DataModel}.
+   * A helper type to extract the schema from a {@link DataModel | `DataModel`}.
    * @typeParam ModelType - the DataModel for the embedded data
    */
   type SchemaOf<ModelType extends DataModel.Any> = ModelType["schema"]["fields"];
@@ -404,8 +351,7 @@ declare namespace DataModel {
   // EmbeddedDataField<typeof DataModel<{}>> extends SchemaField<infer SubSchema> ? SubSchema : never
   // ```
   type SchemaOfClass<ConcreteClass extends DataModel.AnyConstructor> = ConcreteClass extends abstract new (
-    arg0: never,
-    ...args: never[]
+    ...args: infer _1
   ) => { schema: { fields: infer Fields extends DataSchema } }
     ? Fields
     : never;
@@ -420,11 +366,81 @@ declare namespace DataModel {
     _diff: Record<string, unknown>;
     _backup: Record<string, unknown>;
   }
+
+  interface FromSourceOptions extends DataModel.DataValidationOptions {
+    /**
+     * Models created from trusted source data are validated non-strictly
+     * @defaultValue `false`
+     */
+    strict?: boolean;
+  }
+
+  interface ShimDataOptions {
+    /**
+     * Apply shims to embedded models?
+     * @defaultValue `true`
+     */
+    embedded?: boolean;
+  }
+
+  interface ValidateOptions<Schema extends DataSchema> {
+    /**
+     * A specific set of proposed changes to validate, rather than the full source data of the model.
+     */
+    changes?: fields.SchemaField.AssignmentData<Schema>;
+
+    /**
+     * If changes are provided, attempt to clean the changes before validating them?
+     * @defaultValue `false`
+     */
+    clean?: boolean;
+
+    /**
+     * Allow replacement of invalid values with valid defaults?
+     * @defaultValue `false`
+     */
+    fallback?: boolean;
+
+    /**
+     * If true, invalid embedded documents will emit a warning and
+     * be placed in the invalidDocuments collection rather than
+     * causing the parent to be considered invalid.
+     * @defaultValue `false`
+     */
+    dropInvalidEmbedded: boolean;
+
+    /**
+     * Throw if an invalid value is encountered, otherwise log a warning?
+     * @defaultValue `true`
+     */
+    strict?: boolean;
+
+    /**
+     * Perform validation on individual fields?
+     * @defaultValue `true`
+     */
+    fields?: boolean;
+
+    /**
+     * Perform joint validation on the full data model?
+     * Joint validation will be performed by default if no changes are passed.
+     * Joint validation will be disabled by default if changes are passed.
+     * Joint validation can be performed on a complete set of changes (for
+     * example testing a complete data model) by explicitly passing true.
+     */
+    joint?: boolean;
+  }
+
+  interface UpdateSourceOptions {
+    dryRun?: boolean;
+    fallback?: boolean;
+    recursive?: boolean;
+  }
 }
 
 // This uses `any` because `Schema` and `Parent` are invariant
-declare abstract class AnyDataModel extends DataModel<DataSchema, DataModel.Any | null, AnyObject> {
-  constructor(arg0: never, ...args: never[]);
+declare abstract class AnyDataModel extends DataModel<DataSchema, any, AnyObject> {
+  constructor(...args: never);
 }
 
 // Matches foundry exporting class as both default and non-default

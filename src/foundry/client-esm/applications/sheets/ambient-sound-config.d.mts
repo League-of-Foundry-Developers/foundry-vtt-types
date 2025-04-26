@@ -9,16 +9,17 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
 declare class AmbientSoundConfig<
   RenderContext extends AnyObject = InterfaceToObject<AmbientSoundConfig.RenderContext>,
   Configuration extends
-    DocumentSheetV2.Configuration<AmbientSoundDocument.ConfiguredInstance> = DocumentSheetV2.Configuration<AmbientSoundDocument.ConfiguredInstance>,
+    DocumentSheetV2.Configuration<AmbientSoundDocument.Implementation> = DocumentSheetV2.Configuration<AmbientSoundDocument.Implementation>,
   RenderOptions extends
     HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
-  AmbientSoundDocument.ConfiguredInstance,
+  AmbientSoundDocument.Implementation,
   RenderContext,
   Configuration,
   RenderOptions
 > {
-  static override DEFAULT_OPTIONS: DeepPartial<DocumentSheetV2.Configuration<AmbientSoundDocument.ConfiguredInstance>>;
+  static override DEFAULT_OPTIONS: object &
+    DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<AmbientSoundDocument.Implementation>>;
 
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
@@ -41,7 +42,7 @@ declare class AmbientSoundConfig<
 
 declare namespace AmbientSoundConfig {
   interface RenderContext {
-    sound: AmbientSoundDocument.ConfiguredInstance;
+    sound: AmbientSoundDocument.Implementation;
     source: foundry.documents.BaseAmbientSound.Source;
     fields: foundry.documents.BaseAmbientSound.Schema;
     gridUnits: string;

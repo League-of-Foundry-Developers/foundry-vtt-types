@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(TextureExtractor.COMPRESSION_MODES.BASE64).toMatchTypeOf<TextureExtractor.COMPRESSION_MODES>();
+expectTypeOf(TextureExtractor.COMPRESSION_MODES.BASE64).toExtend<TextureExtractor.COMPRESSION_MODES>();
 
 declare const someRenderer: PIXI.Renderer;
 const myTE = new TextureExtractor(someRenderer, {

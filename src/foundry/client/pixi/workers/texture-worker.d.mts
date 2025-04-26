@@ -91,7 +91,7 @@ declare global {
       controlHash?: boolean;
     }>;
 
-    /** Options for the {@link TextureCompressor} constructor */
+    /** Options for the {@link TextureCompressor | `TextureCompressor`} constructor */
     interface ConstructorOptions extends _ConstructorOptions {}
 
     interface CompressBase64Options extends _ProcessBufferToBase64Options, Debug {}
@@ -101,5 +101,5 @@ declare global {
 }
 
 declare abstract class AnyTextureCompressor extends TextureCompressor {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

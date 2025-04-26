@@ -1,10 +1,8 @@
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as CONST from "../constants.mts";
-import type { TextureData } from "../data/data.mts";
-import type * as fields from "../data/fields.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Document definition for a Tile.
@@ -13,191 +11,316 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
+declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the Tile
+   * @param data    - Initial data from which to construct the `BaseTile`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseTile` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link TileDocument.implementation | `new TileDocument.implementation(...)`} instead which will give you
+   * a system specific implementation of `TileDocument`.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseTile.ConstructorData, context?: Document.ConstructionContext<BaseTile.Parent>);
+  constructor(...args: TileDocument.ConstructorArgs);
 
-  override parent: BaseTile.Parent;
-
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Tile",
+   *   collection: "tiles",
+   *   label: "DOCUMENT.Tile",
+   *   labelPlural: "DOCUMENT.Tiles",
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseTile.Metadata;
 
   static override defineSchema(): BaseTile.Schema;
 
-  static override migrateData(source: AnyObject): AnyObject;
+  /**
+   * @remarks Migrates:
+   * - `z` to `sort`
+   * - `roof` to `restrictions.light` and `restrictions.weather`
+   */
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
-  static override shimData(
+  /**
+   * @remarks Shims:
+   * - `z` to `sort` since v12, until v14
+   */
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "You are accessing `roof` which has been migrated to `restrictions.{light|weather}`"
+   *
+   * Getter returns `this.restrictions.light && this.restrictions.weather`, setter sets both
+   */
+  set roof(value: boolean);
+
+  get roof();
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "You are accessing `z` which has been migrated to `sort`"
+   */
+  get z(): this["sort"];
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "`BaseTile#overhead` is deprecated."
+   *
+   * Returns `this.elevation >= this.parent?.foregroundElevation`
+   */
+  get overhead(): boolean;
+
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
+   */
+
+  /* Document overrides */
+
+  static " fvtt_types_internal_document_name_static": "Tile";
+
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: TileDocument.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static override get implementation(): TileDocument.ImplementationClass;
+
+  static get baseDocument(): typeof BaseTile;
+
+  static get collectionName(): TileDocument.ParentCollectionName;
+
+  static get documentName(): TileDocument.Name;
+
+  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+
+  static get hasTypeData(): undefined;
+
+  static get hierarchy(): TileDocument.Hierarchy;
+
+  override parent: TileDocument.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined = false>(
+    data: Array<TileDocument.Implementation | TileDocument.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<TileDocument.Database.Create<Temporary>>,
+  ): Promise<Array<Document.TemporaryIf<TileDocument.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: TileDocument.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<TileDocument.Database.Update>,
+  ): Promise<TileDocument.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteDocumentsOperation<TileDocument.Database.Delete>,
+  ): Promise<TileDocument.Implementation[]>;
+
+  static override create<Temporary extends boolean | undefined = false>(
+    data: TileDocument.CreateData | TileDocument.CreateData[],
+    operation?: TileDocument.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<TileDocument.Implementation, Temporary> | undefined>;
+
+  override update(
+    data: TileDocument.UpdateData | undefined,
+    operation?: TileDocument.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: TileDocument.Database.DeleteOperation): Promise<this | undefined>;
+
+  static get(documentId: string, options?: TileDocument.Database.GetOptions): TileDocument.Implementation | null;
+
+  static override getCollectionName(name: string): null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends TileDocument.Flags.Scope, Key extends TileDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<TileDocument.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends TileDocument.Flags.Scope,
+    Key extends TileDocument.Flags.Key<Scope>,
+    Value extends Document.GetFlag<TileDocument.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends TileDocument.Flags.Scope, Key extends TileDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
+
+  protected _preCreate(
+    data: TileDocument.CreateData,
+    options: TileDocument.Database.PreCreateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(
+    data: TileDocument.CreateData,
+    options: TileDocument.Database.OnCreateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preCreateOperation(
+    documents: TileDocument.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<TileDocument.Database.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: TileDocument.Implementation[],
+    operation: TileDocument.Database.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: TileDocument.UpdateData,
+    options: TileDocument.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: TileDocument.UpdateData,
+    options: TileDocument.Database.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: TileDocument.Implementation[],
+    operation: TileDocument.Database.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: TileDocument.Implementation[],
+    operation: TileDocument.Database.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: TileDocument.Database.PreDeleteOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: TileDocument.Database.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: TileDocument.Implementation[],
+    operation: TileDocument.Database.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
     data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
+
+  protected static _onDeleteOperation(
+    documents: TileDocument.Implementation[],
+    operation: TileDocument.Database.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected static _onCreateDocuments(
+    documents: TileDocument.Implementation[],
+    context: Document.ModificationContext<TileDocument.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: TileDocument.Implementation[],
+    context: Document.ModificationContext<TileDocument.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: TileDocument.Implementation[],
+    context: Document.ModificationContext<TileDocument.Parent>,
+  ): Promise<void>;
+
+  /* DataModel overrides */
+
+  protected static _schema: SchemaField<TileDocument.Schema>;
+
+  static get schema(): SchemaField<TileDocument.Schema>;
+
+  static validateJoint(data: TileDocument.Source): void;
+
+  static override fromSource(
+    source: TileDocument.CreateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): TileDocument.Implementation;
+
+  static override fromJSON(json: string): TileDocument.Implementation;
 }
 
 export default BaseTile;
 
 declare namespace BaseTile {
-  type Parent = Scene.ConfiguredInstance | null;
+  export import Name = TileDocument.Name;
+  export import ConstructorArgs = TileDocument.ConstructorArgs;
+  export import Hierarchy = TileDocument.Hierarchy;
+  export import Metadata = TileDocument.Metadata;
+  export import Parent = TileDocument.Parent;
+  export import Descendant = TileDocument.Descendant;
+  export import DescendantClass = TileDocument.DescendantClass;
+  export import Pack = TileDocument.Pack;
+  export import Embedded = TileDocument.Embedded;
+  export import ParentCollectionName = TileDocument.ParentCollectionName;
+  export import CollectionClass = TileDocument.CollectionClass;
+  export import Collection = TileDocument.Collection;
+  export import Invalid = TileDocument.Invalid;
+  export import Stored = TileDocument.Stored;
+  export import Source = TileDocument.Source;
+  export import PersistedData = TileDocument.PersistedData;
+  export import CreateData = TileDocument.CreateData;
+  export import InitializedData = TileDocument.InitializedData;
+  export import UpdateData = TileDocument.UpdateData;
+  export import Schema = TileDocument.Schema;
+  export import DatabaseOperation = TileDocument.Database;
+  export import Flags = TileDocument.Flags;
+  export import CoreFlags = TileDocument.CoreFlags;
 
-  type Metadata = Document.MetadataFor<BaseTile>;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
-  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
-  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
-  type Source = fields.SchemaField.InnerPersistedType<Schema>;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseTileDocument.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this Tile embedded document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * An image or video texture which this tile displays.
-     * @defaultValue `null`
-     */
-    texture: TextureData<{ categories: ("IMAGE" | "VIDEO")[]; initial: null; wildcard: false }>;
-
-    /**
-     * The pixel width of the tile
-     */
-    width: fields.NumberField<{
-      required: true;
-      min: 0;
-      nullable: false;
-      step: 0.1;
-    }>;
-
-    /**
-     * The pixel height of the tile
-     */
-    height: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }>;
-
-    /**
-     * The x-coordinate position of the top-left corner of the tile
-     * @defaultValue `0`
-     */
-    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
-
-    /**
-     * The y-coordinate position of the top-left corner of the tile
-     * @defaultValue `0`
-     */
-    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
-
-    /**
-     * The elevation of the tile
-     * @defaultValue `0`
-     */
-    elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
-
-    /**
-     * How to sort this tile within its elevation
-     * @defaultValue `0`
-     */
-    sort: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
-
-    /**
-     * The angle of rotation for the tile between 0 and 360
-     * @defaultValue `0`
-     */
-    rotation: fields.AngleField;
-
-    /**
-     * The tile opacity
-     * @defaultValue `1`
-     */
-    alpha: fields.AlphaField;
-
-    /**
-     * Is the tile currently hidden?
-     * @defaultValue `false`
-     */
-    hidden: fields.BooleanField;
-
-    /**
-     * Is the tile currently locked?
-     * @defaultValue `false`
-     */
-    locked: fields.BooleanField;
-
-    /**
-     * Is the tile an overhead tile?
-     * @defaultValue `false`
-     */
-    overhead: fields.BooleanField;
-
-    /**
-     * Is the tile a roof?
-     * @defaultValue `false`
-     */
-    roof: fields.BooleanField;
-
-    /**
-     * The tile's occlusion settings
-     * @defaultValue see properties
-     */
-    occlusion: fields.SchemaField<{
-      /**
-       * The occlusion mode from CONST.TILE_OCCLUSION_MODES
-       * @defaultValue `1`
-       */
-      mode: fields.NumberField<{
-        choices: CONST.OCCLUSION_MODES[];
-        initial: typeof CONST.OCCLUSION_MODES.FADE;
-        validationError: "must be a value in CONST.TILE_OCCLUSION_MODES";
-      }>;
-
-      /**
-       * The occlusion alpha between 0 and 1
-       * @defaultValue `0`
-       */
-      alpha: fields.AlphaField<{ initial: 0 }>;
-
-      /**
-       * An optional radius of occlusion used for RADIAL mode
-       * @defaultValue `null`
-       */
-      radius: fields.NumberField<{ positive: true }>;
-    }>;
-
-    /**
-     * The tile's video settings
-     * @defaultValue see properties
-     */
-    video: fields.SchemaField<{
-      /**
-       * Automatically loop the video?
-       * @defaultValue `true`
-       */
-      loop: fields.BooleanField<{ initial: true }>;
-
-      /**
-       * Should the video play automatically?
-       * @defaultValue `true`
-       */
-      autoplay: fields.BooleanField<{ initial: true }>;
-
-      /**
-       * The volume level of any audio that the video file contains
-       * @defaultValue `0`
-       */
-      volume: fields.AlphaField<{ initial: 0; step: 0.01 }>;
-    }>;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"Tile">;
-  }
+  /**
+   * @deprecated {@link BaseTile.CreateData | `BaseTile.CreateData`}
+   */
+  type ConstructorData = BaseTile.CreateData;
 }

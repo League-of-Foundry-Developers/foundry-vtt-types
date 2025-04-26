@@ -13,7 +13,7 @@ expectTypeOf(MyRenderedSource.defaultData).toEqualTypeOf<RenderedEffectSource.So
 
 expectTypeOf(
   MyRenderedSource.getCorrectedLevel(CONST.LIGHTING_LEVELS.BRIGHT),
-).toMatchTypeOf<foundry.CONST.LIGHTING_LEVELS>();
+).toExtend<foundry.CONST.LIGHTING_LEVELS>();
 expectTypeOf(
   MyRenderedSource.getCorrectedColor(
     CONST.LIGHTING_LEVELS.HALFDARK,
@@ -152,6 +152,6 @@ const meshes = mySource.drawMeshes();
 expectTypeOf(mySource.active).toEqualTypeOf<boolean>();
 expectTypeOf(meshes.background?.visible).toEqualTypeOf<boolean | undefined>();
 
-//deprecated since v11, until v13
+// deprecated since v11, until v13
 expectTypeOf(mySource.preview).toBeBoolean();
 expectTypeOf((mySource.preview = false)).toBeBoolean();

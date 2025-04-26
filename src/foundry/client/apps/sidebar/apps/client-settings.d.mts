@@ -7,7 +7,7 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class SettingsConfig<
-    Options extends FormApplicationOptions = FormApplicationOptions,
+    Options extends FormApplication.Options = FormApplication.Options,
   > extends PackageConfiguration<Options> {
     /**
      * @defaultValue

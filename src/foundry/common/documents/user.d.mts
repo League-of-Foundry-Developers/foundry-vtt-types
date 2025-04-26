@@ -1,10 +1,9 @@
-import type { AnyObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyObject } from "fvtt-types/utils";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
-import type * as fields from "../data/fields.d.mts";
-import type BaseActor from "./actor.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The User Document.
@@ -13,17 +12,21 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseUser extends Document<"User", BaseUser.Schema, any> {
+declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the User
+   * @param data    - Initial data from which to construct the `BaseUser`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseUser` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link User.implementation | `new User.implementation(...)`} instead which will give you
+   * a system specific implementation of `User`.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseUser.ConstructorData, context?: BaseUser.Parent);
+  constructor(...args: User.ConstructorArgs);
 
-  override parent: BaseUser.Parent;
-
-  static override metadata: Readonly<Document.MetadataFor<BaseUser>>;
+  static override metadata: User.Metadata;
 
   static override defineSchema(): BaseUser.Schema;
 
@@ -61,7 +64,7 @@ declare class BaseUser extends Document<"User", BaseUser.Schema, any> {
    */
   can(action: keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES): boolean;
 
-  override getUserLevel(user?: User): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether the User has at least a specific permission
@@ -75,18 +78,7 @@ declare class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param role - The role name from USER_ROLES to test
    * @returns Does the user have at this role level (or greater)?
    */
-  hasRole(
-    role: CONST.USER_ROLE_NAMES | CONST.USER_ROLES,
-    {
-      exact,
-    }?: {
-      /**
-       * Require the role match to be exact
-       * @defaultValue `false`
-       */
-      exact?: boolean;
-    },
-  ): boolean;
+  hasRole(role: CONST.USER_ROLE_NAMES | CONST.USER_ROLES, { exact }?: User.HasRoleOptions): boolean;
 
   /**
    * Is a user able to create an existing User?
@@ -95,7 +87,7 @@ declare class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param data - The supplied creation data.
    * @internal
    */
-  static #canCreate(user: User, doc: BaseUser, data?: BaseUser.ConstructorData): boolean;
+  static #canCreate(user: User.Implementation, doc: BaseUser, data?: BaseUser.CreateData): boolean;
 
   /**
    * Is a user able to update an existing User?
@@ -104,7 +96,7 @@ declare class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param changes - Proposed changes.
    * @internal
    */
-  static #canUpdate(user: User, doc: BaseUser, changes: BaseUser.ConstructorData): boolean;
+  static #canUpdate(user: User.Implementation, doc: BaseUser, changes: BaseUser.CreateData): boolean;
 
   /**
    * Is a user able to delete an existing User?
@@ -113,128 +105,246 @@ declare class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param doc  - The User document being deleted.
    * @internal
    */
-  static #canDelete(user: User, doc: BaseUser): boolean;
+  static #canDelete(user: User.Implementation, doc: BaseUser): boolean;
+
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
+   */
+
+  /* Document overrides */
+
+  static " fvtt_types_internal_document_name_static": "User";
+
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: User.ParentCollectionName | null;
+
+  readonly pack: null;
+
+  static get implementation(): User.ImplementationClass;
+
+  static get baseDocument(): typeof BaseUser;
+
+  static get collectionName(): User.ParentCollectionName;
+
+  static get documentName(): User.Name;
+
+  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+
+  static get hasTypeData(): undefined;
+
+  static get hierarchy(): User.Hierarchy;
+
+  override parent: User.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined = false>(
+    data: Array<User.Implementation | User.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<User.Database.Create<Temporary>>,
+  ): Promise<Array<Document.TemporaryIf<User.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: User.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<User.Database.Update>,
+  ): Promise<User.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteDocumentsOperation<User.Database.Delete>,
+  ): Promise<User.Implementation[]>;
+
+  static override create<Temporary extends boolean | undefined = false>(
+    data: User.CreateData | User.CreateData[],
+    operation?: User.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<User.Implementation, Temporary> | undefined>;
+
+  override update(
+    data: User.UpdateData | undefined,
+    operation?: User.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: User.Database.DeleteOperation): Promise<this | undefined>;
+
+  static get(documentId: string, options?: User.Database.GetOptions): User.Implementation | null;
+
+  static override getCollectionName(name: string): null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends User.Flags.Scope, Key extends User.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<User.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends User.Flags.Scope,
+    Key extends User.Flags.Key<Scope>,
+    Value extends Document.GetFlag<User.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends User.Flags.Scope, Key extends User.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
+
+  protected _preCreate(
+    data: User.CreateData,
+    options: User.Database.PreCreateOptions,
+    user: User.Internal.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(data: User.CreateData, options: User.Database.OnCreateOperation, userId: string): void;
+
+  protected static _preCreateOperation(
+    documents: User.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<User.Database.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: User.Implementation[],
+    operation: User.Database.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: User.UpdateData,
+    options: User.Database.PreUpdateOptions,
+    user: User.Internal.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(changed: User.UpdateData, options: User.Database.OnUpdateOperation, userId: string): void;
+
+  protected static _preUpdateOperation(
+    documents: User.Implementation[],
+    operation: User.Database.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: User.Implementation[],
+    operation: User.Database.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: User.Database.PreDeleteOptions,
+    user: User.Internal.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: User.Database.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: User.Implementation[],
+    operation: User.Database.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: User.Implementation[],
+    operation: User.Database.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  static get hasSystemData(): undefined;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
+
+  protected static _onCreateDocuments(
+    documents: User.Implementation[],
+    context: Document.ModificationContext<User.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: User.Implementation[],
+    context: Document.ModificationContext<User.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: User.Implementation[],
+    context: Document.ModificationContext<User.Parent>,
+  ): Promise<void>;
+
+  /* DataModel overrides */
+
+  protected static _schema: SchemaField<User.Schema>;
+
+  static get schema(): SchemaField<User.Schema>;
+
+  static validateJoint(data: User.Source): void;
+
+  static override fromSource(
+    source: User.CreateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): User.Implementation;
+
+  static override fromJSON(json: string): User.Implementation;
 }
 
 export default BaseUser;
 
 declare namespace BaseUser {
-  type Parent = null;
+  export import Name = User.Name;
+  export import ConstructorArgs = User.ConstructorArgs;
+  export import Hierarchy = User.Hierarchy;
+  export import Metadata = User.Metadata;
+  export import Parent = User.Parent;
+  export import Descendant = User.Descendant;
+  export import DescendantClass = User.DescendantClass;
+  export import Pack = User.Pack;
+  export import Embedded = User.Embedded;
+  export import ParentCollectionName = User.ParentCollectionName;
+  export import CollectionClass = User.CollectionClass;
+  export import Collection = User.Collection;
+  export import Invalid = User.Invalid;
+  export import Stored = User.Stored;
+  export import Source = User.Source;
+  export import PersistedData = User.PersistedData;
+  export import CreateData = User.CreateData;
+  export import InitializedData = User.InitializedData;
+  export import UpdateData = User.UpdateData;
+  export import Schema = User.Schema;
+  export import DatabaseOperation = User.Database;
+  export import Flags = User.Flags;
+  export import PingData = User.PingData;
+  export import ActivityData = User.ActivityData;
+  export import HasRoleOptions = User.HasRoleOptions;
 
-  type Metadata = Document.MetadataFor<BaseUser>;
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
 
-  type Hotbar = Record<number | `${number}`, string>;
-  type Permissions = Record<keyof typeof CONST.USER_PERMISSIONS, boolean>;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseUser.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
-  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
-  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
-  type Source = fields.SchemaField.InnerPersistedType<Schema>;
-
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this User document.
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * The user's name.
-     */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
-
-    /**
-     * The user's role, see CONST.USER_ROLES.
-     * @defaultValue `CONST.USER_ROLES.PLAYER`
-     */
-    role: fields.NumberField<
-      {
-        required: true;
-        choices: CONST.USER_ROLES[];
-        initial: typeof CONST.USER_ROLES.PLAYER;
-        readonly: true;
-      },
-      CONST.USER_ROLES | null | undefined,
-      CONST.USER_ROLES,
-      CONST.USER_ROLES
-    >;
-
-    /**
-     * The user's password. Available only on the Server side for security.
-     * @defaultValue `""`
-     */
-    password: fields.StringField<{ required: true; blank: true }>;
-
-    /**
-     * The user's password salt. Available only on the Server side for security.
-     * @defaultValue `""`
-     */
-    passwordSalt: fields.StringField;
-
-    /**
-     * The user's avatar image.
-     * @defaultValue `null`
-     */
-    avatar: fields.FilePathField<{ categories: "IMAGE"[] }>;
-
-    /**
-     * A linked Actor document that is this user's impersonated character.
-     * @defaultValue `null`
-     */
-    character: fields.ForeignDocumentField<typeof BaseActor>;
-
-    /**
-     * A color to represent this user.
-     * @defaultValue a randomly chosen color string
-     */
-    color: fields.ColorField<{ required: true; nullable: false; initial: () => string }>;
-
-    /**
-     *
-     */
-    pronouns: fields.StringField<{ required: true }>;
-
-    /**
-     * A mapping of hotbar slot number to Macro id for the user.
-     * @defaultValue `{}`
-     */
-    hotbar: fields.ObjectField<
-      {
-        required: true;
-        validate: (bar: AnyObject) => boolean;
-        validationError: "must be a mapping of slots to macro identifiers";
-      },
-      Hotbar | null | undefined,
-      Hotbar,
-      Hotbar
-    >;
-
-    /**
-     * The user's individual permission configuration, see CONST.USER_PERMISSIONS.
-     * @defaultValue `{}`
-     */
-    permissions: fields.ObjectField<
-      {
-        required: true;
-        validate: (perms: AnyObject) => boolean;
-        validationError: "must be a mapping of permission names to booleans";
-      },
-      InexactPartial<Permissions> | null | undefined,
-      InexactPartial<Permissions>,
-      InexactPartial<Permissions>
-    >;
-
-    /**
-     * An object of optional key/value flags.
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"User">;
-
-    /**
-     * An object of creation and access information
-     * @defaultValue see {@link fields.DocumentStatsField}
-     */
-    _stats: fields.DocumentStatsField;
-  }
+  /**
+   * @deprecated {@link BaseUser.CreateData | `BaseUser.CreateData`}
+   */
+  type ConstructorData = BaseUser.CreateData;
 }

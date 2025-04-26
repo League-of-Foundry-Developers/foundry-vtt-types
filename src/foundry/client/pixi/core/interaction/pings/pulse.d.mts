@@ -48,7 +48,7 @@ declare global {
 
     override animate(): Promise<boolean>;
 
-    override _animateFrame(dt: number, animation: CanvasAnimationData): void;
+    override _animateFrame(dt: number, animation: CanvasAnimation.AnimationData): void;
 
     /**
      * Transition linearly from one color to another.
@@ -106,7 +106,7 @@ declare global {
     constructor(origin: PIXI.Point, options?: ArrowPing.ConstructorOptions);
 
     // @privateRemarks The `options` property does not get overridden here as the `rotation` key does not
-    // get passed up to super, so it's still just `PulsePing.ConstructorOptions`
+    // get passed up to super, so it's still just `PulsePing.Constructor.Options`
 
     protected override _drawShape(g: PIXI.Graphics, color: number | Color, alpha: number, size: number): void;
   }
@@ -160,13 +160,13 @@ declare global {
 }
 
 declare abstract class AnyPulsePing extends PulsePing {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyArrowPing extends ArrowPing {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyAlertPing extends AlertPing {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -67,8 +67,8 @@ expectTypeOf(roll.getTooltip()).toEqualTypeOf<Promise<string>>();
 expectTypeOf(roll.render()).toEqualTypeOf<Promise<string>>();
 
 declare const testBool: boolean;
-expectTypeOf(roll.toMessage()).toEqualTypeOf<Promise<ChatMessage | undefined>>();
-expectTypeOf(roll.toMessage({}, { create: true })).toEqualTypeOf<Promise<ChatMessage | undefined>>();
+expectTypeOf(roll.toMessage()).toEqualTypeOf<Promise<ChatMessage.Implementation | undefined>>();
+expectTypeOf(roll.toMessage({}, { create: true })).toEqualTypeOf<Promise<ChatMessage.Implementation | undefined>>();
 expectTypeOf(roll.toMessage({}, { create: false })).toEqualTypeOf<
   Promise<foundry.data.fields.SchemaField.InnerPersistedType<ChatMessage.Schema>>
 >();
@@ -76,7 +76,9 @@ expectTypeOf(roll.toMessage({}, { create: null })).toEqualTypeOf<
   Promise<foundry.data.fields.SchemaField.InnerPersistedType<ChatMessage.Schema>>
 >();
 expectTypeOf(roll.toMessage({}, { create: testBool })).toEqualTypeOf<
-  Promise<ChatMessage | undefined | foundry.data.fields.SchemaField.InnerPersistedType<ChatMessage.Schema>>
+  Promise<
+    ChatMessage.Implementation | undefined | foundry.data.fields.SchemaField.InnerPersistedType<ChatMessage.Schema>
+  >
 >();
 
 expectTypeOf(Roll.MATH_PROXY).toEqualTypeOf<Math>();

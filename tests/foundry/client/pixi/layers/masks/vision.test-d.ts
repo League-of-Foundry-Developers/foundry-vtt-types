@@ -14,7 +14,7 @@ if (vis) {
   expectTypeOf(vis.sight.preview).toEqualTypeOf<PIXI.LegacyGraphics>();
   expectTypeOf(vis.darkness.darkness).toEqualTypeOf<PIXI.LegacyGraphics>();
   expectTypeOf(vis.light.global.meshes).toEqualTypeOf<PIXI.Container>();
-  //deprecated since v12 until v14
+  // deprecated since v12 until v14
   expectTypeOf(vis.light.tokens.tokens.tokens.tokens).toEqualTypeOf<typeof vis.light>();
   expectTypeOf(vis.base).toEqualTypeOf<typeof vis.light.preview>();
   expectTypeOf(vis.fov).toEqualTypeOf<typeof vis.light>();
@@ -29,7 +29,7 @@ declare const someVisionContainer: CanvasVisionMask.CanvasVisionContainer;
 expectTypeOf(myVisionMask.attachVision(someVisionContainer)).toEqualTypeOf<CanvasVisionMask.CanvasVisionContainer>();
 expectTypeOf(myVisionMask.detachVision()).toEqualTypeOf<CanvasVisionMask.CanvasVisionContainer>();
 
-//deprecated since v11, until v13
+// deprecated since v11, until v13
 expectTypeOf(myVisionMask.filter).toEqualTypeOf<AlphaBlurFilter | undefined>();
 declare const someBlurFilter: AlphaBlurFilter;
 myVisionMask.filter = someBlurFilter;

@@ -8,7 +8,7 @@ declare global {
    */
   class CombatantConfig<Options extends CombatantConfig.Options = CombatantConfig.Options> extends DocumentSheet<
     Options,
-    Combatant.ConfiguredInstance
+    Combatant.Implementation
   > {
     /**
      * @defaultValue
@@ -32,7 +32,7 @@ declare global {
   namespace CombatantConfig {
     interface Any extends CombatantConfig<any> {}
 
-    interface Options extends DocumentSheetOptions<Combatant.ConfiguredInstance> {
+    interface Options extends DocumentSheet.Options<Combatant.Implementation> {
       id: "combatant-config";
       title: string;
       classes: string[];

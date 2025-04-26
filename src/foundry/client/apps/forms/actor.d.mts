@@ -12,7 +12,7 @@ declare global {
    */
   class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options> extends DocumentSheet<
     Options,
-    Actor.ConfiguredInstance
+    Actor.Implementation
   > {
     /**
      * @defaultValue
@@ -114,12 +114,17 @@ declare global {
      * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
      * @param itemData - The item data requested for creation
      */
-    protected _onDropItemCreate(itemData: Item["_source"][] | Item["_source"]): Promise<Item.ConfiguredInstance[]>;
+    protected _onDropItemCreate(
+      itemData: Item.Implementation["_source"][] | Item.Implementation["_source"],
+    ): Promise<Item.Implementation[]>;
 
     /**
      * Handle a drop event for an existing embedded Item to sort that Item relative to its siblings
      */
-    protected _onSortItem(event: DragEvent, itemData: Item["_source"]): undefined | Promise<Item.ConfiguredInstance[]>;
+    protected _onSortItem(
+      event: DragEvent,
+      itemData: Item.Implementation["_source"],
+    ): undefined | Promise<Item.Implementation[]>;
 
     /**
      * Is the drop data coming from the same actor?
@@ -152,9 +157,9 @@ declare global {
         type: "Actor";
       }
 
-      type Item = Document.DropData<Item.ConfiguredInstance> & {
+      interface Item extends Document.DropData<Item.Implementation> {
         type: "Item";
-      };
+      }
 
       interface Folder {
         type: "Folder";
@@ -163,12 +168,12 @@ declare global {
       }
     }
 
-    interface Options extends DocumentSheetOptions<Actor.ConfiguredInstance> {
-      token?: TokenDocument.ConfiguredInstance | null;
+    interface Options extends DocumentSheet.Options<Actor.Implementation> {
+      token?: TokenDocument.Implementation | null;
     }
 
     interface ActorSheetData<Options extends ActorSheet.Options = ActorSheet.Options>
-      extends DocumentSheet.DocumentSheetData<Options, Actor.ConfiguredInstance> {
+      extends DocumentSheet.DocumentSheetData<Options, Actor.Implementation> {
       actor: ActorSheet["actor"];
       items: this["data"]["items"];
       effects: this["data"]["effects"];
@@ -177,5 +182,5 @@ declare global {
 }
 
 declare abstract class AnyActorSheet extends ActorSheet<ActorSheet.Options> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

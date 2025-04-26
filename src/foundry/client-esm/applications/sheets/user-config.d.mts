@@ -9,16 +9,17 @@ import type { CustomFormGroup } from "../forms/fields.d.mts";
 declare class UserConfig<
   RenderContext extends AnyObject = InterfaceToObject<UserConfig.RenderContext>,
   Configuration extends
-    DocumentSheetV2.Configuration<User.ConfiguredInstance> = DocumentSheetV2.Configuration<User.ConfiguredInstance>,
+    DocumentSheetV2.Configuration<User.Implementation> = DocumentSheetV2.Configuration<User.Implementation>,
   RenderOptions extends
     HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
-  User.ConfiguredInstance,
+  User.Implementation,
   RenderContext,
   Configuration,
   RenderOptions
 > {
-  static override DEFAULT_OPTIONS: DocumentSheetV2.Configuration<User.ConfiguredInstance>;
+  static override DEFAULT_OPTIONS: object &
+    DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<User.Implementation>>;
 
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
@@ -34,7 +35,7 @@ declare class UserConfig<
 
 declare namespace UserConfig {
   interface RenderContext {
-    user: User.ConfiguredInstance;
+    user: User.Implementation;
     source: foundry.documents.BaseUser.Source;
     fields: foundry.documents.BaseUser.Schema;
     characterWidget: CustomFormGroup;

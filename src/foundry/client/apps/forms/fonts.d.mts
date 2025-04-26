@@ -3,9 +3,9 @@ import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 declare global {
   class FontConfig<Options extends FontConfig.Options = FontConfig.Options> extends FormApplication<
     Options,
-    NewFontDefinition
+    FontConfig.NewFontDefinition
   > {
-    constructor(object?: NewFontDefinition, options?: Options);
+    constructor(object?: FontConfig.NewFontDefinition, options?: Options);
 
     /**
      * @defaultValue
@@ -29,7 +29,7 @@ declare global {
      */
     static FONT_TYPES: { FILE: "file"; SYSTEM: "system" };
 
-    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<FontConfig.FontConfigData>>;
+    override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<FontConfig.Data>>;
 
     /**
      * Template data for a given font definition.
@@ -122,47 +122,54 @@ declare global {
     protected static _formatFont(family: string, definition: CONFIG.Font.Definition): string;
   }
 
-  interface NewFontDefinition {
-    /**
-     * The font family.
-     */
-    family?: string;
-
-    /**
-     * The font weight.
-     * @defaultValue `400`
-     */
-    weight?: number;
-
-    /**
-     * The font style.
-     * @defaultValue `"normal"`
-     */
-    style?: string;
-
-    /**
-     * The font file
-     * @defaultValue `""`
-     */
-    src?: string;
-
-    /**
-     * The text to preview the font.
-     * @defaultValue `game.i18n.localize("FONTS.FontPreview")`
-     */
-    preview?: string;
-  }
+  type NewFontDefinition = FontConfig.NewFontDefinition;
 
   namespace FontConfig {
     interface Any extends FontConfig<any> {}
 
-    interface Options extends FormApplicationOptions {}
+    interface Options extends FormApplication.Options {}
 
-    interface FontConfigData {
+    /**
+     * @deprecated {@link FontConfig.Data | `FontConfig.Data`}
+     */
+    type FontConfigData = Data;
+
+    interface Data {
       fonts: { family: string; index: number; font: string }[];
       selected: { family: string; index: number } | null;
       family: string | undefined;
       weights: Array<{ value: foundry.CONST.FONT_WEIGHTS; label: string }>;
+    }
+
+    interface NewFontDefinition {
+      /**
+       * The font family.
+       */
+      family?: string;
+
+      /**
+       * The font weight.
+       * @defaultValue `400`
+       */
+      weight?: number;
+
+      /**
+       * The font style.
+       * @defaultValue `"normal"`
+       */
+      style?: string;
+
+      /**
+       * The font file
+       * @defaultValue `""`
+       */
+      src?: string;
+
+      /**
+       * The text to preview the font.
+       * @defaultValue `game.i18n.localize("FONTS.FontPreview")`
+       */
+      preview?: string;
     }
   }
 }

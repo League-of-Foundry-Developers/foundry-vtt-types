@@ -158,31 +158,31 @@ declare global {
      * Create and draw the Cursor object for a given User
      * @param user - The User document for whom to draw the cursor Container
      */
-    drawCursor(user: User.ConfiguredInstance): Cursor;
+    drawCursor(user: User.Implementation): Cursor;
 
     /**
      * Update the cursor when the user moves to a new position
      * @param user     - The User for whom to update the cursor
      * @param position - The new cursor position
      */
-    updateCursor(user: User.ConfiguredInstance, position: Canvas.Point | null): void;
+    updateCursor(user: User.Implementation, position: Canvas.Point | null): void;
 
     /**
      * Update display of an active Ruler object for a user given provided data
      * @see {@link Ruler#update}
      */
-    updateRuler(user: User.ConfiguredInstance, rulerData?: Ruler.MeasurementData | null): void;
+    updateRuler(user: User.Implementation, rulerData?: Ruler.MeasurementData | null): void;
 
     /**
      * Handle a broadcast ping.
-     * @see {@link Ping#drawPing}
+     * @see {@link Ping.drawPing | `Ping#drawPing`}
      * @param user     - The user who pinged.
      * @param position - The position on the canvas that was pinged.
      * @param data     - The broadcast ping data.
      * @returns A promise which resolves once the Ping has been drawn and animated
      */
     handlePing(
-      user: User.ConfiguredInstance,
+      user: User.Implementation,
       position: Canvas.Point,
       /** @remarks Despite being a `={}` parameter, an object containing a valid `scene` property (a scene ID) must be passed */
       data: ControlsLayer.HandlePingOptions,
@@ -190,7 +190,7 @@ declare global {
 
     /**
      * Draw a ping at the edge of the viewport, pointing to the location of an off-screen ping.
-     * @see {@link Ping#drawPing}
+     * @see {@link Ping.drawPing | `Ping#drawPing`}
      * @param position - The coordinates of the off-screen ping.
      * @param options  - Additional options to configure how the ping is drawn.
      * @returns A promise which resolves once the Ping has been drawn and animated
@@ -202,7 +202,7 @@ declare global {
 
     /**
      * Draw a ping on the canvas
-     * @see {@link Ping#animate}
+     * @see {@link Ping.animate | `Ping#animate`}
      * @param position - The position on the canvas that was pinged.
      * @param options  - Additional options to configure how the ping is drawn.
      * @returns A promise which resolves once the Ping has been drawn and animated
@@ -246,7 +246,7 @@ declare global {
        * @remarks Only used to set the color of the ping. If `user?.color` ends up `undefined`, the relevant Ping class will provide a default color.
        * If a `color` property is passed along with this, `color` will take precedence
        */
-      user: User.ConfiguredInstance;
+      user: User.Implementation;
     }>;
 
     interface DrawPingOptions extends _DrawPingOptions, Pick<User.PingData, "style">, Ping.ConstructorOptions {}
@@ -270,5 +270,5 @@ declare global {
 }
 
 declare abstract class AnyControlsLayer extends ControlsLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

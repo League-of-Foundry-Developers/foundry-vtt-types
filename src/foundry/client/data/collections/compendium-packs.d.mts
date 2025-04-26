@@ -1,9 +1,9 @@
-import type { DirectoryCollectionMixin_Collection_Interface } from "../abstract/directory-collection-mixin.d.mts";
-
-declare const DirectoryCollectionMixin_Collection: DirectoryCollectionMixin_Collection_Interface;
+export {};
 
 declare global {
-  class CompendiumPacks extends DirectoryCollectionMixin_Collection {
+  class CompendiumPacks extends DirectoryCollectionMixin(Collection)<
+    CompendiumCollection<CompendiumCollection.Metadata>
+  > {
     /**
      * Get a Collection of Folders which contain Compendium Packs
      */

@@ -5,9 +5,9 @@ declare global {
    * The Application responsible for configuring the CombatTracker and its contents.
    * @typeParam Options - The type of the options object
    */
-  class CombatTrackerConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
+  class CombatTrackerConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     Options,
-    undefined
+    FormApplication.NoObject
   > {
     /**
      * @defaultValue
@@ -21,7 +21,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): FormApplicationOptions;
+    static override get defaultOptions(): FormApplication.Options;
 
     override getData(
       options?: Partial<Options>,
@@ -42,10 +42,10 @@ declare global {
 
     interface CombatTrackerConfigData extends FormApplication.FormApplicationData {
       settings: SettingConfig["core.combatTrackerConfig"];
-      attributeChoices: ReturnType<(typeof TokenDocument)["getTrackedAttributeChoices"]>;
+      attributeChoices: ReturnType<typeof TokenDocument.getTrackedAttributeChoices>;
       combatTheme: ClientSettings.SettingConfig<string>;
       selectedTheme: SettingConfig["core.combatTheme"];
-      user: User;
+      user: User.Implementation;
     }
   }
 }

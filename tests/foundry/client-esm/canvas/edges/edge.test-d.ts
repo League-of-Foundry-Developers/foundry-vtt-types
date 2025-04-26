@@ -4,7 +4,7 @@ import type PolygonVertex from "../../../../../src/foundry/client-esm/canvas/edg
 import type Edge from "../../../../../src/foundry/client-esm/canvas/edges/edge.d.mts";
 
 declare const p: Canvas.Point;
-declare const someWall: Wall.ConfiguredInstance;
+declare const someWall: Wall.Object;
 
 const edge = new foundry.canvas.edges.Edge(p, p, {
   type: "darkness",

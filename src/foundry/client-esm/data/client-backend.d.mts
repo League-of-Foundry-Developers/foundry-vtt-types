@@ -14,25 +14,25 @@ declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
   protected override _getDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
     request: DatabaseGetOperation,
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   protected override _createDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
     request: DatabaseCreateOperation<FixedInstanceType<T>>,
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   protected override _updateDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
     request: DatabaseUpdateOperation<FixedInstanceType<T>>,
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   protected override _deleteDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
     request: DatabaseDeleteOperation,
-    user: User.ConfiguredInstance,
+    user: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
   /**

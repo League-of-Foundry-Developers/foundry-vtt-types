@@ -9,7 +9,7 @@ declare global {
      * The FogExploration document which applies to this canvas view
      * @defaultValue `null`
      */
-    exploration: FogExploration.ConfiguredInstance | null;
+    exploration: FogExploration.Implementation | null;
 
     /**
      * Track whether we have pending fog updates which have not yet been saved to the database
@@ -39,18 +39,18 @@ declare global {
      * The configured options used for the saved fog-of-war texture.
      * @remarks Only `undefined` prior to the first time the canvas visibility layer is `#draw()`n
      */
-    get textureConfiguration(): CanvasVisibility["textureConfiguration"];
+    get textureConfiguration(): CanvasVisibility.TextureConfiguration | undefined;
 
     /**
      * Does the currently viewed Scene support Token field of vision?
      */
-    //TODO: make `Scene.Implementation["tokenVision"]` when docsv2 is done
+    // TODO: make `Scene.Implementation["tokenVision"]` when docsv2 is done
     get tokenVision(): boolean;
 
     /**
      * Does the currently viewed Scene support fog of war exploration?
      */
-    //TODO: make `Scene.Implementation["fog"]["exploration"]` when docsv2 is done
+    // TODO: make `Scene.Implementation["fog"]["exploration"]` when docsv2 is done
     get fogExploration(): boolean;
 
     /**
@@ -149,5 +149,5 @@ declare global {
 }
 
 declare abstract class AnyFogManager extends FogManager {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -1,6 +1,6 @@
 import type { Editor } from "tinymce";
 import type { EditorView } from "prosemirror-view";
-import type { GetDataReturnType, InexactPartial, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 import type Showdown from "showdown";
 
 declare global {
@@ -9,7 +9,7 @@ declare global {
    */
   class JournalPageSheet<Options extends JournalPageSheet.Options = JournalPageSheet.Options> extends DocumentSheet<
     Options,
-    JournalEntryPage.ConfiguredInstance
+    JournalEntryPage.Implementation
   > {
     /**
      * @defaultValue
@@ -43,7 +43,10 @@ declare global {
 
     protected override _getSecretContent(secret: HTMLElement): string;
 
-    protected override _updateSecret(secret: HTMLElement, content: string): Promise<void | JournalEntryPage>;
+    protected override _updateSecret(
+      secret: HTMLElement,
+      content: string,
+    ): Promise<void | JournalEntryPage.Implementation>;
 
     override activateEditor(
       name: string,
@@ -66,10 +69,9 @@ declare global {
   namespace JournalPageSheet {
     interface Any extends JournalPageSheet<any> {}
 
-    interface Options extends DocumentSheetOptions<JournalEntryPage.ConfiguredInstance> {}
+    interface Options extends DocumentSheet.Options<JournalEntryPage.Implementation> {}
 
-    interface JournalPageSheetData
-      extends DocumentSheet.DocumentSheetData<Options, JournalEntryPage.ConfiguredInstance> {
+    interface JournalPageSheetData extends DocumentSheet.DocumentSheetData<Options, JournalEntryPage.Implementation> {
       headingLevels: Record<number, string>;
     }
   }
@@ -188,9 +190,9 @@ declare global {
      * @param components - The time components
      * @returns The timestamp, in second
      */
-    _timeComponentsToTimestamp(components?: InexactPartial<JournalVideoPageSheet.TimeComponents>): number;
+    _timeComponentsToTimestamp(components?: JournalVideoPageSheet.TimeComponents): number;
 
-    _timestampToTimeComponents(timestamp: number): Partial<JournalVideoPageSheet.TimeComponents>;
+    _timestampToTimeComponents(timestamp: number): JournalVideoPageSheet.TimeComponents;
   }
 
   namespace JournalVideoPageSheet {
@@ -205,9 +207,9 @@ declare global {
     }
 
     interface TimeComponents {
-      h: number;
-      m: number;
-      s: number;
+      h?: number | undefined;
+      m?: number | undefined;
+      s?: number | undefined;
     }
   }
 
@@ -249,7 +251,7 @@ declare global {
   }
 
   /**
-   * A subclass of {@link JournalTextPageSheet} that implements a markdown editor for editing the text content.
+   * A subclass of {@link JournalTextPageSheet | `JournalTextPageSheet`} that implements a markdown editor for editing the text content.
    */
   class MarkdownJournalPageSheet extends JournalTextPageSheet {
     /**
@@ -292,7 +294,7 @@ declare global {
   }
 
   /**
-   * A subclass of {@link JournalTextPageSheet} that implements a TinyMCE editor.
+   * A subclass of {@link JournalTextPageSheet | `JournalTextPageSheet`} that implements a TinyMCE editor.
    */
   class JournalTextTinyMCESheet extends JournalTextPageSheet {
     override getData(

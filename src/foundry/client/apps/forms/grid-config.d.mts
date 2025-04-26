@@ -5,11 +5,11 @@ declare global {
    * A tool for fine tuning the grid in a Scene
    * @typeParam Options - the type of the options object
    */
-  class GridConfig<Options extends FormApplicationOptions = FormApplicationOptions> extends FormApplication<
+  class GridConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     Options,
-    Scene.ConfiguredInstance
+    Scene.Implementation
   > {
-    constructor(scene: Scene.ConfiguredInstance, sheet: GridConfig["sheet"], options?: Partial<Options>);
+    constructor(scene: Scene.Implementation, sheet: GridConfig["sheet"], options?: Partial<Options>);
 
     /**
      * Track the Scene Configuration sheet reference
@@ -123,17 +123,17 @@ declare global {
     interface Any extends GridConfig<any> {}
 
     interface FormData {
-      "grid.type": Scene["grid"]["type"];
-      "grid.size": Scene["grid"]["size"];
-      scale: Scene["width"];
-      "background.offsetX": Scene["background"]["offsetX"];
-      "background.offsetY": Scene["background"]["offsetY"];
+      "grid.type": Scene.Implementation["grid"]["type"];
+      "grid.size": Scene.Implementation["grid"]["size"];
+      scale: Scene.Implementation["width"];
+      "background.offsetX": Scene.Implementation["background"]["offsetX"];
+      "background.offsetY": Scene.Implementation["background"]["offsetY"];
     }
 
     interface GridConfigData {
       gridTypes: Record<foundry.CONST.GRID_TYPES, string>;
       scale: number;
-      scene: Scene.ConfiguredInstance;
+      scene: Scene.Implementation;
     }
   }
 }

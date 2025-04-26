@@ -130,5 +130,5 @@ declare global {
 }
 
 declare abstract class AnyBatchRenderer extends BatchRenderer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

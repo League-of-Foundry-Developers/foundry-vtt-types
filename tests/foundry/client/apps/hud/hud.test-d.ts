@@ -1,14 +1,13 @@
 import { expectTypeOf } from "vitest";
 import type { MaybePromise } from "fvtt-types/utils";
 
-// abstract class, so have to inherit
-class MyPlaceableHUD extends BasePlaceableHUD {}
+// This exists to make the class non-abstract.
+class TestPlaceableHUD extends BasePlaceableHUD {}
 
-const myPlaceableHUD = new MyPlaceableHUD();
-expectTypeOf(myPlaceableHUD.object).toEqualTypeOf<PlaceableObject | undefined>();
-expectTypeOf(BasePlaceableHUD.defaultOptions).toEqualTypeOf<ApplicationOptions>();
-expectTypeOf(myPlaceableHUD.options).toEqualTypeOf<ApplicationOptions>();
-expectTypeOf(myPlaceableHUD.getData()).toEqualTypeOf<MaybePromise<object>>();
-// expectTypeOf(myPlaceableHUD.render(true)).toEqualTypeOf<BasePlaceableHUD>();
-
-expectTypeOf(myPlaceableHUD.layer).toEqualTypeOf<PlaceableObject["layer"] | undefined>();
+const placeableHUD = new TestPlaceableHUD();
+expectTypeOf(placeableHUD.object).toEqualTypeOf<PlaceableObject | undefined>();
+expectTypeOf(BasePlaceableHUD.defaultOptions).toEqualTypeOf<Application.Options>();
+expectTypeOf(placeableHUD.options).toEqualTypeOf<Application.Options>();
+expectTypeOf(placeableHUD.getData()).toEqualTypeOf<MaybePromise<object>>();
+expectTypeOf(placeableHUD.render(true)).toEqualTypeOf<TestPlaceableHUD>();
+expectTypeOf(placeableHUD.layer).toEqualTypeOf<PlaceableObject["layer"]>();

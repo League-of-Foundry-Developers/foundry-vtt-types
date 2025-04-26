@@ -14,4 +14,4 @@ const myRelease = new foundry.config.ReleaseData({
   time: 1709002477602,
 });
 
-expectTypeOf(myRelease.shortDisplay).toMatchTypeOf<string>();
+expectTypeOf(myRelease.shortDisplay).toExtend<string>();

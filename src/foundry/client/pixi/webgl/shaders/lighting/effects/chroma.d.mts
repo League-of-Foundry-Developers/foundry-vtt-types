@@ -20,5 +20,5 @@ declare global {
 }
 
 declare abstract class AnyChromaColorationShader extends ChromaColorationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

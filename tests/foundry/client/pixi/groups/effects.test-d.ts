@@ -17,8 +17,8 @@ expectTypeOf(myEffectGroup.getDarknessLevel(somePoint, 20)).toEqualTypeOf<number
 expectTypeOf(myEffectGroup.toggleMaskingFilters(false)).toEqualTypeOf<void>();
 expectTypeOf(myEffectGroup.animateDarkness(3, { duration: 40000 })).toEqualTypeOf<Promise<boolean | void>>();
 
-//deprecated since v12 until v14
-expectTypeOf(myEffectGroup.visibility).toMatchTypeOf<CanvasVisibility.Any>();
+// deprecated since v12 until v14
+expectTypeOf(myEffectGroup.visibility).toExtend<CanvasVisibility.Any>();
 expectTypeOf(
   myEffectGroup.globalLightSource,
 ).toEqualTypeOf<foundry.canvas.sources.GlobalLightSource.ConfiguredInstance>();

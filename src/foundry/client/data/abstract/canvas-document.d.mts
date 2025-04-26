@@ -15,14 +15,14 @@ declare class CanvasDocument<
   /**
    * A lazily constructed PlaceableObject instance which can represent this Document on the game canvas.
    */
-  get object(): Document.ConfiguredObjectInstanceForName<PlaceableType> | null;
+  get object(): Document.ObjectFor<PlaceableType> | null;
 
   /**
    * A reference to the PlaceableObject instance which represents this Embedded Document.
    * @internal
    * @defaultValue `null`
    */
-  protected _object: Document.ConfiguredObjectInstanceForName<PlaceableType> | null;
+  protected _object: Document.ObjectFor<PlaceableType> | null;
 
   /**
    * Has this object been deliberately destroyed as part of the deletion workflow?
@@ -34,7 +34,7 @@ declare class CanvasDocument<
   /**
    * A reference to the CanvasLayer which contains Document objects of this type.
    */
-  get layer(): FixedInstanceType<PlaceablesLayer.ConfiguredClassForName<PlaceableType>>;
+  get layer(): PlaceablesLayer.ImplementationFor<PlaceableType>;
 
   /**
    * An indicator for whether this document is currently rendered on the game canvas.
@@ -55,26 +55,20 @@ declare global {
   /**
    * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
    */
-  // TODO(LukeAbby): The constraint here should ideally be something like `Document<Document.PlaceableType, any, Scene.ConfiguredInstance | null>` but this causes circularities.
+  // TODO(LukeAbby): The constraint here should ideally be something like `Document<Document.PlaceableType, any, Scene.Implementation | null>` but this causes circularities.
   function CanvasDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): typeof AnyDocument & Mixin<typeof CanvasDocument<FixedInstanceType<BaseClass>>, BaseClass>;
+  ): Mixin<typeof CanvasDocument<FixedInstanceType<BaseClass>>, BaseClass>;
 }
 
 // This is yet another `AnyDocument` type.
 // It exists specifically because the `Document.AnyConstructor` type is too safe to be merged in with a mixin.
-// The `arg0: never, ...args: never[]` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.
+// The `...args: never` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.
 //
 // `{}` is used to avoid merging `DataSchema` with the real schema.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-declare class AnyDocument extends Document<any, {}, Document.Any | null> {
+declare class AnyDocument extends Document<Document.Type, {}, Document.Any | null> {
   constructor(...args: any[]);
-
-  // Note(LukeAbby): Specifically adding the `DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
-  // This is odd but probably is because it bails from looking up the parent class properties at times or something.
-  static [Document.Internal.DocumentBrand]: true;
-
-  flags?: unknown;
 
   getFlag(scope: never, key: never): any;
 }

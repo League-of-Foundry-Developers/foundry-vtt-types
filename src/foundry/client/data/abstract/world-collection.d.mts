@@ -1,19 +1,17 @@
-import type { DeepPartial, DropFirst, InexactPartial } from "fvtt-types/utils";
+import type { DeepPartial, DropFirst, FixedInstanceType, GetKey, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DirectoryCollectionMixin_DocumentCollection_Interface } from "./directory-collection-mixin.d.mts";
-
-declare const DirectoryCollectionMixin_DocumentCollection: DirectoryCollectionMixin_DocumentCollection_Interface;
+import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 
 declare global {
   /**
    * A collection of world-level Document objects with a singleton instance per primary Document type.
    * Each primary Document type has an associated subclass of WorldCollection which contains them.
-   * @see {@link Game#collections}
+   * @see {@link Game.collections | `Game#collections`}
    */
   abstract class WorldCollection<
-    T extends Document.AnyConstructor,
+    DocumentClass extends Document.AnyConstructor,
     Name extends string,
-  > extends DirectoryCollectionMixin_DocumentCollection<T, Name> {
+  > extends DirectoryCollectionMixin(DocumentCollection)<DocumentClass, Name> {
     /**
      * Reference the set of Folders which contain documents in this collection
      */
@@ -22,14 +20,14 @@ declare global {
     /**
      * Return a reference to the SidebarDirectory application for this WorldCollection.
      * @remarks
-     * In the case where `Lowercase<Name>` is not a property of {@link ui}, this actually always returns `undefined`,
-     * but {@link RollTables} overrides this, so we need to allow a wider return type.
+     * In the case where `Lowercase<Name>` is not a property of {@link ui | `ui`}, this actually always returns `undefined`,
+     * but {@link RollTables | `RollTables`} overrides this, so we need to allow a wider return type.
      */
     get directory(): Lowercase<Name> extends keyof typeof ui
       ? (typeof ui)[Lowercase<Name>]
       :
-          | (Document.ToConfiguredClass<T>["metadata"]["name"] extends foundry.CONST.FOLDER_DOCUMENT_TYPES
-              ? DocumentDirectory<Document.ToConfiguredClass<T>["metadata"]["name"]>
+          | (DocumentClass["metadata"]["name"] extends foundry.CONST.FOLDER_DOCUMENT_TYPES
+              ? DocumentDirectory<DocumentClass["metadata"]["name"]>
               : never)
           | SidebarTab
           | undefined
@@ -40,7 +38,9 @@ declare global {
      */
     static get instance(): WorldCollection<Document.AnyConstructor, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
 
-    protected override _getVisibleTreeContents(): Document.ToConfiguredInstance<T>[];
+    // Note(LukeAbby): Due to the usage of `this["contents"]` in the parent class the override has
+    // to stay like this.
+    protected override _getVisibleTreeContents(): this["contents"];
 
     /**
      * Import a Document from a Compendium collection, adding it to the current World.
@@ -48,7 +48,7 @@ declare global {
      * @param id         - The ID of the compendium entry to import
      * @param updateData - Optional additional data used to modify the imported Document before it is created
      *                     (default: `{}`)
-     * @param options    - Optional arguments passed to the {@link WorldCollection#fromCompendium} and {@link Document.create} methods
+     * @param options    - Optional arguments passed to the {@link WorldCollection.fromCompendium | `WorldCollection.fromCompendium`} and {@link Document.create | `Document.create`} methods
      *                     (default: `{}`)
      * @returns The imported Document instance
      */
@@ -61,13 +61,13 @@ declare global {
      * DatabaseCreateOperation but the foundry typedef doesn't have them).
      */
     importFromCompendium(
-      pack: CompendiumCollection<
-        CompendiumCollection.Metadata & { type: Document.ToConfiguredClass<T>["metadata"]["name"] }
-      >,
+      pack: CompendiumCollection<CompendiumCollection.Metadata & { type: DocumentClass["metadata"]["name"] }>,
       id: string,
-      updateData?: DeepPartial<Document.ToConfiguredInstance<T>["_source"]>,
-      options?: InexactPartial<Document.OnCreateOptions<T["metadata"]["name"]> & WorldCollection.FromCompendiumOptions>,
-    ): Promise<Document.ToConfiguredStored<T>>;
+      updateData?: DeepPartial<FixedInstanceType<DocumentClass>["_source"]>,
+      options?: InexactPartial<
+        Document.Database.CreateOperation<DatabaseCreateOperation> & WorldCollection.FromCompendiumOptions
+      >,
+    ): Promise<Document.ToStored<DocumentClass>>;
 
     /**
      * Apply data transformations when importing a Document from a Compendium pack
@@ -77,26 +77,15 @@ declare global {
      * @returns The processed data ready for world Document creation
      * @remarks FromCompendiumOptions is inflated to account for expanded downstream use
      */
-    fromCompendium<
-      FolderOpt extends boolean = false,
-      SortOpt extends boolean = true,
-      OwnershipOpt extends boolean = false,
-      IdOpt extends boolean = false,
-    >(
-      document: Document.ToConfiguredInstance<T> | Document.ConstructorDataFor<T>,
-      options?: InexactPartial<WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt>>,
-    ): Omit<
-      Document.ToConfiguredInstance<T>["_source"],
-      | ClientDocument.OmitProperty<FolderOpt, "folder">
-      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
-      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
-      | (IdOpt extends false ? "_id" : never)
-    >;
+    fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
+      document: FixedInstanceType<DocumentClass> | Document.CreateDataFor<DocumentClass>,
+      options?: Options,
+    ): WorldCollection.FromCompendiumReturnType<DocumentClass, Options>;
 
     /**
      * Register a Document sheet class as a candidate which can be used to display Documents of a given type.
-     * See {@link DocumentSheetConfig.registerSheet} for details.
-     * @see DocumentSheetConfig.registerSheet
+     * See {@link DocumentSheetConfig.registerSheet | `DocumentSheetConfig.registerSheet`} for details.
+     * @see {@link DocumentSheetConfig.registerSheet | `DocumentSheetConfig.registerSheet`}
      *
      * @example <caption>Register a new ActorSheet subclass for use with certain Actor types.</caption>
      * ```typescript
@@ -107,8 +96,8 @@ declare global {
 
     /**
      * Unregister a Document sheet class, removing it from the list of available sheet Applications to use.
-     * See {@link DocumentSheetConfig.unregisterSheet} for details.
-     * @see DocumentSheetConfig.unregisterSheet
+     * See {@link DocumentSheetConfig.unregisterSheet | `DocumentSheetConfig.unregisterSheet`} for details.
+     * @see {@link DocumentSheetConfig.unregisterSheet | `DocumentSheetConfig.unregisterSheet`}
      *
      * @example <caption>Deregister the default ActorSheet subclass to replace it with others.</caption>
      * Actors.unregisterSheet("core", ActorSheet);
@@ -118,46 +107,51 @@ declare global {
     /**
      * Return an array of currently registered sheet classes for this Document type.
      * @remarks
-     * This is documented to return only {@link DocumentSheet}s but {@link DrawingConfig} is just a
-     * {@link FormApplication}. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6454.
+     * This is documented to return only {@link DocumentSheet | `DocumentSheet`}s but {@link DrawingConfig | `DrawingConfig`} is just a
+     * {@link FormApplication | `FormApplication`}. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6454.
      */
     static get registeredSheets(): FormApplication.Any[];
   }
 
   namespace WorldCollection {
-    interface FromCompendiumOptions<
-      FolderOpt extends boolean = false,
-      SortOpt extends boolean = true,
-      OwnershipOpt extends boolean = false,
-      IdOpt extends boolean = false,
-      StateOpt extends boolean = false,
-    > {
+    interface FromCompendiumOptions {
       /**
        * Clear the currently assigned folder
        * @defaultValue `false`
        */
-      clearFolder: FolderOpt;
+      clearFolder?: boolean | undefined;
 
       /**
        * Clear the currently sort order
        * @defaultValue `true`
        */
-      clearSort: SortOpt;
+      clearSort?: boolean | undefined;
 
       /**
        * Clear Document ownership
        * @defaultValue `true`
        */
-      clearOwnership: OwnershipOpt;
+      clearOwnership?: boolean | undefined;
 
       /**
        * Retain the Document ID from the source Compendium
        * @defaultValue `false`
        */
-      keepId: IdOpt;
+      keepId?: boolean | undefined;
 
       /** @remarks used by Scenes#fromCompendium */
-      clearState: StateOpt;
+      clearState?: boolean | undefined;
     }
+
+    type FromCompendiumReturnType<
+      DocumentClass extends Document.AnyConstructor,
+      Options extends FromCompendiumOptions | undefined,
+    > = Omit<
+      FixedInstanceType<DocumentClass>["_source"],
+      | ClientDocument._OmitProperty<GetKey<Options, "clearFolder", undefined>, false, "folder">
+      | ClientDocument._OmitProperty<GetKey<Options, "clearSort", undefined>, true, "sort" | "navigation" | "navOrder">
+      | ClientDocument._OmitProperty<GetKey<Options, "clearOwnership", undefined>, true, "ownership">
+      | (GetKey<Options, "keepId", undefined> extends true ? never : never)
+    >;
   }
 }

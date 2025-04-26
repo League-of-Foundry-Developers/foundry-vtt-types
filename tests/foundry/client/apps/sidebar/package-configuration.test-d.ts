@@ -3,7 +3,7 @@ import type { MaybePromise } from "fvtt-types/utils";
 
 declare const packageConfiguration: PackageConfiguration;
 
-expectTypeOf(packageConfiguration.object).toEqualTypeOf<object>();
+expectTypeOf(packageConfiguration.object).toEqualTypeOf<FormApplication.NoObject>();
 expectTypeOf(PackageConfiguration.defaultOptions).toEqualTypeOf<PackageConfiguration.Options>();
 expectTypeOf(packageConfiguration.options).toEqualTypeOf<PackageConfiguration.Options>();
 expectTypeOf(packageConfiguration.getData()).toEqualTypeOf<MaybePromise<object>>();

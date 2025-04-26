@@ -56,7 +56,7 @@ declare global {
     /**
      * Pause or Unpause this sampler. If set to true, the shader is disabled. Otherwise, it is enabled.
      * Contrary to enabled, a shader might decide to refuse a pause, to continue to render animations per example.
-     * @see enabled
+     * @see {@link enabled | `enabled`}
      */
     get paused(): boolean;
 
@@ -201,5 +201,5 @@ declare global {
 }
 
 declare abstract class AnyBaseSamplerShader extends BaseSamplerShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

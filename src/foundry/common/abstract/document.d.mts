@@ -1,8 +1,9 @@
 import type {
-  ConfiguredDocuments,
+  ConfigurationFailure,
+  ConfiguredDocumentClass,
+  ConfiguredDocumentInstance,
   ConfiguredMetadata,
-  DefaultDocuments,
-  ConstructorData,
+  CreateData,
 } from "../../../types/documentConfiguration.d.mts";
 import type {
   GetKey,
@@ -11,27 +12,40 @@ import type {
   MustConform,
   ToMethod,
   AnyObject,
-  DeepPartial,
   EmptyObject,
   InexactPartial,
   RemoveIndexSignatures,
   FixedInstanceType,
+  NullishProps,
+  AllKeysOf,
+  DiscriminatedUnion,
+  SimpleMerge,
+  ValueOf,
+  PickValue,
   Identity,
+  ConcreteKeys,
 } from "fvtt-types/utils";
 import type * as CONST from "../constants.mts";
-import type { DataField, EmbeddedCollectionField, EmbeddedDocumentField } from "../data/fields.d.mts";
+import type {
+  DataField,
+  DocumentStatsField,
+  EmbeddedCollectionField,
+  EmbeddedDocumentField,
+  SchemaField,
+  TypeDataField,
+} from "../data/fields.d.mts";
 import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type {
   DatabaseAction,
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
-  DatabaseGetOperation,
   DatabaseUpdateOperation,
   DocumentSocketRequest,
 } from "./_types.d.mts";
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
+import type EmbeddedCollection from "./embedded-collection.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -40,14 +54,21 @@ export default Document;
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
 type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
 
-type _ConfigurationFailureClassMustBeAssignableToInternal = MustConform<
-  Document.ConfigurationFailureClass,
-  Document.Internal.Constructor
->;
-type _ConfigurationFailureInstanceMustBeAssignableToInternal = MustConform<
-  Document.ConfigurationFailureInstance,
-  Document.Internal.Instance.Any
->;
+// Note(LukeAbby): Properties from `Schema` technically derive from `DataModel`. This means that if
+// `name?: string` etc. were to be put in `Document` directly they'd actually override the schema.
+// Therefore this workaround is used to force `DataModel` to override the properties.
+declare const _InternalDocument: (new (...args: any[]) => {
+  name?: string | undefined;
+
+  // `{}` is used so that `{}` and the actual shape of `system` are merged.
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  system?: {} | undefined;
+  _stats?: DocumentStatsField.InitializedData | undefined;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  flags?: {} | undefined;
+}) &
+  typeof DataModel;
 
 /**
  * An extension of the base DataModel which defines a Document.
@@ -57,18 +78,16 @@ declare abstract class Document<
   DocumentName extends Document.Type,
   Schema extends DataSchema,
   Parent extends Document.Any | null = null,
-> extends DataModel<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
-  static [Document.Internal.DocumentBrand]: true;
-
-  [Document.Internal.DocumentName]: DocumentName;
-  [Document.Internal.Schema]: Schema;
-  [Document.Internal.Parent]: Parent;
-
+> extends _InternalDocument<Schema, Parent, InterfaceToObject<Document.ConstructionContext<Parent>>> {
   /**
    * @param data    - Initial data provided to construct the Document
    * @param context - Construction context options
    */
-  constructor(data?: fields.SchemaField.InnerConstructorType<Schema>, context?: Document.ConstructionContext<Parent>);
+  // Note: The constructor has been replaced with `never` in `Document` itself because it never makes
+  // sense to try to construct `new Document(...)` directly. Not only is it an abstract class but
+  // also it varies based upon the `Schema`. While this could be supported it also simplifies
+  // typechecking and helps stymy circularities.
+  constructor(...args: never);
 
   override parent: Parent;
 
@@ -80,7 +99,7 @@ declare abstract class Document<
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
    */
-  readonly parentCollection: string | null;
+  readonly parentCollection: Document.MetadataFor<DocumentName>["collection"] | null;
 
   /**
    * An immutable reference to a containing Compendium collection to which this Document belongs.
@@ -128,7 +147,7 @@ declare abstract class Document<
    * }
    * ```
    */
-  static metadata: Readonly<Document.Metadata.Any>;
+  static metadata: Document.Metadata.Any;
 
   /**
    * The database backend used to execute operations and handle results
@@ -153,7 +172,7 @@ declare abstract class Document<
   /**
    * The named collection to which this Document belongs.
    */
-  get collectionName(): Document.Internal.SimpleMetadata<DocumentName>["collection"];
+  get collectionName(): Document.MetadataFor<DocumentName>["collection"];
 
   /**
    * The canonical name of this Document type, for example "Actor".
@@ -167,19 +186,18 @@ declare abstract class Document<
 
   /**
    * The allowed types which may exist for this Document class
-   * @remarks Document.TYPES is overly generic so subclasses don't cause problems
    */
   static get TYPES(): string[];
 
   /**
    * Does this Document support additional subtypes?
    */
-  static get hasTypeData(): boolean;
+  static get hasTypeData(): undefined | true;
 
   /**
    * The Embedded Document hierarchy for this Document.
    */
-  static get hierarchy(): Record<string, EmbeddedCollectionField<any, any> | EmbeddedDocumentField<any>>;
+  static get hierarchy(): Record<string, EmbeddedCollectionField.Any | EmbeddedDocumentField.Any>;
 
   /**
    * Identify the collection in a parent Document that this Document exists belongs to, if any.
@@ -207,7 +225,7 @@ declare abstract class Document<
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
    */
-  static canUserCreate(user: User): boolean;
+  static canUserCreate(user: User.Internal.Implementation): boolean;
 
   /**
    * Get the explicit permission level that a specific User has over this Document, a value in CONST.DOCUMENT_OWNERSHIP_LEVELS.
@@ -217,7 +235,7 @@ declare abstract class Document<
    *               (default: `game.user`)
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
    */
-  getUserLevel(user?: User): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -226,16 +244,11 @@ declare abstract class Document<
    * @param options    - Additional options involved in the permission test
    * @returns Does the user have this permission level over the Document?
    */
+  // options: not null (destructured)
   testUserPermission(
-    user: User,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    user: User.Internal.Implementation,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   /**
@@ -246,7 +259,11 @@ declare abstract class Document<
    *                 (default: `{}`)
    * @returns Does the User have permission?
    */
-  canUserModify(user: User, action: "create" | "update" | "delete", data?: object): boolean;
+  canUserModify<Action extends "create" | "update" | "delete">(
+    user: User.Internal.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<Schema, Action>,
+  ): boolean;
 
   /**
    * Clone a document, creating a new document by combining current data with provided overrides.
@@ -256,28 +273,8 @@ declare abstract class Document<
    * @returns The cloned Document instance
    */
   override clone<Save extends boolean = false>(
-    data?: fields.SchemaField.AssignmentType<Schema, EmptyObject>,
-    context?: InexactPartial<
-      {
-        /**
-         * Save the clone to the World database?
-         * @defaultValue `false`
-         */
-        save: Save;
-
-        /**
-         * Keep the same ID of the original document
-         * @defaultValue `false`
-         */
-        keepId: boolean;
-
-        /**
-         * Track the clone source
-         * @defaultValue `false`
-         */
-        addSource: boolean;
-      } & Document.ConstructionContext<this["parent"]>
-    >, // FIXME(LukeAbby): Adding Document.Stored to the return causes a recursive type error in Scene
+    data?: fields.SchemaField.UpdateData<Schema>,
+    context?: Document.CloneContext<Save> & InexactPartial<Document.ConstructionContext<Parent>>,
   ): Save extends true ? Promise<this> : this;
 
   /**
@@ -287,8 +284,9 @@ declare abstract class Document<
    */
   migrateSystemData(): object;
 
-  override toObject(source: true): this["_source"];
-  override toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+  override toObject<Source extends boolean | undefined>(
+    source?: Source,
+  ): Source extends false ? SchemaField.SourceData<Schema> : Readonly<SchemaField.SourceData<Schema>>;
 
   /**
    * Create multiple Documents using provided input data.
@@ -324,16 +322,12 @@ declare abstract class Document<
    * const data = [{name: "Compendium Actor", type: "character", img: "path/to/profile.jpg"}];
    * const created = await Actor.createDocuments(data, {pack: "mymodule.mypack"});
    * ```
+   *
+   * @remarks If a document is skipped by a hook or `_preCreate` then that element is skipped in the
+   * return type. This means that you receive only documents that were actually created.
    */
-  static createDocuments<T extends Document.AnyConstructor, Temporary extends boolean | undefined>(
-    this: T,
-    data: Array<Document.ConstructorDataFor<NoInfer<T>>>,
-    operation?: InexactPartial<
-      Omit<Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">, "data">
-    > & {
-      temporary?: Temporary;
-    },
-  ): Promise<Document.ToStoredIf<T, Temporary>[] | undefined>;
+  // Note: This uses `never` because it's unsound to try to do `Document.createDocuments` directly.
+  static createDocuments(data: never, operation?: never): Promise<Document.Any[]>;
 
   /**
    * Update multiple Document instances using provided differential data.
@@ -369,14 +363,12 @@ declare abstract class Document<
    * const actor = await pack.getDocument(documentId);
    * const updated = await Actor.updateDocuments([{_id: actor.id, name: "New Name"}], {pack: "mymodule.mypack"});
    * ```
+   *
+   * @remarks If a document is skipped by a hook or `_preCreate` then that element is skipped in the
+   * return type. This means that you receive only documents that were actually updated.
    */
-  static updateDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    updates?: Array<DeepPartial<Document.UpdateDataFor<NoInfer<T>>>>,
-    operation?: InexactPartial<
-      Omit<Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">, "updates">
-    >,
-  ): Promise<Document.ToConfiguredInstance<T>[]>;
+  // Note: This uses `never` because it's unsound to try to do `Document.updateDocuments`
+  static updateDocuments(updates: never, operation?: never): Promise<Document.Any[]>;
 
   /**
    * Delete one or multiple existing Documents using an array of provided ids.
@@ -414,18 +406,16 @@ declare abstract class Document<
    * const actor = await pack.getDocument(documentId);
    * const deleted = await Actor.deleteDocuments([actor.id], {pack: "mymodule.mypack"});
    * ```
+   *
+   * @remarks If a document is skipped by a hook or `_preDelete` then that element is skipped in the
+   * return type. This means that you receive only documents that were actually deleted.
    */
-  static deleteDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    ids?: string[],
-    operation?: InexactPartial<
-      Omit<Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">, "ids">
-    >,
-  ): Promise<Document.ToConfiguredInstance<T>[]>;
+  // Note: This uses `never` because it's unsound to try to pass the operation for `Document.deleteDocument`
+  static deleteDocuments(ids?: readonly string[], operation?: never): Promise<Document.Any[]>;
 
   /**
    * Create a new Document using provided input data, saving it to the database.
-   * @see {@link Document.createDocuments}
+   * @see {@link Document.createDocuments | `Document.createDocuments`}
    * @param data      - Initial data used to create this Document, or a Document instance to persist.
    * @param operation - Parameters of the creation operation
    *                    (default: `{}`)
@@ -450,55 +440,47 @@ declare abstract class Document<
    * const created = await Item.create(data, {pack: "mymodule.mypack"});
    * ```
    *
-   * @remarks If no document has actually been created, the returned {@link Promise} resolves to `undefined`.
+   * @remarks If the document creation is skipped by a hook or `_preCreate` then `undefined` is
+   * returned.
    */
-  static create<T extends Document.AnyConstructor, Temporary extends boolean | undefined>(
-    this: T,
-    data: Document.ConstructorDataFor<NoInfer<T>> | Document.ConstructorDataFor<NoInfer<T>>[],
-    operation?: InexactPartial<
-      Omit<Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">, "data">
-    > & {
-      temporary?: Temporary;
-    },
-  ): Promise<Document.ToStoredIf<T, Temporary> | undefined>;
+  // Note: This uses `never` because it's unsound to try to call `Document.create` directly.
+  static create(data: never, operation?: never): Promise<Document.Any | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
-   * @see {@link Document.updateDocuments}
+   * @see {@link Document.updateDocuments | `Document.updateDocuments`}
    * @param data      - Differential update data which modifies the existing values of this document data
    *                    (default: `{}`)
    * @param operation - Parameters of the update operation
    *                    (default: `{}`)
    * @returns The updated Document instance
    *
-   * @remarks If no document has actually been updated, the returned {@link Promise} resolves to `undefined`.
+   * @remarks If the document update is skipped by a hook or `_preUpdate` then `undefined` is
+   * returned.
    */
-  update(
-    // TODO: Determine if this is Partial, DeepPartial, or InexactPartial.
-    data?: Partial<Document.ConstructorDataForSchema<Schema>>,
-    operation?: InexactPartial<Omit<Document.Database.OperationOf<DocumentName, "update">, "updates">>,
-  ): Promise<this | undefined>;
+  // Note: This uses `never` because it's unsound to try to call `Document#update` directly.
+  update(data: never, operation: never): Promise<this | undefined>;
 
   /**
    * Delete this Document, removing it from the database.
-   * @see {@link Document.deleteDocuments}
+   * @see {@link Document.deleteDocuments | `Document.deleteDocuments`}
    * @param operation - Parameters of the deletion operation
    *                    (default: `{}`)
    * @returns The deleted Document instance
    *
-   * @remarks If no document has actually been deleted, the returned {@link Promise} resolves to `undefined`.
+   * @remarks If the document deletion is skipped by a hook or `_preUpdate` then `undefined` is
+   * returned.
    */
-  delete(
-    operation?: InexactPartial<Omit<Document.Database.OperationOf<DocumentName, "delete">, "ids">>,
-  ): Promise<this | undefined>;
+  // Note: This uses `never` because it's unsound to try to call `Document#delete` directly.
+  delete(operation: never): Promise<this | undefined>;
 
   /**
    * Get a World-level Document of this type by its id.
    * @param documentId - The Document ID
-   * @param options    - Additional options which customize the request
+   * @param operation  - Additional options which customize the request
    * @returns The retrieved Document, or null
    */
-  static get(documentId: string, options?: InexactPartial<DatabaseGetOperation>): Document.Any | null;
+  static get(documentId: string, operation?: Document.Database.GetOptions): Document.Any | null;
 
   /**
    * A compatibility method that returns the appropriate name of an embedded collection within this Document.
@@ -517,7 +499,7 @@ declare abstract class Document<
    * // returns "items"
    * ```
    */
-  static getCollectionName(name: string): string | null;
+  static getCollectionName(name: never): string | null;
 
   /**
    * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
@@ -525,9 +507,8 @@ declare abstract class Document<
    * @returns The Collection instance of embedded Documents of the requested type
    * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
    */
-  getEmbeddedCollection<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
-    embeddedName: EmbeddedName,
-  ): Collection<Document.ConfiguredInstanceForName<EmbeddedName>>;
+  // Note: This uses `never` because it's unsound to try to call `Document#getEmbeddedCollection` directly.
+  getEmbeddedCollection(embeddedName: never): unknown;
 
   /**
    * Get an embedded document by its id from a named collection in the parent document.
@@ -537,26 +518,16 @@ declare abstract class Document<
    * @returns The retrieved embedded Document instance, or undefined
    * @throws If the embedded collection does not exist, or if strict is true and the Embedded Document could not be found.
    */
+  // Note: This uses `never` because it's unsound to try to call `Document#getEmbeddedDocument` directly.
   getEmbeddedDocument(
-    embeddedName: string,
+    embeddedName: never,
     id: string,
-    options: InexactPartial<{
-      /**
-       * Throw an Error if the requested id does not exist. See Collection#get
-       * @defaultValue `false`
-       */
-      strict: boolean;
-      /**
-       * Allow retrieving an invalid Embedded Document.
-       * @defaultValue `false`
-       */
-      invalid: boolean;
-    }>,
-  ): Document.AnyChild<this> | undefined;
+    options: Document.GetEmbeddedDocumentOptions,
+  ): Document.Any | undefined;
 
   /**
    * Create multiple embedded Document instances within this parent Document using provided input data.
-   * @see {@link Document.createDocuments}
+   * @see {@link Document.createDocuments | `Document.createDocuments`}
    * @param embeddedName - The name of the embedded Document type
    * @param data         - An array of data objects used to create multiple documents
    *                       (default: `[]`)
@@ -564,23 +535,18 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of created Document instances
    */
-  // TODO: I think we could do a better job on all the embedded methods of limiting the types here based on the
-  //   allowed embedded types of the parent (vs. allowing any document to create embedded
-  //   documents of any type)
-  createEmbeddedDocuments<
-    EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES,
-    Temporary extends boolean | undefined,
-  >(
-    embeddedName: EmbeddedName,
-    data?: Array<Document.ConstructorDataForName<Extract<EmbeddedName, Document.Type>>>,
-    operation?: InexactPartial<Document.Database.OperationOf<Extract<EmbeddedName, Document.Type>, "create">> & {
-      temporary?: Temporary;
-    },
-  ): Promise<Array<Document.ConfiguredInstanceForName<Extract<EmbeddedName, Document.Type>>> | undefined>;
+  // Note: This uses `never` because it's unsound to try to call `Document#createEmbeddedDocuments` directly.
+  // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
+  createEmbeddedDocuments(
+    embeddedName: never,
+    // Note: Not optional because `createEmbeddedDocuments("Actor")` does effectively nothing.
+    data: never,
+    operation?: never,
+  ): unknown;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
-   * @see {@link Document.updateDocuments}
+   * @see {@link Document.updateDocuments | `Document.updateDocuments`}
    * @param embeddedName - The name of the embedded Document type
    * @param updates      - An array of differential data objects, each used to update a single Document
    *                       (default: `[]`)
@@ -588,33 +554,34 @@ declare abstract class Document<
    *                       (default: `{}`)
    * @returns An array of updated Document instances
    */
-  updateEmbeddedDocuments<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
-    embeddedName: EmbeddedName,
-    updates?: Array<AnyObject>,
-    context?: Document.ModificationContext<this["parent"]>,
-  ): Promise<Array<Document.Stored<Document.ConfiguredInstanceForName<Extract<EmbeddedName, Document.Type>>>>>;
+  // Note: This uses `never` because it's unsound to try to call `Document#updateEmbeddedDocuments` directly.
+  // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
+  updateEmbeddedDocuments(
+    embeddedName: never,
+    // Note: Not optional because `updateEmbeddedDocuments("Actor")` does effectively nothing.
+    updates: never,
+    context?: never,
+  ): unknown;
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
-   * @see {@link Document.deleteDocuments}
+   * @see {@link Document.deleteDocuments | `Document.deleteDocuments`}
    * @param embeddedName - The name of the embedded Document type
    * @param ids          - An array of string ids for each Document to be deleted
    * @param operation    - Parameters of the database deletion workflow
    *                       (default: `{}`)
    * @returns An array of deleted Document instances
    */
-  deleteEmbeddedDocuments<EmbeddedName extends foundry.CONST.EMBEDDED_DOCUMENT_TYPES>(
-    embeddedName: EmbeddedName,
-    ids: Array<string>,
-    operation?: Document.Database.OperationOf<DocumentName, "delete">,
-  ): Promise<Array<Document.Stored<Document.ConfiguredInstanceForName<EmbeddedName>>>>;
+  // Note: This uses `never` because it's unsound to try to call `Document#deleteEmbeddedDocuments` directly.
+  // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
+  deleteEmbeddedDocuments(embeddedName: never, ids: Array<string>, operation?: never): unknown;
 
   /**
    * Iterate over all embedded Documents that are hierarchical children of this Document.
    * @param _parentPath - A parent field path already traversed
    * @remarks Not called within Foundry's client-side code, likely exists for server documents
    */
-  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.Any]>;
+  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
 
   /**
    * Get the value of a "flag" for this document
@@ -624,10 +591,7 @@ declare abstract class Document<
    * @param key   - The flag key
    * @returns The flag value
    */
-  getFlag<
-    S extends Document.FlagKeyOf<Document.ConfiguredFlagsForName<DocumentName>>,
-    K extends Document.FlagKeyOf<Document.FlagGetKey<Document.ConfiguredFlagsForName<DocumentName>, S>>,
-  >(scope: S, key: K): Document.GetFlag<DocumentName, S, K>;
+  getFlag(scope: never, key: never): unknown;
 
   /**
    * Assign a "flag" to this document.
@@ -647,11 +611,7 @@ declare abstract class Document<
    * @param value - The flag value
    * @returns A Promise resolving to the updated document
    */
-  setFlag<
-    S extends Document.FlagKeyOf<Document.ConfiguredFlagsForName<DocumentName>>,
-    K extends Document.FlagKeyOf<Document.FlagGetKey<Document.ConfiguredFlagsForName<DocumentName>, S>>,
-    V extends Document.GetFlag<DocumentName, S, K>,
-  >(scope: S, key: K, value: V): Promise<this>;
+  setFlag(scope: never, key: never, value: never): Promise<this>;
 
   /**
    * Remove a flag assigned to the document
@@ -659,22 +619,18 @@ declare abstract class Document<
    * @param key   - The flag key
    * @returns The updated document instance
    */
-  unsetFlag(scope: string, key: string): Promise<this>;
+  unsetFlag(scope: never, key: never): Promise<this>;
 
   /**
    * Pre-process a creation operation for a single Document instance.
    * Pre-operation events only occur for the client which requested the operation.
-   * Modifications to the pending Document instance must be performed using {@link Document#updateSource}.
+   * Modifications to the pending Document instance must be performed using {@link Document.updateSource | `Document#updateSource`}.
    * @param data    - The initial data object provided to the document creation request
    * @param options - Additional options which modify the creation request
    * @param user    - The User requesting the document creation
    * @returns Return false to exclude this Document from the creation operation
    */
-  protected _preCreate(
-    data: fields.SchemaField.AssignmentType<Schema>,
-    options: Document.PreCreateOptions<DocumentName>,
-    user: User,
-  ): Promise<boolean | void>;
+  protected _preCreate(data: never, options: never, user: User.Internal.Implementation): Promise<boolean | void>;
 
   /**
    * Post-process a creation operation for a single Document instance.
@@ -683,48 +639,44 @@ declare abstract class Document<
    * @param options - Additional options which modify the creation request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onCreate(
-    data: fields.SchemaField.InnerAssignmentType<Schema>,
-    options: Document.OnCreateOptions<DocumentName>,
-    userId: string,
-  ): void;
+  protected _onCreate(data: never, options: never, userId: string): void;
 
   /**
    * Pre-process a creation operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document#_preCreate} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@link Document._preCreate | `Document#_preCreate`} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to pending documents must mutate the documents array or alter individual document instances using
-   * {@link Document#updateSource}.
+   * {@link Document.updateSource | `Document#updateSource`}.
    * @param documents - Pending document instances ot be created
    * @param operation - Parameters of the database creation operation
    * @param user      - The User requesting the creation operation
    * @returns Return false to cancel the creation operation entirely
    */
-  protected static _preCreateOperation<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">,
-    user: User,
+  // Note: This uses `never` because it's unsound to try to do `Document._preCreateOperation` directly.
+  protected static _preCreateOperation(
+    documents: never[],
+    operation: never,
+    user: User.Internal.Implementation,
   ): Promise<boolean | void>;
 
   /**
    * Post-process a creation operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document#_onCreate} workflows.
+   * This batch-wise workflow occurs after individual {@link Document._onCreate | `Document#_onCreate`} workflows.
    *
    * @param documents - The Document instances which were created
    * @param operation - Parameters of the database creation operation
    * @param user      - The User who performed the creation operation
    */
-  protected static _onCreateOperation<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.Database.OperationOf<NoInfer<T>["metadata"]["name"], "create">,
-    user: User,
+  // Note: This uses `never` because it's unsound to try to do `Document._onCreateOperation` directly.
+  protected static _onCreateOperation(
+    documents: never,
+    operation: never,
+    user: User.Internal.Implementation,
   ): Promise<void>;
 
   /**
@@ -735,11 +687,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    * @returns A return value of false indicates the update operation should be cancelled
    */
-  protected _preUpdate(
-    changed: fields.SchemaField.AssignmentType<Schema>,
-    options: Document.PreUpdateOptions<DocumentName>,
-    user: User,
-  ): Promise<boolean | void>;
+  protected _preUpdate(changed: never, options: never, user: User.Internal.Implementation): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is updated.
@@ -748,49 +696,45 @@ declare abstract class Document<
    * @param options - Additional options which modify the update request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onUpdate(
-    changed: fields.SchemaField.InnerUpdateData<Schema>,
-    options: Document.OnUpdateOptions<DocumentName>,
-    userId: string,
-  ): void;
+  protected _onUpdate(changed: never, options: never, userId: string): void;
 
   /**
    * Pre-process an update operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document#_preUpdate} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@link Document._preUpdate | `Document#_preUpdate`} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to the requested updates are performed by mutating the data array of the operation.
-   * {@link Document#updateSource}.
+   * {@link Document.updateSource | `Document#updateSource`}.
    *
    * @param documents - Document instances to be updated
    * @param operation - Parameters of the database update operation
    * @param user      - The User requesting the update operation
    * @returns Return false to cancel the update operation entirely
    */
-  protected static _preUpdateOperation<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
-    user: User,
+  // Note: This uses `never` because it's unsound to try to do `Document._preUpdateOperation` directly.
+  protected static _preUpdateOperation(
+    documents: never,
+    operation: never,
+    user: User.Internal.Implementation,
   ): Promise<boolean | void>;
 
   /**
    * Post-process an update operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document#_onUpdate} workflows.
+   * This batch-wise workflow occurs after individual {@link Document._onUpdate | `Document#_onUpdate`} workflows.
    *
    * @param documents - The Document instances which were updated
    * @param operation - Parameters of the database update operation
    * @param user      - The User who performed the update operation
    */
-  protected static _onUpdateOperation<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "update">,
-    user: User,
+  // Note: This uses `never` because it's unsound to try to do `Document._onUpdateOperation` directly.
+  protected static _onUpdateOperation(
+    documents: never,
+    operation: never,
+    user: User.Internal.Implementation,
   ): Promise<void>;
 
   /**
@@ -800,7 +744,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
-  protected _preDelete(options: Document.PreDeleteOptions<DocumentName>, user: User): Promise<boolean | void>;
+  protected _preDelete(options: never, user: User.Internal.Implementation): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
@@ -808,17 +752,17 @@ declare abstract class Document<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onDelete(options: Document.OnDeleteOptions<DocumentName>, userId: string): void;
+  protected _onDelete(options: never, userId: string): void;
 
   /**
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document#_preDelete} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@link Document._preDelete | `Document#_preDelete`} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to the requested deletions are performed by mutating the operation object.
-   * {@link Document#updateSource}.
+   * {@link Document.updateSource | `Document#updateSource`}.
    *
    * @param documents - Document instances to be deleted
    * @param operation - Parameters of the database update operation
@@ -826,28 +770,28 @@ declare abstract class Document<
    * @returns Return false to cancel the deletion operation entirely
    * @internal
    */
-  protected static _preDeleteOperation<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
-    user: User,
+  // Note: This uses `never` because it's unsound to try to do `Document._preDeleteOperation` directly.
+  protected static _preDeleteOperation(
+    documents: never,
+    operation: never,
+    user: User.Internal.Implementation,
   ): Promise<unknown>;
 
   /**
    * Post-process a deletion operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document#_onDelete} workflows.
+   * This batch-wise workflow occurs after individual {@link Document._onDelete | `Document#_onDelete`} workflows.
    *
    * @param documents - The Document instances which were deleted
    * @param operation - Parameters of the database deletion operation
    * @param user      - The User who performed the deletion operation
    */
-  protected static _onDeleteOperation<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Document.ToConfiguredInstance<NoInfer<T>>[],
-    operation: Document.Database.OperationOf<FixedInstanceType<NoInfer<T>>["documentName"], "delete">,
-    user: User,
+  // Note: This uses `never` because it's unsound to try to do `Document._onDeleteOperation` directly.
+  protected static _onDeleteOperation(
+    documents: never,
+    operation: never,
+    user: User.Internal.Implementation,
   ): Promise<unknown>;
 
   /**
@@ -859,17 +803,22 @@ declare abstract class Document<
    * @deprecated since v11, will be removed in v13
    * @remarks "You are accessing `Document.hasSystemData` which is deprecated. Please use `Document.hasTypeData` instead."
    */
-  static get hasSystemData(): boolean;
+  static get hasSystemData(): undefined | true;
 
   /**
    * A reusable helper for adding migration shims.
    */
-  protected static _addDataFieldShims(data: object, shims: object, options: object): unknown;
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
 
   /**
    * A reusable helper for adding a migration shim
    */
-  protected static _addDataFieldShim(data: object, oldKey: string, newKey: string, options?: object): unknown;
+  protected static _addDataFieldShim(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
   /**
    * Define a simple migration from one field name to another.
@@ -881,10 +830,10 @@ declare abstract class Document<
    * @internal
    */
   protected static _addDataFieldMigration(
-    data: object,
+    data: AnyObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: object) => any,
+    apply?: (data: AnyObject) => unknown,
   ): unknown;
 
   protected static _logDataFieldMigration(
@@ -897,9 +846,9 @@ declare abstract class Document<
    * @deprecated since v12, will be removed in v14
    * @remarks `"The Document._onCreateDocuments static method is deprecated in favor of Document._onCreateOperation"`
    */
-  protected static _onCreateDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
+  // Note: This uses `never` because it's unsound to try to do `Document._onCreateDocuments` directly.
+  protected static _onCreateDocuments(
+    documents: never,
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<void>;
 
@@ -907,9 +856,9 @@ declare abstract class Document<
    * @deprecated since v12, will be removed in v14
    * @remarks `"The Document._onUpdateDocuments static method is deprecated in favor of Document._onUpdateOperation"`
    */
-  protected static _onUpdateDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
+  // Note: This uses `never` because it's unsound to try to do `Document._onUpdateDocuments` directly.
+  protected static _onUpdateDocuments(
+    documents: never,
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
 
@@ -917,67 +866,36 @@ declare abstract class Document<
    * @deprecated since v12, will be removed in v14
    * @remarks `"The Document._onDeleteDocuments static method is deprecated in favor of Document._onDeleteOperation"`
    */
-  protected static _onDeleteDocuments<T extends Document.AnyConstructor>(
-    this: T,
-    documents: Array<Document.ToConfiguredInstance<NoInfer<T>>>,
+  // Note: This uses `never` because it's unsound to try to do `Document._onDeleteDocuments` directly.
+  protected static _onDeleteDocuments(
+    documents: never,
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
+
+  static " fvtt_types_internal_document_name_static": Document.Type;
+
+  " fvtt_types_internal_document_name": DocumentName;
+  " fvtt_types_internal_document_schema": Schema;
+  " fvtt_types_internal_document_parent": Parent;
 }
 
-declare abstract class AnyDocument extends Document<any, any, any> {
-  constructor(arg0: never, ...args: never[]);
+// An empty schema is the most accurate because index signatures are stripped.
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+declare abstract class AnyDocument extends Document<Document.Type, {}, Document.Any | null> {
+  constructor(...args: never);
 
-  // Note(LukeAbby): Specifically adding the `DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
-  // This is odd but probably is because it bails from looking up the parent class properties at times or something.
-  static [Document.Internal.DocumentBrand]: true;
-
-  flags?: unknown;
-
-  getFlag(scope: never, key: never): any;
-}
-
-// Note(LukeAbby): The point of this class is to show up in intellisense.
-// When something fails to be configured it should be replaced with `typeof ConfigurationFailure & typeof Item` or whatever the relevant class is.
-// This helps to minimize the number of errors that appears in a repo with broken configuration as they can be very misleading and confusing.
-declare abstract class ConfigurationFailure extends AnyDocument {
-  static [Document.Internal.DocumentBrand]: true;
+  // Note(LukeAbby): This uses `object` instead of `AnyObject` to avoid more thorough evaluation of
+  // the involved types which can cause a loop.
+  _source: object;
 }
 
 declare namespace Document {
-  /** Any Document, except for Settings */
   interface Any extends AnyDocument {}
+  interface AnyStored extends Stored<Any> {}
+  interface AnyValid extends AnyDocument {}
   interface AnyConstructor extends Identity<typeof AnyDocument> {}
 
-  type ConfigurationFailureClass = typeof ConfigurationFailure;
-  type ConfigurationFailureInstance = ConfigurationFailure;
-
-  type Type =
-    | "ActiveEffect"
-    | "ActorDelta"
-    | "Actor"
-    | "Adventure"
-    | "Card"
-    | "Cards"
-    | "ChatMessage"
-    | "Combat"
-    | "Combatant"
-    | "FogExploration"
-    | "Folder"
-    | "Item"
-    | "JournalEntryPage"
-    | "JournalEntry"
-    | "Macro"
-    | "PlaylistSound"
-    | "Playlist"
-    | "RegionBehavior"
-    | "Region"
-    | "RollTable"
-    | "Scene"
-    | "Setting"
-    | "TableResult"
-    | "User"
-    // All placeables also have a corresponding document class.
-    | PlaceableType;
+  type Type = CONST.ALL_DOCUMENT_TYPES;
 
   type PlaceableType =
     | "AmbientLight"
@@ -990,8 +908,84 @@ declare namespace Document {
     | "Token"
     | "Wall";
 
+  type PrimaryType = CONST.PRIMARY_DOCUMENT_TYPES;
+  type EmbeddedType = CONST.EMBEDDED_DOCUMENT_TYPES;
+  type WorldType = CONST.WORLD_DOCUMENT_TYPES;
+  type CompendiumType = CONST.COMPENDIUM_DOCUMENT_TYPES;
+
+  type WithSubTypes = WithSystem | "Folder" | "Macro" | "TableResult";
+
+  type WithSystem =
+    | "ActiveEffect"
+    | "ActorDelta"
+    | "Actor"
+    | "Card"
+    | "Cards"
+    | "ChatMessage"
+    | "Combat"
+    | "Combatant"
+    | "Item"
+    | "JournalEntryPage"
+    | "RegionBehavior";
+
+  // The `data` parameter has a default of `{}`. This means it's optional in that scenario.
+  // Note(LukeAbby): Update when `ParameterWithDefaults` is added.
+  // `CreateData` also should be updated to allow `undefined` directly.
+  type ConstructorParameters<CreateData extends object | undefined, Parent extends Document.Any | null> = [
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    {},
+  ] extends [CreateData]
+    ? [data?: CreateData, context?: Document.ConstructionContext<Parent>]
+    : [data: CreateData, context?: Document.ConstructionContext<Parent>];
+
   type CoreTypesForName<Name extends Type> = string &
-    GetKey<Document.Internal.SimpleMetadata<Name>, "coreTypes", ["base"]>[number];
+    GetKey<Document.MetadataFor<Name>, "coreTypes", [CONST.BASE_DOCUMENT_TYPE]>[number];
+
+  type ConfiguredSubTypesOf<Name extends Type> = Name extends "ActorDelta"
+    ? ConfiguredSubTypesOf<"Actor">
+    : string & (keyof GetKey<DataModelConfig, Name, unknown> | keyof GetKey<SourceConfig, Name, unknown>);
+
+  type SubTypesOf<Name extends Type> = Name extends "ActorDelta"
+    ? SubTypesOf<"Actor">
+    :
+        | Document.CoreTypesForName<Name>
+        | ConfiguredSubTypesOf<Name>
+        | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubtype : never);
+
+  type ModuleSubtype = `${string}.${string}` & {};
+
+  type OfType<Name extends WithSubTypes, SubType extends SubTypesOf<Name>> =
+    | (Name extends "ActiveEffect" ? ActiveEffect.OfType<SubType & ActiveEffect.SubType> : never)
+    | (Name extends "ActorDelta" ? ActorDelta.OfType<SubType & ActorDelta.SubType> : never)
+    | (Name extends "Actor" ? Actor.OfType<SubType & Actor.SubType> : never)
+    | (Name extends "Card" ? Card.OfType<SubType & Card.SubType> : never)
+    | (Name extends "Cards" ? Cards.OfType<SubType & Cards.SubType> : never)
+    | (Name extends "ChatMessage" ? ChatMessage.OfType<SubType & ChatMessage.SubType> : never)
+    | (Name extends "Combat" ? Combat.OfType<SubType & Combat.SubType> : never)
+    | (Name extends "Combatant" ? Combatant.OfType<SubType & Combatant.SubType> : never)
+    | (Name extends "Folder" ? Folder.OfType<SubType & Folder.SubType> : never)
+    | (Name extends "Item" ? Item.OfType<SubType & Item.SubType> : never)
+    | (Name extends "JournalEntryPage" ? JournalEntryPage.OfType<SubType & JournalEntryPage.SubType> : never)
+    | (Name extends "Macro" ? Macro.OfType<SubType & Macro.SubType> : never)
+    | (Name extends "RegionBehavior" ? RegionBehavior.OfType<SubType & RegionBehavior.SubType> : never)
+    | (Name extends "TableResult" ? TableResult.OfType<SubType & TableResult.SubType> : never);
+
+  /**
+   * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
+   * A module can provide its own custom type though it is always of the form `${moduleName}.${subType}` so the `.` is a pretty
+   * strong indicator.
+   *
+   * `UnknownSourceData` covers the case where it's configured without a data model.
+   * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
+   */
+  interface UnknownSourceData extends AnyObject {
+    type: ModuleSubtype;
+  }
+
+  /**
+   * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
+   */
+  type UnknownSystem = UnknownSourceData | TypeDataField.UnknownTypeDataModel | DataModel.UnknownDataModel;
 
   // TODO: Probably a way to auto-determine this
   type SystemType =
@@ -1006,14 +1000,73 @@ declare namespace Document {
     | "JournalEntryPage"
     | "RegionBehavior";
 
-  type EmbeddableNamesFor<ConcreteDocument extends Document.Internal.Instance.Any> = {
-    [K in keyof ConfiguredDocuments]: IsParentOf<
-      ConcreteDocument,
-      FixedInstanceType<ConfiguredDocuments[K]>
-    > extends true
-      ? K
-      : never;
-  };
+  /**
+   * To be deleted before merging documents-v2. This was from an older version of the template.
+   */
+  type EmbeddableNamesFor<Metadata extends Document.Metadata.Any> = Document.Type & ConcreteKeys<Metadata["embedded"]>;
+
+  /**
+   * To be deleted before merging documents-v2. This was from an older version of the template.
+   */
+  type CollectionNamesFor<Metadata extends Document.Metadata.Any> =
+    | EmbeddableNamesFor<Metadata>
+    | ValueOf<Metadata["embedded"]>;
+
+  namespace Embedded {
+    type CollectionNameFor<
+      Embedded extends Document.Metadata.Embedded,
+      CollectionName extends Document.Embedded.CollectionName<Embedded>,
+    > = Extract<GetKey<Metadata.Embedded, CollectionName, CollectionName>, Document.Type>;
+
+    type DocumentFor<
+      Embedded extends Document.Metadata.Embedded,
+      CollectionName extends Document.Embedded.CollectionName<Embedded>,
+    > = Document.ImplementationFor<CollectionNameFor<Embedded, CollectionName>>;
+
+    type CollectionFor<
+      Parent extends Document.Any,
+      Embedded extends Document.Metadata.Embedded,
+      CollectionName extends Document.Embedded.CollectionName<Embedded>,
+    > = EmbeddedCollection<DocumentFor<Embedded, CollectionName>, Parent>;
+
+    type CollectionName<Embedded extends Document.Metadata.Embedded> = {
+      [K in keyof Embedded]: K extends Document.Type ? Extract<K | Embedded[K], string> : never;
+    }[keyof Embedded];
+  }
+
+  /**
+   * @internal
+   */
+  interface _WorldCollectionMap {
+    Actor: Actors.Configured;
+    Cards: CardStacks;
+    Combat: CombatEncounters;
+    FogExploration: FogExplorations;
+    Folder: Folders;
+    Item: Items;
+    JournalEntry: Journal;
+    Macro: Macros;
+    ChatMessage: Messages;
+    Playlist: Playlists;
+    Scene: Scenes;
+    Setting: WorldSettings;
+    RollTable: RollTables;
+    User: Users;
+  }
+
+  type WorldCollectionFor<Name extends Document.WorldType> = _WorldCollectionMap[Name];
+
+  // Note(LukeAbby): Will be updated with the CONFIG revamp.
+  type ConfiguredCollectionClass<Name extends Document.Type> = CONFIG extends {
+    readonly [K in Name]: {
+      readonly documentClass?: infer DocumentClass;
+    };
+  }
+    ? DocumentClass
+    : never;
+
+  // Note(LukeAbby): Will be updated with the CONFIG revamp.
+  type ConfiguredCollection<Name extends Document.Type> = FixedInstanceType<ConfiguredCollectionClass<Name>>;
 
   type IsParentOf<
     ParentDocument extends Document.Internal.Instance.Any,
@@ -1025,19 +1078,8 @@ declare namespace Document {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
-    const DocumentBrand: unique symbol;
-
-    const DocumentName: unique symbol;
-    const Schema: unique symbol;
-    const Parent: unique symbol;
-
-    // This metadata is called "simple" because where there should be proper references to the
-    // current document there is instead `Document.Any`. This helps simplify loops.
-    // Use cases should be limited to when these references aren't needed.
-    type SimpleMetadata<Name extends Document.Type> = ConfiguredMetadata<Document.Any>[Name];
-
-    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
-      [DocumentBrand]: true;
+    type Constructor = (abstract new (...args: never) => Instance.Any) & {
+      " fvtt_types_internal_document_name_static": Document.Type;
     };
 
     interface Instance<
@@ -1045,124 +1087,233 @@ declare namespace Document {
       Schema extends DataSchema,
       Parent extends Document.Internal.Instance.Any | null,
     > {
-      [DocumentName]: DocumentName;
-      [Schema]: Schema;
-      [Parent]: Parent;
+      " fvtt_types_internal_document_name": DocumentName;
+      " fvtt_types_internal_document_schema": Schema;
+      " fvtt_types_internal_document_parent": Parent;
     }
 
-    type DocumentNameFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof DocumentName];
+    type DocumentNameFor<ConcreteInstance extends Instance.Any> =
+      ConcreteInstance[" fvtt_types_internal_document_name"];
 
-    type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof Schema];
+    type SchemaFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[" fvtt_types_internal_document_schema"];
 
-    type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[typeof Parent];
+    type ParentFor<ConcreteInstance extends Instance.Any> = ConcreteInstance[" fvtt_types_internal_document_parent"];
 
     namespace Instance {
       interface Any extends Instance<any, any, any> {}
 
       type Complete<T extends Any> = T extends Document.Any ? T : never;
     }
+
+    type OfType<Configured, Document extends Document.Any> = Configured extends { document: infer D }
+      ? D extends Document
+        ? D
+        : FixedInstanceType<ConfigurationFailure[Document["documentName"]]>
+      : Document;
+
+    type SystemMap<Name extends Document.WithSystem> = _SystemMap<
+      Name,
+      GetKey<DataModelConfig, Name>,
+      GetKey<SourceConfig, Name>
+    >;
+
+    type _SystemMap<Name extends Document.WithSystem, DataModel, SourceData> = {
+      [SubType in SubTypesOf<Name>]: DataModel extends {
+        [K in SubType]: abstract new (...args: infer _) => infer Model;
+      }
+        ? Model
+        : SourceData extends {
+              [K in SubType]: infer Source;
+            }
+          ? Source
+          : SubType extends Document.ModuleSubtype
+            ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+              {}
+            : UnknownSystem;
+    };
+
+    type SystemOfType<SystemMap extends Record<SubType, object>, SubType extends string> =
+      | DiscriminatedUnion<SystemMap[SubType]>
+      | (SubType extends ModuleSubtype ? UnknownSystem : never);
   }
 
   /** Any Document, that is a child of the given parent Document. */
-  type AnyChild<Parent extends Any | null> = Document<any, any, Parent>;
+  // An empty schema is the most appropriate type due to removing index signatures.
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  type AnyChild<Parent extends Any | null> = Document<Document.Type, {}, Parent>;
 
   /**
-   * Returns the type of the constructor data for the given {@link foundry.abstract.Document}.
+   * @deprecated {@link Document.CreateDataFor | `Document.CreateDataFor`}
    */
-  type ConstructorDataFor<T extends Document.Internal.Constructor> = ConstructorDataForSchema<
+  type ConstructorDataFor<T extends Document.Internal.Constructor> = SchemaField.CreateData<
     T extends { defineSchema: () => infer R extends DataSchema } ? R : never
   >;
 
-  // TODO(LukeAbby): Actually make this distinguishable from `Document.ConstructorDataFor` and `Document.ConstructorDataForSchema`.
-  type UpdateDataFor<T extends Document.Internal.Constructor> = ConstructorDataForSchema<
+  /**
+   * Returns the type of the constructor data for the given {@link foundry.abstract.Document | `foundry.abstract.Document`}.
+   */
+  type CreateDataFor<T extends Document.Internal.Constructor> = SchemaField.CreateData<
+    T extends { defineSchema: () => infer R extends DataSchema } ? R : never
+  >;
+
+  type UpdateDataFor<T extends Document.Internal.Constructor> = SchemaField.UpdateData<
     T extends { defineSchema: () => infer R extends DataSchema } ? R : never
   >;
 
   // These helper types exist to help break a loop
-  type ConstructorDataForName<T extends Document.Type> = ConstructorData[T];
-  type UpdateDataForName<T extends Document.Type> = ConstructorData[T];
 
-  type ConstructorDataForSchema<Schema extends DataSchema> =
-    foundry.data.fields.SchemaField.InnerAssignmentType<Schema>;
+  type CreateDataForName<DocumentType extends Document.Type> =
+    | (DocumentType extends "ActiveEffect" ? ActiveEffect.CreateData : never)
+    | (DocumentType extends "ActorDelta" ? ActorDelta.CreateData : never)
+    | (DocumentType extends "Actor" ? Actor.CreateData : never)
+    | (DocumentType extends "Adventure" ? Adventure.CreateData : never)
+    | (DocumentType extends "Card" ? Card.CreateData : never)
+    | (DocumentType extends "Cards" ? Cards.CreateData : never)
+    | (DocumentType extends "ChatMessage" ? ChatMessage.CreateData : never)
+    | (DocumentType extends "Combat" ? Combat.CreateData : never)
+    | (DocumentType extends "Combatant" ? Combatant.CreateData : never)
+    | (DocumentType extends "FogExploration" ? FogExploration.CreateData : never)
+    | (DocumentType extends "Folder" ? Folder.CreateData : never)
+    | (DocumentType extends "Item" ? Item.CreateData : never)
+    | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.CreateData : never)
+    | (DocumentType extends "JournalEntry" ? JournalEntry.CreateData : never)
+    | (DocumentType extends "Macro" ? Macro.CreateData : never)
+    | (DocumentType extends "PlaylistSound" ? PlaylistSound.CreateData : never)
+    | (DocumentType extends "Playlist" ? Playlist.CreateData : never)
+    | (DocumentType extends "RegionBehavior" ? RegionBehavior.CreateData : never)
+    | (DocumentType extends "RollTable" ? RollTable.CreateData : never)
+    | (DocumentType extends "Scene" ? Scene.CreateData : never)
+    | (DocumentType extends "Setting" ? Setting.CreateData : never)
+    | (DocumentType extends "TableResult" ? TableResult.CreateData : never)
+    | (DocumentType extends "User" ? User.CreateData : never)
+    | (DocumentType extends "AmbientLight" ? AmbientLightDocument.CreateData : never)
+    | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.CreateData : never)
+    | (DocumentType extends "Drawing" ? DrawingDocument.CreateData : never)
+    | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.CreateData : never)
+    | (DocumentType extends "Note" ? NoteDocument.CreateData : never)
+    | (DocumentType extends "Region" ? RegionDocument.CreateData : never)
+    | (DocumentType extends "Tile" ? TileDocument.CreateData : never)
+    | (DocumentType extends "Token" ? TokenDocument.CreateData : never)
+    | (DocumentType extends "Wall" ? WallDocument.CreateData : never);
+
+  type UpdateDataForName<DocumentType extends Document.Type> =
+    | (DocumentType extends "ActiveEffect" ? ActiveEffect.UpdateData : never)
+    | (DocumentType extends "ActorDelta" ? ActorDelta.UpdateData : never)
+    | (DocumentType extends "Actor" ? Actor.UpdateData : never)
+    | (DocumentType extends "Adventure" ? Adventure.UpdateData : never)
+    | (DocumentType extends "Card" ? Card.UpdateData : never)
+    | (DocumentType extends "Cards" ? Cards.UpdateData : never)
+    | (DocumentType extends "ChatMessage" ? ChatMessage.UpdateData : never)
+    | (DocumentType extends "Combat" ? Combat.UpdateData : never)
+    | (DocumentType extends "Combatant" ? Combatant.UpdateData : never)
+    | (DocumentType extends "FogExploration" ? FogExploration.UpdateData : never)
+    | (DocumentType extends "Folder" ? Folder.UpdateData : never)
+    | (DocumentType extends "Item" ? Item.UpdateData : never)
+    | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.UpdateData : never)
+    | (DocumentType extends "JournalEntry" ? JournalEntry.UpdateData : never)
+    | (DocumentType extends "Macro" ? Macro.UpdateData : never)
+    | (DocumentType extends "PlaylistSound" ? PlaylistSound.UpdateData : never)
+    | (DocumentType extends "Playlist" ? Playlist.UpdateData : never)
+    | (DocumentType extends "RegionBehavior" ? RegionBehavior.UpdateData : never)
+    | (DocumentType extends "RollTable" ? RollTable.UpdateData : never)
+    | (DocumentType extends "Scene" ? Scene.UpdateData : never)
+    | (DocumentType extends "Setting" ? Setting.UpdateData : never)
+    | (DocumentType extends "TableResult" ? TableResult.UpdateData : never)
+    | (DocumentType extends "User" ? User.UpdateData : never)
+    | (DocumentType extends "AmbientLight" ? AmbientLightDocument.UpdateData : never)
+    | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.UpdateData : never)
+    | (DocumentType extends "Drawing" ? DrawingDocument.UpdateData : never)
+    | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.UpdateData : never)
+    | (DocumentType extends "Note" ? NoteDocument.UpdateData : never)
+    | (DocumentType extends "Region" ? NoteDocument.UpdateData : never)
+    | (DocumentType extends "Tile" ? TileDocument.UpdateData : never)
+    | (DocumentType extends "Token" ? TokenDocument.UpdateData : never)
+    | (DocumentType extends "Wall" ? WallDocument.UpdateData : never);
+
+  /**
+   * @deprecated {@link SchemaField.CreateData | `SchemaField.CreateData`}
+   */
+  type ConstructorDataForSchema<Schema extends DataSchema> = SchemaField.CreateData<Schema>;
 
   type SystemConstructor = AnyConstructor & {
     metadata: { name: SystemType };
   };
 
-  type ConfiguredClassForName<Name extends Type> = MakeConform<
-    ConfiguredDocuments[Name],
-    Document.Internal.Constructor,
-    typeof ConfigurationFailure & DefaultDocuments[Name]
-  >;
-
-  type SubTypesOf<T extends Type> =
-    ConfiguredInstanceForName<T> extends { type: infer Types } ? Types : typeof foundry.CONST.BASE_DOCUMENT_TYPE;
-
-  // NOTE(LukeAbby): This type is less DRY than it could be to avoid undue complexity in such a critical helpeer.
-  // This has _many_ times been seen to cause loops so this type is written in an intentionally more paranoid way.
-  // The reason for the verbosity and repetition is to avoid eagerly evaluating any branches that might cause a loop.
-  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
-    ConfiguredDocuments[NameFor<ConcreteDocument>],
-    Document.AnyConstructor,
-    typeof ConfigurationFailure & DefaultDocuments[NameFor<ConcreteDocument>]
+  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = ImplementationClassFor<
+    NameFor<ConcreteDocument>
   >;
 
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
-    FixedInstanceType<ConfiguredDocuments[NameFor<ConcreteDocument>]>,
-    Document.Any,
-    ConfigurationFailure & FixedInstanceType<DefaultDocuments[NameFor<ConcreteDocument>]>
+    FixedInstanceType<ConfiguredDocumentClass[NameFor<ConcreteDocument>]>,
+    Document.Any
+    // TODO(LukeAbby): Look into if there's a way to do this without causing circular loops.
+    // FixedInstanceType<ConfigurationFailure[Name]>
   >;
 
-  type ToConfiguredStored<D extends Document.Internal.Constructor> = Stored<ToConfiguredInstance<D>>;
+  type ToConfiguredStored<D extends Document.AnyConstructor> = Stored<ToConfiguredInstance<D>>;
 
-  type Stored<D extends Document.Internal.Instance.Any> = D & {
+  type Stored<D extends Document.Any> = D & {
     id: string;
     _id: string;
     _source: GetKey<D, "_source"> & { _id: string };
   };
 
-  type ToStoredIf<
-    D extends Document.Internal.Constructor,
-    Temporary extends boolean | undefined,
-  > = Temporary extends true ? ToConfiguredStored<D> : ToConfiguredInstance<D>;
-
-  type Temporary<D extends Document.Internal.Instance.Any> = D extends Stored<infer U> ? U : D;
-
-  type NameFor<ConcreteDocument extends Document.Internal.Constructor> = ConcreteDocument extends {
-    readonly metadata: { readonly name: infer Name extends Type };
-  }
-    ? Name
-    : never;
-
-  type ConfiguredInstanceForName<Name extends Type> = MakeConform<
-    FixedInstanceType<ConfiguredDocuments[Name]>,
-    Document.Any
+  type Invalid<D extends Document.Any> = SimpleMerge<
+    D,
+    {
+      id: string;
+      _id: string;
+      _source: object;
+      system: object;
+    }
   >;
 
-  type ConfiguredObjectClassForName<Name extends PlaceableType> = CONFIG[Name]["objectClass"];
-  type ConfiguredObjectInstanceForName<Name extends PlaceableType> = FixedInstanceType<CONFIG[Name]["objectClass"]>;
+  type ToStored<D extends Document.AnyConstructor> = Stored<FixedInstanceType<D>>;
+
+  type ToStoredIf<D extends Document.AnyConstructor, Temporary extends boolean | undefined> = Temporary extends true
+    ? FixedInstanceType<D>
+    : ToConfiguredStored<D>;
+
+  /** @deprecated {@link Document.TemporaryIf | `Document.TemporaryIf`} */
+  type StoredIf<D extends Document.Any, Temporary extends boolean | undefined> = TemporaryIf<D, Temporary>;
+
+  type TemporaryIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true
+    ? D
+    : Stored<D>;
+
+  type Temporary<D extends Document.Any> = D extends Stored<infer U> ? U : D;
+
+  type NameFor<ConcreteDocument extends Document.Internal.Constructor> =
+    ConcreteDocument[" fvtt_types_internal_document_name_static"];
+
+  type ImplementationFor<Name extends Type> = ConfiguredDocumentInstance[Name];
+  type ImplementationClassFor<Name extends Type> = ConfiguredDocumentClass[Name];
+
+  type ObjectClassFor<Name extends PlaceableType> = CONFIG[Name]["objectClass"];
+  type ObjectFor<Name extends PlaceableType> = FixedInstanceType<CONFIG[Name]["objectClass"]>;
+
+  /**
+   * @deprecated {@link ObjectClassFor | `ObjectClassFor`}
+   */
+  type ConfiguredObjectClassForName<Name extends PlaceableType> = ObjectClassFor<Name>;
+
+  /**
+   * @deprecated {@link ObjectFor | `ObjectFor`}
+   */
+  type ConfiguredObjectInstanceForName<Name extends PlaceableType> = ObjectFor<Name>;
 
   type ConfiguredDataForName<Name extends Type> = GetKey<DataConfig, Name, EmptyObject>;
 
   type ConfiguredSourceForName<Name extends Type> = GetKey<SourceConfig, Name, EmptyObject>;
 
-  type ConfiguredFlagsForName<Name extends Type> = GetKey<FlagConfig, Name, EmptyObject>;
-
-  type ToObjectFalseType<T extends Document.Internal.Instance.Any> = T extends {
-    toObject: (source: false) => infer U;
-  }
-    ? U
-    : T;
+  // The type `{}` is useful here because in an intersection it reduces down to nothing unlike `EmptyObject`.
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  type ConfiguredFlagsForName<Name extends Type> = GetKey<FlagConfig, Name, {}>;
 
   type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
     ConcreteDocument extends Internal.Instance<infer _1, infer Schema, infer _2> ? Schema : never;
 
-  type MetadataFor<ConcreteDocument extends Document.Internal.Instance.Any> =
-    ConfiguredMetadata<ConcreteDocument>[ConcreteDocument extends {
-      readonly documentName: infer Name extends Document.Type;
-    }
-      ? Name
-      : never];
+  type MetadataFor<Name extends Document.Type> = ConfiguredMetadata[Name];
 
   type CollectionRecord<Schema extends DataSchema> = {
     [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
@@ -1198,7 +1349,7 @@ declare namespace Document {
   type FlagGetKey<T, K extends PropertyKey> = T extends unknown ? (K extends keyof T ? T[K] : never) : never;
 
   // Note(LukeAbby): It's at times been very important for `GetFlag` to be covariant over `ConcreteSchema`.
-  // If it isn't then issues arise where the `Document` type ends up becoming invaraint.
+  // If it isn't then issues arise where the `Document` type ends up becoming invariant.
   // Currently it is actually contravariant over `ConcreteSchema` and this may cause issues (because of the usage of `keyof`).
   // Unfortunately it's not easy to avoid because the typical `GetKey` trick has issues between `never`, not defined at all, and `unknown` etc.
   type GetFlag<Name extends Document.Type, S extends string, K extends string> = FlagGetKey<
@@ -1206,12 +1357,19 @@ declare namespace Document {
     K
   >;
 
+  interface CoreFlags {
+    core?: {
+      sheetLock?: boolean;
+      sheetClass?: string;
+    };
+  }
+
   interface ConstructionContext<Parent extends Document.Any | null> {
     /**
      * The parent Document of this one, if this one is embedded
      * @defaultValue `null`
      */
-    parent?: Parent | undefined;
+    parent?: Parent | null | undefined;
 
     /**
      * The compendium collection ID which contains this Document, if any
@@ -1315,85 +1473,115 @@ declare namespace Document {
     deleteAll?: boolean | undefined;
   }
 
+  interface CloneContext<Save extends boolean | undefined = boolean | undefined> {
+    /**
+     * Save the clone to the World database?
+     * @defaultValue `false`
+     */
+    save?: Save;
+
+    /**
+     * Keep the same ID of the original document
+     * @defaultValue `false`
+     */
+    keepId?: boolean | undefined;
+
+    /**
+     * Track the clone source
+     * @defaultValue `false`
+     */
+    addSource?: boolean | undefined;
+  }
+
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
+  /* eslint-disable @typescript-eslint/no-deprecated */
+  /** @deprecated Use {@link Database.PreCreateOptions | `Database.PreCreateOptions`} */
   type PreCreateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "create">,
     "data" | "noHook" | "pack" | "parent"
   >;
+
+  /** @deprecated Use {@link Database.CreateOptions | `Database.CreateOptions`}  */
   type OnCreateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "create">,
     "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
+  /** @deprecated Use {@link Database.PreUpdateOptions | `Database.PreUpdateOperation`}  */
   type PreUpdateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "update">,
     "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
   >;
+
+  /** @deprecated Use {@link Database.UpdateOptions | `Database.OnUpdateOperation`} */
   type OnUpdateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "update">,
     "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
+  /** @deprecated Use {@link Database.PreDeleteOperationInstance | `Database.PreDeleteOperationInstance`} */
   type PreDeleteOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "delete">,
     "ids" | "deleteAll" | "noHook" | "pack" | "parent"
   >;
+
+  /** @deprecated Use {@link Database.DeleteOptions | `Database.OnDeleteOptions`} */
   type OnDeleteOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "delete">,
     "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
+  /** @deprecated Use {@link Database.PreCreateOptions | `Database.PreCreateOptions`} or {@link Database.PreUpdateOptions | `Database.PreUpdateOperation`}*/
   type PreUpsertOptions<Name extends Type> = PreCreateOptions<Name> | PreUpdateOptions<Name>;
+
+  /** @deprecated Use {@link Database.CreateOptions | `Database.CreateOptions`} or {@link Database.UpdateOptions | `Database.OnUpdateOperation`} */
   type OnUpsertOptions<Name extends Type> = OnCreateOptions<Name> | OnUpdateOptions<Name>;
+  /* eslint-enable @typescript-eslint/no-deprecated */
 
   interface Metadata<out ThisType extends Document.Any> {
     readonly name: ThisType["documentName"];
     readonly collection: string;
-    readonly indexed?: boolean | undefined;
-    readonly compendiumIndexFields?: readonly string[] | undefined;
+    readonly indexed: boolean;
+    readonly compendiumIndexFields: readonly string[];
     readonly label: string;
     readonly coreTypes: readonly string[];
-    readonly embedded: Record<string, string>;
-    readonly permissions: {
-      create: string | ToMethod<(user: User, doc: ThisType, data: Document.ConstructorDataForName<Type>) => boolean>;
-      update: string | ToMethod<(user: User, doc: ThisType, data: Document.UpdateDataForName<Type>) => boolean>;
-      delete: string | ToMethod<(user: User, doc: ThisType, data: EmptyObject) => boolean>;
+    readonly embedded: {
+      [DocumentType in Document.Type]?: string;
     };
-    readonly preserveOnImport?: readonly string[] | undefined;
-    readonly schemaVersion: string | undefined;
-    readonly labelPlural: string; // This is not set for the Document class but every class that implements Document actually provides it.
-    readonly types: readonly string[];
-    readonly hasSystemData: boolean;
+    readonly permissions: {
+      create: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
+      update: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
+      delete: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: EmptyObject) => boolean>;
+    };
+    readonly preserveOnImport: readonly string[];
+    readonly schemaVersion?: string | undefined;
+    readonly labelPlural?: string; // This is not set for the Document class but every class that implements Document actually provides it.
+    readonly types?: readonly string[];
+    readonly hasSystemData?: boolean;
   }
 
   namespace Metadata {
     interface Any extends Metadata<any> {}
 
-    export interface Default {
-      name: "Document";
-      collection: "documents";
-      label: "DOCUMENT.Document";
-      coreTypes: [typeof foundry.CONST.BASE_DOCUMENT_TYPE];
-      types: [];
-      embedded: EmptyObject;
-      hasSystemData: false;
-      permissions: {
+    interface Default {
+      readonly name: "Document";
+      readonly collection: "documents";
+      readonly indexed: false;
+      readonly compendiumIndexFields: [];
+      readonly label: "DOCUMENT.Document";
+      readonly coreTypes: [CONST.BASE_DOCUMENT_TYPE];
+      readonly embedded: EmptyObject;
+      readonly permissions: {
         create: "ASSISTANT";
         update: "ASSISTANT";
         delete: "ASSISTANT";
       };
-      pack: null;
+      readonly preserveOnImport: ["_id", "sort", "ownership"];
     }
-  }
 
-  /**
-   * @deprecated {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
-   */
-  type DatabaseOperationsFor<
-    Name extends Document.Type,
-    ConcreteOperation extends Document.Database.Operation,
-  > = Document.Database.OperationOf<Name, ConcreteOperation>;
+    interface Embedded extends Identity<{ [K in Document.Type]?: string }> {}
+  }
 
   type ConfiguredSheetClassFor<Name extends Document.Type> = MakeConform<
     GetKey<GetKey<CONFIG, Name>, "sheetClass">,
@@ -1424,44 +1612,555 @@ declare namespace Document {
   namespace Database {
     type Operation = "create" | "update" | "delete";
 
-    /* eslint-disable @typescript-eslint/no-empty-object-type */
-    interface Operations<
-      T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
-      ExtraCreateOptions extends AnyObject = {},
-      ExtraUpdateOptions extends AnyObject = {},
-      ExtraDeleteOptions extends AnyObject = {},
-    > {
-      create: DatabaseCreateOperation<T> & InexactPartial<ExtraCreateOptions>;
-      update: DatabaseUpdateOperation<T> & InexactPartial<ExtraUpdateOptions>;
-      delete: DatabaseDeleteOperation & InexactPartial<ExtraDeleteOptions>;
+    interface GetOptions {
+      pack?: string | null;
     }
-    /* eslint-enable @typescript-eslint/no-empty-object-type */
+
+    /** Used for {@link Document.createDocuments | `Document.createDocuments`} */
+    type CreateOperation<Op extends DatabaseCreateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;
+
+    /** Used for {@link Document.update | `Document.update`} */
+    type UpdateOperation<Op extends DatabaseUpdateOperation> = InexactPartial<Omit<Op, "updates">>;
+
+    /** Used for {@link Document.delete | `Document.delete`} */
+    type DeleteOperation<Op extends DatabaseDeleteOperation> = InexactPartial<Omit<Op, "ids">>;
+
+    /** Used for {@link Document._preCreateOperation | `Document._preCreateOperation`} */
+    type PreCreateOperationStatic<Op extends DatabaseCreateOperation> = InexactPartial<
+      Op,
+      Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "renderSheet" | "data" | "noHook" | "pack" | "parent">
+    >;
+
+    /** Used for {@link Document._preCreate | `Document#_preCreate`} */
+    type PreCreateOptions<Op extends DatabaseCreateOperation> = Omit<
+      PreCreateOperationStatic<Op>,
+      "data" | "noHook" | "pack" | "parent"
+    >;
+
+    /** Used for {@link Document._onCreate | `Document#_onCreate`} */
+    type CreateOptions<Op extends DatabaseCreateOperation> = Omit<
+      Op,
+      "data" | "pack" | "parentUuid" | "syntheticActorUpdate"
+    >;
+
+    /** Used for {@link Document.updateDocuments | `Document.updateDocuments`} */
+    type UpdateDocumentsOperation<Op extends DatabaseUpdateOperation> = NullishProps<
+      Omit<Op, "updates" | "modifiedTime">
+    >;
+
+    /** Used for {@link Document.update | `Document#update`} */
+    type UpdateOperationInstance<Op extends DatabaseUpdateOperation> = InexactPartial<
+      Omit<Op, "updates" | "parent" | "pack">
+    >;
+
+    /** Used for {@link Document._preUpdateOperation | `Document._preUpdateOperation`} */
+    type PreUpdateOperationStatic<Op extends DatabaseUpdateOperation> = InexactPartial<
+      Op,
+      Exclude<
+        AllKeysOf<Op>,
+        "modifiedTime" | "diff" | "recursive" | "render" | "updates" | "restoreDelta" | "noHook" | "pack" | "parent"
+      >
+    >;
+
+    /** Used for {@link Document._preUpdate | `Document#_preUpdate`} */
+    type PreUpdateOptions<Op extends DatabaseUpdateOperation> = Omit<
+      PreUpdateOperationStatic<Op>,
+      "updates" | "restoreDelta" | "noHook" | "pack" | "parent"
+    >;
+
+    /** Used for {@link Document._onUpdate | `Document#_onUpdate`} */
+    type UpdateOptions<Op extends DatabaseUpdateOperation> = Omit<
+      Op,
+      "updates" | "pack" | "parentUuid" | "syntheticActorUpdate"
+    >;
+
+    /** Used for {@link Document.deleteDocuments | `Document.deleteDocuments`} */
+    type DeleteDocumentsOperation<Op extends DatabaseDeleteOperation> = NullishProps<Omit<Op, "ids" | "modifiedTime">>;
+
+    /** Used for {@link Document.delete | `Document.delete`} */
+    type DeleteOperationInstance<Op extends DatabaseDeleteOperation> = InexactPartial<
+      Omit<Op, "ids" | "parent" | "pack">
+    >;
+
+    /** Used for {@link Document._preDeleteOperation | `Document._preDeleteOperation`} */
+    type PreDeleteOperationStatic<Op extends DatabaseDeleteOperation> = InexactPartial<
+      Op,
+      Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "ids" | "deleteAll" | "noHook" | "pack" | "parent">
+    >;
+
+    /** Used for {@link Document._preDelete | `Document#_preDelete`} */
+    type PreDeleteOperationInstance<Op extends DatabaseDeleteOperation> = Omit<
+      InexactPartial<Op, Exclude<AllKeysOf<Op>, "modifiedTime" | "render">>,
+      "ids" | "deleteAll" | "noHook" | "pack" | "parent"
+    >;
+
+    /** Used for {@link Document._onDelete | `Document#_onDelete`} */
+    type DeleteOptions<Op extends DatabaseDeleteOperation> = Omit<
+      Op,
+      "ids" | "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
+    >;
 
     /**
      * This is a helper type that gets the right DatabaseOperation (including the
      * proper options) for a particular Document type.
+     *
+     * @deprecated This is no longer used internally inside fvtt-types. If you have use for it please file an issue.
      */
-    type OperationOf<
-      T extends Document.Type,
-      Operation extends Database.Operation,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-    > = DatabaseOperationMap[T][Operation];
+    type OperationOf<T extends Document.Type, Operation extends Database.Operation> =
+      | (Operation extends "create" ? DatabaseOperationCreateMap[T] : never)
+      | (Operation extends "update" ? DatabaseOperationUpdateMap[T] : never)
+      | (Operation extends "delete" ? DatabaseOperationDeleteMap[T] : never);
+
+    /**
+     * @deprecated See individual document's namespaces.
+     */
+    interface Operations<
+      _T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
+      _ExtraCreateOptions extends AnyObject = any,
+      _ExtraUpdateOptions extends AnyObject = any,
+      _ExtraDeleteOptions extends AnyObject = any,
+    > {
+      create: AnyObject;
+      update: AnyObject;
+      delete: AnyObject;
+    }
+
+    type CreateForName<DocumentType extends Document.Type> =
+      | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.Create : never)
+      | (DocumentType extends "ActorDelta" ? ActorDelta.Database.Create : never)
+      | (DocumentType extends "Actor" ? Actor.Database.Create : never)
+      | (DocumentType extends "Adventure" ? Adventure.Database.Create : never)
+      | (DocumentType extends "Card" ? Card.Database.Create : never)
+      | (DocumentType extends "Cards" ? Cards.Database.Create : never)
+      | (DocumentType extends "ChatMessage" ? ChatMessage.Database.Create : never)
+      | (DocumentType extends "Combat" ? Combat.Database.Create : never)
+      | (DocumentType extends "Combatant" ? Combatant.Database.Create : never)
+      | (DocumentType extends "FogExploration" ? FogExploration.Database.Create : never)
+      | (DocumentType extends "Folder" ? Folder.Database.Create : never)
+      | (DocumentType extends "Item" ? Item.Database.Create : never)
+      | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.Create : never)
+      | (DocumentType extends "JournalEntry" ? JournalEntry.Database.Create : never)
+      | (DocumentType extends "Macro" ? Macro.Database.Create : never)
+      | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database.Create : never)
+      | (DocumentType extends "Playlist" ? Playlist.Database.Create : never)
+      | (DocumentType extends "RegionBehavior" ? RegionBehavior.Database.Create : never)
+      | (DocumentType extends "RollTable" ? RollTable.Database.Create : never)
+      | (DocumentType extends "Scene" ? Scene.Database.Create : never)
+      | (DocumentType extends "Setting" ? Setting.Database.Create : never)
+      | (DocumentType extends "TableResult" ? TableResult.Database.Create : never)
+      | (DocumentType extends "User" ? User.Database.Create : never)
+      | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Database.Create : never)
+      | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Database.Create : never)
+      | (DocumentType extends "Drawing" ? DrawingDocument.Database.Create : never)
+      | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Database.Create : never)
+      | (DocumentType extends "Note" ? NoteDocument.Database.Create : never)
+      | (DocumentType extends "Region" ? RegionDocument.Database.Create : never)
+      | (DocumentType extends "Tile" ? TileDocument.Database.Create : never)
+      | (DocumentType extends "Token" ? TokenDocument.Database.Create : never)
+      | (DocumentType extends "Wall" ? WallDocument.Database.Create : never);
+
+    type UpdateOperationForName<DocumentType extends Document.Type> =
+      | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.UpdateOperation : never)
+      | (DocumentType extends "ActorDelta" ? ActorDelta.Database.UpdateOperation : never)
+      | (DocumentType extends "Actor" ? Actor.Database.UpdateOperation : never)
+      | (DocumentType extends "Adventure" ? Adventure.Database.UpdateOperation : never)
+      | (DocumentType extends "Card" ? Card.Database.UpdateOperation : never)
+      | (DocumentType extends "Cards" ? Cards.Database.UpdateOperation : never)
+      | (DocumentType extends "ChatMessage" ? ChatMessage.Database.UpdateOperation : never)
+      | (DocumentType extends "Combat" ? Combat.Database.UpdateOperation : never)
+      | (DocumentType extends "Combatant" ? Combatant.Database.UpdateOperation : never)
+      | (DocumentType extends "FogExploration" ? FogExploration.Database.UpdateOperation : never)
+      | (DocumentType extends "Folder" ? Folder.Database.UpdateOperation : never)
+      | (DocumentType extends "Item" ? Item.Database.UpdateOperation : never)
+      | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.UpdateOperation : never)
+      | (DocumentType extends "JournalEntry" ? JournalEntry.Database.UpdateOperation : never)
+      | (DocumentType extends "Macro" ? Macro.Database.UpdateOperation : never)
+      | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database.UpdateOperation : never)
+      | (DocumentType extends "Playlist" ? Playlist.Database.UpdateOperation : never)
+      | (DocumentType extends "RegionBehavior" ? RegionBehavior.Database.UpdateOperation : never)
+      | (DocumentType extends "RollTable" ? RollTable.Database.UpdateOperation : never)
+      | (DocumentType extends "Scene" ? Scene.Database.UpdateOperation : never)
+      | (DocumentType extends "Setting" ? Setting.Database.UpdateOperation : never)
+      | (DocumentType extends "TableResult" ? TableResult.Database.UpdateOperation : never)
+      | (DocumentType extends "User" ? User.Database.UpdateOperation : never)
+      | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "Drawing" ? DrawingDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "Note" ? NoteDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "Region" ? RegionDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "Tile" ? TileDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "Token" ? TokenDocument.Database.UpdateOperation : never)
+      | (DocumentType extends "Wall" ? WallDocument.Database.UpdateOperation : never);
+
+    type DeleteOperationForName<DocumentType extends Document.Type> =
+      | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.DeleteOperation : never)
+      | (DocumentType extends "ActorDelta" ? ActorDelta.Database.DeleteOperation : never)
+      | (DocumentType extends "Actor" ? Actor.Database.DeleteOperation : never)
+      | (DocumentType extends "Adventure" ? Adventure.Database.DeleteOperation : never)
+      | (DocumentType extends "Card" ? Card.Database.DeleteOperation : never)
+      | (DocumentType extends "Cards" ? Cards.Database.DeleteOperation : never)
+      | (DocumentType extends "ChatMessage" ? ChatMessage.Database.DeleteOperation : never)
+      | (DocumentType extends "Combat" ? Combat.Database.DeleteOperation : never)
+      | (DocumentType extends "Combatant" ? Combatant.Database.DeleteOperation : never)
+      | (DocumentType extends "FogExploration" ? FogExploration.Database.DeleteOperation : never)
+      | (DocumentType extends "Folder" ? Folder.Database.DeleteOperation : never)
+      | (DocumentType extends "Item" ? Item.Database.DeleteOperation : never)
+      | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.DeleteOperation : never)
+      | (DocumentType extends "JournalEntry" ? JournalEntry.Database.DeleteOperation : never)
+      | (DocumentType extends "Macro" ? Macro.Database.DeleteOperation : never)
+      | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database.DeleteOperation : never)
+      | (DocumentType extends "Playlist" ? Playlist.Database.DeleteOperation : never)
+      | (DocumentType extends "RegionBehavior" ? RegionBehavior.Database.DeleteOperation : never)
+      | (DocumentType extends "RollTable" ? RollTable.Database.DeleteOperation : never)
+      | (DocumentType extends "Scene" ? Scene.Database.DeleteOperation : never)
+      | (DocumentType extends "Setting" ? Setting.Database.DeleteOperation : never)
+      | (DocumentType extends "TableResult" ? TableResult.Database.DeleteOperation : never)
+      | (DocumentType extends "User" ? User.Database.DeleteOperation : never)
+      | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "Drawing" ? DrawingDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "Note" ? NoteDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "Region" ? RegionDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "Tile" ? TileDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "Token" ? TokenDocument.Database.DeleteOperation : never)
+      | (DocumentType extends "Wall" ? WallDocument.Database.DeleteOperation : never);
+
+    type CreateOptionsFor<DocumentType extends Document.Type> =
+      | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.CreateOptions : never)
+      | (DocumentType extends "ActorDelta" ? ActorDelta.Database.CreateOptions : never)
+      | (DocumentType extends "Actor" ? Actor.Database.CreateOptions : never)
+      | (DocumentType extends "Adventure" ? Adventure.Database.CreateOptions : never)
+      | (DocumentType extends "Card" ? Card.Database.CreateOptions : never)
+      | (DocumentType extends "Cards" ? Cards.Database.CreateOptions : never)
+      | (DocumentType extends "ChatMessage" ? ChatMessage.Database.CreateOptions : never)
+      | (DocumentType extends "Combat" ? Combat.Database.CreateOptions : never)
+      | (DocumentType extends "Combatant" ? Combatant.Database.CreateOptions : never)
+      | (DocumentType extends "FogExploration" ? FogExploration.Database.CreateOptions : never)
+      | (DocumentType extends "Folder" ? Folder.Database.CreateOptions : never)
+      | (DocumentType extends "Item" ? Item.Database.CreateOptions : never)
+      | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.CreateOptions : never)
+      | (DocumentType extends "JournalEntry" ? JournalEntry.Database.CreateOptions : never)
+      | (DocumentType extends "Macro" ? Macro.Database.CreateOptions : never)
+      | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database.CreateOptions : never)
+      | (DocumentType extends "Playlist" ? Playlist.Database.CreateOptions : never)
+      | (DocumentType extends "RegionBehavior" ? RegionBehavior.Database.CreateOptions : never)
+      | (DocumentType extends "RollTable" ? RollTable.Database.CreateOptions : never)
+      | (DocumentType extends "Scene" ? Scene.Database.CreateOptions : never)
+      | (DocumentType extends "Setting" ? Setting.Database.CreateOptions : never)
+      | (DocumentType extends "TableResult" ? TableResult.Database.CreateOptions : never)
+      | (DocumentType extends "User" ? User.Database.CreateOptions : never)
+      | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Database.CreateOptions : never)
+      | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Database.CreateOptions : never)
+      | (DocumentType extends "Drawing" ? DrawingDocument.Database.CreateOptions : never)
+      | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Database.CreateOptions : never)
+      | (DocumentType extends "Note" ? NoteDocument.Database.CreateOptions : never)
+      | (DocumentType extends "Region" ? RegionDocument.Database.CreateOptions : never)
+      | (DocumentType extends "Tile" ? TileDocument.Database.CreateOptions : never)
+      | (DocumentType extends "Token" ? TokenDocument.Database.CreateOptions : never)
+      | (DocumentType extends "Wall" ? WallDocument.Database.CreateOptions : never);
+
+    type UpdateOptionsFor<DocumentType extends Document.Type> =
+      | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.UpdateOptions : never)
+      | (DocumentType extends "ActorDelta" ? ActorDelta.Database.UpdateOptions : never)
+      | (DocumentType extends "Actor" ? Actor.Database.UpdateOptions : never)
+      | (DocumentType extends "Adventure" ? Adventure.Database.UpdateOptions : never)
+      | (DocumentType extends "Card" ? Card.Database.UpdateOptions : never)
+      | (DocumentType extends "Cards" ? Cards.Database.UpdateOptions : never)
+      | (DocumentType extends "ChatMessage" ? ChatMessage.Database.UpdateOptions : never)
+      | (DocumentType extends "Combat" ? Combat.Database.UpdateOptions : never)
+      | (DocumentType extends "Combatant" ? Combatant.Database.UpdateOptions : never)
+      | (DocumentType extends "FogExploration" ? FogExploration.Database.UpdateOptions : never)
+      | (DocumentType extends "Folder" ? Folder.Database.UpdateOptions : never)
+      | (DocumentType extends "Item" ? Item.Database.UpdateOptions : never)
+      | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.UpdateOptions : never)
+      | (DocumentType extends "JournalEntry" ? JournalEntry.Database.UpdateOptions : never)
+      | (DocumentType extends "Macro" ? Macro.Database.UpdateOptions : never)
+      | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database.UpdateOptions : never)
+      | (DocumentType extends "Playlist" ? Playlist.Database.UpdateOptions : never)
+      | (DocumentType extends "RegionBehavior" ? RegionBehavior.Database.UpdateOptions : never)
+      | (DocumentType extends "RollTable" ? RollTable.Database.UpdateOptions : never)
+      | (DocumentType extends "Scene" ? Scene.Database.UpdateOptions : never)
+      | (DocumentType extends "Setting" ? Setting.Database.UpdateOptions : never)
+      | (DocumentType extends "TableResult" ? TableResult.Database.UpdateOptions : never)
+      | (DocumentType extends "User" ? User.Database.UpdateOptions : never)
+      | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Database.UpdateOptions : never)
+      | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Database.UpdateOptions : never)
+      | (DocumentType extends "Drawing" ? DrawingDocument.Database.UpdateOptions : never)
+      | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Database.UpdateOptions : never)
+      | (DocumentType extends "Note" ? NoteDocument.Database.UpdateOptions : never)
+      | (DocumentType extends "Region" ? RegionDocument.Database.UpdateOptions : never)
+      | (DocumentType extends "Tile" ? TileDocument.Database.UpdateOptions : never)
+      | (DocumentType extends "Token" ? TokenDocument.Database.UpdateOptions : never)
+      | (DocumentType extends "Wall" ? WallDocument.Database.UpdateOptions : never);
+
+    type DeleteOptionsFor<DocumentType extends Document.Type> =
+      | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.DeleteOptions : never)
+      | (DocumentType extends "ActorDelta" ? ActorDelta.Database.DeleteOptions : never)
+      | (DocumentType extends "Actor" ? Actor.Database.DeleteOptions : never)
+      | (DocumentType extends "Adventure" ? Adventure.Database.DeleteOptions : never)
+      | (DocumentType extends "Card" ? Card.Database.DeleteOptions : never)
+      | (DocumentType extends "Cards" ? Cards.Database.DeleteOptions : never)
+      | (DocumentType extends "ChatMessage" ? ChatMessage.Database.DeleteOptions : never)
+      | (DocumentType extends "Combat" ? Combat.Database.DeleteOptions : never)
+      | (DocumentType extends "Combatant" ? Combatant.Database.DeleteOptions : never)
+      | (DocumentType extends "FogExploration" ? FogExploration.Database.DeleteOptions : never)
+      | (DocumentType extends "Folder" ? Folder.Database.DeleteOptions : never)
+      | (DocumentType extends "Item" ? Item.Database.DeleteOptions : never)
+      | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.DeleteOptions : never)
+      | (DocumentType extends "JournalEntry" ? JournalEntry.Database.DeleteOptions : never)
+      | (DocumentType extends "Macro" ? Macro.Database.DeleteOptions : never)
+      | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database.DeleteOptions : never)
+      | (DocumentType extends "Playlist" ? Playlist.Database.DeleteOptions : never)
+      | (DocumentType extends "RegionBehavior" ? RegionBehavior.Database.DeleteOptions : never)
+      | (DocumentType extends "RollTable" ? RollTable.Database.DeleteOptions : never)
+      | (DocumentType extends "Scene" ? Scene.Database.DeleteOptions : never)
+      | (DocumentType extends "Setting" ? Setting.Database.DeleteOptions : never)
+      | (DocumentType extends "TableResult" ? TableResult.Database.DeleteOptions : never)
+      | (DocumentType extends "User" ? User.Database.DeleteOptions : never)
+      | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Database.DeleteOptions : never)
+      | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Database.DeleteOptions : never)
+      | (DocumentType extends "Drawing" ? DrawingDocument.Database.DeleteOptions : never)
+      | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Database.DeleteOptions : never)
+      | (DocumentType extends "Note" ? NoteDocument.Database.DeleteOptions : never)
+      | (DocumentType extends "Region" ? RegionDocument.Database.DeleteOptions : never)
+      | (DocumentType extends "Tile" ? TileDocument.Database.DeleteOptions : never)
+      | (DocumentType extends "Token" ? TokenDocument.Database.DeleteOptions : never)
+      | (DocumentType extends "Wall" ? WallDocument.Database.DeleteOptions : never);
   }
+
+  interface DataFieldShimOptions {
+    /**
+     * Apply shims to embedded models?
+     */
+    warning?: string | null | undefined;
+
+    /**
+     * @remarks Foundry uses `if ("value" in options)` to determine whether to override the default value.
+     */
+    value?: unknown;
+  }
+
+  type ParentContext<Parent extends Document.Any | null> = Parent extends null
+    ? {
+        /** A parent document within which the created Document should belong */
+        parent?: Parent | undefined;
+      }
+    : {
+        /** A parent document within which the created Document should belong */
+        parent: Parent;
+      };
+
+  type DefaultNameContext<SubType extends string, Parent extends Document.Any | null> = {
+    /** The sub-type of the document */
+    type?: SubType | undefined;
+
+    /** A compendium pack within which the Document should be created */
+    pack?: string | undefined;
+  } & ParentContext<Parent>;
+
+  interface FromDropDataOptions {
+    /**
+     * Import the provided document data into the World, if it is not already a World-level Document reference
+     * @defaultValue `false`
+     */
+    importWorld?: boolean;
+  }
+
+  type CreateDialogData<CreateData extends object> = InexactPartial<
+    CreateData,
+    Extract<AllKeysOf<CreateData>, "name" | "type" | "folder">
+  >;
+
+  type CreateDialogContext<
+    SubType extends string,
+    Parent extends Document.Any | null,
+  > = InexactPartial<Dialog.Options> & {
+    /**
+     * A compendium pack within which the Document should be created
+     */
+    pack?: string | null | undefined;
+
+    /** A restriction the selectable sub-types of the Dialog. */
+    types?: SubType[] | null | undefined;
+  } & ParentContext<Parent>;
+
+  interface FromImportContext<Parent extends Document.Any | null>
+    extends ConstructionContext<Parent>,
+      DataModel.DataValidationOptions<Parent> {}
+
+  type TestableOwnershipLevel = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  /** @internal */
+  type _TestUserPermissionsOptions = NullishProps<{
+    /**
+     * Require the exact permission level requested?
+     * @defaultValue `false`
+     */
+    exact: boolean;
+  }>;
+
+  interface TestUserPermissionOptions extends _TestUserPermissionsOptions {}
+
+  /**
+   * @deprecated {@link ImplementationFor | `ImplementationFor`}
+   */
+  type ConfiguredInstanceForName<Name extends Type> = ImplementationFor<Name>;
+
+  /**
+   * @deprecated {@link ImplementationClassFor | `ImplementationClassFor`}
+   */
+  type ConfiguredClassForName<Name extends Type> = ImplementationClassFor<Name>;
+
+  /**
+   * @deprecated {@link SchemaField.SourceData | `SchemaField.SourceData<Schema>`}
+   */
+  type ToObjectFalseType<T extends Document.Internal.Instance.Any> = T extends {
+    toObject: (source: false) => infer U;
+  }
+    ? U
+    : T;
+
+  /**
+   * @deprecated {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
+   */
+  type DatabaseOperationsFor<
+    Name extends Document.Type,
+    ConcreteOperation extends Document.Database.Operation,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+  > = Document.Database.OperationOf<Name, ConcreteOperation>;
+
+  /**
+   * @deprecated {@link CreateDataForName | `CreateDataForName`}
+   */
+  type ConstructorDataForName<T extends Document.Type> = CreateData[T];
+
+  type CanUserModifyData<Schema extends DataSchema, Action extends "create" | "update" | "delete"> =
+    | (Action extends "create" ? SchemaField.CreateData<Schema> : never)
+    | (Action extends "update" ? SchemaField.UpdateData<Schema> : never)
+    | (Action extends "delete" ? EmptyObject : never);
+
+  /**
+   * @internal
+   */
+  type _GetEmbeddedDocumentOptions = InexactPartial<{
+    /**
+     * Throw an Error if the requested id does not exist. See {@link Collection.get | `Collection#get`}
+     * @defaultValue `false`
+     */
+    strict: boolean;
+
+    /**
+     * Allow retrieving an invalid Embedded Document.
+     * @defaultValue `false`
+     */
+    invalid: boolean;
+  }>;
+
+  interface GetEmbeddedDocumentOptions extends _GetEmbeddedDocumentOptions {}
+
+  /**
+   * Gets the hierarchical fields in the schema. Hardcoded to whatever Foundry fields are hierarchical
+   * as there is no way to access the a static property of a custom fields from an instance.
+   */
+  type HierarchyOf<Schema extends DataSchema> = PickValue<
+    Schema,
+    EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
+  >;
+
+  type PreCreateDescendantDocumentsArgs<
+    Parent extends Document.AnyStored,
+    DirectDescendant extends Document.Any,
+    Embedded extends Document.Metadata.Embedded,
+  > = DirectDescendant extends unknown
+    ? [
+        parent: Parent,
+        collection: Embedded[DirectDescendant["documentName"]],
+        data: Document.CreateDataForName<DirectDescendant["documentName"]>[],
+        options: Document.Database.CreateOptionsFor<DirectDescendant["documentName"]>,
+        userId: string,
+      ]
+    : never;
+
+  type OnCreateDescendantDocumentsArgs<
+    Parent extends Document.AnyStored,
+    DirectDescendant extends Document.Any,
+    Embedded extends Document.Metadata.Embedded,
+  > = DirectDescendant extends unknown
+    ? [
+        parent: Parent,
+        collection: Embedded[DirectDescendant["documentName"]],
+        documents: DirectDescendant[],
+        data: Document.CreateDataForName<DirectDescendant["documentName"]>[],
+        options: Document.Database.CreateOptionsFor<DirectDescendant["documentName"]>,
+        userId: string,
+      ]
+    : never;
+
+  type PreUpdateDescendantDocumentsArgs<
+    Parent extends Document.AnyStored,
+    DirectDescendant extends Document.Any,
+    Embedded extends Document.Metadata.Embedded,
+  > = DirectDescendant extends unknown
+    ? [
+        parent: Parent,
+        collection: Embedded[DirectDescendant["documentName"]],
+        changes: Document.UpdateDataForName<DirectDescendant["documentName"]>[],
+        options: Document.Database.UpdateOptionsFor<DirectDescendant["documentName"]>,
+        userId: string,
+      ]
+    : never;
+
+  type OnUpdateDescendantDocumentsArgs<
+    Parent extends Document.AnyStored,
+    DirectDescendant extends Document.Any,
+    Embedded extends Document.Metadata.Embedded,
+  > = DirectDescendant extends unknown
+    ? [
+        parent: Parent,
+        collection: Embedded[DirectDescendant["documentName"]],
+        documents: DirectDescendant[],
+        changes: Document.UpdateDataForName<DirectDescendant["documentName"]>[],
+        options: Document.Database.UpdateOptionsFor<DirectDescendant["documentName"]>,
+        userId: string,
+      ]
+    : never;
+
+  type PreDeleteDescendantDocumentsArgs<
+    Parent extends Document.AnyStored,
+    DirectDescendant extends Document.Any,
+    Embedded extends Document.Metadata.Embedded,
+  > = DirectDescendant extends unknown
+    ? [
+        parent: Parent,
+        collection: Embedded[DirectDescendant["documentName"]],
+        ids: string[],
+        options: Document.Database.DeleteOptionsFor<DirectDescendant["documentName"]>,
+        userId: string,
+      ]
+    : never;
+
+  type OnDeleteDescendantDocumentsArgs<
+    Parent extends Document.AnyStored,
+    DirectDescendant extends Document.Any,
+    Embedded extends Document.Metadata.Embedded,
+  > = DirectDescendant extends unknown
+    ? [
+        parent: Parent,
+        collection: Embedded[DirectDescendant["documentName"]],
+        documents: DirectDescendant[],
+        ids: string[],
+        options: Document.Database.DeleteOptionsFor<DirectDescendant["documentName"]>,
+        userId: string,
+      ]
+    : never;
 }
 
 /** @deprecated {@link Document.Database.Operation | `Document.Database.Operation`} */
 export type Operation = Document.Database.Operation;
 
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-/** @deprecated {@link Document.Database.Operations | `Document.Database.Operations`} */
-export type DocumentDatabaseOperations<
-  T extends Document.Internal.Instance.Any = Document.Internal.Instance.Any,
-  ExtraCreateOptions extends AnyObject = {},
-  ExtraUpdateOptions extends AnyObject = {},
-  ExtraDeleteOptions extends AnyObject = {},
-> = Document.Database.Operations<T, ExtraCreateOptions, ExtraUpdateOptions, ExtraDeleteOptions>;
-/* eslint-enable @typescript-eslint/no-empty-object-type */
-
+/* eslint-disable @typescript-eslint/no-deprecated */
 /**
  * @deprecated if you want to get individual operations see {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
  */
@@ -1488,8 +2187,8 @@ export interface DatabaseOperationMap {
   Note: NoteDocument.DatabaseOperations;
   Playlist: Playlist.DatabaseOperations;
   PlaylistSound: PlaylistSound.DatabaseOperations;
-  Region: ActiveEffect.DatabaseOperations;
-  RegionBehavior: ActiveEffect.DatabaseOperations;
+  Region: RegionDocument.DatabaseOperations;
+  RegionBehavior: RegionBehavior.DatabaseOperations;
   RollTable: RollTable.DatabaseOperations;
   Scene: Scene.DatabaseOperations;
   Setting: Setting.DatabaseOperations;
@@ -1498,4 +2197,110 @@ export interface DatabaseOperationMap {
   Token: TokenDocument.DatabaseOperations;
   User: User.DatabaseOperations;
   Wall: WallDocument.DatabaseOperations;
+}
+/* eslint-enable @typescript-eslint/no-deprecated */
+
+interface DatabaseOperationCreateMap {
+  ActiveEffect: ActiveEffect.Database.Create;
+  Actor: Actor.Database.Create;
+  ActorDelta: ActorDelta.Database.Create;
+  Adventure: Adventure.Database.Create;
+  AmbientLight: AmbientLightDocument.Database.Create;
+  AmbientSound: AmbientSoundDocument.Database.Create;
+  Card: Card.Database.Create;
+  Cards: Cards.Database.Create;
+  ChatMessage: ChatMessage.Database.Create;
+  Combat: Combat.Database.Create;
+  Combatant: Combatant.Database.Create;
+  Drawing: DrawingDocument.Database.Create;
+  FogExploration: FogExploration.Database.Create;
+  Folder: Folder.Database.Create;
+  Item: Item.Database.Create;
+  JournalEntry: JournalEntry.Database.Create;
+  JournalEntryPage: JournalEntryPage.Database.Create;
+  Macro: Macro.Database.Create;
+  MeasuredTemplate: MeasuredTemplateDocument.Database.Create;
+  Note: NoteDocument.Database.Create;
+  Playlist: Playlist.Database.Create;
+  PlaylistSound: PlaylistSound.Database.Create;
+  Region: RegionDocument.Database.Create;
+  RegionBehavior: RegionBehavior.Database.Create;
+  RollTable: RollTable.Database.Create;
+  Scene: Scene.Database.Create;
+  Setting: Setting.Database.Create;
+  TableResult: TableResult.Database.Create;
+  Tile: TileDocument.Database.Create;
+  Token: TokenDocument.Database.Create;
+  User: User.Database.Create;
+  Wall: WallDocument.Database.Create;
+}
+
+interface DatabaseOperationUpdateMap {
+  ActiveEffect: ActiveEffect.Database.Update;
+  Actor: Actor.Database.Update;
+  ActorDelta: ActorDelta.Database.Update;
+  Adventure: Adventure.Database.Update;
+  AmbientLight: AmbientLightDocument.Database.Update;
+  AmbientSound: AmbientSoundDocument.Database.Update;
+  Card: Card.Database.Update;
+  Cards: Cards.Database.Update;
+  ChatMessage: ChatMessage.Database.Update;
+  Combat: Combat.Database.Update;
+  Combatant: Combatant.Database.Update;
+  Drawing: DrawingDocument.Database.Update;
+  FogExploration: FogExploration.Database.Update;
+  Folder: Folder.Database.Update;
+  Item: Item.Database.Update;
+  JournalEntry: JournalEntry.Database.Update;
+  JournalEntryPage: JournalEntryPage.Database.Update;
+  Macro: Macro.Database.Update;
+  MeasuredTemplate: MeasuredTemplateDocument.Database.Update;
+  Note: NoteDocument.Database.Update;
+  Playlist: Playlist.Database.Update;
+  PlaylistSound: PlaylistSound.Database.Update;
+  Region: RegionDocument.Database.Update;
+  RegionBehavior: RegionBehavior.Database.Update;
+  RollTable: RollTable.Database.Update;
+  Scene: Scene.Database.Update;
+  Setting: Setting.Database.Update;
+  TableResult: TableResult.Database.Update;
+  Tile: TileDocument.Database.Update;
+  Token: TokenDocument.Database.Update;
+  User: User.Database.Update;
+  Wall: WallDocument.Database.Update;
+}
+
+interface DatabaseOperationDeleteMap {
+  ActiveEffect: ActiveEffect.Database.Delete;
+  Actor: Actor.Database.Delete;
+  ActorDelta: ActorDelta.Database.Delete;
+  Adventure: Adventure.Database.Delete;
+  AmbientLight: AmbientLightDocument.Database.Delete;
+  AmbientSound: AmbientSoundDocument.Database.Delete;
+  Card: Card.Database.Delete;
+  Cards: Cards.Database.Delete;
+  ChatMessage: ChatMessage.Database.Delete;
+  Combat: Combat.Database.Delete;
+  Combatant: Combatant.Database.Delete;
+  Drawing: DrawingDocument.Database.Delete;
+  FogExploration: FogExploration.Database.Delete;
+  Folder: Folder.Database.Delete;
+  Item: Item.Database.Delete;
+  JournalEntry: JournalEntry.Database.Delete;
+  JournalEntryPage: JournalEntryPage.Database.Delete;
+  Macro: Macro.Database.Delete;
+  MeasuredTemplate: MeasuredTemplateDocument.Database.Delete;
+  Note: NoteDocument.Database.Delete;
+  Playlist: Playlist.Database.Delete;
+  PlaylistSound: PlaylistSound.Database.Delete;
+  Region: RegionDocument.Database.Delete;
+  RegionBehavior: RegionBehavior.Database.Delete;
+  RollTable: RollTable.Database.Delete;
+  Scene: Scene.Database.Delete;
+  Setting: Setting.Database.Delete;
+  TableResult: TableResult.Database.Delete;
+  Tile: TileDocument.Database.Delete;
+  Token: TokenDocument.Database.Delete;
+  User: User.Database.Delete;
+  Wall: WallDocument.Database.Delete;
 }

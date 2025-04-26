@@ -5,19 +5,19 @@ expectTypeOf(WallsLayer.documentName).toEqualTypeOf<"Wall">();
 expectTypeOf(WallsLayer.instance).toEqualTypeOf<WallsLayer | undefined>();
 expectTypeOf(WallsLayer.layerOptions).toEqualTypeOf<WallsLayer.LayerOptions>();
 expectTypeOf(WallsLayer.layerOptions.name).toEqualTypeOf<"walls">();
-expectTypeOf(WallsLayer.layerOptions.objectClass).toEqualTypeOf<typeof Wall>();
+expectTypeOf(WallsLayer.layerOptions.objectClass).toEqualTypeOf<Wall.ObjectClass>();
 declare const somePoint: PIXI.Point;
-declare const someWall: Wall.ConfiguredInstance;
+declare const someWall: Wall.Object;
 expectTypeOf(WallsLayer.getClosestEndpoint(somePoint, someWall)).toEqualTypeOf<Canvas.PointTuple>();
 
 const layer = new WallsLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof Wall>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Wall.ObjectClass>();
 expectTypeOf(layer.options).toEqualTypeOf<WallsLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"walls">();
 
 expectTypeOf(layer.hookName).toEqualTypeOf<"WallsLayer">();
-expectTypeOf(layer.doors).toEqualTypeOf<Wall.ConfiguredInstance[]>();
+expectTypeOf(layer.doors).toEqualTypeOf<Wall.Object[]>();
 
 expectTypeOf(layer.getSnappedPoint({ x: 71, y: 59 })).toEqualTypeOf<Canvas.Point>();
 
@@ -40,14 +40,14 @@ expectTypeOf(layer["_getWallEndpointCoordinates"](somePoint, { snap: null })).to
 
 expectTypeOf(layer["_getWallDataFromActiveTool"]()).toEqualTypeOf<Document.ConfiguredSourceForName<"Wall">>();
 expectTypeOf(layer["_getWallDataFromActiveTool"]("ethereal")).toEqualTypeOf<Document.ConfiguredSourceForName<"Wall">>();
-//@ts-expect-error foobar is not a handled Wall tool
+// @ts-expect-error foobar is not a handled Wall tool
 expectTypeOf(layer["_getWallDataFromActiveTool"]("foobar")).toEqualTypeOf<Document.ConfiguredSourceForName<"Wall">>();
 
 expectTypeOf(layer.identifyInteriorArea([someWall, someWall])).toEqualTypeOf<PIXI.Polygon[]>();
 
 declare const someEvent: PIXI.FederatedEvent;
 declare const somePointerEvent: PointerEvent;
-expectTypeOf(layer["_onDragLeftStart"](someEvent)).toEqualTypeOf<Promise<Wall.ConfiguredInstance>>();
+expectTypeOf(layer["_onDragLeftStart"](someEvent)).toEqualTypeOf<Promise<Wall.Object>>();
 expectTypeOf(layer["_onDragLeftMove"](someEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftDrop"](someEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftCancel"](somePointerEvent)).toBeVoid();
@@ -55,7 +55,7 @@ expectTypeOf(layer["_onClickRight"](someEvent)).toBeVoid();
 
 declare const someRay: Ray;
 
-//deprecated since v11 until v13
+// deprecated since v11 until v13
 expectTypeOf(layer.checkCollision(someRay, { type: "move" })).toEqualTypeOf<PointSourcePolygon.TestCollision<"all">>();
 expectTypeOf(layer.checkCollision(someRay, { type: "sight", mode: "any" })).toEqualTypeOf<
   PointSourcePolygon.TestCollision<"any">
@@ -69,7 +69,7 @@ expectTypeOf(layer.checkCollision(someRay, { type: "sound", mode: "all" })).toEq
 
 expectTypeOf(layer.highlightControlledSegments()).toBeVoid();
 
-//deprecated since v12 until v14
+// deprecated since v12 until v14
 expectTypeOf(layer.initialize()).toBeVoid();
 expectTypeOf(layer.identifyInteriorWalls()).toBeVoid();
 expectTypeOf(layer.identifyWallIntersections()).toBeVoid();

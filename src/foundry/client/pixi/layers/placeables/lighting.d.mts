@@ -42,7 +42,7 @@ declare global {
 
     protected override _activate(): void;
 
-    protected override _canDragLeftStart(user: User.ConfiguredInstance, event: PIXI.FederatedEvent): boolean;
+    protected override _canDragLeftStart(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
     protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
 
@@ -51,7 +51,7 @@ declare global {
     protected override _onDragLeftCancel(event: PointerEvent): void;
 
     // @ts-expect-error Foundry is changing the return type here from Promise<PlaceableObject[]> to just Promise<AmbientLight>
-    protected _onMouseWheel(event: WheelEvent): Promise<AmbientLight.ConfiguredInstance>;
+    protected _onMouseWheel(event: WheelEvent): Promise<AmbientLight.Object>;
 
     /**
      * Actions to take when the darkness level of the Scene is changed
@@ -68,7 +68,7 @@ declare global {
 
     interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<"AmbientLight"> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientLight.ObjectClass> {
       name: "lighting";
       rotatableObjects: true;
       zIndex: 900;
@@ -77,5 +77,5 @@ declare global {
 }
 
 declare abstract class AnyLightingLayer extends LightingLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -1,3 +1,4 @@
+import type Document from "../../common/abstract/document.d.mts";
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../../common/constants.d.mts";
 
 declare global {
@@ -17,7 +18,7 @@ declare global {
      * A reverse-lookup of a document's UUID to its parent node in the word tree.
      * @defaultValue `{}`
      */
-    uuids: Record<string, foundry.utils.StringTree.StringTreeNode>;
+    uuids: Record<string, foundry.utils.StringTree.StringTreeNode<DocumentIndex.Leaf>>;
 
     /**
      * Returns a Promise that resolves when the indexing process is complete.
@@ -112,5 +113,14 @@ declare global {
      * @internal
      */
     protected _indexWorldCollection(documentName: string): void;
+  }
+
+  namespace DocumentIndex {
+    interface Leaf {
+      // TODO(LukeAbby): This appears to be possible to be a compendium index entry.
+      doc: Document.Any;
+      documentName: string;
+      uuid: string;
+    }
   }
 }

@@ -7,4 +7,4 @@ expectTypeOf(TestFilter.vertexShader).toEqualTypeOf<string | undefined>();
 expectTypeOf(TestFilter.defaultUniforms).toEqualTypeOf<AbstractBaseShader.Uniforms>();
 expectTypeOf((testFilterInstance = TestFilter.create())).toEqualTypeOf<TestFilter>();
 
-expectTypeOf(testFilterInstance.padding).toMatchTypeOf<number>();
+expectTypeOf(testFilterInstance.padding).toExtend<number>();

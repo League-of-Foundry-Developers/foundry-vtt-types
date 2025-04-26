@@ -5,7 +5,7 @@ declare global {
    * Render the Sidebar container, and after rendering insert Sidebar tabs.
    * @typeParam Options - the type of the options object
    */
-  class Sidebar<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class Sidebar<Options extends Application.Options = Application.Options> extends Application<Options> {
     /**
      * Singleton application instances for each sidebar tab
      * @defaultValue `{}`
@@ -30,7 +30,7 @@ declare global {
      * }
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     /**
      * Return the name of the active Sidebar tab
@@ -95,6 +95,6 @@ declare global {
   }
 }
 
-declare abstract class AnySidebar extends Sidebar<ApplicationOptions> {
-  constructor(arg0: never, ...args: never[]);
+declare abstract class AnySidebar extends Sidebar<Application.Options> {
+  constructor(...args: never);
 }

@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial } from "fvtt-types/utils";
+import type { Identity } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -6,27 +6,27 @@ declare global {
    * The singleton collection of Scene documents which exist within the active World.
    * This Collection is accessible within the Game object as game.scenes.
    *
-   * @see {@link Scene} The Scene document
-   * @see {@link SceneDirectory} The SceneDirectory sidebar directory
+   * @see {@link Scene | `Scene`} The Scene document
+   * @see {@link SceneDirectory | `SceneDirectory`} The SceneDirectory sidebar directory
    */
-  class Scenes extends WorldCollection<typeof foundry.documents.BaseScene, "Scenes"> {
+  class Scenes extends WorldCollection<Scene.ImplementationClass, "Scenes"> {
     static documentName: "Scene";
 
     /**
      * Return a reference to the Scene which is currently active
      */
-    get active(): Document.Stored<Scene.ConfiguredInstance> | undefined;
+    get active(): Scene.Stored | undefined;
 
     /**
      * Return the current Scene target.
      * This is the viewed scene if the canvas is active, otherwise it is the currently active scene.
      */
-    get current(): Document.Stored<Scene.ConfiguredInstance> | undefined;
+    get current(): Scene.Stored | undefined;
 
     /**
      * Return a reference to the Scene which is currently viewed
      */
-    get viewed(): Document.Stored<Scene.ConfiguredInstance> | undefined;
+    get viewed(): Scene.Stored | undefined;
 
     /**
      * Handle pre-loading the art assets for a Scene
@@ -37,7 +37,7 @@ declare global {
      */
     preload(sceneId: string, push?: boolean): io.Socket | Promise<unknown[]>;
 
-    /** @remarks This is not marked as protected because it is used in {@link Game#activateSocketListeners} */
+    /** @remarks This is not marked as protected because it is used in {@link Game.activateSocketListeners | `Game#activateSocketListeners`} */
     static _activateSocketListeners(socket: io.Socket): void;
 
     /**
@@ -45,33 +45,21 @@ declare global {
      */
     protected static _pullToScene(sceneId: string): void;
 
-    override fromCompendium<
-      FolderOpt extends boolean = false,
-      SortOpt extends boolean = true,
-      OwnershipOpt extends boolean = false,
-      IdOpt extends boolean = false,
-      StateOpt extends boolean = false,
-    >(
-      document: Scene.ConfiguredInstance | foundry.documents.BaseScene.ConstructorData,
-      options?: InexactPartial<
-        WorldCollection.FromCompendiumOptions<FolderOpt, SortOpt, OwnershipOpt, IdOpt, StateOpt>
-      >,
-    ): Omit<
-      Scene["_source"],
-      | ClientDocument.OmitProperty<FolderOpt, "folder">
-      | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder">
-      | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
-      | (IdOpt extends false ? "_id" : never)
-      | ClientDocument.OmitProperty<StateOpt, "active">
-    >;
+    override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
+      document: Scene.Implementation | Scene.CreateData,
+      options?: Options,
+    ): WorldCollection.FromCompendiumReturnType<Scene.ImplementationClass, Options>;
   }
 
   namespace Scenes {
     interface Any extends AnyScenes {}
     interface AnyConstructor extends Identity<typeof AnyScenes> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Scene"> {}
+    interface Configured extends Document.ConfiguredCollection<"Scene"> {}
   }
 }
 
 declare abstract class AnyScenes extends Scenes {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

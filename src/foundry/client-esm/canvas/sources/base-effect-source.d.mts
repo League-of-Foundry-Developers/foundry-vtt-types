@@ -55,7 +55,7 @@ declare abstract class BaseEffectSource<
 
   /**
    * Some other object which is responsible for this source.
-   * @privateRemarks In Foundry practice this appears to only ever be `null`, `Token.ConfiguredInstance`, or `EffectsCanvasGroup` in v12
+   * @privateRemarks In Foundry practice this appears to only ever be `null`, `Token.Object`, or `EffectsCanvasGroup` in v12
    */
   object: PlaceableObject.Any | CanvasGroupMixin.AnyMixed | null;
 
@@ -280,7 +280,7 @@ declare namespace BaseEffectSource {
   interface InitializeOptions extends _InitializeOptions {}
 
   /** @privateRemarks The `| number` is from Foundry's typing, but core only uses boolean flags in v12.331 */
-  interface Flags extends Record<string, boolean | number> {
+  interface Flags extends Record<string, boolean | number | undefined> {
     renderSoftEdges?: boolean;
     initializedMeshes?: boolean;
     hasColor?: boolean;
@@ -288,7 +288,7 @@ declare namespace BaseEffectSource {
 }
 
 declare abstract class AnyBaseEffectSource extends BaseEffectSource<BaseEffectSource.SourceData, PIXI.Polygon> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default BaseEffectSource;

@@ -1,9 +1,15 @@
 import { expectTypeOf } from "vitest";
 
-const w = new foundry.utils.WordTree();
-declare const entry: foundry.utils.WordTree.WordTreeEntry;
+import WordTree = foundry.utils.WordTree;
+import StringTree = foundry.utils.StringTree;
 
-expectTypeOf(w.addLeaf("a", entry)).toEqualTypeOf<foundry.utils.StringTree.StringTreeNode>();
-expectTypeOf(w.addLeaf(["a"], entry)).toEqualTypeOf<foundry.utils.StringTree.StringTreeNode>();
-expectTypeOf(w.lookup("a", { limit: 4 })).toEqualTypeOf<foundry.utils.WordTree.WordTreeEntry[]>();
-expectTypeOf(w.nodeAtPrefix("a")).toEqualTypeOf<foundry.utils.WordTree.WordTreeEntry>();
+const w = new WordTree();
+declare const entry: WordTree.WordTreeEntry;
+
+expectTypeOf(w.addLeaf("a", entry)).toEqualTypeOf<StringTree.StringTreeNode<WordTree.WordTreeEntry>>();
+
+// @ts-expect-error - An array of strings may be valid in other trees but not in a `WordTree`.
+w.addLeaf(["a"], entry);
+
+expectTypeOf(w.lookup("a", { limit: 4 })).toEqualTypeOf<WordTree.WordTreeEntry[]>();
+expectTypeOf(w.nodeAtPrefix("a")).toEqualTypeOf<StringTree.StringTreeNode<WordTree.WordTreeEntry> | void>();

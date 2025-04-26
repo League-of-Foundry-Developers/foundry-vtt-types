@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 
 expectTypeOf(DetectionMode.getDetectionFilter()).toEqualTypeOf<PIXI.Filter | undefined>();
-expectTypeOf(DetectionMode.DETECTION_TYPES).toMatchTypeOf<
+expectTypeOf(DetectionMode.DETECTION_TYPES).toExtend<
   Record<keyof DetectionMode.DetectionTypes, DetectionMode.DETECTION_TYPES>
 >();
 expectTypeOf(DetectionMode.BASIC_MODE_ID).toEqualTypeOf<"basicSight">();
@@ -17,7 +17,7 @@ const source = {
 const myDetectionMode = new DetectionMode(source);
 
 declare const someVisionSource: foundry.canvas.sources.PointVisionSource;
-declare const someToken: Token.ConfiguredInstance;
+declare const someToken: Token.Object;
 
 const someCanvasVisibilityTest = {
   elevation: 20,

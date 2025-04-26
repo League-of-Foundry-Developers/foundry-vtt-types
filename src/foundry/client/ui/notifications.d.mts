@@ -16,7 +16,7 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class Notifications<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class Notifications<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -41,7 +41,7 @@ declare global {
      * });
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     /**
      * Initialize the Notifications system by displaying any system-generated messages which were passed from the server.
@@ -138,6 +138,6 @@ declare global {
   }
 }
 
-declare abstract class AnyNotifications extends Notifications<ApplicationOptions> {
-  constructor(arg0: never, ...args: never[]);
+declare abstract class AnyNotifications extends Notifications<Application.Options> {
+  constructor(...args: never);
 }

@@ -1,10 +1,10 @@
 import { expectTypeOf } from "vitest";
 import SceneManager = foundry.canvas.SceneManager;
 
-declare const someScene: Scene.ConfiguredInstance;
+declare const someScene: Scene.Implementation;
 const mySM = new SceneManager(someScene);
 
-expectTypeOf(mySM.scene).toEqualTypeOf<Scene.ConfiguredInstance>();
+expectTypeOf(mySM.scene).toEqualTypeOf<Scene.Implementation>();
 expectTypeOf(mySM["_onInit"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(mySM["_onDraw"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(mySM["_onReady"]()).toEqualTypeOf<Promise<void>>();

@@ -4,7 +4,8 @@ import fields = foundry.data.fields;
 declare const myItem: foundry.documents.BaseItem;
 
 myItem.updateSource({ img: "newPath" });
-//@ts-expect-error foo isn't a valid path
+
+// @ts-expect-error foo isn't a valid property
 myItem.updateSource({ foo: "bar" });
 
 type SchemaWithIndexSignatures = {

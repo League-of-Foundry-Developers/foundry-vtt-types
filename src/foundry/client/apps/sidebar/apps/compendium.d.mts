@@ -1,4 +1,4 @@
-export {};
+import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -11,7 +11,7 @@ declare global {
     Options extends Compendium.Options<Metadata> = Compendium.Options<Metadata>,
   > extends DocumentDirectory<"Compendium", Options> {
     /**
-     * @param options    - Compendium configuration options.
+     * @param options - Compendium configuration options.
      */
     constructor(options: Partial<Options>);
 
@@ -51,14 +51,17 @@ declare global {
 
     override initialize(): void;
 
-    override render(force?: boolean, options?: Application.RenderOptions<ApplicationOptions>): unknown;
+    override render(force?: boolean, options?: Application.RenderOptions<Application.Options>): this;
 
     // TODO: Implement GetDataReturnType
     override getData(options?: Partial<Options>): Promise<object>;
 
-    protected override _entryAlreadyExists(entry: DirectoryMixinEntry): boolean;
+    protected override _entryAlreadyExists(entry: DirectoryApplicationMixin.Entry): boolean;
 
-    protected override _createDroppedEntry(entry: DirectoryMixinEntry, folderId?: string): Promise<DirectoryMixinEntry>;
+    protected override _createDroppedEntry(
+      entry: DirectoryApplicationMixin.Entry,
+      folderId?: string,
+    ): Promise<DirectoryApplicationMixin.Entry>;
 
     protected override _getEntryDragData(entryId: string): { type: string; uuid: string };
 
@@ -75,18 +78,18 @@ declare global {
 
     protected override _getFolderDragData(folderId: string): { type: "Folder"; uuid: string };
 
-    protected override _getFolderContextOptions(): ContextMenuEntry[];
+    protected override _getFolderContextOptions(): ContextMenu.Entry[];
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
   }
 
   namespace Compendium {
     interface Any extends Compendium<any, any> {}
 
-    interface Options<_Metadata extends CompendiumCollection.Metadata = CompendiumCollection.Metadata>
-      extends DocumentDirectoryOptions {
-      // Note(LukeAbby): Replacing `any` with `Metadata` causes an OOM within TypeScript.
-      collection: CompendiumCollection<any>;
+    interface Options<Metadata extends CompendiumCollection.Metadata = CompendiumCollection.Metadata>
+      extends DocumentDirectory.Options<Document.ImplementationClassFor<Metadata["type"]>> {
+      // TODO(LukeAbby): Replace with `CompendiumCollection<Metadata>` when possible.
+      collection: any;
     }
   }
 }

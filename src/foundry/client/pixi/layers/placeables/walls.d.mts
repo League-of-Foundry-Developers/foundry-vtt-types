@@ -1,5 +1,4 @@
 import type { Coalesce, HandleEmptyObject, Identity, NullishProps } from "fvtt-types/utils";
-import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -24,7 +23,7 @@ declare global {
      * @defaultValue `null`
      * @remarks Foundry marked `@private`, is set via {@link Wall#_onCreate} and {@link Wall#_onUpdate}
      */
-    protected _cloneType: Document.ConfiguredSourceForName<"Wall"> | null;
+    protected _cloneType: WallDocument.Source | null;
 
     /**
      * Reference the last interacted wall endpoint for the purposes of chaining
@@ -62,7 +61,7 @@ declare global {
     /**
      * An Array of Wall instances in the current Scene which act as Doors.
      */
-    get doors(): Wall.ConfiguredInstance[];
+    get doors(): Wall.Object[];
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
@@ -76,16 +75,16 @@ declare global {
      * @param wall  - The existing Wall object being chained to
      * @returns The [x,y] coordinates of the starting endpoint
      */
-    static getClosestEndpoint(point: Canvas.Point, wall: Wall.ConfiguredInstance): Canvas.PointTuple;
+    static getClosestEndpoint(point: Canvas.Point, wall: Wall.Object): Canvas.PointTuple;
 
     override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
     /** @remarks `options` is unused */
     protected override _pasteObject(
-      copy: Wall.ConfiguredInstance,
+      copy: Wall.Object,
       offset: Canvas.Point,
       options?: PlaceablesLayer.PasteOptions | null,
-    ): Document.ConfiguredSourceForName<"Wall">;
+    ): Omit<WallDocument.Source, "_id">;
 
     /**
      * Pan the canvas view when the cursor position gets close to the edge of the frame
@@ -113,7 +112,7 @@ declare global {
      * @param tool - The active canvas tool
      * @remarks If a tool is not provided, returns an object with `light`, `sight`, `sound`, and `move` keys, all with the value `CONST.WALL_SENSE_TYPES.NORMAL`
      */
-    protected _getWallDataFromActiveTool(tool?: WallsLayer.WallTools | null): Document.ConfiguredSourceForName<"Wall">;
+    protected _getWallDataFromActiveTool(tool?: WallsLayer.WallTools | null): WallDocument.Source;
 
     /**
      * Identify the interior enclosed by the given walls.
@@ -121,10 +120,10 @@ declare global {
      * @returns The polygons of the interior.
      * @remarks Foundry marked `@license MIT`
      */
-    identifyInteriorArea(walls: Wall.ConfiguredInstance[]): PIXI.Polygon[];
+    identifyInteriorArea(walls: Wall.Object[]): PIXI.Polygon[];
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<Wall.ConfiguredInstance>;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<Wall.Object>;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
@@ -179,10 +178,10 @@ declare global {
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Wall"> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Wall.ObjectClass> {
       name: "walls";
       controllableObjects: true;
-      objectClass: typeof Wall;
+      objectClass: Wall.ObjectClass;
       zIndex: 700;
     }
 
@@ -203,5 +202,5 @@ declare global {
 }
 
 declare abstract class AnyWallsLayer extends WallsLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

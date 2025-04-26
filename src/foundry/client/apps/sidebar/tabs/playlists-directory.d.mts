@@ -1,5 +1,4 @@
 import type { Identity } from "fvtt-types/utils";
-import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -7,7 +6,7 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class PlaylistDirectory<
-    Options extends DocumentDirectoryOptions = DocumentDirectoryOptions,
+    Options extends DocumentDirectory.Options = DocumentDirectory.Options,
   > extends DocumentDirectory<"Playlist", Options> {
     constructor(options?: Partial<Options>);
 
@@ -28,13 +27,13 @@ declare global {
      * Cache the set of Playlist documents that are displayed as playing when the directory is rendered
      * @defaultValue `[]`
      */
-    protected _playingPlaylists: Playlist.ConfiguredInstance[];
+    protected _playingPlaylists: Playlist.Implementation[];
 
     /**
      * Cache the set of PlaylistSound documents that are displayed as playing when the directory is rendered
      * @defaultValue `[]`
      */
-    protected _playingSounds: PlaylistSound.ConfiguredInstance[];
+    protected _playingSounds: PlaylistSound.Implementation[];
 
     /**
      * @internal
@@ -61,7 +60,7 @@ declare global {
      * return options;
      * ```
      */
-    static override get defaultOptions(): DocumentDirectoryOptions;
+    static override get defaultOptions(): DocumentDirectory.Options;
 
     /**
      * Initialize the set of Playlists which should be displayed in an expanded form
@@ -72,7 +71,7 @@ declare global {
     /**
      * Return an Array of the Playlist documents which are currently playing
      */
-    get playing(): Playlist.ConfiguredInstance[];
+    get playing(): Playlist.Implementation[];
 
     /**
      * Whether the "currently playing" element is pinned to the top or bottom of the display.
@@ -94,7 +93,7 @@ declare global {
      * @param node - The tree leaf node being prepared
      * @internal
      */
-    protected _prepareTreeData(node: DirectoryCollectionMixin.TreeNode<Playlist.ConfiguredInstance>): void;
+    protected _prepareTreeData(node: DirectoryCollectionMixin.TreeNode<Playlist.Implementation>): void;
 
     /**
      * Create an object of rendering data for each Playlist document being displayed
@@ -102,7 +101,7 @@ declare global {
      * @returns The data for rendering
      * @internal
      */
-    protected _preparePlaylistData(playlist: Playlist.ConfiguredInstance): PlaylistDirectory.PlaylistData;
+    protected _preparePlaylistData(playlist: Playlist.Implementation): PlaylistDirectory.PlaylistData;
 
     /**
      * Get the icon used to represent the "play/stop" icon for the PlaylistSound
@@ -110,7 +109,7 @@ declare global {
      * @returns The icon that should be used
      * @internal
      */
-    protected _getPlayIcon(sound: PlaylistSound.ConfiguredInstance): string;
+    protected _getPlayIcon(sound: PlaylistSound.Implementation): string;
 
     /**
      * Get the icon used to represent the pause/loading icon for the PlaylistSound
@@ -118,7 +117,7 @@ declare global {
      * @returns The icon that should be used
      * @internal
      */
-    protected _getPauseIcon(sound: PlaylistSound.ConfiguredInstance): string;
+    protected _getPauseIcon(sound: PlaylistSound.Implementation): string;
 
     /**
      * Given a constant playback mode, provide the FontAwesome icon used to display it
@@ -165,7 +164,7 @@ declare global {
      * @param playing - Is the playlist now playing?
      * @internal
      */
-    protected _onPlaylistPlay(event: JQuery.ClickEvent, playing: boolean): Promise<Playlist.ConfiguredInstance>;
+    protected _onPlaylistPlay(event: JQuery.ClickEvent, playing: boolean): Promise<Playlist.Implementation>;
 
     /**
      * Handle advancing the playlist to the next (or previous) sound
@@ -173,14 +172,14 @@ declare global {
      * @param action - The control action requested
      * @internal
      */
-    protected _onPlaylistSkip(event: JQuery.ClickEvent, action: string): Promise<Playlist.ConfiguredInstance>;
+    protected _onPlaylistSkip(event: JQuery.ClickEvent, action: string): Promise<Playlist.Implementation>;
 
     /**
      * Handle cycling the playback mode for a Playlist
      * @param event - The initial click event
      * @internal
      */
-    protected _onPlaylistToggleMode(event: JQuery.ClickEvent): Promise<Playlist.ConfiguredInstance>;
+    protected _onPlaylistToggleMode(event: JQuery.ClickEvent): Promise<Playlist.Implementation>;
 
     /**
      * Handle Playlist track addition request
@@ -195,7 +194,7 @@ declare global {
      * @param action - The sound control action performed
      * @internal
      */
-    protected _onSoundPlay(event: JQuery.ClickEvent, action: string): Promise<Playlist.ConfiguredInstance | undefined>;
+    protected _onSoundPlay(event: JQuery.ClickEvent, action: string): Promise<Playlist.Implementation | undefined>;
 
     /**
      * Handle volume adjustments to sounds within a Playlist
@@ -233,28 +232,28 @@ declare global {
 
     protected override _contextMenu(html: JQuery): void;
 
-    protected override _getFolderContextOptions(): ContextMenuEntry[];
+    protected override _getFolderContextOptions(): ContextMenu.Entry[];
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
 
     /**
      * Get context menu options for individual sound effects
      * @returns The context options for each sound
      * @internal
      */
-    protected _getSoundContextOptions(): ContextMenuEntry[];
+    protected _getSoundContextOptions(): ContextMenu.Entry[];
 
     protected override _onDragStart(event: DragEvent): void;
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    protected override _onDrop(event: DragEvent): Promise<Playlist.ConfiguredInstance | boolean>;
+    protected override _onDrop(event: DragEvent): Promise<Playlist.Implementation | boolean>;
   }
 
   namespace PlaylistDirectory {
     interface Any extends AnyPlaylistDirectory {}
     interface AnyConstructor extends Identity<typeof AnyPlaylistDirectory> {}
 
-    interface PlaylistData extends Document.ToObjectFalseType<Playlist.ConfiguredInstance> {
+    interface PlaylistData extends Playlist.Source {
       modeTooltip: string;
       modeIcon: string;
       disabled: boolean;
@@ -264,7 +263,7 @@ declare global {
       sounds: SoundData[];
     }
 
-    interface SoundData extends Document.ToObjectFalseType<PlaylistSound.ConfiguredInstance> {
+    interface SoundData extends PlaylistSound.Source {
       playlistId: string | null;
       css: string;
       controlCSS: string;
@@ -279,6 +278,6 @@ declare global {
   }
 }
 
-declare abstract class AnyPlaylistDirectory extends PlaylistDirectory<DocumentDirectoryOptions> {
-  constructor(arg0: never, ...args: never[]);
+declare abstract class AnyPlaylistDirectory extends PlaylistDirectory<DocumentDirectory.Options> {
+  constructor(...args: never);
 }

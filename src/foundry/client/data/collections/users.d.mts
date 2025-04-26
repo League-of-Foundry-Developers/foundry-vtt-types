@@ -6,16 +6,16 @@ declare global {
    * The singleton collection of User documents which exist within the active World.
    * This Collection is accessible within the Game object as game.users.
    *
-   * @see {@link User} The User document
+   * @see {@link User | `User`} The User document
    */
-  class Users extends WorldCollection<typeof foundry.documents.BaseUser, "Users"> {
-    constructor(data?: User["_source"][]);
+  class Users extends WorldCollection<User.ImplementationClass, "Users"> {
+    constructor(data?: User.Source[]);
 
     /**
      * The User document of the currently connected user
      * @defaultValue `null`
      */
-    current: Document.Stored<User.ConfiguredInstance> | null;
+    current: User.Stored | null;
 
     /**
      * Initialize the Map object and all its contained documents
@@ -34,9 +34,9 @@ declare global {
      * Get one User who is an active Gamemaster (non-assistant if possible), or null if no active GM is available.
      * This can be useful for workflows which occur on all clients, but where only one user should take action.
      */
-    get activeGM(): User.ConfiguredInstance | null;
+    get activeGM(): User.Implementation | null;
 
-    /** @remarks This is not marked as protected because it is used in {@link Game#activateSocketListeners} */
+    /** @remarks This is not marked as protected because it is used in {@link Game.activateSocketListeners | `Game#activateSocketListeners`} */
     static _activateSocketListeners(socket: io.Socket): void;
 
     /**
@@ -51,9 +51,12 @@ declare global {
   namespace Users {
     interface Any extends AnyUsers {}
     interface AnyConstructor extends Identity<typeof AnyUsers> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"User"> {}
+    interface Configured extends Document.ConfiguredCollection<"User"> {}
   }
 }
 
 declare abstract class AnyUsers extends Users {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

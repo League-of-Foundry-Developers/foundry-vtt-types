@@ -1,7 +1,6 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const messages = new Messages([]);
-expectTypeOf(messages.get("", { strict: true })).toEqualTypeOf<Document.Stored<ChatMessage>>();
-expectTypeOf(messages.toJSON()).toEqualTypeOf<Document.Stored<ChatMessage>["_source"][]>();
-expectTypeOf(messages.directory).toEqualTypeOf<ChatLog>();
+expectTypeOf(messages.get("", { strict: true })).toEqualTypeOf<ChatMessage.Stored>();
+expectTypeOf(messages.toJSON()).toEqualTypeOf<ChatMessage.Stored["_source"][]>();
+expectTypeOf(messages.directory).toEqualTypeOf<ChatLog | undefined>();

@@ -69,7 +69,7 @@ declare global {
 
   interface NumberConstructor {
     /**
-     * @see {@link Number#between}
+     * @see {@link NumberInstance.between | `Number#between`}
      */
     between(num: number, a: number, b: number, inclusive?: boolean): boolean;
 

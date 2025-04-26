@@ -1,5 +1,4 @@
 import type { InterfaceToObject, AnyObject, Identity } from "fvtt-types/utils";
-import type StringTerm from "../../../client-esm/dice/terms/string.d.mts";
 
 declare global {
   /**
@@ -7,24 +6,24 @@ declare global {
    */
   class TokenConfig<
     Options extends
-      DocumentSheetOptions<TokenDocument.ConfiguredInstance> = DocumentSheetOptions<TokenDocument.ConfiguredInstance>,
-  > extends DocumentSheet<Options, TokenDocument.ConfiguredInstance | Actor.ConfiguredInstance> {
-    constructor(object: TokenDocument.ConfiguredInstance | Actor.ConfiguredInstance, options?: Partial<Options>);
+      DocumentSheet.Options<TokenDocument.Implementation> = DocumentSheet.Options<TokenDocument.Implementation>,
+  > extends DocumentSheet<Options, TokenDocument.Implementation | Actor.Implementation> {
+    constructor(object: TokenDocument.Implementation | Actor.Implementation, options?: Partial<Options>);
 
     /**
      * The placed Token object in the Scene
      */
-    token: TokenDocument.ConfiguredInstance | foundry.data.PrototypeToken;
+    token: TokenDocument.Implementation | foundry.data.PrototypeToken;
 
     /**
      * A reference to the Actor which the token depicts
      */
-    actor: Actor.ConfiguredInstance;
+    actor: Actor.Implementation;
 
     /**
      * Maintain a copy of the original to show a real-time preview of changes.
      */
-    preview: TokenDocument.ConfiguredInstance | foundry.data.PrototypeToken;
+    preview: TokenDocument.Implementation | foundry.data.PrototypeToken;
 
     /**
      * @defaultValue
@@ -44,7 +43,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<TokenDocument.ConfiguredInstance>;
+    static override get defaultOptions(): DocumentSheet.Options<TokenDocument.Implementation>;
 
     /**
      * A convenience accessor to test whether we are configuring the prototype Token for an Actor.
@@ -64,7 +63,7 @@ declare global {
      */
     protected _handleTokenPreview(force: boolean, options?: Options): Promise<void>;
 
-    protected override _canUserView(user: User): boolean;
+    protected override _canUserView(user: User.Implementation): boolean;
 
     override getData(options?: Partial<Options>): Promise<object>; // TODO: Implement GetDataReturnType
 
@@ -120,14 +119,14 @@ declare global {
      * Handle adding a detection mode.
      * @param modes - The existing detection modes
      */
-    protected _onAddDetectionMode(modes: TokenDocument["detectionModes"]): void;
+    protected _onAddDetectionMode(modes: TokenDocument.Implementation["detectionModes"]): void;
 
     /**
      * Handle removing a detection mode.
      * @param index - The index of the detection mode to remove.
      * @param modes - The existing detection modes.
      */
-    protected _onRemoveDetectionMode(index: number, modes: TokenDocument["detectionModes"]): void;
+    protected _onRemoveDetectionMode(index: number, modes: TokenDocument.Implementation["detectionModes"]): void;
 
     /**
      * Disable the user's ability to edit the token image field if wildcard images are enabled and that user does not have
@@ -141,42 +140,61 @@ declare global {
     interface Any extends AnyTokenConfig {}
     interface AnyConstructor extends Identity<typeof AnyTokenConfig> {}
 
-    interface FormData {
-      // TODO: Update
-      actorId: string;
-      actorLink: boolean;
-      alternateImages?: string;
-      alpha: number;
-      "bar1.attribute": string;
-      "bar2.attribute": string;
-      brightLight: number | null;
-      brightSight: number | null;
-      dimLight: number | null;
-      dimSight: number | null;
-      displayBars: foundry.CONST.TOKEN_DISPLAY_MODES;
-      displayName: foundry.CONST.TOKEN_DISPLAY_MODES;
-      disposition: foundry.CONST.TOKEN_DISPOSITIONS;
-      elevation: number | null;
-      height: number | null;
-      img: string;
-      lightAlpha: number;
-      lightAngle: number | null;
-      "lightAnimation.intensity": number;
-      "lightAnimation.speed": number;
-      "lightAnimation.type": string;
-      lightColor: string;
-      lockRotation: boolean;
-      mirrorX: boolean;
-      mirrorY: boolean;
-      name: StringTerm;
-      rotation: number | null;
-      scale: number;
-      sightAngle: number | null;
-      tint: string;
-      vision: boolean;
-      width: number | null;
-      x: number | null;
-      y: number | null;
+    /** @internal */
+    type _FormData = Pick<
+      TokenDocument.Implementation,
+      | "actorId"
+      | "actorLink"
+      | "alpha"
+      | "detectionModes"
+      | "displayBars"
+      | "displayName"
+      | "disposition"
+      | "elevation"
+      | "lockRotation"
+      | "name"
+      | "rotation"
+      | "sort"
+      | "x"
+      | "y"
+    >;
+
+    interface FormData extends _FormData {
+      "bar1.attribute": TokenDocument.Implementation["bar1"]["attribute"];
+      "bar2.attribute": TokenDocument.Implementation["bar2"]["attribute"];
+      "light.alpha": TokenDocument.Implementation["light"]["alpha"];
+      "light.angle": TokenDocument.Implementation["light"]["angle"];
+      "light.animation.intensity": TokenDocument.Implementation["light"]["animation"]["intensity"];
+      "light.animation.reverse": TokenDocument.Implementation["light"]["animation"]["reverse"];
+      "light.animation.speed": TokenDocument.Implementation["light"]["animation"]["speed"];
+      "light.animation.type": TokenDocument.Implementation["light"]["animation"]["type"];
+      "light.attenuation": TokenDocument.Implementation["light"]["attenuation"];
+      "light.bright": TokenDocument.Implementation["light"]["bright"];
+      "light.color": TokenDocument.Implementation["light"]["color"];
+      "light.coloration": TokenDocument.Implementation["light"]["coloration"];
+      "light.contrast": TokenDocument.Implementation["light"]["contrast"];
+      "light.dim": TokenDocument.Implementation["light"]["dim"];
+      "light.luminosity": TokenDocument.Implementation["light"]["luminosity"];
+      "light.saturation": TokenDocument.Implementation["light"]["saturation"];
+      "light.shadows": TokenDocument.Implementation["light"]["shadows"];
+      "occludable.radius": TokenDocument.Implementation["occludable"]["radius"];
+      "ring.colors.background": TokenDocument.Implementation["ring"]["colors"]["background"];
+      "ring.colors.ring": TokenDocument.Implementation["ring"]["colors"]["ring"];
+      "ring.effects": TokenDocument.Implementation["ring"]["effects"];
+      "ring.enabled": TokenDocument.Implementation["ring"]["enabled"];
+      "ring.subject.scale": TokenDocument.Implementation["ring"]["subject"]["scale"];
+      "ring.subject.texture": TokenDocument.Implementation["ring"]["subject"]["texture"];
+      "sight.attenuation": TokenDocument.Implementation["sight"]["attenuation"];
+      "sight.color": TokenDocument.Implementation["sight"]["color"];
+      "sight.contrast": TokenDocument.Implementation["sight"]["contrast"];
+      "sight.enabled": TokenDocument.Implementation["sight"]["enabled"];
+      "texture.anchorX": TokenDocument.Implementation["texture"]["anchorX"];
+      "texture.anchorY": TokenDocument.Implementation["texture"]["anchorY"];
+      "texture.fit": TokenDocument.Implementation["texture"]["fit"];
+      "texture.scaleX": TokenDocument.Implementation["texture"]["scaleX"];
+      "texture.scaleY": TokenDocument.Implementation["texture"]["scaleY"];
+      "texture.src": TokenDocument.Implementation["texture"]["src"];
+      "texture.tint": TokenDocument.Implementation["texture"]["tint"];
     }
   }
 
@@ -185,11 +203,11 @@ declare global {
    */
   class DefaultTokenConfig<
     Options extends
-      DocumentSheetOptions<TokenDocument.ConfiguredInstance> = DocumentSheetOptions<TokenDocument.ConfiguredInstance>,
+      DocumentSheet.Options<TokenDocument.Implementation> = DocumentSheet.Options<TokenDocument.Implementation>,
   > extends TokenConfig<Options> {
     constructor(object?: unknown, options?: Partial<Options>);
 
-    object: TokenDocument.ConfiguredInstance;
+    object: TokenDocument.Implementation;
 
     /**
      * The named world setting that stores the default Token configuration
@@ -206,7 +224,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): DocumentSheetOptions<TokenDocument.ConfiguredInstance>;
+    static override get defaultOptions(): DocumentSheet.Options<TokenDocument.Implementation>;
 
     override get id(): string;
 
@@ -214,7 +232,7 @@ declare global {
 
     override get isEditable(): boolean;
 
-    protected override _canUserView(user: User): boolean;
+    protected override _canUserView(user: User.Implementation): boolean;
 
     override getData(options: unknown): Promise<object>; // TODO: Implement GetDataReturnType
 
@@ -234,9 +252,12 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     protected override _onBarChange(): Promise<void>;
 
-    protected override _onAddDetectionMode(modes: TokenDocument["detectionModes"]): void;
+    protected override _onAddDetectionMode(modes: TokenDocument.Implementation["detectionModes"]): void;
 
-    protected override _onRemoveDetectionMode(index: number, modes: TokenDocument["detectionModes"]): void;
+    protected override _onRemoveDetectionMode(
+      index: number,
+      modes: TokenDocument.Implementation["detectionModes"],
+    ): void;
   }
 
   namespace DefaultTokenConfig {
@@ -245,12 +266,12 @@ declare global {
   }
 }
 
-declare abstract class AnyTokenConfig extends TokenConfig<DocumentSheetOptions<TokenDocument.ConfiguredInstance>> {
-  constructor(arg0: never, ...args: never[]);
+declare abstract class AnyTokenConfig extends TokenConfig<DocumentSheet.Options<TokenDocument.Implementation>> {
+  constructor(...args: never);
 }
 
 declare abstract class AnyDefaultTokenConfig extends DefaultTokenConfig<
-  DocumentSheetOptions<TokenDocument.ConfiguredInstance>
+  DocumentSheet.Options<TokenDocument.Implementation>
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

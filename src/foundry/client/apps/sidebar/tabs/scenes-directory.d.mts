@@ -20,16 +20,16 @@ declare global {
      * return options;
      * ```
      */
-    static override get defaultOptions(): DocumentDirectoryOptions;
+    static override get defaultOptions(): DocumentDirectory.Options;
 
     protected override _render(
       force?: boolean,
-      options?: Application.RenderOptions<DocumentDirectoryOptions>,
+      options?: Application.RenderOptions<DocumentDirectory.Options>,
     ): Promise<void>;
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
 
-    protected override _getFolderContextOptions(): ContextMenuEntry[];
+    protected override _getFolderContextOptions(): ContextMenu.Entry[];
   }
 
   namespace SceneDirectory {
@@ -39,5 +39,5 @@ declare global {
 }
 
 declare abstract class AnySceneDirectory extends SceneDirectory {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

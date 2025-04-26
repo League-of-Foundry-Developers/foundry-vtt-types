@@ -33,5 +33,5 @@ declare global {
 }
 
 declare abstract class AnyRevolvingColorationShader extends RevolvingColorationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

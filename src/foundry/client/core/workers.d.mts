@@ -1,16 +1,11 @@
-import type { ValueOf } from "fvtt-types/utils";
+import type { AnyArray, ValueOf } from "fvtt-types/utils";
 
 // TODO: smarter types for named functions
 declare global {
-  interface WorkerTask {
-    [key: string]: unknown;
-
-    /** An incrementing task ID used to reference task progress */
-    taskId?: number;
-
-    /** The task action being performed, from WorkerManager.WORKER_TASK_ACTIONS */
-    action: ValueOf<typeof WorkerManager.WORKER_TASK_ACTIONS>;
-  }
+  /**
+   * @deprecated {@link AsyncWorker.WorkerTask | `AsyncWorker.WorkerTask`}
+   */
+  type WorkerTask = AsyncWorker.WorkerTask;
 
   /**
    * An asynchronous web Worker which can load user-defined functions and await execution using Promises.
@@ -18,7 +13,7 @@ declare global {
    * @param options - Worker initialization options (default: `{}`)
    */
   class AsyncWorker extends Worker {
-    constructor(name: string, options?: Partial<AsyncWorker.Options>);
+    constructor(name: string, options?: AsyncWorker.Options);
 
     name: string;
 
@@ -59,13 +54,25 @@ declare global {
      *                       (default: `[]`)
      * @returns A Promise which resolves with the returned result of the function once complete.
      */
-    executeFunction(functionName: string, args?: any[], transfer?: any[]): Promise<unknown>;
+    executeFunction(functionName: string, args?: AnyArray, transfer?: AnyArray): Promise<unknown>;
+  }
+
+  namespace AsyncWorker {
+    interface WorkerTask {
+      [key: string]: unknown;
+
+      /** An incrementing task ID used to reference task progress */
+      taskId?: number;
+
+      /** The task action being performed, from WorkerManager.WORKER_TASK_ACTIONS */
+      action: ValueOf<typeof WorkerManager.WORKER_TASK_ACTIONS>;
+    }
   }
 
   /**
    * A client-side class responsible for managing a set of web workers.
    * This interface is accessed as a singleton instance via game.workers.
-   * @see Game#workers
+   * @see {@link Game.workers | `Game#workers`}
    */
   class WorkerManager extends Map<string, AsyncWorker> {
     constructor();
@@ -89,7 +96,7 @@ declare global {
 
     /**
      * Retire a current Worker, terminating it immediately.
-     * @see {@link Worker#terminate}
+     * @see {@link Worker.terminate | `Worker#terminate`}
      * @param name - The named worker to terminate
      */
     retireWorker(name: string): void;
@@ -111,18 +118,18 @@ declare global {
        * Should the worker run in debug mode?
        * @defaultValue `false`
        */
-      debug: boolean;
+      debug?: boolean | undefined;
 
       /**
        * Should the worker automatically load the primitives library?
        * @defaultValue `false`
        */
-      loadPrimitives: boolean;
+      loadPrimitives?: boolean | undefined;
 
       /**
        * Should the worker operates in script modes? Optional scripts.
        */
-      scripts: string[];
+      scripts?: string[] | undefined;
     }
   }
 }

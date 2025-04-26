@@ -4,11 +4,11 @@ expectTypeOf(SoundsLayer.documentName).toEqualTypeOf<"AmbientSound">();
 expectTypeOf(SoundsLayer.instance).toEqualTypeOf<SoundsLayer | undefined>();
 expectTypeOf(SoundsLayer.layerOptions).toEqualTypeOf<SoundsLayer.LayerOptions>();
 expectTypeOf(SoundsLayer.layerOptions.name).toEqualTypeOf<"sounds">();
-expectTypeOf(SoundsLayer.layerOptions.objectClass).toEqualTypeOf<typeof AmbientSound>();
+expectTypeOf(SoundsLayer.layerOptions.objectClass).toEqualTypeOf<AmbientSound.ObjectClass>();
 
 const layer = new SoundsLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof AmbientSound>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<AmbientSound.ObjectClass>();
 expectTypeOf(layer.options).toEqualTypeOf<SoundsLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"sounds">();
 
@@ -39,7 +39,7 @@ expectTypeOf(
     source: somePSS, // only actually required property
     listener: somePoint, // not technically required but will cause 0 volume/playback failure if omitted
     walls: false,
-    //all other parts of the AmbientSoundPlaybackConfig are unused in this, the one place its used as a parameter
+    // all other parts of the AmbientSoundPlaybackConfig are unused in this, the one place its used as a parameter
   }),
 ).toBeVoid();
 
@@ -107,4 +107,4 @@ expectTypeOf(
     x: 500,
     y: 500,
   }),
-).toEqualTypeOf<Promise<AmbientSound.ConfiguredInstance | false>>();
+).toEqualTypeOf<Promise<AmbientSound.Object | false>>();

@@ -75,7 +75,7 @@ declare function PointEffectSourceMixin<BaseClass extends PointEffectSourceMixin
 ): Mixin<typeof PointEffectSource, BaseClass>;
 
 declare namespace PointEffectSourceMixin {
-  type AnyMixedConstructor = ReturnType<typeof PointEffectSourceMixin<BaseClass>>;
+  interface AnyMixedConstructor extends ReturnType<typeof PointEffectSourceMixin<BaseClass>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = BaseEffectSource.AnyConstructor;

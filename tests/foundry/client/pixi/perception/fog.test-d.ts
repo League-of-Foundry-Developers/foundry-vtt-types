@@ -5,7 +5,7 @@ expectTypeOf(FogManager.COMMIT_THRESHOLD).toBeNumber();
 declare const someTex: PIXI.Texture;
 const myFogManager = new FogManager();
 
-expectTypeOf(myFogManager.exploration).toEqualTypeOf<FogExploration.ConfiguredInstance | null>();
+expectTypeOf(myFogManager.exploration).toEqualTypeOf<FogExploration.Implementation | null>();
 expectTypeOf(myFogManager.sprite).toEqualTypeOf<SpriteMesh>();
 expectTypeOf(myFogManager.extractor).toEqualTypeOf<TextureExtractor | undefined | null>();
 expectTypeOf(myFogManager.textureConfiguration).toEqualTypeOf<CanvasVisibility.TextureConfiguration | undefined>();
@@ -24,7 +24,7 @@ expectTypeOf(
   myFogManager["_prepareFogUpdateData"]("base64:asfasgad252345+=5236236adfa"),
 ).toEqualTypeOf<FogExploration.UpdateData>();
 
-//deprecated since v11 until v13
+// deprecated since v11 until v13
 expectTypeOf(myFogManager.pending).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(myFogManager.revealed).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(myFogManager.update("garbage", true)).toEqualTypeOf<true>();

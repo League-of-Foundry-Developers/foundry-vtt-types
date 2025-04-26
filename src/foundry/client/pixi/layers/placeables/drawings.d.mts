@@ -38,7 +38,7 @@ declare global {
     /**
      * The collection of drawing objects which are rendered in the interface.
      */
-    graphics: Collection<Drawing.ConfiguredInstance>;
+    graphics: Collection<Drawing.Object>;
 
     override get hud(): NonNullable<Canvas["hud"]>["drawing"];
 
@@ -62,7 +62,7 @@ declare global {
      * @returns The new drawing data
      * @privateRemarks This isn't called externally (anymore?) but seems too useful to make protected without any indication on Foundry's side of such intent
      */
-    _getNewDrawingData(origin: Canvas.Point): DrawingDocument.ConstructorData;
+    _getNewDrawingData(origin: Canvas.Point): DrawingDocument.CreateData;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
@@ -98,7 +98,7 @@ declare global {
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Drawing"> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Drawing.ObjectClass> {
       name: "drawings";
       controllableObjects: true;
       rotatableObjects: true;
@@ -108,5 +108,5 @@ declare global {
 }
 
 declare abstract class AnyDrawingsLayer extends DrawingsLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

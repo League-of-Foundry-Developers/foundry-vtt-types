@@ -31,7 +31,7 @@ declare global {
      * @param dt        - The number of ms that elapsed since the previous frame.
      * @param animation - The animation state.
      */
-    protected _animateFrame(dt: number, animation: CanvasAnimationData): void;
+    protected _animateFrame(dt: number, animation: CanvasAnimation.AnimationData): void;
   }
 
   namespace Ping {
@@ -70,15 +70,20 @@ declare global {
       color: Color.Source;
 
       /**
-       * The name for the ping animation to pass to {@link CanvasAnimation.animate}.
+       * The name for the ping animation to pass to {@link CanvasAnimation.animate | `CanvasAnimation.animate`}.
        */
       name: PropertyKey | undefined | null;
     }>;
 
-    interface ConstructorOptions extends _ConstructorOptions {}
+    interface ConstructorOptions extends Ping._ConstructorOptions {}
   }
+
+  /**
+   * @deprecated {@link Ping.ConstructorOptions | `Ping.ConstructorOptions`}
+   */
+  type PingOptions = Ping.ConstructorOptions;
 }
 
 declare abstract class AnyPing extends Ping {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

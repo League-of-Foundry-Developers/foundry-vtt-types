@@ -1,4 +1,4 @@
-import type { HooksRan, FixedInstanceType, InitializationHook } from "fvtt-types/utils";
+import type { EarlierHook, FixedInstanceType, InitializationHook } from "fvtt-types/utils";
 
 type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationHook>;
 
@@ -16,7 +16,7 @@ interface Games {
 }
 
 // Needs to include the current hook as well as all hooks that can run after it.
-type GameHooks = Exclude<InitializationHook, HooksRan<ValidRanHooks>>;
+type GameHooks = Exclude<InitializationHook, EarlierHook[ValidRanHooks]>;
 
 type MaybeUI = Extract<ValidRanHooks, "ready"> extends never ? Partial<UiApplications> : UiApplications;
 
@@ -54,13 +54,13 @@ declare global {
   /**
    * A collection of application instances
    * @remarks
-   * - All of the elements of {@link ui} except for `context` and `window` are initialized between the `"setup"` and `"ready"` hook events.
-   * - In the `/stream` view, only `chat` is initialized but none of the other {@link Application}s.
+   * - All of the elements of {@link ui | `ui`} except for `context` and `window` are initialized between the `"setup"` and `"ready"` hook events.
+   * - In the `/stream` view, only `chat` is initialized but none of the other {@link Application | `Application`}s.
    */
   let ui: {
     /**
      * @remarks
-     * Initialized whenever a {@link ContextMenu} is opened, deleted when it's closed again.
+     * Initialized whenever a {@link ContextMenu | `ContextMenu`} is opened, deleted when it's closed again.
      */
     context?: ContextMenu;
 

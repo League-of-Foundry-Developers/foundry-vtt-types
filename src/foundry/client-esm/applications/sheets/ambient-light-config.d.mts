@@ -9,23 +9,24 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
 declare class AmbientLightConfig<
   RenderContext extends AnyObject = InterfaceToObject<AmbientLightConfig.RenderContext>,
   Configuration extends
-    DocumentSheetV2.Configuration<AmbientLightDocument.ConfiguredInstance> = DocumentSheetV2.Configuration<AmbientLightDocument.ConfiguredInstance>,
+    DocumentSheetV2.Configuration<AmbientLightDocument.Implementation> = DocumentSheetV2.Configuration<AmbientLightDocument.Implementation>,
   RenderOptions extends
     HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
-  AmbientLightDocument.ConfiguredInstance,
+  AmbientLightDocument.Implementation,
   RenderContext,
   Configuration,
   RenderOptions
 > {
-  static override DEFAULT_OPTIONS: DeepPartial<DocumentSheetV2.Configuration<AmbientLightDocument.ConfiguredInstance>>;
+  static override DEFAULT_OPTIONS: object &
+    DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<AmbientLightDocument.Implementation>>;
 
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
    * Maintain a copy of the original to show a real-time preview of changes.
    */
-  preview: AmbientLightDocument.ConfiguredInstance | undefined;
+  preview: AmbientLightDocument.Implementation | undefined;
 
   override tabGroups: {
     sheet: string;
@@ -66,7 +67,7 @@ declare class AmbientLightConfig<
 
 declare namespace AmbientLightConfig {
   interface RenderContext {
-    light: AmbientLightDocument.ConfiguredInstance;
+    light: AmbientLightDocument.Implementation;
     source: foundry.documents.BaseAmbientLight.Source;
     fields: foundry.documents.BaseAmbientLight.Schema;
     colorationTechniques: (typeof AdaptiveLightingShader)["SHADER_TECHNIQUES"];

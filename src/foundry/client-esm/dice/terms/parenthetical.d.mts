@@ -8,7 +8,7 @@ import type DiceTerm from "./dice.d.mts";
  * A type of RollTerm used to enclose a parenthetical expression to be recursively evaluated.
  */
 declare class ParentheticalTerm extends RollTerm {
-  constructor(termData?: InexactPartial<ParentheticalTerm.TermData>);
+  constructor({ term, roll, options }?: ParentheticalTerm.TermData);
 
   /** The original provided string term used to construct the parenthetical */
   term: string | undefined; // only one of term or roll is expected
@@ -91,11 +91,14 @@ declare class ParentheticalTerm extends RollTerm {
 }
 
 declare namespace ParentheticalTerm {
-  interface TermData {
+  /** @internal */
+  interface _TermData {
     term: string;
     roll: Roll;
     options?: InexactPartial<RollTerm.Options>;
   }
+
+  interface TermData extends InexactPartial<ParentheticalTerm._TermData> {}
 }
 
 export default ParentheticalTerm;

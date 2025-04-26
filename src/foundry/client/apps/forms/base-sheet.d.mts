@@ -37,7 +37,7 @@ declare global {
     interface AnyConstructor extends Identity<typeof AnyBaseSheet> {}
 
     interface Options<ConcreteDocument extends Document.Any = Document.Any>
-      extends DocumentSheetOptions<ConcreteDocument> {}
+      extends DocumentSheet.Options<ConcreteDocument> {}
 
     interface BaseSheetData extends DocumentSheet.DocumentSheetData<Options, Document.Any> {
       hasName: boolean;
@@ -49,5 +49,5 @@ declare global {
 }
 
 declare abstract class AnyBaseSheet extends BaseSheet<Document.Any, BaseSheet.Options<Document.Any>> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

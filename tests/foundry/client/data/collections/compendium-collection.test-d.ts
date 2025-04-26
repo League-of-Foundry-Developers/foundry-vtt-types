@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
 import type { DeepPartial } from "fvtt-types/utils";
-import Document = foundry.abstract.Document;
 
 const compendiumCollection = await CompendiumCollection.createCompendium({
   type: "JournalEntry" as const,
@@ -38,7 +37,7 @@ const compendium2 = new CompendiumCollection(constructorMetadata);
 expectTypeOf(compendium2).toEqualTypeOf<CompendiumCollection<CompendiumCollection.Metadata>>();
 expectTypeOf(compendium2.metadata).toEqualTypeOf<CompendiumCollection.Metadata>();
 
-expectTypeOf(compendiumCollection.get("", { strict: true })).toEqualTypeOf<Document.Stored<JournalEntry>>();
+expectTypeOf(compendiumCollection.get("", { strict: true })).toEqualTypeOf<JournalEntry.Stored>();
 // expectTypeOf(compendiumCollection.toJSON()).toEqualTypeOf<
 //   Array<Document.Stored<foundry.documents.BaseJournalEntry>["_source"]>
 // >();
@@ -51,14 +50,14 @@ type CompendiumCollectionType = typeof compendiumCollection;
 
 if (compendiumCollection instanceof DocumentCollection) {
   // This test makes sure the mixin doesn't destroy the inheritance chain.
-  expectTypeOf(compendiumCollection).toMatchTypeOf<CompendiumCollectionType>();
+  expectTypeOf(compendiumCollection).toExtend<CompendiumCollectionType>();
 }
 
 expectTypeOf((await compendiumCollection.getIndex()).get("some id", { strict: true })).toEqualTypeOf<
   { _id: string; uuid: string } & DeepPartial<foundry.documents.BaseJournalEntry["_source"]>
 >();
 
-expectTypeOf(compendiumCollection.documentClass).toEqualTypeOf<typeof JournalEntry>();
+expectTypeOf(compendiumCollection.documentClass).toEqualTypeOf<JournalEntry.ConfiguredClass>();
 
 const itemCollection = new CompendiumCollection({
   ...metadata,
@@ -73,9 +72,9 @@ expectTypeOf(
   (await itemCollection.getIndex({ fields: ["name", "effects", "system"] })).get("some id", { strict: true }),
 ).toEqualTypeOf<{ _id: string; uuid: string } & DeepPartial<foundry.documents.BaseItem["_source"]>>();
 
-expectTypeOf(await itemCollection.getDocuments()).toEqualTypeOf<Document.Stored<Item>[]>(); // get all items
-expectTypeOf(await itemCollection.getDocuments({})).toEqualTypeOf<Document.Stored<Item>[]>(); // get all items
-expectTypeOf(await itemCollection.getDocuments({ name: "foo" })).toEqualTypeOf<Document.Stored<Item>[]>(); // get all items called "foo"
+expectTypeOf(await itemCollection.getDocuments()).toEqualTypeOf<Item.Stored[]>(); // get all items
+expectTypeOf(await itemCollection.getDocuments({})).toEqualTypeOf<Item.Stored[]>(); // get all items
+expectTypeOf(await itemCollection.getDocuments({ name: "foo" })).toEqualTypeOf<Item.Stored[]>(); // get all items called "foo"
 expectTypeOf(
   await itemCollection.getDocuments({ $or: [{ name: "baz" }, { name: "bar" }], effects: { $size: 2 } }), // only get items called "baz" or "bar" that have exactly 2 effects
-).toEqualTypeOf<Document.Stored<Item>[]>();
+).toEqualTypeOf<Item.Stored[]>();

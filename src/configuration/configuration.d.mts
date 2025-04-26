@@ -3,7 +3,7 @@ import type { fields } from "../foundry/common/data/module.d.mts";
 import type Document from "../foundry/common/abstract/document.d.mts";
 
 /**
- * Some global variables (such as {@link game}) are only initialized after certain events have happened during the
+ * Some global variables (such as {@link game | `game`}) are only initialized after certain events have happened during the
  * initialization of Foundry VTT. For that reason, the correct types for these variables include the types for the
  * uninitialized state.
  *
@@ -24,7 +24,7 @@ import type Document from "../foundry/common/abstract/document.d.mts";
  *
  * @example
  * ```typescript
- * declare global {
+ * declare module "fvtt-types/configuration" {
  *   interface AssumeHookRan {
  *     setup: never; // the type doesn't matter
  *   }
@@ -55,7 +55,7 @@ export interface AssumeHookRan {}
  *   CONFIG.Actor.documentClass = typeof MyActor;
  * });
  *
- * declare global {
+ * declare module "fvtt-types/configuration" {
  *   interface DocumentClassConfig {
  *     Actor: typeof MyActor
  *   }
@@ -84,7 +84,7 @@ export interface DocumentClassConfig {}
  *   CONFIG.Token.objectClass = MyToken;
  * });
  *
- * declare global {
+ * declare module "fvtt-types/configuration" {
  *   interface PlaceableObjectClassConfig {
  *     Token: typeof MyToken;
  *   }
@@ -95,9 +95,9 @@ export interface DocumentClassConfig {}
 export interface PlaceableObjectClassConfig {}
 
 /**
- * This interface together with {@link SourceConfig} is used to configure the
+ * This interface together with {@link SourceConfig | `SourceConfig`} is used to configure the
  * types of the `data`  and `data._source` properties of the
- * {@link foundry.documents.BaseActor} and {@link foundry.documents.BaseItem}
+ * {@link foundry.documents.BaseActor | `foundry.documents.BaseActor`} and {@link foundry.documents.BaseItem | `foundry.documents.BaseItem`}
  * classes. System authors should use declaration merging to provide the types
  * that match their `template.json` file. It is also very important for these
  * types to stay in sync with the `template.json` file, otherwise unexpected
@@ -145,7 +145,7 @@ export interface PlaceableObjectClassConfig {}
  * type MyItemDataSource = ArmorDataSource | WeaponDataSource;
  * type MyItemDataProperties = ArmorDataProperties | WeaponDataProperties;
  *
- * declare global {
+ * declare module "fvtt-types/configuration" {
  *   interface DataConfig {
  *     Item: MyItemDataProperties;
  *   }
@@ -161,11 +161,11 @@ export interface PlaceableObjectClassConfig {}
  *   damage: 5
  * });
  *
- * if(item.data.type === "weapon") {
+ * if (item.data.type === "weapon") {
  *   const damage: number = item.data.data.damage;
  * }
  *
- * if(item.data._source.type === "armor") {
+ * if (item.data._source.type === "armor") {
  *   const armorValue = item.data._source.data.armorValue;
  * }
  * ```
@@ -187,7 +187,7 @@ export interface GetDataConfig {}
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface DataModelConfig {}
 
-/** @see {@link DataConfig} */
+/** @see {@link DataConfig | `DataConfig`} */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SourceConfig {}
 
@@ -199,7 +199,7 @@ export interface WebRTCConfig {}
 
 /**
  * Injects extra data for modules from `game.modules.get("module-id")`.
- * @see {@link RequiredModules} for removing the `undefined` type for required modules.
+ * @see {@link RequiredModules | `RequiredModules`} for removing the `undefined` type for required modules.
  *  @example
  * ```typescript
  * interface ModuleConfig {
@@ -216,7 +216,7 @@ export interface ModuleConfig {}
 /**
  * Removes `undefined` for modules listed as keys here from the return type of `game.modules.get`.
  * Useful if a module is a required dependency.
- * @see {@link ModuleConfig} for adding useful properties to the returned modules, like APIs.
+ * @see {@link ModuleConfig | `ModuleConfig`} for adding useful properties to the returned modules, like APIs.
  * @example
  * ```typescript
  * interface RequiredModules {
@@ -255,7 +255,9 @@ export interface SettingConfig {
   }>;
   "core.defaultDrawingConfig": MaybeEmpty<foundry.documents.BaseDrawing["_source"]>;
   "core.defaultToken": DeepPartial<foundry.documents.BaseToken>;
-  "core.diceConfiguration": Record<CONFIG.Dice.DTermDiceStrings, string>;
+  "core.diceConfiguration": {
+    [K in CONFIG.Dice.DTermDiceStrings]?: string | undefined;
+  };
   "core.disableResolutionScaling": boolean;
   "core.fontSize": number;
   "core.fpsMeter": boolean;
@@ -282,13 +284,12 @@ export interface SettingConfig {
     nullable: true;
     initial: null;
     choices: {
-      [_ in typeof CONST.CANVAS_PERFORMANCE_MODES.LOW]: "SETTINGS.PerformanceModeLow";
-    } & {
-      [_ in typeof CONST.CANVAS_PERFORMANCE_MODES.MED]: "SETTINGS.PerformanceModeMed";
-    } & {
-      [_ in typeof CONST.CANVAS_PERFORMANCE_MODES.HIGH]: "SETTINGS.PerformanceModeHigh";
-    } & {
-      [_ in typeof CONST.CANVAS_PERFORMANCE_MODES.MAX]: "SETTINGS.PerformanceModeMax";
+      // Note: these keys correspond to values of `CANVAS_PERFORMANCE_MODES`. They are not used
+      // directly because the values are branded.
+      0: "SETTINGS.PerformanceModeLow";
+      1: "SETTINGS.PerformanceModeMed";
+      2: "SETTINGS.PerformanceModeHigh";
+      3: "SETTINGS.PerformanceModeMax";
     };
   }>;
   "core.permissions": Game.Permissions;

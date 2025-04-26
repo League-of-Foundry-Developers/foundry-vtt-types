@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 
 const myCanvas = new Canvas();
-declare const someScene: Scene.ConfiguredInstance;
+declare const someScene: Scene.Implementation;
 expectTypeOf(myCanvas.draw(someScene)).toEqualTypeOf<Promise<Canvas>>();
 
 expectTypeOf(myCanvas.getLayerByEmbeddedName("AmbientLight")).toEqualTypeOf<LightingLayer | null>();

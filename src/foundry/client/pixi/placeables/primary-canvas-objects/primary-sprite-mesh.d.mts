@@ -154,7 +154,7 @@ declare global {
        * @remarks Default via `?? null` in function body
        * @privateRemarks Foundry types as `*`, but the only things passed in practice are `Tile`s, `Token`s, and the `PrimaryCanvasGroup`
        */
-      //TODO: (esheyw) Revisit the "any canvas group" type when groups are done
+      // TODO: (esheyw) Revisit the "any canvas group" type when groups are done
       object: PlaceableObject.Any | CanvasGroupMixin.AnyMixed;
     }>;
 
@@ -190,5 +190,5 @@ declare global {
 }
 
 declare abstract class AnyPrimarySpriteMesh extends PrimarySpriteMesh {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

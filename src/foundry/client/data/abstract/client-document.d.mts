@@ -1,7 +1,7 @@
-import type { DeepPartial, InexactPartial, Mixin, FixedInstanceType } from "fvtt-types/utils";
-import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
-import type DataModel from "../../../common/abstract/data.d.mts";
+import type { Mixin, FixedInstanceType, Coalesce, AnyObject } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
+
+import ApplicationV2 = foundry.applications.api.ApplicationV2;
 
 declare class InternalClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -10,11 +10,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * A collection of Application instances which should be re-rendered whenever this document is updated.
    * The keys of this object are the application ids and the values are Application instances. Each
-   * Application in this object will have its render method called by {@link Document#render}.
-   * @see {@link Document#render}
+   * Application in this object will have its render method called by {@link Document.render | `Document#render`}.
+   * @see {@link Document.render | `Document#render`}
    * @defaultValue `{}`
    */
-  readonly apps: Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>;
+  readonly apps: Record<string, Application.Any | ApplicationV2.Any>;
 
   /**
    * A cached reference to the FormApplication instance used to configure this Document.
@@ -27,7 +27,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   static name: "ClientDocumentMixin";
 
   /**
-   * @see abstract.Document#_initialize
+   * @see {@link abstract.Document._initialize | `abstract.Document#_initialize`}
    */
   protected _initialize(): void;
 
@@ -39,8 +39,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): Document.MetadataFor<BaseDocument> extends CompendiumCollection.Metadata
-    ? CompendiumCollection<Document.MetadataFor<BaseDocument>>
+  get compendium(): Document.MetadataFor<
+    Document.Internal.DocumentNameFor<BaseDocument>
+  > extends CompendiumCollection.Metadata
+    ? CompendiumCollection<Document.MetadataFor<Document.Internal.DocumentNameFor<BaseDocument>>>
     : undefined;
 
   /**
@@ -80,7 +82,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * Lazily obtain a FormApplication instance used to configure this Document, or null if no sheet is available.
    */
-  get sheet(): FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null;
+  get sheet(): FormApplication.Any | ApplicationV2.Any | null;
 
   /**
    * A boolean indicator for whether or not the current game User has at least limited visibility for this Document.
@@ -91,10 +93,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * Obtain the FormApplication class constructor which should be used to configure this Document.
    */
-  protected _getSheetClass():
-    | FormApplication.AnyConstructor
-    | foundry.applications.api.ApplicationV2.AnyConstructor
-    | null;
+  protected _getSheetClass(): FormApplication.AnyConstructor | ApplicationV2.AnyConstructor | null;
 
   /**
    * Safely prepare data for a Document, catching any errors.
@@ -127,16 +126,13 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
 
   /**
    * Render all Application instances which are connected to this document by calling their respective
-   * @see Application#render
+   * @see {@link Application.render | `Application#render`}
    * @param force   - Force rendering
    *                  (default: `false`)
    * @param context - Optional context
    *                  (default: `{}`)
    */
-  render(
-    force?: boolean,
-    context?: Application.RenderOptions | foundry.applications.api.ApplicationV2.RenderOptions,
-  ): void;
+  render(force?: boolean, context?: Application.RenderOptions | ApplicationV2.RenderOptions): void;
 
   /**
    * Determine the sort order for this Document by positioning it relative a target sibling.
@@ -144,7 +140,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param options - Sorting options provided to SortingHelper.performIntegerSort
    * @returns The Document after it has been re-sorted
    */
-  sortRelative(options?: InexactPartial<ClientDocument.SortOptions<this>>): Promise<this>;
+  sortRelative(options?: ClientDocument.SortOptions<this>): Promise<this>;
 
   /**
    * Construct a UUID relative to another document.
@@ -153,24 +149,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   getRelativeUuid(relative: ClientDocument): string;
 
   /**
-   * Createa  content link for this document
+   * Create a content link for this document
    * @param eventData - The parsed object of data provided by the drop transfer event.
    * @param options   - Additional options to configure link generation.
    */
-  protected _createDocumentLink(
-    eventData: unknown,
-    options?: InexactPartial<{
-      /**
-       * A document to generate a link relative to.
-       */
-      relativeTo: ClientDocument;
-
-      /**
-       * A custom label to use instead of the document's name.
-       */
-      label: string;
-    }>,
-  ): string;
+  protected _createDocumentLink(eventData: unknown, options?: ClientDocument.CreateDocumentLinkOptions): string;
 
   /**
    * Handle clicking on a content link for this document.
@@ -195,11 +178,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   protected _dispatchDescendantDocumentEvents(
     event: ClientDocument.LifeCycleEventName,
     collection: string,
-    args: unknown[],
-    _parent: ClientDocument,
+    args: never,
+    _parent: never,
   ): void;
 
-  // TODO: Improve the data typing
   /**
    * Actions taken after descendant documents have been created, but before changes are applied to the client data.
    * @param parent     - The direct parent of the created Documents, may be this Document or a child
@@ -209,10 +191,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId     - The ID of the User who triggered the operation
    */
   protected _preCreateDescendantDocuments(
-    parent: ClientDocument,
-    collection: string,
-    data: unknown[],
-    options: Document.PreCreateOptions<any>,
+    parent: never,
+    collection: never,
+    data: never,
+    options: never,
     userId: string,
   ): void;
 
@@ -226,13 +208,14 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId     - The ID of the User who triggered the operation
    */
   protected _onCreateDescendantDocuments(
-    parent: ClientDocument,
-    collection: string,
-    documents: ClientDocument[],
-    data: unknown[],
-    options: Document.OnCreateOptions<any> & InexactPartial<{ render: boolean }>,
+    parent: never,
+    collection: never,
+    documents: never,
+    data: never,
+    options: never,
     userId: string,
   ): void;
+
   /**
    * Actions taken after descendant documents have been updated, but before changes are applied to the client data.
    * @param parent - The direct parent of the updated Documents, may be this Document or a child
@@ -242,10 +225,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId - The ID of the User who triggered the operation
    */
   protected _preUpdateDescendantDocuments(
-    parent: ClientDocument,
-    collection: string,
-    changes: unknown[],
-    options: Document.PreUpdateOptions<any>,
+    parent: never,
+    collection: never,
+    changes: never,
+    options: never,
     userId: string,
   ): void;
 
@@ -259,11 +242,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId - The ID of the User who triggered the operation
    */
   protected _onUpdateDescendantDocuments(
-    parent: ClientDocument,
-    collection: string,
-    documents: ClientDocument[],
-    changes: unknown[],
-    options: Document.OnUpdateOptions<any> & InexactPartial<{ render: boolean }>,
+    parent: never,
+    collection: never,
+    documents: never,
+    changes: never,
+    options: never,
     userId: string,
   ): void;
 
@@ -276,10 +259,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId - The ID of the User who triggered the operation
    */
   protected _preDeleteDescendantDocuments(
-    parent: ClientDocument,
-    collection: string,
-    ids: string[],
-    options: Document.PreDeleteOptions<any>,
+    parent: never,
+    collection: never,
+    ids: never,
+    options: never,
     userId: string,
   ): void;
 
@@ -293,11 +276,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId - The ID of the User who triggered the operation
    */
   protected _onDeleteDescendantDocuments(
-    parent: ClientDocument,
-    collection: string,
-    documents: ClientDocument[],
+    parent: never,
+    collection: never,
+    documents: never,
     ids: string[],
-    options: Document.OnDeleteOptions<any> & InexactPartial<{ render: boolean }>,
+    options: never,
     userId: string,
   ): void;
 
@@ -305,30 +288,13 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Whenever the Document's sheet changes, close any existing applications for this Document, and re-render the new
    * sheet if one was already open.
    */
-  protected _onSheetChange(
-    options?: InexactPartial<{
-      /**
-       * Whether the sheet was originally open and needs to be re-opened.
-       */
-      sheetOpen: boolean;
-    }>,
-  ): Promise<void>;
+  protected _onSheetChange(options?: ClientDocument.OnSheetChangeOptions): Promise<void>;
 
   /**
    * Gets the default new name for a Document
    * @param context - The context for which to create the Document name.
    */
-  static defaultName(
-    context?: InexactPartial<{
-      /** The sub-type of the document */
-      // TODO: See if the valid strings can be inferred from this type
-      type: string;
-      /** A parent document within which the created Document should belong */
-      parent: foundry.abstract.Document.Any;
-      /** A compendium pack within which the Document should be created */
-      pack: string;
-    }>,
-  ): string;
+  static defaultName(context: Document.DefaultNameContext<never, never>): string;
 
   /**
    * Present a Dialog form to create a new Document of this type.
@@ -340,17 +306,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @returns A Promise which resolves to the created Document, or null if the dialog was
    *          closed.
    */
-  static createDialog<T extends Document.AnyConstructor>(
-    this: T,
-    data?: DeepPartial<Document.ConstructorDataFor<NoInfer<T>> & Record<string, unknown>>,
-    context?: Pick<DatabaseCreateOperation<FixedInstanceType<NoInfer<T>>>, "parent" | "pack"> &
-      InexactPartial<
-        Dialog.Options & {
-          /** A restriction the selectable sub-types of the Dialog. */
-          types: string[];
-        }
-      >,
-  ): Promise<Document.ToConfiguredInstance<T> | null | undefined>;
+  static createDialog(data: never, context: never): Promise<unknown>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
@@ -362,9 +318,9 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
-   * @param options - Additional options passed to the {@link ClientDocument#toCompendium} method
+   * @param options - Additional options passed to the {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`} method
    */
-  exportToJSON(options?: InexactPartial<ClientDocument.CompendiumExportOptions>): void;
+  exportToJSON(options?: ClientDocument.ToCompendiumOptions): void;
 
   /**
    * Serialize salient information about this Document when dragging it.
@@ -382,11 +338,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @returns The resolved Document
    * @throws If a Document could not be retrieved from the provided data.
    */
-  static fromDropData<T extends Document.AnyConstructor>(
-    this: T,
-    data: Document.DropData<FixedInstanceType<NoInfer<T>>>,
-    options?: FromDropDataOptions,
-  ): Promise<Document.ToConfiguredInstance<T> | undefined>;
+  static fromDropData(data: Document.DropData<never>, options?: Document.FromDropDataOptions): Promise<unknown>;
 
   /**
    * Create the Document from the given source with migration applied to it.
@@ -394,7 +346,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    *
    * This function must be used to create a document from data that predates the current core version.
    * It must be given nonpartial data matching the schema it had in the core version it is coming from.
-   * It applies legacy migrations to the source data before calling {@link Document.fromSource}.
+   * It applies legacy migrations to the source data before calling {@link Document.fromSource | `Document.fromSource`}.
    * If this function is not used to import old data, necessary migrations may not applied to the data
    * resulting in an incorrectly imported document.
    *
@@ -402,14 +354,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * doesn't contain a `_stats` field, the data is assumed to be pre-V10, when the `_stats` field didn't exist yet.
    * The `_stats` field must not be stripped from the data before it is exported!
    * @param source - The document data that is imported.
-   * @param context - The model construction context passed to {@link Document.fromSource}.
+   * @param context - The model construction context passed to {@link Document.fromSource | `Document.fromSource`}.
    *                  (default: `context.strict=true`) Strict validation is enabled by default.
    */
-  static fromImport<T extends Document.AnyConstructor>(
-    this: T,
-    source: Record<string, unknown>,
-    context?: Document.ConstructionContext<Document.Any | null> & DataModel.DataValidationOptions,
-  ): Promise<FixedInstanceType<T>>;
+  static fromImport(source: never, context?: never): Promise<unknown>;
+
   /**
    * Update this Document using a provided JSON string.
    * @param json - JSON data string
@@ -430,28 +379,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    *                  (default: `{}`)
    * @returns A data object of cleaned data suitable for compendium import
    */
-  toCompendium<
-    FlagsOpt extends boolean = false,
-    SourceOpt extends boolean = true,
-    SortOpt extends boolean = true,
-    FolderOpt extends boolean = false,
-    OwnershipOpt extends boolean = false,
-    StateOpt extends boolean = true,
-    IdOpt extends boolean = false,
-  >(
+  toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
     pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
-    options?: InexactPartial<
-      ClientDocument.CompendiumExportOptions<FlagsOpt, SourceOpt, SortOpt, FolderOpt, OwnershipOpt, StateOpt, IdOpt>
-    >,
-  ): Omit<
-    Document.Internal.Instance.Complete<BaseDocument>["_source"],
-    | (IdOpt extends false ? "_id" : never)
-    | ClientDocument.OmitProperty<SortOpt, "sort" | "navigation" | "navOrder"> // helping out Scene
-    | ClientDocument.OmitProperty<FolderOpt, "folder">
-    | ClientDocument.OmitProperty<FlagsOpt, "flags">
-    | ClientDocument.OmitProperty<OwnershipOpt, "ownership">
-    | ClientDocument.OmitProperty<StateOpt, "active" | "fogReset" | "playing"> // helping out Playlist, Scene
-  >;
+    options?: Options,
+  ): ClientDocument.ToCompendiumReturnType<BaseDocument, Options>;
 
   /**
    * Create a content link for this Document.
@@ -515,7 +446,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   protected _preCreateEmbeddedDocuments(
     embeddedName: string,
-    result: Record<string, unknown>[],
+    result: AnyObject[],
     options: Document.ModificationOptions,
     userId: string,
   ): void;
@@ -531,8 +462,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
-    documents: Document.Any[],
-    result: Record<string, unknown>[],
+    documents: never,
+    result: AnyObject[],
     options: Document.ModificationOptions,
     userId: string,
   ): void;
@@ -547,7 +478,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   protected _preUpdateEmbeddedDocuments(
     embeddedName: string,
-    result: Record<string, unknown>[],
+    result: AnyObject[],
     options: Document.ModificationOptions,
     userId: string,
   ): void;
@@ -563,8 +494,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   protected _onUpdateEmbeddedDocuments(
     embeddedName: string,
-    documents: Document.Any[],
-    result: Record<string, unknown>[],
+    documents: never,
+    result: AnyObject[],
     options: Document.ModificationContext<Document.Any | null>,
     userId: string,
   ): void;
@@ -595,7 +526,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   protected _onDeleteEmbeddedDocuments(
     embeddedName: string,
-    documents: Document.Any[],
+    documents: never,
     result: string[],
     options: Document.ModificationContext<Document.Any | null>,
     userId: string,
@@ -629,7 +560,7 @@ declare global {
   // Note(LukeAbby): The seemingly redundant merging in of `typeof AnyDocument` makes it easier for tsc to recognize that anything extending `ClientDocumentMixin` is also a document.
   function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): typeof AnyDocument & Mixin<typeof InternalClientDocument<FixedInstanceType<BaseClass>>, BaseClass>;
+  ): Mixin<typeof InternalClientDocument<FixedInstanceType<BaseClass>>, BaseClass>;
 
   namespace ClientDocument {
     interface SortOptions<T, SortKey extends string = "sort"> extends SortingHelpers.SortOptions<T, SortKey> {
@@ -643,84 +574,114 @@ declare global {
     // TODO: This may be better defined elsewhere
     type LifeCycleEventName = "preCreate" | "onCreate" | "preUpdate" | "onUpdate" | "preDelete" | "onDelete";
 
-    type OmitProperty<T extends boolean, Property extends string> = T extends true ? Property : never;
+    // Note(LukeAbby): If the property could be omitted it is. This is the safest option because in indeterminate cases access would be unsafe.
+    // In the future the indeterminate case could turn the property optional but that isn't done today because that's annoying to do for little benefit.
+    /** @internal */
+    type _OmitProperty<Omit extends boolean | undefined, Default extends boolean, ToOmit extends string> = Omit extends
+      | true
+      | (Default extends true ? undefined : never)
+      ? ToOmit
+      : never;
 
-    interface CompendiumExportOptions<
-      FlagsOpt extends boolean = false,
-      SourceOpt extends boolean = true,
-      SortOpt extends boolean = true,
-      FolderOpt extends boolean = false,
-      OwnershipOpt extends boolean = false,
-      StateOpt extends boolean = true,
-      IdOpt extends boolean = false,
-    > {
+    interface ToCompendiumOptions {
       /**
        * Clear the flags object
        * @defaultValue `false`
        */
-      clearFlags: FlagsOpt;
+      clearFlags?: boolean | undefined;
 
       /**
        * Clear any prior source information
        * @defaultValue `true`
        */
-      clearSource: SourceOpt;
+      clearSource?: boolean | undefined;
 
       /**
        * Clear the currently assigned folder and sort order
        * @defaultValue `true`
        */
-      clearSort: SortOpt;
+      clearSort?: boolean | undefined;
 
       /**
        * Clear the currently assigned folder
        * @defaultValue `false`
        */
-      clearFolder: FolderOpt;
+      clearFolder?: boolean | undefined;
 
       /**
        * Clear document ownership
        * @defaultValue `true`
        */
-      clearOwnership: OwnershipOpt;
+      clearOwnership?: boolean | undefined;
 
       /**
        * Clear fields which store document state
        * @defaultValue `true`
        */
-      clearState: StateOpt;
+      clearState?: boolean | undefined;
 
       /**
        * Retain the current Document id
        * @defaultValue `false`
        */
-      keepId: IdOpt;
+      keepId?: boolean | undefined;
+    }
+
+    interface CreateDocumentLinkOptions {
+      /**
+       * A document to generate a link relative to.
+       */
+      relativeTo?: ClientDocument | undefined;
+
+      /**
+       * A custom label to use instead of the document's name.
+       */
+      label?: string | undefined;
+    }
+
+    type ToCompendiumReturnType<
+      BaseDocument extends Document.Internal.Instance.Any,
+      Options extends ToCompendiumOptions,
+    > = _ToCompendiumReturnType<
+      Options["clearSource"],
+      Omit<
+        Document.Internal.Instance.Complete<BaseDocument>["_source"],
+        | ClientDocument._OmitProperty<Options["clearFlags"], false, "flags">
+        | ClientDocument._OmitProperty<Options["clearSort"], true, "sort" | "navigation" | "navOrder"> // helping out Scene
+        | ClientDocument._OmitProperty<Options["clearFolder"], true, "folder">
+        | ClientDocument._OmitProperty<Options["clearOwnership"], true, "ownership">
+        | ClientDocument._OmitProperty<Options["clearState"], true, "active" | "fogReset" | "playing"> // helping out Playlist, Scene
+        | (Options["keepId"] extends true ? never : "_id")
+      >
+    >;
+
+    type _ToCompendiumReturnType<ClearSource extends boolean | undefined, SourceData extends object> = [
+      Coalesce<ClearSource, true>,
+    ] extends [true]
+      ? {
+          [K in keyof SourceData]: "_stats" extends K
+            ? Omit<SourceData[K], "compendiumSource" | "duplicateSource">
+            : never;
+        }
+      : SourceData;
+
+    interface OnSheetChangeOptions {
+      /**
+       * Whether the sheet was originally open and needs to be re-opened.
+       */
+      sheetOpen?: boolean | undefined;
     }
   }
 }
 
 // This is yet another `AnyDocument` type.
 // It exists specifically because the `Document.AnyConstructor` type is too safe to be merged in with a mixin.
-// The `arg0: never, ...args: never[]` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.
+// The `...args: never` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.
 //
 // `{}` is used to avoid merging `DataSchema` with the real schema.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-declare class AnyDocument extends Document<any, {}, any> {
+declare class AnyDocument extends Document<Document.Type, {}, Document.Any | null> {
   constructor(...args: any[]);
 
-  // Note(LukeAbby): Specifically adding the `DocumentBrand` should be redundant but in practice it seems to help tsc more efficiently deduce that it's actually inheriting from `Document`.
-  // This is odd but probably is because it bails from looking up the parent class properties at times or something.
-  static [Document.Internal.DocumentBrand]: true;
-
-  flags?: unknown;
-
   getFlag(scope: never, key: never): any;
-}
-
-interface FromDropDataOptions {
-  /**
-   * Import the provided document data into the World, if it is not already a World-level Document reference
-   * @defaultValue `false`
-   */
-  importWorld?: boolean;
 }

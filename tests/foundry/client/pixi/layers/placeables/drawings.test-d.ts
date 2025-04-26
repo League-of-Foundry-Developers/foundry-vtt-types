@@ -4,16 +4,16 @@ expectTypeOf(DrawingsLayer.documentName).toEqualTypeOf<"Drawing">();
 expectTypeOf(DrawingsLayer.instance).toEqualTypeOf<DrawingsLayer | undefined>();
 expectTypeOf(DrawingsLayer.layerOptions).toEqualTypeOf<DrawingsLayer.LayerOptions>();
 expectTypeOf(DrawingsLayer.layerOptions.name).toEqualTypeOf<"drawings">();
-expectTypeOf(DrawingsLayer.layerOptions.objectClass).toEqualTypeOf<typeof Drawing>();
+expectTypeOf(DrawingsLayer.layerOptions.objectClass).toEqualTypeOf<Drawing.ObjectClass>();
 expectTypeOf(DrawingsLayer.DEFAULT_CONFIG_SETTING).toEqualTypeOf<"defaultDrawingConfig">();
 
 const layer = new DrawingsLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<typeof Drawing>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Drawing.ObjectClass>();
 expectTypeOf(layer.options).toEqualTypeOf<DrawingsLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"drawings">();
 
-expectTypeOf(layer.graphics).toEqualTypeOf<Collection<Drawing.ConfiguredInstance>>();
+expectTypeOf(layer.graphics).toEqualTypeOf<Collection<Drawing.Object>>();
 expectTypeOf(layer.hud).toEqualTypeOf<DrawingHUD>();
 expectTypeOf(layer.hookName).toEqualTypeOf<"DrawingsLayer">();
 
@@ -36,5 +36,5 @@ expectTypeOf(layer["_onDragLeftDrop"](someEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftCancel"](somePointerEvent)).toBeVoid();
 expectTypeOf(layer["_onClickRight"](someEvent)).toBeVoid();
 
-//deprecated since v12 until v14
+// deprecated since v12 until v14
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<16 | 8 | 0>();

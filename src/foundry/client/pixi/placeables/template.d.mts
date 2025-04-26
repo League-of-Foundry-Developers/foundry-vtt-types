@@ -1,87 +1,43 @@
-import type { RequiredProps, FixedInstanceType } from "fvtt-types/utils";
+import type { FixedInstanceType, HandleEmptyObject } from "fvtt-types/utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {
-  namespace MeasuredTemplate {
-    type ConfiguredClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
-    type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
-
-    interface RENDER_FLAGS {
-      /** @defaultValue `{ propagate: ["refresh"] }` */
-      redraw: RenderFlag<this>;
-
-      /** @defaultValue `{ propagate: ["refreshState", "refreshShape"], alias: true }` */
-      refresh: RenderFlag<this>;
-
-      /** @defaultValue `{}` */
-      refreshState: RenderFlag<this>;
-
-      /** @defaultValue `{ propagate: ["refreshPosition", "refreshGrid", "refreshText", "refreshTemplate"] }` */
-      refreshShape: RenderFlag<this>;
-
-      /** @defaultValue `{}` */
-      refreshTemplate: RenderFlag<this>;
-
-      /** @defaultValue `{ propagate: ["refreshGrid"] }` */
-      refreshPosition: RenderFlag<this>;
-
-      /** @defaultValue `{}` */
-      refreshGrid: RenderFlag<this>;
-
-      /** @defaultValue `{}` */
-      refreshText: RenderFlag<this>;
-    }
-
-    interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
-
-    // TODO: Fix globalThis.ObjectHUD #2962
-    interface ObjectHUD {
-      /**
-       * Template control icon
-       */
-      icon?: ControlIcon;
-
-      /**
-       * Ruler text tooltip
-       */
-      ruler?: PreciseText;
-    }
-
-    type InitializedObjectHUD = RequiredProps<ObjectHUD, "icon" | "ruler">;
-  }
-
   /**
    * A type of Placeable Object which highlights an area of the grid as covered by some area of effect.
-   * @see {@link MeasuredTemplateDocument}
-   * @see {@link TemplateLayer}
+   * @see {@link MeasuredTemplateDocument | `MeasuredTemplateDocument`}
+   * @see {@link TemplateLayer | `TemplateLayer`}
    */
-  class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.ConfiguredInstance> {
+  class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.Implementation> {
     /**
      * The geometry shape used for testing point intersection
      * @defaultValue `undefined`
+     * @remarks Only `undefined` prior to {@link MeasuredTemplate._refreshShape | `MeasuredTemplate#_refreshShape`} being called
+     *
+     * @privateRemarks Foundry also types this as `| PIXI.Ellipse | PIXI.RoundedRectangle`, but {@link MeasuredTemplate._computeShape | `MeasuredTemplate#_computeShape`}
+     * never returns either in v12
      */
-    shape: PIXI.Circle | PIXI.Ellipse | PIXI.Polygon | PIXI.Rectangle | PIXI.RoundedRectangle | undefined;
+    shape: PIXI.Circle | PIXI.Polygon | PIXI.Rectangle | undefined;
 
     /**
      * The tiling texture used for this template, if any
+     * @defaultValue `undefined`
+     * @remarks Only `undefined` prior to first draw. Set `null` if the template's document has no `texture` set
      */
-    texture: PIXI.Texture | undefined;
+    texture: PIXI.Texture | null | undefined;
 
     /**
      * The template graphics
      * @defaultValue `undefined`
+     * @remarks Only `undefined` prior to first draw.
      */
     template: PIXI.Graphics | undefined;
 
     /**
-     * The template control icon
-     */
-    controlIcon: ControlIcon | undefined;
-
-    /**
      * The measurement ruler label
+     * @defaultValue `undefined`
+     * @remarks Only `undefined` prior to first draw.
      */
-    ruler: PreciseText;
+    ruler: PreciseText | undefined;
 
     /**
      * Internal property used to configure the control border thickness
@@ -93,22 +49,16 @@ declare global {
 
     static override RENDER_FLAGS: MeasuredTemplate.RENDER_FLAGS;
 
+    // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
+    // `RENDER_FLAGS` and so it has to be adjusted here.
+    renderFlags: RenderFlags<MeasuredTemplate.RENDER_FLAGS>;
+
+    /**
+     * A convenient reference for whether the current User is the author of the MeasuredTemplate document.
+     */
+    get isAuthor(): boolean;
+
     override get bounds(): PIXI.Rectangle;
-
-    /**
-     * A convenience accessor for the border color as a numeric hex code
-     */
-    get borderColor(): string | number;
-
-    /**
-     * A convenience accessor for the fill color as a numeric hex code
-     */
-    get fillColor(): string | number;
-
-    /**
-     * A flag for whether the current User has full ownership over the MeasuredTemplate document.
-     */
-    get owner(): boolean;
 
     /**
      * Is this MeasuredTemplate currently visible on the Canvas?
@@ -120,13 +70,37 @@ declare global {
      */
     get highlightId(): string;
 
-    protected override _draw(): Promise<void>;
+    protected override _draw(options: HandleEmptyObject<MeasuredTemplate.DrawOptions>): Promise<void>;
 
-    protected override _destroy(options?: PIXI.IDestroyOptions | boolean): void;
+    protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
+
+    // fake override; super has to account for misbehaving siblings returning void
+    override clear(): this;
 
     protected _applyRenderFlags(flags: MeasuredTemplate.RenderFlags): void;
 
+    /**
+     * Refresh the displayed state of the MeasuredTemplate.
+     * This refresh occurs when the user interaction state changes.
+     */
+    protected _refreshState(): void;
+
+    /**
+     * Refresh the elevation of the control icon.
+     */
+    protected _refreshElevation(): void;
+
     protected override _getTargetAlpha(): number;
+
+    /**
+     * Refresh the position of the MeasuredTemplate
+     */
+    protected _refreshPosition(): void;
+
+    /**
+     * Refresh the underlying geometric shape of the MeasuredTemplate.
+     */
+    protected _refreshShape(): void;
 
     /**
      * Compute the geometry for the template using its document data.
@@ -142,27 +116,38 @@ declare global {
 
     /**
      * Get a Circular area of effect given a radius of effect
-     * @internal
+     * @param distance - The radius of the circle in grid units
+     * @remarks Will return a `PIXI.Circle` unless the core `gridTemplates` setting is truthy,
+     * in which case it returns a `PIXI.Polygon` with points generated by {@link foundry.grid.BaseGrid.getCircle | `canvas.grid.getCircle`}
      */
-    static getCircleShape(distance: number): PIXI.Circle;
+    static getCircleShape(distance: number): PIXI.Circle | PIXI.Polygon;
 
     /**
      * Get a Conical area of effect given a direction, angle, and distance
-     * @internal
+     * @param distance  - The radius of the cone in grid units
+     * @param direction - The direction of the cone in degrees
+     * @param angle     - The angle of the cone in degrees
+     * @remarks Always returns a `PIXI.Polygon`, but if the core `gridTemplates` setting is truthy,
+     * the points will come from {@link foundry.grid.BaseGrid.getCone | `canvas.grid.getCone`}
      */
-    static getConeShape(direction: number, angle: number, distance: number): PIXI.Polygon;
+    static getConeShape(distance: number, direction: number, angle: number): PIXI.Polygon;
 
     /**
      * Get a Rectangular area of effect given a width and height
-     * @internal
+     * @param distance  - The length of the diagonal in grid units
+     * @param direction - The direction of the diagonal in degrees
+     * @remarks Always returns a `PIXI.Rectangle`, but if the core `gridTemplates` setting is truthy,
+     * the height and width will come from {@link foundry.grid.BaseGrid.getTranslatedPoint | `canvas.grid.getTranslatedPoint`}
      */
-    static getRectShape(direction: number, distance: number): PIXI.Rectangle;
+    static getRectShape(distance: number, direction: number): PIXI.Rectangle;
 
     /**
      * Get a rotated Rectangular area of effect given a width, height, and direction
-     * @internal
+     * @param distance  - The length of the ray in grid units
+     * @param direction - The direction of the ray in degrees
+     * @param width     - The width of the ray in grid units
      */
-    static getRayShape(direction: number, distance: number, width: number): PIXI.Polygon;
+    static getRayShape(distance: number, direction: number, width: number): PIXI.Polygon;
 
     /**
      * Update the displayed ruler tooltip text
@@ -177,28 +162,132 @@ declare global {
     /**
      * Get the shape to highlight on a Scene which uses grid-less mode.
      */
-    protected _getGridHighlightShape(): PIXI.Polygon | PIXI.Circle | PIXI.Rectangle;
+    protected _getGridHighlightShape(): NonNullable<this["shape"]>;
 
     /**
      * Get an array of points which define top-left grid spaces to highlight for square or hexagonal grids.
      */
     protected _getGridHighlightPositions(): Canvas.Point[];
 
-    override rotate(angle: number, snap: number): Promise<this>;
+    // snap: not null (forwarded to _updateRotation with only a parameter default)
+    override rotate(angle: number, snap?: number): Promise<this>;
 
-    protected override _canControl(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    // _onUpdate is overridden but with no signature changes.
+    // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
-    protected override _canConfigure(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canControl(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
-    protected override _canView(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canHUD(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
-    /**
-     * @privateRemarks _onUpdate is overridden but with no signature changes.
-     * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    protected override _canConfigure(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
 
-    protected override _canHUD(user: User.ConfiguredInstance, event?: PIXI.FederatedEvent): boolean;
+    protected override _canView(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+
+    // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
+    // options: not null (destructured)
+    protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): void;
 
     protected override _onClickRight(event: PIXI.FederatedEvent): void;
+
+    // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
+    protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.DragLeftDropUpdate[];
+
+    /**
+     * @deprecated since v12, until v14
+     * @remarks "`MeasuredTemplate#borderColor` has been deprecated. Use {@link MeasuredTemplateDocument.borderColor | `MeasuredTemplate#document#borderColor`} instead."
+     *
+     * Returns the {@link Color.valueOf | `Color#valueOf()`} of the document's `borderColor`, not the `Color` itself
+     */
+    get borderColor(): number;
+
+    /**
+     * @deprecated since v12, until v14
+     * @remarks "`MeasuredTemplate#fillColor` has been deprecated. Use {@link MeasuredTemplateDocument.fillColor | `MeasuredTemplate#document#fillColor`} instead."
+     *
+     * Returns the {@link Color.valueOf | `Color#valueOf()`} of the document's `fillColor`, not the `Color` itself
+     */
+    get fillColor(): number;
+
+    /**
+     * A flag for whether the current User has full ownership over the MeasuredTemplate document.
+     * @deprecated since v12, until v14
+     * @remarks "`MeasuredTemplate#owner` has been deprecated. Use {@link MeasuredTemplate.isOwner | `MeasuredTemplate#isOwner`} instead."
+     */
+    get owner(): this["isOwner"];
+  }
+
+  namespace MeasuredTemplate {
+    // eslint-disable-next-line no-restricted-syntax
+    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof MeasuredTemplate> {}
+    interface Object extends FixedInstanceType<ObjectClass> {}
+
+    /**
+     * @deprecated {@link MeasuredTemplate.ObjectClass | `MeasuredTemplate.ObjectClass`}
+     */
+    type ConfiguredClass = ObjectClass;
+
+    /**
+     * @deprecated {@link MeasuredTemplate.Object | `MeasuredTemplate.Object`}
+     */
+    type ConfiguredInstance = Object;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `MeasuredTemplate` (the `PlaceableObject` that appears on the canvas) and
+     * `MeasuredTemplateDocument` (the `Document` that represents the data for a `MeasuredTemplate`) is so common that
+     * it is useful to have a type to forward to `MeasuredTemplateDocument`.
+     *
+     * @deprecated {@link MeasuredTemplateDocument.Implementation | `MeasuredTemplateDocument.Implementation`}
+     */
+    type Implementation = MeasuredTemplateDocument.Implementation;
+
+    /**
+     * This type will permanently exist but is marked deprecated. The reason it exists is because
+     * the confusion between `MeasuredTemplate` (the `PlaceableObject` that appears on the canvas) and
+     * `MeasuredTemplateDocument` (the `Document` that represents the data for a `MeasuredTemplate`) is so common that
+     * it is useful to have a type to forward to `MeasuredTemplateDocument`.
+     *
+     * @deprecated {@link MeasuredTemplateDocument.ImplementationClass | `MeasuredTemplateDocument.ImplementationClass`}
+     */
+    type ImplementationClass = MeasuredTemplateDocument.ImplementationClass;
+
+    interface RENDER_FLAGS {
+      /** @defaultValue `{ propagate: ["refresh"] }` */
+      redraw: RenderFlag<this, "redraw">;
+
+      /** @defaultValue `{ propagate: ["refreshState", "refreshPosition", "refreshShape", "refreshElevation"], alias: true }` */
+      refresh: RenderFlag<this, "refresh">;
+
+      /** @defaultValue `{}` */
+      refreshState: RenderFlag<this, "refreshState">;
+
+      /** @defaultValue `{ propagate: ["refreshGrid"] }` */
+      refreshPosition: RenderFlag<this, "refreshPosition">;
+
+      /** @defaultValue `{ propagate: ["refreshTemplate", "refreshGrid", "refreshText"] }` */
+      refreshShape: RenderFlag<this, "refreshShape">;
+
+      /** @defaultValue `{}` */
+      refreshTemplate: RenderFlag<this, "refreshTemplate">;
+
+      /** @defaultValue `{}` */
+      refreshGrid: RenderFlag<this, "refreshGrid">;
+
+      /** @defaultValue `{}` */
+      refreshText: RenderFlag<this, "refreshText">;
+
+      /** @defaultValue `{}` */
+      refreshElevation: RenderFlag<this, "refreshElevation">;
+    }
+
+    interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
+
+    interface DrawOptions extends PlaceableObject.DrawOptions {}
+
+    interface RefreshOptions extends PlaceableObject.RefreshOptions {}
+
+    interface ControlOptions extends PlaceableObject.ControlOptions {}
+
+    interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
   }
 }

@@ -5,7 +5,7 @@ declare global {
    * A singleton Tooltip Manager class responsible for rendering and positioning a dynamic tooltip element which is
    * accessible as `game.tooltip`.
    *
-   * @see {@link Game.tooltip}
+   * @see {@link Game.tooltip | `Game.tooltip`}
    *
    * @example API Usage
    * ```typescript

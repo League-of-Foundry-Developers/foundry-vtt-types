@@ -1,11 +1,11 @@
 /**
  * A wrapper method around `fetch` that attaches an AbortController signal to the `fetch` call for clean timeouts
- * @see https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal#aborting_a_fetch_with_timeout_or_explicit_abort
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal#aborting_a_fetch_with_timeout_or_explicit_abort}
  * @param url            - The URL to make the Request to
  * @param data           - The data of the Request
  *                         (defalt: `{}`)
  * @param timeoutOptions - (default: `{}`)
- * @throws {@link HttpError}
+ * @throws {@link HttpError | `HttpError`}
  */
 export declare function fetchWithTimeout(
   url: string,

@@ -1,24 +1,25 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
-expectTypeOf(foundry.documents.BaseChatMessage.create({})).toEqualTypeOf<
-  Promise<Document.Stored<ChatMessage> | undefined>
+expectTypeOf(foundry.documents.BaseChatMessage.create({})).toEqualTypeOf<Promise<ChatMessage.Stored | undefined>>();
+expectTypeOf(foundry.documents.BaseChatMessage.createDocuments([])).toEqualTypeOf<Promise<ChatMessage.Stored[]>>();
+expectTypeOf(foundry.documents.BaseChatMessage.updateDocuments([])).toEqualTypeOf<
+  Promise<ChatMessage.Implementation[]>
 >();
-expectTypeOf(foundry.documents.BaseChatMessage.createDocuments([])).toEqualTypeOf<
-  Promise<Document.Stored<ChatMessage>[]>
+expectTypeOf(foundry.documents.BaseChatMessage.deleteDocuments([])).toEqualTypeOf<
+  Promise<ChatMessage.Implementation[]>
 >();
-expectTypeOf(foundry.documents.BaseChatMessage.updateDocuments([])).toEqualTypeOf<Promise<ChatMessage[]>>();
-expectTypeOf(foundry.documents.BaseChatMessage.deleteDocuments([])).toEqualTypeOf<Promise<ChatMessage[]>>();
 
 const chat = await foundry.documents.BaseChatMessage.create({}, { temporary: true });
 if (chat) {
-  expectTypeOf(chat).toEqualTypeOf<ChatMessage>();
+  expectTypeOf(chat).toEqualTypeOf<ChatMessage.Implementation>();
 }
 
-expectTypeOf(new foundry.documents.BaseChatMessage()).toEqualTypeOf<foundry.documents.BaseChatMessage>();
-expectTypeOf(new foundry.documents.BaseChatMessage({})).toEqualTypeOf<foundry.documents.BaseChatMessage>();
+class TestBaseChatMessage extends foundry.documents.BaseChatMessage {}
+
+expectTypeOf(new TestBaseChatMessage()).toEqualTypeOf<foundry.documents.BaseChatMessage>();
+expectTypeOf(new TestBaseChatMessage({})).toEqualTypeOf<foundry.documents.BaseChatMessage>();
 expectTypeOf(
-  new foundry.documents.BaseChatMessage({
+  new TestBaseChatMessage({
     blind: null,
     content: null,
     emote: null,
@@ -35,7 +36,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage>();
 expectTypeOf(
-  new foundry.documents.BaseChatMessage({
+  new TestBaseChatMessage({
     blind: undefined,
     content: undefined,
     emote: undefined,
@@ -53,7 +54,7 @@ expectTypeOf(
 ).toEqualTypeOf<foundry.documents.BaseChatMessage>();
 
 expectTypeOf(
-  new foundry.documents.BaseChatMessage({
+  new TestBaseChatMessage({
     speaker: {
       scene: null,
       actor: null,
@@ -63,12 +64,12 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage>();
 expectTypeOf(
-  new foundry.documents.BaseChatMessage({
+  new TestBaseChatMessage({
     speaker: {},
   }),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage>();
 expectTypeOf(
-  new foundry.documents.BaseChatMessage({
+  new TestBaseChatMessage({
     speaker: {
       scene: undefined,
       actor: undefined,
@@ -79,17 +80,20 @@ expectTypeOf(
 ).toEqualTypeOf<foundry.documents.BaseChatMessage>();
 
 expectTypeOf(
-  new foundry.documents.BaseChatMessage({
+  new TestBaseChatMessage({
     whisper: null,
   }),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage>();
 expectTypeOf(
-  new foundry.documents.BaseChatMessage({
+  new TestBaseChatMessage({
     whisper: ["someId"],
   }),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage>();
+
+declare const myUser: User.Implementation;
+
 expectTypeOf(
-  new foundry.documents.BaseChatMessage({
-    whisper: [new foundry.documents.BaseUser({ name: "foo" })],
+  new TestBaseChatMessage({
+    whisper: [myUser],
   }),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage>();

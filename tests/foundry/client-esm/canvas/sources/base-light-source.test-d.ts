@@ -11,10 +11,10 @@ expectTypeOf(MyLightSource["_initializeShaderKeys"]).toEqualTypeOf<string[]>();
 expectTypeOf(MyLightSource["_refreshUniformsKeys"]).toEqualTypeOf<string[]>();
 expectTypeOf(MyLightSource["_dimLightingLevel"]).toEqualTypeOf<foundry.CONST.LIGHTING_LEVELS>();
 expectTypeOf(MyLightSource["_brightLightingLevel"]).toEqualTypeOf<foundry.CONST.LIGHTING_LEVELS>();
-expectTypeOf(MyLightSource["ANIMATIONS"]).toMatchTypeOf<Record<string, RenderedEffectSource.AnimationConfig>>();
+expectTypeOf(MyLightSource["ANIMATIONS"]).toExtend<Record<string, RenderedEffectSource.AnimationConfig>>();
 expectTypeOf(MyLightSource.defaultData).toEqualTypeOf<BaseLightSource.SourceData>();
 
-declare const someToken: Token.ConfiguredInstance;
+declare const someToken: Token.Object;
 const mySource = new MyLightSource({ object: someToken, sourceId: "asfsdfs" });
 
 expectTypeOf(mySource.ratio).toBeNumber();

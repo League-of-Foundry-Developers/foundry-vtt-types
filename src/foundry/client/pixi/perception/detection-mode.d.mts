@@ -23,7 +23,7 @@ declare global {
 
     /**
      * The type of the detection mode.
-     * @see CONST.WALL_RESTRICTION_TYPES
+     * @see {@link CONST.WALL_RESTRICTION_TYPES | `CONST.WALL_RESTRICTION_TYPES`}
      * @remarks Set via `Object.defineProperty` with a frozen object, so `readonly` is justified both here and for the interface properties
      */
     static readonly DETECTION_TYPES: DetectionMode.DetectionTypes;
@@ -43,7 +43,7 @@ declare global {
     testVisibility(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
       mode: TokenDetectionMode,
-      config?: DetectionMode.TestConfig, // not:null (destructured)
+      { object, tests }: DetectionMode.TestConfig, // not:null (destructured)
     ): boolean;
 
     /**
@@ -262,25 +262,25 @@ declare global {
 }
 
 declare abstract class AnyDetectionMode extends DetectionMode {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDetectionModeLightPerception extends DetectionModeLightPerception {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDetectionModeBasicSight extends DetectionModeBasicSight {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDetectionModeInvisibility extends DetectionModeInvisibility {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDetectionModeTremor extends DetectionModeTremor {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyDetectionModeAll extends DetectionModeAll {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -39,7 +39,7 @@ declare global {
     static override documentName: "Token";
 
     /**
-     * The set of tokens that trigger occlusion (a union of {@link CONST.TOKEN_OCCLUSION_MODES}).
+     * The set of tokens that trigger occlusion (a union of {@link CONST.TOKEN_OCCLUSION_MODES | `CONST.TOKEN_OCCLUSION_MODES`}).
      */
     set occlusionMode(value: foundry.CONST.OCCLUSION_MODES);
 
@@ -55,7 +55,7 @@ declare global {
     /**
      * An Array of tokens which belong to actors which are owned
      */
-    get ownedTokens(): Token.ConfiguredInstance[];
+    get ownedTokens(): Token.Object[];
 
     /** @remarks Forces top left corner snapping */
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
@@ -69,16 +69,13 @@ declare global {
     protected override _deactivate(): void;
 
     protected override _pasteObject(
-      copy: Token.ConfiguredInstance,
+      copy: Token.Object,
       offset: Canvas.Point,
       options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
-    ): Document.ConfiguredSourceForName<"Token">;
+    ): Omit<TokenDocument.Source, "_id">;
 
     /** @remarks Returns `[]` if the ruler is currently measuring */
-    protected override _getMovableObjects(
-      ids?: string[] | null,
-      includeLocked?: boolean | null,
-    ): Token.ConfiguredInstance[];
+    protected override _getMovableObjects(ids?: string[] | null, includeLocked?: boolean | null): Token.Object[];
 
     /**
      * Target all Token instances which fall within a coordinate rectangle.
@@ -101,13 +98,13 @@ declare global {
      *
      * Also selects the returned token if any, and pans the camera to its center
      */
-    cycleTokens(forwards?: boolean | null, reset?: boolean | null): Token.ConfiguredInstance | null;
+    cycleTokens(forwards?: boolean | null, reset?: boolean | null): Token.Object | null;
 
     /**
      * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.
      * @remarks Foundry marked `@private`
      */
-    protected _getCycleOrder(): Token.ConfiguredInstance[];
+    protected _getCycleOrder(): Token.Object[];
 
     /**
      * Immediately conclude the animation of any/all tokens
@@ -123,7 +120,7 @@ declare global {
      * Provide an array of Tokens which are eligible subjects for overhead tile occlusion.
      * By default, only tokens which are currently controlled or owned by a player are included as subjects.
      */
-    protected _getOccludableTokens(): Token.ConfiguredInstance[];
+    protected _getOccludableTokens(): Token.Object[];
 
     /** @remarks "Clean actorData and delta updates from the history so changes to those fields are not undone" */
     override storeHistory<Operation extends Document.Database.Operation>(
@@ -138,11 +135,11 @@ declare global {
     protected _onDropActorData(
       event: DragEvent,
       data: TokenLayer.DropData,
-    ): Promise<number | false | TokenDocument.ConfiguredInstance>;
+    ): Promise<number | false | TokenDocument.Implementation>;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
-    protected override _onMouseWheel(event: WheelEvent): Promise<Token.ConfiguredInstance[] | void>;
+    protected override _onMouseWheel(event: WheelEvent): Promise<Token.Object[] | void>;
 
     /**
      * @deprecated since v12 until v14
@@ -162,9 +159,9 @@ declare global {
      */
     toggleCombat(
       state?: boolean | null,
-      combat?: Combat.ConfiguredInstance | null,
+      combat?: Combat.Implementation | null,
       options?: TokenLayer.ToggleCombatOptions, // not:null (destructured)
-    ): Promise<Combatant.ConfiguredInstance[]>;
+    ): Promise<Combatant.Implementation[]>;
   }
 
   namespace TokenLayer {
@@ -175,7 +172,7 @@ declare global {
 
     interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Token"> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Token.ObjectClass> {
       name: "tokens";
       controllableObjects: true;
       rotatableObjects: true;
@@ -199,12 +196,12 @@ declare global {
        * A specific Token which is the origin of the group toggle request
        * @defaultValue `null`
        */
-      token: Token.ConfiguredInstance;
+      token: Token.Object;
     }>;
     interface ToggleCombatOptions extends _ToggleCombatOptions {}
   }
 }
 
 declare abstract class AnyTokenLayer extends TokenLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

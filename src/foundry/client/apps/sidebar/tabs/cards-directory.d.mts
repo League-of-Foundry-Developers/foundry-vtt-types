@@ -7,7 +7,7 @@ declare global {
   class CardsDirectory extends DocumentDirectory<"Cards"> {
     static override documentName: "Cards";
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
   }
 
   namespace CardsDirectory {
@@ -17,5 +17,5 @@ declare global {
 }
 
 declare abstract class AnyCardsDirectory extends CardsDirectory {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

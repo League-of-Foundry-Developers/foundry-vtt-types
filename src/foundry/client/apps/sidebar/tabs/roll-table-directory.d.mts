@@ -8,7 +8,7 @@ declare global {
   class RollTableDirectory extends DocumentDirectory<"RollTable"> {
     static override documentName: "RollTable";
 
-    protected override _getEntryContextOptions(): ContextMenuEntry[];
+    protected override _getEntryContextOptions(): ContextMenu.Entry[];
   }
 
   namespace RollTableDirectory {
@@ -18,5 +18,5 @@ declare global {
 }
 
 declare abstract class AnyRollTableDirectory extends RollTableDirectory {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

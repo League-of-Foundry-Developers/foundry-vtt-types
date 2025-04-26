@@ -1,25 +1,22 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
-expectTypeOf(foundry.documents.BaseUser.create({ name: "SomeUser" })).toEqualTypeOf<
-  Promise<Document.Stored<User> | undefined>
->();
-expectTypeOf(foundry.documents.BaseUser.createDocuments([])).toEqualTypeOf<Promise<Document.Stored<User>[]>>();
-expectTypeOf(foundry.documents.BaseUser.updateDocuments([])).toEqualTypeOf<
-  Promise<Document.ToConfiguredInstance<typeof User>[]>
->();
-expectTypeOf(foundry.documents.BaseUser.deleteDocuments([])).toEqualTypeOf<
-  Promise<Document.ToConfiguredInstance<typeof User>[]>
->();
+expectTypeOf(foundry.documents.BaseUser.create({ name: "SomeUser" })).toEqualTypeOf<Promise<User.Stored | undefined>>();
+expectTypeOf(foundry.documents.BaseUser.createDocuments([])).toEqualTypeOf<Promise<User.Stored[]>>();
+expectTypeOf(foundry.documents.BaseUser.updateDocuments([])).toEqualTypeOf<Promise<User.Implementation[]>>();
+expectTypeOf(foundry.documents.BaseUser.deleteDocuments([])).toEqualTypeOf<Promise<User.Implementation[]>>();
 
 const user = await foundry.documents.BaseUser.create({ name: "Another User" }, { temporary: true });
 if (user) {
   // Note(LukeAbby): At one point there was a regression in `ForeignDocumentField` that would have caused this to fail.
-  expectTypeOf(user.character).toEqualTypeOf<Actor | null>();
+  expectTypeOf(user.character).toEqualTypeOf<Actor.Implementation | null>();
 }
 
-// @ts-expect-error name may not be undefined
-const baseUser = new foundry.documents.BaseUser();
+class TestBaseUser extends foundry.documents.BaseUser {}
+
+// @ts-expect-error - name may not be undefined
+new TestBaseUser();
+
+const baseUser = new TestBaseUser({ name: "foo" });
 expectTypeOf(baseUser.hasRole("NONE")).toEqualTypeOf<boolean>();
 expectTypeOf(baseUser.hasRole("PLAYER")).toEqualTypeOf<boolean>();
 expectTypeOf(baseUser.hasRole("TRUSTED")).toEqualTypeOf<boolean>();

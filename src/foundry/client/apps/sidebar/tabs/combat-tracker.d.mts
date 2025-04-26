@@ -1,11 +1,10 @@
 import type { Identity } from "fvtt-types/utils";
-import type Document from "../../../../common/abstract/document.d.mts";
 
 declare global {
   /**
    * The sidebar directory which organizes and displays world-level Combat documents.
    */
-  class CombatTracker<Options extends ApplicationOptions = ApplicationOptions> extends SidebarTab<Options> {
+  class CombatTracker<Options extends Application.Options = Application.Options> extends SidebarTab<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -13,13 +12,13 @@ declare global {
      * @defaultValue `null`
      * @internal
      */
-    protected _highlighted: Token.ConfiguredInstance | null;
+    protected _highlighted: Token.Object | null;
 
     /**
      * Record the currently tracked Combat encounter
      * @defaultValue `null`
      */
-    viewed: Document.Stored<Combat.ConfiguredInstance> | null;
+    viewed: Combat.Stored | null;
 
     /**
      * @defaultValue
@@ -32,12 +31,12 @@ declare global {
      * })
      * ```
      */
-    static get defaultOptions(): ApplicationOptions;
+    static get defaultOptions(): Application.Options;
 
     /**
      * Return an array of Combat encounters which occur within the current Scene.
      */
-    get combats(): Document.Stored<Combat.ConfiguredInstance>[];
+    get combats(): Combat.Stored[];
 
     override createPopout(): this;
 
@@ -49,7 +48,7 @@ declare global {
      * @param render - Whether to re-render the sidebar after initialization
      *                 (default: `true`)
      */
-    initialize({ combat, render }?: { combat?: Combat | null; render?: boolean }): void;
+    initialize({ combat, render }?: { combat?: Combat.Implementation | null; render?: boolean }): void;
 
     /**
      * Scroll the combat log container to ensure the current Combatant turn is centered vertically
@@ -64,7 +63,7 @@ declare global {
      * @param combatant - The combatant queried for image.
      * @returns The source image attributed for this combatant.
      */
-    protected _getCombatantThumbnail(combatant: Combatant.ConfiguredInstance): Promise<string>;
+    protected _getCombatantThumbnail(combatant: Combatant.Implementation): Promise<string>;
 
     override activateListeners(html: JQuery): void;
 
@@ -100,13 +99,13 @@ declare global {
      * @returns A Promise that resolves after all operations are complete
      * @internal
      */
-    protected _onToggleDefeatedStatus(combatant: Combatant.ConfiguredInstance): Promise<void>;
+    protected _onToggleDefeatedStatus(combatant: Combatant.Implementation): Promise<void>;
 
     /**
      * Handle pinging a combatant Token
      * @param combatant - The combatant data
      */
-    protected _onPingCombatant(combatant: Combatant.ConfiguredInstance): Promise<number | undefined>;
+    protected _onPingCombatant(combatant: Combatant.Implementation): Promise<number | undefined>;
 
     /**
      * Handle mouse-down event on a combatant name in the tracker
@@ -133,7 +132,7 @@ declare global {
      * @param combatant - The Combatant
      * @param hover     - Whether they are being hovered in or out.
      */
-    hoverCombatant(combatant: Combatant.ConfiguredInstance, hover: boolean): void;
+    hoverCombatant(combatant: Combatant.Implementation, hover: boolean): void;
     /**
      * Attach context menu options to elements in the tracker
      * @param html - The HTML element to which context options are attached
@@ -146,7 +145,7 @@ declare global {
      * @returns The Combatant entry context options
      * @internal
      */
-    protected _getEntryContextOptions(): ContextMenuEntry[];
+    protected _getEntryContextOptions(): ContextMenu.Entry[];
 
     /**
      * Display a dialog which prompts the user to enter a new initiative value for a Combatant
@@ -161,6 +160,6 @@ declare global {
   }
 }
 
-declare abstract class AnyCombatTracker extends CombatTracker<ApplicationOptions> {
-  constructor(arg0: never, ...args: never[]);
+declare abstract class AnyCombatTracker extends CombatTracker<Application.Options> {
+  constructor(...args: never);
 }

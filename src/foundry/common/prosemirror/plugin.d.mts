@@ -6,7 +6,7 @@ export default ProseMirrorPlugin;
 declare abstract class ProseMirrorPlugin {
   /**
    * An abstract class for building a ProseMirror Plugin.
-   * @see Plugin
+   * @see {@link Plugin | `Plugin`}
    * @param schema - The schema to build the plugin against.
    */
   constructor(schema: Schema);

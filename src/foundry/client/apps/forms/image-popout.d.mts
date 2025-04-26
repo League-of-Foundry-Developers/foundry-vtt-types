@@ -1,24 +1,8 @@
 import type { MaybePromise } from "fvtt-types/utils";
 
 declare global {
-  interface ImagePopoutOptions extends FormApplicationOptions {
-    /**
-     * Caption text to display below the image.
-     * @defaultValue `false`
-     */
-    caption: boolean;
-
-    /**
-     * The UUID of some related {@link Document}.
-     * @defaultValue `null`
-     */
-    uuid: string | null;
-
-    /**
-     * Force showing or hiding the title.
-     */
-    showTitle: boolean;
-  }
+  /** @deprecated {@link ImagePopout.Options | `ImagePopout.Options`} */
+  type ImagePopoutOptions = ImagePopout.Options;
 
   /**
    * An Image Popout Application which features a single image in a lightbox style frame.
@@ -43,7 +27,10 @@ declare global {
    * ip.share();
    * ```
    */
-  class ImagePopout<Options extends ImagePopoutOptions = ImagePopoutOptions> extends FormApplication<Options, string> {
+  class ImagePopout<Options extends ImagePopout.Options = ImagePopout.Options> extends FormApplication<
+    Options,
+    string
+  > {
     constructor(src: string, options?: Partial<ImagePopout.Options>);
 
     /**
@@ -64,7 +51,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ImagePopoutOptions;
+    static override get defaultOptions(): ImagePopout.Options;
 
     override get title(): string;
 
@@ -127,7 +114,7 @@ declare global {
   namespace ImagePopout {
     interface Any extends ImagePopout<any> {}
 
-    interface Options extends FormApplicationOptions {
+    interface Options extends FormApplication.Options {
       /**
        * @defaultValue `"templates/apps/image-popout.html"`
        */
@@ -174,6 +161,25 @@ declare global {
 
       /** A list of user IDs to show the image to. */
       users?: string[];
+    }
+
+    interface Options extends FormApplication.Options {
+      /**
+       * Caption text to display below the image.
+       * @defaultValue `false`
+       */
+      caption: boolean;
+
+      /**
+       * The UUID of some related {@link Document | `Document`}.
+       * @defaultValue `null`
+       */
+      uuid: string | null;
+
+      /**
+       * Force showing or hiding the title.
+       */
+      showTitle: boolean;
     }
   }
 }

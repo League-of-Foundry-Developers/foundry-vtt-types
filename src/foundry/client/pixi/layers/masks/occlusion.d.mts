@@ -78,7 +78,7 @@ declare global {
      * @param tokens - The set of currently controlled Token objects
      * @returns The PCO objects which should be currently occluded
      */
-    protected _identifyOccludedObjects(tokens: Token.ConfiguredInstance[]): Set<PrimaryCanvasObjectMixin.AnyMixed>;
+    protected _identifyOccludedObjects(tokens: Token.Object[]): Set<PrimaryCanvasObjectMixin.AnyMixed>;
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -94,5 +94,5 @@ declare global {
 }
 
 declare abstract class AnyCanvasOcclusionMask extends CanvasOcclusionMask {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

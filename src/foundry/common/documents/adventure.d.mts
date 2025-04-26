@@ -1,7 +1,9 @@
+import type { AnyObject } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as fields from "../data/fields.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { fields } from "../data/module.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Adventure Document.
@@ -10,17 +12,21 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseAdventure extends Document<"Adventure", BaseAdventure.Schema, any> {
+declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the Actor
+   * @param data    - Initial data from which to construct the `BaseAdventure`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseAdventure` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link Adventure.implementation | `new Adventure.implementation(...)`} instead which will give you
+   * a system specific implementation of `Adventure`.
    */
-  // TODO(LukeAbby): This constructor is a symptom of a circular error.
-  // constructor(data: BaseAdventure.ConstructorData, context?: Document.ConstructionContext<BaseAdventure.Parent>);
+  constructor(...args: Adventure.ConstructorArgs);
 
-  override parent: BaseAdventure.Parent;
-
-  static override metadata: BaseAdventure.Metadata;
+  static override metadata: Adventure.Metadata;
 
   static override defineSchema(): BaseAdventure.Schema;
 
@@ -33,144 +39,252 @@ declare class BaseAdventure extends Document<"Adventure", BaseAdventure.Schema, 
    * Provide a thumbnail image path used to represent the Adventure document.
    */
   get thumbnail(): string;
+
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
+   */
+
+  /* Document overrides */
+
+  static " fvtt_types_internal_document_name_static": "Adventure";
+
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: Adventure.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static override get implementation(): Adventure.ImplementationClass;
+
+  static get baseDocument(): typeof BaseAdventure;
+
+  static get collectionName(): Adventure.ParentCollectionName;
+
+  static get documentName(): Adventure.Name;
+
+  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+
+  static get hasTypeData(): undefined;
+
+  static get hierarchy(): Adventure.Hierarchy;
+
+  override parent: Adventure.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined = false>(
+    data: Array<Adventure.Implementation | Adventure.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<Adventure.Database.Create<Temporary>>,
+  ): Promise<Array<Document.TemporaryIf<Adventure.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: Adventure.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<Adventure.Database.Update>,
+  ): Promise<Adventure.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteDocumentsOperation<Adventure.Database.Delete>,
+  ): Promise<Adventure.Implementation[]>;
+
+  static override create<Temporary extends boolean | undefined = false>(
+    data: Adventure.CreateData | Adventure.CreateData[],
+    operation?: Adventure.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<Adventure.Implementation, Temporary> | undefined>;
+
+  override update(
+    data: Adventure.UpdateData | undefined,
+    operation?: Adventure.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: Adventure.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(documentId: string, options?: Adventure.Database.GetOptions): Adventure.Implementation | null;
+
+  static override getCollectionName(name: string): null;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends Adventure.Flags.Scope, Key extends Adventure.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<Adventure.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends Adventure.Flags.Scope,
+    Key extends Adventure.Flags.Key<Scope>,
+    Value extends Document.GetFlag<Adventure.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends Adventure.Flags.Scope, Key extends Adventure.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
+
+  protected _preCreate(
+    data: Adventure.CreateData,
+    options: Adventure.Database.PreCreateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(data: Adventure.CreateData, options: Adventure.Database.OnCreateOperation, userId: string): void;
+
+  protected static _preCreateOperation(
+    documents: Adventure.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<Adventure.Database.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: Adventure.Implementation[],
+    operation: Adventure.Database.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: Adventure.UpdateData,
+    options: Adventure.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(
+    changed: Adventure.UpdateData,
+    options: Adventure.Database.OnUpdateOperation,
+    userId: string,
+  ): void;
+
+  protected static _preUpdateOperation(
+    documents: Adventure.Implementation[],
+    operation: Adventure.Database.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: Adventure.Implementation[],
+    operation: Adventure.Database.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(
+    options: Adventure.Database.PreDeleteOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onDelete(options: Adventure.Database.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: Adventure.Implementation[],
+    operation: Adventure.Database.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: Adventure.Implementation[],
+    operation: Adventure.Database.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  static get hasSystemData(): undefined;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
+
+  protected static _onCreateDocuments(
+    documents: Adventure.Implementation[],
+    context: Document.ModificationContext<Adventure.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: Adventure.Implementation[],
+    context: Document.ModificationContext<Adventure.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: Adventure.Implementation[],
+    context: Document.ModificationContext<Adventure.Parent>,
+  ): Promise<void>;
+
+  /* DataModel overrides */
+
+  protected static _schema: SchemaField<Adventure.Schema>;
+
+  static get schema(): SchemaField<Adventure.Schema>;
+
+  static validateJoint(data: Adventure.Source): void;
+
+  static override fromSource(
+    source: Adventure.CreateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): Adventure.Implementation;
+
+  static override fromJSON(json: string): Adventure.Implementation;
 }
 
 export default BaseAdventure;
 
 declare namespace BaseAdventure {
-  type Parent = null;
-
-  type Metadata = Document.MetadataFor<BaseAdventure>;
-
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
-  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
-  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
-  type Source = fields.SchemaField.InnerPersistedType<Schema>;
-
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this Adventure document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /**
-     * The human-readable name of the Adventure
-     */
-    name: fields.StringField<{
-      required: true;
-      blank: false;
-      label: "ADVENTURE.Name";
-      hint: "ADVENTURE.NameHint";
-      textSearch: true;
-    }>;
-
-    /**
-     * The file path for the primary image of the adventure
-     * @defaultValue `null`
-     */
-    img: fields.FilePathField<{ categories: ["IMAGE"]; label: "ADVENTURE.Image"; hint: "ADVENTURE.ImageHint" }>;
-
-    /**
-     * A string caption displayed under the primary image banner
-     * @defaultValue `""`
-     */
-    caption: fields.HTMLField<{ label: "ADVENTURE.Caption"; hint: "ADVENTURE.CaptionHint" }>;
-
-    /**
-     * An HTML text description for the adventure
-     * @defaultValue `""`
-     */
-    description: fields.HTMLField<{
-      label: "ADVENTURE.Description";
-      hint: "ADVENTURE.DescriptionHint";
-      textSearch: true;
-    }>;
-
-    /**
-     * An array of Actor documents which are included in the adventure
-     * @defaultValue `new Set()`
-     */
-    actors: fields.SetField<fields.EmbeddedDataField<Actor.ConfiguredClass>>;
-
-    /**
-     * An array of Combat documents which are included in the adventure
-     * @defaultValue `new Set()`
-     */
-    combats: fields.SetField<fields.EmbeddedDataField<Combat.ConfiguredClass>>;
-
-    /**
-     * An array of Item documents which are included in the adventure
-     * @defaultValue `new Set()`
-     */
-    items: fields.SetField<fields.EmbeddedDataField<Item.ConfiguredClass>>;
-
-    /**
-     * An array of JournalEntry documents which are included in the adventure
-     * @defaultValue `new Set()`
-     */
-    journal: fields.SetField<fields.EmbeddedDataField<JournalEntry.ConfiguredClass>>;
-
-    /**
-     * An array of Scene documents which are included in the adventure
-     * @defaultValue `new Set()`
-     */
-    scenes: fields.SetField<fields.EmbeddedDataField<Scene.ConfiguredClass>>;
-
-    /**
-     * An array of RollTable documents which are included in the adventure
-     * @defaultValue `new Set()`
-     */
-    tables: fields.SetField<fields.EmbeddedDataField<RollTable.ConfiguredClass>>;
-
-    /**
-     * An array of Macro documents which are included in the adventure
-     * @defaultValue `new Set()`
-     */
-    macros: fields.SetField<fields.EmbeddedDataField<Macro.ConfiguredClass>>;
-
-    /**
-     * An array of Cards documents which are included in the adventure
-     * @defaultValue `new Set()`
-     */
-    cards: fields.SetField<fields.EmbeddedDataField<Cards.ConfiguredClass>>;
-
-    /**
-     * An array of Playlist documents which are included in the adventure
-     * @defaultValue `new Set()`
-     */
-    playlists: fields.SetField<fields.EmbeddedDataField<Playlist.ConfiguredClass>>;
-
-    /**
-     * An array of Folder documents which are included in the adventure
-     * @defaultValue `new Set()`
-     */
-    folders: fields.SetField<fields.EmbeddedDataField<Folder.ConfiguredClass>>;
-
-    folder: fields.ForeignDocumentField<Folder.ConfiguredClass>;
-
-    /**
-     * The sort order of this adventure relative to its siblings
-     * @defaultValue `0`
-     */
-    sort: fields.IntegerSortField;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"Adventure">;
-
-    /**
-     * An object of creation and access information
-     * @defaultValue see {@link fields.DocumentStatsField}
-     */
-    _stats: fields.DocumentStatsField;
-  }
+  export import Name = Adventure.Name;
+  export import ConstructorArgs = Adventure.ConstructorArgs;
+  export import Hierarchy = Adventure.Hierarchy;
+  export import Metadata = Adventure.Metadata;
+  export import Parent = Adventure.Parent;
+  export import Descendant = Adventure.Descendant;
+  export import DescendantClass = Adventure.DescendantClass;
+  export import Pack = Adventure.Pack;
+  export import Embedded = Adventure.Embedded;
+  export import ParentCollectionName = Adventure.ParentCollectionName;
+  export import CollectionClass = Adventure.CollectionClass;
+  export import Collection = Adventure.Collection;
+  export import Invalid = Adventure.Invalid;
+  export import Stored = Adventure.Stored;
+  export import Source = Adventure.Source;
+  export import PersistedData = Adventure.PersistedData;
+  export import CreateData = Adventure.CreateData;
+  export import InitializedData = Adventure.InitializedData;
+  export import UpdateData = Adventure.UpdateData;
+  export import Schema = Adventure.Schema;
+  export import DatabaseOperation = Adventure.Database;
+  export import Flags = Adventure.Flags;
 
   /**
-   * A helper type to extract the return value for {@link BaseAdventure.contentFields}
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  type Properties = SchemaField.InitializedData<Schema>;
+
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseAdventure.Schema>`}
+   */
+  type SchemaField = foundry.data.fields.SchemaField<Schema>;
+
+  /**
+   * @deprecated {@link BaseAdventure.CreateData | `BaseAdventure.CreateData`}
+   */
+  type ConstructorData = BaseAdventure.CreateData;
+
+  /**
+   * A helper type to extract the return value for {@link BaseAdventure.contentFields | `BaseAdventure.contentFields`}
    */
   type ContentFields = {
     [Key in keyof BaseAdventure.Schema as BaseAdventure.Schema[Key] extends fields.SetField.Any

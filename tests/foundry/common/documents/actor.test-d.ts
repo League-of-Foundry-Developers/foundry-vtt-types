@@ -9,21 +9,22 @@ import TypeDataModel = foundry.abstract.TypeDataModel;
 
 type DataSchema = foundry.data.fields.DataSchema;
 
-// @ts-expect-error name and type are required
-new foundry.documents.BaseActor();
+// This exists to make the class non-abstract.
+declare class TestBaseActor extends foundry.documents.BaseActor {}
 
 // @ts-expect-error name and type are required
-new foundry.documents.BaseActor({});
+new TestBaseActor();
 
-const baseActor = new foundry.documents.BaseActor({ name: "foo", type: "character" });
+// @ts-expect-error name and type are required
+new TestBaseActor({});
+
+const baseActor = new TestBaseActor({ name: "foo", type: "character" });
 expectTypeOf(baseActor.name).toEqualTypeOf<string>();
-expectTypeOf(baseActor.effects).toEqualTypeOf<
-  EmbeddedCollection<ActiveEffect.ConfiguredInstance, Actor.ConfiguredInstance>
->();
-expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect.ConfiguredInstance | undefined>();
+expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect.Implementation, Actor.Implementation>>();
+expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect.Implementation | undefined>();
 expectTypeOf(baseActor.effects.get("")!.name).toEqualTypeOf<string>();
-expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item.ConfiguredInstance, Actor.ConfiguredInstance>>();
-expectTypeOf(baseActor.items.get("")).toEqualTypeOf<Item | undefined>();
+expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item.Implementation, Actor.Implementation>>();
+expectTypeOf(baseActor.items.get("")).toEqualTypeOf<Item.Implementation | undefined>();
 expectTypeOf(baseActor.items.get("")!.img).toEqualTypeOf<string | null | undefined>();
 expectTypeOf(baseActor._source.effects[0]!.duration.seconds).toEqualTypeOf<number | null | undefined>();
 
@@ -52,7 +53,7 @@ type MyCharacterSchema = {
   }>;
 };
 
-class MyCharacter extends TypeDataModel<MyCharacterSchema, Actor.ConfiguredInstance> {
+class MyCharacter extends TypeDataModel<MyCharacterSchema, Actor.Implementation> {
   static override defineSchema() {
     const { SchemaField, NumberField } = foundry.data.fields;
     return {
@@ -108,7 +109,7 @@ class BoilerplateActorBase<
   Schema extends BoilerplateActorBase.Schema = BoilerplateActorBase.Schema,
   BaseData extends AnyObject = EmptyObject,
   DerivedData extends AnyObject = EmptyObject,
-> extends foundry.abstract.TypeDataModel<Schema, Actor.ConfiguredInstance, BaseData, DerivedData> {
+> extends foundry.abstract.TypeDataModel<Schema, Actor.Implementation, BaseData, DerivedData> {
   static override defineSchema(): BoilerplateActorBase.Schema {
     const fields = foundry.data.fields;
     const requiredInteger = { required: true, nullable: false, integer: true };

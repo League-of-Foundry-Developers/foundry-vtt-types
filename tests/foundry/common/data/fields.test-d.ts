@@ -1,51 +1,66 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
+import DataField = foundry.data.fields.DataField;
 
 type DataSchema = foundry.data.fields.DataSchema;
 
 // #2554 Null and undefined for SchemaField and EmbeddedDataField
 
-new foundry.documents.BaseAmbientSound({
+await foundry.documents.BaseAmbientSound.create({
   darkness: null,
 });
 
-new foundry.documents.BaseAmbientSound({
+await foundry.documents.BaseAmbientSound.create({
   darkness: undefined,
 });
 
-new foundry.documents.BaseNote({
+await foundry.documents.BaseNote.create({
   texture: null,
 });
 
-new foundry.documents.BaseNote({
+await foundry.documents.BaseNote.create({
   texture: undefined,
 });
 
 // #2555 NumberField Choices
 
 // @ts-expect-error - A textAnchor cannot be an arbitrary number.
-new foundry.documents.BaseNote({ textAnchor: 999 });
+await foundry.documents.BaseNote.create({ textAnchor: 999 });
 // Should be correct
-new foundry.documents.BaseNote({ textAnchor: 2 });
+await foundry.documents.BaseNote.create({ textAnchor: 2 });
 
 // @ts-expect-error - t cannot be an arbitrary string.
-new foundry.documents.BaseMeasuredTemplate({ t: "foobar" });
+await foundry.documents.BaseMeasuredTemplate.create({ t: "foobar" });
+
+// Flags
+declare const myEffect: ActiveEffect.Implementation;
+// @ts-expect-error Invalid flag in the space
+myEffect.getFlag("core", "foobar");
+// All documents have a sheetClass flag
+expectTypeOf(myEffect.getFlag("core", "sheetClass")).toEqualTypeOf<string | undefined>();
+expectTypeOf(myEffect.flags.core!.sheetClass).toEqualTypeOf<string | undefined>();
+// Document-specific flag
+expectTypeOf(myEffect.getFlag("core", "overlay")).toEqualTypeOf<boolean | undefined>();
+expectTypeOf(myEffect.flags.core!.overlay).toEqualTypeOf<boolean | undefined>();
 
 // TypeDataField
-declare const JEPCoreTypes: JournalEntryPage.TypeNames;
+declare const JEPCoreTypes: JournalEntryPage.SubType;
 declare const JEPSystemTypes: Game.Model.TypeNames<"JournalEntryPage">;
 
 declare global {
   interface DataModelConfig {
     JournalEntryPage: {
-      headquarters: typeof foundry.abstract.TypeDataModel<DataSchema, JournalEntryPage>;
+      headquarters: typeof foundry.abstract.TypeDataModel<DataSchema, JournalEntryPage.Implementation>;
     };
   }
 }
 
-expectTypeOf(JEPCoreTypes).toEqualTypeOf<"base" | "image" | "pdf" | "text" | "video">();
-expectTypeOf(JEPSystemTypes).toEqualTypeOf<"headquarters">();
+expectTypeOf(JEPCoreTypes).toEqualTypeOf<
+  "base",
+  "image" | "pdf" | "text" | "video" | foundry.abstract.Document.ModuleSubtype
+>();
+expectTypeOf(JEPSystemTypes).toEqualTypeOf<"headquarters" | foundry.abstract.Document.ModuleSubtype>();
 
-declare const myJournalEntryPage: JournalEntryPage;
+declare const myJournalEntryPage: JournalEntryPage.Implementation;
 if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {
   expectTypeOf(myJournalEntryPage.system?.prepareBaseData()).toEqualTypeOf<void>();
 }
@@ -77,7 +92,7 @@ expectTypeOf(embeddedModel.schema.fields.color).toEqualTypeOf<
 declare const embeddedLightField: foundry.data.fields.EmbeddedDataField<typeof foundry.data.LightData>;
 expectTypeOf(embeddedLightField.model).toEqualTypeOf<typeof foundry.data.LightData>();
 
-declare const schemaWithLight: foundry.data.fields.SchemaField.InnerInitializedType<{
+declare const schemaWithLight: foundry.data.fields.SchemaField.InitializedData<{
   light: typeof embeddedLightField;
 }>;
 expectTypeOf(schemaWithLight.light).toEqualTypeOf<foundry.data.LightData>();
@@ -86,13 +101,13 @@ expectTypeOf(schemaWithLight.light).toEqualTypeOf<foundry.data.LightData>();
 
 declare const effectsField: foundry.data.fields.EmbeddedCollectionField<
   typeof foundry.documents.BaseActiveEffect,
-  Actor.ConfiguredInstance
+  Actor.Implementation
 >;
 
 expectTypeOf(effectsField.hint).toEqualTypeOf<string>();
 
 declare const ElementFieldType: typeof foundry.documents.BaseActiveEffect;
-declare const ParentDataModel: Actor.ConfiguredInstance;
+declare const ParentDataModel: Actor.Implementation;
 declare const AssignmentElementType: foundry.data.fields.EmbeddedCollectionField.InitializedElementType<
   typeof ElementFieldType
 >;
@@ -113,7 +128,7 @@ expectTypeOf(ElementFieldType.hasTypeData).toEqualTypeOf<boolean>();
 expectTypeOf(ParentDataModel.name).toEqualTypeOf<string>();
 expectTypeOf(AssignmentElementType.documentName).toEqualTypeOf<"ActiveEffect">();
 expectTypeOf(InitializedElementType.collectionName).toEqualTypeOf<"effects">();
-expectTypeOf(InitializedType.get("", { strict: true })).toEqualTypeOf<ActiveEffect>();
+expectTypeOf(InitializedType.get("", { strict: true })).toEqualTypeOf<ActiveEffect.Implementation>();
 
 const stringField = new foundry.data.fields.StringField();
 
@@ -136,13 +151,12 @@ type _NullOptions = DataField.Options<null>;
 // @ts-expect-error - Options cannot accept undefined.
 type _UndefinedOptions = DataField.Options<undefined>;
 
-// Options never contains required elements.
-const _emptyOptions = {} satisfies DataField.Options.Default<number>;
-
 // Regression test for issue where label was being constrained to `""`.
 // Reported by @FloRadical on Discord, see https://discord.com/channels/732325252788387980/793933527065690184/1268262811063287869.
-new foundry.data.fields.BooleanField({
-  label: "foo",
+test("BooleanField options.label regression test", () => {
+  new foundry.data.fields.BooleanField({
+    label: "foo",
+  });
 });
 
 stringField.toInput({ value: "foo" });
@@ -159,3 +173,16 @@ stringField.toInput({ blank: "blank option" });
 
 // Because this `StringField` has options it doesn't need to be passed in to `toInput` anymore.
 withChoices.toInput({ blank: "blank option" });
+
+// Regression test for a "type instantation is excessively deep" error reported by @Eon.
+// Reduction case: https://tsplay.dev/W4964w
+test("circular data model heritage regression test", () => {
+  class EmbeddedModel extends foundry.abstract.DataModel<any, MyActorSystem> {}
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const schema = {
+    test: new foundry.data.fields.EmbeddedDataField(EmbeddedModel),
+  };
+
+  class MyActorSystem extends foundry.abstract.TypeDataModel<typeof schema, Actor.Implementation> {}
+});

@@ -5,9 +5,9 @@ declare global {
    * An icon representing a Door Control
    */
   class DoorControl extends PIXI.Container {
-    constructor(wall: Wall.ConfiguredInstance);
+    constructor(wall: Wall.Object);
 
-    wall: Wall.ConfiguredInstance;
+    wall: Wall.Object;
 
     /**
      * @defaultValue `false`
@@ -44,7 +44,7 @@ declare global {
     /**
      * Determine whether the DoorControl is visible to the calling user's perspective.
      * The control is always visible if the user is a GM and no Tokens are controlled.
-     * @see {@link CanvasVisibility#testVisibility}
+     * @see {@link CanvasVisibility.testVisibility | `CanvasVisibility#testVisibility`}
      */
     get isVisible(): boolean;
 
@@ -65,14 +65,14 @@ declare global {
      * This should only toggle between the OPEN and CLOSED states.
      * @param event - The originating interaction event
      */
-    protected _onMouseDown(event: PIXI.FederatedEvent): false | void | Promise<WallDocument.ConfiguredInstance>;
+    protected _onMouseDown(event: PIXI.FederatedEvent): false | void | Promise<WallDocument.Implementation>;
 
     /**
      * Handle right mouse down events on the door control icon
      * This should toggle whether the door is LOCKED or CLOSED
      * @param event - The originating interaction event
      */
-    protected _onRightDown(event: PIXI.FederatedEvent): void | Promise<WallDocument.ConfiguredInstance>;
+    protected _onRightDown(event: PIXI.FederatedEvent): void | Promise<WallDocument.Implementation>;
   }
 
   namespace DoorControl {
@@ -85,5 +85,5 @@ declare global {
 }
 
 declare abstract class AnyDoorControl extends DoorControl {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

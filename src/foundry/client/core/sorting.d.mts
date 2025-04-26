@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+export {};
 
 declare global {
   /**
@@ -25,7 +25,7 @@ declare global {
      */
     static performIntegerSort<T, SortKey extends string = "sort">(
       source: T,
-      options?: InexactPartial<SortingHelpers.SortOptions<T, SortKey>>,
+      options?: SortingHelpers.SortOptions<T, SortKey>,
     ): Array<{
       target: T;
       update: {
@@ -50,19 +50,19 @@ declare global {
        * The target object relative which to sort
        * @defaultValue `null`
        */
-      target: T | null;
+      target?: T | null | undefined;
 
       /**
        * The sorted Array of siblings which share the same sorted container
        * @defaultValue `[]`
        */
-      siblings: T[];
+      siblings?: T[] | undefined;
 
       /**
        * The name of the data property within the source object which defines the sort key
        * @defaultValue `"sort"`
        */
-      sortKey: SortKey;
+      sortKey?: SortKey | undefined;
 
       /**
        * Whether to explicitly sort before (true) or sort after (false). If nothing is passed
@@ -70,7 +70,7 @@ declare global {
        *
        * @defaultValue `true`
        */
-      sortBefore: boolean;
+      sortBefore?: boolean | undefined;
     }
   }
 }

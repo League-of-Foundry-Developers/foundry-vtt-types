@@ -1,9 +1,8 @@
-import type { AnyObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, AnyMutableObject } from "fvtt-types/utils";
+import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as fields from "../data/fields.d.mts";
-import type * as documents from "./_module.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
+import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Document definition for an Item.
@@ -12,21 +11,23 @@ type DataSchema = foundry.data.fields.DataSchema;
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseItem extends Document<"Item", BaseItem.Schema, any> {
+declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType> extends Document<
+  "Item",
+  BaseItem._Schema,
+  any
+> {
   /**
-   * @privateRemarks Manual override of the return due to TS limitations with static `this`
-   */
-  static get TYPES(): BaseItem.TypeNames[];
-  /**
-   * @param data    - Initial data from which to construct the Item
+   * @param data    - Initial data from which to construct the `BaseItem`
    * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseItem` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link Item.implementation | `new Item.implementation(...)`} instead which will give you
+   * a system specific implementation of `Item`.
    */
-  // TODO(LukeAbby): This constructor is causing a circular error.
-  // constructor(data: BaseItem.ConstructorData, context?: Document.ConstructionContext<BaseItem.Parent>);
-
-  override parent: BaseItem.Parent;
-
-  override _source: BaseItem.Source;
+  constructor(...args: Item.ConstructorArgs);
 
   static override metadata: BaseItem.Metadata;
 
@@ -43,102 +44,305 @@ declare class BaseItem extends Document<"Item", BaseItem.Schema, any> {
    * @param itemData - The source item data
    * @returns Candidate item image
    */
-  static getDefaultArtwork(itemData: BaseItem.ConstructorData): { img: string };
+  static getDefaultArtwork(itemData: BaseItem.CreateData): { img: string };
 
-  override canUserModify(user: User, action: "create" | "delete" | "update", data?: AnyObject): boolean;
+  override canUserModify(user: User.Implementation, action: "create" | "delete" | "update", data?: AnyObject): boolean;
 
   override testUserPermission(
-    user: User,
+    user: User.Implementation,
     permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
-  static override migrateData(source: AnyObject): AnyObject;
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
+   */
+
+  /* Document overrides */
+
+  static " fvtt_types_internal_document_name_static": "Item";
+
+  // Same as Document for now
+  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+
+  readonly parentCollection: Item.ParentCollectionName | null;
+
+  readonly pack: string | null;
+
+  static get implementation(): Item.ImplementationClass;
+
+  static get baseDocument(): typeof BaseItem;
+
+  static get collectionName(): Item.ParentCollectionName;
+
+  static get documentName(): Item.Name;
+
+  static get TYPES(): BaseItem.SubType[];
+
+  static get hasTypeData(): true;
+
+  static get hierarchy(): Item.Hierarchy;
+
+  override system: Item.SystemOfType<SubType>;
+
+  override parent: BaseItem.Parent;
+
+  static createDocuments<Temporary extends boolean | undefined = false>(
+    data: Array<Item.Implementation | Item.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<Item.Database.Create<Temporary>>,
+  ): Promise<Array<Document.TemporaryIf<Item.Implementation, Temporary>>>;
+
+  static updateDocuments(
+    updates: Item.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<Item.Database.Update>,
+  ): Promise<Item.Implementation[]>;
+
+  static deleteDocuments(
+    ids: readonly string[] | undefined,
+    operation?: Document.Database.DeleteDocumentsOperation<Item.Database.Delete>,
+  ): Promise<Item.Implementation[]>;
+
+  static override create<Temporary extends boolean | undefined = false>(
+    data: Item.CreateData | Item.CreateData[],
+    operation?: Item.Database.CreateOperation<Temporary>,
+  ): Promise<Document.TemporaryIf<Item.Implementation, Temporary> | undefined>;
+
+  override update(
+    data: Item.UpdateData | undefined,
+    operation?: Item.Database.UpdateOperation,
+  ): Promise<this | undefined>;
+
+  override delete(operation?: Item.Database.DeleteOperation): Promise<this | undefined>;
+
+  static override get(documentId: string, options?: Item.Database.GetOptions): Item.Implementation | null;
+
+  static override getCollectionName<CollectionName extends Item.Embedded.Name>(
+    name: CollectionName,
+  ): Item.Embedded.CollectionNameOf<CollectionName> | null;
+
+  override getEmbeddedCollection<EmbeddedName extends Item.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): Item.Embedded.CollectionFor<EmbeddedName>;
+
+  override getEmbeddedDocument<EmbeddedName extends Item.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+    id: string,
+    options: Document.GetEmbeddedDocumentOptions,
+  ): Item.Embedded.DocumentFor<EmbeddedName> | undefined;
+
+  override createEmbeddedDocuments<EmbeddedName extends Item.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
+    // TODO(LukeAbby): The correct signature would be:
+    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
+    // However this causes a number of errors.
+    operation?: object,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override updateEmbeddedDocuments<EmbeddedName extends Item.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
+    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+
+  override deleteEmbeddedDocuments<EmbeddedName extends Item.Embedded.Name>(
+    embeddedName: EmbeddedName,
+    ids: Array<string>,
+    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
+
+  // Same as Document for now
+  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+
+  override getFlag<Scope extends Item.Flags.Scope, Key extends Item.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<Item.Name, Scope, Key>;
+
+  override setFlag<
+    Scope extends Item.Flags.Scope,
+    Key extends Item.Flags.Key<Scope>,
+    Value extends Document.GetFlag<Item.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
+
+  override unsetFlag<Scope extends Item.Flags.Scope, Key extends Item.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
+
+  protected _preCreate(
+    data: Item.CreateData,
+    options: Item.Database.PreCreateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onCreate(data: Item.CreateData, options: Item.Database.OnCreateOperation, userId: string): void;
+
+  protected static _preCreateOperation(
+    documents: Item.Implementation[],
+    operation: Document.Database.PreCreateOperationStatic<Item.Database.Create>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onCreateOperation(
+    documents: Item.Implementation[],
+    operation: Item.Database.Create,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preUpdate(
+    changed: Item.UpdateData,
+    options: Item.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected _onUpdate(changed: Item.UpdateData, options: Item.Database.OnUpdateOperation, userId: string): void;
+
+  protected static _preUpdateOperation(
+    documents: Item.Implementation[],
+    operation: Item.Database.Update,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onUpdateOperation(
+    documents: Item.Implementation[],
+    operation: Item.Database.Update,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  protected _preDelete(options: Item.Database.PreDeleteOptions, user: User.Implementation): Promise<boolean | void>;
+
+  protected _onDelete(options: Item.Database.OnDeleteOperation, userId: string): void;
+
+  protected static _preDeleteOperation(
+    documents: Item.Implementation[],
+    operation: Item.Database.Delete,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected static _onDeleteOperation(
+    documents: Item.Implementation[],
+    operation: Item.Database.Delete,
+    user: User.Implementation,
+  ): Promise<void>;
+
+  static get hasSystemData(): true;
+
+  // These data field things have been ticketed but will probably go into backlog hell for a while.
+  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
+  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
+
+  protected static _addDataFieldMigration(
+    data: AnyObject,
+    oldKey: string,
+    newKey: string,
+    apply?: (data: AnyObject) => unknown,
+  ): unknown;
+
+  protected static _logDataFieldMigration(
+    oldKey: string,
+    newKey: string,
+    options?: LogCompatibilityWarningOptions,
+  ): void;
+
+  protected static _onCreateDocuments(
+    documents: Item.Implementation[],
+    context: Document.ModificationContext<Item.Parent>,
+  ): Promise<void>;
+
+  protected static _onUpdateDocuments(
+    documents: Item.Implementation[],
+    context: Document.ModificationContext<Item.Parent>,
+  ): Promise<void>;
+
+  protected static _onDeleteDocuments(
+    documents: Item.Implementation[],
+    context: Document.ModificationContext<Item.Parent>,
+  ): Promise<void>;
+
+  /* DataModel overrides */
+
+  protected static _schema: SchemaField<Item.Schema>;
+
+  static get schema(): SchemaField<Item.Schema>;
+
+  static validateJoint(data: Item.Source): void;
+
+  static override fromSource(
+    source: Item.CreateData,
+    { strict, ...context }?: DataModel.FromSourceOptions,
+  ): Item.Implementation;
+
+  static override fromJSON(json: string): Item.Implementation;
 }
 
 export default BaseItem;
 
 declare namespace BaseItem {
-  type Parent = Actor.ConfiguredInstance | null;
+  export import Name = Item.Name;
+  export import ConstructorArgs = Item.ConstructorArgs;
+  export import Hierarchy = Item.Hierarchy;
+  export import Metadata = Item.Metadata;
+  export import SubType = Item.SubType;
+  export import ConfiguredSubTypes = Item.ConfiguredSubTypes;
+  export import Known = Item.Known;
+  export import OfType = Item.OfType;
+  export import SystemOfType = Item.SystemOfType;
+  export import Parent = Item.Parent;
+  export import Descendant = Item.Descendant;
+  export import DescendantClass = Item.DescendantClass;
+  export import Pack = Item.Pack;
+  export import Embedded = Item.Embedded;
+  export import ParentCollectionName = Item.ParentCollectionName;
+  export import CollectionClass = Item.CollectionClass;
+  export import Collection = Item.Collection;
+  export import Invalid = Item.Invalid;
+  export import Stored = Item.Stored;
+  export import Source = Item.Source;
+  export import PersistedData = Item.PersistedData;
+  export import CreateData = Item.CreateData;
+  export import InitializedData = Item.InitializedData;
+  export import UpdateData = Item.UpdateData;
+  export import Schema = Item.Schema;
+  export import DatabaseOperation = Item.Database;
+  export import Flags = Item.Flags;
 
+  // The document subclasses override `system` anyways.
+  // There's no point in doing expensive computation work comparing the base class system.
+  /** @internal */
+  interface _Schema extends Item.Schema {
+    // For performance reasons don't bother calculating the `system` field.
+    // This is overridden anyways.
+    system: any;
+  }
+
+  /**
+   * @deprecated This type is used by Foundry too vaguely.
+   * In one context the most correct type is after initialization whereas in another one it should be
+   * before but Foundry uses it interchangeably.
+   */
+  interface Properties extends SchemaField.InitializedData<Schema> {}
+
+  /**
+   * @deprecated {@link BaseItem.SubType | `BaseItem.SubType`}
+   */
   type TypeNames = Game.Model.TypeNames<"Item">;
 
-  type Metadata = Document.MetadataFor<BaseItem>;
+  /**
+   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseItem.Schema>`}
+   */
+  interface SchemaField extends foundry.data.fields.SchemaField<Schema> {}
 
-  type SchemaField = fields.SchemaField<Schema>;
-  type ConstructorData = fields.SchemaField.InnerConstructorType<Schema>;
-  type UpdateData = fields.SchemaField.InnerAssignmentType<Schema>;
-  type Properties = fields.SchemaField.InnerInitializedType<Schema>;
-  type Source = fields.SchemaField.InnerPersistedType<Schema>;
-
-  interface Schema extends DataSchema {
-    /**
-     * The _id which uniquely identifies this Item document
-     * @defaultValue `null`
-     */
-    _id: fields.DocumentIdField;
-
-    /** The name of this Item */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
-
-    /** An Item subtype which configures the system data model applied */
-    type: fields.DocumentTypeField<typeof BaseItem>;
-
-    /**
-     * An image file path which provides the artwork for this Item
-     * @defaultValue `null`
-     */
-    img: fields.FilePathField<{
-      categories: "IMAGE"[];
-      initial: (data: unknown) => string;
-    }>;
-
-    /**
-     * The system data object which is defined by the system template.json model
-     * @defaultValue `{}`
-     */
-    system: fields.TypeDataField<typeof BaseItem>;
-
-    /**
-     * A collection of ActiveEffect embedded Documents
-     * @defaultValue `[]`
-     */
-    effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect, Item.ConfiguredInstance>;
-
-    /**
-     * The _id of a Folder which contains this Item
-     * @defaultValue `null`
-     */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
-
-    /**
-     * The numeric sort value which orders this Item relative to its siblings
-     * @defaultValue `0`
-     */
-    sort: fields.IntegerSortField;
-
-    /**
-     * An object which configures ownership of this Item
-     * @defaultValue see {@link fields.DocumentOwnershipField}
-     */
-    ownership: fields.DocumentOwnershipField;
-
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
-    flags: fields.ObjectField.FlagsField<"Item">;
-
-    /**
-     * An object of creation and access information
-     * @defaultValue see {@link fields.DocumentStatsField}
-     */
-    _stats: fields.DocumentStatsField;
-  }
+  /**
+   * @deprecated {@link BaseItem.CreateData | `BaseItem.CreateData`}
+   */
+  interface ConstructorData extends SchemaField.CreateData<Schema> {}
 }

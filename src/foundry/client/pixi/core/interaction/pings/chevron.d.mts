@@ -62,7 +62,7 @@ declare global {
 
     override animate(): Promise<boolean>;
 
-    override _animateFrame(dt: number, animation: CanvasAnimationData): void;
+    override _animateFrame(dt: number, animation: CanvasAnimation.AnimationData): void;
 
     /**
      * Draw the outer and inner rings.

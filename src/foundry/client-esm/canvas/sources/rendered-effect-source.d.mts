@@ -167,7 +167,7 @@ declare abstract class RenderedEffectSource<
   /**
    * Animate the PointSource, if an animation is enabled and if it currently has rendered containers.
    * @param dt - Delta time.
-   * @privateRemarks In core this will return `void`, as the `this.animation.animation` function will  be a {@link foundry.canvas.sources.BaseLightSource.LightAnimationFunction | `LightAnimationFunction`}
+   * @privateRemarks In core this will return `void`, as the `this.animation.animation` function will  be a {@link foundry.canvas.sources.BaseLightSource.LightAnimationFunction | `BaseLightSource.LightAnimationFunction`}
    * and in fact most of the time will be {@link foundry.canvas.sources.RenderedEffectSource.animateTime | `RenderedEffectSource#animateTime`}, but it could technically be set to any function
    */
   animate(dt: number): this["animation"]["animation"] extends (...args: infer _1) => infer Return ? Return : void;
@@ -435,7 +435,7 @@ declare abstract class AnyRenderedEffectSource extends RenderedEffectSource<
   PIXI.Polygon,
   RenderedEffectSource.Layers
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default RenderedEffectSource;

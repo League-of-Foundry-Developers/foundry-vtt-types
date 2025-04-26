@@ -1,13 +1,14 @@
 import type { Identity } from "fvtt-types/utils";
+import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
    * The Collection of Setting documents which exist within the active World.
    * This collection is accessible as game.settings.storage.get("world")
    *
-   * @see {@link Setting} The Setting document
+   * @see {@link Setting | `Setting`} The Setting document
    */
-  class WorldSettings extends WorldCollection<typeof foundry.documents.BaseSetting, "WorldSettings"> {
+  class WorldSettings extends WorldCollection<Setting.ImplementationClass, "WorldSettings"> {
     static documentName: "Setting";
 
     override get directory(): null;
@@ -30,9 +31,12 @@ declare global {
   namespace WorldSettings {
     interface Any extends AnyWorldSettings {}
     interface AnyConstructor extends Identity<typeof AnyWorldSettings> {}
+
+    interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Setting"> {}
+    interface Configured extends Document.ConfiguredCollection<"Setting"> {}
   }
 }
 
 declare abstract class AnyWorldSettings extends WorldSettings {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

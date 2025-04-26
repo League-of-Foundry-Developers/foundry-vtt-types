@@ -3,7 +3,7 @@ import type { Identity } from "../../../../../../utils/index.d.mts";
 declare global {
   /**
    * The filter used by the weather layer to mask weather above occluded roofs.
-   * @see {@link WeatherEffects}
+   * @see {@link WeatherEffects | `WeatherEffects`}
    */
   class WeatherOcclusionMaskFilter extends AbstractBaseMaskFilter {
     /**
@@ -53,5 +53,5 @@ declare global {
 }
 
 declare abstract class AnyWeatherOcclusionMaskFilter extends WeatherOcclusionMaskFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

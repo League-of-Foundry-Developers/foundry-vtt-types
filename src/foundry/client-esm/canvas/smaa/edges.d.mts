@@ -1,7 +1,7 @@
 import type { IntentionalPartial, RequiredProps } from "../../../../utils/index.d.mts";
 
 /**
- * The edge detection filter for {@link foundry.canvas.SMAAFilter | `SMAAFilter`}.
+ * The edge detection filter for {@link foundry.canvas.SMAAFilter | `foundry.canvas.SMAAFilter`}.
  */
 declare class SMAAEdgeDetectionFilter extends PIXI.Filter {
   constructor(config: SMAAEdgeDetectionFilter.Config);
@@ -22,7 +22,7 @@ declare namespace SMAAEdgeDetectionFilter {
 }
 
 declare abstract class AnySMAAEdgeDetectionFilter extends SMAAEdgeDetectionFilter {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default SMAAEdgeDetectionFilter;

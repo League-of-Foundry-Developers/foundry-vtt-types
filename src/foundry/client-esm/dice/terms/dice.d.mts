@@ -405,7 +405,7 @@ declare namespace DiceTerm {
 }
 
 declare abstract class AnyDiceTerm extends DiceTerm {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default DiceTerm;

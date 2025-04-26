@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-declare const user: User.ConfiguredInstance;
+declare const user: User.Implementation;
 
 const cursor = new Cursor(user);
 

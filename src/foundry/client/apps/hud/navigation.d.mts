@@ -6,7 +6,7 @@ declare global {
    *
    * @typeParam Options - the type of the options object
    */
-  class SceneNavigation<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class SceneNavigation<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -26,19 +26,19 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     /**
      * Return an Array of Scenes which are displayed in the Navigation bar
      */
-    get scenes(): Scene.ConfiguredInstance[];
+    get scenes(): Scene.Implementation[];
 
-    override render(force?: boolean, context?: Application.RenderOptions<Options>): this | void;
+    override render(force?: boolean, context?: Application.RenderOptions<Options>): this;
 
     protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
     override getData(
-      options?: Partial<ApplicationOptions>,
+      options?: Partial<Application.Options>,
     ): MaybePromise<GetDataReturnType<SceneNavigation.SceneNavigationData>>;
 
     /**
@@ -58,7 +58,7 @@ declare global {
      * @returns The Array of context options passed to the ContextMenu instance
      * @internal
      */
-    protected _getContextMenuOptions(): ContextMenuEntry[];
+    protected _getContextMenuOptions(): ContextMenu.Entry[];
 
     /**
      * Handle left-click events on the scenes in the navigation menu
@@ -92,7 +92,7 @@ declare global {
       active: boolean;
       name: string;
       tooltip: string | null;
-      users: { letter: string; color: User["color"] }[];
+      users: { letter: string; color: User.Implementation["color"] }[];
       visible: boolean;
       css: string;
     }
@@ -116,6 +116,6 @@ declare global {
   }
 }
 
-declare abstract class AnySceneNavigation extends SceneNavigation<ApplicationOptions> {
-  constructor(arg0: never, ...args: never[]);
+declare abstract class AnySceneNavigation extends SceneNavigation<Application.Options> {
+  constructor(...args: never);
 }

@@ -1,16 +1,8 @@
 import type { GetKey, ValueOf } from "fvtt-types/utils";
 
 declare global {
-  interface AVSettingsData {
-    /** Whether this user has muted themselves. */
-    muted?: boolean | undefined;
-
-    /** Whether this user has hidden their video. */
-    hidden?: boolean | undefined;
-
-    /** Whether the user is broadcasting audio. */
-    speaking?: boolean | undefined;
-  }
+  /** @deprecated {@link AVSettings.Data | `AVSettings.Data`} */
+  type AVSettingsData = AVSettings.Data;
 
   class AVSettings {
     constructor();
@@ -230,7 +222,7 @@ declare global {
     /**
      * Stores the transient AV activity data received from other users.
      */
-    activity: Record<string, AVSettingsData>;
+    activity: Record<string, AVSettings.Data>;
 
     initialize(): void;
 
@@ -256,7 +248,7 @@ declare global {
      * Prepare a standardized object of user settings data for a single User
      * @internal
      */
-    protected _getUserSettings(user: User): AVSettings.UserSettings;
+    protected _getUserSettings(user: User.Implementation): AVSettings.UserSettings;
 
     /**
      * Handle setting changes to either rctClientSettings or rtcWorldSettings.
@@ -267,7 +259,7 @@ declare global {
     /**
      * Handle another connected user changing their AV settings.
      */
-    handleUserActivity(userId: string, settings: AVSettingsData): void;
+    handleUserActivity(userId: string, settings: AVSettings.Data): void;
   }
 
   namespace AVSettings {
@@ -310,5 +302,16 @@ declare global {
     type DOCK_POSITIONS = ValueOf<DockPositions>;
 
     type AV_MODES = ValueOf<typeof AVSettings.AV_MODES>;
+
+    interface Data {
+      /** Whether this user has muted themselves. */
+      muted?: boolean | undefined;
+
+      /** Whether this user has hidden their video. */
+      hidden?: boolean | undefined;
+
+      /** Whether the user is broadcasting audio. */
+      speaking?: boolean | undefined;
+    }
   }
 }

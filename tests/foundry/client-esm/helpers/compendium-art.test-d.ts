@@ -1,12 +1,11 @@
 import { expectTypeOf } from "vitest";
-import types = foundry.helpers;
+import CompendiumArt = foundry.helpers.CompendiumArt;
 
 const caInfo = { actor: "actorId", token: { randomImg: false }, credit: "Me" };
-expectTypeOf(caInfo).toMatchTypeOf<types.CompendiumArtInfo>;
+expectTypeOf(caInfo).toExtend<CompendiumArt.Info>;
 
 // @ts-expect-error Should reject object not matching prototype tokens schema
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const caError: types.CompendiumArtInfo = { token: { badKey: "1" } };
+expectTypeOf({ token: { badKey: "1" } }).not.toExtend<CompendiumArt.Info>();
 
 const compendiumArt = new foundry.helpers.CompendiumArt([
   ["test", caInfo],
@@ -15,4 +14,4 @@ const compendiumArt = new foundry.helpers.CompendiumArt([
 expectTypeOf(compendiumArt.FLAG).toEqualTypeOf<string>;
 expectTypeOf(compendiumArt.SETTING).toEqualTypeOf<string>;
 expectTypeOf(compendiumArt.enabled).toEqualTypeOf<boolean>;
-expectTypeOf(compendiumArt.getPackages()).toEqualTypeOf<types.CompendiumArtDescriptor[]>;
+expectTypeOf(compendiumArt.getPackages()).toEqualTypeOf<CompendiumArt.Descriptor[]>;

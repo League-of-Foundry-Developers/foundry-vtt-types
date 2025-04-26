@@ -6,7 +6,7 @@ declare global {
    */
   class AdventureImporter<Options extends AdventureImporter.Options = AdventureImporter.Options> extends DocumentSheet<
     Options,
-    Adventure.ConfiguredInstance
+    Adventure.Implementation
   > {
     /**
      * An alias for the Adventure document
@@ -48,7 +48,10 @@ declare global {
 
     protected override _getHeaderButtons(): Application.HeaderButton[];
 
-    protected override _updateObject(event: Event, formData: object): Promise<void | ReturnType<Adventure["import"]>>;
+    protected override _updateObject(
+      event: Event,
+      formData: object,
+    ): Promise<void | ReturnType<Adventure.Implementation["import"]>>;
 
     /**
      * Mirror Adventure#import but call AdventureImporter#_importContent and AdventureImport#_prepareImportData
@@ -73,10 +76,10 @@ declare global {
     interface Any extends AnyAdventureImporter {}
     interface AnyConstructor extends Identity<typeof AnyAdventureImporter> {}
 
-    interface Options extends DocumentSheetOptions<Adventure.ConfiguredInstance> {}
+    interface Options extends DocumentSheet.Options<Adventure.Implementation> {}
 
     interface AdventureImporterData {
-      adventure: Adventure.ConfiguredInstance;
+      adventure: Adventure.Implementation;
 
       contents: ReturnType<AdventureImporter["_getContentList"]>;
 
@@ -86,5 +89,5 @@ declare global {
 }
 
 declare abstract class AnyAdventureImporter extends AdventureImporter<AdventureImporter.Options> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

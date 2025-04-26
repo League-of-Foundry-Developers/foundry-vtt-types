@@ -34,13 +34,13 @@ declare global {
     /**
      * An array of Tile objects which are rendered within the objects container
      */
-    get tiles(): Tile.ConfiguredInstance[];
+    get tiles(): Tile.Object[];
 
     /**
      * @remarks Only produces foreground or non-forground tiles, depending on the state
      * of the foregound layer toggle control
      */
-    override controllableObjects(): Generator<Tile.ConfiguredInstance>;
+    override controllableObjects(): Generator<Tile.Object>;
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
@@ -63,7 +63,7 @@ declare global {
     protected _onDropData(
       event: DragEvent,
       data: TilesLayer.DropData,
-    ): Promise<TileDocument.ConfiguredInstance | false | void>;
+    ): Promise<TileDocument.Implementation | false | void>;
 
     /**
      * Prepare the data object when a new Tile is dropped onto the canvas
@@ -71,17 +71,14 @@ declare global {
      * @param data  - The extracted Tile data
      * @returns The prepared data to create
      */
-    protected _getDropData(
-      event: DragEvent,
-      data: TilesLayer.DropData,
-    ): Promise<foundry.documents.BaseTile.ConstructorData>;
+    protected _getDropData(event: DragEvent, data: TilesLayer.DropData): Promise<TileDocument.CreateData>;
 
     /**
      * Get an array of overhead Tile objects which are roofs
      * @deprecated since v12 until v14
      * @remarks "TilesLayer#roofs has been deprecated without replacement."
      */
-    get roofs(): Tile.ConfiguredInstance[];
+    get roofs(): Tile.Object[];
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -103,7 +100,7 @@ declare global {
 
     interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<"Tile"> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Tile.ObjectClass> {
       name: "tiles";
       zIndex: 300;
       controllableObjects: true;
@@ -111,7 +108,7 @@ declare global {
     }
 
     /** @internal  */
-    type _DropData = Required<Pick<TileDocument.ConstructorData, "elevation" | "height" | "width" | "sort">>;
+    type _DropData = Required<Pick<TileDocument.CreateData, "elevation" | "height" | "width" | "sort">>;
 
     interface DropData extends Canvas.DropPosition, _DropData {
       type: "Tile";
@@ -124,5 +121,5 @@ declare global {
 }
 
 declare abstract class AnyTilesLayer extends TilesLayer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

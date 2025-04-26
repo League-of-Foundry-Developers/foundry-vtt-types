@@ -11,12 +11,12 @@ declare global {
    * The number keys 1 through 0 activate numbered hotbar slots.
    * Pressing the delete key while hovering over a Macro will remove it from the bar.
    *
-   * @see {@link Macros}
-   * @see {@link Macro}
+   * @see {@link Macros | `Macros`}
+   * @see {@link Macro | `Macro`}
    *
    * @typeParam Options - the type of the options object
    */
-  class Hotbar<Options extends ApplicationOptions = ApplicationOptions> extends Application<Options> {
+  class Hotbar<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options?: Partial<Options>);
 
     /**
@@ -29,7 +29,7 @@ declare global {
      * The currently displayed set of macros
      * @defaultValue `[]`
      */
-    macros: Macro.ConfiguredInstance[];
+    macros: Macro.Implementation[];
 
     /**
      * Track collapsed state
@@ -54,7 +54,7 @@ declare global {
      * })
      * ```
      */
-    static override get defaultOptions(): ApplicationOptions;
+    static override get defaultOptions(): Application.Options;
 
     override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<Hotbar.HotbarData>>;
 
@@ -67,7 +67,7 @@ declare global {
      * Get the Array of Macro (or null) values that should be displayed on a numbered page of the bar
      * @param page -
      */
-    protected _getMacrosByPage(page: number): Macro.ConfiguredInstance[];
+    protected _getMacrosByPage(page: number): Macro.Implementation[];
 
     /**
      * Collapse the Hotbar, minimizing its display.
@@ -103,7 +103,7 @@ declare global {
      * @returns The Macro entry context options
      * @internal
      */
-    protected _getEntryContextOptions(): ContextMenuEntry[];
+    protected _getEntryContextOptions(): ContextMenu.Entry[];
 
     /**
      * Handle left-click events to
@@ -129,14 +129,14 @@ declare global {
      * Create a Macro which rolls a RollTable when executed
      * @param table - The RollTable document
      */
-    protected _createRollTableRollMacro(table: RollTable): Promise<Macro.ConfiguredInstance>;
+    protected _createRollTableRollMacro(table: RollTable.Implementation): Promise<Macro.Implementation>;
 
     /**
      * Create a Macro document which can be used to toggle display of a Journal Entry.
      * @param doc - A Document which should be toggled
      * @returns A created Macro document to add to the bar
      */
-    protected _createDocumentSheetToggle(doc: ClientDocument): Promise<Macro.ConfiguredInstance>;
+    protected _createDocumentSheetToggle(doc: ClientDocument): Promise<Macro.Implementation>;
 
     /**
      * Handle click events to toggle display of the macro bar
@@ -170,5 +170,5 @@ declare global {
 }
 
 declare abstract class AnyHotbar extends Hotbar {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -2,7 +2,7 @@ import type { InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
-   * The grid mesh, which uses the {@link GridShader} to render the grid.
+   * The grid mesh, which uses the {@link GridShader | `GridShader`} to render the grid.
    */
   class GridMesh extends QuadMesh {
     /**
@@ -47,7 +47,7 @@ declare global {
      */
     interface MeshData {
       /**
-       * The type of the grid (see {@link CONST.GRID_TYPES})
+       * The type of the grid (see {@link CONST.GRID_TYPES | `CONST.GRID_TYPES`})
        * @defaultValue `CONST.GRID_TYPES.GRIDLESS`
        */
       type: foundry.CONST.GRID_TYPES;

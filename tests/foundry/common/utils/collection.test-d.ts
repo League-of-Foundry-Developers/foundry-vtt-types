@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 const c = new Collection<string>();
 
@@ -34,16 +34,18 @@ expectTypeOf(cn.find(isString)).toEqualTypeOf<string | undefined>();
 // This is a regression test for the error:
 //    Class '...' defines instance member property '...', but extended class '...' defines it as instance member function.
 // This occurred because of how `Map` was patched to allow the unsound subclassing of `Collection`.
-class CustomCollection extends Collection<string> {
-  override clear(): void {}
+test("custom Collection Map overrides regression test", () => {
+  class CustomCollection extends Collection<string> {
+    override clear(): void {}
 
-  override delete(_key: string): boolean {
-    return true;
+    override delete(_key: string): boolean {
+      return true;
+    }
   }
-}
 
-declare const customCollection: CustomCollection;
+  const customCollection = new CustomCollection();
 
-if (customCollection instanceof Map) {
-  expectTypeOf(customCollection).toEqualTypeOf<CustomCollection>();
-}
+  if (customCollection instanceof Map) {
+    expectTypeOf(customCollection).toEqualTypeOf<CustomCollection>();
+  }
+});

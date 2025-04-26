@@ -53,7 +53,7 @@ declare global {
 
     /**
      * Test whether every element in this Set satisfies a certain test criterion.
-     * @see {@link Array#every}
+     * @see {@link Array.every | `Array#every`}
      * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being tested.
      * @returns Does every element in the set satisfy the test criterion?
      */
@@ -61,7 +61,7 @@ declare global {
 
     /**
      * Filter this set to create a subset of elements which satisfy a certain test criterion.
-     * @see {@link Array#filter}
+     * @see {@link Array.filter | `Array#filter`}
      * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being filtered.
      * @returns A new Set containing only elements which satisfy the test criterion.
      */
@@ -70,7 +70,7 @@ declare global {
 
     /**
      * Find the first element in this set which satisfies a certain test criterion.
-     * @see {@link Array#find}
+     * @see {@link Array.find | `Array#find`}
      * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being searched.
      * @returns The first element in the set which satisfies the test criterion, or undefined.
      */
@@ -79,7 +79,7 @@ declare global {
 
     /**
      * Create a new Set where every element is modified by a provided transformation function.
-     * @see {@link Array#map}
+     * @see {@link Array.map | `Array#map`}
      * @param transform - The transformation function to apply.Positional arguments are the value, the index of iteration, and the set being transformed.
      * @returns A new Set of equal size containing transformed elements.
      */
@@ -87,7 +87,7 @@ declare global {
 
     /**
      * Create a new Set with elements that are filtered and transformed by a provided reducer function.
-     * @see {@link Array#reduce}
+     * @see {@link Array.reduce | `Array#reduce`}
      * @param reducer - A reducer function applied to each value. Positional arguments are the accumulator, the value, the index of iteration, and the set being reduced.
      * @param accumulator - The initial value of the returned accumulator.
      * @returns The final value of the accumulator.
@@ -99,7 +99,7 @@ declare global {
 
     /**
      * Test whether any element in this Set satisfies a certain test criterion.
-     * @see {@link Array#some}
+     * @see {@link Array.some | `Array#some`}
      * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being tested.
      * @returns Does any element in the set satisfy the test criterion?
      */

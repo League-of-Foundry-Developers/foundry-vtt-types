@@ -12,12 +12,12 @@ declare const Set: typeof LenientSet;
 declare global {
   /**
    * A subclass of Set which manages the Token ids which the User has targeted.
-   * @see User#targets
+   * @see {@link User.targets | `User#targets`}
    */
-  class UserTargets extends Set<Token.ConfiguredInstance> {
-    constructor(user: User.ConfiguredInstance);
+  class UserTargets extends Set<Token.Object> {
+    constructor(user: UserTargets["user"]);
 
-    user: User.ConfiguredInstance;
+    user: User.Implementation;
 
     /**
      * Return the Token IDs which are user targets
@@ -27,14 +27,14 @@ declare global {
     /**
      * @remarks Returns void, but Set<T>.add returns boolean
      */
-    override add(token: Token.ConfiguredInstance): void;
+    override add(token: Token.Object): void;
 
     override clear(): void;
 
     /**
      * @remarks Returns void, but Set<T>.delete returns boolean
      */
-    override delete(token: Token.ConfiguredInstance): void;
+    override delete(token: Token.Object): void;
   }
 
   namespace UserTargets {
@@ -44,5 +44,5 @@ declare global {
 }
 
 declare abstract class AnyUserTargets extends UserTargets {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

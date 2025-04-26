@@ -7,9 +7,9 @@ import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 export default class ItemSheetV2<
   RenderContext extends AnyObject = EmptyObject,
   Configuration extends
-    DocumentSheetV2.Configuration<Item.ConfiguredInstance> = DocumentSheetV2.Configuration<Item.ConfiguredInstance>,
+    DocumentSheetV2.Configuration<Item.Implementation> = DocumentSheetV2.Configuration<Item.Implementation>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
-> extends DocumentSheetV2<Item.ConfiguredInstance, RenderContext, Configuration, RenderOptions> {
+> extends DocumentSheetV2<Item.Implementation, RenderContext, Configuration, RenderOptions> {
   /**
    * The Item document managed by this sheet.
    */

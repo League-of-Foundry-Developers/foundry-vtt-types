@@ -31,9 +31,9 @@ declare global {
 }
 
 declare abstract class AnyUnboundContainer extends UnboundContainer {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyUnboundTransform extends UnboundTransform {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

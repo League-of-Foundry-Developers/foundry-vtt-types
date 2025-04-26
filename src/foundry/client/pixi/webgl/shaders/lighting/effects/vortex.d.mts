@@ -32,9 +32,9 @@ declare global {
 }
 
 declare abstract class AnyVortexColorationShader extends VortexColorationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 declare abstract class AnyVortexIlluminationShader extends VortexIlluminationShader {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -1,11 +1,7 @@
 import type { InexactPartial, NullishProps, FixedInstanceType } from "fvtt-types/utils";
-import type Document from "../../common/abstract/document.d.mts";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.d.mts";
 
-type InternalCanvas = new (
-  arg0: never,
-  ...args: never[]
-) => {
+type InternalCanvas = new (...args: never) => {
   readonly [K in keyof CONFIG.Canvas.Groups]?: FixedInstanceType<CONFIG.Canvas.Groups[K]["groupClass"]> | undefined;
 };
 
@@ -18,11 +14,11 @@ declare global {
    * objects that are drawn on the canvas itself.
    *
    * ### Hook Events
-   * {@link hookEvents.canvasConfig}
-   * {@link hookEvents.canvasInit}
-   * {@link hookEvents.canvasReady}
-   * {@link hookEvents.canvasPan}
-   * {@link hookEvents.canvasTearDown}
+   * {@link hookEvents.canvasConfig | `hookEvents.canvasConfig`}
+   * {@link hookEvents.canvasInit | `hookEvents.canvasInit`}
+   * {@link hookEvents.canvasReady | `hookEvents.canvasReady`}
+   * {@link hookEvents.canvasPan | `hookEvents.canvasPan`}
+   * {@link hookEvents.canvasTearDown | `hookEvents.canvasTearDown`}
    *
    * @example Canvas State
    * ```typescript
@@ -111,12 +107,12 @@ declare global {
      * Configured performance settings which affect the behavior of the Canvas and its renderer.
      * @defaultValue `undefined`
      */
-    performance: CanvasPerformanceSettings | undefined;
+    performance: Canvas.PerformanceSettings | undefined;
 
     /**
      * A list of supported webGL capabilities and limitations.
      */
-    supported: CanvasSupportedComponents;
+    supported: Canvas.SupportedComponents;
 
     /**
      * Is the photosensitive mode enabled?
@@ -181,15 +177,15 @@ declare global {
 
     /**
      * The primary Canvas group which generally contains tangible physical objects which exist within the Scene.
-     * This group is a {@link CachedContainer} which is rendered to the Scene as a {@link SpriteMesh}.
-     * This allows the rendered result of the Primary Canvas Group to be affected by a {@link BaseSamplerShader}.
+     * This group is a {@link CachedContainer | `CachedContainer`} which is rendered to the Scene as a {@link SpriteMesh | `SpriteMesh`}.
+     * This allows the rendered result of the Primary Canvas Group to be affected by a {@link BaseSamplerShader | `BaseSamplerShader`}.
      * @defaultValue `undefined`
      */
     readonly primary: PrimaryCanvasGroup | undefined;
 
     /**
-     * The effects Canvas group which modifies the result of the {@link PrimaryCanvasGroup} by adding special effects.
-     * This includes lighting, vision, fog of war and related animations..
+     * The effects Canvas group which modifies the result of the {@link PrimaryCanvasGroup | `PrimaryCanvasGroup`} by adding special effects.
+     * This includes lighting, vision, fog of war and related animations.
      * @defaultValue `undefined`
      */
     readonly effects: EffectsCanvasGroup | undefined;
@@ -202,8 +198,8 @@ declare global {
 
     /**
      * The interface Canvas group which is rendered above other groups and contains all interactive elements.
-     * The various {@link InteractionLayer} instances of the interface group provide different control sets for
-     * interacting with different types of {@link Document}s which can be represented on the Canvas.
+     * The various {@link InteractionLayer | `InteractionLayer`} instances of the interface group provide different control sets for
+     * interacting with different types of {@link Document | `Document`}s which can be represented on the Canvas.
      * @defaultValue `undefined`
      */
     readonly interface: InterfaceCanvasGroup | undefined;
@@ -244,7 +240,7 @@ declare global {
     /**
      * A reference to the currently displayed Scene document, or null if the Canvas is currently blank.
      */
-    get scene(): Document.Stored<Scene.ConfiguredInstance> | null;
+    get scene(): Scene.Stored | null;
 
     /**
      * A SceneManager instance which adds behaviors to this Scene, or null if there is no manager.
@@ -388,14 +384,14 @@ declare global {
      * Configure performance settings for hte canvas application based on the selected performance mode.
      * @internal
      */
-    protected _configurePerformanceMode(): CanvasPerformanceSettings;
+    protected _configurePerformanceMode(): Canvas.PerformanceSettings;
 
     /**
      * Draw the game canvas.
      * @param scene - A specific Scene document to render on the Canvas
      * @returns A Promise which resolves once the Canvas is fully drawn
      */
-    draw(scene?: Scene.ConfiguredInstance): Promise<this>;
+    draw(scene?: Scene.Implementation): Promise<this>;
 
     /**
      * When re-drawing the canvas, first tear down or discontinue some existing processes
@@ -405,7 +401,7 @@ declare global {
     /**
      * Create a SceneManager instance used for this Scene, if any.
      */
-    static getSceneManager(scene: Scene.ConfiguredInstance): foundry.canvas.SceneManager | null;
+    static getSceneManager(scene: Scene.Implementation): foundry.canvas.SceneManager | null;
 
     /**
      * Get the value of a GL parameter
@@ -588,20 +584,7 @@ declare global {
     /**
      * Get a texture with the required configuration and clear color.
      */
-    static getRenderTexture(
-      options?: InexactPartial<{
-        /**
-         * The clear color to use for this texture. Transparent by default.
-         */
-        clearColor: number[] | null;
-
-        /**
-         * The render texture configuration.
-         * @privateRemarks forwarded to `PIXI.RenderTexture.create`
-         */
-        textureConfiguration: Parameters<(typeof PIXI.RenderTexture)["create"]>[0];
-      }>,
-    ): PIXI.RenderTexture;
+    static getRenderTexture(options?: Canvas.GetRenderTextureOptions): PIXI.RenderTexture;
 
     /**
      * Handle right-mouse start drag events occurring on the Canvas.
@@ -683,60 +666,18 @@ declare global {
     get colorManager(): this["environment"];
   }
 
-  interface CanvasPerformanceSettings {
-    /** The performance mode in CONST.CANVAS_PERFORMANCE_MODES */
-    mode: CANVAS_PERFORMANCE_MODES;
+  /**
+   * @deprecated {@link Canvas.PerformanceSettings | `Canvas.PerformanceSettings`}
+   */
+  type CanvasPerformanceSettings = Canvas.PerformanceSettings;
 
-    /** Blur filter configuration */
-    blur: {
-      enabled: boolean;
-      illumination: boolean;
-    };
-
-    /** Whether to use mipmaps, "ON" or "OFF" */
-    mipmap: "ON" | "OFF";
-
-    /** Whether to apply MSAA at the overall canvas level */
-    msaa: boolean;
-
-    /** Maximum framerate which should be the render target */
-    fps: number;
-
-    /** Whether to display token movement animation */
-    tokenAnimation: boolean;
-
-    /** Whether to display light source animation */
-    lightAnimation: boolean;
-
-    /** Whether to render soft edges for light sources */
-    lightSoftEdges: boolean;
-
-    /** Texture configuration */
-    textures: {
-      enabled: boolean;
-
-      maxSize: number;
-
-      p2Steps: number;
-
-      /** @defaultValue `2` */
-      p2StepsMax: number;
-    };
-  }
-
-  interface CanvasSupportedComponents {
-    /** Is WebGL2 supported? */
-    webGL2: boolean;
-
-    /** Is reading pixels in RED format supported? */
-    readPixelsRED: boolean;
-
-    /** Is the OffscreenCanvas supported? */
-    offscreenCanvas: boolean;
-  }
+  /**
+   * @deprecated {@link Canvas.SupportedComponents | `Canvas.SupportedComponents`}
+   */
+  type CanvasSupportedComponents = Canvas.SupportedComponents;
 
   namespace Canvas {
-    interface Dimensions extends SceneDimensions {
+    interface Dimensions extends Scene.Dimensions {
       /** The canvas rectangle. */
       rect: PIXI.Rectangle;
 
@@ -794,6 +735,71 @@ declare global {
       y: number;
       width: number;
       height: number;
+    }
+
+    interface PerformanceSettings {
+      /** The performance mode in CONST.CANVAS_PERFORMANCE_MODES */
+      mode: CANVAS_PERFORMANCE_MODES;
+
+      /** Blur filter configuration */
+      blur: {
+        enabled: boolean;
+        illumination: boolean;
+      };
+
+      /** Whether to use mipmaps, "ON" or "OFF" */
+      mipmap: "ON" | "OFF";
+
+      /** Whether to apply MSAA at the overall canvas level */
+      msaa: boolean;
+
+      /** Maximum framerate which should be the render target */
+      fps: number;
+
+      /** Whether to display token movement animation */
+      tokenAnimation: boolean;
+
+      /** Whether to display light source animation */
+      lightAnimation: boolean;
+
+      /** Whether to render soft edges for light sources */
+      lightSoftEdges: boolean;
+
+      /** Texture configuration */
+      textures: {
+        enabled: boolean;
+
+        maxSize: number;
+
+        p2Steps: number;
+
+        /** @defaultValue `2` */
+        p2StepsMax: number;
+      };
+    }
+
+    interface SupportedComponents {
+      /** Is WebGL2 supported? */
+      webGL2: boolean;
+
+      /** Is reading pixels in RED format supported? */
+      readPixelsRED: boolean;
+
+      /** Is the OffscreenCanvas supported? */
+      offscreenCanvas: boolean;
+    }
+
+    interface GetRenderTextureOptions {
+      /**
+       * The clear color to use for this texture. Transparent by default.
+       */
+      clearColor?: number[] | null | undefined;
+
+      /**
+       * The render texture configuration.
+       * @privateRemarks forwarded to {@link PIXI.RenderTexture.create | `PIXI.RenderTexture.create`}
+       */
+      textureConfiguration?: PIXI.IBaseTextureOptions | undefined;
     }
   }
 }

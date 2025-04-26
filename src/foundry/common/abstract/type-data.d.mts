@@ -10,14 +10,15 @@ import type {
   Identity,
 } from "fvtt-types/utils";
 import type { SchemaField } from "../data/fields.d.mts";
+import type { DatabaseCreateOperation, DatabaseDeleteOperation, DatabaseUpdateOperation } from "./_types.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
 interface _InternalTypeDataModelInterface extends DataModel.AnyConstructor {
-  new <Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends DataModel<Schema, Parent>>(
-    ...args: ConstructorParameters<typeof DataModel<Schema, Parent>>
+  new <Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends object>(
+    ...args: DataModel.ConstructorArgs<Schema, Parent>
 
     // Note(LukeAbby): This seemingly redundant `DataModel<Schema, Parent>` is to
     // Ensure that TypeScript allows overriding `protected` methods in subclasses.
@@ -30,18 +31,11 @@ declare const _InternalTypeDataModelConst: _InternalTypeDataModelInterface;
 // @ts-expect-error Ignore the error, this is a workaround for a dynamic class.
 declare class _InternalTypeDataModel<
   Schema extends DataSchema,
-  Parent extends Document<any, DataSchema, any>,
+  Parent extends Document<Document.Type, DataSchema, Document.Any | null>,
   BaseData extends AnyObject = EmptyObject,
   DerivedData extends AnyObject = EmptyObject,
   // This does not work if inlined. It's weird to put it here but it works.
-  _ComputedInstance extends DataModel<Schema, Parent> = SimpleMerge<
-    Merge<RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>,
-    // The merge is written this way because properties in the data model _cannot_ be allowed to be overridden by the base or derived data.
-    // In theory this could be allowed but it causes a few difficulties.
-    // The fundamental issue is that allowing this would cause subclasses to no longer guaranteed to be valid subtypes.
-    // A particularly thorny but not fully fundamental issue is that it also causes difficulties with `this` inside of classes generic over `BaseData`.
-    DataModel<Schema, Parent>
-  >,
+  _ComputedInstance extends object = Merge<RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>,
 > extends _InternalTypeDataModelConst<Schema, Parent, _ComputedInstance> {}
 
 declare const __TypeDataModelBrand: unique symbol;
@@ -117,7 +111,7 @@ declare namespace TypeDataModel {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
-    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
+    type Constructor = (abstract new (...args: never) => Instance.Any) & {
       [__TypeDataModelBrand]: never;
     };
 
@@ -157,17 +151,17 @@ declare namespace TypeDataModel {
       : never;
 
   type ParentAssignmentType<Schema extends DataSchema, Parent extends Document.Internal.Instance.Any> = SimpleMerge<
-    SchemaField.InitializedType<Document.SchemaFor<Parent>>,
+    SchemaField.InitializedData<Document.SchemaFor<Parent>>,
     {
       // FIXME(LukeAbby): Callers handle making this partial when obvious.
       // However also should make system partial using the regular rules: if `initial` is assignable to the field or if `required` is false etc.
-      system: SchemaField.InitializedType<Schema>;
+      system: SchemaField.InitializedData<Schema>;
     }
   >;
 }
 
 declare abstract class AnyTypeDataModel extends TypeDataModel<any, any, any, any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 /**
@@ -250,15 +244,15 @@ declare abstract class TypeDataModel<
   /**
    * Prepare data related to this DataModel itself, before any derived data is computed.
    *
-   * Called before {@link ClientDocument#prepareBaseData} in {@link ClientDocument#prepareData}.
-   * */
+   * Called before {@link ClientDocument.prepareBaseData | `ClientDocument#prepareBaseData`} in {@link ClientDocument.prepareData | `ClientDocument#prepareData`}.
+   */
   prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void;
 
   /**
    * Apply transformations of derivations to the values of the source data object.
    * Compute data fields whose values are not stored to the database.
    *
-   * Called before {@link ClientDocument#prepareDerivedData} in {@link ClientDocument#prepareData}.
+   * Called before {@link ClientDocument.prepareDerivedData | `ClientDocument#prepareDerivedData`} in {@link ClientDocument.prepareData | `ClientDocument#prepareData`}.
    */
   prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>): void;
 
@@ -278,7 +272,7 @@ declare abstract class TypeDataModel<
   /* -------------------------------------------- */
 
   /**
-   * Called by {@link ClientDocument#_preCreate}.
+   * Called by {@link ClientDocument._preCreate | `ClientDocument#_preCreate`}.
    *
    * @param data    - The initial data object provided to the document creation request
    * @param options - Additional options which modify the creation request
@@ -287,12 +281,12 @@ declare abstract class TypeDataModel<
    */
   protected _preCreate(
     data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
-    options: Document.PreCreateOptions<any>,
-    user: User,
+    options: Document.Database.PreCreateOptions<DatabaseCreateOperation>,
+    user: User.Implementation,
   ): Promise<boolean | void>;
 
   /**
-   * Called by {@link ClientDocument#_onCreate}.
+   * Called by {@link ClientDocument._onCreate | `ClientDocument#_onCreate`}.
    *
    * @param data    - The initial data object provided to the document creation request
    * @param options - Additional options which modify the creation request
@@ -300,12 +294,12 @@ declare abstract class TypeDataModel<
    */
   protected _onCreate(
     data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
-    options: Document.OnCreateOptions<any>,
+    options: Document.Database.CreateOptions<DatabaseCreateOperation>,
     userId: string,
   ): void;
 
   /**
-   * Called by {@link ClientDocument#_preUpdate}.
+   * Called by {@link ClientDocument._preUpdate | `ClientDocument#_preUpdate`}.
    *
    * @param changes - The candidate changes to the Document
    * @param options - Additional options which modify the update request
@@ -314,12 +308,12 @@ declare abstract class TypeDataModel<
    */
   protected _preUpdate(
     changes: DeepPartial<TypeDataModel.ParentAssignmentType<Schema, Parent>>,
-    options: Document.PreUpdateOptions<any>,
-    userId: string,
+    options: Document.Database.PreUpdateOptions<DatabaseUpdateOperation>,
+    user: User.Implementation,
   ): Promise<boolean | void>;
 
   /**
-   * Called by {@link ClientDocument#_onUpdate}.
+   * Called by {@link ClientDocument._onUpdate | `ClientDocument#_onUpdate`}.
    *
    * @param changed - The differential data that was changed relative to the documents prior values
    * @param options - Additional options which modify the update request
@@ -327,26 +321,29 @@ declare abstract class TypeDataModel<
    */
   protected _onUpdate(
     changed: DeepPartial<TypeDataModel.ParentAssignmentType<Schema, Parent>>,
-    options: Document.OnUpdateOptions<any>,
+    options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
     userId: string,
   ): void;
 
   /**
-   * Called by {@link ClientDocument#_preDelete}.
+   * Called by {@link ClientDocument._preDelete | `ClientDocument#_preDelete`}.
    *
    * @param options - Additional options which modify the deletion request
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the deletion operation should be cancelled.
    */
-  protected _preDelete(options: Document.PreDeleteOptions<any>, user: User): Promise<boolean | void>;
+  protected _preDelete(
+    options: Document.Database.PreDeleteOperationInstance<DatabaseDeleteOperation>,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
 
   /**
-   * Called by {@link ClientDocument#_onDelete}.
+   * Called by {@link ClientDocument._onDelete | `ClientDocument#_onDelete`}.
    *
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onDelete(options: Document.OnDeleteOptions<any>, userId: string): void;
+  protected _onDelete(options: Document.Database.DeleteOptions<DatabaseDeleteOperation>, userId: string): void;
 }
 
 declare class ConfigurationFailure extends TypeDataModel<any, any, any, any> {}

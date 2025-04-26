@@ -18,7 +18,7 @@ declare class PrimaryCanvasObject {
    * @privateRemarks Foundry types as `*`, but in practice, it will only ever be a `Drawing` (via `PrimaryGraphics`),
    * or a `Token`, `Tile`, or the `PrimaryCanvasGroup` (via `PrimarySpriteMesh`), or its default value `null`
    */
-  //TODO: (esheyw) Revisit the "any canvas group" type when groups are done
+  // TODO: (esheyw) Revisit the "any canvas group" type when groups are done
   object: PlaceableObject.Any | CanvasGroupMixin.AnyMixed | null;
 
   /**
@@ -63,10 +63,10 @@ declare class PrimaryCanvasObject {
    */
   protected _onRemoved(parent: PIXI.Container): void;
 
-  /** @see {@link CanvasTransformMixinClass#updateCanvasTransform} */
+  /** @see {@link CanvasTransformMixinClass.updateCanvasTransform | `CanvasTransformMixinClass#updateCanvasTransform`} */
   updateCanvasTransform(): void;
 
-  /** @see {@link CanvasTransformMixinClass#_onCanvasBoundsUpdate} */
+  /** @see {@link CanvasTransformMixinClass._onCanvasBoundsUpdate | `CanvasTransformMixinClass#_onCanvasBoundsUpdate`} */
   protected _onCanvasBoundsUpdate(): void;
 
   /**
@@ -173,7 +173,8 @@ declare global {
   ): Mixin<typeof PrimaryCanvasObject, ReturnType<typeof CanvasTransformMixin<BaseClass>>>;
 
   namespace PrimaryCanvasObjectMixin {
-    type AnyMixedConstructor = ReturnType<typeof PrimaryCanvasObjectMixin<PrimaryCanvasObjectMixin.BaseClass>>;
+    interface AnyMixedConstructor
+      extends ReturnType<typeof PrimaryCanvasObjectMixin<PrimaryCanvasObjectMixin.BaseClass>> {}
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = PIXI.Container.AnyConstructor;
@@ -190,7 +191,7 @@ declare global {
   ): Mixin<typeof CanvasTransformMixinClass, BaseClass>;
 
   namespace CanvasTransformMixin {
-    type AnyMixedConstructor = ReturnType<typeof CanvasTransformMixin<CanvasTransformMixin.BaseClass>>;
+    interface AnyMixedConstructor extends ReturnType<typeof CanvasTransformMixin<CanvasTransformMixin.BaseClass>> {}
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = PIXI.Container.AnyConstructor;

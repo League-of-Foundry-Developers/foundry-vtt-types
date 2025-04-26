@@ -32,7 +32,9 @@ declare abstract class BaseLightSource<
 
   /**
    * The corresponding animation config.
-   * @privateRemarks Only uses `CONFIG.Canvas.lightAnimations` in `BaseLightSource`, but `PointDarknessSource`
+   * @privateRemarks Only uses {@link CONFIG.Canvas.lightAnimations | `CONFIG.Canvas.lightAnimations`} in
+   * {@link foundry.canvas.sources.BaseLightSource | `foundry.canvas.sources.BaseLightSource`}, but
+   * {@link foundry.canvas.sources.PointDarknessSource | `foundry.canvas.sources.PointDarknessSource`}
    * overrides to use `.darknessAnimations`, so the union type is necessary
    */
   protected static get ANIMATIONS(): typeof CONFIG.Canvas.lightAnimations | typeof CONFIG.Canvas.darknessAnimations;
@@ -215,7 +217,7 @@ declare abstract class AnyBaseLightSource extends BaseLightSource<
   PIXI.Polygon,
   RenderedEffectSource.Layers
 > {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default BaseLightSource;

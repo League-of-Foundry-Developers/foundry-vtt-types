@@ -13,9 +13,9 @@ expectTypeOf(
 // Following should check out, validated in world (use `game.world` to grab the instance)
 // The version handling is weird because it's an alteration of the schema
 // Good demo of complex type handling
-expectTypeOf(baseWorld.schema.fields.version.validate(null)).toEqualTypeOf<
-  foundry.data.validation.DataModelValidationError | undefined
->();
+expectTypeOf(
+  baseWorld.schema.fields.version.validate(null),
+).toEqualTypeOf<foundry.data.validation.DataModelValidationFailure | void>();
 
 // schema fields
 expectTypeOf(baseWorld.system).toEqualTypeOf<string>();

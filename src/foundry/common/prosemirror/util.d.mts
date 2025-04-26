@@ -23,7 +23,7 @@ export declare function serializeHTMLString(
   options?: {
     /** The ProseMirror schema to use instead of the default one. */
     schema?: Schema;
-    /** The number of spaces to use for indentation. See {@link StringNode#toString} for details. */
+    /** The number of spaces to use for indentation. See {@link StringNode.toString | `StringNode#toString`} for details. */
     spaces?: string | number;
   },
 ): string;

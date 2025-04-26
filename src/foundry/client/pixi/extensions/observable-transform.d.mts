@@ -34,5 +34,5 @@ declare global {
 }
 
 declare abstract class AnyObservableTransform extends ObservableTransform<any, any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }

@@ -347,7 +347,7 @@ declare global {
         editable?: boolean | undefined;
 
         /**
-         * The engine editor to use, see {@link TextEditor.create}
+         * The engine editor to use, see {@link TextEditor.create | `TextEditor.create`}
          * @defaultValue `"tinymce"`
          */
         engine?: "tinymce" | "prosemirror" | undefined;

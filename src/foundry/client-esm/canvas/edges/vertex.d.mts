@@ -160,7 +160,7 @@ declare namespace PolygonVertex {
 }
 
 declare abstract class AnyPolygonVertex extends PolygonVertex {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default PolygonVertex;

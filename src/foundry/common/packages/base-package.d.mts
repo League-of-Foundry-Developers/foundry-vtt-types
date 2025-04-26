@@ -1,4 +1,4 @@
-import type { GetKey, AnyObject, InexactPartial, AnyMutableObject, Identity } from "fvtt-types/utils";
+import type { GetKey, AnyObject, InexactPartial, AnyMutableObject, Identity, AnyArray } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -18,7 +18,7 @@ declare namespace BasePackage {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
-    type Constructor = (abstract new (arg0: never, ...args: never[]) => Instance.Any) & {
+    type Constructor = (abstract new (...args: never) => Instance.Any) & {
       [__BasePackageBrand]: never;
     };
 
@@ -226,7 +226,8 @@ declare namespace BasePackage {
     reason: fields.StringField<{ required: false; blank: false; initial: undefined }>;
   }
 
-  interface PackageCompendiumFolderSchemaHelper extends DataSchema {
+  /** @internal */
+  interface _PackageCompendiumFolderSchema extends DataSchema {
     name: fields.StringField<{ required: true; blank: false }>;
     sorting: fields.StringField<{
       required: false;
@@ -242,12 +243,12 @@ declare namespace BasePackage {
   type FolderRecursion = [never, 2, 3];
 
   type PackageCompendiumFolderSchema<Depth> = Depth extends number
-    ? PackageCompendiumFolderSchemaHelper & {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore The recursion works correctly due to helper array. The in-file checker doesn't pick up on this so using ts-ignore
+    ? _PackageCompendiumFolderSchema & {
         folders: fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<FolderRecursion[Depth]>>>;
       }
-    : PackageCompendiumFolderSchemaHelper;
+    : _PackageCompendiumFolderSchema;
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   interface Schema extends DataSchema {
     /**
@@ -480,12 +481,12 @@ export class PackageCompendiumPacks<
     | (() => Set<fields.ArrayField.InitializedElementType<ElementFieldType>> | null);
 
   protected override _validateElements(
-    value: any[],
+    value: AnyArray,
     options?: fields.DataField.ValidationOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 
   protected override _validateElement(
-    value: any,
+    value: unknown,
     options: fields.DataField.ValidationOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 }
@@ -672,7 +673,7 @@ declare class BasePackage<
 }
 
 declare abstract class AnyBasePackage extends foundry.packages.BasePackage<any> {
-  constructor(arg0: never, ...args: never[]);
+  constructor(...args: never);
 }
 
 export default BasePackage;

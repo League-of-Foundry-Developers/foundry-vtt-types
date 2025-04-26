@@ -1,4 +1,11 @@
-import type { AnyConstructor, ConcreteKeys, FixedInstanceType, InexactPartial, Mixin } from "fvtt-types/utils";
+import type {
+  AnyConstructor,
+  ConcreteKeys,
+  FixedInstanceType,
+  InexactPartial,
+  MakeConform,
+  Mixin,
+} from "fvtt-types/utils";
 import type { LogCompatibilityWarningOptions } from "../../../../common/utils/logging.d.mts";
 
 declare class RenderFlagObject {
@@ -22,7 +29,8 @@ declare class RenderFlagObject {
    * Status flags which are applied at render-time to update the PlaceableObject.
    * If an object defines RenderFlags, it should at least include flags for "redraw" and "refresh".
    */
-  renderFlags: RenderFlags;
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  renderFlags: RenderFlags<{}>;
 
   /**
    * Apply any current render flags, clearing the renderFlags set.
@@ -35,16 +43,16 @@ declare class RenderFlagObject {
  * @privateRemarks Values are marked as optional here based on use, foundry docs incomplete
  * @internal
  */
-type _RenderFlags<Flags extends object> = InexactPartial<{
+type _RenderFlag<Keys extends string> = InexactPartial<{
   /**
    * Activating this flag also sets these flags to true
    */
-  propagate: ConcreteKeys<Flags>[];
+  propagate: Keys[];
 
   /**
    * Activating this flag resets these flags to false
    */
-  reset: ConcreteKeys<Flags>[];
+  reset: Keys[];
 
   /**
    * Is this flag deprecated? The deprecation options are passed to
@@ -67,37 +75,43 @@ declare global {
   // Note(LukeAbby): The usage of `ConcreteKeys` is a hazard; if tsc were to become smarter it might
   // notice that `ConcreteKeys<Flags>` is actually contravariant and reject this type. However
   // `RenderFlags` is built upon the assumption this is only used in safe ways.
-  interface RenderFlag<out Flags extends object> extends _RenderFlags<Flags> {}
+  interface RenderFlag<out Flags extends object, Key extends keyof Flags>
+    extends _RenderFlag<Exclude<Extract<ConcreteKeys<Flags>, string>, Key>> {}
 
   namespace RenderFlag {
-    interface Any extends RenderFlag<any> {}
+    interface Any extends _RenderFlag<string> {}
+  }
+
+  namespace RenderFlags {
+    type ValidateFlags<Flags extends object> = {
+      [K in keyof Flags]: MakeConform<Flags[K], _RenderFlag<Extract<Exclude<keyof Flags, K>, string>>>;
+    };
+
+    interface Config {
+      /** The object which owns this RenderFlags instance */
+      object?: RenderFlagObject;
+
+      /**
+       * The update priority when these render flags are applied.
+       * Valid options are OBJECTS or PERCEPTION.
+       * @defaultValue `PIXI.UPDATE_PRIORITY.OBJECTS`
+       */
+      priority?: typeof PIXI.UPDATE_PRIORITY.OBJECTS | typeof PIXI.UPDATE_PRIORITY.PERCEPTION;
+    }
   }
 
   /**
    * A data structure for tracking a set of boolean status flags.
    * This is a restricted set which can only accept flag values which are pre-defined.
    */
-  class RenderFlags extends Set<string> {
+  class RenderFlags<Flags extends RenderFlags.ValidateFlags<Flags>> extends Set<string> {
     /**
      * @param flags  - An object which defines the flags which are supported for tracking
      * @param config - Optional configuration
      */
-    constructor(
-      flags: Record<string, RenderFlag<Record<string, boolean>>>,
-      config?: {
-        /** The object which owns this RenderFlags instance */
-        object?: RenderFlagObject;
+    constructor(flags: Flags, config?: RenderFlags.Config);
 
-        /**
-         * The update priority when these render flags are applied.
-         * Valid options are OBJECTS or PERCEPTION.
-         * @defaultValue `PIXI.UPDATE_PRIORITY.OBJECTS`
-         */
-        priority?: typeof PIXI.UPDATE_PRIORITY.OBJECTS | typeof PIXI.UPDATE_PRIORITY.PERCEPTION;
-      },
-    );
-
-    readonly flags: Record<string, RenderFlag<Record<string, boolean>>>;
+    readonly flags: Flags;
 
     readonly object: RenderFlagObject;
 
@@ -127,17 +141,22 @@ declare global {
    * @param Base - The base class being mixed. Normally a PIXI.DisplayObject
    * @returns The mixed class definition
    */
+  // Note(LukeAbby): In theory a similar thing to what happens in `CanvasGroupMixin` could be done.
+  // That is passing up a generic to instantiate the generic side. However `RenderFlagsMixin` is
+  // only inherited directly by `PerceptionManager` and `PlaceableObject`.
+  // Therefore it's mostly the subclasses of `PlaceableObject` that face this problem and that can't
+  // be solved here unfortunately.
   function RenderFlagsMixin<BaseClass extends RenderFlagsMixin.BaseClass>(
     Base: BaseClass,
   ): Mixin<typeof RenderFlagObject, BaseClass>;
 
   namespace RenderFlagsMixin {
-    type AnyMixedConstructor = ReturnType<typeof RenderFlagsMixin<BaseClass>>;
+    interface AnyMixedConstructor extends ReturnType<typeof RenderFlagsMixin<BaseClass>> {}
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
     type BaseClass = AnyConstructor;
 
-    type RENDER_FLAGS = Record<string, RenderFlag<object>>;
+    type RENDER_FLAGS = Record<string, RenderFlag.Any>;
 
     /**
      * @internal This type exists only to make sure `ToBooleanFlags` isn't a homomorphic mapped type
@@ -146,7 +165,7 @@ declare global {
     type _KeyOf<T> = keyof T;
 
     type ToBooleanFlags<RenderFlags extends object> = {
-      [K in _KeyOf<RenderFlags>]: boolean;
+      [K in _KeyOf<RenderFlags>]?: boolean | null | undefined;
     };
   }
 }

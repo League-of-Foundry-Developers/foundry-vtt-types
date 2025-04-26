@@ -9,9 +9,9 @@ declare global {
    */
   class CardsConfig<Options extends CardsConfig.Options = CardsConfig.Options> extends DocumentSheet<
     Options,
-    Cards.ConfiguredInstance
+    Cards.Implementation
   > {
-    constructor(object: Document.ConfiguredClassForName<"Cards">, options: Options);
+    constructor(object: Document.ImplementationClassFor<"Cards">, options?: Options);
 
     /**
      * The allowed sorting methods which can be used for this sheet
@@ -53,7 +53,7 @@ declare global {
 
     /**
      * Handle lazy-loading card face images.
-     * See {@link SidebarTab#_onLazyLoadImage}
+     * See {@link SidebarTab._onLazyLoadImage | `SidebarTab#_onLazyLoadImage`}
      * @param entries  - The entries which are now in the observer frame
      * @param observer - The intersection observer instance
      */
@@ -76,8 +76,8 @@ declare global {
      */
     protected _onSortCard(
       event: DragEvent,
-      card: Card.ConfiguredInstance,
-    ): ReturnType<Cards.ConfiguredInstance["updateEmbeddedDocuments"]>;
+      card: Card.Implementation,
+    ): ReturnType<Cards.Implementation["updateEmbeddedDocuments"]>;
   }
 
   namespace CardsConfig {
@@ -127,14 +127,14 @@ declare global {
   }
 
   namespace CardsConfig {
-    interface Options extends DocumentSheetOptions<Cards.ConfiguredInstance> {
+    interface Options extends DocumentSheet.Options<Cards.Implementation> {
       sort: string;
     }
 
     interface CardsConfigData<Options extends CardsConfig.Options = CardsConfig.Options>
-      extends DocumentSheet.DocumentSheetData<Options, Cards.ConfiguredInstance> {
-      cards: Card.ConfiguredInstance[];
-      //TODO: Find if we can better type this
+      extends DocumentSheet.DocumentSheetData<Options, Cards.Implementation> {
+      cards: Card.Implementation[];
+      // TODO: Find if we can better type this
       types: Record<string, string>;
       inCompendium: boolean;
     }
