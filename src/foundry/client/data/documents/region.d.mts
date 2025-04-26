@@ -66,22 +66,35 @@ declare global {
     type Parent = Scene.Implementation | null;
 
     /**
-     * A document's descendants are any child documents, grandchild documents, etc.
-     * This is a union of all instances, or never if the document doesn't have any descendants.
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
      */
-    type Descendant = RegionBehavior.Stored;
+    type DirectDescendant = RegionBehavior.Stored;
+
+    /**
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such classes, or never if the document doesn't have any descendants.
+     */
+    type DirectDescendantClass = RegionBehavior.ImplementationClass;
+
+    /**
+     * A document's descendants are any documents that are contained within, either within its schema
+     * or its descendant's schemas.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
+     */
+    type Descendant = DirectDescendant;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClass = RegionBehavior.ImplementationClass;
+    type DescendantClass = DirectDescendantClass;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
-    type Pack = CompendiumCollection.ForDocument<"Scene">;
+    type Pack = CompendiumCollection.ForDocument<"Region">;
 
     /**
      * An embedded document is a document contained in another.
@@ -442,6 +455,42 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+      RegionDocument.Stored,
+      RegionDocument.DirectDescendant,
+      RegionDocument.Metadata.Embedded
+    >;
+
+    type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+      RegionDocument.Stored,
+      RegionDocument.DirectDescendant,
+      RegionDocument.Metadata.Embedded
+    >;
+
+    type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+      RegionDocument.Stored,
+      RegionDocument.DirectDescendant,
+      RegionDocument.Metadata.Embedded
+    >;
+
+    type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+      RegionDocument.Stored,
+      RegionDocument.DirectDescendant,
+      RegionDocument.Metadata.Embedded
+    >;
+
+    type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+      RegionDocument.Stored,
+      RegionDocument.DirectDescendant,
+      RegionDocument.Metadata.Embedded
+    >;
+
+    type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+      RegionDocument.Stored,
+      RegionDocument.DirectDescendant,
+      RegionDocument.Metadata.Embedded
+    >;
+
     interface RegionEvent {
       /** The name of the event */
       name: string;
@@ -568,32 +617,59 @@ declare global {
       options?: InexactPartial<RegionDocument.UpdateTokenOptions>,
     ): Promise<void>;
 
-    protected override _onCreateDescendantDocuments(
-      parent: RegionDocument.Stored,
-      collection: RegionBehavior.ParentCollectionName,
-      documents: RegionBehavior.Stored[],
-      result: RegionBehavior.CreateData[],
-      options: RegionBehavior.Database.OnCreateOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class GurpsRegionDocument extends RegionDocument {
+     *   protected override _onCreateDescendantDocuments(...args: RegionDocument.OnCreateDescendantDocumentsArgs) {
+     *     super._onCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, data, options, userId] = args;
+     *     if (collection === "behaviors") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onCreateDescendantDocuments(...args: RegionDocument.OnCreateDescendantDocumentsArgs): void;
 
-    protected override _onUpdateDescendantDocuments(
-      parent: RegionDocument.Stored,
-      collection: RegionBehavior.ParentCollectionName,
-      documents: RegionBehavior.Stored[],
-      changes: RegionBehavior.UpdateData[],
-      options: RegionBehavior.Database.OnUpdateOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class Ptr2eRegionDocument extends RegionDocument {
+     *   protected override _onUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocumentsArgs) {
+     *     super._onUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, changes, options, userId] = args;
+     *     if (collection === "behaviors") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocumentsArgs): void;
 
-    protected override _onDeleteDescendantDocuments(
-      parent: RegionDocument.Stored,
-      collection: RegionBehavior.ParentCollectionName,
-      documents: RegionBehavior.Stored[],
-      ids: string[],
-      options: RegionBehavior.Database.OnDeleteOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class BladesRegionDocument extends RegionDocument {
+     *   protected override _onDeleteDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocuments) {
+     *     super._onDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, ids, options, userId] = args;
+     *     if (collection === "behaviors") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onDeleteDescendantDocuments(...args: RegionDocument.OnDeleteDescendantDocumentsArgs): void;
 
     /** The tokens inside this region. */
     tokens: Set<TokenDocument.Implementation>;
@@ -632,29 +708,59 @@ declare global {
 
     // ClientDocument overrides
 
-    protected override _preCreateDescendantDocuments(
-      parent: RegionDocument.Stored,
-      collection: RegionBehavior.ParentCollectionName,
-      data: RegionBehavior.CreateData[],
-      options: RegionBehavior.Database.CreateOptions,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class SwadeRegionDocument extends RegionDocument {
+     *   protected override _preCreateDescendantDocuments(...args: RegionDocument.PreCreateDescendantDocumentsArgs) {
+     *     super._preCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, data, options, userId] = args;
+     *     if (collection === "behaviors") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preCreateDescendantDocuments(...args: RegionDocument.PreCreateDescendantDocumentsArgs): void;
 
-    protected override _preUpdateDescendantDocuments(
-      parent: RegionDocument.Stored,
-      collection: RegionBehavior.ParentCollectionName,
-      changes: RegionBehavior.UpdateData[],
-      options: RegionBehavior.Database.UpdateOptions,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class LancerRegionDocument extends RegionDocument {
+     *   protected override _preUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocuments) {
+     *     super._preUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, changes, options, userId] = args;
+     *     if (collection === "behaviors") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preUpdateDescendantDocuments(...args: RegionDocument.PreUpdateDescendantDocumentsArgs): void;
 
-    protected override _preDeleteDescendantDocuments(
-      parent: RegionDocument.Stored,
-      collection: RegionBehavior.ParentCollectionName,
-      ids: string[],
-      options: RegionBehavior.Database.DeleteOptions,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class KultRegionDocument extends RegionDocument {
+     *   protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs) {
+     *     super._preDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, ids, options, userId] = args;
+     *     if (collection === "behaviors") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs): void;
 
     static override defaultName(
       context: Document.DefaultNameContext<"base", NonNullable<RegionDocument.Parent>>,

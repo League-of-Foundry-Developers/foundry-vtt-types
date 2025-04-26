@@ -129,16 +129,29 @@ declare global {
     type DescendantName = "Combatant";
 
     /**
-     * A document's descendants are any child documents, grandchild documents, etc.
-     * This is a union of all instances, or never if the document doesn't have any descendants.
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
      */
-    type Descendant = Combatant.Stored;
+    type DirectDescendant = Combatant.Stored;
+
+    /**
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such classes, or never if the document doesn't have any descendants.
+     */
+    type DirectDescendantClass = Combatant.ImplementationClass;
+
+    /**
+     * A document's descendants are any documents that are contained within, either within its schema
+     * or its descendant's schemas.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
+     */
+    type Descendant = DirectDescendant;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClass = Combatant.ImplementationClass;
+    type DescendantClass = DirectDescendantClass;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.
@@ -468,6 +481,42 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+      Combat.Stored,
+      Combat.DirectDescendant,
+      Combat.Metadata.Embedded
+    >;
+
+    type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+      Combat.Stored,
+      Combat.DirectDescendant,
+      Combat.Metadata.Embedded
+    >;
+
+    type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+      Combat.Stored,
+      Combat.DirectDescendant,
+      Combat.Metadata.Embedded
+    >;
+
+    type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+      Combat.Stored,
+      Combat.DirectDescendant,
+      Combat.Metadata.Embedded
+    >;
+
+    type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+      Combat.Stored,
+      Combat.DirectDescendant,
+      Combat.Metadata.Embedded
+    >;
+
+    type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+      Combat.Stored,
+      Combat.DirectDescendant,
+      Combat.Metadata.Embedded
+    >;
+
     /**
      * @deprecated {@link Combat.Database | `Combat.Database`}
      */
@@ -699,46 +748,59 @@ declare global {
      * @privateRemarks _onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes from BaseCombat.
      */
 
-    protected override _onCreateDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClass,
-      Parent extends Combat.Stored,
-      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      documents: InstanceType<DescendantDocumentType>,
-      data: CreateData[],
-      options: Document.Database.CreateOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class GurpsCombat extends Combat {
+     *   protected override _onCreateDescendantDocuments(...args: Combat.OnCreateDescendantDocumentsArgs) {
+     *     super._onCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, data, options, userId] = args;
+     *     if (collection === "combatants") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onCreateDescendantDocuments(...args: Combat.OnCreateDescendantDocumentsArgs): void;
 
-    protected override _onUpdateDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClass,
-      Parent extends Combat.Stored,
-      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      documents: InstanceType<DescendantDocumentType>,
-      changes: UpdateData[],
-      options: Document.Database.UpdateOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class Ptr2eCombat extends Combat {
+     *   protected override _onUpdateDescendantDocuments(...args: Combat.OnUpdateDescendantDocumentsArgs) {
+     *     super._onUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, changes, options, userId] = args;
+     *     if (collection === "combatants") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onUpdateDescendantDocuments(...args: Combat.OnUpdateDescendantDocumentsArgs): void;
 
-    protected _onDeleteDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClass,
-      Parent extends Combat.Stored,
-      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      documents: InstanceType<DescendantDocumentType>,
-      ids: string[],
-      options: Document.Database.DeleteOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class BladesCombat extends Combat {
+     *   protected override _onDeleteDescendantDocuments(...args: Combat.OnUpdateDescendantDocuments) {
+     *     super._onDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, ids, options, userId] = args;
+     *     if (collection === "combatants") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onDeleteDescendantDocuments(...args: Combat.OnDeleteDescendantDocumentsArgs): void;
 
     #onModifyCombatants();
 
@@ -821,43 +883,59 @@ declare global {
 
     // ClientDocument overrides
 
-    protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClass,
-      Parent extends Combat.Stored,
-      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      data: CreateData[],
-      options: Document.Database.CreateOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class SwadeCombat extends Combat {
+     *   protected override _preCreateDescendantDocuments(...args: Combat.PreCreateDescendantDocumentsArgs) {
+     *     super._preCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, data, options, userId] = args;
+     *     if (collection === "combatants") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preCreateDescendantDocuments(...args: Combat.PreCreateDescendantDocumentsArgs): void;
 
-    protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClass,
-      Parent extends Combat.Stored,
-      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      changes: UpdateData[],
-      options: Document.Database.UpdateOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class LancerCombat extends Combat {
+     *   protected override _preUpdateDescendantDocuments(...args: Combat.OnUpdateDescendantDocuments) {
+     *     super._preUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, changes, options, userId] = args;
+     *     if (collection === "combatants") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preUpdateDescendantDocuments(...args: Combat.PreUpdateDescendantDocumentsArgs): void;
 
-    protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends Combat.DescendantClass,
-      Parent extends Combat.Stored,
-      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      ids: string[],
-      options: Document.Database.DeleteOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class KultCombat extends Combat {
+     *   protected override _preDeleteDescendantDocuments(...args: Combat.PreDeleteDescendantDocumentsArgs) {
+     *     super._preDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, ids, options, userId] = args;
+     *     if (collection === "combatants") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preDeleteDescendantDocuments(...args: Combat.PreDeleteDescendantDocumentsArgs): void;
 
     static override defaultName(context?: Document.DefaultNameContext<Combat.SubType, Combat.Parent>): string;
 

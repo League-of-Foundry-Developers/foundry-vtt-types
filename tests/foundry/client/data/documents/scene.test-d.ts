@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 // @ts-expect-error - A Scene requires name.
 new Scene.implementation();
@@ -32,22 +31,19 @@ expectTypeOf(scene.toCompendium(null, { keepId: true })._id).toEqualTypeOf<strin
 // @ts-expect-error _id does not exist if keepId isn't true
 scene.toCompendium(null)._id;
 
-// TODO(@LukeAbby): More advanced version
 class MySceneDocumentSubclass extends Scene {
-  protected override _onUpdateDescendantDocuments<
-    DescendantDocumentType extends Scene.DescendantClass,
-    Parent extends Scene.DescendantParent,
-    UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
-    Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
-  >(
-    parent: Parent,
-    collection: DescendantDocumentType["metadata"]["collection"],
-    documents: InstanceType<DescendantDocumentType>,
-    changes: UpdateData[],
-    options: Document.Database.UpdateOptions<Operation>,
-    userId: string,
-  ): void {
-    super._onUpdateDescendantDocuments(parent, collection, documents, changes, options, userId);
+  method() {
+    super._onUpdateDescendantDocuments;
+  }
+
+  // callback: () => {
+  //   super._onUpdateDescendantDocuments
+  // }
+
+  protected override _onUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocumentsArgs) {
+    super._onUpdateDescendantDocuments(...args);
+
+    const [_parent, collection, _documents, changes, options, _userId] = args;
 
     expectTypeOf(options.recursive).toEqualTypeOf<boolean>();
 
@@ -55,7 +51,7 @@ class MySceneDocumentSubclass extends Scene {
       case "tokens":
         expectTypeOf(options.animate).toEqualTypeOf<boolean | undefined>();
         for (const d of changes) {
-          expectTypeOf(d.name).toEqualTypeOf<string | undefined>();
+          expectTypeOf(d.name).toEqualTypeOf<string>();
         }
         break;
       // @ts-expect-error "foobar" is not a valid collection

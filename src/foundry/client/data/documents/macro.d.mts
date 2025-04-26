@@ -124,7 +124,7 @@ declare global {
      * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
-    type Pack = CompendiumCollection.ForDocument<"Scene">;
+    type Pack = CompendiumCollection.ForDocument<"Macro">;
 
     /**
      * An embedded document is a document contained in another.

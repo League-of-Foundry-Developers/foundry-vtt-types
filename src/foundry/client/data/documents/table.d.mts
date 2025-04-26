@@ -68,17 +68,29 @@ declare global {
     type Parent = null;
 
     /**
-     * A document's descendants are any child documents, grandchild documents, etc.
-     * This is a union of all instances, or never if the document doesn't have any descendants.
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
      */
-    type Descendant = TableResult.Stored;
+    type DirectDescendant = TableResult.Stored;
+
+    /**
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such classes, or never if the document doesn't have any descendants.
+     */
+    type DirectDescendantClass = TableResult.ImplementationClass;
+
+    /**
+     * A document's descendants are any documents that are contained within, either within its schema
+     * or its descendant's schemas.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
+     */
+    type Descendant = DirectDescendant;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClass = TableResult.ImplementationClass;
-
+    type DescendantClass = DirectDescendantClass;
     /**
      * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
@@ -436,6 +448,42 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+      RollTable.Stored,
+      RollTable.DirectDescendant,
+      RollTable.Metadata.Embedded
+    >;
+
+    type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+      RollTable.Stored,
+      RollTable.DirectDescendant,
+      RollTable.Metadata.Embedded
+    >;
+
+    type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+      RollTable.Stored,
+      RollTable.DirectDescendant,
+      RollTable.Metadata.Embedded
+    >;
+
+    type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+      RollTable.Stored,
+      RollTable.DirectDescendant,
+      RollTable.Metadata.Embedded
+    >;
+
+    type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+      RollTable.Stored,
+      RollTable.DirectDescendant,
+      RollTable.Metadata.Embedded
+    >;
+
+    type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+      RollTable.Stored,
+      RollTable.DirectDescendant,
+      RollTable.Metadata.Embedded
+    >;
+
     /**
      * Optional arguments which customize the draw
      */
@@ -695,32 +743,41 @@ declare global {
       options?: TextEditor.EnrichmentOptions,
     ): Promise<HTMLElement | null>;
 
-    protected override _onCreateDescendantDocuments<
-      DescendantDocumentType extends RollTable.DescendantClass,
-      Parent extends RollTable.Stored,
-      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      documents: InstanceType<DescendantDocumentType>,
-      data: CreateData[],
-      options: Document.Database.CreateOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class GurpsRollTable extends RollTable {
+     *   protected override _onCreateDescendantDocuments(...args: RollTable.OnCreateDescendantDocumentsArgs) {
+     *     super._onCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, data, options, userId] = args;
+     *     if (collection === "cards") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onCreateDescendantDocuments(...args: RollTable.OnCreateDescendantDocumentsArgs): void;
 
-    protected _onDeleteDescendantDocuments<
-      DescendantDocumentType extends RollTable.DescendantClass,
-      Parent extends RollTable.Stored,
-      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      documents: InstanceType<DescendantDocumentType>,
-      ids: string[],
-      options: Document.Database.DeleteOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class BladesRollTable extends RollTable {
+     *   protected override _onDeleteDescendantDocuments(...args: RollTable.OnUpdateDescendantDocuments) {
+     *     super._onDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, ids, options, userId] = args;
+     *     if (collection === "cards") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onDeleteDescendantDocuments(...args: RollTable.OnDeleteDescendantDocumentsArgs): void;
 
     toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
@@ -749,57 +806,77 @@ declare global {
 
     // ClientDocument overrides
 
-    protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends RollTable.DescendantClass,
-      Parent extends RollTable.Stored,
-      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      data: CreateData[],
-      options: Document.Database.CreateOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class SwadeRollTable extends RollTable {
+     *   protected override _preCreateDescendantDocuments(...args: RollTable.PreCreateDescendantDocumentsArgs) {
+     *     super._preCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, data, options, userId] = args;
+     *     if (collection === "cards") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preCreateDescendantDocuments(...args: RollTable.PreCreateDescendantDocumentsArgs): void;
 
-    protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends RollTable.DescendantClass,
-      Parent extends RollTable.Stored,
-      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      changes: UpdateData[],
-      options: Document.Database.UpdateOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class LancerRollTable extends RollTable {
+     *   protected override _preUpdateDescendantDocuments(...args: RollTable.OnUpdateDescendantDocuments) {
+     *     super._preUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, changes, options, userId] = args;
+     *     if (collection === "cards") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preUpdateDescendantDocuments(...args: RollTable.PreUpdateDescendantDocumentsArgs): void;
 
-    protected override _onUpdateDescendantDocuments<
-      DescendantDocumentType extends RollTable.DescendantClass,
-      Parent extends RollTable.Stored,
-      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      documents: InstanceType<DescendantDocumentType>,
-      changes: UpdateData[],
-      options: Document.Database.UpdateOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class Ptr2eRollTable extends RollTable {
+     *   protected override _onUpdateDescendantDocuments(...args: RollTable.OnUpdateDescendantDocumentsArgs) {
+     *     super._onUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, changes, options, userId] = args;
+     *     if (collection === "cards") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onUpdateDescendantDocuments(...args: RollTable.OnUpdateDescendantDocumentsArgs): void;
 
-    protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends RollTable.DescendantClass,
-      Parent extends RollTable.Stored,
-      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      ids: string[],
-      options: Document.Database.DeleteOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class KultRollTable extends RollTable {
+     *   protected override _preDeleteDescendantDocuments(...args: RollTable.PreDeleteDescendantDocumentsArgs) {
+     *     super._preDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, ids, options, userId] = args;
+     *     if (collection === "cards") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preDeleteDescendantDocuments(...args: RollTable.PreDeleteDescendantDocumentsArgs): void;
 
     static override defaultName(context?: Document.DefaultNameContext<string, RollTable.Parent>): string;
 

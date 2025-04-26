@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const combat = new Combat.implementation();
 
@@ -41,19 +40,10 @@ expectTypeOf(combat.updateCombatantActors()).toEqualTypeOf<void>();
 // @LukeAbby The actual implementation here is nonsense for the available document types,
 // but it shows narrowing BUT it also shows that the CreateData is odd.
 class MyCombatDocumentSubclass extends Combat {
-  protected override _preCreateDescendantDocuments<
-    DescendantDocumentType extends Combat.DescendantClass,
-    Parent extends Combat.Stored,
-    CreateData extends Document.CreateDataFor<DescendantDocumentType>,
-    Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
-  >(
-    parent: Parent,
-    collection: DescendantDocumentType["metadata"]["collection"],
-    data: CreateData[],
-    options: Document.Database.CreateOptions<Operation>,
-    userId: string,
-  ): void {
-    super._preCreateDescendantDocuments(parent, collection, data, options, userId);
+  protected override _preCreateDescendantDocuments(...args: Combat.PreCreateDescendantDocumentsArgs): void {
+    super._preCreateDescendantDocuments(...args);
+
+    const [_parent, collection, data, options, _userId] = args;
 
     expectTypeOf(options.keepId).toEqualTypeOf<boolean | undefined>();
 

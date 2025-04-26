@@ -83,28 +83,35 @@ declare global {
     type Parent = Scene.Implementation | null;
 
     /**
-     * A document's descendants are any child documents, grandchild documents, etc.
-     * This is a union of all instances, or never if the document doesn't have any descendants.
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
      */
-    type Descendant = ActorDelta.Stored | ActorDelta.Descendant;
+    type DirectDescendant = ActorDelta.Stored;
+
+    /**
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such classes, or never if the document doesn't have any descendants.
+     */
+    type DirectDescendantClass = ActorDelta.ImplementationClass;
+
+    /**
+     * A document's descendants are any documents that are contained within, either within its schema
+     * or its descendant's schemas.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
+     */
+    type Descendant = DirectDescendant | ActorDelta.Descendant;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClass = ActorDelta.ImplementationClass | ActorDelta.DescendantClass;
-
-    /**
-     * The valid `parent` entries for descendant document operations.
-     * This includes the current document as well as any descendants that have descendants.
-     */
-    type DescendantParent = Stored | ActorDelta.DescendantParent;
+    type DescendantClass = DirectDescendantClass | ActorDelta.DescendantClass;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
      */
-    type Pack = CompendiumCollection.ForDocument<"Scene">;
+    type Pack = CompendiumCollection.ForDocument<"Token">;
 
     /**
      * An embedded document is a document contained in another.
@@ -806,6 +813,54 @@ declare global {
       };
     }
 
+    type PreCreateDescendantDocumentsArgs =
+      | Document.PreCreateDescendantDocumentsArgs<
+          TokenDocument.Stored,
+          TokenDocument.DirectDescendant,
+          TokenDocument.Metadata.Embedded
+        >
+      | ActorDelta.PreCreateDescendantDocumentsArgs;
+
+    type OnCreateDescendantDocumentsArgs =
+      | Document.OnCreateDescendantDocumentsArgs<
+          TokenDocument.Stored,
+          TokenDocument.DirectDescendant,
+          TokenDocument.Metadata.Embedded
+        >
+      | ActorDelta.OnCreateDescendantDocumentsArgs;
+
+    type PreUpdateDescendantDocumentsArgs =
+      | Document.PreUpdateDescendantDocumentsArgs<
+          TokenDocument.Stored,
+          TokenDocument.DirectDescendant,
+          TokenDocument.Metadata.Embedded
+        >
+      | ActorDelta.PreUpdateDescendantDocumentsArgs;
+
+    type OnUpdateDescendantDocumentsArgs =
+      | Document.OnUpdateDescendantDocumentsArgs<
+          TokenDocument.Stored,
+          TokenDocument.DirectDescendant,
+          TokenDocument.Metadata.Embedded
+        >
+      | ActorDelta.OnUpdateDescendantDocumentsArgs;
+
+    type PreDeleteDescendantDocumentsArgs =
+      | Document.PreDeleteDescendantDocumentsArgs<
+          TokenDocument.Stored,
+          TokenDocument.DirectDescendant,
+          TokenDocument.Metadata.Embedded
+        >
+      | ActorDelta.PreDeleteDescendantDocumentsArgs;
+
+    type OnDeleteDescendantDocumentsArgs =
+      | Document.OnDeleteDescendantDocumentsArgs<
+          TokenDocument.Stored,
+          TokenDocument.DirectDescendant,
+          TokenDocument.Metadata.Embedded
+        >
+      | ActorDelta.OnDeleteDescendantDocumentsArgs;
+
     /**
      * @deprecated {@link TokenDocument.Database | `TokenDocument.DatabaseOperation`}
      */
@@ -857,7 +912,7 @@ declare global {
 
     type GetEmbeddedCollectionName = Embedded.CollectionName | "Actor" | "Item" | "ActiveEffect";
 
-    // Note(LukeAbby): Simplified for now to prevent circularities. The correct implementation would
+    // TODO(LukeAbby): Simplified for now to prevent circularities. The correct implementation would
     // be this:
     // | (Name extends "Actor" ? globalThis.Collection<Actor.Implementation> : never)
     // | (Name extends "Item" ? globalThis.Collection<Item.Implementation> : never)
@@ -1029,84 +1084,113 @@ declare global {
      * _onUpdateOperation, _onDeleteOperation are all overridden but with no signature changes from their definition in BaseToken.
      */
 
-    protected override _preCreateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClass,
-      Parent extends TokenDocument.DescendantParent,
-      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      data: CreateData[],
-      options: Document.Database.CreateOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class SwadeActorDelta extends ActorDelta {
+     *   protected override _preCreateDescendantDocuments(...args: ActorDelta.PreCreateDescendantDocumentsArgs) {
+     *     super._preCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, data, options, userId] = args;
+     *     if (collection === "items") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preCreateDescendantDocuments(...args: ActorDelta.PreCreateDescendantDocumentsArgs): void;
 
-    protected override _onCreateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClass,
-      Parent extends TokenDocument.DescendantParent,
-      CreateData extends Document.CreateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      documents: InstanceType<DescendantDocumentType>,
-      data: CreateData[],
-      options: Document.Database.CreateOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class GurpsActorDelta extends ActorDelta {
+     *   protected override _onCreateDescendantDocuments(...args: ActorDelta.OnCreateDescendantDocumentsArgs) {
+     *     super._onCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, data, options, userId] = args;
+     *     if (collection === "items") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onCreateDescendantDocuments(...args: ActorDelta.OnCreateDescendantDocumentsArgs): void;
 
-    protected override _preUpdateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClass,
-      Parent extends TokenDocument.DescendantParent,
-      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      changes: UpdateData[],
-      options: Document.Database.UpdateOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class LancerActorDelta extends ActorDelta {
+     *   protected override _preUpdateDescendantDocuments(...args: ActorDelta.OnUpdateDescendantDocuments) {
+     *     super._preUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, changes, options, userId] = args;
+     *     if (collection === "tokens") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preUpdateDescendantDocuments(...args: ActorDelta.PreUpdateDescendantDocumentsArgs): void;
 
-    protected override _onUpdateDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClass,
-      Parent extends TokenDocument.DescendantParent,
-      UpdateData extends Document.UpdateDataFor<DescendantDocumentType>,
-      Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      documents: InstanceType<DescendantDocumentType>,
-      changes: UpdateData[],
-      options: Document.Database.UpdateOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class Ptr2eTokenDocument extends TokenDocument {
+     *   protected override _onUpdateDescendantDocuments(...args: TokenDocument.OnUpdateDescendantDocumentsArgs) {
+     *     super._onUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, changes, options, userId] = args;
+     *     if (collection === "items") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onUpdateDescendantDocuments(...args: TokenDocument.OnUpdateDescendantDocumentsArgs): void;
 
-    protected _preDeleteDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClass,
-      Parent extends TokenDocument.DescendantParent,
-      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      ids: string[],
-      options: Document.Database.DeleteOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class KultTokenDocument extends TokenDocument {
+     *   protected override _preDeleteDescendantDocuments(...args: TokenDocument.PreDeleteDescendantDocumentsArgs) {
+     *     super._preDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, ids, options, userId] = args;
+     *     if (collection === "items") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preDeleteDescendantDocuments(...args: TokenDocument.PreDeleteDescendantDocumentsArgs): void;
 
-    protected _onDeleteDescendantDocuments<
-      DescendantDocumentType extends TokenDocument.DescendantClass,
-      Parent extends TokenDocument.DescendantParent,
-      Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
-    >(
-      parent: Parent,
-      collection: DescendantDocumentType["metadata"]["collection"],
-      documents: InstanceType<DescendantDocumentType>,
-      ids: string[],
-      options: Document.Database.DeleteOptions<Operation>,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class BladesTokenDocument extends TokenDocument {
+     *   protected override _onDeleteDescendantDocuments(...args: TokenDocument.OnUpdateDescendantDocuments) {
+     *     super._onDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, ids, options, userId] = args;
+     *     if (collection === "tokens") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onDeleteDescendantDocuments(...args: TokenDocument.OnDeleteDescendantDocumentsArgs): void;
 
     /**
      * Is to Token document updated such that the Regions the Token is contained in may change?

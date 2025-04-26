@@ -76,16 +76,29 @@ declare global {
     type Parent = null;
 
     /**
-     * A document's descendants are any child documents, grandchild documents, etc.
-     * This is a union of all instances, or never if the document doesn't have any descendants.
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
      */
-    type Descendant = PlaylistSound.Stored;
+    type DirectDescendant = PlaylistSound.Stored;
+
+    /**
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such classes, or never if the document doesn't have any descendants.
+     */
+    type DirectDescendantClass = PlaylistSound.ImplementationClass;
+
+    /**
+     * A document's descendants are any documents that are contained within, either within its schema
+     * or its descendant's schemas.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
+     */
+    type Descendant = DirectDescendant;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClass = PlaylistSound.ImplementationClass;
+    type DescendantClass = DirectDescendantClass;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.
@@ -445,6 +458,42 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+      Playlist.Stored,
+      Playlist.DirectDescendant,
+      Playlist.Metadata.Embedded
+    >;
+
+    type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+      Playlist.Stored,
+      Playlist.DirectDescendant,
+      Playlist.Metadata.Embedded
+    >;
+
+    type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+      Playlist.Stored,
+      Playlist.DirectDescendant,
+      Playlist.Metadata.Embedded
+    >;
+
+    type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+      Playlist.Stored,
+      Playlist.DirectDescendant,
+      Playlist.Metadata.Embedded
+    >;
+
+    type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+      Playlist.Stored,
+      Playlist.DirectDescendant,
+      Playlist.Metadata.Embedded
+    >;
+
+    type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+      Playlist.Stored,
+      Playlist.DirectDescendant,
+      Playlist.Metadata.Embedded
+    >;
+
     /**
      * @deprecated {@link Playlist.Database.Operation | `Playlist.Database.Operation`}
      */
@@ -590,32 +639,59 @@ declare global {
      * @privateRemarks _preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes from the BasePlaylist class.
      */
 
-    protected override _onCreateDescendantDocuments(
-      parent: Playlist.Stored,
-      collection: PlaylistSound.ParentCollectionName,
-      documents: PlaylistSound.Stored[],
-      result: PlaylistSound.CreateData[],
-      options: PlaylistSound.Database.OnCreateOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class GurpsPlaylist extends Playlist {
+     *   protected override _onCreateDescendantDocuments(...args: Playlist.OnCreateDescendantDocumentsArgs) {
+     *     super._onCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, data, options, userId] = args;
+     *     if (collection === "sounds") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onCreateDescendantDocuments(...args: Playlist.OnCreateDescendantDocumentsArgs): void;
 
-    protected override _onUpdateDescendantDocuments(
-      parent: Playlist.Stored,
-      collection: PlaylistSound.ParentCollectionName,
-      documents: PlaylistSound.Stored[],
-      changes: PlaylistSound.UpdateData[],
-      options: PlaylistSound.Database.OnUpdateOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class Ptr2ePlaylist extends Playlist {
+     *   protected override _onUpdateDescendantDocuments(...args: Playlist.OnUpdateDescendantDocumentsArgs) {
+     *     super._onUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, changes, options, userId] = args;
+     *     if (collection === "sounds") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onUpdateDescendantDocuments(...args: Playlist.OnUpdateDescendantDocumentsArgs): void;
 
-    protected override _onDeleteDescendantDocuments(
-      parent: Playlist.Stored,
-      collection: PlaylistSound.ParentCollectionName,
-      documents: PlaylistSound.Stored[],
-      ids: string[],
-      options: PlaylistSound.Database.OnDeleteOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class BladesPlaylist extends Playlist {
+     *   protected override _onDeleteDescendantDocuments(...args: Playlist.OnUpdateDescendantDocuments) {
+     *     super._onDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, ids, options, userId] = args;
+     *     if (collection === "sounds") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onDeleteDescendantDocuments(...args: Playlist.OnDeleteDescendantDocumentsArgs): void;
 
     /**
      * Handle callback logic when an individual sound within the Playlist concludes playback naturally
@@ -647,29 +723,59 @@ declare global {
 
     // ClientDocument overrides
 
-    protected override _preCreateDescendantDocuments(
-      parent: Playlist.Stored,
-      collection: PlaylistSound.ParentCollectionName,
-      data: PlaylistSound.CreateData[],
-      options: PlaylistSound.Database.CreateOptions,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class SwadePlaylist extends Playlist {
+     *   protected override _preCreateDescendantDocuments(...args: Playlist.PreCreateDescendantDocumentsArgs) {
+     *     super._preCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, data, options, userId] = args;
+     *     if (collection === "sounds") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preCreateDescendantDocuments(...args: Playlist.PreCreateDescendantDocumentsArgs): void;
 
-    protected override _preUpdateDescendantDocuments(
-      parent: Playlist.Stored,
-      collection: PlaylistSound.ParentCollectionName,
-      changes: PlaylistSound.UpdateData[],
-      options: PlaylistSound.Database.UpdateOptions,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class LancerPlaylist extends Playlist {
+     *   protected override _preUpdateDescendantDocuments(...args: Playlist.OnUpdateDescendantDocuments) {
+     *     super._preUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, changes, options, userId] = args;
+     *     if (collection === "sounds") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preUpdateDescendantDocuments(...args: Playlist.PreUpdateDescendantDocumentsArgs): void;
 
-    protected _preDeleteDescendantDocuments(
-      parent: Playlist.Stored,
-      collection: PlaylistSound.ParentCollectionName,
-      ids: string[],
-      options: PlaylistSound.Database.DeleteOptions,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class KultPlaylist extends Playlist {
+     *   protected override _preDeleteDescendantDocuments(...args: Playlist.PreDeleteDescendantDocumentsArgs) {
+     *     super._preDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, ids, options, userId] = args;
+     *     if (collection === "sounds") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preDeleteDescendantDocuments(...args: Playlist.PreDeleteDescendantDocumentsArgs): void;
 
     static override defaultName(context?: Document.DefaultNameContext<string, Playlist.Parent>): string;
 

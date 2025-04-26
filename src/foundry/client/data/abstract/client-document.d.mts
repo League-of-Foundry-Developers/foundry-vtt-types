@@ -1,10 +1,7 @@
 import type { Mixin, FixedInstanceType, Coalesce, AnyObject } from "fvtt-types/utils";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
+
+import ApplicationV2 = foundry.applications.api.ApplicationV2;
 
 declare class InternalClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -17,7 +14,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @see {@link Document.render | `Document#render`}
    * @defaultValue `{}`
    */
-  readonly apps: Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>;
+  readonly apps: Record<string, Application.Any | ApplicationV2.Any>;
 
   /**
    * A cached reference to the FormApplication instance used to configure this Document.
@@ -85,7 +82,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * Lazily obtain a FormApplication instance used to configure this Document, or null if no sheet is available.
    */
-  get sheet(): FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null;
+  get sheet(): FormApplication.Any | ApplicationV2.Any | null;
 
   /**
    * A boolean indicator for whether or not the current game User has at least limited visibility for this Document.
@@ -96,10 +93,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * Obtain the FormApplication class constructor which should be used to configure this Document.
    */
-  protected _getSheetClass():
-    | FormApplication.AnyConstructor
-    | foundry.applications.api.ApplicationV2.AnyConstructor
-    | null;
+  protected _getSheetClass(): FormApplication.AnyConstructor | ApplicationV2.AnyConstructor | null;
 
   /**
    * Safely prepare data for a Document, catching any errors.
@@ -138,10 +132,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param context - Optional context
    *                  (default: `{}`)
    */
-  render(
-    force?: boolean,
-    context?: Application.RenderOptions | foundry.applications.api.ApplicationV2.RenderOptions,
-  ): void;
+  render(force?: boolean, context?: Application.RenderOptions | ApplicationV2.RenderOptions): void;
 
   /**
    * Determine the sort order for this Document by positioning it relative a target sibling.
@@ -187,11 +178,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   protected _dispatchDescendantDocumentEvents(
     event: ClientDocument.LifeCycleEventName,
     collection: string,
-    args: unknown[],
-    _parent: Document.Any,
+    args: never,
+    _parent: never,
   ): void;
 
-  // TODO: Improve the data typing
   /**
    * Actions taken after descendant documents have been created, but before changes are applied to the client data.
    * @param parent     - The direct parent of the created Documents, may be this Document or a child
@@ -199,13 +189,12 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param data       - The source data for new documents that are being created
    * @param options    - Options which modified the creation operation
    * @param userId     - The ID of the User who triggered the operation
-   * @privateRemarks Make generic over `collection`
    */
   protected _preCreateDescendantDocuments(
-    parent: Document.Any,
-    collection: string,
-    data: unknown[],
-    options: Document.Database.CreateOptions<DatabaseCreateOperation>,
+    parent: never,
+    collection: never,
+    data: never,
+    options: never,
     userId: string,
   ): void;
 
@@ -219,11 +208,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId     - The ID of the User who triggered the operation
    */
   protected _onCreateDescendantDocuments(
-    parent: Document.Any,
-    collection: string,
+    parent: never,
+    collection: never,
     documents: never,
-    data: unknown[],
-    options: Document.Database.CreateOptions<DatabaseCreateOperation>,
+    data: never,
+    options: never,
     userId: string,
   ): void;
 
@@ -236,10 +225,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId - The ID of the User who triggered the operation
    */
   protected _preUpdateDescendantDocuments(
-    parent: Document.Any,
-    collection: string,
-    changes: unknown[],
-    options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
+    parent: never,
+    collection: never,
+    changes: never,
+    options: never,
     userId: string,
   ): void;
 
@@ -253,11 +242,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId - The ID of the User who triggered the operation
    */
   protected _onUpdateDescendantDocuments(
-    parent: Document.Any,
-    collection: string,
+    parent: never,
+    collection: never,
     documents: never,
-    changes: unknown[],
-    options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
+    changes: never,
+    options: never,
     userId: string,
   ): void;
 
@@ -270,10 +259,10 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId - The ID of the User who triggered the operation
    */
   protected _preDeleteDescendantDocuments(
-    parent: Document.Any,
-    collection: string,
-    ids: string[],
-    options: Document.Database.DeleteOptions<DatabaseDeleteOperation>,
+    parent: never,
+    collection: never,
+    ids: never,
+    options: never,
     userId: string,
   ): void;
 
@@ -287,11 +276,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param userId - The ID of the User who triggered the operation
    */
   protected _onDeleteDescendantDocuments(
-    parent: Document.Any,
-    collection: string,
+    parent: never,
+    collection: never,
     documents: never,
     ids: string[],
-    options: Document.Database.DeleteOptions<DatabaseDeleteOperation>,
+    options: never,
     userId: string,
   ): void;
 

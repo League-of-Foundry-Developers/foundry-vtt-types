@@ -118,16 +118,29 @@ declare global {
     type Parent = null;
 
     /**
-     * A document's descendants are any child documents, grandchild documents, etc.
-     * This is a union of all instances, or never if the document doesn't have any descendants.
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
      */
-    type Descendant = Card.Stored;
+    type DirectDescendant = Card.Stored;
+
+    /**
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such classes, or never if the document doesn't have any descendants.
+     */
+    type DirectDescendantClass = Card.ImplementationClass;
+
+    /**
+     * A document's descendants are any documents that are contained within, either within its schema
+     * or its descendant's schemas.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
+     */
+    type Descendant = DirectDescendant;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClass = Card.ImplementationClass;
+    type DescendantClass = DirectDescendantClass;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.
@@ -491,6 +504,42 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+      Cards.Stored,
+      Cards.DirectDescendant,
+      Cards.Metadata.Embedded
+    >;
+
+    type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+      Cards.Stored,
+      Cards.DirectDescendant,
+      Cards.Metadata.Embedded
+    >;
+
+    type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+      Cards.Stored,
+      Cards.DirectDescendant,
+      Cards.Metadata.Embedded
+    >;
+
+    type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+      Cards.Stored,
+      Cards.DirectDescendant,
+      Cards.Metadata.Embedded
+    >;
+
+    type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+      Cards.Stored,
+      Cards.DirectDescendant,
+      Cards.Metadata.Embedded
+    >;
+
+    type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+      Cards.Stored,
+      Cards.DirectDescendant,
+      Cards.Metadata.Embedded
+    >;
+
     type CardsAction = "deal" | "pass";
 
     interface BaseOperationOptions {
@@ -835,56 +884,113 @@ declare global {
 
     // ClientDocument overrides
 
-    protected override _preCreateDescendantDocuments(
-      parent: Cards.Stored,
-      collection: Card.ParentCollectionName,
-      data: Card.CreateData[],
-      options: Card.Database.OnCreateOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class SwadeCards extends Cards {
+     *   protected override _preCreateDescendantDocuments(...args: Cards.PreCreateDescendantDocumentsArgs) {
+     *     super._preCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, data, options, userId] = args;
+     *     if (collection === "cards") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preCreateDescendantDocuments(...args: Cards.PreCreateDescendantDocumentsArgs): void;
 
-    protected override _onCreateDescendantDocuments(
-      parent: Cards.Stored,
-      collection: Card.ParentCollectionName,
-      documents: Card.Stored[],
-      result: Card.CreateData[],
-      options: Card.Database.OnCreateOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class GurpsCards extends Cards {
+     *   protected override _onCreateDescendantDocuments(...args: Cards.OnCreateDescendantDocumentsArgs) {
+     *     super._onCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, data, options, userId] = args;
+     *     if (collection === "cards") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onCreateDescendantDocuments(...args: Cards.OnCreateDescendantDocumentsArgs): void;
 
-    protected override _preUpdateDescendantDocuments(
-      parent: Cards.Stored,
-      collection: Card.ParentCollectionName,
-      changes: Card.UpdateData[],
-      options: Card.Database.OnUpdateOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class LancerCards extends Cards {
+     *   protected override _preUpdateDescendantDocuments(...args: Cards.OnUpdateDescendantDocuments) {
+     *     super._preUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, changes, options, userId] = args;
+     *     if (collection === "cards") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preUpdateDescendantDocuments(...args: Cards.PreUpdateDescendantDocumentsArgs): void;
 
-    protected override _onUpdateDescendantDocuments(
-      parent: Cards.Stored,
-      collection: Card.ParentCollectionName,
-      documents: Card.Stored[],
-      changes: Card.UpdateData[],
-      options: Card.Database.OnUpdateOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class Ptr2eCards extends Cards {
+     *   protected override _onUpdateDescendantDocuments(...args: Cards.OnUpdateDescendantDocumentsArgs) {
+     *     super._onUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, changes, options, userId] = args;
+     *     if (collection === "cards") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onUpdateDescendantDocuments(...args: Cards.OnUpdateDescendantDocumentsArgs): void;
 
-    protected _preDeleteDescendantDocuments(
-      parent: Cards.Stored,
-      collection: Card.ParentCollectionName,
-      ids: string[],
-      options: Card.Database.OnDeleteOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class KultCards extends Cards {
+     *   protected override _preDeleteDescendantDocuments(...args: Cards.PreDeleteDescendantDocumentsArgs) {
+     *     super._preDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, ids, options, userId] = args;
+     *     if (collection === "cards") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preDeleteDescendantDocuments(...args: Cards.PreDeleteDescendantDocumentsArgs): void;
 
-    protected override _onDeleteDescendantDocuments(
-      parent: Cards.Stored,
-      collection: Card.ParentCollectionName,
-      documents: Card.Stored[],
-      ids: string[],
-      options: Card.Database.OnDeleteOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class BladesCards extends Cards {
+     *   protected override _onDeleteDescendantDocuments(...args: Cards.OnUpdateDescendantDocuments) {
+     *     super._onDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, ids, options, userId] = args;
+     *     if (collection === "cards") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onDeleteDescendantDocuments(...args: Cards.OnDeleteDescendantDocumentsArgs): void;
 
     static override defaultName(context?: Document.DefaultNameContext<Cards.SubType, Cards.Parent>): string;
 

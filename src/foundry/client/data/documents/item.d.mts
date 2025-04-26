@@ -124,16 +124,29 @@ declare global {
     type Parent = Actor.Implementation | null;
 
     /**
-     * A document's descendants are any child documents, grandchild documents, etc.
-     * This is a union of all instances, or never if the document doesn't have any descendants.
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
      */
-    type Descendant = ActiveEffect.Stored;
+    type DirectDescendant = ActiveEffect.Stored;
+
+    /**
+     * A document's direct descendants are documents that are contained directly within its schema.
+     * This is a union of all such classes, or never if the document doesn't have any descendants.
+     */
+    type DirectDescendantClass = ActiveEffect.ImplementationClass;
+
+    /**
+     * A document's descendants are any documents that are contained within, either within its schema
+     * or its descendant's schemas.
+     * This is a union of all such instances, or never if the document doesn't have any descendants.
+     */
+    type Descendant = DirectDescendant;
 
     /**
      * A document's descendants are any child documents, grandchild documents, etc.
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
-    type DescendantClass = ActiveEffect.ImplementationClass;
+    type DescendantClass = DirectDescendantClass;
 
     /**
      * Types of `CompendiumCollection` this document might be contained in.
@@ -457,6 +470,42 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+      Item.Stored,
+      Item.DirectDescendant,
+      Item.Metadata.Embedded
+    >;
+
+    type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+      Item.Stored,
+      Item.DirectDescendant,
+      Item.Metadata.Embedded
+    >;
+
+    type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+      Item.Stored,
+      Item.DirectDescendant,
+      Item.Metadata.Embedded
+    >;
+
+    type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+      Item.Stored,
+      Item.DirectDescendant,
+      Item.Metadata.Embedded
+    >;
+
+    type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+      Item.Stored,
+      Item.DirectDescendant,
+      Item.Metadata.Embedded
+    >;
+
+    type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+      Item.Stored,
+      Item.DirectDescendant,
+      Item.Metadata.Embedded
+    >;
+
     /**
      * @deprecated {@link Item.Database | `Item.DatabaseOperation`}
      */
@@ -546,56 +595,113 @@ declare global {
 
     // ClientDocument overrides
 
-    protected override _preCreateDescendantDocuments(
-      parent: Item.Stored,
-      collection: ActiveEffect.ParentCollectionName,
-      data: ActiveEffect.CreateData[],
-      options: ActiveEffect.Database.OnCreateOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class SwadeItem extends Item {
+     *   protected override _preCreateDescendantDocuments(...args: Item.PreCreateDescendantDocumentsArgs) {
+     *     super._preCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, data, options, userId] = args;
+     *     if (collection === "effects") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preCreateDescendantDocuments(...args: Item.PreCreateDescendantDocumentsArgs): void;
 
-    protected override _onCreateDescendantDocuments(
-      parent: Item.Stored,
-      collection: ActiveEffect.ParentCollectionName,
-      documents: ActiveEffect.Stored[],
-      result: ActiveEffect.CreateData[],
-      options: ActiveEffect.Database.OnCreateOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class GurpsItem extends Item {
+     *   protected override _onCreateDescendantDocuments(...args: Item.OnCreateDescendantDocumentsArgs) {
+     *     super._onCreateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, data, options, userId] = args;
+     *     if (collection === "effects") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onCreateDescendantDocuments(...args: Item.OnCreateDescendantDocumentsArgs): void;
 
-    protected override _preUpdateDescendantDocuments(
-      parent: Item.Stored,
-      collection: ActiveEffect.ParentCollectionName,
-      changes: ActiveEffect.UpdateData[],
-      options: ActiveEffect.Database.OnUpdateOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class LancerItem extends Item {
+     *   protected override _preUpdateDescendantDocuments(...args: Item.OnUpdateDescendantDocuments) {
+     *     super._preUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, changes, options, userId] = args;
+     *     if (collection === "tokens") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preUpdateDescendantDocuments(...args: Item.PreUpdateDescendantDocumentsArgs): void;
 
-    protected override _onUpdateDescendantDocuments(
-      parent: Item.Stored,
-      collection: ActiveEffect.ParentCollectionName,
-      documents: ActiveEffect.Stored[],
-      changes: ActiveEffect.UpdateData[],
-      options: ActiveEffect.Database.OnUpdateOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class Ptr2eItem extends Item {
+     *   protected override _onUpdateDescendantDocuments(...args: Item.OnUpdateDescendantDocumentsArgs) {
+     *     super._onUpdateDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, changes, options, userId] = args;
+     *     if (collection === "effects") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onUpdateDescendantDocuments(...args: Item.OnUpdateDescendantDocumentsArgs): void;
 
-    protected _preDeleteDescendantDocuments(
-      parent: Item.Stored,
-      collection: ActiveEffect.ParentCollectionName,
-      ids: string[],
-      options: ActiveEffect.Database.OnDeleteOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class KultItem extends Item {
+     *   protected override _preDeleteDescendantDocuments(...args: Item.PreDeleteDescendantDocumentsArgs) {
+     *     super._preDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, ids, options, userId] = args;
+     *     if (collection === "effects") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _preDeleteDescendantDocuments(...args: Item.PreDeleteDescendantDocumentsArgs): void;
 
-    protected override _onDeleteDescendantDocuments(
-      parent: Item.Stored,
-      collection: ActiveEffect.ParentCollectionName,
-      documents: ActiveEffect.Stored[],
-      ids: string[],
-      options: ActiveEffect.Database.OnDeleteOperation,
-      userId: string,
-    ): void;
+    /**
+     * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+     * this method must be overriden like so:
+     * ```typescript
+     * class BladesItem extends Item {
+     *   protected override _onDeleteDescendantDocuments(...args: Item.OnUpdateDescendantDocuments) {
+     *     super._onDeleteDescendantDocuments(...args);
+     *
+     *     const [parent, collection, documents, ids, options, userId] = args;
+     *     if (collection === "effects") {
+     *         options; // Will be narrowed.
+     *     }
+     *   }
+     * }
+     * ```
+     */
+    protected override _onDeleteDescendantDocuments(...args: Item.OnDeleteDescendantDocumentsArgs): void;
 
     static override defaultName(context?: Document.DefaultNameContext<Item.SubType, Item.Parent>): string;
 
