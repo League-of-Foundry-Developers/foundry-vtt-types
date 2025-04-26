@@ -338,9 +338,9 @@ declare class ApplicationV2<
 > extends EventEmitterMixin(Object) {
   static [__ApplicationV2Brand]: never;
 
+  [__RenderContext]: RenderContext;
   [__Configuration]: Configuration;
   [__RenderOptions]: RenderOptions;
-  [__RenderContext]: RenderContext;
 
   constructor(options?: DeepPartial<Configuration>);
 

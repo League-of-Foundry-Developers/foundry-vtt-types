@@ -55,6 +55,15 @@ declare abstract class DataField<
    */
   constructor(options?: Options, context?: DataField.Context);
 
+  /** @internal */
+  " __fvtt_types_internal_source_data": PersistedType;
+
+  /** @internal */
+  " __fvtt_types_internal_assignment_data": AssignmentType;
+
+  /** @internal */
+  " __fvtt_types_internal_initialized_data": InitializedType;
+
   /** The initially provided options which configure the data field */
   options: Options;
 
@@ -1854,37 +1863,34 @@ declare namespace ArrayField {
    * A type to infer the assignment element type of an ArrayField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the ArrayField
    */
-  // Note(LukeAbby): For some reason checking `extends Document` causes issues where `extends DataModel` doesn't.
   type AssignmentElementType<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
-    ElementFieldType extends DataField<infer _1, infer Assign, infer _2, infer _3>
-      ? Assign
-      : ElementFieldType extends abstract new (...args: infer _1) => DataModel<infer Schema, infer _2, infer _3>
-        ? SchemaField.AssignmentData<Schema>
-        : never;
+    ElementFieldType extends
+      | (abstract new (...args: infer _1) => { " __fvtt_types_internal_assignment_data": infer AssignmentData })
+      | { " __fvtt_types_internal_assignment_data": infer AssignmentData }
+      ? AssignmentData
+      : never;
 
   /**
    * A type to infer the initialized element type of an ArrayField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the ArrayField
    */
-  // Note(LukeAbby): For some reason checking `extends Document` causes issues where `extends DataModel` doesn't.
   type InitializedElementType<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
-    ElementFieldType extends DataField<infer _1, infer _2, infer Init, infer _3>
-      ? Init
-      : ElementFieldType extends abstract new (...args: infer _4) => DataModel<infer Schema, infer _5, infer _6>
-        ? SchemaField.InitializedData<Schema>
-        : never;
+    ElementFieldType extends
+      | (abstract new (...args: infer _1) => { " __fvtt_types_internal_initialized_data": infer InitializedData })
+      | { " __fvtt_types_internal_initialized_data": infer InitializedData }
+      ? InitializedData
+      : never;
 
   /**
    * A type to infer the initialized element type of an ArrayField from its ElementFieldType.
    * @typeParam ElementFieldType - the DataField type of the elements in the ArrayField
    */
-  // Note(LukeAbby): For some reason checking `extends Document` causes issues where `extends DataModel` doesn't.
   type PersistedElementType<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
-    ElementFieldType extends DataField<infer _1, infer _2, infer _3, infer Persist>
-      ? Persist
-      : ElementFieldType extends abstract new (...args: infer _4) => DataModel<infer Schema, infer _5, infer _6>
-        ? SchemaField.SourceData<Schema>
-        : never;
+    ElementFieldType extends
+      | (abstract new (...args: infer _1) => { " __fvtt_types_internal_source_data": infer PersistedData })
+      | { " __fvtt_types_internal_source_data": infer PersistedData }
+      ? PersistedData
+      : never;
 
   /**
    * A shorthand for the assignment type of an ArrayField class.
@@ -2475,8 +2481,8 @@ declare namespace EmbeddedCollectionDeltaField {
    */
   type AssignmentElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends abstract new (
     ...args: infer _1
-  ) => DataModel<infer Schema, infer _2, infer _3>
-    ? SchemaField.AssignmentData<Schema>
+  ) => { " __fvtt_types_internal_assignment_data": infer AssignmentData }
+    ? AssignmentData
     : never;
 
   /**
@@ -2493,8 +2499,8 @@ declare namespace EmbeddedCollectionDeltaField {
   // Note(LukeAbby): For some reason checking `extends Document` causes issues where `extends DataModel` doesn't.
   type PersistedElementType<ElementFieldType extends Document.AnyConstructor> = ElementFieldType extends abstract new (
     ...args: infer _1
-  ) => DataModel<infer Schema, infer _2, infer _3>
-    ? SchemaField.SourceData<Schema>
+  ) => { " __fvtt_types_internal_source_data": infer AssignmentData }
+    ? AssignmentData
     : never;
 
   /**

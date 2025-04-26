@@ -1,5 +1,6 @@
 import type {
   Brand,
+  FixedInstanceType,
   HandleEmptyObject,
   Identity,
   InexactPartial,
@@ -16,6 +17,7 @@ declare global {
    * @typeParam DocumentName - The key of the configuration which defines the object and document class.
    * @typeParam Options      - The type of the options in this layer.
    */
+  // TODO(LukeAbby): Make `DocumentName` covariant.
   class PlaceablesLayer<DocumentName extends PlaceablesLayer.DocumentNames> extends InteractionLayer {
     /**
      * Sort order for placeables belonging to this layer
@@ -419,8 +421,8 @@ declare global {
 
     type DocumentNames = Document.PlaceableType;
 
-    /** @privateRemarks Only used in types in `CanvasDocument#layer` */
     type ImplementationClassFor<Name extends DocumentNames> = CONFIG[Name]["layerClass"];
+    type ImplementationFor<Name extends DocumentNames> = FixedInstanceType<CONFIG[Name]["layerClass"]>;
 
     interface DrawOptions extends InteractionLayer.DrawOptions {}
 

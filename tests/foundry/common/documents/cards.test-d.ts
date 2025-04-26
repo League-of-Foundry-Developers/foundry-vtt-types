@@ -14,7 +14,7 @@ expectTypeOf(baseCards.cards).toEqualTypeOf<EmbeddedCollection<Card.Implementati
 
 const card = baseCards._source.cards[0]!;
 expectTypeOf(card._id).toEqualTypeOf<Card.Source["_id"]>();
-expectTypeOf(card.faces[0]!).toEqualTypeOf<Card.FaceData>();
+expectTypeOf(card.faces).toEqualTypeOf<Card.FaceData[]>();
 
 // interface GermanDeckDataSourceData {
 //   mostUsedGame: "Skat";

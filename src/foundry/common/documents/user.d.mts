@@ -78,18 +78,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param role - The role name from USER_ROLES to test
    * @returns Does the user have at this role level (or greater)?
    */
-  hasRole(
-    role: CONST.USER_ROLE_NAMES | CONST.USER_ROLES,
-    {
-      exact,
-    }?: {
-      /**
-       * Require the role match to be exact
-       * @defaultValue `false`
-       */
-      exact?: boolean;
-    },
-  ): boolean;
+  hasRole(role: CONST.USER_ROLE_NAMES | CONST.USER_ROLES, { exact }?: User.HasRoleOptions): boolean;
 
   /**
    * Is a user able to create an existing User?
@@ -338,6 +327,9 @@ declare namespace BaseUser {
   export import Schema = User.Schema;
   export import DatabaseOperation = User.Database;
   export import Flags = User.Flags;
+  export import PingData = User.PingData;
+  export import ActivityData = User.ActivityData;
+  export import HasRoleOptions = User.HasRoleOptions;
 
   /**
    * @deprecated This type is used by Foundry too vaguely.

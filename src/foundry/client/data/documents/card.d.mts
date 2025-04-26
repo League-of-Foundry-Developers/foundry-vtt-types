@@ -368,7 +368,7 @@ declare global {
       }>;
     }
 
-    interface FaceData extends fields.SchemaField.InitializedData<Schema> {}
+    interface FaceData extends fields.SchemaField.InitializedData<FaceSchema> {}
 
     namespace Database {
       /** Options passed along in Get operations for Card Documents */

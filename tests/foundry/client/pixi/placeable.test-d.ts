@@ -35,9 +35,7 @@ expectTypeOf(placeable.objectId).toBeString();
 expectTypeOf(placeable.sourceId).toBeString();
 expectTypeOf(placeable.isPreview).toBeBoolean();
 expectTypeOf(placeable.hasPreview).toBeBoolean();
-
-// TODO: investigate AmbientLightDocument#layer to see if this should be a more narrowed type
-expectTypeOf(placeable.layer).toEqualTypeOf<PlaceablesLayer.Any>();
+expectTypeOf(placeable.layer).toEqualTypeOf<LightingLayer.Any>();
 
 // TODO: investigate AmbientLightDocument#sheet to see if this should be a more narrowed type
 expectTypeOf(placeable.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();

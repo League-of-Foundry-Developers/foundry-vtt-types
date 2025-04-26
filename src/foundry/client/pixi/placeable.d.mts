@@ -6,8 +6,8 @@ import type {
   MakeConform,
   NullishProps,
   Titlecase,
+  GetKey,
 } from "fvtt-types/utils";
-import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 import type { Document } from "../../common/abstract/module.d.mts";
 import type {
   DatabaseCreateOperation,
@@ -16,7 +16,7 @@ import type {
 } from "../../common/abstract/_types.d.mts";
 
 // Gets a key with a required shape to conform to which is also used as a fallback when the key doesn't exist.
-type GetKeyWithShape<T, K, S> = K extends keyof T ? MakeConform<T[K], S> : S;
+type GetKeyWithShape<T, K extends PropertyKey, S> = MakeConform<GetKey<T, K>, S>;
 
 declare global {
   /**
@@ -612,16 +612,18 @@ declare global {
       refreshState: RenderFlag<this, "refreshState">;
     }
 
-    type Layer<CanvasDocument extends AnyCanvasDocument> = GetKeyWithShape<
+    // Note(LukeAbby): Switch back to `GetKeyWithShape` once `TilesLayer` etc. is assignable to `PlaceablesLayer.Any`.
+    // There's no clear reason why it isn't but it's breaking this type.
+    type Layer<CanvasDocument extends AnyCanvasDocument> = GetKey<
       CanvasDocument,
-      "layer",
-      PlaceablesLayer.Any
+      "layer"
+      // PlaceablesLayer.Any
     >;
 
-    type Sheet<CanvasDocument extends AnyCanvasDocument> = GetKeyWithShape<
+    type Sheet<CanvasDocument extends AnyCanvasDocument> = GetKey<
       CanvasDocument,
-      "sheet",
-      FormApplication.Any | ApplicationV2.Any | null
+      "sheet"
+      // FormApplication.Any | ApplicationV2.Any | null
     >;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type

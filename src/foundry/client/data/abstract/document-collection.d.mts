@@ -239,6 +239,8 @@ declare global {
     type _ApplyInvalid<
       ConcreteDocument extends Document.Any,
       Invalid extends boolean | undefined,
-    > = Invalid extends true ? Document.Invalid<ConcreteDocument> : Document.Stored<ConcreteDocument>;
+    > = Invalid extends true
+      ? Document.Invalid<ConcreteDocument> | Document.Stored<ConcreteDocument>
+      : Document.Stored<ConcreteDocument>;
   }
 }

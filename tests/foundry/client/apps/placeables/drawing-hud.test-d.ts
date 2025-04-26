@@ -8,5 +8,4 @@ expectTypeOf(DrawingHUD.defaultOptions).toEqualTypeOf<Application.Options>();
 expectTypeOf(drawingHUD.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(drawingHUD.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(drawingHUD.render(true)).toEqualTypeOf<DrawingHUD>();
-
-expectTypeOf(drawingHUD.layer).toEqualTypeOf<DrawingsLayer | undefined>();
+expectTypeOf(drawingHUD.layer).toEqualTypeOf<DrawingsLayer>();

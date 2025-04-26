@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 
+import Document = foundry.abstract.Document;
 import BaseJournalEntryPage = foundry.documents.BaseJournalEntryPage;
 
 // This exists to make the class non-abstract.
@@ -16,7 +17,7 @@ const myJournalEntryPage = new TestBaseJournalEntryPage({ name: "foo" });
 // Testing Core types
 
 declare const coreTypeMetadata: BaseJournalEntryPage.Metadata["coreTypes"][number];
-declare const coreTypes: (typeof BaseJournalEntryPage)["metadata"]["coreTypes"][number];
+declare const coreTypes: (typeof BaseJournalEntryPage.metadata.coreTypes)[number];
 
 expectTypeOf(coreTypeMetadata).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
 expectTypeOf(coreTypes).toEqualTypeOf<"image" | "pdf" | "text" | "video">();

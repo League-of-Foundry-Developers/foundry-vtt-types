@@ -2,7 +2,7 @@
  * A class responsible for recording information about a validation failure.
  */
 declare class DataModelValidationFailure {
-  constructor(options: DataModelValidationFailure.ConstructorArgs);
+  constructor(options?: DataModelValidationFailure.ConstructorOptions);
 
   /**
    * The value that failed validation for this field.
@@ -129,7 +129,10 @@ declare class DataModelValidationError extends Error {
 }
 
 declare namespace DataModelValidationFailure {
-  interface ConstructorArgs {
+  /** @deprecated {@link ConstructorOptions | `ConstructorOptions`} */
+  type ConstructorArgs = ConstructorOptions;
+
+  interface ConstructorOptions {
     /** The value that failed validation for this field. */
     invalidValue?: unknown;
 

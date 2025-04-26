@@ -7,7 +7,7 @@ class TestBaseCard extends foundry.documents.BaseCard {}
 new TestBaseCard();
 
 const baseCard = new TestBaseCard({ name: "foo", type: "base" });
-expectTypeOf(baseCard.faces[0]!).toEqualTypeOf<Card.FaceData>();
+expectTypeOf(baseCard.faces).toEqualTypeOf<Card.FaceData[]>();
 
 // interface OldCardDataSourceData {
 //   condition: "grubby";

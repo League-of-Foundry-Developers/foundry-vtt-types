@@ -464,6 +464,14 @@ declare global {
       av: AVSettings.Data;
     }
 
+    interface HasRoleOptions {
+      /**
+       * Require the role match to be exact
+       * @defaultValue `false`
+       */
+      exact?: boolean | undefined;
+    }
+
     /**
      * @deprecated {@link User.Database | `User.DatabaseOperation`}
      */

@@ -32,6 +32,15 @@ declare abstract class DataModel<
    */
   constructor(...args: DataModel.ConstructorArgs<Schema, Parent>);
 
+  /** @internal */
+  " __fvtt_types_internal_source_data": SchemaField.SourceData<Schema>;
+
+  /** @internal */
+  " __fvtt_types_internal_assignment_data": SchemaField.AssignmentData<Schema>;
+
+  /** @internal */
+  " __fvtt_types_internal_initialized_data": SchemaField.InitializedData<Schema>;
+
   /**
    * Configure the data model instance before validation and initialization workflows are performed.
    */

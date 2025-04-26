@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import type { AnyObject } from "../../../../../src/utils/index.d.mts";
 
+import Document = foundry.abstract.Document;
+
 type DataSchema = foundry.data.fields.DataSchema;
 
 declare namespace ArmorData {

@@ -89,15 +89,6 @@ declare abstract class Document<
   // typechecking and helps stymy circularities.
   constructor(...args: never);
 
-  /** @internal */
-  " __fvtt_types_internal_source_data": SchemaField.SourceData<Schema>;
-
-  /** @internal */
-  " __fvtt_types_internal_assignment_data": SchemaField.AssignmentData<Schema>;
-
-  /** @internal */
-  " __fvtt_types_internal_initialized_data": SchemaField.InitializedData<Schema>;
-
   override parent: Parent;
 
   protected override _configure(options?: {

@@ -11,8 +11,12 @@ if (user) {
   expectTypeOf(user.character).toEqualTypeOf<Actor.Implementation | null>();
 }
 
-// @ts-expect-error name may not be undefined
-const baseUser = new foundry.documents.BaseUser();
+class TestBaseUser extends foundry.documents.BaseUser {}
+
+// @ts-expect-error - name may not be undefined
+new TestBaseUser();
+
+const baseUser = new TestBaseUser({ name: "foo" });
 expectTypeOf(baseUser.hasRole("NONE")).toEqualTypeOf<boolean>();
 expectTypeOf(baseUser.hasRole("PLAYER")).toEqualTypeOf<boolean>();
 expectTypeOf(baseUser.hasRole("TRUSTED")).toEqualTypeOf<boolean>();

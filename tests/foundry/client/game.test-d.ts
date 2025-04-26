@@ -1,6 +1,8 @@
 import { expectTypeOf, assertType } from "vitest";
 import type { EmptyObject } from "fvtt-types/utils";
 
+import Document = foundry.abstract.Document;
+
 declare const aGame: Game;
 
 expectTypeOf(aGame.combats).toEqualTypeOf<CombatEncounters | undefined>();
@@ -90,7 +92,7 @@ if (game.ready) {
 // Game model
 type ItemType = Game.Model.TypeNames<"Item">;
 expectTypeOf<ItemType>().toEqualTypeOf<"weapon" | "armor" | "base" | Document.ModuleSubtype>();
-expectTypeOf<foundry.abstract.Document.ImplementationClassFor<"Item">>().toEqualTypeOf<Item.ImplementationClass>();
+expectTypeOf<Document.ImplementationClassFor<"Item">>().toEqualTypeOf<Item.ImplementationClass>();
 expectTypeOf(game.documentTypes!.Item).toEqualTypeOf<Array<"weapon" | "armor" | "base" | Document.ModuleSubtype>>();
 
 if (game instanceof Game) {
