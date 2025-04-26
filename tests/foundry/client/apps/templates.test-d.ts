@@ -9,7 +9,7 @@ expectTypeOf(HandlebarsHelpers.editor("", { hash: { target: "" } })).toEqualType
 expectTypeOf(HandlebarsHelpers.ifThen({ hash: { criteria: true, ifTrue: "", ifFalse: "" } })).toEqualTypeOf<string>();
 expectTypeOf(HandlebarsHelpers.localize("", { hash: {} })).toEqualTypeOf<string>();
 expectTypeOf(HandlebarsHelpers.numberFormat("", { hash: {} })).toEqualTypeOf<string>();
-expectTypeOf(HandlebarsHelpers.numberInput("", {})).toEqualTypeOf<Handlebars.SafeString>();
+expectTypeOf(HandlebarsHelpers.numberInput("", { hash: {} })).toEqualTypeOf<Handlebars.SafeString>();
 expectTypeOf(HandlebarsHelpers.radioBoxes("", {}, { hash: {} })).toEqualTypeOf<Handlebars.SafeString>();
 expectTypeOf(HandlebarsHelpers.rangePicker({})).toEqualTypeOf<Handlebars.SafeString>();
 expectTypeOf(HandlebarsHelpers.selectOptions({}, { hash: { options: [] } })).toEqualTypeOf<Handlebars.SafeString>();

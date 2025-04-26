@@ -1,7 +1,6 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 
 const rollTables = new RollTables([]);
-expectTypeOf(rollTables.get("", { strict: true })).toEqualTypeOf<Document.Stored<RollTable.Implementation>>();
-expectTypeOf(rollTables.toJSON()).toEqualTypeOf<Document.Stored<RollTable.Implementation>["_source"][]>();
-expectTypeOf(rollTables.directory).toEqualTypeOf<RollTableDirectory>();
+expectTypeOf(rollTables.get("", { strict: true })).toEqualTypeOf<RollTable.Stored>();
+expectTypeOf(rollTables.toJSON()).toEqualTypeOf<RollTable.Source[]>();
+expectTypeOf(rollTables.directory).toEqualTypeOf<RollTableDirectory.Any | undefined>();

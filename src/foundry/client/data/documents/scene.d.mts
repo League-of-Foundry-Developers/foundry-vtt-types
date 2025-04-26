@@ -971,7 +971,7 @@ declare global {
      * @param data - (default: `{}`)
      * @returns The created thumbnail data.
      */
-    createThumbnail(data?: Scene.ThumbnailCreationData): ReturnType<typeof ImageHelper.createThumbnail>;
+    createThumbnail(data?: Scene.ThumbnailCreationData): Promise<ImageHelper.ThumbnailReturn>;
 
     /*
      * After this point these are not really overridden methods.

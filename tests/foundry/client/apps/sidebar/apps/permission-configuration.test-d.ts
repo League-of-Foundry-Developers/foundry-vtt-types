@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 
 const permissionConfig = new PermissionConfig();
 
-expectTypeOf(permissionConfig.object).toEqualTypeOf<undefined>();
+expectTypeOf(permissionConfig.object).toEqualTypeOf<FormApplication.NoObject>();
 expectTypeOf(PermissionConfig.defaultOptions).toEqualTypeOf<FormApplication.Options>();
 expectTypeOf(permissionConfig.options).toEqualTypeOf<FormApplication.Options>();
 expectTypeOf(permissionConfig.getData()).toEqualTypeOf<Promise<object>>();

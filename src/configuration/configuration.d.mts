@@ -24,7 +24,7 @@ import type Document from "../foundry/common/abstract/document.d.mts";
  *
  * @example
  * ```typescript
- * declare global {
+ * declare module "fvtt-types/configuration" {
  *   interface AssumeHookRan {
  *     setup: never; // the type doesn't matter
  *   }
@@ -55,7 +55,7 @@ export interface AssumeHookRan {}
  *   CONFIG.Actor.documentClass = typeof MyActor;
  * });
  *
- * declare global {
+ * declare module "fvtt-types/configuration" {
  *   interface DocumentClassConfig {
  *     Actor: typeof MyActor
  *   }
@@ -84,7 +84,7 @@ export interface DocumentClassConfig {}
  *   CONFIG.Token.objectClass = MyToken;
  * });
  *
- * declare global {
+ * declare module "fvtt-types/configuration" {
  *   interface PlaceableObjectClassConfig {
  *     Token: typeof MyToken;
  *   }
@@ -145,7 +145,7 @@ export interface PlaceableObjectClassConfig {}
  * type MyItemDataSource = ArmorDataSource | WeaponDataSource;
  * type MyItemDataProperties = ArmorDataProperties | WeaponDataProperties;
  *
- * declare global {
+ * declare module "fvtt-types/configuration" {
  *   interface DataConfig {
  *     Item: MyItemDataProperties;
  *   }
@@ -161,11 +161,11 @@ export interface PlaceableObjectClassConfig {}
  *   damage: 5
  * });
  *
- * if(item.data.type === "weapon") {
+ * if (item.data.type === "weapon") {
  *   const damage: number = item.data.data.damage;
  * }
  *
- * if(item.data._source.type === "armor") {
+ * if (item.data._source.type === "armor") {
  *   const armorValue = item.data._source.data.armorValue;
  * }
  * ```
@@ -284,13 +284,12 @@ export interface SettingConfig {
     nullable: true;
     initial: null;
     choices: {
-      [_ in typeof CONST.CANVAS_PERFORMANCE_MODES.LOW]: "SETTINGS.PerformanceModeLow";
-    } & {
-      [_ in typeof CONST.CANVAS_PERFORMANCE_MODES.MED]: "SETTINGS.PerformanceModeMed";
-    } & {
-      [_ in typeof CONST.CANVAS_PERFORMANCE_MODES.HIGH]: "SETTINGS.PerformanceModeHigh";
-    } & {
-      [_ in typeof CONST.CANVAS_PERFORMANCE_MODES.MAX]: "SETTINGS.PerformanceModeMax";
+      // Note: these keys correspond to values of `CANVAS_PERFORMANCE_MODES`. They are not used
+      // directly because the values are branded.
+      0: "SETTINGS.PerformanceModeLow";
+      1: "SETTINGS.PerformanceModeMed";
+      2: "SETTINGS.PerformanceModeHigh";
+      3: "SETTINGS.PerformanceModeMax";
     };
   }>;
   "core.permissions": Game.Permissions;

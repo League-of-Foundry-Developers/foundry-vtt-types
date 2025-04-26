@@ -153,8 +153,10 @@ type _UndefinedOptions = DataField.Options<undefined>;
 
 // Regression test for issue where label was being constrained to `""`.
 // Reported by @FloRadical on Discord, see https://discord.com/channels/732325252788387980/793933527065690184/1268262811063287869.
-new foundry.data.fields.BooleanField({
-  label: "foo",
+test("BooleanField options.label regression test", () => {
+  new foundry.data.fields.BooleanField({
+    label: "foo",
+  });
 });
 
 stringField.toInput({ value: "foo" });

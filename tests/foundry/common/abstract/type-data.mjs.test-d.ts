@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { DeepPartial, EmptyObject } from "fvtt-types/utils";
 
 import fields = foundry.data.fields;
@@ -157,9 +157,11 @@ class QuestModel3 extends foundry.abstract.TypeDataModel<QuestSchema, BaseJourna
   }
 }
 
-class CustomTypeDataModel extends foundry.abstract.TypeDataModel<any, Item.Implementation> {}
-
 // This is a regression test for a case where `TypeDataModel` was written as `...args: ConstructorParameters<typeof DataModel>` instead of `...args: ConstructorParameters<typeof DataModel<Schema, Parent>>`.
 // Thus causing the constructor to be typed with no respect to the `Parent`.
-// @ts-expect-error - This should not work as it is attempting to give an `Actor` to `TypeDataModel` where it's configured with a parent of `Item`.
-new CustomTypeDataModel({}, { parent: new Actor.implementation({ name: "test" }) });
+test("TypeDataModel parent regression test", () => {
+  class CustomTypeDataModel extends foundry.abstract.TypeDataModel<any, Item.Implementation> {}
+
+  // @ts-expect-error - This should not work as it is attempting to give an `Actor` to `TypeDataModel` where it's configured with a parent of `Item`.
+  new CustomTypeDataModel({}, { parent: new Actor.implementation({ name: "test" }) });
+});

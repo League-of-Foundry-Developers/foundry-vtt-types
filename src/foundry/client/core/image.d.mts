@@ -14,7 +14,7 @@ declare global {
      */
     static createThumbnail(
       src: string | PIXI.DisplayObject,
-      options?: ImageHelper.CompositeOptions & ImageHelper.TextureToImageOptions,
+      options?: ImageHelper.CreateThumbnailOptions,
     ): Promise<ImageHelper.ThumbnailReturn> | null;
 
     /**
@@ -80,7 +80,7 @@ declare global {
       fileName: string,
       filePath: string,
       options?: ImageHelper.UploadBase64Options,
-    ): Promise<ReturnType<(typeof FilePicker)["upload"]>>;
+    ): Promise<ReturnType<typeof FilePicker.upload>>;
 
     /**
      * Create a canvas element containing the pixel data.
@@ -140,6 +140,8 @@ declare global {
      * methods.
      */
     interface CompositeOptions extends _CompositeOptions {}
+
+    interface CreateThumbnailOptions extends ImageHelper.CompositeOptions, ImageHelper.TextureToImageOptions {}
 
     type Format = "image/png" | "image/jpeg" | "image/webp";
 

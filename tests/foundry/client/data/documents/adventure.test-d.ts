@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
 
-import DataModel = foundry.abstract.DataModel;
 import fields = foundry.data.fields;
 
 // @ts-expect-error - Adventure requires name.
@@ -20,4 +19,4 @@ expectTypeOf(adventure.sheet).toEqualTypeOf<FormApplication.Any | foundry.applic
 
 declare const source: fields.SchemaField.AssignmentData<fields.DataSchema>;
 
-expectTypeOf(Adventure.fromSource(source)).toEqualTypeOf<DataModel<fields.DataSchema, DataModel.Any | null>>();
+expectTypeOf(Adventure.fromSource(source)).toEqualTypeOf<Adventure.Implementation>();

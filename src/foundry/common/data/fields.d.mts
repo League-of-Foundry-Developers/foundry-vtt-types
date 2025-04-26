@@ -2937,7 +2937,7 @@ declare namespace ForeignDocumentField {
   type AssignmentType<
     ConcreteDocument extends Document.AnyConstructor,
     Opts extends Options,
-  > = DataField.DerivedAssignmentType<string | Document.ToConfiguredClass<ConcreteDocument>, MergedOptions<Opts>>;
+  > = DataField.DerivedAssignmentType<string | Document.ToConfiguredInstance<ConcreteDocument>, MergedOptions<Opts>>;
 
   /**
    * A shorthand for the initialized type of a ForeignDocumentField class.

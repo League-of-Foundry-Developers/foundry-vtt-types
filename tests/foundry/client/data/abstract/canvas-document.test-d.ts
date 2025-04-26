@@ -1,5 +1,4 @@
-import { assertType, expectTypeOf } from "vitest";
-import type { FixedInstanceType } from "fvtt-types/utils";
+import { expectTypeOf } from "vitest";
 
 import Document = foundry.abstract.Document;
 
@@ -15,12 +14,12 @@ expectTypeOf(doc.isGlobal).toEqualTypeOf<boolean>(); // class itself
 expectTypeOf(doc.compendium).toEqualTypeOf<undefined>(); // TODO: Determine if embedded documents can have this metadata
 
 // Test the inheritance of static members
-expectTypeOf(AmbientLightDocument.documentName).toEqualTypeOf<string>(); // Document
-expectTypeOf(AmbientLightDocument.createDialog()).toEqualTypeOf<
-  Promise<AmbientLightDocument.Implementation | null | undefined>
+expectTypeOf(AmbientLightDocument.documentName).toEqualTypeOf<"AmbientLight">(); // Document
+expectTypeOf(AmbientLightDocument.createDialog({}, { parent: new Scene.implementation() })).toEqualTypeOf<
+  Promise<AmbientLightDocument.Stored | null | undefined>
 >(); // ClientDocumentMixin
 
 // Test the props
-assertType<FixedInstanceType<Document.ConfiguredObjectClassForName<"AmbientLight">> | null>(doc.object);
-assertType<FixedInstanceType<PlaceablesLayer.ImplementationClassFor<"AmbientLight">> | null>(doc.layer);
+expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Object | null>();
+expectTypeOf(doc.layer).toEqualTypeOf<LightingLayer.Any>();
 expectTypeOf(doc.rendered).toEqualTypeOf<boolean>();

@@ -90,7 +90,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage>();
 
-declare const myUser: foundry.documents.BaseUser;
+declare const myUser: User.Implementation;
 
 expectTypeOf(
   new TestBaseChatMessage({
