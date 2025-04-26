@@ -277,11 +277,11 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   static validateJoint(data: Item.Source): void;
 
   static override fromSource(
-    source: Item.UpdateData,
+    source: Item.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<Item.Schema, DataModel.Any | null>;
+  ): Item.Implementation;
 
-  static override fromJSON(json: string): DataModel<Item.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): Item.Implementation;
 }
 
 export default BaseItem;

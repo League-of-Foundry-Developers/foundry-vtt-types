@@ -201,11 +201,11 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   static validateJoint(data: Setting.Source): void;
 
   static override fromSource(
-    source: Setting.UpdateData,
+    source: Setting.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<Setting.Schema, DataModel.Any | null>;
+  ): Setting.Implementation;
 
-  static override fromJSON(json: string): DataModel<Setting.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): Setting.Implementation;
 }
 
 export default BaseSetting;

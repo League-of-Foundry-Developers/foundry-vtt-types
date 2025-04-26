@@ -261,11 +261,11 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   static validateJoint(data: Playlist.Source): void;
 
   static override fromSource(
-    source: Playlist.UpdateData,
+    source: Playlist.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<Playlist.Schema, DataModel.Any | null>;
+  ): Playlist.Implementation;
 
-  static override fromJSON(json: string): DataModel<Playlist.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): Playlist.Implementation;
 }
 
 export default BasePlaylist;

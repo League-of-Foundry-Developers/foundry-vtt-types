@@ -270,11 +270,11 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   static validateJoint(data: MeasuredTemplateDocument.Source): void;
 
   static override fromSource(
-    source: MeasuredTemplateDocument.UpdateData,
+    source: MeasuredTemplateDocument.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<MeasuredTemplateDocument.Schema, DataModel.Any | null>;
+  ): MeasuredTemplateDocument.Implementation;
 
-  static override fromJSON(json: string): DataModel<MeasuredTemplateDocument.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): MeasuredTemplateDocument.Implementation;
 }
 
 export default BaseMeasuredTemplate;

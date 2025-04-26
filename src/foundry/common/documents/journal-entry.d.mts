@@ -264,11 +264,11 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   static validateJoint(data: JournalEntry.Source): void;
 
   static override fromSource(
-    source: JournalEntry.UpdateData,
+    source: JournalEntry.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<JournalEntry.Schema, DataModel.Any | null>;
+  ): JournalEntry.Implementation;
 
-  static override fromJSON(json: string): DataModel<JournalEntry.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): JournalEntry.Implementation;
 }
 
 export default BaseJournalEntry;

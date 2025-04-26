@@ -233,11 +233,11 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   static validateJoint(data: Adventure.Source): void;
 
   static override fromSource(
-    source: Adventure.UpdateData,
+    source: Adventure.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<Adventure.Schema, DataModel.Any | null>;
+  ): Adventure.Implementation;
 
-  static override fromJSON(json: string): DataModel<Adventure.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): Adventure.Implementation;
 }
 
 export default BaseAdventure;

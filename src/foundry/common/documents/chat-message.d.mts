@@ -253,11 +253,11 @@ declare abstract class BaseChatMessage<
   static validateJoint(data: ChatMessage.Source): void;
 
   static override fromSource(
-    source: ChatMessage.UpdateData,
+    source: ChatMessage.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<ChatMessage.Schema, DataModel.Any | null>;
+  ): ChatMessage.Implementation;
 
-  static override fromJSON(json: string): DataModel<ChatMessage.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): ChatMessage.Implementation;
 
   #baseChatMessage: true;
 }

@@ -264,9 +264,9 @@ declare abstract class BaseRegionBehavior<
   static override fromSource(
     source: RegionBehavior.UpdateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<RegionBehavior.Schema, DataModel.Any | null>;
+  ): RegionBehavior.Implementation;
 
-  static override fromJSON(json: string): DataModel<RegionBehavior.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): RegionBehavior.Implementation;
 }
 
 export default BaseRegionBehavior;

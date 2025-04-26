@@ -268,11 +268,11 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   static validateJoint(data: DrawingDocument.Source): void;
 
   static override fromSource(
-    source: DrawingDocument.UpdateData,
+    source: DrawingDocument.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<DrawingDocument.Schema, DataModel.Any | null>;
+  ): DrawingDocument.Implementation;
 
-  static override fromJSON(json: string): DataModel<DrawingDocument.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): DrawingDocument.Implementation;
 }
 
 export default BaseDrawing;

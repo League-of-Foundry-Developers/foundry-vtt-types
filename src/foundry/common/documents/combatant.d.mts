@@ -241,11 +241,11 @@ declare abstract class BaseCombatant<
   static validateJoint(data: Combatant.Source): void;
 
   static override fromSource(
-    source: Combatant.UpdateData,
+    source: Combatant.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<Combatant.Schema, DataModel.Any | null>;
+  ): Combatant.Implementation;
 
-  static override fromJSON(json: string): DataModel<Combatant.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): Combatant.Implementation;
 
   #baseCombatant: true;
 }

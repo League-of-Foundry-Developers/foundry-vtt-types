@@ -275,11 +275,11 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   static validateJoint(data: RegionDocument.Source): void;
 
   static override fromSource(
-    source: RegionDocument.UpdateData,
+    source: RegionDocument.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<RegionDocument.Schema, DataModel.Any | null>;
+  ): RegionDocument.Implementation;
 
-  static override fromJSON(json: string): DataModel<RegionDocument.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): RegionDocument.Implementation;
 }
 
 export default BaseRegion;

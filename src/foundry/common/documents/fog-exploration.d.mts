@@ -231,11 +231,11 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   static validateJoint(data: FogExploration.Source): void;
 
   static override fromSource(
-    source: FogExploration.UpdateData,
+    source: FogExploration.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<FogExploration.Schema, DataModel.Any | null>;
+  ): FogExploration.Implementation;
 
-  static override fromJSON(json: string): DataModel<FogExploration.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): FogExploration.Implementation;
 }
 
 export default BaseFogExploration;

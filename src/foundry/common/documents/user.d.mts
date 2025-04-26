@@ -295,11 +295,11 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   static validateJoint(data: User.Source): void;
 
   static override fromSource(
-    source: User.UpdateData,
+    source: User.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<User.Schema, DataModel.Any | null>;
+  ): User.Implementation;
 
-  static override fromJSON(json: string): DataModel<User.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): User.Implementation;
 }
 
 export default BaseUser;

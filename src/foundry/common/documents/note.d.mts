@@ -256,11 +256,11 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   static validateJoint(data: NoteDocument.Source): void;
 
   static override fromSource(
-    source: NoteDocument.UpdateData,
+    source: NoteDocument.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<NoteDocument.Schema, DataModel.Any | null>;
+  ): NoteDocument.Implementation;
 
-  static override fromJSON(json: string): DataModel<NoteDocument.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): NoteDocument.Implementation;
 }
 
 export default BaseNote;

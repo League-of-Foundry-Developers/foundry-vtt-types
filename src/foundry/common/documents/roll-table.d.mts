@@ -262,11 +262,11 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   static validateJoint(data: RollTable.Source): void;
 
   static override fromSource(
-    source: RollTable.UpdateData,
+    source: RollTable.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<RollTable.Schema, DataModel.Any | null>;
+  ): RollTable.Implementation;
 
-  static override fromJSON(json: string): DataModel<RollTable.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): RollTable.Implementation;
 }
 
 export default BaseRollTable;

@@ -274,11 +274,11 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   static validateJoint(data: Combat.Source): void;
 
   static override fromSource(
-    source: Combat.UpdateData,
+    source: Combat.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<Combat.Schema, DataModel.Any | null>;
+  ): Combat.Implementation;
 
-  static override fromJSON(json: string): DataModel<Combat.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): Combat.Implementation;
 }
 
 export default BaseCombat;

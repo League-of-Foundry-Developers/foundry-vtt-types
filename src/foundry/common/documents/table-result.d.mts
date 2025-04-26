@@ -243,11 +243,11 @@ declare abstract class BaseTableResult<
   static validateJoint(data: TableResult.Source): void;
 
   static override fromSource(
-    source: TableResult.UpdateData,
+    source: TableResult.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<TableResult.Schema, DataModel.Any | null>;
+  ): TableResult.Implementation;
 
-  static override fromJSON(json: string): DataModel<TableResult.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): TableResult.Implementation;
 }
 
 export default BaseTableResult;

@@ -241,11 +241,11 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   static validateJoint(data: PlaylistSound.Source): void;
 
   static override fromSource(
-    source: PlaylistSound.UpdateData,
+    source: PlaylistSound.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<PlaylistSound.Schema, DataModel.Any | null>;
+  ): PlaylistSound.Implementation;
 
-  static override fromJSON(json: string): DataModel<PlaylistSound.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): PlaylistSound.Implementation;
 }
 
 export default BasePlaylistSound;

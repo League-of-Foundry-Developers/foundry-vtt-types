@@ -261,11 +261,11 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   static validateJoint(data: Scene.Source): void;
 
   static override fromSource(
-    source: Scene.UpdateData,
+    source: Scene.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<Scene.Schema, DataModel.Any | null>;
+  ): Scene.Implementation;
 
-  static override fromJSON(json: string): DataModel<Scene.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): Scene.Implementation;
 }
 
 export default BaseScene;

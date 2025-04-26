@@ -234,11 +234,11 @@ declare abstract class BaseJournalEntryPage<
   static validateJoint(data: JournalEntryPage.Source): void;
 
   static override fromSource(
-    source: JournalEntryPage.UpdateData,
+    source: JournalEntryPage.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<JournalEntryPage.Schema, DataModel.Any | null>;
+  ): JournalEntryPage.Implementation;
 
-  static override fromJSON(json: string): DataModel<JournalEntryPage.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): JournalEntryPage.Implementation;
 }
 
 export default BaseJournalEntryPage;

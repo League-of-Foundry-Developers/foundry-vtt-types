@@ -302,11 +302,11 @@ declare abstract class BaseActorDelta<
   static validateJoint(data: ActorDelta.Source): void;
 
   static override fromSource(
-    source: ActorDelta.UpdateData,
+    source: ActorDelta.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<ActorDelta.Schema, DataModel.Any | null>;
+  ): ActorDelta.Implementation;
 
-  static override fromJSON(json: string): DataModel<ActorDelta.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): ActorDelta.Implementation;
 }
 
 export default BaseActorDelta;

@@ -283,11 +283,11 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   static validateJoint(data: Actor.Source): void;
 
   static override fromSource(
-    source: Actor.UpdateData,
+    source: Actor.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<Actor.Schema, DataModel.Any | null>;
+  ): Actor.Implementation;
 
-  static override fromJSON(json: string): DataModel<Actor.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): Actor.Implementation;
 
   #baseActor: true;
 }

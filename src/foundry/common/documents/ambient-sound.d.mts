@@ -239,11 +239,11 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   static validateJoint(data: AmbientSoundDocument.Source): void;
 
   static override fromSource(
-    source: AmbientSoundDocument.UpdateData,
+    source: AmbientSoundDocument.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<AmbientSoundDocument.Schema, DataModel.Any | null>;
+  ): AmbientSoundDocument.Implementation;
 
-  static override fromJSON(json: string): DataModel<AmbientSoundDocument.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): AmbientSoundDocument.Implementation;
 }
 
 export default BaseAmbientSound;

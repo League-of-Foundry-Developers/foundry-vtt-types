@@ -332,11 +332,11 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   static validateJoint(data: TokenDocument.Source): void;
 
   static override fromSource(
-    source: TokenDocument.UpdateData,
+    source: TokenDocument.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<TokenDocument.Schema, DataModel.Any | null>;
+  ): TokenDocument.Implementation;
 
-  static override fromJSON(json: string): DataModel<TokenDocument.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): TokenDocument.Implementation;
 }
 
 /**

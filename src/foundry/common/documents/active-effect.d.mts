@@ -270,11 +270,11 @@ declare abstract class BaseActiveEffect<
   static validateJoint(data: ActiveEffect.Source): void;
 
   static override fromSource(
-    source: ActiveEffect.UpdateData,
+    source: ActiveEffect.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<ActiveEffect.Schema, DataModel.Any | null>;
+  ): ActiveEffect.Implementation;
 
-  static override fromJSON(json: string): DataModel<ActiveEffect.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): ActiveEffect.Implementation;
 }
 
 export default BaseActiveEffect;

@@ -238,11 +238,11 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   static validateJoint(data: AmbientLightDocument.Source): void;
 
   static override fromSource(
-    source: AmbientLightDocument.UpdateData,
+    source: AmbientLightDocument.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<AmbientLightDocument.Schema, DataModel.Any | null>;
+  ): AmbientLightDocument.Implementation;
 
-  static override fromJSON(json: string): DataModel<AmbientLightDocument.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): AmbientLightDocument.Implementation;
 }
 
 export default BaseAmbientLight;

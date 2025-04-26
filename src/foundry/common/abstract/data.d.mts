@@ -241,19 +241,17 @@ declare abstract class DataModel<
    * The source is presumed to be trustworthy and is not strictly validated.
    * @param source  - Initial document data which comes from a trusted source.
    * @param context - Model construction context
-   * @remarks The generic parameters should fit the DataModel implementation that this method is called on.
+   * @remarks Returns `new this()` so needs an override per subclass.
    */
-  static fromSource(
-    source: never,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<any, DataModel.Any | null>;
+  static fromSource(source: never, { strict, ...context }?: DataModel.FromSourceOptions): DataModel.Any;
 
   /**
    * Create a DataModel instance using a provided serialized JSON string.
    * @param json - Serialized document data in string format
    * @returns A constructed data model instance
+   * @remarks Returns `new this()` so needs an override per subclass.
    */
-  static fromJSON(json: string): ReturnType<typeof DataModel.fromSource>;
+  static fromJSON(json: string): DataModel.Any;
 
   /**
    * Migrate candidate source data for this DataModel which may require initial cleaning or transformations.

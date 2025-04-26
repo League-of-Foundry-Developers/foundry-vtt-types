@@ -244,11 +244,11 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
   static override validateJoint(data: WallDocument.Source): void;
 
   static override fromSource(
-    source: WallDocument.UpdateData,
+    source: WallDocument.CreateData,
     { strict, ...context }?: DataModel.FromSourceOptions,
-  ): DataModel<WallDocument.Schema, DataModel.Any | null>;
+  ): WallDocument.Implementation;
 
-  static override fromJSON(json: string): DataModel<WallDocument.Schema, DataModel.Any | null>;
+  static override fromJSON(json: string): WallDocument.Implementation;
 }
 
 export default BaseWall;
