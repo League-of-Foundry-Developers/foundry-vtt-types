@@ -24,6 +24,7 @@ import type {
   PickValue,
   Identity,
   ConcreteKeys,
+  Brand,
 } from "fvtt-types/utils";
 import type * as CONST from "../constants.mts";
 import type {
@@ -952,7 +953,7 @@ declare namespace Document {
         | ConfiguredSubTypesOf<Name>
         | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubtype : never);
 
-  type ModuleSubtype = `${string}.${string}` & {};
+  type ModuleSubtype = Brand<`${string}.${string}`, "Document.ModuleSubtype">;
 
   type OfType<Name extends WithSubTypes, SubType extends SubTypesOf<Name>> =
     | (Name extends "ActiveEffect" ? ActiveEffect.OfType<SubType & ActiveEffect.SubType> : never)
