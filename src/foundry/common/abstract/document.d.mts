@@ -20,10 +20,8 @@ import type {
   AllKeysOf,
   DiscriminatedUnion,
   SimpleMerge,
-  ValueOf,
   PickValue,
   Identity,
-  ConcreteKeys,
   Brand,
 } from "fvtt-types/utils";
 import type * as CONST from "../constants.mts";
@@ -1000,18 +998,6 @@ declare namespace Document {
     | "Item"
     | "JournalEntryPage"
     | "RegionBehavior";
-
-  /**
-   * To be deleted before merging documents-v2. This was from an older version of the template.
-   */
-  type EmbeddableNamesFor<Metadata extends Document.Metadata.Any> = Document.Type & ConcreteKeys<Metadata["embedded"]>;
-
-  /**
-   * To be deleted before merging documents-v2. This was from an older version of the template.
-   */
-  type CollectionNamesFor<Metadata extends Document.Metadata.Any> =
-    | EmbeddableNamesFor<Metadata>
-    | ValueOf<Metadata["embedded"]>;
 
   namespace Embedded {
     type CollectionNameFor<

@@ -410,7 +410,7 @@ declare global {
     interface DatabaseOperations extends Document.Database.Operations<RegionBehavior.Implementation> {}
 
     /**
-     * @deprecated {@link RegionBehavior.Types | `RegionBehavior.SubType`}
+     * @deprecated {@link RegionBehavior.SubType | `RegionBehavior.SubType`}
      */
     type TypeNames = RegionBehavior.SubType;
 

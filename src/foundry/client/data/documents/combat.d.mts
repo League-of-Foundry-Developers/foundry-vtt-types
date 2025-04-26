@@ -533,7 +533,7 @@ declare global {
     /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     /**
-     * @deprecated {@link Combat.Types | `Combat.SubType`}
+     * @deprecated {@link Combat.SubType | `Combat.SubType`}
      */
     type TypeNames = Combat.SubType;
 

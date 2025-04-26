@@ -500,7 +500,7 @@ declare global {
     interface DatabaseOperations extends Document.Database.Operations<Card.Implementation> {}
 
     /**
-     * @deprecated {@link Card.Types | `Card.SubType`}
+     * @deprecated {@link Card.SubType | `Card.SubType`}
      */
     type TypeNames = Card.SubType;
 

@@ -597,7 +597,7 @@ declare global {
       > {}
 
     /**
-     * @deprecated {@link ActiveEffect.Types | `ActiveEffect.SubType`}
+     * @deprecated {@link ActiveEffect.SubType | `ActiveEffect.SubType`}
      */
     type TypeNames = ActiveEffect.SubType;
 

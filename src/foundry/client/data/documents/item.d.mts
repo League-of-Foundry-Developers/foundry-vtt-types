@@ -514,7 +514,7 @@ declare global {
     interface DatabaseOperations extends Document.Database.Operations<Item.Implementation> {}
 
     /**
-     * @deprecated {@link Item.Types | `Item.SubType`}
+     * @deprecated {@link Item.SubType | `Item.SubType`}
      */
     type TypeNames = Item.SubType;
 

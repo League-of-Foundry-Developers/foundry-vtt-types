@@ -420,7 +420,7 @@ declare global {
     interface DatabaseOperations extends Document.Database.Operations<TableResult.Implementation> {}
 
     /**
-     * @deprecated {@link TableResult.Types | `TableResult.SubType`}
+     * @deprecated {@link TableResult.SubType | `TableResult.SubType`}
      */
     type TypeNames = TableResult.SubType;
 

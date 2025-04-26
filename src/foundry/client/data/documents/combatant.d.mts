@@ -447,7 +447,7 @@ declare global {
       > {}
 
     /**
-     * @deprecated {@link Combatant.Types | `Combatant.SubType`}
+     * @deprecated {@link Combatant.SubType | `Combatant.SubType`}
      */
     type TypeNames = Combatant.SubType;
 

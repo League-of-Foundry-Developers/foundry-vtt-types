@@ -546,7 +546,7 @@ declare global {
     interface DatabaseOperations extends Document.Database.Operations<JournalEntryPage.Implementation> {}
 
     /**
-     * @deprecated {@link JournalEntryPage.Types | `JournalEntryPage.SubType`}
+     * @deprecated {@link JournalEntryPage.SubType | `JournalEntryPage.SubType`}
      */
     type TypeNames = JournalEntryPage.SubType;
 

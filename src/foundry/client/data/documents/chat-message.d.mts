@@ -526,7 +526,7 @@ declare global {
     /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     /**
-     * @deprecated {@link ChatMessage.Types | `ChatMessage.SubType`}
+     * @deprecated {@link ChatMessage.SubType | `ChatMessage.SubType`}
      */
     type TypeNames = ChatMessage.SubType;
 

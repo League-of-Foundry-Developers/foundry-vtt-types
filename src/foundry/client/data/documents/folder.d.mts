@@ -391,7 +391,7 @@ declare global {
     interface DatabaseOperations extends Document.Database.Operations<Folder.Implementation> {}
 
     /**
-     * @deprecated {@link Folder.Types | `Folder.SubType`}
+     * @deprecated {@link Folder.SubType | `Folder.SubType`}
      */
     type TypeNames = Folder.SubType;
 

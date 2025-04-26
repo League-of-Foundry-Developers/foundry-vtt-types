@@ -484,7 +484,7 @@ declare global {
     interface DatabaseOperations extends Document.Database.Operations<Macro.Implementation> {}
 
     /**
-     * @deprecated {@link Macro.Types | `Macro.SubType`}
+     * @deprecated {@link Macro.SubType | `Macro.SubType`}
      */
     type TypeNames = Macro.SubType;
 

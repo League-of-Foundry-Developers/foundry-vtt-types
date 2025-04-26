@@ -502,7 +502,7 @@ declare global {
     interface DatabaseOperations extends Document.Database.Operations<ActorDelta.Implementation> {}
 
     /**
-     * @deprecated {@link ActorDelta.Types | `ActorDelta.SubType`}
+     * @deprecated {@link ActorDelta.SubType | `ActorDelta.SubType`}
      */
     type TypeNames = ActorDelta.SubType;
 
