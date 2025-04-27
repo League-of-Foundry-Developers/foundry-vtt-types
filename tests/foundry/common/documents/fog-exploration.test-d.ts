@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { AnyObject } from "../../../../src/utils/index.d.mts";
 
 class TestBaseFogExploration extends foundry.documents.BaseFogExploration {}
 
@@ -52,8 +53,8 @@ new TestBaseFogExploration({});
 declare const data: TestBaseFogExploration;
 
 expectTypeOf(data.explored).toEqualTypeOf<string | null>();
-expectTypeOf(data.positions).toEqualTypeOf<object>();
+expectTypeOf(data.positions).toEqualTypeOf<AnyObject>();
 expectTypeOf(data.scene).toEqualTypeOf<Scene.Implementation | null>();
-expectTypeOf(data.timestamp).toEqualTypeOf<number>(); // FIXME: Initial prevents undefined results
+expectTypeOf(data.timestamp).toEqualTypeOf<number>();
 expectTypeOf(data.user).toEqualTypeOf<User.Implementation | null>();
 expectTypeOf(data._id).toEqualTypeOf<string | null>();
