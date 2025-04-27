@@ -7,8 +7,8 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class FolderConfig<Options extends FolderConfig.Options = FolderConfig.Options> extends DocumentSheet<
-    Options,
-    Folder.Implementation
+    Folder.Implementation,
+    Options
   > {
     /**
      * @defaultValue

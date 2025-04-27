@@ -5,8 +5,8 @@ declare global {
    * An interface for importing an adventure from a compendium pack.
    */
   class AdventureImporter<Options extends AdventureImporter.Options = AdventureImporter.Options> extends DocumentSheet<
-    Options,
-    Adventure.Implementation
+    Adventure.Implementation,
+    Options
   > {
     /**
      * An alias for the Adventure document

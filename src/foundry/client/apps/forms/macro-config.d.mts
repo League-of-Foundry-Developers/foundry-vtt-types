@@ -8,7 +8,7 @@ declare global {
    */
   class MacroConfig<
     Options extends DocumentSheet.Options<Macro.Implementation> = DocumentSheet.Options<Macro.Implementation>,
-  > extends DocumentSheet<Options, Macro.Implementation> {
+  > extends DocumentSheet<Macro.Implementation, Options> {
     /**
      * @defaultValue
      * ```typescript

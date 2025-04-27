@@ -8,8 +8,8 @@ declare global {
    * The Application responsible for displaying and editing a single JournalEntryPage document.
    */
   class JournalPageSheet<Options extends JournalPageSheet.Options = JournalPageSheet.Options> extends DocumentSheet<
-    Options,
-    JournalEntryPage.Implementation
+    JournalEntryPage.Implementation,
+    Options
   > {
     /**
      * @defaultValue

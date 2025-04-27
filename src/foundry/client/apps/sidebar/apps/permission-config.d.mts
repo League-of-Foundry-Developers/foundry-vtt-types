@@ -5,8 +5,8 @@ declare global {
    * An application for configuring the permissions which are available to each User role.
    */
   class PermissionConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
-    Options,
-    FormApplication.NoObject
+    FormApplication.NoObject,
+    Options
   > {
     /**
      * @defaultValue

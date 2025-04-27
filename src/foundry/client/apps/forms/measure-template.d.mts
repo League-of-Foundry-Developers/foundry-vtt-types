@@ -8,7 +8,7 @@ declare global {
   class MeasuredTemplateConfig<
     Options extends
       DocumentSheet.Options<MeasuredTemplateDocument.Implementation> = DocumentSheet.Options<MeasuredTemplateDocument.Implementation>,
-  > extends DocumentSheet<Options, MeasuredTemplateDocument.Implementation> {
+  > extends DocumentSheet<MeasuredTemplateDocument.Implementation, Options> {
     /**
      * @defaultValue
      * ```typescript

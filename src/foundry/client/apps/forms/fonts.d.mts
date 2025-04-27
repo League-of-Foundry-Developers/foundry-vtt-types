@@ -2,8 +2,8 @@ import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
 declare global {
   class FontConfig<Options extends FontConfig.Options = FontConfig.Options> extends FormApplication<
-    Options,
-    FontConfig.NewFontDefinition
+    FontConfig.NewFontDefinition,
+    Options
   > {
     constructor(object?: FontConfig.NewFontDefinition, options?: Options);
 

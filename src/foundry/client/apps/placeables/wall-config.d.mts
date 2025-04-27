@@ -8,7 +8,7 @@ declare global {
   class WallConfig<
     Options extends
       DocumentSheet.Options<WallDocument.Implementation> = DocumentSheet.Options<WallDocument.Implementation>,
-  > extends DocumentSheet<Options, WallDocument.Implementation> {
+  > extends DocumentSheet<WallDocument.Implementation, Options> {
     /**
      * @defaultValue
      * ```typescript

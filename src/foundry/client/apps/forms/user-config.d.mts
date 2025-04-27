@@ -6,8 +6,8 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class UserConfig<Options extends UserConfig.Options = UserConfig.Options> extends DocumentSheet<
-    Options,
-    User.Implementation
+    User.Implementation,
+    Options
   > {
     /**
      * @defaultValue

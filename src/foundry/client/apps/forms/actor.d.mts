@@ -11,8 +11,8 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options> extends DocumentSheet<
-    Options,
-    Actor.Implementation
+    Actor.Implementation,
+    Options
   > {
     /**
      * @defaultValue

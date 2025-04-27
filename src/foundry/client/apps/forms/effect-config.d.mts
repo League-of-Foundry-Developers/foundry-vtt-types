@@ -9,7 +9,7 @@ declare global {
   class ActiveEffectConfig<
     Options extends
       DocumentSheet.Options<ActiveEffect.Implementation> = DocumentSheet.Options<ActiveEffect.Implementation>,
-  > extends DocumentSheet<Options, ActiveEffect.Implementation> {
+  > extends DocumentSheet<ActiveEffect.Implementation, Options> {
     /**
      * @defaultValue
      * ```typescript

@@ -8,7 +8,7 @@ declare global {
   class NoteConfig<
     Options extends
       DocumentSheet.Options<NoteDocument.Implementation> = DocumentSheet.Options<NoteDocument.Implementation>,
-  > extends DocumentSheet<Options, NoteDocument.Implementation> {
+  > extends DocumentSheet<NoteDocument.Implementation, Options> {
     /**
      * @defaultValue
      * ```typescript

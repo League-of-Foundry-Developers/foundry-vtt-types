@@ -7,8 +7,8 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class CardConfig<Options extends CardConfig.Options = CardConfig.Options> extends DocumentSheet<
-    Options,
-    Card.Implementation
+    Card.Implementation,
+    Options
   > {
     /**
      * @defaultValue

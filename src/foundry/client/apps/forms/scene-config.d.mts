@@ -8,7 +8,7 @@ declare global {
    */
   class SceneConfig<
     Options extends DocumentSheet.Options<Scene.Implementation> = DocumentSheet.Options<Scene.Implementation>,
-  > extends DocumentSheet<Options, Scene.Implementation> {
+  > extends DocumentSheet<Scene.Implementation, Options> {
     /**
      * @defaultValue
      * ```typescript

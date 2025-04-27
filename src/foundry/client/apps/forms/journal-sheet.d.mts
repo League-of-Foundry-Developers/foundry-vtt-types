@@ -9,8 +9,8 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class JournalSheet<Options extends JournalSheet.Options = JournalSheet.Options> extends DocumentSheet<
-    Options,
-    JournalEntry.Implementation
+    JournalEntry.Implementation,
+    Options
   > {
     /**
      * @defaultValue

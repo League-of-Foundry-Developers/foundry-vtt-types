@@ -7,7 +7,7 @@ declare global {
   class TokenConfig<
     Options extends
       DocumentSheet.Options<TokenDocument.Implementation> = DocumentSheet.Options<TokenDocument.Implementation>,
-  > extends DocumentSheet<Options, TokenDocument.Implementation | Actor.Implementation> {
+  > extends DocumentSheet<TokenDocument.Implementation | Actor.Implementation, Options> {
     constructor(object: TokenDocument.Implementation | Actor.Implementation, options?: Partial<Options>);
 
     /**

@@ -7,8 +7,8 @@ declare global {
    * An interface for packaging Adventure content and loading it to a compendium pack.
    */
   class AdventureExporter<Options extends AdventureExporter.Options = AdventureExporter.Options> extends DocumentSheet<
-    Options,
-    Adventure.Implementation
+    Adventure.Implementation,
+    Options
   > {
     constructor(object?: Adventure.Implementation & { pack: string }, options?: Partial<Options>);
 

@@ -6,8 +6,8 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class CombatTrackerConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
-    Options,
-    FormApplication.NoObject
+    FormApplication.NoObject,
+    Options
   > {
     /**
      * @defaultValue

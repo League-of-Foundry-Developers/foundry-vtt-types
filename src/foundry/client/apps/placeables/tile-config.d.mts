@@ -6,8 +6,8 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class TileConfig<Options extends TileConfig.Options = TileConfig.Options> extends DocumentSheet<
-    Options,
-    TileDocument.Implementation
+    TileDocument.Implementation,
+    Options
   > {
     /**
      * @defaultValue

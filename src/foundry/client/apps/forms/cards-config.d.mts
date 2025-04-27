@@ -1,5 +1,4 @@
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
-import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -8,10 +7,10 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class CardsConfig<Options extends CardsConfig.Options = CardsConfig.Options> extends DocumentSheet<
-    Options,
-    Cards.Implementation
+    Cards.Implementation,
+    Options
   > {
-    constructor(object: Document.ImplementationClassFor<"Cards">, options?: Options);
+    constructor(object: Cards.Implementation, options?: Options);
 
     /**
      * The allowed sorting methods which can be used for this sheet

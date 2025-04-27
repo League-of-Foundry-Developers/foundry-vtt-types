@@ -9,8 +9,8 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class DrawingConfig<Options extends DrawingConfig.Options = DrawingConfig.Options> extends FormApplication<
-    Options,
-    DrawingDocument.Implementation
+    DrawingDocument.Implementation,
+    Options
   > {
     /**
      * @defaultValue

@@ -4,7 +4,7 @@ declare global {
   /** An application for configuring data across all installed and active packages. */
   abstract class PackageConfiguration<
     Options extends PackageConfiguration.Options = PackageConfiguration.Options,
-  > extends FormApplication<Options, FormApplication.NoObject> {
+  > extends FormApplication<FormApplication.NoObject, Options> {
     /** @returns `["all", "core", "system", "module", "unmapped"]` */
     static get categoryOrder(): string[];
 

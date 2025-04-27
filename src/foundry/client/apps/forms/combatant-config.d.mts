@@ -7,8 +7,8 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class CombatantConfig<Options extends CombatantConfig.Options = CombatantConfig.Options> extends DocumentSheet<
-    Options,
-    Combatant.Implementation
+    Combatant.Implementation,
+    Options
   > {
     /**
      * @defaultValue

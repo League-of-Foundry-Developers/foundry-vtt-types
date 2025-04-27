@@ -8,7 +8,7 @@ declare global {
   class BaseSheet<
     ConcreteDocument extends Document.Any = Document.Any,
     Options extends BaseSheet.Options<ConcreteDocument> = BaseSheet.Options<ConcreteDocument>,
-  > extends DocumentSheet<Options, ConcreteDocument> {
+  > extends DocumentSheet<ConcreteDocument, Options> {
     /**
      * @defaultValue
      * ```typescript

@@ -7,7 +7,7 @@ declare global {
    */
   class RollTableConfig<
     Options extends DocumentSheet.Options<RollTable.Implementation> = DocumentSheet.Options<RollTable.Implementation>,
-  > extends DocumentSheet<Options, RollTable.Implementation> {
+  > extends DocumentSheet<RollTable.Implementation, Options> {
     /**
      * @defaultValue
      * ```typescript

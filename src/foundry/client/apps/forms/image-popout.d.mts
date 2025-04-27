@@ -28,8 +28,8 @@ declare global {
    * ```
    */
   class ImagePopout<Options extends ImagePopout.Options = ImagePopout.Options> extends FormApplication<
-    Options,
-    string
+    string,
+    Options
   > {
     constructor(src: string, options?: Partial<ImagePopout.Options>);
 

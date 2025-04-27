@@ -7,7 +7,7 @@ declare global {
    */
   class PlaylistConfig<
     Options extends DocumentSheet.Options<Playlist.Implementation> = DocumentSheet.Options<Playlist.Implementation>,
-  > extends DocumentSheet<Options, Playlist.Implementation> {
+  > extends DocumentSheet<Playlist.Implementation, Options> {
     /**
      * @defaultValue
      * ```typescript

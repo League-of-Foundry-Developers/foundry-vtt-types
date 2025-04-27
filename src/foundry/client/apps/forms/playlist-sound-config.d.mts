@@ -11,7 +11,7 @@ declare global {
   class PlaylistSoundConfig<
     Options extends
       DocumentSheet.Options<PlaylistSound.Implementation> = DocumentSheet.Options<PlaylistSound.Implementation>,
-  > extends DocumentSheet<Options, PlaylistSound.Implementation> {
+  > extends DocumentSheet<PlaylistSound.Implementation, Options> {
     /**
      * @defaultValue
      * ```typescript

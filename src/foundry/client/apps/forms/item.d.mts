@@ -11,7 +11,7 @@ declare global {
    */
   class ItemSheet<
     Options extends DocumentSheet.Options<Item.Implementation> = DocumentSheet.Options<Item.Implementation>,
-  > extends DocumentSheet<Options, Item.Implementation> {
+  > extends DocumentSheet<Item.Implementation, Options> {
     /**
      * @defaultValue
      * ```typescript

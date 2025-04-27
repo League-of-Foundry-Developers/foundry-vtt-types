@@ -7,8 +7,8 @@ declare global {
    * @typeParam Options - The type of the options object
    */
   class AVConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
-    Options,
-    AVMaster
+    AVMaster,
+    Options
   > {
     /**
      * @param object  - The {@link AVMaster | `AVMaster`} instance being configured.

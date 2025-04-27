@@ -9,9 +9,9 @@ declare global {
    * @typeParam ConcreteDocument - The type of the Document which is being managed
    */
   class DocumentSheetConfig<
-    Options extends FormApplication.Options = FormApplication.Options,
     ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
-  > extends FormApplication<Options, ConcreteDocument> {
+    Options extends FormApplication.Options = FormApplication.Options,
+  > extends FormApplication<ConcreteDocument, Options> {
     /**
      * @defaultValue
      * ```typescript
@@ -85,7 +85,7 @@ declare global {
     static unregisterSheet(
       documentClass: Document.AnyConstructor,
       scope: string,
-      sheetClass: typeof FormApplication<FormApplication.Options, any>,
+      sheetClass: typeof FormApplication<any, FormApplication.Options>,
       { types }?: { types?: string[] },
     ): void;
 
@@ -104,7 +104,7 @@ declare global {
   }
 
   namespace DocumentSheetConfig {
-    interface Any extends DocumentSheetConfig<any> {}
+    interface Any extends DocumentSheetConfig<any, any> {}
 
     interface SheetRegistration {
       action: "register";

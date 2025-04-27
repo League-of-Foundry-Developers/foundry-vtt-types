@@ -5,8 +5,8 @@ declare global {
    * An application responsible for configuring how dice are rolled and evaluated.
    */
   class DiceConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
-    Options,
-    FormApplication.NoObject
+    FormApplication.NoObject,
+    Options
   > {
     /**
      * @defaultValue

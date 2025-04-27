@@ -6,8 +6,8 @@ declare global {
    * @typeParam Options - the type of the options object
    */
   class GridConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
-    Options,
-    Scene.Implementation
+    Scene.Implementation,
+    Options
   > {
     constructor(scene: Scene.Implementation, sheet: GridConfig["sheet"], options?: Partial<Options>);
 

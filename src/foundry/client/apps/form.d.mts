@@ -22,9 +22,8 @@ declare global {
    * {@link Document | `Document`} instance or an object in general which is modified by this form
    */
   abstract class FormApplication<
-    // TODO(LukeAbby): The generic parameters here will be swapped.
-    Options extends FormApplication.Options = FormApplication.Options,
     ConcreteObject = unknown,
+    Options extends FormApplication.Options = FormApplication.Options,
   > extends Application<Options> {
     /**
      * @param object  - Some object or entity which is the target to be updated.
@@ -364,9 +363,9 @@ declare global {
    * @typeParam ConcreteDocument - the type of the Document which should be managed by this form sheet
    */
   abstract class DocumentSheet<
-    Options extends DocumentSheet.Options<ConcreteDocument>,
     ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
-  > extends FormApplication<Options, ConcreteDocument> {
+    Options extends DocumentSheet.Options<ConcreteDocument> = DocumentSheet.Options<ConcreteDocument>,
+  > extends FormApplication<ConcreteDocument, Options> {
     /**
      * @param object  - A Document instance which should be managed by this form.
      * @param options - Optional configuration parameters for how the form behaves.
@@ -480,10 +479,10 @@ declare global {
       editable: boolean;
       data: ReturnType<ConcreteDocument["toObject"]>;
       limited: boolean;
-      options: DocumentSheet<Options, ConcreteDocument>["options"];
+      options: DocumentSheet<ConcreteDocument, Options>["options"];
       owner: boolean;
-      title: DocumentSheet<Options, ConcreteDocument>["title"];
-      document: DocumentSheet<Options, ConcreteDocument>["document"];
+      title: DocumentSheet<ConcreteDocument, Options>["title"];
+      document: DocumentSheet<ConcreteDocument, Options>["document"];
     }
 
     interface Options<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any>
@@ -505,8 +504,8 @@ declare abstract class AnyFormApplication extends FormApplication<any, any> {
 }
 
 declare abstract class AnyDocumentSheet extends DocumentSheet<
-  DocumentSheet.Options<foundry.abstract.Document.Any>,
-  foundry.abstract.Document.Any
+  foundry.abstract.Document.Any,
+  DocumentSheet.Options<foundry.abstract.Document.Any>
 > {
   constructor(...args: never);
 }
