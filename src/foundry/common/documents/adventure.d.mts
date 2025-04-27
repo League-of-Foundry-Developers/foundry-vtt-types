@@ -2,7 +2,7 @@ import type { AnyObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { fields } from "../data/module.d.mts";
+import type * as fields from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**

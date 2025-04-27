@@ -36,7 +36,7 @@ export default class RegionConfig<
     options: DeepPartial<RenderOptions>,
   ): Promise<HandlebarsApplicationMixin.HandlebarsApplication.RenderContextFor<this>>;
 
-  protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): void;
+  protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   protected override _onClose(options: DeepPartial<RenderOptions>): void;
 

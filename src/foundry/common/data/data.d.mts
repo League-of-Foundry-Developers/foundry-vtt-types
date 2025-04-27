@@ -8,6 +8,7 @@ import type {
   ToMethod,
   ValueOf,
 } from "fvtt-types/utils";
+
 import fields = foundry.data.fields;
 import documents = foundry.documents;
 

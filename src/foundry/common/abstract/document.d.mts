@@ -33,7 +33,7 @@ import type {
   SchemaField,
   TypeDataField,
 } from "../data/fields.d.mts";
-import type { fields } from "../data/module.mts";
+import type { fields } from "../data/_module.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type {
   DatabaseAction,

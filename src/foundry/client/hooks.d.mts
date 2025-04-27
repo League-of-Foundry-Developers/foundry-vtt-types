@@ -790,21 +790,27 @@ declare global {
 
       /**
        * A hook event that fires when the context menu for a SceneNavigation entry is constructed.
-       * @param html         - The HTML element to which the context options are attached
+       * @param app          - The Application instance that the context menu is constructed in
        * @param entryOptions - The context menu entries
        * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
        * @see {@link SceneNavigation.activateListeners | `SceneNavigation#activateListeners`}
        */
-      getSceneNavigationContext: (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
+      getSceneNavigationContext: (
+        app: foundry.applications.ui.SceneNavigation,
+        contextOptions: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[],
+      ) => boolean | void;
 
       /**
        * A hook event that fires when the context menu for a PlayersList entry is constructed.
-       * @param html         - The HTML element to which the context options are attached
-       * @param entryOptions - The context menu entries
+       * @param app            - The Application instance that the context menu is constructed in
+       * @param contextOptions - The context menu entries
        * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
        * @see {@link PlayerList.activateListeners | `PlayerList#activateListeners`}
        */
-      getUserContextOptions: (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
+      getUserContextOptions: (
+        app: foundry.applications.ui.Players,
+        contextOptions: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[],
+      ) => boolean | void;
     }
 
     /** Application */
@@ -1155,36 +1161,45 @@ declare global {
      * A hook event that fires when the context menu for entries in an Application is constructed. Substitute the
      * Application name in the hook event to target a specific Application, for example
      * "getActorDirectoryEntryContext".
-     * @param html         - The HTML element to which the context options are attached
+     * @param app          - The Application instance that the context menu is constructed in
      * @param entryOptions - The context menu entries
      * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
      * @see {@link ContextMenu.create | `ContextMenu.create`}
      */
-    type GetEntryContext = (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
+    type GetEntryContext = (
+      app: Application.Any | foundry.applications.api.ApplicationV2.Any,
+      entryOptions: foundry.applications.ux.ContextMenu.Entry<HTMLElement | JQuery>[],
+    ) => boolean | void;
 
     /**
      * A hook event that fires when the context menu for a Sound in the PlaylistDirectory is constructed.
-     * @param html         - The HTML element to which the context options are attached
+     * @param app          - The Application instance that the context menu is constructed in
      * @param entryOptions - The context menu entries
      * @remarks The name for this hook is dynamically created by joining "get" with the type name of the PlaylistDirectory
      * and "SoundContext".
      * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
      * @see {@link PlaylistDirectory._contextMenu | `PlaylistDirectory#_contextMenu`}
      */
-    type GetPlaylistDirectorySoundContext = (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
+    type GetSoundContextPlaylistDirectory = (
+      app: foundry.applications.sidebar.tabs.PlaylistDirectory,
+      entryOptions: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[],
+    ) => boolean | void;
 
     /**
      * A hook event that fires when the context menu for folders in a SidebarTab
      * is constructed. Substitute the SidebarTab name in the hook event to target
      * a specific SidebarTab, for example "getActorDirectoryFolderContext".
-     * @param html         - The HTML element to which the context options are attached
+     * @param app          - The Application instance that the context menu is constructed in
      * @param entryOptions - The context menu entries
      * @remarks The name for this hook is dynamically created by joining "get" with the type name of the SidebarDirectory
      * and "FolderContext".
      * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
      * @see {@link SidebarDirectory._contextMenu | `SidebarDirectory#_contextMenu`}
      */
-    type GetSidebarDirectoryFolderContext = (html: JQuery, entryOptions: ContextMenu.Entry[]) => boolean | void;
+    type GetSidebarDirectoryFolderContext = (
+      app: foundry.applications.sidebar.DocumentDirectory,
+      entryOptions: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[],
+    ) => boolean | void;
 
     type DynamicCallbacks =
       | RenderApplication
@@ -1209,7 +1224,7 @@ declare global {
       | ActivateLayer
       | DeactivateLayer
       | GetEntryContext
-      | GetPlaylistDirectorySoundContext
+      | GetSoundContextPlaylistDirectory
       | GetSidebarDirectoryFolderContext;
 
     interface ErrorCallbackParameters {

@@ -1,18 +1,25 @@
-import type { AnyObject, Brand, DeepPartial, EmptyObject, Identity } from "fvtt-types/utils";
+import type { DeepPartial, Identity } from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
+
+import Document = foundry.abstract.Document;
 
 declare namespace DocumentSheetV2 {
   interface Any extends AnyDocumentSheetV2 {}
   interface AnyConstructor extends Identity<typeof AnyDocumentSheetV2> {}
 
-  type UnsetDocument = Brand<string, "DocumentSheetV2.UnsetDocument">;
+  interface RenderContext<Document extends Document.Any = Document.Any> extends ApplicationV2.RenderContext {
+    document: Document;
+    source: Document["_source"];
+    fields: Document["schema"]["fields"];
+    editable: boolean;
+    rootId: string;
+  }
 
-  interface Configuration<Document extends foundry.abstract.Document.Any | UnsetDocument = UnsetDocument>
-    extends ApplicationV2.Configuration {
+  interface Configuration<Document extends Document.Any> extends ApplicationV2.Configuration {
     /**
      * The Document instance associated with this sheet
      */
-    document: Document extends foundry.abstract.Document.Any ? Document : foundry.abstract.Document.Any;
+    document: Document;
 
     /**
      * A permission level in CONST.DOCUMENT_OWNERSHIP_LEVELS
@@ -30,17 +37,18 @@ declare namespace DocumentSheetV2 {
     sheetConfig: boolean;
   }
 
-  type PartialConfiguration<
-    Configuration extends DocumentSheetV2.Configuration<foundry.abstract.Document.Any | UnsetDocument>,
-  > = DeepPartial<Omit<Configuration, "document">> &
-    (Configuration extends DocumentSheetV2.Configuration<infer _ extends foundry.abstract.Document.Any>
+  // TODO(LukeAbby): This logic needs an update.
+  type PartialConfiguration<Configuration extends DocumentSheetV2.Configuration<Document.Any>> = DeepPartial<
+    Omit<Configuration, "document">
+  > &
+    (Configuration extends DocumentSheetV2.Configuration<infer _ extends Document.Any>
       ? // If a document is already specified in the config, don't allow it to be set in subclasses
         // because `Object.apply(new Item(...), new Actor(...))` is clearly nonsensical
         {
           /** @deprecated Document is not an allowed property in this DocumentSheetV2 subclass */
           document?: never;
         }
-      : { document?: foundry.abstract.Document.Any | undefined });
+      : { document?: Document.Any | undefined });
 
   interface RenderOptions extends ApplicationV2.RenderOptions {
     /** A string with the format "\{operation\}\{documentName\}" providing context */
@@ -55,8 +63,8 @@ declare namespace DocumentSheetV2 {
  * The Application class is responsible for rendering an HTMLElement into the Foundry Virtual Tabletop user interface.
  */
 declare class DocumentSheetV2<
-  Document extends foundry.abstract.Document.Any | DocumentSheetV2.UnsetDocument,
-  RenderContext extends AnyObject = EmptyObject,
+  Document extends Document.Any,
+  RenderContext extends object = DocumentSheetV2.RenderContext<Document>,
   Configuration extends DocumentSheetV2.Configuration<Document> = DocumentSheetV2.Configuration<Document>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
@@ -65,7 +73,7 @@ declare class DocumentSheetV2<
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
-  static DEFAULT_OPTIONS: DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration> & object;
+  static DEFAULT_OPTIONS: DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<Document.Any>> & object;
 
   get document(): Document;
 
@@ -91,7 +99,10 @@ declare class DocumentSheetV2<
 
   protected override _canRender(options: DeepPartial<RenderOptions>): false | void;
 
-  protected override _onFirstRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): void;
+  protected override _onFirstRender(
+    context: DeepPartial<RenderContext>,
+    options: DeepPartial<RenderOptions>,
+  ): Promise<void>;
 
   protected override _onClose(options: DeepPartial<RenderOptions>): void;
 

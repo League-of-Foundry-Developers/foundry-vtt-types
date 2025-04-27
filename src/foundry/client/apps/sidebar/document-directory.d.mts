@@ -130,13 +130,13 @@ declare global {
       documentsToCreate: Array<foundry.abstract.Document.Any>,
     ): Promise<void>;
 
-    protected override _getFolderContextOptions(): ContextMenu.Entry[];
+    protected override _getFolderContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
 
     /**
      * Get the set of ContextMenu options which should be used for Documents in a SidebarDirectory
      * @returns The Array of context options passed to the ContextMenu instance
      */
-    protected _getEntryContextOptions(): ContextMenu.Entry[];
+    protected _getEntryContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
 
     /**
      * @deprecated since v11, will be removed in v13

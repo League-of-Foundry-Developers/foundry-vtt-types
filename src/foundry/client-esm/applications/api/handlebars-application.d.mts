@@ -36,31 +36,36 @@ declare namespace HandlebarsApplicationMixin {
      * A CSS id to assign to the top-level element of the rendered part.
      * This id string is automatically prefixed by the application id.
      */
-    id?: string;
+    id?: string | null | undefined;
+
+    /**
+     * Does this rendered contents of this template part replace the children of the root element?
+     */
+    root?: boolean | null | undefined;
 
     /**
      * An array of CSS classes to apply to the top-level element of the
      * rendered part.
      */
-    classes?: string[];
+    classes?: string[] | null | undefined;
 
     /**
-     * An array of templates that are required to render the part.
+     * An array of additional templates that are required to render the part.
      * If omitted, only the entry-point is inferred as required.
      */
-    templates?: string[];
+    templates?: string[] | null | undefined;
 
     /**
      * An array of selectors within this part whose scroll positions should
      * be persisted during a re-render operation. A blank string is used
      * to denote that the root level of the part is scrollable.
      */
-    scrollable?: string[];
+    scrollable?: string[] | null | undefined;
 
     /**
      * A registry of forms selectors and submission handlers.
      */
-    forms?: Record<string, ApplicationV2.FormConfiguration>;
+    forms?: Record<string, ApplicationV2.FormConfiguration> | null | undefined;
   }
 
   namespace HandlebarsApplication {
@@ -104,6 +109,13 @@ declare namespace HandlebarsApplicationMixin {
     get parts(): Record<string, HTMLElement>;
 
     protected _configureRenderOptions(options: DeepPartial<HandlebarsApplicationMixin.RenderOptions>): void;
+
+    /**
+     * Allow subclasses to dynamically configure render parts.
+     */
+    protected _configureRenderParts(
+      options: HandlebarsApplicationMixin.RenderOptions,
+    ): Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
     protected _preFirstRender(
       context: DeepPartial<HandlebarsApplication.RenderContextFor<this>>,
@@ -178,6 +190,8 @@ declare namespace HandlebarsApplicationMixin {
       priorElement: HTMLElement,
       state: HandlebarsApplicationMixin.PartState,
     ): void;
+
+    protected _tearDown(options: DeepPartial<ApplicationV2.ClosingOptions>): void;
 
     /**
      * Attach event listeners to rendered template parts.

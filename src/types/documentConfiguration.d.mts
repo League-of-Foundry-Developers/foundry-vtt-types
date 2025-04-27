@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-restricted-types, no-restricted-syntax */
 
 import type { documents } from "../foundry/client-esm/client.d.mts";
-import type { Document } from "../foundry/common/abstract/module.d.mts";
+import type { Document } from "../foundry/common/abstract/_module.d.mts";
 import type { InterfaceToObject, MakeConform, MustConform, FixedInstanceType } from "fvtt-types/utils";
 
 type DocumentConform<T> = MakeConform<T, Document.AnyConstructor>;

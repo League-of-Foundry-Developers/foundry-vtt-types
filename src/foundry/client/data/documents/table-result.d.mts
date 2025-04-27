@@ -2,8 +2,9 @@ import type { ConfiguredTableResult } from "../../../../configuration/index.d.mt
 import type { Merge } from "../../../../utils/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type { fields } from "../../../common/data/module.d.mts";
 import type BaseTableResult from "../../../common/documents/table-result.d.mts";
+
+import fields = foundry.data.fields;
 
 declare global {
   namespace TableResult {

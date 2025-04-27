@@ -1,7 +1,7 @@
 import type PolygonVertex from "./vertex.d.mts";
-import type { LineIntersection } from "../../../common/utils/geometry.d.mts";
+import type { LineIntersection } from "@common/utils/geometry.d.mts";
 import type { Identity, NullishProps } from "fvtt-types/utils";
-import type { WallThresholdData } from "../../../common/documents/_types.d.mts";
+import type { WallThresholdData } from "@common/documents/_types.d.mts";
 
 /**
  * A data structure used to represent potential edges used by the ClockwiseSweepPolygon.

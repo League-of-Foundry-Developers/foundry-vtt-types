@@ -1,3 +1,5 @@
+import type { Point } from "@common/_types.d.mts";
+
 /** The node of a {@link RegionPolygonTree | `RegionPolygonTree`}.*/
 declare class RegionPolygonTreeNode {
   /**

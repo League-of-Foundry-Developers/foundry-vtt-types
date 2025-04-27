@@ -2,8 +2,9 @@ import type { ConfiguredFolder } from "../../../../configuration/index.d.mts";
 import type { InexactPartial, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type { fields } from "../../../common/data/module.d.mts";
 import type BaseFolder from "../../../common/documents/folder.d.mts";
+
+import fields = foundry.data.fields;
 
 declare global {
   namespace Folder {

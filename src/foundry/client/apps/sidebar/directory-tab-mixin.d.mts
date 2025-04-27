@@ -244,13 +244,13 @@ declare class DirectoryApplication {
    * Get the set of ContextMenu options which should be used for Folders in a SidebarDirectory
    * @returns The Array of context options passed to the ContextMenu instance
    */
-  protected _getFolderContextOptions(): ContextMenu.Entry[];
+  protected _getFolderContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
 
   /**
    * Get the set of ContextMenu options which should be used for Entries in a SidebarDirectory
    * @returns The array of context options passed to the ContextMenu instance
    */
-  protected _getEntryContextOptions(): ContextMenu.Entry[];
+  protected _getEntryContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
 }
 
 declare global {

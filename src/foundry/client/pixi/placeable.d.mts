@@ -8,7 +8,7 @@ import type {
   Titlecase,
   GetKey,
 } from "fvtt-types/utils";
-import type { Document } from "../../common/abstract/module.d.mts";
+import type { Document } from "../../common/abstract/_module.d.mts";
 import type {
   DatabaseCreateOperation,
   DatabaseDeleteOperation,

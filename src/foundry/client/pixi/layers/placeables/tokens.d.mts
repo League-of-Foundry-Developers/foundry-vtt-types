@@ -135,7 +135,7 @@ declare global {
     protected _onDropActorData(
       event: DragEvent,
       data: TokenLayer.DropData,
-    ): Promise<number | false | TokenDocument.Implementation>;
+    ): Promise<ReturnType<foundry.applications.ui.Notifications["warn"]> | false | TokenDocument.Implementation>;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 

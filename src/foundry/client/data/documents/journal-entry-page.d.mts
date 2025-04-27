@@ -2,8 +2,9 @@ import type { ConfiguredJournalEntryPage } from "../../../../configuration/index
 import type { InexactPartial, LazyUnknown, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type { fields } from "../../../common/data/module.d.mts";
 import type BaseJournalEntryPage from "../../../common/documents/journal-entry-page.d.mts";
+
+import fields = foundry.data.fields;
 
 declare global {
   namespace JournalEntryPage {

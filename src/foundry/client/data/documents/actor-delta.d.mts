@@ -1,10 +1,11 @@
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { BaseActorDelta } from "../../../common/documents/_module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { fields } from "../../../common/data/module.d.mts";
 import type { ConfiguredActorDelta } from "../../../../configuration/index.d.mts";
 import type { Merge } from "../../../../utils/index.d.mts";
 import type DataModel from "../../../common/abstract/data.d.mts";
+
+import fields = foundry.data.fields;
 
 declare global {
   namespace ActorDelta {

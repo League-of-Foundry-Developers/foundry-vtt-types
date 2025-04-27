@@ -1,5 +1,5 @@
 import type { AnyConcreteConstructor, AnyConstructor, AnyFunction } from "fvtt-types/utils";
-import type { Document } from "./abstract/module.d.mts";
+import type { Document } from "./abstract/_module.d.mts";
 
 // After seeing that none of these types add anything or are even exported a
 // very reasonable question may be: Why on earth does this file exist?

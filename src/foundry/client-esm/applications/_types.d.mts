@@ -27,6 +27,8 @@ type ApplicationClickAction = ApplicationV2.ClickAction;
 
 type ApplicationFormSubmission = ApplicationV2.FormSubmission;
 
+type ApplicationTabsConfiguration = ApplicationV2.TabsConfiguration;
+
 type ApplicationTab = ApplicationV2.Tab;
 
 type FormNode = ApplicationV2.FormNode;

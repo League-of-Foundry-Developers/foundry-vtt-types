@@ -1,9 +1,10 @@
 import type { ConfiguredItem } from "../../../../configuration/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { fields } from "../../../common/data/module.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { AnyObject, Merge } from "fvtt-types/utils";
+
+import fields = foundry.data.fields;
 
 declare global {
   namespace Item {

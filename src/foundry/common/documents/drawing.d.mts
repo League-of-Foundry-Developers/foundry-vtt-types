@@ -1,6 +1,7 @@
 import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
+import type * as CONST from "../constants.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 

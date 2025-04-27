@@ -27,9 +27,9 @@ declare global {
       options?: Application.RenderOptions<DocumentDirectory.Options>,
     ): Promise<void>;
 
-    protected override _getEntryContextOptions(): ContextMenu.Entry[];
+    protected override _getEntryContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
 
-    protected override _getFolderContextOptions(): ContextMenu.Entry[];
+    protected override _getFolderContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
   }
 
   namespace SceneDirectory {

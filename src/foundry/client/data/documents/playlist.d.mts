@@ -1,8 +1,8 @@
 import type { InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
-import type { Document } from "../../../common/abstract/module.d.mts";
+import type { Document } from "../../../common/abstract/_module.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type { fields } from "../../../common/data/module.d.mts";
+import type { fields } from "../../../common/data/_module.d.mts";
 
 declare global {
   namespace Playlist {

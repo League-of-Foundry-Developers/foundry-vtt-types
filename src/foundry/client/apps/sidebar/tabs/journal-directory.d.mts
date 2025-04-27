@@ -8,7 +8,7 @@ declare global {
   class JournalDirectory extends DocumentDirectory<"JournalEntry"> {
     static override documentName: "JournalEntry";
 
-    protected override _getEntryContextOptions(): ContextMenu.Entry[];
+    protected override _getEntryContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
   }
 
   namespace JournalDirectory {

@@ -1,6 +1,6 @@
 import { expectTypeOf, test } from "vitest";
 
-const ApplicationV2 = foundry.applications.api.ApplicationV2;
+import ApplicationV2 = foundry.applications.api.ApplicationV2;
 
 // Regression test for issue where synchronous actions were not being allowed.
 // Reported by @ethaks on Discord, see https://discord.com/channels/732325252788387980/793933527065690184/1266523231188422727.
@@ -14,6 +14,27 @@ test("synchronous action regression test", () => {
 
     static someAction(): void {
       return;
+    }
+
+    eventEmitterTest(context: ApplicationV2.RenderContext, options: ApplicationV2.RenderOptions) {
+      const handlerArgs: Parameters<_TestApp["_preFirstRender"]> = [context, options];
+
+      expectTypeOf(
+        this._doEvent(this._preFirstRender, { async: true, handlerArgs, debugText: "Before first render" }),
+      ).toEqualTypeOf<Promise<void>>();
+
+      expectTypeOf(this._doEvent(this._preFirstRender)).toBeVoid();
+
+      expectTypeOf(this._doEvent(this._preFirstRender, { async: undefined })).toBeVoid();
+
+      expectTypeOf(this._doEvent(this._preFirstRender, { async: false })).toBeVoid();
+
+      this._doEvent(this._getHeaderControls, {
+        async: false,
+        debugText: "Header Control Buttons",
+        hookName: "getHeaderControls",
+        hookResponse: true,
+      });
     }
   }
 });
@@ -58,7 +79,7 @@ expectTypeOf(applicationV2.window).toEqualTypeOf<{
   pointerStartPosition: foundry.applications.api.ApplicationV2.Position | undefined;
   pointerMoveThrottle: boolean;
 }>();
-expectTypeOf(applicationV2.tabGroups).toEqualTypeOf<Record<string, string>>();
+expectTypeOf(applicationV2.tabGroups).toEqualTypeOf<Record<string, string | null>>();
 expectTypeOf(applicationV2.classList).toEqualTypeOf<DOMTokenList>();
 expectTypeOf(applicationV2.id).toEqualTypeOf<string>();
 expectTypeOf(applicationV2.title).toEqualTypeOf<string>();
@@ -66,12 +87,14 @@ expectTypeOf(applicationV2.element).toEqualTypeOf<HTMLElement>();
 expectTypeOf(applicationV2.minimized).toEqualTypeOf<boolean>();
 expectTypeOf(applicationV2.position).toEqualTypeOf<foundry.applications.api.ApplicationV2.Position>();
 expectTypeOf(applicationV2.rendered).toEqualTypeOf<boolean>();
-expectTypeOf(applicationV2.state).toEqualTypeOf<typeof ApplicationV2.RENDER_STATES>();
+expectTypeOf(applicationV2.state).toEqualTypeOf<-3 | -2 | -1 | 0 | 1 | 2>();
 expectTypeOf(applicationV2.render()).toEqualTypeOf<Promise<foundry.applications.api.ApplicationV2>>();
 expectTypeOf(applicationV2.close()).toEqualTypeOf<Promise<foundry.applications.api.ApplicationV2>>();
 
 declare const position: foundry.applications.api.ApplicationV2.Position;
-expectTypeOf(applicationV2.setPosition(position)).toEqualTypeOf<foundry.applications.api.ApplicationV2.Position>();
+expectTypeOf(
+  applicationV2.setPosition(position),
+).toEqualTypeOf<foundry.applications.api.ApplicationV2.Position | void>();
 expectTypeOf(applicationV2.toggleControls()).toEqualTypeOf<void>();
 expectTypeOf(applicationV2.minimize()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(applicationV2.maximize()).toEqualTypeOf<Promise<void>>();
@@ -91,7 +114,7 @@ expectTypeOf(ApplicationV2.RENDER_STATES).toEqualTypeOf<{
   RENDERING: 1;
   RENDERED: 2;
 }>();
-expectTypeOf(ApplicationV2.emittedEvents).toEqualTypeOf<["render", "close", "position"]>();
+expectTypeOf(ApplicationV2.emittedEvents).toEqualTypeOf<string[]>();
 expectTypeOf(ApplicationV2.inheritanceChain()).toEqualTypeOf<
   Generator<foundry.applications.api.ApplicationV2.AnyConstructor>
 >();

@@ -3,16 +3,15 @@
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 /* eslint-disable import-x/extensions */
 
-import "../common/primitives/module.mjs";
+import "../common/primitives/_module.mjs";
 import * as _CONST from "../common/constants.mjs";
-import * as _abstract from "../common/abstract/module.mjs";
+import * as _abstract from "../common/abstract/_module.mjs";
 import * as _documents from "../common/documents/_module.mjs";
-import * as _packages from "../common/packages/module.mjs";
-import * as _utils from "../common/utils/module.mjs";
+import * as _packages from "../common/packages/_module.mjs";
+// utils is exported here in the foundry file
 import * as _config from "../common/config.mjs";
 import * as _prosemirror from "../common/prosemirror/_module.mjs";
 import * as _grid from "../common/grid/_module.mjs";
-// import * as _types from "../common/types.mjs";
 
 // client
 import * as _applications from "./applications/_module.mjs";
@@ -21,6 +20,7 @@ import * as _canvas from "./canvas/_module.mjs";
 import * as _helpers from "./helpers/_module.mjs";
 import * as _data from "./data/_module.mjs";
 import * as _dice from "./dice/_module.mjs";
+import * as _utils from "./utils/_module.mjs"; // moved here to match other client-esm exports
 
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.
@@ -30,7 +30,7 @@ export * as CONST from "../common/constants.mjs";
 /**
  * Abstract class definitions for fundamental concepts used throughout the Foundry Virtual Tabletop framework.
  */
-export * as abstract from "../common/abstract/module.mjs";
+export * as abstract from "../common/abstract/_module.mjs";
 
 /**
  * Application configuration options
@@ -45,12 +45,12 @@ export * as documents from "../common/documents/_module.mjs";
 /**
  * Package data definitions, validations, and schema.
  */
-export * as packages from "../common/packages/module.mjs";
+export * as packages from "../common/packages/_module.mjs";
 
 /**
  * Utility functions providing helpful functionality.
  */
-export * as utils from "../common/utils/module.mjs";
+export * as utils from "../common/utils/_module.mjs";
 
 /**
  * A library for providing rich text editing using ProseMirror within the Foundry Virtual Tabletop game client.
@@ -95,7 +95,7 @@ export * as dice from "./dice/_module.mjs";
 /**
  * Shared importable types.
  */
-export * as types from "../common/types.mjs";
+// export * as types from "./types.mjs";
 
 declare global {
   namespace foundry {

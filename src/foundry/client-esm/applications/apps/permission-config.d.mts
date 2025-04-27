@@ -1,5 +1,5 @@
 import type { ConformRecord, InterfaceToObject, MustConform, DeepPartial } from "fvtt-types/utils";
-import type { UserPermission } from "../../../common/constants.d.mts";
+import type { UserPermission } from "@common/constants.d.mts";
 import type { CONST } from "../../client.d.mts";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";

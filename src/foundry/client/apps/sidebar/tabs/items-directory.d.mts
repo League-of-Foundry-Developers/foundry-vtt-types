@@ -9,7 +9,7 @@ declare global {
 
     protected override _canDragDrop(selector: string): boolean;
 
-    protected override _getEntryContextOptions(): ContextMenu.Entry[];
+    protected override _getEntryContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
   }
 
   namespace ItemDirectory {

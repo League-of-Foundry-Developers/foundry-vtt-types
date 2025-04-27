@@ -58,7 +58,7 @@ declare global {
      * @returns The Array of context options passed to the ContextMenu instance
      * @internal
      */
-    protected _getContextMenuOptions(): ContextMenu.Entry[];
+    protected _getContextMenuOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
 
     /**
      * Handle left-click events on the scenes in the navigation menu

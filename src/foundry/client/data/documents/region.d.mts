@@ -1,7 +1,9 @@
 import type { InexactPartial, Merge } from "fvtt-types/utils";
-import type { BaseShapeData, fields } from "../../../common/data/module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
+
+import fields = foundry.data.fields;
+import type { BaseShapeData } from "@common/data/data.mjs";
 
 declare global {
   namespace RegionDocument {

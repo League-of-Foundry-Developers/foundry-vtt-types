@@ -1,9 +1,10 @@
 import type { ConfiguredRegionBehavior } from "../../../../configuration/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { fields } from "../../../common/data/module.d.mts";
 import type BaseRegionBehavior from "../../../common/documents/region-behavior.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { Merge } from "../../../../utils/index.d.mts";
+
+import fields = foundry.data.fields;
 
 declare global {
   namespace RegionBehavior {

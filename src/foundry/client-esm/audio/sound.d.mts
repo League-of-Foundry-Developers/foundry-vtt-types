@@ -1,5 +1,168 @@
-import type { Brand, Identity, InexactPartial, MaybePromise, NullishProps } from "fvtt-types/utils";
-import EventEmitterMixin = foundry.utils.EventEmitterMixin;
+import type { Brand, InexactPartial, MaybePromise, NullishProps, Identity } from "fvtt-types/utils";
+import type EventEmitterMixin from "@common/utils/event-emitter.d.mts";
+
+declare namespace Sound {
+  interface Any extends AnySound {}
+  interface AnyConstructor extends Identity<typeof AnySound> {}
+
+  /** @internal */
+  type _ConstructorOptions = NullishProps<{
+    /**
+     * Force use of an AudioBufferSourceNode even if the audio duration is long
+     * @defaultValue `false`
+     */
+    forceBuffer: boolean;
+
+    /**
+     * A non-default audio context within which the sound should play
+     * @defaultValue `game.audio.music`
+     */
+    context: AudioContext;
+  }>;
+
+  interface ConstructorOptions extends _ConstructorOptions {}
+
+  type STATES = Brand<number, "Sound.STATES">;
+
+  interface States {
+    readonly FAILED: -1 & STATES;
+    readonly NONE: 0 & STATES;
+    readonly LOADING: 1 & STATES;
+    readonly LOADED: 2 & STATES;
+    readonly STARTING: 3 & STATES;
+    readonly PLAYING: 4 & STATES;
+    readonly PAUSED: 5 & STATES;
+    readonly STOPPING: 6 & STATES;
+    readonly STOPPED: 7 & STATES;
+  }
+
+  /** @internal */
+  type _LoadOptions = NullishProps<{
+    /**
+     * Automatically begin playback of the sound once loaded
+     * @defaultValue `false`
+     */
+    autoplay: boolean;
+  }> &
+    InexactPartial<{
+      /**
+       * Playback options passed to Sound#play, if autoplay
+       * @defaultValue `{}`
+       * @remarks Can't be `null` as it only has a parameter default
+       */
+      autoplayOptions: Sound.PlaybackOptions;
+    }>;
+
+  interface LoadOptions extends _LoadOptions {}
+
+  /**
+   * @internal
+   * Since `Sound##playback` isn't exposed, this interface can *just* be accurate to what's allowable to pass
+   * to {@link Sound.play | `Sound#play`} or {@link Sound.stop | `#stop`}, which in reality is what's allowed
+   * by `Sound##configurePlayback`
+   */
+  type _PlaybackOptions = NullishProps<{
+    /**
+     * A delay in seconds by which to delay playback
+     * @defaultValue `0`
+     * @remarks Unlike other properties of this interface, the above default is static.
+     */
+    delay: number;
+
+    /**
+     * A limited duration in seconds for which to play
+     * @defaultValue `undefined`
+     */
+    duration: number;
+
+    /**
+     * A duration in milliseconds over which to fade in playback
+     * @defaultValue `0`
+     * @remarks Unlike other properties of this interface, the above default is static.
+     */
+    fade: number;
+
+    /**
+     * Should sound playback loop?
+     * @defaultValue `false`
+     * @remarks The above default is true for initial calls, but the actual default
+     * value, if this is passed nullish or omitted, is whatever the current value is
+     */
+    loop: boolean;
+
+    /**
+     * Seconds of the AudioBuffer when looped playback should start. Only works for AudioBufferSourceNode.
+     * @defaultValue `0`
+     * @remarks The above default is true for initial calls, but the actual default
+     * value, if this is passed nullish or omitted, is whatever the current value is
+     */
+    loopStart: number;
+
+    /**
+     * Seconds of the Audio buffer when looped playback should restart. Only works for AudioBufferSourceNode.
+     * @defaultValue `undefined`
+     * @remarks The above default is true for initial calls, but the actual default
+     * value, if this is passed nullish or omitted, is whatever the current value is
+     */
+    loopEnd: number;
+
+    /**
+     * An offset in seconds at which to start playback
+     * @defaultValue `0`
+     * @remarks The above default is true for initial calls, but the actual default
+     * value, if this is passed nullish or omitted, is whatever the current value of
+     * `loopStart` is
+     */
+    offset: number;
+
+    /**
+     * A callback function attached to the source node
+     * @defaultValue `null`
+     * @remarks The above default is true for initial calls, but the actual default
+     * value, if this is passed nullish or omitted, is whatever the current value is
+     */
+    onended: ScheduleCallback | null;
+
+    /**
+     * The volume at which to play the sound
+     * @defaultValue `1.0`
+     * @remarks The above default is true for initial calls, but the actual default
+     * value, if this is passed nullish or omitted, is whatever the current value is
+     */
+    volume: number;
+  }>;
+
+  /** @remarks Default values here are what `Sound##configurePlayback` would use if passed an empty object with no prior calls */
+  interface PlaybackOptions extends _PlaybackOptions {}
+
+  /** @internal */
+  type _FadeOptions = InexactPartial<{
+    /**
+     * The duration of the fade effect in milliseconds
+     * @defaultValue `1000`
+     * @remarks Can't be `null` as it only has a parameter default
+     */
+    duration: number;
+
+    /**
+     * The type of fade easing, "linear" or "exponential"
+     * @defaultValue `"linear"`
+     * @remarks Can't be `null` as it only has a parameter default
+     */
+    type: "linear" | "exponential";
+  }> &
+    NullishProps<{
+      /**
+       * A volume level to start from, the current volume by default
+       * @defaultValue `this.gain.value`
+       */
+      from: number;
+    }>;
+
+  interface FadeOptions extends _FadeOptions {}
+
+  type ScheduleCallback = (sound: Sound) => MaybePromise<unknown>;
+}
 
 /**
  * A container around an AudioNode which manages sound playback in Foundry Virtual Tabletop.
@@ -336,168 +499,6 @@ declare class Sound extends EventEmitterMixin(Object) {
   emit(eventName: string): void;
 }
 
-declare namespace Sound {
-  interface Any extends AnySound {}
-  interface AnyConstructor extends Identity<typeof AnySound> {}
-
-  /** @internal */
-  type _ConstructorOptions = NullishProps<{
-    /**
-     * Force use of an AudioBufferSourceNode even if the audio duration is long
-     * @defaultValue `false`
-     */
-    forceBuffer: boolean;
-
-    /**
-     * A non-default audio context within which the sound should play
-     * @defaultValue `game.audio.music`
-     */
-    context: AudioContext;
-  }>;
-
-  interface ConstructorOptions extends _ConstructorOptions {}
-
-  type STATES = Brand<number, "Sound.STATES">;
-
-  interface States {
-    readonly FAILED: -1 & STATES;
-    readonly NONE: 0 & STATES;
-    readonly LOADING: 1 & STATES;
-    readonly LOADED: 2 & STATES;
-    readonly STARTING: 3 & STATES;
-    readonly PLAYING: 4 & STATES;
-    readonly PAUSED: 5 & STATES;
-    readonly STOPPING: 6 & STATES;
-    readonly STOPPED: 7 & STATES;
-  }
-
-  /** @internal */
-  type _LoadOptions = NullishProps<{
-    /**
-     * Automatically begin playback of the sound once loaded
-     * @defaultValue `false`
-     */
-    autoplay: boolean;
-  }> &
-    InexactPartial<{
-      /**
-       * Playback options passed to Sound#play, if autoplay
-       * @defaultValue `{}`
-       * @remarks Can't be `null` as it only has a parameter default
-       */
-      autoplayOptions: Sound.PlaybackOptions;
-    }>;
-
-  interface LoadOptions extends _LoadOptions {}
-
-  /**
-   * @internal
-   * Since `Sound##playback` isn't exposed, this interface can *just* be accurate to what's allowable to pass
-   * to {@link Sound.play | `Sound#play`} or {@link Sound.stop | `#stop`}, which in reality is what's allowed
-   * by `Sound##configurePlayback`
-   */
-  type _PlaybackOptions = NullishProps<{
-    /**
-     * A delay in seconds by which to delay playback
-     * @defaultValue `0`
-     * @remarks Unlike other properties of this interface, the above default is static.
-     */
-    delay: number;
-
-    /**
-     * A limited duration in seconds for which to play
-     * @defaultValue `undefined`
-     */
-    duration: number;
-
-    /**
-     * A duration in milliseconds over which to fade in playback
-     * @defaultValue `0`
-     * @remarks Unlike other properties of this interface, the above default is static.
-     */
-    fade: number;
-
-    /**
-     * Should sound playback loop?
-     * @defaultValue `false`
-     * @remarks The above default is true for initial calls, but the actual default
-     * value, if this is passed nullish or omitted, is whatever the current value is
-     */
-    loop: boolean;
-
-    /**
-     * Seconds of the AudioBuffer when looped playback should start. Only works for AudioBufferSourceNode.
-     * @defaultValue `0`
-     * @remarks The above default is true for initial calls, but the actual default
-     * value, if this is passed nullish or omitted, is whatever the current value is
-     */
-    loopStart: number;
-
-    /**
-     * Seconds of the Audio buffer when looped playback should restart. Only works for AudioBufferSourceNode.
-     * @defaultValue `undefined`
-     * @remarks The above default is true for initial calls, but the actual default
-     * value, if this is passed nullish or omitted, is whatever the current value is
-     */
-    loopEnd: number;
-
-    /**
-     * An offset in seconds at which to start playback
-     * @defaultValue `0`
-     * @remarks The above default is true for initial calls, but the actual default
-     * value, if this is passed nullish or omitted, is whatever the current value of
-     * `loopStart` is
-     */
-    offset: number;
-
-    /**
-     * A callback function attached to the source node
-     * @defaultValue `null`
-     * @remarks The above default is true for initial calls, but the actual default
-     * value, if this is passed nullish or omitted, is whatever the current value is
-     */
-    onended: ScheduleCallback | null;
-
-    /**
-     * The volume at which to play the sound
-     * @defaultValue `1.0`
-     * @remarks The above default is true for initial calls, but the actual default
-     * value, if this is passed nullish or omitted, is whatever the current value is
-     */
-    volume: number;
-  }>;
-
-  /** @remarks Default values here are what `Sound##configurePlayback` would use if passed an empty object with no prior calls */
-  interface PlaybackOptions extends _PlaybackOptions {}
-
-  /** @internal */
-  type _FadeOptions = InexactPartial<{
-    /**
-     * The duration of the fade effect in milliseconds
-     * @defaultValue `1000`
-     * @remarks Can't be `null` as it only has a parameter default
-     */
-    duration: number;
-
-    /**
-     * The type of fade easing, "linear" or "exponential"
-     * @defaultValue `"linear"`
-     * @remarks Can't be `null` as it only has a parameter default
-     */
-    type: "linear" | "exponential";
-  }> &
-    NullishProps<{
-      /**
-       * A volume level to start from, the current volume by default
-       * @defaultValue `this.gain.value`
-       */
-      from: number;
-    }>;
-
-  interface FadeOptions extends _FadeOptions {}
-
-  type ScheduleCallback = (sound: Sound) => MaybePromise<unknown>;
-}
 export default Sound;
 
 declare abstract class AnySound extends Sound {
