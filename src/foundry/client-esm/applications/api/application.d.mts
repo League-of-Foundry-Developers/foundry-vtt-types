@@ -8,7 +8,7 @@ import type {
   AnyArray,
   Identity,
 } from "fvtt-types/utils";
-import type EventEmitterMixin from "@common/utils/event-emitter.d.mts";
+import type EventEmitterMixin from "#common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
 

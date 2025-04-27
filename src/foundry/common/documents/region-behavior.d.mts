@@ -1,4 +1,4 @@
-import type { DataField, SchemaField } from "@common/data/fields.mjs";
+import type { DataField, SchemaField } from "#common/data/fields.mjs";
 import type { AnyObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";

@@ -1,5 +1,5 @@
-import type DataModel from "@common/abstract/data.d.mts";
-import type * as fields from "@common/data/fields.mjs";
+import type DataModel from "#common/abstract/data.d.mts";
+import type * as fields from "#common/data/fields.mjs";
 
 declare namespace CalendarData {
   interface Schema extends fields.DataSchema {

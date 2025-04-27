@@ -1,11 +1,11 @@
 import type { Merge } from "../../../../utils/index.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
-import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type BaseNote from "../../../common/documents/note.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type { DataSchema } from "#common/data/fields.d.mts";
+import type BaseNote from "#common/documents/note.d.mts";
+import type { TextureData } from "#common/data/data.mjs";
 
 import fields = foundry.data.fields;
-import type { TextureData } from "@common/data/data.mjs";
 
 declare global {
   namespace NoteDocument {

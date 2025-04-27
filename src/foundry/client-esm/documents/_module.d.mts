@@ -3,7 +3,7 @@
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 /* eslint-disable import-x/extensions */
 
-export * from "@common/documents/_module.mjs";
+export * from "#common/documents/_module.mjs";
 export * as types from "./_types.mjs";
 
 // Abstract Classes

@@ -1,7 +1,7 @@
 import type RegionBehaviorType from "./base.d.mts";
 import type { Brand } from "fvtt-types/utils";
 import fields = foundry.data.fields;
-import type { InvertObject } from "@common/utils/helpers.d.mts";
+import type { InvertObject } from "#common/utils/helpers.d.mts";
 
 declare namespace DisplayScrollingTextRegionBehaviorType {
   type VISIBILITY_MODES = Brand<number, "DisplayScrollingTextRegionBehaviorType.VISIBILITY_MODES">;

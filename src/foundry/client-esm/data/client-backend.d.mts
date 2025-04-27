@@ -1,11 +1,11 @@
 import type { FixedInstanceType, LoggingLevels } from "fvtt-types/utils";
-import type Document from "@common/abstract/document.d.mts";
+import type Document from "#common/abstract/document.d.mts";
 import type {
   DatabaseGetOperation,
   DatabaseCreateOperation,
   DatabaseUpdateOperation,
   DatabaseDeleteOperation,
-} from "@common/abstract/_types.d.mts";
+} from "#common/abstract/_types.d.mts";
 
 /**
  * The client-side database backend implementation which handles Document modification operations.

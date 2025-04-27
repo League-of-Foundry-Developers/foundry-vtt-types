@@ -25,6 +25,14 @@
       "types": "./src/foundry/public/scripts/workers/image-compressor.d.mts"
     }
   },
+  "imports": {
+    "#client/*": {
+      "import": "./src/foundry/client/*"
+    },
+    "#common/*": {
+      "import": "./src/foundry/common/*"
+    }
+  },
   "scripts": {
     "format": "prettier -l -w .",
     "lint": "npm-run-all -c typecheck eslint prettier",

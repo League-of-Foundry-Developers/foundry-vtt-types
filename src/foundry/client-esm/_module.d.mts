@@ -9,7 +9,7 @@
 
 // import * as globalUI from "./ui.mjs";
 
-export * as CONST from "@common/constants.mjs";
+export * as CONST from "#common/constants.mjs";
 
 // // declare global {
 // //   const logger: typeof console;
@@ -33,7 +33,7 @@ export * as packages from "./packages/_module.mjs";
 /**
  * Abstract class definitions for fundamental concepts used throughout the Foundry Virtual Tabletop framework.
  */
-export * as abstract from "@common/abstract/_module.mjs";
+export * as abstract from "#common/abstract/_module.mjs";
 
 /**
  * Utility functions providing helpful functionality.
@@ -43,17 +43,17 @@ export * as utils from "./utils/_module.mjs";
 /**
  * Application configuration options
  */
-export * as config from "@common/config.mjs";
+export * as config from "#common/config.mjs";
 
 /**
  * A library for providing rich text editing using ProseMirror within the Foundry Virtual Tabletop game client.
  */
-export * as prosemirror from "@common/prosemirror/_module.mjs";
+export * as prosemirror from "#common/prosemirror/_module.mjs";
 
 /**
  * Grid classes.
  */
-export * as grid from "@common/grid/_module.mjs";
+export * as grid from "#common/grid/_module.mjs";
 
 // /* -------------------------------------------- */
 // /*  Client                                      */

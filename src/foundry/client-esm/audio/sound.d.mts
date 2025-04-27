@@ -1,5 +1,5 @@
 import type { Brand, InexactPartial, MaybePromise, NullishProps, Identity } from "fvtt-types/utils";
-import type EventEmitterMixin from "@common/utils/event-emitter.d.mts";
+import type EventEmitterMixin from "#common/utils/event-emitter.d.mts";
 
 declare namespace Sound {
   interface Any extends AnySound {}
