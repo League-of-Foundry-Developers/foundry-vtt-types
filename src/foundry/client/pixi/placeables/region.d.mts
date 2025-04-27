@@ -1,9 +1,9 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { Brand, FixedInstanceType, HandleEmptyObject, NullishProps } from "fvtt-types/utils";
-import type RegionShape from "../../../client-esm/canvas/regions/shape.d.mts";
-import type RegionPolygonTree from "../../../client-esm/canvas/regions/polygon-tree.d.mts";
-import type RegionGeometry from "../../../client-esm/canvas/regions/geometry.d.mts";
-import type { Point } from "../../../common/_types.d.mts";
+import type RegionShape from "#client-esm/canvas/regions/shape.d.mts";
+import type RegionPolygonTree from "#client-esm/canvas/regions/polygon-tree.d.mts";
+import type RegionGeometry from "#client-esm/canvas/regions/geometry.d.mts";
+import type { Point } from "#common/_types.d.mts";
 
 declare global {
   /**

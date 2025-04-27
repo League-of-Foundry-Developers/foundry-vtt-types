@@ -6,7 +6,7 @@ import type {
   MakeConform,
   Mixin,
 } from "fvtt-types/utils";
-import type { LogCompatibilityWarningOptions } from "../../../../common/utils/logging.d.mts";
+import type { LogCompatibilityWarningOptions } from "#common/utils/logging.d.mts";
 
 declare class RenderFlagObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

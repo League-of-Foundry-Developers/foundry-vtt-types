@@ -1,16 +1,16 @@
 import type { EditorState, Plugin } from "prosemirror-state";
 import type { DeepPartial, EmptyObject, ValueOf } from "fvtt-types/utils";
-import type Document from "../common/abstract/document.d.mts";
-import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
-import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
-import type PointVisionSource from "../client-esm/canvas/sources/point-vision-source.d.mts";
-import type RenderedEffectSource from "../client-esm/canvas/sources/rendered-effect-source.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type { ProseMirrorDropDown } from "#common/prosemirror/menu.d.mts";
+import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
+import type PointVisionSource from "#client-esm/canvas/sources/point-vision-source.d.mts";
+import type RenderedEffectSource from "#client-esm/canvas/sources/rendered-effect-source.d.mts";
 import type {
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
-} from "../common/abstract/_types.d.mts";
-import type CompendiumArt from "../client-esm/helpers/compendium-art.d.mts";
+} from "#common/abstract/_types.d.mts";
+import type CompendiumArt from "#client-esm/helpers/compendium-art.d.mts";
 
 declare global {
   /**

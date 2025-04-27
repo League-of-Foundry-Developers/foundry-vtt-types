@@ -1,6 +1,6 @@
 import type { DeepPartial, EmptyObject, InexactPartial } from "fvtt-types/utils";
-import type Document from "../../../common/abstract/document.d.mts";
-import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type { DatabaseCreateOperation } from "#common/abstract/_types.d.mts";
 
 declare global {
   /**

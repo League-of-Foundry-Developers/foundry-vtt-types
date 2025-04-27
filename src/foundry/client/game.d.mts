@@ -8,8 +8,8 @@ import type {
   InitializationHook,
   InitializedOn,
 } from "fvtt-types/utils";
-import type BasePackage from "../common/packages/base-package.d.mts";
-import type { Document } from "../common/abstract/_module.d.mts";
+import type BasePackage from "#common/packages/base-package.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 
 // Must be called with all hooks in a union.
 // Do not increase the complexity of this type. If you do Game related types may get complex enough to complain about not being statically known.

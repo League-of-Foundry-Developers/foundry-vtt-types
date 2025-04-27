@@ -1,7 +1,7 @@
 import type { FolderDocumentTypes, InexactPartial, FixedInstanceType, Merge } from "fvtt-types/utils";
-import type { fields } from "../../../common/data/_module.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
-import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type { DataSchema } from "#common/data/fields.d.mts";
 
 declare global {
   namespace Adventure {

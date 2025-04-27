@@ -1,4 +1,4 @@
-import type { Identity } from "../../../../utils/index.d.mts";
+import type { Identity } from "fvtt-types/utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 

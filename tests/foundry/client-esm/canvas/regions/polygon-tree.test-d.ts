@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { ValueOf } from "../../../../../src/utils/index.d.mts";
+import type { ValueOf } from "fvtt-types/utils";
 import RegionPolygonTree = foundry.canvas.regions.RegionPolygonTree;
 
 declare const somePath: ClipperLib.Path;

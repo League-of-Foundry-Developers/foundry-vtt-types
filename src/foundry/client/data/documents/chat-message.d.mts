@@ -1,9 +1,9 @@
-import type { ConfiguredChatMessage } from "../../../../configuration/index.d.mts";
+import type { ConfiguredChatMessage } from "fvtt-types/configuration";
 import type { AnyObject, InexactPartial, InterfaceToObject, Merge } from "fvtt-types/utils";
-import type { documents } from "../../../client-esm/client.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
-import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type BaseChatMessage from "../../../common/documents/chat-message.d.mts";
+import type { documents } from "#client-esm/client.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type { DataSchema } from "#common/data/fields.d.mts";
+import type BaseChatMessage from "#common/documents/chat-message.d.mts";
 
 import fields = foundry.data.fields;
 

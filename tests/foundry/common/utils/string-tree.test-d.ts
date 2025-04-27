@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyObject } from "../../../../src/utils/index.d.mts";
+import type { AnyObject } from "fvtt-types/utils";
 
 const s = new foundry.utils.StringTree();
 declare const node: foundry.utils.StringTree.StringTreeNode<AnyObject>;

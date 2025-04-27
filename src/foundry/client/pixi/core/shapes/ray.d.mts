@@ -1,5 +1,5 @@
 import type { Identity } from "fvtt-types/utils";
-import type { LineIntersection } from "../../../../common/utils/geometry.d.mts";
+import type { LineIntersection } from "#common/utils/geometry.d.mts";
 
 declare global {
   /**

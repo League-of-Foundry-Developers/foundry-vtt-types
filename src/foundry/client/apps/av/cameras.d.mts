@@ -1,5 +1,5 @@
 import type { GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
-import type Document from "../../../common/abstract/document.d.mts";
+import type Document from "#common/abstract/document.d.mts";
 
 declare global {
   /**

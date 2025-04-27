@@ -1,9 +1,9 @@
-import type { ConfiguredActiveEffect } from "../../../../configuration/index.d.mts";
+import type { ConfiguredActiveEffect } from "fvtt-types/configuration";
 import type { AnyObject, InterfaceToObject, Merge } from "fvtt-types/utils";
-import type { DataModel } from "../../../common/abstract/data.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
-import type { DataField, DataSchema } from "../../../common/data/fields.d.mts";
-import type BaseActiveEffect from "../../../common/documents/active-effect.d.mts";
+import type { DataModel } from "#common/abstract/data.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type { DataField, DataSchema } from "#common/data/fields.d.mts";
+import type BaseActiveEffect from "#common/documents/active-effect.d.mts";
 
 import fields = foundry.data.fields;
 

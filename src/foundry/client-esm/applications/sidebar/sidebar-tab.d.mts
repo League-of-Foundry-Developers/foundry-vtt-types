@@ -1,4 +1,4 @@
-import type { DeepPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial } from "fvtt-types/utils";
 import type ApplicationV2 from "../api/application.d.mts";
 
 /**

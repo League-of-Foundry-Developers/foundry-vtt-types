@@ -1,10 +1,10 @@
-import type { ConfiguredCards } from "../../../../configuration/index.d.mts";
+import type { ConfiguredCards } from "fvtt-types/configuration";
 import type { DeepPartial, InexactPartial, Merge } from "fvtt-types/utils";
-import type Document from "../../../common/abstract/document.d.mts";
-import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type { fields } from "../../../common/data/_module.d.mts";
-import type BaseCards from "../../../common/documents/cards.d.mts";
-import type { documents } from "../../../client-esm/client.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type { DataSchema } from "#common/data/fields.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
+import type BaseCards from "#common/documents/cards.d.mts";
+import type { documents } from "#client-esm/client.d.mts";
 
 declare global {
   namespace Cards {

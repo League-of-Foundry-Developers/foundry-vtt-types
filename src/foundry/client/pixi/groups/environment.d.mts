@@ -1,5 +1,5 @@
 import type { HandleEmptyObject, Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
-import type { SceneEnvironmentData } from "../../../common/documents/_types.d.mts";
+import type { SceneEnvironmentData } from "#common/documents/_types.d.mts";
 
 declare global {
   /**

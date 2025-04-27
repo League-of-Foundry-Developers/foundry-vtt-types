@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { HandleEmptyObject } from "../../../../../../src/utils/index.d.mts";
+import type { HandleEmptyObject } from "fvtt-types/utils";
 
 interface MyInteractionLayerOptions extends InteractionLayer.LayerOptions {
   name: "MyInteractionLayer";

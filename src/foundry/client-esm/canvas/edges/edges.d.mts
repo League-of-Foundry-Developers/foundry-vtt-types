@@ -1,4 +1,4 @@
-import type { Identity } from "../../../../utils/index.d.mts";
+import type { Identity } from "fvtt-types/utils";
 import type Edge from "./edge.d.mts";
 
 /**

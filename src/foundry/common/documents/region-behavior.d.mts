@@ -1,5 +1,5 @@
 import type { DataField, SchemaField } from "#common/data/fields.mjs";
-import type { AnyObject } from "../../../utils/index.d.mts";
+import type { AnyObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";

@@ -1,5 +1,5 @@
-import type Document from "../../common/abstract/document.d.mts";
-import type { DataModelValidationError } from "../../common/data/validation-failure.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type { DataModelValidationError } from "#common/data/validation-failure.d.mts";
 
 declare global {
   /**

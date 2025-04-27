@@ -1,6 +1,6 @@
 import { assertType, expectTypeOf } from "vitest";
 import Document = foundry.abstract.Document;
-import type { HandleEmptyObject } from "../../../../src/utils/index.d.mts";
+import type { HandleEmptyObject } from "fvtt-types/utils";
 
 expectTypeOf(PlaceableObject.embeddedName).toBeString();
 

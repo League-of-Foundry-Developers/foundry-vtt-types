@@ -1,4 +1,4 @@
-import type { Identity, NullishProps } from "../../../utils/index.d.mts";
+import type { Identity, NullishProps } from "fvtt-types/utils";
 
 /**
  * A special error class used for cancellation.

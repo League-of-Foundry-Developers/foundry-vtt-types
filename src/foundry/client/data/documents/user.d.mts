@@ -1,8 +1,8 @@
 import type { ConfiguredDocumentClass } from "../../../../types/documentConfiguration.d.mts";
 import type { AnyObject, FixedInstanceType, InexactPartial, Merge, NullishProps } from "fvtt-types/utils";
-import type Document from "../../../common/abstract/document.d.mts";
-import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type { BaseActor } from "../../../common/documents/_module.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type { DataSchema } from "#common/data/fields.d.mts";
+import type { BaseActor } from "#common/documents/_module.d.mts";
 
 import fields = foundry.data.fields;
 

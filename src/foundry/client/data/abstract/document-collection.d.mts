@@ -1,10 +1,6 @@
 import type { AnyObject, DeepPartial, InexactPartial, FixedInstanceType } from "fvtt-types/utils";
-import type {
-  DatabaseAction,
-  DatabaseOperationMap,
-  DatabaseUpdateOperation,
-} from "../../../common/abstract/_types.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
+import type { DatabaseAction, DatabaseOperationMap, DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
+import type Document from "#common/abstract/document.d.mts";
 
 declare global {
   /**

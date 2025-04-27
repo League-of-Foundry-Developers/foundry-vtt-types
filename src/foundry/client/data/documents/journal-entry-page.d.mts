@@ -1,8 +1,8 @@
-import type { ConfiguredJournalEntryPage } from "../../../../configuration/index.d.mts";
+import type { ConfiguredJournalEntryPage } from "fvtt-types/configuration";
 import type { InexactPartial, LazyUnknown, Merge } from "fvtt-types/utils";
-import type Document from "../../../common/abstract/document.d.mts";
-import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type BaseJournalEntryPage from "../../../common/documents/journal-entry-page.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type { DataSchema } from "#common/data/fields.d.mts";
+import type BaseJournalEntryPage from "#common/documents/journal-entry-page.d.mts";
 
 import fields = foundry.data.fields;
 

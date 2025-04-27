@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyObject } from "../../../../../src/utils/index.d.mts";
+import type { AnyObject } from "fvtt-types/utils";
 // import type { ArmorData, WeaponData } from "./item.test-d";
 
 // @ts-expect-error - Actor requires name.

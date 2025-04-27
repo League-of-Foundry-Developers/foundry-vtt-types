@@ -8,12 +8,12 @@ import type {
   Titlecase,
   GetKey,
 } from "fvtt-types/utils";
-import type { Document } from "../../common/abstract/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type {
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
-} from "../../common/abstract/_types.d.mts";
+} from "#common/abstract/_types.d.mts";
 
 // Gets a key with a required shape to conform to which is also used as a fallback when the key doesn't exist.
 type GetKeyWithShape<T, K extends PropertyKey, S> = MakeConform<GetKey<T, K>, S>;

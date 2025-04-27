@@ -1,5 +1,5 @@
 import type { AnyObject } from "fvtt-types/utils";
-import type { DatabaseOperationMap, DocumentSocketRequest } from "../../common/abstract/_types.d.mts";
+import type { DatabaseOperationMap, DocumentSocketRequest } from "#common/abstract/_types.d.mts";
 
 declare global {
   class SocketInterface {

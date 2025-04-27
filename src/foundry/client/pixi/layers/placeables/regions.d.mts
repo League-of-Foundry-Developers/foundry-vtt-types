@@ -1,6 +1,6 @@
 import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
-import type Document from "../../../../common/abstract/document.d.mts";
-import type DataModel from "../../../../common/abstract/data.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type DataModel from "#common/abstract/data.d.mts";
 
 declare global {
   /**

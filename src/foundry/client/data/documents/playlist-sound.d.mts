@@ -1,7 +1,7 @@
 import type { InexactPartial, Merge } from "fvtt-types/utils";
-import type Sound from "../../../client-esm/audio/sound.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
-import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type Sound from "#client-esm/audio/sound.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type { DataSchema } from "#common/data/fields.d.mts";
 
 import fields = foundry.data.fields;
 

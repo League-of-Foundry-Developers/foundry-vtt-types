@@ -1,5 +1,5 @@
 import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
-import type Document from "../../../../common/abstract/document.d.mts";
+import type Document from "#common/abstract/document.d.mts";
 
 declare class PrimaryCanvasObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type { DOMParser as BaseDOMParser, Node } from "prosemirror-model";
-import type { FixedInstanceType } from "../../../../src/utils/index.d.mts";
+import type { FixedInstanceType } from "fvtt-types/utils";
 
 declare const schema: foundry.prosemirror.Schema;
 

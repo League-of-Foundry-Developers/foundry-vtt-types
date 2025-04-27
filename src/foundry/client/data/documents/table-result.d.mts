@@ -1,8 +1,8 @@
-import type { ConfiguredTableResult } from "../../../../configuration/index.d.mts";
-import type { Merge } from "../../../../utils/index.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
-import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type BaseTableResult from "../../../common/documents/table-result.d.mts";
+import type { ConfiguredTableResult } from "fvtt-types/configuration";
+import type { Merge } from "fvtt-types/utils";
+import type Document from "#common/abstract/document.d.mts";
+import type { DataSchema } from "#common/data/fields.d.mts";
+import type BaseTableResult from "#common/documents/table-result.d.mts";
 
 import fields = foundry.data.fields;
 

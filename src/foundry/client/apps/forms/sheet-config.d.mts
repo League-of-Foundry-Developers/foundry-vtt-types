@@ -1,6 +1,6 @@
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
-import type DocumentSheetV2 from "../../../client-esm/applications/api/document-sheet.d.mts";
-import type { Document } from "../../../common/abstract/_module.d.mts";
+import type DocumentSheetV2 from "#client-esm/applications/api/document-sheet.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 
 declare global {
   /**

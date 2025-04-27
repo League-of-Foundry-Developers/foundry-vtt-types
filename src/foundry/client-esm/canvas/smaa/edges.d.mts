@@ -1,4 +1,4 @@
-import type { IntentionalPartial, RequiredProps } from "../../../../utils/index.d.mts";
+import type { IntentionalPartial, RequiredProps } from "fvtt-types/utils";
 
 /**
  * The edge detection filter for {@link foundry.canvas.SMAAFilter | `foundry.canvas.SMAAFilter`}.

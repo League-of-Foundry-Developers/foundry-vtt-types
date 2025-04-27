@@ -1,6 +1,6 @@
-import type { Merge } from "../../../../utils/index.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
-import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { Merge } from "fvtt-types/utils";
+import type Document from "#common/abstract/document.d.mts";
+import type { DataSchema } from "#common/data/fields.d.mts";
 
 import fields = foundry.data.fields;
 

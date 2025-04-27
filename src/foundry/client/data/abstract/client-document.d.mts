@@ -1,5 +1,5 @@
 import type { Mixin, FixedInstanceType, Coalesce, AnyObject } from "fvtt-types/utils";
-import type Document from "../../../common/abstract/document.d.mts";
+import type Document from "#common/abstract/document.d.mts";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 

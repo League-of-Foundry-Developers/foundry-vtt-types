@@ -1,9 +1,9 @@
-import type { ConfiguredCard } from "../../../../configuration/index.d.mts";
+import type { ConfiguredCard } from "fvtt-types/configuration";
 import type { DeepPartial, Merge } from "fvtt-types/utils";
-import type { documents } from "../../../client-esm/client.d.mts";
-import type Document from "../../../common/abstract/document.d.mts";
-import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type BaseCard from "../../../common/documents/card.d.mts";
+import type { documents } from "#client-esm/client.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type { DataSchema } from "#common/data/fields.d.mts";
+import type BaseCard from "#common/documents/card.d.mts";
 
 import fields = foundry.data.fields;
 

@@ -1,5 +1,5 @@
-import type Document from "../../common/abstract/document.d.mts";
-import type { DOCUMENT_OWNERSHIP_LEVELS } from "../../common/constants.d.mts";
+import type Document from "#common/abstract/document.d.mts";
+import type { DOCUMENT_OWNERSHIP_LEVELS } from "#common/constants.d.mts";
 
 declare global {
   /**

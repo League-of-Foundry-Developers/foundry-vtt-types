@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { DeepPartial } from "../../../../../src/utils/index.d.mts";
+import type { DeepPartial } from "fvtt-types/utils";
 
 const regionLegend = new foundry.applications.ui.RegionLegend({});
 

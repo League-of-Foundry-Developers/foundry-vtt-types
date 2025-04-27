@@ -1,5 +1,5 @@
 import type { IntentionalPartial, InexactPartial, NullishProps, HandleEmptyObject, Identity } from "fvtt-types/utils";
-import type { AmbientSoundEffect } from "../../../../common/documents/_types.d.mts";
+import type { AmbientSoundEffect } from "#common/documents/_types.d.mts";
 
 declare global {
   /**
