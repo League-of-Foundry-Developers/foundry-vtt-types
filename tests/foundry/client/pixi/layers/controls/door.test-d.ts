@@ -1,12 +1,12 @@
 import { expectTypeOf } from "vitest";
 
-declare const wall: Wall.Object;
+declare const wall: Wall.Implementation;
 
 // @ts-expect-error - A DoorControl requires a wall.
 new DoorControl();
 const control = new DoorControl(wall);
 
-expectTypeOf(control.wall).toEqualTypeOf<Wall.Object>();
+expectTypeOf(control.wall).toEqualTypeOf<Wall.Implementation>();
 expectTypeOf(control.center).toEqualTypeOf<PIXI.Point>();
 expectTypeOf(control.isVisible).toEqualTypeOf<boolean>();
 

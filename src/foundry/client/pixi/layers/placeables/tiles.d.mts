@@ -34,13 +34,13 @@ declare global {
     /**
      * An array of Tile objects which are rendered within the objects container
      */
-    get tiles(): Tile.Object[];
+    get tiles(): Tile.Implementation[];
 
     /**
      * @remarks Only produces foreground or non-forground tiles, depending on the state
      * of the foregound layer toggle control
      */
-    override controllableObjects(): Generator<Tile.Object>;
+    override controllableObjects(): Generator<Tile.Implementation>;
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
@@ -78,7 +78,7 @@ declare global {
      * @deprecated since v12 until v14
      * @remarks "TilesLayer#roofs has been deprecated without replacement."
      */
-    get roofs(): Tile.Object[];
+    get roofs(): Tile.Implementation[];
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -100,7 +100,7 @@ declare global {
 
     interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<Tile.ObjectClass> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Tile.ImplementationClass> {
       name: "tiles";
       zIndex: 300;
       controllableObjects: true;

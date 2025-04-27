@@ -299,7 +299,7 @@ declare global {
        * @param statusId - The status effect ID being applied, from CONFIG.specialStatusEffects.
        * @param active   - Is the special status effect now active?
        */
-      applyTokenStatusEffect: (token: Token.Object, statusId: string, active: boolean) => void;
+      applyTokenStatusEffect: (token: Token.Implementation, statusId: string, active: boolean) => void;
 
       /**
        * A hook event that fires when a chat bubble is initially configured.
@@ -313,7 +313,7 @@ declare global {
        * @see {@link ChatBubbles.say | `ChatBubbles#say`}
        */
       chatBubble: (
-        token: Token.Object,
+        token: Token.Implementation,
         html: JQuery,
         message: string,
         options: {
@@ -368,7 +368,7 @@ declare global {
        * @param options - Options for rendering the associated {@link JournalSheet | `JournalSheet`}
        * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
        */
-      activateNote: (note: Note.Object, options: JournalSheet.RenderOptions) => true | false;
+      activateNote: (note: Note.Implementation, options: JournalSheet.RenderOptions) => true | false;
 
       /** Cards */
 

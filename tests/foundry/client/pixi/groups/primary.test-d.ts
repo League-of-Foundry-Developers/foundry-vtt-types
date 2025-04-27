@@ -5,8 +5,8 @@ expectTypeOf(PrimaryCanvasGroup.tearDownChildren).toEqualTypeOf<boolean>();
 expectTypeOf(PrimaryCanvasGroup.BACKGROUND_ELEVATION).toEqualTypeOf<number>();
 
 declare const someMesh: SpriteMesh;
-declare const someToken: Token.Object;
-declare const someTile: Tile.Object;
+declare const someToken: Token.Implementation;
+declare const someTile: Tile.Implementation;
 declare const someDrawing: Drawing.Object;
 const myPrimaryGroup = new PrimaryCanvasGroup(someMesh);
 

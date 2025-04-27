@@ -871,7 +871,7 @@ declare global {
     /**
      * @deprecated Since v12. Use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
      */
-    getCombatantByToken(token: Token.Object): Combatant.Implementation[];
+    getCombatantByToken(token: Token.Implementation): Combatant.Implementation[];
 
     /*
      * After this point these are not really overridden methods.

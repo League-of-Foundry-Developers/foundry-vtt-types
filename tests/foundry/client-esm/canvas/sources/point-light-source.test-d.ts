@@ -54,7 +54,7 @@ expectTypeOf(mySource["_configure"](sourceData)).toBeVoid();
 expectTypeOf(mySource["_getPolygonConfiguration"]()).toEqualTypeOf<PointLightSource.PolygonConfig>();
 
 declare const someVisionSource: foundry.canvas.sources.PointVisionSource;
-declare const someToken: Token.Object;
+declare const someToken: Token.Implementation;
 const tests = [
   {
     elevation: 0,

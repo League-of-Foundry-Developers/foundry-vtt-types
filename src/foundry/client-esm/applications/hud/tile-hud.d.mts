@@ -11,4 +11,9 @@ export default class TileHUD<
   RenderContext extends BasePlaceableHUD.RenderContext = BasePlaceableHUD.RenderContext,
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
-> extends HandlebarsApplicationMixin(BasePlaceableHUD)<Tile.Object, RenderContext, Configuration, RenderOptions> {}
+> extends HandlebarsApplicationMixin(BasePlaceableHUD)<
+  Tile.Implementation,
+  RenderContext,
+  Configuration,
+  RenderOptions
+> {}

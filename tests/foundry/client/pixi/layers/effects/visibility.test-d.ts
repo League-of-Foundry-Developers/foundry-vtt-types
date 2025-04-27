@@ -33,7 +33,7 @@ expectTypeOf(layer.resetExploration()).toBeVoid();
 expectTypeOf(layer.restrictVisibility()).toBeVoid();
 
 declare const somePoint: PIXI.Point;
-declare const someToken: Token.Object;
+declare const someToken: Token.Implementation;
 expectTypeOf(layer.testVisibility({ x: 0, y: 0 })).toBeBoolean();
 expectTypeOf(layer.testVisibility(somePoint, {})).toBeBoolean();
 expectTypeOf(

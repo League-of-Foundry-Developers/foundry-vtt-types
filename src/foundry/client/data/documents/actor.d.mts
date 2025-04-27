@@ -702,7 +702,7 @@ declare global {
     getActiveTokens<ReturnDocument extends boolean | undefined = undefined>(
       linked?: boolean,
       document?: ReturnDocument,
-    ): ReturnDocument extends true ? TokenDocument.Implementation[] : Token.Object[];
+    ): ReturnDocument extends true ? TokenDocument.Implementation[] : Token.Implementation[];
 
     /**
      * Get all ActiveEffects that may apply to this Actor.

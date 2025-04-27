@@ -78,7 +78,7 @@ declare global {
      * @param tokens - The set of currently controlled Token objects
      * @returns The PCO objects which should be currently occluded
      */
-    protected _identifyOccludedObjects(tokens: Token.Object[]): Set<PrimaryCanvasObjectMixin.AnyMixed>;
+    protected _identifyOccludedObjects(tokens: Token.Implementation[]): Set<PrimaryCanvasObjectMixin.AnyMixed>;
 
     /**
      * @deprecated since v11, will be removed in v13

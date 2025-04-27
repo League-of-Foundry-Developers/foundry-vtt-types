@@ -38,7 +38,7 @@ declare global {
     /**
      * The collection of drawing objects which are rendered in the interface.
      */
-    graphics: Collection<Drawing.Object>;
+    graphics: Collection<Drawing.Implementation>;
 
     override get hud(): NonNullable<Canvas["hud"]>["drawing"];
 
@@ -98,7 +98,7 @@ declare global {
 
     interface DrawOptions extends CanvasLayer.DrawOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<Drawing.ObjectClass> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Drawing.ImplementationClass> {
       name: "drawings";
       controllableObjects: true;
       rotatableObjects: true;

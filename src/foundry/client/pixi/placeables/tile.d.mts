@@ -98,7 +98,7 @@ declare global {
      * Create a preview tile with a background texture instead of an image
      * @param data - Initial data with which to create the preview Tile
      */
-    static createPreview(data: TileDocument.CreateData): Tile.Object;
+    static createPreview(data: TileDocument.CreateData): Tile.Implementation;
 
     protected override _draw(options: HandleEmptyObject<Tile.DrawOptions>): Promise<void>;
 
@@ -220,7 +220,7 @@ declare global {
      * The runtime deprecation warning erroneously points to `PrimaryCanvasObject#testOcclusion`
      */
     // options: not null (destructured where forwarded)
-    testOcclusion(token: Token.Object, options?: PrimaryOccludableObjectMixin.TestOcclusionOptions): boolean;
+    testOcclusion(token: Token.Implementation, options?: PrimaryOccludableObjectMixin.TestOcclusionOptions): boolean;
 
     /**
      * @deprecated since v11, will be removed in v13
@@ -248,39 +248,44 @@ declare global {
   }
 
   namespace Tile {
+    /**
+     * The implementation of the `Tile` placeable configured through `CONFIG.Tile.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link TileDocument.Implementation | `TileDocument.Implementation`}
+     * which refers to the implementation for the Tile document.
+     */
+    type Implementation = FixedInstanceType<ImplementationClass>;
+
+    /**
+     * The implementation of the `Tile` placeable configured through `CONFIG.Tile.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link TileDocument.ImplementationClass | `TileDocument.ImplementationClass`}
+     * which refers to the implementation for the Tile document.
+     */
     // eslint-disable-next-line no-restricted-syntax
-    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof Tile> {}
-    interface Object extends FixedInstanceType<ObjectClass> {}
+    type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Tile>;
 
     /**
-     * @deprecated {@link Tile.ObjectClass | `Tile.ObjectClass`}
+     * @deprecated {@link ImplementationClass | `ImplementationClass`}
      */
-    type ConfiguredClass = ObjectClass;
+    type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Tile.Object | `Tile.Object`}
+     * @deprecated {@link Implementation | `Implementation`}
      */
-    type ConfiguredInstance = Object;
+    type Object = Implementation;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `Tile` (the `PlaceableObject` that appears on the canvas) and
-     * `TileDocument` (the `Document` that represents the data for a `Tile`) is so common that
-     * it is useful to have a type to forward to `TileDocument`.
-     *
-     * @deprecated {@link TileDocument.Implementation | `TileDocument.Implementation`}
+     * @deprecated {@link Tile.ImplementationClass | `Tile.ImplementationClass`}
      */
-    type Implementation = TileDocument.Implementation;
+    type ConfiguredClass = ImplementationClass;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `Tile` (the `PlaceableObject` that appears on the canvas) and
-     * `TileDocument` (the `Document` that represents the data for a `Tile`) is so common that
-     * it is useful to have a type to forward to `TileDocument`.
-     *
-     * @deprecated {@link TileDocument.ImplementationClass | `TileDocument.ImplementationClass`}
+     * @deprecated {@link Tile.Implementation | `Tile.Implementation`}
      */
-    type ImplementationClass = TileDocument.ImplementationClass;
+    type ConfiguredInstance = Implementation;
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */

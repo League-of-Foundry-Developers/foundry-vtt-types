@@ -449,7 +449,7 @@ declare global {
       actor: Actor.Implementation;
 
       /**  A Token which is the protagonist of the executed action. */
-      token: Token.Object;
+      token: Token.Implementation;
 
       /** An optional event passed to the executed macro. */
       event: Event | RegionDocument.RegionEvent;

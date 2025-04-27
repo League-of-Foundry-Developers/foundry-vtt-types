@@ -152,39 +152,44 @@ declare global {
   }
 
   namespace Region {
+    /**
+     * The implementation of the `Region` placeable configured through `CONFIG.Region.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link RegionDocument.Implementation | `RegionDocument.Implementation`}
+     * which refers to the implementation for the region document.
+     */
+    type Implementation = FixedInstanceType<ImplementationClass>;
+
+    /**
+     * The implementation of the `Region` placeable configured through `CONFIG.Region.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link RegionDocument.ImplementationClass | `RegionDocument.ImplementationClass`}
+     * which refers to the implementation for the region document.
+     */
     // eslint-disable-next-line no-restricted-syntax
-    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof Region> {}
-    interface Object extends FixedInstanceType<ObjectClass> {}
+    type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Region>;
 
     /**
-     * @deprecated {@link Region.ObjectClass | `Region.ObjectClass`}
+     * @deprecated {@link ImplementationClass | `ImplementationClass`}
      */
-    type ConfiguredClass = ObjectClass;
+    type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Region.Object | `Region.Object`}
+     * @deprecated {@link Implementation | `Implementation`}
      */
-    type ConfiguredInstance = Object;
+    type Object = Implementation;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `Region` (the `PlaceableObject` that appears on the canvas) and
-     * `RegionDocument` (the `Document` that represents the data for a `Region`) is so common that
-     * it is useful to have a type to forward to `RegionDocument`.
-     *
-     * @deprecated {@link RegionDocument.Implementation | `RegionDocument.Implementation`}
+     * @deprecated {@link Region.ImplementationClass | `Region.ImplementationClass`}
      */
-    type Implementation = RegionDocument.Implementation;
+    type ConfiguredClass = ImplementationClass;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `Region` (the `PlaceableObject` that appears on the canvas) and
-     * `RegionDocument` (the `Document` that represents the data for a `Region`) is so common that
-     * it is useful to have a type to forward to `RegionDocument`.
-     *
-     * @deprecated {@link RegionDocument.ImplementationClass | `RegionDocument.ImplementationClass`}
+     * @deprecated {@link Region.Implementation | `Region.Implementation`}
      */
-    type ImplementationClass = RegionDocument.ImplementationClass;
+    type ConfiguredInstance = Implementation;
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */

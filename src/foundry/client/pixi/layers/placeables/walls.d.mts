@@ -61,7 +61,7 @@ declare global {
     /**
      * An Array of Wall instances in the current Scene which act as Doors.
      */
-    get doors(): Wall.Object[];
+    get doors(): Wall.Implementation[];
 
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
@@ -75,13 +75,13 @@ declare global {
      * @param wall  - The existing Wall object being chained to
      * @returns The [x,y] coordinates of the starting endpoint
      */
-    static getClosestEndpoint(point: Canvas.Point, wall: Wall.Object): Canvas.PointTuple;
+    static getClosestEndpoint(point: Canvas.Point, wall: Wall.Implementation): Canvas.PointTuple;
 
     override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
     /** @remarks `options` is unused */
     protected override _pasteObject(
-      copy: Wall.Object,
+      copy: Wall.Implementation,
       offset: Canvas.Point,
       options?: PlaceablesLayer.PasteOptions | null,
     ): Omit<WallDocument.Source, "_id">;
@@ -120,10 +120,10 @@ declare global {
      * @returns The polygons of the interior.
      * @remarks Foundry marked `@license MIT`
      */
-    identifyInteriorArea(walls: Wall.Object[]): PIXI.Polygon[];
+    identifyInteriorArea(walls: Wall.Implementation[]): PIXI.Polygon[];
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<Wall.Object>;
+    protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<Wall.Implementation>;
 
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
@@ -178,10 +178,10 @@ declare global {
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<Wall.ObjectClass> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Wall.ImplementationClass> {
       name: "walls";
       controllableObjects: true;
-      objectClass: Wall.ObjectClass;
+      objectClass: Wall.ImplementationClass;
       zIndex: 700;
     }
 

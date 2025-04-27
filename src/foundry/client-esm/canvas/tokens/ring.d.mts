@@ -6,7 +6,7 @@ import type DynamicRingData from "./ring-data.d.mts";
  */
 declare class TokenRing {
   /** A `TokenRing` is constructed by providing a reference to a `Token` object. */
-  constructor(token: Token.Object);
+  constructor(token: Token.Implementation);
 
   /** The effects which could be applied to a token ring (using bitwise operations) */
   static effects: TokenRing.Effects;
@@ -140,7 +140,7 @@ declare class TokenRing {
    * @remarks This getter is the return of calling {@link WeakRef.deref | `deref`} on the stored {@link WeakRef | `WeakRef`}
    * of the Token passed at construction; If the Token has been garbage collected, will return undefined.
    */
-  get token(): Token.Object | undefined;
+  get token(): Token.Implementation | undefined;
 
   /**
    * Configure the sprite mesh.

@@ -161,39 +161,44 @@ declare global {
   }
 
   namespace AmbientSound {
+    /**
+     * The implementation of the `AmbientSound` placeable configured through `CONFIG.AmbientSound.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link AmbientSoundDocument.Implementation | `AmbientSoundDocument.Implementation`}
+     * which refers to the implementation for the ambientSound document.
+     */
+    type Implementation = FixedInstanceType<ImplementationClass>;
+
+    /**
+     * The implementation of the `AmbientSound` placeable configured through `CONFIG.AmbientSound.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link AmbientSoundDocument.ImplementationClass | `AmbientSoundDocument.ImplementationClass`}
+     * which refers to the implementation for the ambientSound document.
+     */
     // eslint-disable-next-line no-restricted-syntax
-    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof AmbientSound> {}
-    interface Object extends FixedInstanceType<ObjectClass> {}
+    type ImplementationClass = ConfiguredObjectClassOrDefault<typeof AmbientSound>;
 
     /**
-     * @deprecated {@link AmbientSound.ObjectClass | `AmbientSound.ObjectClass`}
+     * @deprecated {@link ImplementationClass | `ImplementationClass`}
      */
-    type ConfiguredClass = ObjectClass;
+    type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link AmbientSound.Object | `AmbientSound.Object`}
+     * @deprecated {@link Implementation | `Implementation`}
      */
-    type ConfiguredInstance = Object;
+    type Object = Implementation;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `AmbientSound` (the `PlaceableObject` that appears on the canvas) and
-     * `AmbientSoundDocument` (the `Document` that represents the data for a `AmbientSound`) is so common that
-     * it is useful to have a type to forward to `AmbientSoundDocument`.
-     *
-     * @deprecated {@link AmbientSoundDocument.Implementation | `AmbientSoundDocument.Implementation`}
+     * @deprecated {@link AmbientSound.ImplementationClass | `AmbientSound.ImplementationClass`}
      */
-    type Implementation = AmbientSoundDocument.Implementation;
+    type ConfiguredClass = ImplementationClass;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `AmbientSound` (the `PlaceableObject` that appears on the canvas) and
-     * `AmbientSoundDocument` (the `Document` that represents the data for a `AmbientSound`) is so common that
-     * it is useful to have a type to forward to `AmbientSoundDocument`.
-     *
-     * @deprecated {@link AmbientSoundDocument.ImplementationClass | `AmbientSoundDocument.ImplementationClass`}
+     * @deprecated {@link AmbientSound.Implementation | `AmbientSound.Implementation`}
      */
-    type ImplementationClass = AmbientSoundDocument.ImplementationClass;
+    type ConfiguredInstance = Implementation;
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */

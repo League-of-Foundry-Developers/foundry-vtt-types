@@ -34,7 +34,7 @@ expectTypeOf(ruler["_state"]).toEqualTypeOf<Ruler.STATES>();
 
 expectTypeOf(ruler.active).toEqualTypeOf<boolean>();
 expectTypeOf(ruler.highlightLayer).toEqualTypeOf<GridHighlight>();
-expectTypeOf(ruler.token).toEqualTypeOf<Token.Object | null>();
+expectTypeOf(ruler.token).toEqualTypeOf<Token.Implementation | null>();
 
 expectTypeOf(ruler.clear()).toBeVoid();
 
@@ -78,12 +78,12 @@ expectTypeOf(ruler["_highlightMeasurementSegment"](fullRulerSegment)).toBeVoid()
 expectTypeOf(ruler["_highlightMeasurementSegment"]({ teleport: true, ray: someRay })).toBeVoid();
 
 expectTypeOf(ruler.moveToken()).toEqualTypeOf<Promise<boolean>>();
-expectTypeOf(ruler["_getMovementToken"](somePoint)).toEqualTypeOf<Token.Object | null>();
+expectTypeOf(ruler["_getMovementToken"](somePoint)).toEqualTypeOf<Token.Implementation | null>();
 
 expectTypeOf(ruler["_getMeasurementHistory"]()).toEqualTypeOf<Ruler.MeasurementHistory | void>();
 expectTypeOf(ruler["_createMeasurementHistory"]()).toEqualTypeOf<Ruler.MeasurementHistory>();
 
-declare const someToken: Token.Object;
+declare const someToken: Token.Implementation;
 expectTypeOf(ruler["_canMove"](someToken)).toBeBoolean();
 expectTypeOf(ruler["_animateMovement"](someToken)).toEqualTypeOf<Promise<void>>();
 

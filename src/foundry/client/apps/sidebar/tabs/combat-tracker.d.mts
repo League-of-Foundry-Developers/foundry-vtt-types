@@ -12,7 +12,7 @@ declare global {
      * @defaultValue `null`
      * @internal
      */
-    protected _highlighted: Token.Object | null;
+    protected _highlighted: Token.Implementation | null;
 
     /**
      * Record the currently tracked Combat encounter

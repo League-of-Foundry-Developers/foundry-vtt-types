@@ -636,7 +636,7 @@ declare global {
      * @returns Is the Token inside the Region?
      * @remarks `position` can be `{x, y}`, `{elevation}`, both, or neither. If either part is omitted, uses the document's value(s)
      */
-    testInsideRegion(region: Region.Object, position?: Token.TestablePosition | null): boolean;
+    testInsideRegion(region: Region.Implementation, position?: Token.TestablePosition | null): boolean;
 
     /**
      * Split the Token movement through the waypoints into its segments.
@@ -661,7 +661,7 @@ declare global {
      */
     // options: not null (destructured)
     segmentizeRegionMovement(
-      region: Region.Object,
+      region: Region.Implementation,
       waypoints: Region.MovementWaypoint[],
       options?: Region.SegmentizeMovementOptions,
     ): Region.MovementSegment[];
@@ -840,42 +840,47 @@ declare global {
    * A "secret" global to help debug attributes of the currently controlled Token.
    * This is only for debugging, and may be removed in the future, so it's not safe to use.
    */
-  let _token: Token.Object | null;
+  let _token: Token.Implementation | null;
 
   namespace Token {
+    /**
+     * The implementation of the `Token` placeable configured through `CONFIG.Token.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link TokenDocument.Implementation | `TokenDocument.Implementation`}
+     * which refers to the implementation for the Token document.
+     */
+    type Implementation = FixedInstanceType<ImplementationClass>;
+
+    /**
+     * The implementation of the `Token` placeable configured through `CONFIG.Token.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link TokenDocument.ImplementationClass | `TokenDocument.ImplementationClass`}
+     * which refers to the implementation for the Token document.
+     */
     // eslint-disable-next-line no-restricted-syntax
-    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof Token> {}
-    interface Object extends FixedInstanceType<ObjectClass> {}
+    type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Token>;
 
     /**
-     * @deprecated {@link Token.ObjectClass | `Token.ObjectClass`}
+     * @deprecated {@link ImplementationClass | `ImplementationClass`}
      */
-    type ConfiguredClass = ObjectClass;
+    type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Token.Object | `Token.Object`}
+     * @deprecated {@link Implementation | `Implementation`}
      */
-    type ConfiguredInstance = Object;
+    type Object = Implementation;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `Token` (the `PlaceableObject` that appears on the canvas) and
-     * `TokenDocument` (the `Document` that represents the data for a `Token`) is so common that
-     * it is useful to have a type to forward to `TokenDocument`.
-     *
-     * @deprecated {@link TokenDocument.Implementation | `TokenDocument.Implementation`}
+     * @deprecated {@link Drawing.ImplementationClass | `Drawing.ImplementationClass`}
      */
-    type Implementation = TokenDocument.Implementation;
+    type ConfiguredClass = ImplementationClass;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `Token` (the `PlaceableObject` that appears on the canvas) and
-     * `TokenDocument` (the `Document` that represents the data for a `Token`) is so common that
-     * it is useful to have a type to forward to `TokenDocument`.
-     *
-     * @deprecated {@link TokenDocument.ImplementationClass | `TokenDocument.ImplementationClass`}
+     * @deprecated {@link Drawing.Implementation | `Drawing.Implementation`}
      */
-    type ImplementationClass = TokenDocument.ImplementationClass;
+    type ConfiguredInstance = Implementation;
 
     type Schema = BaseToken.Schema;
     type Parent = BaseToken.Parent;

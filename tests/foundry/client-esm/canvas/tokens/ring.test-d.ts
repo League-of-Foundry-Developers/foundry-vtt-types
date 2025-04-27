@@ -29,7 +29,7 @@ expectTypeOf(TokenRing.createSpikeEasing(0.72)).toEqualTypeOf<CanvasAnimation.Ea
 expectTypeOf(TokenRing.easeTwoPeaks(0.34)).toBeNumber();
 expectTypeOf(TokenRing.easeTwoPeaks).toExtend<CanvasAnimation.EasingFunction>();
 
-declare const someToken: Token.Object;
+declare const someToken: Token.Implementation;
 const myTR = new TokenRing(someToken);
 
 expectTypeOf(myTR.ringName).toEqualTypeOf<string | undefined>();
@@ -55,7 +55,7 @@ expectTypeOf(myTR.scaleAdjustmentX).toBeNumber();
 expectTypeOf(myTR.scaleAdjustmentY).toBeNumber();
 expectTypeOf(myTR.subjectScaleAdjustment).toEqualTypeOf<number | null>();
 expectTypeOf(myTR.colorBand).toEqualTypeOf<TokenRing.ColorBand | undefined>();
-expectTypeOf(myTR.token).toEqualTypeOf<Token.Object | undefined>();
+expectTypeOf(myTR.token).toEqualTypeOf<Token.Implementation | undefined>();
 
 expectTypeOf(myTR.configure(someToken.mesh!)).toBeVoid();
 expectTypeOf(myTR.clear()).toBeVoid();

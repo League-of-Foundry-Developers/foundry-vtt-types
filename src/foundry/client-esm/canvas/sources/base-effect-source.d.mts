@@ -55,7 +55,7 @@ declare abstract class BaseEffectSource<
 
   /**
    * Some other object which is responsible for this source.
-   * @privateRemarks In Foundry practice this appears to only ever be `null`, `Token.Object`, or `EffectsCanvasGroup` in v12
+   * @privateRemarks In Foundry practice this appears to only ever be `null`, `Token.Implementation`, or `EffectsCanvasGroup` in v12
    */
   object: PlaceableObject.Any | CanvasGroupMixin.AnyMixed | null;
 

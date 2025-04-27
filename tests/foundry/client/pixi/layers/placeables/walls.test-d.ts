@@ -5,19 +5,19 @@ expectTypeOf(WallsLayer.documentName).toEqualTypeOf<"Wall">();
 expectTypeOf(WallsLayer.instance).toEqualTypeOf<WallsLayer | undefined>();
 expectTypeOf(WallsLayer.layerOptions).toEqualTypeOf<WallsLayer.LayerOptions>();
 expectTypeOf(WallsLayer.layerOptions.name).toEqualTypeOf<"walls">();
-expectTypeOf(WallsLayer.layerOptions.objectClass).toEqualTypeOf<Wall.ObjectClass>();
+expectTypeOf(WallsLayer.layerOptions.objectClass).toEqualTypeOf<Wall.ImplementationClass>();
 declare const somePoint: PIXI.Point;
-declare const someWall: Wall.Object;
+declare const someWall: Wall.Implementation;
 expectTypeOf(WallsLayer.getClosestEndpoint(somePoint, someWall)).toEqualTypeOf<Canvas.PointTuple>();
 
 const layer = new WallsLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<Wall.ObjectClass>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Wall.ImplementationClass>();
 expectTypeOf(layer.options).toEqualTypeOf<WallsLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"walls">();
 
 expectTypeOf(layer.hookName).toEqualTypeOf<"WallsLayer">();
-expectTypeOf(layer.doors).toEqualTypeOf<Wall.Object[]>();
+expectTypeOf(layer.doors).toEqualTypeOf<Wall.Implementation[]>();
 
 expectTypeOf(layer.getSnappedPoint({ x: 71, y: 59 })).toEqualTypeOf<Canvas.Point>();
 
@@ -47,7 +47,7 @@ expectTypeOf(layer.identifyInteriorArea([someWall, someWall])).toEqualTypeOf<PIX
 
 declare const someEvent: PIXI.FederatedEvent;
 declare const somePointerEvent: PointerEvent;
-expectTypeOf(layer["_onDragLeftStart"](someEvent)).toEqualTypeOf<Promise<Wall.Object>>();
+expectTypeOf(layer["_onDragLeftStart"](someEvent)).toEqualTypeOf<Promise<Wall.Implementation>>();
 expectTypeOf(layer["_onDragLeftMove"](someEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftDrop"](someEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftCancel"](somePointerEvent)).toBeVoid();

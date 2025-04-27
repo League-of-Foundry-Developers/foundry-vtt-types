@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 
 expectTypeOf(Quadtree.INDICES).toExtend<Record<keyof Quadtree.Indices, Quadtree.INDICES>>();
 
-type TCI = Token.Object;
+type TCI = Token.Implementation;
 declare const someToken: TCI;
 declare const someRect: PIXI.Rectangle;
 declare const collisionTest: (o: QuadtreeObject<TCI>, rect: Canvas.Rectangle) => boolean;

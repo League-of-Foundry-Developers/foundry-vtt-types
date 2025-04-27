@@ -217,39 +217,44 @@ declare global {
   }
 
   namespace MeasuredTemplate {
+    /**
+     * The implementation of the `MeasuredTemplate` placeable configured through `CONFIG.MeasuredTemplate.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link MeasuredTemplateDocument.Implementation | `MeasuredTemplateDocument.Implementation`}
+     * which refers to the implementation for the measured template document.
+     */
+    type Implementation = FixedInstanceType<ImplementationClass>;
+
+    /**
+     * The implementation of the `MeasuredTemplate` placeable configured through `CONFIG.MeasuredTemplate.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link MeasuredTemplateDocument.ImplementationClass | `MeasuredTemplateDocument.ImplementationClass`}
+     * which refers to the implementation for the measured template document.
+     */
     // eslint-disable-next-line no-restricted-syntax
-    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof MeasuredTemplate> {}
-    interface Object extends FixedInstanceType<ObjectClass> {}
+    type ImplementationClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
 
     /**
-     * @deprecated {@link MeasuredTemplate.ObjectClass | `MeasuredTemplate.ObjectClass`}
+     * @deprecated {@link ImplementationClass | `ImplementationClass`}
      */
-    type ConfiguredClass = ObjectClass;
+    type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link MeasuredTemplate.Object | `MeasuredTemplate.Object`}
+     * @deprecated {@link Implementation | `Implementation`}
      */
-    type ConfiguredInstance = Object;
+    type Object = Implementation;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `MeasuredTemplate` (the `PlaceableObject` that appears on the canvas) and
-     * `MeasuredTemplateDocument` (the `Document` that represents the data for a `MeasuredTemplate`) is so common that
-     * it is useful to have a type to forward to `MeasuredTemplateDocument`.
-     *
-     * @deprecated {@link MeasuredTemplateDocument.Implementation | `MeasuredTemplateDocument.Implementation`}
+     * @deprecated {@link MeasuredTemplate.ImplementationClass | `MeasuredTemplate.ImplementationClass`}
      */
-    type Implementation = MeasuredTemplateDocument.Implementation;
+    type ConfiguredClass = ImplementationClass;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `MeasuredTemplate` (the `PlaceableObject` that appears on the canvas) and
-     * `MeasuredTemplateDocument` (the `Document` that represents the data for a `MeasuredTemplate`) is so common that
-     * it is useful to have a type to forward to `MeasuredTemplateDocument`.
-     *
-     * @deprecated {@link MeasuredTemplateDocument.ImplementationClass | `MeasuredTemplateDocument.ImplementationClass`}
+     * @deprecated {@link MeasuredTemplate.Implementation | `MeasuredTemplate.Implementation`}
      */
-    type ImplementationClass = MeasuredTemplateDocument.ImplementationClass;
+    type ConfiguredInstance = Implementation;
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */

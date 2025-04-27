@@ -17,7 +17,7 @@ const source = {
 const myDetectionMode = new DetectionMode(source);
 
 declare const someVisionSource: foundry.canvas.sources.PointVisionSource;
-declare const someToken: Token.Object;
+declare const someToken: Token.Implementation;
 
 const someCanvasVisibilityTest = {
   elevation: 20,

@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-declare const token: Token.Object;
+declare const token: Token.Implementation;
 declare const tokenDocument: TokenDocument.Implementation;
 
 const bubbles = new ChatBubbles();

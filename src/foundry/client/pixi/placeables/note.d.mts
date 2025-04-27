@@ -129,39 +129,44 @@ declare global {
   }
 
   namespace Note {
+    /**
+     * The implementation of the `Note` placeable configured through `CONFIG.Note.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link NoteDocument.Implementation | `NoteDocument.Implementation`}
+     * which refers to the implementation for the note document.
+     */
+    type Implementation = FixedInstanceType<ImplementationClass>;
+
+    /**
+     * The implementation of the `Note` placeable configured through `CONFIG.Note.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link NoteDocument.ImplementationClass | `NoteDocument.ImplementationClass`}
+     * which refers to the implementation for the note document.
+     */
     // eslint-disable-next-line no-restricted-syntax
-    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof Note> {}
-    interface Object extends FixedInstanceType<ObjectClass> {}
+    type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Note>;
 
     /**
-     * @deprecated {@link Note.ObjectClass | `Note.ObjectClass`}
+     * @deprecated {@link ImplementationClass | `ImplementationClass`}
      */
-    type ConfiguredClass = ObjectClass;
+    type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Note.Object | `Note.Object`}
+     * @deprecated {@link Implementation | `Implementation`}
      */
-    type ConfiguredInstance = Object;
+    type Object = Implementation;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `Note` (the `PlaceableObject` that appears on the canvas) and
-     * `NoteDocument` (the `Document` that represents the data for a `Note`) is so common that
-     * it is useful to have a type to forward to `NoteDocument`.
-     *
-     * @deprecated {@link NoteDocument.Implementation | `NoteDocument.Implementation`}
+     * @deprecated {@link Note.ImplementationClass | `Note.ImplementationClass`}
      */
-    type Implementation = NoteDocument.Implementation;
+    type ConfiguredClass = ImplementationClass;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `Note` (the `PlaceableObject` that appears on the canvas) and
-     * `NoteDocument` (the `Document` that represents the data for a `Note`) is so common that
-     * it is useful to have a type to forward to `NoteDocument`.
-     *
-     * @deprecated {@link NoteDocument.ImplementationClass | `NoteDocument.ImplementationClass`}
+     * @deprecated {@link Note.Implementation | `Note.Implementation`}
      */
-    type ImplementationClass = NoteDocument.ImplementationClass;
+    type ConfiguredInstance = Implementation;
 
     interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */

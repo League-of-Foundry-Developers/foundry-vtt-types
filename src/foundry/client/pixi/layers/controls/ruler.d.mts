@@ -116,7 +116,7 @@ declare global {
     /**
      * The Token that is moved by the Ruler.
      */
-    get token(): Token.Object | null;
+    get token(): Token.Implementation | null;
 
     /**
      * Clear display of the current Ruler
@@ -231,7 +231,7 @@ declare global {
      * @returns The Token that is to be moved, if any
      *
      */
-    protected _getMovementToken(origin: Canvas.Point): Token.Object | null;
+    protected _getMovementToken(origin: Canvas.Point): Token.Implementation | null;
 
     /**
      * Get the current measurement history.
@@ -252,14 +252,14 @@ declare global {
      * @returns Whether the movement is allowed
      * @throws  A specific Error message used instead of returning false
      */
-    protected _canMove(token: Token.Object): boolean;
+    protected _canMove(token: Token.Implementation): boolean;
 
     /**
      * Animate piecewise Token movement along the measured segment path.
      * @param token - The Token being animated
      * @returns A Promise which resolves once all animation is completed
      */
-    protected _animateMovement(token: Token.Object): Promise<void>;
+    protected _animateMovement(token: Token.Implementation): Promise<void>;
 
     /**
      * Update Token position and configure its animation properties for the next leg of its animation.
@@ -270,7 +270,7 @@ declare global {
      * @returns A Promise that resolves once the animation for this segment is done
      */
     protected _animateSegment(
-      token: Token.Object,
+      token: Token.Implementation,
       segment: Ruler.PartialSegmentForAnimating,
       destination: Canvas.Point,
       updateOptions?: Ruler.PartialTokenUpdateOptions, // not:null (used as first param in mergeObject)
@@ -280,13 +280,13 @@ declare global {
      * An method which can be extended by a subclass of Ruler to define custom behaviors before a confirmed movement.
      * @param token - The Token that will be moving
      */
-    protected _preMove(token: Token.Object): Promise<void>;
+    protected _preMove(token: Token.Implementation): Promise<void>;
 
     /**
      * An event which can be extended by a subclass of Ruler to define custom behaviors before a confirmed movement.
      * @param token - The Token that finished moving
      */
-    protected _postMove(token: Token.Object): Promise<void>;
+    protected _postMove(token: Token.Implementation): Promise<void>;
 
     /**
      * Broadcast Ruler measurement if its User is the connected client.
@@ -470,7 +470,7 @@ declare global {
       /**
        * The token that is moved (defaults to {@link Ruler#_getMovementToken})
        */
-      token: Token.Object | null;
+      token: Token.Implementation | null;
     }>;
 
     interface StartMeasurementOptions extends _StartMeasurementOptions, _Snap {}

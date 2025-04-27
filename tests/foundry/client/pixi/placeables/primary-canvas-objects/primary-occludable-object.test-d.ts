@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-declare const someToken: Token.Object;
+declare const someToken: Token.Implementation;
 declare const someRenderer: PIXI.Renderer;
 
 const POOClass = PrimaryOccludableObjectMixin(PIXI.Container);

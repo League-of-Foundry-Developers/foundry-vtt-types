@@ -28,7 +28,7 @@ declare global {
      * @defaultValue `null`
      * @internal
      */
-    protected _panned: Token.Object | null;
+    protected _panned: Token.Implementation | null;
 
     /**
      * A reference to the chat bubbles HTML container in which rendered bubbles should live
@@ -54,7 +54,7 @@ declare global {
      * @param emote   - Whether to style the speech bubble as an emote
      * @returns A Promise which resolves once the chat bubble has been created
      */
-    say(token: Token.Object, message: string, { emote }?: { emote?: boolean }): Promise<void>;
+    say(token: Token.Implementation, message: string, { emote }?: { emote?: boolean }): Promise<void>;
 
     /**
      * Activate Socket event listeners which apply to the ChatBubbles UI.
@@ -66,7 +66,7 @@ declare global {
      * Clear any existing chat bubble for a certain Token
      * @internal
      */
-    protected _clearBubble(token: Token.Object): Promise<void>;
+    protected _clearBubble(token: Token.Implementation): Promise<void>;
 
     /**
      * Render the HTML template for the chat bubble
@@ -74,7 +74,7 @@ declare global {
      * @returns The rendered HTML
      * @internal
      */
-    protected _renderHTML(data: { token: Token.Object; message: string; emote: boolean }): Promise<string>;
+    protected _renderHTML(data: { token: Token.Implementation; message: string; emote: boolean }): Promise<string>;
 
     /**
      * Before displaying the chat message, determine it's constrained and unconstrained dimensions
@@ -88,7 +88,7 @@ declare global {
      * Assign styling parameters to the chat bubble, toggling either a left or right display (randomly)
      * @internal
      */
-    protected _setPosition(token: Token.Object, html: JQuery, dimensions: ChatBubbles.Dimensions): void;
+    protected _setPosition(token: Token.Implementation, html: JQuery, dimensions: ChatBubbles.Dimensions): void;
 
     /**
      * Determine the length of time for which to display a chat bubble.

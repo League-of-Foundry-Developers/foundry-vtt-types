@@ -228,7 +228,7 @@ expectTypeOf(token["_drawBar"](1, token.bars!.bar1, doc.getBarAttribute("foo")!)
 expectTypeOf(token["_getTooltipText"]()).toBeString();
 expectTypeOf(token["_getTextStyle"]()).toEqualTypeOf<PIXI.TextStyle>();
 
-expectTypeOf(token.drawEffects()).toEqualTypeOf<Promise<Token.Object>>();
+expectTypeOf(token.drawEffects()).toEqualTypeOf<Promise<Token.Implementation>>();
 expectTypeOf(token["_drawEffects"]()).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(token["_drawEffect"]("path/to/effect/texture.jpg")).toEqualTypeOf<Promise<PIXI.Sprite | undefined>>();

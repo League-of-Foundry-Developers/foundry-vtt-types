@@ -55,7 +55,7 @@ declare global {
     /**
      * An Array of tokens which belong to actors which are owned
      */
-    get ownedTokens(): Token.Object[];
+    get ownedTokens(): Token.Implementation[];
 
     /** @remarks Forces top left corner snapping */
     override getSnappedPoint(point: Canvas.Point): Canvas.Point;
@@ -69,13 +69,16 @@ declare global {
     protected override _deactivate(): void;
 
     protected override _pasteObject(
-      copy: Token.Object,
+      copy: Token.Implementation,
       offset: Canvas.Point,
       options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
     ): Omit<TokenDocument.Source, "_id">;
 
     /** @remarks Returns `[]` if the ruler is currently measuring */
-    protected override _getMovableObjects(ids?: string[] | null, includeLocked?: boolean | null): Token.Object[];
+    protected override _getMovableObjects(
+      ids?: string[] | null,
+      includeLocked?: boolean | null,
+    ): Token.Implementation[];
 
     /**
      * Target all Token instances which fall within a coordinate rectangle.
@@ -98,13 +101,13 @@ declare global {
      *
      * Also selects the returned token if any, and pans the camera to its center
      */
-    cycleTokens(forwards?: boolean | null, reset?: boolean | null): Token.Object | null;
+    cycleTokens(forwards?: boolean | null, reset?: boolean | null): Token.Implementation | null;
 
     /**
      * Get the tab cycle order for tokens by sorting observable tokens based on their distance from top-left.
      * @remarks Foundry marked `@private`
      */
-    protected _getCycleOrder(): Token.Object[];
+    protected _getCycleOrder(): Token.Implementation[];
 
     /**
      * Immediately conclude the animation of any/all tokens
@@ -120,7 +123,7 @@ declare global {
      * Provide an array of Tokens which are eligible subjects for overhead tile occlusion.
      * By default, only tokens which are currently controlled or owned by a player are included as subjects.
      */
-    protected _getOccludableTokens(): Token.Object[];
+    protected _getOccludableTokens(): Token.Implementation[];
 
     /** @remarks "Clean actorData and delta updates from the history so changes to those fields are not undone" */
     override storeHistory<Operation extends Document.Database.Operation>(
@@ -139,7 +142,7 @@ declare global {
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 
-    protected override _onMouseWheel(event: WheelEvent): Promise<Token.Object[] | void>;
+    protected override _onMouseWheel(event: WheelEvent): Promise<Token.Implementation[] | void>;
 
     /**
      * @deprecated since v12 until v14
@@ -172,7 +175,7 @@ declare global {
 
     interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<Token.ObjectClass> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Token.ImplementationClass> {
       name: "tokens";
       controllableObjects: true;
       rotatableObjects: true;
@@ -196,7 +199,7 @@ declare global {
        * A specific Token which is the origin of the group toggle request
        * @defaultValue `null`
        */
-      token: Token.Object;
+      token: Token.Implementation;
     }>;
     interface ToggleCombatOptions extends _ToggleCombatOptions {}
   }

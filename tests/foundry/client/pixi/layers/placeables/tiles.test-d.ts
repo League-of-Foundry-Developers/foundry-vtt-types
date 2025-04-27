@@ -4,18 +4,18 @@ expectTypeOf(TilesLayer.documentName).toEqualTypeOf<"Tile">();
 expectTypeOf(TilesLayer.instance).toEqualTypeOf<TilesLayer | undefined>();
 expectTypeOf(TilesLayer.layerOptions).toEqualTypeOf<TilesLayer.LayerOptions>();
 expectTypeOf(TilesLayer.layerOptions.name).toEqualTypeOf<"tiles">();
-expectTypeOf(TilesLayer.layerOptions.objectClass).toEqualTypeOf<Tile.ObjectClass>();
+expectTypeOf(TilesLayer.layerOptions.objectClass).toEqualTypeOf<Tile.ImplementationClass>();
 
 const layer = new TilesLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<Tile.ObjectClass>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Tile.ImplementationClass>();
 expectTypeOf(layer.options).toEqualTypeOf<TilesLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"tiles">();
 
 expectTypeOf(layer.hookName).toEqualTypeOf<"TilesLayer">();
 expectTypeOf(layer.hud).toEqualTypeOf<TileHUD>();
-expectTypeOf(layer.tiles).toEqualTypeOf<Tile.Object[]>();
-expectTypeOf(layer.controllableObjects()).toEqualTypeOf<Generator<Tile.Object>>();
+expectTypeOf(layer.tiles).toEqualTypeOf<Tile.Implementation[]>();
+expectTypeOf(layer.controllableObjects()).toEqualTypeOf<Generator<Tile.Implementation>>();
 expectTypeOf(layer.getSnappedPoint({ x: 2, y: 3 })).toEqualTypeOf<Canvas.Point>();
 
 expectTypeOf(layer["_tearDown"]({})).toEqualTypeOf<Promise<void>>();

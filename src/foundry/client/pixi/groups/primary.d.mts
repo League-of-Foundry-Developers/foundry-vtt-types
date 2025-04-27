@@ -138,39 +138,39 @@ declare global {
      * @param token - The Token being added
      * @returns The added PrimarySpriteMesh
      */
-    addToken(token: Token.Object): PrimarySpriteMesh;
+    addToken(token: Token.Implementation): PrimarySpriteMesh;
 
     /**
      * Remove a TokenMesh from the group.
      * @param token - The Token being removed
      */
-    removeToken(token: Token.Object): void;
+    removeToken(token: Token.Implementation): void;
 
     /**
      * Draw the SpriteMesh for a specific Token object.
      * @param tile - The Tile being added
      * @returns The added PrimarySpriteMesh
      */
-    addTile(tile: Tile.Object): PrimarySpriteMesh;
+    addTile(tile: Tile.Implementation): PrimarySpriteMesh;
 
     /**
      * Remove a TokenMesh from the group.
      * @param tile - The Tile being removed
      */
-    removeTile(tile: Tile.Object): void;
+    removeTile(tile: Tile.Implementation): void;
 
     /**
      * Add a PrimaryGraphics to the group.
      * @param drawing - The Drawing being added
      * @returns The created PrimaryGraphics instance
      */
-    addDrawing(drawing: Drawing.Object): PrimaryGraphics;
+    addDrawing(drawing: Drawing.Implementation): PrimaryGraphics;
 
     /**
      * Remove a PrimaryGraphics from the group.
      * @param drawing - The Drawing being removed
      */
-    removeDrawing(drawing: Drawing.Object): void;
+    removeDrawing(drawing: Drawing.Implementation): void;
 
     /**
      * Override the default PIXI.Container behavior for how objects in this container are sorted.

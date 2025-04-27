@@ -16,7 +16,7 @@ expectTypeOf(myOcclusionMask.mapElevation(20)).toBeNumber();
 expectTypeOf(myOcclusionMask.updateOcclusion()).toBeVoid();
 expectTypeOf(myOcclusionMask["_updateOcclusionMask"]()).toBeVoid();
 expectTypeOf(myOcclusionMask["_updateOcclusionStates"]()).toBeVoid();
-declare const someTokens: Token.Object[];
+declare const someTokens: Token.Implementation[];
 expectTypeOf(myOcclusionMask["_identifyOccludedObjects"](someTokens));
 
 // deprecated since v11 until v13

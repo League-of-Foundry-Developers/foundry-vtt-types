@@ -19,7 +19,7 @@ expectTypeOf(Tile.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
     >
   | undefined
 >();
-expectTypeOf(Tile.createPreview(doc.toObject())).toEqualTypeOf<Tile.Object>();
+expectTypeOf(Tile.createPreview(doc.toObject())).toEqualTypeOf<Tile.Implementation>();
 
 const tile = new CONFIG.Tile.objectClass(doc);
 
@@ -120,14 +120,14 @@ expectTypeOf(tile["_onHandleHoverIn"](someEvent)).toBeVoid();
 expectTypeOf(tile["_onHandleHoverOut"](someEvent)).toBeVoid();
 expectTypeOf(tile["_onHandleDragStart"](someEvent)).toBeVoid();
 expectTypeOf(tile["_onHandleDragMove"](someEvent)).toBeVoid();
-expectTypeOf(tile["_onHandleDragDrop"](someEvent)).toEqualTypeOf<Promise<Tile.Object>>();
+expectTypeOf(tile["_onHandleDragDrop"](someEvent)).toEqualTypeOf<Promise<Tile.Implementation>>();
 expectTypeOf(tile["_onHandleDragCancel"](someEvent)).toBeVoid();
 
 expectTypeOf(tile["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
 // deprecated since v12, until v14
 expectTypeOf(tile.isRoof).toEqualTypeOf<boolean>();
-declare const someToken: Token.Object;
+declare const someToken: Token.Implementation;
 expectTypeOf(tile.testOcclusion(someToken)).toBeBoolean();
 expectTypeOf(tile.testOcclusion(someToken, {})).toBeBoolean();
 expectTypeOf(tile.testOcclusion(someToken, { corners: true })).toBeBoolean();

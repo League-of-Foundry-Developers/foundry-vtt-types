@@ -5,9 +5,9 @@ declare global {
    * An icon representing a Door Control
    */
   class DoorControl extends PIXI.Container {
-    constructor(wall: Wall.Object);
+    constructor(wall: Wall.Implementation);
 
-    wall: Wall.Object;
+    wall: Wall.Implementation;
 
     /**
      * @defaultValue `false`

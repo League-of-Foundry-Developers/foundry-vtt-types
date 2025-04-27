@@ -288,39 +288,44 @@ declare global {
   }
 
   namespace Wall {
+    /**
+     * The implementation of the `Wall` placeable configured through `CONFIG.Wall.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link WallDocument.Implementation | `WallDocument.Implementation`}
+     * which refers to the implementation for the Wall document.
+     */
+    type Implementation = FixedInstanceType<ImplementationClass>;
+
+    /**
+     * The implementation of the `Wall` placeable configured through `CONFIG.Wall.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link WallDocument.ImplementationClass | `WallDocument.ImplementationClass`}
+     * which refers to the implementation for the Wall document.
+     */
     // eslint-disable-next-line no-restricted-syntax
-    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof Wall> {}
-    interface Object extends FixedInstanceType<ObjectClass> {}
+    type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Wall>;
 
     /**
-     * @deprecated {@link Wall.ObjectClass | `Wall.ObjectClass`}
+     * @deprecated {@link ImplementationClass | `ImplementationClass`}
      */
-    type ConfiguredClass = ObjectClass;
+    type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Wall.Object | `Wall.Object`}
+     * @deprecated {@link Implementation | `Implementation`}
      */
-    type ConfiguredInstance = Object;
+    type Object = Implementation;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `Wall` (the `PlaceableObject` that appears on the canvas) and
-     * `WallDocument` (the `Document` that represents the data for a `Wall`) is so common that
-     * it is useful to have a type to forward to `WallDocument`.
-     *
-     * @deprecated {@link WallDocument.Implementation | `WallDocument.Implementation`}
+     * @deprecated {@link Wall.ImplementationClass | `Wall.ImplementationClass`}
      */
-    type Implementation = WallDocument.Implementation;
+    type ConfiguredClass = ImplementationClass;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `Wall` (the `PlaceableObject` that appears on the canvas) and
-     * `WallDocument` (the `Document` that represents the data for a `Wall`) is so common that
-     * it is useful to have a type to forward to `WallDocument`.
-     *
-     * @deprecated {@link WallDocument.ImplementationClass | `WallDocument.ImplementationClass`}
+     * @deprecated {@link Wall.Implementation | `Wall.Implementation`}
      */
-    type ImplementationClass = WallDocument.ImplementationClass;
+    type ConfiguredInstance = Implementation;
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
@@ -381,7 +386,7 @@ declare global {
       ids: string[];
 
       /** @remarks All the Walls connected to this one */
-      walls: Wall.Object[];
+      walls: Wall.Implementation[];
 
       /** @remarks `walls.length + 1` endpoints */
       endpoints: Canvas.PointTuple[];

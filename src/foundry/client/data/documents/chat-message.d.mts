@@ -495,7 +495,7 @@ declare global {
       actor: Actor.Implementation | null | undefined;
 
       /** The Token whom is speaking */
-      token: TokenDocument.Implementation | Token.Object | null | undefined;
+      token: TokenDocument.Implementation | Token.Implementation | null | undefined;
 
       /** The name of the speaker to display */
       alias: string | undefined;

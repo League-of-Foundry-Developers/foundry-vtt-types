@@ -5,11 +5,11 @@ expectTypeOf(TokenLayer.documentName).toEqualTypeOf<"Token">();
 expectTypeOf(TokenLayer.instance).toEqualTypeOf<TokenLayer | undefined>();
 expectTypeOf(TokenLayer.layerOptions).toEqualTypeOf<TokenLayer.LayerOptions>();
 expectTypeOf(TokenLayer.layerOptions.name).toEqualTypeOf<"tokens">();
-expectTypeOf(TokenLayer.layerOptions.objectClass).toEqualTypeOf<Token.ObjectClass>();
+expectTypeOf(TokenLayer.layerOptions.objectClass).toEqualTypeOf<Token.ImplementationClass>();
 
 const layer = new TokenLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<Token.ObjectClass>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Token.ImplementationClass>();
 expectTypeOf(layer.options).toEqualTypeOf<TokenLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"tokens">();
 
@@ -18,7 +18,7 @@ expectTypeOf(layer.occlusionMode).toExtend<foundry.CONST.OCCLUSION_MODES>();
 layer.occlusionMode = CONST.OCCLUSION_MODES.RADIAL;
 expectTypeOf(layer.hookName).toEqualTypeOf<"TokenLayer">();
 expectTypeOf(layer.hud).toEqualTypeOf<TokenHUD>();
-expectTypeOf(layer.ownedTokens).toEqualTypeOf<Token.Object[]>();
+expectTypeOf(layer.ownedTokens).toEqualTypeOf<Token.Implementation[]>();
 expectTypeOf(layer.getSnappedPoint({ x: 4, y: 5 })).toEqualTypeOf<Canvas.Point>();
 
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
@@ -26,7 +26,7 @@ expectTypeOf(layer["_tearDown"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(layer["_activate"]()).toBeVoid();
 expectTypeOf(layer["_deactivate"]()).toBeVoid();
 
-declare const someToken: Token.Object;
+declare const someToken: Token.Implementation;
 declare const somePoint: PIXI.Point;
 expectTypeOf(layer["_pasteObject"](someToken, somePoint)).toEqualTypeOf<Document.ConfiguredSourceForName<"Token">>();
 expectTypeOf(layer["_pasteObject"](someToken, somePoint, { hidden: true, snap: false })).toEqualTypeOf<
@@ -36,21 +36,21 @@ expectTypeOf(layer["_pasteObject"](someToken, somePoint, { hidden: undefined, sn
   Document.ConfiguredSourceForName<"Token">
 >();
 
-expectTypeOf(layer["_getMovableObjects"]()).toEqualTypeOf<Token.Object[]>();
-expectTypeOf(layer["_getMovableObjects"](null, null)).toEqualTypeOf<Token.Object[]>();
-expectTypeOf(layer["_getMovableObjects"](["id1", "id2"], false)).toEqualTypeOf<Token.Object[]>();
+expectTypeOf(layer["_getMovableObjects"]()).toEqualTypeOf<Token.Implementation[]>();
+expectTypeOf(layer["_getMovableObjects"](null, null)).toEqualTypeOf<Token.Implementation[]>();
+expectTypeOf(layer["_getMovableObjects"](["id1", "id2"], false)).toEqualTypeOf<Token.Implementation[]>();
 
 expectTypeOf(layer.targetObjects({ x: 0, y: 0, width: 500, height: 500 })).toBeNumber();
 expectTypeOf(layer.targetObjects({ x: 0, y: 0, width: 500, height: 500 }, { releaseOthers: null })).toBeNumber();
 expectTypeOf(layer.targetObjects({ x: 0, y: 0, width: 500, height: 500 }, { releaseOthers: true })).toBeNumber();
 
-expectTypeOf(layer.cycleTokens()).toEqualTypeOf<Token.Object | null>();
-expectTypeOf(layer.cycleTokens(true, false)).toEqualTypeOf<Token.Object | null>();
-expectTypeOf(layer.cycleTokens(undefined, null)).toEqualTypeOf<Token.Object | null>();
+expectTypeOf(layer.cycleTokens()).toEqualTypeOf<Token.Implementation | null>();
+expectTypeOf(layer.cycleTokens(true, false)).toEqualTypeOf<Token.Implementation | null>();
+expectTypeOf(layer.cycleTokens(undefined, null)).toEqualTypeOf<Token.Implementation | null>();
 
-expectTypeOf(layer["_getCycleOrder"]()).toEqualTypeOf<Token.Object[]>();
+expectTypeOf(layer["_getCycleOrder"]()).toEqualTypeOf<Token.Implementation[]>();
 expectTypeOf(layer.concludeAnimation()).toBeVoid();
-expectTypeOf(layer["_getOccludableTokens"]()).toEqualTypeOf<Token.Object[]>();
+expectTypeOf(layer["_getOccludableTokens"]()).toEqualTypeOf<Token.Implementation[]>();
 
 // `storeHistory` tests omitted due to current breakage of document `.toObject()` typing
 // The override does not change the signature, so they'd be redundant over the `PlaceablesLayer` tests in any case
@@ -67,7 +67,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<number | false | TokenDocument.Implementation>>();
 expectTypeOf(layer["_onClickLeft"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<Token.Object[] | void>>();
+expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<Token.Implementation[] | void>>();
 
 // deprecated since v12, until v14
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<1>();

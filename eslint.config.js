@@ -224,16 +224,17 @@ for (const [documentType, documentData] of Object.entries(documents)) {
 for (const placeable of placeables) {
   noRestrictedSyntax.push({
     selector: typeofSelector(placeable),
-    message: `Prefer \`${placeable}.ObjectClass\` or \`typeof CONFIG.${placeable}.objectClass\` as \`typeof ${placeable}\` does not account for any packages that may have configured the placeable class.`,
+    message: `Prefer \`${placeable}.ImplementationClass\` or \`typeof CONFIG.${placeable}.objectClass\` as \`typeof ${placeable}\` does not account for any packages that may have configured the placeable class.`,
   });
 
   noRestrictedSyntax.push({
     selector: directExpressionSelector(placeable, "^embeddedName$"),
+    // Note(LukeAbby): This will need to be updated on the next v13 release.
     message: `Prefer \`CONFIG.${placeable}.objectClass\` as \`typeof ${placeable}\` does not account for any packages that may have configured the placeable class.`,
   });
 
   noRestrictedTypes[placeable] = {
-    message: `Prefer \`${placeable}.Object\` as \`${placeable}\` does not account for any packages that may have configured the placeable class.`,
+    message: `Prefer \`${placeable}.Implementation\` as \`${placeable}\` does not account for any packages that may have configured the placeable class.`,
   };
 }
 

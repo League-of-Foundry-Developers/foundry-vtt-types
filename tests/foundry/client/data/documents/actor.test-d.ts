@@ -23,12 +23,12 @@ expectTypeOf(actor.token).toEqualTypeOf<TokenDocument.Implementation | null>();
 expectTypeOf(actor.inCombat).toEqualTypeOf<boolean>();
 
 expectTypeOf(actor.applyActiveEffects()).toEqualTypeOf<void>();
-expectTypeOf(actor.getActiveTokens(false)).toEqualTypeOf<Token.Object[]>();
+expectTypeOf(actor.getActiveTokens(false)).toEqualTypeOf<Token.Implementation[]>();
 expectTypeOf(actor.getActiveTokens(false, Math.random() > 0.5)).toEqualTypeOf<
-  Token.Object[] | TokenDocument.Implementation[]
+  Token.Implementation[] | TokenDocument.Implementation[]
 >();
 expectTypeOf(actor.getActiveTokens(true, true)).toEqualTypeOf<TokenDocument.Implementation[]>();
-expectTypeOf(actor.getActiveTokens(true, false)).toEqualTypeOf<Token.Object[]>();
+expectTypeOf(actor.getActiveTokens(true, false)).toEqualTypeOf<Token.Implementation[]>();
 
 // TODO: Implement #1551 so the `system` properties resolve correctly.
 expectTypeOf(actor.itemTypes.weapon[0]!.type).toEqualTypeOf<"weapon">();

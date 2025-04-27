@@ -118,7 +118,7 @@ declare class PrimaryOccludableObject {
    * @param options - Additional options that affect testing
    * @returns Is the Token occluded by the PCO?
    */
-  testOcclusion(token: Token.Object, options?: PrimaryOccludableObjectMixin.TestOcclusionOptions): boolean;
+  testOcclusion(token: Token.Implementation, options?: PrimaryOccludableObjectMixin.TestOcclusionOptions): boolean;
 
   /**
    * @deprecated since v12, will be removed in v14

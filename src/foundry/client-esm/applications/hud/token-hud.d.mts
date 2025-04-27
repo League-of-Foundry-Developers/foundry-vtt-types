@@ -12,4 +12,9 @@ export default class TokenHUD<
   RenderContext extends BasePlaceableHUD.RenderContext = BasePlaceableHUD.RenderContext,
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
-> extends HandlebarsApplicationMixin(BasePlaceableHUD)<Token.Object, RenderContext, Configuration, RenderOptions> {}
+> extends HandlebarsApplicationMixin(BasePlaceableHUD)<
+  Token.Implementation,
+  RenderContext,
+  Configuration,
+  RenderOptions
+> {}

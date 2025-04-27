@@ -283,39 +283,44 @@ declare global {
   }
 
   namespace Drawing {
+    /**
+     * The implementation of the `Drawing` placeable configured through `CONFIG.Drawing.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link DrawingDocument.Implementation | `DrawingDocument.Implementation`}
+     * which refers to the implementation for the drawing document.
+     */
+    type Implementation = FixedInstanceType<ImplementationClass>;
+
+    /**
+     * The implementation of the `Drawing` placeable configured through `CONFIG.Drawing.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link DrawingDocument.ImplementationClass | `DrawingDocument.ImplementationClass`}
+     * which refers to the implementation for the drawing document.
+     */
     // eslint-disable-next-line no-restricted-syntax
-    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof Drawing> {}
-    interface Object extends FixedInstanceType<ObjectClass> {}
+    type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Drawing>;
 
     /**
-     * @deprecated {@link Drawing.ObjectClass | `Drawing.ObjectClass`}
+     * @deprecated {@link ImplementationClass | `ImplementationClass`}
      */
-    type ConfiguredClass = ObjectClass;
+    type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Drawing.Object | `Drawing.Object`}
+     * @deprecated {@link Implementation | `Implementation`}
      */
-    type ConfiguredInstance = Object;
+    type Object = Implementation;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `Drawing` (the `PlaceableObject` that appears on the canvas) and
-     * `DrawingDocument` (the `Document` that represents the data for a `Drawing`) is so common that
-     * it is useful to have a type to forward to `DrawingDocument`.
-     *
-     * @deprecated {@link DrawingDocument.Implementation | `DrawingDocument.Implementation`}
+     * @deprecated {@link Drawing.ImplementationClass | `Drawing.ImplementationClass`}
      */
-    type Implementation = DrawingDocument.Implementation;
+    type ConfiguredClass = ImplementationClass;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `Drawing` (the `PlaceableObject` that appears on the canvas) and
-     * `DrawingDocument` (the `Document` that represents the data for a `Drawing`) is so common that
-     * it is useful to have a type to forward to `DrawingDocument`.
-     *
-     * @deprecated {@link DrawingDocument.ImplementationClass | `DrawingDocument.ImplementationClass`}
+     * @deprecated {@link Drawing.Implementation | `Drawing.Implementation`}
      */
-    type ImplementationClass = DrawingDocument.ImplementationClass;
+    type ConfiguredInstance = Implementation;
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */

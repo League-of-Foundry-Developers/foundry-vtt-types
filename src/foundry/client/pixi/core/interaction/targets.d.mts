@@ -14,7 +14,7 @@ declare global {
    * A subclass of Set which manages the Token ids which the User has targeted.
    * @see {@link User.targets | `User#targets`}
    */
-  class UserTargets extends Set<Token.Object> {
+  class UserTargets extends Set<Token.Implementation> {
     constructor(user: UserTargets["user"]);
 
     user: User.Implementation;
@@ -27,14 +27,14 @@ declare global {
     /**
      * @remarks Returns void, but Set<T>.add returns boolean
      */
-    override add(token: Token.Object): void;
+    override add(token: Token.Implementation): void;
 
     override clear(): void;
 
     /**
      * @remarks Returns void, but Set<T>.delete returns boolean
      */
-    override delete(token: Token.Object): void;
+    override delete(token: Token.Implementation): void;
   }
 
   namespace UserTargets {

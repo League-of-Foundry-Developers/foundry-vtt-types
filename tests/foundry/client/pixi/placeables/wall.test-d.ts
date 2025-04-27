@@ -38,7 +38,7 @@ expectTypeOf(wall.toRay()).toEqualTypeOf<Ray>();
 expectTypeOf(wall["_draw"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(wall["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(wall.clear()).toEqualTypeOf<Wall.Object>();
+expectTypeOf(wall.clear()).toEqualTypeOf<Wall.Implementation>();
 expectTypeOf(wall.createDoorControl()).toEqualTypeOf<DoorControl.ConfiguredInstance>();
 expectTypeOf(wall.clearDoorControl()).toBeVoid();
 

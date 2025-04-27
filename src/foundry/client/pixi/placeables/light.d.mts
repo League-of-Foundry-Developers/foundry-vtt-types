@@ -184,39 +184,44 @@ declare global {
   }
 
   namespace AmbientLight {
+    /**
+     * The implementation of the `AmbientLight` placeable configured through `CONFIG.AmbientLight.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link AmbientLightDocument.Implementation | `AmbientLightDocument.Implementation`}
+     * which refers to the implementation for the AmbientLight document.
+     */
+    type Implementation = FixedInstanceType<ImplementationClass>;
+
+    /**
+     * The implementation of the `AmbientLight` placeable configured through `CONFIG.AmbientLight.objectClass`
+     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     *
+     * Not to be confused with {@link AmbientLightDocument.ImplementationClass | `AmbientLightDocument.ImplementationClass`}
+     * which refers to the implementation for the AmbientLight document.
+     */
     // eslint-disable-next-line no-restricted-syntax
-    interface ObjectClass extends ConfiguredObjectClassOrDefault<typeof AmbientLight> {}
-    interface Object extends FixedInstanceType<ObjectClass> {}
+    type ImplementationClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;
 
     /**
-     * @deprecated {@link AmbientLight.ObjectClass | `AmbientLight.ObjectClass`}
+     * @deprecated {@link ImplementationClass | `ImplementationClass`}
      */
-    type ConfiguredClass = ObjectClass;
+    type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link AmbientLight.Object | `AmbientLight.Object`}
+     * @deprecated {@link Implementation | `Implementation`}
      */
-    type ConfiguredInstance = Object;
+    type Object = Implementation;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `AmbientLight` (the `PlaceableObject` that appears on the canvas) and
-     * `AmbientLightDocument` (the `Document` that represents the data for a `AmbientLight`) is so common that
-     * it is useful to have a type to forward to `AmbientLightDocument`.
-     *
-     * @deprecated {@link AmbientLightDocument.Implementation | `AmbientLightDocument.Implementation`}
+     * @deprecated {@link AmbientLight.ImplementationClass | `AmbientLight.ImplementationClass`}
      */
-    type Implementation = AmbientLightDocument.Implementation;
+    type ConfiguredClass = ImplementationClass;
 
     /**
-     * This type will permanently exist but is marked deprecated. The reason it exists is because
-     * the confusion between `AmbientLight` (the `PlaceableObject` that appears on the canvas) and
-     * `AmbientLightDocument` (the `Document` that represents the data for a `AmbientLight`) is so common that
-     * it is useful to have a type to forward to `AmbientLightDocument`.
-     *
-     * @deprecated {@link AmbientLightDocument.ImplementationClass | `AmbientLightDocument.ImplementationClass`}
+     * @deprecated {@link AmbientLight.Implementation | `AmbientLight.Implementation`}
      */
-    type ImplementationClass = AmbientLightDocument.ImplementationClass;
+    type ConfiguredInstance = Implementation;
 
     interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */

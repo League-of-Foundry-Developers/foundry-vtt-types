@@ -14,13 +14,13 @@ declare global {
      * @returns The created Graphics instance
      * @remarks
      */
-    addDrawing(drawing: Drawing.Object): PIXI.Graphics;
+    addDrawing(drawing: Drawing.Implementation): PIXI.Graphics;
 
     /**
      * Remove a PrimaryGraphics from the group.
      * @param drawing - The Drawing being removed
      */
-    removeDrawing(drawing: Drawing.Object): void;
+    removeDrawing(drawing: Drawing.Implementation): void;
 
     protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 

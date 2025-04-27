@@ -230,7 +230,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @param token - The token.
    * @deprecated Since v12 until v14. No Replacement
    */
-  protected _adjustSnapForTokenSize(x: number, y: number, token: Token.Object): [x: number, y: number];
+  protected _adjustSnapForTokenSize(x: number, y: number, token: Token.Implementation): [x: number, y: number];
 
   /**
    * We set the 'size' of a hexagon (the distance from a hexagon's centre to a vertex) to be equal to the grid size
@@ -262,7 +262,7 @@ declare class HexagonalGrid extends BaseGrid {
    * @returns The adjusted row and column number.
    * @deprecated Since v12 until v14. No Replacement
    */
-  protected _adjustPositionForTokenSize(row: number, col: number, token: Token.Object): [x: number, y: number];
+  protected _adjustPositionForTokenSize(row: number, col: number, token: Token.Implementation): [x: number, y: number];
 
   /**
    * Compute the grid configuration from a provided type
