@@ -111,7 +111,7 @@ declare global {
     type Collection = WorldSettings.Configured;
 
     /**
-     * An instance of `Setting` that comes from the database but failed validation meaining that
+     * An instance of `Setting` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<Setting.Implementation> {}
@@ -382,8 +382,8 @@ declare global {
      */
     get config(): SettingsConfig | undefined;
 
-    // TODO: This is the same as `DataModel._initialize`
-    protected _initialize(options?: any): void;
+    // options: not null (parameter default only)
+    protected override _initialize(options?: Document.InitializeOptions): void;
 
     /**
      * @privateRemarks _onCreate and _preUpdate are overridden but with no signature changes.

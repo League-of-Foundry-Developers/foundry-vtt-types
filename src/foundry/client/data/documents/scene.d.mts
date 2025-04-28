@@ -193,7 +193,7 @@ declare global {
     type Collection = Scenes.Configured;
 
     /**
-     * An instance of `Scene` that comes from the database but failed validation meaining that
+     * An instance of `Scene` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<Scene.Implementation> {}
@@ -908,9 +908,10 @@ declare global {
      * @param createData - (default: `{}`)
      * @param options    - (default: `{}`)
      */
-    override clone<Save extends boolean = false>(
-      createData?: Scene.CreateData,
-      context?: Document.CloneContext<Save> & InexactPartial<Document.ConstructionContext<Scene.Parent>>,
+    // data: not null (property access), context: not null (destructured)
+    override clone<Save extends boolean | null | undefined = false>(
+      data?: Scene.CreateData,
+      context?: Document.CloneContext<Save>,
     ): Save extends true ? Promise<this> : this;
 
     override reset(): void;
@@ -944,7 +945,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class SwadeScene extends Scene {
      *   protected override _preCreateDescendantDocuments(...args: Scene.PreCreateDescendantDocumentsArgs) {
@@ -962,7 +963,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class LancerScene extends Scene {
      *   protected override _preUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocuments) {
@@ -980,7 +981,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class Ptr2eScene extends Scene {
      *   protected override _onUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocumentsArgs) {
@@ -998,7 +999,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class KultScene extends Scene {
      *   protected override _preDeleteDescendantDocuments(...args: Scene.PreDeleteDescendantDocumentsArgs) {
@@ -1042,7 +1043,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class GurpsScene extends Scene {
      *   protected override _onCreateDescendantDocuments(...args: Scene.OnCreateDescendantDocumentsArgs) {
@@ -1060,7 +1061,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class BladesScene extends Scene {
      *   protected override _onDeleteDescendantDocuments(...args: Scene.OnUpdateDescendantDocuments) {
