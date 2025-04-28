@@ -430,7 +430,11 @@ declare namespace ApplicationV2 {
 
     hookName?: string | undefined | null;
 
-    parentClassHooks?: boolean;
+    /**
+     * @defaultValue `true`
+     */
+    // non-null due to default value
+    parentClassHooks?: boolean | undefined;
   }
 }
 
@@ -766,7 +770,8 @@ declare class ApplicationV2<
    * Programmatically submit an ApplicationV2 instance which implements a single top-level form.
    * @param submitOptions - Arbitrary options which are supported by and provided to the configured form submission handler.
    * @returns A promise that resolves to the returned result of the form submission handler, if any.
-   * @remarks Possible 13.340 bug that this never returns anything
+   * @remarks Return is accurate to 13.340, but https://github.com/foundryvtt/foundryvtt/issues/12661 classifies it as a bug.
+   * Correct return is based on the handler.
    * @privateRemarks TODO: More precisely type the submitOptions, as they vary with the handler
    * which means on DocumentSheet they can be the document's create or update operations
    */

@@ -103,7 +103,7 @@ expectTypeOf(applicationV2.changeTab("", "")).toEqualTypeOf<void>();
 
 declare const formConfig: foundry.applications.api.ApplicationV2.FormConfiguration;
 declare const event: Event;
-expectTypeOf(applicationV2._onChangeForm(formConfig, event)).toEqualTypeOf<void>();
+expectTypeOf(applicationV2["_onChangeForm"](formConfig, event)).toEqualTypeOf<void>();
 
 expectTypeOf(ApplicationV2.BASE_APPLICATION).toEqualTypeOf<typeof ApplicationV2>();
 expectTypeOf(ApplicationV2.RENDER_STATES).toEqualTypeOf<{

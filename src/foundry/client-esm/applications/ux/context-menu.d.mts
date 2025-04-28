@@ -20,7 +20,7 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
    * @param options   - Additional options to configure the context menu.
    */
   constructor(
-    container: JQuery | HTMLElement,
+    container: HTMLElement,
     selector: string | null | undefined,
     menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
     options: ContextMenu.ConstructorOptions<UsesJQuery>,
