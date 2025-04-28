@@ -106,10 +106,12 @@ declare abstract class DataModel<
    * @param options - Options provided to the model constructor
    *                  (unused)
    * @returns Migrated and cleaned source data which will be stored to the model instance
+   * @remarks `options` is unused in `DataModel`
    */
+  // options: not null (parameter default only)
   protected _initializeSource(
     data: fields.SchemaField.CreateData<Schema> | this,
-    options?: Omit<DataModel.DataValidationOptions, "parent">,
+    options?: DataModel.InitializeSourceOptions & ExtraConstructorOptions,
   ): fields.SchemaField.SourceData<Schema>;
 
   /**

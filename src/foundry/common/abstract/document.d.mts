@@ -1358,30 +1358,59 @@ declare namespace Document {
     };
   }
 
-  interface ConstructionContext<Parent extends Document.Any | null> {
+  /** @internal */
+  type _ConstructionContext<Parent extends Document.Any | null> = NullishProps<{
     /**
      * The parent Document of this one, if this one is embedded
      * @defaultValue `null`
      */
-    parent?: Parent | null | undefined;
+    parent: Parent;
 
     /**
      * The compendium collection ID which contains this Document, if any
      * @defaultValue `null`
      */
-    pack?: string | null | undefined;
+    pack: string;
 
     /**
      * Whether to validate initial data strictly?
      * @defaultValue `true`
      */
-    strict?: boolean | null | undefined;
+    strict: boolean;
 
     /**
-     * An immutable reverse-reference to the name of the collection that thi8s Document exists in on its parent, if any.
+     * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
+     * @privateRemarks Omitted from the typedef, inferred from usage in {@link Document._configure | `Document#_configure`}
+     * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
+     * {@link foundry.abstract.EmbeddedCollection.createDocument | `EmbeddedCollection#createDocument`})
      */
-    parentCollection?: string | null | undefined;
-  }
+    parentCollection: string;
+  }>;
+
+  /**
+   * Foundry does not include the properties from the DataModel construction context in `DocumentConstructionContext`,
+   * but they're all still valid.
+   *
+   * `strict` is omitted from the DataModel interface so the Document interface's property
+   * description takes precedence.
+   */
+  interface ConstructionContext<Parent extends Document.Any | null = Document.Any | null>
+    extends Omit<DataModel._ConstructionContext, "strict">,
+      _ConstructionContext<Parent> {}
+
+  /** `DataModel#constructor` pulls `parent` and `strict` out of the passed context before forwarding to `#_configure` */
+  interface ConfigureOptions extends Omit<ConstructionContext, "parent" | "strict"> {}
+
+  /** `DataModel#constructor` pulls `parent` out of the passed context before forwarding to `#_initializeSource` */
+  interface InitializeOptions extends Omit<ConstructionContext, "parent"> {}
+
+  /**
+   * `DataModel#constructor` pulls `parent` out of the passed context before forwarding to `#_initializeSource`
+   * @privateRemarks `Document` doesn't override `_initializeSource`, but at least one specific document does (Actor only, as of v12);
+   * Without an override, this is handled by the `& ExtraConstructorOptions` in the `DataModel` signature, but with one,
+   * a manually combined interface is needed.
+   */
+  interface InitializeSourceOptions extends DataModel.InitializeSourceOptions, Omit<ConstructionContext, "parent"> {}
 
   interface ModificationContext<Parent extends Document.Any | null> {
     /**
