@@ -53,7 +53,7 @@ declare abstract class DataField<
   /**
    * @param options - Options which configure the behavior of the field
    */
-  constructor(options?: Options, context?: DataField.Context);
+  constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @internal */
   " __fvtt_types_internal_source_data": PersistedType;
@@ -219,7 +219,7 @@ declare abstract class DataField<
    */
   validate(
     value: AssignmentType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): DataModelValidationFailure | void;
 
   /**
@@ -243,7 +243,7 @@ declare abstract class DataField<
    */
   protected _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
   /**
@@ -525,24 +525,6 @@ declare namespace DataField {
       | (RequiredOption extends true ? never : undefined);
   }
 
-  interface DataValidationOptions {
-    /** Whether this is a partial schema validation, or a complete one. */
-    partial?: boolean;
-
-    /** Whether to allow replacing invalid values with valid fallbacks. */
-    fallback?: boolean;
-
-    /** The full source object being evaluated. */
-    source?: AnyObject;
-
-    /**
-     * If true, invalid embedded documents will emit a warning and be placed in
-     * the invalidDocuments collection rather than causing the parent to be
-     * considered invalid.
-     */
-    dropInvalidEmbedded?: boolean;
-  }
-
   /**
    * A helper type for the given options type merged into the default options of the DataField class.
    * @typeParam Options - the options that override the default options
@@ -601,16 +583,82 @@ declare namespace DataField {
    */
   type InitializedType<Options extends DataField.Options.Any> = DerivedInitializedType<any, MergedOptions<Options>>;
 
-  /** An interface for the options of the {@link DataField | `DataField`} clean functions. */
-  interface CleanOptions {
-    /** Whether to perform partial cleaning? */
-    partial?: boolean;
+  /** @internal */
+  type _ConstructionContext = NullishProps<{
+    /** A field name to assign to the constructed field */
+    name?: string;
+  }> &
+    InexactPartial<{
+      /**
+       * Another data field which is a hierarchical parent of this one
+       * @remarks Can't be `null` as there's a `!== undefined` check in {@link SchemaField._initialize | `SchemaField#_initialize`}
+       */
+      parent?: DataField.Any;
+    }>;
 
-    /** The root data model being cleaned */
-    source?: {
-      type?: string;
-    };
-  }
+  interface ConstructionContext extends _ConstructionContext {}
+
+  /** @internal */
+  type _ValidationOptions = NullishProps<{
+    /** Whether this is a partial schema validation, or a complete one. */
+    partial: boolean;
+
+    /** Whether to allow replacing invalid values with valid fallbacks. */
+    fallback: boolean;
+
+    /**
+     * If true, invalid embedded documents will emit a warning and be placed in the invalidDocuments
+     * collection rather than causing the parent to be considered invalid.
+     */
+    dropInvalidEmbedded?: boolean;
+  }> &
+    InexactPartial<{
+      /**
+       * The full source object being evaluated.
+       * @privateRemarks Disallowing `null` as this value gets passed to provided `initial` functions,
+       * and users shouldn't have to expect `null`
+       */
+      source: AnyObject;
+    }>;
+
+  /**
+   * @remarks This is the type for the options for `#validate` and associate methods *without* the
+   * possible inclusion of a `validator` function.
+   *
+   * If you are looking for the type with a generic formerly under this name, see {@link ValidateOptions | `DataField.ValidateOptions`}
+   */
+  interface ValidationOptions extends _ValidationOptions {}
+
+  /**
+   * @deprecated Use {@link ValidateOptions | `DataField.ValidationOptions`} instead if you need a direct replacement,
+   * or {@link ValidateOptions | `DataField.ValidateOptions`} if you're typing the options of `#validate` or an associated
+   * method.
+   */
+  interface DataValidationOptions extends ValidationOptions {}
+
+  /** @internal */
+  type _CleanOptions = NullishProps<{
+    /** Whether to perform partial cleaning? */
+    partial: boolean;
+  }> &
+    InexactPartial<{
+      /** The root data model being cleaned */
+      source: AnyObject;
+    }>;
+
+  /** An interface for the options of {@link DataField.clean | `DataField#clean`} and {@link DataField._cleanType | `DataField#_cleanType`}. */
+  interface CleanOptions extends _CleanOptions {}
+
+  /**
+   * @remarks The only place core checks the `options` for any property is in {@link TypeDataField._validateModel | `TypeDataField#_validateModel`},
+   * where it checks `options.source?.type`
+   *
+   * {@link SchemaField._validateModel | `SchemaField._validateModel`} enforces `source`'s existence for subsidiary calls
+   *
+   * The only place core *calls* this at a top level, it does not pass anything for `options`, relying on SchemaField above
+   * to make TypeDataField work
+   */
+  interface ValidateModelOptions extends Pick<ValidationOptions, "source"> {}
 
   /**
    * A Custom DataField validator function.
@@ -628,21 +676,21 @@ declare namespace DataField {
         validate(
           this: CurrentField,
           value: unknown,
-          options: ValidationOptions<CurrentField>,
+          options: ValidateOptions<CurrentField>,
         ): value is BaseAssignmentType;
       }["validate"]
     | {
         validate(
           this: CurrentField,
           value: unknown,
-          options: ValidationOptions<CurrentField>,
+          options: ValidateOptions<CurrentField>,
         ): asserts value is BaseAssignmentType;
       }["validate"]
     | {
         validate(
           this: CurrentField,
           value: unknown,
-          options: ValidationOptions<CurrentField>,
+          options: ValidateOptions<CurrentField>,
         ): DataModelValidationFailure | boolean | void;
       }["validate"];
 
@@ -650,18 +698,28 @@ declare namespace DataField {
    * An interface for the options of the {@link DataField | `DataField`} validation functions.
    * @typeParam CurrentField - the type of the DataField, which is the receiver of the validate function
    */
-  interface ValidationOptions<CurrentField extends DataField.Any> extends DataValidationOptions {
-    source?: AnyObject;
+  interface ValidateOptions<CurrentField extends DataField.Any> extends ValidationOptions {
+    /**
+     * @remarks If {@link DataField.validate | `DataField#validate`} is called with a `validate: someFunc` in its `options`,
+     * it will then pass that `options` object on to that function when it calls it, without alteration.
+     * Nothing in core makes use of the fact that a reference to the function is available, this seems incidental.
+     */
     validate?: Validator<CurrentField, DataField.AssignmentTypeFor<CurrentField>>;
   }
 
-  interface Context {
-    /** A field name to assign to the constructed field */
-    name: string;
-
-    /** Another data field which is a hierarchical parent of this one */
-    parent: DataField.Any;
-  }
+  /**
+   * @remarks The `options` passed to {@link DataField.initialize | `DataField#initialize`} exclusively (in core) come from
+   * {@link DataModel._initialize | `DataModel#_initialize`} or an override (meaning `parent` has been stripped from the
+   * interface), and eventually hits one of:
+   * 1. Document construction, in all cases with `parent` already provided
+   * 2. Gets fed back {@link DataModel._initialize | `DataModel#_initialize`} or an override
+   * 3. {@link Document.get | `Document.get`}, but the one place this happens, `pack` is already provided, and that's the only
+   * option that method cares about.
+   *
+   * This extends the `Document` interface because several core fields use the `pack` property, which isn't available on the
+   * `DataModel` interface
+   */
+  interface InitializeOptions extends Document.InitializeOptions {}
 
   interface ToInputConfig<InitializedType> extends FormInputConfig<InitializedType> {}
 
@@ -715,7 +773,7 @@ declare class SchemaField<
    * @param options - Options which configure the behavior of the field
    */
   // Saying `fields: Fields` here causes the inference for the fields to be unnecessarily widened. This might effectively be a no-op but it fixes the inference.
-  constructor(fields: { [K in keyof Fields]: Fields[K] }, options?: Options, context?: DataField.Context);
+  constructor(fields: { [K in keyof Fields]: Fields[K] }, options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `true` */
   override required: boolean;
@@ -798,7 +856,7 @@ declare class SchemaField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
   protected override _validateModel(data: AnyObject, options?: AnyObject): void;
@@ -1067,7 +1125,7 @@ declare class BooleanField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
   protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
@@ -1128,7 +1186,7 @@ declare class NumberField<
   /**
    * @param options - Options which configure the behavior of the field
    */
-  constructor(options?: Options, context?: DataField.Context);
+  constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `null` */
   override initial: DataField.Options.InitialType<InitializedType>;
@@ -1182,7 +1240,7 @@ declare class NumberField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
   /**
@@ -1363,7 +1421,7 @@ declare class StringField<
   /**
    * @param options - Options which configure the behavior of the field
    */
-  constructor(options?: Options, context?: DataField.Context);
+  constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `undefined` */
   override initial: DataField.Options.InitialType<InitializedType>;
@@ -1404,7 +1462,7 @@ declare class StringField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
   /**
@@ -1624,7 +1682,7 @@ declare class ObjectField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -1728,7 +1786,7 @@ declare class ArrayField<
    * @param element - A DataField instance which defines the type of element contained in the Array.
    * @param options - Options which configure the behavior of the field
    */
-  constructor(element: ElementFieldType, options?: Options, context?: DataField.Context);
+  constructor(element: ElementFieldType, options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `true` */
   override required: boolean;
@@ -1767,7 +1825,7 @@ declare class ArrayField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
   /**
@@ -1778,7 +1836,7 @@ declare class ArrayField<
    */
   protected _validateElements(
     value: AnyArray,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): DataModelValidationFailure | void;
 
   /**
@@ -1789,7 +1847,7 @@ declare class ArrayField<
    */
   protected _validateElement(
     value: unknown,
-    options: DataField.ValidationOptions<DataField.Any>,
+    options: DataField.ValidateOptions<DataField.Any>,
   ): DataModelValidationFailure | void;
 
   override initialize(
@@ -1970,7 +2028,7 @@ declare class SetField<
 > {
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): void | DataModelValidationFailure;
 
   override initialize(
@@ -2095,7 +2153,7 @@ declare class EmbeddedDataField<
    * @param model   - The class of DataModel which should be embedded in this field
    * @param options - Options which configure the behavior of the field
    */
-  constructor(model: ModelType, options?: Options, context?: DataField.Context);
+  constructor(model: ModelType, options?: Options, context?: DataField.ConstructionContext);
 
   /**
    * The embedded DataModel definition which is contained in this field.
@@ -2236,7 +2294,7 @@ declare class EmbeddedCollectionField<
    * @param element - The type of Document which belongs to this embedded collection
    * @param options - Options which configure the behavior of the field
    */
-  constructor(element: ElementFieldType, options?: Options, context?: DataField.Context);
+  constructor(element: ElementFieldType, options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `true` */
   override readonly: true;
@@ -2265,7 +2323,7 @@ declare class EmbeddedCollectionField<
 
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): DataModelValidationFailure | void;
 
   override initialize(
@@ -2448,7 +2506,7 @@ declare class EmbeddedCollectionDeltaField<
 
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): void | DataModelValidationFailure;
 }
 
@@ -2570,7 +2628,7 @@ declare class EmbeddedDocumentField<
    * @param model   - The type of Document which is embedded.
    * @param options - Options which configure the behavior of the field.
    */
-  constructor(model: DocumentType, options?: Options, context?: DataField.Context);
+  constructor(model: DocumentType, options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `true` */
   override nullable: boolean;
@@ -2706,7 +2764,7 @@ declare class DocumentIdField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -2767,7 +2825,7 @@ declare class DocumentUUIDField<
    * @param options - Options which configure the behavior of the field
    * @param context - Additional context which describes the field
    */
-  constructor(options?: Options, context?: DataField.Context);
+  constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** A specific document type in CONST.ALL_DOCUMENT_TYPES required by this field */
   type: Document.Type | undefined;
@@ -2779,7 +2837,7 @@ declare class DocumentUUIDField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
   // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
@@ -2877,7 +2935,7 @@ declare class ForeignDocumentField<
    * @param model   - The foreign DataModel class definition which this field should link to.
    * @param options - Options which configure the behavior of the field
    */
-  constructor(model: DocumentType, options?: Options, context?: DataField.Context);
+  constructor(model: DocumentType, options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `true` */
   override nullable: boolean;
@@ -2995,7 +3053,7 @@ declare class ColorField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -3067,7 +3125,7 @@ declare class FilePathField<
   /**
    * @param options - Options which configure the behavior of the field
    */
-  constructor(options?: Options, context?: DataField.Context);
+  constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /**
    * A set of categories in CONST.FILE_CATEGORIES which this field supports
@@ -3102,7 +3160,7 @@ declare class FilePathField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -3392,7 +3450,7 @@ declare class DocumentOwnershipField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -3454,7 +3512,7 @@ declare class JSONField<
   InitializedType = JSONField.InitializedType<Options>,
   PersistedType extends string | null | undefined = JSONField.PersistedType<Options>,
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
-  constructor(options?: Options, context?: DataField.Context);
+  constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `false` */
   override blank: boolean;
@@ -3471,7 +3529,7 @@ declare class JSONField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
   override initialize(
@@ -3563,7 +3621,7 @@ declare class AnyField extends DataField<DataField.Options.Any, unknown, unknown
 
   protected override _validateType(
     value: unknown,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -3888,13 +3946,17 @@ declare class DocumentTypeField<
    * @param options - Options which configure the behavior of the field
    * @param context - Additional context which describes the field
    */
-  constructor(documentClass: ConcreteDocumentClass, options?: DocumentTypeField.Options, context?: DataField.Context);
+  constructor(
+    documentClass: ConcreteDocumentClass,
+    options?: DocumentTypeField.Options,
+    context?: DataField.ConstructionContext,
+  );
 
   static override get _defaults(): DocumentTypeField.Options;
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -4007,7 +4069,7 @@ declare class TypeDataField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
   protected override _validateModel(data: AnyObject, options?: AnyObject): void;
@@ -4117,7 +4179,7 @@ declare class TypedSchemaField<
    * @param options - Options which configure the behavior of the field
    * @param context - Additional context which describes the field
    */
-  constructor(types: Types, options?: Options, context?: DataField.Context);
+  constructor(types: Types, options?: Options, context?: DataField.ConstructionContext);
 
   static get _defaults(): DataField.Options.Any;
 
@@ -4136,7 +4198,7 @@ declare class TypedSchemaField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
   override initialize(
@@ -4292,13 +4354,13 @@ declare class JavaScriptField<
   const InitializedType = StringField.InitializedType<Options>,
   const PersistedType extends string | null | undefined = StringField.InitializedType<Options>,
 > extends _InternalJavaScriptField<Options, AssignmentType, InitializedType, PersistedType> {
-  constructor(options?: Options, context?: DataField.Context);
+  constructor(options?: Options, context?: DataField.ConstructionContext);
 
   static get _defaults(): JavaScriptField.Options;
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
   override toFormGroup(

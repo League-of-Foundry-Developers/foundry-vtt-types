@@ -482,12 +482,12 @@ export class PackageCompendiumPacks<
 
   protected override _validateElements(
     value: AnyArray,
-    options?: fields.DataField.ValidationOptions<fields.DataField.Any>,
+    options?: fields.DataField.ValidateOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 
   protected override _validateElement(
     value: unknown,
-    options: fields.DataField.ValidationOptions<fields.DataField.Any>,
+    options: fields.DataField.ValidateOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 }
 

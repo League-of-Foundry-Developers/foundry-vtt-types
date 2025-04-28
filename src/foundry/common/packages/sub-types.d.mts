@@ -20,7 +20,7 @@ declare class AdditionalTypesField<
 
   protected _validateType(
     value: ObjectField.InitializedType<Options>,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | void;
 }
 
