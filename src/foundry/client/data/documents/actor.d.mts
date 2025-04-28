@@ -618,9 +618,11 @@ declare global {
      */
     protected _dependentTokens: foundry.utils.IterableWeakMap<Scene.Implementation, TokenDocument.Implementation>;
 
+    /** @remarks `||=`s the `prototypeToken`'s `name` and `texture.src` fields with the main actor's values */
+    // options: not null (parameter default only)
     protected override _initializeSource(
       data: this | Actor.CreateData,
-      options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
+      options?: Document.InitializeSourceOptions,
     ): Actor.Source;
 
     /**
