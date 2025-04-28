@@ -7,19 +7,19 @@ declare namespace DocumentSheetV2 {
   interface Any extends AnyDocumentSheetV2 {}
   interface AnyConstructor extends Identity<typeof AnyDocumentSheetV2> {}
 
-  interface RenderContext<Document extends Document.Any = Document.Any> extends ApplicationV2.RenderContext {
-    document: Document;
-    source: Document["_source"];
-    fields: Document["schema"]["fields"];
+  interface RenderContext<ConcreteDocument extends Document.Any = Document.Any> extends ApplicationV2.RenderContext {
+    document: ConcreteDocument;
+    source: ConcreteDocument["_source"];
+    fields: ConcreteDocument["schema"]["fields"];
     editable: boolean;
     rootId: string;
   }
 
-  interface Configuration<Document extends Document.Any> extends ApplicationV2.Configuration, _Configuration {
+  interface Configuration<ConcreteDocument extends Document.Any> extends ApplicationV2.Configuration, _Configuration {
     /**
      * The Document instance associated with this sheet
      */
-    document: Document;
+    document: ConcreteDocument;
   }
 
   /** @internal */
