@@ -170,7 +170,7 @@ declare class DocumentSheetV2<
    * @param options  - Additional options altering the request
    * @privateRemarks TODO: Improve options to capture the Create and/or Update options available to the Document
    */
-  _processSubmitData(
+  protected _processSubmitData(
     event: SubmitEvent,
     form: HTMLFormElement,
     formData: FormDataExtended,

@@ -95,7 +95,7 @@ declare const position: foundry.applications.api.ApplicationV2.Position;
 expectTypeOf(
   applicationV2.setPosition(position),
 ).toEqualTypeOf<foundry.applications.api.ApplicationV2.Position | void>();
-expectTypeOf(applicationV2.toggleControls()).toEqualTypeOf<void>();
+expectTypeOf(applicationV2.toggleControls()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(applicationV2.minimize()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(applicationV2.maximize()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(applicationV2.bringToFront()).toEqualTypeOf<void>();
@@ -118,4 +118,4 @@ expectTypeOf(ApplicationV2.emittedEvents).toEqualTypeOf<string[]>();
 expectTypeOf(ApplicationV2.inheritanceChain()).toEqualTypeOf<
   Generator<foundry.applications.api.ApplicationV2.AnyConstructor>
 >();
-expectTypeOf(ApplicationV2.parseCSSDimensions("", 1)).toEqualTypeOf<number>();
+expectTypeOf(ApplicationV2.parseCSSDimensions("", 1)).toEqualTypeOf<number | undefined>();
