@@ -65,6 +65,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): boolean;
 
   updateSource(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateOptions): TokenDocument.UpdateData;
+  updateSource(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateOptions): TokenDocument.UpdateData;
 
   // TODO: Update with the Delta conditionality
   toObject(source: true): this["_source"];
@@ -309,34 +310,13 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     options?: Document.DataFieldShimOptions,
   ): void;
 
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
   protected static override _addDataFieldMigration(
     data: AnyMutableObject,
     oldKey: string,
     newKey: string,
     apply?: ((data: AnyMutableObject) => unknown) | null,
   ): boolean;
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
 
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
   // options: not null (destructured where forwarded)
   protected static override _logDataFieldMigration(
     oldKey: string,
@@ -383,6 +363,7 @@ export class ActorDeltaField<
   DocumentType extends Document.AnyConstructor,
   Options extends fields.EmbeddedDocumentField.Options<DocumentType> = fields.EmbeddedDocumentField.DefaultOptions,
 > extends fields.EmbeddedDocumentField<DocumentType, Options> {
+  // options: not null (parameter default only)
   // options: not null (parameter default only)
   override initialize(
     value: fields.EmbeddedDocumentField.PersistedType<DocumentType, Options>,

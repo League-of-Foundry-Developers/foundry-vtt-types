@@ -219,34 +219,13 @@ declare abstract class BaseTableResult<
     options?: Document.DataFieldShimOptions,
   ): void;
 
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
   protected static override _addDataFieldMigration(
     data: AnyMutableObject,
     oldKey: string,
     newKey: string,
     apply?: ((data: AnyMutableObject) => unknown) | null,
   ): boolean;
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
 
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
   // options: not null (destructured where forwarded)
   protected static override _logDataFieldMigration(
     oldKey: string,
@@ -277,6 +256,7 @@ declare abstract class BaseTableResult<
 
   static validateJoint(data: TableResult.Source): void;
 
+  // context: not null (destructured)
   // context: not null (destructured)
   static override fromSource(
     source: TableResult.CreateData,
