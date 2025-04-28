@@ -57,6 +57,11 @@ declare namespace DocumentSheetV2 {
     /** Data describing the document modification that occurred */
     renderData: object;
   }
+
+  interface SubmitOptions {
+    /** Additional data merged with processed form data */
+    updateData: object;
+  }
 }
 
 /**
@@ -136,10 +141,7 @@ declare class DocumentSheetV2<
   /**
    * Programmatically submit a DocumentSheetV2 instance, providing additional data to be merged with form data.
    */
-  submit(options?: {
-    /** Additional data merged with processed form data */
-    updateData: object;
-  }): Promise<void>;
+  submit(options?: DocumentSheetV2.SubmitOptions): Promise<void>;
 }
 
 export default DocumentSheetV2;

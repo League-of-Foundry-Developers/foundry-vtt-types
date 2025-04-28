@@ -323,6 +323,20 @@ declare namespace ApplicationV2 {
     labelPrefix?: string | null | undefined;
   }
 
+  interface Window {
+    header?: HTMLElement | undefined;
+    resize?: HTMLElement | undefined;
+    title: HTMLHeadingElement | undefined;
+    icon: HTMLElement | undefined;
+    close: HTMLButtonElement | undefined;
+    controls: HTMLButtonElement | undefined;
+    controlsDropdown: HTMLDivElement | undefined;
+    onDrag: (event: PointerEvent) => void;
+    onResize: (event: PointerEvent) => void;
+    pointerStartPosition: ApplicationV2.Position | undefined;
+    pointerMoveThrottle: boolean;
+  }
+
   /** @remarks Used with `templates/generic/tab-navigation.hbs` */
   interface Tab {
     id: string;
@@ -467,19 +481,7 @@ declare class ApplicationV2<
   /**
    * Convenience references to window header elements.
    */
-  get window(): {
-    header?: HTMLElement | undefined;
-    resize?: HTMLElement | undefined;
-    title: HTMLHeadingElement | undefined;
-    icon: HTMLElement | undefined;
-    close: HTMLButtonElement | undefined;
-    controls: HTMLButtonElement | undefined;
-    controlsDropdown: HTMLDivElement | undefined;
-    onDrag: (event: PointerEvent) => void;
-    onResize: (event: PointerEvent) => void;
-    pointerStartPosition: ApplicationV2.Position | undefined;
-    pointerMoveThrottle: boolean;
-  };
+  get window(): ApplicationV2.Window;
 
   /**
    * If this Application uses tabbed navigation groups, this mapping is updated whenever the changeTab method is called.

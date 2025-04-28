@@ -900,790 +900,7 @@ declare global {
     /**
      * Configuration settings for the Canvas and its contained layers and objects
      */
-    Canvas: {
-      /** @defaultValue `8` */
-      blurStrength: number;
-
-      /** @defaultValue `4` */
-      blurQuality: number;
-
-      /** @defaultValue `0x303030` */
-      darknessColor: number;
-
-      /** @defaultValue `0xeeeeee` */
-      daylightColor: number;
-
-      /** @defaultValue `0xffffff` */
-      brightestColor: number;
-
-      chatBubblesClass: ChatBubbles.AnyConstructor;
-
-      /** @defaultValue `0.25` */
-      darknessLightPenalty: number;
-
-      dispositionColors: {
-        /** @defaultValue `0xe72124` */
-        HOSTILE: number;
-
-        /** @defaultValue `0xf1d836` */
-        NEUTRAL: number;
-
-        /** @defaultValue `0x43dfdf` */
-        FRIENDLY: number;
-
-        /** @defaultValue `0x555555` */
-        INACTIVE: number;
-
-        /** @defaultValue `0x33bc4e` */
-        PARTY: number;
-
-        /** @defaultValue `0xff9829` */
-        CONTROLLED: number;
-
-        /** @defaultValue `0xA612D4` */
-        SECRET: number;
-      };
-
-      /**
-       * The class used to render door control icons
-       * @remarks Not `AnyConstructor` because it's instantiated with a `Wall.Implementation` as its first argument
-       */
-      doorControlClass: typeof DoorControl;
-
-      /** @defaultValue `0x000000` */
-      exploredColor: number;
-
-      /** @defaultValue `0x000000` */
-      unexploredColor: number;
-
-      /** @defaultValue `10000` */
-      darknessToDaylightAnimationMS: number;
-
-      /** @defaultValue `10000` */
-      daylightToDarknessAnimationMS: number;
-
-      /**
-       * @defaultValue `foundry.canvas.sources.PointDarknessSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
-       */
-      darknessSourceClass: typeof foundry.canvas.sources.PointDarknessSource;
-
-      /**
-       * @defaultValue `foundry.canvas.sources.PointLightSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
-       */
-      lightSourceClass: typeof foundry.canvas.sources.PointLightSource;
-
-      /**
-       * @defaultValue `foundry.canvas.sources.GlobalLightSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
-       */
-      globalLightSourceClass: typeof foundry.canvas.sources.GlobalLightSource;
-
-      /**
-       * @defaultValue `foundry.canvas.sources.PointVisionSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
-       */
-      visionSourceClass: typeof foundry.canvas.sources.PointVisionSource;
-
-      /**
-       * @defaultValue `foundry.canvas.sources.PointSoundSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
-       */
-      soundSourceClass: typeof foundry.canvas.sources.PointSoundSource;
-
-      groups: CONFIG.Canvas.Groups;
-
-      layers: CONFIG.Canvas.Layers;
-
-      lightLevels: {
-        /** @defaultValue `0` */
-        dark: number;
-
-        /** @defaultValue `0.5` */
-        halfdark: number;
-
-        /** @defaultValue `0.25` */
-        dim: number;
-
-        /** @defaultValue `1.0` */
-        bright: number;
-      };
-
-      /**
-       * @defaultValue `FogManager`
-       * @remarks Can't be `AnyConstructor` because Foundry assumes it can call `new` with the same arguments FogManager accepts
-       */
-      fogManager: typeof FogManager;
-
-      polygonBackends: {
-        /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        sight: PointSourcePolygon.AnyConstructor;
-        /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        light: PointSourcePolygon.AnyConstructor;
-        /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        sound: PointSourcePolygon.AnyConstructor;
-        /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        move: PointSourcePolygon.AnyConstructor;
-      };
-
-      /** @defaultValue `number` */
-      darknessSourcePaddingMultiplier: number;
-
-      visibilityFilter: VisibilityFilter.AnyConstructor;
-
-      visualEffectsMaskingFilter: VisualEffectsMaskingFilter.AnyConstructor;
-
-      /**
-       * @defaultValue `Ruler`
-       * @remarks Not `AnyConstructor` because it's instantiated with a `User.Implementation` as its first argument
-       */
-      rulerClass: typeof Ruler;
-
-      /** @defaultValue `0.8` */
-      dragSpeedModifier: number;
-
-      /** @defaultValue `3.0` */
-      maxZoom: number;
-
-      /** @defaultValue `4` */
-      objectBorderThickness: number;
-
-      gridStyles: {
-        [key: string]: GridLayer.GridStyle;
-
-        /**
-         * @defaultValue
-         * ```js
-         * {
-         *   label: "GRID.STYLES.SolidLines",
-         *   shaderClass: GridShader,
-         *   shaderOptions: {
-         *     style: 0
-         *   }
-         * }
-         * ```
-         */
-        solidLines: GridLayer.GridStyle;
-
-        /**
-         * @defaultValue
-         * ```js
-         * {
-         *   label: "GRID.STYLES.DashedLines",
-         *   shaderClass: GridShader,
-         *   shaderOptions: {
-         *     style: 1
-         *   }
-         * }
-         * ```
-         */
-        dashedLines: GridLayer.GridStyle;
-
-        /**
-         * @defaultValue
-         * ```js
-         * {
-         *   label: "GRID.STYLES.DottedLines",
-         *   shaderClass: GridShader,
-         *   shaderOptions: {
-         *     style: 0
-         *   }
-         * }
-         * ```
-         */
-        dottedLines: GridLayer.GridStyle;
-
-        /**
-         * @defaultValue
-         * ```js
-         * {
-         *   label: "GRID.STYLES.SquarePoints",
-         *   shaderClass: GridShader,
-         *   shaderOptions: {
-         *     style: 0
-         *   }
-         * }
-         * ```
-         */
-        squarePoints: GridLayer.GridStyle;
-
-        /**
-         * @defaultValue
-         * ```js
-         * {
-         *   label: "GRID.STYLES.DiamondPoints",
-         *   shaderClass: GridShader,
-         *   shaderOptions: {
-         *     style: 0
-         *   }
-         * }
-         * ```
-         */
-        diamondPoints: GridLayer.GridStyle;
-
-        /**
-         * @defaultValue
-         * ```js
-         * {
-         *   label: "GRID.STYLES.RoundPoints",
-         *   shaderClass: GridShader,
-         *   shaderOptions: {
-         *     style: 0
-         *   }
-         * }
-         * ```
-         */
-        roundPoints: GridLayer.GridStyle;
-      };
-
-      lightAnimations: {
-        [key: string]: RenderedEffectSource.LightAnimationConfig;
-
-        flame: {
-          /** @defaultValue `"LIGHT.AnimationFame"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateFlickering` */
-          animation: BaseLightSource.LightAnimationFunction;
-
-          /** @defaultValue `FlameIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
-
-          /** @defaultValue `FlameColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        torch: {
-          /** @defaultValue `"LIGHT.AnimationTorch"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTorch` */
-          animation: BaseLightSource.LightAnimationFunction;
-
-          /** @defaultValue `TorchIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
-
-          /** @defaultValue `TorchColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        revolving: {
-          /** @defaultValue `"LIGHT.AnimationRevolving"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: BaseLightSource.LightAnimationFunction;
-
-          /** @defaultValue `RevolvingColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        siren: {
-          /** @defaultValue `"LIGHT.AnimationSiren"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTorch` */
-          animation: BaseLightSource.LightAnimationFunction;
-
-          /** @defaultValue `SirenIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
-
-          /** @defaultValue `SirenIlluminationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        pulse: {
-          /** @defaultValue `"LIGHT.AnimationPulse"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animatePulse` */
-          animation: BaseLightSource.LightAnimationFunction;
-
-          /** @defaultValue `PulseIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
-
-          /** @defaultValue `PulseColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        chroma: {
-          /** @defaultValue `"LIGHT.AnimationChroma"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `ChromaColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        wave: {
-          /** @defaultValue `"LIGHT.AnimationWave"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `WaveIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
-
-          /** @defaultValue `WaveColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        fog: {
-          /** @defaultValue `"LIGHT.AnimationFog"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `FogColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        sunburst: {
-          /** @defaultValue `"LIGHT.AnimationSunburst"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `SunburstIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
-
-          /** @defaultValue `SunburstColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        dome: {
-          /** @defaultValue `"LIGHT.AnimationLightDome"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `LightDomeColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        emanation: {
-          /** @defaultValue `"LIGHT.AnimationEmanation"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `EmanationColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        hexa: {
-          /** @defaultValue `"LIGHT.AnimationHexaDome";` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `HexaDomeColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        ghost: {
-          /** @defaultValue `"LIGHT.AnimationGhostLight"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `GhostLightIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
-
-          /** @defaultValue `GhostLightColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        energy: {
-          /** @defaultValue `"LIGHT.AnimationEnergyField"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `EnergyFieldColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        vortex: {
-          /** @defaultValue `"LIGHT.AnimationVortex"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `VortexIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
-
-          /** @defaultValue `VortexColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        witchwave: {
-          /** @defaultValue `"LIGHT.AnimationBewitchingWave"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `BewitchingWaveIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
-
-          /** @defaultValue `BewitchingWaveColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        rainbowswirl: {
-          /** @defaultValue `"LIGHT.AnimationSwirlingRainbow"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `SwirlingRainbowColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        radialrainbow: {
-          /** @defaultValue `"LIGHT.AnimationRadialRainbow"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `RadialRainbowColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-
-        fairy: {
-          /** @defaultValue `"LIGHT.AnimationFairyLight"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `FairyLightIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
-
-          /** @defaultValue `FairyLightColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
-        };
-      };
-
-      darknessAnimations: {
-        [key: string]: RenderedEffectSource.DarknessAnimationConfig;
-
-        magicalGloom: {
-          /** @defaultValue `"LIGHT.AnimationMagicalGloom"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `MagicalGloomDarknessShader` */
-          darknessShader: AdaptiveDarknessShader.AnyConstructor;
-        };
-
-        roiling: {
-          /** @defaultValue `"LIGHT.AnimationRoilingMass"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `RoilingDarknessShader` */
-          darknessShader: AdaptiveDarknessShader.AnyConstructor;
-        };
-
-        hole: {
-          /** @defaultValue `"LIGHT.AnimationBlackHole"` */
-          label: string;
-
-          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
-          animation: RenderedEffectSource.AnimationFunction;
-
-          /** @defaultValue `BlackHoleDarknessShader` */
-          darknessShader: AdaptiveDarknessShader.AnyConstructor;
-        };
-      };
-
-      /**
-       * A registry of Scenes which are managed by a specific SceneManager class.
-       * @remarks Keys are Scene IDs
-       * @privateRemarks Can't be `AnyConstructor` because it's instantiated expecting a compatible constructor
-       */
-      managedScenes: Record<string, typeof foundry.canvas.SceneManager>;
-
-      pings: {
-        types: {
-          /** @defaultValue `"pulse"` */
-          PULSE: string;
-
-          /** @defaultValue `"alert"` */
-          ALERT: string;
-
-          /** @defaultValue `"chevron"` */
-          PULL: string;
-
-          /** @defaultValue `"arrow"` */
-          ARROW: string;
-        };
-        styles: {
-          /** @defaultValue `{ class: AlertPing, color: "#ff0000", size: 1.5, duration: 900 }` */
-          alert: CONFIG.Canvas.Pings.Style;
-
-          /** @defaultValue `{ class: ArrowPing, size: 1, duration: 900 }` */
-          arrow: CONFIG.Canvas.Pings.Style;
-
-          /** @defaultValue `{ class: ChevronPing, size: 1, duration: 2000 }` */
-          chevron: CONFIG.Canvas.Pings.Style;
-
-          /** @defaultValue `{ class: PulsePing, size: 1.5, duration: 900 }` */
-          pulse: CONFIG.Canvas.Pings.Style;
-
-          [key: string]: CONFIG.Canvas.Pings.Style;
-        };
-
-        /** @defaultValue `700` */
-        pullSpeed: number;
-      };
-
-      targeting: {
-        /** @defaultValue `.15` */
-        size: number;
-      };
-
-      /**
-       * The hover-fading configuration.
-       */
-      hoverFade: {
-        /**
-         * The delay in milliseconds before the (un)faded animation starts on (un)hover.
-         * @defaultValue `250`
-         */
-        delay: number;
-
-        /**
-         * The duration in milliseconds of the (un)fade animation on (un)hover.
-         * @defaultValue `750`
-         */
-        duration: number;
-      };
-
-      /**
-       * Allow specific transcoders for assets
-       * @defaultValue `{ basis: false }`
-       */
-      transCoders: Record<string, boolean>;
-
-      /**
-       * The set of VisionMode definitions which are available to be used for Token vision.
-       */
-      visionModes: {
-        [key: string]: VisionMode;
-
-        /**
-         * Default (Basic) Vision
-         * @defaultValue
-         * ```typescript
-         * new VisionMode({
-         *   id: "basic",
-         *   label: "VISION.ModeBasicVision",
-         *   vision: {
-         *     defaults: { attenuation: 0, contrast: 0, saturation: 0, brightness: 0 }
-         *     preferred: true // Takes priority over other vision modes
-         *   }
-         * })
-         * ```
-         */
-        basic: VisionMode;
-
-        /**
-         * Darkvision
-         * @defaultValue
-         * ```typescript
-         * new VisionMode({
-         *   id: "darkvision",
-         *   label: "VISION.ModeDarkvision",
-         *     canvas: {
-         *       shader: ColorAdjustmentsSamplerShader,
-         *       uniforms: { contrast: 0, saturation: -1.0, brightness: 0 }
-         *   },
-         *   lighting: {
-         *     levels: {
-         *       [VisionMode.LIGHTING_LEVELS.DIM]: VisionMode.LIGHTING_LEVELS.BRIGHT
-         *     },
-         *   background: { visibility: VisionMode.LIGHTING_VISIBILITY.REQUIRED }
-         *   },
-         *   vision: {
-         *     darkness: { adaptive: false },
-         *     defaults: { attenuation: 0, contrast: 0, saturation: -1.0, brightness: 0 }
-         *   }
-         * })
-         * ```
-         */
-        darkvision: VisionMode;
-
-        /**
-         * Darkvision
-         * @defaultValue
-         * ```typescript
-         * new VisionMode({
-         *   id: "monochromatic",
-         *   label: "VISION.ModeMonochromatic",
-         *   canvas: {
-         *     shader: ColorAdjustmentsSamplerShader,
-         *     uniforms: { contrast: 0, saturation: -1.0, brightness: 0 }
-         *   },
-         *   lighting: {
-         *     background: {
-         *       postProcessingModes: ["SATURATION"],
-         *       uniforms: { saturation: -1.0, tint: [1, 1, 1] }
-         *     },
-         *     illumination: {
-         *       postProcessingModes: ["SATURATION"],
-         *       uniforms: { saturation: -1.0, tint: [1, 1, 1] }
-         *     },
-         *     coloration: {
-         *       postProcessingModes: ["SATURATION"],
-         *       uniforms: { saturation: -1.0, tint: [1, 1, 1] }
-         *     }
-         *   },
-         *   vision: {
-         *     darkness: { adaptive: false },
-         *     defaults: { attenuation: 0, contrast: 0, saturation: -1, brightness: 0 }
-         *   }
-         * })
-         * ```
-         */
-        monochromatic: VisionMode;
-
-        /**
-         * Blindness
-         * @defaultValue
-         * ```typescript
-         * new VisionMode({
-         *   id: "blindness",
-         *   label: "VISION.ModeBlindness",
-         *   tokenConfig: false,
-         *   canvas: {
-         *     shader: ColorAdjustmentsSamplerShader,
-         *     uniforms: { contrast: -0.75, saturation: -1, exposure: -0.3 }
-         *   },
-         *   lighting: {
-         *     background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
-         *     illumination: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
-         *     coloration: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED }
-         *   },
-         *   vision: {
-         *     darkness: { adaptive: false },
-         *     defaults: { color: null, attenuation: 0, contrast: -0.5, saturation: -1, brightness: -1 }
-         *   }
-         * }),
-         * ```
-         */
-        blindness: VisionMode;
-
-        /**
-         * Tremorsense
-         * @defaultValue
-         * ```typescript
-         * new VisionMode({
-         *   id: "tremorsense",
-         *   label: "VISION.ModeTremorsense",
-         *   canvas: {
-         *     shader: ColorAdjustmentsSamplerShader,
-         *     uniforms: { contrast: 0, saturation: -0.8, exposure: -0.65 }
-         *   },
-         *   lighting: {
-         *     background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
-         *     illumination: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
-         *     coloration: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
-         *     darkness: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED }
-         *   },
-         *   vision: {
-         *     darkness: { adaptive: false },
-         *     defaults: { attenuation: 0, contrast: 0.2, saturation: -0.3, brightness: 1 },
-         *     background: { shader: WaveBackgroundVisionShader },
-         *     coloration: { shader: WaveColorationVisionShader }
-         *   }
-         * }, {animated: true})
-         * ```
-         */
-        tremorsense: VisionMode;
-
-        /**
-         * Light Amplification
-         * @defaultValue
-         * ```typescript
-         * new VisionMode({
-         *   id: "lightAmplification",
-         *   label: "VISION.ModeLightAmplification",
-         *   canvas: {
-         *     shader: AmplificationSamplerShader,
-         *     uniforms: { saturation: -0.5, tint: [0.38, 0.8, 0.38] }
-         *   },
-         *   lighting: {
-         *     background: {
-         *       visibility: VisionMode.LIGHTING_VISIBILITY.REQUIRED,
-         *       postProcessingModes: ["SATURATION", "EXPOSURE"],
-         *       uniforms: { saturation: -0.5, exposure: 1.5, tint: [0.38, 0.8, 0.38] }
-         *     },
-         *     illumination: {
-         *       postProcessingModes: ["SATURATION"],
-         *       uniforms: { saturation: -0.5 }
-         *     },
-         *     coloration: {
-         *       postProcessingModes: ["SATURATION", "EXPOSURE"],
-         *       uniforms: { saturation: -0.5, exposure: 1.5, tint: [0.38, 0.8, 0.38] }
-         *     },
-         *     levels: {
-         *       [VisionMode.LIGHTING_LEVELS.DIM]: VisionMode.LIGHTING_LEVELS.BRIGHT,
-         *       [VisionMode.LIGHTING_LEVELS.BRIGHT]: VisionMode.LIGHTING_LEVELS.BRIGHTEST
-         *     }
-         *   },
-         *   vision: {
-         *     darkness: { adaptive: false },
-         *     defaults: { attenuation: 0, contrast: 0, saturation: -0.5, brightness: 1 },
-         *     background: { shader: AmplificationBackgroundVisionShader }
-         *   }
-         * })
-         * ```
-         */
-        lightAmplification: VisionMode;
-      };
-
-      /**
-       * The set of DetectionMode definitions which are available to be used for visibility detection.
-       */
-      detectionModes: {
-        [key: string]: DetectionMode;
-
-        lightPerception: DetectionModeLightPerception;
-
-        basicSight: DetectionModeBasicSight;
-
-        seeInvisibility: DetectionModeInvisibility;
-
-        senseInvisibility: DetectionModeInvisibility;
-
-        feelTremor: DetectionModeTremor;
-
-        seeAll: DetectionModeAll;
-
-        senseAll: DetectionModeAll;
-      };
-    };
+    Canvas: CONFIG.Canvas;
 
     /**
      * Configure the default Token text style so that it may be reused and overridden by modules
@@ -3078,6 +2295,152 @@ declare global {
       webrtc: CameraViews.AnyConstructor;
     }
 
+    interface Canvas {
+      /** @defaultValue `8` */
+      blurStrength: number;
+
+      /** @defaultValue `4` */
+      blurQuality: number;
+
+      /** @defaultValue `0x303030` */
+      darknessColor: number;
+
+      /** @defaultValue `0xeeeeee` */
+      daylightColor: number;
+
+      /** @defaultValue `0xffffff` */
+      brightestColor: number;
+
+      chatBubblesClass: ChatBubbles.AnyConstructor;
+
+      /** @defaultValue `0.25` */
+      darknessLightPenalty: number;
+
+      dispositionColors: Canvas.DispositionColors;
+
+      /**
+       * The class used to render door control icons
+       * @remarks Not `AnyConstructor` because it's instantiated with a `Wall.Implementation` as its first argument
+       */
+      doorControlClass: typeof DoorControl;
+
+      /** @defaultValue `0x000000` */
+      exploredColor: number;
+
+      /** @defaultValue `0x000000` */
+      unexploredColor: number;
+
+      /** @defaultValue `10000` */
+      darknessToDaylightAnimationMS: number;
+
+      /** @defaultValue `10000` */
+      daylightToDarknessAnimationMS: number;
+
+      /**
+       * @defaultValue `foundry.canvas.sources.PointDarknessSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
+       */
+      darknessSourceClass: typeof foundry.canvas.sources.PointDarknessSource;
+
+      /**
+       * @defaultValue `foundry.canvas.sources.PointLightSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
+       */
+      lightSourceClass: typeof foundry.canvas.sources.PointLightSource;
+
+      /**
+       * @defaultValue `foundry.canvas.sources.GlobalLightSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
+       */
+      globalLightSourceClass: typeof foundry.canvas.sources.GlobalLightSource;
+
+      /**
+       * @defaultValue `foundry.canvas.sources.PointVisionSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
+       */
+      visionSourceClass: typeof foundry.canvas.sources.PointVisionSource;
+
+      /**
+       * @defaultValue `foundry.canvas.sources.PointSoundSource`
+       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
+       */
+      soundSourceClass: typeof foundry.canvas.sources.PointSoundSource;
+
+      groups: CONFIG.Canvas.Groups;
+
+      layers: CONFIG.Canvas.Layers;
+
+      lightLevels: Canvas.LightLevels;
+
+      /**
+       * @defaultValue `FogManager`
+       * @remarks Can't be `AnyConstructor` because Foundry assumes it can call `new` with the same arguments FogManager accepts
+       */
+      fogManager: typeof FogManager;
+
+      polygonBackends: Canvas.PolygonBackends;
+
+      /** @defaultValue `number` */
+      darknessSourcePaddingMultiplier: number;
+
+      visibilityFilter: VisibilityFilter.AnyConstructor;
+
+      visualEffectsMaskingFilter: VisualEffectsMaskingFilter.AnyConstructor;
+
+      /**
+       * @defaultValue `Ruler`
+       * @remarks Not `AnyConstructor` because it's instantiated with a `User.Implementation` as its first argument
+       */
+      rulerClass: typeof Ruler;
+
+      /** @defaultValue `0.8` */
+      dragSpeedModifier: number;
+
+      /** @defaultValue `3.0` */
+      maxZoom: number;
+
+      /** @defaultValue `4` */
+      objectBorderThickness: number;
+
+      gridStyles: Canvas.GridStyles;
+
+      lightAnimations: Canvas.LightAnimations;
+
+      darknessAnimations: Canvas.DarknessAnimations;
+
+      /**
+       * A registry of Scenes which are managed by a specific SceneManager class.
+       * @remarks Keys are Scene IDs
+       * @privateRemarks Can't be `AnyConstructor` because it's instantiated expecting a compatible constructor
+       */
+      managedScenes: Record<string, typeof foundry.canvas.SceneManager>;
+
+      pings: Canvas.Pings;
+
+      targeting: Canvas.Targeting;
+
+      /**
+       * The hover-fading configuration.
+       */
+      hoverFade: Canvas.HoverFade;
+
+      /**
+       * Allow specific transcoders for assets
+       * @defaultValue `{ basis: false }`
+       */
+      transCoders: Canvas.TransCoders;
+
+      /**
+       * The set of VisionMode definitions which are available to be used for Token vision.
+       */
+      visionModes: Canvas.VisionModes;
+
+      /**
+       * The set of DetectionMode definitions which are available to be used for visibility detection.
+       */
+      detectionModes: Canvas.DetectionModes;
+    }
+
     namespace Canvas {
       interface Groups {
         /** @defaultValue `{ groupClass: HiddenCanvasGroup, parent: "stage" }` */
@@ -3103,6 +2466,14 @@ declare global {
 
         /** @defaultValue `{ groupClass: OverlayCanvasGroup, parent: "stage" }` */
         overlay: CONFIG.Canvas.GroupDefinition<typeof OverlayCanvasGroup>;
+      }
+
+      // This requires `CanvasGroupConstructor` because `Canvas##createGroups` assumes there's no parameters.
+      interface GroupDefinition<GroupClass extends CanvasGroupConstructor = CanvasGroupConstructor> {
+        groupClass: GroupClass;
+        parent: string;
+        zIndexDrawings?: number;
+        zIndexScrollingText?: number;
       }
 
       interface Layers {
@@ -3143,27 +2514,688 @@ declare global {
         controls: LayerDefinition<typeof ControlsLayer, "interface">;
       }
 
-      // This requires `CanvasGroupConstructor` because `Canvas##createGroups` assumes there's no parameters.
-      interface GroupDefinition<GroupClass extends CanvasGroupConstructor = CanvasGroupConstructor> {
-        groupClass: GroupClass;
-        parent: string;
-        zIndexDrawings?: number;
-        zIndexScrollingText?: number;
-      }
-
       // This requires `typeof CanvasLayer` because `CanvasGroupMixin#_createLayers` assumes there's no parameters.
       interface LayerDefinition<LayerClass extends typeof CanvasLayer, Group extends keyof CONFIG["Canvas"]["groups"]> {
         layerClass: LayerClass;
         group: Group;
       }
 
+      interface LightLevels {
+        /** @defaultValue `0` */
+        dark: number;
+
+        /** @defaultValue `0.5` */
+        halfdark: number;
+
+        /** @defaultValue `0.25` */
+        dim: number;
+
+        /** @defaultValue `1.0` */
+        bright: number;
+      }
+
+      interface PolygonBackends {
+        /** @defaultValue `typeof ClockwiseSweepPolygon` */
+        sight: PointSourcePolygon.AnyConstructor;
+
+        /** @defaultValue `typeof ClockwiseSweepPolygon` */
+        light: PointSourcePolygon.AnyConstructor;
+
+        /** @defaultValue `typeof ClockwiseSweepPolygon` */
+        sound: PointSourcePolygon.AnyConstructor;
+
+        /** @defaultValue `typeof ClockwiseSweepPolygon` */
+        move: PointSourcePolygon.AnyConstructor;
+      }
+
+      interface GridStyles {
+        [key: string]: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.SolidLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        solidLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DashedLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 1
+         *   }
+         * }
+         * ```
+         */
+        dashedLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DottedLines",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        dottedLines: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.SquarePoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        squarePoints: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.DiamondPoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        diamondPoints: GridLayer.GridStyle;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "GRID.STYLES.RoundPoints",
+         *   shaderClass: GridShader,
+         *   shaderOptions: {
+         *     style: 0
+         *   }
+         * }
+         * ```
+         */
+        roundPoints: GridLayer.GridStyle;
+      }
+
+      interface LightAnimations {
+        flame: {
+          /** @defaultValue `"LIGHT.AnimationFame"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateFlickering` */
+          animation: BaseLightSource.LightAnimationFunction;
+
+          /** @defaultValue `FlameIlluminationShader` */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+
+          /** @defaultValue `FlameColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        torch: {
+          /** @defaultValue `"LIGHT.AnimationTorch"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTorch` */
+          animation: BaseLightSource.LightAnimationFunction;
+
+          /** @defaultValue `TorchIlluminationShader` */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+
+          /** @defaultValue `TorchColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        revolving: {
+          /** @defaultValue `"LIGHT.AnimationRevolving"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: BaseLightSource.LightAnimationFunction;
+
+          /** @defaultValue `RevolvingColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        siren: {
+          /** @defaultValue `"LIGHT.AnimationSiren"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTorch` */
+          animation: BaseLightSource.LightAnimationFunction;
+
+          /** @defaultValue `SirenIlluminationShader` */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+
+          /** @defaultValue `SirenIlluminationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        pulse: {
+          /** @defaultValue `"LIGHT.AnimationPulse"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animatePulse` */
+          animation: BaseLightSource.LightAnimationFunction;
+
+          /** @defaultValue `PulseIlluminationShader` */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+
+          /** @defaultValue `PulseColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        chroma: {
+          /** @defaultValue `"LIGHT.AnimationChroma"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `ChromaColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        wave: {
+          /** @defaultValue `"LIGHT.AnimationWave"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `WaveIlluminationShader` */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+
+          /** @defaultValue `WaveColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        fog: {
+          /** @defaultValue `"LIGHT.AnimationFog"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `FogColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        sunburst: {
+          /** @defaultValue `"LIGHT.AnimationSunburst"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `SunburstIlluminationShader` */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+
+          /** @defaultValue `SunburstColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        dome: {
+          /** @defaultValue `"LIGHT.AnimationLightDome"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `LightDomeColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        emanation: {
+          /** @defaultValue `"LIGHT.AnimationEmanation"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `EmanationColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        hexa: {
+          /** @defaultValue `"LIGHT.AnimationHexaDome";` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `HexaDomeColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        ghost: {
+          /** @defaultValue `"LIGHT.AnimationGhostLight"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `GhostLightIlluminationShader` */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+
+          /** @defaultValue `GhostLightColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        energy: {
+          /** @defaultValue `"LIGHT.AnimationEnergyField"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `EnergyFieldColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        vortex: {
+          /** @defaultValue `"LIGHT.AnimationVortex"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `VortexIlluminationShader` */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+
+          /** @defaultValue `VortexColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        witchwave: {
+          /** @defaultValue `"LIGHT.AnimationBewitchingWave"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `BewitchingWaveIlluminationShader` */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+
+          /** @defaultValue `BewitchingWaveColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        rainbowswirl: {
+          /** @defaultValue `"LIGHT.AnimationSwirlingRainbow"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `SwirlingRainbowColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        radialrainbow: {
+          /** @defaultValue `"LIGHT.AnimationRadialRainbow"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `RadialRainbowColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+
+        fairy: {
+          /** @defaultValue `"LIGHT.AnimationFairyLight"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `FairyLightIlluminationShader` */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+
+          /** @defaultValue `FairyLightColorationShader` */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        };
+      }
+
+      interface DarknessAnimations {
+        magicalGloom: {
+          /** @defaultValue `"LIGHT.AnimationMagicalGloom"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `MagicalGloomDarknessShader` */
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+        };
+
+        roiling: {
+          /** @defaultValue `"LIGHT.AnimationRoilingMass"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `RoilingDarknessShader` */
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+        };
+
+        hole: {
+          /** @defaultValue `"LIGHT.AnimationBlackHole"` */
+          label: string;
+
+          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue `BlackHoleDarknessShader` */
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+        };
+      }
+
+      interface Pings {
+        types: Pings.Types;
+
+        styles: Pings.Styles;
+
+        /** @defaultValue `700` */
+        pullSpeed: number;
+      }
+
       namespace Pings {
+        interface Types {
+          /** @defaultValue `"pulse"` */
+          PULSE: string;
+
+          /** @defaultValue `"alert"` */
+          ALERT: string;
+
+          /** @defaultValue `"chevron"` */
+          PULL: string;
+
+          /** @defaultValue `"arrow"` */
+          ARROW: string;
+        }
+
+        interface Styles {
+          /** @defaultValue `{ class: AlertPing, color: "#ff0000", size: 1.5, duration: 900 }` */
+          alert: CONFIG.Canvas.Pings.Style;
+
+          /** @defaultValue `{ class: ArrowPing, size: 1, duration: 900 }` */
+          arrow: CONFIG.Canvas.Pings.Style;
+
+          /** @defaultValue `{ class: ChevronPing, size: 1, duration: 2000 }` */
+          chevron: CONFIG.Canvas.Pings.Style;
+
+          /** @defaultValue `{ class: PulsePing, size: 1.5, duration: 900 }` */
+          pulse: CONFIG.Canvas.Pings.Style;
+
+          [key: string]: CONFIG.Canvas.Pings.Style;
+        }
+
         interface Style {
           class: unknown;
           color?: string;
           size: number;
           duration: number;
         }
+      }
+
+      interface DispositionColors {
+        /** @defaultValue `0xe72124` */
+        HOSTILE: number;
+
+        /** @defaultValue `0xf1d836` */
+        NEUTRAL: number;
+
+        /** @defaultValue `0x43dfdf` */
+        FRIENDLY: number;
+
+        /** @defaultValue `0x555555` */
+        INACTIVE: number;
+
+        /** @defaultValue `0x33bc4e` */
+        PARTY: number;
+
+        /** @defaultValue `0xff9829` */
+        CONTROLLED: number;
+
+        /** @defaultValue `0xA612D4` */
+        SECRET: number;
+      }
+
+      interface Targeting {
+        /** @defaultValue `.15` */
+        size: number;
+      }
+
+      interface HoverFade {
+        /**
+         * The delay in milliseconds before the (un)faded animation starts on (un)hover.
+         * @defaultValue `250`
+         */
+        delay: number;
+
+        /**
+         * The duration in milliseconds of the (un)fade animation on (un)hover.
+         * @defaultValue `750`
+         */
+        duration: number;
+      }
+
+      interface TransCoders {
+        [K: string]: boolean;
+      }
+
+      interface VisionModes {
+        [key: string]: VisionMode;
+
+        /**
+         * Default (Basic) Vision
+         * @defaultValue
+         * ```typescript
+         * new VisionMode({
+         *   id: "basic",
+         *   label: "VISION.ModeBasicVision",
+         *   vision: {
+         *     defaults: { attenuation: 0, contrast: 0, saturation: 0, brightness: 0 }
+         *     preferred: true // Takes priority over other vision modes
+         *   }
+         * })
+         * ```
+         */
+        basic: VisionMode;
+
+        /**
+         * Darkvision
+         * @defaultValue
+         * ```typescript
+         * new VisionMode({
+         *   id: "darkvision",
+         *   label: "VISION.ModeDarkvision",
+         *     canvas: {
+         *       shader: ColorAdjustmentsSamplerShader,
+         *       uniforms: { contrast: 0, saturation: -1.0, brightness: 0 }
+         *   },
+         *   lighting: {
+         *     levels: {
+         *       [VisionMode.LIGHTING_LEVELS.DIM]: VisionMode.LIGHTING_LEVELS.BRIGHT
+         *     },
+         *   background: { visibility: VisionMode.LIGHTING_VISIBILITY.REQUIRED }
+         *   },
+         *   vision: {
+         *     darkness: { adaptive: false },
+         *     defaults: { attenuation: 0, contrast: 0, saturation: -1.0, brightness: 0 }
+         *   }
+         * })
+         * ```
+         */
+        darkvision: VisionMode;
+
+        /**
+         * Darkvision
+         * @defaultValue
+         * ```typescript
+         * new VisionMode({
+         *   id: "monochromatic",
+         *   label: "VISION.ModeMonochromatic",
+         *   canvas: {
+         *     shader: ColorAdjustmentsSamplerShader,
+         *     uniforms: { contrast: 0, saturation: -1.0, brightness: 0 }
+         *   },
+         *   lighting: {
+         *     background: {
+         *       postProcessingModes: ["SATURATION"],
+         *       uniforms: { saturation: -1.0, tint: [1, 1, 1] }
+         *     },
+         *     illumination: {
+         *       postProcessingModes: ["SATURATION"],
+         *       uniforms: { saturation: -1.0, tint: [1, 1, 1] }
+         *     },
+         *     coloration: {
+         *       postProcessingModes: ["SATURATION"],
+         *       uniforms: { saturation: -1.0, tint: [1, 1, 1] }
+         *     }
+         *   },
+         *   vision: {
+         *     darkness: { adaptive: false },
+         *     defaults: { attenuation: 0, contrast: 0, saturation: -1, brightness: 0 }
+         *   }
+         * })
+         * ```
+         */
+        monochromatic: VisionMode;
+
+        /**
+         * Blindness
+         * @defaultValue
+         * ```typescript
+         * new VisionMode({
+         *   id: "blindness",
+         *   label: "VISION.ModeBlindness",
+         *   tokenConfig: false,
+         *   canvas: {
+         *     shader: ColorAdjustmentsSamplerShader,
+         *     uniforms: { contrast: -0.75, saturation: -1, exposure: -0.3 }
+         *   },
+         *   lighting: {
+         *     background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
+         *     illumination: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
+         *     coloration: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED }
+         *   },
+         *   vision: {
+         *     darkness: { adaptive: false },
+         *     defaults: { color: null, attenuation: 0, contrast: -0.5, saturation: -1, brightness: -1 }
+         *   }
+         * }),
+         * ```
+         */
+        blindness: VisionMode;
+
+        /**
+         * Tremorsense
+         * @defaultValue
+         * ```typescript
+         * new VisionMode({
+         *   id: "tremorsense",
+         *   label: "VISION.ModeTremorsense",
+         *   canvas: {
+         *     shader: ColorAdjustmentsSamplerShader,
+         *     uniforms: { contrast: 0, saturation: -0.8, exposure: -0.65 }
+         *   },
+         *   lighting: {
+         *     background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
+         *     illumination: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
+         *     coloration: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
+         *     darkness: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED }
+         *   },
+         *   vision: {
+         *     darkness: { adaptive: false },
+         *     defaults: { attenuation: 0, contrast: 0.2, saturation: -0.3, brightness: 1 },
+         *     background: { shader: WaveBackgroundVisionShader },
+         *     coloration: { shader: WaveColorationVisionShader }
+         *   }
+         * }, {animated: true})
+         * ```
+         */
+        tremorsense: VisionMode;
+
+        /**
+         * Light Amplification
+         * @defaultValue
+         * ```typescript
+         * new VisionMode({
+         *   id: "lightAmplification",
+         *   label: "VISION.ModeLightAmplification",
+         *   canvas: {
+         *     shader: AmplificationSamplerShader,
+         *     uniforms: { saturation: -0.5, tint: [0.38, 0.8, 0.38] }
+         *   },
+         *   lighting: {
+         *     background: {
+         *       visibility: VisionMode.LIGHTING_VISIBILITY.REQUIRED,
+         *       postProcessingModes: ["SATURATION", "EXPOSURE"],
+         *       uniforms: { saturation: -0.5, exposure: 1.5, tint: [0.38, 0.8, 0.38] }
+         *     },
+         *     illumination: {
+         *       postProcessingModes: ["SATURATION"],
+         *       uniforms: { saturation: -0.5 }
+         *     },
+         *     coloration: {
+         *       postProcessingModes: ["SATURATION", "EXPOSURE"],
+         *       uniforms: { saturation: -0.5, exposure: 1.5, tint: [0.38, 0.8, 0.38] }
+         *     },
+         *     levels: {
+         *       [VisionMode.LIGHTING_LEVELS.DIM]: VisionMode.LIGHTING_LEVELS.BRIGHT,
+         *       [VisionMode.LIGHTING_LEVELS.BRIGHT]: VisionMode.LIGHTING_LEVELS.BRIGHTEST
+         *     }
+         *   },
+         *   vision: {
+         *     darkness: { adaptive: false },
+         *     defaults: { attenuation: 0, contrast: 0, saturation: -0.5, brightness: 1 },
+         *     background: { shader: AmplificationBackgroundVisionShader }
+         *   }
+         * })
+         * ```
+         */
+        lightAmplification: VisionMode;
+      }
+
+      interface DetectionModes {
+        [key: string]: DetectionMode;
+
+        lightPerception: DetectionModeLightPerception;
+
+        basicSight: DetectionModeBasicSight;
+
+        seeInvisibility: DetectionModeInvisibility;
+
+        senseInvisibility: DetectionModeInvisibility;
+
+        feelTremor: DetectionModeTremor;
+
+        seeAll: DetectionModeAll;
+
+        senseAll: DetectionModeAll;
       }
     }
 
