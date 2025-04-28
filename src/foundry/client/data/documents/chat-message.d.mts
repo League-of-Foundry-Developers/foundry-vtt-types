@@ -296,6 +296,7 @@ declare global {
       rolls: fields.ArrayField<
         fields.JSONField<
           { validate: (rollJson: string) => void },
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
           fields.JSONField.AssignmentType<{ validate: (rollJson: string) => void }>,
           Roll // TODO: If initialization fails can this possibly be not-roll?
         >

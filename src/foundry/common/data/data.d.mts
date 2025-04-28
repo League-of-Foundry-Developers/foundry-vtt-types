@@ -455,6 +455,7 @@ declare namespace TextureData {
 
   /** @remarks The keys picked directly are passed on to the `src: FilePathField` field, but `initial` is an object of initial values for potentially every field in the schema */
   interface SrcOptions extends Pick<fields.FilePathField.Options, "categories" | "wildcard" | "label"> {
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     initial: _SrcOptionsInitial<fields.SchemaField.AssignmentData<Schema<DefaultOptions>>>;
   }
 

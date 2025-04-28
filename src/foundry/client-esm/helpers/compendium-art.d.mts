@@ -55,6 +55,7 @@ declare namespace CompendiumArt {
     /**
      * The path to the token image, or an object to merge into the Actor's prototype token.
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     token?: string | SchemaField.AssignmentData<PrototypeToken.Schema> | undefined;
 
     /**

@@ -216,6 +216,7 @@ declare global {
           validationError: "must be a length-4 array of integer coordinates";
         },
         // TODO(LukeAbby): Make the array shape easier to override.
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         fields.ArrayField.AssignmentElementType<fields.NumberField<{ required: true; integer: true; nullable: false }>>,
         fields.ArrayField.InitializedElementType<
           fields.NumberField<{ required: true; integer: true; nullable: false }>

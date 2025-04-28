@@ -373,6 +373,7 @@ type SettingType<T extends ClientSettings.Type> =
   // Note(LukeAbby): This isn't written as `T extends ClientSettings.TypeScriptType ? T : never` because then types like `DataField.Any` would be matched.
   | (T extends ClientSettings.RuntimeType ? never : T)
   // TODO(LukeAbby): The `validate` function is called with `strict` which changes how fallback behavior works. See `ClientSettings#set`
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   | (T extends DataField.Any ? DataField.AssignmentTypeFor<T> : never)
   | (T extends SettingConstructor ? ConstructorToSettingType<T> : T extends SettingFunction ? ReturnType<T> : never);
 

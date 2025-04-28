@@ -49,6 +49,7 @@ declare global {
      * A shorthand for the assignment type of a BooleanField class.
      * @typeParam Opts - the options that override the default options
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     type AssignmentType<Opts extends Options> = DataField.DerivedAssignmentType<
       typeof AbstractBaseShader,
       MergedOptions<Opts>

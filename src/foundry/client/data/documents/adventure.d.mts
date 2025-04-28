@@ -527,7 +527,7 @@ declare global {
 }
 
 type DocumentDataRecord = {
-  [K in AdventureDocumentTypes]?: foundry.data.fields.SchemaField.AssignmentData<
+  [K in AdventureDocumentTypes]?: foundry.data.fields.SchemaField.InitializedData<
     ReturnType<Document.ImplementationClassFor<K>["defineSchema"]>
   >[];
 };

@@ -36,6 +36,7 @@ declare abstract class DataModel<
   " __fvtt_types_internal_source_data": SchemaField.SourceData<Schema>;
 
   /** @internal */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   " __fvtt_types_internal_assignment_data": SchemaField.AssignmentData<Schema>;
 
   /** @internal */
@@ -144,7 +145,7 @@ declare abstract class DataModel<
    * @param context - Context options passed to the data model constructor
    * @returns The cloned Document instance
    */
-  clone(data?: fields.SchemaField.AssignmentData<Schema>, context?: DataModel.DataValidationOptions<Parent>): this;
+  clone(data?: fields.SchemaField.CreateData<Schema>, context?: DataModel.DataValidationOptions<Parent>): this;
 
   /**
    * Validate the data contained in the document to check for type and content
@@ -279,7 +280,7 @@ declare abstract class DataModel<
 }
 
 declare namespace DataModel {
-  type CreateData<Schema extends DataSchema> = fields.SchemaField.AssignmentData<Schema> | DataModel<Schema, any>;
+  type CreateData<Schema extends DataSchema> = fields.SchemaField.CreateData<Schema> | DataModel<Schema, any>;
 
   type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = CreateData<SchemaOf<ConcreteDataModel>>;
 
@@ -387,6 +388,7 @@ declare namespace DataModel {
     /**
      * A specific set of proposed changes to validate, rather than the full source data of the model.
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     changes?: fields.SchemaField.AssignmentData<Schema>;
 
     /**
