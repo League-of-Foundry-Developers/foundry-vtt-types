@@ -1,4 +1,4 @@
-import type { AnyMutableObject, AnyObject, EmptyObject, Identity } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject, EmptyObject, Identity, NullishProps } from "fvtt-types/utils";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
@@ -30,7 +30,7 @@ declare abstract class DataModel<
    *                  will be owned by the constructed model instance and may be mutated.
    * @param options - Options which affect DataModel construction
    */
-  constructor(...args: DataModel.ConstructorArgs<Schema, Parent>);
+  constructor(...args: DataModel.ConstructorArgs<Schema, Parent, ExtraConstructorOptions>);
 
   /** @internal */
   " __fvtt_types_internal_source_data": SchemaField.SourceData<Schema>;
@@ -279,17 +279,26 @@ declare abstract class DataModel<
 }
 
 declare namespace DataModel {
+  interface Any extends AnyDataModel {}
+  interface AnyConstructor extends Identity<typeof AnyDataModel> {}
+
   type CreateData<Schema extends DataSchema> = fields.SchemaField.AssignmentData<Schema> | DataModel<Schema, any>;
 
   type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = CreateData<SchemaOf<ConcreteDataModel>>;
 
   // TODO(LukeAbby): Make optional only if `{}` is assignable to `AssignmentData`.
-  type ConstructorArgs<Schema extends DataSchema, Parent extends DataModel.Any | null = null> = [
+  type ConstructorArgs<
+    Schema extends DataSchema,
+    Parent extends DataModel.Any | null = null,
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ExtraConstructorOptions extends AnyObject = {},
+  > = [
     data?: DataModel.CreateData<Schema>,
 
-    // Note(LukeAbby): `{ parent, strict, ...options }`
-    options?: DataModel.DataValidationOptions<Parent>,
+    // Note(LukeAbby): `{ parent, strict, ...options }` (ie: not null (destructured))
+    options?: DataModel.ConstructionContext<Parent> & ExtraConstructorOptions,
   ];
+
   /**
    * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
    *
@@ -299,46 +308,6 @@ declare namespace DataModel {
    * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
    */
   interface UnknownDataModel extends DataModel<any, any, any> {}
-
-  interface DataValidationOptions<Parent extends Any | null = Any | null> {
-    /**
-     * Throw an error if validation fails.
-     * @defaultValue `true`
-     */
-    strict?: boolean | null | undefined;
-
-    /**
-     * Attempt to replace invalid values with valid defaults?
-     *
-     * @defaultValue `false`
-     */
-    fallback?: boolean | null | undefined;
-
-    /**
-     * Allow partial source data, ignoring absent fields?
-     *
-     * @defaultValue `false`
-     */
-    partial?: boolean | null | undefined;
-
-    /**
-     * If true, invalid embedded documents will emit a warning and be
-     * placed in the invalidDocuments collection rather than causing the
-     * parent to be considered invalid.
-     *
-     * @defaultValue `false`
-     */
-    dropInvalidEmbedded?: boolean | null | undefined;
-
-    /**
-     * A parent DataModel instance to which this DataModel belongs
-     * @defaultValue `null`
-     */
-    parent?: Parent | null | undefined;
-  }
-
-  interface Any extends AnyDataModel {}
-  interface AnyConstructor extends Identity<typeof AnyDataModel> {}
 
   /**
    * A helper type to extract the schema from a {@link DataModel | `DataModel`}.
@@ -356,80 +325,167 @@ declare namespace DataModel {
     ? Fields
     : never;
 
-  interface UpdateOptions {
-    dryRun?: boolean;
-    fallback?: boolean;
-    recursive?: boolean;
-    restoreDelta?: boolean;
-    _collections: Record<string, unknown>;
-    _singletons: Record<string, unknown>;
-    _diff: Record<string, unknown>;
-    _backup: Record<string, unknown>;
+  /** @internal this is how 13.339 splits up the interfaces */
+  type _ConstructionContext = Pick<ValidateOptions<DataSchema>, "strict" | "fallback" | "dropInvalidEmbedded">;
+
+  interface ConstructionContext<Parent extends Any | null = Any | null> extends _ConstructionContext {
+    /**
+     * A parent DataModel instance to which this DataModel belongs
+     * @defaultValue `null`
+     */
+    parent?: Parent | undefined;
   }
 
-  interface FromSourceOptions extends DataModel.DataValidationOptions {
+  interface CloneContext extends _ConstructionContext {
     /**
-     * Models created from trusted source data are validated non-strictly
-     * @defaultValue `false`
+     * A parent DataModel instance to which this DataModel belongs
+     * @defaultValue `this.parent`
+     * @remarks The above default is only applied if this parameter is omitted entirely. Passing `parent: undefined` will
+     * cause the returned DataModel's `parent` (*at runtime*) to be `null`, because it will override the spread-object
+     * default of `this.parent`, and then the parameter default in `new DataModel()` (`null`) will apply.
+     *
+     * **NOTE:** At the type level, the returned model will necessarily have the same parent as the instance `#clone()` is being called
+     * on; Accurate typing of `#parent` requires a cast.
      */
-    strict?: boolean;
+    parent?: Any | null | undefined;
   }
 
-  interface ShimDataOptions {
+  /**
+   * @internal
+   * Updated to 13.339 wording, still accurate for v12
+   */
+  type _ValidateOptions<Schema extends DataSchema> = NullishProps<{
     /**
-     * Apply shims to embedded models?
+     * Validate each individual field?
      * @defaultValue `true`
      */
-    embedded?: boolean;
-  }
-
-  interface ValidateOptions<Schema extends DataSchema> {
-    /**
-     * A specific set of proposed changes to validate, rather than the full source data of the model.
-     */
-    changes?: fields.SchemaField.AssignmentData<Schema>;
-
-    /**
-     * If changes are provided, attempt to clean the changes before validating them?
-     * @defaultValue `false`
-     */
-    clean?: boolean;
-
-    /**
-     * Allow replacement of invalid values with valid defaults?
-     * @defaultValue `false`
-     */
-    fallback?: boolean;
-
-    /**
-     * If true, invalid embedded documents will emit a warning and
-     * be placed in the invalidDocuments collection rather than
-     * causing the parent to be considered invalid.
-     * @defaultValue `false`
-     */
-    dropInvalidEmbedded: boolean;
-
-    /**
-     * Throw if an invalid value is encountered, otherwise log a warning?
-     * @defaultValue `true`
-     */
-    strict?: boolean;
-
-    /**
-     * Perform validation on individual fields?
-     * @defaultValue `true`
-     */
-    fields?: boolean;
+    fields: boolean;
 
     /**
      * Perform joint validation on the full data model?
      * Joint validation will be performed by default if no changes are passed.
      * Joint validation will be disabled by default if changes are passed.
-     * Joint validation can be performed on a complete set of changes (for
-     * example testing a complete data model) by explicitly passing true.
+     * Joint validation can be performed on a complete set of changes (for example, testing a complete data model) by explicitly passing true.
+     * @remarks If nullish, defaults to `!changes`
      */
-    joint?: boolean;
-  }
+    joint: boolean;
+
+    /**
+     * A specific set of proposed changes to validate, rather than the full source data of the model.
+     * @remarks If not passed or nullish, `validate` will operate on `this._source` instead
+     */
+    changes: fields.SchemaField.AssignmentData<Schema>;
+
+    /**
+     * If changes are provided, attempt to clean the changes before validating them?
+     * @defaultValue `false`
+     * @remarks Only has any effect if a `changes` has been passed with it
+     */
+    clean: boolean;
+
+    /**
+     * Throw an error if validation fails.
+     * @defaultValue `true`
+     */
+    strict: boolean;
+
+    /**
+     * Allow replacement of invalid values with valid defaults? This option mutates the provided changes.
+     * @defaultValue `false`
+     * @see {@link DataField.ValidateOptions.fallback | `DataField.DataValidationOptions.fallback`}
+     */
+    fallback: boolean;
+
+    // Foundry describes a `partial` property here, but nothing in DataModel actually *takes* such; `#validate`
+    // generates a value for `partial` from the state of `changes` and `joint` before passing it on to either
+    // `DataModel.cleanData` or `SchemaField#validate`, both of which do have uses for that property downstream
+    // (in `SchemaField#_cleanType` and `#_validateType`). This is a documentation error in v12, fixed in v13.
+
+    /**
+     * If true, invalid embedded documents will emit a warning and be placed in the invalidDocuments collection rather
+     * than causing the parent to be considered invalid. This option mutates the provided changes.
+     * @defaultValue `false`
+     * @see {@link DataField.ValidateOptions.dropInvalidEmbedded | `DataField.DataValidationOptions.dropInvalidEmbedded`}
+     */
+    dropInvalidEmbedded: boolean;
+  }>;
+
+  interface ValidateOptions<Schema extends DataSchema> extends _ValidateOptions<Schema> {}
+
+  /**
+   * @deprecated Use {@link DataModel.ConstructionContext | `DataModel.ConstructionContext`} for `new`/`#clone()`/`.create()`,
+   * {@link DataModel.ValidateOptions | `DataModel.ValidateOptions`} for `#validate()`
+   */
+  interface DataValidationOptions<Parent extends Any | null = Any | null> extends ConstructionContext<Parent> {}
+
+  /** `DataModel#constructor` pulls `parent` out of the passed `ConstructionContext` before forwarding to `#_initializeSource` */
+  interface InitializeSourceOptions extends _ConstructionContext {}
+
+  /** `DataModel#constructor` pulls `parent` and `strict` out of the passed `ConstructionContext` before forwarding to `#_configure` */
+  interface ConfigureOptions extends Omit<_ConstructionContext, "strict"> {}
+
+  /** `DataModel#constructor` pulls `parent` out of the passed `ConstructionContext` before forwarding to `#_initialize` */
+  interface InitializeOptions extends _ConstructionContext {}
+
+  type _UpdateOptions = NullishProps<{
+    /** Do not finally apply the change, but instead simulate the update workflow  */
+    dryRun: boolean;
+
+    /**
+     * Allow automatic fallback to a valid initial value if the value provided for a field
+     * in the model is invalid.
+     */
+    fallback: boolean;
+
+    /** Apply changes to inner objects recursively rather than replacing the top-level object */
+    recursive: boolean;
+
+    /** An advanced option used specifically and internally by the ActorDelta model */
+    restoreDelta: boolean;
+  }>;
+
+  interface UpdateOptions extends _UpdateOptions {}
+
+  /**
+   * Not actually sure the Readonly is accurate, or that there's any meaningful difference
+   * as far as our types can tell between the two possible returns
+   */
+  type ToObject<Schema extends DataSchema, Source extends boolean | undefined | null = true> = Source extends
+    | true
+    | undefined
+    ? Readonly<SchemaField.SourceData<Schema>>
+    : SchemaField.SourceData<Schema>;
+
+  /**
+   * @internal
+   * Only necessary to change the default value of `strict`
+   */
+  type _FromSourceOptions = NullishProps<{
+    /**
+     * Models created from trusted source data are validated non-strictly
+     * @defaultValue `false`
+     * @remarks The property description is describing why the default is `false` here,
+     * rather than `true` in normal construction
+     */
+    strict: boolean;
+  }>;
+
+  /**
+   * @remarks `.fromSource` could take and pass on a specific `Parent`, but this causes
+   * inheritance issues and complicates subclass overriding
+   */
+  interface FromSourceOptions extends ConstructionContext {}
+
+  /** @internal */
+  type _ShimDataOptions = NullishProps<{
+    /**
+     * Apply shims to embedded models?
+     * @defaultValue `true`
+     */
+    embedded: boolean;
+  }>;
+
+  interface ShimDataOptions extends _ShimDataOptions {}
 
   interface UpdateSourceOptions {
     dryRun?: boolean;

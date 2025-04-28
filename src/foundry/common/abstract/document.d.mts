@@ -1980,9 +1980,16 @@ declare namespace Document {
     types?: SubType[] | null | undefined;
   } & ParentContext<Parent>;
 
-  interface FromImportContext<Parent extends Document.Any | null>
-    extends ConstructionContext<Parent>,
-      DataModel.DataValidationOptions<Parent> {}
+  interface FromImportContext<Parent extends Document.Any | null> extends Omit<ConstructionContext<Parent>, "strict"> {
+    /**
+     * Strict validation is enabled by default.
+     * @defaultValue `true`
+     * @remarks Not allowed to be `undefined` as that would produce `false`, not the expected default of `true`, due to being spread
+     * into an object with `strict: true`, then passed to {@link Document.fromSource | `Document.fromSource`}, where the parameter
+     * default is `false`
+     */
+    strict?: boolean | null;
+  }
 
   type TestableOwnershipLevel = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
