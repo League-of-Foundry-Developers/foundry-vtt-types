@@ -597,7 +597,7 @@ declare global {
      * Return a reference to the Note instance for this Journal Entry Page in the current Scene, if any.
      * If multiple notes are placed for this Journal Entry, only the first will be returned.
      */
-    get sceneNote(): Note.Object | null;
+    get sceneNote(): Note.Implementation | null;
 
     /**
      * Convert a heading into slug suitable for use as an identifier.

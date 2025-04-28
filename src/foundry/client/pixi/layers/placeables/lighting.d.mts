@@ -51,7 +51,7 @@ declare global {
     protected override _onDragLeftCancel(event: PointerEvent): void;
 
     // @ts-expect-error Foundry is changing the return type here from Promise<PlaceableObject[]> to just Promise<AmbientLight>
-    protected _onMouseWheel(event: WheelEvent): Promise<AmbientLight.Object>;
+    protected _onMouseWheel(event: WheelEvent): Promise<AmbientLight.Implementation>;
 
     /**
      * Actions to take when the darkness level of the Scene is changed
@@ -68,7 +68,7 @@ declare global {
 
     interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientLight.ObjectClass> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass> {
       name: "lighting";
       rotatableObjects: true;
       zIndex: 900;

@@ -59,17 +59,17 @@ declare global {
      * @returns A Promise which resolves once the pan animation has concluded.
      */
     panToNote(
-      note: Note.Object,
+      note: Note.Implementation,
       options?: NotesLayer.PanToNoteOptions, // not:null (destructured)
     ): Promise<void>;
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    protected override _onClickLeft(event: PIXI.FederatedEvent): Promise<Note.Object | void>;
+    protected override _onClickLeft(event: PIXI.FederatedEvent): Promise<Note.Implementation | void>;
 
     /**
      * Handle JournalEntry document drop data
      */
-    protected _onDropData(event: DragEvent, data: NotesLayer.DropData): Promise<false | Note.Object>;
+    protected _onDropData(event: DragEvent, data: NotesLayer.DropData): Promise<false | Note.Implementation>;
   }
 
   namespace NotesLayer {
@@ -78,7 +78,7 @@ declare global {
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<Note.ObjectClass> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Note.ImplementationClass> {
       name: "notes";
       zIndex: 800;
     }

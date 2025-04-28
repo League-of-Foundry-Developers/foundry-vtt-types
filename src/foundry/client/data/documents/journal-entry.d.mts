@@ -504,7 +504,7 @@ declare global {
      * Return a reference to the Note instance for this Journal Entry in the current Scene, if any.
      * If multiple notes are placed for this Journal Entry, only the first will be returned.
      */
-    get sceneNote(): Note.Object | null;
+    get sceneNote(): Note.Implementation | null;
 
     /**
      * Show the JournalEntry to connected players.

@@ -97,7 +97,7 @@ declare global {
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<Region.ObjectClass> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<Region.ImplementationClass> {
       name: "regions";
       controllableObjects: true;
       confirmDeleteKey: true;

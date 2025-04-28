@@ -329,7 +329,7 @@ declare class Sound extends EventEmitterMixin(Object) {
    *
    * @privateRemarks Foundry types this as `Object|null` but the only place in Core this gets set is in `AmbientSound`, to `this`
    */
-  _manager: AmbientSound.Object | null;
+  _manager: AmbientSound.Implementation | null;
 
   /**
    * Load the audio source and prepare it for playback, either using an AudioBuffer or a streamed HTMLAudioElement.

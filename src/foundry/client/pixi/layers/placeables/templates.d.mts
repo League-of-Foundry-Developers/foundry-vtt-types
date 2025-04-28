@@ -46,7 +46,7 @@ declare global {
     protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
 
     // @ts-expect-error Foundry is changing the return type here from Promise<PlaceableObject[]> to Promise<MeasuredTemplate>
-    protected override _onMouseWheel(event: WheelEvent): Promise<MeasuredTemplate.Object> | void;
+    protected override _onMouseWheel(event: WheelEvent): Promise<MeasuredTemplate.Implementation> | void;
   }
 
   namespace TemplateLayer {
@@ -55,7 +55,7 @@ declare global {
 
     interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<MeasuredTemplate.ObjectClass> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<MeasuredTemplate.ImplementationClass> {
       name: "templates";
       rotatableObjects: true;
       zIndex: 400;

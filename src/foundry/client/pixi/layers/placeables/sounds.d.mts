@@ -174,7 +174,7 @@ declare global {
      * @param event - The drag drop event
      * @param data  - The dropped transfer data.
      */
-    protected _onDropData(event: DragEvent, data: SoundsLayer.DropData): Promise<AmbientSound.Object | false>;
+    protected _onDropData(event: DragEvent, data: SoundsLayer.DropData): Promise<AmbientSound.Implementation | false>;
   }
 
   namespace SoundsLayer {
@@ -185,7 +185,7 @@ declare global {
 
     interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
-    interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientSound.ObjectClass> {
+    interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientSound.ImplementationClass> {
       name: "sounds";
       zIndex: 900;
     }
@@ -291,7 +291,7 @@ declare global {
       /**
        * An AmbientSound object responsible for the sound, or undefined
        */
-      object?: AmbientSound.Object;
+      object?: AmbientSound.Implementation;
 
       /**
        * The minimum distance between a listener and the AmbientSound origin

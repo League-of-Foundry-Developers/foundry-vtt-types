@@ -8,10 +8,10 @@ declare class RegionGeometry extends PIXI.Geometry {
    * Create a RegionGeometry
    * @remarks Foundry marked `@internal`
    */
-  constructor(region: Region.Object);
+  constructor(region: Region.Implementation);
 
   /** The Region this geometry belongs to */
-  get region(): Region.Object;
+  get region(): Region.Implementation;
 
   /**
    * Update the buffers
