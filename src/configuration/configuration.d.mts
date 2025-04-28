@@ -48,10 +48,10 @@ export interface AssumeHookRan {}
  * // myActor.ts
  * class MyActor extends Actor {}
  *
- * // entryPoint.ts
+ * // index.ts
  * import { MyActor } from "./myActor"
  *
- * hooks.once("init", () => {
+ * Hooks.once("init", () => {
  *   CONFIG.Actor.documentClass = typeof MyActor;
  * });
  *
@@ -77,7 +77,7 @@ export interface DocumentClassConfig {}
  * // myToken.ts
  * class MyToken extends Token {}
  *
- * // entryPoint.ts
+ * // index.ts
  * import { MyToken } from "./myToken"
  *
  * Hooks.once("init", () => {
