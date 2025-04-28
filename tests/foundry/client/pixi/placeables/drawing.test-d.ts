@@ -35,6 +35,9 @@ expectTypeOf(drawing.isPolygon).toBeBoolean();
 expectTypeOf(drawing.hasText).toBeBoolean();
 expectTypeOf(drawing["_pendingText"]).toEqualTypeOf<string | undefined>();
 expectTypeOf(drawing["_onkeydown"]).toEqualTypeOf<((event: KeyboardEvent) => void) | null>();
+expectTypeOf(drawing.shape).toEqualTypeOf<PrimaryGraphics | PIXI.Graphics | undefined>();
+expectTypeOf(drawing.text).toEqualTypeOf<PIXI.Text | null>();
+expectTypeOf(drawing.frame).toEqualTypeOf<PIXI.Container | undefined>();
 
 // @ts-expect-error _destroy always gets passed a value, even if that value is `undefined`
 expectTypeOf(drawing["_destroy"]()).toBeVoid();
