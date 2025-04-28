@@ -20,8 +20,7 @@ export default class RegionBehaviorConfig<
 > {
   constructor(options: DeepPartial<Configuration> & { document: Document });
 
-  static override DEFAULT_OPTIONS: object &
-    DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<RegionBehavior.Implementation>>;
+  static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContext(

@@ -17,8 +17,7 @@ export default class RegionConfig<
   Configuration,
   RenderOptions
 > {
-  static override DEFAULT_OPTIONS: object &
-    DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<RegionDocument.Implementation>>;
+  static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   override tabGroups: {

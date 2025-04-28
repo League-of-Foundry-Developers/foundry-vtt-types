@@ -15,12 +15,15 @@ declare namespace DocumentSheetV2 {
     rootId: string;
   }
 
-  interface Configuration<Document extends Document.Any> extends ApplicationV2.Configuration {
+  interface Configuration<Document extends Document.Any> extends ApplicationV2.Configuration, _Configuration {
     /**
      * The Document instance associated with this sheet
      */
     document: Document;
+  }
 
+  /** @internal */
+  interface _Configuration {
     /**
      * A permission level in CONST.DOCUMENT_OWNERSHIP_LEVELS
      */
@@ -37,18 +40,15 @@ declare namespace DocumentSheetV2 {
     sheetConfig: boolean;
   }
 
-  // TODO(LukeAbby): This logic needs an update.
-  type PartialConfiguration<Configuration extends DocumentSheetV2.Configuration<Document.Any>> = DeepPartial<
-    Omit<Configuration, "document">
-  > &
-    (Configuration extends DocumentSheetV2.Configuration<infer _ extends Document.Any>
-      ? // If a document is already specified in the config, don't allow it to be set in subclasses
-        // because `Object.apply(new Item(...), new Actor(...))` is clearly nonsensical
-        {
-          /** @deprecated Document is not an allowed property in this DocumentSheetV2 subclass */
-          document?: never;
-        }
-      : { document?: Document.Any | undefined });
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  interface DefaultOptions extends _Configuration, Identity<object> {
+    /**
+     * @deprecated Setting `document` in `DocumentSheetV2.DEFAULT_OPTIONS` is not supported. If you
+     * have a need for this, please file an issue.
+     */
+    document: never;
+  }
 
   interface RenderOptions extends ApplicationV2.RenderOptions {
     /** A string with the format "\{operation\}\{documentName\}" providing context */
@@ -68,12 +68,9 @@ declare class DocumentSheetV2<
   Configuration extends DocumentSheetV2.Configuration<Document> = DocumentSheetV2.Configuration<Document>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
-  // Note(LukeAbby): This is a fix for https://github.com/microsoft/TypeScript/issues/60927
-  constructor(options: DocumentSheetV2.PartialConfiguration<Configuration>);
+  constructor(options?: DeepPartial<Configuration>);
 
-  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
-  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
-  static DEFAULT_OPTIONS: DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<Document.Any>> & object;
+  static DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
   get document(): Document;
 
@@ -91,7 +88,7 @@ declare class DocumentSheetV2<
    */
   get isEditable(): boolean;
 
-  protected _initializeApplicationOptions(options: DocumentSheetV2.PartialConfiguration<Configuration>): Configuration;
+  protected _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;
 
   protected override _headerControlsButtons(): Generator<ApplicationV2.HeaderControlsEntry>;
 

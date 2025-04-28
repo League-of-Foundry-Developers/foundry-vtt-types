@@ -17,6 +17,4 @@ expectTypeOf(documentSheetV2._processFormData(event, form, formData)).toEqualTyp
 expectTypeOf(documentSheetV2._processSubmitData(event, form, formData)).toEqualTypeOf<Promise<void>>();
 expectTypeOf(documentSheetV2.submit()).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(DocumentSheetV2.DEFAULT_OPTIONS).toEqualTypeOf<
-  DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<Document.Any>> & object
->();
+expectTypeOf(DocumentSheetV2.DEFAULT_OPTIONS).toEqualTypeOf<DocumentSheetV2.DefaultOptions>();

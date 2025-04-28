@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
-import type { DeepPartial } from "fvtt-types/utils";
 
 import AmbientSoundConfig = foundry.applications.sheets.AmbientSoundConfig;
+import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 
 declare const doc: AmbientSoundDocument.Implementation;
 const soundSheet = new AmbientSoundConfig({ document: doc });
@@ -14,9 +14,8 @@ declare const formConfig: foundry.applications.api.ApplicationV2.FormConfigurati
 declare const event: Event;
 expectTypeOf(soundSheet._onChangeForm(formConfig, event)).toEqualTypeOf<void>();
 
-expectTypeOf(AmbientSoundConfig.DEFAULT_OPTIONS).toEqualTypeOf<
-  DeepPartial<foundry.applications.api.DocumentSheetV2.Configuration<AmbientSoundDocument.Implementation>>
->();
+expectTypeOf(AmbientSoundConfig.DEFAULT_OPTIONS).toEqualTypeOf<DocumentSheetV2.DefaultOptions>();
+
 expectTypeOf(AmbientSoundConfig.PARTS).toEqualTypeOf<
   Record<string, foundry.applications.api.HandlebarsApplicationMixin.HandlebarsTemplatePart>
 >();

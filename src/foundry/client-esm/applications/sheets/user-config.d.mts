@@ -18,8 +18,7 @@ declare class UserConfig<
   Configuration,
   RenderOptions
 > {
-  static override DEFAULT_OPTIONS: object &
-    DocumentSheetV2.PartialConfiguration<DocumentSheetV2.Configuration<User.Implementation>>;
+  static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 

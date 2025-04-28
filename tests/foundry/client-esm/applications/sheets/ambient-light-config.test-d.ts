@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { DeepPartial } from "fvtt-types/utils";
+import type DocumentSheetV2 from "../../../../../src/foundry/client-esm/applications/api/document-sheet.d.mts";
 
 declare const doc: AmbientLightDocument.Implementation;
 const lightConfig = new foundry.applications.sheets.AmbientLightConfig({ document: doc });
@@ -12,9 +12,10 @@ declare const formConfig: foundry.applications.api.ApplicationV2.FormConfigurati
 declare const event: Event;
 expectTypeOf(lightConfig._onChangeForm(formConfig, event)).toEqualTypeOf<void>();
 
-expectTypeOf(foundry.applications.sheets.AmbientLightConfig.DEFAULT_OPTIONS).toEqualTypeOf<
-  DeepPartial<foundry.applications.api.DocumentSheetV2.Configuration<AmbientLightDocument.Implementation>>
->();
+expectTypeOf(
+  foundry.applications.sheets.AmbientLightConfig.DEFAULT_OPTIONS,
+).toEqualTypeOf<DocumentSheetV2.DefaultOptions>();
+
 expectTypeOf(foundry.applications.sheets.AmbientLightConfig.PARTS).toEqualTypeOf<
   Record<string, foundry.applications.api.HandlebarsApplicationMixin.HandlebarsTemplatePart>
 >();
