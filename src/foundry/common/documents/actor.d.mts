@@ -48,9 +48,10 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     texture: { src: string };
   };
 
+  // options: not null (parameter default only)
   protected override _initializeSource(
     data: BaseActor.CreateData | this,
-    options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
+    options?: Document.InitializeSourceOptions,
   ): BaseActor.Source;
 
   static override canUserCreate(user: User.Implementation): boolean;
