@@ -258,10 +258,8 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
   static override validateJoint(data: WallDocument.Source): void;
 
   // context: not null (destructured)
-  // context: not null (destructured)
   static override fromSource(
     source: WallDocument.CreateData,
-    context?: Document.ConstructionContext<BaseWall.Parent>,
     context?: Document.ConstructionContext<BaseWall.Parent>,
   ): WallDocument.Implementation;
 

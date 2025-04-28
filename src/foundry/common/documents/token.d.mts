@@ -65,7 +65,6 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): boolean;
 
   updateSource(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateOptions): TokenDocument.UpdateData;
-  updateSource(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateOptions): TokenDocument.UpdateData;
 
   // TODO: Update with the Delta conditionality
   toObject(source: true): this["_source"];
@@ -363,7 +362,6 @@ export class ActorDeltaField<
   DocumentType extends Document.AnyConstructor,
   Options extends fields.EmbeddedDocumentField.Options<DocumentType> = fields.EmbeddedDocumentField.DefaultOptions,
 > extends fields.EmbeddedDocumentField<DocumentType, Options> {
-  // options: not null (parameter default only)
   // options: not null (parameter default only)
   override initialize(
     value: fields.EmbeddedDocumentField.PersistedType<DocumentType, Options>,

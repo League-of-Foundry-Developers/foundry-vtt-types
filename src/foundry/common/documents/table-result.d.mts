@@ -257,7 +257,6 @@ declare abstract class BaseTableResult<
   static validateJoint(data: TableResult.Source): void;
 
   // context: not null (destructured)
-  // context: not null (destructured)
   static override fromSource(
     source: TableResult.CreateData,
     context?: Document.ConstructionContext<BaseTableResult.Parent>,
