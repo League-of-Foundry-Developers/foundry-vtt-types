@@ -144,10 +144,21 @@ declare abstract class DataModel<
    * Clone a model, creating a new data model by combining current data with provided overrides.
    * @param data    - Additional data which overrides current document data at the time of creation
    * @param context - Context options passed to the data model constructor
-   * @returns The cloned Document instance
+   * @returns The cloned Document [sic] instance
+   * @remarks Obviously returns not necessarily a `Document`, just a `DataModel`.
+   *
+   * @privateRemarks Foundry types `context` as simply `object`, but given usage, it's a `DataValidationOptions`,
+   * or, put another way, a `DataModel.ConstructionContext` omitting `parent`. Both the implementation here and
+   * the override in `Document` provide `this.parent` to the construction context; Here, `context` is spread in,
+   * so it'd be mechanically possible to provide a different parent, but such being desirable seems unlikely to
+   * come up in normal development. The `Document` override enforces `this.parent` with no opportunity to pass an
+   * alternative.
    */
-  clone(data?: fields.SchemaField.AssignmentData<Schema>, context?: DataModel.DataValidationOptions<Parent>): this;
-
+  // null would be fine for both params here, but it breaks Document, and its never *expected*, just incidentally doesn't break
+  clone(
+    data?: fields.SchemaField.AssignmentData<Schema>,
+    context?: DataModel.ConstructionContext & ExtraConstructorOptions,
+  ): this;
   /**
    * Validate the data contained in the document to check for type and content
    * This function throws an error if data within the document is not valid

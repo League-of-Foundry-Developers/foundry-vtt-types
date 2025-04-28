@@ -272,9 +272,10 @@ declare abstract class Document<
    * @param context - Additional context options passed to the create method
    * @returns The cloned Document instance
    */
-  override clone<Save extends boolean = false>(
+  // data: not null (property access), context: not null (destructured)
+  override clone<Save extends boolean | null | undefined = false>(
     data?: fields.SchemaField.UpdateData<Schema>,
-    context?: Document.CloneContext<Save> & InexactPartial<Document.ConstructionContext<Parent>>,
+    context?: Document.CloneContext<Save>,
   ): Save extends true ? Promise<this> : this;
 
   /**
@@ -1496,25 +1497,34 @@ declare namespace Document {
     deleteAll?: boolean | undefined;
   }
 
-  interface CloneContext<Save extends boolean | undefined = boolean | undefined> {
+  /** @internal */
+  type _CloneContext<Save extends boolean | null | undefined = boolean | null | undefined> = NullishProps<{
     /**
      * Save the clone to the World database?
      * @defaultValue `false`
      */
-    save?: Save;
+    save: Save;
 
     /**
      * Keep the same ID of the original document
      * @defaultValue `false`
      */
-    keepId?: boolean | undefined;
+    keepId: boolean;
 
     /**
      * Track the clone source
      * @defaultValue `false`
      */
-    addSource?: boolean | undefined;
-  }
+    addSource: boolean;
+  }>;
+
+  /**
+   * @privateRemarks Since we've lost the ExtraConstructorOptions type param, we have to extend
+   * the (parentless) construction context
+   */
+  interface CloneContext<Save extends boolean | null | undefined = boolean | null | undefined>
+    extends _CloneContext<Save>,
+      Omit<Document.ConstructionContext, "parent"> {}
 
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
