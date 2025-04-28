@@ -881,7 +881,7 @@ declare class ApplicationV2<
    * @param formConfig - The form configuration for which this handler is bound
    * @param event      - The form submission event
    */
-  _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+  protected _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
 
   /**
    * Parse a CSS style rule into a number of pixels which apply to that dimension.
