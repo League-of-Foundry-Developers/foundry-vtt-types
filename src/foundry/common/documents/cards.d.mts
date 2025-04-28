@@ -261,9 +261,10 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   static validateJoint(data: Cards.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: Cards.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseCards.Parent>,
   ): Cards.Implementation;
 
   static override fromJSON(json: string): Cards.Implementation;

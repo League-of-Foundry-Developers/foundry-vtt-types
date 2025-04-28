@@ -1,10 +1,10 @@
-import type { AnyMutableObject, AnyObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
-import type { CONST, documents } from "../../client-esm/client.d.mts";
+import type { documents } from "../../client-esm/client.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type DataModel from "../abstract/data.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
+import type EmbeddedCollection from "../abstract/embedded-collection.d.mts";
 
 /**
  * The ActorDelta Document.
@@ -34,37 +34,47 @@ declare abstract class BaseActorDelta<
 
   static override defineSchema(): BaseActorDelta.Schema;
 
-  override canUserModify(
+  // data: not null (parameter default only)
+  override canUserModify<Action extends "create" | "update" | "delete">(
     user: User.Internal.Implementation,
-    action: "create" | "update" | "delete",
-    data?: AnyObject,
+    action: Action,
+    // TODO: should this be `BaseActor._Schema`?
+    data?: Document.CanUserModifyData<BaseActorDelta._Schema, Action>,
   ): boolean;
 
+  // options: not null (destructured)
   override testUserPermission(
     user: User.Internal.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   /**
    * Retrieve the base actor's collection, if it exists.
    * @param collectionName - The collection name.
+   * @remarks Passes `collectionName` to the token's `baseActor`'s {@link Actor.getEmbeddedCollection | `#getEmbeddedCollection`}
    */
-  getBaseCollection(collectionName: string): Collection<Actor.Implementation> | undefined;
+  getBaseCollection<DocType extends Actor.Embedded.Name>(
+    collectionName: DocType,
+  ): EmbeddedCollection<Document.ImplementationFor<DocType>, Actor.Implementation> | undefined;
 
+  /**
+   * Apply an ActorDelta to an Actor and return the resultant synthetic Actor.
+   * @param delta     - The ActorDelta.
+   * @param baseActor - The base Actor.
+   * @param context   - Context to supply to synthetic Actor instantiation.
+   * @remarks `context` is spread into an object, so it being `null` is effectively the same as omitted
+   */
   static applyDelta(
     delta: BaseActorDelta,
     baseActor: documents.BaseActor,
-    context: unknown,
-  ): Document.ImplementationClassFor<"Actor"> | null;
+    context?: BaseActorDelta.ApplyDeltaContext | null,
+  ): Actor.Implementation | null;
 
-  static migrateData(source: AnyMutableObject): AnyMutableObject;
+  /**
+   * @remarks Forwards to {@link foundry.documents.BaseActor.migrateData | `BaseActor.migrateData`}
+   */
+  static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   // TODO: Figure out if this override still applies
   toObject(source: true): this["_source"];
@@ -263,16 +273,31 @@ declare abstract class BaseActorDelta<
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
 
-  protected static _addDataFieldMigration(
-    data: AnyObject,
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static override _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
+
+  // options: not null (parameter default only)
+  protected static override _addDataFieldShim(
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyObject) => unknown,
-  ): unknown;
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
-  protected static _logDataFieldMigration(
+  protected static override _addDataFieldMigration(
+    data: AnyMutableObject,
+    oldKey: string,
+    newKey: string,
+    apply?: ((data: AnyMutableObject) => unknown) | null,
+  ): boolean;
+
+  // options: not null (destructured where forwarded)
+  protected static override _logDataFieldMigration(
     oldKey: string,
     newKey: string,
     options?: LogCompatibilityWarningOptions,
@@ -301,9 +326,10 @@ declare abstract class BaseActorDelta<
 
   static validateJoint(data: ActorDelta.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: ActorDelta.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseActorDelta.Parent>,
   ): ActorDelta.Implementation;
 
   static override fromJSON(json: string): ActorDelta.Implementation;
@@ -366,4 +392,15 @@ declare namespace BaseActorDelta {
    * @deprecated {@link BaseActorDelta.CreateData | `BaseActorDelta.CreateData`}
    */
   type ConstructorData = fields.SchemaField.CreateData<Schema>;
+
+  /**
+   * @internal
+   * This interface is spread into an object that already has `parent` defined, and as this is ActorDelta logic,
+   * let's assume that overwriting the parent is contraindicated.
+   */
+  type _ApplyDeltaContext = Omit<Document.ConstructionContext<TokenDocument.Implementation>, "parent">;
+
+  interface ApplyDeltaContext extends _ApplyDeltaContext {
+    parent?: never;
+  }
 }

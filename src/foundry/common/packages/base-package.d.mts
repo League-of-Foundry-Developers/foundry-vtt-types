@@ -401,7 +401,7 @@ export class PackageRelationships extends fields.SchemaField<BasePackage.Package
   constructor(options: fields.SchemaField.Options<BasePackage.PackageRelationshipsSchema>);
 }
 
-// ommitted private class PackageRelationshipField
+// omitted private class PackageRelationshipField
 
 /**
  * A custom SchemaField for defining a related Package.
@@ -454,9 +454,10 @@ export class CompendiumOwnershipField extends fields.ObjectField<
     validationError: string;
   };
 
+  // options: not null (parameter default only, property access)
   protected override _validateType(
     value: Record<keyof typeof foundry.CONST.USER_ROLES, keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>,
-    options?: any,
+    options?: fields.DataField.ValidateOptions<CompendiumOwnershipField>,
   ): boolean | void;
 }
 
@@ -482,12 +483,12 @@ export class PackageCompendiumPacks<
 
   protected override _validateElements(
     value: AnyArray,
-    options?: fields.DataField.ValidationOptions<fields.DataField.Any>,
+    options?: fields.DataField.ValidateOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 
   protected override _validateElement(
     value: unknown,
-    options: fields.DataField.ValidationOptions<fields.DataField.Any>,
+    options: fields.DataField.ValidateOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 }
 
@@ -605,7 +606,8 @@ declare class BasePackage<
    */
   static testDependencyCompatibility(compatibility: PackageCompatibility, dependency: BasePackage): boolean;
 
-  static cleanData(source?: AnyObject, options?: fields.DataField.CleanOptions): AnyObject;
+  // options: not null (parameter default only, property access where forwarded)
+  static cleanData(source?: AnyMutableObject | null, options?: fields.DataField.CleanOptions): AnyMutableObject;
 
   /**
    * Validate that a Package ID is allowed.
