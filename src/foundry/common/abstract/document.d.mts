@@ -23,6 +23,7 @@ import type {
   PickValue,
   Identity,
   Brand,
+  AnyMutableObject,
 } from "fvtt-types/utils";
 import type * as CONST from "../constants.mts";
 import type {
@@ -807,13 +808,18 @@ declare abstract class Document<
   /**
    * A reusable helper for adding migration shims.
    */
-  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
-
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
   /**
    * A reusable helper for adding a migration shim
    */
+  // options: not null (parameter default only)
   protected static _addDataFieldShim(
-    data: AnyObject,
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
     options?: Document.DataFieldShimOptions,
@@ -826,15 +832,16 @@ declare abstract class Document<
    * @param oldKey - The old field name
    * @param newKey - The new field name
    * @param apply  - An application function, otherwise the old value is applied
-   * @internal
+   * @remarks Foundry marked `@internal`
    */
   protected static _addDataFieldMigration(
-    data: AnyObject,
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyObject) => unknown,
+    apply?: (data: AnyMutableObject) => unknown,
   ): unknown;
 
+  // options: not null (destructured where forwarded)
   protected static _logDataFieldMigration(
     oldKey: string,
     newKey: string,
@@ -1919,7 +1926,7 @@ declare namespace Document {
 
   interface DataFieldShimOptions {
     /**
-     * Apply shims to embedded models?
+     * A string to log as a compatibility warning on accessing the `oldKey`
      */
     warning?: string | null | undefined;
 
