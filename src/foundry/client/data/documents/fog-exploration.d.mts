@@ -114,7 +114,7 @@ declare global {
     type Collection = FogExplorations.Configured;
 
     /**
-     * An instance of `FogExploration` that comes from the database but failed validation meaining that
+     * An instance of `FogExploration` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<FogExploration.Implementation> {}

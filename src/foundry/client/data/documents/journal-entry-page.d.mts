@@ -157,7 +157,7 @@ declare global {
     type Collection = never;
 
     /**
-     * An instance of `JournalEntryPage` that comes from the database but failed validation meaining that
+     * An instance of `JournalEntryPage` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType>

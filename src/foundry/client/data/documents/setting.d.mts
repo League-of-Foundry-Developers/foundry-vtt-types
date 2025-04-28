@@ -111,7 +111,7 @@ declare global {
     type Collection = WorldSettings.Configured;
 
     /**
-     * An instance of `Setting` that comes from the database but failed validation meaining that
+     * An instance of `Setting` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<Setting.Implementation> {}
