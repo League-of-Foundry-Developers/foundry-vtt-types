@@ -1,5 +1,4 @@
 import type { AnyMutableObject } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
@@ -210,13 +209,34 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     options?: Document.DataFieldShimOptions,
   ): void;
 
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static override _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
+
+  // options: not null (parameter default only)
+  protected static override _addDataFieldShim(
+    data: AnyMutableObject,
+    oldKey: string,
+    newKey: string,
+    options?: Document.DataFieldShimOptions,
+  ): void;
+
+  protected static override _addDataFieldMigration(
+    data: AnyMutableObject,
   protected static override _addDataFieldMigration(
     data: AnyMutableObject,
     oldKey: string,
     newKey: string,
     apply?: ((data: AnyMutableObject) => unknown) | null,
   ): boolean;
+    apply?: ((data: AnyMutableObject) => unknown) | null,
+  ): boolean;
 
+  // options: not null (destructured where forwarded)
+  protected static override _logDataFieldMigration(
   // options: not null (destructured where forwarded)
   protected static override _logDataFieldMigration(
     oldKey: string,
@@ -247,9 +267,11 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static validateJoint(data: Adventure.Source): void;
 
+  // TODO: Actual override, not just template; audit
+  // context: not null (destructured)
   static override fromSource(
     source: Adventure.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseAdventure.Parent>,
   ): Adventure.Implementation;
 
   static override fromJSON(json: string): Adventure.Implementation;

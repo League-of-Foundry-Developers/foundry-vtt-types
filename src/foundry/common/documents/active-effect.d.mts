@@ -1,9 +1,8 @@
-import type { AnyObject, AnyMutableObject, InexactPartial } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type Document from "../abstract/document.mts";
-import type * as CONST from "../constants.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 
 /**
  * The ActiveEffect Document.
@@ -27,30 +26,58 @@ declare abstract class BaseActiveEffect<
    */
   constructor(...args: ActiveEffect.ConstructorArgs);
 
-  override canUserModify(user: User.Implementation, action: "create" | "update" | "delete", data?: AnyObject): boolean;
-
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "ActorDelta",
+   *   collection: "delta",
+   *   label: "DOCUMENT.ActorDelta",
+   *   labelPlural: "DOCUMENT.ActorDeltas",
+   *   isEmbedded: true,
+   *   embedded: {
+   *     Item: "items",
+   *     ActiveEffect: "effects"
+   *   },
+   *   schemaVersion: "12.324"
+   * });
+   * ```
+   */
   static override metadata: BaseActiveEffect.Metadata;
 
   static override defineSchema(): BaseActiveEffect.Schema;
 
-  override testUserPermission(
+  // data: not null (parameter default only)
+  override canUserModify<Action extends "create" | "update" | "delete">(
     user: User.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    action: Action,
+    data?: Document.CanUserModifyData<BaseActiveEffect._Schema, Action>,
   ): boolean;
 
-  /**
-   * @privateRemarks _preCreate overridden but with no signature changes.
-   * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
-   */
+  // options: not null (destructured)
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
 
+  // _preCreate overridden but with no signature changes.
+  // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+
+  /**
+   * @remarks Migrates:
+   * - `label` to `name` (default: `"Unnamed Effect"`)
+   * - `icon` to `img`
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /**
+   * @remarks Shims:
+   * - `label` to `name`, since v11, until v13
+   * - `icon` to `img`, since v12, until v14
+   */
+  // options: not null (destructured)
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
    * @deprecated since v11, will be removed in v13
@@ -284,9 +311,10 @@ declare abstract class BaseActiveEffect<
 
   static validateJoint(data: ActiveEffect.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: ActiveEffect.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseActiveEffect.Parent>,
   ): ActiveEffect.Implementation;
 
   static override fromJSON(json: string): ActiveEffect.Implementation;

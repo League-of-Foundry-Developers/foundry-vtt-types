@@ -1,4 +1,4 @@
-import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -64,7 +64,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
-  updateSource(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateSourceOptions): TokenDocument.UpdateData;
+  updateSource(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateOptions): TokenDocument.UpdateData;
 
   // TODO: Update with the Delta conditionality
   toObject(source: true): this["_source"];
@@ -309,13 +309,34 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     options?: Document.DataFieldShimOptions,
   ): void;
 
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static override _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
+
+  // options: not null (parameter default only)
+  protected static override _addDataFieldShim(
+    data: AnyMutableObject,
+    oldKey: string,
+    newKey: string,
+    options?: Document.DataFieldShimOptions,
+  ): void;
+
+  protected static override _addDataFieldMigration(
+    data: AnyMutableObject,
   protected static override _addDataFieldMigration(
     data: AnyMutableObject,
     oldKey: string,
     newKey: string,
     apply?: ((data: AnyMutableObject) => unknown) | null,
   ): boolean;
+    apply?: ((data: AnyMutableObject) => unknown) | null,
+  ): boolean;
 
+  // options: not null (destructured where forwarded)
+  protected static override _logDataFieldMigration(
   // options: not null (destructured where forwarded)
   protected static override _logDataFieldMigration(
     oldKey: string,
@@ -346,9 +367,10 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   static validateJoint(data: TokenDocument.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: TokenDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseToken.Parent>,
   ): TokenDocument.Implementation;
 
   static override fromJSON(json: string): TokenDocument.Implementation;
@@ -361,10 +383,11 @@ export class ActorDeltaField<
   DocumentType extends Document.AnyConstructor,
   Options extends fields.EmbeddedDocumentField.Options<DocumentType> = fields.EmbeddedDocumentField.DefaultOptions,
 > extends fields.EmbeddedDocumentField<DocumentType, Options> {
+  // options: not null (parameter default only)
   override initialize(
     value: fields.EmbeddedDocumentField.PersistedType<DocumentType, Options>,
     model: DataModel.Any,
-    options?: InexactPartial<DataModel.DataValidationOptions>,
+    options?: DataField.InitializeOptions,
   ):
     | fields.EmbeddedDocumentField.InitializedType<DocumentType, Options>
     | (() => fields.EmbeddedDocumentField.InitializedType<DocumentType, Options> | null);

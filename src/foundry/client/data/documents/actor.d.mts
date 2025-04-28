@@ -296,7 +296,8 @@ declare global {
       _id: fields.DocumentIdField;
 
       /** The name of this Actor */
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+      //FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
 
       /** An Actor subtype which configures the system data model applied */
       type: fields.DocumentTypeField<typeof BaseActor>;
@@ -611,16 +612,18 @@ declare global {
 
     static override metadata: Actor.Metadata;
 
-    protected override _configure(options?: { pack?: string | null }): void;
+    // options: not null (destructured)
+    protected override _configure(options?: Document.ConfigureOptions): void;
 
     /**
      * Maintain a list of Token Documents that represent this Actor, stored by Scene.
      */
     protected _dependentTokens: foundry.utils.IterableWeakMap<Scene.Implementation, TokenDocument.Implementation>;
 
+    // options: not null (parameter default only
     protected override _initializeSource(
       data: this | Actor.CreateData,
-      options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
+      options?: Document.InitializeSourceOptions,
     ): Actor.Source;
 
     /**
