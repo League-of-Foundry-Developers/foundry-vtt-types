@@ -137,11 +137,6 @@ declare class DocumentSheetV2<
    * @param formData - Processed and validated form data to be used for a document update
    */
   _processSubmitData(event: SubmitEvent, form: HTMLFormElement, formData: FormDataExtended): Promise<void>;
-
-  /**
-   * Programmatically submit a DocumentSheetV2 instance, providing additional data to be merged with form data.
-   */
-  submit(options?: DocumentSheetV2.SubmitOptions): Promise<void>;
 }
 
 export default DocumentSheetV2;

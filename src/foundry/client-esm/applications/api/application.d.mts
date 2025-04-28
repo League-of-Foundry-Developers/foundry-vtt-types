@@ -9,6 +9,7 @@ import type {
   Identity,
 } from "fvtt-types/utils";
 import type EventEmitterMixin from "#common/utils/event-emitter.d.mts";
+import type ContextMenu from "../ux/context-menu.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
 
@@ -84,8 +85,17 @@ declare namespace ApplicationV2 {
     /** Arguments passed to the requested hook function */
     hookArgs: string;
 
-    /** Add the handler response to hookArgs */
+    /**
+     * Add the handler response to hookArgs
+     * @defaultValue `false`
+     */
     hookResponse: boolean;
+
+    /**
+     * Call hooks for parent classes in the inheritance chain?
+     * @defaultValue `true`
+     */
+    parentClassHooks: boolean;
   }
 
   type RenderState = ValueOf<typeof ApplicationV2.RENDER_STATES>;
@@ -412,6 +422,16 @@ declare namespace ApplicationV2 {
        */
       updatePosition: boolean;
     }> {}
+
+  type CreateContextMenuHandler = () => ContextMenu.Entry<HTMLElement>[];
+
+  interface CreateContextMenuOptions extends ContextMenu.ConstructorOptions<false> {
+    container?: HTMLElement | undefined | null;
+
+    hookName?: string | undefined | null;
+
+    parentClassHooks?: boolean;
+  }
 }
 
 /**
@@ -470,6 +490,16 @@ declare class ApplicationV2<
     RENDERING: 1;
     RENDERED: 2;
   };
+
+  /**
+   * An incrementing integer Application ID.
+   */
+  static _appId: number;
+
+  /**
+   * The current maximum z-index of any displayed Application.
+   */
+  static _maxZ: number;
 
   static override readonly emittedEvents: string[];
 
@@ -657,8 +687,7 @@ declare class ApplicationV2<
    * @param element - The element to insert
    * @returns The inserted element
    */
-  // TODO: Actual function def appears to be void?
-  protected _insertElement(element: HTMLElement): HTMLElement;
+  protected _insertElement(element: HTMLElement): void;
 
   /**
    * Close the Application, removing it from the DOM.
@@ -704,7 +733,7 @@ declare class ApplicationV2<
    * @returns A Promise which resolves once the control expansion animation is complete
    */
   // not: null
-  toggleControls(expanded?: boolean | null, options?: ApplicationV2.ToggleControlOptions): void;
+  toggleControls(expanded?: boolean | null, options?: ApplicationV2.ToggleControlOptions): Promise<void>;
 
   /**
    * Minimize the Application, collapsing it to a minimal header.
@@ -732,6 +761,16 @@ declare class ApplicationV2<
    */
   // not: null
   changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
+
+  /**
+   * Programmatically submit an ApplicationV2 instance which implements a single top-level form.
+   * @param submitOptions - Arbitrary options which are supported by and provided to the configured form submission handler.
+   * @returns A promise that resolves to the returned result of the form submission handler, if any.
+   * @remarks Possible 13.340 bug that this never returns anything
+   * @privateRemarks TODO: More precisely type the submitOptions, as they vary with the handler
+   * which means on DocumentSheet they can be the document's create or update operations
+   */
+  submit(submitOptions?: AnyObject): Promise<void>;
 
   /**
    * Perform an event in the application life-cycle.
@@ -850,7 +889,7 @@ declare class ApplicationV2<
    * @param parentDimension - The relevant dimension of the parent element
    * @returns The parsed style dimension in pixels
    */
-  static parseCSSDimensions(style: string, parentDimension: number): number;
+  static parseCSSDimensions(style: string, parentDimension: number): number | undefined;
 
   /**
    * Wait for a CSS transition to complete for an element.
@@ -859,6 +898,19 @@ declare class ApplicationV2<
    * @internal
    */
   protected _awaitTransition(element: HTMLElement, timeout: number): Promise<void>;
+
+  /**
+   * Create a ContextMenu instance used in this Application.
+   * @param handler   - A handler function that provides initial context options
+   * @param selector  - A CSS selector to which the ContextMenu will be bound
+   * @param options   - Additional options which affect ContextMenu construction
+   * @returns A created ContextMenu or null if no menu items were defined
+   */
+  protected _createContextMenu(
+    handler: ApplicationV2.CreateContextMenuHandler,
+    selector: string,
+    options: ApplicationV2.CreateContextMenuOptions,
+  ): ContextMenu | null;
 
   /**
    * Wait for any images in the given element to load.
