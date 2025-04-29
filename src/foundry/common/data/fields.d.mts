@@ -193,8 +193,9 @@ declare abstract class DataField<
    * @param value   - The appropriately coerced value.
    * @param options - Additional options for how the field is cleaned.
    * @returns The cleaned value.
+   * @remarks Simply returns `value` in `DataField`. `options` is unused in `DataField`
    */
-  protected _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
+  protected _cleanType(value: InitializedType, options?: DataField.CleanOptions | null): InitializedType;
 
   /**
    * Cast a non-default value to ensure it is the correct type for the field
@@ -225,6 +226,7 @@ declare abstract class DataField<
    *                  (default: `{}`)
    * @returns Returns a ModelValidationError if a validation failure occurred
    */
+  // options: not null (parameter default only, property access)
   validate(value: AssignmentType, options?: DataField.ValidateOptions<this>): DataModelValidationFailure | void;
 
   /**
@@ -246,6 +248,7 @@ declare abstract class DataField<
    *          otherwise void.
    * @throws May throw a specific error if the value is not valid
    */
+  // options: not null (parameter default only, property access in subclasses)
   protected _validateType(
     value: InitializedType,
     options?: DataField.ValidateOptions<this>,
@@ -257,9 +260,18 @@ declare abstract class DataField<
    * @param data    - Candidate data for joint model validation
    * @param options - Options which modify joint model validation
    * @throws  An error if joint model validation fails
-   * @internal
+   * @remarks Foundry marked `@internal`
+   *
+   * The only place core checks the `options` for any property is in {@link TypeDataField._validateModel | `TypeDataField#_validateModel`},
+   * where it checks `options.source?.type`
+   *
+   * {@link SchemaField._validateModel | `SchemaField._validateModel`} enforces `source`'s existence for subsidiary calls
+   *
+   * The only place core *calls* this at a top level, it does not pass anything for `options`, relying on SchemaField above
+   * to make TypeDataField work
    */
-  protected _validateModel(data: AnyObject, options?: AnyObject): void; // TODO: Type further.
+  // options: not null (parameter default only, property access)
+  protected _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void; // TODO: Type further.
 
   /**
    * Initialize the original source data into a mutable copy for the DataModel instance.
@@ -858,6 +870,12 @@ declare class SchemaField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
+  /**
+   * @remarks Ensures `options.source` is set via effectively `||= data`, then forwards to each field's `#clean`
+   *
+   * Deletes any keys from `value` not in the schema
+   */
+  // options: not null (parameter default only, property access)
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   // options: not null (parameter default only)
@@ -867,6 +885,7 @@ declare class SchemaField<
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
+  // options: not null (parameter default only, property access)
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidateOptions<this>,
@@ -1133,9 +1152,10 @@ declare class BooleanField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
+  /** @remarks `options` is unused in `BooleanField` */
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<this>,
+    options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
 
   protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
@@ -1252,11 +1272,17 @@ declare class NumberField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
+  /**
+   * @remarks Applies `integer`, `min`, `max`, and `step`
+   *
+   * `options` is only passed to super, so effective unused
+   * */
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | null): InitializedType;
 
+  /** @remarks `options` is unused in `NumberField` */
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<this>,
+    options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
 
   /**
@@ -1484,6 +1510,7 @@ declare class StringField<
 
   protected override _validateSpecial(value: AssignmentType): boolean | void;
 
+  /** @remarks `options` is unused in `StringField` */
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidateOptions<this>,
@@ -1707,6 +1734,8 @@ declare class ObjectField<
 
   override toObject(value: InitializedType): PersistedType;
 
+  /** @remarks `options` is unused in `ObjectField` */
+  // options: not null (parameter default only, despite being unused)
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidateOptions<this>,
@@ -1854,8 +1883,13 @@ declare class ArrayField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
+  /**
+   * @remarks `options` gets its `partial` property forced `false`, then each element gets run through its field's `#clean`
+   * @privateRemarks `null` is allowed for `options` as it gets spread, and `...null` doesn't error
+   */
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | null): InitializedType;
 
+  // options: not null (parameter default only)
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidateOptions<this>,
@@ -2203,6 +2237,8 @@ declare class EmbeddedDataField<
   // options: not null (parameter default only, property access)
   override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
+  /** @remarks Forwards to super with `options.source: value` */
+  // options: not null (parameter default only, property access)
   override validate(
     value: AssignmentType,
     options?: DataField.ValidateOptions<this>,
@@ -2372,7 +2408,12 @@ declare class EmbeddedCollectionField<
    */
   get schema(): this["model"]["schema"];
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
+  /**
+   * @remarks Calls the Collection's Document's Implementation's `schema.clean` on every entry in `value`,
+   * with `options.source` set to that entry
+   * @privateRemarks `null` is allowed for `options` as it gets spread, and `...null` doesn't error
+   */
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | null): InitializedType;
 
   protected override _validateElements(
     value: any[],
@@ -2558,7 +2599,12 @@ declare class EmbeddedCollectionDeltaField<
 > {
   static override get implementation(): typeof EmbeddedCollectionDelta;
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
+  /**
+   * @remarks Calls the Collection's Document's Implementation's `schema.clean` on every entry in `value`,
+   * with `options.source` set to that entry, and some special handling for Tombstone data
+   * @privateRemarks `null` is allowed for `options` as it gets spread, and `...null` doesn't error
+   */
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | null): InitializedType;
 
   protected override _validateElements(
     value: any[],
@@ -2821,9 +2867,10 @@ declare class DocumentIdField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
+  /** @remarks `options` is unused in `DocumentIdField` */
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<this>,
+    options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -2895,9 +2942,10 @@ declare class DocumentUUIDField<
 
   static get _defaults(): DocumentUUIDField.Options;
 
+  /** @remarks `options` is unused in `DocumentUUIDField` */
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<this>,
+    options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
 
   // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
@@ -3126,11 +3174,17 @@ declare class ColorField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
+  /**
+   * @remarks Returns `value.css` if it's a `.valid` `Color`, otherwise `this.getInitialValue(options.source)`
+   *
+   * `options` is required as it lacks any default handling and has its `.source` property accessed
+   */
+  protected override _cleanType(value: InitializedType, options: DataField.CleanOptions): InitializedType;
 
+  /** @remarks `options` is only passed to super, where it is unused in `StringField` */
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<this>,
+    options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
 
   protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
@@ -3239,6 +3293,7 @@ declare class FilePathField<
 
   override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
+  /** @remarks `options` is unused in `FilePathField` */
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidateOptions<this>,
@@ -3536,9 +3591,10 @@ declare class DocumentOwnershipField<
 
   protected static override get _defaults(): DocumentOwnershipField.Options;
 
+  /** @remarks `options` is unused in `DocumentOwnershipField` */
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<this>,
+    options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -3616,9 +3672,10 @@ declare class JSONField<
 
   override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
+  /** @remarks `options` is unused in `JSONField` */
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<this>,
+    options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
 
   // options: not null (parameter default only)
@@ -3707,11 +3764,17 @@ declare namespace JSONField {
  */
 // TODO(LukeAbby): This field effectively removes all options because there's no point asking for an options when none of them do anything.
 declare class AnyField extends DataField<DataField.Options.Any, unknown, unknown, unknown> {
+  /** @remarks Simply returns `value` */
   override _cast(value: unknown): unknown;
 
+  /**
+   * @remarks `options` is unused in `AnyField`
+   *
+   * Always returns `true`
+   */
   protected override _validateType(
     value: unknown,
-    options?: DataField.ValidateOptions<this>,
+    options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -4051,9 +4114,10 @@ declare class DocumentTypeField<
 
   static override get _defaults(): DocumentTypeField.Options;
 
+  /** @remarks `options` is required as it has no default handling and its `fallback` property is accessed */
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<this>,
+    options: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -4159,7 +4223,15 @@ declare class TypeDataField<
   /** @remarks If an object with a valid `type` isn't passed, returns `{}` */
   override getInitialValue(data?: { type?: string }): InitializedType;
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
+  /**
+   * @remarks Returns:
+   * - If a valid TypeDataModel, the `value` run through its `.cleanData` with `options.source: value`, else
+   * - If `options.partial`, simply `value`, else
+   * - A `mergeObject` of `this.getInitialValue(options.source)` and `value`
+   *
+   * `options` is required as it lacks any default handling and has its properties accessed
+   */
+  protected override _cleanType(value: InitializedType, options: DataField.CleanOptions): InitializedType;
 
   // options: not null (parameter default only)
   override initialize(
@@ -4168,6 +4240,7 @@ declare class TypeDataField<
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
+  // options: not null (parameter default only, property access)
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidateOptions<this>,
@@ -4292,12 +4365,19 @@ declare class TypedSchemaField<
 
   protected override _getField(path: string[]): unknown;
 
+  /**
+   * @remarks Returns `value` if `value?.type` doesn't map to a valid type, otherwise it runs `value`
+   * through the matching type's `#clean`
+   */
+  // options: not null (parameter default only, property access in super)
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
   protected override _validateSpecial(value: AssignmentType): boolean | void;
 
+  /** @remarks Forwards to the SchemaField designated by `value.type`'s `#validate` */
+  // options: not null (parameter default only, property access in super)
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidateOptions<this>,
@@ -4474,9 +4554,10 @@ declare class JavaScriptField<
 
   static get _defaults(): JavaScriptField.Options;
 
+  /** @remarks `options` is only passed to super, where it is unused in `StringField` */
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<this>,
+    options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
 
   override toFormGroup(

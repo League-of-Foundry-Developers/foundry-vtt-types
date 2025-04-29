@@ -454,9 +454,10 @@ export class CompendiumOwnershipField extends fields.ObjectField<
     validationError: string;
   };
 
+  /** @remarks `options` is unused in `CompendiumOwnershipField` */
   protected override _validateType(
     value: Record<keyof typeof foundry.CONST.USER_ROLES, keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>,
-    options?: any,
+    options?: fields.DataField.ValidateOptions<this> | null,
   ): boolean | void;
 }
 
