@@ -362,13 +362,15 @@ declare abstract class DataField<
    * @param model  - The model instance.
    * @param change - The original change data.
    * @returns - The updated value.
+   *
+   * @remarks Returns `value + delta`. `model` and `change` are unused in `DataField`
    */
   protected _applyChangeAdd(
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
     change: ActiveEffect.EffectChangeData,
-  ): InitializedType | undefined;
+  ): InitializedType;
 
   /**
    * Apply a MULTIPLY change to this field.
@@ -377,6 +379,8 @@ declare abstract class DataField<
    * @param model  - The model instance.
    * @param change - The original change data.
    * @returns The updated value.
+   *
+   * @remarks No-op in `DataField`, returns `undefined` unless overridden
    */
   protected _applyChangeMultiply(
     value: InitializedType,
@@ -392,13 +396,15 @@ declare abstract class DataField<
    * @param model  - The model instance.
    * @param change - The original change data.
    * @returns The updated value.
+   *
+   * @returns Simply returns `delta`. `value`, `model`, and `change` are unused in `DataField`
    */
   protected _applyChangeOverride(
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
     change: ActiveEffect.EffectChangeData,
-  ): InitializedType | undefined;
+  ): InitializedType;
 
   /**
    * Apply an UPGRADE change to this field.
@@ -407,6 +413,8 @@ declare abstract class DataField<
    * @param model - The model instance.
    * @param change - The original change data.
    * @returns - The updated value.
+   *
+   * @remarks No-op in `DataField`, returns `undefined` unless overridden
    */
   protected _applyChangeUpgrade(
     value: InitializedType,
@@ -422,6 +430,8 @@ declare abstract class DataField<
    * @param model  - The model instance.
    * @param change - The original change data.
    * @returns The updated value.
+   *
+   * @remarks No-op in `DataField`, returns `undefined` unless overridden
    */
   protected _applyChangeDowngrade(
     value: InitializedType,
@@ -437,13 +447,14 @@ declare abstract class DataField<
    * @param model - The model instance.
    * @param change - The original change data.
    * @returns - The updated value.
+   * @remarks Only returns a value if the target value of the change actually changed
    */
   protected _applyChangeCustom(
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
     change: ActiveEffect.EffectChangeData,
-  ): InitializedType;
+  ): InitializedType | undefined;
 }
 
 declare namespace DataField {
@@ -1159,6 +1170,30 @@ declare class BooleanField<
   ): boolean | DataModelValidationFailure | void;
 
   protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
+
+  /** @remarks Returns `value || delta`. `model` and `change` are unused in `BooleanField` */
+  protected override _applyChangeAdd(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.EffectChangeData,
+  ): InitializedType;
+
+  /** @remarks Returns `value && delta`. `model` and `change` are unused in `BooleanField` */
+  protected override _applyChangeMultiply(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.EffectChangeData,
+  ): InitializedType;
+
+  /** @remarks Returns `delta > value ? delta : value`. `model` and `change` are unused in `BooleanField` */
+  protected override _applyChangeUpgrade(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.EffectChangeData,
+  ): InitializedType | undefined;
 }
 
 declare namespace BooleanField {
@@ -1322,6 +1357,30 @@ declare class NumberField<
   protected override _toInput(
     config: NumberField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
   ): HTMLElement | HTMLCollection;
+
+  /** @remarks Returns `value * delta`. `model` and `change` are unused in `NumberField` */
+  protected override _applyChangeMultiply(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.EffectChangeData,
+  ): InitializedType;
+
+  /** @remarks Returns `delta > value ? delta : value`. `model` and `change` are unused in `NumberField` */
+  protected override _applyChangeUpgrade(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.EffectChangeData,
+  ): InitializedType | undefined;
+
+  /** @remarks Returns `delta < value ? delta : value`. `model` and `change` are unused in `NumberField` */
+  protected override _applyChangeDowngrade(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.EffectChangeData,
+  ): InitializedType | undefined;
 }
 
 declare namespace NumberField {
@@ -1944,6 +2003,14 @@ declare class ArrayField<
    * @param fieldData  - The value of this field within the source data
    */
   migrateSource(sourceData: AnyObject, fieldData: unknown): unknown;
+
+  /** @remarks Returns `value` with `delta` `push`ed. `model` and `change` are unused in `ArrayField` */
+  protected override _applyChangeAdd(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.EffectChangeData,
+  ): InitializedType;
 }
 
 declare namespace ArrayField {
@@ -2121,6 +2188,17 @@ declare class SetField<
   protected override _toInput(
     config: SetField.ToInputConfig<ElementFieldType, InitializedType>,
   ): HTMLElement | HTMLCollection;
+
+  /**
+   * @remarks Returns `value` with each element of `delta` `add`ed in order.
+   * `model` and `change` are unused in `SetField`
+   */
+  protected override _applyChangeAdd(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.EffectChangeData,
+  ): InitializedType;
 }
 
 declare namespace SetField {
