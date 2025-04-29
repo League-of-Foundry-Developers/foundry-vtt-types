@@ -52,7 +52,9 @@ declare abstract class DataField<
 
   /**
    * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
    */
+  // options: not null (unchecked `in` operation), context: not null (destructured)
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @internal */
@@ -124,14 +126,14 @@ declare abstract class DataField<
    *
    * The field name of this DataField instance.
    * This is assigned by SchemaField#initialize.
-   * @internal
+   * @remarks Foundry marked `@internal`
    */
   name: string | undefined;
 
   /**
    * A reference to the parent schema to which this DataField belongs.
    * This is assigned by SchemaField#initialize.
-   * @internal
+   * @remarks Foundry marked `@internal`
    */
   parent: DataField.Any | undefined;
 
@@ -157,6 +159,7 @@ declare abstract class DataField<
 
   /**
    * A dot-separated string representation of the field path within the parent schema.
+   * @remarks Returns `""` if both `this.parent?.fieldPath` and `this.name` are falsey
    */
   get fieldPath(): string;
 
@@ -164,13 +167,13 @@ declare abstract class DataField<
    * Apply a function to this DataField which propagates through recursively to any contained data schema.
    * @param fn      - The function to apply
    * @param value   - The current value of this field
-   * @param options - Additional options passed to the applied function
-   *                  (default `{}`)
+   * @param options - Additional options passed to the applied function (default `{}`)
    * @returns The results object
    */
+  // options: not null (could be forwarded somewhere destructured, parameter default only)
   apply<Value, Options, Return>(
     fn: keyof this | ((this: this, value: Value, options: Options) => Return),
-    value: Value,
+    value?: Value,
     options?: Options,
   ): Return;
 
@@ -777,8 +780,10 @@ declare class SchemaField<
   /**
    * @param fields  - The contained field definitions
    * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
    */
   // Saying `fields: Fields` here causes the inference for the fields to be unnecessarily widened. This might effectively be a no-op but it fixes the inference.
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(fields: { [K in keyof Fields]: Fields[K] }, options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `true` */
@@ -870,14 +875,11 @@ declare class SchemaField<
 
   override toObject(value: InitializedType): PersistedType;
 
-  override apply<Options, Return>(
-    fn: keyof this | ((this: this, value: undefined | null, options: Options) => Return),
-    value?: null,
-    options?: Options,
-  ): Return;
+  // TODO: Find a way to limit `Value` to `AnyObject | undefined` here while allowing it to be `unknown` in DataField
+  // options: not null (could be forwarded somewhere destructured, parameter default only)
   override apply<Value, Options, Return>(
     fn: keyof this | ((this: this, value: Value, options: Options) => Return),
-    value: Value,
+    value?: Value,
     options?: Options,
   ): Return;
 
@@ -1192,13 +1194,19 @@ declare class NumberField<
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   * @remarks Changes the default of `nullable` if passed `choices`
    */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `null` */
   override initial: DataField.Options.InitialType<InitializedType>;
 
-  /** @defaultValue `true` */
+  /**
+   * @defaultValue `true`
+   * @remarks If this field is created with `choices`, the default becomes `false`
+   */
   override nullable: boolean;
 
   /**
@@ -1427,7 +1435,10 @@ declare class StringField<
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   * @remarks If passed `choices`, changes the defaults of `nullable` and `blank`
    */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `undefined` */
@@ -1436,6 +1447,7 @@ declare class StringField<
   /**
    * Is the string allowed to be blank (empty)?
    * @defaultValue `true`
+   * @remarks If this field is created with `choices`, the default changes to `false`
    */
   blank: boolean;
 
@@ -1445,7 +1457,10 @@ declare class StringField<
    */
   trim: boolean;
 
-  /** @defaultValue `false` */
+  /**
+   * @defaultValue `false`
+   * @remarks If this field is created with `choices`, the default changes to `false`
+   */
   override nullable: boolean;
 
   /**
@@ -1768,6 +1783,9 @@ declare namespace ObjectField {
  * @typeParam PersistedElementType   - the persisted type for the elements in the array
  * @typeParam PersistedType          - the type of the persisted values of the ArrayField
  * @remarks
+ * `ArrayField` itself will not accept Document class instances, that exists on `ElementFieldType` to support
+ * {@link EmbeddedCollectionField | `EmbeddedCollectionField` }
+ *
  * Defaults:
  * - AssignmentType: `ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined`
  * - InitializedType: `InitializedElementType[]`
@@ -1793,7 +1811,10 @@ declare class ArrayField<
   /**
    * @param element - A DataField instance which defines the type of element contained in the Array.
    * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   * @throws If provided a `max` that is lower than `min` (default `0`)
    */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(element: ElementFieldType, options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `true` */
@@ -1868,9 +1889,11 @@ declare class ArrayField<
   override toObject(value: InitializedType): PersistedType;
 
   // TODO: Limit to the keys of `this` that are actually callable.
+  // TODO: Find a way to limit `Value` to `AnyArray | undefined` here while allowing it to be `unknown` in DataField
+  // options: not null (could be forwarded somewhere destructured, parameter default only)
   override apply<Value, Options, Return>(
     fn: keyof this | ((this: this, value: Value, options: Options) => Return),
-    value: Value,
+    value?: Value,
     options?: Options,
   ): Return;
 
@@ -2162,7 +2185,9 @@ declare class EmbeddedDataField<
   /**
    * @param model   - The class of DataModel which should be embedded in this field
    * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
    */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(model: ModelType, options?: Options, context?: DataField.ConstructionContext);
 
   /**
@@ -2304,10 +2329,16 @@ declare class EmbeddedCollectionField<
   /**
    * @param element - The type of Document which belongs to this embedded collection
    * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   * @remarks Forces `readonly: true`, regardless of passed value
    */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(element: ElementFieldType, options?: Options, context?: DataField.ConstructionContext);
 
-  /** @defaultValue `true` */
+  /**
+   * @defaultValue `true`
+   * @remarks Enforced by the constructor
+   */
   override readonly: true;
 
   protected static override _validateElementType<T extends DataField.Any | Document.AnyConstructor>(element: T): T;
@@ -2346,9 +2377,11 @@ declare class EmbeddedCollectionField<
 
   override toObject(value: InitializedType): PersistedType;
 
+  // TODO: Find a way to limit `Value` to `AnyObject | undefined` here while allowing it to be `unknown` in DataField
+  // options: not null (could be forwarded somewhere destructured, parameter default only)
   override apply<Value, Options, Return>(
     fn: keyof this | ((this: this, value: Value, options: Options) => Return),
-    value: Value,
+    value?: Value,
     options?: Options,
   ): Return;
 
@@ -2639,7 +2672,9 @@ declare class EmbeddedDocumentField<
   /**
    * @param model   - The type of Document which is embedded.
    * @param options - Options which configure the behavior of the field.
+   * @param context - Additional context which describes the field
    */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(model: DocumentType, options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `true` */
@@ -2838,6 +2873,7 @@ declare class DocumentUUIDField<
    * @param options - Options which configure the behavior of the field
    * @param context - Additional context which describes the field
    */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** A specific document type in CONST.ALL_DOCUMENT_TYPES required by this field */
@@ -2947,7 +2983,11 @@ declare class ForeignDocumentField<
   /**
    * @param model   - The foreign DataModel class definition which this field should link to.
    * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   *
+   * @privateRemarks Technically the runtime check allows any DataModel, but that seems unintended
    */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(model: DocumentType, options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `true` */
@@ -3138,7 +3178,9 @@ declare class FilePathField<
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
    */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /**
@@ -3256,6 +3298,13 @@ declare class AngleField<
   InitializedType = AngleField.InitializedType<Options>,
   PersistedType extends number | null | undefined = AngleField.InitializedType<Options>,
 > extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
+  /**
+   * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
+  constructor(options?: Options, context?: DataField.ConstructionContext);
+
   /** @defaultValue `true` */
   override required: boolean;
 
@@ -3526,6 +3575,7 @@ declare class JSONField<
   InitializedType = JSONField.InitializedType<Options>,
   PersistedType extends string | null | undefined = JSONField.PersistedType<Options>,
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `false` */
@@ -3838,7 +3888,12 @@ declare class DocumentStatsField<
   InitializedType = DocumentStatsField.InitializedType<Options>,
   PersistedType extends AnyObject | null | undefined = DocumentStatsField.PersistedType<Options>,
 > extends SchemaField<DocumentStatsField.Schema, Options, AssignmentType, InitializedType, PersistedType> {
-  constructor(options?: Options);
+  /**
+   * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
+  constructor(options?: Options, context?: DataField.ConstructionContext);
 }
 
 declare namespace DocumentStatsField {
@@ -3960,7 +4015,9 @@ declare class DocumentTypeField<
    * @param documentClass - The base document class which belongs in this field
    * @param options - Options which configure the behavior of the field
    * @param context - Additional context which describes the field
+   * @remarks Enforces `choices` being `documentClass.TYPES`
    */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(
     documentClass: ConcreteDocumentClass,
     options?: DocumentTypeField.Options,
@@ -4038,8 +4095,10 @@ declare class TypeDataField<
   /**
    * @param document - The base document class which belongs in this field
    * @param options  - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
    */
-  constructor(document: SystemDocument, options?: Options);
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
+  constructor(document: SystemDocument, options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `true` */
   override required: boolean;
@@ -4195,6 +4254,7 @@ declare class TypedSchemaField<
    * @param options - Options which configure the behavior of the field
    * @param context - Additional context which describes the field
    */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(types: Types, options?: Options, context?: DataField.ConstructionContext);
 
   static get _defaults(): DataField.Options.Any;
@@ -4227,6 +4287,13 @@ declare class TypedSchemaField<
   override toObject(value: InitializedType): PersistedType;
 
   // TODO(LukeAbby): Type `TypedSchemaField#apply`.
+  // TODO: Find a way to limit `Value` to `AnyObject | undefined` here while allowing it to be `unknown` in DataField
+  // options: not null (could be forwarded somewhere destructured, parameter default only)
+  override apply<Value, Options, Return>(
+    fn: keyof this | ((this: this, value: Value, options: Options) => Return),
+    value?: Value,
+    options?: Options,
+  ): Return;
 
   migrateSource(sourceData: AnyObject, fieldData: unknown): unknown;
 }
@@ -4371,6 +4438,12 @@ declare class JavaScriptField<
   const InitializedType = StringField.InitializedType<Options>,
   const PersistedType extends string | null | undefined = StringField.InitializedType<Options>,
 > extends _InternalJavaScriptField<Options, AssignmentType, InitializedType, PersistedType> {
+  /**
+   * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   * @remarks Enforces `choices = undefined`
+   */
+  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   static get _defaults(): JavaScriptField.Options;
