@@ -460,13 +460,10 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    *          or the Object of prepared chatData otherwise.
    */
   // options: not null (destructured)
-  toMessage<
-    const Create extends boolean | null | undefined,
-    ConcreteMessageData extends Roll.MessageData | null | undefined = undefined,
-  >(
-    messageData?: ConcreteMessageData,
+  toMessage<const Create extends boolean | null | undefined = undefined>(
+    messageData?: Roll.MessageData | null,
     options?: Roll.ToMessageOptions<Create>,
-  ): Promise<Roll.ToMessageReturn<Create, ConcreteMessageData>>;
+  ): Promise<Roll.ToMessageReturn<Create>>;
 
   /* -------------------------------------------- */
   /*  Interface Helpers                           */
@@ -629,8 +626,6 @@ declare namespace Roll {
     sound?: ChatMessage.CreateData["sound"];
 
     /**
-     * The URL of an audio file which plays when this message is received
-     *
      * @deprecated In `Roll.MessageData`, Foundry always overrides `rolls` to `[this]`.
      * This makes it useless to set. Do not use.
      */
@@ -655,11 +650,7 @@ declare namespace Roll {
     create?: Create;
   }
 
-  type ToMessageReturn<
-    Create extends boolean | null | undefined,
-    ConcreteMessageData extends Roll.MessageData | null | undefined = undefined,
-  > =
-    | (ConcreteMessageData extends undefined ? ChatMessage.Implementation | undefined : never)
+  type ToMessageReturn<Create extends boolean | null | undefined> =
     | (Create extends true | undefined ? ChatMessage.Implementation | undefined : never)
     | (Create extends false | null ? ChatMessage.CreateData : never);
 }
