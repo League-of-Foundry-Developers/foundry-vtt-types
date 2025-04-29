@@ -185,6 +185,7 @@ declare abstract class DataField<
    * @param options - Additional options for how the field is cleaned
    * @returns The cast value
    */
+  // options: not null (parameter default only, property access)
   clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
   /**
@@ -224,10 +225,7 @@ declare abstract class DataField<
    *                  (default: `{}`)
    * @returns Returns a ModelValidationError if a validation failure occurred
    */
-  validate(
-    value: AssignmentType,
-    options?: DataField.ValidateOptions<DataField.Any>,
-  ): DataModelValidationFailure | void;
+  validate(value: AssignmentType, options?: DataField.ValidateOptions<this>): DataModelValidationFailure | void;
 
   /**
    * Special validation rules which supersede regular field validation.
@@ -250,7 +248,7 @@ declare abstract class DataField<
    */
   protected _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
   /**
@@ -871,7 +869,7 @@ declare class SchemaField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
   protected override _validateModel(data: AnyObject, options?: AnyObject): void;
@@ -1137,7 +1135,7 @@ declare class BooleanField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
   protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
@@ -1258,7 +1256,7 @@ declare class NumberField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
   /**
@@ -1479,6 +1477,7 @@ declare class StringField<
 
   protected static override get _defaults(): StringField.Options<unknown>;
 
+  // options: not null (parameter default only, property access)
   override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
   protected override _cast(value: AssignmentType): InitializedType;
@@ -1487,7 +1486,7 @@ declare class StringField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
   /**
@@ -1710,7 +1709,7 @@ declare class ObjectField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -1859,7 +1858,7 @@ declare class ArrayField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
   /**
@@ -1870,7 +1869,7 @@ declare class ArrayField<
    */
   protected _validateElements(
     value: AnyArray,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): DataModelValidationFailure | void;
 
   /**
@@ -1881,7 +1880,7 @@ declare class ArrayField<
    */
   protected _validateElement(
     value: unknown,
-    options: DataField.ValidateOptions<DataField.Any>,
+    options: DataField.ValidateOptions<this>,
   ): DataModelValidationFailure | void;
 
   // options: not null (parameter default only)
@@ -2065,7 +2064,7 @@ declare class SetField<
 > {
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): void | DataModelValidationFailure;
 
   // options: not null (parameter default only)
@@ -2200,7 +2199,14 @@ declare class EmbeddedDataField<
    */
   model: ModelType;
 
-  protected override _initialize(fields: DataModel.SchemaOfClass<ModelType>): DataModel.SchemaOfClass<ModelType>;
+  /** @remarks Passed `options.source` will be ignored, forwarded to super with `source: value` */
+  // options: not null (parameter default only, property access)
+  override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
+
+  override validate(
+    value: AssignmentType,
+    options?: DataField.ValidateOptions<this>,
+  ): DataModelValidationFailure | void;
 
   // options: not null (parameter default only)
   override initialize(
@@ -2370,7 +2376,7 @@ declare class EmbeddedCollectionField<
 
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): DataModelValidationFailure | void;
 
   // options: not null (parameter default only)
@@ -2556,7 +2562,7 @@ declare class EmbeddedCollectionDeltaField<
 
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): void | DataModelValidationFailure;
 }
 
@@ -2817,7 +2823,7 @@ declare class DocumentIdField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -2891,7 +2897,7 @@ declare class DocumentUUIDField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
   // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
@@ -3124,7 +3130,7 @@ declare class ColorField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
   protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
@@ -3235,7 +3241,7 @@ declare class FilePathField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -3532,7 +3538,7 @@ declare class DocumentOwnershipField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -3612,7 +3618,7 @@ declare class JSONField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
   // options: not null (parameter default only)
@@ -3705,7 +3711,7 @@ declare class AnyField extends DataField<DataField.Options.Any, unknown, unknown
 
   protected override _validateType(
     value: unknown,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -4047,7 +4053,7 @@ declare class DocumentTypeField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 }
 
@@ -4164,7 +4170,7 @@ declare class TypeDataField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
   protected override _validateModel(data: AnyObject, options?: AnyObject): void;
@@ -4294,7 +4300,7 @@ declare class TypedSchemaField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
   // options: not null (parameter default only)
@@ -4470,7 +4476,7 @@ declare class JavaScriptField<
 
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
   override toFormGroup(
