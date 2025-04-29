@@ -302,7 +302,7 @@ declare abstract class DataField<
    * Recursively traverse a schema and retrieve a field specification by a given path
    * @param path - The field path as an array of strings
    */
-  protected _getField(path: string[]): unknown; // TODO: Type further.
+  protected _getField(path: string[]): DataField.Any | undefined;
 
   /**
    * Does this form field class have defined form support?
@@ -865,7 +865,7 @@ declare class SchemaField<
    */
   getField(fieldName: string | string[]): DataField.Unknown | undefined;
 
-  protected override _getField(path: string[]): DataField.Unknown;
+  protected override _getField(path: string[]): DataField.Any;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
@@ -1936,7 +1936,7 @@ declare class ArrayField<
     options?: Options,
   ): Return;
 
-  protected override _getField(path: string[]): unknown;
+  protected override _getField(path: string[]): DataField.Any;
 
   /**
    * Migrate this field's candidate source data.
@@ -4365,7 +4365,7 @@ declare class TypedSchemaField<
    */
   types: TypedSchemaField.ToConfiguredTypes<Types>;
 
-  protected override _getField(path: string[]): unknown;
+  protected override _getField(path: string[]): DataField.Any;
 
   /**
    * @remarks Returns `value` if `value?.type` doesn't map to a valid type, otherwise it runs `value`
