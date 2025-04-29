@@ -66,9 +66,11 @@ declare abstract class BaseActorDelta<
 
   static migrateData(source: AnyMutableObject): AnyMutableObject;
 
-  // TODO: Figure out if this override still applies
-  toObject(source: true): this["_source"];
-  toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+  /** @remarks Strips optional (`required: false`) fields from the object before returning */
+  // TODO: Properly type this override
+  override toObject<Source extends boolean | null | undefined = true>(
+    source?: Source,
+  ): DataModel.ToObject<ActorDelta.Schema, Source>;
 
   /*
    * After this point these are not really overridden methods.

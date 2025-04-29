@@ -202,49 +202,13 @@ declare abstract class DataModel<
   ): fields.SchemaField.UpdateData<Schema>;
 
   /**
-   * Update the source data for a specific DataSchema.
-   * This method assumes that both source and changes are valid objects.
-   * @param schema  - The data schema to update
-   * @param source  - Source data to be updated
-   * @param changes - Changes to apply to the source data
-   * @param options - Options which modify the update workflow
-   * @returns The updated source data
-   * @throws An error if the update operation was unsuccessful
-   */
-  static #updateData(
-    schema: SchemaField.Any,
-    source: object,
-    changes: object,
-    options: DataModel.UpdateOptions,
-  ): object;
-
-  /**
-   * Update the source data for a specific DataField.
-   * @param name    - The field name being updated
-   * @param field   - The field definition being updated
-   * @param source  - The source object being updated
-   * @param value   - The new value for the field
-   * @param options - Options which modify the update workflow
-   * @throws An error if the new candidate value is invalid
-   */
-  static #updateField(
-    name: string,
-    field: DataField.Any,
-    source: object,
-    value: any,
-    options: DataModel.UpdateOptions,
-  ): object;
-
-  /**
    * Copy and transform the DataModel into a plain object.
    * Draw the values of the extracted object from the data source (by default) otherwise from its transformed values.
    * @param source - Draw values from the underlying data source rather than transformed values
    *                 (default: `true`)
    * @returns The extracted primitive object
    */
-  toObject<Source extends boolean | undefined>(
-    source?: Source,
-  ): Source extends false ? SchemaField.SourceData<Schema> : Readonly<SchemaField.SourceData<Schema>>;
+  toObject<Source extends boolean | null | undefined = true>(source?: Source): DataModel.ToObject<Schema, Source>;
 
   /**
    * Extract the source data for the DataModel into a simple object format that can be serialized.

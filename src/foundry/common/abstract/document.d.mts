@@ -284,9 +284,10 @@ declare abstract class Document<
    */
   migrateSystemData(): object;
 
-  override toObject<Source extends boolean | undefined>(
+  /** @remarks `Document#toObject` calls `this.constructor.shimData()` on the data before returning */
+  override toObject<Source extends boolean | null | undefined = true>(
     source?: Source,
-  ): Source extends false ? SchemaField.SourceData<Schema> : Readonly<SchemaField.SourceData<Schema>>;
+  ): DataModel.ToObject<Schema, Source>;
 
   /**
    * Create multiple Documents using provided input data.

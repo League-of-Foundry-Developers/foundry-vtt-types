@@ -22,11 +22,8 @@ declare class ToggleBehaviorRegionBehaviorType extends RegionBehaviorType<Toggle
 
   static override defineSchema(): ToggleBehaviorRegionBehaviorType.Schema;
 
+  /** @throws If there's any overlap between the `data.enable` and `data.disable` sets */
   static override validateJoint(data: ToggleBehaviorRegionBehaviorType.Source): void;
-  /**
-   * @privateRemarks validateJoint is overridden but without signature changes.
-   * For type simplicity it is left off. Methods like this historically have been the source of a large amount of computation from tsc.
-   */
 
   protected override _handleRegionEvent(event: RegionDocument.RegionEvent): Promise<void>;
 }

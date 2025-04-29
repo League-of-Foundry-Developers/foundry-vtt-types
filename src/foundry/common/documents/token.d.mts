@@ -67,8 +67,9 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   updateSource(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateSourceOptions): TokenDocument.UpdateData;
 
   // TODO: Update with the Delta conditionality
-  toObject(source: true): this["_source"];
-  toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+  override toObject<Source extends boolean | null | undefined = true>(
+    source?: Source,
+  ): DataModel.ToObject<TokenDocument.Schema, Source>;
 
   /**
    * @remarks Migrates:

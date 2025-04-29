@@ -679,8 +679,9 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
    */
   get actor(): this["parent"];
 
-  override toObject(source: true): this["_source"] & { actorId: string | undefined };
-  override toObject(source?: boolean): ReturnType<this["schema"]["toObject"]> & { actorId: string | undefined };
+  override toObject<Source extends boolean | null | undefined = true>(
+    source?: Source,
+  ): DataModel.ToObject<PrototypeToken.Schema, Source> & { actorId: string | undefined };
 
   static get database(): CONFIG["DatabaseBackend"];
 

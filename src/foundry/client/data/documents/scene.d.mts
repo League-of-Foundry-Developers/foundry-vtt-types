@@ -3,6 +3,7 @@ import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields, TextureData } from "../../../common/data/module.d.mts";
+import type DataModel from "../../../common/abstract/data.d.mts";
 
 declare global {
   namespace Scene {
@@ -915,6 +916,14 @@ declare global {
     ): Save extends true ? Promise<this> : this;
 
     override reset(): void;
+
+    /**
+     * @remarks If `source` is falsey, and the grid is hexagonal with the `legacyHex` flag set,
+     * does some conversion on `object.grid.size` before returning
+     */
+    override toObject<Source extends boolean | null | undefined = true>(
+      source?: Source,
+    ): DataModel.ToObject<Scene.Schema, Source>;
 
     override prepareBaseData(): void;
 
