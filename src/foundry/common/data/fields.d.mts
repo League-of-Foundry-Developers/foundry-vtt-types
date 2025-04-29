@@ -270,8 +270,7 @@ declare abstract class DataField<
    * The only place core *calls* this at a top level, it does not pass anything for `options`, relying on SchemaField above
    * to make TypeDataField work
    */
-  // options: not null (parameter default only, property access)
-  protected _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void; // TODO: Type further.
+  protected _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions | null): void; // TODO: Type further.
 
   /**
    * Initialize the original source data into a mutable copy for the DataModel instance.
@@ -283,7 +282,7 @@ declare abstract class DataField<
    * - {@link ForeignDocumentField | `ForeignDocumentField`}
    * - `ActorDeltaField` (exported in the BaseToken file but not re-exported by the relevant `_module`, so unlinkable)
    */
-  // TODO: investigate narrowing return to just `InitializedType` on lines that don't possibly return one
+  // TODO: investigate narrowing return to just `InitializedType` on inheritance lines that don't possibly return one
   // TODO: (everything except SchemaField and ObjectField and their descendants)
   // options: not null (parameter default only)
   initialize(
@@ -891,7 +890,8 @@ declare class SchemaField<
     options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
-  protected override _validateModel(data: AnyObject, options?: AnyObject): void;
+  // options: not null (parameter default only, property access)
+  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
 
   override toObject(value: InitializedType): PersistedType;
 
@@ -1879,7 +1879,8 @@ declare class ArrayField<
    */
   protected static _validateElementType<T extends DataField.Any>(element: T): T;
 
-  protected override _validateModel(data: AnyObject, options?: AnyObject): void;
+  // options: not null (could be destructured in element#_validateModel)
+  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
@@ -2260,7 +2261,7 @@ declare class EmbeddedDataField<
    */
   migrateSource(sourceData: AnyObject, fieldData: unknown): unknown;
 
-  protected override _validateModel(data: AnyObject, options?: AnyObject): void;
+  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions | null): void;
 }
 
 declare namespace EmbeddedDataField {
@@ -4246,7 +4247,8 @@ declare class TypeDataField<
     options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
-  protected override _validateModel(data: AnyObject, options?: AnyObject): void;
+  // options: not ull (parameter default only, property access)
+  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
 
   override toObject(value: InitializedType): PersistedType;
 
