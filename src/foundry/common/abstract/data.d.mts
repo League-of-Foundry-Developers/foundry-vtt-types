@@ -121,7 +121,7 @@ declare abstract class DataModel<
    * @param options - Additional options which are passed to field cleaning methods
    * @returns The cleaned source data
    */
-  static cleanData(source?: AnyMutableObject, options?: Parameters<SchemaField.Any["clean"]>[1]): AnyMutableObject;
+  static cleanData(source?: AnyMutableObject, options?: DataField.CleanOptions): AnyMutableObject;
 
   /**
    * A generator that orders the DataFields in the DataSchema into an expected initialization order.

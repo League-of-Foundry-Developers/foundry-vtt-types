@@ -385,6 +385,14 @@ declare namespace BasePackage {
     /** Is the package installed? */
     installed?: unknown;
   }
+
+  interface CleanDataOptions extends fields.DataField.CleanOptions {
+    /**
+     * Is the package installed?
+     * @remarks Only used to pass on to {@link BasePackage._logWarning | `BasePackage#_logWarning`}
+     */
+    installed?: boolean | null | undefined;
+  }
 }
 
 /**
@@ -608,7 +616,7 @@ declare class BasePackage<
    */
   static testDependencyCompatibility(compatibility: PackageCompatibility, dependency: BasePackage): boolean;
 
-  static cleanData(source?: AnyObject, options?: fields.DataField.CleanOptions): AnyObject;
+  static cleanData(source?: AnyObject, options?: BasePackage.CleanDataOptions): AnyMutableObject;
 
   /**
    * Validate that a Package ID is allowed.
