@@ -1,5 +1,5 @@
 import type { EditorState, Plugin } from "prosemirror-state";
-import type { DeepPartial, EmptyObject, ValueOf } from "fvtt-types/utils";
+import type { AnyMutableObject, DeepPartial, EmptyObject, ValueOf } from "fvtt-types/utils";
 import type Document from "../common/abstract/document.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";
@@ -264,12 +264,24 @@ declare global {
 
       /**
        * A hook event that fires when a custom active effect is applied.
-       * @param actor  - The actor the active effect is being applied to
-       * @param change - The change data being applied
+       * @param actor   - The actor the active effect is being applied to
+       * @param change  - The change data being applied
+       * @param current - The current value being modified
+       * @param delta   - The parsed value of the change object
+       * @param changes - An object which accumulates changes to be applied
        * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       *
+       * Despite the parameter being named `actor`, it could theoretically be any Document that an AE is being applied to
        * @see {@link ActiveEffect._applyCustom | `ActiveEffect#_applyCustom`}
+       * @see {@link foundry.data.fields.DataField._applyChangeCustom | `DataField#_applyChangeCustom`}
        */
-      applyActiveEffect: (actor: Actor.Implementation, change: ActiveEffect.EffectChangeData) => boolean | void;
+      applyActiveEffect: (
+        actor: Document.Any,
+        change: ActiveEffect.EffectChangeData,
+        current: unknown,
+        delta: unknown,
+        changes: AnyMutableObject,
+      ) => boolean | void;
 
       /** Compendium */
 

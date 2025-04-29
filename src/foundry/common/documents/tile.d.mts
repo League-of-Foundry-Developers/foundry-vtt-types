@@ -287,9 +287,10 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   static validateJoint(data: TileDocument.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: TileDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseTile.Parent>,
   ): TileDocument.Implementation;
 
   static override fromJSON(json: string): TileDocument.Implementation;

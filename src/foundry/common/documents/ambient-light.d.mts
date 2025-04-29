@@ -1,5 +1,4 @@
 import type { AnyMutableObject } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
@@ -252,9 +251,10 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static validateJoint(data: AmbientLightDocument.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: AmbientLightDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseAmbientLight.Parent>,
   ): AmbientLightDocument.Implementation;
 
   static override fromJSON(json: string): AmbientLightDocument.Implementation;

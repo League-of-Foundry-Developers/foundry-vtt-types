@@ -1,5 +1,4 @@
 import type { AnyMutableObject } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
@@ -288,9 +287,10 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   static validateJoint(data: Combat.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: Combat.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseCombat.Parent>,
   ): Combat.Implementation;
 
   static override fromJSON(json: string): Combat.Implementation;

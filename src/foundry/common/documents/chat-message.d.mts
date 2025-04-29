@@ -1,5 +1,4 @@
 import type { AnyObject, AnyMutableObject, InexactPartial } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type { SchemaField } from "../data/fields.d.mts";
@@ -267,9 +266,10 @@ declare abstract class BaseChatMessage<
 
   static validateJoint(data: ChatMessage.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: ChatMessage.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseChatMessage.Parent>,
   ): ChatMessage.Implementation;
 
   static override fromJSON(json: string): ChatMessage.Implementation;

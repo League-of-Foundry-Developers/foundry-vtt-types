@@ -1,5 +1,4 @@
 import type { AnyMutableObject } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
@@ -276,9 +275,10 @@ declare abstract class BaseRegionBehavior<
 
   static validateJoint(data: RegionBehavior.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: RegionBehavior.UpdateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseRegionBehavior.Parent>,
   ): RegionBehavior.Implementation;
 
   static override fromJSON(json: string): RegionBehavior.Implementation;

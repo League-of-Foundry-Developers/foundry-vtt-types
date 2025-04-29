@@ -1,5 +1,4 @@
 import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -264,9 +263,10 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   static validateJoint(data: Card.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: Card.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseCard.Parent>,
   ): Card.Implementation;
 
   static override fromJSON(json: string): Card.Implementation;

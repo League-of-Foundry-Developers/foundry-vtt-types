@@ -1,5 +1,4 @@
 import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -257,9 +256,10 @@ declare abstract class BaseTableResult<
 
   static validateJoint(data: TableResult.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: TableResult.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseTableResult.Parent>,
   ): TableResult.Implementation;
 
   static override fromJSON(json: string): TableResult.Implementation;

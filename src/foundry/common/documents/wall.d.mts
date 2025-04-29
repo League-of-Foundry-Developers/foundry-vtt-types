@@ -1,5 +1,4 @@
 import type { AnyMutableObject } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
@@ -258,9 +257,10 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static override validateJoint(data: WallDocument.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: WallDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseWall.Parent>,
   ): WallDocument.Implementation;
 
   static override fromJSON(json: string): WallDocument.Implementation;

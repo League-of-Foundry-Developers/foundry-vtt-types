@@ -1,5 +1,4 @@
 import type { AnyMutableObject } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
@@ -247,9 +246,11 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static validateJoint(data: Adventure.Source): void;
 
+  // TODO: Actual override, not just template; audit
+  // context: not null (destructured)
   static override fromSource(
     source: Adventure.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseAdventure.Parent>,
   ): Adventure.Implementation;
 
   static override fromJSON(json: string): Adventure.Implementation;

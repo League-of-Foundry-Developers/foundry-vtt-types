@@ -982,8 +982,8 @@ declare global {
      */
     regions: Set<RegionDocument.Implementation> | null;
 
-    // TODO: Same as `DataModel._initialize`
-    protected override _initialize(options?: any): void;
+    // options: not null (parameter default only)
+    protected override _initialize(options?: Document.InitializeOptions): void;
 
     override prepareBaseData(): void;
 

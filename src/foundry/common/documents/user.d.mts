@@ -1,5 +1,4 @@
 import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -309,9 +308,10 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static validateJoint(data: User.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: User.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseUser.Parent>,
   ): User.Implementation;
 
   static override fromJSON(json: string): User.Implementation;

@@ -1,5 +1,4 @@
 import type { AnyMutableObject } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
@@ -245,9 +244,10 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   static validateJoint(data: FogExploration.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: FogExploration.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseFogExploration.Parent>,
   ): FogExploration.Implementation;
 
   static override fromJSON(json: string): FogExploration.Implementation;

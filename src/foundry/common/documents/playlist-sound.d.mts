@@ -1,5 +1,4 @@
 import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
@@ -255,9 +254,10 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   static validateJoint(data: PlaylistSound.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: PlaylistSound.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BasePlaylistSound.Parent>,
   ): PlaylistSound.Implementation;
 
   static override fromJSON(json: string): PlaylistSound.Implementation;

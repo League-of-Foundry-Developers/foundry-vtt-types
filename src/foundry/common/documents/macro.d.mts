@@ -1,5 +1,4 @@
 import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.d.mts";
 import type * as CONST from "../constants.mts";
 import type { SchemaField } from "../data/fields.d.mts";
@@ -252,9 +251,10 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
 
   static override validateJoint(data: Macro.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: Macro.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseMacro.Parent>,
   ): Macro.Implementation;
 
   static override fromJSON(json: string): Macro.Implementation;

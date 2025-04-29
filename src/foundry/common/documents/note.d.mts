@@ -1,5 +1,4 @@
 import type { AnyMutableObject } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
@@ -270,9 +269,10 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   static validateJoint(data: NoteDocument.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: NoteDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BaseNote.Parent>,
   ): NoteDocument.Implementation;
 
   static override fromJSON(json: string): NoteDocument.Implementation;

@@ -1,5 +1,4 @@
 import type { AnyObject, AnyMutableObject } from "fvtt-types/utils";
-import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
@@ -274,9 +273,10 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   static validateJoint(data: Playlist.Source): void;
 
+  // context: not null (destructured)
   static override fromSource(
     source: Playlist.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: Document.ConstructionContext<BasePlaylist.Parent>,
   ): Playlist.Implementation;
 
   static override fromJSON(json: string): Playlist.Implementation;
