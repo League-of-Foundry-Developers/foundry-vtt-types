@@ -20,6 +20,10 @@ menu.menuItems[0]?.callback(htmlElement);
 ContextMenu.create(testAppV1, testAppV1.element[0]!, ".foobar", [], { jQuery: true });
 // Deprecated: expects HTML element
 ContextMenu.create(testAppV1, testAppV1.element, ".foobar", [], { jQuery: true });
+// Deprecated: jQuery must be defined
+ContextMenu.create(testAppV1, testAppV1.element[0]!, ".foobar", [], { jQuery: undefined });
+// Deprecated: expects HTML element & jQuery must be defined
+ContextMenu.create(testAppV1, testAppV1.element, ".foobar", [], { fixed: true });
 
 // jQuery param deprecation testing
 
