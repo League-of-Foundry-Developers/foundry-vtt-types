@@ -299,6 +299,8 @@ declare namespace ApplicationV2 {
     submitted: boolean;
   }
 
+  type ActionTarget = HTMLElement & { dataset: { action: string } };
+
   /** An on-click action supported by the Application. Run in the context of a HandlebarsApplication. */
   type ClickAction = (
     /** The originating click event */
@@ -872,7 +874,7 @@ declare class ApplicationV2<
    * @param event  - The originating click event
    * @param target - The capturing HTML element which defined a [data-action]
    */
-  protected _onClickAction(event: PointerEvent, target: HTMLElement & { dataset: { action: string } }): void;
+  protected _onClickAction(event: PointerEvent, target: ApplicationV2.ActionTarget): void;
 
   /**
    * Handle submission for an Application which uses the form element.
