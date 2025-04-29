@@ -35,6 +35,11 @@ declare namespace DocumentSheetV2 {
     editPermission: typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
     /**
+     * Can this sheet class be used to create a new Document?
+     */
+    canCreate: boolean;
+
+    /**
      * Allow sheet configuration as a header button
      */
     sheetConfig: boolean;
@@ -59,7 +64,7 @@ declare namespace DocumentSheetV2 {
   }
 
   interface SubmitOptions {
-    /** Additional data merged with processed form data */
+    /** Additional data passed in if this form is submitted manually which should be merged with prepared formData. */
     updateData: object;
   }
 }
@@ -97,7 +102,19 @@ declare class DocumentSheetV2<
 
   protected override _headerControlsButtons(): Generator<ApplicationV2.HeaderControlsEntry>;
 
+  protected override _configureRenderOptions(options: DeepPartial<RenderOptions>): void;
+
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
   protected override _renderFrame(options: DeepPartial<RenderOptions>): Promise<HTMLElement>;
+
+  /**
+   * Disable or reenable all form fields in this application
+   * @param disabled - Should the fields be disabled?
+   */
+  protected _toggleDisabled(disabled: boolean): void;
 
   protected override _canRender(options: DeepPartial<RenderOptions>): false | void;
 
@@ -106,19 +123,34 @@ declare class DocumentSheetV2<
     options: DeepPartial<RenderOptions>,
   ): Promise<void>;
 
+  protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+
   protected override _onClose(options: DeepPartial<RenderOptions>): void;
+
+  protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+
+  /**
+   * Handle toggling the revealed state of a secret embedded in some content.
+   */
+  protected _onRevealSecret(event: Event): void;
 
   /**
    * Prepare data used to update the Item upon form submission.
    * This data is cleaned and validated before being returned for further processing.
-   * @param event    - The originating form submission event
-   * @param form     - The form element that was submitted
-   * @param formData - Processed data for the submitted form
+   * @param event      - The originating form submission event
+   * @param form       - The form element that was submitted
+   * @param formData   - Processed data for the submitted form
+   * @param updateData - Additional data passed in if this form is submitted manually which should be merged with prepared formData
    * @returns Prepared submission data as an object
    * @throws Subclasses may throw validation errors here to prevent form submission
+   * @privateRemarks TODO: Improve typing for updateData & return
    */
-  // TODO: Improve typing?
-  protected _prepareSubmitData(event: SubmitEvent, form: HTMLFormElement, formData: FormDataExtended): object;
+  protected _prepareSubmitData(
+    event: SubmitEvent,
+    form: HTMLFormElement,
+    formData: FormDataExtended,
+    updateData?: unknown,
+  ): object;
 
   /**
    * Customize how form data is extracted into an expanded object.
@@ -128,20 +160,30 @@ declare class DocumentSheetV2<
    * @returns An expanded object of processed form data
    * @throws Subclasses may throw validation errors here to prevent form submission
    */
-  _processFormData(event: SubmitEvent, form: HTMLFormElement, formData: FormDataExtended): object;
+  protected _processFormData(event: SubmitEvent | null, form: HTMLFormElement, formData: FormDataExtended): object;
 
   /**
-   * Submit a document update based on the processed form data.
+   * Submit a document update or creation request based on the processed form data.
    * @param event    - The originating form submission event
    * @param form     - The form element that was submitted
    * @param formData - Processed and validated form data to be used for a document update
+   * @param options  - Additional options altering the request
+   * @privateRemarks TODO: Improve options to capture the Create and/or Update options available to the Document
    */
-  _processSubmitData(event: SubmitEvent, form: HTMLFormElement, formData: FormDataExtended): Promise<void>;
+  protected _processSubmitData(
+    event: SubmitEvent,
+    form: HTMLFormElement,
+    formData: FormDataExtended,
+    options?: unknown,
+  ): Promise<void>;
 
   /**
-   * Programmatically submit a DocumentSheetV2 instance, providing additional data to be merged with form data.
+   * Provide a deprecation path for converted V1 document sheets.
+   * @param first - The first parameter received by this class's constructor
+   * @param rest  - Any additional parameters received
+   * @privateRemarks - This *is* possible to type more precisely but the reward/benefit is pretty minor
    */
-  submit(options?: DocumentSheetV2.SubmitOptions): Promise<void>;
+  static _migrateConstructorParams(first: unknown, rest: unknown[]): DocumentSheetV2.Configuration<Document.Any>;
 }
 
 export default DocumentSheetV2;
