@@ -227,7 +227,7 @@ declare global {
     type Collection = Actors.Configured;
 
     /**
-     * An instance of `Actor` that comes from the database but failed validation meaining that
+     * An instance of `Actor` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends Actor.SubType = Actor.SubType> extends Document.Invalid<OfType<SubType>> {}
@@ -824,7 +824,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class GurpsActor extends Actor {
      *   protected override _onCreateDescendantDocuments(...args: Actor.OnCreateDescendantDocumentsArgs) {
@@ -842,7 +842,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class Ptr2eActor extends Actor {
      *   protected override _onUpdateDescendantDocuments(...args: Actor.OnUpdateDescendantDocumentsArgs) {
@@ -860,7 +860,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class BladesActor extends Actor {
      *   protected override _onDeleteDescendantDocuments(...args: Actor.OnUpdateDescendantDocuments) {
@@ -906,7 +906,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class SwadeActor extends Actor {
      *   protected override _preCreateDescendantDocuments(...args: Actor.PreCreateDescendantDocumentsArgs) {
@@ -924,7 +924,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class LancerActor extends Actor {
      *   protected override _preUpdateDescendantDocuments(...args: Actor.OnUpdateDescendantDocuments) {
@@ -942,7 +942,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class KultActor extends Actor {
      *   protected override _preDeleteDescendantDocuments(...args: Actor.PreDeleteDescendantDocumentsArgs) {

@@ -175,7 +175,7 @@ declare global {
     type Collection = Journal.Configured;
 
     /**
-     * An instance of `JournalEntry` that comes from the database but failed validation meaining that
+     * An instance of `JournalEntry` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<JournalEntry.Implementation> {}
@@ -542,7 +542,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class SwadeCards extends Cards {
      *   protected override _preCreateDescendantDocuments(...args: Cards.PreCreateDescendantDocumentsArgs) {
@@ -560,7 +560,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class GurpsCards extends Cards {
      *   protected override _onCreateDescendantDocuments(...args: Cards.OnCreateDescendantDocumentsArgs) {
@@ -578,7 +578,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class LancerCards extends Cards {
      *   protected override _preUpdateDescendantDocuments(...args: Cards.OnUpdateDescendantDocuments) {
@@ -596,7 +596,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class Ptr2eCards extends Cards {
      *   protected override _onUpdateDescendantDocuments(...args: Cards.OnUpdateDescendantDocumentsArgs) {
@@ -614,7 +614,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class KultCards extends Cards {
      *   protected override _preDeleteDescendantDocuments(...args: Cards.PreDeleteDescendantDocumentsArgs) {
@@ -632,7 +632,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class BladesCards extends Cards {
      *   protected override _onDeleteDescendantDocuments(...args: Cards.OnUpdateDescendantDocuments) {

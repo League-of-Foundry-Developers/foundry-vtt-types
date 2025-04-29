@@ -166,7 +166,7 @@ declare global {
     type Collection = RollTables.Configured;
 
     /**
-     * An instance of `RollTable` that comes from the database but failed validation meaining that
+     * An instance of `RollTable` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<RollTable.Implementation> {}
@@ -746,7 +746,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class GurpsRollTable extends RollTable {
      *   protected override _onCreateDescendantDocuments(...args: RollTable.OnCreateDescendantDocumentsArgs) {
@@ -764,7 +764,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class BladesRollTable extends RollTable {
      *   protected override _onDeleteDescendantDocuments(...args: RollTable.OnUpdateDescendantDocuments) {
@@ -809,7 +809,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class SwadeRollTable extends RollTable {
      *   protected override _preCreateDescendantDocuments(...args: RollTable.PreCreateDescendantDocumentsArgs) {
@@ -827,7 +827,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class LancerRollTable extends RollTable {
      *   protected override _preUpdateDescendantDocuments(...args: RollTable.OnUpdateDescendantDocuments) {
@@ -845,7 +845,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class Ptr2eRollTable extends RollTable {
      *   protected override _onUpdateDescendantDocuments(...args: RollTable.OnUpdateDescendantDocumentsArgs) {
@@ -863,7 +863,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class KultRollTable extends RollTable {
      *   protected override _preDeleteDescendantDocuments(...args: RollTable.PreDeleteDescendantDocumentsArgs) {

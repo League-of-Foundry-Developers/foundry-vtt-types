@@ -164,7 +164,7 @@ declare global {
     type Collection = never;
 
     /**
-     * An instance of `Region` that comes from the database but failed validation meaining that
+     * An instance of `Region` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<RegionDocument.Implementation> {}
@@ -619,7 +619,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class GurpsRegionDocument extends RegionDocument {
      *   protected override _onCreateDescendantDocuments(...args: RegionDocument.OnCreateDescendantDocumentsArgs) {
@@ -637,7 +637,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class Ptr2eRegionDocument extends RegionDocument {
      *   protected override _onUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocumentsArgs) {
@@ -655,7 +655,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class BladesRegionDocument extends RegionDocument {
      *   protected override _onDeleteDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocuments) {
@@ -710,7 +710,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class SwadeRegionDocument extends RegionDocument {
      *   protected override _preCreateDescendantDocuments(...args: RegionDocument.PreCreateDescendantDocumentsArgs) {
@@ -728,7 +728,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class LancerRegionDocument extends RegionDocument {
      *   protected override _preUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocuments) {
@@ -746,7 +746,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class KultRegionDocument extends RegionDocument {
      *   protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs) {
