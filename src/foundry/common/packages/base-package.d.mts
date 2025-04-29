@@ -471,11 +471,13 @@ export class PackageCompendiumPacks<
     options?: fields.DataField.CleanOptions,
   ): Set<fields.ArrayField.InitializedElementType<ElementFieldType>>;
 
+  // options: not null (parameter default only)
   override initialize(
     value: fields.ArrayField.PersistedElementType<ElementFieldType>[],
     // In Foundry itself, this field is only used in `BasePackage`, however it should be able to accept any model.
     // NOTE(LukeAbby): This also has been seen in a circularity `Type of property 'packs' circularly references itself in mapped type ...`.
     model: DataModel.Any,
+    options?: fields.DataField.InitializeOptions,
   ):
     | Set<fields.ArrayField.InitializedElementType<ElementFieldType>>
     | (() => Set<fields.ArrayField.InitializedElementType<ElementFieldType>> | null);

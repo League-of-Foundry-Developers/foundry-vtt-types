@@ -262,12 +262,18 @@ declare abstract class DataField<
    * @param model   - The DataModel instance that this field belongs to
    * @param options - Initialization options
    * @returns An initialized copy of the source data
+   * @remarks Core fields that return a function:
+   * - {@link ForeignDocumentField | `ForeignDocumentField`}
+   * - `ActorDeltaField` (exported in the BaseToken file but not re-exported by the relevant `_module`, so unlinkable)
    */
+  // TODO: investigate narrowing return to just `InitializedType` on lines that don't possibly return one
+  // TODO: (everything except SchemaField and ObjectField and their descendants)
+  // options: not null (parameter default only)
   initialize(
     value: PersistedType,
     model: DataModel.Any,
-    options?: AnyObject, // TODO: Type further.
-  ): (() => InitializedType | null) | InitializedType;
+    options?: DataField.InitializeOptions,
+  ): InitializedType | (() => InitializedType | null);
 
   /**
    * Export the current value of the field into a serializable object.
@@ -848,10 +854,11 @@ declare class SchemaField<
 
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
+  // options: not null (parameter default only)
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
-    options?: AnyObject,
+    options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
   protected override _validateType(
@@ -1672,10 +1679,11 @@ declare class ObjectField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
+  // options: not null (parameter default only)
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
-    options?: AnyObject,
+    options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
@@ -1850,10 +1858,11 @@ declare class ArrayField<
     options: DataField.ValidateOptions<DataField.Any>,
   ): DataModelValidationFailure | void;
 
+  // options: not null (parameter default only)
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
-    options?: AnyObject,
+    options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
@@ -2031,10 +2040,11 @@ declare class SetField<
     options?: DataField.ValidateOptions<DataField.Any>,
   ): void | DataModelValidationFailure;
 
+  // options: not null (parameter default only)
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
-    options?: AnyObject,
+    options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
@@ -2162,10 +2172,11 @@ declare class EmbeddedDataField<
 
   protected override _initialize(fields: DataModel.SchemaOfClass<ModelType>): DataModel.SchemaOfClass<ModelType>;
 
+  // options: not null (parameter default only)
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
-    options?: AnyObject,
+    options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
@@ -2326,10 +2337,11 @@ declare class EmbeddedCollectionField<
     options?: DataField.ValidateOptions<DataField.Any>,
   ): DataModelValidationFailure | void;
 
+  // options: not null (parameter default only)
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
-    options?: AnyObject,
+    options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
@@ -2638,10 +2650,11 @@ declare class EmbeddedDocumentField<
   /** @defaultValue `true` */
   static override hierarchical: boolean;
 
+  // options: not null (parameter default only)
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
-    options?: AnyObject,
+    options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
   /**
@@ -2955,10 +2968,11 @@ declare class ForeignDocumentField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
+  // options: not null (parameter default only)
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
-    options?: AnyObject,
+    options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
@@ -3532,10 +3546,11 @@ declare class JSONField<
     options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
+  // options: not null (parameter default only)
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
-    options?: AnyObject,
+    options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
@@ -4061,10 +4076,11 @@ declare class TypeDataField<
 
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
+  // options: not null (parameter default only)
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
-    options?: AnyObject,
+    options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
   protected override _validateType(
@@ -4201,11 +4217,12 @@ declare class TypedSchemaField<
     options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
 
+  // options: not null (parameter default only)
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
-    options?: AnyObject, // TODO: Type further.
-  ): (() => InitializedType | null) | InitializedType;
+    options?: DataField.InitializeOptions,
+  ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
 
