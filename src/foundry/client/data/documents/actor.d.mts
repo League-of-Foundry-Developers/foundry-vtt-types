@@ -611,7 +611,8 @@ declare global {
 
     static override metadata: Actor.Metadata;
 
-    protected override _configure(options?: { pack?: string | null }): void;
+    // options: not null (parameter default only, destructured in super)
+    protected override _configure(options?: Document.ConfigureOptions): void;
 
     /**
      * Maintain a list of Token Documents that represent this Actor, stored by Scene.

@@ -1,9 +1,9 @@
+import type { Merge, NullishProps } from "fvtt-types/utils";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { BaseActorDelta } from "../../../common/documents/_module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { ConfiguredActorDelta } from "../../../../configuration/index.d.mts";
-import type { Merge } from "../../../../utils/index.d.mts";
 import type DataModel from "../../../common/abstract/data.d.mts";
 
 declare global {
@@ -520,6 +520,17 @@ declare global {
      * @deprecated {@link ActorDelta.Implementation | `ActorDelta.Implementation`}
      */
     type ConfiguredInstance = Implementation;
+
+    /** @internal */
+    type _InitializeOptions = NullishProps<{
+      /**
+       * @remarks Is this initialization part of a {@link Scene.reset | `Scene#reset`} call? (skips further initialization if truthy)
+       * @defaultValue `false`
+       */
+      sceneReset: boolean;
+    }>;
+
+    interface InitializeOptions extends Document.InitializeOptions, _InitializeOptions {}
   }
 
   /**
@@ -535,7 +546,8 @@ declare global {
      */
     constructor(...args: ActorDelta.ConstructorArgs);
 
-    protected override _configure(options?: { pack?: string | null }): void;
+    // options: not null (parameter default only, destructured in super)
+    protected override _configure(options?: Document.ConfigureOptions): void;
 
     protected override _initialize(options?: any): void;
 

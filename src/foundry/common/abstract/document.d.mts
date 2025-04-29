@@ -91,10 +91,8 @@ declare abstract class Document<
 
   override parent: Parent;
 
-  protected override _configure(options?: {
-    pack?: string | null | undefined;
-    parentCollection?: string | null | undefined;
-  }): void;
+  // options: not null (destructured)
+  protected override _configure(options?: Document.ConfigureOptions): void;
 
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.

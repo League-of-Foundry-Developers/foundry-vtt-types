@@ -3,7 +3,7 @@ import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
 
-type DataSchema = foundry.data.fields.DataSchema;
+type DataSchema = fields.DataSchema;
 
 declare const DynamicClass: new <_Computed extends object>(...args: never) => _Computed;
 
@@ -44,7 +44,8 @@ declare abstract class DataModel<
   /**
    * Configure the data model instance before validation and initialization workflows are performed.
    */
-  protected _configure(options?: ExtraConstructorOptions): void;
+  // options: not null (parameter default only, destructured in Document)
+  protected _configure(options?: DataModel.ConfigureOptions & ExtraConstructorOptions): void;
 
   /**
    * The source data object for this DataModel instance.
