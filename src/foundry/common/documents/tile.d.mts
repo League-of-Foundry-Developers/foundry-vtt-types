@@ -285,6 +285,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   static get schema(): SchemaField<TileDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: TileDocument.Source): void;
 
   static override fromSource(

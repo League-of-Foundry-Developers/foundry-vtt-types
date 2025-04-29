@@ -268,6 +268,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   static get schema(): SchemaField<NoteDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: NoteDocument.Source): void;
 
   static override fromSource(

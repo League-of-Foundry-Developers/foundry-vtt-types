@@ -255,6 +255,7 @@ declare abstract class BaseTableResult<
 
   static get schema(): SchemaField<TableResult.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: TableResult.Source): void;
 
   static override fromSource(

@@ -265,6 +265,7 @@ declare abstract class BaseChatMessage<
 
   static get schema(): SchemaField<ChatMessage.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: ChatMessage.Source): void;
 
   static override fromSource(

@@ -246,6 +246,7 @@ declare abstract class BaseJournalEntryPage<
 
   static get schema(): SchemaField<JournalEntryPage.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: JournalEntryPage.Source): void;
 
   static override fromSource(

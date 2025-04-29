@@ -286,6 +286,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   static get schema(): SchemaField<Combat.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Combat.Source): void;
 
   static override fromSource(

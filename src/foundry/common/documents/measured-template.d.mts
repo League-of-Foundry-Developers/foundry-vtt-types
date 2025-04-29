@@ -282,6 +282,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   static get schema(): SchemaField<MeasuredTemplateDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: MeasuredTemplateDocument.Source): void;
 
   static override fromSource(

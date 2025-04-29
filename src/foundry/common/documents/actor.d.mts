@@ -296,6 +296,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   static get schema(): SchemaField<Actor.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Actor.Source): void;
 
   static override fromSource(

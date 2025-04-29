@@ -276,6 +276,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static get schema(): SchemaField<JournalEntry.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: JournalEntry.Source): void;
 
   static override fromSource(

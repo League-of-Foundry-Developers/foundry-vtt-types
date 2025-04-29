@@ -282,6 +282,7 @@ declare abstract class BaseActiveEffect<
 
   static get schema(): SchemaField<ActiveEffect.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: ActiveEffect.Source): void;
 
   static override fromSource(

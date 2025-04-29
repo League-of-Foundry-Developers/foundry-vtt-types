@@ -251,6 +251,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   static get schema(): SchemaField<AmbientSoundDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: AmbientSoundDocument.Source): void;
 
   static override fromSource(

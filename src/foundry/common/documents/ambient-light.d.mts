@@ -250,6 +250,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static get schema(): SchemaField<AmbientLightDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: AmbientLightDocument.Source): void;
 
   static override fromSource(

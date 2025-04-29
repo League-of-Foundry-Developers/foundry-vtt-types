@@ -314,6 +314,7 @@ declare abstract class BaseActorDelta<
 
   static get schema(): SchemaField<ActorDelta.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: ActorDelta.Source): void;
 
   static override fromSource(

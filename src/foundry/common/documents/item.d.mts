@@ -289,6 +289,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   static get schema(): SchemaField<Item.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Item.Source): void;
 
   static override fromSource(

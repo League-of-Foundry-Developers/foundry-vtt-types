@@ -213,6 +213,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static get schema(): SchemaField<Setting.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Setting.Source): void;
 
   static override fromSource(

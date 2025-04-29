@@ -250,6 +250,10 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
 
   static get schema(): SchemaField<Macro.Schema>;
 
+  /**
+   * @remarks Actual override, not just part of the template.
+   * @throws If `data.command` doesn't pass {@link foundry.data.fields.JavaScriptField | `JavaScriptField`} validation
+   */
   static override validateJoint(data: Macro.Source): void;
 
   static override fromSource(

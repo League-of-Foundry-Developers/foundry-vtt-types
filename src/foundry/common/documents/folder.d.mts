@@ -239,6 +239,10 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 
   static get schema(): SchemaField<Folder.Schema>;
 
+  /**
+   * @remarks Actual override, not just part of the template
+   * @throws If `data.folder === data._id` (no putting folders inside themselves)
+   * */
   static validateJoint(data: Folder.Source): void;
 
   static override fromSource(

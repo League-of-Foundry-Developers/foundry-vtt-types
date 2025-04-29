@@ -274,6 +274,7 @@ declare abstract class BaseRegionBehavior<
 
   static get schema(): SchemaField<RegionBehavior.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: RegionBehavior.Source): void;
 
   static override fromSource(

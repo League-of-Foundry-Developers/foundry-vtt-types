@@ -272,6 +272,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   static get schema(): SchemaField<Playlist.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Playlist.Source): void;
 
   static override fromSource(

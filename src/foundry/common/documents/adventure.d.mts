@@ -245,6 +245,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static get schema(): SchemaField<Adventure.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Adventure.Source): void;
 
   static override fromSource(

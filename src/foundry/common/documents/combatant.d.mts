@@ -253,6 +253,7 @@ declare abstract class BaseCombatant<
 
   static get schema(): SchemaField<Combatant.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Combatant.Source): void;
 
   static override fromSource(

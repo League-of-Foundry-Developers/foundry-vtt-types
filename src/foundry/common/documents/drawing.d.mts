@@ -280,6 +280,10 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   static get schema(): SchemaField<DrawingDocument.Schema>;
 
+  /**
+   * @remarks Actual override, not just part of the template
+   * @throws If `data` fails `BaseDrawing.#validateVisibleContent` validation (must have some visible text, fill, *or* line)
+   * */
   static validateJoint(data: DrawingDocument.Source): void;
 
   static override fromSource(

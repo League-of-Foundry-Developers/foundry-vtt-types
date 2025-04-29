@@ -287,6 +287,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   static get schema(): SchemaField<RegionDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: RegionDocument.Source): void;
 
   static override fromSource(

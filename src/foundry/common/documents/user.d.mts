@@ -307,6 +307,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static get schema(): SchemaField<User.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: User.Source): void;
 
   static override fromSource(

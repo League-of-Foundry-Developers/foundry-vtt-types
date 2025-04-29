@@ -262,6 +262,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   static get schema(): SchemaField<Card.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Card.Source): void;
 
   static override fromSource(

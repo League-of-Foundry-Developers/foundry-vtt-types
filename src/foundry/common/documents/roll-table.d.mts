@@ -274,6 +274,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   static get schema(): SchemaField<RollTable.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: RollTable.Source): void;
 
   static override fromSource(

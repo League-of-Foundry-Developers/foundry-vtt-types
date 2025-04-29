@@ -344,6 +344,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   static get schema(): SchemaField<TokenDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: TokenDocument.Source): void;
 
   static override fromSource(

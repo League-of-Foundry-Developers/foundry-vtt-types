@@ -149,18 +149,20 @@ declare abstract class DataModel<
    * @returns The cloned Document [sic] instance
    * @remarks Obviously returns not necessarily a `Document`, just a `DataModel`.
    *
-   * @privateRemarks Foundry types `context` as simply `object`, but given usage, it's a `DataValidationOptions`,
-   * or, put another way, a `DataModel.ConstructionContext` omitting `parent`. Both the implementation here and
-   * the override in `Document` provide `this.parent` to the construction context; Here, `context` is spread in,
-   * so it'd be mechanically possible to provide a different parent, but such being desirable seems unlikely to
-   * come up in normal development. The `Document` override enforces `this.parent` with no opportunity to pass an
-   * alternative.
+   * **NOTE:** At the type level, the returned model will necessarily have the same parent as the instance `#clone()` is being called
+   * on; Accurate typing of `#parent` requires a cast.
+   * @privateRemarks Foundry types `context` as simply `object`, but going by core usage, it's a
+   * {@link DataModel.ConstructionContext | `DataModel.ConstructionContext`}. Both the implementation here
+   * and the override in `Document` provide `this.parent` to the construction context; Here, `context` is
+   * spread in, so providing a different parent is allowed. The `Document` override enforces `this.parent`
+   * with no opportunity to pass an alternative.
    */
-  // null would be fine for both params here, but it breaks Document, and its never *expected*, just incidentally doesn't break
+  // null would be fine for either/both params here, but it breaks Document, and its never *expected*, just incidentally doesn't break
   clone(
     data?: fields.SchemaField.AssignmentData<Schema>,
-    context?: DataModel.ConstructionContext & ExtraConstructorOptions,
+    context?: DataModel.CloneContext & ExtraConstructorOptions,
   ): this;
+
   /**
    * Validate the data contained in the document to check for type and content
    * This function throws an error if data within the document is not valid
@@ -168,7 +170,8 @@ declare abstract class DataModel<
    * @param options - Optional parameters which customize how validation occurs.
    * @returns An indicator for whether the document contains valid data
    */
-  validate({ changes, clean, fallback, strict, fields, joint }?: DataModel.ValidateOptions<Schema>): boolean;
+  // options: not null (destructured)
+  validate(options?: DataModel.ValidateOptions<Schema>): boolean;
 
   /**
    * Evaluate joint validation rules which apply validation conditions across multiple fields of the model.
@@ -176,14 +179,12 @@ declare abstract class DataModel<
    * This method allows for testing aggregate rules which impose requirements on the overall model.
    * @param data - Candidate data for the model
    * @throws An error if a validation failure is detected
+   * @remarks Other than posting a deprecation warning about and forwarding `data` to `this.prototype._validateModel` if defined,
+   * this is effectively abstract in `DataModel`. Subclasses implementing should type `data` as the `SchemaField.SourceData<>` of
+   * their schema.
    */
+  // TODO(esheyw): dep warning is gone in v13, clean up remarks
   static validateJoint(data: never): void;
-
-  /**
-   * @deprecated since v11; Use the validateJoint static method instead.
-   */
-  // TODO(LukeAbby): Should be SourceType
-  protected _validateModel(data: fields.SchemaField.SourceData<Schema>): void;
 
   /**
    * Update the DataModel locally by applying an object of changes to its source data.

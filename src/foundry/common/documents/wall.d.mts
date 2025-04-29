@@ -256,6 +256,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static override get schema(): SchemaField<WallDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static override validateJoint(data: WallDocument.Source): void;
 
   static override fromSource(

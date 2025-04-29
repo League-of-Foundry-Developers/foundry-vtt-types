@@ -243,6 +243,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   static get schema(): SchemaField<FogExploration.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: FogExploration.Source): void;
 
   static override fromSource(
