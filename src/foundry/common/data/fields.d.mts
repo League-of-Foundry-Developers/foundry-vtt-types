@@ -840,6 +840,7 @@ declare class SchemaField<
    */
   [Symbol.iterator](): Generator<DataField.Unknown>;
 
+  // TODO: see if its viable to narrow keys, values, entries, has, and get's types via the schema
   /**
    * An array of field names which are present in the schema.
    */
@@ -1193,7 +1194,15 @@ declare class BooleanField<
     delta: InitializedType,
     model: DataModel.Any,
     change: ActiveEffect.EffectChangeData,
-  ): InitializedType | undefined;
+  ): InitializedType;
+
+  /** @remarks Returns `delta < value ? delta : value`. `model` and `change` are unused in `BooleanField` */
+  protected override _applyChangeDowngrade(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.EffectChangeData,
+  ): InitializedType;
 }
 
 declare namespace BooleanField {
@@ -1310,7 +1319,7 @@ declare class NumberField<
   /**
    * @remarks Applies `integer`, `min`, `max`, and `step`
    *
-   * `options` is only passed to super, so effective unused
+   * `options` is only passed to super, so effectively unused
    * */
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | null): InitializedType;
 
@@ -1319,13 +1328,6 @@ declare class NumberField<
     value: InitializedType,
     options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
-
-  /**
-   * Test whether a provided value is a valid choice from the allowed choice set
-   * @param value - The provided value
-   * @returns Is the choice valid?
-   */
-  #isValidChoice(value: AssignmentType): boolean;
 
   // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
   toFormGroup(
@@ -1372,7 +1374,7 @@ declare class NumberField<
     delta: InitializedType,
     model: DataModel.Any,
     change: ActiveEffect.EffectChangeData,
-  ): InitializedType | undefined;
+  ): InitializedType;
 
   /** @remarks Returns `delta < value ? delta : value`. `model` and `change` are unused in `NumberField` */
   protected override _applyChangeDowngrade(
@@ -1380,7 +1382,7 @@ declare class NumberField<
     delta: InitializedType,
     model: DataModel.Any,
     change: ActiveEffect.EffectChangeData,
-  ): InitializedType | undefined;
+  ): InitializedType;
 }
 
 declare namespace NumberField {
@@ -1579,11 +1581,14 @@ declare class StringField<
    * Test whether a provided value is a valid choice from the allowed choice set
    * @param value - The provided value
    * @returns Is the choice valid?
+   *
+   * @privateRemarks `#_validateType` throws if `value` is not `string` before forwarding here
    */
-  protected _isValidChoice(value: AssignmentType): boolean;
+  protected _isValidChoice(value: string): boolean;
 
   /**
    * Get a record of eligible choices for the field.
+   * @remarks Foundry marked `@internal`
    */
   static _getChoices(options?: StringField.GetChoicesOptions): FormSelectOption[];
 
@@ -1721,11 +1726,10 @@ declare namespace StringField {
       }
     | readonly string[];
 
+  // TODO: consolidate with inline type in GetChoicesOptions if possible
   type Choices = BaseChoices | (() => BaseChoices);
 
-  /**
-   * @internal
-   */
+  /** @internal */
   interface _GetChoicesOptions {
     /**
      * The property in the choice object values to use as the option label.
@@ -1963,7 +1967,7 @@ declare class ArrayField<
    */
   protected _validateElements(
     value: AnyArray,
-    options?: DataField.ValidateOptions<this>,
+    options?: DataField.ValidateOptions<this> | null,
   ): DataModelValidationFailure | void;
 
   /**
@@ -2003,6 +2007,8 @@ declare class ArrayField<
    * @param fieldData  - The value of this field within the source data
    */
   migrateSource(sourceData: AnyObject, fieldData: unknown): unknown;
+
+  protected override _castChangeDelta(delta: string): InitializedType;
 
   /** @remarks Returns `value` with `delta` `push`ed. `model` and `change` are unused in `ArrayField` */
   protected override _applyChangeAdd(
@@ -2164,9 +2170,10 @@ declare class SetField<
   PersistedElementType,
   PersistedType
 > {
+  // options: required (property access with no default)
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidateOptions<this>,
+    options: DataField.ValidateOptions<this>,
   ): void | DataModelValidationFailure;
 
   // options: not null (parameter default only)
@@ -2188,6 +2195,8 @@ declare class SetField<
   protected override _toInput(
     config: SetField.ToInputConfig<ElementFieldType, InitializedType>,
   ): HTMLElement | HTMLCollection;
+
+  protected override _castChangeDelta(delta: string): InitializedType;
 
   /**
    * @remarks Returns `value` with each element of `delta` `add`ed in order.
@@ -2487,6 +2496,8 @@ declare class EmbeddedCollectionField<
    */
   get schema(): this["model"]["schema"];
 
+  protected override _cast(value: AssignmentType): InitializedType;
+
   /**
    * @remarks Calls the Collection's Document's Implementation's `schema.clean` on every entry in `value`,
    * with `options.source` set to that entry
@@ -2494,9 +2505,10 @@ declare class EmbeddedCollectionField<
    */
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | null): InitializedType;
 
+  // options: required (property access with no default)
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidateOptions<this>,
+    options: DataField.ValidateOptions<this>,
   ): DataModelValidationFailure | void;
 
   // options: not null (parameter default only)
@@ -2527,6 +2539,7 @@ declare class EmbeddedCollectionField<
    * Return the embedded document(s) as a Collection.
    * @param parent - The parent document.
    */
+  // TODO: Foundry claims this returns `DocumentCollection`, figure out why this can't be that
   getCollection<P extends Document.Any>(parent: P): Collection<P>;
 }
 
@@ -2685,9 +2698,10 @@ declare class EmbeddedCollectionDeltaField<
    */
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | null): InitializedType;
 
+  // options: required (property access with no default)
   protected override _validateElements(
     value: any[],
-    options?: DataField.ValidateOptions<this>,
+    options: DataField.ValidateOptions<this>,
   ): void | DataModelValidationFailure;
 }
 
@@ -3154,6 +3168,8 @@ declare class ForeignDocumentField<
   ): InitializedType | (() => InitializedType | null);
 
   override toObject(value: InitializedType): PersistedType;
+
+  //TODO: _toInput
 }
 
 declare namespace ForeignDocumentField {
@@ -3377,6 +3393,8 @@ declare class FilePathField<
     value: InitializedType,
     options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
+
+  // TODO: _toInput
 }
 
 declare namespace FilePathField {
@@ -3473,8 +3491,11 @@ declare class AngleField<
   /** @defaultValue `0` */
   override initial: DataField.Options.InitialType<InitializedType>;
 
-  /** @defaultValue `0` */
-  base: number;
+  /**
+   * Whether the angle should be normalized to [0,360) before being clamped to [0,360]. The default is true.
+   * @defaultValue `true`
+   */
+  normalize: boolean;
 
   /** @defaultValue `0` */
   override min: number | undefined;
@@ -3488,6 +3509,14 @@ declare class AngleField<
   protected static override get _defaults(): NumberField.Options;
 
   protected override _cast(value: AssignmentType): InitializedType;
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "The `AngleField#base` is deprecated in favor of {@link AngleField.normalize | `AngleField#normalize`}."
+   */
+  get base(): number;
+
+  set base(value);
 }
 
 declare namespace AngleField {
@@ -3498,7 +3527,7 @@ declare namespace AngleField {
       required: true;
       nullable: false;
       initial: 0;
-      base: 0;
+      normalize: true;
       min: 0;
       max: 360;
       validationError: "is not a number between 0 and 360";
@@ -3887,6 +3916,7 @@ declare class HTMLField<
   protected static override get _defaults(): StringField.Options;
 
   // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
+  /** @remarks Sets `groupConfig.stacked ??= true` before calling super */
   toFormGroup(
     groupConfig?: HTMLField.GroupConfig,
     inputConfig?: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
@@ -3985,12 +4015,14 @@ declare class IntegerSortField<
 
   /** @defaultValue `"FOLDER.DocumentSortHint"` */
   override hint: string;
+
+  static override get _defaults(): NumberField.Options;
 }
 
 declare namespace IntegerSortField {
   /** The type of the default options for the {@link IntegerSortField | `IntegerSortField`} class. */
   type DefaultOptions = SimpleMerge<
-    DataField.DefaultOptions,
+    NumberField.DefaultOptions,
     {
       required: true;
       nullable: false;
@@ -4061,6 +4093,41 @@ declare class DocumentStatsField<
    */
   // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(options?: Options, context?: DataField.ConstructionContext);
+
+  /**
+   * All Document stats.
+   * @defaultValue
+   * ```js
+   * [
+   *   "coreVersion",
+   *   "systemId",
+   *   "systemVersion",
+   *   "createdTime",
+   *   "modifiedTime",
+   *   "lastModifiedBy",
+   *   "compendiumSource",
+   *   "duplicateSource"
+   * ]
+   * ```
+   */
+  static fields: string[];
+
+  /**
+   * These fields are managed by the server and are ignored if they appear in creation or update data.
+   * @defaultValue
+   * ```js
+   * [
+   *   "coreVersion",
+   *   "systemId",
+   *   "systemVersion",
+   *   "createdTime",
+   *   "modifiedTime",
+   *   "lastModifiedBy",
+   * ]
+   * ```
+   * @remarks The only fields not managed are `compendiumSource` and `duplicateSource`
+   */
+  static managedFields: string[];
 }
 
 declare namespace DocumentStatsField {
@@ -4569,7 +4636,7 @@ declare namespace TypedSchemaField {
 }
 
 /**
- * @deprecated since v11; ModelValidationError is deprecated. Please use DataModelValidationError instead.
+ * @deprecated since v11 until v13; ModelValidationError is deprecated. Please use DataModelValidationError instead.
  * @typeParam Errors - the type of the errors contained in this error
  */
 declare class ModelValidationError<
@@ -4595,7 +4662,7 @@ declare class ModelValidationError<
 
 declare namespace ModelValidationError {
   /**
-   * @deprecated since v11; ModelValidationError is deprecated. Please use DataModelValidationError instead.
+   * @deprecated since v11 until v13; ModelValidationError is deprecated. Please use DataModelValidationError instead.
    */
   type Errors = Record<number | string | symbol, Error> | Error[] | string;
 }
@@ -4640,6 +4707,7 @@ declare class JavaScriptField<
     options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
 
+  /** @remarks Sets `groupConfig.stacked ??= true` then forwards to super */
   override toFormGroup(
     groupConfig?: JavaScriptField.GroupConfig,
     inputConfig?: JavaScriptField.ToInputConfig<InitializedType>,
