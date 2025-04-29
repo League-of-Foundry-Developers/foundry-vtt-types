@@ -549,7 +549,8 @@ declare global {
     // options: not null (parameter default only, destructured in super)
     protected override _configure(options?: Document.ConfigureOptions): void;
 
-    protected override _initialize(options?: any): void;
+    // options: not null (destructured)
+    protected override _initialize(options?: ActorDelta.InitializeOptions): void;
 
     /** Pass-through the type from the synthetic Actor, if it exists. */
     _type: string;

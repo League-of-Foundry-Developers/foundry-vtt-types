@@ -29,7 +29,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * @see {@link abstract.Document._initialize | `abstract.Document#_initialize`}
    */
-  protected _initialize(): void;
+  // options: not null (parameter default only)
+  protected _initialize(options?: Document.InitializeOptions): void;
 
   /**
    * Return a reference to the parent Collection instance which contains this Document.

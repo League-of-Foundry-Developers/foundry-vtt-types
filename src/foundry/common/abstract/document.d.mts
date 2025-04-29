@@ -114,7 +114,8 @@ declare abstract class Document<
    */
   static get schema(): foundry.data.fields.SchemaField.Any;
 
-  protected _initialize(options?: any): void;
+  // options: not null (parameter default only)
+  protected _initialize(options?: Document.InitializeOptions): void;
 
   /**
    * A mapping of singleton embedded Documents which exist in this model.

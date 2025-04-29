@@ -132,9 +132,10 @@ declare abstract class DataModel<
    * Initialize the instance by copying data from the source object to instance attributes.
    * This mirrors the workflow of SchemaField#initialize but with some added functionality.
    * @param options - Options provided to the model constructor
-   *                  (unused)
+   * @remarks `options` gets passed on to each field in the schema's `#initialize`
    */
-  protected _initialize(options?: any): void;
+  // options: not null (parameter default only)
+  protected _initialize(options?: DataModel.InitializeOptions & ExtraConstructorOptions): void;
 
   /**
    * Reset the state of this data instance back to mirror the contained source data, erasing any changes.
