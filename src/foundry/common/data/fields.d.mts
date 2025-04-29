@@ -36,10 +36,10 @@ export type DataSchema = Record<string, DataField.Any>;
  * @typeParam PersistedType   - the type of the persisted values of the DataField
  * @remarks
  * Defaults:
- * AssignmentType: `unknown | null | undefined`
- * InitializedType: `unknown | undefined`
- * PersistedType: `unknown | undefined`
- * InitialValue: `undefined`
+ * - AssignmentType: `unknown | null | undefined`
+ * - InitializedType: `unknown | undefined`
+ * - PersistedType: `unknown | undefined`
+ * - InitialValue: `undefined`
  */
 declare abstract class DataField<
   const Options extends DataField.Options.Any = DataField.DefaultOptions,
@@ -760,9 +760,9 @@ declare abstract class AnyDataField extends DataField<any, any, any, any> {
  * @typeParam PersistedType   - the type of the persisted values of the SchemaField
  * @remarks
  * Defaults:
- * AssignmentType: `SchemaField.AssignmentType<Fields> | null | undefined`
- * InitializedType: `SchemaField.InitializedType<Fields>`
- * PersistedType: `SchemaField.PersistedType<Fields>`
+ * - AssignmentType: `SchemaField.AssignmentType<Fields> | null | undefined`
+ * - InitializedType: `SchemaField.InitializedType<Fields>`
+ * - PersistedType: `SchemaField.PersistedType<Fields>`
  */
 declare class SchemaField<
   Fields extends DataSchema,
@@ -1104,10 +1104,10 @@ declare namespace SchemaField {
  * @typeParam PersistedType   - the type of the persisted values of the BooleanField
  * @remarks
  * Defaults:
- * AssignmentType: `boolean | null | undefined`
- * InitializedType: `boolean`
- * PersistedType: `boolean`
- * InitialValue: `false`
+ * - AssignmentType: `boolean | null | undefined`
+ * - InitializedType: `boolean`
+ * - PersistedType: `boolean`
+ * - InitialValue: `false`
  */
 declare class BooleanField<
   const Options extends BooleanField.Options = BooleanField.DefaultOptions,
@@ -1179,10 +1179,10 @@ declare namespace BooleanField {
  * @typeParam PersistedType   - the type of the persisted values of the NumberField
  * @remarks
  * Defaults:
- * AssignmentType: `number | null | undefined`
- * InitializedType: `number | null`
- * PersistedType: `number | null`
- * InitialValue: `null`
+ * - AssignmentType: `number | null | undefined`
+ * - InitializedType: `number | null`
+ * - PersistedType: `number | null`
+ * - InitialValue: `null`
  */
 declare class NumberField<
   const Options extends NumberField.Options = NumberField.DefaultOptions,
@@ -1414,10 +1414,10 @@ declare namespace NumberField {
  * @typeParam PersistedType   - the type of the persisted values of the StringField
  * @remarks
  * Defaults:
- * AssignmentType: `string | null | undefined`
- * InitializedType: `string`
- * PersistedType: `string`
- * InitialValue: `""`
+ * - AssignmentType: `string | null | undefined`
+ * - InitializedType: `string`
+ * - PersistedType: `string`
+ * - InitialValue: `""`
  */
 declare class StringField<
   const Options extends StringField.Options<unknown> = StringField.DefaultOptions,
@@ -1655,10 +1655,10 @@ declare namespace StringField {
  * @typeParam PersistedType   - the type of the persisted values of the ObjectField
  * @remarks
  * Defaults:
- * AssignmentType: `object | null | undefined`
- * InitializedType: `object`
- * PersistedType: `object`
- * InitialValue: `{}`
+ * - AssignmentType: `object | null | undefined`
+ * - InitializedType: `object`
+ * - PersistedType: `object`
+ * - InitialValue: `{}`
  */
 declare class ObjectField<
   const Options extends DataField.Options<AnyObject> = ObjectField.DefaultOptions,
@@ -1769,10 +1769,10 @@ declare namespace ObjectField {
  * @typeParam PersistedType          - the type of the persisted values of the ArrayField
  * @remarks
  * Defaults:
- * AssignmentType: `ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined`
- * InitializedType: `InitializedElementType[]`
- * PersistedType: `PersistedElementType[]`
- * InitialValue: `[]`
+ * - AssignmentType: `ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined`
+ * - InitializedType: `InitializedElementType[]`
+ * - PersistedType: `PersistedElementType[]`
+ * - InitialValue: `[]`
  */
 declare class ArrayField<
   const ElementFieldType extends DataField.Any | Document.AnyConstructor,
@@ -2007,10 +2007,10 @@ declare namespace ArrayField {
  * @typeParam PersistedType          - the type of the persisted values of the SetField
  * @remarks
  * Defaults:
- * AssignmentType: `SetField.BaseAssignmentType<AssignmentElementType> | null | undefined`
- * InitializedType: `Set<InitializedElementType>`
- * PersistedType: `PersistedElementType[]`
- * InitialValue: `new Set()`
+ * - AssignmentType: `SetField.BaseAssignmentType<AssignmentElementType> | null | undefined`
+ * - InitializedType: `Set<InitializedElementType>`
+ * - PersistedType: `PersistedElementType[]`
+ * - InitialValue: `new Set()`
  */
 declare class SetField<
   ElementFieldType extends DataField.Any,
@@ -2147,10 +2147,10 @@ declare namespace SetField {
  * @typeParam PersistedType   - the type of the persisted values of the EmbeddedDataField
  * @remarks
  * Defaults:
- * AssignmentType: `SchemaField.AssignmentType<ModelType["schema"]["fields"]> | null | undefined`
- * InitializedType: `SchemaField.InitializedType<ModelType["schema"]["fields"]>`
- * PersistedType: `SchemaField.PersistedType<ModelType["schema"]["fields"]>`
- * InitialValue: `{}`
+ * - AssignmentType: `SchemaField.AssignmentType<ModelType["schema"]["fields"]> | null | undefined`
+ * - InitializedType: `SchemaField.InitializedType<ModelType["schema"]["fields"]>`
+ * - PersistedType: `SchemaField.PersistedType<ModelType["schema"]["fields"]>`
+ * - InitialValue: `{}`
  */
 declare class EmbeddedDataField<
   const ModelType extends DataModel.AnyConstructor,
@@ -2264,10 +2264,10 @@ declare namespace EmbeddedDataField {
  * @typeParam PersistedType          - the type of the persisted values of the EmbeddedCollectionField
  * @remarks
  * Defaults:
- * AssignmentType: `ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined`
- * InitializedType: `Collection<InitializedElementType>`
- * PersistedType: `PersistedElementType[]`
- * InitialValue: `[]`
+ * - AssignmentType: `ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined`
+ * - InitializedType: `Collection<InitializedElementType>`
+ * - PersistedType: `PersistedElementType[]`
+ * - InitialValue: `[]`
  */
 declare class EmbeddedCollectionField<
   ElementFieldType extends Document.AnyConstructor,
@@ -2475,10 +2475,10 @@ declare namespace EmbeddedCollectionField {
  * @typeParam PersistedType          - the type of the persisted values of the EmbeddedCollectionDeltaField
  * @remarks
  * Defaults:
- * AssignmentType: `ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined`
- * InitializedType: `Collection<InitializedElementType>`
- * PersistedType: `PersistedElementType[]`
- * InitialValue: `[]`
+ * - AssignmentType: `ArrayField.BaseAssignmentType<AssignmentElementType> | null | undefined`
+ * - InitializedType: `Collection<InitializedElementType>`
+ * - PersistedType: `PersistedElementType[]`
+ * - InitialValue: `[]`
  */
 declare class EmbeddedCollectionDeltaField<
   ElementFieldType extends Document.AnyConstructor,
@@ -2624,10 +2624,10 @@ declare namespace EmbeddedCollectionDeltaField {
  * @typeParam PersistedType   - the type of the persisted values of the EmbeddedDocumentField
  * @remarks
  * Defaults:
- * AssignmentType: `SchemaField.AssignmentType<DocumentType["schema"]["fields"]> | null | undefined`
- * InitializedType: `SchemaField.InitializedType<DocumentType["schema"]["fields"]> | null`
- * PersistedType: `SchemaField.PersistedType<DocumentType["schema"]["fields"]> | null`
- * InitialValue: `{}`
+ * - AssignmentType: `SchemaField.AssignmentType<DocumentType["schema"]["fields"]> | null | undefined`
+ * - InitializedType: `SchemaField.InitializedType<DocumentType["schema"]["fields"]> | null`
+ * - PersistedType: `SchemaField.PersistedType<DocumentType["schema"]["fields"]> | null`
+ * - InitialValue: `{}`
  */
 declare class EmbeddedDocumentField<
   const DocumentType extends Document.AnyConstructor,
@@ -2742,10 +2742,10 @@ declare namespace EmbeddedDocumentField {
  * @typeParam PersistedType   - the type of the persisted values of the DocumentIdField
  * @remarks
  * Defaults:
- * AssignmentType: `string | Document.Any | null | undefined`
- * InitializedType: `string | null`
- * PersistedType: `string | null`
- * InitialValue: `null`
+ * - AssignmentType: `string | Document.Any | null | undefined`
+ * - InitializedType: `string | null`
+ * - PersistedType: `string | null`
+ * - InitialValue: `null`
  */
 declare class DocumentIdField<
   Options extends DocumentIdField.Options = DocumentIdField.DefaultOptions,
@@ -2932,10 +2932,10 @@ declare namespace DocumentUUIDField {
  * @typeParam PersistedType   - the type of the persisted values of the ForeignDocumentField
  * @remarks
  * Defaults:
- * AssignmentType: `string | InstanceType<DocumentType> | null | undefined`
- * InitializedType: `InstanceType<DocumentType> | null`
- * PersistedType: `string | null`
- * InitialValue: `null`
+ * - AssignmentType: `string | InstanceType<DocumentType> | null | undefined`
+ * - InitializedType: `InstanceType<DocumentType> | null`
+ * - PersistedType: `string | null`
+ * - InitialValue: `null`
  */
 declare class ForeignDocumentField<
   DocumentType extends Document.AnyConstructor,
@@ -3038,10 +3038,10 @@ declare namespace ForeignDocumentField {
  * @typeParam PersistedType   - the type of the persisted values of the ColorField
  * @remarks
  * Defaults:
- * AssignmentType: `string | null | undefined`
- * InitializedType: `string | null`
- * PersistedType: `string | null`
- * InitialValue: `null`
+ * - AssignmentType: `string | null | undefined`
+ * - InitializedType: `string | null`
+ * - PersistedType: `string | null`
+ * - InitialValue: `null`
  */
 declare class ColorField<
   Options extends StringField.Options = ColorField.DefaultOptions,
@@ -3125,10 +3125,10 @@ declare namespace ColorField {
  * @typeParam PersistedType   - the type of the persisted values of the FilePathField
  * @remarks
  * Defaults:
- * AssignmentType: `string | null | undefined`
- * InitializedType: `string | null`
- * PersistedType: `string | null`
- * InitialValue: `null`
+ * - AssignmentType: `string | null | undefined`
+ * - InitializedType: `string | null`
+ * - PersistedType: `string | null`
+ * - InitialValue: `null`
  */
 declare class FilePathField<
   Options extends FilePathField.Options = FilePathField.DefaultOptions,
@@ -3245,10 +3245,10 @@ declare namespace FilePathField {
  * @typeParam PersistedType   - the type of the persisted values of the AngleField
  * @remarks
  * Defaults:
- * AssignmentType: `number | null | undefined`
- * InitializedType: `number`
- * PersistedType: `number`
- * InitialValue: `0`
+ * - AssignmentType: `number | null | undefined`
+ * - InitializedType: `number`
+ * - PersistedType: `number`
+ * - InitialValue: `0`
  */
 declare class AngleField<
   Options extends NumberField.Options = AngleField.DefaultOptions,
@@ -3330,10 +3330,10 @@ declare namespace AngleField {
  * @typeParam PersistedType   - the type of the persisted values of the AlphaField
  * @remarks
  * Defaults:
- * AssignmentType: `number | null | undefined`
- * InitializedType: `number`
- * PersistedType: `number`
- * InitialValue: `1`
+ * - AssignmentType: `number | null | undefined`
+ * - InitializedType: `number`
+ * - PersistedType: `number`
+ * - InitialValue: `1`
  */
 declare class AlphaField<
   Options extends NumberField.Options = AlphaField.DefaultOptions,
@@ -3440,10 +3440,10 @@ declare namespace HueField {
  * @typeParam PersistedType   - the type of the persisted values of the DocumentOwnershipField
  * @remarks
  * Defaults:
- * AssignmentType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS> | null | undefined`
- * InitializedType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS>`
- * PersistedType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS>`
- * InitialValue: `{ default: DOCUMENT_OWNERSHIP_LEVELS.NONE }`
+ * - AssignmentType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS> | null | undefined`
+ * - InitializedType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS>`
+ * - PersistedType: `Record<string, DOCUMENT_OWNERSHIP_LEVELS>`
+ * - InitialValue: `{ default: DOCUMENT_OWNERSHIP_LEVELS.NONE }`
  */
 declare class DocumentOwnershipField<
   Options extends DocumentOwnershipField.Options = DocumentOwnershipField.DefaultOptions,
@@ -3514,10 +3514,10 @@ declare namespace DocumentOwnershipField {
  * @typeParam PersistedType   - the type of the persisted values of the JSONField
  * @remarks
  * Defaults:
- * AssignmentType: `string | null | undefined`
- * InitializedType: `object | undefined`
- * PersistedType: `string | undefined`
- * InitialValue: `undefined`
+ * - AssignmentType: `string | null | undefined`
+ * - InitializedType: `object | undefined`
+ * - PersistedType: `string | undefined`
+ * - InitialValue: `undefined`
  */
 declare class JSONField<
   // TODO(LukeAbby): Due to the unconditional setting of `blank`, `trim`, and `choices` setting them is meaningless which basically means they're removed from the options.
@@ -3650,10 +3650,10 @@ declare class AnyField extends DataField<DataField.Options.Any, unknown, unknown
  * @typeParam PersistedType   - the type of the persisted values of the HTMLField
  * @remarks
  * Defaults:
- * AssignmentType: `string | null | undefined`
- * InitializedType: `string`
- * PersistedType: `string`
- * InitialValue: `""`
+ * - AssignmentType: `string | null | undefined`
+ * - InitializedType: `string`
+ * - PersistedType: `string`
+ * - InitialValue: `""`
  */
 declare class HTMLField<
   Options extends StringField.Options = HTMLField.DefaultOptions,
@@ -3740,10 +3740,10 @@ declare namespace HTMLField {
  * @typeParam PersistedType   - the type of the persisted values of the IntegerSortField
  * @remarks
  * Defaults:
- * AssignmentType: `number | null | undefined`
- * InitializedType: `number`
- * PersistedType: `number`
- * InitialValue: `0`
+ * - AssignmentType: `number | null | undefined`
+ * - InitializedType: `number`
+ * - PersistedType: `number`
+ * - InitialValue: `0`
  */
 declare class IntegerSortField<
   Options extends NumberField.Options = IntegerSortField.DefaultOptions,
@@ -3817,10 +3817,10 @@ declare namespace IntegerSortField {
  * @typeParam PersistedType   - the type of the persisted values of the DocumentStatsField
  * @remarks
  * Defaults:
- * AssignmentType: `Partial<DocumentStats> | null | undefined`
- * InitializedType: `DocumentStats`
- * PersistedType: `object`
- * InitialValue:
+ * - AssignmentType: `Partial<DocumentStats> | null | undefined`
+ * - InitializedType: `DocumentStats`
+ * - PersistedType: `object`
+ * - InitialValue:
  * ```typescript
  * {
  *   systemId: null,
@@ -4023,10 +4023,10 @@ declare namespace DocumentTypeField {
  * @typeParam PersistedType   - the type of the persisted values of the TypeDataField
  * @remarks
  * Defaults:
- * AssignmentType: `SchemaField.AssignmentType<DocumentType["schema"]["fields"]> | null | undefined`
- * InitializedType: `SchemaField.InitializedType<DocumentType["schema"]["fields"]>`
- * PersistedType: `SchemaField.PersistedType<DocumentType["schema"]["fields"]>`
- * InitialValue: `{}`
+ * - AssignmentType: `SchemaField.AssignmentType<DocumentType["schema"]["fields"]> | null | undefined`
+ * - InitializedType: `SchemaField.InitializedType<DocumentType["schema"]["fields"]>`
+ * - PersistedType: `SchemaField.PersistedType<DocumentType["schema"]["fields"]>`
+ * - InitialValue: `{}`
  */
 declare class TypeDataField<
   const SystemDocument extends Document.SystemConstructor,
