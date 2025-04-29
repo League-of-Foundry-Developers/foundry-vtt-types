@@ -91,7 +91,8 @@ declare class ClassReferenceField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
-  override getInitialValue(data: DataField.CleanOptions["source"]): InitializedType;
+  /** @remarks `data` is unused, always returns `this.initial` */
+  override getInitialValue(data?: unknown): InitializedType;
 }
 
 declare namespace ClassReferenceField {

@@ -207,8 +207,12 @@ declare abstract class DataField<
    * @param data - The source data object for which an initial value is required
    * @returns A valid initial value
    * @throws An error if there is no valid initial value defined
+   * @remarks The `@throws` is Foundry's, and is wrong, as all fields will at a minimum inherit `initial: undefined` from DataField.
+   *
+   * `data` is unused if the field's `initial` is not a function.
    */
-  getInitialValue(data: DataField.CleanOptions["source"]): InitializedType;
+  // TODO: the @throws is omitted in v13, clean up remarks
+  getInitialValue(data?: unknown): InitializedType;
 
   /**
    * Validate a candidate input for this field, ensuring it meets the field requirements.
@@ -649,11 +653,10 @@ declare namespace DataField {
   type _CleanOptions = NullishProps<{
     /** Whether to perform partial cleaning? */
     partial: boolean;
-  }> &
-    InexactPartial<{
-      /** The root data model being cleaned */
-      source: AnyObject;
-    }>;
+
+    /** The root data model being cleaned */
+    source: AnyObject;
+  }>;
 
   /** An interface for the options of {@link DataField.clean | `DataField#clean`} and {@link DataField._cleanType | `DataField#_cleanType`}. */
   interface CleanOptions extends _CleanOptions {}
@@ -1691,6 +1694,8 @@ declare class ObjectField<
   override initial: DataField.Options.InitialType<InitializedType>;
 
   protected static override get _defaults(): DataField.Options<AnyObject>;
+
+  override getInitialValue(data?: unknown): InitializedType;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
@@ -3103,12 +3108,26 @@ declare class ColorField<
 
   protected static override get _defaults(): StringField.Options;
 
-  override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
+  // options: not null (parameter default only)
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: DataField.InitializeOptions,
+  ): InitializedType | (() => InitializedType | null);
+
+  /** @throws If the value isn't a valid {@link foundry.utils.Color.Source | `Color.Source`} *after* going through `super` */
+  override getInitialValue(data?: unknown): InitializedType;
+
+  protected override _cast(value: AssignmentType): InitializedType;
+
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidateOptions<DataField.Any>,
   ): boolean | DataModelValidationFailure | void;
+
+  protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
 }
 
 declare namespace ColorField {
@@ -4131,7 +4150,8 @@ declare class TypeDataField<
    */
   getModelForType(type: string): DataModel.AnyConstructor | null;
 
-  override getInitialValue(data: { type?: string }): InitializedType;
+  /** @remarks If an object with a valid `type` isn't passed, returns `{}` */
+  override getInitialValue(data?: { type?: string }): InitializedType;
 
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
