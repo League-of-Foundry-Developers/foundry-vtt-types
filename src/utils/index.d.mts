@@ -1180,7 +1180,7 @@ export type Identity<T extends object> = T;
  * ### Background
  *
  * A common unintuitive behavior of unions in TypeScript is that if a property only exists on some
- * members of the union access is not allowed:
+ * members of the union, then access on that property is not allowed:
  * ```typescript
  * const member1 = { prop1: "foo" };
  * const member2 = { prop2: 1 };
@@ -1190,7 +1190,7 @@ export type Identity<T extends object> = T;
  * const prop1 = union.prop1;
  * ```
  *
- * This snippet errors with:
+ * This snippet errors at `union.prop1` with:
  * ```
  * Property 'prop1' does not exist on type '{ prop1: number; } | { prop2: number; }'.
  *   Property 'prop1' does not exist on type '{ prop2: number; }'.`
@@ -1219,14 +1219,15 @@ export type Identity<T extends object> = T;
  *
  * Discriminated unions are a way to get around this issue. There's several possible ways to express
  * discriminated unions but the most common version is
- * `{ prop1: number; prop2?: undefined } | { prop1?: undefined; prop1: number }`. The key idea is to
- * put a property that
+ * `{ prop1: number; prop2?: never } | { prop1?: never; prop1: number }`. The key idea is to
+ * put a property that ensures that `undefined` will be read out. Using `never` specifically avoids
+ * some niche issues.
  *
  * In fact TypeScript will automatically create a discriminated union in some cases. For example if
  * you simplify the snippet above:
  * ```typescript
  * const discriminatedUnion = Math.random() > 0.5 ? { prop1: 1 } : { prop2: 2 };
- * //    ^ { prop1: number; prop2?: undefined } | { prop2: number; }
+ * //    ^ { prop1: number; prop2?: undefined } | { prop2: number; prop1?: undefined }
  *
  * const prop1 = discriminatedUnion.prop1;
  * //    ^ number | undefined
