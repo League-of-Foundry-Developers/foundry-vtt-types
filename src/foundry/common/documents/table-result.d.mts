@@ -258,9 +258,10 @@ declare abstract class BaseTableResult<
   /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: TableResult.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: TableResult.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): TableResult.Implementation;
 
   static override fromJSON(json: string): TableResult.Implementation;

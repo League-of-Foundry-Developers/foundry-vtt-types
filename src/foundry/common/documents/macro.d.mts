@@ -256,10 +256,8 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    */
   static override validateJoint(data: Macro.Source): void;
 
-  static override fromSource(
-    source: Macro.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): Macro.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: Macro.CreateData, context?: DataModel.FromSourceOptions): Macro.Implementation;
 
   static override fromJSON(json: string): Macro.Implementation;
 }

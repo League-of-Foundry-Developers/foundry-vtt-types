@@ -348,9 +348,10 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: TokenDocument.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: TokenDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): TokenDocument.Implementation;
 
   static override fromJSON(json: string): TokenDocument.Implementation;

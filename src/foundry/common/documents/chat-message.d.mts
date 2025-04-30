@@ -268,9 +268,10 @@ declare abstract class BaseChatMessage<
   /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: ChatMessage.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: ChatMessage.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): ChatMessage.Implementation;
 
   static override fromJSON(json: string): ChatMessage.Implementation;

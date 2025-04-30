@@ -277,9 +277,10 @@ declare abstract class BaseRegionBehavior<
   /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: RegionBehavior.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: RegionBehavior.UpdateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): RegionBehavior.Implementation;
 
   static override fromJSON(json: string): RegionBehavior.Implementation;

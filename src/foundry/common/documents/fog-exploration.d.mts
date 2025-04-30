@@ -246,9 +246,10 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: FogExploration.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: FogExploration.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): FogExploration.Implementation;
 
   static override fromJSON(json: string): FogExploration.Implementation;

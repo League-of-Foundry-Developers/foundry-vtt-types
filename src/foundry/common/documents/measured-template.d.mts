@@ -285,9 +285,10 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: MeasuredTemplateDocument.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: MeasuredTemplateDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): MeasuredTemplateDocument.Implementation;
 
   static override fromJSON(json: string): MeasuredTemplateDocument.Implementation;

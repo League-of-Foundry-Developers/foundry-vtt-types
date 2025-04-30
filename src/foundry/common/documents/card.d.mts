@@ -265,10 +265,8 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Card.Source): void;
 
-  static override fromSource(
-    source: Card.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): Card.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: Card.CreateData, context?: DataModel.FromSourceOptions): Card.Implementation;
 
   static override fromJSON(json: string): Card.Implementation;
 }

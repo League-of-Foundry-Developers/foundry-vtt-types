@@ -245,10 +245,8 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
    * */
   static validateJoint(data: Folder.Source): void;
 
-  static override fromSource(
-    source: Folder.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): Folder.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: Folder.CreateData, context?: DataModel.FromSourceOptions): Folder.Implementation;
 
   static override fromJSON(json: string): Folder.Implementation;
 }

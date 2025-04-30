@@ -279,9 +279,10 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: JournalEntry.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: JournalEntry.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): JournalEntry.Implementation;
 
   static override fromJSON(json: string): JournalEntry.Implementation;

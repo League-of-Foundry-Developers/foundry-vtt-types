@@ -259,9 +259,10 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
   /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static override validateJoint(data: WallDocument.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: WallDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): WallDocument.Implementation;
 
   static override fromJSON(json: string): WallDocument.Implementation;

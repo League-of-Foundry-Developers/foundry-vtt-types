@@ -292,10 +292,8 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Item.Source): void;
 
-  static override fromSource(
-    source: Item.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): Item.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: Item.CreateData, context?: DataModel.FromSourceOptions): Item.Implementation;
 
   static override fromJSON(json: string): Item.Implementation;
 }

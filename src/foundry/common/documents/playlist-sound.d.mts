@@ -256,9 +256,10 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: PlaylistSound.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: PlaylistSound.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): PlaylistSound.Implementation;
 
   static override fromJSON(json: string): PlaylistSound.Implementation;

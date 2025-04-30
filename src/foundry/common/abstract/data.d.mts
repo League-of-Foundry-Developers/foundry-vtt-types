@@ -214,16 +214,36 @@ declare abstract class DataModel<
    * Extract the source data for the DataModel into a simple object format that can be serialized.
    * @returns The document source data expressed as a plain object
    */
-  toJSON(): fields.SchemaField.SourceData<Schema>;
+  toJSON(): DataModel.ToObject<Schema, true>;
 
   /**
    * Create a new instance of this DataModel from a source record.
    * The source is presumed to be trustworthy and is not strictly validated.
    * @param source  - Initial document data which comes from a trusted source.
    * @param context - Model construction context
-   * @remarks Returns `new this()` so needs an override per subclass.
+   * @remarks Returns `new this()` so needs an override per subclass:
+   * ```ts
+   * const mySchema = {
+   *   // etc
+   * }
+   *d
+   * type MySchema = typeof mySchema
+   *
+   * // most models likely wont be using this param at all, but its included for completeness
+   * interface MyECO {
+   *   someProp: string
+   * }
+   *
+   * class MyDataModel extends DataModel<MySchema, DataModel.Any | null = null, MyECO> {
+   *   static fromSource(
+   *     source: foundry.data.fields.SchemaField.CreateData<MySchema>,
+   *     context?: DataModel.FromSourceOptions<NewParent> & MyECO
+   *   ): MyDataModel
+   * }
+   * ```
    */
-  static fromSource(source: never, { strict, ...context }?: DataModel.FromSourceOptions): DataModel.Any;
+  // context: not null (destructured)
+  static fromSource(source: never, context?: DataModel.FromSourceOptions): DataModel.Any;
 
   /**
    * Create a DataModel instance using a provided serialized JSON string.
