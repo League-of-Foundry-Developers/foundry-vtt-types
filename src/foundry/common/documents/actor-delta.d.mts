@@ -65,7 +65,8 @@ declare abstract class BaseActorDelta<
   ): Document.ImplementationClassFor<"Actor"> | null;
 
   /**
-   * @remarks Migrations:
+   * @remarks
+   * Migrations:
    * - {@link documents.BaseActor.migrateData | `BaseActor`}'s
    *
    * Simply forwards to `BaseActor`

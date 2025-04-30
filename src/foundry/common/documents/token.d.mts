@@ -72,28 +72,33 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): DataModel.ToObject<TokenDocument.Schema, Source>;
 
   /**
-   * @remarks Migrations:
+   * @remarks
+   * Migrations:
    * - `actorData` to `delta` (since v11, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**
-   * @remarks Shims:
-   * - `actorData` to `delta` since v11, until v13
-   * - `effects` to nothing since v12, until v14 ("TokenDocument#effects is deprecated in favor of using ActiveEffect documents on the associated Actor")
-   * - `overlayEffect` to nothing since v12, until v14 ("TokenDocument#overlayEffect is deprecated in favor of using ActiveEffect documents on the associated Actor")
+   * @remarks
+   * Shims:
+   * - `actorData` to `delta` (since v11, until v13)
+   * - `effects` to nothing (since v12, until v14)
+   *   - "`TokenDocument#effects` is deprecated in favor of using {@link ActiveEffect | `ActiveEffect`} documents on the associated `Actor`")
+   * - `overlayEffect` to nothing (since v12, until v14)
+   *   - "`TokenDocument#overlayEffect` is deprecated in favor of using `ActiveEffect` documents on the associated `Actor`")
    */
+  // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
    * @deprecated since v12, until v14
-   * @remarks "TokenDocument#overlayEffect is deprecated in favor of using ActiveEffect documents on the associated Actor"
+   * @remarks "TokenDocument#overlayEffect is deprecated in favor of using {@link ActiveEffect | `ActiveEffect`} documents on the associated Actor"
    */
   get effects(): [];
 
   /**
    * @deprecated since v12, until v14
-   * @remarks "TokenDocument# is deprecated in favor of using ActiveEffect documents on the associated Actor"
+   * @remarks "TokenDocument# is deprecated in favor of using {@link ActiveEffect | `ActiveEffect`} documents on the associated Actor"
    */
   get overlayEffect(): "";
 

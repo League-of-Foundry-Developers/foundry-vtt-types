@@ -1,4 +1,4 @@
-import type { AnyObject, AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -30,21 +30,11 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   static override defineSchema(): BasePlaylist.Schema;
 
   /**
-   * @remarks Migrations:
+   * @remarks
+   * Migrations:
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
-
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
 
   /*
    * After this point these are not really overridden methods.

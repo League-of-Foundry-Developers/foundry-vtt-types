@@ -40,7 +40,8 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   static DEFAULT_ICON: string;
 
   /**
-   * @remarks Migrations:
+   * @remarks
+   * Migrations:
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;

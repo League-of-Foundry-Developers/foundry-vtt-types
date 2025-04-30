@@ -1,4 +1,4 @@
-import type { AnyObject, AnyMutableObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -39,22 +39,20 @@ declare abstract class BaseChatMessage<
   ): boolean;
 
   /**
-   * @remarks Migrations:
+   * @remarks
+   * Migrations:
    * - `user` to `author` (since v12, no specified end)
    * - existing numeric `type`s to `style`, setting `type` to `"base"` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
+  /**
+   * @remarks
+   * Shims:
+   * - `user` to `author` (since v12, until v14)
+   */
+  // options: not null (destructured)
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
    * @deprecated since v12, will be removed in v14

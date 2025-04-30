@@ -28,7 +28,8 @@ declare class BaseWorld extends BasePackage<BaseWorld.Schema> {
   static icon: string;
 
   /**
-   * @remarks Migrations:
+   * @remarks
+   * Migrations:
    * - Enforces `compatibility` being an object
    * - `compatibility.maximum === "1.0.0"` to `undefined`
    * - If `coreVersion` but no `compatibility.verified`, sets both `compatibility.verified` and `.minimum` to `coreVersion`

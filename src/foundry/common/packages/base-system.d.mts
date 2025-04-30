@@ -1,4 +1,5 @@
 import type { AnyMutableObject } from "../../../utils/index.d.mts";
+import type DataModel from "../abstract/data.d.mts";
 import type BasePackage from "./base-package.d.mts";
 
 declare namespace BaseSystem {
@@ -50,12 +51,22 @@ declare class BaseSystem extends BasePackage<BaseSystem.Schema> {
   static override migratedKeys: Set<string>;
 
   /**
-   * @remarks Migrations:
+   * @remarks
+   * Migrations:
    * - {@link BasePackage.migrateData | `BasePackage`}'s
    * - `gridDistance` to `grid.distance` (since v12, until v14)
    * - `gridUnits` to `grid.units` (since v12, until v14)
    */
   static override migrateData(data: AnyMutableObject, options?: BasePackage.MigrateDataOptions): AnyMutableObject;
+
+  /**
+   * @remarks
+   * Shims:
+   * - `gridDistance` to `grid.distance` (since v12, until v14)
+   * - `gridUnits` to `grid.units` (since v12, until v14)
+   */
+  // options: not null (destructured)
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 }
 
 export default BaseSystem;

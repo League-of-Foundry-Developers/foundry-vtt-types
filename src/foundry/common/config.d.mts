@@ -194,7 +194,8 @@ declare class ApplicationConfiguration extends DataModel<ApplicationConfiguratio
   static defineSchema(): ApplicationConfiguration.Schema;
 
   /**
-   * @remarks Migrates:
+   * @remarks
+   * Migrations:
    * - pre-v9 `dataChannel`s to their updated names
    * - `awsConfig === true` to `""`
    */

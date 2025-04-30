@@ -42,16 +42,19 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   static override defineSchema(): BaseTile.Schema;
 
   /**
-   * @remarks Migrations:
+   * @remarks
+   * Migrations:
    * - `z` to `sort` (since v12, no specified end)
    * - `roof` to `restrictions.light` and `restrictions.weather` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**
-   * @remarks Shims:
-   * - `z` to `sort` since v12, until v14
+   * @remarks
+   * Shims:
+   * - `z` to `sort` (since v12, until v14)
    */
+  // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**

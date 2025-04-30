@@ -652,7 +652,8 @@ declare class BasePackage<
   static migratedKeys: Set<string>;
 
   /**
-   * @remarks Migrations:
+   * @remarks
+   * Migrations:
    * - `name` to `id`, both at root and for any `dependencies` (since v10 until v13)
    * - `dependencies` to `relationships` (structural change) (since v10 until v13)
    * - `minimumCoreVersion` and `compatibleCoreVersion` to `compatibility.minimum` and `.verified`, respectively (since v10 until v13)

@@ -56,14 +56,16 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   ): boolean;
 
   /**
-   * @remarks Migrations:
+   * @remarks
+   * Migrations:
    * - `z` to `elevation` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**
-   * @remarks Shims:
-   * - `z` to `elevation` since v12, until v14
+   * @remarks
+   * Shims:
+   * - `z` to `elevation` (since v12, until v14)
    */
   // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;

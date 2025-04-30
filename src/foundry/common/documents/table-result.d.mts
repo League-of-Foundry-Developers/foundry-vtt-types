@@ -45,7 +45,8 @@ declare abstract class BaseTableResult<
   ): boolean;
 
   /**
-   * @remarks Migrations:
+   * @remarks
+   * Migrations:
    * - Numeric `type`s to their new string values
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;

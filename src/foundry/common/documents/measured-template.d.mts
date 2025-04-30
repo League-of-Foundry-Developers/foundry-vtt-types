@@ -54,14 +54,16 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   ): boolean;
 
   /**
-   * @remarks Migrations:
-   * - `user` to `author`
+   * @remarks
+   * Migrations:
+   * - `user` to `author` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**
-   * @remarks Shims:
-   * - `user` to `author` since v12, until v14
+   * @remarks
+   * Shims:
+   * - `user` to `author` (since v12, until v14)
    */
   // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;

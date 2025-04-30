@@ -51,11 +51,21 @@ declare abstract class BaseActiveEffect<
    */
 
   /**
-   * @remarks Migrations:
+   * @remarks
+   * Migrations:
    * - `label` to `name` (since v11, no specified end)
    * - `icon` to `img` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /**
+   * @remarks
+   * Shims:
+   * - `label` to `name` (since v11, until v13)
+   * - `icon` to `img` (since v12, until v14)
+   */
+  // options: not null (destructured)
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
    * @deprecated since v11, will be removed in v13
