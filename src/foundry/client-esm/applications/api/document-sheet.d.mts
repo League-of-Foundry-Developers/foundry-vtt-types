@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity } from "fvtt-types/utils";
+import type { DeepPartial, Identity, IntentionalPartial } from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
 
 import Document = foundry.abstract.Document;
@@ -47,12 +47,12 @@ declare namespace DocumentSheetV2 {
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
-  interface DefaultOptions extends _Configuration, Identity<object> {
+  interface DefaultOptions extends IntentionalPartial<_Configuration>, Identity<object> {
     /**
      * @deprecated Setting `document` in `DocumentSheetV2.DEFAULT_OPTIONS` is not supported. If you
      * have a need for this, please file an issue.
      */
-    document: never;
+    document?: never;
   }
 
   interface RenderOptions extends ApplicationV2.RenderOptions {
