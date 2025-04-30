@@ -240,10 +240,10 @@ declare namespace CombatTracker {
     hidden: boolean;
     id: string;
     isDefeated: boolean;
-    initiative: Combatant.Implementation["initiative"];
+    initiative: number | null;
     isOwner: boolean;
     name: string;
-    resource: Combatant.Implementation["resource"] | null;
+    resource: Combatant.Resource;
     active: boolean;
     canPing: boolean;
     img: string;

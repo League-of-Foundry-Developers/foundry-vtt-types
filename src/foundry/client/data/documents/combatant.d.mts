@@ -435,6 +435,8 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    type Resource = `${number}` | number | boolean | null;
+
     /**
      * @deprecated {@link Combatant.Database | `Combatant.DatabaseOperation`}
      */
@@ -489,7 +491,7 @@ declare global {
     _videoSrc: string | null;
 
     /** The current value of the special tracked resource which pertains to this Combatant */
-    resource: `${number}` | number | boolean | null;
+    resource: Combatant.Resource;
 
     /**
      * A convenience alias of Combatant#parent which is more semantically intuitive
@@ -545,7 +547,7 @@ declare global {
     /**
      * Update the value of the tracked resource for this Combatant.
      */
-    updateResource(): this["resource"];
+    updateResource(): Combatant.Resource;
 
     /**
      * Acquire the default dice formula which should be used to roll initiative for this combatant.
