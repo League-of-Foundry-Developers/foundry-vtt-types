@@ -58,7 +58,8 @@ declare abstract class BaseRegionBehavior<
 
   static override defineSchema(): BaseRegionBehavior.Schema;
 
-  static override canUserCreate(user: User.Internal.Implementation): boolean;
+  /** @remarks Returns `user.isGM` */
+  static override canUserCreate(user: User.Implementation): boolean;
 
   /*
    * After this point these are not really overridden methods.

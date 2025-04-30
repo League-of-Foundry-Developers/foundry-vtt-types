@@ -46,6 +46,7 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
+  /** @remarks Returns `user.hasRole("PLAYER")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
   override testUserPermission(

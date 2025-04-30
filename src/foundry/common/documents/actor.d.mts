@@ -54,6 +54,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     options?: Document.InitializeSourceOptions,
   ): BaseActor.Source;
 
+  /** @remarks Returns `user.hasPermission("ACTOR_CREATE")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
   /**

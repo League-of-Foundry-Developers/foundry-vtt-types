@@ -46,7 +46,8 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   static override defineSchema(): BaseDrawing.Schema;
 
-  static override canUserCreate(user: User.Internal.Implementation): boolean;
+  /** @remarks Returns `user.hasPermission("DRAWING_CREATE")` */
+  static override canUserCreate(user: User.Implementation): boolean;
 
   // options: not null (destructured)
   override testUserPermission(

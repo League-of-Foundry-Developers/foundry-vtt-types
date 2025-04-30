@@ -201,6 +201,9 @@ declare abstract class Document<
   /**
    * Identify the collection in a parent Document that this Document exists belongs to, if any.
    * @param parentCollection - An explicitly provided parent collection name.
+   * @remarks If passed a value for `parentCollection`, simply returns that value
+   *
+   * Foundry marked `@internal`
    */
   _getParentCollection(parentCollection?: string): string | null;
 
@@ -224,17 +227,16 @@ declare abstract class Document<
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
    */
-  static canUserCreate(user: User.Internal.Implementation): boolean;
+  static canUserCreate(user: User.Implementation): boolean;
 
   /**
-   * Get the explicit permission level that a specific User has over this Document, a value in CONST.DOCUMENT_OWNERSHIP_LEVELS.
+   * Get the explicit permission level that a specific User has over this Document, a value in {@link CONST.DOCUMENT_OWNERSHIP_LEVELS | `CONST.DOCUMENT_OWNERSHIP_LEVELS`}.
    * This method returns the value recorded in Document ownership, regardless of the User's role.
    * To test whether a user has a certain capability over the document, testUserPermission should be used.
-   * @param user - The User being tested
-   *               (default: `game.user`)
+   * @param user - The User being tested (default: `game.user`)
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
    */
-  getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
