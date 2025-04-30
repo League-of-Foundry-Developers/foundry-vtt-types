@@ -1,10 +1,11 @@
+import type EventEmitterMixin from "#common/utils/event-emitter.mjs";
 import type { FixedInstanceType, Identity } from "fvtt-types/utils";
 
 declare global {
   /**
    * A fog of war management class which is the singleton canvas.fog instance.
    */
-  class FogManager {
+  class FogManager extends EventEmitterMixin() {
     /**
      * The FogExploration document which applies to this canvas view
      * @defaultValue `null`

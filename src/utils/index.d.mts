@@ -1277,3 +1277,9 @@ export type JSONValue =
   | boolean
   | null
   | undefined;
+
+/**
+ * This type represents a constructor such that `typeof SomeConstructor & PhantomConstructor`
+ * simplifies to `typeof SomeConstructor`.
+ */
+export type PhantomConstructor = new (...args: any[]) => unknown;

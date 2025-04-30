@@ -1,4 +1,11 @@
-import type { AnyConstructor, FixedInstanceType, Mixin, NullishProps } from "fvtt-types/utils";
+import type {
+  AnyConstructor,
+  Coalesce,
+  FixedInstanceType,
+  Mixin,
+  PhantomConstructor,
+  NullishProps,
+} from "fvtt-types/utils";
 
 /**
  * A mixin class which implements the behavior of EventTarget.
@@ -50,6 +57,11 @@ declare namespace EventEmitterMixin {
   interface AnyMixedConstructor extends ReturnType<typeof EventEmitterMixin<BaseClass>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
+  type Mix<BaseClass extends EventEmitterMixin.BaseClass | undefined> = Mixin<
+    typeof EventEmitter,
+    Coalesce<BaseClass, PhantomConstructor>
+  >;
+
   type BaseClass = AnyConstructor;
 
   /** @internal */
@@ -70,8 +82,8 @@ declare namespace EventEmitterMixin {
  * Augment a base class with EventEmitter behavior.
  * @param BaseClass - Some base class augmented with event emitter functionality
  */
-declare function EventEmitterMixin<ExtendedClass extends EventEmitterMixin.BaseClass>(
-  BaseClass: ExtendedClass,
-): Mixin<typeof EventEmitter, ExtendedClass>;
+declare function EventEmitterMixin<BaseClass extends EventEmitterMixin.BaseClass | undefined = undefined>(
+  BaseClass?: BaseClass,
+): EventEmitterMixin.Mix<BaseClass>;
 
 export default EventEmitterMixin;

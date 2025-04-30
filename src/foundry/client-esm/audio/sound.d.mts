@@ -169,7 +169,7 @@ declare namespace Sound {
  * Each Sound is either an AudioBufferSourceNode (for short sources) or a MediaElementAudioSourceNode (for long ones).
  * This class provides an interface around both types which allows standardized control over playback.
  */
-declare class Sound extends EventEmitterMixin(Object) {
+declare class Sound extends EventEmitterMixin() {
   /**
    * Construct a Sound by providing the source URL and other options.
    * @param src     - The audio source path, either a relative path or a remote URL

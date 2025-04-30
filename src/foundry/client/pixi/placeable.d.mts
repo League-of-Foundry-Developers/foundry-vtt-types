@@ -24,7 +24,9 @@ declare global {
    */
   abstract class PlaceableObject<
     CanvasDocument extends PlaceableObject.AnyCanvasDocument = PlaceableObject.AnyCanvasDocument,
-  > extends RenderFlagsMixin(PIXI.Container) {
+    // Note(LukeAbby): The generic parameter being required to be provided is due to
+    // https://github.com/microsoft/TypeScript/issues/61633
+  > extends RenderFlagsMixin<typeof PIXI.Container>(PIXI.Container) {
     /**
      * @param document - The Document instance which is represented by this object
      */

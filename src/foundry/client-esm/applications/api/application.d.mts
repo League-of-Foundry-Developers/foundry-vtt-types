@@ -448,7 +448,7 @@ declare class ApplicationV2<
   RenderContext extends object = ApplicationV2.RenderContext,
   Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
-> extends EventEmitterMixin(Object) {
+> extends EventEmitterMixin() {
   static [__ApplicationV2Brand]: never;
 
   [__RenderContext]: RenderContext;

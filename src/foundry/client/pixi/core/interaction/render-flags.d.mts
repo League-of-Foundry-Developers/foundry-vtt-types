@@ -1,10 +1,12 @@
 import type {
   AnyConstructor,
+  Coalesce,
   ConcreteKeys,
   FixedInstanceType,
   InexactPartial,
   MakeConform,
   Mixin,
+  PhantomConstructor,
 } from "fvtt-types/utils";
 import type { LogCompatibilityWarningOptions } from "#common/utils/logging.d.mts";
 
@@ -138,21 +140,28 @@ declare global {
   /**
    * Add RenderFlags functionality to some other object.
    * This mixin standardizes the interface for such functionality.
-   * @param Base - The base class being mixed. Normally a PIXI.DisplayObject
+   * @param Base - The base class being mixed: defaults to an anonymous empty class.
    * @returns The mixed class definition
+   *
+   * @remarks `Base` is normally a PIXI.DisplayObject
    */
   // Note(LukeAbby): In theory a similar thing to what happens in `CanvasGroupMixin` could be done.
   // That is passing up a generic to instantiate the generic side. However `RenderFlagsMixin` is
   // only inherited directly by `PerceptionManager` and `PlaceableObject`.
   // Therefore it's mostly the subclasses of `PlaceableObject` that face this problem and that can't
   // be solved here unfortunately.
-  function RenderFlagsMixin<BaseClass extends RenderFlagsMixin.BaseClass>(
-    Base: BaseClass,
-  ): Mixin<typeof RenderFlagObject, BaseClass>;
+  function RenderFlagsMixin<BaseClass extends RenderFlagsMixin.BaseClass | undefined = undefined>(
+    Base?: BaseClass,
+  ): RenderFlagsMixin.Mix<BaseClass>;
 
   namespace RenderFlagsMixin {
     interface AnyMixedConstructor extends ReturnType<typeof RenderFlagsMixin<BaseClass>> {}
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
+
+    type Mix<BaseClass extends RenderFlagsMixin.BaseClass | undefined> = Mixin<
+      typeof RenderFlagObject,
+      Coalesce<BaseClass, PhantomConstructor>
+    >;
 
     type BaseClass = AnyConstructor;
 

@@ -11,7 +11,7 @@ declare global {
    * This controls the logic which batches multiple requested updates to minimize the amount of work required.
    * A singleton instance is available as {@link Canvas.perception | `Canvas#perception`}.
    */
-  class PerceptionManager extends RenderFlagsMixin(Object) {
+  class PerceptionManager extends RenderFlagsMixin() {
     static RENDER_FLAGS: InterfaceToObject<PerceptionManager.RENDER_FLAGS>;
 
     static RENDER_FLAG_PRIORITY: "PERCEPTION";

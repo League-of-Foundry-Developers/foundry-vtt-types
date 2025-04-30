@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import EventEmitterMixin = foundry.utils.EventEmitterMixin;
 
-declare class EventEmitter extends EventEmitterMixin(Object) {}
+declare class EventEmitter extends EventEmitterMixin() {}
 
 expectTypeOf(EventEmitter.emittedEvents).toEqualTypeOf<string[]>();
 
