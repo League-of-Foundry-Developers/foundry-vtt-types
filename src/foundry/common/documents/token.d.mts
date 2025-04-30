@@ -72,8 +72,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): DataModel.ToObject<TokenDocument.Schema, Source>;
 
   /**
-   * @remarks Migrates:
-   * - `actorData` to `delta`
+   * @remarks Migrations:
+   * - `actorData` to `delta` (since v11, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 

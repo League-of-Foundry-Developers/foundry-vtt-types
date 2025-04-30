@@ -193,6 +193,11 @@ declare namespace ApplicationConfiguration {
 declare class ApplicationConfiguration extends DataModel<ApplicationConfiguration.Schema> {
   static defineSchema(): ApplicationConfiguration.Schema;
 
+  /**
+   * @remarks Migrates:
+   * - pre-v9 `dataChannel`s to their updated names
+   * - `awsConfig === true` to `""`
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**

@@ -249,7 +249,14 @@ declare abstract class DataModel<
    * Create a DataModel instance using a provided serialized JSON string.
    * @param json - Serialized document data in string format
    * @returns A constructed data model instance
-   * @remarks Returns `new this()` so needs an override per subclass.
+   * @remarks
+   * Returns `new this()` so needs an override per subclass.
+   *
+   * ```ts
+   * class MyDataModel extends ... {
+   *   static fromJSON(json: string): MyDataModel
+   * }
+   * ```
    */
   static fromJSON(json: string): DataModel.Any;
 

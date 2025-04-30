@@ -1,3 +1,4 @@
+import type { AnyMutableObject } from "../../../utils/index.d.mts";
 import type BasePackage from "./base-package.d.mts";
 
 declare namespace BaseSystem {
@@ -28,6 +29,33 @@ declare class BaseSystem extends BasePackage<BaseSystem.Schema> {
    * Does the system template request strict type checking of data compared to template.json inferred types.
    */
   strictDataCleaning: boolean;
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "You are accessing `BaseSystem#gridDistance` which has been migrated to {@link BaseSystem.grid | `BaseSystem#grid`}`#distance`"
+   */
+  get gridDistance(): number;
+
+  set gridDistance(number);
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks "You are accessing `BaseSystem#gridUnits` which has been migrated to {@link BaseSystem.grid | `BaseSystem#grid`}`#units`"
+   */
+  get gridUnits(): number;
+
+  set gridUnits(number);
+
+  /** @remarks Adds `gridDistance` and `gridUnits` to super's */
+  static override migratedKeys: Set<string>;
+
+  /**
+   * @remarks Migrations:
+   * - {@link BasePackage.migrateData | `BasePackage`}'s
+   * - `gridDistance` to `grid.distance` (since v12, until v14)
+   * - `gridUnits` to `grid.units` (since v12, until v14)
+   */
+  static override migrateData(data: AnyMutableObject, options?: BasePackage.MigrateDataOptions): AnyMutableObject;
 }
 
 export default BaseSystem;

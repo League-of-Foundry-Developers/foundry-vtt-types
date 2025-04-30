@@ -1,4 +1,12 @@
-import type { GetKey, AnyObject, InexactPartial, AnyMutableObject, Identity, AnyArray } from "fvtt-types/utils";
+import type {
+  GetKey,
+  AnyObject,
+  InexactPartial,
+  AnyMutableObject,
+  Identity,
+  AnyArray,
+  NullishProps,
+} from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -381,10 +389,15 @@ declare namespace BasePackage {
     hasStorage: boolean;
   }
 
-  interface LogOptions extends InexactPartial<LogCompatibilityWarningOptions> {
+  /** @internal */
+  type _Installed = NullishProps<{
     /** Is the package installed? */
-    installed?: unknown;
-  }
+    installed: boolean;
+  }>;
+
+  interface LogOptions extends _Installed, InexactPartial<LogCompatibilityWarningOptions> {}
+
+  interface MigrateDataOptions extends _Installed {}
 
   interface CleanDataOptions extends fields.DataField.CleanOptions {
     /**
@@ -409,7 +422,7 @@ export class PackageRelationships extends fields.SchemaField<BasePackage.Package
   constructor(options: fields.SchemaField.Options<BasePackage.PackageRelationshipsSchema>);
 }
 
-// ommitted private class PackageRelationshipField
+// omitted private class PackageRelationshipField
 
 /**
  * A custom SchemaField for defining a related Package.
@@ -638,12 +651,18 @@ declare class BasePackage<
    */
   static migratedKeys: Set<string>;
 
-  static migrateData(
-    data: AnyMutableObject,
-    logOptions?: InexactPartial<{
-      installed: boolean;
-    }>,
-  ): AnyMutableObject;
+  /**
+   * @remarks Migrations:
+   * - `name` to `id`, both at root and for any `dependencies` (since v10 until v13)
+   * - `dependencies` to `relationships` (structural change) (since v10 until v13)
+   * - `minimumCoreVersion` and `compatibleCoreVersion` to `compatibility.minimum` and `.verified`, respectively (since v10 until v13)
+   * - Inside `media` entries, `link` to `url` (since v11 until v13)
+   * - Inside `packs` entries:
+   *   - `private` to an `ownership` object with `{PLAYER: "LIMITED", ASSISTANT: "OWNER"}` (since v11 until v13)
+   *   - Slugifies the `name` if not already a valid slug (since v12, until v14)
+   *   - `entity` to `type` (since v9, no specified end)
+   */
+  static override migrateData(data: AnyMutableObject, options?: BasePackage.MigrateDataOptions): AnyMutableObject;
 
   protected static _migrateNameToId(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 

@@ -56,8 +56,8 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   ): boolean;
 
   /**
-   * @remarks Migrates:
-   * - `z` to `elevation`
+   * @remarks Migrations:
+   * - `z` to `elevation` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 

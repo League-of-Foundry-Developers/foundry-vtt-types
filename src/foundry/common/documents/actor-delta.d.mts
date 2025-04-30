@@ -64,6 +64,12 @@ declare abstract class BaseActorDelta<
     context: unknown,
   ): Document.ImplementationClassFor<"Actor"> | null;
 
+  /**
+   * @remarks Migrations:
+   * - {@link documents.BaseActor.migrateData | `BaseActor`}'s
+   *
+   * Simply forwards to `BaseActor`
+   */
   static migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /** @remarks Strips optional (`required: false`) fields from the object before returning */

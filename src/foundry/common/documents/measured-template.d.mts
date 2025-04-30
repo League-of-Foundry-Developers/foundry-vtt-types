@@ -54,7 +54,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   ): boolean;
 
   /**
-   * @remarks Migrates:
+   * @remarks Migrations:
    * - `user` to `author`
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;

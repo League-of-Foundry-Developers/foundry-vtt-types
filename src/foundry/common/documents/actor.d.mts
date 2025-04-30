@@ -61,6 +61,10 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
    */
 
+  /**
+   * @remarks Migrations:
+   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /*

@@ -29,6 +29,10 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   static override defineSchema(): BasePlaylist.Schema;
 
+  /**
+   * @remarks Migrations:
+   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   static override shimData(

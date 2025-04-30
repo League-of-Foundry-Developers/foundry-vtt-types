@@ -39,6 +39,10 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    */
   static DEFAULT_ICON: "icons/svg/dice-target.svg";
 
+  /**
+   * @remarks Migrations:
+   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   static override canUserCreate(user: User.Implementation): boolean;

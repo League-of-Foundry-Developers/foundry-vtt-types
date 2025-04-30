@@ -29,6 +29,10 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override defineSchema(): BaseJournalEntry.Schema;
 
+  /**
+   * @remarks Migrations:
+   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /*

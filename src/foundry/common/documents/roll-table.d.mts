@@ -34,6 +34,10 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    */
   static DEFAULT_ICON: "icons/svg/d20-grey.svg";
 
+  /**
+   * @remarks Migrations:
+   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /*

@@ -181,6 +181,10 @@ declare class LightData extends DataModel<LightData.Schema, LightData.Parent> {
   /** @defaultValue `["LIGHT"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
+  /**
+   * @remarks Migrates:
+   * - negative `luminosity`s to `1 - luminosity` and setting `negative` true
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 }
 

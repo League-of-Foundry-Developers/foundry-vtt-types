@@ -38,6 +38,11 @@ declare abstract class BaseChatMessage<
     options?: InexactPartial<{ exact: boolean }>,
   ): boolean;
 
+  /**
+   * @remarks Migrations:
+   * - `user` to `author` (since v12, no specified end)
+   * - existing numeric `type`s to `style`, setting `type` to `"base"` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   static override shimData(

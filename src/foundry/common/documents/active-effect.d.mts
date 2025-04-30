@@ -50,6 +50,11 @@ declare abstract class BaseActiveEffect<
    * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
    */
 
+  /**
+   * @remarks Migrations:
+   * - `label` to `name` (since v11, no specified end)
+   * - `icon` to `img` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**

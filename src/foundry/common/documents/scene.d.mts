@@ -29,6 +29,18 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   static override defineSchema(): BaseScene.Schema;
 
+  /**
+   * @remarks Migrations:
+   * - `fogExploration` to `fog.exploration` (since v12, until 14 (probably))
+   * - `fogReset` to `fog.reset` (since v12, until 14 (probably))
+   * - `fogOverlay` to `fog.overlay` (since v12, until 14 (probably))
+   * - `fogExploredColor` to `fog.colors.explored` (since v12, until 14 (probably))
+   * - `fogUnexploredColor` to `fog.colors.unexplored` (since v12, until 14 (probably))
+   * - `globalLight` to `environment.globalLight.enabled` (since v12, until 14 (probably))
+   * - `globalLightThreshold` to `environment.globalLight.darkness.max` (since v12, until 14 (probably))
+   * - `darkness` to `environment.darknessLevel` (since v12, until 14 (probably))
+   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   static override shimData(
