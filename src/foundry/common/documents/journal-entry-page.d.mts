@@ -30,7 +30,13 @@ declare abstract class BaseJournalEntryPage<
 
   static override defineSchema(): BaseJournalEntryPage.Schema;
 
-  override getUserLevel(user?: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  /**
+   * @remarks Uses `game.user` if `user` is falsey.
+   *
+   * If this page's ownership is `.INHERIT` for this user (specified or default),
+   * forwards to `this.parent.getUserLevel`.
+   */
+  override getUserLevel(user?: User.Implementation | null): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /*
    * After this point these are not really overridden methods.

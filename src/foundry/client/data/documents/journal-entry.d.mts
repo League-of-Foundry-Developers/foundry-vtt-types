@@ -497,6 +497,11 @@ declare global {
      */
     get visible(): boolean;
 
+    /**
+     * @remarks "Upgrade to OBSERVER ownership if the journal entry is in a LIMITED compendium,
+     * as LIMITED has no special meaning for journal entries in this context.""
+     */
+    // user: not null (parameter default only where forwarded)
     override getUserLevel(user?: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
     /**
