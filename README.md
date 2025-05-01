@@ -15,13 +15,13 @@ TypeScript type definitions for [Foundry Virtual Tabletop](https://foundryvtt.co
 
 We aim to support the latest release of each Foundry VTT version (0.7, 0.8, 9, etc.), starting with 0.7.
 
-At the moment, versions 0.7, 0.8, and 9 are fully supported with partial support for versions 10 and 11. Work on support for version 12 is currently underway. See the [open foundry V12 issues](https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues?q=is%3Aopen+is%3Aissue+label%3A%22foundry+V12%22).
+At the moment, versions 0.7, 0.8, and 9 are fully supported with partial support for versions 10, 11, and 12. Work on support for version 13 is currently underway.
 
-## V12 Installation
+## V13 Installation
 
-Currently v12 is still in beta. There are known bugs, issues in the ergonomics, and major unfinished work in the current implementation. To get a direct line of communication about the current status of development as well as to help us understand what areas need to be prioritized first, join the [League of Extraordinary FoundryVTT Developers Discord](https://discord.gg/73HTMuK7dT) or file an issue.
+Currently v13 is still in beta. There are known bugs, issues in the ergonomics, and major unfinished work in the current implementation. To get a direct line of communication about the current status of development as well as to help us understand what areas need to be prioritized first, join the [League of Extraordinary FoundryVTT Developers Discord](https://discord.gg/73HTMuK7dT) or file an issue.
 
-The recommended way to install for v12 is this command:
+The recommended way to install for v13 is this command:
 
 ```sh
 npm add -D fvtt-types@github:League-of-Foundry-Developers/foundry-vtt-types#main
@@ -30,8 +30,6 @@ npm add -D fvtt-types@github:League-of-Foundry-Developers/foundry-vtt-types#main
 Alternatively, if you're using yarn you'll need to use the command `yarn add --dev fvtt-types@github:League-of-Foundry-Developers/foundry-vtt-types#main`.
 
 This will add the current commit on `main` as a dependency. Both npm and yarn's lockfile will store the commit you initially installed this command and so updates to your dependency will not happen automatically or even after a fresh install. To update you will need to be rerun the prior command periodically to update as improvements are added frequently.
-
-If you've been using the types for a few months now, the best branch would be `maintenance` instead. `main` will have a number of backwards incompatible breaking changes going forward.
 
 ## Installation
 
