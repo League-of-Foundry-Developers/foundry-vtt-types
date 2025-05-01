@@ -117,7 +117,7 @@ declare namespace HandlebarsApplicationMixin {
       options: HandlebarsApplicationMixin.RenderOptions,
     ): Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
-    protected _preFirstRender(
+    protected _preRender(
       context: DeepPartial<HandlebarsApplication.RenderContextFor<this>>,
       options: DeepPartial<HandlebarsApplication.RenderOptionsFor<this>>,
     ): Promise<void>;
