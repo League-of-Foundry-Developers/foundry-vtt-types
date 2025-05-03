@@ -1,4 +1,4 @@
-import type { Mixin, FixedInstanceType, Coalesce, AnyObject } from "fvtt-types/utils";
+import type { Mixin, FixedInstanceType, Coalesce, AnyObject, Identity } from "fvtt-types/utils";
 import type Document from "#common/abstract/document.d.mts";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
@@ -539,15 +539,8 @@ declare const _ClientDocument: _ClientDocumentType;
 type ClientDocumentMixinBaseClass = Document.Internal.Constructor;
 
 declare global {
-  /**
-   * This class does not really exist at runtime. It's here for types only.
-   */
-  class ClientDocument extends _ClientDocument {
-    // This may have be removed at some point in the future if it causes issues but the idea is to
-    // prevent operations like `new ClientDocument()` or `extends ClientDocument` because this does
-    // is not a class that really exists at runtime.
-    private constructor(...args: any[]);
-  }
+  interface ClientDocument extends FixedInstanceType<typeof _ClientDocument> {}
+  interface ClientDocumentConstructor extends Identity<typeof _ClientDocument> {}
 
   /**
    * A mixin which extends each Document definition with specialized client-side behaviors.
@@ -556,8 +549,6 @@ declare global {
   // FIXME(LukeAbby): Unlike most mixins, `ClientDocumentMixin` actually requires a specific constructor, the same as `Document`.
   // This means that `BaseClass extends Document.Internal.Constructor` is actually too permissive.
   // However this easily leads to circularities.
-  //
-  // Note(LukeAbby): The seemingly redundant merging in of `typeof AnyDocument` makes it easier for tsc to recognize that anything extending `ClientDocumentMixin` is also a document.
   function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
   ): Mixin<typeof InternalClientDocument<FixedInstanceType<BaseClass>>, BaseClass>;
