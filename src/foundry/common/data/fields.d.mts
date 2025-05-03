@@ -4382,7 +4382,9 @@ declare namespace TypedSchemaField {
     [type: string]:
       | ValidDataSchema
       | SchemaField<DataSchema, { required: true; nullable: false }, any, any, any>
-      | typeof DataModel<DataSchema, null>;
+      // Used instead of `AnyConstructor` because the constructor must stay the same.
+      // Note(LukeAbby): `AnyObject` for `ExtraConstructorOptions` may not make sense.
+      | typeof DataModel<DataSchema, Document.Any | null, AnyObject>;
   };
 
   type ToConfiguredTypes<Types extends TypedSchemaField.Types> = {
