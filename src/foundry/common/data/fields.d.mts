@@ -1728,6 +1728,20 @@ declare namespace ObjectField {
     MergedOptions<Options>
   >;
 
+  namespace FlagsField {
+    /**
+     * @internal
+     */
+    type _TwoLevelPartial<T> = {
+      [K in keyof T]?: _PartialObject<T[K]>;
+    };
+
+    /**
+     * @internal
+     */
+    type _PartialObject<T> = T extends object ? Partial<T> : T;
+  }
+
   /**
    * A helper to create a flags object field for the given key in the {@link FlagConfig | `FlagConfig`}.
    * @typeParam Key            - the key to look for in the FlagConfig
@@ -1744,7 +1758,10 @@ declare namespace ObjectField {
     Options,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     DataField.DerivedAssignmentType<
-      Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>,
+      // Note(LukeAbby): This is to make sure `UpdateData` etc. is partial.
+      FlagsField._TwoLevelPartial<
+        Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>
+      >,
       MergedOptions<Options>
     >,
     DataField.DerivedInitializedType<

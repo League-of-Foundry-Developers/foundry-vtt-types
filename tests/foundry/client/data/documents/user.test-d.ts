@@ -1,4 +1,4 @@
-import { assertType, expectTypeOf } from "vitest";
+import { assertType, expectTypeOf, test } from "vitest";
 
 // @ts-expect-error - requires a name.
 new User.implementation();
@@ -36,6 +36,7 @@ declare global {
     User: {
       someScope: {
         someFlag: number;
+        otherFlag: string;
       };
     };
   }
@@ -43,3 +44,14 @@ declare global {
 
 expectTypeOf<User.ImplementationClass>().toEqualTypeOf<typeof ConfiguredUser>();
 expectTypeOf<User.Implementation>().toEqualTypeOf<ConfiguredUser>();
+
+// Regression test for partial flags. @exxaminator reported that the `flags` weren't partial in `update`.
+test("partial update of flags allowed", () => {
+  user.update({
+    flags: {
+      someScope: {
+        someFlag: 123,
+      },
+    },
+  });
+});
