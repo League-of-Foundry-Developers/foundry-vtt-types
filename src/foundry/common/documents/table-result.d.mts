@@ -113,7 +113,7 @@ declare abstract class BaseTableResult<
 
   override delete(operation?: TableResult.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: TableResult.Database.GetOptions): TableResult.Implementation | null;
+  static override get(documentId: string, options?: TableResult.Database.GetOptions): TableResult.Implementation | null;
 
   static override getCollectionName(name: string): null;
 

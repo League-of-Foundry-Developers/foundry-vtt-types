@@ -106,6 +106,12 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 
   override delete(operation?: Folder.Database.DeleteOperation): Promise<this | undefined>;
 
+  /**
+   * @remarks Actual override, not just Document template typing.
+   *
+   * Never returns an index entry, only ever `Folder` or `null`, as the `folders` collection of a
+   * compendium is accessible at sync speed
+   */
   static override get(documentId: string, options?: Folder.Database.GetOptions): Folder.Implementation | null;
 
   static override getCollectionName(name: string): null;

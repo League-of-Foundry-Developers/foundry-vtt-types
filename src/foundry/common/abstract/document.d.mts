@@ -454,6 +454,7 @@ declare abstract class Document<
    * returned.
    */
   // Note: This uses `never` because it's unsound to try to call `Document.create` directly.
+  // TODO: This can take an array of data and return an array of documents, in addition to its current typing
   static create(data: never, operation?: never): Promise<Document.Any | undefined>;
 
   /**
@@ -489,8 +490,19 @@ declare abstract class Document<
    * @param documentId - The Document ID
    * @param operation  - Additional options which customize the request
    * @returns The retrieved Document, or null
+   *
+   * @remarks If the Document is in a compendium (i.e `operation.pack` is provided), returns the index
+   * entry (or `null`), instead of the Document.
+   *
+   * {@link FogExploration.get | `FogExploration.get`} can possibly forward args and return to/from
+   * {@link FogExploration.load | `FogExploration.load`}, which accounts for the `Promise<>` part
+   * of the return; All other documents return `SomeDoc.Implementation | null`
    */
-  static get(documentId: string, operation?: Document.Database.GetOptions): Document.Any | null;
+  // TODO: Type for possible index entry return
+  static get(
+    documentId: string,
+    operation?: Document.Database.GetOptions,
+  ): Promise<Document.Any | null> | Document.Any | null;
 
   /**
    * A compatibility method that returns the appropriate name of an embedded collection within this Document.

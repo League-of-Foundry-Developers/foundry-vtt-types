@@ -105,7 +105,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   override delete(operation?: RollTable.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: RollTable.Database.GetOptions): RollTable.Implementation | null;
+  static override get(documentId: string, options?: RollTable.Database.GetOptions): RollTable.Implementation | null;
 
   static override getCollectionName<CollectionName extends RollTable.Embedded.Name>(
     name: CollectionName,

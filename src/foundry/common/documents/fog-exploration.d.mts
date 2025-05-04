@@ -98,7 +98,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   static override get(
     documentId: string,
     options?: FogExploration.Database.GetOptions,
-  ): FogExploration.Implementation | null;
+  ): Promise<FogExploration.Implementation | null> | FogExploration.Implementation | null;
 
   static override getCollectionName(name: string): null;
 

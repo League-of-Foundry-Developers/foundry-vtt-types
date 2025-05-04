@@ -444,6 +444,18 @@ declare global {
       source: FogExploration.Source,
       context?: Document.FromImportContext<FogExploration.Parent>,
     ): Promise<FogExploration.Implementation>;
+
+    /**
+     * @remarks If the first argument is an object, logs a compatibility warning:
+     *
+     * "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War exploration data, an operation which has been renamed to {@link FogExploration.load | `FogExploration.load`}"
+     *
+     * Then forwards `...args` to `this.load`. Otherwise, forwards to {@link Document.get | `Document.get`}.
+     */
+    static override get(
+      documentId: string,
+      options?: FogExploration.Database.GetOptions,
+    ): Promise<FogExploration.Implementation | null> | FogExploration.Implementation | null;
   }
 
   namespace FogExploration {
