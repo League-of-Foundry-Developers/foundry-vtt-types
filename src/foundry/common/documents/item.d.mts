@@ -1,4 +1,4 @@
-import type { AnyObject, AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -46,10 +46,20 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    */
   static getDefaultArtwork(itemData: BaseItem.CreateData): { img: string };
 
-  override canUserModify(user: User.Implementation, action: "create" | "delete" | "update", data?: AnyObject): boolean;
+  /**
+   * @remarks If `this.isEmbedded`, uses `this.parent.canUserModify(user, "update")`, dropping `data` and forcing `action`,
+   * otherwise `super`'s (with all arguments forwarded). Core's `Actor` implementation doesn't override this method, so
+   * without further extension those are both {@link Document.canUserModify | `Document#canUserModify`}
+   */
+  // data: not null (parameter default only)
+  override canUserModify<Action extends "create" | "update" | "delete">(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<Item.Schema, Action>,
+  ): boolean;
 
   /**
-   * @remarks If `this.Embedded`, uses `this.parent.testUserPermission` otherwise `super`'s. Core's `Actor` implementation
+   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Actor` implementation
    * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
    */
   // options: not null (destructured)

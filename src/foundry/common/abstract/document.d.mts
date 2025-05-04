@@ -236,7 +236,7 @@ declare abstract class Document<
    * @param user - The User being tested (default: `game.user`)
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
    *
-   * @privateRemarks Making this just `User.Implementation` immediately explodes
+   * @privateRemarks Making this just `User.Implementation` causes circularities
    */
   getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
@@ -246,6 +246,8 @@ declare abstract class Document<
    * @param permission - The permission level from DOCUMENT_PERMISSION_LEVELS to test
    * @param options    - Additional options involved in the permission test
    * @returns Does the user have this permission level over the Document?
+   *
+   * @privateRemarks Making this just `User.Implementation` causes circularities
    */
   // options: not null (destructured)
   testUserPermission(
@@ -258,10 +260,12 @@ declare abstract class Document<
    * Test whether a given User has permission to perform some action on this Document
    * @param user   - The User attempting modification
    * @param action - The attempted action
-   * @param data   - Data involved in the attempted action
-   *                 (default: `{}`)
+   * @param data   - Data involved in the attempted action (default: `{}`)
    * @returns Does the User have permission?
+   *
+   * @privateRemarks Making this just `User.Implementation` causes circularities
    */
+  // data: not null (parameter default only)
   canUserModify<Action extends "create" | "update" | "delete">(
     user: User.Internal.Implementation,
     action: Action,

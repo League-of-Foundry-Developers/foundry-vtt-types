@@ -1,4 +1,4 @@
-import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
 import type { documents } from "../../client-esm/client.d.mts";
@@ -34,10 +34,15 @@ declare abstract class BaseActorDelta<
 
   static override defineSchema(): BaseActorDelta.Schema;
 
-  override canUserModify(
-    user: User.Internal.Implementation,
-    action: "create" | "update" | "delete",
-    data?: AnyObject,
+  /**
+   * @remarks Forwards to `this.parent.canUserModify`. Core's `TokenDocument` implementation doesn't override this method,
+   * so without further extension that's equivalent to {@link Document.canUserModify | `Document#canUserModify`}
+   */
+  // data: not null (parameter default only)
+  override canUserModify<Action extends "create" | "update" | "delete">(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<TokenDocument.Schema, Action>,
   ): boolean;
 
   /** @remarks Forwards to {@link TokenDocument.testUserPermission | `this.parent.testUserPermission`} */

@@ -50,7 +50,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   static #canUpdate(user: User.Implementation, doc: BaseCard, data: BaseCard.UpdateData): boolean;
 
   /**
-   * @remarks If `this.Embedded`, uses `this.parent.testUserPermission` otherwise `super`'s. Core's `Cards` implementation
+   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Cards` implementation
    * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
    */
   // options: not null (destructured)

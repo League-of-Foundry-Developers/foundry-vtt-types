@@ -30,7 +30,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   static override defineSchema(): BasePlaylistSound.Schema;
 
   /**
-   * @remarks If `this.Embedded`, uses `this.parent.testUserPermission` otherwise `super`'s. Core's `Playlist` implementation
+   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Playlist` implementation
    * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
    */
   // options: not null (destructured)
