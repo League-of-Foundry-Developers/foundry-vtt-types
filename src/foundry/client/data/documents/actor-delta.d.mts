@@ -567,9 +567,9 @@ declare global {
     override updateSource(
       // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });` and `super.updateSource`.
       // However it's likely the overlap between these two types is pretty high.
-      changes?: ActorDelta.Source,
-      options?: DataModel.UpdateSourceOptions,
-    ): object;
+      changes?: Actor.UpdateData,
+      options?: DataModel.UpdateOptions,
+    ): Actor.UpdateData;
 
     override reset(): void;
 

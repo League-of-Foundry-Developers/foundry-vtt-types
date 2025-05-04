@@ -195,11 +195,12 @@ declare abstract class DataModel<
    * @param changes - New values which should be applied to the data model
    * @param options - Options which determine how the new data is merged
    * @returns An object containing the changed keys and values
+   *
+   * @remarks `changes` and the return type are `AnyObject` to account for `ActorDelta` taking and returning `Actor` data
    */
-  updateSource(
-    changes?: fields.SchemaField.UpdateData<Schema>,
-    options?: DataModel.UpdateSourceOptions,
-  ): fields.SchemaField.UpdateData<Schema>;
+  // TODO: (LukeAbby) FIXME: this use of AnyObject forces DataModel subclasses to override `updateSource` if they want stricter typing/intellisense of their UpdateData
+  // changes: not null (parameter default only), options: not null (property access)
+  updateSource(changes?: AnyObject, options?: DataModel.UpdateOptions): AnyObject;
 
   /**
    * Copy and transform the DataModel into a plain object.
@@ -493,12 +494,6 @@ declare namespace DataModel {
   }>;
 
   interface ShimDataOptions extends _ShimDataOptions {}
-
-  interface UpdateSourceOptions {
-    dryRun?: boolean;
-    fallback?: boolean;
-    recursive?: boolean;
-  }
 }
 
 // This uses `any` because `Schema` and `Parent` are invariant
