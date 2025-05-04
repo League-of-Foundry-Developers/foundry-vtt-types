@@ -563,6 +563,8 @@ declare global {
     Base: BaseClass,
   ): Mixin<typeof InternalClientDocument<FixedInstanceType<BaseClass>>, BaseClass>;
 
+  // TODO: Namespaces typically match the Mixin, not the non-exported class, but we're exporting the class for type reasons,
+  // TODO: so this is an exception?
   namespace ClientDocument {
     interface SortOptions<T, SortKey extends string = "sort"> extends SortingHelpers.SortOptions<T, SortKey> {
       /**
@@ -675,6 +677,7 @@ declare global {
   }
 }
 
+// TODO: This appears unused. remove?
 // This is yet another `AnyDocument` type.
 // It exists specifically because the `Document.AnyConstructor` type is too safe to be merged in with a mixin.
 // The `...args: never` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.

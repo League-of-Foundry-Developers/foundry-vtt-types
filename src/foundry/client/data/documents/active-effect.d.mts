@@ -891,8 +891,16 @@ declare global {
       };
     };
 
-    // TODO: This is a minor override and doing the extension is complicated
-    // getFlag(scope: string, key: string): unknown;
+    /**
+     * @remarks If attempting to set `core.statusId`, logs a compatibility warning:
+     *
+     * "You are setting flags.core.statusId on an Active Effect. This flag is deprecated
+     * in favor of the {@link ActiveEffect.statuses | `statuses`} set."
+     */
+    override getFlag<Scope extends ActiveEffect.Flags.Scope, Key extends ActiveEffect.Flags.Key<Scope>>(
+      scope: Scope,
+      key: Key,
+    ): Document.GetFlag<ActiveEffect.Name, Scope, Key>;
 
     /**
      * @privateRemarks _preCreate, _onCreate, _onUpdate, _preUpdate, and _onDelete are all overridden but with no signature changes from BaseActiveEffect.

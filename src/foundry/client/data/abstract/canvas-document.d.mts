@@ -47,20 +47,24 @@ declare class CanvasDocument<
    */
 }
 
-declare namespace CanvasDocument {
-  interface Any extends CanvasDocument<any> {}
-}
-
 declare global {
   /**
    * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
    */
   // TODO(LukeAbby): The constraint here should ideally be something like `Document<Document.PlaceableType, any, Scene.Implementation | null>` but this causes circularities.
-  function CanvasDocumentMixin<BaseClass extends Document.Internal.Constructor>(
+  function CanvasDocumentMixin<BaseClass extends CanvasDocumentMixin.BaseClass>(
     Base: BaseClass,
   ): Mixin<typeof CanvasDocument<FixedInstanceType<BaseClass>>, BaseClass>;
+
+  namespace CanvasDocumentMixin {
+    interface AnyMixedConstructor extends ReturnType<typeof ClientDocumentMixin<BaseClass>> {}
+    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
+
+    type BaseClass = Document.Internal.Constructor;
+  }
 }
 
+// TODO: this appears unused, remove?
 // This is yet another `AnyDocument` type.
 // It exists specifically because the `Document.AnyConstructor` type is too safe to be merged in with a mixin.
 // The `...args: never` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.

@@ -655,6 +655,8 @@ declare namespace PrototypeToken {
   type ConstructorData = CreateData;
 
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 }
 
 /**
@@ -699,23 +701,39 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
 
   /**
    * @see {@link foundry.abstract.Document.update | `foundry.abstract.Document#update`}
+   * @remarks Despite the above `@see`, forwards to {@link Actor.update | `this.actor.update`} after wrapping `data`
+   * in `{prototypeToken: data}`
    */
-  update(data: unknown, options: unknown): unknown;
+  update(
+    data: PrototypeToken.UpdateData | undefined,
+    operation?: Actor.Database.UpdateOperation,
+  ): Promise<Actor.Implementation | undefined>;
 
+  // TODO: Type PrototypeToken flags separately from TokenDocument flags?
   /**
    * @see {@link foundry.abstract.Document.getFlag | `foundry.abstract.Document#getFlag`}
    */
-  getFlag(args: unknown): unknown;
+  getFlag<Scope extends TokenDocument.Flags.Scope, Key extends TokenDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<TokenDocument.Name, Scope, Key>;
 
   /**
    * @see {@link foundry.abstract.Document.setFlag | `foundry.abstract.Document#setFlag`}
    */
-  setFlag(args: unknown): unknown;
+  setFlag<
+    Scope extends TokenDocument.Flags.Scope,
+    Key extends TokenDocument.Flags.Key<Scope>,
+    Value extends Document.GetFlag<TokenDocument.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   /**
    * @see {@link foundry.abstract.Document.unsetFlag | `foundry.abstract.Document#unsetFlag`}
    */
-  unsetFlag(args: unknown): Promise<unknown>;
+  unsetFlag<Scope extends TokenDocument.Flags.Scope, Key extends TokenDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   /**
    * @see {@link Document.testUserPermission | `Document#testUserPermission`}
