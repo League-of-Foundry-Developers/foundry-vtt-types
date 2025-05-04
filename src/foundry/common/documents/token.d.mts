@@ -68,7 +68,11 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
-  updateSource(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateSourceOptions): TokenDocument.UpdateData;
+  // changes, options: not null (parameter default only)
+  override updateSource(
+    changes?: TokenDocument.UpdateData,
+    options?: DataModel.UpdateOptions,
+  ): TokenDocument.UpdateData;
 
   // TODO: Update with the Delta conditionality
   override toObject<Source extends boolean | null | undefined = true>(

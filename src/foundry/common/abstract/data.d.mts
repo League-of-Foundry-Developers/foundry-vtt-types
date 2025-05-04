@@ -196,9 +196,12 @@ declare abstract class DataModel<
    * @param options - Options which determine how the new data is merged
    * @returns An object containing the changed keys and values
    */
+  // TODO: This should allow dotkeys to be passed
+  // TODO: Without widening changes and the return type, the ActorDelta override is impossible to make correct
+  // changes, options: not null (parameter default only)
   updateSource(
     changes?: fields.SchemaField.UpdateData<Schema>,
-    options?: DataModel.UpdateSourceOptions,
+    options?: DataModel.UpdateOptions,
   ): fields.SchemaField.UpdateData<Schema>;
 
   /**
@@ -493,12 +496,6 @@ declare namespace DataModel {
   }>;
 
   interface ShimDataOptions extends _ShimDataOptions {}
-
-  interface UpdateSourceOptions {
-    dryRun?: boolean;
-    fallback?: boolean;
-    recursive?: boolean;
-  }
 }
 
 // This uses `any` because `Schema` and `Parent` are invariant

@@ -564,11 +564,13 @@ declare global {
     /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
     override prepareEmbeddedDocuments(): void;
 
+    // TODO: accurately type changes and return type
+    // changes, options: not null (parameter default only)
     override updateSource(
       // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });` and `super.updateSource`.
       // However it's likely the overlap between these two types is pretty high.
       changes?: ActorDelta.Source,
-      options?: DataModel.UpdateSourceOptions,
+      options?: DataModel.UpdateOptions,
     ): object;
 
     override reset(): void;
