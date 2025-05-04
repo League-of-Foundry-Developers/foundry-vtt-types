@@ -51,13 +51,7 @@ declare global {
     | { type: Notifications.Notification["type"]; message: string; options: Notifications.NotifyOptions }[]
     | null;
 
-  /**
-   * A collection of application instances
-   * @remarks
-   * - All of the elements of {@link ui | `ui`} except for `context` and `window` are initialized between the `"setup"` and `"ready"` hook events.
-   * - In the `/stream` view, only `chat` is initialized but none of the other {@link Application | `Application`}s.
-   */
-  let ui: {
+  interface UI {
     /**
      * @remarks
      * Initialized whenever a {@link ContextMenu | `ContextMenu`} is opened, deleted when it's closed again.
@@ -68,7 +62,15 @@ declare global {
      * @defaultValue `{}`
      */
     windows: Record<number, Application.Any>;
-  } & MaybeUI;
+  }
+
+  /**
+   * A collection of application instances
+   * @remarks
+   * - All of the elements of {@link ui | `ui`} except for `context` and `window` are initialized between the `"setup"` and `"ready"` hook events.
+   * - In the `/stream` view, only `chat` is initialized but none of the other {@link Application | `Application`}s.
+   */
+  let ui: UI & MaybeUI;
 
   /**
    * The client side console logger
