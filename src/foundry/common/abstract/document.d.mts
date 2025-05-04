@@ -289,6 +289,7 @@ declare abstract class Document<
    * For Documents which include game system data, migrate the system data object to conform to its latest data model.
    * The data model is defined by the template.json specification included by the game system.
    * @returns The migrated system data object
+   * @throws If this document type either doesn't have subtypes or it does but the one on this document is a DataModel
    */
   migrateSystemData(): object;
 

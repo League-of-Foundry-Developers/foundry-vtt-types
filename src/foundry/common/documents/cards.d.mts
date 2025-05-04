@@ -85,6 +85,11 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   override parent: BaseCards.Parent;
 
+  /**
+   * @remarks Actual override, not just Document template typing.
+   *
+   * Sets `context.keepEmbeddedIds` to `false` if it's `=== undefined`
+   */
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Cards.Implementation | Cards.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Cards.Database.Create<Temporary>>,
