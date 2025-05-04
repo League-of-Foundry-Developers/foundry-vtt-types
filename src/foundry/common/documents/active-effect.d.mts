@@ -1,7 +1,6 @@
-import type { AnyObject, AnyMutableObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as CONST from "../constants.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
@@ -33,16 +32,16 @@ declare abstract class BaseActiveEffect<
 
   static override defineSchema(): BaseActiveEffect.Schema;
 
+  /**
+   * @remarks If `this.Embedded`, uses `this.parent.testUserPermission` otherwise `super`'s. Core's `Actor` implementation
+   * doesn't override this method, and `Item` only optionally forwards to `Actor`, so without further extension all roads
+   * lead to {@link Document.testUserPermission | `Document#testUserPermission`}
+   */
+  // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   /**

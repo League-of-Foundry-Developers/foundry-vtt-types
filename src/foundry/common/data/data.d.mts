@@ -10,6 +10,7 @@ import type {
 } from "fvtt-types/utils";
 import fields = foundry.data.fields;
 import documents = foundry.documents;
+import Document = foundry.abstract.Document;
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -717,13 +718,16 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
   unsetFlag(args: unknown): Promise<unknown>;
 
   /**
-   * @see {@link foundry.abstract.Document.testUserPermission | `foundry.abstract.Document#testUserPermission`}
+   * @see {@link Document.testUserPermission | `Document#testUserPermission`}
+   * @remarks Forwards to {@link Actor.testUserPermission | `this.actor.testUserPermission`}. Core's `Actor` implementation
+   * doesn't override this method, so without further extension, that's equivalent to `Document#testUserPermission`
    */
+  // options: not null (destructured)
   testUserPermission(
     user: User.Implementation,
-    permission: unknown,
-    { exact }: { exact: boolean },
-  ): ReturnType<this["actor"]["testUserPermission"]>;
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
 
   /**
    * @see {@link foundry.abstract.Document.isOwner | `foundry.abstract.Document#isOwner`}

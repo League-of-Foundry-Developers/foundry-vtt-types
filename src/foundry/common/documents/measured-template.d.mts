@@ -46,9 +46,13 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   static override defineSchema(): BaseMeasuredTemplate.Schema;
 
+  /**
+   * @remarks Returns `true` if `user` is the `author` of the `MeasuredTemplate` and `options.exact` is falsey.
+   * Otherwise, forwards to {@link Document.testUserPermission | Document#testUserPermission`}
+   */
   // options: not null (destructured)
   override testUserPermission(
-    user: User.Internal.Implementation,
+    user: User.Implementation,
     permission: Document.TestableOwnershipLevel,
     options?: Document.TestUserPermissionOptions,
   ): boolean;

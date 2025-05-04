@@ -50,6 +50,14 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    */
   static DEFAULT_ICON: string;
 
+  /**
+   * @remarks Returns `true` for GMs regardless of `options.exact`
+   *
+   * If this is an unlinked note (lacks an `entryId`), returns `user.hasPermission("NOTE_CREATE")`. Otherwise,
+   * `this.entry.testUserPermission`, or `false` if `!this.entry`. Core's `JournalEntry` implementation doesn't
+   * override this method, so without further extension that's equivalent to {@link Document.testUserPermission | `Document#testUserPermission`}
+   * */
+  // options: not null (destructured)
   override testUserPermission(
     user: User.Internal.Implementation,
     permission: Document.TestableOwnershipLevel,

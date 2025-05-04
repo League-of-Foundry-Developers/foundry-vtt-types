@@ -519,10 +519,17 @@ declare global {
      */
     get isDefeated(): boolean;
 
+    /**
+     * @remarks Returns `true` for GMs, regardless of `options.exact`. Otherwise, returns
+     * `this.actor?.canUserModify(user, "update") || false`
+     *
+     * @privateRemarks This is the only document that overrides this in the non-Base class
+     */
+    // options: not null (destructured)
     override testUserPermission(
       user: User.Implementation,
-      permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-      { exact }?: { exact?: boolean },
+      permission: Document.TestableOwnershipLevel,
+      options?: Document.TestUserPermissionOptions,
     ): boolean;
 
     /**

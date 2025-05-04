@@ -57,6 +57,10 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    */
   static DEFAULT_ICON: string;
 
+  /**
+   * @remarks If `this.actor`, uses {@link Actor.testUserPermission | `this.actor.testUserPermission`} otherwise `super`'s. Core's `Actor` implementation
+   * doesn't override this method, so without further extension, that's equivalent to {@link Document.testUserPermission | `Document#testUserPermission`}
+   */
   // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,

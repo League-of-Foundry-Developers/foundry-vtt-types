@@ -49,9 +49,13 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   /** @remarks Returns `user.hasPermission("DRAWING_CREATE")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
+  /**
+   * @remarks Returns `true` if `user` is the `author` of the `Drawing` and `options.exact` is falsey.
+   * Otherwise, forwards to {@link Document.testUserPermission | `Document#testUserPermission`}
+   */
   // options: not null (destructured)
   override testUserPermission(
-    user: User.Internal.Implementation,
+    user: User.Implementation,
     permission: Document.TestableOwnershipLevel,
     options?: Document.TestUserPermissionOptions,
   ): boolean;

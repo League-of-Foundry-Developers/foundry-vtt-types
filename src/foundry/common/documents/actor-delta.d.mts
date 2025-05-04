@@ -1,7 +1,7 @@
-import type { AnyMutableObject, AnyObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
-import type { CONST, documents } from "../../client-esm/client.d.mts";
+import type { documents } from "../../client-esm/client.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
@@ -40,16 +40,12 @@ declare abstract class BaseActorDelta<
     data?: AnyObject,
   ): boolean;
 
+  /** @remarks Forwards to {@link TokenDocument.testUserPermission | `this.parent.testUserPermission`} */
+  // options: not null (destructured)
   override testUserPermission(
-    user: User.Internal.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    user: User.Implementation,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   /**

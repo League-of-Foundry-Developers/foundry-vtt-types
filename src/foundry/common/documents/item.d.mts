@@ -48,9 +48,14 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   override canUserModify(user: User.Implementation, action: "create" | "delete" | "update", data?: AnyObject): boolean;
 
+  /**
+   * @remarks If `this.Embedded`, uses `this.parent.testUserPermission` otherwise `super`'s. Core's `Actor` implementation
+   * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
+   */
+  // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
+    permission: Document.TestableOwnershipLevel,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
