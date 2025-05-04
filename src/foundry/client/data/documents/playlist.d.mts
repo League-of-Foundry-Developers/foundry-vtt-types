@@ -636,9 +636,7 @@ declare global {
 
     override _onClickDocumentLink(event: MouseEvent): ReturnType<this["playAll" | "stopAll"]>;
 
-    /**
-     * @privateRemarks _preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes from the BasePlaylist class.
-     */
+    //_preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes from the BasePlaylist class.
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters

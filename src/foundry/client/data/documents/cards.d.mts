@@ -836,9 +836,7 @@ declare global {
       context: Record<string, unknown>,
     ): Promise<ChatMessage.Implementation | undefined>;
 
-    /**
-     * @privateRemarks _preCreate, _onUpdate, and _preDelete are all overridden but with no signature changes from BaseCards.
-     */
+    // _preCreate, _onUpdate, and _preDelete are all overridden but with no signature changes from BaseCards.
 
     /**
      * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.

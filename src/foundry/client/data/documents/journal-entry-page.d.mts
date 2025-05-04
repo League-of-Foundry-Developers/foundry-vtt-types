@@ -660,9 +660,7 @@ declare global {
 
     override _onClickDocumentLink(event: MouseEvent): this;
 
-    /**
-     * @privateRemarks _onUpdate is overridden but with no signature changes from the template in BaseJournalEntryPage
-     */
+    // _onUpdate is overridden but with no signature changes from the template in BaseJournalEntryPage
 
     protected override _buildEmbedHTML(
       config: TextEditor.DocumentHTMLEmbedConfig,

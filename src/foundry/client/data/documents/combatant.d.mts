@@ -560,10 +560,8 @@ declare global {
      */
     protected _getInitiativeFormula(): string;
 
-    /**
-     * @privateRemarks DatabaseLifecycle Events are overridden but with no signature changes.
-     * These are already covered in BaseCombatant
-     */
+    // DatabaseLifecycle Events are overridden but with no signature changes.
+    // These are already covered in BaseCombatant
 
     /*
      * After this point these are not really overridden methods.

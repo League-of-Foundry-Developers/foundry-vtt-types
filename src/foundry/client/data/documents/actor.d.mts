@@ -821,9 +821,7 @@ declare global {
      */
     protected _unregisterDependentScene(scene: Scene.Implementation): void;
 
-    /**
-     * @privateRemarks _preCreate and _onUpdate are all overridden but with no signature changes from BaseActor.
-     */
+    // _preCreate and _onUpdate are all overridden but with no signature changes from BaseActor.
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters

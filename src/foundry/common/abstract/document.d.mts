@@ -661,6 +661,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the creation request
    * @param userId  - The id of the User requesting the document update
    */
+  // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _onCreate(data: never, options: never, userId: string): void;
 
   /**
@@ -718,6 +719,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the update request
    * @param userId  - The id of the User requesting the document update
    */
+  // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _onUpdate(changed: never, options: never, userId: string): void;
 
   /**
@@ -766,6 +768,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
+  // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _preDelete(options: never, user: User.Internal.Implementation): Promise<boolean | void>;
 
   /**
@@ -817,9 +820,13 @@ declare abstract class Document<
   ): Promise<unknown>;
 
   /**
-   * Configure whether V10 Document Model migration warnings should be logged for this class.
+   * @deprecated since v10, no specified end
+   * @remarks "You are accessing the "data" field of which was deprecated in v10 and replaced with "system".
+   * Continued usage of pre-v10 ".data" paths is no longer supported"
+   *
+   * @throws An error with the above deprecation warning, if this Document's schema has a `system` field
    */
-  static LOG_V10_COMPATIBILITY_WARNINGS: boolean;
+  get data(): never;
 
   /**
    * @deprecated since v11, will be removed in v13

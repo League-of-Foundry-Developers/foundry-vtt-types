@@ -580,9 +580,7 @@ declare global {
      */
     getRollData(): AnyObject;
 
-    /**
-     * @privateRemarks _preCreate, _onCreateDocuments and _onDeleteDocuments are all overridden but with no signature changes from BaseItem.
-     */
+    // _preCreate, _onCreateDocuments and _onDeleteDocuments are all overridden but with no signature changes from BaseItem.
 
     /*
      * After this point these are not really overridden methods.

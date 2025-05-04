@@ -58,11 +58,6 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   static override canUserCreate(user: User.Implementation): boolean;
 
   /**
-   * @privateRemarks _preCreate and _preUpdate are overridden but with no signature changes.
-   * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-   */
-
-  /**
    * @remarks
    * Migrations:
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)

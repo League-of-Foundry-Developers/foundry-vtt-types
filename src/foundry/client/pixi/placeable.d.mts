@@ -252,6 +252,7 @@ declare global {
     /**
      * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
      */
+    // TODO: should be `MaybePromise<void>` to allow async subclassing?
     protected _onCreate(
       data: foundry.data.fields.SchemaField.CreateData<CanvasDocument["schema"]["fields"]>,
       options: Document.Database.CreateOptions<DatabaseCreateOperation>,

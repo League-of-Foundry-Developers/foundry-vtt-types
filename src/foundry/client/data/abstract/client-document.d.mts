@@ -162,10 +162,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   _onClickDocumentLink(event: MouseEvent): unknown;
 
-  /**
-   * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-   * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-   */
+  // _preCreate, _preUpdate, and _preDelete are all overridden with no signature changes,
+  // just to call `this.system._preX` if `super` doesn't return `false`
+
+  //  _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
   /**
    * Orchestrate dispatching descendant document events to parent documents when embedded children are modified.

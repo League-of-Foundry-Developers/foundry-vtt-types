@@ -1079,10 +1079,8 @@ declare global {
       embeddedName: EmbeddedName,
     ): TokenDocument.GetEmbeddedCollectionResult<EmbeddedName>;
 
-    /**
-     * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
-     * _onUpdateOperation, _onDeleteOperation are all overridden but with no signature changes from their definition in BaseToken.
-     */
+    //_onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
+    // _onUpdateOperation, _onDeleteOperation are all overridden but with no signature changes from their definition in BaseToken.
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters

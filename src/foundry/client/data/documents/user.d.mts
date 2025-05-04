@@ -591,10 +591,8 @@ declare global {
      */
     updateTokenTargets(targetIds?: string[]): void;
 
-    /**
-     * @privateRemarks _onUpdate and _onDelete are overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    // _onUpdate and _onDelete are overridden but with no signature changes.
+    // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     /*
      * After this point these are not really overridden methods.

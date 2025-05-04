@@ -902,9 +902,7 @@ declare global {
       key: Key,
     ): Document.GetFlag<ActiveEffect.Name, Scope, Key>;
 
-    /**
-     * @privateRemarks _preCreate, _onCreate, _onUpdate, _preUpdate, and _onDelete are all overridden but with no signature changes from BaseActiveEffect.
-     */
+    // _preCreate, _onCreate, _onUpdate, _preUpdate, and _onDelete are all overridden but with no signature changes from BaseActiveEffect.
 
     /**
      * Display changes to active effects as scrolling Token status text.

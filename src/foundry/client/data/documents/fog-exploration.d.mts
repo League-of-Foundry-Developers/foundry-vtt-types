@@ -410,9 +410,7 @@ declare global {
      */
     getTexture(): PIXI.Texture | null;
 
-    /**
-     * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseFogExploration.
-     */
+    // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseFogExploration.
 
     /*
      * After this point these are not really overridden methods.

@@ -936,10 +936,8 @@ declare global {
 
     override _onClickDocumentLink(event: MouseEvent): unknown;
 
-    /**
-     * @privateRemarks _onCreate, _preUpdate, _onUpdate, _preDelete, and _onDelete are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    // _onCreate, _preUpdate, _onUpdate, _preDelete, and _onDelete are all overridden but with no signature changes.
+    // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     /**
      * Handle repositioning of placed objects when the Scene dimensions change

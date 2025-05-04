@@ -602,9 +602,7 @@ declare global {
      */
     _handleDeltaCollectionUpdates(doc: Document.Any): void;
 
-    /**
-     * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes from BaseActorDelta.
-     */
+    // _onUpdate and _onDelete are all overridden but with no signature changes from BaseActorDelta.
 
     protected override _dispatchDescendantDocumentEvents(
       event: ClientDocument.LifeCycleEventName,

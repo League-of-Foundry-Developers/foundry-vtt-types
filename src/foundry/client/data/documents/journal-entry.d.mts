@@ -529,9 +529,7 @@ declare global {
      */
     panToNote(options?: PanToNoteOptions): Promise<void>;
 
-    /**
-     * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes from their definition in BaseJournalEntry.
-     */
+    // _onUpdate and _onDelete are all overridden but with no signature changes from their definition in BaseJournalEntry.
 
     /*
      * After this point these are not really overridden methods.

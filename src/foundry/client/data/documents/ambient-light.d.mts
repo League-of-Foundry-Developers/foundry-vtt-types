@@ -402,9 +402,7 @@ declare global {
      */
     constructor(...args: AmbientLightDocument.ConstructorArgs);
 
-    /**
-     * @privateRemarks _onUpdate is overridden but with no signature changes from its implementation in BaseAmbientLight.
-     */
+    // _onUpdate is overridden but with no signature changes from its implementation in BaseAmbientLight.
 
     /**
      * Is this ambient light source global in nature?
