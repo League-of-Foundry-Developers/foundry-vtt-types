@@ -70,6 +70,12 @@ declare global {
       type RollFunction = (...args: Array<string | number>) => MaybePromise<number | `${number}`>;
 
       type DTermDiceStrings = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
+
+      interface Terms extends Record<string, foundry.dice.terms.DiceTerm.AnyConstructor> {
+        c: foundry.dice.terms.Coin.AnyConstructor;
+        d: foundry.dice.terms.Die.AnyConstructor;
+        f: foundry.dice.terms.FateDie.AnyConstructor;
+      }
     }
 
     interface Dice {
@@ -105,11 +111,7 @@ declare global {
       termTypes: Record<string, foundry.dice.terms.RollTerm.AnyConstructor>;
 
       /** Configured roll terms and the classes they map to. */
-      terms: {
-        c: foundry.dice.terms.Coin.AnyConstructor;
-        d: foundry.dice.terms.Die.AnyConstructor;
-        f: foundry.dice.terms.FateDie.AnyConstructor;
-      } & Record<string, foundry.dice.terms.DiceTerm.AnyConstructor>;
+      terms: Dice.Terms;
 
       /**
        * A function used to provide random uniform values.
@@ -132,7 +134,7 @@ declare global {
     /**
      * Configured status effects which are recognized by the game system
      */
-    type StatusEffect = foundry.documents.BaseActiveEffect.CreateData & {
+    interface StatusEffect extends foundry.documents.BaseActiveEffect.CreateData {
       /**
        * A string identifier for the effect
        */
@@ -156,7 +158,12 @@ declare global {
        * @defaultValue `true`
        */
       hud?: boolean | { actorTypes: string[] } | undefined | null;
-    };
+    }
+
+    interface TrackableAttribute {
+      bar: string[];
+      value: string[];
+    }
   }
 
   /**
@@ -318,19 +325,19 @@ declare global {
       /**
        * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
        */
-      sheetClasses: Record<foundry.documents.BaseActor.SubType, Record<string, SheetClassConfig>>;
+      sheetClasses: Record<Actor.SubType, Record<string, SheetClassConfig>>;
 
       /**
        * @defaultValue `{}`
        * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
        */
-      typeLabels: Record<foundry.documents.BaseActor.SubType, string>;
+      typeLabels: Record<Actor.SubType, string>;
 
       /** @defaultValue `{}` */
       typeIcons: Record<string, string>;
 
       /** @defaultValue `{}` */
-      trackableAttributes: Record<string, string>;
+      trackableAttributes: Record<string, CONFIG.TrackableAttribute>;
     };
 
     /**
