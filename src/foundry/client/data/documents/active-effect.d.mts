@@ -1,5 +1,5 @@
 import type { ConfiguredActiveEffect } from "../../../../configuration/index.d.mts";
-import type { AnyObject, InterfaceToObject, Merge } from "fvtt-types/utils";
+import type { AnyMutableObject, IntentionalPartial, InterfaceToObject, Merge, RequiredProps } from "fvtt-types/utils";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField, DataSchema } from "../../../common/data/fields.d.mts";
@@ -225,13 +225,15 @@ declare global {
        * The name of the ActiveEffect
        * @defaultValue `""`
        */
-      name: fields.StringField<{ required: true; label: "EFFECT.Label" }>;
+      // TODO: (LukeAbby): fix this when redoing DataField
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      name: fields.StringField<{ required: true; blank: false; label: "EFFECT.Name"; textSearch: true }, string>;
 
       /**
        * An image path used to depict the ActiveEffect as an icon
        * @defaultValue `null`
        */
-      img: fields.FilePathField<{ categories: "IMAGE"[]; label: "EFFECT.Image" }>;
+      img: fields.FilePathField<{ categories: ["IMAGE"]; label: "EFFECT.Image" }>;
 
       type: fields.DocumentTypeField<typeof BaseActiveEffect, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
 
@@ -259,11 +261,18 @@ declare global {
            * The modification mode with which the change is applied
            * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
            */
-          mode: fields.NumberField<{
-            integer: true;
-            initial: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
-            label: "EFFECT.ChangeMode";
-          }>;
+          mode: fields.NumberField<
+            {
+              integer: true;
+              initial: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
+              label: "EFFECT.ChangeMode";
+            },
+            // TODO: (LukeAbby): fix this when redoing DataField
+            // FIXME: Overrides required to enforce the branded type
+            CONST.ACTIVE_EFFECT_MODES | null | undefined,
+            CONST.ACTIVE_EFFECT_MODES | null,
+            CONST.ACTIVE_EFFECT_MODES | null
+          >;
 
           /**
            * The priority level with which this change is applied
@@ -533,10 +542,12 @@ declare global {
       startTurn?: number | null | undefined;
     }
 
+    type DurationType = "seconds" | "turns" | "none";
+
     // Must be kept in sync with
     interface Duration extends DurationData {
       /** The duration type, either "seconds", "turns", or "none" */
-      type: "seconds" | "turns" | "none";
+      type: DurationType;
 
       /** The total effect duration, in seconds of world time or as a decimal number with the format \{rounds\}.\{turns\} */
       duration: number;
@@ -552,6 +563,21 @@ declare global {
 
       /** An internal flag used determine when to recompute turns-based duration */
       _combatTime?: number;
+    }
+
+    interface PrepareDurationReturn extends RequiredProps<IntentionalPartial<Duration>, "type"> {}
+
+    interface GetInitialDurationReturn {
+      duration: {
+        /** @defaultValue `game.time.worldTime` */
+        startTime: number;
+
+        /** @remarks Only exists `if (game.combat)` */
+        startRound?: number;
+
+        /** @remarks Only exists `if (game.combat)` */
+        startTurn?: number;
+      };
     }
 
     interface EffectChangeData {
@@ -574,7 +600,7 @@ declare global {
        * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
        * @privateRemarks `undefined` is not actually a possible value, included here due to fvtt-types handling of `initial` values
        */
-      mode: number | null | undefined;
+      mode: CONST.ACTIVE_EFFECT_MODES | null | undefined;
 
       /**
        * The priority level with which this change is applied
@@ -646,9 +672,10 @@ declare global {
      * @throws An error if there is no status effect in `CONFIG.statusEffects` with the given status ID and if
      * the status has implicit statuses but doesn't have a static _id.
      */
+    // options: not null (parameter default only)
     static fromStatusEffect(
       statusId: string,
-      options?: Document.ConstructionContext<Document.Any | null>,
+      options?: Document.ConstructionContext<ActiveEffect.Parent>,
     ): Promise<ActiveEffect.Implementation>;
 
     /**
@@ -658,16 +685,19 @@ declare global {
      * @param effectData - The status effect data.
      * @param options    - Additional options to pass to the ActiveEffect constructor.
      * @returns The created ActiveEffect instance.
+     *
+     * @remarks Core's implementation doesn't use `statusId`, simply returning `new this(effectData, options)`
      */
+    // options: not null (destructured where forwarded)
     protected static _fromStatusEffect(
       statusId: string,
       effectData: ActiveEffect.CreateData,
-      options?: Document.ConstructionContext<Document.Any | null>,
+      options?: Document.ConstructionContext<ActiveEffect.Parent>,
     ): Promise<ActiveEffect.Implementation>;
 
     /**
      * Is there some system logic that makes this active effect ineligible for application?
-     * @defaultValue `false`
+     * @remarks Core's implementation always returns `false`
      */
     get isSuppressed(): boolean;
 
@@ -686,14 +716,15 @@ declare global {
      */
     get modifiesActor(): boolean;
 
-    prepareBaseData(): void;
+    override prepareBaseData(): void;
 
-    prepareDerivedData(): void;
+    override prepareDerivedData(): void;
 
     /**
      * Update derived Active Effect duration data.
      * Configure the remaining and label properties to be getters which lazily recompute only when necessary.
      */
+    // TODO: This adds two getter properties (`remaining` and `label`) to `this.duration`
     updateDuration(): ActiveEffect.Duration;
 
     /**
@@ -703,7 +734,8 @@ declare global {
      */
     protected _requiresDurationUpdate(): boolean;
 
-    protected _prepareDuration(): Omit<ActiveEffect.Duration, keyof ActiveEffect.DurationData>;
+    /** @remarks Foundry marked `@internal` */
+    protected _prepareDuration(): ActiveEffect.PrepareDurationReturn;
 
     /**
      * Format a round+turn combination as a decimal
@@ -711,7 +743,9 @@ declare global {
      * @param turn   - The turn number
      * @param nTurns - The maximum number of turns in the encounter
      * @returns The decimal representation
+     * @remarks Foundry marked `@private`
      */
+    // nTurns: not null (`!== undefined` check)
     protected _getCombatTime(round: number, turn: number, nTurns?: number): number;
 
     /**
@@ -719,6 +753,7 @@ declare global {
      * @param rounds - The number of rounds
      * @param turns  - The number of turns
      * @returns The formatted label
+     * @remarks Foundry marked `@private`
      */
     protected _getDurationLabel(rounds: number, turns: number): string;
 
@@ -740,8 +775,14 @@ declare global {
      * @param change - The change to apply.
      * @param field  - The field. If not supplied, it will be retrieved from the supplied model.
      * @returns The updated value.
+     *
+     * @remarks `field` default provided by `??= model.schema.getField(change.key)`
      */
-    static applyField(model: DataModel.Any, change: ActiveEffect.EffectChangeData, field?: DataField.Any): unknown;
+    static applyField<Field extends DataField.Any | null = null>(
+      model: DataModel.Any,
+      change: ActiveEffect.EffectChangeData,
+      field?: Field,
+    ): Field extends DataField.Any ? DataField.InitializedTypeFor<Field> : unknown;
 
     /**
      * Apply this ActiveEffect to a provided Actor.
@@ -749,9 +790,9 @@ declare global {
      * TODO: When we revisit this in Active Effects V2 this should become an Actor method, or a static method
      * @param actor  - The Actor to whom this effect should be applied
      * @param change - The change data being applied
-     * @returns The resulting applied value
+     * @returns An object of property paths and their updated values.
      */
-    apply(actor: Actor.Implementation, change: ActiveEffect.EffectChangeData): unknown;
+    apply(actor: Actor.Implementation, change: ActiveEffect.EffectChangeData): AnyMutableObject;
 
     /**
      * Apply this ActiveEffect to a provided Actor using a heuristic to infer the value types based on the current value
@@ -760,14 +801,22 @@ declare global {
      * @param change  - The change data being applied.
      * @param changes - The aggregate update paths and their updated values.
      */
-    protected _applyLegacy(actor: Actor.Implementation, change: ActiveEffect.DurationData, changes: AnyObject): void;
+    protected _applyLegacy(
+      actor: Actor.Implementation,
+      change: ActiveEffect.EffectChangeData,
+      changes: AnyMutableObject,
+    ): void;
 
     /**
      * Cast a raw ActiveEffect.EffectChangeData change string to the desired data type.
      * @param raw - The raw string value
      * @param type - The target data type that the raw value should be cast to match
      * @returns The parsed delta cast to the target data type
+     * @remarks Foundry marked `@private`
+     *
+     * Core's implementation returns `boolean | number | string` or the return of {@link ActiveEffect._parseOrString | `ActiveEffect#_parseOrString`}
      */
+    // TODO: replace `object` with AnyValidJSON-y type
     protected _castDelta(raw: string, type: string): boolean | number | string | object;
 
     /**
@@ -776,13 +825,16 @@ declare global {
      * @param type - The target data type of inner array elements
      * @returns The parsed delta cast as a typed array
      */
+    // TODO: replace `object` with AnyValidJSON-y type
     protected _castArray(raw: string, type: string): Array<boolean | string | number | object>;
 
     /**
      * Parse serialized JSON, or retain the raw string.
      * @param raw - A raw serialized string
      * @returns The parsed value, or the original value if parsing failed
+     * @remarks Tries to `JSON.parse(raw)`, simply returns `raw` if error
      */
+    // TODO: replace `object` with AnyValidJSON-y type
     protected _parseOrString(raw: string): string | object;
 
     /**
@@ -800,13 +852,16 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      * @returns The resulting applied value
+     * @remarks Foundry marked `@private`
+     *
+     * Core's implementation does not use `actor`
      */
     protected _applyAdd(
       actor: Actor.Implementation,
       change: ActiveEffect.EffectChangeData,
-      current: any,
-      delta: any,
-      changes: AnyObject,
+      current: unknown,
+      delta: unknown,
+      changes: AnyMutableObject,
     ): void;
 
     /**
@@ -818,13 +873,16 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      * @returns The resulting applied value
+     * @remarks Foundry marked `@private`
+     *
+     * Core's implementation does not use `actor`
      */
     protected _applyMultiply(
       actor: Actor.Implementation,
       change: ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
-      changes: AnyObject,
+      changes: AnyMutableObject,
     ): void;
 
     /**
@@ -836,13 +894,16 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      * @returns The resulting applied value
+     * @remarks Foundry marked `@private`
+     *
+     * Core's implementation does not use `actor` or `current`
      */
     protected _applyOverride(
       actor: Actor.Implementation,
       change: ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
-      changes: AnyObject,
+      changes: AnyMutableObject,
     ): void;
 
     /**
@@ -854,13 +915,16 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      * @returns The resulting applied value
+     * @remarks Foundry marked `@private`
+     *
+     * Core's implementation does not use `actor`
      */
     protected _applyUpgrade(
       actor: Actor.Implementation,
       change: ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
-      changes: AnyObject,
+      changes: AnyMutableObject,
     ): void;
 
     /**
@@ -871,25 +935,20 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      * @returns The resulting applied value
+     * @remarks Foundry marked `@private`
      */
     protected _applyCustom(
       actor: Actor.Implementation,
       change: ActiveEffect.EffectChangeData,
       current: unknown,
       delta: unknown,
-      changes: AnyObject,
+      changes: AnyMutableObject,
     ): void;
 
     /**
      * Retrieve the initial duration configuration.
      */
-    static getInitialDuration(): {
-      duration: {
-        startTime: number;
-        startRound?: number | undefined;
-        startTurn?: number | undefined;
-      };
-    };
+    static getInitialDuration(): ActiveEffect.GetInitialDurationReturn;
 
     /**
      * @remarks If attempting to set `core.statusId`, logs a compatibility warning:
@@ -902,7 +961,7 @@ declare global {
       key: Key,
     ): Document.GetFlag<ActiveEffect.Name, Scope, Key>;
 
-    // _preCreate, _onCreate, _onUpdate, _preUpdate, and _onDelete are all overridden but with no signature changes from BaseActiveEffect.
+    // _preCreate, _onCreate, _preUpdate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseActiveEffect.
 
     /**
      * Display changes to active effects as scrolling Token status text.
@@ -913,7 +972,7 @@ declare global {
     /**
      * Get the name of the source of the Active Effect
      * @deprecated since v11, will be removed in v13
-     * @remarks `"You are accessing ActiveEffect._getSourceName which is deprecated."`
+     * @remarks "You are accessing `ActiveEffect._getSourceName` which is deprecated."
      */
     _getSourceName(): Promise<string>;
 

@@ -27,6 +27,23 @@ declare abstract class BaseActiveEffect<
   constructor(...args: ActiveEffect.ConstructorArgs);
 
   /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "ActiveEffect",
+   *   collection: "effects",
+   *   hasTypeData: true,
+   *   label: "DOCUMENT.ActiveEffect",
+   *   labelPlural: "DOCUMENT.ActiveEffects",
+   *   schemaVersion: "12.324"
+   * });
+   * ```
+   */
+  static override metadata: BaseActiveEffect.Metadata;
+
+  static override defineSchema(): BaseActiveEffect.Schema;
+
+  /**
    * @remarks If `this.isEmbedded`, uses `this.parent.canUserModify(user, "update")`, dropping `data` and forcing `action`,
    * otherwise `super`'s (with all arguments forwarded). Core's `Actor` implementation doesn't override this method, and while
    * core's `Item` does, it only mirrors this functionality, so without further extension all roads lead to {@link Document.canUserModify | `Document#canUserModify`}
@@ -37,9 +54,6 @@ declare abstract class BaseActiveEffect<
     action: Action,
     data?: Document.CanUserModifyData<ActiveEffect.Schema, Action>,
   ): boolean;
-  static override metadata: BaseActiveEffect.Metadata;
-
-  static override defineSchema(): BaseActiveEffect.Schema;
 
   /**
    * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Actor` implementation
