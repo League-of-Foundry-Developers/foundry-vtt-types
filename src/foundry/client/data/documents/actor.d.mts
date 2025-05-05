@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, NullishProps, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, NullishProps, Merge, MaybePromise } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";
@@ -975,5 +975,8 @@ declare global {
       source: Actor.Source,
       context?: Document.FromImportContext<Actor.Parent>,
     ): Promise<Actor.Implementation>;
+
+    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
+    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
   }
 }

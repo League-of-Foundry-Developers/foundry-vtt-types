@@ -1,5 +1,5 @@
 import type { ConfiguredFolder } from "../../../../configuration/index.d.mts";
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { InexactPartial, MaybePromise, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -567,5 +567,8 @@ declare global {
       source: Folder.Source,
       context?: Document.FromImportContext<Folder.Parent>,
     ): Promise<Folder.Implementation>;
+
+    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
+    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
   }
 }

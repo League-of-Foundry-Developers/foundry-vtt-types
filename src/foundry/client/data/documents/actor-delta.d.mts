@@ -1,4 +1,4 @@
-import type { Merge, NullishProps } from "fvtt-types/utils";
+import type { MaybePromise, Merge, NullishProps } from "fvtt-types/utils";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { BaseActorDelta } from "../../../common/documents/_module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -751,5 +751,8 @@ declare global {
       source: ActorDelta.Source,
       context?: Document.FromImportContext<ActorDelta.Parent>,
     ): Promise<ActorDelta.Implementation>;
+
+    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
+    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
   }
 }

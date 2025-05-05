@@ -1,4 +1,4 @@
-import type { Merge } from "../../../../utils/index.d.mts";
+import type { MaybePromise, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -428,6 +428,9 @@ declare global {
       source: Setting.Source,
       context?: Document.FromImportContext<Setting.Parent>,
     ): Promise<Setting.Implementation>;
+
+    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
+    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
 
     // Embedded document operations have been left out because Setting does not have any embedded documents.
   }

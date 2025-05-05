@@ -1,10 +1,10 @@
-import type { Mixin, FixedInstanceType, Coalesce, AnyObject } from "fvtt-types/utils";
+import type { Mixin, FixedInstanceType, Coalesce, AnyObject, NullishProps, MaybePromise } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 
 declare class InternalClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
-  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /**
@@ -13,14 +13,18 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Application in this object will have its render method called by {@link Document.render | `Document#render`}.
    * @see {@link Document.render | `Document#render`}
    * @defaultValue `{}`
+   * @remarks Created during construction via `defineProperty`, with options `{value: {}, writable: false, enumerable: false}`
    */
   readonly apps: Record<string, Application.Any | ApplicationV2.Any>;
 
   /**
    * A cached reference to the FormApplication instance used to configure this Document.
    * @defaultValue `null`
+   * @remarks Created during construction via `defineProperty`, with options `{value: null, writable: true, enumerable: false}`
+   *
+   * Foundry marked `@private`
    */
-  protected readonly _sheet: FixedInstanceType<
+  protected _sheet: FixedInstanceType<
     Document.ConfiguredSheetClassFor<Document.Internal.DocumentNameFor<BaseDocument>>
   > | null;
 
@@ -28,6 +32,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
 
   /**
    * @see {@link abstract.Document._initialize | `abstract.Document#_initialize`}
+   * @remarks ClientDocument override calls `super`, then if `game._documentsReady`, calls {@link InternalClientDocument._safePrepareData | `this._safePrepareData`}
    */
   // options: not null (parameter default only)
   protected _initialize(options?: Document.InitializeOptions): void;
@@ -147,20 +152,33 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Construct a UUID relative to another document.
    * @param doc - The document to compare against.
    */
-  getRelativeUuid(relative: ClientDocument): string;
+  getRelativeUUID(relative: ClientDocument): string;
 
   /**
    * Create a content link for this document
    * @param eventData - The parsed object of data provided by the drop transfer event.
    * @param options   - Additional options to configure link generation.
+   * @remarks Foundry marked `@internal`, but the only place core calls this is in {@link TextEditor.getContentLink | `TextEditor.getContentLink`},
+   * so it has not been marked protected
+   *
+   * Core's implementation doesn't use `eventData` here, but when it's passed in it's the return from
+   * {@link TextEditor.getDragEventData | `TextEditor.getDragEventData(someDragEvent)`}
    */
-  protected _createDocumentLink(eventData: unknown, options?: ClientDocument.CreateDocumentLinkOptions): string;
+  // options: not null (destructured)
+  _createDocumentLink(eventData?: AnyObject | null, options?: ClientDocument.CreateDocumentLinkOptions): string;
 
   /**
    * Handle clicking on a content link for this document.
    * @param event - The triggering click event.
+   * @remarks
+   * In `ClientDocument`, returns `this.sheet.render(true)`:
+   * - AppV1: this is a reference to that sheet
+   * - AppV2: this is a Promise of a reference to that sheet
+   *
+   * However it unfortunately has to be typed as `MaybePromise<unknown>` due to the {@link Macro._onClickDocumentLink | `Macro`} override,
+   * where `##executeScript` could return whatever a user-provided macro wants.
    */
-  _onClickDocumentLink(event: MouseEvent): unknown;
+  _onClickDocumentLink(event: MouseEvent): MaybePromise<unknown>;
 
   // _preCreate, _preUpdate, and _preDelete are all overridden with no signature changes,
   // just to call `this.system._preX` if `super` doesn't return `false`
@@ -572,7 +590,7 @@ declare global {
        * Additional data changes which are applied to each sorted document
        * @defaultValue `{}`
        */
-      updateData?: any;
+      updateData?: AnyObject;
     }
 
     // TODO: This may be better defined elsewhere
@@ -631,17 +649,22 @@ declare global {
       keepId?: boolean | undefined;
     }
 
-    interface CreateDocumentLinkOptions {
+    /** @internal */
+    type _CreateDocumentLinkOptions = NullishProps<{
       /**
        * A document to generate a link relative to.
+       * @remarks Ignored if falsey
        */
-      relativeTo?: ClientDocument | undefined;
+      relativeTo: ClientDocument;
 
       /**
        * A custom label to use instead of the document's name.
+       * @defaultValue `this.name`
        */
-      label?: string | undefined;
-    }
+      label: string;
+    }>;
+
+    interface CreateDocumentLinkOptions extends _CreateDocumentLinkOptions {}
 
     type ToCompendiumReturnType<
       BaseDocument extends Document.Internal.Instance.Any,

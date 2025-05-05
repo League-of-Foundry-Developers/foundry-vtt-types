@@ -459,7 +459,10 @@ declare global {
       }>,
     ): HTMLAnchorElement;
 
-    _onClickDocumentLink(event: MouseEvent): ReturnType<Playlist.Implementation["stopSound" | "playSound"]>;
+    /**
+     * @remarks Returns `this.parent`{@link Playlist.stopSound | `.stopSound`} or {@link Playlist.playSound | `.playSound`}
+     */
+    override _onClickDocumentLink(event: MouseEvent): Promise<Playlist.Implementation | undefined>;
 
     //_onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
     // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.

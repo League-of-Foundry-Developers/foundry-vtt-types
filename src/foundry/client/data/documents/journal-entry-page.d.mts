@@ -1,5 +1,5 @@
 import type { ConfiguredJournalEntryPage } from "../../../../configuration/index.d.mts";
-import type { InexactPartial, LazyUnknown, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, LazyUnknown, MaybePromise, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -539,6 +539,14 @@ declare global {
       order: number;
     }
 
+    interface CreateDocumentLinkOptions extends ClientDocument.CreateDocumentLinkOptions {
+      /**
+       * @remarks If the `eventData` passed with these options has an `anchor.slug`, the default is `eventData.anchor.name`,
+       * otherwise uses `super`'s default of `this.name`
+       */
+      label?: string | null | undefined;
+    }
+
     /**
      * @deprecated {@link JournalEntryPage.Database | `JournalEntryPage.DatabaseOperation`}
      */
@@ -644,21 +652,17 @@ declare global {
       }>,
     ): JournalEntryPage.JournalEntryPageHeading;
 
-    protected override _createDocumentLink(
-      eventData: unknown,
-      options?: InexactPartial<{
-        /**
-         * A document to generate a link relative to.
-         */
-        relativeTo: ClientDocument;
-        /**
-         * A custom label to use instead of the document's name.
-         */
-        label: string;
-      }>,
-    ): string;
+    /** @remarks Uses `eventData`, unlike {@link ClientDocument._createDocumentLink | `ClientDocument#_createDocumentLink`} */
+    // options: not null (destructured)
+    override _createDocumentLink(eventData: AnyObject, options?: JournalEntryPage.CreateDocumentLinkOptions): string;
 
-    override _onClickDocumentLink(event: MouseEvent): this;
+    /**
+     * @remarks
+     * As `super`, but return the parent's sheet's `#render`:
+     * - AppV1: this is a reference to that sheet
+     * - AppV2: this is a Promise of a reference to that sheet
+     */
+    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<NonNullable<this["parent"]>["sheet"]>>;
 
     // _onUpdate is overridden but with no signature changes from the template in BaseJournalEntryPage
 

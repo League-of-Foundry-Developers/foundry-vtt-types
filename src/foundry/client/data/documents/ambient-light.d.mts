@@ -1,4 +1,4 @@
-import type { InterfaceToObject, Merge } from "../../../../utils/index.d.mts";
+import type { InterfaceToObject, MaybePromise, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields, LightData } from "../../../common/data/module.d.mts";
@@ -441,5 +441,8 @@ declare global {
       source: AmbientLightDocument.Source,
       context?: Document.FromImportContext<AmbientLightDocument.Parent>,
     ): Promise<AmbientLightDocument.Implementation>;
+
+    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
+    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
   }
 }

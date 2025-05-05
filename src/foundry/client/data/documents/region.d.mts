@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { InexactPartial, MaybePromise, Merge } from "fvtt-types/utils";
 import type { BaseShapeData, fields } from "../../../common/data/module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -780,5 +780,8 @@ declare global {
       source: RegionDocument.Source,
       context?: Document.FromImportContext<RegionDocument.Parent>,
     ): Promise<RegionDocument.Implementation>;
+
+    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
+    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
   }
 }

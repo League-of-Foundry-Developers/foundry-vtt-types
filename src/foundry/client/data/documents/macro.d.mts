@@ -554,7 +554,8 @@ declare global {
 
     #executeScript();
 
-    _onClickDocumentLink(event: MouseEvent): ReturnType<this["execute"]>;
+    /** @remarks Returns `this.execute({event})` */
+    override _onClickDocumentLink(event: MouseEvent): Macro.ExecuteReturn<SubType>;
 
     /*
      * After this point these are not really overridden methods.

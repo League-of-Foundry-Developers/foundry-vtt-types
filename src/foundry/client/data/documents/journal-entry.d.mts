@@ -1,8 +1,8 @@
+import type { InterfaceToObject, MaybePromise, Merge, ValueOf } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type { InterfaceToObject, Merge, ValueOf } from "../../../../utils/index.d.mts";
 
 declare global {
   namespace JournalEntry {
@@ -667,6 +667,9 @@ declare global {
       source: JournalEntry.Source,
       context?: Document.FromImportContext<JournalEntry.Parent>,
     ): Promise<JournalEntry.Implementation>;
+
+    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
+    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
   }
 }
 
