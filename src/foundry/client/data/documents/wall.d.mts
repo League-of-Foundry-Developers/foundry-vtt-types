@@ -542,7 +542,9 @@ declare global {
 
     // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
-    static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<WallDocument.Parent>>): string;
+    static override defaultName(
+      context?: Document.DefaultNameContext<"base", NonNullable<WallDocument.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<WallDocument.CreateData>,

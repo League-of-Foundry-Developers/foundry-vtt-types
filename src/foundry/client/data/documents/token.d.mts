@@ -1308,7 +1308,7 @@ declare global {
     // ClientDocument overrides
 
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<TokenDocument.Parent>>,
+      context?: Document.DefaultNameContext<"base", NonNullable<TokenDocument.Parent>>,
     ): string;
 
     static override createDialog(

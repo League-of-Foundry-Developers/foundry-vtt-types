@@ -480,7 +480,7 @@ declare global {
     // Descendant Document operations have been left out because TableResult does not have any descendant documents.
 
     static override defaultName(
-      context: Document.DefaultNameContext<TableResult.SubType, NonNullable<TableResult.Parent>>,
+      context?: Document.DefaultNameContext<TableResult.SubType, NonNullable<TableResult.Parent>>,
     ): string;
 
     static override createDialog(

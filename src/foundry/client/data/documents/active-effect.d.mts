@@ -932,7 +932,7 @@ declare global {
     // Descendant Document operations have been left out because ActiveEffect does not have any descendant documents.
 
     static override defaultName(
-      context: Document.DefaultNameContext<ActiveEffect.SubType, NonNullable<ActiveEffect.Parent>>,
+      context?: Document.DefaultNameContext<ActiveEffect.SubType, NonNullable<ActiveEffect.Parent>>,
     ): string;
 
     static override createDialog(

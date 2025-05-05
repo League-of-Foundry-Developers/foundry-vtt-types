@@ -296,7 +296,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Gets the default new name for a Document
    * @param context - The context for which to create the Document name.
    */
-  static defaultName(context: Document.DefaultNameContext<never, never>): string;
+  static defaultName(context?: Document.DefaultNameContext<never, never>): string;
 
   /**
    * Present a Dialog form to create a new Document of this type.

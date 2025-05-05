@@ -772,7 +772,7 @@ declare global {
     // Descendant Document operations have been left out because JournalEntryPage does not have any descendant documents.
 
     static override defaultName(
-      context: Document.DefaultNameContext<JournalEntryPage.SubType, NonNullable<JournalEntryPage.Parent>>,
+      context?: Document.DefaultNameContext<JournalEntryPage.SubType, NonNullable<JournalEntryPage.Parent>>,
     ): string;
 
     static override createDialog(

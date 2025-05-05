@@ -540,7 +540,7 @@ declare global {
     // Descendant Document operations have been left out because Drawing does not have any descendant documents.
 
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<DrawingDocument.Parent>>,
+      context?: Document.DefaultNameContext<"base", NonNullable<DrawingDocument.Parent>>,
     ): string;
 
     static override createDialog(

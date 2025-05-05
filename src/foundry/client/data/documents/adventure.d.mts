@@ -501,7 +501,7 @@ declare global {
 
     // Descendant Document operations have been left out because Adventure does not have any descendant documents.
 
-    static override defaultName(context: Document.DefaultNameContext<"base", Adventure.Parent>): string;
+    static override defaultName(context?: Document.DefaultNameContext<"base", Adventure.Parent>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<Adventure.CreateData>,

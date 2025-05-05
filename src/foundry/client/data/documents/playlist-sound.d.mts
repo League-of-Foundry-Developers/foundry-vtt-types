@@ -504,7 +504,7 @@ declare global {
     // Descendant Document operations have been left out because PlaylistSound does not have any descendant documents.
 
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<PlaylistSound.Parent>>,
+      context?: Document.DefaultNameContext<"base", NonNullable<PlaylistSound.Parent>>,
     ): string;
 
     static override createDialog(

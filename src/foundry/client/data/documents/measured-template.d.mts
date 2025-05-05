@@ -483,7 +483,7 @@ declare global {
     // Descendant Document operations have been left out because MeasuredTemplate does not have any descendant documents.
 
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<MeasuredTemplateDocument.Parent>>,
+      context?: Document.DefaultNameContext<"base", NonNullable<MeasuredTemplateDocument.Parent>>,
     ): string;
 
     static override createDialog(

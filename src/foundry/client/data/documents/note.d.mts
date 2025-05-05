@@ -500,7 +500,9 @@ declare global {
 
     // Descendant Document operations have been left out because Note does not have any descendant documents.
 
-    static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<NoteDocument.Parent>>): string;
+    static override defaultName(
+      context?: Document.DefaultNameContext<"base", NonNullable<NoteDocument.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<NoteDocument.CreateData>,

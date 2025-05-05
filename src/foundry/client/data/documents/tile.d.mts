@@ -495,7 +495,9 @@ declare global {
 
     // Descendant Document operations have been left out because Tile does not have any descendant documents.
 
-    static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<TileDocument.Parent>>): string;
+    static override defaultName(
+      context?: Document.DefaultNameContext<"base", NonNullable<TileDocument.Parent>>,
+    ): string;
 
     static override createDialog(
       data: Document.CreateDialogData<TileDocument.CreateData>,

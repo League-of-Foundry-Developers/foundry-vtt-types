@@ -763,7 +763,7 @@ declare global {
     protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs): void;
 
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<RegionDocument.Parent>>,
+      context?: Document.DefaultNameContext<"base", NonNullable<RegionDocument.Parent>>,
     ): string;
 
     static override createDialog(

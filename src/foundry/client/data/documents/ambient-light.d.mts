@@ -424,7 +424,7 @@ declare global {
     // Descendant Document operations have been left out because AmbientLight does not have any descendant documents.
 
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<AmbientLightDocument.Parent>>,
+      context?: Document.DefaultNameContext<"base", NonNullable<AmbientLightDocument.Parent>>,
     ): string;
 
     static override createDialog(

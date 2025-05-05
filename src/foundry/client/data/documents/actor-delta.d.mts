@@ -734,7 +734,7 @@ declare global {
     protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs): void;
 
     static override defaultName(
-      context: Document.DefaultNameContext<ActorDelta.SubType, NonNullable<ActorDelta.Parent>>,
+      context?: Document.DefaultNameContext<ActorDelta.SubType, NonNullable<ActorDelta.Parent>>,
     ): string;
 
     static override createDialog(

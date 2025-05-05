@@ -489,7 +489,7 @@ declare global {
     // Descendant Document operations have been left out because RegionBehavior does not have any descendant documents.
 
     static override defaultName(
-      context: Document.DefaultNameContext<RegionBehavior.SubType, NonNullable<RegionBehavior.Parent>>,
+      context?: Document.DefaultNameContext<RegionBehavior.SubType, NonNullable<RegionBehavior.Parent>>,
     ): string;
 
     static override fromDropData(

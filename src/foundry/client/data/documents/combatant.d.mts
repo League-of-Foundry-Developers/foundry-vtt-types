@@ -578,7 +578,7 @@ declare global {
     // Descendant Document operations have been left out because Combatant does not have any descendant documents.
 
     static override defaultName(
-      context: Document.DefaultNameContext<Combatant.SubType, NonNullable<Combatant.Parent>>,
+      context?: Document.DefaultNameContext<Combatant.SubType, NonNullable<Combatant.Parent>>,
     ): string;
 
     static override createDialog(

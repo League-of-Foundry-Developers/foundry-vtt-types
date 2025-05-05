@@ -638,7 +638,7 @@ declare global {
 
     // Descendant Document operations have been left out because Card does not have any descendant documents.
 
-    static override defaultName(context: Document.DefaultNameContext<Card.SubType, NonNullable<Card.Parent>>): string;
+    static override defaultName(context?: Document.DefaultNameContext<Card.SubType, NonNullable<Card.Parent>>): string;
 
     static override createDialog(
       data: Document.CreateDialogData<Card.CreateData>,
