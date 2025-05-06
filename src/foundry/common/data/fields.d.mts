@@ -2539,7 +2539,6 @@ declare class EmbeddedCollectionField<
    * Return the embedded document(s) as a Collection.
    * @param parent - The parent document.
    */
-  // TODO: Foundry claims this returns `DocumentCollection`, figure out why this can't be that
   getCollection<P extends Document.Any>(parent: P): Collection<P>;
 }
 

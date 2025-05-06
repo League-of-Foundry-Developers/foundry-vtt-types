@@ -24,9 +24,11 @@ import type {
   Identity,
   Brand,
   AnyMutableObject,
+  MaybePromise,
 } from "fvtt-types/utils";
 import type * as CONST from "../constants.mts";
 import type {
+  DataSchema,
   DataField,
   DocumentStatsField,
   EmbeddedCollectionField,
@@ -34,20 +36,18 @@ import type {
   SchemaField,
   TypeDataField,
 } from "../data/fields.d.mts";
-import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type {
   DatabaseAction,
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
+  DatabaseGetOperation,
   DatabaseUpdateOperation,
   DocumentSocketRequest,
 } from "./_types.d.mts";
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
 
 export default Document;
 
@@ -112,7 +112,7 @@ declare abstract class Document<
   /**
    * Ensure that all Document classes share the same schema of their base declaration.
    */
-  static get schema(): foundry.data.fields.SchemaField.Any;
+  static get schema(): SchemaField.Any;
 
   // options: not null (parameter default only)
   protected _initialize(options?: Document.InitializeOptions): void;
@@ -281,7 +281,7 @@ declare abstract class Document<
    */
   // data: not null (property access), context: not null (destructured)
   override clone<Save extends boolean | null | undefined = false>(
-    data?: fields.SchemaField.UpdateData<Schema>,
+    data?: SchemaField.UpdateData<Schema>,
     context?: Document.CloneContext<Save>,
   ): Save extends true ? Promise<this> : this;
 
@@ -294,9 +294,7 @@ declare abstract class Document<
   migrateSystemData(): object;
 
   /** @remarks `Document#toObject` calls `this.constructor.shimData()` on the data before returning */
-  override toObject<Source extends boolean | null | undefined = true>(
-    source?: Source,
-  ): DataModel.ToObject<Schema, Source>;
+  override toObject(source?: boolean | null): SchemaField.SourceData<Schema>;
 
   /**
    * Create multiple Documents using provided input data.
@@ -499,10 +497,7 @@ declare abstract class Document<
    * of the return; All other documents return `SomeDoc.Implementation | null`
    */
   // TODO: Type for possible index entry return
-  static get(
-    documentId: string,
-    operation?: Document.Database.GetOptions,
-  ): Promise<Document.Any | null> | Document.Any | null;
+  static get(documentId: string, operation?: Document.Database.GetOptions): MaybePromise<Document.Any | null>;
 
   /**
    * A compatibility method that returns the appropriate name of an embedded collection within this Document.
@@ -1339,7 +1334,7 @@ declare namespace Document {
   type MetadataFor<Name extends Document.Type> = ConfiguredMetadata[Name];
 
   type CollectionRecord<Schema extends DataSchema> = {
-    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
+    [Key in keyof Schema]: Schema[Key] extends EmbeddedCollectionField.Any ? Schema[Key] : never;
   };
 
   type Flags<ConcreteDocument extends Internal.Instance.Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
@@ -1673,9 +1668,11 @@ declare namespace Document {
   namespace Database {
     type Operation = "create" | "update" | "delete";
 
-    interface GetOptions {
-      pack?: string | null;
-    }
+    /**
+     * @privateRemarks Foundry types {@link Document.get | `Document.get`} as taking a {@link DatabaseGetOperation | `DatabaseGetOperation`}
+     * but it only ever looks for `pack`
+     */
+    interface GetOptions extends Pick<DatabaseGetOperation, "pack"> {}
 
     /** Used for {@link Document.createDocuments | `Document.createDocuments`} */
     type CreateOperation<Op extends DatabaseCreateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;

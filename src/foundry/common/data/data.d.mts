@@ -11,6 +11,7 @@ import type {
 import fields = foundry.data.fields;
 import documents = foundry.documents;
 import Document = foundry.abstract.Document;
+import type { SchemaField } from "./fields.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -687,9 +688,9 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
    */
   get actor(): this["parent"];
 
-  override toObject<Source extends boolean | null | undefined = true>(
-    source?: Source,
-  ): DataModel.ToObject<PrototypeToken.Schema, Source> & { actorId: string | undefined };
+  override toObject(
+    source?: boolean | null,
+  ): SchemaField.SourceData<PrototypeToken.Schema> & { actorId: string | undefined };
 
   static get database(): CONFIG["DatabaseBackend"];
 
