@@ -193,7 +193,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param args       - Arguments passed to each dispatched function
    * @param _parent    - The document with directly modified embedded documents.
    *                     Either this document or a descendant of this one.
-   * @internal
+   * @remarks Foundry marked `@internal`
    */
   protected _dispatchDescendantDocumentEvents(
     event: ClientDocument.LifeCycleEventName,
@@ -692,12 +692,13 @@ declare global {
         }
       : SourceData;
 
-    interface OnSheetChangeOptions {
-      /**
-       * Whether the sheet was originally open and needs to be re-opened.
-       */
-      sheetOpen?: boolean | undefined;
-    }
+    /** @internal */
+    type _OnSheetChangeOptions = NullishProps<{
+      /** Whether the sheet was originally open and needs to be re-opened. */
+      sheetOpen: boolean;
+    }>;
+
+    interface OnSheetChangeOptions extends _OnSheetChangeOptions {}
   }
 }
 
