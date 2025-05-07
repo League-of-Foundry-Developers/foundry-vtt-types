@@ -1,4 +1,3 @@
-import type ApplicationV2 from "../api/application.d.mts";
 import type CategoryBrowser from "../api/category-browser.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
@@ -8,14 +7,35 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
  * @privateRemarks TODO: Stub
  */
 declare class SettingsConfig<
-  RenderContext extends SettingsConfig.RenderContext = SettingsConfig.RenderContext,
+  Entry extends SettingsConfig.Entry = SettingsConfig.Entry,
+  RenderContext extends SettingsConfig.RenderContext<Entry> = SettingsConfig.RenderContext<Entry>,
   Configuration extends CategoryBrowser.Configuration = CategoryBrowser.Configuration,
   RenderOptions extends
     HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
-> extends CategoryBrowser<RenderContext, Configuration, RenderOptions> {}
+> extends CategoryBrowser<Entry, RenderContext, Configuration, RenderOptions> {
+  protected _prepareCategoryData(): Promise<Record<string, CategoryBrowser.CategoryData<Entry>>>;
+}
 
 declare namespace SettingsConfig {
-  interface RenderContext extends ApplicationV2.RenderContext {}
+  interface MenuEntry {
+    menu: true;
+    buttonText: string;
+    hint: string;
+    icon: string;
+    key: string;
+    label: string;
+  }
+
+  interface SettingEntry {
+    menu: false;
+    field: foundry.data.fields.DataField.Any;
+    label: string | undefined;
+    value: unknown;
+  }
+
+  type Entry = MenuEntry | SettingEntry;
+
+  interface RenderContext<Entry> extends CategoryBrowser.RenderContext<Entry> {}
 }
 
 export default SettingsConfig;
