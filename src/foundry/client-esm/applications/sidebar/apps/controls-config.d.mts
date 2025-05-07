@@ -1,5 +1,4 @@
 import type CategoryBrowser from "../../api/category-browser.d.mts";
-import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 
 /**
@@ -7,14 +6,22 @@ import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.
  * @remarks TODO: Stub
  */
 declare class ControlsConfig<
-  RenderContext extends ControlsConfig.RenderContext = ControlsConfig.RenderContext,
+  Entry extends ControlsConfig.Entry = ControlsConfig.Entry,
+  RenderContext extends ControlsConfig.RenderContext<Entry> = ControlsConfig.RenderContext<Entry>,
   Configuration extends CategoryBrowser.Configuration = CategoryBrowser.Configuration,
   RenderOptions extends
     HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
-> extends CategoryBrowser<RenderContext, Configuration, RenderOptions> {}
+> extends CategoryBrowser<Entry, RenderContext, Configuration, RenderOptions> {
+  protected _prepareCategoryData(): Promise<Record<string, CategoryBrowser.CategoryData<Entry>>>;
+}
 
 declare namespace ControlsConfig {
-  interface RenderContext extends ApplicationV2.RenderContext {}
+  // TODO: Interface is a stub
+  interface Entry {
+    id: string;
+  }
+
+  interface RenderContext<Entry> extends CategoryBrowser.RenderContext<Entry> {}
 }
 
 export default ControlsConfig;

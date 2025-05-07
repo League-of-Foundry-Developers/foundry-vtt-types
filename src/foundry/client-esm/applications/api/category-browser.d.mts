@@ -1,18 +1,74 @@
+import type { DeepPartial } from "../../../../utils/index.d.mts";
 import type ApplicationV2 from "./application.d.mts";
 import type HandlebarsApplicationMixin from "./handlebars-application.d.mts";
 
 /**
  * An abstract class responsible for displaying a 2-pane Application that allows for entries to be grouped and filtered
  * by category.
- * @remarks TODO: Stub
- * @remarks This is not actually *imported* anywhere it can be used, it appears to be for internal FVTT use only.
  */
-declare class CategoryBrowser<
-  RenderContext extends CategoryBrowser.RenderContext = CategoryBrowser.RenderContext,
+declare abstract class CategoryBrowser<
+  Entry,
+  RenderContext extends CategoryBrowser.RenderContext<Entry> = CategoryBrowser.RenderContext<Entry>,
   Configuration extends CategoryBrowser.Configuration = CategoryBrowser.Configuration,
   RenderOptions extends
     HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
-> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {}
+> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  static DEFAULT_OPTIONS: DeepPartial<CategoryBrowser.Configuration> & object;
+
+  static PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  /**
+   * Is category and/or entry data loaded? Most subclasses will already have their data close at hand.
+   */
+  protected get _dataLoaded(): boolean;
+
+  protected override _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;
+
+  protected override _configureRenderParts(
+    options: RenderOptions,
+  ): Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  /**
+   * Perform a text search without a `KeyboardEvent`.
+   */
+  search(query: string): void;
+
+  override render(options?: DeepPartial<RenderOptions>): Promise<this>;
+
+  /** @deprecated Exists for backwards compatibility with the original `ApplicationV1#render` signature. */
+  override render(options: boolean, _options?: DeepPartial<RenderOptions>): Promise<this>;
+
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  /**
+   * Prepare the structure of category data which is rendered in this configuration form.
+   */
+  protected abstract _prepareCategoryData(): Promise<Record<string, CategoryBrowser.CategoryData<Entry>>>;
+
+  /**
+   * An optional method to make a potentially long-running request to load category data: a temporary message will be
+   * displayed until completion.
+   */
+  protected _loadCategoryData(): Promise<void>;
+
+  /**
+   * Reusable logic for how categories are sorted in relation to each other.
+   */
+  protected _sortCategories(a: CategoryBrowser.CategoryData<Entry>, b: CategoryBrowser.CategoryData<Entry>): number;
+
+  protected override _getTabsConfig(group: string): ApplicationV2.TabsConfiguration | null;
+
+  protected _tearDown(options: DeepPartial<ApplicationV2.ClosingOptions>): void;
+
+  protected _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+
+  /**
+   * Handle search input
+   */
+  _onSearchFilter: unknown; // SearchFilter.Callback
+}
 
 declare namespace CategoryBrowser {
   interface Configuration extends ApplicationV2.Configuration {
@@ -34,7 +90,20 @@ declare namespace CategoryBrowser {
     sidebarFooter: string | null;
   }
 
-  interface RenderContext extends ApplicationV2.RenderContext {}
+  interface RenderContext<Entry> {
+    rootId: string;
+    loading: boolean | null;
+    categories: CategoryData<Entry>;
+    packageList: boolean;
+    subtemplates: Subtemplates;
+    submitButton: boolean;
+  }
+
+  interface CategoryData<Entry> {
+    id: string;
+    label: string;
+    entries: Entry[];
+  }
 }
 
 export default CategoryBrowser;
