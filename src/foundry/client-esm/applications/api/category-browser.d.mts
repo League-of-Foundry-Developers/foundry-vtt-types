@@ -67,7 +67,7 @@ declare abstract class CategoryBrowser<
   /**
    * Handle search input
    */
-  _onSearchFilter: unknown; // SearchFilter.Callback
+  _onSearchFilter: unknown; // TODO: SearchFilter.Callback
 }
 
 declare namespace CategoryBrowser {

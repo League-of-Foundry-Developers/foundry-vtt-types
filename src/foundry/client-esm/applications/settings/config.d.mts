@@ -17,17 +17,23 @@ declare class SettingsConfig<
 }
 
 declare namespace SettingsConfig {
-  // There's a split here between field and menu entries that could/should probably be resolved by a union
-  interface Entry {
-    key?: string;
-    icon?: string;
+  interface MenuEntry {
+    menu: true;
+    buttonText: string;
+    hint: string;
+    icon: string;
+    key: string;
     label: string;
-    hint?: string;
-    menu: boolean;
-    buttonText?: string;
-    value?: unknown;
-    field?: foundry.data.fields.DataField.Any;
   }
+
+  interface SettingEntry {
+    menu: false;
+    field: foundry.data.fields.DataField.Any;
+    label: string | undefined;
+    value: unknown;
+  }
+
+  type Entry = MenuEntry | SettingEntry;
 
   interface RenderContext<Entry> extends CategoryBrowser.RenderContext<Entry> {}
 }
