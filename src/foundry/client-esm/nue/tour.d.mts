@@ -7,16 +7,11 @@ declare class Tour {
   /**
    * Construct a Tour by providing a configuration.
    * @param config  - The configuration of the Tour
-   * @param options - Additional options for configuring the tour
-   *                  (default: `{}`)
+   * @param options - Additional options for configuring the tour (default: `{}`)
    */
   constructor(config: Tour.Config, options?: Tour.ConstructorOptions);
 
-  static STATUS: Readonly<{
-    UNSTARTED: "unstarted";
-    IN_PROGRESS: "in-progress";
-    COMPLETED: "completed";
-  }>;
+  static STATUS: Tour.STATUS;
 
   /**
    * Indicates if a Tour is currently in progress.
@@ -32,7 +27,7 @@ declare class Tour {
    * Handle a movement action to either progress or regress the Tour
    * @param movementDirections - The Directions being moved in
    */
-  static onMovementAction(movementDirections: string[]): boolean | void;
+  static onMovementAction(movementDirections: string[]): true | void;
 
   /**
    * Configuration of the tour. This object is cloned to avoid mutating the original configuration.
@@ -63,9 +58,9 @@ declare class Tour {
   /**
    * The unique identifier of the tour
    */
-  get id(): string | undefined;
+  get id(): string;
 
-  set id(value: string | undefined);
+  set id(value: string);
 
   /**
    * The human-readable title for the tour.
@@ -80,9 +75,9 @@ declare class Tour {
   /**
    * The package namespace for the tour.
    */
-  get namespace(): string | undefined;
+  get namespace(): string;
 
-  set namespace(value: string | undefined);
+  set namespace(value: string);
 
   /**
    * The key the Tour is stored under in game.tours, of the form `${namespace}.${id}`
@@ -171,6 +166,7 @@ declare class Tour {
   /**
    * Creates and returns a Tour by loading a JSON file
    * @param filepath The path to the JSON file
+   * @remarks Returns `new this()` so needs an override per subclass.
    */
   static fromJSON(filepath: string): Promise<Tour>;
 
@@ -196,6 +192,8 @@ declare class Tour {
    * @internal
    */
   _reloadProgress(): void;
+
+  #tour: true;
 }
 
 declare namespace Tour {
@@ -214,22 +212,22 @@ declare namespace Tour {
     steps: Tour.Step[];
 
     /** A human-readable description of this Tour. Localized. */
-    description?: string;
+    description?: string | undefined;
 
     /** A map of localizations for the Tour that should be merged into the default localizations */
-    localization?: Localization.Translations; // TODO: Verify
+    localization?: Localization.Translations | undefined;
 
     /** Whether the Tour is restricted to the GM only. Defaults to false. */
-    restricted?: boolean;
+    restricted?: boolean | undefined;
 
     /** Whether the Tour should be displayed in the Manage Tours UI. Defaults to false. */
-    display?: boolean;
+    display?: boolean | undefined;
 
     /** Whether the Tour can be resumed or if it always needs to start from the beginning. Defaults to false. */
-    canBeResumed?: boolean;
+    canBeResumed?: boolean | undefined;
 
     /** A list of namespaced Tours that might be suggested to the user when this Tour is completed. The first non-completed Tour in the array will be recommended. */
-    suggestedNextTours?: string[];
+    suggestedNextTours?: string[] | undefined;
   }
 
   /** A step in a Tour */
@@ -244,32 +242,38 @@ declare namespace Tour {
     content: string;
 
     /** A DOM selector which denotes an element to highlight during this step. If omitted, the step is displayed in the center of the screen. */
-    selector?: string;
+    selector?: string | undefined;
 
     /** How the tooltip for the step should be displayed relative to the target element. If omitted, the best direction will be attempted to be auto-selected. */
-    tooltipDirection?: TooltipManager.TOOLTIP_DIRECTIONS;
+    tooltipDirection?: TooltipManager.TOOLTIP_DIRECTIONS | undefined;
 
     /** Whether the Step is restricted to the GM only. Defaults to false. */
-    restricted?: boolean;
+    restricted?: boolean | undefined;
 
     /** Activates a particular sidebar tab. Usable in `SidebarTour` instances. */
-    sidebarTab?: string;
+    sidebarTab?: string | undefined;
 
     /** Activates a particular canvas layer and its respective control group. Usable in `CanvasTour` instances */
-    layer?: string;
+    layer?: string | undefined;
 
     /** Activates a particular tool. Usable in `CanvasTour` instances. */
-    tool?: string;
+    tool?: string | undefined;
   }
 
-  type STATUS = ValueOf<typeof Tour.STATUS>;
+  type Status = ValueOf<STATUS>;
 
   interface ConstructorOptions {
-    /** A tour ID that supercedes TourConfig#id */
+    /** A tour ID that supercedes `TourConfig#id` */
     id: string;
 
-    /** A tour namespace that supercedes TourConfig#namespace */
+    /** A tour namespace that supercedes `TourConfig#namespace` */
     namespace: string;
+  }
+
+  interface STATUS {
+    readonly UNSTARTED: "unstarted";
+    readonly IN_PROGRESS: "in-progress";
+    readonly COMPLETED: "completed";
   }
 }
 
