@@ -44,13 +44,13 @@ declare namespace ApplicationV2 {
      * codebase.
      */
     interface Instance<
+      RenderContext extends object,
       Configuration extends ApplicationV2.Configuration,
       RenderOptions extends ApplicationV2.RenderOptions,
-      RenderContext extends AnyObject,
     > {
+      readonly [__RenderContext]: RenderContext;
       readonly [__Configuration]: Configuration;
       readonly [__RenderOptions]: RenderOptions;
-      readonly [__RenderContext]: RenderContext;
     }
 
     namespace Instance {

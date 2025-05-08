@@ -69,20 +69,20 @@ declare namespace HandlebarsApplicationMixin {
   }
 
   namespace HandlebarsApplication {
-    // Note(LukeAbby): `unknown` is returned in the false case instead of `never` because otherwise errors will crop up at usage sites like "any cannot be assigned to `never`".
+    // Note(LukeAbby): `object` is returned in the false case instead of `never` because otherwise errors will crop up at usage sites like "any cannot be assigned to `never`".
+    type RenderContextFor<Instance extends HandlebarsApplication> =
+      Instance extends ApplicationV2.Internal.Instance<infer RenderContext, infer _1, infer _2>
+        ? RenderContext
+        : object;
+
     type ConfigurationFor<Instance extends HandlebarsApplication> =
-      Instance extends ApplicationV2.Internal.Instance<infer Configuration, infer _1, infer _2>
+      Instance extends ApplicationV2.Internal.Instance<infer _1, infer Configuration, infer _2>
         ? Configuration
         : unknown;
 
     type RenderOptionsFor<Instance extends HandlebarsApplication> =
-      Instance extends ApplicationV2.Internal.Instance<infer _1, infer RenderOptions, infer _2>
+      Instance extends ApplicationV2.Internal.Instance<infer _1, infer _2, infer RenderOptions>
         ? RenderOptions
-        : object;
-
-    type RenderContextFor<Instance extends HandlebarsApplication> =
-      Instance extends ApplicationV2.Internal.Instance<infer _1, infer _2, infer RenderContext>
-        ? RenderContext
         : object;
   }
 
