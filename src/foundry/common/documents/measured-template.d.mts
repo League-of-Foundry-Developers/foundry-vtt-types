@@ -46,22 +46,28 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   static override defineSchema(): BaseMeasuredTemplate.Schema;
 
+  /**
+   * @remarks Returns `true` if `user` is the `author` of the `MeasuredTemplate` and `options.exact` is falsey.
+   * Otherwise, forwards to {@link Document.testUserPermission | Document#testUserPermission`}
+   */
   // options: not null (destructured)
   override testUserPermission(
-    user: User.Internal.Implementation,
+    user: User.Implementation,
     permission: Document.TestableOwnershipLevel,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   /**
-   * @remarks Migrates:
-   * - `user` to `author`
+   * @remarks
+   * Migrations:
+   * - `user` to `author` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**
-   * @remarks Shims:
-   * - `user` to `author` since v12, until v14
+   * @remarks
+   * Shims:
+   * - `user` to `author` (since v12, until v14)
    */
   // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -282,11 +288,13 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   static get schema(): SchemaField<MeasuredTemplateDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: MeasuredTemplateDocument.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: MeasuredTemplateDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): MeasuredTemplateDocument.Implementation;
 
   static override fromJSON(json: string): MeasuredTemplateDocument.Implementation;

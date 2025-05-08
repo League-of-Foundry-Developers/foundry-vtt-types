@@ -245,11 +245,19 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static get schema(): SchemaField<Adventure.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Adventure.Source): void;
 
+  /**
+   * @remarks Actual override, not just document template typing
+   *
+   * If this creation is happening in a provided `pack`, and that pack is system-agnostic,
+   * strips `Actor`s, `Item`s, and `Actor` and `Item` `Folders` from `source`d
+   */
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: Adventure.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): Adventure.Implementation;
 
   static override fromJSON(json: string): Adventure.Implementation;

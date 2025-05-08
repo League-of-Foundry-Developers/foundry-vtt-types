@@ -908,12 +908,19 @@ declare global {
      * @param createData - (default: `{}`)
      * @param options    - (default: `{}`)
      */
-    override clone<Save extends boolean = false>(
-      createData?: Scene.CreateData,
-      context?: Document.CloneContext<Save> & InexactPartial<Document.ConstructionContext<Scene.Parent>>,
+    // data: not null (property access), context: not null (destructured)
+    override clone<Save extends boolean | null | undefined = false>(
+      data?: Scene.CreateData,
+      context?: Document.CloneContext<Save>,
     ): Save extends true ? Promise<this> : this;
 
     override reset(): void;
+
+    /**
+     * @remarks If `source` is falsey, and the grid is hexagonal with the `legacyHex` flag set,
+     * does some conversion on `object.grid.size` before returning
+     */
+    override toObject(source?: boolean | null): fields.SchemaField.SourceData<Scene.Schema>;
 
     override prepareBaseData(): void;
 
@@ -926,10 +933,8 @@ declare global {
 
     override _onClickDocumentLink(event: MouseEvent): unknown;
 
-    /**
-     * @privateRemarks _onCreate, _preUpdate, _onUpdate, _preDelete, and _onDelete are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    // _onCreate, _preUpdate, _onUpdate, _preDelete, and _onDelete are all overridden but with no signature changes.
+    // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     /**
      * Handle repositioning of placed objects when the Scene dimensions change

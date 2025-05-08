@@ -745,9 +745,7 @@ declare global {
      */
     protected _refreshTokenHUD(documents: Array<Combatant.Implementation>): void;
 
-    /**
-     * @privateRemarks _onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes from BaseCombat.
-     */
+    //_onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes from BaseCombat.
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters

@@ -1,4 +1,4 @@
-import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -29,16 +29,15 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   static override defineSchema(): BasePlaylistSound.Schema;
 
+  /**
+   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Playlist` implementation
+   * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
+   */
+  // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   /*
@@ -253,11 +252,13 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   static get schema(): SchemaField<PlaylistSound.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: PlaylistSound.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: PlaylistSound.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): PlaylistSound.Implementation;
 
   static override fromJSON(json: string): PlaylistSound.Implementation;

@@ -250,11 +250,13 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static get schema(): SchemaField<AmbientLightDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: AmbientLightDocument.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: AmbientLightDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): AmbientLightDocument.Implementation;
 
   static override fromJSON(json: string): AmbientLightDocument.Implementation;

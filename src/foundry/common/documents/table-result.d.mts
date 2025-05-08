@@ -1,7 +1,6 @@
-import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as CONST from "../constants.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
@@ -32,18 +31,22 @@ declare abstract class BaseTableResult<
 
   static override defineSchema(): BaseTableResult.Schema;
 
+  /**
+   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `RollTable` implementation
+   * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
+   */
+  // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  /**
+   * @remarks
+   * Migrations:
+   * - Numeric `type`s to their new string values
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /*
@@ -110,7 +113,7 @@ declare abstract class BaseTableResult<
 
   override delete(operation?: TableResult.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: TableResult.Database.GetOptions): TableResult.Implementation | null;
+  static override get(documentId: string, options?: TableResult.Database.GetOptions): TableResult.Implementation | null;
 
   static override getCollectionName(name: string): null;
 
@@ -255,11 +258,13 @@ declare abstract class BaseTableResult<
 
   static get schema(): SchemaField<TableResult.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: TableResult.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: TableResult.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): TableResult.Implementation;
 
   static override fromJSON(json: string): TableResult.Implementation;

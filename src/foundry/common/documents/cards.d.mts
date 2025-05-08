@@ -39,6 +39,11 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    */
   static DEFAULT_ICON: string;
 
+  /**
+   * @remarks
+   * Migrations:
+   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /*
@@ -80,6 +85,11 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   override parent: BaseCards.Parent;
 
+  /**
+   * @remarks Actual override, not just Document template typing.
+   *
+   * Sets `context.keepEmbeddedIds` to `false` if it's `=== undefined`
+   */
   static createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Cards.Implementation | Cards.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Cards.Database.Create<Temporary>>,
@@ -274,12 +284,11 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   static get schema(): SchemaField<Cards.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Cards.Source): void;
 
-  static override fromSource(
-    source: Cards.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): Cards.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: Cards.CreateData, context?: DataModel.FromSourceOptions): Cards.Implementation;
 
   static override fromJSON(json: string): Cards.Implementation;
 }

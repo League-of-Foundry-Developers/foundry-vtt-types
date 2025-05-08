@@ -251,11 +251,13 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   static get schema(): SchemaField<AmbientSoundDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: AmbientSoundDocument.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: AmbientSoundDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): AmbientSoundDocument.Implementation;
 
   static override fromJSON(json: string): AmbientSoundDocument.Implementation;

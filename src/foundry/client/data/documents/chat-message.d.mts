@@ -718,10 +718,8 @@ declare global {
      */
     protected _renderRollHTML(isPrivate: boolean): Promise<string>;
 
-    /**
-     * @privateRemarks _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    // _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+    // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     /**
      * Export the content of the chat message into a standardized log format

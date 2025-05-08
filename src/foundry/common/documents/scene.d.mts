@@ -1,4 +1,4 @@
-import type { AnyObject, AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -29,18 +29,35 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   static override defineSchema(): BaseScene.Schema;
 
+  /**
+   * @remarks
+   * Migrations:
+   * - `fogExploration` to `fog.exploration` (since v12, until 14 (probably))
+   * - `fogReset` to `fog.reset` (since v12, until 14 (probably))
+   * - `fogOverlay` to `fog.overlay` (since v12, until 14 (probably))
+   * - `fogExploredColor` to `fog.colors.explored` (since v12, until 14 (probably))
+   * - `fogUnexploredColor` to `fog.colors.unexplored` (since v12, until 14 (probably))
+   * - `globalLight` to `environment.globalLight.enabled` (since v12, until 14 (probably))
+   * - `globalLightThreshold` to `environment.globalLight.darkness.max` (since v12, until 14 (probably))
+   * - `darkness` to `environment.darknessLevel` (since v12, until 14 (probably))
+   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
+  /**
+   * @remarks
+   * Shims:
+   * - `fogExploration` to `fog.exploration` (since v12, until 14)
+   * - `fogReset` to `fog.reset` (since v12, until 14)
+   * - `fogOverlay` to `fog.overlay` (since v12, until 14)
+   * - `fogExploredColor` to `fog.colors.explored` (since v12, until 14)
+   * - `fogUnexploredColor` to `fog.colors.unexplored` (since v12, until 14)
+   * - `globalLight` to `environment.globalLight.enabled` (since v12, until 14)
+   * - `globalLightThreshold` to `environment.globalLight.darkness.max` (since v12, until 14)
+   * - `darkness` to `environment.darknessLevel` (since v12, until 14)
+   */
+  // options: not null (destructured)
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.
@@ -273,12 +290,11 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   static get schema(): SchemaField<Scene.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Scene.Source): void;
 
-  static override fromSource(
-    source: Scene.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): Scene.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: Scene.CreateData, context?: DataModel.FromSourceOptions): Scene.Implementation;
 
   static override fromJSON(json: string): Scene.Implementation;
 }

@@ -50,6 +50,14 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    */
   static DEFAULT_ICON: string;
 
+  /**
+   * @remarks Returns `true` for GMs regardless of `options.exact`
+   *
+   * If this is an unlinked note (lacks an `entryId`), returns `user.hasPermission("NOTE_CREATE")`. Otherwise,
+   * `this.entry.testUserPermission`, or `false` if `!this.entry`. Core's `JournalEntry` implementation doesn't
+   * override this method, so without further extension that's equivalent to {@link Document.testUserPermission | `Document#testUserPermission`}
+   * */
+  // options: not null (destructured)
   override testUserPermission(
     user: User.Internal.Implementation,
     permission: Document.TestableOwnershipLevel,
@@ -268,11 +276,13 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   static get schema(): SchemaField<NoteDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: NoteDocument.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: NoteDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): NoteDocument.Implementation;
 
   static override fromJSON(json: string): NoteDocument.Implementation;

@@ -382,13 +382,11 @@ declare global {
      */
     get config(): SettingsConfig | undefined;
 
-    // TODO: This is the same as `DataModel._initialize`
-    protected _initialize(options?: any): void;
+    // options: not null (parameter default only)
+    protected override _initialize(options?: Document.InitializeOptions): void;
 
-    /**
-     * @privateRemarks _onCreate and _preUpdate are overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    // _onCreate and _preUpdate are overridden but with no signature changes.
+    // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     /**
      * Cast the value of the Setting into its defined type.

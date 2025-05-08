@@ -44,7 +44,13 @@ declare abstract class BaseCombatant<
    */
   static #canCreate(user: User.Implementation, doc: BaseCombatant, data: BaseCombatant.CreateData): boolean;
 
-  override getUserLevel(user?: User.Implementation): DOCUMENT_OWNERSHIP_LEVELS | null;
+  /**
+   * @remarks Uses `game.user` if `user` is falsey.
+   *
+   * Returns `OWNER` if `user.isGM`, otherwise forwards to this Combatant's `actor?.getUserLevel`,
+   * if that does exist returns `NONE`
+   */
+  override getUserLevel(user?: User.Implementation | null): DOCUMENT_OWNERSHIP_LEVELS;
 
   /*
    * After this point these are not really overridden methods.
@@ -253,11 +259,13 @@ declare abstract class BaseCombatant<
 
   static get schema(): SchemaField<Combatant.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Combatant.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: Combatant.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): Combatant.Implementation;
 
   static override fromJSON(json: string): Combatant.Implementation;

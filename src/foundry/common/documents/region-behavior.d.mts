@@ -58,7 +58,8 @@ declare abstract class BaseRegionBehavior<
 
   static override defineSchema(): BaseRegionBehavior.Schema;
 
-  static override canUserCreate(user: User.Internal.Implementation): boolean;
+  /** @remarks Returns `user.isGM` */
+  static override canUserCreate(user: User.Implementation): boolean;
 
   /*
    * After this point these are not really overridden methods.
@@ -274,11 +275,13 @@ declare abstract class BaseRegionBehavior<
 
   static get schema(): SchemaField<RegionBehavior.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: RegionBehavior.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: RegionBehavior.UpdateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): RegionBehavior.Implementation;
 
   static override fromJSON(json: string): RegionBehavior.Implementation;

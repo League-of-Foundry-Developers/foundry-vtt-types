@@ -495,10 +495,8 @@ declare global {
      */
     get ancestors(): Folder.Implementation[];
 
-    /**
-     * @privateRemarks _preCreate overridden but with no signature changes.
-     * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    // _preCreate overridden but with no signature changes.
+    // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
     static override createDialog(
       data?: Document.CreateDialogData<Folder.CreateData>,

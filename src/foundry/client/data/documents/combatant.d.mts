@@ -519,10 +519,17 @@ declare global {
      */
     get isDefeated(): boolean;
 
+    /**
+     * @remarks Returns `true` for GMs, regardless of `options.exact`. Otherwise, returns
+     * `this.actor?.canUserModify(user, "update") || false`
+     *
+     * @privateRemarks This is the only document that overrides this in the non-Base class
+     */
+    // options: not null (destructured)
     override testUserPermission(
       user: User.Implementation,
-      permission: keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
-      { exact }?: { exact?: boolean },
+      permission: Document.TestableOwnershipLevel,
+      options?: Document.TestUserPermissionOptions,
     ): boolean;
 
     /**
@@ -553,10 +560,8 @@ declare global {
      */
     protected _getInitiativeFormula(): string;
 
-    /**
-     * @privateRemarks DatabaseLifecycle Events are overridden but with no signature changes.
-     * These are already covered in BaseCombatant
-     */
+    // DatabaseLifecycle Events are overridden but with no signature changes.
+    // These are already covered in BaseCombatant
 
     /*
      * After this point these are not really overridden methods.

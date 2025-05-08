@@ -48,18 +48,20 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     texture: { src: string };
   };
 
+  // options: not null (parameter default only)
   protected override _initializeSource(
     data: BaseActor.CreateData | this,
-    options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
+    options?: Document.InitializeSourceOptions,
   ): BaseActor.Source;
 
+  /** @remarks Returns `user.hasPermission("ACTOR_CREATE")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
   /**
-   * @privateRemarks _preCreate and _preUpdate are overridden but with no signature changes.
-   * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+   * @remarks
+   * Migrations:
+   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
-
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /*
@@ -295,12 +297,11 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   static get schema(): SchemaField<Actor.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Actor.Source): void;
 
-  static override fromSource(
-    source: Actor.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): Actor.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: Actor.CreateData, context?: DataModel.FromSourceOptions): Actor.Implementation;
 
   static override fromJSON(json: string): Actor.Implementation;
 

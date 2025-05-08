@@ -1,7 +1,6 @@
-import type { AnyObject, AnyMutableObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type * as CONST from "../constants.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
@@ -32,24 +31,32 @@ declare abstract class BaseChatMessage<
 
   static override defineSchema(): BaseChatMessage.Schema;
 
+  /**
+   * @remarks Returns `true` if `user` is the `author` of the `ChatMessage` and `options.exact` is falsey.
+   * Otherwise, forwards to {@link Document.testUserPermission | `Document#testUserPermission`}
+   */
+  // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{ exact: boolean }>,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  /**
+   * @remarks
+   * Migrations:
+   * - `user` to `author` (since v12, no specified end)
+   * - existing numeric `type`s to `style`, setting `type` to `"base"` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
-  static override shimData(
-    data: AnyObject,
-    options?: {
-      /**
-       * Apply shims to embedded models?
-       * @defaultValue `true`
-       */
-      embedded?: boolean;
-    },
-  ): AnyObject;
+  /**
+   * @remarks
+   * Shims:
+   * - `user` to `author` (since v12, until v14)
+   */
+  // options: not null (destructured)
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
    * @deprecated since v12, will be removed in v14
@@ -265,11 +272,13 @@ declare abstract class BaseChatMessage<
 
   static get schema(): SchemaField<ChatMessage.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: ChatMessage.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: ChatMessage.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): ChatMessage.Implementation;
 
   static override fromJSON(json: string): ChatMessage.Implementation;

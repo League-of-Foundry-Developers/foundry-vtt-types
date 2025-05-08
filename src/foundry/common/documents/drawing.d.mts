@@ -46,24 +46,31 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   static override defineSchema(): BaseDrawing.Schema;
 
-  static override canUserCreate(user: User.Internal.Implementation): boolean;
+  /** @remarks Returns `user.hasPermission("DRAWING_CREATE")` */
+  static override canUserCreate(user: User.Implementation): boolean;
 
+  /**
+   * @remarks Returns `true` if `user` is the `author` of the `Drawing` and `options.exact` is falsey.
+   * Otherwise, forwards to {@link Document.testUserPermission | `Document#testUserPermission`}
+   */
   // options: not null (destructured)
   override testUserPermission(
-    user: User.Internal.Implementation,
+    user: User.Implementation,
     permission: Document.TestableOwnershipLevel,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   /**
-   * @remarks Migrates:
-   * - `z` to `elevation`
+   * @remarks
+   * Migrations:
+   * - `z` to `elevation` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**
-   * @remarks Shims:
-   * - `z` to `elevation` since v12, until v14
+   * @remarks
+   * Shims:
+   * - `z` to `elevation` (since v12, until v14)
    */
   // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -280,11 +287,16 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   static get schema(): SchemaField<DrawingDocument.Schema>;
 
+  /**
+   * @remarks Actual override, not just part of the template
+   * @throws If `data` fails `BaseDrawing.#validateVisibleContent` validation (must have some visible text, fill, *or* line)
+   * */
   static validateJoint(data: DrawingDocument.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: DrawingDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): DrawingDocument.Implementation;
 
   static override fromJSON(json: string): DrawingDocument.Implementation;

@@ -1,7 +1,6 @@
-import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.d.mts";
-import type * as CONST from "../constants.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
@@ -39,20 +38,25 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    */
   static DEFAULT_ICON: "icons/svg/dice-target.svg";
 
+  /**
+   * @remarks
+   * Migrations:
+   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
+  /** @remarks Returns `user.hasRole("PLAYER")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
+  /**
+   * @remarks Returns `true` if `user` is the `author` of the `Macro` and `options.exact` is falsey.
+   * Otherwise, forwards to {@link Document.testUserPermission | `Document#testUserPermission`}
+   */
+  // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   /*
@@ -250,12 +254,14 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
 
   static get schema(): SchemaField<Macro.Schema>;
 
+  /**
+   * @remarks Actual override, not just part of the template.
+   * @throws If `data.command` doesn't pass {@link foundry.data.fields.JavaScriptField | `JavaScriptField`} validation
+   */
   static override validateJoint(data: Macro.Source): void;
 
-  static override fromSource(
-    source: Macro.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): Macro.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: Macro.CreateData, context?: DataModel.FromSourceOptions): Macro.Implementation;
 
   static override fromJSON(json: string): Macro.Implementation;
 }

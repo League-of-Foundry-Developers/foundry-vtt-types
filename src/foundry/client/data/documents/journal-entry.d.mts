@@ -497,6 +497,11 @@ declare global {
      */
     get visible(): boolean;
 
+    /**
+     * @remarks "Upgrade to OBSERVER ownership if the journal entry is in a LIMITED compendium,
+     * as LIMITED has no special meaning for journal entries in this context.""
+     */
+    // user: not null (parameter default only where forwarded)
     override getUserLevel(user?: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
     /**
@@ -524,9 +529,7 @@ declare global {
      */
     panToNote(options?: PanToNoteOptions): Promise<void>;
 
-    /**
-     * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes from their definition in BaseJournalEntry.
-     */
+    // _onUpdate and _onDelete are all overridden but with no signature changes from their definition in BaseJournalEntry.
 
     /*
      * After this point these are not really overridden methods.

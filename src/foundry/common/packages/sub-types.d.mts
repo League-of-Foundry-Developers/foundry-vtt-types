@@ -18,9 +18,10 @@ declare class AdditionalTypesField<
 > {
   static get _defaults(): AdditionalTypesField.DefaultOptions;
 
+  // options: not null (parameter default only, despite being unused)
   protected _validateType(
     value: ObjectField.InitializedType<Options>,
-    options?: DataField.ValidationOptions<DataField.Any>,
+    options?: DataField.ValidateOptions<AdditionalTypesField>,
   ): boolean | void;
 }
 
@@ -30,9 +31,6 @@ declare namespace AdditionalTypesField {
   type DefaultOptions = Merge<
     ObjectField.DefaultOptions,
     {
-      // Required is set as false BUT this doesn't work correctly in v11
-      // TODO: Re-enable in v12
-      // required: false;
       readonly: true;
       validationError: "is not a valid sub-types configuration";
     }

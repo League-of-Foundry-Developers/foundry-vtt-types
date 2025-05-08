@@ -30,7 +30,13 @@ declare abstract class BaseJournalEntryPage<
 
   static override defineSchema(): BaseJournalEntryPage.Schema;
 
-  override getUserLevel(user?: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  /**
+   * @remarks Uses `game.user` if `user` is falsey.
+   *
+   * If this page's ownership is `.INHERIT` for this user (specified or default),
+   * forwards to `this.parent.getUserLevel`.
+   */
+  override getUserLevel(user?: User.Implementation | null): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /*
    * After this point these are not really overridden methods.
@@ -246,11 +252,13 @@ declare abstract class BaseJournalEntryPage<
 
   static get schema(): SchemaField<JournalEntryPage.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: JournalEntryPage.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: JournalEntryPage.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): JournalEntryPage.Implementation;
 
   static override fromJSON(json: string): JournalEntryPage.Implementation;

@@ -34,6 +34,11 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    */
   static DEFAULT_ICON: "icons/svg/d20-grey.svg";
 
+  /**
+   * @remarks
+   * Migrations:
+   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /*
@@ -100,7 +105,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   override delete(operation?: RollTable.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: RollTable.Database.GetOptions): RollTable.Implementation | null;
+  static override get(documentId: string, options?: RollTable.Database.GetOptions): RollTable.Implementation | null;
 
   static override getCollectionName<CollectionName extends RollTable.Embedded.Name>(
     name: CollectionName,
@@ -274,11 +279,13 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   static get schema(): SchemaField<RollTable.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: RollTable.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: RollTable.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): RollTable.Implementation;
 
   static override fromJSON(json: string): RollTable.Implementation;

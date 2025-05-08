@@ -461,10 +461,8 @@ declare global {
 
     _onClickDocumentLink(event: MouseEvent): ReturnType<Playlist.Implementation["stopSound" | "playSound"]>;
 
-    /**
-     * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    //_onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+    // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     /**
      * Special handling that occurs when playback of a PlaylistSound is started.

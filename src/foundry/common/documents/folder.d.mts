@@ -106,6 +106,12 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 
   override delete(operation?: Folder.Database.DeleteOperation): Promise<this | undefined>;
 
+  /**
+   * @remarks Actual override, not just Document template typing.
+   *
+   * Never returns an index entry, only ever `Folder` or `null`, as the `folders` collection of a
+   * compendium is accessible at sync speed
+   */
   static override get(documentId: string, options?: Folder.Database.GetOptions): Folder.Implementation | null;
 
   static override getCollectionName(name: string): null;
@@ -239,12 +245,14 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 
   static get schema(): SchemaField<Folder.Schema>;
 
+  /**
+   * @remarks Actual override, not just part of the template
+   * @throws If `data.folder === data._id` (no putting folders inside themselves)
+   * */
   static validateJoint(data: Folder.Source): void;
 
-  static override fromSource(
-    source: Folder.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): Folder.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: Folder.CreateData, context?: DataModel.FromSourceOptions): Folder.Implementation;
 
   static override fromJSON(json: string): Folder.Implementation;
 }

@@ -29,6 +29,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override defineSchema(): BaseSetting.Schema;
 
+  /** @remarks Returns `user.hasPermission("SETTINGS_MODIFY")` */
   static canUserCreate(user: User.Implementation): boolean;
 
   /*
@@ -213,12 +214,11 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static get schema(): SchemaField<Setting.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Setting.Source): void;
 
-  static override fromSource(
-    source: Setting.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): Setting.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: Setting.CreateData, context?: DataModel.FromSourceOptions): Setting.Implementation;
 
   static override fromJSON(json: string): Setting.Implementation;
 }

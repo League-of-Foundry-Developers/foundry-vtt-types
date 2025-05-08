@@ -286,12 +286,11 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   static get schema(): SchemaField<Combat.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Combat.Source): void;
 
-  static override fromSource(
-    source: Combat.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): Combat.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: Combat.CreateData, context?: DataModel.FromSourceOptions): Combat.Implementation;
 
   static override fromJSON(json: string): Combat.Implementation;
 }

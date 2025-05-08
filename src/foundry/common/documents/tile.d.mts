@@ -42,16 +42,19 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   static override defineSchema(): BaseTile.Schema;
 
   /**
-   * @remarks Migrates:
-   * - `z` to `sort`
-   * - `roof` to `restrictions.light` and `restrictions.weather`
+   * @remarks
+   * Migrations:
+   * - `z` to `sort` (since v12, no specified end)
+   * - `roof` to `restrictions.light` and `restrictions.weather` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**
-   * @remarks Shims:
-   * - `z` to `sort` since v12, until v14
+   * @remarks
+   * Shims:
+   * - `z` to `sort` (since v12, until v14)
    */
+  // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
@@ -142,7 +145,10 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   override delete(operation?: TileDocument.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: TileDocument.Database.GetOptions): TileDocument.Implementation | null;
+  static override get(
+    documentId: string,
+    options?: TileDocument.Database.GetOptions,
+  ): TileDocument.Implementation | null;
 
   static override getCollectionName(name: string): null;
 
@@ -285,11 +291,13 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   static get schema(): SchemaField<TileDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: TileDocument.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: TileDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): TileDocument.Implementation;
 
   static override fromJSON(json: string): TileDocument.Implementation;

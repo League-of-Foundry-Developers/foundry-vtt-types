@@ -64,7 +64,8 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    */
   can(action: keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES): boolean;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  /** @remarks Returns `.OWNER` for the User in question, `.NONE` for everyone else */
+  override getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Test whether the User has at least a specific permission
@@ -171,7 +172,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override delete(operation?: User.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: User.Database.GetOptions): User.Implementation | null;
+  static override get(documentId: string, options?: User.Database.GetOptions): User.Implementation | null;
 
   static override getCollectionName(name: string): null;
 
@@ -307,12 +308,11 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static get schema(): SchemaField<User.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: User.Source): void;
 
-  static override fromSource(
-    source: User.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): User.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: User.CreateData, context?: DataModel.FromSourceOptions): User.Implementation;
 
   static override fromJSON(json: string): User.Implementation;
 }
