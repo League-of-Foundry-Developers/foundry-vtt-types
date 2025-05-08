@@ -658,6 +658,8 @@ declare namespace PrototypeToken {
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  export import Flags = TokenDocument.Flags;
 }
 
 /**
@@ -710,7 +712,6 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
     operation?: Actor.Database.UpdateOperation,
   ): Promise<Actor.Implementation | undefined>;
 
-  // TODO: Type PrototypeToken flags separately from TokenDocument flags?
   /**
    * @see {@link foundry.abstract.Document.getFlag | `foundry.abstract.Document#getFlag`}
    */

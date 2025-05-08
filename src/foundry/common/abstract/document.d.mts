@@ -656,8 +656,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the creation request
    * @param userId  - The id of the User requesting the document update
    */
-  // TODO: should be `MaybePromise<void>` to allow async subclassing?
-  protected _onCreate(data: never, options: never, userId: string): void;
+  protected _onCreate(data: never, options: never, userId: string): MaybePromise<void>;
 
   /**
    * Pre-process a creation operation, potentially altering its instructions or input data. Pre-operation events only
@@ -714,8 +713,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the update request
    * @param userId  - The id of the User requesting the document update
    */
-  // TODO: should be `MaybePromise<void>` to allow async subclassing?
-  protected _onUpdate(changed: never, options: never, userId: string): void;
+  protected _onUpdate(changed: never, options: never, userId: string): MaybePromise<void>;
 
   /**
    * Pre-process an update operation, potentially altering its instructions or input data. Pre-operation events only
@@ -763,7 +761,6 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
-  // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _preDelete(options: never, user: User.Internal.Implementation): Promise<boolean | void>;
 
   /**
@@ -772,7 +769,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onDelete(options: never, userId: string): void;
+  protected _onDelete(options: never, userId: string): MaybePromise<void>;
 
   /**
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
