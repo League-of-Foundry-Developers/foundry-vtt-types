@@ -29,9 +29,9 @@ declare namespace ToursManagement {
     completed: boolean;
     hint: string;
     status: string;
-    canPlay?: boolean;
-    startOrResume?: string;
-    canReset?: boolean;
+    canPlay?: boolean | undefined;
+    startOrResume?: string | undefined;
+    canReset?: boolean | undefined;
   }
 
   interface RenderContext<Entry> extends CategoryBrowser.RenderContext<Entry> {}
