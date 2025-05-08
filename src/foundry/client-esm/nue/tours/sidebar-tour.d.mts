@@ -2,9 +2,11 @@ import type Tour from "../tour.mjs";
 
 /**
  * A Tour subclass for the Sidebar Tour
- * @remarks TODO: Stub
  */
-declare class SidebarTour extends Tour {}
+declare class SidebarTour extends Tour {
+  override start(): Promise<void>;
+  protected override _preStep(): Promise<void>;
+}
 
 declare namespace SidebarTour {}
 
