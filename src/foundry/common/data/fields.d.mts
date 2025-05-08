@@ -170,10 +170,11 @@ declare abstract class DataField<
    * @param options - Additional options passed to the applied function (default `{}`)
    * @returns The results object
    */
+  // TODO: Determine `value` based upon the field metadata in fields-v2 (while allowing subclasses to narrow allowed values)
   // options: not null (could be forwarded somewhere destructured, parameter default only)
-  apply<Value, Options, Return>(
-    fn: keyof this | ((this: this, value: Value, options: Options) => Return),
-    value?: Value,
+  apply<Options, Return>(
+    fn: keyof this | ((this: this, value: unknown, options: Options) => Return),
+    value?: unknown,
     options?: Options,
   ): Return;
 
@@ -907,11 +908,10 @@ declare class SchemaField<
 
   override toObject(value: InitializedType): PersistedType;
 
-  // TODO: Find a way to limit `Value` to `AnyObject | undefined` here while allowing it to be `unknown` in DataField
   // options: not null (could be forwarded somewhere destructured, parameter default only)
-  override apply<Value, Options, Return>(
-    fn: keyof this | ((this: this, value: Value, options: Options) => Return),
-    value?: Value,
+  override apply<Options, Return>(
+    fn: keyof this | ((this: this, value: AnyObject, options: Options) => Return),
+    value?: AnyObject,
     options?: Options,
   ): Return;
 
@@ -1991,11 +1991,10 @@ declare class ArrayField<
   override toObject(value: InitializedType): PersistedType;
 
   // TODO: Limit to the keys of `this` that are actually callable.
-  // TODO: Find a way to limit `Value` to `AnyArray | undefined` here while allowing it to be `unknown` in DataField
   // options: not null (could be forwarded somewhere destructured, parameter default only)
-  override apply<Value, Options, Return>(
-    fn: keyof this | ((this: this, value: Value, options: Options) => Return),
-    value?: Value,
+  override apply<Options, Return>(
+    fn: keyof this | ((this: this, value: AnyArray, options: Options) => Return),
+    value?: AnyArray,
     options?: Options,
   ): Return;
 
@@ -2539,7 +2538,6 @@ declare class EmbeddedCollectionField<
    * Return the embedded document(s) as a Collection.
    * @param parent - The parent document.
    */
-  // TODO: Foundry claims this returns `DocumentCollection`, figure out why this can't be that
   getCollection<P extends Document.Any>(parent: P): Collection<P>;
 }
 
@@ -4540,11 +4538,10 @@ declare class TypedSchemaField<
   override toObject(value: InitializedType): PersistedType;
 
   // TODO(LukeAbby): Type `TypedSchemaField#apply`.
-  // TODO: Find a way to limit `Value` to `AnyObject | undefined` here while allowing it to be `unknown` in DataField
   // options: not null (could be forwarded somewhere destructured, parameter default only)
-  override apply<Value, Options, Return>(
-    fn: keyof this | ((this: this, value: Value, options: Options) => Return),
-    value?: Value,
+  override apply<Options, Return>(
+    fn: keyof this | ((this: this, value: AnyObject, options: Options) => Return),
+    value?: AnyObject,
     options?: Options,
   ): Return;
 

@@ -207,17 +207,16 @@ declare abstract class DataModel<
   /**
    * Copy and transform the DataModel into a plain object.
    * Draw the values of the extracted object from the data source (by default) otherwise from its transformed values.
-   * @param source - Draw values from the underlying data source rather than transformed values
-   *                 (default: `true`)
+   * @param source - Draw values from the underlying data source rather than transformed values (default: `true`)
    * @returns The extracted primitive object
    */
-  toObject<Source extends boolean | null | undefined = true>(source?: Source): DataModel.ToObject<Schema, Source>;
+  toObject(source?: boolean | null): SchemaField.SourceData<Schema>;
 
   /**
    * Extract the source data for the DataModel into a simple object format that can be serialized.
    * @returns The document source data expressed as a plain object
    */
-  toJSON(): DataModel.ToObject<Schema, true>;
+  toJSON(): SchemaField.SourceData<Schema>;
 
   /**
    * Create a new instance of this DataModel from a source record.
@@ -229,18 +228,18 @@ declare abstract class DataModel<
    * const mySchema = {
    *   // etc
    * }
-   *d
+   *
    * type MySchema = typeof mySchema
    *
    * // most models likely wont be using this param at all, but its included for completeness
-   * interface MyECO {
+   * interface MyExtraConstructorOptions {
    *   someProp: string
    * }
    *
-   * class MyDataModel extends DataModel<MySchema, DataModel.Any | null = null, MyECO> {
+   * class MyDataModel extends DataModel<MySchema, DataModel.Any | null, MyExtraConstructorOptions> {
    *   static fromSource(
    *     source: foundry.data.fields.SchemaField.CreateData<MySchema>,
-   *     context?: DataModel.FromSourceOptions<NewParent> & MyECO
+   *     context?: DataModel.FromSourceOptions<NewParent> & MyExtraConstructorOptions
    *   ): MyDataModel
    * }
    * ```
@@ -303,9 +302,11 @@ declare namespace DataModel {
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     ExtraConstructorOptions extends AnyObject = {},
   > = [
+    // not null (parameter default only)
     data?: DataModel.CreateData<Schema>,
 
-    // Note(LukeAbby): `{ parent, strict, ...options }` (ie: not null (destructured))
+    // Note(LukeAbby): `{ parent, strict, ...options }`
+    // not null (destructured)
     options?: DataModel.ConstructionContext<Parent> & ExtraConstructorOptions,
   ];
 
@@ -455,16 +456,6 @@ declare namespace DataModel {
   }>;
 
   interface UpdateOptions extends _UpdateOptions {}
-
-  /**
-   * Not actually sure the Readonly is accurate, or that there's any meaningful difference
-   * as far as our types can tell between the two possible returns
-   */
-  type ToObject<Schema extends DataSchema, Source extends boolean | undefined | null = true> = Source extends
-    | true
-    | undefined
-    ? Readonly<SchemaField.SourceData<Schema>>
-    : SchemaField.SourceData<Schema>;
 
   /**
    * @internal

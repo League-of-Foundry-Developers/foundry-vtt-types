@@ -2,7 +2,7 @@ import type RegionBehaviorType from "./base.d.mts";
 import fields = foundry.data.fields;
 
 declare namespace ToggleBehaviorRegionBehaviorType {
-  type Source = fields.SchemaField.SourceData<Schema>;
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   interface Schema extends foundry.data.fields.DataSchema {
     events: RegionBehaviorType.EventsField;

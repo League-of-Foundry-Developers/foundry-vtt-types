@@ -701,16 +701,3 @@ declare global {
     interface OnSheetChangeOptions extends _OnSheetChangeOptions {}
   }
 }
-
-// TODO: This appears unused. remove?
-// This is yet another `AnyDocument` type.
-// It exists specifically because the `Document.AnyConstructor` type is too safe to be merged in with a mixin.
-// The `...args: never` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.
-//
-// `{}` is used to avoid merging `DataSchema` with the real schema.
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-declare class AnyDocument extends Document<Document.Type, {}, Document.Any | null> {
-  constructor(...args: any[]);
-
-  getFlag(scope: never, key: never): any;
-}
