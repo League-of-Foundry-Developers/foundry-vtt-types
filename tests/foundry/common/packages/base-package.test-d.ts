@@ -35,7 +35,7 @@ declare const packageCompatibility: foundry.packages.PackageCompatibility;
 expectTypeOf(
   foundry.packages.BasePackage.testDependencyCompatibility(packageCompatibility, basePackage),
 ).toEqualTypeOf<boolean>();
-expectTypeOf(foundry.packages.BasePackage.cleanData()).toEqualTypeOf<AnyObject>();
+expectTypeOf(foundry.packages.BasePackage.cleanData()).toEqualTypeOf<AnyMutableObject>();
 expectTypeOf(foundry.packages.BasePackage.validateId("")).toEqualTypeOf<void>();
 expectTypeOf(foundry.packages.BasePackage.migratedKeys).toEqualTypeOf<Set<string>>();
 expectTypeOf(foundry.packages.BasePackage.migrateData({})).toEqualTypeOf<AnyMutableObject>();
