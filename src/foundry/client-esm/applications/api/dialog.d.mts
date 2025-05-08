@@ -130,6 +130,20 @@ declare class DialogV2<
   ): Promise<DialogV2.PromptReturn<Options>>;
 
   /**
+   * A utility helper to generate a dialog for user input.
+   * @param config - Options to overwrite the default confirmation button configuration.
+   * @returns Resolves to the data of the form if the ok button was pressed,
+   *          or the value returned by that button's callback. If additional
+   *          buttons were provided, the Promise resolves to the identifier of
+   *          the one that was pressed, or the value returned by its callback.
+   *          If the dialog was dismissed, and rejectClose is false, the Promise
+   *          resolves to null.
+   */
+  static input<FD extends object, Options extends DialogV2.PromptConfig<FD>>(
+    config?: Options,
+  ): Promise<DialogV2.InputReturn<FD, Options>>;
+
+  /**
    * Spawn a dialog and wait for it to be dismissed or submitted.
    * @returns Resolves to the identifier of the button used to submit the
    *          dialog, or the value returned by that button's callback. If the
@@ -306,6 +320,10 @@ declare namespace DialogV2 {
 
   type PromptReturn<Options extends PromptConfig<unknown>> = Internal.PromptReturnType<Options> | WaitReturn<Options>;
 
+  type InputReturn<FD extends object, Options extends PromptConfig<FD>> =
+    | Internal.InputReturnType<FD, Options>
+    | WaitReturn<Options>;
+
   type QueryReturn<T extends Type, Options extends QueryConfig<T>> =
     | (T extends "confirm" ? boolean : string)
     | DialogV2.Internal.DismissType<Options>;
@@ -340,6 +358,14 @@ declare namespace DialogV2 {
     }
       ? NullishCoalesce<OKReturn, string>
       : string;
+
+    type InputReturnType<FD extends object, Options extends PromptConfig<FD>> = Options extends {
+      ok: {
+        readonly callback: ButtonCallback<infer OKReturn>;
+      };
+    }
+      ? NullishCoalesce<OKReturn, string>
+      : FD;
   }
 }
 

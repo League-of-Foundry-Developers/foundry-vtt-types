@@ -80,6 +80,29 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<number | string | null>();
 
+type InputTest = {
+  label: string;
+  value: number;
+};
+
+// TODO: @LukeAbby not inferring properly
+const _foo = await DialogV2.input<InputTest>({
+  rejectClose: true,
+});
+
+declare const _bar: DialogV2.Internal.InputReturnType<InputTest, DialogV2.PromptConfig<InputTest>>;
+
+declare const _foobar: DialogV2.WaitReturn<DialogV2.PromptConfig<InputTest>>;
+
+expectTypeOf(_foo?.label).toEqualTypeOf<string | undefined>();
+
+// Which of course causes problems here if you don't provide the full type
+expectTypeOf(
+  await DialogV2.input<InputTest, DialogV2.PromptConfig<InputTest> & { rejectClose: true }>({
+    rejectClose: true,
+  }),
+).toEqualTypeOf<InputTest>();
+
 expectTypeOf(
   await DialogV2.wait({
     buttons: [
