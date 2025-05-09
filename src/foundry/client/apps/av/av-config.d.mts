@@ -4,7 +4,7 @@ declare global {
   /**
    * Audio/Video Conferencing Configuration Sheet
    *
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   class AVConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     AVMaster,

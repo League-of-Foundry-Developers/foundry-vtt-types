@@ -19,7 +19,7 @@ class InternalAbstractWeatherShader<
 declare global {
   /**
    * The base shader class for weather shaders.
-   * @typeParam DefaultUniforms - An interface representing an `AbstractWeatherShader` subclass's `static defaultUniforms`
+   * @template DefaultUniforms - An interface representing an `AbstractWeatherShader` subclass's `static defaultUniforms`
    * @remarks For each key in `static defaultOptions`, dynamically defines a getter/setter pair for `this.uniforms[key]` on the instance
    */
   class AbstractWeatherShader<

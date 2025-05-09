@@ -4,7 +4,7 @@ declare global {
   /**
    * The UI element which displays the Scene documents which are currently enabled for quick navigation.
    *
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class SceneNavigation<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options?: Partial<Options>);

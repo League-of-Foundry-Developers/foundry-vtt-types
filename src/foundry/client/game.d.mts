@@ -639,7 +639,7 @@ declare global {
        * Because of module subtypes, extra types of the form `${moduleName}.${subtype}` are
        * possible when `hasTypeData` is true.
        *
-       * @typeParam DocumentName - the type of the Document this data is for
+       * @template DocumentName - the type of the Document this data is for
        */
       type TypeNames<DocumentType extends Document.Type> = Document.SubTypesOf<DocumentType>;
     }

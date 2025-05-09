@@ -16,8 +16,8 @@ declare global {
    * 2) The template used contains one (and only one) HTML form as it's outer-most element
    * 3) This abstract layer has no knowledge of what is being updated, so the implementation must define _updateObject
    *
-   * @typeParam Options        - the type of the options object
-   * @typeParam ConcreteObject - while this is called object this can actually be any arbitrary value.
+   * @template Options        - the type of the options object
+   * @template ConcreteObject - while this is called object this can actually be any arbitrary value.
    * For example `ImagePopout` sets this to a string. This is still typically a
    * {@linkcode Document} instance or an object in general which is modified by this form
    */
@@ -359,8 +359,8 @@ declare global {
    * Extend the FormApplication pattern to incorporate specific logic for viewing or editing Document instances.
    * See the FormApplication documentation for more complete description of this interface.
    *
-   * @typeParam Options          - the type of the options object
-   * @typeParam ConcreteDocument - the type of the Document which should be managed by this form sheet
+   * @template Options          - the type of the options object
+   * @template ConcreteDocument - the type of the Document which should be managed by this form sheet
    */
   abstract class DocumentSheet<
     ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,

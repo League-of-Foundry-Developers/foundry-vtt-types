@@ -9,7 +9,7 @@ declare global {
   /**
    * The FilePicker application renders contents of the server-side public directory.
    * This app allows for navigating and uploading files to the public path.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class FilePicker<Options extends FilePicker.Options = FilePicker.Options> extends Application<Options> {
     /**

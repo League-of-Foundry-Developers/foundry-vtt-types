@@ -4,7 +4,7 @@ declare global {
   /**
    * A DocumentSheet application responsible for displaying and editing a single Cards stack.
    *
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   class CardsConfig<Options extends CardsConfig.Options = CardsConfig.Options> extends DocumentSheet<
     Cards.Implementation,
@@ -86,7 +86,7 @@ declare global {
   /**
    * A subclass of CardsConfig which provides a sheet representation for Cards documents with the "hand" type.
    *
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   class CardsHand<Options extends CardsConfig.Options = CardsConfig.Options> extends CardsConfig<Options> {
     /**
@@ -107,7 +107,7 @@ declare global {
   /**
    * A subclass of CardsConfig which provides a sheet representation for Cards documents with the "pile" type.
    *
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   class CardsPile<Options extends CardsConfig.Options = CardsConfig.Options> extends CardsConfig<Options> {
     /**

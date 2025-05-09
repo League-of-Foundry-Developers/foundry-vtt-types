@@ -3,8 +3,8 @@ import type Document from "#common/abstract/document.d.mts";
 declare global {
   /**
    * An interface for displaying the content of a CompendiumCollection.
-   * @typeParam Metadata - The metadata of the compendium
-   * @typeParam Options  - The type of the options object
+   * @template Metadata - The metadata of the compendium
+   * @template Options  - The type of the options object
    */
   class Compendium<
     Metadata extends CompendiumCollection.Metadata,

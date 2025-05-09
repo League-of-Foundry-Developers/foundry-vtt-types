@@ -4,7 +4,7 @@ declare global {
   /**
    * The Application responsible for configuring a single ActiveEffect document within a parent Actor or Item.
    *
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class ActiveEffectConfig<
     Options extends

@@ -4,7 +4,7 @@ declare global {
   /**
    * A compendium of knowledge arcane and mystical!
    * Renders the sidebar directory of compendium packs
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   class CompendiumDirectory<
     Options extends DocumentDirectory.Options = DocumentDirectory.Options,

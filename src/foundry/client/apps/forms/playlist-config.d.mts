@@ -3,7 +3,7 @@ import type { GetDataReturnType, MaybePromise, ValueOf } from "fvtt-types/utils"
 declare global {
   /**
    * The Application responsible for configuring a single Playlist document.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class PlaylistConfig<
     Options extends DocumentSheet.Options<Playlist.Implementation> = DocumentSheet.Options<Playlist.Implementation>,

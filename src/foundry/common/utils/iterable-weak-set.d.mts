@@ -1,7 +1,7 @@
 /**
  * Stores a set of objects with weak references to them, allowing them to be garbage collected. Can be iterated over,
  * unlike a WeakSet.
- * @typeParam T - The type of the objects contained in the WeakSet
+ * @template T - The type of the objects contained in the WeakSet
  */
 declare class IterableWeakSet<T extends WeakKey> extends WeakSet<T> {
   /**

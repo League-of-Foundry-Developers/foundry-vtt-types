@@ -4,7 +4,7 @@ declare global {
   /**
    * The Application responsible for configuring a single Combatant document within a parent Combat.
    *
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class CombatantConfig<Options extends CombatantConfig.Options = CombatantConfig.Options> extends DocumentSheet<
     Combatant.Implementation,

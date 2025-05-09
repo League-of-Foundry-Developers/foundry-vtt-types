@@ -13,8 +13,8 @@ interface IterableWeakMapHeldValue<K extends WeakKey> {
 /**
  * Stores a map of objects with weak references to the keys, allowing them to be garbage collected. Both keys and values
  * can be iterated over, unlike a WeakMap.
- * @typeParam K - the type of the keys contained in the IterableWeakMap
- * @typeParam V - The type of the values contained in the IterableWeakMap
+ * @template K - the type of the keys contained in the IterableWeakMap
+ * @template V - The type of the values contained in the IterableWeakMap
  */
 declare class IterableWeakMap<K extends WeakKey, V> extends WeakMap<K, V> {
   /**

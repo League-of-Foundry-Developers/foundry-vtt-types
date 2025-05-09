@@ -6,7 +6,7 @@ declare global {
 
   /**
    * The World Management setup application
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   class WorldConfig<Options extends WorldConfig.Options = WorldConfig.Options> extends FormApplication<World, Options> {
     /**

@@ -6,7 +6,7 @@ declare global {
 
   /**
    * The Application responsible for configuring a single Drawing document within a parent Scene.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class DrawingConfig<Options extends DrawingConfig.Options = DrawingConfig.Options> extends FormApplication<
     DrawingDocument.Implementation,

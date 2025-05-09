@@ -3,7 +3,7 @@ export {};
 declare global {
   /**
    * An abstract pattern followed by the different tabs of the sidebar
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   abstract class SidebarTab<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(...args: ConstructorParameters<typeof Application>);

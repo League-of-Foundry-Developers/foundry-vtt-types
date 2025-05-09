@@ -19,7 +19,7 @@ declare global {
 
   /**
    * The standard application window that is rendered for a large variety of UI elements in Foundry VTT.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   abstract class Application<Options extends Application.Options = Application.Options> {
     /**

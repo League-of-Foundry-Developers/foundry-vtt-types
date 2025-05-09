@@ -3,7 +3,7 @@ import type { Identity } from "fvtt-types/utils";
 declare global {
   /**
    * The sidebar directory which organizes and displays world-level RollTable documents.
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   class RollTableDirectory extends DocumentDirectory<"RollTable"> {
     static override documentName: "RollTable";

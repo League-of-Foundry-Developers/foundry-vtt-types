@@ -4,7 +4,7 @@ declare global {
   /**
    * The Application responsible for displaying and editing the client and world settings for this world.
    * This form renders the settings defined via the game.settings.register API which have config = true
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   class SettingsConfig<
     Options extends FormApplication.Options = FormApplication.Options,

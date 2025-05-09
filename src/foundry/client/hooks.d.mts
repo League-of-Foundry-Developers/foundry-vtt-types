@@ -830,7 +830,7 @@ declare global {
      * @param app   - The Application instance being rendered
      * @param html  - The inner HTML of the document that will be displayed and may be modified
      * @param data  - The object of data used when rendering the application
-     * @typeParam A - the type of the Application
+     * @template A - the type of the Application
      * @remarks The name for this hook is dynamically created by joining "render" with the type name of the Application.
      * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@link Application._render | `Application#_render`}
@@ -845,7 +845,7 @@ declare global {
      * A hook event that fires whenever this Application is first rendered to add buttons to its header.
      * @param app     - The Application instance being rendered
      * @param buttons - The array of header buttons which will be displayed
-     * @typeParam A   - the type of the Application
+     * @template A   - the type of the Application
      * @remarks The name for this hook is dynamically created by joining "get" with the type name of the Application and
      * "HeaderButtons".
      * @remarks This is called by {@linkcode Hooks.call}.
@@ -860,7 +860,7 @@ declare global {
      * A hook event that fires whenever this Application is closed.
      * @param app   - The Application instance being closed
      * @param html  - The application HTML when it is closed
-     * @typeParam A - the type of the Application
+     * @template A - the type of the Application
      * @remarks The name for this hook is dynamically created by joining "close" with the type name of the Application.
      * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@link Application.close | `Application#close`}
@@ -901,7 +901,7 @@ declare global {
      * A hook event that fires when a {@linkcode CanvasLayer} is initially drawn.
      * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "drawTokensLayer".
      * @param layer - The layer being drawn
-     * @typeParam L - the type of the CanvasLayer
+     * @template L - the type of the CanvasLayer
      */
     type DrawLayer<L extends CanvasLayer = CanvasLayer> = (layer: L) => void;
 
@@ -909,7 +909,7 @@ declare global {
      * A hook event that fires when a {@linkcode CanvasLayer} is deconstructed.
      * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "tearDownTokensLayer".
      * @param layer - The layer being deconstructed
-     * @typeParam L - the type of the CanvasLayer
+     * @template L - the type of the CanvasLayer
      */
     type TearDownLayer<L extends CanvasLayer = CanvasLayer> = (layer: L) => void;
 
@@ -919,7 +919,7 @@ declare global {
      * specific PlaceableObject type, for example "pasteToken".
      * @param copied     - The PlaceableObjects that were copied
      * @param createData - The new objects that will be added to the Scene
-     * @typeParam P      - the type of the PlaceableObject
+     * @template P      - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining "paste" with the type name of the
      * PlaceableObject.
      * @remarks This is called by {@linkcode Hooks.call}.
@@ -936,7 +936,7 @@ declare global {
      * A hook event that fires when a {@linkcode PlaceableObject} is initially drawn.
      * The dispatched event name replaces "Object" with the named PlaceableObject subclass, i.e. "drawToken".
      * @param object - The object instance being drawn
-     * @typeParam P  - the type of the PlaceableObject
+     * @template P  - the type of the PlaceableObject
      * @remarks This is called by {@linkcode Hooks.callAll}
      */
     type DrawObject<P extends PlaceableObject = PlaceableObject> = (object: P) => void;
@@ -945,7 +945,7 @@ declare global {
      * A hook event that fires when a {@linkcode PlaceableObject} is incrementally refreshed.
      * The dispatched event name replaces "Object" with the named PlaceableObject subclass, i.e. "refreshToken".
      * @param object - The object instance being refreshed
-     * @typeParam P  - the type of the PlaceableObject
+     * @template P  - the type of the PlaceableObject
      * @remarks This is called by {@linkcode Hooks.callAll}
      */
     type RefreshObject<P extends PlaceableObject = PlaceableObject> = (object: P) => void;
@@ -954,7 +954,7 @@ declare global {
      * A hook event that fires when a {@linkcode PlaceableObject} is destroyed.
      * The dispatched event name replaces "Object" with the named PlaceableObject subclass, i.e. "destroyToken".
      * @param object - The object instance being destroyed
-     * @typeParam P  - the type of the PlaceableObject
+     * @template P  - the type of the PlaceableObject
      * @remarks This is called by {@linkcode Hooks.callAll}
      */
     type DestroyObject<P extends PlaceableObject = PlaceableObject> = (object: P) => void;
@@ -965,7 +965,7 @@ declare global {
      * target a specific PlaceableObject type, for example "controlToken".
      * @param object     - The PlaceableObject
      * @param controlled - Whether the PlaceableObject is selected or not
-     * @typeParam P      - the type of the PlaceableObject
+     * @template P      - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining "control" and the type name of the
      * PlaceableObject.
      * @remarks This is called by {@linkcode Hooks.callAll}.
@@ -980,7 +980,7 @@ declare global {
      * PlaceableObject type, for example "hoverToken".
      * @param object - The PlaceableObject
      * @param hover  - Whether the PlaceableObject is hovered over or not
-     * @typeParam P  - the type of the PlaceableObject
+     * @template P  - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining "hover" and the type name of the PlaceableObject.
      * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@link PlaceableObject._onHoverIn | `PlaceableObject#_onHoverIn`}
@@ -1002,7 +1002,7 @@ declare global {
      * @param data     - The initial data object provided to the document creation request
      * @param options  - Additional options which modify the creation request
      * @param userId   - The ID of the requesting user, always game.user.id
-     * @typeParam D    - the type of the Document constructor
+     * @template D    - the type of the Document constructor
      * @returns Explicitly return false to prevent creation of this Document
      * @remarks The name for this hook is dynamically created by joining "preCreate" with the name of the Document.
      * @remarks This is called by {@linkcode Hooks.call}.
@@ -1028,7 +1028,7 @@ declare global {
      * @param changed  - Differential data that will be used to update the document
      * @param options  - Additional options which modify the update request
      * @param userId   - The ID of the requesting user, always game.user.id
-     * @typeParam D    - the type of the Document constructor
+     * @template D    - the type of the Document constructor
      * @returns Explicitly return false to prevent update of this Document
      * @remarks The name for this hook is dynamically created by joining "preUpdate" with the type name of the Document.
      * @remarks This is called {@linkcode Hooks.call}.
@@ -1055,7 +1055,7 @@ declare global {
      * @param document - The Document instance being deleted
      * @param options  - Additional options which modify the deletion request
      * @param userId   - The ID of the requesting user, always game.user.id
-     * @typeParam D    - the type of the Document constructor
+     * @template D    - the type of the Document constructor
      * @returns Explicitly return false to prevent deletion of this Document
      * @remarks The name for this hook is dynamically created by joining "preDelete" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.call}.
@@ -1076,7 +1076,7 @@ declare global {
      * @param document - The new Document instance which has been created
      * @param options  - Additional options which modified the creation request
      * @param userId   - The ID of the User who triggered the creation workflow
-     * @typeParam D    - the type of the Document constructor
+     * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "create" and the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@link ClientDatabaseBackend._postCreateDocumentCallbacks | `ClientDatabaseBackend#_postCreateDocumentCallbacks`}
@@ -1097,7 +1097,7 @@ declare global {
      * @param change   - Differential data that was used used to update the document
      * @param options  - Additional options which modified the update request
      * @param userId   - The ID of the User who triggered the update workflow
-     * @typeParam D    - the type of the Document constructor
+     * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "update" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@link ClientDatabaseBackend._postUpdateDocumentCallbacks | `ClientDatabaseBackend#_postUpdateDocumentCallbacks`}
@@ -1120,7 +1120,7 @@ declare global {
      * @param document - The existing Document which was deleted
      * @param options  - Additional options which modified the deletion request
      * @param userId   - The ID of the User who triggered the deletion workflow
-     * @typeParam D    - the type of the Document constructor
+     * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "delete" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@link ClientDatabaseBackend._postDeleteDocumentCallbacks | `ClientDatabaseBackend#_postDeleteDocumentCallbacks`}
@@ -1137,7 +1137,7 @@ declare global {
     /**
      * A hook event that fires after RenderedPointSource shaders have initialized.
      * @param source - The RenderedEffectSource instance being initialized
-     * @typeParam RPS - the type of the RenderedPointSource
+     * @template RPS - the type of the RenderedPointSource
      * @remarks The name for this hook is dynamically created by wrapping the type name of the shader in `initialize` and `Shaders`.
      * @remarks This is called by {@linkcode Hooks.callAll}.
      */

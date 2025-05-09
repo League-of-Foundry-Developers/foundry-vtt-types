@@ -9,7 +9,7 @@ declare global {
    * This popout can also be used as a form, allowing the user to edit an image which is being used.
    * Furthermore, this application allows for sharing the display of an image with other connected players.
    *
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    *
    * @example
    * ```typescript

@@ -36,7 +36,7 @@ declare global {
    * });
    * d.render(true);
    * ```
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class Dialog<Options extends Dialog.Options = Dialog.Options> extends Application<Options> {
     /**
@@ -161,8 +161,8 @@ declare global {
     >;
 
     /**
-     * @typeParam Yes - The value returned by the yes callback
-     * @typeParam No  - The value returned by the no callback
+     * @template Yes - The value returned by the yes callback
+     * @template No  - The value returned by the no callback
      */
     interface ConfirmConfig<
       Yes,
@@ -224,7 +224,7 @@ declare global {
         : never;
 
     /**
-     * @typeParam Value - The value returned by the callback function
+     * @template Value - The value returned by the callback function
      */
     interface PromptConfig<
       Value,

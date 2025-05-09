@@ -19,7 +19,7 @@ declare global {
      *
      * @param source  - source object being sorted
      * @param options - Options which modify the sort behavior
-     * @typeParam T   - the type of the source and target object
+     * @template T   - the type of the source and target object
      *
      * @returns An Array of updates for the caller of the helper function to perform
      */

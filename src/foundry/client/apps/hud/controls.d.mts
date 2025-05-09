@@ -3,7 +3,7 @@ import type { Identity } from "fvtt-types/utils";
 declare global {
   /**
    * Scene controls navigation menu
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class SceneControls<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options?: Partial<Options>);

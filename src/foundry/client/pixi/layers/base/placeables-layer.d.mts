@@ -14,8 +14,8 @@ declare global {
   /**
    * A subclass of Canvas Layer which is specifically designed to contain multiple PlaceableObject instances,
    * each corresponding to an embedded Document.
-   * @typeParam DocumentName - The key of the configuration which defines the object and document class.
-   * @typeParam Options      - The type of the options in this layer.
+   * @template DocumentName - The key of the configuration which defines the object and document class.
+   * @template Options      - The type of the options in this layer.
    */
   // TODO(LukeAbby): Make `DocumentName` covariant.
   class PlaceablesLayer<DocumentName extends PlaceablesLayer.DocumentNames> extends InteractionLayer {

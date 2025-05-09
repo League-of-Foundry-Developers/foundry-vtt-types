@@ -3,7 +3,7 @@ import type { MaybePromise } from "fvtt-types/utils";
 declare global {
   /**
    * The Application responsible for configuring a single Note document within a parent Scene.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class NoteConfig<
     Options extends

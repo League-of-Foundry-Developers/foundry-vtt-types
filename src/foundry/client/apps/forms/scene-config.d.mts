@@ -4,7 +4,7 @@ import type Document from "#common/abstract/document.d.mts";
 declare global {
   /**
    * The Application responsible for configuring a single Scene document.   *
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class SceneConfig<
     Options extends DocumentSheet.Options<Scene.Implementation> = DocumentSheet.Options<Scene.Implementation>,

@@ -6,7 +6,7 @@ declare global {
 
   /**
    * The Application responsible for displaying and editing a single JournalEntry document.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class JournalSheet<Options extends JournalSheet.Options = JournalSheet.Options> extends DocumentSheet<
     JournalEntry.Implementation,

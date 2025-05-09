@@ -4,7 +4,7 @@ declare global {
   /**
    * A DocumentSheet application responsible for displaying and editing a single embedded Card document.
    *
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   class CardConfig<Options extends CardConfig.Options = CardConfig.Options> extends DocumentSheet<
     Card.Implementation,

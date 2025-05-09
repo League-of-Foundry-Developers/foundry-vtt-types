@@ -42,13 +42,13 @@ declare global {
 
     /**
      * A helper type for the given options type merged into the default options of the BooleanField class.
-     * @typeParam Opts - the options that override the default options
+     * @template Opts - the options that override the default options
      */
     type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
 
     /**
      * A shorthand for the assignment type of a BooleanField class.
-     * @typeParam Opts - the options that override the default options
+     * @template Opts - the options that override the default options
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     type AssignmentType<Opts extends Options> = DataField.DerivedAssignmentType<
@@ -58,7 +58,7 @@ declare global {
 
     /**
      * A shorthand for the initialized type of a BooleanField class.
-     * @typeParam Opts - the options that override the default options
+     * @template Opts - the options that override the default options
      */
     type InitializedType<Opts extends Options> = DataField.DerivedInitializedType<
       typeof AbstractBaseShader,

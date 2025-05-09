@@ -658,8 +658,8 @@ export type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
  * Nested properties of type `object` are merged recursively unless the property
  * in `U` is an `Array`.
  *
- * @typeParam T - The base type that `U` will be merged into.
- * @typeParam U - The type that will be merged into `T`.
+ * @template T - The base type that `U` will be merged into.
+ * @template U - The type that will be merged into `T`.
  */
 export type Merge<T, U> =
   IsObject<U> extends true
@@ -695,8 +695,8 @@ export type IsObject<T> = T extends object ? (T extends AnyArray | AnyFunction |
 
 /**
  * A simple, non-recursive merge type.
- * @typeParam Target - the target type to merge into
- * @typeParam Override - the type whose properties override the ones in Target
+ * @template Target - the target type to merge into
+ * @template Override - the type whose properties override the ones in Target
  */
 export type SimpleMerge<Target, Override> = Omit<Target, keyof Override> & Override;
 

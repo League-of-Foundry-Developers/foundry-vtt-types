@@ -103,8 +103,8 @@ declare global {
      * @param namespace - The namespace under which the menu is registered
      * @param key       - The key name for the setting under the namespace module
      * @param data      - Configuration for setting data
-     * @typeParam N     - The namespace under which the menu is registered, as a type
-     * @typeParam K     - The key name for the setting under the namespace module, as a type
+     * @template N     - The namespace under which the menu is registered, as a type
+     * @template K     - The key name for the setting under the namespace module, as a type
      *
      * @example Define a settings submenu which handles advanced configuration needs
      * ```typescript
@@ -125,8 +125,8 @@ declare global {
      *
      * @param namespace - The namespace under which the setting is registered
      * @param key       - The setting key to retrieve
-     * @typeParam N     - The namespace under which the setting is registered, as a type
-     * @typeParam K     - The setting key to retrieve, as a type
+     * @template N     - The namespace under which the setting is registered, as a type
+     * @template K     - The setting key to retrieve, as a type
      *
      * @example Retrieve the current setting value
      * ```typescript
@@ -145,9 +145,9 @@ declare global {
      * @param key       - The setting key to retrieve
      * @param value     - The data to assign to the setting key
      * @param options   - Additional options passed to the server when updating world-scope settings
-     * @typeParam N     - The namespace under which the setting is registered, as a type
-     * @typeParam K     - The setting key to retrieve, as a type
-     * @typeParam V     - The type of the value being set
+     * @template N     - The namespace under which the setting is registered, as a type
+     * @template K     - The setting key to retrieve, as a type
+     * @template V     - The type of the value being set
      * @returns         - The assigned setting value
      *
      * @example

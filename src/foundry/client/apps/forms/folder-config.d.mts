@@ -4,7 +4,7 @@ declare global {
   /**
    * The Application responsible for configuring a single Folder document.
    *
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class FolderConfig<Options extends FolderConfig.Options = FolderConfig.Options> extends DocumentSheet<
     Folder.Implementation,

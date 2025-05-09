@@ -105,7 +105,7 @@ export function objectsEqual<B extends object>(a: object, b: B): a is B;
  * A cheap data duplication trick which is relatively robust.
  * For a subset of cases the deepClone function will offer better performance.
  * @param original - Some sort of data
- * @typeParam T    - Type of the original data.
+ * @template T    - Type of the original data.
  *
  * @remarks This function will actually convert any occurrences of `NaN` and `Infinity` to `null`. For ease of use, this
  * is _not_ reflected in the type. Be careful if your types might contain `NaN` or `Infinity`!
@@ -115,7 +115,7 @@ export function duplicate<T>(original: T): Duplicated<T>;
 /**
  * The resulting type when using {@linkcode duplicate} on some data of type `T`.
  *
- * @typeParam T - Original type.
+ * @template T - Original type.
  * @internal
  */
 export type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated<T>;
@@ -637,7 +637,7 @@ type NonStringifiable = undefined | AnyFunction | AnyConstructor | symbol;
 /**
  * Internal helper for {@linkcode InnerDuplicated}. Maps the properties of `T` to their duplicated types.
  *
- * @typeParam T - The object type that should have its properties mapped.
+ * @template T - The object type that should have its properties mapped.
  * @internal
  */
 type MapToInnerDuplicated<T extends object> = { [k in keyof T]: InnerDuplicated<T[k]> };
@@ -645,8 +645,8 @@ type MapToInnerDuplicated<T extends object> = { [k in keyof T]: InnerDuplicated<
 /**
  * Omit properties of `T` which are of type `U`.
  *
- * @typeParam T - Object type from which properties will be omitted.
- * @typeParam U - Properties of this type will be omitted.
+ * @template T - Object type from which properties will be omitted.
+ * @template U - Properties of this type will be omitted.
  * @internal
  */
 type OmitOfType<T extends object, U> = { [k in keyof T as T[k] extends U ? never : k]: T[k] };
@@ -654,7 +654,7 @@ type OmitOfType<T extends object, U> = { [k in keyof T as T[k] extends U ? never
 /**
  * Internal helper type for {@linkcode Duplicated}. It is the main part of the implementation, which does the recursion.
  *
- * @typeParam T - Type currently being converted.
+ * @template T - Type currently being converted.
  * @internal
  */
 // prettier-ignore
@@ -678,9 +678,9 @@ type InnerDuplicated<T> = T extends { toJSON(): infer U }
 /**
  * If T extends `U`, the resulting type is `R`, otherwise it is `T`.
  *
- * @typeParam T - Original type.
- * @typeParam U - Only convert types of this type.
- * @typeParam R - Adjust to this type.
+ * @template T - Original type.
+ * @template U - Only convert types of this type.
+ * @template R - Adjust to this type.
  * @internal
  */
 type TypeToType<T, U, R> = T extends U ? R : T;
@@ -688,9 +688,9 @@ type TypeToType<T, U, R> = T extends U ? R : T;
 /**
  * Map the types of properties of `T` to `R` if they are of type `U`.
  *
- * @typeParam T - Object type that will have its properties' types adjusted.
- * @typeParam U - Adjust the types of properties of this type.
- * @typeParam R - Type that properties' types will be adjusted to.
+ * @template T - Object type that will have its properties' types adjusted.
+ * @template U - Adjust the types of properties of this type.
+ * @template R - Type that properties' types will be adjusted to.
  * @internal
  */
 type MapTypeToType<T, U, R> = { [k in keyof T]: TypeToType<T[k], U, R> };
@@ -698,8 +698,8 @@ type MapTypeToType<T, U, R> = { [k in keyof T]: TypeToType<T[k], U, R> };
 /**
  * Omit properties of `T` which are assignable from `U`.
  *
- * @typeParam T - Object type that will have its properties omitted.
- * @typeParam U - Properties with types that are assignable from this type will be omitted.
+ * @template T - Object type that will have its properties omitted.
+ * @template U - Properties with types that are assignable from this type will be omitted.
  * @internal
  */
 type OmitAssignableFromType<T extends object, U> = { [k in keyof T as U extends T[k] ? never : k]: T[k] };
@@ -707,8 +707,8 @@ type OmitAssignableFromType<T extends object, U> = { [k in keyof T as U extends 
 /**
  * Omit properties of `T` which are not assignable from `U`.
  *
- * @typeParam T - Object type that will have its properties omitted.
- * @typeParam U - Properties with types that are not assignable from this type will be omitted.
+ * @template T - Object type that will have its properties omitted.
+ * @template U - Properties with types that are not assignable from this type will be omitted.
  * @internal
  */
 type OmitNotAssignableFromType<T extends object, U> = { [k in keyof T as U extends T[k] ? k : never]: T[k] };

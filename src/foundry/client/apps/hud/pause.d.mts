@@ -4,7 +4,7 @@ declare global {
   /**
    * Pause notification in the HUD
    *
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class Pause<Options extends Application.Options = Application.Options> extends Application<Options> {
     /**

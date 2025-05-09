@@ -326,7 +326,7 @@ declare namespace DataModel {
 
   /**
    * A helper type to extract the schema from a {@linkcode DataModel}.
-   * @typeParam ModelType - the DataModel for the embedded data
+   * @template ModelType - the DataModel for the embedded data
    */
   type SchemaOf<ModelType extends DataModel.Any> = ModelType["schema"]["fields"];
 

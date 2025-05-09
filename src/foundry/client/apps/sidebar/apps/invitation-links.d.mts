@@ -4,7 +4,7 @@ declare global {
   /**
    * Game Invitation Links Reference
    *
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class InvitationLinks<Options extends Application.Options = Application.Options> extends Application<Options> {
     /**

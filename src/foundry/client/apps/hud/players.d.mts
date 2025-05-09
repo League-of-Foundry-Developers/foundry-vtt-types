@@ -4,7 +4,7 @@ declare global {
   /**
    * The UI element which displays the list of Users who are currently playing within the active World.
    *
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class PlayerList<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options?: Partial<Options>);

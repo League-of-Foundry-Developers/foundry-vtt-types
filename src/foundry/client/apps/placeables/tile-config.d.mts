@@ -3,7 +3,7 @@ import type { MaybePromise } from "fvtt-types/utils";
 declare global {
   /**
    * The Application responsible for configuring a single Tile document within a parent Scene.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class TileConfig<Options extends TileConfig.Options = TileConfig.Options> extends DocumentSheet<
     TileDocument.Implementation,

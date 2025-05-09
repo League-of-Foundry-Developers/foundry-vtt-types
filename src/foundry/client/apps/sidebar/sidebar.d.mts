@@ -3,7 +3,7 @@ import type { MaybePromise, Identity } from "fvtt-types/utils";
 declare global {
   /**
    * Render the Sidebar container, and after rendering insert Sidebar tabs.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class Sidebar<Options extends Application.Options = Application.Options> extends Application<Options> {
     /**
