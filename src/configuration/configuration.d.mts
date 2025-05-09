@@ -97,7 +97,7 @@ export interface PlaceableObjectClassConfig {}
 /**
  * This interface together with {@linkcode SourceConfig} is used to configure the
  * types of the `data`  and `data._source` properties of the
- * {@link foundry.documents.BaseActor | `foundry.documents.BaseActor`} and {@link foundry.documents.BaseItem | `foundry.documents.BaseItem`}
+ * {@linkcode foundry.documents.BaseActor} and {@linkcode foundry.documents.BaseItem}
  * classes. System authors should use declaration merging to provide the types
  * that match their `template.json` file. It is also very important for these
  * types to stay in sync with the `template.json` file, otherwise unexpected
