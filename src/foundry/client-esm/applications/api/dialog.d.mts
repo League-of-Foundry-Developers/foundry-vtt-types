@@ -1,4 +1,11 @@
-import type { DeepPartial, EmptyObject, InexactPartial, MaybePromise, NullishCoalesce } from "fvtt-types/utils";
+import type {
+  AnyObject,
+  DeepPartial,
+  EmptyObject,
+  InexactPartial,
+  MaybePromise,
+  NullishCoalesce,
+} from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
 
 /**
@@ -138,8 +145,10 @@ declare class DialogV2<
    *          the one that was pressed, or the value returned by its callback.
    *          If the dialog was dismissed, and rejectClose is false, the Promise
    *          resolves to null.
+   * @template FD - The expected return of `new FormDataExtended(form).object`.
+   *                You can specify this implicitly by casting `content` to `DialogV2.FormContent`
    */
-  static input<FD extends object, Options extends DialogV2.PromptConfig<FD>>(
+  static input<FD extends object, Options extends DialogV2.InputConfig<FD>>(
     config?: Options,
   ): Promise<DialogV2.InputReturn<FD, Options>>;
 
@@ -295,6 +304,13 @@ declare namespace DialogV2 {
     ok?: InexactPartial<Button<OKReturn>> | null | undefined;
   }
 
+  type FormContent<FormData extends object> = (string | HTMLDivElement) & { " __fvtt_types_form_data": FormData };
+
+  /** @typeParam FD - The form data */
+  interface InputConfig<FD extends object> extends PromptConfig<FD> {
+    content?: FormContent<FD>;
+  }
+
   type Type = "prompt" | "confirm" | "wait";
 
   /**
@@ -320,8 +336,8 @@ declare namespace DialogV2 {
 
   type PromptReturn<Options extends PromptConfig<unknown>> = Internal.PromptReturnType<Options> | WaitReturn<Options>;
 
-  type InputReturn<FD extends object, Options extends PromptConfig<FD>> =
-    | Internal.InputReturnType<FD, Options>
+  type InputReturn<FD extends object, Options extends InputConfig<FD>> =
+    | Internal.InputReturnType<Options>
     | WaitReturn<Options>;
 
   type QueryReturn<T extends Type, Options extends QueryConfig<T>> =
@@ -359,13 +375,17 @@ declare namespace DialogV2 {
       ? NullishCoalesce<OKReturn, string>
       : string;
 
-    type InputReturnType<FD extends object, Options extends PromptConfig<FD>> = Options extends {
+    type InputReturnType<Options extends InputConfig<object>> = Options extends {
       ok: {
         readonly callback: ButtonCallback<infer OKReturn>;
       };
     }
       ? NullishCoalesce<OKReturn, string>
-      : FD;
+      : Options extends {
+            content: FormContent<infer FD>;
+          }
+        ? FD
+        : AnyObject;
   }
 }
 

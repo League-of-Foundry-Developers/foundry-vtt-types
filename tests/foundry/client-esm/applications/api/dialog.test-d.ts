@@ -85,20 +85,13 @@ type InputTest = {
   value: number;
 };
 
-// TODO: @LukeAbby not inferring properly
-const _foo = await DialogV2.input<InputTest>({
-  rejectClose: true,
-});
+// this of course does not actually represent the form,
+// users must perform their own cast accurately
+const testContent = "";
 
-declare const _bar: DialogV2.Internal.InputReturnType<InputTest, DialogV2.PromptConfig<InputTest>>;
-
-declare const _foobar: DialogV2.WaitReturn<DialogV2.PromptConfig<InputTest>>;
-
-expectTypeOf(_foo?.label).toEqualTypeOf<string | undefined>();
-
-// Which of course causes problems here if you don't provide the full type
 expectTypeOf(
-  await DialogV2.input<InputTest, DialogV2.PromptConfig<InputTest> & { rejectClose: true }>({
+  await DialogV2.input({
+    content: testContent as DialogV2.FormContent<InputTest>,
     rejectClose: true,
   }),
 ).toEqualTypeOf<InputTest>();
