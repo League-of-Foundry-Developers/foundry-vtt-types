@@ -8,6 +8,7 @@ declare global {
    */
   class DocumentIndex {
     constructor();
+
     /**
      * A collection of WordTree structures for each document type.
      * @defaultValue `{}`
@@ -45,15 +46,18 @@ declare global {
          * (default: `10`)
          */
         limit?: number;
+
         /**
          * Optionally provide an array of document types. Only entries of that type
          * will be searched for. (default: `[]`)
          */
         documentTypes?: string[];
+
         /**
          * A filter function to apply to each candidate entry.
          */
         filterEntries?: foundry.utils.StringTree.StringTreeEntryFilter;
+
         /**
          * Only return entries that the user meets this ownership level for.
          */

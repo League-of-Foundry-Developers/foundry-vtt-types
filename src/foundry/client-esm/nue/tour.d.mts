@@ -165,20 +165,20 @@ declare class Tour {
 
   /**
    * Creates and returns a Tour by loading a JSON file
-   * @param filepath The path to the JSON file
+   * @param filepath - The path to the JSON file
    * @remarks Returns `new this()` so needs an override per subclass.
    */
   static fromJSON(filepath: string): Promise<Tour>;
 
   /**
    * Set-up operations performed before a step is shown.
-   * @virtual
+   * @abstract
    */
   protected _preStep(): Promise<void>;
 
   /**
    * Clean-up operations performed after a step is completed.
-   * @virtual
+   * @abstract
    */
   protected _postStep(): Promise<void>;
 

@@ -34,7 +34,9 @@ declare global {
     protected static override _preRenderBatch: BatchRenderer.PreRenderBatchFunction;
 
     protected static override _packInterleavedGeometry(
-      /** @privateRemarks Calls super, which is the grandparent class in this case, with no new keys */
+      /**
+       * @privateRemarks Calls super, which is the grandparent class in this case, with no new keys
+       */
       element: TokenRingSamplerShader.BatchData,
       attributeBuffer: PIXI.ViewableBuffer,
       indexBuffer: Uint16Array,

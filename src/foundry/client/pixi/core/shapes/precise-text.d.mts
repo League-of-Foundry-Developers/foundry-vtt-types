@@ -13,6 +13,7 @@ declare global {
 
     /** @defaultValue `2` */
     override _resolution: number;
+
     /**
      * Prepare a TextStyle object which merges the canvas defaults with user-provided options
      * @param anchor  - A text anchor point from CONST.TEXT_ANCHOR_POINTS

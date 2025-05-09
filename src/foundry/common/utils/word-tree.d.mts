@@ -35,8 +35,8 @@ declare namespace WordTree {
    * A leaf entry in the tree.
    */
   interface WordTreeEntry {
-    // TODO(LukeAbby): This appears to be possible to be a compendium index entry.
     /** An object that this entry represents. */
+    // TODO(LukeAbby): This appears to be possible to be a compendium index entry.
     entry: foundry.abstract.Document.Any;
 
     /** The document type. */

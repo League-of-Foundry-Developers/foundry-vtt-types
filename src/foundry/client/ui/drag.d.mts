@@ -98,12 +98,13 @@ declare global {
     interface Resizable {
       /** A selector for the resize handle. */
       selector?: string;
-      //     * @param {boolean} [resizable.resizeX=true]  Enable resizing in the X direction.
+
       /**
        * Enable resizing in the X direction.
        * @defaultValue `true`
        */
       resizeX?: boolean;
+
       /**
        * Enable resizing in the y direction.
        * @defaultValue `true`

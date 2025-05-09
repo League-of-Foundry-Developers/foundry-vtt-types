@@ -206,6 +206,7 @@ declare global {
      * A reference to the possible interaction states which can be observed
      */
     get handlerOutcomes(): MouseInteractionManager.HandlerOutcomes;
+
     /**
      * A public method to handle directly an event into this manager, according to its type.
      * Note: drag events are not handled.

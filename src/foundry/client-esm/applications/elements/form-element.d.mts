@@ -56,10 +56,12 @@ export default abstract class AbstractFormInputElement<FormInputValueType> exten
   protected _setValue(value: FormInputValueType): void;
 
   set disabled(value: boolean);
+
   /**
    * Is this element disabled?
    */
   get disabled(): boolean;
+
   /**
    * Is this field editable? The field can be neither disabled nor readonly.
    */

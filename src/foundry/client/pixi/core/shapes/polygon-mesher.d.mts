@@ -56,7 +56,7 @@ declare global {
     interface AnyConstructor extends Identity<typeof AnyPolygonMesher> {}
 
     /**
-     *  @remarks These properties all have non-nullish values in `_defaultOptions`, and explicit `undefined` breaks
+     * @remarks These properties all have non-nullish values in `_defaultOptions`, and explicit `undefined` breaks
      * things that aren't `boolean` due to math and object spread syntax in the constructor. `null` has been allowed
      * where its casting to `0` or `false` doesn't break things.
      */

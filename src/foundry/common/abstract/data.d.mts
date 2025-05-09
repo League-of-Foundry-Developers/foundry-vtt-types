@@ -291,6 +291,7 @@ declare namespace DataModel {
     // Note(LukeAbby): `{ parent, strict, ...options }`
     options?: DataModel.DataValidationOptions<Parent>,
   ];
+
   /**
    * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
    *

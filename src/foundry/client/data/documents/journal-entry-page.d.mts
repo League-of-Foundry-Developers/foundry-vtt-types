@@ -652,6 +652,7 @@ declare global {
          * A document to generate a link relative to.
          */
         relativeTo: ClientDocument;
+
         /**
          * A custom label to use instead of the document's name.
          */
@@ -754,7 +755,7 @@ declare global {
      */
     protected _embedImagePage(
       config: TextEditor.DocumentHTMLEmbedConfig & {
-        /** Alt text for the image, otherwise the caption will be used. **/
+        /** Alt text for the image, otherwise the caption will be used. */
         alt?: string | LazyUnknown;
       },
       options?: InexactPartial<TextEditor.EnrichmentOptions>,

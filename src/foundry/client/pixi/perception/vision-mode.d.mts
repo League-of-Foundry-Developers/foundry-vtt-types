@@ -24,6 +24,7 @@ declare global {
     static override get _defaults(): ShaderField.DefaultOptions;
 
     // TODO: _cast blatantly breaks inheritance so this is difficult to work with
+
     /** @remarks The value provided to a ShaderField must be an AbstractBaseShader subclass. */
     override _cast(value: any): NonNullable<InitializedType>; // typeof AbstractBaseShader;
   }
@@ -148,8 +149,10 @@ declare global {
     interface LightingVisibility {
       /** Disabled: this lighting layer is not rendered, the shaders does not decide. */
       DISABLED: 0 & LIGHTING_VISIBILITY;
+
       /** Enabled: this lighting layer is rendered normally, and the shaders can choose if they should be rendered or not. */
       ENABLED: 1 & LIGHTING_VISIBILITY;
+
       /** Required: the lighting layer is rendered, the shaders does not decide. */
       REQUIRED: 2 & LIGHTING_VISIBILITY;
     }

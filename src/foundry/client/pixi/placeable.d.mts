@@ -648,7 +648,7 @@ declare global {
      * `Drawing`, `Region`, and `Token` extend `_onRelease` and pass the options back to `super`, but do no further checks.
      *
      * As it is completely unused and has been removed in v13, it is not included in this interface
-     * */
+     */
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface ReleaseOptions {}
 

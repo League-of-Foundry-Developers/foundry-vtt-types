@@ -373,6 +373,7 @@ declare class Roll<D extends AnyObject = EmptyObject> {
        * If null, the unmatched key is left as-is.
        */
       missing?: string;
+
       /**
        * Display a warning notification when encountering an un-matched key.
        * (default: `false`)
@@ -482,10 +483,9 @@ declare class Roll<D extends AnyObject = EmptyObject> {
   static collapseInlineResult(a: HTMLAnchorElement): void;
 
   /**
-     * Construct an inline roll link for this Roll.
-     * @param object - Additional options to configure how the link is constructed.
-
-     */
+   * Construct an inline roll link for this Roll.
+   * @param object - Additional options to configure how the link is constructed.
+   */
   toAnchor(options?: InexactPartial<Roll.ToAnchorOptions>): HTMLAnchorElement;
 
   /**
@@ -548,6 +548,7 @@ declare namespace Roll {
      * @defaultValue `true`
      */
     allowInteractive?: boolean | undefined;
+
     /**
      * Throw an Error if the Roll contains non-deterministic terms that cannot be evaluated synchronously.
      *  If this is set to false, non-deterministic terms will be ignored.

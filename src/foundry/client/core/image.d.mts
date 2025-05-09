@@ -98,10 +98,12 @@ declare global {
 
   namespace ImageHelper {
     /**
-     * @internal Helper type to simplify NullishProps usage.
+     * Helper type to simplify NullishProps usage.
+     *
      * @remarks Letting this be NullishProps instead of InexactPartial because despite `tx` and `ty` only
      * having defaults via `{=0}`, they either get overwritten or `*=`ed which casts null to `0`, their default anyway.
      *
+     * @internal
      */
     type _CompositeOptions = NullishProps<{
       /**
@@ -146,9 +148,11 @@ declare global {
     type Format = "image/png" | "image/jpeg" | "image/webp";
 
     /**
-     * @internal Helper type to simplify NullishProps usage
+     * Helper type to simplify NullishProps usage
      * @remarks Letting this be NullishProps, as, after testing, passing null values to `HTMLCanvasElement#toBlob()`,
      * where these eventually end up, doesn't break anything and seems to apply the defaults
+     *
+     * @internal
      */
     type _TextureToImageOptions = NullishProps<{
       /**
@@ -166,7 +170,11 @@ declare global {
 
     interface TextureToImageOptions extends _TextureToImageOptions {}
 
-    /** @internal Intermediary type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
+    /**
+     * Intermediary type to simplify use of optionality- and nullish-permissiveness-modifying helpers
+     *
+     * @internal
+     */
     type _UploadBase64Options = InexactPartial<{
       /**
        * The data storage location to which the file should be uploaded

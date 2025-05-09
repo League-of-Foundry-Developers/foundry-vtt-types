@@ -889,6 +889,7 @@ declare global {
     interface TrackedAttributesDescription {
       /** A list of property path arrays to attributes with both a value and a max property. */
       bar: string[][];
+
       /** A list of property path arrays to attributes that have only a value property. */
       value: string[][];
     }
@@ -1031,7 +1032,7 @@ declare global {
      * @param options - Additional options passed to TokenDocument.createCombatants or
      *                  TokenDocument.deleteCombatants
      *                  Default: `{}`
-     *  @returns Is this Token now an active Combatant?
+     * @returns Is this Token now an active Combatant?
      */
     toggleCombatant({ active, ...options }?: TokenDocument.ToggleCombatantOptions): Promise<boolean>;
 
@@ -1217,6 +1218,7 @@ declare global {
      */
     protected _onRelatedUpdate(
       update?: DeepPartial<Actor.Implementation["_source"]>,
+
       /**
        * @privateRemarks foundry calls this field operation
        * but it's being passed options (and then ignores them)

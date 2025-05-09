@@ -213,12 +213,13 @@ declare global {
 
     class TEdge {
       Bot: IntPoint;
+
       /** current (updated for every new scanbeam) */
       Curr: IntPoint;
       Top: IntPoint;
       Delta: IntPoint;
 
-      /**  @defaultValue `0` */
+      /** @defaultValue `0` */
       Dx: number;
 
       /** @defaultValue `PolyType.ptSubject` */

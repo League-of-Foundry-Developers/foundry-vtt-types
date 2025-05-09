@@ -574,6 +574,7 @@ declare global {
         updateData: {
           /** The initial round */
           round: number;
+
           /** The initial turn */
           turn: number;
         },
@@ -591,12 +592,14 @@ declare global {
         updateData: {
           /** The current round of combat */
           round: number;
+
           /** The new turn number */
           turn: number;
         },
         updateOptions: {
           /** The amount of time in seconds that time is being advanced */
           advanceTime: number;
+
           /** A signed integer for whether the turn order is advancing or rewinding */
           direction: number;
         },
@@ -613,12 +616,14 @@ declare global {
         updateData: {
           /** The new round of combat */
           round: number;
+
           /** The new turn number */
           turn: number;
         },
         updateOptions: {
           /** The amount of time in seconds that time is being advanced */
           advanceTime: number;
+
           /** A signed integer for whether the turn order is advancing or rewinding */
           direction: number;
         },
@@ -738,6 +743,7 @@ declare global {
        * @see {@link AudioHelper._onChangeGlobalVolume | `AudioHelper#_onChangeGlobalVolume`}
        */
       globalAmbientVolumeChanged: (volume: number) => void;
+
       /**
        * A hook event that fires when the user modifies a global volume slider.
        * @param volume - The new volume level
@@ -745,6 +751,7 @@ declare global {
        * @see {@link AudioHelper._onChangeGlobalVolume | `AudioHelper#_onChangeGlobalVolume`}
        */
       globalInterfaceVolumeChanged: (volume: number) => void;
+
       /**
        * A hook event that fires when the user modifies a global volume slider.
        * @param volume - The new volume level
@@ -922,7 +929,6 @@ declare global {
       copied: P[],
       createData: Array<P["document"]["_source"]>,
     ) => boolean | void;
-    /**  */
 
     /** PlaceableObject */
 

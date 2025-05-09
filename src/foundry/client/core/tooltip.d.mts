@@ -82,19 +82,23 @@ declare global {
          * automatically localized
          */
         text?: string;
+
         /**
          * An explicit tooltip expansion direction. If this is not provided the direction is acquired
          * from the data-tooltip-direction attribute of the element or one of its parents.
          */
         direction?: TooltipManager.TOOLTIP_DIRECTIONS;
+
         /**
          * An optional, space-separated list of CSS classes to apply to the activated
          * tooltip. If this is not provided, the CSS classes are acquired from the
          * data-tooltip-class attribute of the element or one of its parents.
          */
         cssClass?: string;
+
         /** An optional boolean to lock the tooltip after creation. Defaults to false. */
         locked?: boolean;
+
         /** Explicit HTML content to inject into the tooltip rather than using tooltip text. */
         content?: HTMLElement;
       },
@@ -150,10 +154,13 @@ declare global {
       position: {
         /** Explicit top position for the tooltip */
         top?: string;
+
         /** Explicit right position for the tooltip */
         right?: string;
+
         /** Explicit bottom position for the tooltip */
         bottom?: string;
+
         /** Explicit left position for the tooltip */
         left?: string;
       },

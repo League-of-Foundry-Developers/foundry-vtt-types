@@ -66,17 +66,21 @@ declare global {
        * (default: `{}`)
        */
       editors?: FormDataExtended["editors"];
+
       /**
        * A mapping of data types for form fields
        * (default: `{}`)
        */
       dtypes?: FormDataExtended["dtypes"];
+
       /**
        * Include disabled fields?
        * (default: `false`)
        */
       disabled?: boolean;
-      /** Include readonly fields?
+
+      /**
+       * Include readonly fields?
        * (default: `true`)
        */
       readonly?: boolean;

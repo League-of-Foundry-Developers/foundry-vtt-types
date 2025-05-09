@@ -4,6 +4,7 @@ import type ProseMirrorPlugin from "./plugin.d.mts";
 import type { Node, Schema } from "prosemirror-model";
 
 export default ProseMirrorClickHandler;
+
 /**
  * A class responsible for managing click events inside a ProseMirror editor.
  */

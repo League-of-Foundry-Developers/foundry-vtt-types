@@ -13,7 +13,6 @@ export function benchmark<F extends AnyFunction>(func: F, iterations: number, ..
  * A debugging function to test latency or timeouts by forcibly locking the thread for an amount of time.
  * @param ms    - A number of milliseconds to lock
  * @param debug - (default: `false`)
- * @returns
  */
 export function threadLock(ms: number, debug?: boolean): Promise<void>;
 
@@ -46,6 +45,7 @@ export interface DeepCloneOptions {
    * @defaultValue `false`
    */
   strict?: boolean;
+
   /**
    * An internal depth tracker
    * @defaultValue `0`
@@ -132,12 +132,12 @@ export function isSubclass<Parent extends AnyConstructor>(cls: AnyConstructor, p
 /**
  * Search up the prototype chain and return the class that defines the given property.
  * @param obj                - A class instance or class definition which contains a property.
- *                             - If a class instance is passed the property is treated as an instance attribute.
- *                             - If a class constructor is passed the property is treated as a static attribute.
+ *                             If a class instance is passed the property is treated as an instance attribute.
+ *                             If a class constructor is passed the property is treated as a static attribute.
  * @param property           - The property name
  * @returns     - The class that defines the property
  */
-export function getDefiningClass(cls: AnyConstructor, property: string): AnyConstructor;
+export function getDefiningClass(obj: AnyConstructor, property: string): AnyConstructor;
 
 /**
  * Encode a url-like string by replacing any characters which need encoding
@@ -471,7 +471,6 @@ export function timeSince(timeStamp: Date | string): string;
  * Format a file size to an appropriate order of magnitude.
  * @param size    - The size in bytes.
  * @param options - Additional options. (default: `{}`)
- * @returns
  */
 export function formatFileSize(size: number, options?: FormatFileSizeOptions): string;
 
@@ -568,7 +567,6 @@ export function parseUuid(uuid: string, options?: ParseUUIDOptions): ResolvedUUI
  * 2. If the number of parts is even, resolve embedded documents against the current document.
  * @param uuid     - The UUID to resolve.
  * @param relative - The document to resolve against.
- * @returns
  * @internal
  */
 declare function _resolveRelativeUuid(uuid: string, relative: Document.Any): ResolvedUUID;

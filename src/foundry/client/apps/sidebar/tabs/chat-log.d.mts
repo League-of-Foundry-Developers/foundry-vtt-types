@@ -355,6 +355,7 @@ declare global {
        * appended to the end of the log.
        */
       before?: string | undefined;
+
       /**
        * Trigger a notification which shows the log as having a new unread message.
        */

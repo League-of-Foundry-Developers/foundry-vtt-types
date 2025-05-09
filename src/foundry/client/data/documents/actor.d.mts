@@ -794,6 +794,7 @@ declare global {
          * A single Scene, or list of Scenes to filter by.
          */
         scenes: Scene.Implementation | Scene.Implementation[];
+
         /**
          * Limit the results to tokens that are linked to the actor.
          * @defaultValue `false`

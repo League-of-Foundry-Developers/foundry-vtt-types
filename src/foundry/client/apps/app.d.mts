@@ -298,6 +298,7 @@ declare global {
       options?: {
         /** A specific named tab group, useful if multiple sets of tabs are present */
         group?: string;
+
         /**
          * Whether to trigger tab-change callback functions
          * (default: `true`)

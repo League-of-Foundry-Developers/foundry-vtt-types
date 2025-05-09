@@ -369,9 +369,11 @@ declare abstract class BaseGrid {
   measureDistances(
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     segments: BaseGrid.Segment[],
+
     /**
      * @defaultValue `{}`
-     * @remarks Unused */
+     * @remarks Unused
+     */
     options?: EmptyObject,
   ): number[];
 
@@ -396,6 +398,7 @@ declare abstract class BaseGrid {
     x: number,
     y: number,
     interval?: number | null,
+
     /**
      * @defaultValue `{}`
      * @remarks Unused

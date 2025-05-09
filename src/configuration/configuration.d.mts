@@ -200,7 +200,7 @@ export interface WebRTCConfig {}
 /**
  * Injects extra data for modules from `game.modules.get("module-id")`.
  * @see {@link RequiredModules | `RequiredModules`} for removing the `undefined` type for required modules.
- *  @example
+ * @example
  * ```typescript
  * interface ModuleConfig {
  *   "module-id": {

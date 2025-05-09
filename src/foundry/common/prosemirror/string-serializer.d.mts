@@ -15,6 +15,7 @@ export type ProseMirrorNodeOutput = (node: Node) => DOMOutputSpec;
 export type ProseMirrorMarkOutput = (mark: Mark, inline: boolean) => DOMOutputSpec;
 
 export default StringSerializer;
+
 /**
  * A class responsible for serializing a ProseMirror document into a string of HTML.
  */
@@ -109,9 +110,16 @@ declare class StringNode {
       _depth,
       _inlineParent,
     }?: {
-      /** @internal (default: `0`) */
+      /**
+       * @internal
+       * @defaultValue `0`
+       */
       _depth?: number;
-      /** @internal (default: `false`) */
+
+      /**
+       * @internal
+       * @defaultValue `false`
+       */
       _inlineParent?: boolean;
     },
   ): string;

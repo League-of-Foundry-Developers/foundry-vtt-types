@@ -36,6 +36,7 @@ declare global {
          * Display the entry to all players regardless of normal permissions.
          */
         force: boolean;
+
         /**
          * An optional list of user IDs to show the document to. Otherwise it will be shown to all connected clients.
          */

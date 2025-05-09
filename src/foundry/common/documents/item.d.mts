@@ -317,6 +317,7 @@ declare namespace BaseItem {
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
+
   /** @internal */
   interface _Schema extends Item.Schema {
     // For performance reasons don't bother calculating the `system` field.

@@ -444,10 +444,11 @@ declare namespace TextureData {
   }
 
   /**
-   * @internal
    * The `initial` property of the `srcOptions` parameter of the {@link TextureData | `TextureData`} constructor
    * is not the `initial` for any one field, but instead is an object that gets parcelled out by key to the
    * fields of the schema
+   *
+   * @internal
    */
   type _SrcOptionsInitial<T> = {
     [K in keyof T]: fields.DataField.Options.InitialType<T[K]>;
@@ -576,6 +577,7 @@ declare namespace TextureData {
       nullable: false;
       initial: NullishCoalesce<GetKey<Options["initial"], "tint", "#ffffff">, "#ffffff">;
     }>;
+
     /**
      * Only pixels with an alpha value at or above this value are consider solid
      * w.r.t. to occlusion testing and light/weather blocking.
@@ -608,8 +610,9 @@ declare namespace PrototypeToken {
   type Parent = documents.BaseActor;
 
   /**
-   * @internal
    * The fields foundry omits from the BaseToken schema. Not used, left as reference
+   *
+   * @internal
    */
   type ExcludedProperties =
     | "_id"

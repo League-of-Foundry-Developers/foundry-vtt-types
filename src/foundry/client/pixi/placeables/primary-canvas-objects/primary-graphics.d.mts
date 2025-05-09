@@ -39,7 +39,7 @@ declare global {
        * The name of the PCO.
        * @defaultValue `null`
        * @remarks Default via `?? null` in function body
-       * */
+       */
       name: string;
 
       /**

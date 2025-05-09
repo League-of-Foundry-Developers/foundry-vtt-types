@@ -33,11 +33,12 @@ declare namespace BiquadFilterEffect {
   interface AnyConstructor extends Identity<typeof AnyBiquadFilterEffect> {}
 
   /**
-   * @internal
    * Foundry keeps this specific list in a private static property of {@link BiquadFilterEffect | `BiquadFilterEffect`}.
    * It is typed as it is to make obvious where it comes from.
    *
    * @privateRemarks An `Exclude` would have been shorter but for all we know the lib type might change, this is reliable
+   *
+   * @internal
    */
   type AspirationalAllowedFilterType = Extract<
     "lowpass" | "highpass" | "bandpass" | "lowshelf" | "highshelf" | "peaking" | "notch",

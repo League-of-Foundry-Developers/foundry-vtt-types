@@ -11,6 +11,7 @@ declare global {
      */
     constructor(
       program: PIXI.Program,
+
       /** @defaultValue `{}` */
       uniforms?: AbstractBaseShader.Uniforms | null,
     );

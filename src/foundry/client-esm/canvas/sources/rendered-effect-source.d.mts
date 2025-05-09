@@ -246,6 +246,7 @@ declare namespace RenderedEffectSource {
 
   type AnimationFunction = (
     this: RenderedEffectSource,
+
     /** Delta time */
     dt: number,
     options?: AnimationFunctionOptions,
@@ -375,6 +376,7 @@ declare namespace RenderedEffectSource {
   type AnimationConfig = LightAnimationConfig | DarknessAnimationConfig;
 
   type StoredAnimationConfig = StoredLightAnimationConfig | StoredDarknessAnimationConfig;
+
   /**
    * @remarks The properties `mesh` and `shader` from `LayerConfig` are not documented as being part of the typedef. They are given values
    * during initialization *if* the Source has a valid `Placeable` as its `object`. `vmUniforms` is only provided a value for `PointVisionSource` layers.

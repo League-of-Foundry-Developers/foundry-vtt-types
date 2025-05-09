@@ -11,10 +11,6 @@
       "syntaxKind": "modifier"
     },
     {
-      "tagName": "@template",
-      "syntaxKind": "block"
-    },
-    {
       "tagName": "@yields",
       "syntaxKind": "modifier"
     }

@@ -398,9 +398,10 @@ declare global {
      */
     static load(
       query?: InexactPartial<{
-        /** A certain Scene ID **/
+        /** A certain Scene ID */
         scene: string;
-        /** A certain User ID **/
+
+        /** A certain User ID */
         user: string;
       }>,
       options?: InexactPartial<DatabaseGetOperation>,

@@ -254,7 +254,8 @@ declare global {
     interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
 
     /**
-     * @internal */
+     * @internal
+     */
     type _InitializeSoundSourceOptions = NullishProps<{
       /**
        * Indicate that this SoundSource has been deleted.

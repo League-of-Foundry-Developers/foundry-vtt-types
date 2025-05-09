@@ -92,6 +92,7 @@ declare global {
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
     type DescendantClass = DirectDescendantClass;
+
     /**
      * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`

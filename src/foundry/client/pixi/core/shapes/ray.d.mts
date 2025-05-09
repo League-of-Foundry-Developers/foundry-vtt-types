@@ -150,6 +150,7 @@ declare global {
      */
     shiftAngle(
       offset: number,
+
       /**
        * @defaultValue `this.distance`
        * @remarks Default provided by `||`, so `0` is effectively `this.distance`

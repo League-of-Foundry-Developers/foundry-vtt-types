@@ -51,7 +51,7 @@ declare global {
      * A Graphics instance which renders the border frame for this Token inside the GridLayer.
      * @defaultValue `undefined`
      * @remarks Only `undefined` prior to first draw
-     * */
+     */
     border: PIXI.Graphics | undefined;
 
     /**

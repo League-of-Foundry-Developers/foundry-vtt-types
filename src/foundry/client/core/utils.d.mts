@@ -41,6 +41,14 @@ declare global {
    */
   function readTextFromFile(file: File): Promise<string>;
 
+  interface FromUuidOptions {
+    /** A Document to resolve relative UUIDs against. */
+    relative?: ClientDocument;
+
+    /** Allow retrieving an invalid Document. (default: `false`) */
+    invalid?: boolean;
+  }
+
   /**
    * Retrieve an Entity or Embedded Entity by its Universally Unique Identifier (uuid).
    * @param uuid    - The uuid of the Entity or Embedded Entity to retrieve
@@ -48,32 +56,31 @@ declare global {
    */
   function fromUuid<ConcreteDocument extends Document.Any = __UnsetDocument, const Uuid extends string = string>(
     uuid: FromUuidValidate<ConcreteDocument, Uuid> | null | undefined,
-    options?: {
-      /** A Document to resolve relative UUIDs against. */
-      relative?: ClientDocument;
-      /** Allow retrieving an invalid Document. (default: `false`) */
-      invalid?: boolean;
-    },
+    options?: FromUuidOptions,
   ): Promise<(__UnsetDocument extends ConcreteDocument ? FromUuid<Uuid> : ConcreteDocument) | null>;
+
+  interface FromUuidSyncOptions {
+    /** A Document to resolve relative UUIDs against. */
+    relative?: ClientDocument;
+
+    /** Allow retrieving an invalid Document. (default: `false`) */
+    invalid?: boolean;
+
+    /** Throw an error if the UUID cannot be resolved synchronously. (default: `true`) */
+    strict?: boolean;
+  }
 
   /**
    * Retrieve a Document by its Universally Unique Identifier (uuid) synchronously. If the uuid resolves to a compendium
    * document, that document's index entry will be returned instead.
-   * @param uuid     - The uuid of the Document to retrieve.
-   * @param relative - A document to resolve relative UUIDs against.
+   * @param uuid    - The uuid of the Document to retrieve.
+   * @param options - Options to configure how a UUID is resolved.
    * @returns The Document or its index entry if it resides in a Compendium, otherwise null.
    * @throws If the uuid resolves to a Document that cannot be retrieved synchronously.
    */
   function fromUuidSync<ConcreteDocument extends Document.Any = __UnsetDocument, const Uuid extends string = string>(
     uuid: FromUuidValidate<ConcreteDocument, Uuid> | null | undefined,
-    options?: {
-      /** A Document to resolve relative UUIDs against. */
-      relative?: ClientDocument;
-      /** Allow retrieving an invalid Document. (default: `false`) */
-      invalid?: boolean;
-      /** Throw an error if the UUID cannot be resolved synchronously. (default: `true`) */
-      strict?: boolean;
-    },
+    options?: FromUuidSyncOptions,
   ): (__UnsetDocument extends ConcreteDocument ? FromUuid<Uuid> : ConcreteDocument) | AnyObject | null;
 
   /**

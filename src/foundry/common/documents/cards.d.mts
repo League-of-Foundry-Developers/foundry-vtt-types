@@ -302,6 +302,7 @@ declare namespace BaseCards {
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
+
   /** @internal */
   interface _Schema extends Cards.Schema {
     system: any;

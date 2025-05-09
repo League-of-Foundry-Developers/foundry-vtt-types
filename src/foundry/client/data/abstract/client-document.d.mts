@@ -567,6 +567,7 @@ declare global {
 
     // Note(LukeAbby): If the property could be omitted it is. This is the safest option because in indeterminate cases access would be unsafe.
     // In the future the indeterminate case could turn the property optional but that isn't done today because that's annoying to do for little benefit.
+
     /** @internal */
     type _OmitProperty<Omit extends boolean | undefined, Default extends boolean, ToOmit extends string> = Omit extends
       | true

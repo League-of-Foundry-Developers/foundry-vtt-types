@@ -631,8 +631,9 @@ declare global {
        */
       updateData: DeepPartial<Card.Implementation["_source"]>;
 
-      /** Create a ChatMessage which notifies that this action has occurred
-       *  @defaultValue `true`
+      /**
+       * Create a ChatMessage which notifies that this action has occurred
+       * @defaultValue `true`
        */
       chatNotification: boolean | undefined;
     }

@@ -173,6 +173,7 @@ declare global {
       background: VisionMode.LIGHTING_VISIBILITY;
       coloration: VisionMode.LIGHTING_VISIBILITY;
       darkness: VisionMode.LIGHTING_VISIBILITY;
+
       /** @remarks Only set `false` if all other keys are `VisionMode.LIGHTING_VISIBILITY.DISABLED` */
       any: boolean;
     }

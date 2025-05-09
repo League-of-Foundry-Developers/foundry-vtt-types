@@ -199,7 +199,7 @@ declare global {
        */
       displayProgress: boolean;
     }> &
-      /** @privateRemarks Can't Pick `expireCache`, despite it existing on `LoadSceneTexturesOptions`, as it has a different default here */
+      // Can't Pick `expireCache`, despite it existing on `LoadSceneTexturesOptions`, as it has a different default here
       Pick<LoadSceneTexturesOptions, "maxConcurrent">;
 
     /** Options for {@link TextureLoader.load | `TextureLoader#load`} */

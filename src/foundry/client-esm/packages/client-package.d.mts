@@ -4,7 +4,7 @@
  * @returns A BasePackage subclass mixed with ClientPackage features
  * @remarks TODO: Stub
  */
-declare function ClientPackageMixin(): void;
+declare function ClientPackageMixin(BasePackage: unknown): unknown;
 
 declare namespace ClientPackageMixin {}
 

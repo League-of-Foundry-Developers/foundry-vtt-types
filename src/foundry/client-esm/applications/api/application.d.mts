@@ -328,6 +328,7 @@ declare namespace ApplicationV2 {
 
     /** The tab in this group that will be active on first render */
     initial?: string | null | undefined;
+
     /**
      * A localization path prefix for all tabs in the group: if set, a label is generated
      * for each tab using a full path of `${labelPrefix}.${tabId}`.
@@ -409,15 +410,18 @@ declare namespace ApplicationV2 {
        * An interaction event which caused the tab change, if any
        */
       event: Event;
+
       /**
        * An explicit navigation element being modified
        */
       navElement: HTMLElement;
+
       /**
        * Force changing the tab even if the new tab is already active
        * @defaultValue `false`
        */
       force: boolean;
+
       /**
        * Update application position after changing the tab?
        * @defaultValue `false`

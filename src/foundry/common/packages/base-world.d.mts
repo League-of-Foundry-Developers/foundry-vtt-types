@@ -37,18 +37,21 @@ declare class BaseWorld extends BasePackage<BaseWorld.Schema> {
        * Tests against the current release by default.
        */
       release: ReleaseData;
+
       /**
        * A specific collection of modules to test availability
        * against. Tests against the currently installed modules by
        * default.
        */
       modules: Collection<Module>;
+
       /**
        * A specific collection of modules to test availability
        * against. Tests against the currently installed modules by
        * default.
        */
       systems: Collection<System>;
+
       /**
        * Ignore the world's own core software compatibility and
        * instead defer entirely to the system's core software

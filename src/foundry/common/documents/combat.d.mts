@@ -314,6 +314,7 @@ declare namespace BaseCombat {
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
+
   /** @internal */
   interface _Schema extends Combat.Schema {
     system: any;

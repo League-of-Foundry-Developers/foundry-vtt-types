@@ -14,7 +14,7 @@ declare global {
      *   popOut: false
      * });
      * ```
-     * */
+     */
     static override get defaultOptions(): Application.Options;
 
     /**

@@ -230,6 +230,7 @@ declare global {
 
     interface VisualizeOptions extends _VisualizeOptions {}
   }
+
   /**
    * A subclass of Quadtree specifically intended for classifying the location of objects on the game canvas.
    * @remarks Foundry never uses `Quadtree` directly, only this class, and only ever fills it with `PrimaryCanvasObject`s or `PlaceableObject`s

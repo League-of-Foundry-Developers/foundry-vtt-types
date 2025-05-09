@@ -1,5 +1,8 @@
 // @ts-check
 
+// In this file JSDoc is used simply to bring proper types, not documentation.
+/* eslint-disable jsdoc/require-property-description, jsdoc/no-types, jsdoc/require-param-description */
+
 import * as fs from "fs/promises";
 
 /**

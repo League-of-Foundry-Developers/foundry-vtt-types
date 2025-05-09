@@ -305,6 +305,7 @@ declare namespace BasePackage {
     media: fields.SetField<fields.SchemaField<PackageMediaSchema>>;
 
     // Moved to base-module and base-system to avoid conflict with base-world
+
     /**
      * The current package version
      */
@@ -448,6 +449,7 @@ export class CompendiumOwnershipField extends fields.ObjectField<
   static override get _defaults(): {
     /** @defaultValue `{PLAYER: "OBSERVER", ASSISTANT: "OWNER"}` */
     initial: BasePackage.OwnershipRecord;
+
     /**
      * @defaultValue `"is not a mapping of USER_ROLES to DOCUMENT_OWNERSHIP_LEVELS"`
      */
@@ -535,7 +537,7 @@ declare class BasePackage<
   /**
    * Define the package type in CONST.PACKAGE_TYPES that this class represents.
    * Each BasePackage subclass must define this attribute.
-   * @virtual
+   * @abstract
    */
   static type: foundry.CONST.PACKAGE_TYPES;
 

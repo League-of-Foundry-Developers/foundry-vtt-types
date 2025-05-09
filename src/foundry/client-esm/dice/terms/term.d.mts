@@ -105,7 +105,7 @@ declare abstract class RollTerm {
   static fromParseNode(node: RollParseNode): RollTerm;
 
   /**
-   * * Define term-specific logic for how a de-serialized data object is restored as a functional RollTerm
+   * Define term-specific logic for how a de-serialized data object is restored as a functional RollTerm
    * @param data - The de-serialized term data
    * @returns The re-constructed RollTerm object
    */
@@ -140,7 +140,7 @@ declare namespace RollTerm {
     /**
      * Maximize the result, obtaining the largest possible value.
      * @defaultValue `false`
-     * */
+     */
     maximize: boolean;
 
     /**

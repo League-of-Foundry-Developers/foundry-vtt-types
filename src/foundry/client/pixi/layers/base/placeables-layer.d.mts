@@ -484,11 +484,13 @@ declare global {
        * @remarks Passed to {@link PlaceableObject._updateRotation | `PlaceableObject#_updateRotation`} where it is checked for `> 0` before being passed to the non-null-safe `Number#toNearest`
        */
       snap: number;
+
       /**
        * An Array of object IDs to target for rotation
        * @remarks Passed to {@link PlaceablesLayer._getMovableObjects | `PlaceablesLayer#_getMovableObjects`}
        */
       ids: string[];
+
       /**
        * Rotate objects whose documents are locked?
        * @defaultValue `false`

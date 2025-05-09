@@ -976,6 +976,7 @@ declare namespace SchemaField {
   // The names are also confusing. Hence these it's put into `Internal.
   namespace Internal {
     // FIXME: null or undefined should be permissible, cast as the initialized type
+
     /**
      * A shorthand for the assignment type of a SchemaField class.
      * @typeParam Fields - the DataSchema fields of the SchemaField

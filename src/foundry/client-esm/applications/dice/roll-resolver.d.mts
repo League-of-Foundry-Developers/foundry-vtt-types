@@ -55,6 +55,7 @@ declare class RollResolver<
     options?: InexactPartial<{
       /** @defaultValue `false` */
       reroll: boolean;
+
       /** @defaultValue `false` */
       explode: boolean;
     }>,

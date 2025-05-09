@@ -387,8 +387,10 @@ declare global {
     interface FavoriteFolder {
       /** The source of the folder (e.g. "data", "public") */
       source: string;
+
       /** The full path to the folder */
       path: string;
+
       /** The label for the path */
       label: string;
     }

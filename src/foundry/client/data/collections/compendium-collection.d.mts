@@ -106,7 +106,7 @@ declare global {
 
     /**
      * The visibility configuration of this compendium pack.
-     * */
+     */
     get ownership(): InexactPartial<foundry.packages.BasePackage.OwnershipRecord>;
 
     /** Is this Compendium pack visible to the current game User? */
@@ -257,12 +257,13 @@ declare global {
           /**
            * An existing Folder _id to use.
            * @defaultValue `null`
-           * */
+           */
           folderId: string | null;
+
           /**
            * A new Folder name to create.
            * @defaultValue `""`
-           * */
+           */
           folderName: string;
         } & Document.Database.CreateOperation<DatabaseCreateOperation> &
           WorldCollection.FromCompendiumOptions
@@ -455,13 +456,15 @@ interface ImportAllOptions {
   /**
    * An existing Folder _id to use.
    * @defaultValue `null`
-   * */
+   */
   folderId?: string | null | undefined;
+
   /**
    * A new Folder name to create.
    * @defaultValue `""`
-   * */
+   */
   folderName?: string | undefined;
+
   /**
    * Additional options forwarded to {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@link Document.createDocuments | `Document.createDocuments`}
    * @defaultValue `{}`

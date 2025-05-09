@@ -1483,6 +1483,7 @@ declare namespace Document {
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
   /* eslint-disable @typescript-eslint/no-deprecated */
+
   /** @deprecated Use {@link Database.PreCreateOptions | `Database.PreCreateOptions`} */
   type PreCreateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "create">,
@@ -2148,6 +2149,7 @@ declare namespace Document {
 export type Operation = Document.Database.Operation;
 
 /* eslint-disable @typescript-eslint/no-deprecated */
+
 /**
  * @deprecated if you want to get individual operations see {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
  */

@@ -1,6 +1,7 @@
 export interface RollParseNode {
   /** The class name for this node. */
   class: string;
+
   /** The original matched text for this node. */
   formula: string;
 }
@@ -8,6 +9,7 @@ export interface RollParseNode {
 export interface RollParseTreeNode {
   /** The binary operator. */
   operator: string;
+
   /** The two operands. */
   operands: [RollParseNode, RollParseNode];
 }
@@ -32,6 +34,7 @@ export interface NumericRollParseNode extends FlavorRollParseNode {
 export interface FunctionRollParseNode extends FlavorRollParseNode {
   /** The function name. */
   fn: string;
+
   /** The arguments to the function. */
   terms: RollParseNode[];
 }
@@ -54,6 +57,7 @@ export interface StringParseNode extends FlavorRollParseNode {
 export interface DiceRollParseNode extends ModifiersRollParseNode {
   /** The number of dice. */
   number: number | ParentheticalRollParseNode;
+
   /** The number of faces or a string denomination like "c" or "f" */
   faces: string | number | ParentheticalRollParseNode;
 }

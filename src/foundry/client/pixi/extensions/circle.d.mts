@@ -103,7 +103,11 @@ declare global {
         extends PIXI.Rectangle.ClipperLibIntersectPolygonOptions,
           Pick<PIXI.Circle.PointsForArcOptions, "density"> {}
 
-      /** @internal Helper type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
+      /**
+       * Helper type to simplify use of optionality- and nullish-permissiveness-modifying helpers
+       *
+       * @internal
+       */
       type _PointsForArcOptions = NullishProps<{
         /**
          * The number of points which defines the density of approximation
