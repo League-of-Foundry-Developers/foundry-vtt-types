@@ -173,19 +173,29 @@ declare class DialogV2<
    * @see {@link DialogV2.confirm}
    * @see {@link DialogV2.wait}
    */
-  static query<T extends DialogV2.Type, Options extends DialogV2.QueryConfig<T>>(
+  static query<T extends Exclude<DialogV2.Type, "input">, _FD, Options extends DialogV2.QueryConfig<T>>(
     user: User.Implementation | string,
     type: T,
     config?: Options,
   ): Promise<DialogV2.QueryReturn<T, Options>>;
+  static query<T extends "input" & DialogV2.Type, FD extends object, Options extends DialogV2.InputConfig<FD>>(
+    user: User.Implementation | string,
+    type: T,
+    config?: Options,
+  ): Promise<DialogV2.InputReturn<FD, Options>>;
 
   /**
    * The dialog query handler.
    */
-  static _handleQuery<T extends DialogV2.Type, Options extends DialogV2.QueryConfig<T>>(config: {
+  static _handleQuery<T extends DialogV2.Type, _FD, Options extends DialogV2.QueryConfig<T>>(queryData: {
     type: T;
     config: Options;
   }): Promise<DialogV2.QueryReturn<T, Options>>;
+  static _handleQuery<
+    T extends "input" & DialogV2.Type,
+    FD extends object,
+    Options extends DialogV2.InputConfig<FD>,
+  >(queryData: { type: T; config: Options }): Promise<DialogV2.InputReturn<FD, Options>>;
 }
 
 declare namespace DialogV2 {
@@ -311,7 +321,7 @@ declare namespace DialogV2 {
     content?: FormContent<FD>;
   }
 
-  type Type = "prompt" | "confirm" | "wait";
+  type Type = "prompt" | "confirm" | "wait" | "input";
 
   /**
    * @remarks Query gets passed through a socket which means it can't take a callback function on its buttons
@@ -350,14 +360,18 @@ declare namespace DialogV2 {
       : null;
 
     type ButtonReturnType<Options extends { buttons?: Button<unknown>[] }> =
-      // Two cases - one for where all buttons have a defined callback, the other where they don't
+      // All buttons have a callback
       Options["buttons"] extends ReadonlyArray<{ callback: ButtonCallback<infer Callback> }>
         ? Callback extends undefined
           ? string
           : Callback
-        : Options["buttons"] extends ReadonlyArray<Button<infer Callback>>
-          ? Callback | string
-          : never;
+        : // No buttons have a callback
+          Options["buttons"] extends ReadonlyArray<Button<never>>
+          ? string
+          : // Some buttons have a callback
+            Options["buttons"] extends ReadonlyArray<Button<infer Callback>>
+            ? Callback | string
+            : never;
 
     type ConfirmReturnType<Options extends ConfirmConfig<unknown, unknown>> =
       | (Options extends { yes: { readonly callback: ButtonCallback<infer YesReturn> } }

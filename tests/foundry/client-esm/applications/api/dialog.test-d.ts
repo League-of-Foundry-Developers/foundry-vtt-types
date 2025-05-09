@@ -96,6 +96,95 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<InputTest>();
 
+// overriding the ok callback
+expectTypeOf(
+  await DialogV2.input({
+    content: testContent as DialogV2.FormContent<InputTest>,
+    ok: okButton,
+    rejectClose: true,
+  }),
+).toEqualTypeOf<number>();
+expectTypeOf(
+  await DialogV2.input({
+    content: testContent as DialogV2.FormContent<InputTest>,
+    ok: okButton,
+    buttons: [
+      {
+        label: "Foo",
+        action: "foo",
+        callback: async () => 3 > 2,
+      },
+      {
+        label: "Bar",
+        action: "bar",
+        callback: async () => 3,
+      },
+    ],
+  }),
+).toEqualTypeOf<number | boolean | null>();
+expectTypeOf(
+  await DialogV2.input({
+    content: testContent as DialogV2.FormContent<InputTest>,
+    buttons: [
+      {
+        label: "Foo",
+        action: "foo",
+        callback: async () => 3 > 2,
+      },
+      {
+        label: "Bar",
+        action: "bar",
+        callback: async () => 3,
+      },
+    ],
+  }),
+).toEqualTypeOf<InputTest | number | boolean | null>();
+expectTypeOf(
+  await DialogV2.input({
+    content: testContent as DialogV2.FormContent<InputTest>,
+    buttons: [
+      {
+        label: "Foo",
+        action: "foo",
+      },
+      {
+        label: "Bar",
+        action: "bar",
+      },
+    ],
+  }),
+).toEqualTypeOf<InputTest | string | null>();
+
+declare const _inputTest: DialogV2.Internal.ButtonReturnType<{
+  // content: HTMLDivElement;
+  buttons: [
+    {
+      label: "Foo";
+      action: "foo";
+    },
+    {
+      label: "Bar";
+      action: "bar";
+    },
+  ];
+}>;
+
+expectTypeOf(
+  await DialogV2.wait({
+    buttons: [
+      {
+        label: "Foo",
+        action: "foo",
+      },
+      {
+        label: "Bar",
+        action: "bar",
+      },
+    ],
+    rejectClose: true,
+  }),
+).toEqualTypeOf<string>();
+
 expectTypeOf(
   await DialogV2.wait({
     buttons: [
@@ -130,13 +219,15 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<boolean | string | null>();
 
-DialogV2.query(foundry.utils.randomID(), "confirm", {
+const queryReturnConfirm = await DialogV2.query(foundry.utils.randomID(), "confirm", {
   yes: {
     label: "foo",
   },
 });
 
-DialogV2.query(foundry.utils.randomID(), "wait", {
+expectTypeOf(queryReturnConfirm).toEqualTypeOf<boolean | null>();
+
+const queryReturnWait = await DialogV2.query(foundry.utils.randomID(), "wait", {
   buttons: [
     {
       action: "foo",
@@ -144,6 +235,14 @@ DialogV2.query(foundry.utils.randomID(), "wait", {
     },
   ],
 });
+
+expectTypeOf(queryReturnWait).toEqualTypeOf<string | null>();
+
+const queryReturnInput = await DialogV2.query(foundry.utils.randomID(), "input", {
+  content: testContent as DialogV2.FormContent<InputTest>,
+});
+
+expectTypeOf(queryReturnInput).toEqualTypeOf<InputTest | null>();
 
 /*********************
  *
