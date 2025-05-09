@@ -280,12 +280,12 @@ declare namespace BaseAmbientSound {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseAmbientSound.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseAmbientSound.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseAmbientSound.CreateData | `BaseAmbientSound.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseAmbientSound.CreateData}
    */
   type ConstructorData = BaseAmbientSound.CreateData;
 }

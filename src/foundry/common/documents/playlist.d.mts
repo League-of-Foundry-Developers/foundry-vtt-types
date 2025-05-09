@@ -302,12 +302,12 @@ declare namespace BasePlaylist {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BasePlaylist.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BasePlaylist.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BasePlaylist.CreateData | `BasePlaylist.CreateData`}
+   * @deprecated Replaced with {@linkcode BasePlaylist.CreateData}
    */
   type ConstructorData = BasePlaylist.CreateData;
 }

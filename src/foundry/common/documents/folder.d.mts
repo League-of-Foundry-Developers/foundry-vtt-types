@@ -269,16 +269,16 @@ declare namespace BaseFolder {
    */
   type Properties = SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseFolder.SubType | `BaseFolder.SubType`} */
+  /** @deprecated Replaced with {@linkcode BaseFolder.SubType} */
   type TypeNames = SubType;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseFolder.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseFolder.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseFolder.CreateData | `BaseFolder.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseFolder.CreateData}
    */
   type ConstructorData = BaseFolder.CreateData;
 }

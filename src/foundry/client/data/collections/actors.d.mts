@@ -6,8 +6,8 @@ declare global {
    * The singleton collection of Actor documents which exist within the active World.
    * This Collection is accessible within the Game object as game.actors.
    *
-   * @see {@link Actor | `Actor`} The Actor document
-   * @see {@link ActorDirectory | `ActorDirectory`} The ActorDirectory sidebar directory
+   * @see {@linkcode Actor} The Actor document
+   * @see {@linkcode ActorDirectory} The ActorDirectory sidebar directory
    *
    * @example <caption>Retrieve an existing Actor by its id</caption>
    * ```typescript

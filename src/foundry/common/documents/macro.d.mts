@@ -281,16 +281,16 @@ declare namespace BaseMacro {
    */
   type Properties = SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseMacro.SubType | `BaseMacro.SubType`} */
+  /** @deprecated Replaced with {@linkcode BaseMacro.SubType} */
   type TypeNames = SubType;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseMacro.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseMacro.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseMacro.CreateData | `BaseMacro.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseMacro.CreateData}
    */
   type ConstructorData = BaseMacro.CreateData;
 }

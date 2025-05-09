@@ -33,10 +33,10 @@ declare global {
     interface Any extends AnyDiceConfig {}
     interface AnyConstructor extends Identity<typeof AnyDiceConfig> {}
 
-    /** @deprecated {@link DiceConfig.Data | `DiceConfig.Data`} */
+    /** @deprecated Replaced with {@linkcode DiceConfig.Data} */
     type DiceConfigData = Data;
 
-    /** @deprecated {@link DiceConfig.DiceDat | `DiceConfig.DiceDat`} */
+    /** @deprecated Replaced with {@linkcode DiceConfig.DiceDat} */
     type DiceConfigDiceData = DiceData;
 
     interface Data {

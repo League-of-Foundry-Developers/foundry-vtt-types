@@ -4,8 +4,8 @@ import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 declare global {
   /**
    * A type of Placeable Object which highlights an area of the grid as covered by some area of effect.
-   * @see {@link MeasuredTemplateDocument | `MeasuredTemplateDocument`}
-   * @see {@link TemplateLayer | `TemplateLayer`}
+   * @see {@linkcode MeasuredTemplateDocument}
+   * @see {@linkcode TemplateLayer}
    */
   class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.Implementation> {
     /**
@@ -219,40 +219,40 @@ declare global {
   namespace MeasuredTemplate {
     /**
      * The implementation of the `MeasuredTemplate` placeable configured through `CONFIG.MeasuredTemplate.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link MeasuredTemplateDocument.Implementation | `MeasuredTemplateDocument.Implementation`}
+     * Not to be confused with {@linkcode MeasuredTemplateDocument.Implementation}
      * which refers to the implementation for the measured template document.
      */
     type Implementation = FixedInstanceType<ImplementationClass>;
 
     /**
      * The implementation of the `MeasuredTemplate` placeable configured through `CONFIG.MeasuredTemplate.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link MeasuredTemplateDocument.ImplementationClass | `MeasuredTemplateDocument.ImplementationClass`}
+     * Not to be confused with {@linkcode MeasuredTemplateDocument.ImplementationClass}
      * which refers to the implementation for the measured template document.
      */
     // eslint-disable-next-line no-restricted-syntax
     type ImplementationClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
 
     /**
-     * @deprecated {@link ImplementationClass | `ImplementationClass`}
+     * @deprecated Replaced with {@linkcode ImplementationClass}
      */
     type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Implementation | `Implementation`}
+     * @deprecated Replaced with {@linkcode Implementation}
      */
     type Object = Implementation;
 
     /**
-     * @deprecated {@link MeasuredTemplate.ImplementationClass | `MeasuredTemplate.ImplementationClass`}
+     * @deprecated Replaced with {@linkcode MeasuredTemplate.ImplementationClass}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link MeasuredTemplate.Implementation | `MeasuredTemplate.Implementation`}
+     * @deprecated Replaced with {@linkcode MeasuredTemplate.Implementation}
      */
     type ConfiguredInstance = Implementation;
 

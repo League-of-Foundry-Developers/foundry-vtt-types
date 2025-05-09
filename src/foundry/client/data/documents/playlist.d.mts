@@ -23,13 +23,13 @@ declare global {
 
     /**
      * The implementation of the `Playlist` document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylist | `fvtt-types/configuration/ConfiguredPlaylist`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredPlaylist | `fvtt-types/configuration/ConfiguredPlaylist`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<"Playlist">;
 
     /**
      * The implementation of the `Playlist` document configured through `CONFIG.Playlist.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<"Playlist">;
 
@@ -190,20 +190,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link Playlist.Source | `Playlist.Source`}
+     * @deprecated Replaced with {@linkcode Playlist.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link Playlist.create | `Playlist.create`}
+     * The data necessary to create a document. Used in places like {@linkcode Playlist.create}
      * and {@link Playlist | `new Playlist(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -213,7 +213,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Playlist.name | `Playlist#name`}.
      *
-     * This is data transformed from {@link Playlist.Source | `Playlist.Source`} and turned into more
+     * This is data transformed from {@linkcode Playlist.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -227,10 +227,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link Playlist | `Playlist`}. This is the source of truth for how an Playlist document
+     * The schema for {@linkcode Playlist}. This is the source of truth for how an Playlist document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link Playlist | `Playlist`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode Playlist}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -320,7 +320,7 @@ declare global {
 
       /**
        * An object which configures ownership of this Playlist
-       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
+       * @defaultValue see {@linkcode fields.DocumentOwnershipField}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -332,7 +332,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
+       * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -351,17 +351,17 @@ declare global {
       /** Options passed along in Update operations for Playlists */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Playlist.UpdateData, Playlist.Parent> {}
 
-      /** Operation for {@link Playlist.createDocuments | `Playlist.createDocuments`} */
+      /** Operation for {@linkcode Playlist.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Playlist.Database.Create<Temporary>> {}
 
-      /** Operation for {@link Playlist.updateDocuments | `Playlist.updateDocuments`} */
+      /** Operation for {@linkcode Playlist.updateDocuments} */
       interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Playlist.Database.Update> {}
 
-      /** Operation for {@link Playlist.deleteDocuments | `Playlist.deleteDocuments`} */
+      /** Operation for {@linkcode Playlist.deleteDocuments} */
       interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Playlist.Database.Delete> {}
 
-      /** Operation for {@link Playlist.create | `Playlist.create`} */
+      /** Operation for {@linkcode Playlist.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Playlist.Database.Create<Temporary>> {}
 
@@ -370,7 +370,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link Playlist.get | `Playlist.get`} */
+      /** Options for {@linkcode Playlist.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link Playlist._preCreate | `Playlist#_preCreate`} */
@@ -379,7 +379,7 @@ declare global {
       /** Options for {@link Playlist._onCreate | `Playlist#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link Playlist._preCreateOperation | `Playlist._preCreateOperation`} */
+      /** Operation for {@linkcode Playlist._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Playlist.Database.Create> {}
 
       /** Operation for {@link Playlist._onCreateOperation | `Playlist#_onCreateOperation`} */
@@ -391,7 +391,7 @@ declare global {
       /** Options for {@link Playlist._onUpdate | `Playlist#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link Playlist._preUpdateOperation | `Playlist._preUpdateOperation`} */
+      /** Operation for {@linkcode Playlist._preUpdateOperation} */
       interface PreUpdateOperation extends Playlist.Database.Update {}
 
       /** Operation for {@link Playlist._onUpdateOperation | `Playlist._preUpdateOperation`} */
@@ -409,13 +409,13 @@ declare global {
       /** Options for {@link Playlist._onDeleteOperation | `Playlist#_onDeleteOperation`} */
       interface OnDeleteOperation extends Playlist.Database.Delete {}
 
-      /** Context for {@link Playlist._onDeleteOperation | `Playlist._onDeleteOperation`} */
+      /** Context for {@linkcode Playlist._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<Playlist.Parent> {}
 
-      /** Context for {@link Playlist._onCreateDocuments | `Playlist._onCreateDocuments`} */
+      /** Context for {@linkcode Playlist._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<Playlist.Parent> {}
 
-      /** Context for {@link Playlist._onUpdateDocuments | `Playlist._onUpdateDocuments`} */
+      /** Context for {@linkcode Playlist._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<Playlist.Parent> {}
 
       /**
@@ -496,23 +496,23 @@ declare global {
     >;
 
     /**
-     * @deprecated {@link Playlist.Database.Operation | `Playlist.Database.Operation`}
+     * @deprecated Replaced with {@linkcode Playlist.Database.Operation}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Playlist.Implementation> {}
 
     /**
-     * @deprecated {@link Playlist.CreateData | `Playlist.CreateData`}
+     * @deprecated Replaced with {@linkcode Playlist.CreateData}
      */
     interface ConstructorData extends Playlist.CreateData {}
 
     /**
-     * @deprecated {@link Playlist.implementation | `Playlist.ImplementationClass`}
+     * @deprecated Replaced with {@link Playlist.implementation | `Playlist.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Playlist.Implementation | `Playlist.Implementation`}
+     * @deprecated Replaced with {@linkcode Playlist.Implementation}
      */
     type ConfiguredInstance = Implementation;
     interface PlayNextOptions {
@@ -527,9 +527,9 @@ declare global {
   /**
    * The client-side Playlist document which extends the common BasePlaylist model.
    *
-   * @see {@link Playlists | `Playlists`}             The world-level collection of Playlist documents
-   * @see {@link PlaylistSound | `PlaylistSound`}         The PlaylistSound embedded document within a parent Playlist
-   * @see {@link PlaylistConfig | `PlaylistConfig`}        The Playlist configuration application
+   * @see {@linkcode Playlists}             The world-level collection of Playlist documents
+   * @see {@linkcode PlaylistSound}         The PlaylistSound embedded document within a parent Playlist
+   * @see {@linkcode PlaylistConfig}        The Playlist configuration application
    *
    */
   class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
@@ -555,7 +555,7 @@ declare global {
     override get visible(): boolean;
 
     /**
-     * Find all content links belonging to a given {@link Playlist | `Playlist`} or {@link PlaylistSound | `PlaylistSound`}.
+     * Find all content links belonging to a given {@linkcode Playlist} or {@linkcode PlaylistSound}.
      * @param doc - The Playlist or PlaylistSound.
      */
     static _getSoundContentLinks(doc: Playlist.Implementation | PlaylistSound.Implementation): NodeListOf<Element>;

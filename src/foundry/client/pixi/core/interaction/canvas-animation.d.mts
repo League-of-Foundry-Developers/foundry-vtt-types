@@ -230,10 +230,10 @@ declare global {
     }
   }
 
-  /** @deprecated {@link CanvasAnimation.AnimateOptions | `CanvasAnimation.AnimateOptions`} */
+  /** @deprecated Replaced with {@linkcode CanvasAnimation.AnimateOptions} */
   type CanvasAnimationOptions = CanvasAnimation.AnimateOptions;
 
-  /** @deprecated {@link CanvasAnimation.AnimationData | `CanvasAnimation.AnimationData`} */
+  /** @deprecated Replaced with {@linkcode CanvasAnimation.AnimationData} */
   type CanvasAnimationData = CanvasAnimation.AnimationData;
 }
 

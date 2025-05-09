@@ -618,15 +618,15 @@ declare global {
   interface SetupGame extends _SetupGame {}
   interface ReadyGame extends _ReadyGame {}
 
-  /** @deprecated {@link Hooks.HotReloadData | `HotReloadData`} */
+  /** @deprecated Replaced with {@link Hooks.HotReloadData | `HotReloadData`} */
   type HotReloadData = Hooks.HotReloadData;
 
   namespace Game {
     interface ModuleCollection extends Collection<Module> {
       /**
        * Gets the module requested for by ID
-       * @see {@link ModuleConfig | `ModuleConfig`} to add custom properties to modules like APIs.
-       * @see {@link RequiredModules | `RequiredModules`} to remove `undefined` from the return type for a given module
+       * @see {@linkcode ModuleConfig} to add custom properties to modules like APIs.
+       * @see {@linkcode RequiredModules} to remove `undefined` from the return type for a given module
        * @param id - The module ID to look up
        */
       get<T extends string>(id: T): Module & ConfiguredModule<T>;

@@ -339,12 +339,12 @@ declare namespace BaseUser {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseUser.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseUser.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseUser.CreateData | `BaseUser.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseUser.CreateData}
    */
   type ConstructorData = BaseUser.CreateData;
 }

@@ -1,7 +1,7 @@
 import type { MaybePromise } from "fvtt-types/utils";
 
 declare global {
-  /** @deprecated {@link DrawingConfig.Options | `DrawingConfig.Options`} */
+  /** @deprecated Replaced with {@linkcode DrawingConfig.Options} */
   type DrawingConfigOptions = DrawingConfig.Options;
 
   /**

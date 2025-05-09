@@ -339,17 +339,17 @@ declare namespace BaseActor {
   interface Properties extends SchemaField.InitializedData<Schema> {}
 
   /**
-   * @deprecated {@link BaseActor.SubType | `BaseActor.SubType`}
+   * @deprecated Replaced with {@linkcode BaseActor.SubType}
    */
   type TypeNames = Game.Model.TypeNames<"Actor">;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseActor.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseActor.Schema>`}
    */
   interface SchemaField extends foundry.data.fields.SchemaField<Schema> {}
 
   /**
-   * @deprecated {@link BaseActor.CreateData | `BaseActor.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseActor.CreateData}
    */
   interface ConstructorData extends SchemaField.CreateData<Schema> {}
 }

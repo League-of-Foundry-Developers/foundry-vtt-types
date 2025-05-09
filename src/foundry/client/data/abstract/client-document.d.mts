@@ -346,7 +346,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    *
    * This function must be used to create a document from data that predates the current core version.
    * It must be given nonpartial data matching the schema it had in the core version it is coming from.
-   * It applies legacy migrations to the source data before calling {@link Document.fromSource | `Document.fromSource`}.
+   * It applies legacy migrations to the source data before calling {@linkcode Document.fromSource}.
    * If this function is not used to import old data, necessary migrations may not applied to the data
    * resulting in an incorrectly imported document.
    *
@@ -354,7 +354,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * doesn't contain a `_stats` field, the data is assumed to be pre-V10, when the `_stats` field didn't exist yet.
    * The `_stats` field must not be stripped from the data before it is exported!
    * @param source - The document data that is imported.
-   * @param context - The model construction context passed to {@link Document.fromSource | `Document.fromSource`}.
+   * @param context - The model construction context passed to {@linkcode Document.fromSource}.
    *                  (default: `context.strict=true`) Strict validation is enabled by default.
    */
   static fromImport(source: never, context?: never): Promise<unknown>;

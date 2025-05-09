@@ -285,12 +285,12 @@ declare namespace BaseWall {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseWallDocument.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseWallDocument.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseWall.CreateData | `BaseWall.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseWall.CreateData}
    */
   type ConstructorData = BaseWall.CreateData;
 }

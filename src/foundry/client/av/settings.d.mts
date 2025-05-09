@@ -1,7 +1,7 @@
 import type { GetKey, ValueOf } from "fvtt-types/utils";
 
 declare global {
-  /** @deprecated {@link AVSettings.Data | `AVSettings.Data`} */
+  /** @deprecated Replaced with {@linkcode AVSettings.Data} */
   type AVSettingsData = AVSettings.Data;
 
   class AVSettings {

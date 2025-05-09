@@ -13,8 +13,8 @@ declare global {
    * Game object as as game.settings.
    *
    * @see {@link Game.settings | `Game#settings`}
-   * @see {@link Settings | `Settings`}
-   * @see {@link SettingsConfig | `SettingsConfig`}
+   * @see {@linkcode Settings}
+   * @see {@linkcode SettingsConfig}
    */
   class ClientSettings {
     constructor(worldSettings?: Setting.Implementation["_source"][]);
@@ -270,7 +270,7 @@ declare global {
     /**
      * A Client Setting
      * @remarks Copied from `resources/app/common/types.mjs`
-     * @remarks Not to be confused with {@link globalThis.SettingConfig | `globalThis.SettingConfig`} which is how you register setting types in this project
+     * @remarks Not to be confused with {@linkcode globalThis.SettingConfig} which is how you register setting types in this project
      */
     interface SettingConfig<T extends Type = (value: unknown) => unknown>
       extends _SettingConfig<ToRuntimeType<T>, ToSettingAssignmentType<T>> {}

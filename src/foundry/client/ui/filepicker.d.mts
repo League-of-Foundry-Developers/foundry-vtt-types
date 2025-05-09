@@ -2,7 +2,7 @@ import type { EmptyObject, MaybePromise, ValueOf } from "fvtt-types/utils";
 
 declare global {
   /**
-   * @deprecated {@link FilePicker.Options | `FilePicker.Options`}
+   * @deprecated Replaced with {@linkcode FilePicker.Options}
    */
   type FilePickerOptions = FilePicker.Options;
 

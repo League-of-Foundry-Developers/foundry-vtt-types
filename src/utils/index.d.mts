@@ -51,7 +51,7 @@ type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infe
  *   `Object.assign({}, defaultOptions, options)`,
  *   `foundry.utils.mergeObject(defaultOptions, options)`, or so on.
  *
- *   Note that {@link foundry.utils.mergeObject | `foundry.utils.mergeObject`}
+ *   Note that {@linkcode foundry.utils.mergeObject}
  *   also expands the object. So once `ExpandsTo` exists you should also use
  *   that helper type.
  *
@@ -533,7 +533,7 @@ export type AllKeysOf<T extends object> = T extends unknown ? keyof T : never;
  *   `Object.assign({}, defaultOptions, options)`,
  *   `foundry.utils.mergeObject(defaultOptions, options)`, or so on.
  *
- *   Note that {@link foundry.utils.mergeObject | `foundry.utils.mergeObject`}
+ *   Note that {@linkcode foundry.utils.mergeObject}
  *   also expands the object. So once `ExpandsTo` exists you should also use
  *   that helper type.
  *
@@ -574,7 +574,7 @@ export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<
  *   `Object.assign({}, defaultOptions, options)`,
  *   `foundry.utils.mergeObject(defaultOptions, options)`, or so on.
  *
- *   Note that {@link foundry.utils.mergeObject | `foundry.utils.mergeObject`}
+ *   Note that {@linkcode foundry.utils.mergeObject}
  *   also expands the object. So once `ExpandsTo` exists you should also use
  *   that helper type.
  *
@@ -796,7 +796,7 @@ export type AnyMutableObject = {
 /**
  * Use this type to allow any array. This allows readonly arrays which is
  * generally what you want. If you need a mutable array use the
- * {@link MutableArray | `MutableArray`} type instead of the builtin `T[]` or
+ * {@linkcode MutableArray} type instead of the builtin `T[]` or
  * `Array` types. This allows us to be more explicit about intent.
  *
  * Consider being more specific if possible. You should generally try to use a
@@ -811,7 +811,7 @@ export type AnyArray = readonly unknown[];
 /**
  * Use this type to allow a mutable array of type `T`. Only use this if the
  * array can be soundly mutated. Otherwise you should be using
- * `readonly T[]` or {@link ReadonlyArray | `ReadonlyArray`}
+ * `readonly T[]` or {@linkcode ReadonlyArray}
  */
 export type MutableArray<T> = Array<T>;
 
@@ -834,9 +834,9 @@ export type AnyFunction = (...args: never) => unknown;
 /**
  * Use this type to allow any class, abstract class, or class-like constructor.
  *
- * See {@link AnyConcreteConstructor | `AnyConcreteConstructor`} if you cannot
+ * See {@linkcode AnyConcreteConstructor} if you cannot
  * allow abstract classes. Please also consider writing a comment
- * explaining why {@link AnyConcreteConstructor | `AnyConcreteConstructor`} is
+ * explaining why {@linkcode AnyConcreteConstructor} is
  * necessary.
  *
  * @example
@@ -856,7 +856,7 @@ export type AnyConstructor = abstract new (...args: never) => unknown;
  *
  * Use this type only when abstract classes would be problematic such as the
  * base type of a mixin. Please consider writing a comment explaining why.
- * See {@link AnyConstructor | `AnyConstructor`} to also allow abstract classes.
+ * See {@linkcode AnyConstructor} to also allow abstract classes.
  *
  * @example
  * ```ts
@@ -874,26 +874,26 @@ export type AnyConcreteConstructor = new (...args: never) => unknown;
 /**
  * This type is equivalent to `Promise<T>` but exists to give an explicit signal
  * that this is not a mistake. When Foundry accepts an asynchronous callback the
- * vast majority of the time it is best to use {@link MaybePromise | `MaybePromise`}.
+ * vast majority of the time it is best to use {@linkcode MaybePromise}.
  *
  * By doing it this way the maximum flexibility is given to the definer of the
  * callback. This is okay because typically asynchronous callbacks are simply
  * awaited, meaning that there's no noticeable difference between a `Promise`
- * and {@link MaybePromise | `MaybePromise`}. Even functions like
- * {@link Promise.allSettled | `Promise.allSettled`} function correctly
- * with {@link MaybePromise | `MaybePromise`}.
+ * and {@linkcode MaybePromise}. Even functions like
+ * {@linkcode Promise.allSettled} function correctly
+ * with {@linkcode MaybePromise}.
  *
- * Do not use this type or {@link MaybePromise | `MaybePromise`} for the return
+ * Do not use this type or {@linkcode MaybePromise} for the return
  * type of asynchronous methods on classes. For example for
  * {@link foundry.abstract.Document._preCreate | `Document#_preCreate`} the typing
  * should be `Promise<void>` and not this type. In theory we could use
- * {@link MaybePromise | `MaybePromise`} in this context as well but this seems
+ * {@linkcode MaybePromise} in this context as well but this seems
  * more likely to be confusing than to be helpful.
  *
  * Use this type only in the rare case where a callback's return type must be a
  * `Promise`, for example if `promise.then` or `promise.catch` is explicitly
  * called. Please also writing a comment explaining why
- * {@link MaybePromise | `MaybePromise`} is problematic in this context.
+ * {@linkcode MaybePromise} is problematic in this context.
  */
 export type MustBePromise<T> = Promise<T>;
 
@@ -903,7 +903,7 @@ export type MustBePromise<T> = Promise<T>;
  * callback instead.
  *
  * If it is not sound to provide a non-Promise for whatever reason, see
- * {@link MustBePromise | `MustBePromise`} to declare this more explicitly than simply writing
+ * {@linkcode MustBePromise} to declare this more explicitly than simply writing
  * `Promise<T>`.
  *
  * This should generally not be used in asynchronous methods. For example in
@@ -937,7 +937,7 @@ export type NonNullish = {};
  *
  * Use instead of `{}` when you want to represent an empty object. `{}` actually
  * allows any type that is not `null` or `undefined`. see
- * {@link NonNullish | `NonNullish`} if you want that behavior.
+ * {@linkcode NonNullish} if you want that behavior.
  */
 // It would be unsound to merge into so an interface is not used.
 export type EmptyObject = Record<string, never>;
@@ -1044,7 +1044,7 @@ type DropFirst<T extends AnyArray> = T extends [infer _1, ...infer V] ? V : T;
  *
  * The type `{}` isn't actually the type for an empty object. It allows anything except
  * `null`/`undefined` which is why `{} | null | undefined` allows anything to be assigned to it.
- * See {@link NonNullish | `NonNullish`} for a further explanation on why `{}` allows anything
+ * See {@linkcode NonNullish} for a further explanation on why `{}` allows anything
  * besides `null`/`undefined`.
  */
 export type LazyUnknown = NonNullish | null | undefined;
@@ -1092,7 +1092,7 @@ export type Coalesce<T, D, CoalesceType = undefined> = T extends CoalesceType ? 
 
 /**
  * Coalesces specifically `null | undefined`. Behaves like `??` does at runtime.
- * See {@link Coalesce | `Coalesce`}.
+ * See {@linkcode Coalesce}.
  */
 export type NullishCoalesce<T, D> = T extends null | undefined ? D : T;
 
@@ -1105,7 +1105,7 @@ interface EarlierHook {
 }
 
 /**
- * A hook that's valid to use in {@link AssumeHookRan | `AssumeHookRan`}
+ * A hook that's valid to use in {@linkcode AssumeHookRan}
  */
 export type InitializationHook = keyof EarlierHook;
 

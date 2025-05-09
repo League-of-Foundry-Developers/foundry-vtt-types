@@ -412,7 +412,7 @@ declare global {
     set _highlight(state);
   }
 
-  /** @deprecated {@link PlaceablesLayer.LayerOptions | `PlaceablesLayer.LayerOptions`} */
+  /** @deprecated Replaced with {@linkcode PlaceablesLayer.LayerOptions} */
   export import PlaceablesLayerOptions = PlaceablesLayer.LayerOptions;
 
   namespace PlaceablesLayer {

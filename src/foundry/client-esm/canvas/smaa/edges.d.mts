@@ -1,7 +1,7 @@
 import type { IntentionalPartial, RequiredProps } from "fvtt-types/utils";
 
 /**
- * The edge detection filter for {@link foundry.canvas.SMAAFilter | `foundry.canvas.SMAAFilter`}.
+ * The edge detection filter for {@linkcode foundry.canvas.SMAAFilter}.
  */
 declare class SMAAEdgeDetectionFilter extends PIXI.Filter {
   constructor(config: SMAAEdgeDetectionFilter.Config);

@@ -296,16 +296,16 @@ declare namespace BaseCombatant {
    */
   type Properties = SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseCombatant.SubType | `BaseCombatant.SubType`} */
+  /** @deprecated Replaced with {@linkcode BaseCombatant.SubType} */
   type TypeNames = SubType;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseCombatant.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseCombatant.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseCombatant.CreateData | `BaseCombatant.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseCombatant.CreateData}
    */
   type ConstructorData = BaseCombatant.CreateData;
 }

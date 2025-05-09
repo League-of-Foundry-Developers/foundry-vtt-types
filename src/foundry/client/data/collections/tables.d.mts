@@ -6,8 +6,8 @@ declare global {
    * The singleton collection of RollTable documents which exist within the active World.
    * This Collection is accessible within the Game object as game.tables.
    *
-   * @see {@link RollTable | `RollTable`} The RollTable document
-   * @see {@link RollTableDirectory | `RollTableDirectory`} The RollTableDirectory sidebar directory
+   * @see {@linkcode RollTable} The RollTable document
+   * @see {@linkcode RollTableDirectory} The RollTableDirectory sidebar directory
    */
   class RollTables extends WorldCollection<RollTable.ImplementationClass, "RollTables"> {
     static documentName: "RollTable";

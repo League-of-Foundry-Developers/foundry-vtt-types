@@ -2,7 +2,7 @@ import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
-   * The shader used by {@link RegionMesh | `RegionMesh`}.
+   * The shader used by {@linkcode RegionMesh}.
    */
   class RegionShader extends AbstractBaseShader {
     /**

@@ -25,13 +25,13 @@ declare global {
 
     /**
      * The implementation of the `RegionBehavior` document instance configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `RegionBehavior` document configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -77,12 +77,12 @@ declare global {
     /**
      * Allowed subtypes of `RegionBehavior`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
-     * under {@link CONFIG.RegionBehavior.dataModels | `CONFIG.RegionBehavior.dataModels`}. This corresponds to
-     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     * under {@linkcode CONFIG.RegionBehavior.dataModels}. This corresponds to
+     * fvtt-type's {@linkcode DataModelConfig}.
      *
      * Subtypes can also be registered through a `template.json` though this is discouraged.
-     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
-     * {@link DataConfig | `DataConfig`}.
+     * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
+     * {@linkcode DataConfig}.
      */
     type SubType = Game.Model.TypeNames<"RegionBehavior">;
 
@@ -188,20 +188,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link RegionBehavior.Source | `RegionBehavior.Source`}
+     * @deprecated Replaced with {@linkcode RegionBehavior.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link RegionBehavior.create | `RegionBehavior.create`}
+     * The data necessary to create a document. Used in places like {@linkcode RegionBehavior.create}
      * and {@link RegionBehavior | `new RegionBehavior(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -211,7 +211,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link RegionBehavior.name | `RegionBehavior#name`}.
      *
-     * This is data transformed from {@link RegionBehavior.Source | `RegionBehavior.Source`} and turned into more
+     * This is data transformed from {@linkcode RegionBehavior.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -225,10 +225,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link RegionBehavior | `RegionBehavior`}. This is the source of truth for how an RegionBehavior document
+     * The schema for {@linkcode RegionBehavior}. This is the source of truth for how an RegionBehavior document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link RegionBehavior | `RegionBehavior`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode RegionBehavior}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -270,7 +270,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
+       * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -294,19 +294,19 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<RegionBehavior.UpdateData, RegionBehavior.Parent> {}
 
-      /** Operation for {@link RegionBehavior.createDocuments | `RegionBehavior.createDocuments`} */
+      /** Operation for {@linkcode RegionBehavior.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<RegionBehavior.Database.Create<Temporary>> {}
 
-      /** Operation for {@link RegionBehavior.updateDocuments | `RegionBehavior.updateDocuments`} */
+      /** Operation for {@linkcode RegionBehavior.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<RegionBehavior.Database.Update> {}
 
-      /** Operation for {@link RegionBehavior.deleteDocuments | `RegionBehavior.deleteDocuments`} */
+      /** Operation for {@linkcode RegionBehavior.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<RegionBehavior.Database.Delete> {}
 
-      /** Operation for {@link RegionBehavior.create | `RegionBehavior.create`} */
+      /** Operation for {@linkcode RegionBehavior.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<RegionBehavior.Database.Create<Temporary>> {}
 
@@ -315,7 +315,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link RegionBehavior.get | `RegionBehavior.get`} */
+      /** Options for {@linkcode RegionBehavior.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link RegionBehavior._preCreate | `RegionBehavior#_preCreate`} */
@@ -324,7 +324,7 @@ declare global {
       /** Options for {@link RegionBehavior._onCreate | `RegionBehavior#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link RegionBehavior._preCreateOperation | `RegionBehavior._preCreateOperation`} */
+      /** Operation for {@linkcode RegionBehavior._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RegionBehavior.Database.Create> {}
 
       /** Operation for {@link RegionBehavior._onCreateOperation | `RegionBehavior#_onCreateOperation`} */
@@ -336,7 +336,7 @@ declare global {
       /** Options for {@link RegionBehavior._onUpdate | `RegionBehavior#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link RegionBehavior._preUpdateOperation | `RegionBehavior._preUpdateOperation`} */
+      /** Operation for {@linkcode RegionBehavior._preUpdateOperation} */
       interface PreUpdateOperation extends RegionBehavior.Database.Update {}
 
       /** Operation for {@link RegionBehavior._onUpdateOperation | `RegionBehavior._preUpdateOperation`} */
@@ -354,13 +354,13 @@ declare global {
       /** Options for {@link RegionBehavior._onDeleteOperation | `RegionBehavior#_onDeleteOperation`} */
       interface OnDeleteOperation extends RegionBehavior.Database.Delete {}
 
-      /** Context for {@link RegionBehavior._onDeleteOperation | `RegionBehavior._onDeleteOperation`} */
+      /** Context for {@linkcode RegionBehavior._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<RegionBehavior.Parent> {}
 
-      /** Context for {@link RegionBehavior._onCreateDocuments | `RegionBehavior._onCreateDocuments`} */
+      /** Context for {@linkcode RegionBehavior._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<RegionBehavior.Parent> {}
 
-      /** Context for {@link RegionBehavior._onUpdateDocuments | `RegionBehavior._onUpdateDocuments`} */
+      /** Context for {@linkcode RegionBehavior._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<RegionBehavior.Parent> {}
 
       /**
@@ -405,28 +405,28 @@ declare global {
     }
 
     /**
-     * @deprecated {@link RegionBehavior.Database | `RegionBehavior.DatabaseOperation`}
+     * @deprecated Replaced with {@link RegionBehavior.Database | `RegionBehavior.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<RegionBehavior.Implementation> {}
 
     /**
-     * @deprecated {@link RegionBehavior.SubType | `RegionBehavior.SubType`}
+     * @deprecated Replaced with {@linkcode RegionBehavior.SubType}
      */
     type TypeNames = RegionBehavior.SubType;
 
     /**
-     * @deprecated {@link RegionBehavior.CreateData | `RegionBehavior.CreateData`}
+     * @deprecated Replaced with {@linkcode RegionBehavior.CreateData}
      */
     interface ConstructorData extends RegionBehavior.CreateData {}
 
     /**
-     * @deprecated {@link RegionBehavior.implementation | `RegionBehavior.ImplementationClass`}
+     * @deprecated Replaced with {@link RegionBehavior.implementation | `RegionBehavior.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link RegionBehavior.Implementation | `RegionBehavior.Implementation`}
+     * @deprecated Replaced with {@linkcode RegionBehavior.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }

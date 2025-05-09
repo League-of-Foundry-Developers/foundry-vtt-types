@@ -327,16 +327,16 @@ declare namespace BaseCombat {
    */
   type Properties = SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseCombat.SubType | `BaseCombat.SubType`} */
+  /** @deprecated Replaced with {@linkcode BaseCombat.SubType} */
   type TypeNames = SubType;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseCombat.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseCombat.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseCombat.CreateData | `BaseCombat.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseCombat.CreateData}
    */
   type ConstructorData = BaseCombat.CreateData;
 }

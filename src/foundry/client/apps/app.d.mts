@@ -14,7 +14,7 @@ declare global {
   const MIN_WINDOW_WIDTH: 200;
   const MIN_WINDOW_HEIGHT: 50;
 
-  /** @deprecated {@link Application.Options | `Application.Options`} */
+  /** @deprecated Replaced with {@linkcode Application.Options} */
   type ApplicationOptions = Application.Options;
 
   /**
@@ -76,16 +76,16 @@ declare global {
 
     /**
      * Track the render state of the Application
-     * @defaultValue {@link Application.RENDER_STATES.NONE | `Application.RENDER_STATES.NONE`}
-     * @see {@link Application.RENDER_STATES | `Application.RENDER_STATES`}
+     * @defaultValue {@linkcode Application.RENDER_STATES.NONE}
+     * @see {@linkcode Application.RENDER_STATES}
      */
     protected _state: Application.RenderState;
 
     /**
      * The prior render state of this Application.
      * This allows for rendering logic to understand if the application is being rendered for the first time.
-     * @defaultValue {@link Application.RENDER_STATES.NONE | `Application.RENDER_STATES.NONE`}
-     * @see {@link Application.RENDER_STATES | `Application.RENDER_STATES`}
+     * @defaultValue {@linkcode Application.RENDER_STATES.NONE}
+     * @see {@linkcode Application.RENDER_STATES}
      */
     protected _priorState: Application.RenderState;
 
@@ -97,7 +97,7 @@ declare global {
 
     /**
      * The sequence of rendering states that track the Application life-cycle.
-     * @see {@link Application.RenderState | `Application.RenderState`}
+     * @see {@linkcode Application.RenderState}
      */
     static RENDER_STATES: Readonly<{
       CLOSING: -2;
@@ -269,7 +269,7 @@ declare global {
     protected _getHeaderButtons(): Application.HeaderButton[];
 
     /**
-     * Create a {@link ContextMenu | `ContextMenu`} for this Application.
+     * Create a {@linkcode ContextMenu} for this Application.
      * @param html - The Application's HTML.
      * @internal
      */
@@ -599,7 +599,7 @@ declare global {
     }
 
     /**
-     * @see {@link Application.RENDER_STATES | `Application.RENDER_STATES`}
+     * @see {@linkcode Application.RENDER_STATES}
      */
     type RenderState = ValueOf<typeof Application.RENDER_STATES>;
   }

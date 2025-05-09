@@ -25,13 +25,13 @@ declare global {
 
     /**
      * The implementation of the `Scene` document instance configured through `CONFIG.Scene.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredScene | `fvtt-types/configuration/ConfiguredScene`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredScene | `fvtt-types/configuration/ConfiguredScene`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<"Scene">;
 
     /**
      * The implementation of the `Scene` document configured through `CONFIG.Scene.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<"Scene">;
 
@@ -210,20 +210,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link Scene.Source | `Scene.Source`}
+     * @deprecated Replaced with {@linkcode Scene.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link Scene.create | `Scene.create`}
+     * The data necessary to create a document. Used in places like {@linkcode Scene.create}
      * and {@link Scene | `new Scene(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -233,7 +233,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Scene.name | `Scene#name`}.
      *
-     * This is data transformed from {@link Scene.Source | `Scene.Source`} and turned into more
+     * This is data transformed from {@linkcode Scene.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -247,10 +247,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link Scene | `Scene`}. This is the source of truth for how an Scene document
+     * The schema for {@linkcode Scene}. This is the source of truth for how an Scene document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link Scene | `Scene`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode Scene}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -295,7 +295,7 @@ declare global {
 
       /**
        * An image or video file that provides the background texture for the scene.
-       * @defaultValue see {@link TextureData | `TextureData`}
+       * @defaultValue see {@linkcode TextureData}
        */
       background: TextureData;
 
@@ -563,7 +563,7 @@ declare global {
 
       /**
        * An object which configures ownership of this Scene
-       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
+       * @defaultValue see {@linkcode fields.DocumentOwnershipField}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -575,7 +575,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
+       * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -598,17 +598,17 @@ declare global {
         animateDarkness?: number;
       }
 
-      /** Operation for {@link Scene.createDocuments | `Scene.createDocuments`} */
+      /** Operation for {@linkcode Scene.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Scene.Database.Create<Temporary>> {}
 
-      /** Operation for {@link Scene.updateDocuments | `Scene.updateDocuments`} */
+      /** Operation for {@linkcode Scene.updateDocuments} */
       interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Scene.Database.Update> {}
 
-      /** Operation for {@link Scene.deleteDocuments | `Scene.deleteDocuments`} */
+      /** Operation for {@linkcode Scene.deleteDocuments} */
       interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Scene.Database.Delete> {}
 
-      /** Operation for {@link Scene.create | `Scene.create`} */
+      /** Operation for {@linkcode Scene.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Scene.Database.Create<Temporary>> {}
 
@@ -617,7 +617,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link Scene.get | `Scene.get`} */
+      /** Options for {@linkcode Scene.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link Scene._preCreate | `Scene#_preCreate`} */
@@ -626,7 +626,7 @@ declare global {
       /** Options for {@link Scene._onCreate | `Scene#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link Scene._preCreateOperation | `Scene._preCreateOperation`} */
+      /** Operation for {@linkcode Scene._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Scene.Database.Create> {}
 
       /** Operation for {@link Scene._onCreateOperation | `Scene#_onCreateOperation`} */
@@ -638,7 +638,7 @@ declare global {
       /** Options for {@link Scene._onUpdate | `Scene#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link Scene._preUpdateOperation | `Scene._preUpdateOperation`} */
+      /** Operation for {@linkcode Scene._preUpdateOperation} */
       interface PreUpdateOperation extends Scene.Database.Update {}
 
       /** Operation for {@link Scene._onUpdateOperation | `Scene._preUpdateOperation`} */
@@ -656,13 +656,13 @@ declare global {
       /** Options for {@link Scene._onDeleteOperation | `Scene#_onDeleteOperation`} */
       interface OnDeleteOperation extends Scene.Database.Delete {}
 
-      /** Context for {@link Scene._onDeleteOperation | `Scene._onDeleteOperation`} */
+      /** Context for {@linkcode Scene._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<Scene.Parent> {}
 
-      /** Context for {@link Scene._onCreateDocuments | `Scene._onCreateDocuments`} */
+      /** Context for {@linkcode Scene._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<Scene.Parent> {}
 
-      /** Context for {@link Scene._onUpdateDocuments | `Scene._onUpdateDocuments`} */
+      /** Context for {@linkcode Scene._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<Scene.Parent> {}
 
       /**
@@ -826,23 +826,23 @@ declare global {
     interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}
 
     /**
-     * @deprecated {@link Scene.Database | `Scene.DatabaseOperation`}
+     * @deprecated Replaced with {@link Scene.Database | `Scene.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Scene.Implementation> {}
 
     /**
-     * @deprecated {@link Scene.CreateData | `Scene.CreateData`}
+     * @deprecated Replaced with {@linkcode Scene.CreateData}
      */
     interface ConstructorData extends Scene.CreateData {}
 
     /**
-     * @deprecated {@link Scene.implementation | `Scene.ImplementationClass`}
+     * @deprecated Replaced with {@link Scene.implementation | `Scene.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Scene.Implementation | `Scene.Implementation`}
+     * @deprecated Replaced with {@linkcode Scene.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -850,8 +850,8 @@ declare global {
   /**
    * The client-side Scene document which extends the common BaseScene model.
    *
-   * @see {@link Scenes | `Scenes`}            The world-level collection of Scene documents
-   * @see {@link SceneConfig | `SceneConfig`}       The Scene configuration application
+   * @see {@linkcode Scenes}            The world-level collection of Scene documents
+   * @see {@linkcode SceneConfig}       The Scene configuration application
    *
    */
   class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
@@ -1096,6 +1096,6 @@ declare global {
     ): Promise<Scene.Implementation>;
   }
 
-  /** @deprecated {@link Scene.Dimensions | `Scene.Dimensions`} */
+  /** @deprecated Replaced with {@linkcode Scene.Dimensions} */
   type SceneDimensions = Scene.Dimensions;
 }

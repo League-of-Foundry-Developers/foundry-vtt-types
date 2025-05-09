@@ -66,7 +66,7 @@ declare global {
       format: PIXI.FORMATS;
     }>;
 
-    /** Options for the constructor of {@link TextureExtractor | `TextureExtractor`} */
+    /** Options for the constructor of {@linkcode TextureExtractor} */
     interface ConstructorOptions extends _ConstructorOptions {}
 
     /** @internal */

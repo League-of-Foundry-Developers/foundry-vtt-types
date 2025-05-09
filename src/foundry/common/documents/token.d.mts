@@ -390,12 +390,12 @@ declare namespace BaseToken {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseToken.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseToken.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseToken.CreateData | `BaseToken.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseToken.CreateData}
    */
   type ConstructorData = BaseToken.CreateData;
 }

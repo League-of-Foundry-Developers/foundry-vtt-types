@@ -93,12 +93,12 @@ declare global {
     totalCost: number;
 
     /**
-     * The current state of the Ruler (one of {@link Ruler.States | `Ruler.States`}).
+     * The current state of the Ruler (one of {@linkcode Ruler.States}).
      */
     get state(): Ruler.STATES;
 
     /**
-     * The current state of the Ruler (one of {@link Ruler.States | `Ruler.States`}).
+     * The current state of the Ruler (one of {@linkcode Ruler.States}).
      * @defaultValue `Ruler.STATES.INACTIVE`
      */
     protected _state: Ruler.STATES;
@@ -308,35 +308,35 @@ declare global {
     /**
      * Handle the beginning of a new Ruler measurement workflow
      * @param event - The drag start event
-     * @see {@link Canvas.#onDragLeftStart | `Canvas.#onDragLeftStart`}
+     * @see {@linkcode Canvas.#onDragLeftStart}
      */
     protected _onDragStart(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle left-click events on the Canvas during Ruler measurement.
      * @param event - The pointer-down event
-     * @see {@link Canvas._onClickLeft | `Canvas._onClickLeft`}
+     * @see {@linkcode Canvas._onClickLeft}
      */
     protected _onClickLeft(event: PIXI.FederatedEvent): void;
 
     /**
      * Handle right-click events on the Canvas during Ruler measurement.
      * @param event - The pointer-down event
-     * @see {@link Canvas._onClickRight | `Canvas._onClickRight`}
+     * @see {@linkcode Canvas._onClickRight}
      */
     protected _onClickRight(event: PIXI.FederatedEvent): void;
 
     /**
      * Continue a Ruler measurement workflow for left-mouse movements on the Canvas.
      * @param event - The mouse move event
-     * @see {@link Canvas.#onDragLeftMove | `Canvas.#onDragLeftMove`}
+     * @see {@linkcode Canvas.#onDragLeftMove}
      */
     protected _onMouseMove(event: PIXI.FederatedEvent): void;
 
     /**
      * Conclude a Ruler measurement workflow by releasing the left-mouse button.
      * @param event - The pointer-up event
-     * @see {@link Canvas.#onDragLeftDrop | `Canvas.#onDragLeftDrop`}
+     * @see {@linkcode Canvas.#onDragLeftDrop}
      */
     protected _onMouseUp(event: PIXI.FederatedEvent): void;
 

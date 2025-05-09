@@ -24,13 +24,13 @@ declare global {
 
     /**
      * The implementation of the `JournalEntry` document instance configured through `CONFIG.JournalEntry.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredJournalEntry | `fvtt-types/configuration/ConfiguredJournalEntry`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredJournalEntry | `fvtt-types/configuration/ConfiguredJournalEntry`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `JournalEntry` document configured through `CONFIG.JournalEntry.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -191,20 +191,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link JournalEntry.Source | `JournalEntry.Source`}
+     * @deprecated Replaced with {@linkcode JournalEntry.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link JournalEntry.create | `JournalEntry.create`}
+     * The data necessary to create a document. Used in places like {@linkcode JournalEntry.create}
      * and {@link JournalEntry | `new JournalEntry(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -214,7 +214,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link JournalEntry.name | `JournalEntry#name`}.
      *
-     * This is data transformed from {@link JournalEntry.Source | `JournalEntry.Source`} and turned into more
+     * This is data transformed from {@linkcode JournalEntry.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -228,10 +228,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link JournalEntry | `JournalEntry`}. This is the source of truth for how an JournalEntry document
+     * The schema for {@linkcode JournalEntry}. This is the source of truth for how an JournalEntry document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link JournalEntry | `JournalEntry`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode JournalEntry}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -269,7 +269,7 @@ declare global {
 
       /**
        * An object which configures ownership of this JournalEntry
-       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
+       * @defaultValue see {@linkcode fields.DocumentOwnershipField}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -281,7 +281,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
+       * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -305,19 +305,19 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<JournalEntry.UpdateData, JournalEntry.Parent> {}
 
-      /** Operation for {@link JournalEntry.createDocuments | `JournalEntry.createDocuments`} */
+      /** Operation for {@linkcode JournalEntry.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<JournalEntry.Database.Create<Temporary>> {}
 
-      /** Operation for {@link JournalEntry.updateDocuments | `JournalEntry.updateDocuments`} */
+      /** Operation for {@linkcode JournalEntry.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<JournalEntry.Database.Update> {}
 
-      /** Operation for {@link JournalEntry.deleteDocuments | `JournalEntry.deleteDocuments`} */
+      /** Operation for {@linkcode JournalEntry.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<JournalEntry.Database.Delete> {}
 
-      /** Operation for {@link JournalEntry.create | `JournalEntry.create`} */
+      /** Operation for {@linkcode JournalEntry.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<JournalEntry.Database.Create<Temporary>> {}
 
@@ -326,7 +326,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link JournalEntry.get | `JournalEntry.get`} */
+      /** Options for {@linkcode JournalEntry.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link JournalEntry._preCreate | `JournalEntry#_preCreate`} */
@@ -335,7 +335,7 @@ declare global {
       /** Options for {@link JournalEntry._onCreate | `JournalEntry#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link JournalEntry._preCreateOperation | `JournalEntry._preCreateOperation`} */
+      /** Operation for {@linkcode JournalEntry._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<JournalEntry.Database.Create> {}
 
       /** Operation for {@link JournalEntry._onCreateOperation | `JournalEntry#_onCreateOperation`} */
@@ -347,7 +347,7 @@ declare global {
       /** Options for {@link JournalEntry._onUpdate | `JournalEntry#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link JournalEntry._preUpdateOperation | `JournalEntry._preUpdateOperation`} */
+      /** Operation for {@linkcode JournalEntry._preUpdateOperation} */
       interface PreUpdateOperation extends JournalEntry.Database.Update {}
 
       /** Operation for {@link JournalEntry._onUpdateOperation | `JournalEntry._preUpdateOperation`} */
@@ -365,13 +365,13 @@ declare global {
       /** Options for {@link JournalEntry._onDeleteOperation | `JournalEntry#_onDeleteOperation`} */
       interface OnDeleteOperation extends JournalEntry.Database.Delete {}
 
-      /** Context for {@link JournalEntry._onDeleteOperation | `JournalEntry._onDeleteOperation`} */
+      /** Context for {@linkcode JournalEntry._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<JournalEntry.Parent> {}
 
-      /** Context for {@link JournalEntry._onCreateDocuments | `JournalEntry._onCreateDocuments`} */
+      /** Context for {@linkcode JournalEntry._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<JournalEntry.Parent> {}
 
-      /** Context for {@link JournalEntry._onUpdateDocuments | `JournalEntry._onUpdateDocuments`} */
+      /** Context for {@linkcode JournalEntry._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<JournalEntry.Parent> {}
 
       /**
@@ -459,23 +459,23 @@ declare global {
     }
 
     /**
-     * @deprecated {@link JournalEntry.Database | `JournalEntry.DatabaseOperation`}
+     * @deprecated Replaced with {@link JournalEntry.Database | `JournalEntry.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<JournalEntry.Implementation> {}
 
     /**
-     * @deprecated {@link JournalEntry.CreateData | `JournalEntry.CreateData`}
+     * @deprecated Replaced with {@linkcode JournalEntry.CreateData}
      */
     interface ConstructorData extends JournalEntry.CreateData {}
 
     /**
-     * @deprecated {@link JournalEntry.implementation | `JournalEntry.ImplementationClass`}
+     * @deprecated Replaced with {@link JournalEntry.implementation | `JournalEntry.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link JournalEntry.Implementation | `JournalEntry.Implementation`}
+     * @deprecated Replaced with {@linkcode JournalEntry.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -483,8 +483,8 @@ declare global {
   /**
    * The client-side JournalEntry document which extends the common BaseJournalEntry model.
    *
-   * @see {@link Journal | `Journal`}                  The world-level collection of JournalEntry documents
-   * @see {@link JournalSheet | `JournalSheet`}          The JournalEntry configuration application
+   * @see {@linkcode Journal}                  The world-level collection of JournalEntry documents
+   * @see {@linkcode JournalSheet}          The JournalEntry configuration application
    */
   class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
     /**

@@ -333,17 +333,17 @@ declare namespace BaseItem {
   interface Properties extends SchemaField.InitializedData<Schema> {}
 
   /**
-   * @deprecated {@link BaseItem.SubType | `BaseItem.SubType`}
+   * @deprecated Replaced with {@linkcode BaseItem.SubType}
    */
   type TypeNames = Game.Model.TypeNames<"Item">;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseItem.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseItem.Schema>`}
    */
   interface SchemaField extends foundry.data.fields.SchemaField<Schema> {}
 
   /**
-   * @deprecated {@link BaseItem.CreateData | `BaseItem.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseItem.CreateData}
    */
   interface ConstructorData extends SchemaField.CreateData<Schema> {}
 }

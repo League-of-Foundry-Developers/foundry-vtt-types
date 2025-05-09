@@ -71,7 +71,7 @@ declare global {
     interface AnyConstructor extends Identity<typeof AnyCanvasVisionMask> {}
 
     /**
-     * The sight part of {@link CanvasVisionContainer | `CanvasVisionContainer`}.
+     * The sight part of {@linkcode CanvasVisionContainer}.
      * The blend mode is MAX_COLOR.
      */
     interface CanvasVisionContainerSight extends PIXI.LegacyGraphics {
@@ -94,7 +94,7 @@ declare global {
     }
 
     /**
-     * The light part of {@link CanvasVisionContainer | `CanvasVisionContainer`}.
+     * The light part of {@linkcode CanvasVisionContainer}.
      * The blend mode is MAX_COLOR.
      */
     interface CanvasVisionContainerLight extends PIXI.LegacyGraphics {
@@ -144,7 +144,7 @@ declare global {
     }
 
     /**
-     * The sight part of {@link CanvasVisionContainer | `CanvasVisionContainer`}.
+     * The sight part of {@linkcode CanvasVisionContainer}.
      * The blend mode is ERASE.
      */
     interface CanvasVisionContainerDarkness extends PIXI.LegacyGraphics {

@@ -311,16 +311,16 @@ declare namespace BaseChatMessage {
    */
   type Properties = SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseChatMessage.SubType | `BaseChatMessage.SubType`} */
+  /** @deprecated Replaced with {@linkcode BaseChatMessage.SubType} */
   type TypeNames = SubType;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseChatMessage.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseChatMessage.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseChatMessage.CreateData | `BaseChatMessage.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseChatMessage.CreateData}
    */
   type ConstructorData = BaseChatMessage.CreateData;
 }

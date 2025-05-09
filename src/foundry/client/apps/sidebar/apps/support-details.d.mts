@@ -120,7 +120,7 @@ declare global {
   }
 
   /**
-   * @deprecated {@link SupportDetails.ReportData | `SupportDetails.ReportData`}
+   * @deprecated Replaced with {@linkcode SupportDetails.ReportData}
    */
   type SupportReportData = SupportDetails.ReportData;
 }

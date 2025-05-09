@@ -3,10 +3,10 @@ import type { ValueOf } from "fvtt-types/utils";
 export { Tour };
 
 declare global {
-  /** @deprecated {@link Tour.Step | `Tour.Step`} */
+  /** @deprecated Replaced with {@linkcode Tour.Step} */
   type TourStep = Tour.Step;
 
-  /** @deprecated {@link Tour.Config | `Tour.Config`} */
+  /** @deprecated Replaced with {@linkcode Tour.Config} */
   type TourConfig = Tour.Config;
 
   namespace Tour {

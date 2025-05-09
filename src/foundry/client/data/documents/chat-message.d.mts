@@ -26,13 +26,13 @@ declare global {
 
     /**
      * The implementation of the `ChatMessage` document instance configured through `CONFIG.ChatMessage.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `ChatMessage` document configured through `CONFIG.ChatMessage.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -68,12 +68,12 @@ declare global {
     /**
      * Allowed subtypes of `ChatMessage`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
-     * under {@link CONFIG.ChatMessage.dataModels | `CONFIG.ChatMessage.dataModels`}. This corresponds to
-     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     * under {@linkcode CONFIG.ChatMessage.dataModels}. This corresponds to
+     * fvtt-type's {@linkcode DataModelConfig}.
      *
      * Subtypes can also be registered through a `template.json` though this is discouraged.
-     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
-     * {@link DataConfig | `DataConfig`}.
+     * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
+     * {@linkcode DataConfig}.
      */
     type SubType = Game.Model.TypeNames<"ChatMessage">;
 
@@ -179,20 +179,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link ChatMessage.Source | `ChatMessage.Source`}
+     * @deprecated Replaced with {@linkcode ChatMessage.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link ChatMessage.create | `ChatMessage.create`}
+     * The data necessary to create a document. Used in places like {@linkcode ChatMessage.create}
      * and {@link ChatMessage | `new ChatMessage(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -202,7 +202,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link ChatMessage.name | `ChatMessage#name`}.
      *
-     * This is data transformed from {@link ChatMessage.Source | `ChatMessage.Source`} and turned into more
+     * This is data transformed from {@linkcode ChatMessage.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -216,10 +216,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link ChatMessage | `ChatMessage`}. This is the source of truth for how an ChatMessage document
+     * The schema for {@linkcode ChatMessage}. This is the source of truth for how an ChatMessage document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link ChatMessage | `ChatMessage`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode ChatMessage}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -369,19 +369,19 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<ChatMessage.UpdateData, ChatMessage.Parent> {}
 
-      /** Operation for {@link ChatMessage.createDocuments | `ChatMessage.createDocuments`} */
+      /** Operation for {@linkcode ChatMessage.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<ChatMessage.Database.Create<Temporary>> {}
 
-      /** Operation for {@link ChatMessage.updateDocuments | `ChatMessage.updateDocuments`} */
+      /** Operation for {@linkcode ChatMessage.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<ChatMessage.Database.Update> {}
 
-      /** Operation for {@link ChatMessage.deleteDocuments | `ChatMessage.deleteDocuments`} */
+      /** Operation for {@linkcode ChatMessage.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<ChatMessage.Database.Delete> {}
 
-      /** Operation for {@link ChatMessage.create | `ChatMessage.create`} */
+      /** Operation for {@linkcode ChatMessage.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<ChatMessage.Database.Create<Temporary>> {}
 
@@ -390,7 +390,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link ChatMessage.get | `ChatMessage.get`} */
+      /** Options for {@linkcode ChatMessage.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link ChatMessage._preCreate | `ChatMessage#_preCreate`} */
@@ -399,7 +399,7 @@ declare global {
       /** Options for {@link ChatMessage._onCreate | `ChatMessage#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link ChatMessage._preCreateOperation | `ChatMessage._preCreateOperation`} */
+      /** Operation for {@linkcode ChatMessage._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<ChatMessage.Database.Create> {}
 
       /** Operation for {@link ChatMessage._onCreateOperation | `ChatMessage#_onCreateOperation`} */
@@ -411,7 +411,7 @@ declare global {
       /** Options for {@link ChatMessage._onUpdate | `ChatMessage#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link ChatMessage._preUpdateOperation | `ChatMessage._preUpdateOperation`} */
+      /** Operation for {@linkcode ChatMessage._preUpdateOperation} */
       interface PreUpdateOperation extends ChatMessage.Database.Update {}
 
       /** Operation for {@link ChatMessage._onUpdateOperation | `ChatMessage._preUpdateOperation`} */
@@ -429,13 +429,13 @@ declare global {
       /** Options for {@link ChatMessage._onDeleteOperation | `ChatMessage#_onDeleteOperation`} */
       interface OnDeleteOperation extends ChatMessage.Database.Delete {}
 
-      /** Context for {@link ChatMessage._onDeleteOperation | `ChatMessage._onDeleteOperation`} */
+      /** Context for {@linkcode ChatMessage._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<ChatMessage.Parent> {}
 
-      /** Context for {@link ChatMessage._onCreateDocuments | `ChatMessage._onCreateDocuments`} */
+      /** Context for {@linkcode ChatMessage._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<ChatMessage.Parent> {}
 
-      /** Context for {@link ChatMessage._onUpdateDocuments | `ChatMessage._onUpdateDocuments`} */
+      /** Context for {@linkcode ChatMessage._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<ChatMessage.Parent> {}
 
       /**
@@ -514,7 +514,7 @@ declare global {
     }
 
     /**
-     * @deprecated {@link ChatMessage.DatabaseOperation | `ChatMessage.DatabaseOperation`}
+     * @deprecated Replaced with {@linkcode ChatMessage.DatabaseOperation}
      */
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations
@@ -528,22 +528,22 @@ declare global {
     /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     /**
-     * @deprecated {@link ChatMessage.SubType | `ChatMessage.SubType`}
+     * @deprecated Replaced with {@linkcode ChatMessage.SubType}
      */
     type TypeNames = ChatMessage.SubType;
 
     /**
-     * @deprecated {@link ChatMessage.CreateData | `ChatMessage.CreateData`}
+     * @deprecated Replaced with {@linkcode ChatMessage.CreateData}
      */
     interface ConstructorData extends ChatMessage.CreateData {}
 
     /**
-     * @deprecated {@link ChatMessage.implementation | `ChatMessage.ImplementationClass`}
+     * @deprecated Replaced with {@link ChatMessage.implementation | `ChatMessage.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link ChatMessage.Implementation | `ChatMessage.Implementation`}
+     * @deprecated Replaced with {@linkcode ChatMessage.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -552,7 +552,7 @@ declare global {
    * The client-side ChatMessage document which extends the common BaseChatMessage abstraction.
    * Each ChatMessage document contains ChatMessageData which defines its data schema.
    *
-   * @see {@link Messages | `Messages`}                The world-level collection of ChatMessage documents
+   * @see {@linkcode Messages}                The world-level collection of ChatMessage documents
    *
    */
   class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.SubType> extends ClientDocumentMixin(

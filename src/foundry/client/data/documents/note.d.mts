@@ -26,13 +26,13 @@ declare global {
 
     /**
      * The implementation of the `NoteDocument` document instance configured through `CONFIG.Note.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredNoteDocument | `fvtt-types/configuration/ConfiguredNoteDocument`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredNoteDocument | `fvtt-types/configuration/ConfiguredNoteDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `NoteDocument` document configured through `CONFIG.Note.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -128,20 +128,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link NoteDocument.Source | `NoteDocument.Source`}
+     * @deprecated Replaced with {@linkcode NoteDocument.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link NoteDocument.create | `NoteDocument.create`}
+     * The data necessary to create a document. Used in places like {@linkcode NoteDocument.create}
      * and {@link NoteDocument | `new NoteDocument(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -151,7 +151,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link NoteDocument.name | `NoteDocument#name`}.
      *
-     * This is data transformed from {@link NoteDocument.Source | `NoteDocument.Source`} and turned into more
+     * This is data transformed from {@linkcode NoteDocument.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -165,10 +165,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link NoteDocument | `NoteDocument`}. This is the source of truth for how an NoteDocument document
+     * The schema for {@linkcode NoteDocument}. This is the source of truth for how an NoteDocument document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link NoteDocument | `NoteDocument`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode NoteDocument}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -327,19 +327,19 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<NoteDocument.UpdateData, NoteDocument.Parent> {}
 
-      /** Operation for {@link NoteDocument.createDocuments | `NoteDocument.createDocuments`} */
+      /** Operation for {@linkcode NoteDocument.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<NoteDocument.Database.Create<Temporary>> {}
 
-      /** Operation for {@link NoteDocument.updateDocuments | `NoteDocument.updateDocuments`} */
+      /** Operation for {@linkcode NoteDocument.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<NoteDocument.Database.Update> {}
 
-      /** Operation for {@link NoteDocument.deleteDocuments | `NoteDocument.deleteDocuments`} */
+      /** Operation for {@linkcode NoteDocument.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<NoteDocument.Database.Delete> {}
 
-      /** Operation for {@link NoteDocument.create | `NoteDocument.create`} */
+      /** Operation for {@linkcode NoteDocument.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<NoteDocument.Database.Create<Temporary>> {}
 
@@ -348,7 +348,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link NoteDocument.get | `NoteDocument.get`} */
+      /** Options for {@linkcode NoteDocument.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link NoteDocument._preCreate | `NoteDocument#_preCreate`} */
@@ -357,7 +357,7 @@ declare global {
       /** Options for {@link NoteDocument._onCreate | `NoteDocument#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link NoteDocument._preCreateOperation | `NoteDocument._preCreateOperation`} */
+      /** Operation for {@linkcode NoteDocument._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<NoteDocument.Database.Create> {}
 
       /** Operation for {@link NoteDocument._onCreateOperation | `NoteDocument#_onCreateOperation`} */
@@ -369,7 +369,7 @@ declare global {
       /** Options for {@link NoteDocument._onUpdate | `NoteDocument#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link NoteDocument._preUpdateOperation | `NoteDocument._preUpdateOperation`} */
+      /** Operation for {@linkcode NoteDocument._preUpdateOperation} */
       interface PreUpdateOperation extends NoteDocument.Database.Update {}
 
       /** Operation for {@link NoteDocument._onUpdateOperation | `NoteDocument._preUpdateOperation`} */
@@ -387,13 +387,13 @@ declare global {
       /** Options for {@link NoteDocument._onDeleteOperation | `NoteDocument#_onDeleteOperation`} */
       interface OnDeleteOperation extends NoteDocument.Database.Delete {}
 
-      /** Context for {@link NoteDocument._onDeleteOperation | `NoteDocument._onDeleteOperation`} */
+      /** Context for {@linkcode NoteDocument._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<NoteDocument.Parent> {}
 
-      /** Context for {@link NoteDocument._onCreateDocuments | `NoteDocument._onCreateDocuments`} */
+      /** Context for {@linkcode NoteDocument._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<NoteDocument.Parent> {}
 
-      /** Context for {@link NoteDocument._onUpdateDocuments | `NoteDocument._onUpdateDocuments`} */
+      /** Context for {@linkcode NoteDocument._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<NoteDocument.Parent> {}
 
       /**
@@ -438,23 +438,23 @@ declare global {
     }
 
     /**
-     * @deprecated {@link NoteDocument.Database | `NoteDocument.DatabaseOperation`}
+     * @deprecated Replaced with {@link NoteDocument.Database | `NoteDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<NoteDocument.Implementation> {}
 
     /**
-     * @deprecated {@link NoteDocument.CreateData | `NoteDocument.CreateData`}
+     * @deprecated Replaced with {@linkcode NoteDocument.CreateData}
      */
     interface ConstructorData extends NoteDocument.CreateData {}
 
     /**
-     * @deprecated {@link NoteDocument.implementation | `NoteDocument.ImplementationClass`}
+     * @deprecated Replaced with {@link NoteDocument.implementation | `NoteDocument.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link NoteDocument.Implementation | `NoteDocument.Implementation`}
+     * @deprecated Replaced with {@linkcode NoteDocument.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -463,8 +463,8 @@ declare global {
    * The client-side Note document which extends the common BaseNote model.
    * Each Note document contains NoteData which defines its data schema.
    *
-   * @see {@link Scene | `Scene`}               The Scene document type which contains Note embedded documents
-   * @see {@link NoteConfig | `NoteConfig`}          The Note configuration application
+   * @see {@linkcode Scene}               The Scene document type which contains Note embedded documents
+   * @see {@linkcode NoteConfig}          The Note configuration application
    */
   class NoteDocument extends CanvasDocumentMixin(foundry.documents.BaseNote) {
     /**

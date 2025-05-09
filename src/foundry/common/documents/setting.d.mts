@@ -241,12 +241,12 @@ declare namespace BaseSetting {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseSetting.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseSetting.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseSetting.CreateData | `BaseSetting.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseSetting.CreateData}
    */
   type ConstructorData = BaseSetting.CreateData;
 }

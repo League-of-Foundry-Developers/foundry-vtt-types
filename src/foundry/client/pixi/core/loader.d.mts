@@ -170,12 +170,12 @@ declare global {
       /**
        * The maximum number of textures that can be loaded concurrently
        * @remarks Can't be `null` becuase it is eventually passed to the constructor of
-       * {@link foundry.utils.Semaphore | `foundry.utils.Semaphore`}, with only a parameter deafult.
+       * {@linkcode foundry.utils.Semaphore}, with only a parameter deafult.
        */
       maxConcurrent: number;
     }>;
 
-    /** Options for {@link TextureLoader.loadSceneTextures | `TextureLoader.loadSceneTextures`}*/
+    /** Options for {@linkcode TextureLoader.loadSceneTextures}*/
     interface LoadSceneTexturesOptions extends _LoadSceneTexturesOptions {}
 
     /** @internal */
@@ -183,7 +183,7 @@ declare global {
       /**
        * The status message to display in the load bar
        * @remarks Allowed to be null or undefined because ultimately `HTMLElement.textContent = undefined`
-       * or `= null` (via {@link SceneNavigation.displayProgressBar | `SceneNavigation.displayProgressBar`}) does not error and simply blanks textContent.
+       * or `= null` (via {@linkcode SceneNavigation.displayProgressBar}) does not error and simply blanks textContent.
        */
       message: string;
 

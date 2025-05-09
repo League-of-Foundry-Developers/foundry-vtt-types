@@ -311,12 +311,12 @@ declare namespace BaseMeasuredTemplate {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseMeasuredTemplate.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseMeasuredTemplate.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseMeasuredTemplate.CreateData | `BaseMeasuredTemplate.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseMeasuredTemplate.CreateData}
    */
   type ConstructorData = BaseMeasuredTemplate.CreateData;
 }

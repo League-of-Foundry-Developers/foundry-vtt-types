@@ -1,7 +1,7 @@
 import type { MaybePromise } from "fvtt-types/utils";
 
 declare global {
-  /** @deprecated {@link WorldConfig.Options | `WorldConfig.Options`} */
+  /** @deprecated Replaced with {@linkcode WorldConfig.Options} */
   type WorldConfigOptions = WorldConfig.Options;
 
   /**

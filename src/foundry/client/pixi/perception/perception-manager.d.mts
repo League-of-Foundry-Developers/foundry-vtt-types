@@ -2,7 +2,7 @@ import type { InterfaceToObject, NullishProps } from "fvtt-types/utils";
 
 declare global {
   /**
-   * @deprecated {@link PerceptionManager.RenderFlags | `PerceptionManager.RenderFlags`}
+   * @deprecated Replaced with {@linkcode PerceptionManager.RenderFlags}
    */
   type PerceptionManagerFlags = PerceptionManager.RenderFlags;
 

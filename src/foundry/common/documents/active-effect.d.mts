@@ -327,16 +327,16 @@ declare namespace BaseActiveEffect {
    */
   type Properties = SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseActiveEffect.SubType | `BaseActiveEffect.SubType`} */
+  /** @deprecated Replaced with {@linkcode BaseActiveEffect.SubType} */
   type TypeNames = SubType;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseActiveEffect.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseActiveEffect.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseActiveEffect.CreateData | `BaseActiveEffect.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseActiveEffect.CreateData}
    */
   type ConstructorData = BaseActiveEffect.CreateData;
 }

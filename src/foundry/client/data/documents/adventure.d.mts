@@ -22,13 +22,13 @@ declare global {
 
     /**
      * The implementation of the `Adventure` document instance configured through `CONFIG.Adventure.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredAdventure | `fvtt-types/configuration/ConfiguredAdventure`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredAdventure | `fvtt-types/configuration/ConfiguredAdventure`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `Adventure` document configured through `CONFIG.Adventure.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -117,20 +117,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link Adventure.Source | `Adventure.Source`}
+     * @deprecated Replaced with {@linkcode Adventure.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link Adventure.create | `Adventure.create`}
+     * The data necessary to create a document. Used in places like {@linkcode Adventure.create}
      * and {@link Adventure | `new Adventure(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -140,7 +140,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Adventure.name | `Adventure#name`}.
      *
-     * This is data transformed from {@link Adventure.Source | `Adventure.Source`} and turned into more
+     * This is data transformed from {@linkcode Adventure.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -154,10 +154,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link Adventure | `Adventure`}. This is the source of truth for how an Adventure document
+     * The schema for {@linkcode Adventure}. This is the source of truth for how an Adventure document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link Adventure | `Adventure`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode Adventure}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -279,7 +279,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
+       * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -298,19 +298,19 @@ declare global {
       /** Options passed along in Update operations for Adventures */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Adventure.UpdateData, Adventure.Parent> {}
 
-      /** Operation for {@link Adventure.createDocuments | `Adventure.createDocuments`} */
+      /** Operation for {@linkcode Adventure.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Adventure.Database.Create<Temporary>> {}
 
-      /** Operation for {@link Adventure.updateDocuments | `Adventure.updateDocuments`} */
+      /** Operation for {@linkcode Adventure.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<Adventure.Database.Update> {}
 
-      /** Operation for {@link Adventure.deleteDocuments | `Adventure.deleteDocuments`} */
+      /** Operation for {@linkcode Adventure.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<Adventure.Database.Delete> {}
 
-      /** Operation for {@link Adventure.create | `Adventure.create`} */
+      /** Operation for {@linkcode Adventure.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Adventure.Database.Create<Temporary>> {}
 
@@ -319,7 +319,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link Adventure.get | `Adventure.get`} */
+      /** Options for {@linkcode Adventure.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link Adventure._preCreate | `Adventure#_preCreate`} */
@@ -328,7 +328,7 @@ declare global {
       /** Options for {@link Adventure._onCreate | `Adventure#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link Adventure._preCreateOperation | `Adventure._preCreateOperation`} */
+      /** Operation for {@linkcode Adventure._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Adventure.Database.Create> {}
 
       /** Operation for {@link Adventure._onCreateOperation | `Adventure#_onCreateOperation`} */
@@ -340,7 +340,7 @@ declare global {
       /** Options for {@link Adventure._onUpdate | `Adventure#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link Adventure._preUpdateOperation | `Adventure._preUpdateOperation`} */
+      /** Operation for {@linkcode Adventure._preUpdateOperation} */
       interface PreUpdateOperation extends Adventure.Database.Update {}
 
       /** Operation for {@link Adventure._onUpdateOperation | `Adventure._preUpdateOperation`} */
@@ -358,13 +358,13 @@ declare global {
       /** Options for {@link Adventure._onDeleteOperation | `Adventure#_onDeleteOperation`} */
       interface OnDeleteOperation extends Adventure.Database.Delete {}
 
-      /** Context for {@link Adventure._onDeleteOperation | `Adventure._onDeleteOperation`} */
+      /** Context for {@linkcode Adventure._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<Adventure.Parent> {}
 
-      /** Context for {@link Adventure._onCreateDocuments | `Adventure._onCreateDocuments`} */
+      /** Context for {@linkcode Adventure._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<Adventure.Parent> {}
 
-      /** Context for {@link Adventure._onUpdateDocuments | `Adventure._onUpdateDocuments`} */
+      /** Context for {@linkcode Adventure._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<Adventure.Parent> {}
 
       /**
@@ -425,23 +425,23 @@ declare global {
     }
 
     /**
-     * @deprecated {@link Adventure.Database | `Adventure.DatabaseOperation`}
+     * @deprecated Replaced with {@link Adventure.Database | `Adventure.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Adventure.Implementation> {}
 
     /**
-     * @deprecated {@link Adventure.CreateData | `Adventure.CreateData`}
+     * @deprecated Replaced with {@linkcode Adventure.CreateData}
      */
     interface ConstructorData extends Adventure.CreateData {}
 
     /**
-     * @deprecated {@link Adventure.implementation | `Adventure.ImplementationClass`}
+     * @deprecated Replaced with {@link Adventure.implementation | `Adventure.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Adventure.Implementation | `Adventure.Implementation`}
+     * @deprecated Replaced with {@linkcode Adventure.Implementation}
      */
     type ConfiguredInstance = Implementation;
 
@@ -458,7 +458,7 @@ declare global {
   }
 
   /**
-   * The client-side Adventure document which extends the common {@link foundry.documents.BaseAdventure | `foundry.documents.BaseAdventure`} model.
+   * The client-side Adventure document which extends the common {@linkcode foundry.documents.BaseAdventure} model.
    */
   class Adventure extends ClientDocumentMixin(foundry.documents.BaseAdventure) {
     /**
@@ -519,10 +519,10 @@ declare global {
     ): Promise<Adventure.Implementation>;
   }
 
-  /** @deprecated {@link Adventure.ImportData | `Adventure.ImportData`} */
+  /** @deprecated Replaced with {@linkcode Adventure.ImportData} */
   type AdventureImportData = Adventure.ImportData;
 
-  /** @deprecated {@link Adventure.ImportResult | `Adventure.ImportResult`} */
+  /** @deprecated Replaced with {@linkcode Adventure.ImportResult} */
   type AdventureImportResult = Adventure.ImportResult;
 }
 

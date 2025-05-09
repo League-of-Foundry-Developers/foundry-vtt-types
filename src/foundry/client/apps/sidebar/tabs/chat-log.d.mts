@@ -2,13 +2,13 @@ import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
-   * @deprecated {@link ChatLog.Options | `ChatLog.Options`}
+   * @deprecated Replaced with {@linkcode ChatLog.Options}
    */
   type ChatLogOptions = ChatLog.Options;
 
   /**
    * The sidebar directory which organizes and displays world-level ChatMessage documents.
-   * @see {@link Sidebar | `Sidebar`}
+   * @see {@linkcode Sidebar}
    */
   class ChatLog extends SidebarTab<ChatLog.Options> {
     constructor(options?: Partial<ChatLog.Options>);

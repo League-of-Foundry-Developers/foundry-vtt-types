@@ -315,12 +315,12 @@ declare namespace BaseTile {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseTileDocument.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseTileDocument.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseTile.CreateData | `BaseTile.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseTile.CreateData}
    */
   type ConstructorData = BaseTile.CreateData;
 }

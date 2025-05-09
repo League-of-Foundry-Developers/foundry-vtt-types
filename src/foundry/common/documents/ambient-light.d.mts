@@ -280,12 +280,12 @@ declare namespace BaseAmbientLight {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseAmbientLight.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseAmbientLight.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseAmbientLight.CreateData | `BaseAmbientLight.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseAmbientLight.CreateData}
    */
   type ConstructorData = BaseAmbientLight.CreateData;
 }

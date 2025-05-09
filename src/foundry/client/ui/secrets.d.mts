@@ -2,23 +2,23 @@ import type Document from "#common/abstract/document.d.mts";
 
 declare global {
   /**
-   * @deprecated {@link HTMLSecret.ContentCallback | `HTMLSecret.ContentCallback`}
+   * @deprecated Replaced with {@linkcode HTMLSecret.ContentCallback}
    */
   export import HTMLSecretContentCallback = HTMLSecret.ContentCallback;
 
   /**
-   * @deprecated {@link HTMLSecret.UpdateCallback | `HTMLSecret.UpdateCallback`}
+   * @deprecated Replaced with {@linkcode HTMLSecret.UpdateCallback}
    */
   export import HTMLSecretUpdateCallback = HTMLSecret.UpdateCallback;
 
   /**
-   * @deprecated {@link HTMLSecret.Configuration | `HTMLSecret.Configuration`}
+   * @deprecated Replaced with {@linkcode HTMLSecret.Configuration}
    */
   export import HTMLSecretConfiguration = HTMLSecret.Configuration;
 
   /**
    * A composable class for managing functionality for secret blocks within DocumentSheets.
-   * @see {@link DocumentSheet | `DocumentSheet`}
+   * @see {@linkcode DocumentSheet}
    * @example Activate secret revealing functionality within a certain block of content.
    * ```js
    * const secrets = new HTMLSecret({

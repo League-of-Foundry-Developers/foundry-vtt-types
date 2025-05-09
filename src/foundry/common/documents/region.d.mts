@@ -316,12 +316,12 @@ declare namespace BaseRegion {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseRegionDocument.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseRegionDocument.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseRegion.CreateData | `BaseRegionDocument.CreateData`}
+   * @deprecated Replaced with {@link BaseRegion.CreateData | `BaseRegionDocument.CreateData`}
    */
   type ConstructorData = BaseRegion.CreateData;
 }

@@ -4,7 +4,7 @@ import type Document from "#common/abstract/document.d.mts";
 declare global {
   /**
    * The singleton collection of FogExploration documents which exist within the active World.
-   * @see {@link FogExploration | `FogExploration`} The FogExploration document
+   * @see {@linkcode FogExploration} The FogExploration document
    */
   class FogExplorations extends WorldCollection<FogExploration.ImplementationClass, "FogExplorations"> {
     static documentName: "FogExploration";

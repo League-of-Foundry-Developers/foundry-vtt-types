@@ -4,12 +4,12 @@ import type { DatabaseCreateOperation } from "#common/abstract/_types.d.mts";
 
 declare global {
   /**
-   * @deprecated {@link CompendiumCollection.ManageCompendiumRequest | `CompendiumCollection.ManageCompendiumRequest`}
+   * @deprecated Replaced with {@linkcode CompendiumCollection.ManageCompendiumRequest}
    */
   type ManageCompendiumRequest = CompendiumCollection.ManageCompendiumRequest;
 
   /**
-   * @deprecated {@link CompendiumCollection.ManageCompendiumResponse | `CompendiumCollection.ManageCompendiumResponse`}
+   * @deprecated Replaced with {@linkcode CompendiumCollection.ManageCompendiumResponse}
    */
   type ManageCompendiumResponse = CompendiumCollection.ManageCompendiumResponse;
 
@@ -247,7 +247,7 @@ declare global {
     /**
      * Fully import the contents of a Compendium pack into a World folder.
      * @param options    - Options which modify the import operation. Additional options are forwarded to
-     *                     {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@link Document.createDocuments | `Document.createDocuments`}
+     *                     {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@linkcode Document.createDocuments}
      *                     (default: `{}`)
      * @returns The imported Documents, now existing within the World
      */
@@ -466,7 +466,7 @@ interface ImportAllOptions {
   folderName?: string | undefined;
 
   /**
-   * Additional options forwarded to {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@link Document.createDocuments | `Document.createDocuments`}
+   * Additional options forwarded to {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@linkcode Document.createDocuments}
    * @defaultValue `{}`
    */
   options?: (Document.ModificationContext<Document.Any | null> & WorldCollection.FromCompendiumOptions) | undefined;

@@ -25,13 +25,13 @@ declare global {
 
     /**
      * The implementation of the `JournalEntryPage` document instance configured through `CONFIG.JournalEntryPage.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `JournalEntryPage` document configured through `CONFIG.JournalEntryPage.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -60,12 +60,12 @@ declare global {
     /**
      * Allowed subtypes of `JournalEntryPage`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
-     * under {@link CONFIG.JournalEntryPage.dataModels | `CONFIG.JournalEntryPage.dataModels`}. This corresponds to
-     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     * under {@linkcode CONFIG.JournalEntryPage.dataModels}. This corresponds to
+     * fvtt-type's {@linkcode DataModelConfig}.
      *
      * Subtypes can also be registered through a `template.json` though this is discouraged.
-     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
-     * {@link DataConfig | `DataConfig`}.
+     * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
+     * {@linkcode DataConfig}.
      */
     type SubType = Game.Model.TypeNames<"JournalEntryPage">;
 
@@ -175,20 +175,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link JournalEntryPage.Source | `JournalEntryPage.Source`}
+     * @deprecated Replaced with {@linkcode JournalEntryPage.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link JournalEntryPage.create | `JournalEntryPage.create`}
+     * The data necessary to create a document. Used in places like {@linkcode JournalEntryPage.create}
      * and {@link JournalEntryPage | `new JournalEntryPage(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -198,7 +198,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link JournalEntryPage.name | `JournalEntryPage#name`}.
      *
-     * This is data transformed from {@link JournalEntryPage.Source | `JournalEntryPage.Source`} and turned into more
+     * This is data transformed from {@linkcode JournalEntryPage.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -212,10 +212,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link JournalEntryPage | `JournalEntryPage`}. This is the source of truth for how an JournalEntryPage document
+     * The schema for {@linkcode JournalEntryPage}. This is the source of truth for how an JournalEntryPage document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link JournalEntryPage | `JournalEntryPage`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode JournalEntryPage}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -234,7 +234,7 @@ declare global {
       name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true }>;
 
       /**
-       * The type of this page, in {@link BaseJournalEntryPage.TYPES | `BaseJournalEntryPage.TYPES`}.
+       * The type of this page, in {@linkcode BaseJournalEntryPage.TYPES}.
        * @defaultValue `"text"`
        */
       type: fields.DocumentTypeField<
@@ -295,7 +295,7 @@ declare global {
         markdown: fields.StringField<{ required: false; initial: undefined }>;
 
         /**
-         * The format of the page's content, in {@link CONST.JOURNAL_ENTRY_PAGE_FORMATS | `CONST.JOURNAL_ENTRY_PAGE_FORMATS`}.
+         * The format of the page's content, in {@linkcode CONST.JOURNAL_ENTRY_PAGE_FORMATS}.
          * @defaultValue `CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML`
          */
         format: fields.NumberField<{
@@ -409,19 +409,19 @@ declare global {
         animate?: boolean;
       }
 
-      /** Operation for {@link JournalEntryPage.createDocuments | `JournalEntryPage.createDocuments`} */
+      /** Operation for {@linkcode JournalEntryPage.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<JournalEntryPage.Database.Create<Temporary>> {}
 
-      /** Operation for {@link JournalEntryPage.updateDocuments | `JournalEntryPage.updateDocuments`} */
+      /** Operation for {@linkcode JournalEntryPage.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<JournalEntryPage.Database.Update> {}
 
-      /** Operation for {@link JournalEntryPage.deleteDocuments | `JournalEntryPage.deleteDocuments`} */
+      /** Operation for {@linkcode JournalEntryPage.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<JournalEntryPage.Database.Delete> {}
 
-      /** Operation for {@link JournalEntryPage.create | `JournalEntryPage.create`} */
+      /** Operation for {@linkcode JournalEntryPage.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<JournalEntryPage.Database.Create<Temporary>> {}
 
@@ -430,7 +430,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link JournalEntryPage.get | `JournalEntryPage.get`} */
+      /** Options for {@linkcode JournalEntryPage.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link JournalEntryPage._preCreate | `JournalEntryPage#_preCreate`} */
@@ -439,7 +439,7 @@ declare global {
       /** Options for {@link JournalEntryPage._onCreate | `JournalEntryPage#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link JournalEntryPage._preCreateOperation | `JournalEntryPage._preCreateOperation`} */
+      /** Operation for {@linkcode JournalEntryPage._preCreateOperation} */
       interface PreCreateOperation
         extends Document.Database.PreCreateOperationStatic<JournalEntryPage.Database.Create> {}
 
@@ -452,7 +452,7 @@ declare global {
       /** Options for {@link JournalEntryPage._onUpdate | `JournalEntryPage#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link JournalEntryPage._preUpdateOperation | `JournalEntryPage._preUpdateOperation`} */
+      /** Operation for {@linkcode JournalEntryPage._preUpdateOperation} */
       interface PreUpdateOperation extends JournalEntryPage.Database.Update {}
 
       /** Operation for {@link JournalEntryPage._onUpdateOperation | `JournalEntryPage._preUpdateOperation`} */
@@ -470,13 +470,13 @@ declare global {
       /** Options for {@link JournalEntryPage._onDeleteOperation | `JournalEntryPage#_onDeleteOperation`} */
       interface OnDeleteOperation extends JournalEntryPage.Database.Delete {}
 
-      /** Context for {@link JournalEntryPage._onDeleteOperation | `JournalEntryPage._onDeleteOperation`} */
+      /** Context for {@linkcode JournalEntryPage._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<JournalEntryPage.Parent> {}
 
-      /** Context for {@link JournalEntryPage._onCreateDocuments | `JournalEntryPage._onCreateDocuments`} */
+      /** Context for {@linkcode JournalEntryPage._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<JournalEntryPage.Parent> {}
 
-      /** Context for {@link JournalEntryPage._onUpdateDocuments | `JournalEntryPage._onUpdateDocuments`} */
+      /** Context for {@linkcode JournalEntryPage._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<JournalEntryPage.Parent> {}
 
       /**
@@ -541,28 +541,28 @@ declare global {
     }
 
     /**
-     * @deprecated {@link JournalEntryPage.Database | `JournalEntryPage.DatabaseOperation`}
+     * @deprecated Replaced with {@link JournalEntryPage.Database | `JournalEntryPage.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<JournalEntryPage.Implementation> {}
 
     /**
-     * @deprecated {@link JournalEntryPage.SubType | `JournalEntryPage.SubType`}
+     * @deprecated Replaced with {@linkcode JournalEntryPage.SubType}
      */
     type TypeNames = JournalEntryPage.SubType;
 
     /**
-     * @deprecated {@link JournalEntryPage.CreateData | `JournalEntryPage.CreateData`}
+     * @deprecated Replaced with {@linkcode JournalEntryPage.CreateData}
      */
     interface ConstructorData extends JournalEntryPage.CreateData {}
 
     /**
-     * @deprecated {@link JournalEntryPage.implementation | `JournalEntryPage.ImplementationClass`}
+     * @deprecated Replaced with {@link JournalEntryPage.implementation | `JournalEntryPage.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link JournalEntryPage.Implementation | `JournalEntryPage.Implementation`}
+     * @deprecated Replaced with {@linkcode JournalEntryPage.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -570,7 +570,7 @@ declare global {
   /**
    * The client-side JournalEntryPage document which extends the common BaseJournalEntryPage document model.
    *
-   * @see {@link JournalEntry | `JournalEntry`}  The JournalEntry document type which contains JournalEntryPage embedded documents.
+   * @see {@linkcode JournalEntry}  The JournalEntry document type which contains JournalEntryPage embedded documents.
    */
   class JournalEntryPage<
     out SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType,

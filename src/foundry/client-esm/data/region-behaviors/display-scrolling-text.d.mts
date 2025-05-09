@@ -33,7 +33,7 @@ declare namespace DisplayScrollingTextRegionBehaviorType {
     /** Optional color setting for the text */
     color: fields.ColorField<{ required: true; nullable: false; initial: string }>;
 
-    /** Which users the scrolling text will display for (see {@link VISIBILITY_MODES | `VISIBILITY_MODES`}) */
+    /** Which users the scrolling text will display for (see {@linkcode VISIBILITY_MODES}) */
     visibility: fields.NumberField<{
       required: true;
       choices: InvertObject<VisibilityModes>;

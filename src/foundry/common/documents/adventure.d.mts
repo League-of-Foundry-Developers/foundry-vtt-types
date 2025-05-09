@@ -274,17 +274,17 @@ declare namespace BaseAdventure {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseAdventure.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseAdventure.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseAdventure.CreateData | `BaseAdventure.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseAdventure.CreateData}
    */
   type ConstructorData = BaseAdventure.CreateData;
 
   /**
-   * A helper type to extract the return value for {@link BaseAdventure.contentFields | `BaseAdventure.contentFields`}
+   * A helper type to extract the return value for {@linkcode BaseAdventure.contentFields}
    */
   type ContentFields = {
     [Key in keyof BaseAdventure.Schema as BaseAdventure.Schema[Key] extends fields.SetField.Any

@@ -306,12 +306,12 @@ declare namespace BaseJournalEntry {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseJournalEntry.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseJournalEntry.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseJournalEntry.CreateData | `BaseJournalEntry.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseJournalEntry.CreateData}
    */
   type ConstructorData = BaseJournalEntry.CreateData;
 }

@@ -25,13 +25,13 @@ declare global {
 
     /**
      * The implementation of the `Item` document instance configured through `CONFIG.Item.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `Item` document configured through `CONFIG.Item.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -75,12 +75,12 @@ declare global {
     /**
      * Allowed subtypes of `Item`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
-     * under {@link CONFIG.Item.dataModels | `CONFIG.Item.dataModels`}. This corresponds to
-     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     * under {@linkcode CONFIG.Item.dataModels}. This corresponds to
+     * fvtt-type's {@linkcode DataModelConfig}.
      *
      * Subtypes can also be registered through a `template.json` though this is discouraged.
-     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
-     * {@link DataConfig | `DataConfig`}.
+     * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
+     * {@linkcode DataConfig}.
      */
     type SubType = Game.Model.TypeNames<"Item">;
 
@@ -239,20 +239,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link Item.Source | `Item.Source`}
+     * @deprecated Replaced with {@linkcode Item.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link Item.create | `Item.create`}
+     * The data necessary to create a document. Used in places like {@linkcode Item.create}
      * and {@link Item | `new Item(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -262,7 +262,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Item.name | `Item#name`}.
      *
-     * This is data transformed from {@link Item.Source | `Item.Source`} and turned into more
+     * This is data transformed from {@linkcode Item.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -276,10 +276,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link Item | `Item`}. This is the source of truth for how an Item document
+     * The schema for {@linkcode Item}. This is the source of truth for how an Item document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link Item | `Item`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode Item}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -333,7 +333,7 @@ declare global {
 
       /**
        * An object which configures ownership of this Item
-       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
+       * @defaultValue see {@linkcode fields.DocumentOwnershipField}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -345,7 +345,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
+       * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -364,17 +364,17 @@ declare global {
       /** Options passed along in Update operations for Items */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Item.UpdateData, Item.Parent> {}
 
-      /** Operation for {@link Item.createDocuments | `Item.createDocuments`} */
+      /** Operation for {@linkcode Item.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Item.Database.Create<Temporary>> {}
 
-      /** Operation for {@link Item.updateDocuments | `Item.updateDocuments`} */
+      /** Operation for {@linkcode Item.updateDocuments} */
       interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Item.Database.Update> {}
 
-      /** Operation for {@link Item.deleteDocuments | `Item.deleteDocuments`} */
+      /** Operation for {@linkcode Item.deleteDocuments} */
       interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Item.Database.Delete> {}
 
-      /** Operation for {@link Item.create | `Item.create`} */
+      /** Operation for {@linkcode Item.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Item.Database.Create<Temporary>> {}
 
@@ -383,7 +383,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link Item.get | `Item.get`} */
+      /** Options for {@linkcode Item.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link Item._preCreate | `Item#_preCreate`} */
@@ -392,7 +392,7 @@ declare global {
       /** Options for {@link Item._onCreate | `Item#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link Item._preCreateOperation | `Item._preCreateOperation`} */
+      /** Operation for {@linkcode Item._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Item.Database.Create> {}
 
       /** Operation for {@link Item._onCreateOperation | `Item#_onCreateOperation`} */
@@ -404,7 +404,7 @@ declare global {
       /** Options for {@link Item._onUpdate | `Item#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link Item._preUpdateOperation | `Item._preUpdateOperation`} */
+      /** Operation for {@linkcode Item._preUpdateOperation} */
       interface PreUpdateOperation extends Item.Database.Update {}
 
       /** Operation for {@link Item._onUpdateOperation | `Item._preUpdateOperation`} */
@@ -422,13 +422,13 @@ declare global {
       /** Options for {@link Item._onDeleteOperation | `Item#_onDeleteOperation`} */
       interface OnDeleteOperation extends Item.Database.Delete {}
 
-      /** Context for {@link Item._onDeleteOperation | `Item._onDeleteOperation`} */
+      /** Context for {@linkcode Item._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<Item.Parent> {}
 
-      /** Context for {@link Item._onCreateDocuments | `Item._onCreateDocuments`} */
+      /** Context for {@linkcode Item._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<Item.Parent> {}
 
-      /** Context for {@link Item._onUpdateDocuments | `Item._onUpdateDocuments`} */
+      /** Context for {@linkcode Item._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<Item.Parent> {}
 
       /**
@@ -509,28 +509,28 @@ declare global {
     >;
 
     /**
-     * @deprecated {@link Item.Database | `Item.DatabaseOperation`}
+     * @deprecated Replaced with {@link Item.Database | `Item.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Item.Implementation> {}
 
     /**
-     * @deprecated {@link Item.SubType | `Item.SubType`}
+     * @deprecated Replaced with {@linkcode Item.SubType}
      */
     type TypeNames = Item.SubType;
 
     /**
-     * @deprecated {@link Item.CreateData | `Item.CreateData`}
+     * @deprecated Replaced with {@linkcode Item.CreateData}
      */
     interface ConstructorData extends Item.CreateData {}
 
     /**
-     * @deprecated {@link Item.implementation | `Item.ImplementationClass`}
+     * @deprecated Replaced with {@link Item.implementation | `Item.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Item.Implementation | `Item.Implementation`}
+     * @deprecated Replaced with {@linkcode Item.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -539,11 +539,11 @@ declare global {
    * The client-side Item document which extends the common BaseItem abstraction.
    * Each Item document contains ItemData which defines its data schema.
    *
-   * @see {@link Items | `Items`}            The world-level collection of Item documents
-   * @see {@link ItemSheet | `ItemSheet`}     The Item configuration application
+   * @see {@linkcode Items}            The world-level collection of Item documents
+   * @see {@linkcode ItemSheet}     The Item configuration application
    *
    * @param data    - Initial data provided to construct the Item document
-   * @param context - The document context, see {@link foundry.abstract.Document | `foundry.abstract.Document`}
+   * @param context - The document context, see {@linkcode foundry.abstract.Document}
    */
   class Item<out SubType extends Item.SubType = Item.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseItem,

@@ -315,16 +315,16 @@ declare namespace BaseCards {
    */
   type Properties = SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseCards.SubType | `BaseCards.SubType`} */
+  /** @deprecated Replaced with {@linkcode BaseCards.SubType} */
   type TypeNames = SubType;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseCards.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseCards.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseCards.CreateData | `BaseCards.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseCards.CreateData}
    */
   type ConstructorData = BaseCards.CreateData;
 }

@@ -26,6 +26,6 @@ declare global {
     }
   }
 
-  /** @deprecated {@link SetupTour.Config | `SetupTour.Config`} */
+  /** @deprecated Replaced with {@linkcode SetupTour.Config} */
   type SetupTourConfig = SetupTour.Config;
 }

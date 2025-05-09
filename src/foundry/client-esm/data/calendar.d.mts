@@ -23,15 +23,15 @@ declare namespace CalendarData {
   }
 
   /**
-   * The data put in {@link CalendarData._source | `CalendarData._source`}.
+   * The data put in {@linkcode CalendarData._source}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
-   * The data necessary to create a document. Used in places like {@link WallDocument.create | `WallDocument.create`}
+   * The data necessary to create a document. Used in places like {@linkcode WallDocument.create}
    * and {@link WallDocument | `new WallDocument(...)`}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    * @remarks Equivalent to how Foundry uses CalendarConfig, this is the type of `CONFIG.calendar`
@@ -39,10 +39,10 @@ declare namespace CalendarData {
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link DataModel | `DataModel`} has been initialized, for example
+   * The data after a {@linkcode DataModel} has been initialized, for example
    * {@link CalendarData.name | `CalenderData#name`}.
    *
-   * This is data transformed from {@link CalendarData.Source | `CalendarData.Source`} and turned into more
+   * This is data transformed from {@linkcode CalendarData.Source} and turned into more
    * convenient runtime data structures. For example a source value of `undefined` will be replaced
    * by the `initial` value of the field instance.
    */

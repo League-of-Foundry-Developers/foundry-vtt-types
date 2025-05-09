@@ -25,13 +25,13 @@ declare global {
 
     /**
      * The implementation of the `Cards` document instance configured through `CONFIG.Cards.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCards | `fvtt-types/configuration/ConfiguredCards`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredCards | `fvtt-types/configuration/ConfiguredCards`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `Cards` document configured through `CONFIG.Cards.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -68,12 +68,12 @@ declare global {
     /**
      * Allowed subtypes of `Cards`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
-     * under {@link CONFIG.Cards.dataModels | `CONFIG.Cards.dataModels`}. This corresponds to
-     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     * under {@linkcode CONFIG.Cards.dataModels}. This corresponds to
+     * fvtt-type's {@linkcode DataModelConfig}.
      *
      * Subtypes can also be registered through a `template.json` though this is discouraged.
-     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
-     * {@link DataConfig | `DataConfig`}.
+     * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
+     * {@linkcode DataConfig}.
      */
     type SubType = Game.Model.TypeNames<"Cards">;
 
@@ -232,20 +232,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link Cards.Source | `Cards.Source`}
+     * @deprecated Replaced with {@linkcode Cards.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link Cards.create | `Cards.create`}
+     * The data necessary to create a document. Used in places like {@linkcode Cards.create}
      * and {@link Cards | `new Cards(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -255,7 +255,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Cards.name | `Cards#name`}.
      *
-     * This is data transformed from {@link Cards.Source | `Cards.Source`} and turned into more
+     * This is data transformed from {@linkcode Cards.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -269,10 +269,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link Cards | `Cards`}. This is the source of truth for how an Cards document
+     * The schema for {@linkcode Cards}. This is the source of truth for how an Cards document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link Cards | `Cards`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode Cards}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -360,7 +360,7 @@ declare global {
 
       /**
        * An object which configures ownership of this Cards
-       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
+       * @defaultValue see {@linkcode fields.DocumentOwnershipField}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -372,7 +372,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
+       * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -397,17 +397,17 @@ declare global {
         animate?: boolean;
       }
 
-      /** Operation for {@link Cards.createDocuments | `Cards.createDocuments`} */
+      /** Operation for {@linkcode Cards.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Cards.Database.Create<Temporary>> {}
 
-      /** Operation for {@link Cards.updateDocuments | `Cards.updateDocuments`} */
+      /** Operation for {@linkcode Cards.updateDocuments} */
       interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Cards.Database.Update> {}
 
-      /** Operation for {@link Cards.deleteDocuments | `Cards.deleteDocuments`} */
+      /** Operation for {@linkcode Cards.deleteDocuments} */
       interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Cards.Database.Delete> {}
 
-      /** Operation for {@link Cards.create | `Cards.create`} */
+      /** Operation for {@linkcode Cards.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Cards.Database.Create<Temporary>> {}
 
@@ -416,7 +416,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link Cards.get | `Cards.get`} */
+      /** Options for {@linkcode Cards.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link Cards._preCreate | `Cards#_preCreate`} */
@@ -425,7 +425,7 @@ declare global {
       /** Options for {@link Cards._onCreate | `Cards#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link Cards._preCreateOperation | `Cards._preCreateOperation`} */
+      /** Operation for {@linkcode Cards._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Cards.Database.Create> {}
 
       /** Operation for {@link Cards._onCreateOperation | `Cards#_onCreateOperation`} */
@@ -437,7 +437,7 @@ declare global {
       /** Options for {@link Cards._onUpdate | `Cards#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link Cards._preUpdateOperation | `Cards._preUpdateOperation`} */
+      /** Operation for {@linkcode Cards._preUpdateOperation} */
       interface PreUpdateOperation extends Cards.Database.Update {}
 
       /** Operation for {@link Cards._onUpdateOperation | `Cards._preUpdateOperation`} */
@@ -455,13 +455,13 @@ declare global {
       /** Options for {@link Cards._onDeleteOperation | `Cards#_onDeleteOperation`} */
       interface OnDeleteOperation extends Cards.Database.Delete {}
 
-      /** Context for {@link Cards._onDeleteOperation | `Cards._onDeleteOperation`} */
+      /** Context for {@linkcode Cards._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<Cards.Parent> {}
 
-      /** Context for {@link Cards._onCreateDocuments | `Cards._onCreateDocuments`} */
+      /** Context for {@linkcode Cards._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<Cards.Parent> {}
 
-      /** Context for {@link Cards._onUpdateDocuments | `Cards._onUpdateDocuments`} */
+      /** Context for {@linkcode Cards._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<Cards.Parent> {}
 
       /**
@@ -664,28 +664,28 @@ declare global {
     }
 
     /**
-     * @deprecated {@link Cards.Database | `Cards.DatabaseOperation`}
+     * @deprecated Replaced with {@link Cards.Database | `Cards.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Cards.Implementation> {}
 
     /**
-     * @deprecated {@link Cards.SubType | `Cards.SubType`}
+     * @deprecated Replaced with {@linkcode Cards.SubType}
      */
     type TypeNames = Cards.SubType;
 
     /**
-     * @deprecated {@link Cards.CreateData | `Cards.CreateData`}
+     * @deprecated Replaced with {@linkcode Cards.CreateData}
      */
     interface ConstructorData extends Cards.CreateData {}
 
     /**
-     * @deprecated {@link Cards.implementation | `Cards.ImplementationClass`}
+     * @deprecated Replaced with {@link Cards.implementation | `Cards.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Cards.Implementation | `Cards.Implementation`}
+     * @deprecated Replaced with {@linkcode Cards.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -694,8 +694,8 @@ declare global {
    * The client-side Cards document which extends the common BaseCards model.
    * Each Cards document contains CardsData which defines its data schema.
    *
-   * @see {@link CardStacks | `CardStacks`}                        The world-level collection of Cards documents
-   * @see {@link CardsConfig | `CardsConfig`}                       The Cards configuration application
+   * @see {@linkcode CardStacks}                        The world-level collection of Cards documents
+   * @see {@linkcode CardsConfig}                       The Cards configuration application
    */
   class Cards<out SubType extends Cards.SubType = Cards.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseCards,

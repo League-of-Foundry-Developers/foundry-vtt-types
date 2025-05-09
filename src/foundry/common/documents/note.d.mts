@@ -297,12 +297,12 @@ declare namespace BaseNote {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseNote.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseNote.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseNote.CreateData | `BaseNote.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseNote.CreateData}
    */
   type ConstructorData = BaseNote.CreateData;
 }

@@ -70,7 +70,7 @@ declare global {
       color: Color.Source;
 
       /**
-       * The name for the ping animation to pass to {@link CanvasAnimation.animate | `CanvasAnimation.animate`}.
+       * The name for the ping animation to pass to {@linkcode CanvasAnimation.animate}.
        */
       name: PropertyKey | undefined | null;
     }>;
@@ -79,7 +79,7 @@ declare global {
   }
 
   /**
-   * @deprecated {@link Ping.ConstructorOptions | `Ping.ConstructorOptions`}
+   * @deprecated Replaced with {@linkcode Ping.ConstructorOptions}
    */
   type PingOptions = Ping.ConstructorOptions;
 }

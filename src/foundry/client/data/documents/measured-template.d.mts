@@ -24,13 +24,13 @@ declare global {
 
     /**
      * The implementation of the `MeasuredTemplateDocument` document instance configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredMeasuredTemplateDocument | `fvtt-types/configuration/ConfiguredMeasuredTemplateDocument`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredMeasuredTemplateDocument | `fvtt-types/configuration/ConfiguredMeasuredTemplateDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `MeasuredTemplateDocument` document configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -129,20 +129,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link MeasuredTemplateDocument.Source | `MeasuredTemplateDocument.Source`}
+     * @deprecated Replaced with {@linkcode MeasuredTemplateDocument.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link MeasuredTemplateDocument.create | `MeasuredTemplateDocument.create`}
+     * The data necessary to create a document. Used in places like {@linkcode MeasuredTemplateDocument.create}
      * and {@link MeasuredTemplateDocument | `new MeasuredTemplateDocument(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -152,7 +152,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link MeasuredTemplateDocument.name | `MeasuredTemplateDocument#name`}.
      *
-     * This is data transformed from {@link MeasuredTemplateDocument.Source | `MeasuredTemplateDocument.Source`} and turned into more
+     * This is data transformed from {@linkcode MeasuredTemplateDocument.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -166,10 +166,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link MeasuredTemplateDocument | `MeasuredTemplateDocument`}. This is the source of truth for how an MeasuredTemplateDocument document
+     * The schema for {@linkcode MeasuredTemplateDocument}. This is the source of truth for how an MeasuredTemplateDocument document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link MeasuredTemplateDocument | `MeasuredTemplateDocument`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode MeasuredTemplateDocument}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -313,19 +313,19 @@ declare global {
           MeasuredTemplateDocument.Parent
         > {}
 
-      /** Operation for {@link MeasuredTemplateDocument.createDocuments | `MeasuredTemplateDocument.createDocuments`} */
+      /** Operation for {@linkcode MeasuredTemplateDocument.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<MeasuredTemplateDocument.Database.Create<Temporary>> {}
 
-      /** Operation for {@link MeasuredTemplateDocument.updateDocuments | `MeasuredTemplateDocument.updateDocuments`} */
+      /** Operation for {@linkcode MeasuredTemplateDocument.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<MeasuredTemplateDocument.Database.Update> {}
 
-      /** Operation for {@link MeasuredTemplateDocument.deleteDocuments | `MeasuredTemplateDocument.deleteDocuments`} */
+      /** Operation for {@linkcode MeasuredTemplateDocument.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<MeasuredTemplateDocument.Database.Delete> {}
 
-      /** Operation for {@link MeasuredTemplateDocument.create | `MeasuredTemplateDocument.create`} */
+      /** Operation for {@linkcode MeasuredTemplateDocument.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<MeasuredTemplateDocument.Database.Create<Temporary>> {}
 
@@ -334,7 +334,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link MeasuredTemplateDocument.get | `MeasuredTemplateDocument.get`} */
+      /** Options for {@linkcode MeasuredTemplateDocument.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link MeasuredTemplateDocument._preCreate | `MeasuredTemplateDocument#_preCreate`} */
@@ -343,7 +343,7 @@ declare global {
       /** Options for {@link MeasuredTemplateDocument._onCreate | `MeasuredTemplateDocument#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link MeasuredTemplateDocument._preCreateOperation | `MeasuredTemplateDocument._preCreateOperation`} */
+      /** Operation for {@linkcode MeasuredTemplateDocument._preCreateOperation} */
       interface PreCreateOperation
         extends Document.Database.PreCreateOperationStatic<MeasuredTemplateDocument.Database.Create> {}
 
@@ -356,7 +356,7 @@ declare global {
       /** Options for {@link MeasuredTemplateDocument._onUpdate | `MeasuredTemplateDocument#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link MeasuredTemplateDocument._preUpdateOperation | `MeasuredTemplateDocument._preUpdateOperation`} */
+      /** Operation for {@linkcode MeasuredTemplateDocument._preUpdateOperation} */
       interface PreUpdateOperation extends MeasuredTemplateDocument.Database.Update {}
 
       /** Operation for {@link MeasuredTemplateDocument._onUpdateOperation | `MeasuredTemplateDocument._preUpdateOperation`} */
@@ -374,13 +374,13 @@ declare global {
       /** Options for {@link MeasuredTemplateDocument._onDeleteOperation | `MeasuredTemplateDocument#_onDeleteOperation`} */
       interface OnDeleteOperation extends MeasuredTemplateDocument.Database.Delete {}
 
-      /** Context for {@link MeasuredTemplateDocument._onDeleteOperation | `MeasuredTemplateDocument._onDeleteOperation`} */
+      /** Context for {@linkcode MeasuredTemplateDocument._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<MeasuredTemplateDocument.Parent> {}
 
-      /** Context for {@link MeasuredTemplateDocument._onCreateDocuments | `MeasuredTemplateDocument._onCreateDocuments`} */
+      /** Context for {@linkcode MeasuredTemplateDocument._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<MeasuredTemplateDocument.Parent> {}
 
-      /** Context for {@link MeasuredTemplateDocument._onUpdateDocuments | `MeasuredTemplateDocument._onUpdateDocuments`} */
+      /** Context for {@linkcode MeasuredTemplateDocument._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<MeasuredTemplateDocument.Parent> {}
 
       /**
@@ -425,23 +425,23 @@ declare global {
     }
 
     /**
-     * @deprecated {@link MeasuredTemplateDocument.Database | `MeasuredTemplateDocument.DatabaseOperation`}
+     * @deprecated Replaced with {@link MeasuredTemplateDocument.Database | `MeasuredTemplateDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<MeasuredTemplateDocument.Implementation> {}
 
     /**
-     * @deprecated {@link MeasuredTemplateDocument.CreateData | `MeasuredTemplateDocument.CreateData`}
+     * @deprecated Replaced with {@linkcode MeasuredTemplateDocument.CreateData}
      */
     interface ConstructorData extends MeasuredTemplateDocument.CreateData {}
 
     /**
-     * @deprecated {@link MeasuredTemplateDocument.implementation | `MeasuredTemplateDocument.ImplementationClass`}
+     * @deprecated Replaced with {@link MeasuredTemplateDocument.implementation | `MeasuredTemplateDocument.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link MeasuredTemplateDocument.Implementation | `MeasuredTemplateDocument.Implementation`}
+     * @deprecated Replaced with {@linkcode MeasuredTemplateDocument.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -449,8 +449,8 @@ declare global {
   /**
    * The client-side MeasuredTemplate document which extends the common BaseMeasuredTemplate document model.
    *
-   * @see {@link Scene | `Scene`}                     The Scene document type which contains MeasuredTemplate documents
-   * @see {@link MeasuredTemplateConfig | `MeasuredTemplateConfig`}    The MeasuredTemplate configuration application
+   * @see {@linkcode Scene}                     The Scene document type which contains MeasuredTemplate documents
+   * @see {@linkcode MeasuredTemplateConfig}    The MeasuredTemplate configuration application
    */
   class MeasuredTemplateDocument extends CanvasDocumentMixin(foundry.documents.BaseMeasuredTemplate) {
     /**

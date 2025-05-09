@@ -295,10 +295,10 @@ declare namespace DataModel {
   /**
    * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
    *
-   * `UnknownDataModel` covers the case where it's configured with a {@link DataModel | `DataModel`}.
-   * Using a {@link TypeDataModel | `TypeDataModel`} is recommended by Foundry but a {@link DataModel | `DataModel`} is
+   * `UnknownDataModel` covers the case where it's configured with a {@linkcode DataModel}.
+   * Using a {@linkcode TypeDataModel} is recommended by Foundry but a {@linkcode DataModel} is
    * always possible.
-   * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
+   * See {@linkcode UnknownSystem} for other possibilities.
    */
   interface UnknownDataModel extends DataModel<any, any, any> {}
 
@@ -343,7 +343,7 @@ declare namespace DataModel {
   interface AnyConstructor extends Identity<typeof AnyDataModel> {}
 
   /**
-   * A helper type to extract the schema from a {@link DataModel | `DataModel`}.
+   * A helper type to extract the schema from a {@linkcode DataModel}.
    * @typeParam ModelType - the DataModel for the embedded data
    */
   type SchemaOf<ModelType extends DataModel.Any> = ModelType["schema"]["fields"];

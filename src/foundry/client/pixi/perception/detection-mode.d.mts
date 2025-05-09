@@ -23,7 +23,7 @@ declare global {
 
     /**
      * The type of the detection mode.
-     * @see {@link CONST.WALL_RESTRICTION_TYPES | `CONST.WALL_RESTRICTION_TYPES`}
+     * @see {@linkcode CONST.WALL_RESTRICTION_TYPES}
      * @remarks Set via `Object.defineProperty` with a frozen object, so `readonly` is justified both here and for the interface properties
      */
     static readonly DETECTION_TYPES: DetectionMode.DetectionTypes;

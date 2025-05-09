@@ -3,7 +3,7 @@ import type { Identity } from "fvtt-types/utils";
 declare global {
   /**
    * The filter used by the weather layer to mask weather above occluded roofs.
-   * @see {@link WeatherEffects | `WeatherEffects`}
+   * @see {@linkcode WeatherEffects}
    */
   class WeatherOcclusionMaskFilter extends AbstractBaseMaskFilter {
     /**

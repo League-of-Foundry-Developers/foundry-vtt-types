@@ -25,13 +25,13 @@ declare global {
 
     /**
      * The implementation of the `User` document instance configured through `CONFIG.User.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredUser | `fvtt-types/configuration/ConfiguredUser`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredUser | `fvtt-types/configuration/ConfiguredUser`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `User` document configured through `CONFIG.User.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -129,30 +129,30 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link User.Source | `User.Source`}
+     * @deprecated Replaced with {@linkcode User.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link User.create | `User.create`}
+     * The data necessary to create a document. Used in places like {@linkcode User.create}
      * and {@link User | `new User(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link Document | `Document`} has been initialized, for example
+     * The data after a {@linkcode Document} has been initialized, for example
      * {@link User.name | `User#name`}.
      *
-     * This is data transformed from {@link User.Source | `User.Source`} and turned into more
+     * This is data transformed from {@linkcode User.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -166,10 +166,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link User | `User`}. This is the source of truth for how an User document
+     * The schema for {@linkcode User}. This is the source of truth for how an User document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link User | `User`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode User}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -276,7 +276,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
+       * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -295,17 +295,17 @@ declare global {
       /** Options passed along in Update operations for Users */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<User.UpdateData, User.Parent> {}
 
-      /** Operation for {@link User.createDocuments | `User.createDocuments`} */
+      /** Operation for {@linkcode User.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<User.Database.Create<Temporary>> {}
 
-      /** Operation for {@link User.updateDocuments | `User.updateDocuments`} */
+      /** Operation for {@linkcode User.updateDocuments} */
       interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<User.Database.Update> {}
 
-      /** Operation for {@link User.deleteDocuments | `User.deleteDocuments`} */
+      /** Operation for {@linkcode User.deleteDocuments} */
       interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<User.Database.Delete> {}
 
-      /** Operation for {@link User.create | `User.create`} */
+      /** Operation for {@linkcode User.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<User.Database.Create<Temporary>> {}
 
@@ -314,7 +314,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link User.get | `User.get`} */
+      /** Options for {@linkcode User.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link User._preCreate | `User#_preCreate`} */
@@ -323,7 +323,7 @@ declare global {
       /** Options for {@link User._onCreate | `User#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link User._preCreateOperation | `User._preCreateOperation`} */
+      /** Operation for {@linkcode User._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<User.Database.Create> {}
 
       /** Operation for {@link User._onCreateOperation | `User#_onCreateOperation`} */
@@ -335,7 +335,7 @@ declare global {
       /** Options for {@link User._onUpdate | `User#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link User._preUpdateOperation | `User._preUpdateOperation`} */
+      /** Operation for {@linkcode User._preUpdateOperation} */
       interface PreUpdateOperation extends User.Database.Update {}
 
       /** Operation for {@link User._onUpdateOperation | `User._preUpdateOperation`} */
@@ -353,13 +353,13 @@ declare global {
       /** Options for {@link User._onDeleteOperation | `User#_onDeleteOperation`} */
       interface OnDeleteOperation extends User.Database.Delete {}
 
-      /** Context for {@link User._onDeleteOperation | `User._onDeleteOperation`} */
+      /** Context for {@linkcode User._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<User.Parent> {}
 
-      /** Context for {@link User._onCreateDocuments | `User._onCreateDocuments`} */
+      /** Context for {@linkcode User._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<User.Parent> {}
 
-      /** Context for {@link User._onUpdateDocuments | `User._onUpdateDocuments`} */
+      /** Context for {@linkcode User._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<User.Parent> {}
 
       /**
@@ -475,23 +475,23 @@ declare global {
     }
 
     /**
-     * @deprecated {@link User.Database | `User.DatabaseOperation`}
+     * @deprecated Replaced with {@link User.Database | `User.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<User.Implementation> {}
 
     /**
-     * @deprecated {@link User.CreateData | `User.CreateData`}
+     * @deprecated Replaced with {@linkcode User.CreateData}
      */
     interface ConstructorData extends User.CreateData {}
 
     /**
-     * @deprecated {@link User.implementation | `User.ImplementationClass`}
+     * @deprecated Replaced with {@link User.implementation | `User.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link User.Implementation | `User.Implementation`}
+     * @deprecated Replaced with {@linkcode User.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -500,8 +500,8 @@ declare global {
    * The client-side User document which extends the common BaseUser model.
    * Each User document contains UserData which defines its data schema.
    *
-   * @see {@link Users | `Users`}             The world-level collection of User documents
-   * @see {@link UserConfig | `UserConfig`}     The User configuration application
+   * @see {@linkcode Users}             The world-level collection of User documents
+   * @see {@linkcode UserConfig}     The User configuration application
    */
   class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
     /**

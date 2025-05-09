@@ -25,13 +25,13 @@ declare global {
 
     /**
      * The implementation of the `DrawingDocument` document instance configured through `CONFIG.Drawing.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredDrawingDocument | `fvtt-types/configuration/ConfiguredDrawingDocument`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredDrawingDocument | `fvtt-types/configuration/ConfiguredDrawingDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<"Drawing">;
 
     /**
      * The implementation of the `DrawingDocument` document configured through `CONFIG.DrawingDocument.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<"Drawing">;
 
@@ -130,20 +130,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link DrawingDocument.Source | `DrawingDocument.Source`}
+     * @deprecated Replaced with {@linkcode DrawingDocument.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link DrawingDocument.create | `DrawingDocument.create`}
+     * The data necessary to create a document. Used in places like {@linkcode DrawingDocument.create}
      * and {@link DrawingDocument | `new DrawingDocument(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -153,7 +153,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link DrawingDocument.name | `DrawingDocument#name`}.
      *
-     * This is data transformed from {@link DrawingDocument.Source | `DrawingDocument.Source`} and turned into more
+     * This is data transformed from {@linkcode DrawingDocument.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -167,10 +167,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link DrawingDocument | `DrawingDocument`}. This is the source of truth for how an DrawingDocument document
+     * The schema for {@linkcode DrawingDocument}. This is the source of truth for how an DrawingDocument document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link DrawingDocument | `DrawingDocument`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode DrawingDocument}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -194,7 +194,7 @@ declare global {
 
       /**
        * The geometric shape of the drawing
-       * @defaultValue see {@link ShapeData.Schema | `ShapeData.Schema`}
+       * @defaultValue see {@linkcode ShapeData.Schema}
        */
       shape: fields.EmbeddedDataField<typeof ShapeData>;
 
@@ -376,19 +376,19 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<DrawingDocument.UpdateData, DrawingDocument.Parent> {}
 
-      /** Operation for {@link DrawingDocument.createDocuments | `DrawingDocument.createDocuments`} */
+      /** Operation for {@linkcode DrawingDocument.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<DrawingDocument.Database.Create<Temporary>> {}
 
-      /** Operation for {@link DrawingDocument.updateDocuments | `DrawingDocument.updateDocuments`} */
+      /** Operation for {@linkcode DrawingDocument.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<DrawingDocument.Database.Update> {}
 
-      /** Operation for {@link DrawingDocument.deleteDocuments | `DrawingDocument.deleteDocuments`} */
+      /** Operation for {@linkcode DrawingDocument.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<DrawingDocument.Database.Delete> {}
 
-      /** Operation for {@link DrawingDocument.create | `DrawingDocument.create`} */
+      /** Operation for {@linkcode DrawingDocument.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<DrawingDocument.Database.Create<Temporary>> {}
 
@@ -397,7 +397,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link DrawingDocument.get | `DrawingDocument.get`} */
+      /** Options for {@linkcode DrawingDocument.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link DrawingDocument._preCreate | `DrawingDocument#_preCreate`} */
@@ -406,7 +406,7 @@ declare global {
       /** Options for {@link DrawingDocument._onCreate | `DrawingDocument#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link DrawingDocument._preCreateOperation | `DrawingDocument._preCreateOperation`} */
+      /** Operation for {@linkcode DrawingDocument._preCreateOperation} */
       interface PreCreateOperation
         extends Document.Database.PreCreateOperationStatic<DrawingDocument.Database.Create> {}
 
@@ -419,7 +419,7 @@ declare global {
       /** Options for {@link DrawingDocument._onUpdate | `DrawingDocument#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link DrawingDocument._preUpdateOperation | `DrawingDocument._preUpdateOperation`} */
+      /** Operation for {@linkcode DrawingDocument._preUpdateOperation} */
       interface PreUpdateOperation extends DrawingDocument.Database.Update {}
 
       /** Operation for {@link DrawingDocument._onUpdateOperation | `DrawingDocument._preUpdateOperation`} */
@@ -437,13 +437,13 @@ declare global {
       /** Options for {@link DrawingDocument._onDeleteOperation | `DrawingDocument#_onDeleteOperation`} */
       interface OnDeleteOperation extends DrawingDocument.Database.Delete {}
 
-      /** Context for {@link DrawingDocument._onDeleteOperation | `DrawingDocument._onDeleteOperation`} */
+      /** Context for {@linkcode DrawingDocument._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
 
-      /** Context for {@link DrawingDocument._onCreateDocuments | `DrawingDocument._onCreateDocuments`} */
+      /** Context for {@linkcode DrawingDocument._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
 
-      /** Context for {@link DrawingDocument._onUpdateDocuments | `DrawingDocument._onUpdateDocuments`} */
+      /** Context for {@linkcode DrawingDocument._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
 
       /**
@@ -488,23 +488,23 @@ declare global {
     }
 
     /**
-     * @deprecated {@link DrawingDocument.Database | `DrawingDocument.DatabaseOperation`}
+     * @deprecated Replaced with {@link DrawingDocument.Database | `DrawingDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<DrawingDocument.Implementation> {}
 
     /**
-     * @deprecated {@link DrawingDocument.CreateData | `DrawingDocument.CreateData`}
+     * @deprecated Replaced with {@linkcode DrawingDocument.CreateData}
      */
     interface ConstructorData extends DrawingDocument.CreateData {}
 
     /**
-     * @deprecated {@link DrawingDocument.implementation | `DrawingDocument.ImplementationClass`}
+     * @deprecated Replaced with {@link DrawingDocument.implementation | `DrawingDocument.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link DrawingDocument.Implementation | `DrawingDocument.Implementation`}
+     * @deprecated Replaced with {@linkcode DrawingDocument.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -512,8 +512,8 @@ declare global {
   /**
    * The client-side Drawing document which extends the common BaseDrawing model.
    *
-   * @see {@link Scene | `Scene`}               The Scene document type which contains Drawing embedded documents
-   * @see {@link DrawingConfig | `DrawingConfig`}       The Drawing configuration application
+   * @see {@linkcode Scene}               The Scene document type which contains Drawing embedded documents
+   * @see {@linkcode DrawingConfig}       The Drawing configuration application
    */
   class DrawingDocument extends CanvasDocumentMixin(foundry.documents.BaseDrawing) {
     /**

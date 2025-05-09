@@ -3,7 +3,7 @@ import type { AnyArray, ValueOf } from "fvtt-types/utils";
 // TODO: smarter types for named functions
 declare global {
   /**
-   * @deprecated {@link AsyncWorker.WorkerTask | `AsyncWorker.WorkerTask`}
+   * @deprecated Replaced with {@linkcode AsyncWorker.WorkerTask}
    */
   type WorkerTask = AsyncWorker.WorkerTask;
 

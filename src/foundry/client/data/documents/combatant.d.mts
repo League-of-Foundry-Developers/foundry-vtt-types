@@ -26,13 +26,13 @@ declare global {
 
     /**
      * The implementation of the `Combatant` document instance configured through `CONFIG.Combatant.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `Combatant` document configured through `CONFIG.Combatant.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -68,12 +68,12 @@ declare global {
     /**
      * Allowed subtypes of `Combatant`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
-     * under {@link CONFIG.Combatant.dataModels | `CONFIG.Combatant.dataModels`}. This corresponds to
-     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     * under {@linkcode CONFIG.Combatant.dataModels}. This corresponds to
+     * fvtt-type's {@linkcode DataModelConfig}.
      *
      * Subtypes can also be registered through a `template.json` though this is discouraged.
-     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
-     * {@link DataConfig | `DataConfig`}.
+     * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
+     * {@linkcode DataConfig}.
      */
     type SubType = Game.Model.TypeNames<"Combatant">;
 
@@ -179,20 +179,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link Combatant.Source | `Combatant.Source`}
+     * @deprecated Replaced with {@linkcode Combatant.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link Combatant.create | `Combatant.create`}
+     * The data necessary to create a document. Used in places like {@linkcode Combatant.create}
      * and {@link Combatant | `new Combatant(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -202,7 +202,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Combatant.name | `Combatant#name`}.
      *
-     * This is data transformed from {@link Combatant.Source | `Combatant.Source`} and turned into more
+     * This is data transformed from {@linkcode Combatant.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -216,10 +216,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link Combatant | `Combatant`}. This is the source of truth for how an Combatant document
+     * The schema for {@linkcode Combatant}. This is the source of truth for how an Combatant document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link Combatant | `Combatant`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode Combatant}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -325,19 +325,19 @@ declare global {
         turnEvents?: boolean;
       }
 
-      /** Operation for {@link Combatant.createDocuments | `Combatant.createDocuments`} */
+      /** Operation for {@linkcode Combatant.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Combatant.Database.Create<Temporary>> {}
 
-      /** Operation for {@link Combatant.updateDocuments | `Combatant.updateDocuments`} */
+      /** Operation for {@linkcode Combatant.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<Combatant.Database.Update> {}
 
-      /** Operation for {@link Combatant.deleteDocuments | `Combatant.deleteDocuments`} */
+      /** Operation for {@linkcode Combatant.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<Combatant.Database.Delete> {}
 
-      /** Operation for {@link Combatant.create | `Combatant.create`} */
+      /** Operation for {@linkcode Combatant.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Combatant.Database.Create<Temporary>> {}
 
@@ -346,7 +346,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link Combatant.get | `Combatant.get`} */
+      /** Options for {@linkcode Combatant.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link Combatant._preCreate | `Combatant#_preCreate`} */
@@ -355,7 +355,7 @@ declare global {
       /** Options for {@link Combatant._onCreate | `Combatant#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link Combatant._preCreateOperation | `Combatant._preCreateOperation`} */
+      /** Operation for {@linkcode Combatant._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Combatant.Database.Create> {}
 
       /** Operation for {@link Combatant._onCreateOperation | `Combatant#_onCreateOperation`} */
@@ -367,7 +367,7 @@ declare global {
       /** Options for {@link Combatant._onUpdate | `Combatant#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link Combatant._preUpdateOperation | `Combatant._preUpdateOperation`} */
+      /** Operation for {@linkcode Combatant._preUpdateOperation} */
       interface PreUpdateOperation extends Combatant.Database.Update {}
 
       /** Operation for {@link Combatant._onUpdateOperation | `Combatant._preUpdateOperation`} */
@@ -385,13 +385,13 @@ declare global {
       /** Options for {@link Combatant._onDeleteOperation | `Combatant#_onDeleteOperation`} */
       interface OnDeleteOperation extends Combatant.Database.Delete {}
 
-      /** Context for {@link Combatant._onDeleteOperation | `Combatant._onDeleteOperation`} */
+      /** Context for {@linkcode Combatant._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<Combatant.Parent> {}
 
-      /** Context for {@link Combatant._onCreateDocuments | `Combatant._onCreateDocuments`} */
+      /** Context for {@linkcode Combatant._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<Combatant.Parent> {}
 
-      /** Context for {@link Combatant._onUpdateDocuments | `Combatant._onUpdateDocuments`} */
+      /** Context for {@linkcode Combatant._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<Combatant.Parent> {}
 
       /**
@@ -438,7 +438,7 @@ declare global {
     type Resource = `${number}` | number | boolean | null;
 
     /**
-     * @deprecated {@link Combatant.Database | `Combatant.DatabaseOperation`}
+     * @deprecated Replaced with {@link Combatant.Database | `Combatant.DatabaseOperation`}
      */
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -450,22 +450,22 @@ declare global {
       > {}
 
     /**
-     * @deprecated {@link Combatant.SubType | `Combatant.SubType`}
+     * @deprecated Replaced with {@linkcode Combatant.SubType}
      */
     type TypeNames = Combatant.SubType;
 
     /**
-     * @deprecated {@link Combatant.CreateData | `Combatant.CreateData`}
+     * @deprecated Replaced with {@linkcode Combatant.CreateData}
      */
     interface ConstructorData extends Combatant.CreateData {}
 
     /**
-     * @deprecated {@link Combatant.implementation | `Combatant.ImplementationClass`}
+     * @deprecated Replaced with {@link Combatant.implementation | `Combatant.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Combatant.Implementation | `Combatant.Implementation`}
+     * @deprecated Replaced with {@linkcode Combatant.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -473,8 +473,8 @@ declare global {
   /**
    * The client-side Combatant document which extends the common BaseCombatant model.
    *
-   * @see {@link Combat | `Combat`}                    The Combat document which contains Combatant embedded documents
-   * @see {@link CombatantConfig | `CombatantConfig`}        The Combatant configuration application
+   * @see {@linkcode Combat}                    The Combat document which contains Combatant embedded documents
+   * @see {@linkcode CombatantConfig}        The Combatant configuration application
    */
   class Combatant<out SubType extends Combatant.SubType = Combatant.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseCombatant,

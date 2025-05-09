@@ -414,7 +414,7 @@ declare abstract class Document<
 
   /**
    * Create a new Document using provided input data, saving it to the database.
-   * @see {@link Document.createDocuments | `Document.createDocuments`}
+   * @see {@linkcode Document.createDocuments}
    * @param data      - Initial data used to create this Document, or a Document instance to persist.
    * @param operation - Parameters of the creation operation
    *                    (default: `{}`)
@@ -447,7 +447,7 @@ declare abstract class Document<
 
   /**
    * Update this Document using incremental data, saving it to the database.
-   * @see {@link Document.updateDocuments | `Document.updateDocuments`}
+   * @see {@linkcode Document.updateDocuments}
    * @param data      - Differential update data which modifies the existing values of this document data
    *                    (default: `{}`)
    * @param operation - Parameters of the update operation
@@ -462,7 +462,7 @@ declare abstract class Document<
 
   /**
    * Delete this Document, removing it from the database.
-   * @see {@link Document.deleteDocuments | `Document.deleteDocuments`}
+   * @see {@linkcode Document.deleteDocuments}
    * @param operation - Parameters of the deletion operation
    *                    (default: `{}`)
    * @returns The deleted Document instance
@@ -526,7 +526,7 @@ declare abstract class Document<
 
   /**
    * Create multiple embedded Document instances within this parent Document using provided input data.
-   * @see {@link Document.createDocuments | `Document.createDocuments`}
+   * @see {@linkcode Document.createDocuments}
    * @param embeddedName - The name of the embedded Document type
    * @param data         - An array of data objects used to create multiple documents
    *                       (default: `[]`)
@@ -545,7 +545,7 @@ declare abstract class Document<
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
-   * @see {@link Document.updateDocuments | `Document.updateDocuments`}
+   * @see {@linkcode Document.updateDocuments}
    * @param embeddedName - The name of the embedded Document type
    * @param updates      - An array of differential data objects, each used to update a single Document
    *                       (default: `[]`)
@@ -564,7 +564,7 @@ declare abstract class Document<
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
-   * @see {@link Document.deleteDocuments | `Document.deleteDocuments`}
+   * @see {@linkcode Document.deleteDocuments}
    * @param embeddedName - The name of the embedded Document type
    * @param ids          - An array of string ids for each Document to be deleted
    * @param operation    - Parameters of the database deletion workflow
@@ -975,7 +975,7 @@ declare namespace Document {
    * strong indicator.
    *
    * `UnknownSourceData` covers the case where it's configured without a data model.
-   * See {@link UnknownSystem | `UnknownSystem`} for other possibilities.
+   * See {@linkcode UnknownSystem} for other possibilities.
    */
   interface UnknownSourceData extends AnyObject {
     type: ModuleSubtype;
@@ -1130,14 +1130,14 @@ declare namespace Document {
   type AnyChild<Parent extends Any | null> = Document<Document.Type, {}, Parent>;
 
   /**
-   * @deprecated {@link Document.CreateDataFor | `Document.CreateDataFor`}
+   * @deprecated Replaced with {@linkcode Document.CreateDataFor}
    */
   type ConstructorDataFor<T extends Document.Internal.Constructor> = SchemaField.CreateData<
     T extends { defineSchema: () => infer R extends DataSchema } ? R : never
   >;
 
   /**
-   * Returns the type of the constructor data for the given {@link foundry.abstract.Document | `foundry.abstract.Document`}.
+   * Returns the type of the constructor data for the given {@linkcode foundry.abstract.Document}.
    */
   type CreateDataFor<T extends Document.Internal.Constructor> = SchemaField.CreateData<
     T extends { defineSchema: () => infer R extends DataSchema } ? R : never
@@ -1218,7 +1218,7 @@ declare namespace Document {
     | (DocumentType extends "Wall" ? WallDocument.UpdateData : never);
 
   /**
-   * @deprecated {@link SchemaField.CreateData | `SchemaField.CreateData`}
+   * @deprecated Replaced with {@linkcode SchemaField.CreateData}
    */
   type ConstructorDataForSchema<Schema extends DataSchema> = SchemaField.CreateData<Schema>;
 
@@ -1261,7 +1261,7 @@ declare namespace Document {
     ? FixedInstanceType<D>
     : ToConfiguredStored<D>;
 
-  /** @deprecated {@link Document.TemporaryIf | `Document.TemporaryIf`} */
+  /** @deprecated Replaced with {@linkcode Document.TemporaryIf} */
   type StoredIf<D extends Document.Any, Temporary extends boolean | undefined> = TemporaryIf<D, Temporary>;
 
   type TemporaryIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true
@@ -1280,12 +1280,12 @@ declare namespace Document {
   type ObjectFor<Name extends PlaceableType> = FixedInstanceType<CONFIG[Name]["objectClass"]>;
 
   /**
-   * @deprecated {@link ObjectClassFor | `ObjectClassFor`}
+   * @deprecated Replaced with {@linkcode ObjectClassFor}
    */
   type ConfiguredObjectClassForName<Name extends PlaceableType> = ObjectClassFor<Name>;
 
   /**
-   * @deprecated {@link ObjectFor | `ObjectFor`}
+   * @deprecated Replaced with {@linkcode ObjectFor}
    */
   type ConfiguredObjectInstanceForName<Name extends PlaceableType> = ObjectFor<Name>;
 
@@ -1484,13 +1484,13 @@ declare namespace Document {
 
   /* eslint-disable @typescript-eslint/no-deprecated */
 
-  /** @deprecated Use {@link Database.PreCreateOptions | `Database.PreCreateOptions`} */
+  /** @deprecated Use {@linkcode Database.PreCreateOptions} */
   type PreCreateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "create">,
     "data" | "noHook" | "pack" | "parent"
   >;
 
-  /** @deprecated Use {@link Database.CreateOptions | `Database.CreateOptions`}  */
+  /** @deprecated Use {@linkcode Database.CreateOptions}  */
   type OnCreateOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "create">,
     "pack" | "parentUuid" | "syntheticActorUpdate"
@@ -1508,7 +1508,7 @@ declare namespace Document {
     "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
-  /** @deprecated Use {@link Database.PreDeleteOperationInstance | `Database.PreDeleteOperationInstance`} */
+  /** @deprecated Use {@linkcode Database.PreDeleteOperationInstance} */
   type PreDeleteOptions<Name extends Type> = Omit<
     Document.Database.OperationOf<Name, "delete">,
     "ids" | "deleteAll" | "noHook" | "pack" | "parent"
@@ -1520,10 +1520,10 @@ declare namespace Document {
     "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
   >;
 
-  /** @deprecated Use {@link Database.PreCreateOptions | `Database.PreCreateOptions`} or {@link Database.PreUpdateOptions | `Database.PreUpdateOperation`}*/
+  /** @deprecated Use {@linkcode Database.PreCreateOptions} or {@link Database.PreUpdateOptions | `Database.PreUpdateOperation`}*/
   type PreUpsertOptions<Name extends Type> = PreCreateOptions<Name> | PreUpdateOptions<Name>;
 
-  /** @deprecated Use {@link Database.CreateOptions | `Database.CreateOptions`} or {@link Database.UpdateOptions | `Database.OnUpdateOperation`} */
+  /** @deprecated Use {@linkcode Database.CreateOptions} or {@link Database.UpdateOptions | `Database.OnUpdateOperation`} */
   type OnUpsertOptions<Name extends Type> = OnCreateOptions<Name> | OnUpdateOptions<Name>;
   /* eslint-enable @typescript-eslint/no-deprecated */
 
@@ -1604,16 +1604,16 @@ declare namespace Document {
       pack?: string | null;
     }
 
-    /** Used for {@link Document.createDocuments | `Document.createDocuments`} */
+    /** Used for {@linkcode Document.createDocuments} */
     type CreateOperation<Op extends DatabaseCreateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;
 
-    /** Used for {@link Document.update | `Document.update`} */
+    /** Used for {@linkcode Document.update} */
     type UpdateOperation<Op extends DatabaseUpdateOperation> = InexactPartial<Omit<Op, "updates">>;
 
-    /** Used for {@link Document.delete | `Document.delete`} */
+    /** Used for {@linkcode Document.delete} */
     type DeleteOperation<Op extends DatabaseDeleteOperation> = InexactPartial<Omit<Op, "ids">>;
 
-    /** Used for {@link Document._preCreateOperation | `Document._preCreateOperation`} */
+    /** Used for {@linkcode Document._preCreateOperation} */
     type PreCreateOperationStatic<Op extends DatabaseCreateOperation> = InexactPartial<
       Op,
       Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "renderSheet" | "data" | "noHook" | "pack" | "parent">
@@ -1631,7 +1631,7 @@ declare namespace Document {
       "data" | "pack" | "parentUuid" | "syntheticActorUpdate"
     >;
 
-    /** Used for {@link Document.updateDocuments | `Document.updateDocuments`} */
+    /** Used for {@linkcode Document.updateDocuments} */
     type UpdateDocumentsOperation<Op extends DatabaseUpdateOperation> = NullishProps<
       Omit<Op, "updates" | "modifiedTime">
     >;
@@ -1641,7 +1641,7 @@ declare namespace Document {
       Omit<Op, "updates" | "parent" | "pack">
     >;
 
-    /** Used for {@link Document._preUpdateOperation | `Document._preUpdateOperation`} */
+    /** Used for {@linkcode Document._preUpdateOperation} */
     type PreUpdateOperationStatic<Op extends DatabaseUpdateOperation> = InexactPartial<
       Op,
       Exclude<
@@ -1662,15 +1662,15 @@ declare namespace Document {
       "updates" | "pack" | "parentUuid" | "syntheticActorUpdate"
     >;
 
-    /** Used for {@link Document.deleteDocuments | `Document.deleteDocuments`} */
+    /** Used for {@linkcode Document.deleteDocuments} */
     type DeleteDocumentsOperation<Op extends DatabaseDeleteOperation> = NullishProps<Omit<Op, "ids" | "modifiedTime">>;
 
-    /** Used for {@link Document.delete | `Document.delete`} */
+    /** Used for {@linkcode Document.delete} */
     type DeleteOperationInstance<Op extends DatabaseDeleteOperation> = InexactPartial<
       Omit<Op, "ids" | "parent" | "pack">
     >;
 
-    /** Used for {@link Document._preDeleteOperation | `Document._preDeleteOperation`} */
+    /** Used for {@linkcode Document._preDeleteOperation} */
     type PreDeleteOperationStatic<Op extends DatabaseDeleteOperation> = InexactPartial<
       Op,
       Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "ids" | "deleteAll" | "noHook" | "pack" | "parent">
@@ -1992,17 +1992,17 @@ declare namespace Document {
   interface TestUserPermissionOptions extends _TestUserPermissionsOptions {}
 
   /**
-   * @deprecated {@link ImplementationFor | `ImplementationFor`}
+   * @deprecated Replaced with {@linkcode ImplementationFor}
    */
   type ConfiguredInstanceForName<Name extends Type> = ImplementationFor<Name>;
 
   /**
-   * @deprecated {@link ImplementationClassFor | `ImplementationClassFor`}
+   * @deprecated Replaced with {@linkcode ImplementationClassFor}
    */
   type ConfiguredClassForName<Name extends Type> = ImplementationClassFor<Name>;
 
   /**
-   * @deprecated {@link SchemaField.SourceData | `SchemaField.SourceData<Schema>`}
+   * @deprecated Replaced with {@link SchemaField.SourceData | `SchemaField.SourceData<Schema>`}
    */
   type ToObjectFalseType<T extends Document.Internal.Instance.Any> = T extends {
     toObject: (source: false) => infer U;
@@ -2011,7 +2011,7 @@ declare namespace Document {
     : T;
 
   /**
-   * @deprecated {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
+   * @deprecated Replaced with {@linkcode Document.Database.OperationOf}
    */
   type DatabaseOperationsFor<
     Name extends Document.Type,
@@ -2020,7 +2020,7 @@ declare namespace Document {
   > = Document.Database.OperationOf<Name, ConcreteOperation>;
 
   /**
-   * @deprecated {@link CreateDataForName | `CreateDataForName`}
+   * @deprecated Replaced with {@linkcode CreateDataForName}
    */
   type ConstructorDataForName<T extends Document.Type> = CreateData[T];
 
@@ -2145,13 +2145,13 @@ declare namespace Document {
     : never;
 }
 
-/** @deprecated {@link Document.Database.Operation | `Document.Database.Operation`} */
+/** @deprecated Replaced with {@linkcode Document.Database.Operation} */
 export type Operation = Document.Database.Operation;
 
 /* eslint-disable @typescript-eslint/no-deprecated */
 
 /**
- * @deprecated if you want to get individual operations see {@link Document.Database.OperationOf | `Document.Database.OperationOf`}
+ * @deprecated if you want to get individual operations see {@linkcode Document.Database.OperationOf}
  */
 export interface DatabaseOperationMap {
   ActiveEffect: ActiveEffect.DatabaseOperations;

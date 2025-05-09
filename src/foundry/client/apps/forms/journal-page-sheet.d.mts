@@ -251,7 +251,7 @@ declare global {
   }
 
   /**
-   * A subclass of {@link JournalTextPageSheet | `JournalTextPageSheet`} that implements a markdown editor for editing the text content.
+   * A subclass of {@linkcode JournalTextPageSheet} that implements a markdown editor for editing the text content.
    */
   class MarkdownJournalPageSheet extends JournalTextPageSheet {
     /**
@@ -294,7 +294,7 @@ declare global {
   }
 
   /**
-   * A subclass of {@link JournalTextPageSheet | `JournalTextPageSheet`} that implements a TinyMCE editor.
+   * A subclass of {@linkcode JournalTextPageSheet} that implements a TinyMCE editor.
    */
   class JournalTextTinyMCESheet extends JournalTextPageSheet {
     override getData(

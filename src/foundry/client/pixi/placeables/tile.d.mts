@@ -4,10 +4,10 @@ import type { FixedInstanceType, HandleEmptyObject } from "fvtt-types/utils";
 declare global {
   /**
    * A Tile is an implementation of PlaceableObject which represents a static piece of artwork or prop within the Scene.
-   * Tiles are drawn inside the {@link TilesLayer | `TilesLayer`} container.
+   * Tiles are drawn inside the {@linkcode TilesLayer} container.
    *
-   * @see {@link TileDocument | `TileDocument`}
-   * @see {@link TilesLayer | `TilesLayer`}
+   * @see {@linkcode TileDocument}
+   * @see {@linkcode TilesLayer}
    */
   class Tile extends PlaceableObject<TileDocument.Implementation> {
     static override embeddedName: "Tile";
@@ -250,40 +250,40 @@ declare global {
   namespace Tile {
     /**
      * The implementation of the `Tile` placeable configured through `CONFIG.Tile.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link TileDocument.Implementation | `TileDocument.Implementation`}
+     * Not to be confused with {@linkcode TileDocument.Implementation}
      * which refers to the implementation for the Tile document.
      */
     type Implementation = FixedInstanceType<ImplementationClass>;
 
     /**
      * The implementation of the `Tile` placeable configured through `CONFIG.Tile.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link TileDocument.ImplementationClass | `TileDocument.ImplementationClass`}
+     * Not to be confused with {@linkcode TileDocument.ImplementationClass}
      * which refers to the implementation for the Tile document.
      */
     // eslint-disable-next-line no-restricted-syntax
     type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Tile>;
 
     /**
-     * @deprecated {@link ImplementationClass | `ImplementationClass`}
+     * @deprecated Replaced with {@linkcode ImplementationClass}
      */
     type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Implementation | `Implementation`}
+     * @deprecated Replaced with {@linkcode Implementation}
      */
     type Object = Implementation;
 
     /**
-     * @deprecated {@link Tile.ImplementationClass | `Tile.ImplementationClass`}
+     * @deprecated Replaced with {@linkcode Tile.ImplementationClass}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Tile.Implementation | `Tile.Implementation`}
+     * @deprecated Replaced with {@linkcode Tile.Implementation}
      */
     type ConfiguredInstance = Implementation;
 

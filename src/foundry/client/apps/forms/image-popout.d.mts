@@ -1,7 +1,7 @@
 import type { MaybePromise } from "fvtt-types/utils";
 
 declare global {
-  /** @deprecated {@link ImagePopout.Options | `ImagePopout.Options`} */
+  /** @deprecated Replaced with {@linkcode ImagePopout.Options} */
   type ImagePopoutOptions = ImagePopout.Options;
 
   /**
@@ -171,7 +171,7 @@ declare global {
       caption: boolean;
 
       /**
-       * The UUID of some related {@link Document | `Document`}.
+       * The UUID of some related {@linkcode Document}.
        * @defaultValue `null`
        */
       uuid: string | null;

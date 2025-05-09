@@ -310,12 +310,12 @@ declare namespace BaseDrawing {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseDrawing.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseDrawing.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseDrawing.CreateData | `BaseDrawing.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseDrawing.CreateData}
    */
   type ConstructorData = BaseDrawing.CreateData;
 }

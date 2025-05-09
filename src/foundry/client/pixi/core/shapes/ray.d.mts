@@ -3,7 +3,7 @@ import type { LineIntersection } from "#common/utils/geometry.d.mts";
 
 declare global {
   /**
-   * @deprecated {@link Ray.Intersection | `Ray.Intersection`}
+   * @deprecated Replaced with {@linkcode Ray.Intersection}
    */
   type RayIntersection = Ray.Intersection;
 
@@ -160,7 +160,7 @@ declare global {
 
     /**
      * Find the point I[x,y] and distance t* on ray R(t) which intersects another ray
-     * @see {@link foundry.utils.lineLineIntersection | `foundry.utils.lineLineIntersection`}
+     * @see {@linkcode foundry.utils.lineLineIntersection}
      */
     intersectSegment(coords: Canvas.PairOfPointsTuple): LineIntersection | null;
   }

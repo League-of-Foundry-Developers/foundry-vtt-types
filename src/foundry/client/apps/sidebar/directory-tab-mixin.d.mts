@@ -260,7 +260,7 @@ declare class DirectoryApplication {
 
 declare global {
   /**
-   * @deprecated {@link DirectoryApplicationMixin.Entry | `DirectoryApplicationMixin.Entry`}
+   * @deprecated Replaced with {@linkcode DirectoryApplicationMixin.Entry}
    */
   type DirectoryMixinEntry = DirectoryApplicationMixin.Entry;
 

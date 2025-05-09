@@ -12,8 +12,8 @@ import PointLightSource = foundry.canvas.sources.PointLightSource;
 declare global {
   /**
    * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.
-   * @see {@link AmbientLightDocument | `AmbientLightDocument`}
-   * @see {@link LightingLayer | `LightingLayer`}
+   * @see {@linkcode AmbientLightDocument}
+   * @see {@linkcode LightingLayer}
    */
   class AmbientLight extends PlaceableObject<AmbientLightDocument.Implementation> {
     /**
@@ -186,40 +186,40 @@ declare global {
   namespace AmbientLight {
     /**
      * The implementation of the `AmbientLight` placeable configured through `CONFIG.AmbientLight.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link AmbientLightDocument.Implementation | `AmbientLightDocument.Implementation`}
+     * Not to be confused with {@linkcode AmbientLightDocument.Implementation}
      * which refers to the implementation for the AmbientLight document.
      */
     type Implementation = FixedInstanceType<ImplementationClass>;
 
     /**
      * The implementation of the `AmbientLight` placeable configured through `CONFIG.AmbientLight.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link AmbientLightDocument.ImplementationClass | `AmbientLightDocument.ImplementationClass`}
+     * Not to be confused with {@linkcode AmbientLightDocument.ImplementationClass}
      * which refers to the implementation for the AmbientLight document.
      */
     // eslint-disable-next-line no-restricted-syntax
     type ImplementationClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;
 
     /**
-     * @deprecated {@link ImplementationClass | `ImplementationClass`}
+     * @deprecated Replaced with {@linkcode ImplementationClass}
      */
     type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Implementation | `Implementation`}
+     * @deprecated Replaced with {@linkcode Implementation}
      */
     type Object = Implementation;
 
     /**
-     * @deprecated {@link AmbientLight.ImplementationClass | `AmbientLight.ImplementationClass`}
+     * @deprecated Replaced with {@linkcode AmbientLight.ImplementationClass}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link AmbientLight.Implementation | `AmbientLight.Implementation`}
+     * @deprecated Replaced with {@linkcode AmbientLight.Implementation}
      */
     type ConfiguredInstance = Implementation;
 

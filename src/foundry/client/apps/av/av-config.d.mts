@@ -11,7 +11,7 @@ declare global {
     Options
   > {
     /**
-     * @param object  - The {@link AVMaster | `AVMaster`} instance being configured.
+     * @param object  - The {@linkcode AVMaster} instance being configured.
      * @param options - Application configuration options.
      */
     constructor(object?: AVMaster, options?: Partial<Options>);

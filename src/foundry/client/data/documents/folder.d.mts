@@ -25,13 +25,13 @@ declare global {
 
     /**
      * The implementation of the `Folder` document instance configured through `CONFIG.Folder.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredFolder | `fvtt-types/configuration/ConfiguredFolder`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredFolder | `fvtt-types/configuration/ConfiguredFolder`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `Folder` document configured through `CONFIG.Folder.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -60,11 +60,11 @@ declare global {
      * built in subtypes usable for `Folder`.
      *
      * Each of `Folder`'s subtypes correspond to something that it is intended to contain. This
-     * includes various documents as well as a {@link Compendium | `Compendium`}. The documents a
-     * `Folder` can contain specifically are an {@link Actor | `Actor`}, {@link Adventure | `Adventure`},
-     * {@link Item | `Item`}, {@link Scene | `Scene`}, {@link JournalEntry | `JournalEntry`},
-     * {@link Playlist | `Playlist`}, {@link RollTable | `RollTable`}, {@link Cards | `Cards`}, or a
-     * {@link Macro | `Macro`}
+     * includes various documents as well as a {@linkcode Compendium}. The documents a
+     * `Folder` can contain specifically are an {@linkcode Actor}, {@linkcode Adventure},
+     * {@linkcode Item}, {@linkcode Scene}, {@linkcode JournalEntry},
+     * {@linkcode Playlist}, {@linkcode RollTable}, {@linkcode Cards}, or a
+     * {@linkcode Macro}
      */
     type SubType = Game.Model.TypeNames<Name>;
 
@@ -90,7 +90,7 @@ declare global {
      * {@link ConfiguredFolder | `fvtt-types/configuration/ConfiguredFolder`}.
      *
      * Note that `Folder` does not have a `system` property and therefore there is no way for a user
-     * to configure custom subtypes. See {@link Folder.SubType | `Folder.SubType`} for more information.
+     * to configure custom subtypes. See {@linkcode Folder.SubType} for more information.
      */
     // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredFolder<Type>, Folder<Type>>;
@@ -161,20 +161,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link Folder.Source | `Folder.Source`}
+     * @deprecated Replaced with {@linkcode Folder.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link Folder.create | `Folder.create`}
+     * The data necessary to create a document. Used in places like {@linkcode Folder.create}
      * and {@link Folder | `new Folder(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -184,7 +184,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Folder.name | `Folder#name`}.
      *
-     * This is data transformed from {@link Folder.Source | `Folder.Source`} and turned into more
+     * This is data transformed from {@linkcode Folder.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -198,10 +198,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link Folder | `Folder`}. This is the source of truth for how an Folder document
+     * The schema for {@linkcode Folder}. This is the source of truth for how an Folder document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link Folder | `Folder`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode Folder}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -258,7 +258,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
+       * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -277,17 +277,17 @@ declare global {
       /** Options passed along in Update operations for Folders */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Folder.UpdateData, Folder.Parent> {}
 
-      /** Operation for {@link Folder.createDocuments | `Folder.createDocuments`} */
+      /** Operation for {@linkcode Folder.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Folder.Database.Create<Temporary>> {}
 
-      /** Operation for {@link Folder.updateDocuments | `Folder.updateDocuments`} */
+      /** Operation for {@linkcode Folder.updateDocuments} */
       interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Folder.Database.Update> {}
 
-      /** Operation for {@link Folder.deleteDocuments | `Folder.deleteDocuments`} */
+      /** Operation for {@linkcode Folder.deleteDocuments} */
       interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Folder.Database.Delete> {}
 
-      /** Operation for {@link Folder.create | `Folder.create`} */
+      /** Operation for {@linkcode Folder.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Folder.Database.Create<Temporary>> {}
 
@@ -296,7 +296,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link Folder.get | `Folder.get`} */
+      /** Options for {@linkcode Folder.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link Folder._preCreate | `Folder#_preCreate`} */
@@ -305,7 +305,7 @@ declare global {
       /** Options for {@link Folder._onCreate | `Folder#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link Folder._preCreateOperation | `Folder._preCreateOperation`} */
+      /** Operation for {@linkcode Folder._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Folder.Database.Create> {}
 
       /** Operation for {@link Folder._onCreateOperation | `Folder#_onCreateOperation`} */
@@ -317,7 +317,7 @@ declare global {
       /** Options for {@link Folder._onUpdate | `Folder#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link Folder._preUpdateOperation | `Folder._preUpdateOperation`} */
+      /** Operation for {@linkcode Folder._preUpdateOperation} */
       interface PreUpdateOperation extends Folder.Database.Update {}
 
       /** Operation for {@link Folder._onUpdateOperation | `Folder._preUpdateOperation`} */
@@ -335,13 +335,13 @@ declare global {
       /** Options for {@link Folder._onDeleteOperation | `Folder#_onDeleteOperation`} */
       interface OnDeleteOperation extends Folder.Database.Delete {}
 
-      /** Context for {@link Folder._onDeleteOperation | `Folder._onDeleteOperation`} */
+      /** Context for {@linkcode Folder._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<Folder.Parent> {}
 
-      /** Context for {@link Folder._onCreateDocuments | `Folder._onCreateDocuments`} */
+      /** Context for {@linkcode Folder._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<Folder.Parent> {}
 
-      /** Context for {@link Folder._onUpdateDocuments | `Folder._onUpdateDocuments`} */
+      /** Context for {@linkcode Folder._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<Folder.Parent> {}
 
       /**
@@ -386,28 +386,28 @@ declare global {
     }
 
     /**
-     * @deprecated {@link Folder.Database | `Folder.DatabaseOperation`}
+     * @deprecated Replaced with {@link Folder.Database | `Folder.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Folder.Implementation> {}
 
     /**
-     * @deprecated {@link Folder.SubType | `Folder.SubType`}
+     * @deprecated Replaced with {@linkcode Folder.SubType}
      */
     type TypeNames = Folder.SubType;
 
     /**
-     * @deprecated {@link Folder.CreateData | `Folder.CreateData`}
+     * @deprecated Replaced with {@linkcode Folder.CreateData}
      */
     interface ConstructorData extends Folder.CreateData {}
 
     /**
-     * @deprecated {@link Folder.implementation | `Folder.ImplementationClass`}
+     * @deprecated Replaced with {@link Folder.implementation | `Folder.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Folder.Implementation | `Folder.Implementation`}
+     * @deprecated Replaced with {@linkcode Folder.Implementation}
      */
     type ConfiguredInstance = Implementation;
 
@@ -433,8 +433,8 @@ declare global {
   /**
    * The client-side Folder document which extends the common BaseFolder model.
    *
-   * @see {@link Folders | `Folders`}            The world-level collection of Folder documents
-   * @see {@link FolderConfig | `FolderConfig`}       The Folder configuration application
+   * @see {@linkcode Folders}            The world-level collection of Folder documents
+   * @see {@linkcode FolderConfig}       The Folder configuration application
    */
   class Folder<out SubType extends Folder.SubType = Folder.SubType> extends ClientDocumentMixin(
     foundry.documents.BaseFolder,
@@ -448,13 +448,13 @@ declare global {
     /**
      * The depth of this folder in its sidebar tree
      *
-     * @remarks For folders that have been populated by the {@link SidebarDirectory | `SidebarDirectory`}, this is always be defined
+     * @remarks For folders that have been populated by the {@linkcode SidebarDirectory}, this is always be defined
      */
     depth?: number;
 
     /**
      * An array of other Folders which are the displayed children of this one. This differs from the results of
-     * {@link Folder.getSubfolders | `Folder.getSubfolders`} because reports the subset of child folders which  are displayed to the current User
+     * {@linkcode Folder.getSubfolders} because reports the subset of child folders which  are displayed to the current User
      * in the UI.
      */
     children: Folder.Implementation[];

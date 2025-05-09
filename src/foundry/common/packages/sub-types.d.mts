@@ -5,7 +5,7 @@ import type { DataField, ObjectField } from "../data/fields.d.mts";
 export type DocumentTypesConfiguration = Record<string, Record<string, AnyObject>>;
 
 /**
- * A special {@link ObjectField | `ObjectField`} available to packages which configures any additional Document subtypes
+ * A special {@linkcode ObjectField} available to packages which configures any additional Document subtypes
  * provided by the package.
  */
 declare class AdditionalTypesField<

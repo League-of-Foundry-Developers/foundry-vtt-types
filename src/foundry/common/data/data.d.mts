@@ -112,7 +112,7 @@ declare namespace LightData {
     /**
      * The coloration technique applied in the shader
      * @defaultValue `1`
-     * @remarks This should match the `id` of the desired property of {@link AdaptiveLightingShader.SHADER_TECHNIQUES | `AdaptiveLightingShader.SHADER_TECHNIQUES`}
+     * @remarks This should match the `id` of the desired property of {@linkcode AdaptiveLightingShader.SHADER_TECHNIQUES}
      */
     coloration: fields.NumberField<{ required: true; integer: true; initial: 1 }>;
 
@@ -444,7 +444,7 @@ declare namespace TextureData {
   }
 
   /**
-   * The `initial` property of the `srcOptions` parameter of the {@link TextureData | `TextureData`} constructor
+   * The `initial` property of the `srcOptions` parameter of the {@linkcode TextureData} constructor
    * is not the `initial` for any one field, but instead is an object that gets parcelled out by key to the
    * fields of the schema
    *
@@ -465,7 +465,7 @@ declare namespace TextureData {
      * The URL of the texture source.
      * @defaultValue `initial.src ?? null`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     src: fields.FilePathField<{
       categories: NullishCoalesce<Options["categories"], DefaultOptions["categories"]>;
@@ -478,7 +478,7 @@ declare namespace TextureData {
      * The X coordinate of the texture anchor.
      * @defaultValue `initial.anchorX ?? 0`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     anchorX: fields.NumberField<{
       nullable: false;
@@ -489,7 +489,7 @@ declare namespace TextureData {
      * The Y coordinate of the texture anchor.
      * @defaultValue `initial.anchorY ?? 0`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     anchorY: fields.NumberField<{
       nullable: false;
@@ -500,7 +500,7 @@ declare namespace TextureData {
      * The X offset of the texture with (0,0) in the top left.
      * @defaultValue `initial.offsetX ?? 0`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     offsetX: fields.NumberField<{
       nullable: false;
@@ -512,7 +512,7 @@ declare namespace TextureData {
      * The Y offset of the texture with (0,0) in the top left.
      * @defaultValue `initial.offsetY ?? 0`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     offsetY: fields.NumberField<{
       nullable: false;
@@ -523,7 +523,7 @@ declare namespace TextureData {
     /**
      * @defaultValue `initial.fit ?? "fill"`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     fit: fields.StringField<
       {
@@ -539,7 +539,7 @@ declare namespace TextureData {
      * The scale of the texture in the X dimension.
      * @defaultValue `initial.scaleX ?? 1`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     scaleX: fields.NumberField<{
       nullable: false;
@@ -550,7 +550,7 @@ declare namespace TextureData {
      * The scale of the texture in the Y dimension.
      * @defaultValue `initial.scaleY ?? 1`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     scaleY: fields.NumberField<{
       nullable: false;
@@ -561,7 +561,7 @@ declare namespace TextureData {
      * An angle of rotation by which this texture is rotated around its center.
      * @defaultValue `initial.rotation ?? 0`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     rotation: fields.AngleField<{
       initial: NullishCoalesce<GetKey<Options["initial"], "rotation", 0>, 0>;
@@ -571,7 +571,7 @@ declare namespace TextureData {
      * The tint applied to the texture.
      * @defaultValue `initial.tint ?? "#ffffff"`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     tint: fields.ColorField<{
       nullable: false;
@@ -583,7 +583,7 @@ declare namespace TextureData {
      * w.r.t. to occlusion testing and light/weather blocking.
      * @defaultValue `initial.alphaThreshold ?? 0`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     alphaThreshold: fields.AlphaField<{
       nullable: false;
@@ -593,7 +593,7 @@ declare namespace TextureData {
 }
 
 /**
- * A {@link fields.SchemaField | `fields.SchemaField`} subclass used to represent texture data.
+ * A {@linkcode fields.SchemaField} subclass used to represent texture data.
  */
 declare class TextureData<
   SrcOptions extends TextureData.SrcOptions = TextureData.DefaultOptions,
@@ -630,7 +630,7 @@ declare namespace PrototypeToken {
    * @remarks This has `PrototypeToken.#applyDefaultTokenSettings` run on it before actually being returned, so `initial`
    * values may not be exactly accurate as typed
    * @privateRemarks Since the {@link TokenDocument.Schema | `TokenDocument` schema} also extends `SharedProtoSchema`,
-   * overrides & extensions specific to {@link PrototypeToken | `PrototypeToken`} must go here
+   * overrides & extensions specific to {@linkcode PrototypeToken} must go here
    */
   interface Schema extends TokenDocument.SharedProtoSchema {
     /**
@@ -649,7 +649,7 @@ declare namespace PrototypeToken {
   }
 
   /**
-   * {@link PrototypeToken.CreateData | `PrototypeToken.CreateData`}
+   * {@linkcode PrototypeToken.CreateData}
    */
   type ConstructorData = CreateData;
 

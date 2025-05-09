@@ -1,6 +1,6 @@
 import type { CircleShapeData, EllipseShapeData, PolygonShapeData, RectangleShapeData } from "../../data/_module.d.mts";
 
-/** A shape of a {@link Region | `Region`} */
+/** A shape of a {@linkcode Region} */
 declare abstract class RegionShape<ShapeData extends RegionShape.ShapeData> {
   /**
    * Create the RegionShape from the shape data.
@@ -70,7 +70,7 @@ declare namespace RegionShape {
 }
 
 /**
- * A circle of a {@link Region | `Region`}
+ * A circle of a {@linkcode Region}
  * @privateRemarks Technically `ShapeData` should extend `CircleShapeData`, but it's easier to instantiate if it's `RegionShape.ShapeData`.
  */
 declare class RegionCircle<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
@@ -84,7 +84,7 @@ declare class RegionCircle<ShapeData extends RegionShape.ShapeData> extends Regi
 }
 
 /**
- * An ellipse of a {@link Region | `Region`}
+ * An ellipse of a {@linkcode Region}
  * @privateRemarks Technically `ShapeData` should extend `EllipseShapeData`, but it's easier to instantiate if it's `RegionShape.ShapeData`.
  */
 declare class RegionEllipse<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
@@ -98,7 +98,7 @@ declare class RegionEllipse<ShapeData extends RegionShape.ShapeData> extends Reg
 }
 
 /**
- * A polygon of a {@link Region | `Region`}
+ * A polygon of a {@linkcode Region}
  * @privateRemarks Technically `ShapeData` should extend `PolygonShapeData`, but it's easier to instantiate if it's `RegionShape.ShapeData`.
  */
 declare class RegionPolygon<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {
@@ -110,7 +110,7 @@ declare class RegionPolygon<ShapeData extends RegionShape.ShapeData> extends Reg
 }
 
 /**
- * A rectangle of a {@link Region | `Region`}
+ * A rectangle of a {@linkcode Region}
  * @privateRemarks Technically `ShapeData` should extend `RectangleShapeData`, but it's easier to instantiate if it's `RegionShape.ShapeData`.
  */
 declare class RegionRectangle<ShapeData extends RegionShape.ShapeData> extends RegionShape<ShapeData> {

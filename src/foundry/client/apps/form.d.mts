@@ -5,7 +5,7 @@ import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "#common/prosemirror/_m
 import type Document from "#common/abstract/document.d.mts";
 
 declare global {
-  /** @deprecated {@link FormApplication.Options | `FormApplication.Options`} */
+  /** @deprecated Replaced with {@linkcode FormApplication.Options} */
   type FormApplicationOptions = FormApplication.Options;
 
   /**
@@ -19,7 +19,7 @@ declare global {
    * @typeParam Options        - the type of the options object
    * @typeParam ConcreteObject - while this is called object this can actually be any arbitrary value.
    * For example `ImagePopout` sets this to a string. This is still typically a
-   * {@link Document | `Document`} instance or an object in general which is modified by this form
+   * {@linkcode Document} instance or an object in general which is modified by this form
    */
   abstract class FormApplication<
     ConcreteObject = unknown,
@@ -61,7 +61,7 @@ declare global {
     /**
      * Assign the default options which are supported by the entity edit sheet.
      * @returns The default options for this FormApplication class
-     * @see {@link Application.defaultOptions | `Application.defaultOptions`}
+     * @see {@linkcode Application.defaultOptions}
      * @defaultValue
      * ```typescript
      * foundry.utils.mergeObject(super.defaultOptions, {
@@ -159,7 +159,7 @@ declare global {
     /**
      * Activate a named TinyMCE text editor
      * @param name           - The named data field which the editor modifies.
-     * @param options        - Editor initialization options passed to {@link TextEditor.create | `TextEditor.create`}.
+     * @param options        - Editor initialization options passed to {@linkcode TextEditor.create}.
      *                         (default: `{}`)
      * @param initialContent - Initial text content for the editor area.
      *                         (default: `""`)
@@ -238,7 +238,7 @@ declare global {
 
     type ConstructorArguments<ConcreteObject, Options extends FormApplication.Options> =
       // Note(LukeAbby): Uses a strict equality test to avoid `object` and `{}` counting as the same.
-      // See {@link HandleEmptyObject | `HandleEmptyObject`} for more information.
+      // See {@linkcode HandleEmptyObject} for more information.
       (<T>() => T extends FormApplication.NoObject ? 1 : 0) extends <T>() => T extends ConcreteObject ? 1 : 0
         ? [object?: ConcreteObject, options?: Partial<Options>]
         : [ConcreteObject] extends [undefined]
@@ -350,7 +350,7 @@ declare global {
   }
 
   /**
-   * @deprecated {@link DocumentSheet.Options | `DocumentSheet.Options`}
+   * @deprecated Replaced with {@linkcode DocumentSheet.Options}
    */
   type DocumentSheetOptions<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> =
     DocumentSheet.Options<ConcreteDocument>;
@@ -489,11 +489,11 @@ declare global {
       extends FormApplication.Options {
       /**
        * The default permissions required to view this Document sheet.
-       * @defaultValue {@link CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED | `CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED`}
+       * @defaultValue {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED}
        */
       viewPermission: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
-      /** An array of {@link HTMLSecret | `HTMLSecret`} configuration objects. */
+      /** An array of {@linkcode HTMLSecret} configuration objects. */
       secrets: HTMLSecret.Configuration<ConcreteDocument>[];
     }
   }

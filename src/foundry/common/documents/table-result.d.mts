@@ -287,16 +287,16 @@ declare namespace BaseTableResult {
    */
   type Properties = SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseTableResult.SubType | `BaseTableResult.SubType`} */
+  /** @deprecated Replaced with {@linkcode BaseTableResult.SubType} */
   type TypeNames = SubType;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseTableResult.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseTableResult.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseTableResult.CreateData | `BaseTableResult.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseTableResult.CreateData}
    */
   type ConstructorData = BaseTableResult.CreateData;
 }

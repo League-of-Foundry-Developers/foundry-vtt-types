@@ -3,7 +3,7 @@ import type { DataModelValidationError } from "#common/data/validation-failure.d
 
 declare global {
   /**
-   * @deprecated {@link ClientIssues.ModuleSubTypeCounts | `ClientIssues.ModuleSubTypeCounts`}
+   * @deprecated Replaced with {@linkcode ClientIssues.ModuleSubTypeCounts}
    */
   type ModuleSubTypeCounts = ClientIssues.ModuleSubTypeCounts;
 

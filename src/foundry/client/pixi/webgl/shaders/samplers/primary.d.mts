@@ -2,7 +2,7 @@ import type { Identity } from "fvtt-types/utils";
 
 declare global {
   /**
-   * The base shader class of {@link PrimarySpriteMesh | `PrimarySpriteMesh`}.
+   * The base shader class of {@linkcode PrimarySpriteMesh}.
    */
   class PrimaryBaseSamplerShader extends OccludableSamplerShader {
     /**

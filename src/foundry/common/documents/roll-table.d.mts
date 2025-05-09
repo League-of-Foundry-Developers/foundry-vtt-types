@@ -303,12 +303,12 @@ declare namespace BaseRollTable {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseRollTable.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseRollTable.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseRollTable.CreateData | `BaseRollTable.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseRollTable.CreateData}
    */
   type ConstructorData = BaseRollTable.CreateData;
 }

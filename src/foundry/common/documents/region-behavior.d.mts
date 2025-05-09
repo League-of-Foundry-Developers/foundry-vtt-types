@@ -315,16 +315,16 @@ declare namespace BaseRegionBehavior {
    */
   type Properties = SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseRegionBehavior.SubType | `BaseRegionBehavior.SubType`} */
+  /** @deprecated Replaced with {@linkcode BaseRegionBehavior.SubType} */
   type TypeNames = SubType;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseRegionBehavior.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseRegionBehavior.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseRegionBehavior.CreateData | `BaseRegionBehavior.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseRegionBehavior.CreateData}
    */
   type ConstructorData = BaseRegionBehavior.CreateData;
 }

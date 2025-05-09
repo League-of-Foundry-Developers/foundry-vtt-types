@@ -222,7 +222,7 @@ declare global {
     set texture(texture);
 
     /**
-     * The anchor sets the origin point of the sprite. The default value is taken from the {@link PIXI.Texture | `PIXI.Texture`}
+     * The anchor sets the origin point of the sprite. The default value is taken from the {@linkcode PIXI.Texture}
      * and passed to the constructor.
      *
      * The default is `(0,0)`, this means the sprite's origin is the top left.
@@ -314,7 +314,7 @@ declare global {
      * Create a SpriteMesh from another source.
      * You can specify texture options and a specific shader class derived from BaseSamplerShader.
      * @param source         - Source to create texture from.
-     * @param textureOptions - See {@link PIXI.BaseTexture | `PIXI.BaseTexture`}'s constructor for options.
+     * @param textureOptions - See {@linkcode PIXI.BaseTexture}'s constructor for options.
      * @param shaderClass    - The shader class to use. BaseSamplerShader by default.
      */
     static from(

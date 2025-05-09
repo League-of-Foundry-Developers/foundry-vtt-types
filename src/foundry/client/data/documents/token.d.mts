@@ -27,13 +27,13 @@ declare global {
 
     /**
      * The implementation of the `TokenDocument` document instance configured through `CONFIG.Token.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTokenDocument | `fvtt-types/configuration/ConfiguredTokenDocument`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredTokenDocument | `fvtt-types/configuration/ConfiguredTokenDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `TokenDocument` document configured through `CONFIG.Token.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -198,20 +198,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link TokenDocument.Source | `TokenDocument.Source`}
+     * @deprecated Replaced with {@linkcode TokenDocument.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link TokenDocument.create | `TokenDocument.create`}
+     * The data necessary to create a document. Used in places like {@linkcode TokenDocument.create}
      * and {@link TokenDocument | `new TokenDocument(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -221,7 +221,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link TokenDocument.name | `TokenDocument#name`}.
      *
-     * This is data transformed from {@link TokenDocument.Source | `TokenDocument.Source`} and turned into more
+     * This is data transformed from {@linkcode TokenDocument.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -397,7 +397,7 @@ declare global {
 
       /**
        * Configuration of the light source that this Token emits
-       * @defaultValue see {@link LightData | `LightData`}
+       * @defaultValue see {@linkcode LightData}
        */
       light: fields.EmbeddedDataField<typeof LightData>;
 
@@ -595,10 +595,10 @@ declare global {
     }
 
     /**
-     * The schema for {@link TokenDocument | `TokenDocument`}. This is the source of truth for how an TokenDocument document
+     * The schema for {@linkcode TokenDocument}. This is the source of truth for how an TokenDocument document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link TokenDocument | `TokenDocument`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode TokenDocument}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -695,19 +695,19 @@ declare global {
         animation: AnyObject;
       }
 
-      /** Operation for {@link TokenDocument.createDocuments | `TokenDocument.createDocuments`} */
+      /** Operation for {@linkcode TokenDocument.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>> {}
 
-      /** Operation for {@link TokenDocument.updateDocuments | `TokenDocument.updateDocuments`} */
+      /** Operation for {@linkcode TokenDocument.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<TokenDocument.Database.Update> {}
 
-      /** Operation for {@link TokenDocument.deleteDocuments | `TokenDocument.deleteDocuments`} */
+      /** Operation for {@linkcode TokenDocument.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<TokenDocument.Database.Delete> {}
 
-      /** Operation for {@link TokenDocument.create | `TokenDocument.create`} */
+      /** Operation for {@linkcode TokenDocument.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>> {}
 
@@ -716,7 +716,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link TokenDocument.get | `TokenDocument.get`} */
+      /** Options for {@linkcode TokenDocument.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link TokenDocument._preCreate | `TokenDocument#_preCreate`} */
@@ -725,7 +725,7 @@ declare global {
       /** Options for {@link TokenDocument._onCreate | `TokenDocument#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link TokenDocument._preCreateOperation | `TokenDocument._preCreateOperation`} */
+      /** Operation for {@linkcode TokenDocument._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TokenDocument.Database.Create> {}
 
       /** Operation for {@link TokenDocument._onCreateOperation | `TokenDocument#_onCreateOperation`} */
@@ -737,7 +737,7 @@ declare global {
       /** Options for {@link TokenDocument._onUpdate | `TokenDocument#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link TokenDocument._preUpdateOperation | `TokenDocument._preUpdateOperation`} */
+      /** Operation for {@linkcode TokenDocument._preUpdateOperation} */
       interface PreUpdateOperation extends TokenDocument.Database.Update {}
 
       /** Operation for {@link TokenDocument._onUpdateOperation | `TokenDocument._preUpdateOperation`} */
@@ -755,13 +755,13 @@ declare global {
       /** Options for {@link TokenDocument._onDeleteOperation | `TokenDocument#_onDeleteOperation`} */
       interface OnDeleteOperation extends TokenDocument.Database.Delete {}
 
-      /** Context for {@link TokenDocument._onDeleteOperation | `TokenDocument._onDeleteOperation`} */
+      /** Context for {@linkcode TokenDocument._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
 
-      /** Context for {@link TokenDocument._onCreateDocuments | `TokenDocument._onCreateDocuments`} */
+      /** Context for {@linkcode TokenDocument._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
 
-      /** Context for {@link TokenDocument._onUpdateDocuments | `TokenDocument._onUpdateDocuments`} */
+      /** Context for {@linkcode TokenDocument._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
 
       /**
@@ -864,23 +864,23 @@ declare global {
       | ActorDelta.OnDeleteDescendantDocumentsArgs;
 
     /**
-     * @deprecated {@link TokenDocument.Database | `TokenDocument.DatabaseOperation`}
+     * @deprecated Replaced with {@link TokenDocument.Database | `TokenDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<TokenDocument.Implementation> {}
 
     /**
-     * @deprecated {@link TokenDocument.CreateData | `TokenDocument.CreateData`}
+     * @deprecated Replaced with {@linkcode TokenDocument.CreateData}
      */
     interface ConstructorData extends TokenDocument.CreateData {}
 
     /**
-     * @deprecated {@link TokenDocument.implementation | `TokenDocument.ImplementationClass`}
+     * @deprecated Replaced with {@link TokenDocument.implementation | `TokenDocument.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link TokenDocument.Implementation | `TokenDocument.Implementation`}
+     * @deprecated Replaced with {@linkcode TokenDocument.Implementation}
      */
     type ConfiguredInstance = Implementation;
 
@@ -927,8 +927,8 @@ declare global {
   /**
    * The client-side Token document which extends the common BaseToken model.
    *
-   * @see {@link Scene | `Scene`}               The Scene document type which contains Token embedded documents
-   * @see {@link TokenConfig | `TokenConfig`}      The Token configuration application
+   * @see {@linkcode Scene}               The Scene document type which contains Token embedded documents
+   * @see {@linkcode TokenConfig}      The Token configuration application
    */
   class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
     /**
@@ -1336,12 +1336,12 @@ declare global {
   }
 
   /**
-   * @deprecated {@link TokenDocument.TrackedAttributesDescription | `TokenDocument.TrackedAttributesDescription`}
+   * @deprecated Replaced with {@linkcode TokenDocument.TrackedAttributesDescription}
    */
   type TrackedAttributesDescription = TokenDocument.TrackedAttributesDescription;
 
   /**
-   * @deprecated {@link TokenDocument.CreateCombatantOptions | `TokenDocument.CreateCombatantOptions`}
+   * @deprecated Replaced with {@linkcode TokenDocument.CreateCombatantOptions}
    */
   type CreateCombatantOptions = TokenDocument.CreateCombatantOptions;
 }

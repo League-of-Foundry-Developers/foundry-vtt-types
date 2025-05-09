@@ -13,19 +13,19 @@ declare class TokenRing {
 
   /**
    * Is the token rings framework enabled? Will be `null` if the system hasn't initialized yet.
-   * @remarks {@link TokenRing.initialize | `CONFIG.Token.ring.ringClass.initialize`} is called inside {@link Canvas.initialize | `Canvas.initialize`}, which is called between the `setup` and `ready` hooks.
+   * @remarks {@link TokenRing.initialize | `CONFIG.Token.ring.ringClass.initialize`} is called inside {@linkcode Canvas.initialize}, which is called between the `setup` and `ready` hooks.
    */
   static get initialized(): InitializedOn<true, "ready", null>;
 
   /**
    * Token Rings sprite sheet base texture.
-   * @remarks Only `undefined` prior to first canvas draw; set in {@link createAssetsUVs | `createAssetsUVs`}
+   * @remarks Only `undefined` prior to first canvas draw; set in {@linkcode createAssetsUVs}
    */
   static baseTexture: PIXI.BaseTexture | undefined;
 
   /**
    * Rings and background textures UVs and center offset.
-   * @remarks Only `undefined` prior to first canvas draw; set in {@link createAssetsUVs | `createAssetsUVs`}
+   * @remarks Only `undefined` prior to first canvas draw; set in {@linkcode createAssetsUVs}
    */
   static texturesData: Record<string, TokenRing.TextureData> | undefined;
 
@@ -65,7 +65,7 @@ declare class TokenRing {
   ringName: TokenRing.RingData["ringName"];
 
   /**
-   * @remarks Not initialized to a value, this gets set in {@link TokenRing.configureSize | `TokenRing.configureSize`}.
+   * @remarks Not initialized to a value, this gets set in {@linkcode TokenRing.configureSize}.
    * After initialization (`ready`), this will only be `undefined` if the current spritesheet provides no frames
    */
   bkgName: TokenRing.RingData["bkgName"];
@@ -137,7 +137,7 @@ declare class TokenRing {
 
   /**
    * Reference to the token that should be animated
-   * @remarks This getter is the return of calling {@link WeakRef.deref | `deref`} on the stored {@link WeakRef | `WeakRef`}
+   * @remarks This getter is the return of calling {@link WeakRef.deref | `deref`} on the stored {@linkcode WeakRef}
    * of the Token passed at construction; If the Token has been garbage collected, will return undefined.
    */
   get token(): Token.Implementation | undefined;

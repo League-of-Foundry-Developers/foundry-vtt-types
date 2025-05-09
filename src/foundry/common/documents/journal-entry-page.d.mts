@@ -287,16 +287,16 @@ declare namespace BaseJournalEntryPage {
    */
   type Properties = SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseJournalEntryPage.SubType | `BaseJournalEntryPage.SubType`} */
+  /** @deprecated Replaced with {@linkcode BaseJournalEntryPage.SubType} */
   type TypeNames = SubType;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseJournalEntryPage.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseJournalEntryPage.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseJournalEntryPage.CreateData | `BaseJournalEntryPage.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseJournalEntryPage.CreateData}
    */
   type ConstructorData = BaseJournalEntryPage.CreateData;
 }

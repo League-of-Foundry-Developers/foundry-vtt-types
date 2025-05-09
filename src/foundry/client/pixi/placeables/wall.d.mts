@@ -8,8 +8,8 @@ declare global {
    * Walls are used to restrict Token movement or visibility as well as to define the areas of effect for ambient lights
    * and sounds.
    *
-   * @see {@link WallDocument | `WallDocument`}
-   * @see {@link WallsLayer | `WallsLayer`}
+   * @see {@linkcode WallDocument}
+   * @see {@linkcode WallsLayer}
    */
   class Wall extends PlaceableObject<WallDocument.Implementation> {
     static override embeddedName: "Wall";
@@ -290,40 +290,40 @@ declare global {
   namespace Wall {
     /**
      * The implementation of the `Wall` placeable configured through `CONFIG.Wall.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link WallDocument.Implementation | `WallDocument.Implementation`}
+     * Not to be confused with {@linkcode WallDocument.Implementation}
      * which refers to the implementation for the Wall document.
      */
     type Implementation = FixedInstanceType<ImplementationClass>;
 
     /**
      * The implementation of the `Wall` placeable configured through `CONFIG.Wall.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link WallDocument.ImplementationClass | `WallDocument.ImplementationClass`}
+     * Not to be confused with {@linkcode WallDocument.ImplementationClass}
      * which refers to the implementation for the Wall document.
      */
     // eslint-disable-next-line no-restricted-syntax
     type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Wall>;
 
     /**
-     * @deprecated {@link ImplementationClass | `ImplementationClass`}
+     * @deprecated Replaced with {@linkcode ImplementationClass}
      */
     type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Implementation | `Implementation`}
+     * @deprecated Replaced with {@linkcode Implementation}
      */
     type Object = Implementation;
 
     /**
-     * @deprecated {@link Wall.ImplementationClass | `Wall.ImplementationClass`}
+     * @deprecated Replaced with {@linkcode Wall.ImplementationClass}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Wall.Implementation | `Wall.Implementation`}
+     * @deprecated Replaced with {@linkcode Wall.Implementation}
      */
     type ConfiguredInstance = Implementation;
 

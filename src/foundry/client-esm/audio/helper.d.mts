@@ -39,7 +39,7 @@ declare class AudioHelper {
    * A user gesture must be registered before audio can be played.
    * This Array contains the Sound instances which are requested for playback prior to a gesture.
    * Once a gesture is observed, we begin playing all elements of this Array.
-   * @see {@link Sound | `Sound`}
+   * @see {@linkcode Sound}
    * @defaultValue `[]`
    * @remarks Foundry only populates this in one place, {@link SoundsLayer.refresh | `SoundsLayer#refresh`}
    */
@@ -273,7 +273,7 @@ declare namespace AudioHelper {
     NullishProps<{
       /**
        * A specific AudioContext to attach the sound to
-       * @remarks Has no default, but if it's falsey, the {@link Sound | `Sound`} constructor
+       * @remarks Has no default, but if it's falsey, the {@linkcode Sound} constructor
        * (where this is forwarded) will use {@link AudioHelper.music | `game.audio.music`} instead
        */
       context: AudioContext;
@@ -303,7 +303,7 @@ declare namespace AudioHelper {
   }
 
   /**
-   * {@link AudioHelper#play | `AudioHelper#play`} pulls `context` out of this object then forwards the rest to {@link Sound.play | `Sound#play`}
+   * {@linkcode AudioHelper#play} pulls `context` out of this object then forwards the rest to {@link Sound.play | `Sound#play`}
    */
   interface PlayOptions extends Pick<SoundCreationOptions, "context">, Sound.PlaybackOptions {}
 

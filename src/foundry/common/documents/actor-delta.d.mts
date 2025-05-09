@@ -355,16 +355,16 @@ declare namespace BaseActorDelta {
    */
   type Properties = fields.SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseActorDelta.SubType | `BaseActorDelta.SubType`} */
+  /** @deprecated Replaced with {@linkcode BaseActorDelta.SubType} */
   type TypeNames = Game.Model.TypeNames<"Actor">;
 
   /**
-   * @deprecated {@link fields.SchemaField | `SchemaField<BaseActorDelta.Schema>`}
+   * @deprecated Replaced with {@link fields.SchemaField | `SchemaField<BaseActorDelta.Schema>`}
    */
   type SchemaField = fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseActorDelta.CreateData | `BaseActorDelta.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseActorDelta.CreateData}
    */
   type ConstructorData = fields.SchemaField.CreateData<Schema>;
 }

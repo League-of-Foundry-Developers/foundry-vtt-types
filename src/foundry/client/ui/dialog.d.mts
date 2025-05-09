@@ -1,13 +1,13 @@
 import type { MaybePromise } from "fvtt-types/utils";
 
 declare global {
-  /** @deprecated {@link Dialog.Options | `Dialog.Options`} */
+  /** @deprecated Replaced with {@linkcode Dialog.Options} */
   type DialogOptions = Dialog.Options;
 
-  /** @deprecated {@link Dialog.Button | `Dialog.Button`} */
+  /** @deprecated Replaced with {@linkcode Dialog.Button} */
   type DialogButton = Dialog.Button;
 
-  /** @deprecated {@link Dialog.Data | `Dialog.Data`} */
+  /** @deprecated Replaced with {@linkcode Dialog.Data} */
   type DialogData<JQueryOrHTML extends JQuery | HTMLElement = JQuery | HTMLElement> = Dialog.Data<JQueryOrHTML>;
 
   /**
@@ -41,7 +41,7 @@ declare global {
   class Dialog<Options extends Dialog.Options = Dialog.Options> extends Application<Options> {
     /**
      * @param data    - An object of dialog data which configures how the modal window is rendered
-     * @param options - Dialog rendering options, see {@link Application | `Application`}
+     * @param options - Dialog rendering options, see {@linkcode Application}
      */
     constructor(data: Dialog.Data<Dialog.JQueryOrHTML<Options>>, options?: Partial<Options>);
 

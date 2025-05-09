@@ -5,7 +5,7 @@ import type { Socket } from "socket.io-client";
 
 declare global {
   /**
-   * @deprecated {@link ProseMirrorEditor.History | `ProseMirrorEditor.History`}
+   * @deprecated Replaced with {@linkcode ProseMirrorEditor.History}
    */
   type ProseMirrorHistory = ProseMirrorEditor.History;
 

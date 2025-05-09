@@ -14,13 +14,13 @@ import type CompendiumArt from "#client-esm/helpers/compendium-art.d.mts";
 
 declare global {
   /**
-   * This namespace contains typescript specific type definitions for the {@link Hooks | `Hooks`} callback functions. It contains an
-   * interface ({@link Hooks.StaticCallbacks | `Hooks.StaticCallbacks`}) for callbacks with static names. There are more function types in the
+   * This namespace contains typescript specific type definitions for the {@linkcode Hooks} callback functions. It contains an
+   * interface ({@linkcode Hooks.StaticCallbacks}) for callbacks with static names. There are more function types in the
    * namespace for the dynamic hooks, whose names are generated at runtime. There is also a union of all of the dynamic
-   * hooks ({@link Hooks.DynamicCallbacks | `Hooks.DynamicCallbacks`}).
+   * hooks ({@linkcode Hooks.DynamicCallbacks}).
    *
-   * Callback types remarked to be called with {@link Hooks.callAll | `Hooks.callAll`} do not care about the return value of the callback.
-   * Callback types remarked to be called with {@link Hooks.call | `Hooks.call`} do care about the return value and will stop executing
+   * Callback types remarked to be called with {@linkcode Hooks.callAll} do not care about the return value of the callback.
+   * Callback types remarked to be called with {@linkcode Hooks.call} do care about the return value and will stop executing
    * remaining callbacks if `false` is returned. If a callback type does not have such a remark, pay attention to the
    * return value documentation.
    *
@@ -79,14 +79,14 @@ declare global {
 
       /**
        * A hook event that fires as Foundry is initializing, right before any initialization tasks have begun.
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link Game.initialize | `Game#initialize`}
        */
       init: () => void;
 
       /**
        * A hook event that fires once Localization translations have been loaded and are ready for use.
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link Localization.initialize | `Localization#initialize`}
        */
       i18nInit: () => void;
@@ -95,14 +95,14 @@ declare global {
        * A hook event that fires when Foundry has finished initializing but
        * before the game state has been set up. Fires before any Documents, UI
        * applications, or the Canvas have been initialized.
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link Game.setupGame | `Game#setupGame`}
        */
       setup: () => void;
 
       /**
        * A hook event that fires when the game is fully ready.
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link Game.setupGame | `Game#setupGame`}
        */
       ready: () => void;
@@ -114,8 +114,8 @@ declare global {
        * @param err      - The error.
        * @param data     - Additional data that might be provided, based on the nature of the error.
        *                   (default: `{}`)
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
-       * @see {@link Hooks.onError | `Hooks.onError`}
+       * @remarks This is called by {@linkcode Hooks.callAll}.
+       * @see {@linkcode Hooks.onError}
        */
       error: (...args: ValueOf<ErrorCallbackParameters>) => void;
 
@@ -124,7 +124,7 @@ declare global {
       /**
        * A hook event that fires when the game is paused or un-paused.
        * @param paused - Is the game now paused (true) or un-paused (false)
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link Game.togglePause | `Game#togglePause`}
        */
       pauseGame: (paused: boolean) => void;
@@ -133,7 +133,7 @@ declare global {
        * A hook event that fires when the World time has been updated.
        * @param worldTime - The new canonical World time
        * @param delta     - The time delta
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link GameTime.onUpdateWorldTime | `GameTime#onUpdateWorldTime`}
        */
       updateWorldTime: (worldTime: number, delta: number) => void;
@@ -143,14 +143,14 @@ declare global {
       /**
        * A hook event that fires immediately prior to PIXI Application construction with the configuration parameters.
        * @param canvasConfig - Canvas configuration parameters that will be used to initialize the PIXI.Application
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        */
       canvasConfig: (canvasConfig: ConstructorParameters<typeof PIXI.Application>[0]) => void;
 
       /**
        * A hook event that fires when the Canvas is initialized.
        * @param canvas - the Canvas instance being initialized
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link Canvas.draw | `Canvas#draw`}
        */
       canvasInit: (canvas: Canvas) => void;
@@ -160,7 +160,7 @@ declare global {
        * @param canvas - The Canvas instance
        * @param view   - The applied camera position
        * @remarks When called during animated panning, the callback is called on every tick.
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link Canvas.pan | `Canvas#pan`}
        * @see {@link Canvas.animatePan | `Canvas#animatePan`}
        */
@@ -169,7 +169,7 @@ declare global {
       /**
        * A hook event that fires when the Canvas is ready.
        * @param canvas - The Canvas which is now ready for use
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @see {@link Canvas.draw | `Canvas#draw`}
        */
       canvasReady: (canvas: Canvas) => boolean | void;
@@ -177,14 +177,14 @@ declare global {
       /**
        * A hook event that fires when the Canvas is deactivated.
        * @param canvas - The Canvas instance being deactivated
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        */
       canvasTearDown: (canvas: Canvas) => void;
 
       /**
        * A hook event that fires when the Canvas is beginning to draw the canvas groups.
        * @param canvas - The Canvas instance being drawn
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        */
       canvasDraw: (canvas: Canvas) => void;
 
@@ -192,7 +192,7 @@ declare global {
        * A hook event that fires when some useful data is dropped onto the Canvas.
        * @param canvas - The Canvas
        * @param data   - The data that has been dropped onto the Canvas
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link Canvas._onDrop | `Canvas#_onDrop`}
        */
@@ -214,7 +214,7 @@ declare global {
       /**
        * A hook event that fires when the Scene controls are initialized.
        * @param controls - The SceneControl configurations
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link SceneControls._getControlButtons | `SceneControls#_getControlButtons`}
        */
       getSceneControlButtons: (controls: SceneControls.Control[]) => void;
@@ -226,7 +226,7 @@ declare global {
        * @param hotbar - The Hotbar application instance
        * @param data   - The dropped data object
        * @param slot   - The target hotbar slot
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link Hotbar._onDrop | `Hotbar#_onDrop`}
        */
@@ -236,7 +236,7 @@ declare global {
        * A hook event that fires when the SceneNavigation menu is expanded or collapsed.
        * @param nav       - The SceneNavigation application
        * @param collapsed - Whether the navigation is now collapsed or not
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link SceneNavigation.expand | `SceneNavigation#expand`}
        * @see {@link SceneNavigation.collapse | `SceneNavigation#collapse`}
        */
@@ -246,7 +246,7 @@ declare global {
        * A hook event that fires when the Sidebar is collapsed or expanded.
        * @param sidebar   - The Sidebar application
        * @param collapsed - Whether the Sidebar is now collapsed or not
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link Sidebar.expand | `Sidebar#expand`}
        * @see {@link Sidebar.collapse | `Sidebar#collapse`}
        */
@@ -255,7 +255,7 @@ declare global {
       /**
        * A hook event that fires when the Sidebar tab is changed.
        * @param app - The SidebarTab application which is now active
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link Sidebar._onChangeTab | `Sidebar#_onChangeTab`}
        */
       changeSidebarTab: (app: SidebarTab) => void;
@@ -266,7 +266,7 @@ declare global {
        * A hook event that fires when a custom active effect is applied.
        * @param actor  - The actor the active effect is being applied to
        * @param change - The change data being applied
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @see {@link ActiveEffect._applyCustom | `ActiveEffect#_applyCustom`}
        */
       applyActiveEffect: (actor: Actor.Implementation, change: ActiveEffect.EffectChangeData) => boolean | void;
@@ -281,7 +281,7 @@ declare global {
        * @param documents - The locally-cached Documents which were modified in the operation
        * @param options   - Additional options which modified the modification request
        * @param userId    - The ID of the User who triggered the modification workflow
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link CompendiumCollection._onModifyContents | `CompendiumCollection#_onModifyContents`}
        */
       updateCompendium: (
@@ -294,7 +294,7 @@ declare global {
       /** Token */
 
       /**
-       * A hook event that fires when a token {@link Token | `Token`} should apply a specific status effect.
+       * A hook event that fires when a token {@linkcode Token} should apply a specific status effect.
        * @param token    - The token affected
        * @param statusId - The status effect ID being applied, from CONFIG.specialStatusEffects.
        * @param active   - Is the special status effect now active?
@@ -307,8 +307,8 @@ declare global {
        * @param html    - The HTML for the chat bubble
        * @param message - The spoken message text
        * @param options - additional options
-       * @remarks This is called when creating a {@link ChatBubble | `ChatBubble`}, but before displaying it.
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called when creating a {@linkcode ChatBubble}, but before displaying it.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @remarks An explicit return value of `false` prevents the chat bubble being shown.
        * @see {@link ChatBubbles.say | `ChatBubbles#say`}
        */
@@ -327,7 +327,7 @@ declare global {
        * @param data    - A object describing the modification
        * @param updates - The update delta that will be applied to the Token's actor
        * @returns whether the Actor should be updated
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @see {@link Actor.modifyTokenAttribute | `Actor#modifyTokenAttribute`}
        * @see {@link Actor.update | `Actor#update`}
        */
@@ -353,7 +353,7 @@ declare global {
        * @param user     - The User doing the targeting
        * @param token    - The targeted Token
        * @param targeted - Whether the Token has been targeted or untargeted
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link UserTargets._hook | `UserTargets#_hook`}
        */
       targetToken: (user: User.Implementation, token: Document.ObjectClassFor<"Token">, targeted: boolean) => void;
@@ -362,11 +362,11 @@ declare global {
 
       /**
        * A hook event that fires whenever a map note is double-clicked.
-       * The hook provides the note placeable and the arguments passed to the associated {@link JournalSheet | `JournalSheet`} render call.
+       * The hook provides the note placeable and the arguments passed to the associated {@linkcode JournalSheet} render call.
        * Hooked functions may modify the render arguments or cancel the render by returning false.
        * @param note    - The note that was activated
-       * @param options - Options for rendering the associated {@link JournalSheet | `JournalSheet`}
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @param options - Options for rendering the associated {@linkcode JournalSheet}
+       * @remarks This is called by {@linkcode Hooks.call}.
        */
       activateNote: (note: Note.Implementation, options: JournalSheet.RenderOptions) => true | false;
 
@@ -377,7 +377,7 @@ declare global {
        * @param origin             - The origin Cards document
        * @param destinations       - An array of destination Cards documents
        * @param context            - Additional context which describes the operation
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @remarks An explicit return value of `false` prevents the operation.
        */
       dealCards: (
@@ -391,7 +391,7 @@ declare global {
        * @param origin      - The origin Cards document
        * @param destination - The destination Cards document
        * @param context     - Additional context which describes the operation
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @remarks An explicit return value of `false` prevents the operation.
        */
       passCards: (
@@ -422,7 +422,7 @@ declare global {
        * @param art           - The art being applied.
        * @remarks Called as part of _initializeSource, after data migration, cleaning, and shims
        * @remarks Currently only called by Actor but comments are more generic
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        */
       applyCompendiumArt: (
         documentClass: Actor.ImplementationClass,
@@ -438,7 +438,7 @@ declare global {
        * @param actor - The Actor
        * @param sheet - The ActorSheet application
        * @param data  - The data that has been dropped onto the sheet
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link ActorSheet._onDrop | `ActorSheet#_onDrop`}
        */
@@ -449,14 +449,14 @@ declare global {
       /**
        * A hook event that fires when the set of vision sources are initialized.
        * @param sources - The collection of current vision sources
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        */
       initializeVisionSources: (sources: Collection<PointVisionSource.Any>) => void;
 
       /**
        * A hook event that fires when the LightingLayer is refreshed.
        * @param layer - the LightingLayer
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link LightingLayer.refresh | `LightingLayer#refresh`}
        */
       lightingRefresh: (layer: LightingLayer) => void;
@@ -464,7 +464,7 @@ declare global {
       /**
        * A hook event that fires when visibility is refreshed.
        * @param visibility - The CanvasVisibility instance
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        */
       visibilityRefresh: (visibility: CanvasVisibility) => void;
 
@@ -472,7 +472,7 @@ declare global {
        * A hook event that fires during light source initialization.
        * This hook can be used to add programmatic light sources to the Scene.
        * @param source - The EffectsCanvasGroup where light sources are initialized
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link EffectsCanvasGroup.initializeLightSources | `EffectsCanvasGroup#initializeLightSources`}
        */
       initializeLightSources: (group: EffectsCanvasGroup) => void;
@@ -481,14 +481,14 @@ declare global {
        * A hook event that fires during darkness source initialization.
        * This hook can be used to add programmatic darkness sources to the Scene.
        * @param group - The EffectsCanvasGroup where darkness sources are initialized
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        */
       initializeDarknessSources: (group: EffectsCanvasGroup) => void;
 
       /**
        * A hook event that fires when the CanvasVisibility layer has been refreshed.
        * @param visibility - The CanvasVisibility layer
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link CanvasVisibility.restrictVisibility | `CanvasVisibility#restrictVisibility`}
        */
       sightRefresh: (visibility: CanvasVisibility) => void;
@@ -499,7 +499,7 @@ declare global {
        * Initialize the weather container from a weather config object.
        * @param weatherEffect        - The weather effects canvas layer
        * @param weatherEffectsConfig - The weather effects config object
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        */
       initializeWeatherEffects: (
         weatherEffect: WeatherEffects,
@@ -516,7 +516,7 @@ declare global {
        * @param toCreate  - Adventure data which needs to be created in the World
        * @param toUpdate  - Adventure data which needs to be updated in the World
        * @returns False to prevent the core software from handling the import
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        */
       preImportAdventure: (
         adventure: Adventure.Implementation,
@@ -532,7 +532,7 @@ declare global {
        * @param toCreate  - Adventure data which needs to be created in the World
        * @param toUpdate  - Adventure data which needs to be updated in the World
        * @returns False to prevent the core software from handling the import
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        */
       importAdventure: (
         adventure: Adventure.Implementation,
@@ -547,7 +547,7 @@ declare global {
        * A hook event that fires whenever some other User joins or leaves the game session.
        * @param user      - The User who connected or disconnected
        * @param connected - Is the user now connected (true) or disconnected (false)
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        */
       userConnected: (user: User.Implementation, connected: boolean) => void;
 
@@ -559,7 +559,7 @@ declare global {
        * @param combat  - The Combat encounter for which the turn order has changed
        * @param prior   - The prior turn state
        * @param current - The new turn state
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        */
       combatTurnChange: (combat: Combat.Implementation, prior: Combat.HistoryData, current: Combat.HistoryData) => void;
 
@@ -637,7 +637,7 @@ declare global {
        * Hooked functions may append their own drop-downs or append entries to existing drop-downs.
        * @param menu   - The ProseMirrorMenu instance.
        * @param config - The drop-down config.
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        */
       getProseMirrorMenuDropdowns: (
         menu: ProseMirrorMenu,
@@ -653,7 +653,7 @@ declare global {
        * Hooked functions may append their own buttons to the list.
        * @param menu   - The ProseMirrorMenu instance
        * @param config - The button configuration objects
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        */
       // TODO: Having trouble finding the appropriate typing for the menu items? Also, where is this even called?
       getProseMirrorMenuItems: (menu: ProseMirrorMenu, config: unknown[]) => void;
@@ -668,8 +668,8 @@ declare global {
        * @param uuid    - A UUID that uniquely identifies this ProseMirror instance.
        * @param plugins - A list of plugins that will be loaded.
        * @param options - The provisional EditorState and ProseMirrorMenuPlugin.
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
-       * @see {@link ProseMirrorEditor.create | `ProseMirrorEditor.create`}
+       * @remarks This is called by {@linkcode Hooks.callAll}.
+       * @see {@linkcode ProseMirrorEditor.create}
        */
       createProseMirrorEditor: (uuid: string, plugins: Record<string, Plugin>, options: { state: EditorState }) => void;
 
@@ -680,7 +680,7 @@ declare global {
        * The hook provides the hot reload data related to the file change.
        * Hooked functions may intercept the hot reload and prevent the core software from handling it by returning false.
        * @param data - The hot reload data
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        */
       hotReload: (data: HotReloadData) => boolean | void;
 
@@ -691,7 +691,7 @@ declare global {
        * @param chatLog  - The ChatLog instance
        * @param message  - The trimmed message content
        * @param chatData - The basic chat data
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @remarks An explicit return value of `false` prevents the chat message from being created.
        * @see {@link ChatLog.processMessage | `ChatLog#processMessage`}
        */
@@ -702,7 +702,7 @@ declare global {
           /** The id of the User sending the message */
           user: string;
 
-          /** The identified speaker data, see {@link ChatMessage.getSpeaker | `ChatMessage.getSpeaker`} */
+          /** The identified speaker data, see {@linkcode ChatMessage.getSpeaker} */
           speaker: ReturnType<ChatMessage.ImplementationClass["getSpeaker"]>;
         },
       ) => boolean | void;
@@ -713,7 +713,7 @@ declare global {
        * @param message        - The ChatMessage document being rendered
        * @param html           - The pending HTML as a jQuery object
        * @param messageData    - The input data provided for template rendering
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @see {@link ChatMessage.render | `ChatMessage#render`}
        */
       renderChatMessage: (
@@ -739,7 +739,7 @@ declare global {
       /**
        * A hook event that fires when the user modifies a global volume slider.
        * @param volume - The new volume level
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link AudioHelper._onChangeGlobalVolume | `AudioHelper#_onChangeGlobalVolume`}
        */
       globalAmbientVolumeChanged: (volume: number) => void;
@@ -747,7 +747,7 @@ declare global {
       /**
        * A hook event that fires when the user modifies a global volume slider.
        * @param volume - The new volume level
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link AudioHelper._onChangeGlobalVolume | `AudioHelper#_onChangeGlobalVolume`}
        */
       globalInterfaceVolumeChanged: (volume: number) => void;
@@ -755,7 +755,7 @@ declare global {
       /**
        * A hook event that fires when the user modifies a global volume slider.
        * @param volume - The new volume level
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link AudioHelper._onChangeGlobalVolume | `AudioHelper#_onChangeGlobalVolume`}
        */
       globalPlaylistVolumeChanged: (volume: number) => void;
@@ -764,7 +764,7 @@ declare global {
        * A hook event that fires when the AV settings are changed.
        * @param settings - The AVSettings manager
        * @param changed  - The delta of the settings that have been changed
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link AVSettings._onSettingsChanged | `AVSettings#_onSettingsChanged`}
        */
       rtcSettingsChanged: (settings: AVSettings, changed: DeepPartial<AVSettings.Settings>) => void;
@@ -776,7 +776,7 @@ declare global {
        * @param table  - The RollTable
        * @param config - The RollTableConfig application
        * @param data   - The data dropped onto the RollTableConfig
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @remarks An explicit return value of `false` prevents the Document being created.
        * @see {@link RollTableConfig._onDrop | `RollTableConfig#_onDrop`}
        */
@@ -789,7 +789,7 @@ declare global {
       /**
        * A hook event that allows to pass custom dynamic ring configurations.
        * @param ringConfig - The ring configuration instance
-       * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+       * @remarks This is called by {@linkcode Hooks.callAll}.
        */
       initializeDynamicTokenRingConfig: (ringConfig: foundry.canvas.tokens.TokenRingConfig) => void;
 
@@ -799,7 +799,7 @@ declare global {
        * A hook event that fires when the context menu for a SceneNavigation entry is constructed.
        * @param app          - The Application instance that the context menu is constructed in
        * @param entryOptions - The context menu entries
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @see {@link SceneNavigation.activateListeners | `SceneNavigation#activateListeners`}
        */
       getSceneNavigationContext: (
@@ -811,7 +811,7 @@ declare global {
        * A hook event that fires when the context menu for a PlayersList entry is constructed.
        * @param app            - The Application instance that the context menu is constructed in
        * @param contextOptions - The context menu entries
-       * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+       * @remarks This is called by {@linkcode Hooks.call}.
        * @see {@link PlayerList.activateListeners | `PlayerList#activateListeners`}
        */
       getUserContextOptions: (
@@ -832,7 +832,7 @@ declare global {
      * @param data  - The object of data used when rendering the application
      * @typeParam A - the type of the Application
      * @remarks The name for this hook is dynamically created by joining "render" with the type name of the Application.
-     * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+     * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@link Application._render | `Application#_render`}
      */
     type RenderApplication<A extends Application.Any = Application.Any> = (
@@ -848,7 +848,7 @@ declare global {
      * @typeParam A   - the type of the Application
      * @remarks The name for this hook is dynamically created by joining "get" with the type name of the Application and
      * "HeaderButtons".
-     * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+     * @remarks This is called by {@linkcode Hooks.call}.
      * @see {@link Application._getHeaderButtons | `Application#_getHeaderButtons`}
      */
     type GetApplicationHeaderButtons<A extends Application.Any = Application.Any> = (
@@ -862,7 +862,7 @@ declare global {
      * @param html  - The application HTML when it is closed
      * @typeParam A - the type of the Application
      * @remarks The name for this hook is dynamically created by joining "close" with the type name of the Application.
-     * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+     * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@link Application.close | `Application#close`}
      */
     type CloseApplication<A extends Application.Any = Application.Any> = (app: A, html: JQuery) => void;
@@ -882,14 +882,14 @@ declare global {
     /** EffectsCanvasGroup */
 
     /**
-     * A hook event that fires when a {@link CanvasGroup | `CanvasGroup`} is drawn.
+     * A hook event that fires when a {@linkcode CanvasGroup} is drawn.
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "drawPrimaryCanvasGroup".
      * @param group - The group being drawn
      */
     type DrawGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (group: G) => void;
 
     /**
-     * A hook event that fires when a {@link CanvasGroup | `CanvasGroup`} is deconstructed.
+     * A hook event that fires when a {@linkcode CanvasGroup} is deconstructed.
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "tearDownPrimaryCanvasGroup".
      * @param group - The group being deconstructed
      */
@@ -898,7 +898,7 @@ declare global {
     /** CanvasLayer */
 
     /**
-     * A hook event that fires when a {@link CanvasLayer | `CanvasLayer`} is initially drawn.
+     * A hook event that fires when a {@linkcode CanvasLayer} is initially drawn.
      * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "drawTokensLayer".
      * @param layer - The layer being drawn
      * @typeParam L - the type of the CanvasLayer
@@ -906,7 +906,7 @@ declare global {
     type DrawLayer<L extends CanvasLayer = CanvasLayer> = (layer: L) => void;
 
     /**
-     * A hook event that fires when a {@link CanvasLayer | `CanvasLayer`} is deconstructed.
+     * A hook event that fires when a {@linkcode CanvasLayer} is deconstructed.
      * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "tearDownTokensLayer".
      * @param layer - The layer being deconstructed
      * @typeParam L - the type of the CanvasLayer
@@ -922,7 +922,7 @@ declare global {
      * @typeParam P      - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining "paste" with the type name of the
      * PlaceableObject.
-     * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+     * @remarks This is called by {@linkcode Hooks.call}.
      * @see {@link PlaceablesLayer.pasteObjects | `PlaceablesLayer#pasteObjects`}
      */
     type PastePlaceableObject<P extends PlaceableObject = PlaceableObject> = (
@@ -933,29 +933,29 @@ declare global {
     /** PlaceableObject */
 
     /**
-     * A hook event that fires when a {@link PlaceableObject | `PlaceableObject`} is initially drawn.
+     * A hook event that fires when a {@linkcode PlaceableObject} is initially drawn.
      * The dispatched event name replaces "Object" with the named PlaceableObject subclass, i.e. "drawToken".
      * @param object - The object instance being drawn
      * @typeParam P  - the type of the PlaceableObject
-     * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}
+     * @remarks This is called by {@linkcode Hooks.callAll}
      */
     type DrawObject<P extends PlaceableObject = PlaceableObject> = (object: P) => void;
 
     /**
-     * A hook event that fires when a {@link PlaceableObject | `PlaceableObject`} is incrementally refreshed.
+     * A hook event that fires when a {@linkcode PlaceableObject} is incrementally refreshed.
      * The dispatched event name replaces "Object" with the named PlaceableObject subclass, i.e. "refreshToken".
      * @param object - The object instance being refreshed
      * @typeParam P  - the type of the PlaceableObject
-     * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}
+     * @remarks This is called by {@linkcode Hooks.callAll}
      */
     type RefreshObject<P extends PlaceableObject = PlaceableObject> = (object: P) => void;
 
     /**
-     * A hook event that fires when a {@link PlaceableObject | `PlaceableObject`} is destroyed.
+     * A hook event that fires when a {@linkcode PlaceableObject} is destroyed.
      * The dispatched event name replaces "Object" with the named PlaceableObject subclass, i.e. "destroyToken".
      * @param object - The object instance being destroyed
      * @typeParam P  - the type of the PlaceableObject
-     * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}
+     * @remarks This is called by {@linkcode Hooks.callAll}
      */
     type DestroyObject<P extends PlaceableObject = PlaceableObject> = (object: P) => void;
 
@@ -968,7 +968,7 @@ declare global {
      * @typeParam P      - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining "control" and the type name of the
      * PlaceableObject.
-     * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+     * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@link PlaceableObject.control | `PlaceableObject#control`}
      * @see {@link PlaceableObject.release | `PlaceableObject#release`}
      */
@@ -982,7 +982,7 @@ declare global {
      * @param hover  - Whether the PlaceableObject is hovered over or not
      * @typeParam P  - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining "hover" and the type name of the PlaceableObject.
-     * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+     * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@link PlaceableObject._onHoverIn | `PlaceableObject#_onHoverIn`}
      * @see {@link PlaceableObject._onHoverOut | `PlaceableObject#_onHoverOut`}
      */
@@ -1005,7 +1005,7 @@ declare global {
      * @typeParam D    - the type of the Document constructor
      * @returns Explicitly return false to prevent creation of this Document
      * @remarks The name for this hook is dynamically created by joining "preCreate" with the name of the Document.
-     * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+     * @remarks This is called by {@linkcode Hooks.call}.
      * @see {@link ClientDatabaseBackend._preCreateDocumentArray | `ClientDatabaseBackend#_preCreateDocumentArray`}
      * @see {@link TokenDocument._preUpdateTokenActor | `TokenDocument#_preUpdateTokenActor`}
      */
@@ -1031,7 +1031,7 @@ declare global {
      * @typeParam D    - the type of the Document constructor
      * @returns Explicitly return false to prevent update of this Document
      * @remarks The name for this hook is dynamically created by joining "preUpdate" with the type name of the Document.
-     * @remarks This is called {@link Hooks.call | `Hooks.call`}.
+     * @remarks This is called {@linkcode Hooks.call}.
      * @see {@link ClientDatabaseBackend._preUpdateDocumentArray | `ClientDatabaseBackend#_preUpdateDocumentArray`}
      * @see {@link TokenDocument._preUpdateTokenActor | `TokenDocument#_preUpdateTokenActor`}
      */
@@ -1058,7 +1058,7 @@ declare global {
      * @typeParam D    - the type of the Document constructor
      * @returns Explicitly return false to prevent deletion of this Document
      * @remarks The name for this hook is dynamically created by joining "preDelete" with the type name of the Document.
-     * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+     * @remarks This is called by {@linkcode Hooks.call}.
      * @see {@link ClientDatabaseBackend._preDeleteDocumentArray | `ClientDatabaseBackend#_preDeleteDocumentArray`}.
      * @see {@link TokenDocument._preUpdateTokenActor | `TokenDocument#_preUpdateTokenActor`}
      */
@@ -1078,7 +1078,7 @@ declare global {
      * @param userId   - The ID of the User who triggered the creation workflow
      * @typeParam D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "create" and the type name of the Document.
-     * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+     * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@link ClientDatabaseBackend._postCreateDocumentCallbacks | `ClientDatabaseBackend#_postCreateDocumentCallbacks`}
      * @see {@link TokenDocument._onUpdateTokenActor | `TokenDocument#_onUpdateTokenActor`}
      */
@@ -1099,7 +1099,7 @@ declare global {
      * @param userId   - The ID of the User who triggered the update workflow
      * @typeParam D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "update" with the type name of the Document.
-     * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+     * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@link ClientDatabaseBackend._postUpdateDocumentCallbacks | `ClientDatabaseBackend#_postUpdateDocumentCallbacks`}
      * @see {@link TokenDocument._onUpdateTokenActor | `TokenDocument#_onUpdateTokenActor`}
      */
@@ -1122,7 +1122,7 @@ declare global {
      * @param userId   - The ID of the User who triggered the deletion workflow
      * @typeParam D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "delete" with the type name of the Document.
-     * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+     * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@link ClientDatabaseBackend._postDeleteDocumentCallbacks | `ClientDatabaseBackend#_postDeleteDocumentCallbacks`}
      * @see {@link TokenDocument._onUpdateTokenActor | `TokenDocument#_onUpdateTokenActor`}
      */
@@ -1139,7 +1139,7 @@ declare global {
      * @param source - The RenderedEffectSource instance being initialized
      * @typeParam RPS - the type of the RenderedPointSource
      * @remarks The name for this hook is dynamically created by wrapping the type name of the shader in `initialize` and `Shaders`.
-     * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+     * @remarks This is called by {@linkcode Hooks.callAll}.
      */
     type InitializeRenderedEffectSourceShaders<RPS extends RenderedEffectSource.Any = RenderedEffectSource.Any> = (
       source: RPS,
@@ -1148,18 +1148,18 @@ declare global {
     /** InteractionLayer */
 
     /**
-     * A hook event that fires with a {@link InteractionLayer | `InteractionLayer`} becomes active.
+     * A hook event that fires with a {@linkcode InteractionLayer} becomes active.
      * The dispatched event name replaces "Layer" with the named InteractionLayer subclass, i.e. "activateTokensLayer".
      * @param layer - The layer becoming active
-     * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+     * @remarks This is called by {@linkcode Hooks.callAll}.
      */
     type ActivateLayer<L extends InteractionLayer = InteractionLayer> = (layer: L) => void;
 
     /**
-     * A hook event that fires with a {@link InteractionLayer | `InteractionLayer`} becomes inactive.
+     * A hook event that fires with a {@linkcode InteractionLayer} becomes inactive.
      * The dispatched event name replaces "Layer" with the named InteractionLayer subclass, i.e. "deactivateTokensLayer".
      * @param layer - The layer becoming inactive
-     * @remarks This is called by {@link Hooks.callAll | `Hooks.callAll`}.
+     * @remarks This is called by {@linkcode Hooks.callAll}.
      */
     type DeactivateLayer<L extends InteractionLayer = InteractionLayer> = (layer: L) => void;
 
@@ -1169,8 +1169,8 @@ declare global {
      * "getActorDirectoryEntryContext".
      * @param app          - The Application instance that the context menu is constructed in
      * @param entryOptions - The context menu entries
-     * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
-     * @see {@link ContextMenu.create | `ContextMenu.create`}
+     * @remarks This is called by {@linkcode Hooks.call}.
+     * @see {@linkcode ContextMenu.create}
      */
     type GetEntryContext = (
       app: Application.Any | foundry.applications.api.ApplicationV2.Any,
@@ -1183,7 +1183,7 @@ declare global {
      * @param entryOptions - The context menu entries
      * @remarks The name for this hook is dynamically created by joining "get" with the type name of the PlaylistDirectory
      * and "SoundContext".
-     * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+     * @remarks This is called by {@linkcode Hooks.call}.
      * @see {@link PlaylistDirectory._contextMenu | `PlaylistDirectory#_contextMenu`}
      */
     type GetSoundContextPlaylistDirectory = (
@@ -1199,7 +1199,7 @@ declare global {
      * @param entryOptions - The context menu entries
      * @remarks The name for this hook is dynamically created by joining "get" with the type name of the SidebarDirectory
      * and "FolderContext".
-     * @remarks This is called by {@link Hooks.call | `Hooks.call`}.
+     * @remarks This is called by {@linkcode Hooks.call}.
      * @see {@link SidebarDirectory._contextMenu | `SidebarDirectory#_contextMenu`}
      */
     type GetSidebarDirectoryFolderContext = (

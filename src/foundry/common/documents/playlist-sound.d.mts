@@ -282,12 +282,12 @@ declare namespace BasePlaylistSound {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BasePlaylistSound.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BasePlaylistSound.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BasePlaylistSound.CreateData | `BasePlaylistSound.CreateData`}
+   * @deprecated Replaced with {@linkcode BasePlaylistSound.CreateData}
    */
   type ConstructorData = BasePlaylistSound.CreateData;
 }

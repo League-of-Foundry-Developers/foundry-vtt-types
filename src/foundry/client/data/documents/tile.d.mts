@@ -24,13 +24,13 @@ declare global {
 
     /**
      * The implementation of the `TileDocument` document instance configured through `CONFIG.Tile.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTileDocument | `fvtt-types/configuration/ConfiguredTileDocument`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredTileDocument | `fvtt-types/configuration/ConfiguredTileDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `TileDocument` document configured through `CONFIG.Tile.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -117,20 +117,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link TileDocument.Source | `TileDocument.Source`}
+     * @deprecated Replaced with {@linkcode TileDocument.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link TileDocument.create | `TileDocument.create`}
+     * The data necessary to create a document. Used in places like {@linkcode TileDocument.create}
      * and {@link TileDocument | `new TileDocument(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -141,7 +141,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link TileDocument.name | `TileDocument#name`}.
      *
-     * This is data transformed from {@link TileDocument.Source | `TileDocument.Source`} and turned into more
+     * This is data transformed from {@linkcode TileDocument.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -155,10 +155,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link TileDocument | `TileDocument`}. This is the source of truth for how an TileDocument document
+     * The schema for {@linkcode TileDocument}. This is the source of truth for how an TileDocument document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link TileDocument | `TileDocument`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode TileDocument}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -323,19 +323,19 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<TileDocument.UpdateData, TileDocument.Parent> {}
 
-      /** Operation for {@link TileDocument.createDocuments | `TileDocument.createDocuments`} */
+      /** Operation for {@linkcode TileDocument.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<TileDocument.Database.Create<Temporary>> {}
 
-      /** Operation for {@link TileDocument.updateDocuments | `TileDocument.updateDocuments`} */
+      /** Operation for {@linkcode TileDocument.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<TileDocument.Database.Update> {}
 
-      /** Operation for {@link TileDocument.deleteDocuments | `TileDocument.deleteDocuments`} */
+      /** Operation for {@linkcode TileDocument.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<TileDocument.Database.Delete> {}
 
-      /** Operation for {@link TileDocument.create | `TileDocument.create`} */
+      /** Operation for {@linkcode TileDocument.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<TileDocument.Database.Create<Temporary>> {}
 
@@ -344,7 +344,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link TileDocument.get | `TileDocument.get`} */
+      /** Options for {@linkcode TileDocument.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link TileDocument._preCreate | `TileDocument#_preCreate`} */
@@ -353,7 +353,7 @@ declare global {
       /** Options for {@link TileDocument._onCreate | `TileDocument#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link TileDocument._preCreateOperation | `TileDocument._preCreateOperation`} */
+      /** Operation for {@linkcode TileDocument._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TileDocument.Database.Create> {}
 
       /** Operation for {@link TileDocument._onCreateOperation | `TileDocument#_onCreateOperation`} */
@@ -365,7 +365,7 @@ declare global {
       /** Options for {@link TileDocument._onUpdate | `TileDocument#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link TileDocument._preUpdateOperation | `TileDocument._preUpdateOperation`} */
+      /** Operation for {@linkcode TileDocument._preUpdateOperation} */
       interface PreUpdateOperation extends TileDocument.Database.Update {}
 
       /** Operation for {@link TileDocument._onUpdateOperation | `TileDocument._preUpdateOperation`} */
@@ -383,13 +383,13 @@ declare global {
       /** Options for {@link TileDocument._onDeleteOperation | `TileDocument#_onDeleteOperation`} */
       interface OnDeleteOperation extends TileDocument.Database.Delete {}
 
-      /** Context for {@link TileDocument._onDeleteOperation | `TileDocument._onDeleteOperation`} */
+      /** Context for {@linkcode TileDocument._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<TileDocument.Parent> {}
 
-      /** Context for {@link TileDocument._onCreateDocuments | `TileDocument._onCreateDocuments`} */
+      /** Context for {@linkcode TileDocument._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<TileDocument.Parent> {}
 
-      /** Context for {@link TileDocument._onUpdateDocuments | `TileDocument._onUpdateDocuments`} */
+      /** Context for {@linkcode TileDocument._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<TileDocument.Parent> {}
 
       /**
@@ -447,23 +447,23 @@ declare global {
     }
 
     /**
-     * @deprecated {@link TileDocument.Database | `TileDocument.DatabaseOperation`}
+     * @deprecated Replaced with {@link TileDocument.Database | `TileDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<TileDocument.Implementation> {}
 
     /**
-     * @deprecated {@link TileDocument.CreateData | `TileDocument.CreateData`}
+     * @deprecated Replaced with {@linkcode TileDocument.CreateData}
      */
     interface ConstructorData extends TileDocument.CreateData {}
 
     /**
-     * @deprecated {@link TileDocument.implementation | `TileDocument.ImplementationClass`}
+     * @deprecated Replaced with {@link TileDocument.implementation | `TileDocument.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link TileDocument.Implementation | `TileDocument.Implementation`}
+     * @deprecated Replaced with {@linkcode TileDocument.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -471,8 +471,8 @@ declare global {
   /**
    * The client-side Tile document which extends the common BaseTile model.
    *
-   * @see {@link Scene | `Scene`}            The Scene document type which contains Tile embedded documents
-   * @see {@link TileConfig | `TileConfig`}       The Tile configuration application
+   * @see {@linkcode Scene}            The Scene document type which contains Tile embedded documents
+   * @see {@linkcode TileConfig}       The Tile configuration application
    */
   class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
     /**

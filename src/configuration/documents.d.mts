@@ -2,7 +2,7 @@
 
 /**
  * Use this interface to configure your custom generic `ActiveEffect` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript
@@ -23,7 +23,7 @@ export interface ConfiguredActiveEffect<SubType extends ActiveEffect.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `ActorDelta` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript
@@ -44,7 +44,7 @@ export interface ConfiguredActorDelta<SubType extends ActorDelta.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Actor` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript
@@ -65,7 +65,7 @@ export interface ConfiguredActor<SubType extends Actor.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Card` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript
@@ -86,7 +86,7 @@ export interface ConfiguredCard<SubType extends Card.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Cards` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript
@@ -107,7 +107,7 @@ export interface ConfiguredCards<SubType extends Cards.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `ChatMessage` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript
@@ -128,7 +128,7 @@ export interface ConfiguredChatMessage<SubType extends ChatMessage.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Combat` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript
@@ -149,7 +149,7 @@ export interface ConfiguredCombat<SubType extends Combat.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Combatant` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript
@@ -170,7 +170,7 @@ export interface ConfiguredCombatant<SubType extends Combatant.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Folder` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript
@@ -191,7 +191,7 @@ export interface ConfiguredFolder<SubType extends Folder.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `Item` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript
@@ -212,7 +212,7 @@ export interface ConfiguredItem<SubType extends Item.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `JournalEntryPage` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript
@@ -233,7 +233,7 @@ export interface ConfiguredJournalEntryPage<SubType extends JournalEntryPage.Sub
 
 /**
  * Use this interface to configure your custom generic `Macro` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript
@@ -254,7 +254,7 @@ export interface ConfiguredMacro<SubType extends Macro.SubType> {}
 
 /**
  * Use this interface to configure your custom generic `RegionBehavior` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript
@@ -275,7 +275,7 @@ export interface ConfiguredRegionBehavior<SubType extends RegionBehavior.SubType
 
 /**
  * Use this interface to configure your custom generic `TableResult` implementation.
- * See also {@link DocumentClassConfig | `DocumentClassConfig`} to configure your class.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
  *
  * @example
  * ```typescript

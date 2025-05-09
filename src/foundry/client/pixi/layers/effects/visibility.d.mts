@@ -4,7 +4,7 @@ declare global {
   /**
    * The visibility Layer which implements dynamic vision, lighting, and fog of war
    * This layer uses an event-driven workflow to perform the minimal required calculation in response to changes.
-   * @see {@link PointSource | `PointSource`}
+   * @see {@linkcode PointSource}
    */
   class CanvasVisibility extends CanvasLayer {
     /**

@@ -51,7 +51,7 @@ declare class HexagonalGrid extends BaseGrid {
    * Returns the cube coordinates of the grid space corresponding to the given coordinates
    * shifted by one grid space in the given direction.
    * @param coords    - The coordinates
-   * @param direction - The direction (see {@link CONST.MOVEMENT_DIRECTIONS | `CONST.MOVEMENT_DIRECTIONS`})
+   * @param direction - The direction (see {@linkcode CONST.MOVEMENT_DIRECTIONS})
    * @returns The cube coordinates
    */
   getShiftedCube(coords: HexagonalGrid.Coordinates, direction: number): HexagonalGrid.Cube;

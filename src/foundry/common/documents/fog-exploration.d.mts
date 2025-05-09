@@ -272,12 +272,12 @@ declare namespace BaseFogExploration {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseFogExploration.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseFogExploration.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseFogExploration.CreateData | `BaseFogExploration.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseFogExploration.CreateData}
    */
   type ConstructorData = BaseFogExploration.CreateData;
 }

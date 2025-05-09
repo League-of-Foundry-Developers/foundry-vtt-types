@@ -302,12 +302,12 @@ declare namespace BaseScene {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseScene.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseScene.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseScene.CreateData | `BaseScene.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseScene.CreateData}
    */
   type ConstructorData = BaseScene.CreateData;
 }
