@@ -33,6 +33,9 @@ declare abstract class DataModel<
   constructor(...args: DataModel.ConstructorArgs<Schema, Parent, ExtraConstructorOptions>);
 
   /** @internal */
+  " __fvtt_types_internal_schema": Schema;
+
+  /** @internal */
   " __fvtt_types_internal_source_data": SchemaField.SourceData<Schema>;
 
   /** @internal */

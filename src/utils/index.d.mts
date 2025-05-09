@@ -1284,3 +1284,24 @@ export type JSONValue =
  * simplifies to `typeof SomeConstructor`.
  */
 export type PhantomConstructor = new (...args: any[]) => unknown;
+
+/**
+ * Effectively equivalent to `str.split(delimiter)` at the type level.
+ */
+export type SplitString<S extends string, Delimiter extends string> = Delimiter extends ""
+  ? ToCharacters<S>
+  : _SplitString<S, Delimiter>;
+
+type ToCharacters<S, Return extends string[] = []> = S extends `${infer C}${infer Rest}`
+  ? ToCharacters<Rest, [...Return, C]>
+  : Return;
+
+type _SplitString<
+  S extends string,
+  Delimiter extends string,
+  Return extends string[] = [],
+> = S extends `${infer Prefix}${Delimiter}${infer Suffix}`
+  ? _SplitString<Suffix, Delimiter, [...Return, Prefix]>
+  : S extends ""
+    ? []
+    : [...Return, S];

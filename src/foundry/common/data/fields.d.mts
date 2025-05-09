@@ -10,6 +10,9 @@ import type {
   PrettifyType,
   InterfaceToObject,
   AnyArray,
+  GetKey,
+  SplitString,
+  ValueOf,
 } from "fvtt-types/utils";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -467,6 +470,16 @@ declare namespace DataField {
   /** A DataField with unknown inner types. */
   type Unknown = DataField<any, unknown, unknown, unknown>;
 
+  namespace Internal {
+    interface ElementFieldImplementation<Element extends DataField.Any = DataField.Any> {
+      " __fvtt_types_get_field_element": Element;
+    }
+
+    interface NestedFieldImplementation<Schema extends DataSchema = DataSchema> {
+      " __fvtt_types_get_field_schema": Schema;
+    }
+  }
+
   /**
    * @deprecated - AssignmentType is being deprecated. See {@linkcode SchemaField.AssignmentData}
    * for more details.
@@ -805,16 +818,19 @@ declare abstract class AnyDataField extends DataField<any, any, any, any> {
  * - PersistedType: `SchemaField.PersistedType<Fields>`
  */
 declare class SchemaField<
-  Fields extends DataSchema,
-  Options extends SchemaField.Options<Fields> = SchemaField.DefaultOptions,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  AssignmentType = SchemaField.Internal.AssignmentType<Fields, SimpleMerge<Options, SchemaField.DefaultOptions>>,
-  InitializedType = SchemaField.Internal.InitializedType<Fields, SimpleMerge<Options, SchemaField.DefaultOptions>>,
-  PersistedType extends AnyObject | null | undefined = SchemaField.Internal.PersistedType<
-    Fields,
-    SimpleMerge<Options, SchemaField.DefaultOptions>
-  >,
-> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
+    Fields extends DataSchema,
+    Options extends SchemaField.Options<Fields> = SchemaField.DefaultOptions,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    AssignmentType = SchemaField.Internal.AssignmentType<Fields, SimpleMerge<Options, SchemaField.DefaultOptions>>,
+    InitializedType = SchemaField.Internal.InitializedType<Fields, SimpleMerge<Options, SchemaField.DefaultOptions>>,
+    PersistedType extends AnyObject | null | undefined = SchemaField.Internal.PersistedType<
+      Fields,
+      SimpleMerge<Options, SchemaField.DefaultOptions>
+    >,
+  >
+  extends DataField<Options, AssignmentType, InitializedType, PersistedType>
+  implements DataField.Internal.NestedFieldImplementation
+{
   /**
    * @param fields  - The contained field definitions
    * @param options - Options which configure the behavior of the field
@@ -823,6 +839,9 @@ declare class SchemaField<
   // Saying `fields: Fields` here causes the inference for the fields to be unnecessarily widened. This might effectively be a no-op but it fixes the inference.
   // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(fields: { [K in keyof Fields]: Fields[K] }, options?: Options, context?: DataField.ConstructionContext);
+
+  /** @internal */
+  " __fvtt_types_get_field_schema": Fields;
 
   /** @defaultValue `true` */
   override required: boolean;
@@ -883,6 +902,8 @@ declare class SchemaField<
    * @param fieldName - The field name
    * @returns The DataField instance or undefined
    */
+  // TODO(LukeAbby): Enabling this signatures causes a circularity but it would be ideal.
+  // get<FieldName extends string>(fieldName: OverlapsWith<FieldName, keyof Fields>): SchemaField.Get<Fields, FieldName>;
   get(fieldName: string): DataField.Unknown | undefined;
 
   /**
@@ -891,6 +912,10 @@ declare class SchemaField<
    * @returns The corresponding DataField definition for that field, or undefined
    */
   getField(fieldName: string | string[]): DataField.Unknown | undefined;
+  // TODO(LukeAbby): Enabling this signatures causes a circularity but it would be ideal.
+  // getField<FieldName extends SchemaField.FieldName<Fields>>(
+  //   fieldName: FieldName,
+  // ): SchemaField.GetField<this, Fields, FieldName>;
 
   protected override _getField(path: string[]): DataField.Any;
 
@@ -1175,6 +1200,83 @@ declare namespace SchemaField {
    * @deprecated Replaced with {@linkcode SchemaField.SourceData}
    */
   type InnerPersistedType<Fields extends DataSchema> = SourceData<Fields>;
+
+  type Get<Schema extends DataSchema, FieldName extends string> = GetKey<Schema, FieldName, undefined>;
+
+  type FieldName<Schema extends DataSchema> = "" | [] | _FieldName<Schema>;
+
+  /**
+   * Essentially sets a field depth of 10.
+   *
+   * @internal
+   */
+  type _MaxFieldDepth = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+
+  /**
+   * @internal
+   */
+  type _FieldName<
+    Schema extends DataSchema,
+    PrefixString extends string = "",
+    PrefixArray extends string[] = [],
+    Depth extends number[] = [],
+  > = Depth extends _MaxFieldDepth
+    ? never
+    : ValueOf<{
+        [K in keyof Schema as string extends K ? never : K]-?: K extends string
+          ? _DataFieldFieldName<Schema[K], `${PrefixString}${K}`, [...PrefixArray, K], Depth>
+          : never;
+      }>;
+
+  type _DataFieldFieldName<
+    DataField extends DataField.Any,
+    PrefixString extends string = "",
+    PrefixArray extends string[] = [],
+    Depth extends number[] = [],
+  > =
+    DataField extends DataField.Internal.NestedFieldImplementation<infer Schema>
+      ? PrefixString | PrefixArray | _FieldName<Schema, `${PrefixString}.`, PrefixArray, [...Depth, 1]>
+      : DataField extends DataField.Internal.ElementFieldImplementation<infer Element>
+        ?
+            | PrefixString
+            | `${PrefixString}.element`
+            | PrefixArray
+            | [...PrefixArray, "element"]
+            | _DataFieldFieldName<Element, `${PrefixString}.element`, [...PrefixArray, "element"], [...Depth, 1]>
+        : PrefixString | PrefixArray;
+
+  type GetField<
+    CurrentField extends SchemaField.Any,
+    Schema extends DataSchema,
+    Path extends SchemaField.FieldName<Schema>,
+  > =
+    | (Path extends readonly string[] ? _GetField<CurrentField, Schema, Path> : never)
+    | (Path extends string ? _GetField<CurrentField, Schema, SplitString<Path, ".">> : never);
+
+  /** @internal */
+  type _GetField<
+    CurrentField extends DataField.Any,
+    Schema extends DataSchema,
+    Path extends readonly string[],
+  > = Path extends readonly [infer Key extends string, ...infer SubKeys extends string[]]
+    ? Schema[Key] extends DataField.Internal.NestedFieldImplementation<infer SubSchema>
+      ? _GetField<Schema[Key], SubSchema, SubKeys>
+      : Schema[Key] extends DataField.Internal.ElementFieldImplementation<infer SubField>
+        ? SubKeys extends readonly ["element", ...infer Rest extends string[]]
+          ? SubField extends SchemaField<infer Schema, infer _1, infer _2, infer _3, infer _4>
+            ? _GetField<SubField, Schema, Rest>
+            : Rest extends readonly []
+              ? SubField
+              : ["never0"]
+          : SubKeys extends readonly []
+            ? Schema[Key]
+            : ["never1"]
+        : SubKeys extends readonly []
+          ? Schema[Key]
+          : ["never2"]
+    : Path extends readonly []
+      ? CurrentField
+      : ["never3"]; // An array like `["element"?]` or `string[]` just falls back to any
 }
 
 /**
@@ -1953,6 +2055,13 @@ declare namespace ObjectField {
   >;
 }
 
+type ArrayFieldElement<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
+  ElementFieldType extends abstract new (...args: infer _1) => {
+    " __fvtt_types_internal_schema": infer Schema extends DataSchema;
+  }
+    ? SchemaField<Schema>
+    : ElementFieldType;
+
 /**
  * A subclass of {@linkcode DataField} which deals with array-typed data.
  * @template ElementFieldType       - the field type for the elements in the ArrayField
@@ -1974,24 +2083,27 @@ declare namespace ObjectField {
  * - InitialValue: `[]`
  */
 declare class ArrayField<
-  const ElementFieldType extends DataField.Any | Document.AnyConstructor,
-  const Options extends ArrayField.AnyOptions = ArrayField.DefaultOptions<
+    const ElementFieldType extends DataField.Any | Document.AnyConstructor,
+    const Options extends ArrayField.AnyOptions = ArrayField.DefaultOptions<
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      ArrayField.AssignmentElementType<ElementFieldType>
+    >,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    ArrayField.AssignmentElementType<ElementFieldType>
-  >,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  const AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
-  const InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  const AssignmentType = ArrayField.AssignmentType<AssignmentElementType, Options>,
-  const InitializedType = ArrayField.InitializedType<AssignmentElementType, InitializedElementType, Options>,
-  const PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
-  const PersistedType extends PersistedElementType[] | null | undefined = ArrayField.PersistedType<
-    AssignmentElementType,
-    PersistedElementType,
-    Options
-  >,
-> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
+    const AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
+    const InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    const AssignmentType = ArrayField.AssignmentType<AssignmentElementType, Options>,
+    const InitializedType = ArrayField.InitializedType<AssignmentElementType, InitializedElementType, Options>,
+    const PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
+    const PersistedType extends PersistedElementType[] | null | undefined = ArrayField.PersistedType<
+      AssignmentElementType,
+      PersistedElementType,
+      Options
+    >,
+  >
+  extends DataField<Options, AssignmentType, InitializedType, PersistedType>
+  implements DataField.Internal.ElementFieldImplementation
+{
   /**
    * @param element - A DataField instance which defines the type of element contained in the Array.
    * @param options - Options which configure the behavior of the field
@@ -2000,6 +2112,9 @@ declare class ArrayField<
    */
   // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(element: ElementFieldType, options?: Options, context?: DataField.ConstructionContext);
+
+  /** @internal */
+  " __fvtt_types_get_field_element": ArrayFieldElement<ElementFieldType>;
 
   /** @defaultValue `true` */
   override required: boolean;
@@ -4702,13 +4817,16 @@ declare namespace TypeDataField {
  * A subclass of {@linkcode DataField} which allows to typed schemas.
  */
 declare class TypedSchemaField<
-  const Types extends TypedSchemaField.Types,
-  const Options extends TypedSchemaField.Options<Types> = TypedSchemaField.DefaultOptions,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  const AssignmentType = TypedSchemaField.AssignmentType<Types, Options>,
-  const InitializedType = TypedSchemaField.InitializedType<Types, Options>,
-  const PersistedType = TypedSchemaField.PersistedType<Types, Options>,
-> extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
+    const Types extends TypedSchemaField.Types,
+    const Options extends TypedSchemaField.Options<Types> = TypedSchemaField.DefaultOptions,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    const AssignmentType = TypedSchemaField.AssignmentType<Types, Options>,
+    const InitializedType = TypedSchemaField.InitializedType<Types, Options>,
+    const PersistedType = TypedSchemaField.PersistedType<Types, Options>,
+  >
+  extends DataField<Options, AssignmentType, InitializedType, PersistedType>
+  implements DataField.Internal.NestedFieldImplementation
+{
   /**
    * @param types   - The different types this field can represent.
    * @param options - Options which configure the behavior of the field
@@ -4716,6 +4834,9 @@ declare class TypedSchemaField<
    */
   // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(types: Types, options?: Options, context?: DataField.ConstructionContext);
+
+  /** @internal */
+  " __fvtt_types_get_field_schema": TypedSchemaField.ToConfiguredTypes<Types>;
 
   static get _defaults(): DataField.Options.Any;
 
@@ -4791,14 +4912,16 @@ declare namespace TypedSchemaField {
     readonly [field: string]: DataField.Any;
   };
 
+  type Type =
+    | ValidDataSchema
+    | SchemaField<DataSchema, { required: true; nullable: false }, any, any, any>
+    // Used instead of `AnyConstructor` because the constructor must stay the same.
+    // Note(LukeAbby): `AnyObject` for `ExtraConstructorOptions` may not make sense.
+    | DataModel.ConcreteConstructor;
+
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   type Types = {
-    [type: string]:
-      | ValidDataSchema
-      | SchemaField<DataSchema, { required: true; nullable: false }, any, any, any>
-      // Used instead of `AnyConstructor` because the constructor must stay the same.
-      // Note(LukeAbby): `AnyObject` for `ExtraConstructorOptions` may not make sense.
-      | DataModel.ConcreteConstructor;
+    [type: string]: Type;
   };
 
   type ToConfiguredTypes<Types extends TypedSchemaField.Types> = {
