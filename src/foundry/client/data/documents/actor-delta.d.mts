@@ -2,7 +2,7 @@ import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseActorDelta } from "#common/documents/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { ConfiguredActorDelta } from "fvtt-types/configuration";
-import type { Merge } from "fvtt-types/utils";
+import type { Merge, NullishProps } from "fvtt-types/utils";
 import type DataModel from "#common/abstract/data.d.mts";
 
 import fields = foundry.data.fields;
@@ -212,7 +212,7 @@ declare global {
     type Collection = never;
 
     /**
-     * An instance of `ActorDelta` that comes from the database but failed validation meaining that
+     * An instance of `ActorDelta` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<ActorDelta.Implementation> {}
@@ -521,6 +521,17 @@ declare global {
      * @deprecated Replaced with {@linkcode ActorDelta.Implementation}
      */
     type ConfiguredInstance = Implementation;
+
+    /** @internal */
+    type _InitializeOptions = NullishProps<{
+      /**
+       * @remarks Is this initialization part of a {@link Scene.reset | `Scene#reset`} call? (skips further initialization if truthy)
+       * @defaultValue `false`
+       */
+      sceneReset: boolean;
+    }>;
+
+    interface InitializeOptions extends Document.InitializeOptions, _InitializeOptions {}
   }
 
   /**
@@ -536,9 +547,11 @@ declare global {
      */
     constructor(...args: ActorDelta.ConstructorArgs);
 
-    protected override _configure(options?: { pack?: string | null }): void;
+    // options: not null (parameter default only, destructured in super)
+    protected override _configure(options?: Document.ConfigureOptions): void;
 
-    protected override _initialize(options?: any): void;
+    // options: not null (destructured)
+    protected override _initialize(options?: ActorDelta.InitializeOptions): void;
 
     /** Pass-through the type from the synthetic Actor, if it exists. */
     _type: string;
@@ -552,11 +565,13 @@ declare global {
     /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
     override prepareEmbeddedDocuments(): void;
 
+    // TODO: accurately type changes and return type
+    // changes, options: not null (parameter default only)
     override updateSource(
       // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });` and `super.updateSource`.
       // However it's likely the overlap between these two types is pretty high.
       changes?: ActorDelta.Source,
-      options?: DataModel.UpdateSourceOptions,
+      options?: DataModel.UpdateOptions,
     ): object;
 
     override reset(): void;
@@ -590,9 +605,7 @@ declare global {
      */
     _handleDeltaCollectionUpdates(doc: Document.Any): void;
 
-    /**
-     * @privateRemarks _onUpdate and _onDelete are all overridden but with no signature changes from BaseActorDelta.
-     */
+    // _onUpdate and _onDelete are all overridden but with no signature changes from BaseActorDelta.
 
     protected override _dispatchDescendantDocumentEvents(
       event: ClientDocument.LifeCycleEventName,
@@ -615,7 +628,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class SwadeActorDelta extends ActorDelta {
      *   protected override _preCreateDescendantDocuments(...args: ActorDelta.PreCreateDescendantDocumentsArgs) {
@@ -633,7 +646,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class GurpsActorDelta extends ActorDelta {
      *   protected override _onCreateDescendantDocuments(...args: ActorDelta.OnCreateDescendantDocumentsArgs) {
@@ -651,7 +664,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class LancerActorDelta extends ActorDelta {
      *   protected override _preUpdateDescendantDocuments(...args: ActorDelta.OnUpdateDescendantDocuments) {
@@ -669,7 +682,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class Ptr2eActorDelta extends ActorDelta {
      *   protected override _onUpdateDescendantDocuments(...args: ActorDelta.OnUpdateDescendantDocumentsArgs) {
@@ -687,7 +700,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class KultActorDelta extends ActorDelta {
      *   protected override _preDeleteDescendantDocuments(...args: ActorDelta.PreDeleteDescendantDocumentsArgs) {
@@ -705,7 +718,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class BladesActorDelta extends ActorDelta {
      *   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnUpdateDescendantDocuments) {

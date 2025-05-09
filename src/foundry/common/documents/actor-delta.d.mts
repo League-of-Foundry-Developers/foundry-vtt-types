@@ -1,7 +1,7 @@
-import type { AnyMutableObject, AnyObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/_module.d.mts";
-import type { CONST, documents } from "#client-esm/client.d.mts";
+import type { documents } from "#client-esm/client.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
@@ -34,22 +34,23 @@ declare abstract class BaseActorDelta<
 
   static override defineSchema(): BaseActorDelta.Schema;
 
-  override canUserModify(
-    user: User.Internal.Implementation,
-    action: "create" | "update" | "delete",
-    data?: AnyObject,
+  /**
+   * @remarks Forwards to `this.parent.canUserModify`. Core's `TokenDocument` implementation doesn't override this method,
+   * so without further extension that's equivalent to {@link Document.canUserModify | `Document#canUserModify`}
+   */
+  // data: not null (parameter default only)
+  override canUserModify<Action extends "create" | "update" | "delete">(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<TokenDocument.Schema, Action>,
   ): boolean;
 
+  /** @remarks Forwards to {@link TokenDocument.testUserPermission | `this.parent.testUserPermission`} */
+  // options: not null (destructured)
   override testUserPermission(
-    user: User.Internal.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS,
-    options?: InexactPartial<{
-      /**
-       * Require the exact permission level requested?
-       * @defaultValue `false`
-       */
-      exact: boolean;
-    }>,
+    user: User.Implementation,
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   /**
@@ -64,11 +65,18 @@ declare abstract class BaseActorDelta<
     context: unknown,
   ): Document.ImplementationClassFor<"Actor"> | null;
 
+  /**
+   * @remarks
+   * Migrations:
+   * - {@link documents.BaseActor.migrateData | `BaseActor`}'s
+   *
+   * Simply forwards to `BaseActor`
+   */
   static migrateData(source: AnyMutableObject): AnyMutableObject;
 
-  // TODO: Figure out if this override still applies
-  toObject(source: true): this["_source"];
-  toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+  /** @remarks Strips optional (`required: false`) fields from the object before returning */
+  // TODO: Properly type this override
+  override toObject(source?: boolean | null): SchemaField.SourceData<ActorDelta.Schema>;
 
   /*
    * After this point these are not really overridden methods.
@@ -263,16 +271,31 @@ declare abstract class BaseActorDelta<
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
 
-  protected static _addDataFieldMigration(
-    data: AnyObject,
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static override _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
+
+  // options: not null (parameter default only)
+  protected static override _addDataFieldShim(
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyObject) => unknown,
-  ): unknown;
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
-  protected static _logDataFieldMigration(
+  protected static override _addDataFieldMigration(
+    data: AnyMutableObject,
+    oldKey: string,
+    newKey: string,
+    apply?: ((data: AnyMutableObject) => unknown) | null,
+  ): boolean;
+
+  // options: not null (destructured where forwarded)
+  protected static override _logDataFieldMigration(
     oldKey: string,
     newKey: string,
     options?: LogCompatibilityWarningOptions,
@@ -299,11 +322,13 @@ declare abstract class BaseActorDelta<
 
   static get schema(): SchemaField<ActorDelta.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: ActorDelta.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: ActorDelta.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): ActorDelta.Implementation;
 
   static override fromJSON(json: string): ActorDelta.Implementation;

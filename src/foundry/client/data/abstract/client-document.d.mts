@@ -29,7 +29,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * @see {@link abstract.Document._initialize | `abstract.Document#_initialize`}
    */
-  protected _initialize(): void;
+  // options: not null (parameter default only)
+  protected _initialize(options?: Document.InitializeOptions): void;
 
   /**
    * Return a reference to the parent Collection instance which contains this Document.
@@ -161,10 +162,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   _onClickDocumentLink(event: MouseEvent): unknown;
 
-  /**
-   * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-   * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-   */
+  // _preCreate, _preUpdate, and _preDelete are all overridden with no signature changes,
+  // just to call `this.system._preX` if `super` doesn't return `false`
+
+  //  _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
   /**
    * Orchestrate dispatching descendant document events to parent documents when embedded children are modified.
@@ -553,6 +555,8 @@ declare global {
     Base: BaseClass,
   ): Mixin<typeof InternalClientDocument<FixedInstanceType<BaseClass>>, BaseClass>;
 
+  // TODO: Namespaces typically match the Mixin, not the non-exported class, but we're exporting the class for type reasons,
+  // TODO: so this is an exception?
   namespace ClientDocument {
     interface SortOptions<T, SortKey extends string = "sort"> extends SortingHelpers.SortOptions<T, SortKey> {
       /**
@@ -664,16 +668,4 @@ declare global {
       sheetOpen?: boolean | undefined;
     }
   }
-}
-
-// This is yet another `AnyDocument` type.
-// It exists specifically because the `Document.AnyConstructor` type is too safe to be merged in with a mixin.
-// The `...args: never` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.
-//
-// `{}` is used to avoid merging `DataSchema` with the real schema.
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-declare class AnyDocument extends Document<Document.Type, {}, Document.Any | null> {
-  constructor(...args: any[]);
-
-  getFlag(scope: never, key: never): any;
 }

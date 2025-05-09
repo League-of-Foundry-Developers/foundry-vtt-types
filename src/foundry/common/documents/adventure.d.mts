@@ -1,4 +1,4 @@
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -194,16 +194,31 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
 
-  protected static _addDataFieldMigration(
-    data: AnyObject,
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static override _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
+
+  // options: not null (parameter default only)
+  protected static override _addDataFieldShim(
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyObject) => unknown,
-  ): unknown;
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
-  protected static _logDataFieldMigration(
+  protected static override _addDataFieldMigration(
+    data: AnyMutableObject,
+    oldKey: string,
+    newKey: string,
+    apply?: ((data: AnyMutableObject) => unknown) | null,
+  ): boolean;
+
+  // options: not null (destructured where forwarded)
+  protected static override _logDataFieldMigration(
     oldKey: string,
     newKey: string,
     options?: LogCompatibilityWarningOptions,
@@ -230,11 +245,19 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static get schema(): SchemaField<Adventure.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Adventure.Source): void;
 
+  /**
+   * @remarks Actual override, not just document template typing
+   *
+   * If this creation is happening in a provided `pack`, and that pack is system-agnostic,
+   * strips `Actor`s, `Item`s, and `Actor` and `Item` `Folders` from `source`d
+   */
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: Adventure.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): Adventure.Implementation;
 
   static override fromJSON(json: string): Adventure.Implementation;

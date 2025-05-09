@@ -8,9 +8,11 @@ import type {
   ToMethod,
   ValueOf,
 } from "fvtt-types/utils";
+import type { SchemaField } from "./fields.d.mts";
 
 import fields = foundry.data.fields;
 import documents = foundry.documents;
+import Document = foundry.abstract.Document;
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -182,6 +184,11 @@ declare class LightData extends DataModel<LightData.Schema, LightData.Parent> {
   /** @defaultValue `["LIGHT"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
+  /**
+   * @remarks
+   * Migrations:
+   * - negative `luminosity`s to `1 - luminosity` and setting `negative` true
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 }
 
@@ -654,6 +661,10 @@ declare namespace PrototypeToken {
   type ConstructorData = CreateData;
 
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  export import Flags = TokenDocument.Flags;
 }
 
 /**
@@ -663,7 +674,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
   // options: not null (destructured when passed to super)
   constructor(
     data?: PrototypeToken.ConstructorData | null,
-    options?: DataModel.DataValidationOptions<PrototypeToken.Parent>,
+    options?: DataModel.ConstructionContext<PrototypeToken.Parent>,
   );
 
   /**
@@ -684,8 +695,9 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
    */
   get actor(): this["parent"];
 
-  override toObject(source: true): this["_source"] & { actorId: string | undefined };
-  override toObject(source?: boolean): ReturnType<this["schema"]["toObject"]> & { actorId: string | undefined };
+  override toObject(
+    source?: boolean | null,
+  ): SchemaField.SourceData<PrototypeToken.Schema> & { actorId: string | undefined };
 
   static get database(): CONFIG["DatabaseBackend"];
 
@@ -697,32 +709,50 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
 
   /**
    * @see {@link foundry.abstract.Document.update | `foundry.abstract.Document#update`}
+   * @remarks Despite the above `@see`, forwards to {@link Actor.update | `this.actor.update`} after wrapping `data`
+   * in `{prototypeToken: data}`
    */
-  update(data: unknown, options: unknown): unknown;
+  update(
+    data: PrototypeToken.UpdateData | undefined,
+    operation?: Actor.Database.UpdateOperation,
+  ): Promise<Actor.Implementation | undefined>;
 
   /**
    * @see {@link foundry.abstract.Document.getFlag | `foundry.abstract.Document#getFlag`}
    */
-  getFlag(args: unknown): unknown;
+  getFlag<Scope extends TokenDocument.Flags.Scope, Key extends TokenDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<TokenDocument.Name, Scope, Key>;
 
   /**
    * @see {@link foundry.abstract.Document.setFlag | `foundry.abstract.Document#setFlag`}
    */
-  setFlag(args: unknown): unknown;
+  setFlag<
+    Scope extends TokenDocument.Flags.Scope,
+    Key extends TokenDocument.Flags.Key<Scope>,
+    Value extends Document.GetFlag<TokenDocument.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   /**
    * @see {@link foundry.abstract.Document.unsetFlag | `foundry.abstract.Document#unsetFlag`}
    */
-  unsetFlag(args: unknown): Promise<unknown>;
+  unsetFlag<Scope extends TokenDocument.Flags.Scope, Key extends TokenDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   /**
-   * @see {@link foundry.abstract.Document.testUserPermission | `foundry.abstract.Document#testUserPermission`}
+   * @see {@link Document.testUserPermission | `Document#testUserPermission`}
+   * @remarks Forwards to {@link Actor.testUserPermission | `this.actor.testUserPermission`}. Core's `Actor` implementation
+   * doesn't override this method, so without further extension, that's equivalent to `Document#testUserPermission`
    */
+  // options: not null (destructured)
   testUserPermission(
     user: User.Implementation,
-    permission: unknown,
-    { exact }: { exact: boolean },
-  ): ReturnType<this["actor"]["testUserPermission"]>;
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
 
   /**
    * @see {@link foundry.abstract.Document.isOwner | `foundry.abstract.Document#isOwner`}

@@ -2,6 +2,7 @@ import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
 import type { CONST } from "#client-esm/client.d.mts";
 import type BasePackage from "#common/packages/base-package.d.mts";
 import type AdditionalTypesField from "#common/packages/sub-types.d.mts";
+import type DataModel from "#common/abstract/data.mjs";
 
 import fields = foundry.data.fields;
 
@@ -246,7 +247,8 @@ declare global {
   class System extends ClientPackageMixin(foundry.packages.BaseSystem) {
     constructor(data: ClientPackage.SystemCreateData, options: unknown);
 
-    override _configure(options: unknown): void;
+    // options: not null (parameter default only, destructured in super)
+    protected override _configure(options?: DataModel.ConfigureOptions): void;
 
     /**
      * @deprecated since v12, will be removed in v14

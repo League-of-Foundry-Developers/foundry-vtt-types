@@ -158,7 +158,7 @@ declare global {
     type Collection = never;
 
     /**
-     * An instance of `JournalEntryPage` that comes from the database but failed validation meaining that
+     * An instance of `JournalEntryPage` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType>
@@ -662,9 +662,7 @@ declare global {
 
     override _onClickDocumentLink(event: MouseEvent): this;
 
-    /**
-     * @privateRemarks _onUpdate is overridden but with no signature changes from the template in BaseJournalEntryPage
-     */
+    // _onUpdate is overridden but with no signature changes from the template in BaseJournalEntryPage
 
     protected override _buildEmbedHTML(
       config: TextEditor.DocumentHTMLEmbedConfig,

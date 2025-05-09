@@ -105,7 +105,7 @@ declare global {
     type Collection = never;
 
     /**
-     * An instance of `PlaylistSound` that comes from the database but failed validation meaining that
+     * An instance of `PlaylistSound` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<PlaylistSound.Implementation> {}
@@ -462,10 +462,8 @@ declare global {
 
     _onClickDocumentLink(event: MouseEvent): ReturnType<Playlist.Implementation["stopSound" | "playSound"]>;
 
-    /**
-     * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    //_onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+    // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     /**
      * Special handling that occurs when playback of a PlaylistSound is started.

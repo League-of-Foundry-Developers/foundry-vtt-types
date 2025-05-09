@@ -1,4 +1,4 @@
-import type { AnyMutableObject, AnyObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -57,6 +57,10 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    */
   static DEFAULT_ICON: string;
 
+  /**
+   * @remarks If `this.actor`, uses {@link Actor.testUserPermission | `this.actor.testUserPermission`} otherwise `super`'s. Core's `Actor` implementation
+   * doesn't override this method, so without further extension, that's equivalent to {@link Document.testUserPermission | `Document#testUserPermission`}
+   */
   // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
@@ -64,35 +68,43 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
-  updateSource(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateSourceOptions): TokenDocument.UpdateData;
+  // changes, options: not null (parameter default only)
+  override updateSource(
+    changes?: TokenDocument.UpdateData,
+    options?: DataModel.UpdateOptions,
+  ): TokenDocument.UpdateData;
 
   // TODO: Update with the Delta conditionality
-  toObject(source: true): this["_source"];
-  toObject(source?: boolean): ReturnType<this["schema"]["toObject"]>;
+  override toObject(source?: boolean | null): SchemaField.SourceData<TokenDocument.Schema>;
 
   /**
-   * @remarks Migrates:
-   * - `actorData` to `delta`
+   * @remarks
+   * Migrations:
+   * - `actorData` to `delta` (since v11, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**
-   * @remarks Shims:
-   * - `actorData` to `delta` since v11, until v13
-   * - `effects` to nothing since v12, until v14 ("TokenDocument#effects is deprecated in favor of using ActiveEffect documents on the associated Actor")
-   * - `overlayEffect` to nothing since v12, until v14 ("TokenDocument#overlayEffect is deprecated in favor of using ActiveEffect documents on the associated Actor")
+   * @remarks
+   * Shims:
+   * - `actorData` to `delta` (since v11, until v13)
+   * - `effects` to nothing (since v12, until v14)
+   *   - "`TokenDocument#effects` is deprecated in favor of using {@link ActiveEffect | `ActiveEffect`} documents on the associated `Actor`")
+   * - `overlayEffect` to nothing (since v12, until v14)
+   *   - "`TokenDocument#overlayEffect` is deprecated in favor of using `ActiveEffect` documents on the associated `Actor`")
    */
+  // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
    * @deprecated since v12, until v14
-   * @remarks "TokenDocument#overlayEffect is deprecated in favor of using ActiveEffect documents on the associated Actor"
+   * @remarks "TokenDocument#overlayEffect is deprecated in favor of using {@link ActiveEffect | `ActiveEffect`} documents on the associated Actor"
    */
   get effects(): [];
 
   /**
    * @deprecated since v12, until v14
-   * @remarks "TokenDocument# is deprecated in favor of using ActiveEffect documents on the associated Actor"
+   * @remarks "TokenDocument# is deprecated in favor of using {@link ActiveEffect | `ActiveEffect`} documents on the associated Actor"
    */
   get overlayEffect(): "";
 
@@ -174,7 +186,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * runtime, namely returning a `EmbeddedCollection` corresponding to a field in `BaseToken`'s
    * schema. However {@link TokenDocument.getEmbeddedCollection | `TokenDocument#getEmbeddedCollection`}
    * is overridden to add new cases and since `BaseToken` is a superclass it had to be widened to
-   * accomodate that.
+   * accommodate that.
    */
   override getEmbeddedCollection(embeddedName: TokenDocument.Embedded.CollectionName): Collection.Any;
 
@@ -293,16 +305,31 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
 
-  protected static _addDataFieldMigration(
-    data: AnyObject,
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static override _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
+
+  // options: not null (parameter default only)
+  protected static override _addDataFieldShim(
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyObject) => unknown,
-  ): unknown;
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
-  protected static _logDataFieldMigration(
+  protected static override _addDataFieldMigration(
+    data: AnyMutableObject,
+    oldKey: string,
+    newKey: string,
+    apply?: ((data: AnyMutableObject) => unknown) | null,
+  ): boolean;
+
+  // options: not null (destructured where forwarded)
+  protected static override _logDataFieldMigration(
     oldKey: string,
     newKey: string,
     options?: LogCompatibilityWarningOptions,
@@ -329,11 +356,13 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   static get schema(): SchemaField<TokenDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: TokenDocument.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: TokenDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): TokenDocument.Implementation;
 
   static override fromJSON(json: string): TokenDocument.Implementation;
@@ -346,10 +375,11 @@ export class ActorDeltaField<
   DocumentType extends Document.AnyConstructor,
   Options extends fields.EmbeddedDocumentField.Options<DocumentType> = fields.EmbeddedDocumentField.DefaultOptions,
 > extends fields.EmbeddedDocumentField<DocumentType, Options> {
+  // options: not null (parameter default only)
   override initialize(
     value: fields.EmbeddedDocumentField.PersistedType<DocumentType, Options>,
     model: DataModel.Any,
-    options?: InexactPartial<DataModel.DataValidationOptions>,
+    options?: DataField.InitializeOptions,
   ):
     | fields.EmbeddedDocumentField.InitializedType<DocumentType, Options>
     | (() => fields.EmbeddedDocumentField.InitializedType<DocumentType, Options> | null);

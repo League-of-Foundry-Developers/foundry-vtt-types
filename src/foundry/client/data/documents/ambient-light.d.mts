@@ -103,7 +103,7 @@ declare global {
     type Collection = never;
 
     /**
-     * An instance of `AmbientLightDocument` that comes from the database but failed validation meaining that
+     * An instance of `AmbientLightDocument` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<AmbientLightDocument.Implementation> {}
@@ -404,9 +404,7 @@ declare global {
      */
     constructor(...args: AmbientLightDocument.ConstructorArgs);
 
-    /**
-     * @privateRemarks _onUpdate is overridden but with no signature changes from its implementation in BaseAmbientLight.
-     */
+    // _onUpdate is overridden but with no signature changes from its implementation in BaseAmbientLight.
 
     /**
      * Is this ambient light source global in nature?

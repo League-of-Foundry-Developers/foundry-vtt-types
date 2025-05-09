@@ -23,9 +23,12 @@ import type {
   PickValue,
   Identity,
   Brand,
+  AnyMutableObject,
+  MaybePromise,
 } from "fvtt-types/utils";
 import type * as CONST from "../constants.mts";
 import type {
+  DataSchema,
   DataField,
   DocumentStatsField,
   EmbeddedCollectionField,
@@ -33,20 +36,18 @@ import type {
   SchemaField,
   TypeDataField,
 } from "../data/fields.d.mts";
-import type { fields } from "../data/_module.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type {
   DatabaseAction,
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
+  DatabaseGetOperation,
   DatabaseUpdateOperation,
   DocumentSocketRequest,
 } from "./_types.d.mts";
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
 
 export default Document;
 
@@ -90,10 +91,8 @@ declare abstract class Document<
 
   override parent: Parent;
 
-  protected override _configure(options?: {
-    pack?: string | null | undefined;
-    parentCollection?: string | null | undefined;
-  }): void;
+  // options: not null (destructured)
+  protected override _configure(options?: Document.ConfigureOptions): void;
 
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
@@ -113,9 +112,10 @@ declare abstract class Document<
   /**
    * Ensure that all Document classes share the same schema of their base declaration.
    */
-  static get schema(): foundry.data.fields.SchemaField.Any;
+  static get schema(): SchemaField.Any;
 
-  protected _initialize(options?: any): void;
+  // options: not null (parameter default only)
+  protected _initialize(options?: Document.InitializeOptions): void;
 
   /**
    * A mapping of singleton embedded Documents which exist in this model.
@@ -201,6 +201,9 @@ declare abstract class Document<
   /**
    * Identify the collection in a parent Document that this Document exists belongs to, if any.
    * @param parentCollection - An explicitly provided parent collection name.
+   * @remarks If passed a value for `parentCollection`, simply returns that value
+   *
+   * Foundry marked `@internal`
    */
   _getParentCollection(parentCollection?: string): string | null;
 
@@ -224,17 +227,18 @@ declare abstract class Document<
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
    */
-  static canUserCreate(user: User.Internal.Implementation): boolean;
+  static canUserCreate(user: User.Implementation): boolean;
 
   /**
-   * Get the explicit permission level that a specific User has over this Document, a value in CONST.DOCUMENT_OWNERSHIP_LEVELS.
+   * Get the explicit permission level that a specific User has over this Document, a value in {@link CONST.DOCUMENT_OWNERSHIP_LEVELS | `CONST.DOCUMENT_OWNERSHIP_LEVELS`}.
    * This method returns the value recorded in Document ownership, regardless of the User's role.
    * To test whether a user has a certain capability over the document, testUserPermission should be used.
-   * @param user - The User being tested
-   *               (default: `game.user`)
+   * @param user - The User being tested (default: `game.user`)
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
+   *
+   * @privateRemarks Making this just `User.Implementation` causes circularities
    */
-  getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -242,6 +246,8 @@ declare abstract class Document<
    * @param permission - The permission level from DOCUMENT_PERMISSION_LEVELS to test
    * @param options    - Additional options involved in the permission test
    * @returns Does the user have this permission level over the Document?
+   *
+   * @privateRemarks Making this just `User.Implementation` causes circularities
    */
   // options: not null (destructured)
   testUserPermission(
@@ -254,10 +260,12 @@ declare abstract class Document<
    * Test whether a given User has permission to perform some action on this Document
    * @param user   - The User attempting modification
    * @param action - The attempted action
-   * @param data   - Data involved in the attempted action
-   *                 (default: `{}`)
+   * @param data   - Data involved in the attempted action (default: `{}`)
    * @returns Does the User have permission?
+   *
+   * @privateRemarks Making this just `User.Implementation` causes circularities
    */
+  // data: not null (parameter default only)
   canUserModify<Action extends "create" | "update" | "delete">(
     user: User.Internal.Implementation,
     action: Action,
@@ -271,21 +279,22 @@ declare abstract class Document<
    * @param context - Additional context options passed to the create method
    * @returns The cloned Document instance
    */
-  override clone<Save extends boolean = false>(
-    data?: fields.SchemaField.UpdateData<Schema>,
-    context?: Document.CloneContext<Save> & InexactPartial<Document.ConstructionContext<Parent>>,
+  // data: not null (property access), context: not null (destructured)
+  override clone<Save extends boolean | null | undefined = false>(
+    data?: SchemaField.UpdateData<Schema>,
+    context?: Document.CloneContext<Save>,
   ): Save extends true ? Promise<this> : this;
 
   /**
    * For Documents which include game system data, migrate the system data object to conform to its latest data model.
    * The data model is defined by the template.json specification included by the game system.
    * @returns The migrated system data object
+   * @throws If this document type either doesn't have subtypes or it does but the one on this document is a DataModel
    */
   migrateSystemData(): object;
 
-  override toObject<Source extends boolean | undefined>(
-    source?: Source,
-  ): Source extends false ? SchemaField.SourceData<Schema> : Readonly<SchemaField.SourceData<Schema>>;
+  /** @remarks `Document#toObject` calls `this.constructor.shimData()` on the data before returning */
+  override toObject(source?: boolean | null): SchemaField.SourceData<Schema>;
 
   /**
    * Create multiple Documents using provided input data.
@@ -443,6 +452,7 @@ declare abstract class Document<
    * returned.
    */
   // Note: This uses `never` because it's unsound to try to call `Document.create` directly.
+  // TODO: This can take an array of data and return an array of documents, in addition to its current typing
   static create(data: never, operation?: never): Promise<Document.Any | undefined>;
 
   /**
@@ -478,8 +488,16 @@ declare abstract class Document<
    * @param documentId - The Document ID
    * @param operation  - Additional options which customize the request
    * @returns The retrieved Document, or null
+   *
+   * @remarks If the Document is in a compendium (i.e `operation.pack` is provided), returns the index
+   * entry (or `null`), instead of the Document.
+   *
+   * {@link FogExploration.get | `FogExploration.get`} can possibly forward args and return to/from
+   * {@link FogExploration.load | `FogExploration.load`}, which accounts for the `Promise<>` part
+   * of the return; All other documents return `SomeDoc.Implementation | null`
    */
-  static get(documentId: string, operation?: Document.Database.GetOptions): Document.Any | null;
+  // TODO: Type for possible index entry return
+  static get(documentId: string, operation?: Document.Database.GetOptions): MaybePromise<Document.Any | null>;
 
   /**
    * A compatibility method that returns the appropriate name of an embedded collection within this Document.
@@ -638,7 +656,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the creation request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onCreate(data: never, options: never, userId: string): void;
+  protected _onCreate(data: never, options: never, userId: string): MaybePromise<void>;
 
   /**
    * Pre-process a creation operation, potentially altering its instructions or input data. Pre-operation events only
@@ -695,7 +713,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the update request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onUpdate(changed: never, options: never, userId: string): void;
+  protected _onUpdate(changed: never, options: never, userId: string): MaybePromise<void>;
 
   /**
    * Pre-process an update operation, potentially altering its instructions or input data. Pre-operation events only
@@ -751,7 +769,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onDelete(options: never, userId: string): void;
+  protected _onDelete(options: never, userId: string): MaybePromise<void>;
 
   /**
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
@@ -794,9 +812,13 @@ declare abstract class Document<
   ): Promise<unknown>;
 
   /**
-   * Configure whether V10 Document Model migration warnings should be logged for this class.
+   * @deprecated since v10, no specified end
+   * @remarks "You are accessing the "data" field of which was deprecated in v10 and replaced with "system".
+   * Continued usage of pre-v10 ".data" paths is no longer supported"
+   *
+   * @throws An error with the above deprecation warning, if this Document's schema has a `system` field
    */
-  static LOG_V10_COMPATIBILITY_WARNINGS: boolean;
+  get data(): never;
 
   /**
    * @deprecated since v11, will be removed in v13
@@ -807,13 +829,18 @@ declare abstract class Document<
   /**
    * A reusable helper for adding migration shims.
    */
-  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
-
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
   /**
    * A reusable helper for adding a migration shim
    */
+  // options: not null (parameter default only)
   protected static _addDataFieldShim(
-    data: AnyObject,
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
     options?: Document.DataFieldShimOptions,
@@ -826,15 +853,16 @@ declare abstract class Document<
    * @param oldKey - The old field name
    * @param newKey - The new field name
    * @param apply  - An application function, otherwise the old value is applied
-   * @internal
+   * @remarks Foundry marked `@internal`
    */
   protected static _addDataFieldMigration(
-    data: AnyObject,
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyObject) => unknown,
+    apply?: (data: AnyMutableObject) => unknown,
   ): unknown;
 
+  // options: not null (destructured where forwarded)
   protected static _logDataFieldMigration(
     oldKey: string,
     newKey: string,
@@ -1303,7 +1331,7 @@ declare namespace Document {
   type MetadataFor<Name extends Document.Type> = ConfiguredMetadata[Name];
 
   type CollectionRecord<Schema extends DataSchema> = {
-    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
+    [Key in keyof Schema]: Schema[Key] extends EmbeddedCollectionField.Any ? Schema[Key] : never;
   };
 
   type Flags<ConcreteDocument extends Internal.Instance.Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
@@ -1351,30 +1379,59 @@ declare namespace Document {
     };
   }
 
-  interface ConstructionContext<Parent extends Document.Any | null> {
+  /** @internal */
+  type _ConstructionContext<Parent extends Document.Any | null> = NullishProps<{
     /**
      * The parent Document of this one, if this one is embedded
      * @defaultValue `null`
      */
-    parent?: Parent | null | undefined;
+    parent: Parent;
 
     /**
      * The compendium collection ID which contains this Document, if any
      * @defaultValue `null`
      */
-    pack?: string | null | undefined;
+    pack: string;
 
     /**
      * Whether to validate initial data strictly?
      * @defaultValue `true`
      */
-    strict?: boolean | null | undefined;
+    strict: boolean;
 
     /**
-     * An immutable reverse-reference to the name of the collection that thi8s Document exists in on its parent, if any.
+     * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
+     * @privateRemarks Omitted from the typedef, inferred from usage in {@link Document._configure | `Document#_configure`}
+     * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
+     * {@link foundry.abstract.EmbeddedCollection.createDocument | `EmbeddedCollection#createDocument`})
      */
-    parentCollection?: string | null | undefined;
-  }
+    parentCollection: string;
+  }>;
+
+  /**
+   * Foundry does not include the properties from the DataModel construction context in `DocumentConstructionContext`,
+   * but they're all still valid.
+   *
+   * `strict` is omitted from the DataModel interface so the Document interface's property
+   * description takes precedence.
+   */
+  interface ConstructionContext<Parent extends Document.Any | null = Document.Any | null>
+    extends Omit<DataModel._ConstructionContext, "strict">,
+      _ConstructionContext<Parent> {}
+
+  /** `DataModel#constructor` pulls `parent` and `strict` out of the passed context before forwarding to `#_configure` */
+  interface ConfigureOptions extends Omit<ConstructionContext, "parent" | "strict"> {}
+
+  /** `DataModel#constructor` pulls `parent` out of the passed context before forwarding to `#_initializeSource` */
+  interface InitializeOptions extends Omit<ConstructionContext, "parent"> {}
+
+  /**
+   * `DataModel#constructor` pulls `parent` out of the passed context before forwarding to `#_initializeSource`
+   * @privateRemarks `Document` doesn't override `_initializeSource`, but at least one specific document does (Actor only, as of v12);
+   * Without an override, this is handled by the `& ExtraConstructorOptions` in the `DataModel` signature, but with one,
+   * a manually combined interface is needed.
+   */
+  interface InitializeSourceOptions extends DataModel.InitializeSourceOptions, Omit<ConstructionContext, "parent"> {}
 
   interface ModificationContext<Parent extends Document.Any | null> {
     /**
@@ -1460,25 +1517,34 @@ declare namespace Document {
     deleteAll?: boolean | undefined;
   }
 
-  interface CloneContext<Save extends boolean | undefined = boolean | undefined> {
+  /** @internal */
+  type _CloneContext<Save extends boolean | null | undefined = boolean | null | undefined> = NullishProps<{
     /**
      * Save the clone to the World database?
      * @defaultValue `false`
      */
-    save?: Save;
+    save: Save;
 
     /**
      * Keep the same ID of the original document
      * @defaultValue `false`
      */
-    keepId?: boolean | undefined;
+    keepId: boolean;
 
     /**
      * Track the clone source
      * @defaultValue `false`
      */
-    addSource?: boolean | undefined;
-  }
+    addSource: boolean;
+  }>;
+
+  /**
+   * @privateRemarks Since we've lost the ExtraConstructorOptions type param, we have to extend
+   * the (parentless) construction context
+   */
+  interface CloneContext<Save extends boolean | null | undefined = boolean | null | undefined>
+    extends _CloneContext<Save>,
+      Omit<Document.ConstructionContext, "parent"> {}
 
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
@@ -1600,9 +1666,11 @@ declare namespace Document {
   namespace Database {
     type Operation = "create" | "update" | "delete";
 
-    interface GetOptions {
-      pack?: string | null;
-    }
+    /**
+     * @privateRemarks Foundry types {@link Document.get | `Document.get`} as taking a {@link DatabaseGetOperation | `DatabaseGetOperation`}
+     * but it only ever looks for `pack`
+     */
+    interface GetOptions extends Pick<DatabaseGetOperation, "pack"> {}
 
     /** Used for {@linkcode Document.createDocuments} */
     type CreateOperation<Op extends DatabaseCreateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;
@@ -1920,7 +1988,7 @@ declare namespace Document {
 
   interface DataFieldShimOptions {
     /**
-     * Apply shims to embedded models?
+     * A string to log as a compatibility warning on accessing the `oldKey`
      */
     warning?: string | null | undefined;
 
@@ -1974,9 +2042,16 @@ declare namespace Document {
     types?: SubType[] | null | undefined;
   } & ParentContext<Parent>;
 
-  interface FromImportContext<Parent extends Document.Any | null>
-    extends ConstructionContext<Parent>,
-      DataModel.DataValidationOptions<Parent> {}
+  interface FromImportContext<Parent extends Document.Any | null> extends Omit<ConstructionContext<Parent>, "strict"> {
+    /**
+     * Strict validation is enabled by default.
+     * @defaultValue `true`
+     * @remarks Not allowed to be `undefined` as that would produce `false`, not the expected default of `true`, due to being spread
+     * into an object with `strict: true`, then passed to {@link Document.fromSource | `Document.fromSource`}, where the parameter
+     * default is `false`
+     */
+    strict?: boolean | null;
+  }
 
   type TestableOwnershipLevel = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
 

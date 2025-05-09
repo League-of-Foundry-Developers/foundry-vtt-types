@@ -176,10 +176,11 @@ declare global {
 
     /**
      * Get the ownership level that a User has for this Compendium pack.
-     * @param user - The user being tested
-     * @returns The ownership level in CONST.DOCUMENT_OWNERSHIP_LEVELS
+     * @param user - The user being tested (default: `game.user`)
+     * @returns The ownership level in {@link CONST.DOCUMENT_OWNERSHIP_LEVELS | `CONST.DOCUMENT_OWNERSHIP_LEVELS`}
      */
-    getUserLevel(user?: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+    // user: not null (parameter default only)
+    getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
     /**
      * Test whether a certain User has a requested permission level (or greater) over the Compendium pack

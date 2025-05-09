@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, Merge } from "fvtt-types/utils";
+import type { Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "fvtt-types/utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type { DatabaseGetOperation } from "#common/abstract/_types.d.mts";
 import type Document from "#common/abstract/document.d.mts";
@@ -115,7 +115,7 @@ declare global {
     type Collection = FogExplorations.Configured;
 
     /**
-     * An instance of `FogExploration` that comes from the database but failed validation meaining that
+     * An instance of `FogExploration` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<FogExploration.Implementation> {}
@@ -377,6 +377,25 @@ declare global {
      * @deprecated Replaced with {@linkcode FogExploration.Implementation}
      */
     type ConfiguredInstance = Implementation;
+
+    /** @internal */
+    type _LoadQuery = NullishProps<{
+      /**
+       * A certain Scene ID
+       * @defaultValue `canvas.scene`
+       */
+      scene: string;
+
+      /**
+       * A certain User ID
+       * @defaultValue `game.user`
+       */
+      user: string;
+    }>;
+    interface LoadQuery extends _LoadQuery {}
+
+    /** @remarks {@link FogExploration.load | `#load`} takes the `query` property separately as its first argument, then merges later*/
+    interface LoadOptions extends Omit<IntentionalPartial<DatabaseGetOperation>, "query"> {}
   }
 
   /**
@@ -397,13 +416,7 @@ declare global {
      * @returns
      */
     static load(
-      query?: InexactPartial<{
-        /** A certain Scene ID */
-        scene: string;
-
-        /** A certain User ID */
-        user: string;
-      }>,
+      query?: FogExploration.LoadQuery,
       options?: InexactPartial<DatabaseGetOperation>,
     ): Promise<FogExploration.Implementation | null>;
 
@@ -412,9 +425,7 @@ declare global {
      */
     getTexture(): PIXI.Texture | null;
 
-    /**
-     * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseFogExploration.
-     */
+    // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseFogExploration.
 
     /*
      * After this point these are not really overridden methods.
@@ -446,6 +457,20 @@ declare global {
       source: FogExploration.Source,
       context?: Document.FromImportContext<FogExploration.Parent>,
     ): Promise<FogExploration.Implementation>;
+
+    static override get(
+      documentId: string,
+      options?: FogExploration.Database.GetOptions,
+    ): FogExploration.Implementation | null;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War exploration data, an operation which has been renamed to {@link FogExploration.load | `FogExploration.load`}"
+     */
+    static override get(
+      query: FogExploration.LoadQuery,
+      options: FogExploration.LoadOptions,
+    ): Promise<FogExploration.Implementation | null>;
   }
 
   namespace FogExploration {

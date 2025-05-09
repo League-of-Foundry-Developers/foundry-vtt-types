@@ -229,7 +229,7 @@ declare global {
     type Collection = Actors.Configured;
 
     /**
-     * An instance of `Actor` that comes from the database but failed validation meaining that
+     * An instance of `Actor` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends Actor.SubType = Actor.SubType> extends Document.Invalid<OfType<SubType>> {}
@@ -613,16 +613,19 @@ declare global {
 
     static override metadata: Actor.Metadata;
 
-    protected override _configure(options?: { pack?: string | null }): void;
+    // options: not null (parameter default only, destructured in super)
+    protected override _configure(options?: Document.ConfigureOptions): void;
 
     /**
      * Maintain a list of Token Documents that represent this Actor, stored by Scene.
      */
     protected _dependentTokens: foundry.utils.IterableWeakMap<Scene.Implementation, TokenDocument.Implementation>;
 
+    /** @remarks `||=`s the `prototypeToken`'s `name` and `texture.src` fields with the main actor's values */
+    // options: not null (parameter default only)
     protected override _initializeSource(
       data: this | Actor.CreateData,
-      options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
+      options?: Document.InitializeSourceOptions,
     ): Actor.Source;
 
     /**
@@ -821,13 +824,11 @@ declare global {
      */
     protected _unregisterDependentScene(scene: Scene.Implementation): void;
 
-    /**
-     * @privateRemarks _preCreate and _onUpdate are all overridden but with no signature changes from BaseActor.
-     */
+    // _preCreate and _onUpdate are all overridden but with no signature changes from BaseActor.
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class GurpsActor extends Actor {
      *   protected override _onCreateDescendantDocuments(...args: Actor.OnCreateDescendantDocumentsArgs) {
@@ -845,7 +846,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class Ptr2eActor extends Actor {
      *   protected override _onUpdateDescendantDocuments(...args: Actor.OnUpdateDescendantDocumentsArgs) {
@@ -863,7 +864,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class BladesActor extends Actor {
      *   protected override _onDeleteDescendantDocuments(...args: Actor.OnUpdateDescendantDocuments) {
@@ -909,7 +910,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class SwadeActor extends Actor {
      *   protected override _preCreateDescendantDocuments(...args: Actor.PreCreateDescendantDocumentsArgs) {
@@ -927,7 +928,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class LancerActor extends Actor {
      *   protected override _preUpdateDescendantDocuments(...args: Actor.OnUpdateDescendantDocuments) {
@@ -945,7 +946,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class KultActor extends Actor {
      *   protected override _preDeleteDescendantDocuments(...args: Actor.PreDeleteDescendantDocumentsArgs) {

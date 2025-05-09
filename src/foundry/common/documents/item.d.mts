@@ -1,4 +1,4 @@
-import type { AnyObject, AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -46,14 +46,34 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    */
   static getDefaultArtwork(itemData: BaseItem.CreateData): { img: string };
 
-  override canUserModify(user: User.Implementation, action: "create" | "delete" | "update", data?: AnyObject): boolean;
+  /**
+   * @remarks If `this.isEmbedded`, uses `this.parent.canUserModify(user, "update")`, dropping `data` and forcing `action`,
+   * otherwise `super`'s (with all arguments forwarded). Core's `Actor` implementation doesn't override this method, so
+   * without further extension those are both {@link Document.canUserModify | `Document#canUserModify`}
+   */
+  // data: not null (parameter default only)
+  override canUserModify<Action extends "create" | "update" | "delete">(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<Item.Schema, Action>,
+  ): boolean;
 
+  /**
+   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Actor` implementation
+   * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
+   */
+  // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS,
+    permission: Document.TestableOwnershipLevel,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  /**
+   * @remarks
+   * Migrations:
+   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /*
@@ -238,16 +258,31 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
 
-  protected static _addDataFieldMigration(
-    data: AnyObject,
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static override _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
+
+  // options: not null (parameter default only)
+  protected static override _addDataFieldShim(
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyObject) => unknown,
-  ): unknown;
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
-  protected static _logDataFieldMigration(
+  protected static override _addDataFieldMigration(
+    data: AnyMutableObject,
+    oldKey: string,
+    newKey: string,
+    apply?: ((data: AnyMutableObject) => unknown) | null,
+  ): boolean;
+
+  // options: not null (destructured where forwarded)
+  protected static override _logDataFieldMigration(
     oldKey: string,
     newKey: string,
     options?: LogCompatibilityWarningOptions,
@@ -274,12 +309,11 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   static get schema(): SchemaField<Item.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: Item.Source): void;
 
-  static override fromSource(
-    source: Item.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): Item.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: Item.CreateData, context?: DataModel.FromSourceOptions): Item.Implementation;
 
   static override fromJSON(json: string): Item.Implementation;
 }

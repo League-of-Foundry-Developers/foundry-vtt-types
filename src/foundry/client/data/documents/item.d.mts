@@ -224,7 +224,7 @@ declare global {
     type Collection = Items.Configured;
 
     /**
-     * An instance of `Item` that comes from the database but failed validation meaining that
+     * An instance of `Item` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends Item.SubType = Item.SubType> extends Document.Invalid<OfType<SubType>> {}
@@ -581,9 +581,7 @@ declare global {
      */
     getRollData(): AnyObject;
 
-    /**
-     * @privateRemarks _preCreate, _onCreateDocuments and _onDeleteDocuments are all overridden but with no signature changes from BaseItem.
-     */
+    // _preCreate, _onCreateDocuments and _onDeleteDocuments are all overridden but with no signature changes from BaseItem.
 
     /*
      * After this point these are not really overridden methods.
@@ -599,7 +597,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class SwadeItem extends Item {
      *   protected override _preCreateDescendantDocuments(...args: Item.PreCreateDescendantDocumentsArgs) {
@@ -617,7 +615,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class GurpsItem extends Item {
      *   protected override _onCreateDescendantDocuments(...args: Item.OnCreateDescendantDocumentsArgs) {
@@ -635,7 +633,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class LancerItem extends Item {
      *   protected override _preUpdateDescendantDocuments(...args: Item.OnUpdateDescendantDocuments) {
@@ -653,7 +651,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class Ptr2eItem extends Item {
      *   protected override _onUpdateDescendantDocuments(...args: Item.OnUpdateDescendantDocumentsArgs) {
@@ -671,7 +669,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class KultItem extends Item {
      *   protected override _preDeleteDescendantDocuments(...args: Item.PreDeleteDescendantDocumentsArgs) {
@@ -689,7 +687,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class BladesItem extends Item {
      *   protected override _onDeleteDescendantDocuments(...args: Item.OnUpdateDescendantDocuments) {

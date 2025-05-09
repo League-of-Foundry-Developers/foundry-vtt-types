@@ -114,7 +114,7 @@ declare global {
     type Collection = Users.Configured;
 
     /**
-     * An instance of `User` that comes from the database but failed validation meaining that
+     * An instance of `User` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<User.Implementation> {}
@@ -592,10 +592,8 @@ declare global {
      */
     updateTokenTargets(targetIds?: string[]): void;
 
-    /**
-     * @privateRemarks _onUpdate and _onDelete are overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    // _onUpdate and _onDelete are overridden but with no signature changes.
+    // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     /*
      * After this point these are not really overridden methods.

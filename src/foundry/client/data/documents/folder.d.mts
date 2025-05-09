@@ -146,7 +146,7 @@ declare global {
     type Collection = Folders.Configured;
 
     /**
-     * An instance of `Folder` that comes from the database but failed validation meaining that
+     * An instance of `Folder` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends Folder.SubType = Folder.SubType> extends Document.Invalid<OfType<SubType>> {}
@@ -496,10 +496,8 @@ declare global {
      */
     get ancestors(): Folder.Implementation[];
 
-    /**
-     * @privateRemarks _preCreate overridden but with no signature changes.
-     * For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    // _preCreate overridden but with no signature changes.
+    // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
     static override createDialog(
       data?: Document.CreateDialogData<Folder.CreateData>,
