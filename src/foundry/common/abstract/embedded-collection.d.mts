@@ -234,8 +234,7 @@ declare class EmbeddedCollection<
    *                 (default: `true`)
    * @returns The extracted array of primitive objects
    */
-  toObject(source?: true): ContainedDocument["_source"][];
-  toObject(source: false): ReturnType<ContainedDocument["schema"]["toObject"]>[];
+  toObject(source?: boolean | null): ContainedDocument["_source"][];
 
   /**
    * Follow-up actions to take when a database operation modifies Documents in this EmbeddedCollection.
