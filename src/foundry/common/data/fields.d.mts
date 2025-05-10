@@ -875,6 +875,7 @@ declare class SchemaField<
   [Symbol.iterator](): Generator<DataField.Unknown>;
 
   // TODO: see if its viable to narrow keys, values, entries, has, and get's types via the schema
+
   /**
    * An array of field names which are present in the schema.
    */
@@ -4213,6 +4214,7 @@ declare class HTMLField<
   protected static override get _defaults(): StringField.Options;
 
   // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
+
   /** @remarks Sets `groupConfig.stacked ??= true` before calling super */
   toFormGroup(
     groupConfig?: HTMLField.GroupConfig,
