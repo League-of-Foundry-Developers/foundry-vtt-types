@@ -79,9 +79,9 @@ declare global {
          */
         duration: number;
       }> &
-      /**
+      /*
        * Additional parameters of PIXI.TextStyle which are applied to the text
-       * @remarks Excess keys are collected as `{...textStyle}` and passed to {@linkcode PreciseText.getTextStyle} which checks for `!== undefined`, so this can't be NullishProps
+       * Excess keys are collected as `{...textStyle}` and passed to {@linkcode PreciseText.getTextStyle} which checks for `!== undefined`, so this can't be NullishProps
        */
       InexactPartial<PIXI.ITextStyle>;
 

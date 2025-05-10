@@ -835,6 +835,7 @@ declare abstract class Document<
     shims: Record<string, string>,
     options?: Document.DataFieldShimOptions,
   ): void;
+
   /**
    * A reusable helper for adding a migration shim
    */

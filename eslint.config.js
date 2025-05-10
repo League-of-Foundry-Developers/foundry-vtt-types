@@ -379,13 +379,11 @@ const rules = [
           definedTags: ["remarks", "privateRemarks", "defaultValue", "typeParam", "immediate"],
         },
       ],
+      "jsdoc/lines-before-block": "error",
       "jsdoc/require-jsdoc": "off",
       "jsdoc/require-param": "off",
       "jsdoc/require-returns": "off",
       "jsdoc/tag-lines": "off",
-
-      // Blocked by https://github.com/gajus/eslint-plugin-jsdoc/issues/1381
-      "jsdoc/lines-before-block": "off",
 
       // Blocked by https://github.com/gajus/eslint-plugin-jsdoc/issues/1379
       "jsdoc/valid-types": "off",
