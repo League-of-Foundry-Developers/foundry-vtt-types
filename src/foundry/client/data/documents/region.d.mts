@@ -1,4 +1,4 @@
-import type { InexactPartial, MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, MaybePromise, Merge } from "fvtt-types/utils";
 import type { BaseShapeData, fields } from "../../../common/data/module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -773,9 +773,10 @@ declare global {
       context: Document.CreateDialogContext<"Region", NonNullable<RegionDocument.Parent>>,
     ): Promise<RegionDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<RegionDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<RegionDocument.Implementation | undefined>;
 
     static override fromImport(

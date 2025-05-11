@@ -751,7 +751,7 @@ declare global {
 
     static override fromDropData(
       data: Document.DropData<ChatMessage.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<ChatMessage.Implementation | undefined>;
 
     static override fromImport(

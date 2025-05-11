@@ -788,7 +788,7 @@ declare global {
 
     static override fromDropData(
       data: Document.DropData<JournalEntryPage.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<JournalEntryPage.Implementation | undefined>;
 
     static override fromImport(

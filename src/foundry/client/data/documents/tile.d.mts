@@ -1,4 +1,4 @@
-import type { InterfaceToObject, MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, InterfaceToObject, MaybePromise, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields, TextureData } from "../../../common/data/module.d.mts";
@@ -505,9 +505,10 @@ declare global {
       context: Document.CreateDialogContext<"Tile", NonNullable<TileDocument.Parent>>,
     ): Promise<TileDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<TileDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<TileDocument.Implementation | undefined>;
 
     static override fromImport(

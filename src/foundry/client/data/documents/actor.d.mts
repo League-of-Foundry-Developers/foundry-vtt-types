@@ -968,9 +968,10 @@ declare global {
       context?: Document.CreateDialogContext<"Actor", Actor.Parent>,
     ): Promise<Actor.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Actor.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Actor.Implementation | undefined>;
 
     static override fromImport(

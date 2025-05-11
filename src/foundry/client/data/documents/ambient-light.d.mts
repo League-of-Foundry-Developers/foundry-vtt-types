@@ -1,4 +1,4 @@
-import type { InterfaceToObject, MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, InterfaceToObject, MaybePromise, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields, LightData } from "../../../common/data/module.d.mts";
@@ -434,9 +434,10 @@ declare global {
       context: Document.CreateDialogContext<"AmbientLight", NonNullable<AmbientLightDocument.Parent>>,
     ): Promise<AmbientLightDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<AmbientLightDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<AmbientLightDocument.Implementation | undefined>;
 
     static override fromImport(

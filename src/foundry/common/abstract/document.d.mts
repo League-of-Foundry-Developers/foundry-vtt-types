@@ -2043,14 +2043,6 @@ declare namespace Document {
   }> &
     _PossibleSubtypeContext<DocumentName>;
 
-  interface FromDropDataOptions {
-    /**
-     * Import the provided document data into the World, if it is not already a World-level Document reference
-     * @defaultValue `false`
-     */
-    importWorld?: boolean;
-  }
-
   type CreateDialogData<CreateData extends object> = InexactPartial<
     CreateData,
     Extract<AllKeysOf<CreateData>, "name" | "type" | "folder">

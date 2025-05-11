@@ -1,5 +1,5 @@
 import type { ConfiguredMacro } from "../../../../configuration/index.d.mts";
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -580,9 +580,10 @@ declare global {
       context?: Document.CreateDialogContext<"Macro", Macro.Parent>,
     ): Promise<Macro.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Macro.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Macro.Implementation | undefined>;
 
     static override fromImport(

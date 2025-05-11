@@ -942,9 +942,10 @@ declare global {
       context: Document.CreateDialogContext<"ActiveEffect", NonNullable<ActiveEffect.Parent>>,
     ): Promise<ActiveEffect.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<ActiveEffect.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<ActiveEffect.Implementation | undefined>;
 
     static override fromImport(

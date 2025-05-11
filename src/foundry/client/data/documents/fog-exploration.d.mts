@@ -1,4 +1,12 @@
-import type { Identity, InexactPartial, MaybePromise, IntentionalPartial, Merge, NullishProps } from "fvtt-types/utils";
+import type {
+  AnyObject,
+  Identity,
+  InexactPartial,
+  MaybePromise,
+  IntentionalPartial,
+  Merge,
+  NullishProps,
+} from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type { DatabaseGetOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -449,9 +457,10 @@ declare global {
       context?: Document.CreateDialogContext<"FogExploration", FogExploration.Parent>,
     ): Promise<FogExploration.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<FogExploration.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<FogExploration.Implementation | undefined>;
 
     static override fromImport(

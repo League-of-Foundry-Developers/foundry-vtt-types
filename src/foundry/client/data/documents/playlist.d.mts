@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -785,9 +785,10 @@ declare global {
       context?: Document.CreateDialogContext<"Playlist", Playlist.Parent>,
     ): Promise<Playlist.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Playlist.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Playlist.Implementation | undefined>;
 
     static override fromImport(

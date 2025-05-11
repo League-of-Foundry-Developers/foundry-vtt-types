@@ -1,4 +1,11 @@
-import type { FolderDocumentTypes, InexactPartial, FixedInstanceType, Merge, MaybePromise } from "fvtt-types/utils";
+import type {
+  AnyObject,
+  FolderDocumentTypes,
+  InexactPartial,
+  FixedInstanceType,
+  Merge,
+  MaybePromise,
+} from "fvtt-types/utils";
 import type { fields } from "../../../common/data/module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -510,9 +517,10 @@ declare global {
       context: Document.CreateDialogContext<"Adventure", Adventure.Parent>,
     ): Promise<Adventure.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Adventure.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Adventure.Implementation | undefined>;
 
     static override fromImport(

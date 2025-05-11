@@ -1,5 +1,5 @@
 import type { ConfiguredCard } from "../../../../configuration/index.d.mts";
-import type { DeepPartial, MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, MaybePromise, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -647,9 +647,10 @@ declare global {
       context: Document.CreateDialogContext<"Card", NonNullable<Card.Parent>>,
     ): Promise<Card.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Card.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Card.Implementation | undefined>;
 
     static override fromImport(

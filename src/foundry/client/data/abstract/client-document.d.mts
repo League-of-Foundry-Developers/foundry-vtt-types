@@ -371,8 +371,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param options - Additional options which affect drop data behavior
    * @returns The resolved Document
    * @throws If a Document could not be retrieved from the provided data.
+   * @remarks Core's implementation in `ClientDocument` does not use `options` at all, no call passes any `options`
+   * anywhere in Foundry, and the TSDoc types it as simply `object`, so it cannot be typed more exactly than this.
    */
-  static fromDropData(data: Document.DropData<never>, options?: Document.FromDropDataOptions): Promise<unknown>;
+  // options: not null (parameter default only)
+  static fromDropData(data: Document.DropData<never>, options?: AnyObject): Promise<unknown>;
 
   /**
    * Create the Document from the given source with migration applied to it.

@@ -1,5 +1,5 @@
 import type { ConfiguredFolder } from "../../../../configuration/index.d.mts";
-import type { InexactPartial, MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, MaybePromise, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -571,9 +571,10 @@ declare global {
     // context: not null (destructured)
     static override defaultName(context?: Document.DefaultNameContext<"Folder", Folder.Parent>): string;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Folder.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Folder.Implementation | undefined>;
 
     static override fromImport(

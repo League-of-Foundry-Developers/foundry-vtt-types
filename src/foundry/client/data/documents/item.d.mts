@@ -713,7 +713,7 @@ declare global {
 
     static override fromDropData(
       data: Document.DropData<Item.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Item.Implementation | undefined>;
 
     static override fromImport(

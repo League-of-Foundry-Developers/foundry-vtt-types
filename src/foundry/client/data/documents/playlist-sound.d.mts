@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
 import type Sound from "../../../client-esm/audio/sound.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -517,9 +517,10 @@ declare global {
       context: Document.CreateDialogContext<"PlaylistSound", NonNullable<PlaylistSound.Parent>>,
     ): Promise<PlaylistSound.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<PlaylistSound.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<PlaylistSound.Implementation | undefined>;
 
     static override fromImport(

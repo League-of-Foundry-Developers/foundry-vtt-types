@@ -1,4 +1,4 @@
-import type { InexactPartial, MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, MaybePromise, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -888,9 +888,10 @@ declare global {
       context?: Document.CreateDialogContext<"RollTable", RollTable.Parent>,
     ): Promise<RollTable.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<RollTable.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<RollTable.Implementation | undefined>;
 
     static override fromImport(

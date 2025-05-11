@@ -1,5 +1,5 @@
 import type { ConfiguredCombatant } from "../../../../configuration/index.d.mts";
-import type { MaybePromise, Merge, ValueOf } from "fvtt-types/utils";
+import type { AnyObject, MaybePromise, Merge, ValueOf } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -588,9 +588,10 @@ declare global {
       context: Document.CreateDialogContext<"Combatant", NonNullable<Combatant.Parent>>,
     ): Promise<Combatant.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Combatant.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Combatant.Implementation | undefined>;
 
     static override fromImport(

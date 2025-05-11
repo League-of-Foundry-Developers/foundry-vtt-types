@@ -1,4 +1,4 @@
-import type { InterfaceToObject, MaybePromise, Merge, ValueOf } from "fvtt-types/utils";
+import type { AnyObject, InterfaceToObject, MaybePromise, Merge, ValueOf } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
@@ -660,9 +660,10 @@ declare global {
       context?: Document.CreateDialogContext<"JournalEntry", JournalEntry.Parent>,
     ): Promise<JournalEntry.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<JournalEntry.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<JournalEntry.Implementation | undefined>;
 
     static override fromImport(

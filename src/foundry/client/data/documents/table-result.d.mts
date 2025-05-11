@@ -1,5 +1,5 @@
 import type { ConfiguredTableResult } from "../../../../configuration/index.d.mts";
-import type { MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, MaybePromise, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -490,9 +490,10 @@ declare global {
       context: Document.CreateDialogContext<"TableResult", NonNullable<TableResult.Parent>>,
     ): Promise<TableResult.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<TableResult.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<TableResult.Implementation | undefined>;
 
     static override fromImport(

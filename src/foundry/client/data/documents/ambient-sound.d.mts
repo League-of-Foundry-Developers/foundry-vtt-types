@@ -1,4 +1,4 @@
-import type { MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, MaybePromise, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -478,9 +478,10 @@ declare global {
       context: Document.CreateDialogContext<"AmbientSound", NonNullable<AmbientSoundDocument.Parent>>,
     ): Promise<AmbientSoundDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<AmbientSoundDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<AmbientSoundDocument.Implementation | undefined>;
 
     static override fromImport(

@@ -1318,9 +1318,10 @@ declare global {
       context: Document.CreateDialogContext<"Token", NonNullable<TokenDocument.Parent>>,
     ): Promise<TokenDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<TokenDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<TokenDocument.Implementation | undefined>;
 
     static override fromImport(

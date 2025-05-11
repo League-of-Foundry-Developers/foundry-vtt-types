@@ -1,4 +1,4 @@
-import type { MaybePromise, Merge, NullishProps } from "fvtt-types/utils";
+import type { AnyObject, MaybePromise, Merge, NullishProps } from "fvtt-types/utils";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { BaseActorDelta } from "../../../common/documents/_module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -744,9 +744,10 @@ declare global {
       context: Document.CreateDialogContext<"ActorDelta", NonNullable<ActorDelta.Parent>>,
     ): Promise<ActorDelta.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<ActorDelta.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<ActorDelta.Implementation | undefined>;
 
     static override fromImport(

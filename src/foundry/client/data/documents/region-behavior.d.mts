@@ -1,4 +1,4 @@
-import type { MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, MaybePromise, Merge } from "fvtt-types/utils";
 import type { ConfiguredRegionBehavior } from "../../../../configuration/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -500,9 +500,10 @@ declare global {
       context?: Document.DefaultNameContext<"RegionBehavior", NonNullable<RegionBehavior.Parent>>,
     ): string;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<RegionBehavior.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<RegionBehavior.Implementation | undefined>;
 
     static override fromImport(
