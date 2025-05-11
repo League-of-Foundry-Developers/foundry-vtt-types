@@ -608,11 +608,13 @@ declare global {
 
     // Descendant Document operations have been left out because User does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<string, User.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"User", User.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<User.CreateData>,
-      context?: Document.CreateDialogContext<string, User.Parent>,
+      context?: Document.CreateDialogContext<"User", User.Parent>,
     ): Promise<User.Stored | null | undefined>;
 
     static override fromDropData(

@@ -702,11 +702,13 @@ declare global {
      */
     protected override _onDeleteDescendantDocuments(...args: Item.OnDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<Item.SubType, Item.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Item", Item.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<Item.CreateData>,
-      context?: Document.CreateDialogContext<Item.SubType, Item.Parent>,
+      context?: Document.CreateDialogContext<"Item", Item.Parent>,
     ): Promise<Item.Stored | null | undefined>;
 
     static override fromDropData(

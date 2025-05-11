@@ -539,13 +539,15 @@ declare global {
 
     // Descendant Document operations have been left out because Drawing does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<"base", NonNullable<DrawingDocument.Parent>>,
+      context?: Document.DefaultNameContext<"Drawing", NonNullable<DrawingDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<DrawingDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<DrawingDocument.Parent>>,
+      data: Document.CreateDialogData<DrawingDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Drawing", NonNullable<DrawingDocument.Parent>>,
     ): Promise<DrawingDocument.Stored | null | undefined>;
 
     static override fromDropData(

@@ -506,13 +506,15 @@ declare global {
 
     // Descendant Document operations have been left out because PlaylistSound does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<"base", NonNullable<PlaylistSound.Parent>>,
+      context?: Document.DefaultNameContext<"PlaylistSound", NonNullable<PlaylistSound.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<PlaylistSound.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<PlaylistSound.Parent>>,
+      data: Document.CreateDialogData<PlaylistSound.CreateData> | undefined,
+      context: Document.CreateDialogContext<"PlaylistSound", NonNullable<PlaylistSound.Parent>>,
     ): Promise<PlaylistSound.Stored | null | undefined>;
 
     static override fromDropData(

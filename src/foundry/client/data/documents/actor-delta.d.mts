@@ -733,13 +733,15 @@ declare global {
      */
     protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs): void;
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<ActorDelta.SubType, NonNullable<ActorDelta.Parent>>,
+      context?: Document.DefaultNameContext<"ActorDelta", NonNullable<ActorDelta.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<ActorDelta.CreateData>,
-      context: Document.CreateDialogContext<ActorDelta.SubType, NonNullable<ActorDelta.Parent>>,
+      data: Document.CreateDialogData<ActorDelta.CreateData> | undefined,
+      context: Document.CreateDialogContext<"ActorDelta", NonNullable<ActorDelta.Parent>>,
     ): Promise<ActorDelta.Stored | null | undefined>;
 
     static override fromDropData(

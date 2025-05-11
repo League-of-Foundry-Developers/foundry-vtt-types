@@ -936,11 +936,13 @@ declare global {
      */
     protected override _preDeleteDescendantDocuments(...args: Combat.PreDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<Combat.SubType, Combat.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Combat", Combat.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<Combat.CreateData>,
-      context?: Document.CreateDialogContext<Combat.SubType, Combat.Parent>,
+      context?: Document.CreateDialogContext<"Combat", Combat.Parent>,
     ): Promise<Combat.Stored | null | undefined>;
 
     static override fromDropData(

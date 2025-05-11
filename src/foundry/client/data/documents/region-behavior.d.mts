@@ -469,9 +469,16 @@ declare global {
      */
     protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;
 
+    /**
+     * @remarks Actual override, not just Document template typing.
+     *
+     * No type changes from the template, just removes `executeScript` from `options.types` if the user lacks the `MACRO_SCRIPT` permission
+     *
+     * `context.parent` is required as construction requires one
+     */
     static override createDialog(
-      data: Document.CreateDialogData<RegionBehavior.CreateData>,
-      context: Document.CreateDialogContext<RegionBehavior.SubType, NonNullable<RegionBehavior.Parent>>,
+      data: Document.CreateDialogData<RegionBehavior.CreateData> | undefined,
+      context: Document.CreateDialogContext<"RegionBehavior", NonNullable<RegionBehavior.Parent>>,
     ): Promise<RegionBehavior.Stored | null | undefined>;
 
     /*
@@ -488,8 +495,9 @@ declare global {
 
     // Descendant Document operations have been left out because RegionBehavior does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<RegionBehavior.SubType, NonNullable<RegionBehavior.Parent>>,
+      context?: Document.DefaultNameContext<"RegionBehavior", NonNullable<RegionBehavior.Parent>>,
     ): string;
 
     static override fromDropData(

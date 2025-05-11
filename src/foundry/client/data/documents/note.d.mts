@@ -500,13 +500,15 @@ declare global {
 
     // Descendant Document operations have been left out because Note does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<"base", NonNullable<NoteDocument.Parent>>,
+      context?: Document.DefaultNameContext<"Note", NonNullable<NoteDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<NoteDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<NoteDocument.Parent>>,
+      data: Document.CreateDialogData<NoteDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Note", NonNullable<NoteDocument.Parent>>,
     ): Promise<NoteDocument.Stored | null | undefined>;
 
     static override fromDropData(

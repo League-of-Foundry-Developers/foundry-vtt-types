@@ -959,11 +959,13 @@ declare global {
      */
     protected override _preDeleteDescendantDocuments(...args: Actor.PreDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<Actor.SubType, Actor.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Actor", Actor.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<Actor.CreateData>,
-      context?: Document.CreateDialogContext<Actor.SubType, Actor.Parent>,
+      context?: Document.CreateDialogContext<"Actor", Actor.Parent>,
     ): Promise<Actor.Stored | null | undefined>;
 
     static override fromDropData(

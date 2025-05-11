@@ -37,7 +37,12 @@ declare global {
     interface Any extends FolderConfig<any> {}
 
     interface Options extends DocumentSheet.Options<Folder.Implementation> {
-      resolve?: (doc: Folder.Implementation) => void;
+      /**
+       * @remarks Gets called with either the created Folder in `#_updateObject` or `null` in `#close`
+       *
+       * Foundry passes this inside {@link Folder.createDialog | `Folder.createDialog`}
+       */
+      resolve?: (doc: Folder.Implementation | null) => void;
     }
 
     interface FormData {

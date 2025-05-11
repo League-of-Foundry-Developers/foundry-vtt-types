@@ -440,11 +440,13 @@ declare global {
 
     // Descendant Document operations have been left out because FogExploration does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<string, FogExploration.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"FogExploration", FogExploration.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: FogExploration.CreateData,
-      context?: Document.CreateDialogContext<string, FogExploration.Parent>,
+      context?: Document.CreateDialogContext<"FogExploration", FogExploration.Parent>,
     ): Promise<FogExploration.Stored | null | undefined>;
 
     static override fromDropData(

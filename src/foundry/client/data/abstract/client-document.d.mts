@@ -1,4 +1,12 @@
-import type { Mixin, FixedInstanceType, Coalesce, AnyObject, NullishProps, MaybePromise } from "fvtt-types/utils";
+import type {
+  Mixin,
+  FixedInstanceType,
+  Coalesce,
+  AnyObject,
+  NullishProps,
+  MaybePromise,
+  IntentionalPartial,
+} from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
@@ -193,7 +201,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param args       - Arguments passed to each dispatched function
    * @param _parent    - The document with directly modified embedded documents.
    *                     Either this document or a descendant of this one.
-   * @remarks Foundry marked `@internal`
+   * @internal
+   * @remarks This has not been typed for specific documents as there should be no need for users to ever extend this method
    */
   protected _dispatchDescendantDocumentEvents(
     event: ClientDocument.LifeCycleEventName,
@@ -308,24 +317,27 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Whenever the Document's sheet changes, close any existing applications for this Document, and re-render the new
    * sheet if one was already open.
    */
+  // options: not null (destructured)
   protected _onSheetChange(options?: ClientDocument.OnSheetChangeOptions): Promise<void>;
 
   /**
    * Gets the default new name for a Document
    * @param context - The context for which to create the Document name.
    */
+  // context: not null (destructured)
   static defaultName(context?: Document.DefaultNameContext<never, never>): string;
 
   /**
    * Present a Dialog form to create a new Document of this type.
    * Choose a name and a type from a select menu of types.
-   * @param data    - Initial data with which to populate the creation form
-   *                  (default: `{}`)
-   * @param context - Additional context options or dialog positioning options
-   *                  (default: `{}`)
-   * @returns A Promise which resolves to the created Document, or null if the dialog was
-   *          closed.
+   * @param data    - Initial data with which to populate the creation form    (default: `{}`)
+   * @param context - Additional context options or dialog positioning options (default: `{}`)
+   * @returns A Promise which resolves to the created Document, or null if the dialog was closed.
+   * @throws If the document has
+   * @privateRemarks `| undefined` is included in the template return type due to {@link Document.create | `Document.create`} possibly
+   * being `undefined` if creation is cancelled by pre-Create methods/hooks
    */
+  // data: not null (parameter default only), option: not null (destructured)
   static createDialog(data: never, context: never): Promise<unknown>;
 
   /**
@@ -334,12 +346,14 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    *                  (default: `{}`)
    * @returns A Promise which resolves to the deleted Document
    */
-  deleteDialog(options?: Partial<Dialog.Options>): Promise<this | false | null | undefined>;
+  // options: not null (parameter default only)
+  deleteDialog(options?: IntentionalPartial<Dialog.Options>): Promise<this | false | null | undefined>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
    * @param options - Additional options passed to the {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`} method
    */
+  // options: not null (destructured where forwarded)
   exportToJSON(options?: ClientDocument.ToCompendiumOptions): void;
 
   /**

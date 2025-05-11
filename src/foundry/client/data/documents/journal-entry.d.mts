@@ -651,11 +651,13 @@ declare global {
      */
     protected override _onDeleteDescendantDocuments(...args: Cards.OnDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<string, JournalEntry.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"JournalEntry", JournalEntry.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<JournalEntry.CreateData>,
-      context?: Document.CreateDialogContext<string, JournalEntry.Parent>,
+      context?: Document.CreateDialogContext<"JournalEntry", JournalEntry.Parent>,
     ): Promise<JournalEntry.Stored | null | undefined>;
 
     static override fromDropData(

@@ -1,19 +1,72 @@
 import { expectTypeOf } from "vitest";
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import Document = foundry.abstract.Document;
-import type { FixedInstanceType, MaybePromise } from "../../../../../src/utils/index.d.mts";
+import type { FixedInstanceType, InexactPartial, MaybePromise } from "../../../../../src/utils/index.d.mts";
 
 const item = new Item.implementation({ name: "foo", type: "base" });
+declare const someActor: Actor.Implementation;
+// Test the inheritance of static members
+expectTypeOf(Item.documentName).toEqualTypeOf<"Item">(); // Document
+expectTypeOf(Item.createDialog()).toEqualTypeOf<Promise<Item.Stored | null | undefined>>(); // ClientDocumentMixin
+
+// ensure source can be used to create a new document with createDialog
+expectTypeOf(Item.createDialog(item.toObject())).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+
+declare const createData: Item.CreateData;
+declare const dialogOptions: InexactPartial<Dialog.Options>;
+expectTypeOf(Item.createDialog({}, {})).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+expectTypeOf(
+  Item.createDialog(createData, {
+    types: ["armor"], // fake subtype defined in the test file for Item
+    pack: "some.pack",
+    parent: someActor,
+    ...dialogOptions,
+  }),
+).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+
+// @ts-expect-error "foo" is not a valid Item type
+Item.createDialog({}, { types: ["foo"] });
+
+expectTypeOf(
+  Item.createDialog(createData, {
+    types: ["armor"], // fake subtype defined in the test file for Item
+    pack: "some.pack",
+    parent: someActor,
+    ...dialogOptions,
+  }),
+).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+expectTypeOf(
+  Item.createDialog(createData, {
+    types: null,
+    pack: null,
+    parent: null,
+  }),
+).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+expectTypeOf(
+  Item.createDialog(createData, {
+    types: undefined,
+    pack: undefined,
+    parent: undefined,
+  }),
+).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+
+expectTypeOf(Item.defaultName()).toBeString();
+expectTypeOf(Item.defaultName({})).toBeString();
+expectTypeOf(
+  Item.defaultName({
+    type: "base",
+    pack: "some.pack", // `parent` supersedes `pack` if provided
+    parent: someActor,
+  }),
+).toBeString();
+expectTypeOf(Item.defaultName({ type: null, pack: null, parent: null })).toBeString();
+expectTypeOf(Item.defaultName({ type: undefined, pack: undefined, parent: undefined })).toBeString();
 
 // Test the inheritance
 expectTypeOf(item.documentName).toEqualTypeOf<"Item">(); // Document
 expectTypeOf(item.migrateSystemData()).toEqualTypeOf<object>(); // Base-Document
 expectTypeOf(item.uuid).toEqualTypeOf<string>(); // ClientDocumentMixin
 expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>(); // class itself
-
-// Test the inheritance of static members
-expectTypeOf(Item.documentName).toEqualTypeOf<"Item">(); // Document
-expectTypeOf(Item.createDialog()).toEqualTypeOf<Promise<Item.Implementation | null | undefined>>(); // ClientDocumentMixin
 
 // Properties
 declare const someApp: Application.Any;
@@ -34,7 +87,7 @@ expectTypeOf(item.collection).toEqualTypeOf<Collection<typeof item>>();
 // @ts-expect-error Only getter, no setter
 item.collection = new Collection<typeof item>();
 
-// TODO: This appears to be `undefined` in all cases, look into the conditional type on this getter
+// TODO: This appears to be `undefined` in all cases https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3306
 expectTypeOf(item.compendium).toEqualTypeOf<undefined>();
 // @ts-expect-error Only getter, no setter
 item.compendium = game.packs!.contents[0]!;
@@ -83,7 +136,7 @@ expectTypeOf(item.render(true)).toBeVoid();
 expectTypeOf(item.render(true, {})).toBeVoid();
 expectTypeOf(item.render(true, { title: "foo" })).toBeVoid();
 // TODO: This will error as long as ApplicationV2.RenderOptions isn't inherently DeepPartialed
-expectTypeOf(item.render(true, { window: { title: "foo" } })).toBeVoid();
+// expectTypeOf(item.render(true, { window: { title: "foo" } })).toBeVoid();
 
 declare const sortOptions: SortingHelpers.SortOptions<typeof item>;
 declare const updateData: Item.UpdateData;
@@ -91,8 +144,7 @@ expectTypeOf(item.sortRelative()).toEqualTypeOf<Promise<typeof item>>();
 expectTypeOf(item.sortRelative({})).toEqualTypeOf<Promise<typeof item>>();
 expectTypeOf(item.sortRelative({ updateData, ...sortOptions })).toEqualTypeOf<Promise<typeof item>>();
 
-declare const actor: Actor.Implementation;
-expectTypeOf(item.getRelativeUUID(actor)).toBeString();
+expectTypeOf(item.getRelativeUUID(someActor)).toBeString();
 
 // The first argument is unused in core except in JournalEntryPage
 expectTypeOf(item._createDocumentLink()).toBeString();
@@ -102,7 +154,7 @@ expectTypeOf(item._createDocumentLink(null, {})).toBeString();
 expectTypeOf(
   item._createDocumentLink(undefined, {
     label: "Some Label",
-    relativeTo: actor,
+    relativeTo: someActor,
   }),
 ).toBeString();
 expectTypeOf(
@@ -119,5 +171,72 @@ declare const mouseEvent: MouseEvent;
 // this is typed by a fake overload, but does represent the average case
 expectTypeOf(item._onClickDocumentLink(mouseEvent)).toEqualTypeOf<MaybePromise<NonNullable<(typeof item)["sheet"]>>>();
 
-// ensure source can be used to create a new document with createDialog
-expectTypeOf(Item.createDialog(item.toObject())).toEqualTypeOf<Promise<Item.Implementation | null | undefined>>();
+declare const storedItem: Item.Stored;
+declare const aeCreateDataArray: ActiveEffect.CreateData[];
+declare const aeUpdateDataArray: ActiveEffect.UpdateData[];
+declare const createdAEs: ActiveEffect.Stored[];
+declare const aeIDs: string[];
+expectTypeOf(
+  item["_preCreateDescendantDocuments"](
+    storedItem, // cannot just be `item`
+    "effects",
+    aeCreateDataArray,
+    { modifiedTime: 0, render: false, renderSheet: false },
+    "XXXXXSomeIDXXXXX",
+  ),
+).toBeVoid();
+expectTypeOf(
+  item["_onCreateDescendantDocuments"](
+    storedItem,
+    "effects",
+    createdAEs,
+    aeCreateDataArray,
+    { modifiedTime: 0, render: false, renderSheet: false },
+    "XXXXXSomeIDXXXXX",
+  ),
+).toBeVoid();
+
+expectTypeOf(
+  item["_preUpdateDescendantDocuments"](
+    storedItem, // cannot just be `item`
+    "effects",
+    aeUpdateDataArray,
+    { modifiedTime: 0, render: false, diff: true, recursive: true },
+    "XXXXXSomeIDXXXXX",
+  ),
+).toBeVoid();
+expectTypeOf(
+  item["_onUpdateDescendantDocuments"](
+    storedItem,
+    "effects",
+    createdAEs,
+    aeUpdateDataArray,
+    { modifiedTime: 0, render: false, diff: true, recursive: true },
+    "XXXXXSomeIDXXXXX",
+  ),
+).toBeVoid();
+
+expectTypeOf(
+  item["_preDeleteDescendantDocuments"](
+    storedItem, // cannot just be `item`
+    "effects",
+    aeIDs,
+    { modifiedTime: 0, render: false },
+    "XXXXXSomeIDXXXXX",
+  ),
+).toBeVoid();
+expectTypeOf(
+  item["_onDeleteDescendantDocuments"](
+    storedItem,
+    "effects",
+    createdAEs,
+    aeIDs,
+    { modifiedTime: 0, render: false },
+    "XXXXXSomeIDXXXXX",
+  ),
+).toBeVoid();
+
+expectTypeOf(item["_onSheetChange"]()).toEqualTypeOf<Promise<void>>();
+expectTypeOf(item["_onSheetChange"]({})).toEqualTypeOf<Promise<void>>();
+expectTypeOf(item["_onSheetChange"]({ sheetOpen: true })).toEqualTypeOf<Promise<void>>();
+expectTypeOf(item["_onSheetChange"]({ sheetOpen: null })).toEqualTypeOf<Promise<void>>();

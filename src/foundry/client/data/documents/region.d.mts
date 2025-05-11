@@ -762,13 +762,15 @@ declare global {
      */
     protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs): void;
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<"base", NonNullable<RegionDocument.Parent>>,
+      context?: Document.DefaultNameContext<"Region", NonNullable<RegionDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<RegionDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<RegionDocument.Parent>>,
+      data: Document.CreateDialogData<RegionDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Region", NonNullable<RegionDocument.Parent>>,
     ): Promise<RegionDocument.Stored | null | undefined>;
 
     static override fromDropData(

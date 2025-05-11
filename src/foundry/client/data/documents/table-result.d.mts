@@ -479,13 +479,15 @@ declare global {
 
     // Descendant Document operations have been left out because TableResult does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<TableResult.SubType, NonNullable<TableResult.Parent>>,
+      context?: Document.DefaultNameContext<"TableResult", NonNullable<TableResult.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<TableResult.CreateData>,
-      context: Document.CreateDialogContext<TableResult.SubType, NonNullable<TableResult.Parent>>,
+      data: Document.CreateDialogData<TableResult.CreateData> | undefined,
+      context: Document.CreateDialogContext<"TableResult", NonNullable<TableResult.Parent>>,
     ): Promise<TableResult.Stored | null | undefined>;
 
     static override fromDropData(

@@ -571,11 +571,13 @@ declare global {
 
     // Descendant Document operations have been left out because Macro does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<Macro.SubType, Macro.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Macro", Macro.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Macro.CreateData,
-      context?: Document.CreateDialogContext<Macro.SubType, Macro.Parent>,
+      context?: Document.CreateDialogContext<"Macro", Macro.Parent>,
     ): Promise<Macro.Stored | null | undefined>;
 
     static override fromDropData(

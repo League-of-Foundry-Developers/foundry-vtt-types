@@ -1307,13 +1307,15 @@ declare global {
 
     // ClientDocument overrides
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<"base", NonNullable<TokenDocument.Parent>>,
+      context?: Document.DefaultNameContext<"Token", NonNullable<TokenDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<TokenDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<TokenDocument.Parent>>,
+      data: Document.CreateDialogData<TokenDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Token", NonNullable<TokenDocument.Parent>>,
     ): Promise<TokenDocument.Stored | null | undefined>;
 
     static override fromDropData(

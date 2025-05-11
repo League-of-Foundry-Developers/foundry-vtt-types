@@ -1997,6 +1997,10 @@ declare namespace Document {
     value?: unknown;
   }
 
+  /**
+   * @internal
+   * If a `parent` is required for a given Document's creation, its template must pass `NonNullable<X.Parent>` to `CreateDialogContext`
+   */
   type ParentContext<Parent extends Document.Any | null> = Parent extends null
     ? {
         /** A parent document within which the created Document should belong */
@@ -2007,13 +2011,37 @@ declare namespace Document {
         parent: Parent;
       };
 
-  type DefaultNameContext<SubType extends string, Parent extends Document.Any | null> = {
-    /** The sub-type of the document */
-    type?: SubType | undefined;
+  /** @internal */
+  type _PossibleSubtypeContext<DocumentName extends Document.Type> =
+    GetKey<Document.MetadataFor<DocumentName>, "hasTypeData"> extends true
+      ? NullishProps<{
+          /**
+           * The sub-type of the document
+           * @remarks Pulls from `CONFIG[documentName].typeLabels?.[type]` if provided. Ignored if falsey.
+           */
+          type: Document.SubTypesOf<DocumentName>;
+        }>
+      : {
+          /** @deprecated This Document type does not support subtypes */
+          type?: string;
+        };
 
-    /** A compendium pack within which the Document should be created */
-    pack?: string | undefined;
-  } & ParentContext<Parent>;
+  type DefaultNameContext<DocumentName extends Document.Type, Parent extends Document.Any | null> = NullishProps<{
+    /**
+     * A compendium pack within which the Document should be created
+     * @remarks Only used to generate the list of existing names to check against when incrementing the index for the `(number)` suffix.
+     * Ignored if falsey, or if `parent` is provided and truthy.
+     */
+    pack: string;
+
+    /**
+     * A parent document within which the created Document should belong
+     * @remarks Only used to generate the list of existing names to check against when incrementing the index for the `(number)` suffix.
+     * Ignored if falsey.
+     */
+    parent: Parent;
+  }> &
+    _PossibleSubtypeContext<DocumentName>;
 
   interface FromDropDataOptions {
     /**
@@ -2028,18 +2056,39 @@ declare namespace Document {
     Extract<AllKeysOf<CreateData>, "name" | "type" | "folder">
   >;
 
-  type CreateDialogContext<
-    SubType extends string,
-    Parent extends Document.Any | null,
-  > = InexactPartial<Dialog.Options> & {
-    /**
-     * A compendium pack within which the Document should be created
-     */
-    pack?: string | null | undefined;
+  /** @internal */
+  type _PossibleSubtypesContext<DocumentName extends Document.Type> =
+    GetKey<Document.MetadataFor<DocumentName>, "hasTypeData"> extends true
+      ? {
+          /** @deprecated This Document type does not support subtypes */
+          types?: [];
+        }
+      : NullishProps<{
+          /**
+           * A restriction the selectable sub-types of the Dialog.
+           * @remarks Only checked if the document has `static TYPES` of length \> 1 (i.e it both `hasTypeData` and has
+           * at least one non-`"base"` type registered). The computed list will always exclude {@link CONST.BASE_DOCUMENT_TYPE | `CONST.BASE_DOCUMENT_TYPE`}
+           *
+           * @privateRemarks This could be `ConfiguredSubTypesOf` instead of `SubTypesOf` because `"base"` is always
+           * dropped regardless of its inclusion or not in this list, but allowing it doesn't hurt anything and could
+           * simplify some workflows
+           */
+          types: Document.SubTypesOf<DocumentName>[];
+        }>;
 
-    /** A restriction the selectable sub-types of the Dialog. */
-    types?: SubType[] | null | undefined;
-  } & ParentContext<Parent>;
+  type CreateDialogContext<
+    DocumentName extends Document.Type,
+    Parent extends Document.Any | null,
+  > = InexactPartial<Dialog.Options> &
+    NullishProps<{
+      /**
+       * A compendium pack within which the Document should be created
+       * @remarks Only checked if `parent` is falsey, and only used to generate the list of folders for the dialog
+       */
+      pack: string;
+    }> &
+    _PossibleSubtypesContext<DocumentName> &
+    ParentContext<Parent>;
 
   interface FromImportContext<Parent extends Document.Any | null> extends Omit<ConstructionContext<Parent>, "strict"> {
     /**

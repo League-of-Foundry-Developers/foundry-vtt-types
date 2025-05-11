@@ -542,13 +542,15 @@ declare global {
 
     // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<"base", NonNullable<WallDocument.Parent>>,
+      context?: Document.DefaultNameContext<"Wall", NonNullable<WallDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<WallDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<WallDocument.Parent>>,
+      data: Document.CreateDialogData<WallDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Wall", NonNullable<WallDocument.Parent>>,
     ): Promise<WallDocument.Stored | null | undefined>;
 
     static override fromDropData(

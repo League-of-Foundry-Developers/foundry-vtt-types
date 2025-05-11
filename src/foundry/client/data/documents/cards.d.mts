@@ -871,6 +871,17 @@ declare global {
 
     override deleteDialog(options?: Partial<Dialog.Options>): Promise<this | false | null | undefined>;
 
+    /**
+     * @remarks Actual override, not just Document template typing.
+     *
+     * Despite that, the typing follows the template, it just creates a fancier `Dialog` than `super`
+     */
+    // data: not null (parameter default only), context: not null (destructured)
+    static override createDialog(
+      data?: Document.CreateDialogData<Cards.CreateData>,
+      context?: Document.CreateDialogContext<"Cards", Cards.Parent>,
+    ): Promise<Cards.Stored | null | undefined>;
+
     /*
      * After this point these are not really overridden methods.
      * They are here because Foundry's documents are complex and have lots of edge cases.
@@ -991,12 +1002,8 @@ declare global {
      */
     protected override _onDeleteDescendantDocuments(...args: Cards.OnDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<Cards.SubType, Cards.Parent>): string;
-
-    static override createDialog(
-      data?: Document.CreateDialogData<Cards.CreateData>,
-      context?: Document.CreateDialogContext<Cards.SubType, Cards.Parent>,
-    ): Promise<Cards.Stored | null | undefined>;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Cards", Cards.Parent>): string;
 
     static override fromDropData(
       data: Document.DropData<Cards.Implementation>,

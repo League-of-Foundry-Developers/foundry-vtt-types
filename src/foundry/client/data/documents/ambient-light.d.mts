@@ -423,13 +423,15 @@ declare global {
 
     // Descendant Document operations have been left out because AmbientLight does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<"base", NonNullable<AmbientLightDocument.Parent>>,
+      context?: Document.DefaultNameContext<"AmbientLight", NonNullable<AmbientLightDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<AmbientLightDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<AmbientLightDocument.Parent>>,
+      data: Document.CreateDialogData<AmbientLightDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"AmbientLight", NonNullable<AmbientLightDocument.Parent>>,
     ): Promise<AmbientLightDocument.Stored | null | undefined>;
 
     static override fromDropData(

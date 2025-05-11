@@ -427,6 +427,12 @@ declare global {
     type DocumentClass<SubType extends Folder.SubType> = Document.ImplementationClassFor<
       Extract<SubType, Document.Type>
     >;
+
+    /**
+     * @remarks Rather than a simple `Dialog`, {@link Folder.createDialog | `Folder.createDialog`} creates a {@link FolderConfig | `FolderConfig`},
+     * passing along the returned `Promise`'s `resolve` to the app.
+     */
+    interface CreateDialogOptions extends InexactPartial<Omit<FolderConfig.Options, "resolve">> {}
   }
 
   /**
@@ -498,9 +504,15 @@ declare global {
     // _preCreate overridden but with no signature changes.
     // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
+    /**
+     * @remarks Real override, not just Document template typing
+     *
+     * Creates and renders a {@link FolderConfig | `FolderConfig`} instead of a simple Dialog
+     */
+    // data, options: not null (parameter defaults only)
     static override createDialog(
       data?: Document.CreateDialogData<Folder.CreateData>,
-      context?: InexactPartial<Omit<FolderConfig.Options, "resolve">>,
+      context?: Folder.CreateDialogOptions,
     ): Promise<Folder.Stored | null | undefined>;
 
     /**
@@ -556,7 +568,8 @@ declare global {
 
     // Descendant Document operations have been left out because Folder does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<Folder.SubType, Folder.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Folder", Folder.Parent>): string;
 
     static override fromDropData(
       data: Document.DropData<Folder.Implementation>,

@@ -496,12 +496,13 @@ declare global {
     // Descendant Document operations have been left out because Tile does not have any descendant documents.
 
     static override defaultName(
-      context?: Document.DefaultNameContext<"base", NonNullable<TileDocument.Parent>>,
+      context?: Document.DefaultNameContext<"Tile", NonNullable<TileDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<TileDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<TileDocument.Parent>>,
+      data: Document.CreateDialogData<TileDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Tile", NonNullable<TileDocument.Parent>>,
     ): Promise<TileDocument.Stored | null | undefined>;
 
     static override fromDropData(

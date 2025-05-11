@@ -1081,11 +1081,13 @@ declare global {
      */
     protected override _onDeleteDescendantDocuments(...args: Scene.OnDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<string, Scene.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Scene", Scene.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<Scene.CreateData>,
-      context?: Document.CreateDialogContext<string, Scene.Parent>,
+      context?: Document.CreateDialogContext<"Scene", Scene.Parent>,
     ): Promise<Scene.Stored | null | undefined>;
 
     static override fromDropData(

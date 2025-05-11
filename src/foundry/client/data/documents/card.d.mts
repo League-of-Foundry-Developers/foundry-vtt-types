@@ -638,11 +638,13 @@ declare global {
 
     // Descendant Document operations have been left out because Card does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<Card.SubType, NonNullable<Card.Parent>>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Card", NonNullable<Card.Parent>>): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<Card.CreateData>,
-      context: Document.CreateDialogContext<Card.SubType, NonNullable<Card.Parent>>,
+      data: Document.CreateDialogData<Card.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Card", NonNullable<Card.Parent>>,
     ): Promise<Card.Stored | null | undefined>;
 
     static override fromDropData(

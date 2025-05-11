@@ -931,13 +931,15 @@ declare global {
 
     // Descendant Document operations have been left out because ActiveEffect does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<ActiveEffect.SubType, NonNullable<ActiveEffect.Parent>>,
+      context?: Document.DefaultNameContext<"ActiveEffect", NonNullable<ActiveEffect.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<ActiveEffect.CreateData>,
-      context: Document.CreateDialogContext<ActiveEffect.SubType, NonNullable<ActiveEffect.Parent>>,
+      data: Document.CreateDialogData<ActiveEffect.CreateData> | undefined,
+      context: Document.CreateDialogContext<"ActiveEffect", NonNullable<ActiveEffect.Parent>>,
     ): Promise<ActiveEffect.Stored | null | undefined>;
 
     static override fromDropData(

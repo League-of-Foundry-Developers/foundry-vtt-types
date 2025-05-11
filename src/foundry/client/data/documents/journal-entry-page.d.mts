@@ -775,13 +775,15 @@ declare global {
 
     // Descendant Document operations have been left out because JournalEntryPage does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<JournalEntryPage.SubType, NonNullable<JournalEntryPage.Parent>>,
+      context?: Document.DefaultNameContext<"JournalEntryPage", NonNullable<JournalEntryPage.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<JournalEntryPage.CreateData>,
-      context: Document.CreateDialogContext<JournalEntryPage.SubType, NonNullable<JournalEntryPage.Parent>>,
+      data: Document.CreateDialogData<JournalEntryPage.CreateData> | undefined,
+      context: Document.CreateDialogContext<"JournalEntryPage", NonNullable<JournalEntryPage.Parent>>,
     ): Promise<JournalEntryPage.Stored | null | undefined>;
 
     static override fromDropData(

@@ -776,11 +776,13 @@ declare global {
      */
     protected override _preDeleteDescendantDocuments(...args: Playlist.PreDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<string, Playlist.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Playlist", Playlist.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<Playlist.CreateData>,
-      context?: Document.CreateDialogContext<string, Playlist.Parent>,
+      context?: Document.CreateDialogContext<"Playlist", Playlist.Parent>,
     ): Promise<Playlist.Stored | null | undefined>;
 
     static override fromDropData(

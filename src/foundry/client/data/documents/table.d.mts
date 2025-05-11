@@ -879,11 +879,13 @@ declare global {
      */
     protected override _preDeleteDescendantDocuments(...args: RollTable.PreDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<string, RollTable.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"RollTable", RollTable.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<RollTable.CreateData>,
-      context?: Document.CreateDialogContext<string, RollTable.Parent>,
+      context?: Document.CreateDialogContext<"RollTable", RollTable.Parent>,
     ): Promise<RollTable.Stored | null | undefined>;
 
     static override fromDropData(

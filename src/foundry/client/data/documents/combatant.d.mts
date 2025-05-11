@@ -577,13 +577,15 @@ declare global {
 
     // Descendant Document operations have been left out because Combatant does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<Combatant.SubType, NonNullable<Combatant.Parent>>,
+      context?: Document.DefaultNameContext<"Combatant", NonNullable<Combatant.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<Combatant.CreateData>,
-      context: Document.CreateDialogContext<Combatant.SubType, NonNullable<Combatant.Parent>>,
+      data: Document.CreateDialogData<Combatant.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Combatant", NonNullable<Combatant.Parent>>,
     ): Promise<Combatant.Stored | null | undefined>;
 
     static override fromDropData(

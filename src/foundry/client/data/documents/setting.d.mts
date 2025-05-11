@@ -409,14 +409,16 @@ declare global {
 
     // Descendant Document operations have been left out because Setting does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<string, Setting.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Setting", Setting.Parent>): string;
 
     /**
      * @throws Foundry tries to figure out the folders for the world collection and errors out
      */
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Setting.CreateData,
-      context?: Document.CreateDialogContext<string, Setting.Parent>,
+      context?: Document.CreateDialogContext<"Setting", Setting.Parent>,
     ): never;
 
     static override fromDropData(

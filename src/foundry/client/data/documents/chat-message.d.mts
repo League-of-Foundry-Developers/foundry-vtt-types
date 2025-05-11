@@ -740,11 +740,13 @@ declare global {
 
     // Descendant Document operations have been left out because ChatMessage does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<ChatMessage.SubType, ChatMessage.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"ChatMessage", ChatMessage.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<ChatMessage.CreateData>,
-      context?: Document.CreateDialogContext<ChatMessage.SubType, ChatMessage.Parent>,
+      context?: Document.CreateDialogContext<"ChatMessage", ChatMessage.Parent>,
     ): Promise<ChatMessage.Stored | null | undefined>;
 
     static override fromDropData(

@@ -482,13 +482,15 @@ declare global {
 
     // Descendant Document operations have been left out because MeasuredTemplate does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context?: Document.DefaultNameContext<"base", NonNullable<MeasuredTemplateDocument.Parent>>,
+      context?: Document.DefaultNameContext<"MeasuredTemplate", NonNullable<MeasuredTemplateDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as construction requires one */
     static override createDialog(
-      data: Document.CreateDialogData<MeasuredTemplateDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<MeasuredTemplateDocument.Parent>>,
+      data: Document.CreateDialogData<MeasuredTemplateDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"MeasuredTemplate", NonNullable<MeasuredTemplateDocument.Parent>>,
     ): Promise<MeasuredTemplateDocument.Stored | null | undefined>;
 
     static override fromDropData(
