@@ -1,5 +1,3 @@
-// @ts-check
-
 // In this file JSDoc is used simply to bring proper types, not documentation.
 /* eslint-disable jsdoc/no-types, jsdoc/require-param-description, jsdoc/require-returns-description */
 

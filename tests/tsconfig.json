@@ -1,13 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig.json",
-  "extends": "../tsconfig.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["fvtt-types"],
-    "outDir": "../.typescript-build/tests",
-    "composite": true,
-    "noEmit": false,
-    "emitDeclarationOnly": true
+    "types": ["fvtt-types"]
   },
-  "include": ["**/*"],
-  "references": []
+  "include": ["**/*"]
 }

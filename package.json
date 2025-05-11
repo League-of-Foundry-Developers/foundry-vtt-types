@@ -46,7 +46,7 @@
     "prettier:fix": "prettier -l -w .",
     "eslint:report": "eslint --cache --output-file eslint_report.json --format json .",
     "test": "vitest --typecheck",
-    "typecheck": "tsc -b tsconfig.main.json",
+    "typecheck": "tsc",
     "prepare": "is-ci || husky",
     "betterer": "betterer",
     "betterer:update": "betterer --update"
@@ -181,9 +181,7 @@
     "index.d.mts",
     "index-lenient.d.mts",
     "src",
-    "tsconfig.json",
-    "tsconfig.main.json",
-    "tsconfig.miscellaneous.json"
+    "tsconfig.json"
   ],
   "publishConfig": {
     "access": "public"

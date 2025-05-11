@@ -1,29 +1,13 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "types": [],
-    "allowImportingTsExtensions": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "exactOptionalPropertyTypes": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "noEmit": true,
-    "noImplicitOverride": true,
-    "strict": true,
-    "target": "ESNext",
-    "verbatimModuleSyntax": true,
-    "noUncheckedSideEffectImports": true,
-    "noUncheckedIndexedAccess": true,
-    "incremental": true
+    "outDir": "./.typescript-build/src"
   },
-
-  // This root project includes nothing on purpose.
-  "include": [],
-
-  "references": [
-    { "path": "./src/tsconfig.json" },
-    { "path": "./tsconfig.miscellaneous.json" },
-    { "path": "./tests/tsconfig.json" }
-  ]
+  // Annoyingly, TypeScript doesn't include hidden files by default for whatever reason.
+  "include": ["**/*", ".*", ".**/**/*"],
+  // `src/index-lenient.d.mts` is skipped because it sets `AssumeHookRan` which has some pretty global effects that would make it easy to write broken code.
+  // `tests` also mess around with configuration, add a lot of overhead, and currently don't all pass.
+  "exclude": ["src/index-lenient.d.mts", "tests"]
 }
