@@ -498,7 +498,7 @@ declare global {
 
     static override fromImport(
       source: TableResult.Source,
-      context?: Document.FromImportContext<TableResult.Parent>,
+      context?: Document.FromImportContext<TableResult.Parent> | null,
     ): Promise<TableResult.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

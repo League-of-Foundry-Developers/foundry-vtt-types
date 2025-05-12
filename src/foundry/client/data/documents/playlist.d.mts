@@ -794,7 +794,7 @@ declare global {
 
     static override fromImport(
       source: Playlist.Source,
-      context?: Document.FromImportContext<Playlist.Parent>,
+      context?: Document.FromImportContext<Playlist.Parent> | null,
     ): Promise<Playlist.Implementation>;
   }
 }

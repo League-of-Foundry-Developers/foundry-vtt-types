@@ -897,7 +897,7 @@ declare global {
 
     static override fromImport(
       source: RollTable.Source,
-      context?: Document.FromImportContext<RollTable.Parent>,
+      context?: Document.FromImportContext<RollTable.Parent> | null,
     ): Promise<RollTable.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

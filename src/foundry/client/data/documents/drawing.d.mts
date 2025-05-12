@@ -558,7 +558,7 @@ declare global {
 
     static override fromImport(
       source: DrawingDocument.Source,
-      context?: Document.FromImportContext<DrawingDocument.Parent>,
+      context?: Document.FromImportContext<DrawingDocument.Parent> | null,
     ): Promise<DrawingDocument.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

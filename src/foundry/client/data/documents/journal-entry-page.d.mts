@@ -786,6 +786,7 @@ declare global {
       context: Document.CreateDialogContext<"JournalEntryPage", NonNullable<JournalEntryPage.Parent>>,
     ): Promise<JournalEntryPage.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<JournalEntryPage.Implementation>,
       options?: AnyObject,
@@ -793,7 +794,7 @@ declare global {
 
     static override fromImport(
       source: JournalEntryPage.Source,
-      context?: Document.FromImportContext<JournalEntryPage.Parent>,
+      context?: Document.FromImportContext<JournalEntryPage.Parent> | null,
     ): Promise<JournalEntryPage.Implementation>;
 
     // Embedded document operations have been left out because JournalEntryPage does not have any embedded documents.

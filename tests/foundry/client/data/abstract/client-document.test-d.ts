@@ -62,6 +62,23 @@ expectTypeOf(
 expectTypeOf(Item.defaultName({ type: null, pack: null, parent: null })).toBeString();
 expectTypeOf(Item.defaultName({ type: undefined, pack: undefined, parent: undefined })).toBeString();
 
+declare const itemDropData: Document.DropData<Item.Implementation>;
+expectTypeOf(Item.fromDropData(itemDropData)).toEqualTypeOf<Promise<Item.Implementation>>();
+// there are no actual options to test
+expectTypeOf(Item.fromDropData(itemDropData, {})).toEqualTypeOf<Promise<Item.Implementation>>();
+
+declare const itemSource: Item.Source;
+const constructionContext = {
+  dropInvalidEmbedded: false,
+  fallback: true,
+  pack: null,
+  parent: null,
+  strict: true,
+};
+expectTypeOf(Item.fromImport(itemSource)).toEqualTypeOf<Promise<Item.Implementation>>();
+expectTypeOf(Item.fromImport(itemSource, {})).toEqualTypeOf<Promise<Item.Implementation>>();
+expectTypeOf(Item.fromImport(itemSource, constructionContext)).toEqualTypeOf<Promise<Item.Implementation>>();
+
 // Test the inheritance
 expectTypeOf(item.documentName).toEqualTypeOf<"Item">(); // Document
 expectTypeOf(item.migrateSystemData()).toEqualTypeOf<object>(); // Base-Document
@@ -282,7 +299,48 @@ expectTypeOf(
   }),
 ).toBeVoid();
 
+expectTypeOf(item.toDragData()).toEqualTypeOf<Document.DropData<Item.Implementation>>();
+
+expectTypeOf(item.importFromJSON(`{"foo":true}`)).toEqualTypeOf<Promise<typeof item>>();
+expectTypeOf(item.importFromJSONDialog()).toEqualTypeOf<Promise<void>>();
+
 // TODO: more thorough tests after `ToCompendiumReturnType` is rewritten or the v13 pass, whichever comes first
 expectTypeOf(item.toCompendium()).toEqualTypeOf<
   ClientDocument.ToCompendiumReturnType<foundry.documents.BaseItem, undefined>
 >();
+
+declare const enrichmentAnchorOptions: TextEditor.EnrichmentAnchorOptions;
+expectTypeOf(item.toAnchor()).toEqualTypeOf<HTMLAnchorElement>();
+expectTypeOf(item.toAnchor({})).toEqualTypeOf<HTMLAnchorElement>();
+expectTypeOf(item.toAnchor(enrichmentAnchorOptions)).toEqualTypeOf<HTMLAnchorElement>();
+
+declare const enrichmentOptions: TextEditor.EnrichmentOptions;
+declare const embedConfig: TextEditor.DocumentHTMLEmbedConfig;
+expectTypeOf(item.toEmbed(embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(item.toEmbed(embedConfig, {})).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(item.toEmbed(embedConfig, enrichmentOptions)).toEqualTypeOf<Promise<HTMLElement | null>>();
+
+expectTypeOf(item["_buildEmbedHTML"](embedConfig)).toEqualTypeOf<Promise<HTMLElement | HTMLCollection | null>>();
+expectTypeOf(item["_buildEmbedHTML"](embedConfig, {})).toEqualTypeOf<Promise<HTMLElement | HTMLCollection | null>>();
+expectTypeOf(item["_buildEmbedHTML"](embedConfig, enrichmentOptions)).toEqualTypeOf<
+  Promise<HTMLElement | HTMLCollection | null>
+>();
+
+declare const element: HTMLElement;
+declare const htmlCollection: HTMLCollection;
+
+expectTypeOf(item["_createInlineEmbed"](element, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(item["_createInlineEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(item["_createInlineEmbed"](element, embedConfig, {})).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(item["_createInlineEmbed"](element, embedConfig, enrichmentOptions)).toEqualTypeOf<
+  Promise<HTMLElement | null>
+>();
+
+expectTypeOf(item["_createFigureEmbed"](element, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(item["_createFigureEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(item["_createFigureEmbed"](element, embedConfig, {})).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(item["_createFigureEmbed"](element, embedConfig, enrichmentOptions)).toEqualTypeOf<
+  Promise<HTMLElement | null>
+>();
+
+// omitting tests for deprecated _*EmbeddedDocuments methods

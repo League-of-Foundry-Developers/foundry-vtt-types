@@ -525,7 +525,7 @@ declare global {
 
     static override fromImport(
       source: PlaylistSound.Source,
-      context?: Document.FromImportContext<PlaylistSound.Parent>,
+      context?: Document.FromImportContext<PlaylistSound.Parent> | null,
     ): Promise<PlaylistSound.Implementation>;
 
     // Embedded document operations have been left out because PlaylistSound does not have any embedded documents.

@@ -395,6 +395,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param context - The model construction context passed to {@link Document.fromSource | `Document.fromSource`}.
    *                  (default: `context.strict=true`) Strict validation is enabled by default.
    */
+  // context: allowed to be null because `...null` is fine
   static fromImport(source: never, context?: never): Promise<unknown>;
 
   /**
@@ -427,6 +428,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Create a content link for this Document.
    * @param options - Additional options to configure how the link is constructed.
    */
+  // options: not null (parameter default only)
   toAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
   /**
@@ -435,6 +437,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
    * @returns A representation of the Document as HTML content, or null if such a representation could not be generated.
    */
+  // options: not null (parameter default only)
   toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,

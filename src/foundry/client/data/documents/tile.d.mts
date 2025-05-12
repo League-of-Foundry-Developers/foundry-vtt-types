@@ -513,7 +513,7 @@ declare global {
 
     static override fromImport(
       source: TileDocument.Source,
-      context?: Document.FromImportContext<TileDocument.Parent>,
+      context?: Document.FromImportContext<TileDocument.Parent> | null,
     ): Promise<TileDocument.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

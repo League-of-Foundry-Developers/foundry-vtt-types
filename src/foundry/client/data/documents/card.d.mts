@@ -655,7 +655,7 @@ declare global {
 
     static override fromImport(
       source: Card.Source,
-      context?: Document.FromImportContext<Card.Parent>,
+      context?: Document.FromImportContext<Card.Parent> | null,
     ): Promise<Card.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

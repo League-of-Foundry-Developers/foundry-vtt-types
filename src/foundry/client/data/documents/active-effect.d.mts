@@ -950,7 +950,7 @@ declare global {
 
     static override fromImport(
       source: ActiveEffect.Source,
-      context?: Document.FromImportContext<ActiveEffect.Parent>,
+      context?: Document.FromImportContext<ActiveEffect.Parent> | null,
     ): Promise<ActiveEffect.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

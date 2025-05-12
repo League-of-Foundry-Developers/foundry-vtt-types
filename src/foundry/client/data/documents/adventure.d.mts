@@ -525,7 +525,7 @@ declare global {
 
     static override fromImport(
       source: Adventure.Source,
-      context?: Document.FromImportContext<Adventure.Parent>,
+      context?: Document.FromImportContext<Adventure.Parent> | null,
     ): Promise<Adventure.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

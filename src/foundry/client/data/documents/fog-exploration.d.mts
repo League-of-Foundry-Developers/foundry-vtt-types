@@ -465,7 +465,7 @@ declare global {
 
     static override fromImport(
       source: FogExploration.Source,
-      context?: Document.FromImportContext<FogExploration.Parent>,
+      context?: Document.FromImportContext<FogExploration.Parent> | null,
     ): Promise<FogExploration.Implementation>;
 
     static override get(

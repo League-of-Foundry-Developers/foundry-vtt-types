@@ -561,7 +561,7 @@ declare global {
 
     static override fromImport(
       source: WallDocument.Source,
-      context?: Document.FromImportContext<WallDocument.Parent>,
+      context?: Document.FromImportContext<WallDocument.Parent> | null,
     ): Promise<WallDocument.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

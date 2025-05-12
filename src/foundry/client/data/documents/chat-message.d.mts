@@ -749,6 +749,7 @@ declare global {
       context?: Document.CreateDialogContext<"ChatMessage", ChatMessage.Parent>,
     ): Promise<ChatMessage.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<ChatMessage.Implementation>,
       options?: AnyObject,
@@ -756,7 +757,7 @@ declare global {
 
     static override fromImport(
       source: ChatMessage.Source,
-      context?: Document.FromImportContext<ChatMessage.Parent>,
+      context?: Document.FromImportContext<ChatMessage.Parent> | null,
     ): Promise<ChatMessage.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

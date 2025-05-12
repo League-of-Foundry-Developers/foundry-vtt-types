@@ -752,7 +752,7 @@ declare global {
 
     static override fromImport(
       source: ActorDelta.Source,
-      context?: Document.FromImportContext<ActorDelta.Parent>,
+      context?: Document.FromImportContext<ActorDelta.Parent> | null,
     ): Promise<ActorDelta.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

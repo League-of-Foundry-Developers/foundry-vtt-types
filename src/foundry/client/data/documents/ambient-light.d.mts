@@ -442,7 +442,7 @@ declare global {
 
     static override fromImport(
       source: AmbientLightDocument.Source,
-      context?: Document.FromImportContext<AmbientLightDocument.Parent>,
+      context?: Document.FromImportContext<AmbientLightDocument.Parent> | null,
     ): Promise<AmbientLightDocument.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

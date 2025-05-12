@@ -501,7 +501,7 @@ declare global {
 
     static override fromImport(
       source: MeasuredTemplateDocument.Source,
-      context?: Document.FromImportContext<MeasuredTemplateDocument.Parent>,
+      context?: Document.FromImportContext<MeasuredTemplateDocument.Parent> | null,
     ): Promise<MeasuredTemplateDocument.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

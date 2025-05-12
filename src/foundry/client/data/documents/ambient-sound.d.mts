@@ -486,7 +486,7 @@ declare global {
 
     static override fromImport(
       source: AmbientSoundDocument.Source,
-      context?: Document.FromImportContext<AmbientSoundDocument.Parent>,
+      context?: Document.FromImportContext<AmbientSoundDocument.Parent> | null,
     ): Promise<AmbientSoundDocument.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

@@ -1099,7 +1099,7 @@ declare global {
 
     static override fromImport(
       source: Scene.Source,
-      context?: Document.FromImportContext<Scene.Parent>,
+      context?: Document.FromImportContext<Scene.Parent> | null,
     ): Promise<Scene.Implementation>;
   }
 

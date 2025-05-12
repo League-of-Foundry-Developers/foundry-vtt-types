@@ -508,7 +508,7 @@ declare global {
 
     static override fromImport(
       source: RegionBehavior.Source,
-      context?: Document.FromImportContext<RegionBehavior.Parent>,
+      context?: Document.FromImportContext<RegionBehavior.Parent> | null,
     ): Promise<RegionBehavior.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

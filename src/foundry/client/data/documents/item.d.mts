@@ -711,6 +711,7 @@ declare global {
       context?: Document.CreateDialogContext<"Item", Item.Parent>,
     ): Promise<Item.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Item.Implementation>,
       options?: AnyObject,
@@ -718,7 +719,7 @@ declare global {
 
     static override fromImport(
       source: Item.Source,
-      context?: Document.FromImportContext<Item.Parent>,
+      context?: Document.FromImportContext<Item.Parent> | null,
     ): Promise<Item.Implementation>;
 
     /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */

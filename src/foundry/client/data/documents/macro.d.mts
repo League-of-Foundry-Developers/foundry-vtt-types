@@ -588,7 +588,7 @@ declare global {
 
     static override fromImport(
       source: Macro.Source,
-      context?: Document.FromImportContext<Macro.Parent>,
+      context?: Document.FromImportContext<Macro.Parent> | null,
     ): Promise<Macro.Implementation>;
   }
 }
