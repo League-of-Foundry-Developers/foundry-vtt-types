@@ -42,14 +42,14 @@ new Item.implementation({});
 // @ts-expect-error - Item requires name and type.
 await Item.create({});
 
-const item = new Item.implementation({ name: "Mighty Axe of Killing", type: "base" });
-await Item.create({ name: "Mighty Axe of Killing", type: "base" });
+const item = new Item.implementation({ name: "Mighty Axe of Killing", type: "weapon" });
+await Item.create({ name: "Mighty Axe of Killing", type: "weapon" });
 
 expectTypeOf(item.actor).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(item.img).toEqualTypeOf<string | null | undefined>();
 expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
 expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
-expectTypeOf(item.type).toEqualTypeOf<"base" | Document.ModuleSubtype>();
+expectTypeOf(item.type).toEqualTypeOf<"base" | "armor" | "weapon" | Document.ModuleSubtype>();
 expectTypeOf(item.getRollData()).toEqualTypeOf<AnyObject>();
 
 // Configured Item Usage
