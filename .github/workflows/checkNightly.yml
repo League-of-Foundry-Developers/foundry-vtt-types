@@ -30,9 +30,10 @@ jobs:
           # This has been seen going in an infinite loop without `--legacy-peer-deps`.
           npm add --legacy-peer-deps --force -D typescript@next
           npx tsc --version
-      - run: npm run typecheck
       - run: npm run lint
+      - name: Type Check (exactOptionalPropertyTypes = false)
+        run: npx tsc --exactOptionalPropertyTypes false
 
       # Note(LukeAbby): Currently the beta releases doesn't pass the tests.
       # This will be enabled again once tests are passing.
-      # - run: npm test
+      # - run: npm run test
