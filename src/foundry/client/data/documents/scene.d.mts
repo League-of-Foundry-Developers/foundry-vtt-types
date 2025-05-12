@@ -1019,7 +1019,8 @@ declare global {
      */
     protected override _preDeleteDescendantDocuments(...args: Scene.PreDeleteDescendantDocumentsArgs): void;
 
-    toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
+    // options: not null (parameter default only, destructured in super)
+    override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
       options?: Options,
     ): ClientDocument.ToCompendiumReturnType<foundry.documents.BaseScene, Options>;

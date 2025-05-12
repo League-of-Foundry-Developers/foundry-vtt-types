@@ -5,7 +5,8 @@ import type {
   AnyObject,
   NullishProps,
   MaybePromise,
-  IntentionalPartial,
+  InexactPartial,
+  NullishCoalesce,
 } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
@@ -347,7 +348,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @returns A Promise which resolves to the deleted Document
    */
   // options: not null (parameter default only)
-  deleteDialog(options?: IntentionalPartial<Dialog.Options>): Promise<this | false | null | undefined>;
+  deleteDialog(options?: InexactPartial<Dialog.Options>): Promise<this | false | null | undefined>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
@@ -416,7 +417,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    *                  (default: `{}`)
    * @returns A data object of cleaned data suitable for compendium import
    */
-  toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
+  // options: not null (destructured)
+  toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
     options?: Options,
   ): ClientDocument.ToCompendiumReturnType<BaseDocument, Options>;
@@ -616,55 +618,59 @@ declare global {
     // Note(LukeAbby): If the property could be omitted it is. This is the safest option because in indeterminate cases access would be unsafe.
     // In the future the indeterminate case could turn the property optional but that isn't done today because that's annoying to do for little benefit.
     /** @internal */
-    type _OmitProperty<Omit extends boolean | undefined, Default extends boolean, ToOmit extends string> = Omit extends
-      | true
-      | (Default extends true ? undefined : never)
-      ? ToOmit
-      : never;
+    type _OmitProperty<
+      Omit extends boolean | null | undefined,
+      Default extends boolean,
+      ToOmit extends string,
+    > = Omit extends true | (Default extends true ? undefined : never) ? ToOmit : never;
 
-    interface ToCompendiumOptions {
+    /** @internal */
+    type _ToCompendiumOptions = NullishProps<{
       /**
        * Clear the flags object
        * @defaultValue `false`
        */
-      clearFlags?: boolean | undefined;
+      clearFlags: boolean;
 
       /**
        * Clear any prior source information
        * @defaultValue `true`
+       * @remarks Deletes `_stats.compendiumSource` and `_stats.duplicateSource`, won't delete legacy source flags
        */
-      clearSource?: boolean | undefined;
+      clearSource: boolean;
 
       /**
        * Clear the currently assigned folder and sort order
        * @defaultValue `true`
        */
-      clearSort?: boolean | undefined;
+      clearSort: boolean;
 
       /**
        * Clear the currently assigned folder
        * @defaultValue `false`
        */
-      clearFolder?: boolean | undefined;
+      clearFolder: boolean;
 
       /**
        * Clear document ownership
        * @defaultValue `true`
        */
-      clearOwnership?: boolean | undefined;
+      clearOwnership: boolean;
 
       /**
        * Clear fields which store document state
        * @defaultValue `true`
        */
-      clearState?: boolean | undefined;
+      clearState: boolean;
 
       /**
        * Retain the current Document id
        * @defaultValue `false`
        */
-      keepId?: boolean | undefined;
-    }
+      keepId: boolean;
+    }>;
+
+    interface ToCompendiumOptions extends _ToCompendiumOptions {}
 
     /** @internal */
     type _CreateDocumentLinkOptions = NullishProps<{
@@ -685,27 +691,46 @@ declare global {
 
     type ToCompendiumReturnType<
       BaseDocument extends Document.Internal.Instance.Any,
+      Options extends ToCompendiumOptions | undefined,
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    > = _ToCompendiumReturnType<BaseDocument, Coalesce<Options, {}>>;
+
+    type _ToCompendiumReturnType<
+      BaseDocument extends Document.Internal.Instance.Any,
       Options extends ToCompendiumOptions,
-    > = _ToCompendiumReturnType<
-      Options["clearSource"],
-      Omit<
-        Document.Internal.Instance.Complete<BaseDocument>["_source"],
-        | ClientDocument._OmitProperty<Options["clearFlags"], false, "flags">
-        | ClientDocument._OmitProperty<Options["clearSort"], true, "sort" | "navigation" | "navOrder"> // helping out Scene
-        | ClientDocument._OmitProperty<Options["clearFolder"], true, "folder">
-        | ClientDocument._OmitProperty<Options["clearOwnership"], true, "ownership">
-        | ClientDocument._OmitProperty<Options["clearState"], true, "active" | "fogReset" | "playing"> // helping out Playlist, Scene
-        | (Options["keepId"] extends true ? never : "_id")
+    > = _ClearFog<
+      Options["clearState"],
+      _ClearStats<
+        Options["clearSource"],
+        Omit<
+          Document.Internal.Instance.Complete<BaseDocument>["_source"],
+          | ClientDocument._OmitProperty<Options["clearFlags"], false, "flags">
+          | ClientDocument._OmitProperty<Options["clearSort"], true, "sort" | "navigation" | "navOrder"> // helping out Scene
+          | ClientDocument._OmitProperty<Options["clearFolder"], true, "folder">
+          | ClientDocument._OmitProperty<Options["clearOwnership"], true, "ownership">
+          | ClientDocument._OmitProperty<Options["clearState"], true, "active" | "playing"> // helping out Playlist, Scene
+          | (Options["keepId"] extends true ? never : "_id")
+        >
       >
     >;
 
-    type _ToCompendiumReturnType<ClearSource extends boolean | undefined, SourceData extends object> = [
-      Coalesce<ClearSource, true>,
+    /** @internal */
+    type _ClearStats<ClearSource extends boolean | null | undefined, SourceData extends object> = [
+      NullishCoalesce<ClearSource, true>,
     ] extends [true]
       ? {
           [K in keyof SourceData]: "_stats" extends K
             ? Omit<SourceData[K], "compendiumSource" | "duplicateSource">
             : never;
+        }
+      : SourceData;
+
+    /** @internal */
+    type _ClearFog<ClearState extends boolean | null | undefined, SourceData extends object> = [
+      NullishCoalesce<ClearState, true>,
+    ] extends [true]
+      ? {
+          [K in keyof SourceData]: "fog" extends K ? Omit<SourceData[K], "reset"> : never;
         }
       : SourceData;
 

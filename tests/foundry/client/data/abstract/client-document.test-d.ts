@@ -136,7 +136,7 @@ expectTypeOf(item.render(true)).toBeVoid();
 expectTypeOf(item.render(true, {})).toBeVoid();
 expectTypeOf(item.render(true, { title: "foo" })).toBeVoid();
 // TODO: This will error as long as ApplicationV2.RenderOptions isn't inherently DeepPartialed
-// expectTypeOf(item.render(true, { window: { title: "foo" } })).toBeVoid();
+expectTypeOf(item.render(true, { window: { title: "foo" } })).toBeVoid();
 
 declare const sortOptions: SortingHelpers.SortOptions<typeof item>;
 declare const updateData: Item.UpdateData;
@@ -240,3 +240,49 @@ expectTypeOf(item["_onSheetChange"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(item["_onSheetChange"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(item["_onSheetChange"]({ sheetOpen: true })).toEqualTypeOf<Promise<void>>();
 expectTypeOf(item["_onSheetChange"]({ sheetOpen: null })).toEqualTypeOf<Promise<void>>();
+
+expectTypeOf(item.deleteDialog()).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();
+expectTypeOf(item.deleteDialog({})).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();
+expectTypeOf(item.deleteDialog(dialogOptions)).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();
+
+// Using exportToJSON to test ToCompendiumOptions for now
+expectTypeOf(item.exportToJSON()).toBeVoid();
+expectTypeOf(item.exportToJSON({})).toBeVoid();
+expectTypeOf(
+  item.exportToJSON({
+    clearFlags: true,
+    clearFolder: true,
+    clearOwnership: true,
+    clearSort: true,
+    clearSource: true,
+    clearState: false,
+    keepId: true,
+  }),
+).toBeVoid();
+expectTypeOf(
+  item.exportToJSON({
+    clearFlags: null,
+    clearFolder: null,
+    clearOwnership: null,
+    clearSort: null,
+    clearSource: null,
+    clearState: null,
+    keepId: null,
+  }),
+).toBeVoid();
+expectTypeOf(
+  item.exportToJSON({
+    clearFlags: undefined,
+    clearFolder: undefined,
+    clearOwnership: undefined,
+    clearSort: undefined,
+    clearSource: undefined,
+    clearState: undefined,
+    keepId: undefined,
+  }),
+).toBeVoid();
+
+// TODO: more thorough tests after `ToCompendiumReturnType` is rewritten or the v13 pass, whichever comes first
+expectTypeOf(item.toCompendium()).toEqualTypeOf<
+  ClientDocument.ToCompendiumReturnType<foundry.documents.BaseItem, undefined>
+>();
