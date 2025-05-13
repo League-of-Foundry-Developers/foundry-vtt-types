@@ -1,5 +1,5 @@
 import type { ConfiguredActiveEffect } from "../../../../configuration/index.d.mts";
-import type { AnyObject, InterfaceToObject, MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, InterfaceToObject, Merge } from "fvtt-types/utils";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField, DataSchema } from "../../../common/data/fields.d.mts";
@@ -953,8 +953,7 @@ declare global {
       context?: Document.FromImportContext<ActiveEffect.Parent> | null,
     ): Promise<ActiveEffect.Implementation>;
 
-    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
-    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 
   /**

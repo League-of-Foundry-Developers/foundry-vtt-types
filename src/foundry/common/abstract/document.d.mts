@@ -2023,7 +2023,7 @@ declare namespace Document {
         }>
       : {
           /** @deprecated This Document type does not support subtypes */
-          type?: string;
+          type?: never;
         };
 
   type DefaultNameContext<DocumentName extends Document.Type, Parent extends Document.Any | null> = NullishProps<{
@@ -2053,19 +2053,16 @@ declare namespace Document {
     GetKey<Document.MetadataFor<DocumentName>, "hasTypeData"> extends true
       ? {
           /** @deprecated This Document type does not support subtypes */
-          types?: [];
+          types?: never;
         }
       : NullishProps<{
           /**
            * A restriction the selectable sub-types of the Dialog.
            * @remarks Only checked if the document has `static TYPES` of length \> 1 (i.e it both `hasTypeData` and has
-           * at least one non-`"base"` type registered). The computed list will always exclude {@link CONST.BASE_DOCUMENT_TYPE | `CONST.BASE_DOCUMENT_TYPE`}
-           *
-           * @privateRemarks This could be `ConfiguredSubTypesOf` instead of `SubTypesOf` because `"base"` is always
-           * dropped regardless of its inclusion or not in this list, but allowing it doesn't hurt anything and could
-           * simplify some workflows
+           * at least one non-`"base"` type registered). The computed list will always exclude {@link CONST.BASE_DOCUMENT_TYPE | `CONST.BASE_DOCUMENT_TYPE`},
+           * so it is disallowed in this whitelist.
            */
-          types: Document.SubTypesOf<DocumentName>[];
+          types: Exclude<Document.SubTypesOf<DocumentName>, "base">[];
         }>;
 
   type CreateDialogContext<

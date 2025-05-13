@@ -1,4 +1,4 @@
-import type { AnyObject, MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, Merge } from "fvtt-types/utils";
 import type { ConfiguredRegionBehavior } from "../../../../configuration/index.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -511,8 +511,7 @@ declare global {
       context?: Document.FromImportContext<RegionBehavior.Parent> | null,
     ): Promise<RegionBehavior.Implementation>;
 
-    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
-    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // Embedded document operations have been left out because RegionBehavior does not have any embedded documents.
   }

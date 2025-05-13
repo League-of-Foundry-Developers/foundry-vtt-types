@@ -1,5 +1,5 @@
 import type { ConfiguredFolder } from "../../../../configuration/index.d.mts";
-import type { AnyObject, InexactPartial, MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -432,7 +432,11 @@ declare global {
      * @remarks Rather than a simple `Dialog`, {@link Folder.createDialog | `Folder.createDialog`} creates a {@link FolderConfig | `FolderConfig`},
      * passing along the returned `Promise`'s `resolve` to the app.
      */
-    interface CreateDialogOptions extends InexactPartial<Omit<FolderConfig.Options, "resolve">> {}
+    // TODO (v13): `options.document` is also force set
+    interface CreateDialogOptions extends InexactPartial<Omit<FolderConfig.Options, "resolve">> {
+      /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
+      resolve?: never;
+    }
   }
 
   /**
@@ -582,7 +586,6 @@ declare global {
       context?: Document.FromImportContext<Folder.Parent> | null,
     ): Promise<Folder.Implementation>;
 
-    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
-    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

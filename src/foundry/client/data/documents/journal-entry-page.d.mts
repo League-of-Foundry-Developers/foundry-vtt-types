@@ -1,5 +1,5 @@
 import type { ConfiguredJournalEntryPage } from "../../../../configuration/index.d.mts";
-import type { AnyObject, InexactPartial, LazyUnknown, MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, LazyUnknown, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -659,10 +659,10 @@ declare global {
     /**
      * @remarks
      * As `super`, but return the parent's sheet's `#render`:
-     * - AppV1: this is a reference to that sheet
-     * - AppV2: this is a Promise of a reference to that sheet
+     * - AppV1: returns that sheet
+     * - AppV2: returns a Promise of that sheet
      */
-    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<NonNullable<this["parent"]>["sheet"]>>;
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // _onUpdate is overridden but with no signature changes from the template in BaseJournalEntryPage
 

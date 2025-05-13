@@ -460,7 +460,7 @@ declare global {
     ): HTMLAnchorElement;
 
     /**
-     * @remarks Returns `this.parent`{@link Playlist.stopSound | `.stopSound`} or {@link Playlist.playSound | `.playSound`}
+     * @remarks Returns {@link Playlist.stopSound | `this.parent.stopSound()`} or {@link Playlist.playSound | `this.parent.playSound()`}
      */
     override _onClickDocumentLink(event: MouseEvent): Promise<Playlist.Implementation | undefined>;
 

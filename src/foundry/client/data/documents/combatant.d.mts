@@ -1,5 +1,5 @@
 import type { ConfiguredCombatant } from "../../../../configuration/index.d.mts";
-import type { AnyObject, MaybePromise, Merge, ValueOf } from "fvtt-types/utils";
+import type { AnyObject, Merge, ValueOf } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -599,7 +599,6 @@ declare global {
       context?: Document.FromImportContext<Combatant.Parent> | null,
     ): Promise<Combatant.Implementation>;
 
-    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
-    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

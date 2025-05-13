@@ -1,5 +1,5 @@
 import type { ConfiguredChatMessage } from "../../../../configuration/index.d.mts";
-import type { AnyObject, InexactPartial, InterfaceToObject, MaybePromise, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, InterfaceToObject, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -760,7 +760,6 @@ declare global {
       context?: Document.FromImportContext<ChatMessage.Parent> | null,
     ): Promise<ChatMessage.Implementation>;
 
-    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
-    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

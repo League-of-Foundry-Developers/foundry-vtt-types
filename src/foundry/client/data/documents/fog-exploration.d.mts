@@ -1,12 +1,4 @@
-import type {
-  AnyObject,
-  Identity,
-  InexactPartial,
-  MaybePromise,
-  IntentionalPartial,
-  Merge,
-  NullishProps,
-} from "fvtt-types/utils";
+import type { AnyObject, Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type { DatabaseGetOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -482,8 +474,7 @@ declare global {
       options: FogExploration.LoadOptions,
     ): Promise<FogExploration.Implementation | null>;
 
-    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
-    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 
   namespace FogExploration {

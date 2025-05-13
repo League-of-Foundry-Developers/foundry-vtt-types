@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/documentConfiguration.d.mts";
-import type { AnyObject, FixedInstanceType, InexactPartial, MaybePromise, Merge, NullishProps } from "fvtt-types/utils";
+import type { AnyObject, FixedInstanceType, InexactPartial, Merge, NullishProps } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -628,8 +628,7 @@ declare global {
       context?: Document.FromImportContext<User.Parent> | null,
     ): Promise<User.Implementation>;
 
-    /** @remarks Not actually overridden, typed here to narrow from {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} */
-    override _onClickDocumentLink(event: MouseEvent): MaybePromise<NonNullable<this["sheet"]>>;
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // Embedded document operations have been left out because User does not have any embedded documents.
   }

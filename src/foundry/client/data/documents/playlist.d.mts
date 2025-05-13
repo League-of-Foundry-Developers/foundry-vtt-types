@@ -634,6 +634,9 @@ declare global {
       }>,
     ): HTMLAnchorElement;
 
+    /**
+     * @remarks Returns {@link Playlist.playAll | `this.playAll()`} or {@link Playlist.stopAll | `this.stopAll()`}
+     */
     override _onClickDocumentLink(event: MouseEvent): Promise<this | undefined>;
 
     //_preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes from the BasePlaylist class.

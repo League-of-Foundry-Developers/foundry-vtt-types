@@ -167,10 +167,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Create a content link for this document
    * @param eventData - The parsed object of data provided by the drop transfer event.
    * @param options   - Additional options to configure link generation.
-   * @remarks Foundry marked `@internal`, but the only place core calls this is in {@link TextEditor.getContentLink | `TextEditor.getContentLink`},
-   * so it has not been marked protected
-   *
-   * Core's implementation doesn't use `eventData` here, but when it's passed in it's the return from
+   * @remarks Core's implementation doesn't use `eventData` here, but when it's passed in it's the return from
    * {@link TextEditor.getDragEventData | `TextEditor.getDragEventData(someDragEvent)`}
    */
   // options: not null (destructured)
@@ -181,8 +178,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param event - The triggering click event.
    * @remarks
    * In `ClientDocument`, returns `this.sheet.render(true)`:
-   * - AppV1: this is a reference to that sheet
-   * - AppV2: this is a Promise of a reference to that sheet
+   * - AppV1: returns that sheet
+   * - AppV2: returns a Promise of that sheet
    *
    * However it unfortunately has to be typed as `MaybePromise<unknown>` due to the {@link Macro._onClickDocumentLink | `Macro`} override,
    * where `##executeScript` could return whatever a user-provided macro wants.
@@ -203,7 +200,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param _parent    - The document with directly modified embedded documents.
    *                     Either this document or a descendant of this one.
    * @internal
-   * @remarks This has not been typed for specific documents as there should be no need for users to ever extend this method
+   * @remarks This has not been typed per-document as there does not appear to be a reason for users to ever extend or call this method.
+   * If you have a use case for this, please file an issue.
    */
   protected _dispatchDescendantDocumentEvents(
     event: ClientDocument.LifeCycleEventName,
@@ -335,8 +333,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param context - Additional context options or dialog positioning options (default: `{}`)
    * @returns A Promise which resolves to the created Document, or null if the dialog was closed.
    * @throws If the document has
-   * @privateRemarks `| undefined` is included in the template return type due to {@link Document.create | `Document.create`} possibly
-   * being `undefined` if creation is cancelled by pre-Create methods/hooks
+   * @privateRemarks `| undefined` is included in the return types of the specific document overrides due to {@link Document.create | `Document.create`}
+   * possibly being `undefined` if creation is cancelled by preCreate methods or hooks
    */
   // data: not null (parameter default only), option: not null (destructured)
   static createDialog(data: never, context: never): Promise<unknown>;
@@ -373,7 +371,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @returns The resolved Document
    * @throws If a Document could not be retrieved from the provided data.
    * @remarks Core's implementation in `ClientDocument` does not use `options` at all, no call passes any `options`
-   * anywhere in Foundry, and the TSDoc types it as simply `object`, so it cannot be typed more exactly than this.
+   * anywhere in Foundry, and the JSDoc types it as simply `object`, so it cannot be typed more exactly than this.
    */
   // options: not null (parameter default only)
   static fromDropData(data: Document.DropData<never>, options?: AnyObject): Promise<unknown>;
@@ -395,7 +393,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param context - The model construction context passed to {@link Document.fromSource | `Document.fromSource`}.
    *                  (default: `context.strict=true`) Strict validation is enabled by default.
    */
-  // context: allowed to be null because `...null` is fine
+  // context: allowed to be null because spreading a variable with the value `null` into an object is allowed
   static fromImport(source: never, context?: never): Promise<unknown>;
 
   /**
@@ -691,6 +689,8 @@ declare global {
     }>;
 
     interface CreateDocumentLinkOptions extends _CreateDocumentLinkOptions {}
+
+    type OnClickDocumentLinkReturn = FormApplication.Any | Promise<ApplicationV2.Any>;
 
     type ToCompendiumReturnType<
       BaseDocument extends Document.Internal.Instance.Any,
