@@ -1,4 +1,4 @@
-import type { Merge } from "../../../../utils/index.d.mts";
+import type { AnyObject, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -482,23 +482,28 @@ declare global {
 
     // Descendant Document operations have been left out because MeasuredTemplate does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<MeasuredTemplateDocument.Parent>>,
+      context?: Document.DefaultNameContext<"MeasuredTemplate", NonNullable<MeasuredTemplateDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<MeasuredTemplateDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<MeasuredTemplateDocument.Parent>>,
+      data: Document.CreateDialogData<MeasuredTemplateDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"MeasuredTemplate", NonNullable<MeasuredTemplateDocument.Parent>>,
     ): Promise<MeasuredTemplateDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<MeasuredTemplateDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<MeasuredTemplateDocument.Implementation | undefined>;
 
     static override fromImport(
       source: MeasuredTemplateDocument.Source,
-      context?: Document.FromImportContext<MeasuredTemplateDocument.Parent>,
+      context?: Document.FromImportContext<MeasuredTemplateDocument.Parent> | null,
     ): Promise<MeasuredTemplateDocument.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -634,7 +634,10 @@ declare global {
       }>,
     ): HTMLAnchorElement;
 
-    override _onClickDocumentLink(event: MouseEvent): ReturnType<this["playAll" | "stopAll"]>;
+    /**
+     * @remarks Returns {@link Playlist.playAll | `this.playAll()`} or {@link Playlist.stopAll | `this.stopAll()`}
+     */
+    override _onClickDocumentLink(event: MouseEvent): Promise<this | undefined>;
 
     //_preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes from the BasePlaylist class.
 
@@ -705,7 +708,8 @@ declare global {
      */
     _onSoundStart(sound: PlaylistSound.Implementation): Promise<void>;
 
-    toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
+    // options: not null (parameter default only, destructured in super)
+    override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
       options?: Options,
     ): ClientDocument.ToCompendiumReturnType<foundry.documents.BasePlaylist, Options>;
@@ -776,21 +780,24 @@ declare global {
      */
     protected override _preDeleteDescendantDocuments(...args: Playlist.PreDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<string, Playlist.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Playlist", Playlist.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<Playlist.CreateData>,
-      context?: Document.CreateDialogContext<string, Playlist.Parent>,
+      context?: Document.CreateDialogContext<"Playlist", Playlist.Parent>,
     ): Promise<Playlist.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Playlist.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Playlist.Implementation | undefined>;
 
     static override fromImport(
       source: Playlist.Source,
-      context?: Document.FromImportContext<Playlist.Parent>,
+      context?: Document.FromImportContext<Playlist.Parent> | null,
     ): Promise<Playlist.Implementation>;
   }
 }

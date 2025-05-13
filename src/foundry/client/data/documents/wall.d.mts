@@ -1,4 +1,4 @@
-import type { Merge } from "../../../../utils/index.d.mts";
+import type { AnyObject, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -542,22 +542,29 @@ declare global {
 
     // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
-    static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<WallDocument.Parent>>): string;
+    // context: not null (destructured)
+    static override defaultName(
+      context?: Document.DefaultNameContext<"Wall", NonNullable<WallDocument.Parent>>,
+    ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<WallDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<WallDocument.Parent>>,
+      data: Document.CreateDialogData<WallDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Wall", NonNullable<WallDocument.Parent>>,
     ): Promise<WallDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<WallDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<WallDocument.Implementation | undefined>;
 
     static override fromImport(
       source: WallDocument.Source,
-      context?: Document.FromImportContext<WallDocument.Parent>,
+      context?: Document.FromImportContext<WallDocument.Parent> | null,
     ): Promise<WallDocument.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // Embedded document operations have been left out because Wall does not have any embedded documents.
   }

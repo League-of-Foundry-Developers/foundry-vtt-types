@@ -1,8 +1,8 @@
+import type { AnyObject, InterfaceToObject, Merge, ValueOf } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
-import type { InterfaceToObject, Merge, ValueOf } from "../../../../utils/index.d.mts";
 
 declare global {
   namespace JournalEntry {
@@ -651,22 +651,27 @@ declare global {
      */
     protected override _onDeleteDescendantDocuments(...args: Cards.OnDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<string, JournalEntry.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"JournalEntry", JournalEntry.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<JournalEntry.CreateData>,
-      context?: Document.CreateDialogContext<string, JournalEntry.Parent>,
+      context?: Document.CreateDialogContext<"JournalEntry", JournalEntry.Parent>,
     ): Promise<JournalEntry.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<JournalEntry.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<JournalEntry.Implementation | undefined>;
 
     static override fromImport(
       source: JournalEntry.Source,
-      context?: Document.FromImportContext<JournalEntry.Parent>,
+      context?: Document.FromImportContext<JournalEntry.Parent> | null,
     ): Promise<JournalEntry.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }
 

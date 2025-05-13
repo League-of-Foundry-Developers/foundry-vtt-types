@@ -1,4 +1,4 @@
-import type { InterfaceToObject, Merge } from "../../../../utils/index.d.mts";
+import type { AnyObject, InterfaceToObject, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields, LightData } from "../../../common/data/module.d.mts";
@@ -423,23 +423,28 @@ declare global {
 
     // Descendant Document operations have been left out because AmbientLight does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<AmbientLightDocument.Parent>>,
+      context?: Document.DefaultNameContext<"AmbientLight", NonNullable<AmbientLightDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<AmbientLightDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<AmbientLightDocument.Parent>>,
+      data: Document.CreateDialogData<AmbientLightDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"AmbientLight", NonNullable<AmbientLightDocument.Parent>>,
     ): Promise<AmbientLightDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<AmbientLightDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<AmbientLightDocument.Implementation | undefined>;
 
     static override fromImport(
       source: AmbientLightDocument.Source,
-      context?: Document.FromImportContext<AmbientLightDocument.Parent>,
+      context?: Document.FromImportContext<AmbientLightDocument.Parent> | null,
     ): Promise<AmbientLightDocument.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

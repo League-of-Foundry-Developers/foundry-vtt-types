@@ -990,24 +990,29 @@ declare global {
 
     // Descendant Document operations have been left out because ActiveEffect does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<ActiveEffect.SubType, NonNullable<ActiveEffect.Parent>>,
+      context?: Document.DefaultNameContext<"ActiveEffect", NonNullable<ActiveEffect.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<ActiveEffect.CreateData>,
-      context: Document.CreateDialogContext<ActiveEffect.SubType, NonNullable<ActiveEffect.Parent>>,
+      data: Document.CreateDialogData<ActiveEffect.CreateData> | undefined,
+      context: Document.CreateDialogContext<"ActiveEffect", NonNullable<ActiveEffect.Parent>>,
     ): Promise<ActiveEffect.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<ActiveEffect.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<ActiveEffect.Implementation | undefined>;
 
     static override fromImport(
       source: ActiveEffect.Source,
-      context?: Document.FromImportContext<ActiveEffect.Parent>,
+      context?: Document.FromImportContext<ActiveEffect.Parent> | null,
     ): Promise<ActiveEffect.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 
   /**

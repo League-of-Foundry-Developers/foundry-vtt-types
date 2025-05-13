@@ -24,9 +24,11 @@ import type {
   Identity,
   Brand,
   AnyMutableObject,
+  MaybePromise,
 } from "fvtt-types/utils";
 import type * as CONST from "../constants.mts";
 import type {
+  DataSchema,
   DataField,
   DocumentStatsField,
   EmbeddedCollectionField,
@@ -34,20 +36,18 @@ import type {
   SchemaField,
   TypeDataField,
 } from "../data/fields.d.mts";
-import type { fields } from "../data/module.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type {
   DatabaseAction,
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
+  DatabaseGetOperation,
   DatabaseUpdateOperation,
   DocumentSocketRequest,
 } from "./_types.d.mts";
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
-
-type DataSchema = foundry.data.fields.DataSchema;
 
 export default Document;
 
@@ -112,7 +112,7 @@ declare abstract class Document<
   /**
    * Ensure that all Document classes share the same schema of their base declaration.
    */
-  static get schema(): foundry.data.fields.SchemaField.Any;
+  static get schema(): SchemaField.Any;
 
   // options: not null (parameter default only)
   protected _initialize(options?: Document.InitializeOptions): void;
@@ -281,7 +281,7 @@ declare abstract class Document<
    */
   // data: not null (property access), context: not null (destructured)
   override clone<Save extends boolean | null | undefined = false>(
-    data?: fields.SchemaField.UpdateData<Schema>,
+    data?: SchemaField.UpdateData<Schema>,
     context?: Document.CloneContext<Save>,
   ): Save extends true ? Promise<this> : this;
 
@@ -294,9 +294,7 @@ declare abstract class Document<
   migrateSystemData(): object;
 
   /** @remarks `Document#toObject` calls `this.constructor.shimData()` on the data before returning */
-  override toObject<Source extends boolean | null | undefined = true>(
-    source?: Source,
-  ): DataModel.ToObject<Schema, Source>;
+  override toObject(source?: boolean | null): SchemaField.SourceData<Schema>;
 
   /**
    * Create multiple Documents using provided input data.
@@ -499,10 +497,7 @@ declare abstract class Document<
    * of the return; All other documents return `SomeDoc.Implementation | null`
    */
   // TODO: Type for possible index entry return
-  static get(
-    documentId: string,
-    operation?: Document.Database.GetOptions,
-  ): Promise<Document.Any | null> | Document.Any | null;
+  static get(documentId: string, operation?: Document.Database.GetOptions): MaybePromise<Document.Any | null>;
 
   /**
    * A compatibility method that returns the appropriate name of an embedded collection within this Document.
@@ -661,8 +656,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the creation request
    * @param userId  - The id of the User requesting the document update
    */
-  // TODO: should be `MaybePromise<void>` to allow async subclassing?
-  protected _onCreate(data: never, options: never, userId: string): void;
+  protected _onCreate(data: never, options: never, userId: string): MaybePromise<void>;
 
   /**
    * Pre-process a creation operation, potentially altering its instructions or input data. Pre-operation events only
@@ -719,8 +713,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the update request
    * @param userId  - The id of the User requesting the document update
    */
-  // TODO: should be `MaybePromise<void>` to allow async subclassing?
-  protected _onUpdate(changed: never, options: never, userId: string): void;
+  protected _onUpdate(changed: never, options: never, userId: string): MaybePromise<void>;
 
   /**
    * Pre-process an update operation, potentially altering its instructions or input data. Pre-operation events only
@@ -768,7 +761,6 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
-  // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _preDelete(options: never, user: User.Internal.Implementation): Promise<boolean | void>;
 
   /**
@@ -777,7 +769,7 @@ declare abstract class Document<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  protected _onDelete(options: never, userId: string): void;
+  protected _onDelete(options: never, userId: string): MaybePromise<void>;
 
   /**
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
@@ -1339,7 +1331,7 @@ declare namespace Document {
   type MetadataFor<Name extends Document.Type> = ConfiguredMetadata[Name];
 
   type CollectionRecord<Schema extends DataSchema> = {
-    [Key in keyof Schema]: Schema[Key] extends fields.EmbeddedCollectionField.Any ? Schema[Key] : never;
+    [Key in keyof Schema]: Schema[Key] extends EmbeddedCollectionField.Any ? Schema[Key] : never;
   };
 
   type Flags<ConcreteDocument extends Internal.Instance.Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
@@ -1673,9 +1665,11 @@ declare namespace Document {
   namespace Database {
     type Operation = "create" | "update" | "delete";
 
-    interface GetOptions {
-      pack?: string | null;
-    }
+    /**
+     * @privateRemarks Foundry types {@link Document.get | `Document.get`} as taking a {@link DatabaseGetOperation | `DatabaseGetOperation`}
+     * but it only ever looks for `pack`
+     */
+    interface GetOptions extends Pick<DatabaseGetOperation, "pack"> {}
 
     /** Used for {@link Document.createDocuments | `Document.createDocuments`} */
     type CreateOperation<Op extends DatabaseCreateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;
@@ -2003,6 +1997,10 @@ declare namespace Document {
     value?: unknown;
   }
 
+  /**
+   * @internal
+   * If a `parent` is required for a given Document's creation, its template must pass `NonNullable<X.Parent>` to `CreateDialogContext`
+   */
   type ParentContext<Parent extends Document.Any | null> = Parent extends null
     ? {
         /** A parent document within which the created Document should belong */
@@ -2013,39 +2011,73 @@ declare namespace Document {
         parent: Parent;
       };
 
-  type DefaultNameContext<SubType extends string, Parent extends Document.Any | null> = {
-    /** The sub-type of the document */
-    type?: SubType | undefined;
+  /** @internal */
+  type _PossibleSubtypeContext<DocumentName extends Document.Type> =
+    GetKey<Document.MetadataFor<DocumentName>, "hasTypeData"> extends true
+      ? NullishProps<{
+          /**
+           * The sub-type of the document
+           * @remarks Pulls from `CONFIG[documentName].typeLabels?.[type]` if provided. Ignored if falsey.
+           */
+          type: Document.SubTypesOf<DocumentName>;
+        }>
+      : {
+          /** @deprecated This Document type does not support subtypes */
+          type?: never;
+        };
 
-    /** A compendium pack within which the Document should be created */
-    pack?: string | undefined;
-  } & ParentContext<Parent>;
-
-  interface FromDropDataOptions {
+  type DefaultNameContext<DocumentName extends Document.Type, Parent extends Document.Any | null> = NullishProps<{
     /**
-     * Import the provided document data into the World, if it is not already a World-level Document reference
-     * @defaultValue `false`
+     * A compendium pack within which the Document should be created
+     * @remarks Only used to generate the list of existing names to check against when incrementing the index for the `(number)` suffix.
+     * Ignored if falsey, or if `parent` is provided and truthy.
      */
-    importWorld?: boolean;
-  }
+    pack: string;
+
+    /**
+     * A parent document within which the created Document should belong
+     * @remarks Only used to generate the list of existing names to check against when incrementing the index for the `(number)` suffix.
+     * Ignored if falsey.
+     */
+    parent: Parent;
+  }> &
+    _PossibleSubtypeContext<DocumentName>;
 
   type CreateDialogData<CreateData extends object> = InexactPartial<
     CreateData,
     Extract<AllKeysOf<CreateData>, "name" | "type" | "folder">
   >;
 
-  type CreateDialogContext<
-    SubType extends string,
-    Parent extends Document.Any | null,
-  > = InexactPartial<Dialog.Options> & {
-    /**
-     * A compendium pack within which the Document should be created
-     */
-    pack?: string | null | undefined;
+  /** @internal */
+  type _PossibleSubtypesContext<DocumentName extends Document.Type> =
+    GetKey<Document.MetadataFor<DocumentName>, "hasTypeData"> extends true
+      ? {
+          /** @deprecated This Document type does not support subtypes */
+          types?: never;
+        }
+      : NullishProps<{
+          /**
+           * A restriction the selectable sub-types of the Dialog.
+           * @remarks Only checked if the document has `static TYPES` of length \> 1 (i.e it both `hasTypeData` and has
+           * at least one non-`"base"` type registered). The computed list will always exclude {@link CONST.BASE_DOCUMENT_TYPE | `CONST.BASE_DOCUMENT_TYPE`},
+           * so it is disallowed in this whitelist.
+           */
+          types: Exclude<Document.SubTypesOf<DocumentName>, "base">[];
+        }>;
 
-    /** A restriction the selectable sub-types of the Dialog. */
-    types?: SubType[] | null | undefined;
-  } & ParentContext<Parent>;
+  type CreateDialogContext<
+    DocumentName extends Document.Type,
+    Parent extends Document.Any | null,
+  > = InexactPartial<Dialog.Options> &
+    NullishProps<{
+      /**
+       * A compendium pack within which the Document should be created
+       * @remarks Only checked if `parent` is falsey, and only used to generate the list of folders for the dialog
+       */
+      pack: string;
+    }> &
+    _PossibleSubtypesContext<DocumentName> &
+    ParentContext<Parent>;
 
   interface FromImportContext<Parent extends Document.Any | null> extends Omit<ConstructionContext<Parent>, "strict"> {
     /**

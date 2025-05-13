@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
 import type Sound from "../../../client-esm/audio/sound.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -459,7 +459,10 @@ declare global {
       }>,
     ): HTMLAnchorElement;
 
-    _onClickDocumentLink(event: MouseEvent): ReturnType<Playlist.Implementation["stopSound" | "playSound"]>;
+    /**
+     * @remarks Returns {@link Playlist.stopSound | `this.parent.stopSound()`} or {@link Playlist.playSound | `this.parent.playSound()`}
+     */
+    override _onClickDocumentLink(event: MouseEvent): Promise<Playlist.Implementation | undefined>;
 
     //_onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
     // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
@@ -503,23 +506,26 @@ declare global {
 
     // Descendant Document operations have been left out because PlaylistSound does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<PlaylistSound.Parent>>,
+      context?: Document.DefaultNameContext<"PlaylistSound", NonNullable<PlaylistSound.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<PlaylistSound.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<PlaylistSound.Parent>>,
+      data: Document.CreateDialogData<PlaylistSound.CreateData> | undefined,
+      context: Document.CreateDialogContext<"PlaylistSound", NonNullable<PlaylistSound.Parent>>,
     ): Promise<PlaylistSound.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<PlaylistSound.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<PlaylistSound.Implementation | undefined>;
 
     static override fromImport(
       source: PlaylistSound.Source,
-      context?: Document.FromImportContext<PlaylistSound.Parent>,
+      context?: Document.FromImportContext<PlaylistSound.Parent> | null,
     ): Promise<PlaylistSound.Implementation>;
 
     // Embedded document operations have been left out because PlaylistSound does not have any embedded documents.

@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type { DatabaseGetOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -376,6 +376,25 @@ declare global {
      * @deprecated {@link FogExploration.Implementation | `FogExploration.Implementation`}
      */
     type ConfiguredInstance = Implementation;
+
+    /** @internal */
+    type _LoadQuery = NullishProps<{
+      /**
+       * A certain Scene ID
+       * @defaultValue `canvas.scene`
+       */
+      scene: string;
+
+      /**
+       * A certain User ID
+       * @defaultValue `game.user`
+       */
+      user: string;
+    }>;
+    interface LoadQuery extends _LoadQuery {}
+
+    /** @remarks {@link FogExploration.load | `#load`} takes the `query` property separately as its first argument, then merges later*/
+    interface LoadOptions extends Omit<IntentionalPartial<DatabaseGetOperation>, "query"> {}
   }
 
   /**
@@ -396,12 +415,7 @@ declare global {
      * @returns
      */
     static load(
-      query?: InexactPartial<{
-        /** A certain Scene ID **/
-        scene: string;
-        /** A certain User ID **/
-        user: string;
-      }>,
+      query?: FogExploration.LoadQuery,
       options?: InexactPartial<DatabaseGetOperation>,
     ): Promise<FogExploration.Implementation | null>;
 
@@ -426,34 +440,41 @@ declare global {
 
     // Descendant Document operations have been left out because FogExploration does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<string, FogExploration.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"FogExploration", FogExploration.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: FogExploration.CreateData,
-      context?: Document.CreateDialogContext<string, FogExploration.Parent>,
+      context?: Document.CreateDialogContext<"FogExploration", FogExploration.Parent>,
     ): Promise<FogExploration.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<FogExploration.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<FogExploration.Implementation | undefined>;
 
     static override fromImport(
       source: FogExploration.Source,
-      context?: Document.FromImportContext<FogExploration.Parent>,
+      context?: Document.FromImportContext<FogExploration.Parent> | null,
     ): Promise<FogExploration.Implementation>;
 
-    /**
-     * @remarks If the first argument is an object, logs a compatibility warning:
-     *
-     * "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War exploration data, an operation which has been renamed to {@link FogExploration.load | `FogExploration.load`}"
-     *
-     * Then forwards `...args` to `this.load`. Otherwise, forwards to {@link Document.get | `Document.get`}.
-     */
     static override get(
       documentId: string,
       options?: FogExploration.Database.GetOptions,
-    ): Promise<FogExploration.Implementation | null> | FogExploration.Implementation | null;
+    ): FogExploration.Implementation | null;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War exploration data, an operation which has been renamed to {@link FogExploration.load | `FogExploration.load`}"
+     */
+    static override get(
+      query: FogExploration.LoadQuery,
+      options: FogExploration.LoadOptions,
+    ): Promise<FogExploration.Implementation | null>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 
   namespace FogExploration {

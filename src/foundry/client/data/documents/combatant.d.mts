@@ -1,5 +1,5 @@
 import type { ConfiguredCombatant } from "../../../../configuration/index.d.mts";
-import type { Merge, ValueOf } from "fvtt-types/utils";
+import type { AnyObject, Merge, ValueOf } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -577,23 +577,28 @@ declare global {
 
     // Descendant Document operations have been left out because Combatant does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<Combatant.SubType, NonNullable<Combatant.Parent>>,
+      context?: Document.DefaultNameContext<"Combatant", NonNullable<Combatant.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<Combatant.CreateData>,
-      context: Document.CreateDialogContext<Combatant.SubType, NonNullable<Combatant.Parent>>,
+      data: Document.CreateDialogData<Combatant.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Combatant", NonNullable<Combatant.Parent>>,
     ): Promise<Combatant.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Combatant.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Combatant.Implementation | undefined>;
 
     static override fromImport(
       source: Combatant.Source,
-      context?: Document.FromImportContext<Combatant.Parent>,
+      context?: Document.FromImportContext<Combatant.Parent> | null,
     ): Promise<Combatant.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

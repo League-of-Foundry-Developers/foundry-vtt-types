@@ -76,9 +76,7 @@ declare abstract class BaseActorDelta<
 
   /** @remarks Strips optional (`required: false`) fields from the object before returning */
   // TODO: Properly type this override
-  override toObject<Source extends boolean | null | undefined = true>(
-    source?: Source,
-  ): DataModel.ToObject<ActorDelta.Schema, Source>;
+  override toObject(source?: boolean | null): SchemaField.SourceData<ActorDelta.Schema>;
 
   /*
    * After this point these are not really overridden methods.

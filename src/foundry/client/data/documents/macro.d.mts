@@ -1,5 +1,5 @@
 import type { ConfiguredMacro } from "../../../../configuration/index.d.mts";
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -554,7 +554,8 @@ declare global {
 
     #executeScript();
 
-    _onClickDocumentLink(event: MouseEvent): ReturnType<this["execute"]>;
+    /** @remarks Returns `this.execute({event})` */
+    override _onClickDocumentLink(event: MouseEvent): Macro.ExecuteReturn<SubType>;
 
     /*
      * After this point these are not really overridden methods.
@@ -570,21 +571,24 @@ declare global {
 
     // Descendant Document operations have been left out because Macro does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<Macro.SubType, Macro.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Macro", Macro.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Macro.CreateData,
-      context?: Document.CreateDialogContext<Macro.SubType, Macro.Parent>,
+      context?: Document.CreateDialogContext<"Macro", Macro.Parent>,
     ): Promise<Macro.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Macro.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Macro.Implementation | undefined>;
 
     static override fromImport(
       source: Macro.Source,
-      context?: Document.FromImportContext<Macro.Parent>,
+      context?: Document.FromImportContext<Macro.Parent> | null,
     ): Promise<Macro.Implementation>;
   }
 }
