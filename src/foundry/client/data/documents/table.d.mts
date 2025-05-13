@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -780,7 +780,8 @@ declare global {
      */
     protected override _onDeleteDescendantDocuments(...args: RollTable.OnDeleteDescendantDocumentsArgs): void;
 
-    toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
+    // options: not null (parameter default only, destructured in super)
+    override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
       options?: Options,
     ): ClientDocument.ToCompendiumReturnType<foundry.documents.BaseRollTable, Options>;
@@ -879,22 +880,27 @@ declare global {
      */
     protected override _preDeleteDescendantDocuments(...args: RollTable.PreDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<string, RollTable.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"RollTable", RollTable.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<RollTable.CreateData>,
-      context?: Document.CreateDialogContext<string, RollTable.Parent>,
+      context?: Document.CreateDialogContext<"RollTable", RollTable.Parent>,
     ): Promise<RollTable.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<RollTable.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<RollTable.Implementation | undefined>;
 
     static override fromImport(
       source: RollTable.Source,
-      context?: Document.FromImportContext<RollTable.Parent>,
+      context?: Document.FromImportContext<RollTable.Parent> | null,
     ): Promise<RollTable.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 
   /**

@@ -1307,24 +1307,29 @@ declare global {
 
     // ClientDocument overrides
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<TokenDocument.Parent>>,
+      context?: Document.DefaultNameContext<"Token", NonNullable<TokenDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<TokenDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<TokenDocument.Parent>>,
+      data: Document.CreateDialogData<TokenDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Token", NonNullable<TokenDocument.Parent>>,
     ): Promise<TokenDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<TokenDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<TokenDocument.Implementation | undefined>;
 
     static override fromImport(
       source: TokenDocument.Source,
-      context?: Document.FromImportContext<TokenDocument.Parent>,
+      context?: Document.FromImportContext<TokenDocument.Parent> | null,
     ): Promise<TokenDocument.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // TODO: The deprecated Embedded Document Operations
   }

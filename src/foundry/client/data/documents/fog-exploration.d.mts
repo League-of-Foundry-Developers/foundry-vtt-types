@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "fvtt-types/utils";
+import type { AnyObject, Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type { DatabaseGetOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -440,21 +440,24 @@ declare global {
 
     // Descendant Document operations have been left out because FogExploration does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<string, FogExploration.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"FogExploration", FogExploration.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: FogExploration.CreateData,
-      context?: Document.CreateDialogContext<string, FogExploration.Parent>,
+      context?: Document.CreateDialogContext<"FogExploration", FogExploration.Parent>,
     ): Promise<FogExploration.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<FogExploration.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<FogExploration.Implementation | undefined>;
 
     static override fromImport(
       source: FogExploration.Source,
-      context?: Document.FromImportContext<FogExploration.Parent>,
+      context?: Document.FromImportContext<FogExploration.Parent> | null,
     ): Promise<FogExploration.Implementation>;
 
     static override get(
@@ -470,6 +473,8 @@ declare global {
       query: FogExploration.LoadQuery,
       options: FogExploration.LoadOptions,
     ): Promise<FogExploration.Implementation | null>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 
   namespace FogExploration {

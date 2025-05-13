@@ -1,5 +1,5 @@
 import type { ConfiguredFolder } from "../../../../configuration/index.d.mts";
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -427,6 +427,16 @@ declare global {
     type DocumentClass<SubType extends Folder.SubType> = Document.ImplementationClassFor<
       Extract<SubType, Document.Type>
     >;
+
+    /**
+     * @remarks Rather than a simple `Dialog`, {@link Folder.createDialog | `Folder.createDialog`} creates a {@link FolderConfig | `FolderConfig`},
+     * passing along the returned `Promise`'s `resolve` to the app.
+     */
+    // TODO (v13): `options.document` is also force set
+    interface CreateDialogOptions extends InexactPartial<Omit<FolderConfig.Options, "resolve">> {
+      /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
+      resolve?: never;
+    }
   }
 
   /**
@@ -498,9 +508,11 @@ declare global {
     // _preCreate overridden but with no signature changes.
     // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
+    /** @remarks Creates and renders a {@link FolderConfig | `FolderConfig`} instead of a simple Dialog */
+    // data, options: not null (parameter defaults only)
     static override createDialog(
       data?: Document.CreateDialogData<Folder.CreateData>,
-      context?: InexactPartial<Omit<FolderConfig.Options, "resolve">>,
+      context?: Folder.CreateDialogOptions,
     ): Promise<Folder.Stored | null | undefined>;
 
     /**
@@ -556,16 +568,20 @@ declare global {
 
     // Descendant Document operations have been left out because Folder does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<Folder.SubType, Folder.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Folder", Folder.Parent>): string;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Folder.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Folder.Implementation | undefined>;
 
     static override fromImport(
       source: Folder.Source,
-      context?: Document.FromImportContext<Folder.Parent>,
+      context?: Document.FromImportContext<Folder.Parent> | null,
     ): Promise<Folder.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

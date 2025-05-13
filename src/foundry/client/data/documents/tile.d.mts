@@ -1,4 +1,4 @@
-import type { InterfaceToObject, Merge } from "../../../../utils/index.d.mts";
+import type { AnyObject, InterfaceToObject, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields, TextureData } from "../../../common/data/module.d.mts";
@@ -495,22 +495,28 @@ declare global {
 
     // Descendant Document operations have been left out because Tile does not have any descendant documents.
 
-    static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<TileDocument.Parent>>): string;
+    static override defaultName(
+      context?: Document.DefaultNameContext<"Tile", NonNullable<TileDocument.Parent>>,
+    ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<TileDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<TileDocument.Parent>>,
+      data: Document.CreateDialogData<TileDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Tile", NonNullable<TileDocument.Parent>>,
     ): Promise<TileDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<TileDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<TileDocument.Implementation | undefined>;
 
     static override fromImport(
       source: TileDocument.Source,
-      context?: Document.FromImportContext<TileDocument.Parent>,
+      context?: Document.FromImportContext<TileDocument.Parent> | null,
     ): Promise<TileDocument.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // Embedded document operations have been left out because Tile does not have any embedded documents.
   }

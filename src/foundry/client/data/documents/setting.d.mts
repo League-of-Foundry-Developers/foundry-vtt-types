@@ -1,4 +1,4 @@
-import type { Merge } from "../../../../utils/index.d.mts";
+import type { AnyObject, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -409,25 +409,30 @@ declare global {
 
     // Descendant Document operations have been left out because Setting does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<string, Setting.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Setting", Setting.Parent>): string;
 
     /**
      * @throws Foundry tries to figure out the folders for the world collection and errors out
      */
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Setting.CreateData,
-      context?: Document.CreateDialogContext<string, Setting.Parent>,
+      context?: Document.CreateDialogContext<"Setting", Setting.Parent>,
     ): never;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Setting.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Setting.Implementation | undefined>;
 
     static override fromImport(
       source: Setting.Source,
-      context?: Document.FromImportContext<Setting.Parent>,
+      context?: Document.FromImportContext<Setting.Parent> | null,
     ): Promise<Setting.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // Embedded document operations have been left out because Setting does not have any embedded documents.
   }

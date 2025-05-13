@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
 import type { BaseShapeData, fields } from "../../../common/data/module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -762,23 +762,28 @@ declare global {
      */
     protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs): void;
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<RegionDocument.Parent>>,
+      context?: Document.DefaultNameContext<"Region", NonNullable<RegionDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<RegionDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<RegionDocument.Parent>>,
+      data: Document.CreateDialogData<RegionDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Region", NonNullable<RegionDocument.Parent>>,
     ): Promise<RegionDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<RegionDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<RegionDocument.Implementation | undefined>;
 
     static override fromImport(
       source: RegionDocument.Source,
-      context?: Document.FromImportContext<RegionDocument.Parent>,
+      context?: Document.FromImportContext<RegionDocument.Parent> | null,
     ): Promise<RegionDocument.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

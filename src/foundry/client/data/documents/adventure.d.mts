@@ -1,4 +1,4 @@
-import type { FolderDocumentTypes, InexactPartial, FixedInstanceType, Merge } from "fvtt-types/utils";
+import type { AnyObject, FolderDocumentTypes, InexactPartial, FixedInstanceType, Merge } from "fvtt-types/utils";
 import type { fields } from "../../../common/data/module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -501,22 +501,27 @@ declare global {
 
     // Descendant Document operations have been left out because Adventure does not have any descendant documents.
 
-    static override defaultName(context: Document.DefaultNameContext<"base", Adventure.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Adventure", Adventure.Parent>): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<Adventure.CreateData>,
-      context: Document.CreateDialogContext<string, Adventure.Parent>,
+      data: Document.CreateDialogData<Adventure.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Adventure", Adventure.Parent>,
     ): Promise<Adventure.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Adventure.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Adventure.Implementation | undefined>;
 
     static override fromImport(
       source: Adventure.Source,
-      context?: Document.FromImportContext<Adventure.Parent>,
+      context?: Document.FromImportContext<Adventure.Parent> | null,
     ): Promise<Adventure.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 
   /** @deprecated {@link Adventure.ImportData | `Adventure.ImportData`} */

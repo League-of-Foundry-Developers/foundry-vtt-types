@@ -1,5 +1,5 @@
 import type { ConfiguredTableResult } from "../../../../configuration/index.d.mts";
-import type { Merge } from "../../../../utils/index.d.mts";
+import type { AnyObject, Merge } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -479,24 +479,29 @@ declare global {
 
     // Descendant Document operations have been left out because TableResult does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<TableResult.SubType, NonNullable<TableResult.Parent>>,
+      context?: Document.DefaultNameContext<"TableResult", NonNullable<TableResult.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<TableResult.CreateData>,
-      context: Document.CreateDialogContext<TableResult.SubType, NonNullable<TableResult.Parent>>,
+      data: Document.CreateDialogData<TableResult.CreateData> | undefined,
+      context: Document.CreateDialogContext<"TableResult", NonNullable<TableResult.Parent>>,
     ): Promise<TableResult.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<TableResult.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<TableResult.Implementation | undefined>;
 
     static override fromImport(
       source: TableResult.Source,
-      context?: Document.FromImportContext<TableResult.Parent>,
+      context?: Document.FromImportContext<TableResult.Parent> | null,
     ): Promise<TableResult.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // Embedded document operations have been left out because TableResult does not have any embedded documents.
   }

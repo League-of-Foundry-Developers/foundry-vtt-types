@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -931,7 +931,8 @@ declare global {
      */
     getDimensions(): Scene.Dimensions;
 
-    override _onClickDocumentLink(event: MouseEvent): unknown;
+    /** @remarks If the scene has a `journal`, forwards to that journal's `#_onClickDocumentLink` */
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // _onCreate, _preUpdate, _onUpdate, _preDelete, and _onDelete are all overridden but with no signature changes.
     // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
@@ -1019,7 +1020,8 @@ declare global {
      */
     protected override _preDeleteDescendantDocuments(...args: Scene.PreDeleteDescendantDocumentsArgs): void;
 
-    toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
+    // options: not null (parameter default only, destructured in super)
+    override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
       options?: Options,
     ): ClientDocument.ToCompendiumReturnType<foundry.documents.BaseScene, Options>;
@@ -1081,21 +1083,24 @@ declare global {
      */
     protected override _onDeleteDescendantDocuments(...args: Scene.OnDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<string, Scene.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Scene", Scene.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<Scene.CreateData>,
-      context?: Document.CreateDialogContext<string, Scene.Parent>,
+      context?: Document.CreateDialogContext<"Scene", Scene.Parent>,
     ): Promise<Scene.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Scene.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Scene.Implementation | undefined>;
 
     static override fromImport(
       source: Scene.Source,
-      context?: Document.FromImportContext<Scene.Parent>,
+      context?: Document.FromImportContext<Scene.Parent> | null,
     ): Promise<Scene.Implementation>;
   }
 

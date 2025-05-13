@@ -1,10 +1,19 @@
-import type { Mixin, FixedInstanceType, Coalesce, AnyObject } from "fvtt-types/utils";
+import type {
+  Mixin,
+  FixedInstanceType,
+  Coalesce,
+  AnyObject,
+  NullishProps,
+  MaybePromise,
+  InexactPartial,
+  NullishCoalesce,
+} from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 
 declare class InternalClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
-  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /**
@@ -13,14 +22,18 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Application in this object will have its render method called by {@link Document.render | `Document#render`}.
    * @see {@link Document.render | `Document#render`}
    * @defaultValue `{}`
+   * @remarks Created during construction via `defineProperty`, with options `{value: {}, writable: false, enumerable: false}`
    */
   readonly apps: Record<string, Application.Any | ApplicationV2.Any>;
 
   /**
    * A cached reference to the FormApplication instance used to configure this Document.
    * @defaultValue `null`
+   * @remarks Created during construction via `defineProperty`, with options `{value: null, writable: true, enumerable: false}`
+   *
+   * Foundry marked `@private`
    */
-  protected readonly _sheet: FixedInstanceType<
+  protected _sheet: FixedInstanceType<
     Document.ConfiguredSheetClassFor<Document.Internal.DocumentNameFor<BaseDocument>>
   > | null;
 
@@ -28,6 +41,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
 
   /**
    * @see {@link abstract.Document._initialize | `abstract.Document#_initialize`}
+   * @remarks ClientDocument override calls `super`, then if `game._documentsReady`, calls {@link InternalClientDocument._safePrepareData | `this._safePrepareData`}
    */
   // options: not null (parameter default only)
   protected _initialize(options?: Document.InitializeOptions): void;
@@ -147,20 +161,30 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Construct a UUID relative to another document.
    * @param doc - The document to compare against.
    */
-  getRelativeUuid(relative: ClientDocument): string;
+  getRelativeUUID(relative: ClientDocument): string;
 
   /**
    * Create a content link for this document
    * @param eventData - The parsed object of data provided by the drop transfer event.
    * @param options   - Additional options to configure link generation.
+   * @remarks Core's implementation doesn't use `eventData` here, but when it's passed in it's the return from
+   * {@link TextEditor.getDragEventData | `TextEditor.getDragEventData(someDragEvent)`}
    */
-  protected _createDocumentLink(eventData: unknown, options?: ClientDocument.CreateDocumentLinkOptions): string;
+  // options: not null (destructured)
+  _createDocumentLink(eventData?: AnyObject | null, options?: ClientDocument.CreateDocumentLinkOptions): string;
 
   /**
    * Handle clicking on a content link for this document.
    * @param event - The triggering click event.
+   * @remarks
+   * In `ClientDocument`, returns `this.sheet.render(true)`:
+   * - AppV1: returns that sheet
+   * - AppV2: returns a Promise of that sheet
+   *
+   * However it unfortunately has to be typed as `MaybePromise<unknown>` due to the {@link Macro._onClickDocumentLink | `Macro`} override,
+   * where `##executeScript` could return whatever a user-provided macro wants.
    */
-  _onClickDocumentLink(event: MouseEvent): unknown;
+  _onClickDocumentLink(event: MouseEvent): MaybePromise<unknown>;
 
   // _preCreate, _preUpdate, and _preDelete are all overridden with no signature changes,
   // just to call `this.system._preX` if `super` doesn't return `false`
@@ -176,6 +200,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param _parent    - The document with directly modified embedded documents.
    *                     Either this document or a descendant of this one.
    * @internal
+   * @remarks This has not been typed per-document as there does not appear to be a reason for users to ever extend or call this method.
+   * If you have a use case for this, please file an issue.
    */
   protected _dispatchDescendantDocumentEvents(
     event: ClientDocument.LifeCycleEventName,
@@ -290,24 +316,27 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Whenever the Document's sheet changes, close any existing applications for this Document, and re-render the new
    * sheet if one was already open.
    */
+  // options: not null (destructured)
   protected _onSheetChange(options?: ClientDocument.OnSheetChangeOptions): Promise<void>;
 
   /**
    * Gets the default new name for a Document
    * @param context - The context for which to create the Document name.
    */
-  static defaultName(context: Document.DefaultNameContext<never, never>): string;
+  // context: not null (destructured)
+  static defaultName(context?: Document.DefaultNameContext<never, never>): string;
 
   /**
    * Present a Dialog form to create a new Document of this type.
    * Choose a name and a type from a select menu of types.
-   * @param data    - Initial data with which to populate the creation form
-   *                  (default: `{}`)
-   * @param context - Additional context options or dialog positioning options
-   *                  (default: `{}`)
-   * @returns A Promise which resolves to the created Document, or null if the dialog was
-   *          closed.
+   * @param data    - Initial data with which to populate the creation form    (default: `{}`)
+   * @param context - Additional context options or dialog positioning options (default: `{}`)
+   * @returns A Promise which resolves to the created Document, or null if the dialog was closed.
+   * @throws If the document has
+   * @privateRemarks `| undefined` is included in the return types of the specific document overrides due to {@link Document.create | `Document.create`}
+   * possibly being `undefined` if creation is cancelled by preCreate methods or hooks
    */
+  // data: not null (parameter default only), option: not null (destructured)
   static createDialog(data: never, context: never): Promise<unknown>;
 
   /**
@@ -316,12 +345,14 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    *                  (default: `{}`)
    * @returns A Promise which resolves to the deleted Document
    */
-  deleteDialog(options?: Partial<Dialog.Options>): Promise<this | false | null | undefined>;
+  // options: not null (parameter default only)
+  deleteDialog(options?: InexactPartial<Dialog.Options>): Promise<this | false | null | undefined>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
    * @param options - Additional options passed to the {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`} method
    */
+  // options: not null (destructured where forwarded)
   exportToJSON(options?: ClientDocument.ToCompendiumOptions): void;
 
   /**
@@ -339,8 +370,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param options - Additional options which affect drop data behavior
    * @returns The resolved Document
    * @throws If a Document could not be retrieved from the provided data.
+   * @remarks Core's implementation in `ClientDocument` does not use `options` at all, no call passes any `options`
+   * anywhere in Foundry, and the JSDoc types it as simply `object`, so it cannot be typed more exactly than this.
    */
-  static fromDropData(data: Document.DropData<never>, options?: Document.FromDropDataOptions): Promise<unknown>;
+  // options: not null (parameter default only)
+  static fromDropData(data: Document.DropData<never>, options?: AnyObject): Promise<unknown>;
 
   /**
    * Create the Document from the given source with migration applied to it.
@@ -359,6 +393,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param context - The model construction context passed to {@link Document.fromSource | `Document.fromSource`}.
    *                  (default: `context.strict=true`) Strict validation is enabled by default.
    */
+  // context: allowed to be null because spreading a variable with the value `null` into an object is allowed
   static fromImport(source: never, context?: never): Promise<unknown>;
 
   /**
@@ -381,7 +416,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    *                  (default: `{}`)
    * @returns A data object of cleaned data suitable for compendium import
    */
-  toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
+  // options: not null (destructured)
+  toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
     options?: Options,
   ): ClientDocument.ToCompendiumReturnType<BaseDocument, Options>;
@@ -390,6 +426,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * Create a content link for this Document.
    * @param options - Additional options to configure how the link is constructed.
    */
+  // options: not null (parameter default only)
   toAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
   /**
@@ -398,6 +435,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
    * @returns A representation of the Document as HTML content, or null if such a representation could not be generated.
    */
+  // options: not null (parameter default only)
   toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
@@ -572,7 +610,7 @@ declare global {
        * Additional data changes which are applied to each sorted document
        * @defaultValue `{}`
        */
-      updateData?: any;
+      updateData?: AnyObject;
     }
 
     // TODO: This may be better defined elsewhere
@@ -581,86 +619,107 @@ declare global {
     // Note(LukeAbby): If the property could be omitted it is. This is the safest option because in indeterminate cases access would be unsafe.
     // In the future the indeterminate case could turn the property optional but that isn't done today because that's annoying to do for little benefit.
     /** @internal */
-    type _OmitProperty<Omit extends boolean | undefined, Default extends boolean, ToOmit extends string> = Omit extends
-      | true
-      | (Default extends true ? undefined : never)
-      ? ToOmit
-      : never;
+    type _OmitProperty<
+      Omit extends boolean | null | undefined,
+      Default extends boolean,
+      ToOmit extends string,
+    > = Omit extends true | (Default extends true ? undefined : never) ? ToOmit : never;
 
-    interface ToCompendiumOptions {
+    /** @internal */
+    type _ToCompendiumOptions = NullishProps<{
       /**
        * Clear the flags object
        * @defaultValue `false`
        */
-      clearFlags?: boolean | undefined;
+      clearFlags: boolean;
 
       /**
        * Clear any prior source information
        * @defaultValue `true`
+       * @remarks Deletes `_stats.compendiumSource` and `_stats.duplicateSource`, won't delete legacy source flags
        */
-      clearSource?: boolean | undefined;
+      clearSource: boolean;
 
       /**
        * Clear the currently assigned folder and sort order
        * @defaultValue `true`
        */
-      clearSort?: boolean | undefined;
+      clearSort: boolean;
 
       /**
        * Clear the currently assigned folder
        * @defaultValue `false`
        */
-      clearFolder?: boolean | undefined;
+      clearFolder: boolean;
 
       /**
        * Clear document ownership
        * @defaultValue `true`
        */
-      clearOwnership?: boolean | undefined;
+      clearOwnership: boolean;
 
       /**
        * Clear fields which store document state
        * @defaultValue `true`
        */
-      clearState?: boolean | undefined;
+      clearState: boolean;
 
       /**
        * Retain the current Document id
        * @defaultValue `false`
        */
-      keepId?: boolean | undefined;
-    }
+      keepId: boolean;
+    }>;
 
-    interface CreateDocumentLinkOptions {
+    interface ToCompendiumOptions extends _ToCompendiumOptions {}
+
+    /** @internal */
+    type _CreateDocumentLinkOptions = NullishProps<{
       /**
        * A document to generate a link relative to.
+       * @remarks Ignored if falsey
        */
-      relativeTo?: ClientDocument | undefined;
+      relativeTo: ClientDocument;
 
       /**
        * A custom label to use instead of the document's name.
+       * @defaultValue `this.name`
        */
-      label?: string | undefined;
-    }
+      label: string;
+    }>;
+
+    interface CreateDocumentLinkOptions extends _CreateDocumentLinkOptions {}
+
+    type OnClickDocumentLinkReturn = FormApplication.Any | Promise<ApplicationV2.Any>;
 
     type ToCompendiumReturnType<
       BaseDocument extends Document.Internal.Instance.Any,
+      Options extends ToCompendiumOptions | undefined,
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    > = _ToCompendiumReturnType<BaseDocument, Coalesce<Options, {}>>;
+
+    type _ToCompendiumReturnType<
+      BaseDocument extends Document.Internal.Instance.Any,
       Options extends ToCompendiumOptions,
-    > = _ToCompendiumReturnType<
-      Options["clearSource"],
-      Omit<
-        Document.Internal.Instance.Complete<BaseDocument>["_source"],
-        | ClientDocument._OmitProperty<Options["clearFlags"], false, "flags">
-        | ClientDocument._OmitProperty<Options["clearSort"], true, "sort" | "navigation" | "navOrder"> // helping out Scene
-        | ClientDocument._OmitProperty<Options["clearFolder"], true, "folder">
-        | ClientDocument._OmitProperty<Options["clearOwnership"], true, "ownership">
-        | ClientDocument._OmitProperty<Options["clearState"], true, "active" | "fogReset" | "playing"> // helping out Playlist, Scene
-        | (Options["keepId"] extends true ? never : "_id")
+    > = _ClearFog<
+      Options["clearState"],
+      _ClearStats<
+        Options["clearSource"],
+        Omit<
+          Document.Internal.Instance.Complete<BaseDocument>["_source"],
+          | ClientDocument._OmitProperty<Options["clearFlags"], false, "flags">
+          | ClientDocument._OmitProperty<Options["clearSort"], true, "sort" | "navigation" | "navOrder"> // helping out Scene
+          | ClientDocument._OmitProperty<Options["clearFolder"], true, "folder">
+          | ClientDocument._OmitProperty<Options["clearOwnership"], true, "ownership">
+          | ClientDocument._OmitProperty<Options["clearState"], true, "active" | "playing"> // helping out Playlist, Scene
+          | (Options["keepId"] extends true ? never : "_id")
+        >
       >
     >;
 
-    type _ToCompendiumReturnType<ClearSource extends boolean | undefined, SourceData extends object> = [
-      Coalesce<ClearSource, true>,
+    /** @internal */
+    type _ClearStats<ClearSource extends boolean | null | undefined, SourceData extends object> = [
+      NullishCoalesce<ClearSource, true>,
     ] extends [true]
       ? {
           [K in keyof SourceData]: "_stats" extends K
@@ -669,11 +728,21 @@ declare global {
         }
       : SourceData;
 
-    interface OnSheetChangeOptions {
-      /**
-       * Whether the sheet was originally open and needs to be re-opened.
-       */
-      sheetOpen?: boolean | undefined;
-    }
+    /** @internal */
+    type _ClearFog<ClearState extends boolean | null | undefined, SourceData extends object> = [
+      NullishCoalesce<ClearState, true>,
+    ] extends [true]
+      ? {
+          [K in keyof SourceData]: "fog" extends K ? Omit<SourceData[K], "reset"> : never;
+        }
+      : SourceData;
+
+    /** @internal */
+    type _OnSheetChangeOptions = NullishProps<{
+      /** Whether the sheet was originally open and needs to be re-opened. */
+      sheetOpen: boolean;
+    }>;
+
+    interface OnSheetChangeOptions extends _OnSheetChangeOptions {}
   }
 }

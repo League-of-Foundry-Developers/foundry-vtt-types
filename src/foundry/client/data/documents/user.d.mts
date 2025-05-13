@@ -608,22 +608,27 @@ declare global {
 
     // Descendant Document operations have been left out because User does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<string, User.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"User", User.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<User.CreateData>,
-      context?: Document.CreateDialogContext<string, User.Parent>,
+      context?: Document.CreateDialogContext<"User", User.Parent>,
     ): Promise<User.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<User.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<User.Implementation | undefined>;
 
     static override fromImport(
       source: User.Source,
-      context?: Document.FromImportContext<User.Parent>,
+      context?: Document.FromImportContext<User.Parent> | null,
     ): Promise<User.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // Embedded document operations have been left out because User does not have any embedded documents.
   }
