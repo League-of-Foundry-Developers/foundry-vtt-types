@@ -504,7 +504,7 @@ declare global {
     // context: not null (destructured)
     static override defaultName(context?: Document.DefaultNameContext<"Adventure", Adventure.Parent>): string;
 
-    /** @remarks `context.parent` is required as construction requires one */
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
       data: Document.CreateDialogData<Adventure.CreateData> | undefined,
       context: Document.CreateDialogContext<"Adventure", Adventure.Parent>,

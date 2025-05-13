@@ -871,11 +871,7 @@ declare global {
 
     override deleteDialog(options?: Partial<Dialog.Options>): Promise<this | false | null | undefined>;
 
-    /**
-     * @remarks Actual override, not just Document template typing.
-     *
-     * Despite that, the typing follows the template, it just creates a fancier `Dialog` than `super`
-     */
+    /** @remarks No type changes, just creates a fancier `Dialog` than `super` */
     // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<Cards.CreateData>,

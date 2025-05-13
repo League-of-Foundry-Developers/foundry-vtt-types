@@ -936,7 +936,7 @@ declare global {
       context?: Document.DefaultNameContext<"ActiveEffect", NonNullable<ActiveEffect.Parent>>,
     ): string;
 
-    /** @remarks `context.parent` is required as construction requires one */
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
       data: Document.CreateDialogData<ActiveEffect.CreateData> | undefined,
       context: Document.CreateDialogContext<"ActiveEffect", NonNullable<ActiveEffect.Parent>>,

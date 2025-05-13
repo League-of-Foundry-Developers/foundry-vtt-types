@@ -767,7 +767,7 @@ declare global {
       context?: Document.DefaultNameContext<"Region", NonNullable<RegionDocument.Parent>>,
     ): string;
 
-    /** @remarks `context.parent` is required as construction requires one */
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
       data: Document.CreateDialogData<RegionDocument.CreateData> | undefined,
       context: Document.CreateDialogContext<"Region", NonNullable<RegionDocument.Parent>>,

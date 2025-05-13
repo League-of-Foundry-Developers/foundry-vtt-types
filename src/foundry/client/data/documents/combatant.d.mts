@@ -582,7 +582,7 @@ declare global {
       context?: Document.DefaultNameContext<"Combatant", NonNullable<Combatant.Parent>>,
     ): string;
 
-    /** @remarks `context.parent` is required as construction requires one */
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
       data: Document.CreateDialogData<Combatant.CreateData> | undefined,
       context: Document.CreateDialogContext<"Combatant", NonNullable<Combatant.Parent>>,

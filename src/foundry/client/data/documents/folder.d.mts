@@ -508,11 +508,7 @@ declare global {
     // _preCreate overridden but with no signature changes.
     // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
-    /**
-     * @remarks Real override, not just Document template typing
-     *
-     * Creates and renders a {@link FolderConfig | `FolderConfig`} instead of a simple Dialog
-     */
+    /** @remarks Creates and renders a {@link FolderConfig | `FolderConfig`} instead of a simple Dialog */
     // data, options: not null (parameter defaults only)
     static override createDialog(
       data?: Document.CreateDialogData<Folder.CreateData>,

@@ -544,7 +544,7 @@ declare global {
       context?: Document.DefaultNameContext<"Drawing", NonNullable<DrawingDocument.Parent>>,
     ): string;
 
-    /** @remarks `context.parent` is required as construction requires one */
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
       data: Document.CreateDialogData<DrawingDocument.CreateData> | undefined,
       context: Document.CreateDialogContext<"Drawing", NonNullable<DrawingDocument.Parent>>,

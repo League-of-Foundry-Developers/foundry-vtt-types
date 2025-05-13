@@ -499,7 +499,7 @@ declare global {
       context?: Document.DefaultNameContext<"Tile", NonNullable<TileDocument.Parent>>,
     ): string;
 
-    /** @remarks `context.parent` is required as construction requires one */
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
       data: Document.CreateDialogData<TileDocument.CreateData> | undefined,
       context: Document.CreateDialogContext<"Tile", NonNullable<TileDocument.Parent>>,

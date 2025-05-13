@@ -487,7 +487,7 @@ declare global {
       context?: Document.DefaultNameContext<"MeasuredTemplate", NonNullable<MeasuredTemplateDocument.Parent>>,
     ): string;
 
-    /** @remarks `context.parent` is required as construction requires one */
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
       data: Document.CreateDialogData<MeasuredTemplateDocument.CreateData> | undefined,
       context: Document.CreateDialogContext<"MeasuredTemplate", NonNullable<MeasuredTemplateDocument.Parent>>,

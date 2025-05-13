@@ -641,7 +641,7 @@ declare global {
     // context: not null (destructured)
     static override defaultName(context?: Document.DefaultNameContext<"Card", NonNullable<Card.Parent>>): string;
 
-    /** @remarks `context.parent` is required as construction requires one */
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
       data: Document.CreateDialogData<Card.CreateData> | undefined,
       context: Document.CreateDialogContext<"Card", NonNullable<Card.Parent>>,

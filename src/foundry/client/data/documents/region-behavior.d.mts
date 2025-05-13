@@ -470,11 +470,9 @@ declare global {
     protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;
 
     /**
-     * @remarks Actual override, not just Document template typing.
+     * @remarks No type changes, just removes `executeScript` from `options.types` if the user lacks the `MACRO_SCRIPT` permission
      *
-     * No type changes from the template, just removes `executeScript` from `options.types` if the user lacks the `MACRO_SCRIPT` permission
-     *
-     * `context.parent` is required as construction requires one
+     * `context.parent` is required as creation requires one
      */
     static override createDialog(
       data: Document.CreateDialogData<RegionBehavior.CreateData> | undefined,

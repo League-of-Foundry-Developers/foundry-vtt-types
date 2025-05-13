@@ -428,7 +428,7 @@ declare global {
       context?: Document.DefaultNameContext<"AmbientLight", NonNullable<AmbientLightDocument.Parent>>,
     ): string;
 
-    /** @remarks `context.parent` is required as construction requires one */
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
       data: Document.CreateDialogData<AmbientLightDocument.CreateData> | undefined,
       context: Document.CreateDialogContext<"AmbientLight", NonNullable<AmbientLightDocument.Parent>>,

@@ -505,7 +505,7 @@ declare global {
       context?: Document.DefaultNameContext<"Note", NonNullable<NoteDocument.Parent>>,
     ): string;
 
-    /** @remarks `context.parent` is required as construction requires one */
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
       data: Document.CreateDialogData<NoteDocument.CreateData> | undefined,
       context: Document.CreateDialogContext<"Note", NonNullable<NoteDocument.Parent>>,

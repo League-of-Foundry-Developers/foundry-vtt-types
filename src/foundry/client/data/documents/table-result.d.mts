@@ -484,7 +484,7 @@ declare global {
       context?: Document.DefaultNameContext<"TableResult", NonNullable<TableResult.Parent>>,
     ): string;
 
-    /** @remarks `context.parent` is required as construction requires one */
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
       data: Document.CreateDialogData<TableResult.CreateData> | undefined,
       context: Document.CreateDialogContext<"TableResult", NonNullable<TableResult.Parent>>,
