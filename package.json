@@ -4,7 +4,7 @@
   "version": "13.340.0",
   "description": "TypeScript type definitions for Foundry VTT",
   "type": "module",
-  "types": "./index.d.mts",
+  "types": "./src/index.d.mts",
   "exports": {
     ".": {
       "types": "./src/index.d.mts"
