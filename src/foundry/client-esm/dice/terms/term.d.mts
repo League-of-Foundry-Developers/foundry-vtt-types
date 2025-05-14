@@ -21,11 +21,15 @@ declare abstract class RollTerm {
    */
   isIntermediate: boolean;
 
+  /* eslint-disable jsdoc/valid-types */
+
   /**
    * A regular expression pattern which identifies optional term-level flavor text
-   * @defaultValue `(?:\\[([^\\]]+)\\])`
+   * @defaultValue `/(?:\[([^\]]+)\])/`
    */
   static FLAVOR_REGEXP_STRING: string;
+
+  /* eslint-enable jsdoc/valid-types */
 
   /**
    * A regular expression which identifies term-level flavor text

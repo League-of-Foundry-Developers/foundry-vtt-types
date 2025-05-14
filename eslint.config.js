@@ -254,7 +254,7 @@ const rules = [
   eslintConfigPrettier,
   {
     // This is excluded because if it weren't then it would mess with the type checking of the rest of the repo as it loosens the types of many types.
-    ignores: ["src/index-lenient.d.mts", "cvise"],
+    ignores: ["src/index-lenient.d.mts"],
   },
   {
     languageOptions: {
@@ -382,9 +382,6 @@ const rules = [
       "jsdoc/require-param": "off",
       "jsdoc/require-returns": "off",
       "jsdoc/tag-lines": "off",
-
-      // Blocked by https://github.com/gajus/eslint-plugin-jsdoc/issues/1379
-      "jsdoc/valid-types": "off",
 
       "tsdoc/syntax": "warn",
 
