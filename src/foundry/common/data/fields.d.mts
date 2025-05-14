@@ -4774,7 +4774,18 @@ declare namespace TypeDataField {
     SystemDocumentConstructor extends Document.SystemConstructor,
     Opts extends Options<SystemDocumentConstructor>,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-  > = DataField.DerivedAssignmentType<AnyObject, MergedOptions<SystemDocumentConstructor, Opts>>;
+  > = DataField.DerivedAssignmentType<
+    _Schemas<DataModelsFor<SystemDocumentConstructor["metadata"]["name"]>>,
+    MergedOptions<SystemDocumentConstructor, Opts>
+  >;
+
+  /** @internal */
+  type _Schemas<T> = {
+    [K in keyof T]: T[K] extends (abstract new (...args: never) => infer U extends DataModel.Any)
+      ? // eslint-disable-next-line @typescript-eslint/no-deprecated
+        U | SchemaField.AssignmentData<U["schema"]["fields"]>
+      : never;
+  }[keyof T];
 
   /**
    * A shorthand for the initialized type of a TypeDataField class.

@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
 import Document = foundry.abstract.Document;
@@ -51,6 +51,19 @@ expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
 expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
 expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor" | "base" | Document.ModuleSubtype>();
 expectTypeOf(item.getRollData()).toEqualTypeOf<AnyObject>();
+
+// Reported by @n3dst4 on Discord, see https://discord.com/channels/732325252788387980/803646399014109205/1372236409402032231
+test("update regression test", () => {
+  // Note that this call is unsound as it assumes that it's using the correct subtype.
+  //
+  // Eventually this _should_ break and require `item` to have been narrowed to `"weapon"` but for
+  // now it doesn't matter.
+  item.update({
+    system: {
+      attack: 12,
+    },
+  });
+});
 
 // Configured Item Usage
 declare global {
