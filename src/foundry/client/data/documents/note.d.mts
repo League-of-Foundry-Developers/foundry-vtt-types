@@ -466,7 +466,7 @@ declare global {
    * @see {@linkcode Scene}               The Scene document type which contains Note embedded documents
    * @see {@linkcode NoteConfig}          The Note configuration application
    */
-  class NoteDocument extends CanvasDocumentMixin(foundry.documents.BaseNote) {
+  class NoteDocument extends BaseNote.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `NoteDocument`
      * @param context - Construction context options

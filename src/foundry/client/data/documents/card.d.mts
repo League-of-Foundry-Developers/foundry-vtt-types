@@ -526,9 +526,7 @@ declare global {
    *
    * @see {@linkcode Cards}                    The Cards document type which contains Card embedded documents
    */
-  class Card<out SubType extends Card.SubType = Card.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseCard,
-  )<SubType> {
+  class Card<out SubType extends Card.SubType = Card.SubType> extends BaseCard.Internal.ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `Card`
      * @param context - Construction context options

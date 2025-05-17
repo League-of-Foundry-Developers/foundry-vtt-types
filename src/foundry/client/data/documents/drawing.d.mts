@@ -5,6 +5,7 @@ import type { DataSchema } from "#common/data/fields.d.mts";
 import type { ShapeData } from "#common/data/data.mjs";
 
 import fields = foundry.data.fields;
+import type BaseDrawing from "#common/documents/drawing.mjs";
 
 declare global {
   namespace DrawingDocument {
@@ -515,7 +516,7 @@ declare global {
    * @see {@linkcode Scene}               The Scene document type which contains Drawing embedded documents
    * @see {@linkcode DrawingConfig}       The Drawing configuration application
    */
-  class DrawingDocument extends CanvasDocumentMixin(foundry.documents.BaseDrawing) {
+  class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `DrawingDocument`
      * @param context - Construction context options

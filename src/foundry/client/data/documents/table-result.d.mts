@@ -446,9 +446,8 @@ declare global {
    *
    * @see {@linkcode RollTable}         The RollTable document which contains TableResult embedded documents
    */
-  class TableResult<out SubType extends TableResult.SubType = TableResult.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseTableResult,
-  )<SubType> {
+  class TableResult<out SubType extends TableResult.SubType = TableResult.SubType> extends foundry.documents
+    .BaseTableResult.Internal.ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `TableResult`
      * @param context - Construction context options

@@ -436,9 +436,8 @@ declare global {
    * @see {@linkcode Folders}            The world-level collection of Folder documents
    * @see {@linkcode FolderConfig}       The Folder configuration application
    */
-  class Folder<out SubType extends Folder.SubType = Folder.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseFolder,
-  )<SubType> {
+  class Folder<out SubType extends Folder.SubType = Folder.SubType> extends BaseFolder.Internal
+    .ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `Folder`
      * @param context - Construction context options

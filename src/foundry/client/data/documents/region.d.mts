@@ -2,6 +2,7 @@ import type { InexactPartial, Merge } from "fvtt-types/utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseShapeData } from "#common/data/data.mjs";
+import type BaseRegion from "#common/documents/region.mjs";
 
 import fields = foundry.data.fields;
 
@@ -591,7 +592,7 @@ declare global {
   /**
    * The client-side Region document which extends the common BaseRegion model.
    */
-  class RegionDocument extends ClientDocumentMixin(foundry.documents.BaseRegion) {
+  class RegionDocument extends BaseRegion.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `RegionDocument`
      * @param context - Construction context options

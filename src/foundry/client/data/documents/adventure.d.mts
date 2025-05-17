@@ -2,6 +2,7 @@ import type { FolderDocumentTypes, InexactPartial, FixedInstanceType, Merge } fr
 import type { fields } from "#common/data/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
+import type BaseAdventure from "#common/documents/adventure.mjs";
 
 declare global {
   namespace Adventure {
@@ -460,7 +461,7 @@ declare global {
   /**
    * The client-side Adventure document which extends the common {@linkcode foundry.documents.BaseAdventure} model.
    */
-  class Adventure extends ClientDocumentMixin(foundry.documents.BaseAdventure) {
+  class Adventure extends BaseAdventure.Internal.ClientDocument {
     /**
      * @param data    - Initial data from which to construct the `Adventure`
      * @param context - Construction context options

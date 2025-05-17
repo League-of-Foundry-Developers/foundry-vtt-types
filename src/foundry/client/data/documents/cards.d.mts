@@ -697,9 +697,7 @@ declare global {
    * @see {@linkcode CardStacks}                        The world-level collection of Cards documents
    * @see {@linkcode CardsConfig}                       The Cards configuration application
    */
-  class Cards<out SubType extends Cards.SubType = Cards.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseCards,
-  )<SubType> {
+  class Cards<out SubType extends Cards.SubType = Cards.SubType> extends BaseCards.Internal.ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `Cards`
      * @param context - Construction context options

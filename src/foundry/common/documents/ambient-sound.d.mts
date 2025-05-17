@@ -289,6 +289,14 @@ declare namespace BaseAmbientSound {
   export import DatabaseOperation = AmbientSoundDocument.Database;
   export import Flags = AmbientSoundDocument.Flags;
 
+  namespace Internal {
+    // Note(LukeAbby): The point of this is to give the base class of `AmbientSoundDocument` a name.
+    // The expression `CanvasDocumentMixin(BaseAmbientSound)` is more intuitive but it has worse
+    // caching, likely due to the majority of tsc's caching working off of names.
+    // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
+    const CanvasDocument: CanvasDocumentMixin.Mix<typeof BaseAmbientSound>;
+  }
+
   /**
    * @deprecated This type is used by Foundry too vaguely.
    * In one context the most correct type is after initialization whereas in another one it should be

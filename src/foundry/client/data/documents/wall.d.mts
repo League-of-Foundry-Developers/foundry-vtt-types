@@ -1,6 +1,7 @@
 import type { Merge } from "fvtt-types/utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
+import type BaseWall from "#common/documents/wall.mjs";
 
 import fields = foundry.data.fields;
 
@@ -523,7 +524,7 @@ declare global {
    * @see {@linkcode Scene}            The Scene document type which contains Wall embedded documents
    * @see {@linkcode WallConfig}       The Wall configuration application
    */
-  class WallDocument extends CanvasDocumentMixin(foundry.documents.BaseWall) {
+  class WallDocument extends BaseWall.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `WallDocument`
      * @param context - Construction context options

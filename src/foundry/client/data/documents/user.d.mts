@@ -2,7 +2,7 @@ import type { ConfiguredDocumentClass } from "../../../../types/documentConfigur
 import type { AnyObject, FixedInstanceType, InexactPartial, Merge, NullishProps } from "fvtt-types/utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { BaseActor } from "#common/documents/_module.d.mts";
+import type { BaseActor, BaseUser } from "#common/documents/_module.d.mts";
 
 import fields = foundry.data.fields;
 
@@ -500,10 +500,10 @@ declare global {
    * The client-side User document which extends the common BaseUser model.
    * Each User document contains UserData which defines its data schema.
    *
-   * @see {@linkcode Users}             The world-level collection of User documents
+   * @see {@linkcode Users}          The world-level collection of User documents
    * @see {@linkcode UserConfig}     The User configuration application
    */
-  class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
+  class User extends BaseUser.Internal.ClientDocument {
     /**
      * @param data    - Initial data from which to construct the `User`
      * @param context - Construction context options

@@ -434,9 +434,8 @@ declare global {
   /**
    * The client-side RegionBehavior document which extends the common BaseRegionBehavior model.
    */
-  class RegionBehavior<out SubType extends RegionBehavior.SubType = RegionBehavior.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseRegionBehavior,
-  )<SubType> {
+  class RegionBehavior<out SubType extends RegionBehavior.SubType = RegionBehavior.SubType> extends BaseRegionBehavior
+    .Internal.ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `RegionBehavior`
      * @param context - Construction context options

@@ -627,9 +627,8 @@ declare global {
    * @see {@linkcode Actor}                     The Actor document which contains ActiveEffect embedded documents
    * @see {@linkcode Item}                      The Item document which contains ActiveEffect embedded documents
    */
-  class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseActiveEffect,
-  )<SubType> {
+  class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends BaseActiveEffect.Internal
+    .ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `ActiveEffect`
      * @param context - Construction context options

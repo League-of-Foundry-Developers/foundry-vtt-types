@@ -3,6 +3,7 @@ import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 
 import fields = foundry.data.fields;
+import type BaseAmbientSound from "#common/documents/ambient-sound.mjs";
 
 declare global {
   namespace AmbientSoundDocument {
@@ -447,7 +448,7 @@ declare global {
    * @see {@linkcode Scene}                   The Scene document type which contains AmbientSound documents
    * @see {@linkcode AmbientSoundConfig}      The AmbientSound configuration application
    */
-  class AmbientSoundDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientSound) {
+  class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `AmbientSoundDocument`
      * @param context - Construction context options

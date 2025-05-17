@@ -555,9 +555,8 @@ declare global {
    * @see {@linkcode Messages}                The world-level collection of ChatMessage documents
    *
    */
-  class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseChatMessage,
-  )<SubType> {
+  class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.SubType> extends BaseChatMessage.Internal
+    .ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `ChatMessage`
      * @param context - Construction context options

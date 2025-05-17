@@ -3,6 +3,7 @@ import type { documents } from "#client-esm/client.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { fields } from "#common/data/_module.d.mts";
+import type BasePlaylist from "#common/documents/playlist.mjs";
 
 declare global {
   namespace Playlist {
@@ -532,7 +533,7 @@ declare global {
    * @see {@linkcode PlaylistConfig}        The Playlist configuration application
    *
    */
-  class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
+  class Playlist extends BasePlaylist.Internal.ClientDocument {
     /**
      * @param data    - Initial data from which to construct the `Playlist`
      * @param context - Construction context options
@@ -708,7 +709,7 @@ declare global {
     toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
       options?: Options,
-    ): ClientDocument.ToCompendiumReturnType<foundry.documents.BasePlaylist, Options>;
+    ): ClientDocument.ToCompendiumReturnType<"Playlist", Options>;
 
     /*
      * After this point these are not really overridden methods.

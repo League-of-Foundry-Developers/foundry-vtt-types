@@ -304,6 +304,14 @@ declare namespace BaseCombatant {
   export import DatabaseOperation = Combatant.Database;
   export import Flags = Combatant.Flags;
 
+  namespace Internal {
+    // Note(LukeAbby): The point of this is to give the base class of `Combatant` a name.
+    // The expression `ClientDocumentMixin(BaseCombatant)` is more intuitive but it has worse
+    // caching, likely due to the majority of tsc's caching working off of names.
+    // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
+    const ClientDocument: ClientDocumentMixin.Mix<typeof BaseCombatant>;
+  }
+
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
 

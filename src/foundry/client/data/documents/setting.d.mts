@@ -366,7 +366,7 @@ declare global {
    *
    * @see {@linkcode WorldSettings}       The world-level collection of Setting documents
    */
-  class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
+  class Setting extends foundry.documents.BaseSetting.Internal.ClientDocument {
     /**
      * @param data    - Initial data from which to construct the `Setting`
      * @param context - Construction context options

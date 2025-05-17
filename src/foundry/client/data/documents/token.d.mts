@@ -930,7 +930,7 @@ declare global {
    * @see {@linkcode Scene}               The Scene document type which contains Token embedded documents
    * @see {@linkcode TokenConfig}      The Token configuration application
    */
-  class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
+  class TokenDocument extends BaseToken.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `TokenDocument`
      * @param context - Construction context options

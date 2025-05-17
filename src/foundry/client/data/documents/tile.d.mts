@@ -2,6 +2,7 @@ import type { InterfaceToObject, Merge } from "fvtt-types/utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { TextureData } from "#common/data/data.mjs";
+import type BaseTile from "#common/documents/tile.mjs";
 
 import fields = foundry.data.fields;
 
@@ -474,7 +475,7 @@ declare global {
    * @see {@linkcode Scene}            The Scene document type which contains Tile embedded documents
    * @see {@linkcode TileConfig}       The Tile configuration application
    */
-  class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
+  class TileDocument extends BaseTile.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `TileDocument`
      * @param context - Construction context options

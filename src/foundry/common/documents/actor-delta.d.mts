@@ -365,6 +365,14 @@ declare namespace BaseActorDelta {
   export import DatabaseOperation = ActorDelta.Database;
   export import Flags = ActorDelta.Flags;
 
+  namespace Internal {
+    // Note(LukeAbby): The point of this is to give the base class of `ActorDelta` a name.
+    // The expression `ClientDocumentMixin(BaseActorDelta)` is more intuitive but it has worse
+    // caching, likely due to the majority of tsc's caching working off of names.
+    // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
+    const ClientDocument: ClientDocumentMixin.Mix<typeof BaseActorDelta>;
+  }
+
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
 

@@ -1266,7 +1266,7 @@ export type PickValue<T extends object, Value> = {
 };
 
 /**
- * Represnts a valid JSON value.
+ * Represents a valid JSON value.
  */
 export type JSONValue =
   | {

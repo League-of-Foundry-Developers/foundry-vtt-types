@@ -538,9 +538,8 @@ declare global {
    * The client-side ActorDelta embedded document which extends the common BaseActorDelta document model.
    * @see {@linkcode TokenDocument}  The TokenDocument document type which contains ActorDelta embedded documents.
    */
-  class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.SubType> extends ClientDocumentMixin(
-    BaseActorDelta,
-  )<SubType> {
+  class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.SubType> extends BaseActorDelta.Internal
+    .ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `ActorDelta`
      * @param context - Construction context options

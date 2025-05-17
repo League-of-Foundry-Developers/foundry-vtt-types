@@ -2,6 +2,7 @@ import type { InexactPartial, Merge } from "fvtt-types/utils";
 import type Sound from "#client-esm/audio/sound.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
+import type BasePlaylistSound from "#common/documents/playlist-sound.mjs";
 
 import fields = foundry.data.fields;
 
@@ -399,7 +400,7 @@ declare global {
    * @see {@linkcode Sound}                          The Sound API which manages web audio playback
    *
    */
-  class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSound) {
+  class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `PlaylistSound`
      * @param context - Construction context options

@@ -1024,7 +1024,7 @@ declare global {
     toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
       options?: Options,
-    ): ClientDocument.ToCompendiumReturnType<foundry.documents.BaseScene, Options>;
+    ): ClientDocument.ToCompendiumReturnType<"Scene", Options>;
 
     /**
      * Create a 300px by 100px thumbnail image for this scene background

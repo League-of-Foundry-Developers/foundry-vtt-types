@@ -330,6 +330,14 @@ declare namespace BaseTile {
   export import Flags = TileDocument.Flags;
   export import CoreFlags = TileDocument.CoreFlags;
 
+  namespace Internal {
+    // Note(LukeAbby): The point of this is to give the base class of `TileDocument` a name.
+    // The expression `CanvasDocumentMixin(BaseTile)` is more intuitive but it has worse
+    // caching, likely due to the majority of tsc's caching working off of names.
+    // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
+    const CanvasDocument: CanvasDocumentMixin.Mix<typeof BaseTile>;
+  }
+
   /**
    * @deprecated This type is used by Foundry too vaguely.
    * In one context the most correct type is after initialization whereas in another one it should be

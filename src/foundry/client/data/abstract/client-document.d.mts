@@ -3,7 +3,7 @@ import type Document from "#common/abstract/document.d.mts";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 
-declare class InternalClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
+declare class InternalClientDocument<DocumentName extends Document.Type> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -20,9 +20,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * A cached reference to the FormApplication instance used to configure this Document.
    * @defaultValue `null`
    */
-  protected readonly _sheet: FixedInstanceType<
-    Document.ConfiguredSheetClassFor<Document.Internal.DocumentNameFor<BaseDocument>>
-  > | null;
+  protected readonly _sheet: FixedInstanceType<Document.ConfiguredSheetClassFor<DocumentName>> | null;
 
   static name: "ClientDocumentMixin";
 
@@ -40,10 +38,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): Document.MetadataFor<
-    Document.Internal.DocumentNameFor<BaseDocument>
-  > extends CompendiumCollection.Metadata
-    ? CompendiumCollection<Document.MetadataFor<Document.Internal.DocumentNameFor<BaseDocument>>>
+  get compendium(): Document.MetadataFor<DocumentName> extends CompendiumCollection.Metadata
+    ? CompendiumCollection<Document.MetadataFor<DocumentName>>
     : undefined;
 
   /**
@@ -327,7 +323,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * Serialize salient information about this Document when dragging it.
    */
-  toDragData(): Document.DropData<Document.Internal.Instance.Complete<BaseDocument>>;
+  toDragData(): Document.DropData<Document.ImplementationFor<DocumentName>>;
 
   /**
    * A helper function to handle obtaining the relevant Document from dropped data provided via a DataTransfer event.
@@ -384,7 +380,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
     pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
     options?: Options,
-  ): ClientDocument.ToCompendiumReturnType<BaseDocument, Options>;
+  ): ClientDocument.ToCompendiumReturnType<DocumentName, Options>;
 
   /**
    * Create a content link for this Document.
@@ -535,7 +531,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   ): void;
 }
 
-type _ClientDocumentType = InternalClientDocument & Document.AnyConstructor;
+type _ClientDocumentType = InternalClientDocument<Document.Type> & Document.AnyConstructor;
 declare const _ClientDocument: _ClientDocumentType;
 
 type ClientDocumentMixinBaseClass = Document.Internal.Constructor;
@@ -553,7 +549,14 @@ declare global {
   // However this easily leads to circularities.
   function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): Mixin<typeof InternalClientDocument<FixedInstanceType<BaseClass>>, BaseClass>;
+  ): ClientDocumentMixin.Mix<BaseClass>;
+
+  namespace ClientDocumentMixin {
+    type Mix<BaseClass extends Document.Internal.Constructor> = Mixin<
+      typeof InternalClientDocument<Document.NameFor<BaseClass>>,
+      BaseClass
+    >;
+  }
 
   // TODO: Namespaces typically match the Mixin, not the non-exported class, but we're exporting the class for type reasons,
   // TODO: so this is an exception?
@@ -636,12 +639,12 @@ declare global {
     }
 
     type ToCompendiumReturnType<
-      BaseDocument extends Document.Internal.Instance.Any,
+      DocumentName extends Document.Type,
       Options extends ToCompendiumOptions,
     > = _ToCompendiumReturnType<
       Options["clearSource"],
       Omit<
-        Document.Internal.Instance.Complete<BaseDocument>["_source"],
+        Document.ImplementationFor<DocumentName>["_source"],
         | ClientDocument._OmitProperty<Options["clearFlags"], false, "flags">
         | ClientDocument._OmitProperty<Options["clearSort"], true, "sort" | "navigation" | "navOrder"> // helping out Scene
         | ClientDocument._OmitProperty<Options["clearFolder"], true, "folder">

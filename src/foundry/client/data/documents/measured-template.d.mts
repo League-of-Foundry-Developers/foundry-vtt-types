@@ -2,6 +2,7 @@ import type { Merge } from "fvtt-types/utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
+import type BaseMeasuredTemplate from "#common/documents/measured-template.mjs";
 
 import fields = foundry.data.fields;
 
@@ -452,7 +453,7 @@ declare global {
    * @see {@linkcode Scene}                     The Scene document type which contains MeasuredTemplate documents
    * @see {@linkcode MeasuredTemplateConfig}    The MeasuredTemplate configuration application
    */
-  class MeasuredTemplateDocument extends CanvasDocumentMixin(foundry.documents.BaseMeasuredTemplate) {
+  class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `MeasuredTemplateDocument`
      * @param context - Construction context options

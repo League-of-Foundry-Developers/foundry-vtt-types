@@ -574,7 +574,7 @@ declare global {
    */
   class JournalEntryPage<
     out SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType,
-  > extends ClientDocumentMixin(foundry.documents.BaseJournalEntryPage)<SubType> {
+  > extends BaseJournalEntryPage.Internal.ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `JournalEntryPage`
      * @param context - Construction context options

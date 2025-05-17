@@ -2,6 +2,7 @@ import type Document from "#common/abstract/document.d.mts";
 import type { documents } from "#client-esm/client.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { InterfaceToObject, Merge, ValueOf } from "fvtt-types/utils";
+import type BaseJournalEntry from "#common/documents/journal-entry.mjs";
 
 import fields = foundry.data.fields;
 
@@ -486,7 +487,7 @@ declare global {
    * @see {@linkcode Journal}                  The world-level collection of JournalEntry documents
    * @see {@linkcode JournalSheet}          The JournalEntry configuration application
    */
-  class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntry) {
+  class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
     /**
      * @param data    - Initial data from which to construct the `JournalEntry`
      * @param context - Construction context options

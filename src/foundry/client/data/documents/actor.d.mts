@@ -602,9 +602,8 @@ declare global {
    * let actor = game.actors.get(actorId);
    * ```
    */
-  class Actor<out SubType extends Actor.SubType = Actor.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseActor,
-  )<SubType> {
+  class Actor<out SubType extends Actor.SubType = Actor.SubType> extends foundry.documents.BaseActor.Internal
+    .ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `Actor`
      * @param context - Construction context options

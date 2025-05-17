@@ -5,6 +5,7 @@ import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 
 import fields = foundry.data.fields;
+import type BaseFogExploration from "#common/documents/fog-exploration.mjs";
 
 declare global {
   namespace FogExploration {
@@ -401,7 +402,7 @@ declare global {
   /**
    * The client-side FogExploration document which extends the common BaseFogExploration model.
    */
-  class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
+  class FogExploration extends BaseFogExploration.Internal.ClientDocument {
     /**
      * @param data    - Initial data from which to construct the `FogExploration`
      * @param context - Construction context options

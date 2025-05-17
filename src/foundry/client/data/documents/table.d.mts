@@ -2,6 +2,7 @@ import type { InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
+import type BaseRollTable from "#common/documents/roll-table.mjs";
 
 import fields = foundry.data.fields;
 
@@ -598,7 +599,7 @@ declare global {
    * @see {@linkcode TableResult}        The embedded TableResult document
    * @see {@linkcode RollTableConfig}    The RollTable configuration application
    */
-  class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
+  class RollTable extends BaseRollTable.Internal.ClientDocument {
     /**
      * @param data    - Initial data from which to construct the `RollTable`
      * @param context - Construction context options
@@ -785,7 +786,7 @@ declare global {
     toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
       options?: Options,
-    ): ClientDocument.ToCompendiumReturnType<foundry.documents.BaseRollTable, Options>;
+    ): ClientDocument.ToCompendiumReturnType<"RollTable", Options>;
 
     /**
      * Create a new RollTable document using all of the Documents from a specific Folder as new results.

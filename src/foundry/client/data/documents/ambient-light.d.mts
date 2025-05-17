@@ -4,6 +4,7 @@ import type { DataSchema } from "#common/data/fields.d.mts";
 import type { LightData } from "#common/data/data.mjs";
 
 import fields = foundry.data.fields;
+import type BaseAmbientLight from "#common/documents/ambient-light.mjs";
 
 declare global {
   namespace AmbientLightDocument {
@@ -397,7 +398,7 @@ declare global {
    * @see {@linkcode Scene}                     The Scene document type which contains AmbientLight documents
    * @see {@linkcode AmbientLightConfig}        The AmbientLight configuration application
    */
-  class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
+  class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `AmbientLightDocument`
      * @param context - Construction context options

@@ -3,12 +3,9 @@ import type Document from "#common/abstract/document.d.mts";
 import type { InternalClientDocument } from "./client-document.d.mts";
 
 declare class CanvasDocument<
-  BaseDocument extends Document.Internal.Instance.Any,
-  PlaceableType extends Document.PlaceableType = Extract<
-    Document.Internal.DocumentNameFor<BaseDocument>,
-    Document.PlaceableType
-  >,
-> extends InternalClientDocument<BaseDocument> {
+  DocumentName extends Document.Type,
+  PlaceableType extends Document.PlaceableType = Extract<DocumentName, Document.PlaceableType>,
+> extends InternalClientDocument<DocumentName> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -52,11 +49,16 @@ declare global {
   // TODO(LukeAbby): The constraint here should ideally be something like `Document<Document.PlaceableType, any, Scene.Implementation | null>` but this causes circularities.
   function CanvasDocumentMixin<BaseClass extends CanvasDocumentMixin.BaseClass>(
     Base: BaseClass,
-  ): Mixin<typeof CanvasDocument<FixedInstanceType<BaseClass>>, BaseClass>;
+  ): CanvasDocumentMixin.Mix<BaseClass>;
 
   namespace CanvasDocumentMixin {
     interface AnyMixedConstructor extends ReturnType<typeof ClientDocumentMixin<BaseClass>> {}
     interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
+
+    type Mix<BaseClass extends CanvasDocumentMixin.BaseClass> = Mixin<
+      typeof CanvasDocument<Document.NameFor<BaseClass>>,
+      BaseClass
+    >;
 
     type BaseClass = Document.Internal.Constructor;
   }

@@ -3,6 +3,7 @@ import type { documents } from "#client-esm/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { AnyObject, Merge } from "fvtt-types/utils";
+import type BaseItem from "#common/documents/item.mjs";
 
 import fields = foundry.data.fields;
 
@@ -545,9 +546,7 @@ declare global {
    * @param data    - Initial data provided to construct the Item document
    * @param context - The document context, see {@linkcode foundry.abstract.Document}
    */
-  class Item<out SubType extends Item.SubType = Item.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseItem,
-  )<SubType> {
+  class Item<out SubType extends Item.SubType = Item.SubType> extends BaseItem.Internal.ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `Item`
      * @param context - Construction context options

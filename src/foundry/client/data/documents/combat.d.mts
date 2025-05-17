@@ -590,9 +590,8 @@ declare global {
    * @see {@linkcode Combatant}                     The Combatant embedded document which exists within a Combat document
    * @see {@linkcode CombatConfig}                  The Combat configuration application
    */
-  class Combat<out SubType extends Combat.SubType = Combat.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseCombat,
-  )<SubType> {
+  class Combat<out SubType extends Combat.SubType = Combat.SubType> extends BaseCombat.Internal
+    .ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `Combat`
      * @param context - Construction context options

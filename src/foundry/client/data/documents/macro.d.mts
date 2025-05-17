@@ -513,9 +513,7 @@ declare global {
    *
    * @param data - Initial data provided to construct the Macro document
    */
-  class Macro<out SubType extends Macro.SubType = Macro.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseMacro,
-  )<SubType> {
+  class Macro<out SubType extends Macro.SubType = Macro.SubType> extends BaseMacro.Internal.ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `Macro`
      * @param context - Construction context options
