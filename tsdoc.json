@@ -13,6 +13,10 @@
       // See https://github.com/microsoft/TypeScript/pull/58729
       "tagName": "@immediate",
       "syntaxKind": "modifier"
+    },
+    {
+      "tagName": "@private",
+      "syntaxKind": "modifier"
     }
   ]
 }

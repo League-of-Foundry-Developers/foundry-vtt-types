@@ -731,7 +731,7 @@ declare global {
      * Update derived Active Effect duration data.
      * Configure the remaining and label properties to be getters which lazily recompute only when necessary.
      */
-    // TODO: This adds two getter properties (`remaining` and `label`) to `this.duration`
+    // TODO: This adds two getter properties (`remaining` and `label`) to `this.duration` (a SchemaField property on the document)
     updateDuration(): ActiveEffect.Duration;
 
     /**
@@ -741,7 +741,7 @@ declare global {
      */
     protected _requiresDurationUpdate(): boolean;
 
-    /** @remarks Foundry marked `@internal` */
+    /** @internal */
     protected _prepareDuration(): ActiveEffect.PrepareDurationReturn;
 
     /**
@@ -750,7 +750,7 @@ declare global {
      * @param turn   - The turn number
      * @param nTurns - The maximum number of turns in the encounter
      * @returns The decimal representation
-     * @remarks Foundry marked `@private`
+     * @private
      */
     // nTurns: not null (`!== undefined` check)
     protected _getCombatTime(round: number, turn: number, nTurns?: number): number;
@@ -760,7 +760,7 @@ declare global {
      * @param rounds - The number of rounds
      * @param turns  - The number of turns
      * @returns The formatted label
-     * @remarks Foundry marked `@private`
+     * @private
      */
     protected _getDurationLabel(rounds: number, turns: number): string;
 

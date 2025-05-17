@@ -690,6 +690,7 @@ declare global {
 
     interface CreateDocumentLinkOptions extends _CreateDocumentLinkOptions {}
 
+    /** The return type of {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} if not overridden */
     type OnClickDocumentLinkReturn = FormApplication.Any | Promise<ApplicationV2.Any>;
 
     type ToCompendiumReturnType<
