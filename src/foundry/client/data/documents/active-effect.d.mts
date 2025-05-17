@@ -819,9 +819,8 @@ declare global {
      * @param raw - The raw string value
      * @param type - The target data type that the raw value should be cast to match
      * @returns The parsed delta cast to the target data type
-     * @remarks Foundry marked `@private`
-     *
-     * Core's implementation returns `boolean | number | string` or the return of {@link ActiveEffect._parseOrString | `ActiveEffect#_parseOrString`}
+     * @private
+     * @remarks Core's implementation returns `boolean | number | string` or the return of {@link ActiveEffect._parseOrString | `ActiveEffect#_parseOrString`}
      */
     // TODO: replace `object` with AnyValidJSON-y type
     protected _castDelta(raw: string, type: string): boolean | number | string | object;
@@ -859,9 +858,8 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      * @returns The resulting applied value
-     * @remarks Foundry marked `@private`
-     *
-     * Core's implementation does not use `actor`
+     * @private
+     * @remarks Core's implementation does not use `actor`
      */
     protected _applyAdd(
       actor: Actor.Implementation,
@@ -880,9 +878,8 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      * @returns The resulting applied value
-     * @remarks Foundry marked `@private`
-     *
-     * Core's implementation does not use `actor`
+     * @private
+     * @remarks Core's implementation does not use `actor`
      */
     protected _applyMultiply(
       actor: Actor.Implementation,
@@ -901,9 +898,8 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      * @returns The resulting applied value
-     * @remarks Foundry marked `@private`
-     *
-     * Core's implementation does not use `actor` or `current`
+     * @private
+     * @remarks Core's implementation does not use `actor` or `current`
      */
     protected _applyOverride(
       actor: Actor.Implementation,
@@ -922,9 +918,8 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      * @returns The resulting applied value
-     * @remarks Foundry marked `@private`
-     *
-     * Core's implementation does not use `actor`
+     * @private
+     * @remarks Core's implementation does not use `actor`
      */
     protected _applyUpgrade(
       actor: Actor.Implementation,
@@ -942,7 +937,7 @@ declare global {
      * @param delta   - The parsed value of the change object
      * @param changes - An object which accumulates changes to be applied
      * @returns The resulting applied value
-     * @remarks Foundry marked `@private`
+     * @private
      */
     protected _applyCustom(
       actor: Actor.Implementation,
