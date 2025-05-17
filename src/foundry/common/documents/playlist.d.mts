@@ -245,16 +245,29 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     newKey: string,
     options?: LogCompatibilityWarningOptions,
   ): void;
+
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
   protected static _onCreateDocuments(
     documents: Playlist.Implementation[],
     context: Document.ModificationContext<Playlist.Parent>,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
   protected static _onUpdateDocuments(
     documents: Playlist.Implementation[],
     context: Document.ModificationContext<Playlist.Parent>,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
   protected static _onDeleteDocuments(
     documents: Playlist.Implementation[],
     context: Document.ModificationContext<Playlist.Parent>,

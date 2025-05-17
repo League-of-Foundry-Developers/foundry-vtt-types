@@ -335,16 +335,28 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     options?: LogCompatibilityWarningOptions,
   ): void;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
   protected static _onCreateDocuments(
     documents: TokenDocument.Implementation[],
     context: Document.ModificationContext<TokenDocument.Parent>,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
   protected static _onUpdateDocuments(
     documents: TokenDocument.Implementation[],
     context: Document.ModificationContext<TokenDocument.Parent>,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
   protected static _onDeleteDocuments(
     documents: TokenDocument.Implementation[],
     context: Document.ModificationContext<TokenDocument.Parent>,

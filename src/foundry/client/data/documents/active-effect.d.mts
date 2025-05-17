@@ -1,5 +1,12 @@
 import type { ConfiguredActiveEffect } from "../../../../configuration/index.d.mts";
-import type { AnyMutableObject, IntentionalPartial, InterfaceToObject, Merge, RequiredProps } from "fvtt-types/utils";
+import type {
+  AnyMutableObject,
+  AnyObject,
+  IntentionalPartial,
+  InterfaceToObject,
+  Merge,
+  RequiredProps,
+} from "fvtt-types/utils";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField, DataSchema } from "../../../common/data/fields.d.mts";

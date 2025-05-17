@@ -233,16 +233,28 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
     options?: LogCompatibilityWarningOptions,
   ): void;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
   protected static _onCreateDocuments(
     documents: Macro.Implementation[],
     context: Document.ModificationContext<Macro.Parent>,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
   protected static _onUpdateDocuments(
     documents: Macro.Implementation[],
     context: Document.ModificationContext<Macro.Parent>,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
   protected static _onDeleteDocuments(
     documents: Macro.Implementation[],
     context: Document.ModificationContext<Macro.Parent>,
