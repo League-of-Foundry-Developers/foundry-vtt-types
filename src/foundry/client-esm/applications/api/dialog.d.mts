@@ -1,4 +1,11 @@
-import type { DeepPartial, EmptyObject, InexactPartial, MaybePromise, NullishCoalesce } from "fvtt-types/utils";
+import type {
+  AnyObject,
+  DeepPartial,
+  EmptyObject,
+  InexactPartial,
+  MaybePromise,
+  NullishCoalesce,
+} from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
 
 /**
@@ -130,6 +137,22 @@ declare class DialogV2<
   ): Promise<DialogV2.PromptReturn<Options>>;
 
   /**
+   * A utility helper to generate a dialog for user input.
+   * @param config - Options to overwrite the default confirmation button configuration.
+   * @returns Resolves to the data of the form if the ok button was pressed,
+   *          or the value returned by that button's callback. If additional
+   *          buttons were provided, the Promise resolves to the identifier of
+   *          the one that was pressed, or the value returned by its callback.
+   *          If the dialog was dismissed, and rejectClose is false, the Promise
+   *          resolves to null.
+   * @template FD - The expected return of `new FormDataExtended(form).object`.
+   *                You can specify this implicitly by casting `content` to `DialogV2.FormContent`
+   */
+  static input<FD extends object, Options extends DialogV2.InputConfig<FD>>(
+    config?: Options,
+  ): Promise<DialogV2.InputReturn<FD, Options>>;
+
+  /**
    * Spawn a dialog and wait for it to be dismissed or submitted.
    * @returns Resolves to the identifier of the button used to submit the
    *          dialog, or the value returned by that button's callback. If the
@@ -150,19 +173,29 @@ declare class DialogV2<
    * @see {@link DialogV2.confirm}
    * @see {@link DialogV2.wait}
    */
-  static query<T extends DialogV2.Type, Options extends DialogV2.QueryConfig<T>>(
+  static query<T extends Exclude<DialogV2.Type, "input">, _FD, Options extends DialogV2.QueryConfig<T>>(
     user: User.Implementation | string,
     type: T,
     config?: Options,
   ): Promise<DialogV2.QueryReturn<T, Options>>;
+  static query<T extends "input" & DialogV2.Type, FD extends object, Options extends DialogV2.InputConfig<FD>>(
+    user: User.Implementation | string,
+    type: T,
+    config?: Options,
+  ): Promise<DialogV2.InputReturn<FD, Options>>;
 
   /**
    * The dialog query handler.
    */
-  static _handleQuery<T extends DialogV2.Type, Options extends DialogV2.QueryConfig<T>>(config: {
+  static _handleQuery<T extends DialogV2.Type, _FD, Options extends DialogV2.QueryConfig<T>>(queryData: {
     type: T;
     config: Options;
   }): Promise<DialogV2.QueryReturn<T, Options>>;
+  static _handleQuery<
+    T extends "input" & DialogV2.Type,
+    FD extends object,
+    Options extends DialogV2.InputConfig<FD>,
+  >(queryData: { type: T; config: Options }): Promise<DialogV2.InputReturn<FD, Options>>;
 }
 
 declare namespace DialogV2 {
@@ -281,7 +314,14 @@ declare namespace DialogV2 {
     ok?: InexactPartial<Button<OKReturn>> | null | undefined;
   }
 
-  type Type = "prompt" | "confirm" | "wait";
+  type FormContent<FormData extends object> = (string | HTMLDivElement) & { " __fvtt_types_form_data": FormData };
+
+  /** @typeParam FD - The form data */
+  interface InputConfig<FD extends object> extends PromptConfig<FD> {
+    content?: FormContent<FD>;
+  }
+
+  type Type = "prompt" | "confirm" | "wait" | "input";
 
   /**
    * @remarks Query gets passed through a socket which means it can't take a callback function on its buttons
@@ -306,6 +346,10 @@ declare namespace DialogV2 {
 
   type PromptReturn<Options extends PromptConfig<unknown>> = Internal.PromptReturnType<Options> | WaitReturn<Options>;
 
+  type InputReturn<FD extends object, Options extends InputConfig<FD>> =
+    | Internal.InputReturnType<Options>
+    | WaitReturn<Options>;
+
   type QueryReturn<T extends Type, Options extends QueryConfig<T>> =
     | (T extends "confirm" ? boolean : string)
     | DialogV2.Internal.DismissType<Options>;
@@ -316,14 +360,18 @@ declare namespace DialogV2 {
       : null;
 
     type ButtonReturnType<Options extends { buttons?: Button<unknown>[] }> =
-      // Two cases - one for where all buttons have a defined callback, the other where they don't
+      // All buttons have a callback
       Options["buttons"] extends ReadonlyArray<{ callback: ButtonCallback<infer Callback> }>
         ? Callback extends undefined
           ? string
           : Callback
-        : Options["buttons"] extends ReadonlyArray<Button<infer Callback>>
-          ? Callback | string
-          : never;
+        : // No buttons have a callback
+          Options["buttons"] extends ReadonlyArray<Button<never>>
+          ? string
+          : // Some buttons have a callback
+            Options["buttons"] extends ReadonlyArray<Button<infer Callback>>
+            ? Callback | string
+            : never;
 
     type ConfirmReturnType<Options extends ConfirmConfig<unknown, unknown>> =
       | (Options extends { yes: { readonly callback: ButtonCallback<infer YesReturn> } }
@@ -340,6 +388,18 @@ declare namespace DialogV2 {
     }
       ? NullishCoalesce<OKReturn, string>
       : string;
+
+    type InputReturnType<Options extends InputConfig<object>> = Options extends {
+      ok: {
+        readonly callback: ButtonCallback<infer OKReturn>;
+      };
+    }
+      ? NullishCoalesce<OKReturn, string>
+      : Options extends {
+            content: FormContent<infer FD>;
+          }
+        ? FD
+        : AnyObject;
   }
 }
 
