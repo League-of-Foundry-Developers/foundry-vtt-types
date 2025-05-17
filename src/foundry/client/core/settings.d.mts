@@ -89,13 +89,7 @@ declare global {
       T extends ClientSettings.Type,
       N extends ClientSettings.Namespace = ClientSettings.Namespace,
       K extends ClientSettings.KeyFor<N> = ClientSettings.KeyFor<N>,
-    >(
-      namespace: N,
-      key: K,
-      data: ClientSettings.Type extends T
-        ? ClientSettings.RegisterOptions<globalThis.SettingConfig[`${N}.${K}` & keyof SettingConfig]>
-        : ClientSettings.RegisterOptions<NoInfer<T>>,
-    ): void;
+    >(namespace: N, key: K, data: ClientSettings.RegisterData<T, N, K>): void;
 
     /**
      * Register a new sub-settings menu
@@ -168,8 +162,28 @@ declare global {
     type Namespace = GetNamespaces<keyof globalThis.SettingConfig>;
     type KeyFor<N extends Namespace> = GetKeys<N, keyof globalThis.SettingConfig>;
 
+    interface RegisterData<
+      T extends ClientSettings.Type,
+      N extends ClientSettings.Namespace,
+      K extends ClientSettings.KeyFor<N>,
+    > extends _RegisterData<_RegisterType<T, N, K>> {}
+
     /**
-     * A compile type is a type for a setting that only exists at compile time.
+     * @internal
+     */
+    type _RegisterType<
+      T extends ClientSettings.Type,
+      N extends ClientSettings.Namespace,
+      K extends ClientSettings.KeyFor<N>,
+    > = ClientSettings.Type extends T ? globalThis.SettingConfig[`${N}.${K}` & keyof SettingConfig] : NoInfer<T>;
+
+    /**
+     * @internal
+     */
+    type _RegisterData<T extends ClientSettings.Type> = InexactPartial<Omit<SettingConfig<T>, "key" | "namespace">>;
+
+    /**
+     * A TypeScript type is a type for a setting that only exists at compile time.
      * For example `string` does not correspond to a real runtime value like `String` does.
      */
     type TypeScriptType = string | number | boolean | symbol | bigint | AnyArray | AnyObject;
@@ -192,6 +206,7 @@ declare global {
     type SettingAssignmentType<N extends Namespace, K extends KeyFor<N>> = ToSettingAssignmentType<
       ConfiguredType<N, K>
     >;
+
     type ToSettingAssignmentType<T extends Type> = ReplaceUndefinedWithNull<
       | SettingType<T>
       // TODO(LukeAbby): The `fromSource` function is called with `strict` which changes how fallback behaviour works. See `ClientSettings#set`
@@ -204,6 +219,7 @@ declare global {
     type SettingInitializedType<N extends Namespace, K extends KeyFor<N>> = ToSettingInitializedType<
       ConfiguredType<N, K>
     >;
+
     type ToSettingInitializedType<T extends Type> = ReplaceUndefinedWithNull<
       SettingType<T> | (T extends DataModel.Any ? T : never)
     >;
@@ -275,6 +291,9 @@ declare global {
     interface SettingConfig<T extends Type = (value: unknown) => unknown>
       extends _SettingConfig<ToRuntimeType<T>, ToSettingAssignmentType<T>> {}
 
+    /**
+     * @deprecated {@link ClientSettings.RegisterData | `ClientSettings.RegisterData`}
+     */
     interface RegisterOptions<T extends Type> extends InexactPartial<Omit<SettingConfig<T>, "key" | "namespace">> {}
 
     /**
