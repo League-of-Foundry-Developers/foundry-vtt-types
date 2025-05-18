@@ -474,6 +474,8 @@ declare global {
       exact?: boolean | undefined;
     }
 
+    type UUID = `User.${string}` | `${string}.User.${string}`;
+
     /**
      * @deprecated {@link User.Database | `User.DatabaseOperation`}
      */

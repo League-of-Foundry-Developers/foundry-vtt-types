@@ -1,12 +1,27 @@
 import type {
+  AnyArray,
+  AnyConstructor,
+  AnyFunction,
   AnyObject,
+  Coalesce,
   DeepPartial,
   EmptyObject,
+  GetKey,
   InexactPartial,
+  IntentionalPartial,
   MaybePromise,
   NullishCoalesce,
+  SimpleMerge,
 } from "fvtt-types/utils";
 import type ApplicationV2 from "./application.d.mts";
+
+type DeepInexactPartial<T> = T extends object
+  ? T extends AnyArray | AnyFunction | AnyConstructor
+    ? T
+    : {
+        [K in keyof T]?: DeepInexactPartial<T[K]> | undefined;
+      }
+  : T;
 
 /**
  * A lightweight Application that renders a dialog containing a form with arbitrary content, and some buttons.
@@ -70,13 +85,23 @@ import type ApplicationV2 from "./application.d.mts";
  */
 declare class DialogV2<
   RenderContext extends object = EmptyObject,
-  Configuration extends DialogV2.Configuration = DialogV2.Configuration,
+  // TODO(LukeAbby): The `any` is unideal but it's to to stymy a circularity when it's `DialogV2`.
+  Configuration extends DialogV2.Configuration = DialogV2.Configuration<any>,
   RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
-  static override DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration>;
+  static override DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration> & object;
 
-  protected override _initializeApplicationOptions(options: DeepPartial<DialogV2.Configuration>): Configuration;
+  protected override _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;
 
+  /**
+   * @remarks Note: fvtt-types assumes that the default form contains no values. Specifically this
+   * is important for `DialogV2.input` where it assumes that given no `content` it can return `{}`.
+   * In theory you could override `_renderHTML` to add a custom `form`.
+   *
+   * This could make `DialogV2.input` incorrectly typed but it is assumed that such a use case would
+   * be better served with a custom `ApplicationV2` subclass. Therefore this use case isn't
+   * accounted for. However if it would be important to you, please let us know.
+   */
   protected override _renderHTML(
     _context: RenderContext,
     _options: DeepPartial<RenderOptions>,
@@ -94,7 +119,10 @@ declare class DialogV2<
    */
   protected _onSubmit(target: HTMLButtonElement, event: PointerEvent | SubmitEvent): Promise<DialogV2>;
 
-  protected override _onFirstRender(_context: RenderContext, _options: DeepPartial<RenderOptions>): Promise<void>;
+  protected override _onFirstRender(
+    _context: DeepPartial<RenderContext>,
+    _options: DeepPartial<RenderOptions>,
+  ): Promise<void>;
 
   protected override _replaceHTML(
     result: HTMLFormElement,
@@ -121,20 +149,46 @@ declare class DialogV2<
    *          the identifier of the one that was pressed, or the value returned by its
    *          callback. If the dialog was dismissed, and rejectClose is false, the
    *          Promise resolves to null.
+   *
+   * @remarks The callbacks within `config.buttons` are called with an instance of the current class.
+   * While many users likely will not notice, if this ends up effecting you then you will need to
+   * make an override to provide the current class. For example:
+   * ```typescript
+   * class YourDialog extends DialogV2 {
+   *   static confirm<const Config extends DialogV2.ConfirmConfig<YourDialog> | undefined = undefined>(
+   *     config?: Config,
+   *   ): Promise<DialogV2.ConfirmReturn<Config>> {
+   *     return super.confirm(config);
+   *   };
+   * }
+   * ```
    */
-  static confirm<Options extends DialogV2.ConfirmConfig<unknown, unknown>>(
-    config?: Options,
-  ): Promise<DialogV2.ConfirmReturn<Options>>;
+  static confirm<const Config extends DialogV2.ConfirmConfig | undefined = undefined>(
+    config?: Config,
+  ): Promise<DialogV2.ConfirmReturn<Config>>;
 
   /**
    * A utility helper to generate a dialog with a single confirmation button.
    * @returns  - Resolves to the identifier of the button used to submit the dialog,
    *             or the value returned by that button's callback. If the dialog was
    *             dismissed, and rejectClose is false, the Promise resolves to null.
+   *
+   * @remarks The callbacks within `config.buttons` are called with an instance of the current class.
+   * While many users likely will not notice, if this ends up effecting you then you will need to
+   * make an override to provide the current class. For example:
+   * ```typescript
+   * class YourDialog extends DialogV2 {
+   *   static prompt<const Config extends DialogV2.PromptConfig | undefined = undefined>(
+   *     config?: Config,
+   *   ): Promise<DialogV2.PromptReturn<Config>> {
+   *     return super.prompt(config);
+   *   };
+   * }
+   * ```
    */
-  static prompt<Options extends DialogV2.PromptConfig<unknown>>(
-    config?: Options,
-  ): Promise<DialogV2.PromptReturn<Options>>;
+  static prompt<const Config extends DialogV2.PromptConfig | undefined = undefined>(
+    config?: Config,
+  ): Promise<DialogV2.PromptReturn<Config>>;
 
   /**
    * A utility helper to generate a dialog for user input.
@@ -145,12 +199,37 @@ declare class DialogV2<
    *          the one that was pressed, or the value returned by its callback.
    *          If the dialog was dismissed, and rejectClose is false, the Promise
    *          resolves to null.
-   * @template FD - The expected return of `new FormDataExtended(form).object`.
-   *                You can specify this implicitly by casting `content` to `DialogV2.FormContent`
+   *
+   * @remarks `input` by default returns form data derived from `config.content`. Unfortunately this
+   * means that short of writing an HTML parser to support automatically deriving this, the caller
+   * must hint at the return type. Specifically a call should look something like this:
+   * ```typescript
+   * DialogV2.input({
+   *   content: `<form>
+   *     <label><input type="radio" name="choice" value="one" checked> Option 1</label>
+   *     <label><input type="radio" name="choice" value="two"> Option 2</label>
+   *     <label><input type="radio" name="choice" value="three"> Options 3</label>
+   *   </form>` as DialogV2.Content<{ choice: "one" | "two" | "three" }>;
+   * });
+   * ```
+   * The added `as DialogV2.Content` allows fvtt-types to extract out the
+   *
+   * Additionally, the callbacks within `config.buttons` are called with an instance of the current class.
+   * While many users likely will not notice, if this ends up effecting you then you will need to
+   * make an override to provide the current class. For example:
+   * ```typescript
+   * class YourDialog extends DialogV2 {
+   *   static input<const Config extends DialogV2.InputConfig<YourDialog> | undefined = undefined>(
+   *     config?: Config,
+   *   ): Promise<DialogV2.InputReturn<Config>> {
+   *     return super.input(config);
+   *   };
+   * }
+   * ```
    */
-  static input<FD extends object, Options extends DialogV2.InputConfig<FD>>(
-    config?: Options,
-  ): Promise<DialogV2.InputReturn<FD, Options>>;
+  static input<const Config extends DialogV2.InputConfig | undefined = undefined>(
+    config?: Config,
+  ): Promise<DialogV2.InputReturn<Config>>;
 
   /**
    * Spawn a dialog and wait for it to be dismissed or submitted.
@@ -158,8 +237,21 @@ declare class DialogV2<
    *          dialog, or the value returned by that button's callback. If the
    *          dialog was dismissed, and rejectClose is false, the Promise
    *          resolves to null.
+   *
+   * @remarks The callbacks within `config.buttons` are called with an instance of the current class.
+   * While many users likely will not notice, if this ends up effecting you then you will need to
+   * make an override to provide the current class. For example:
+   * ```typescript
+   * class YourDialog extends DialogV2 {
+   *   static wait<const Config extends DialogV2.WaitOptions<YourDialog>>(
+   *     config: Config,
+   *   ): Promise<DialogV2.WaitReturn<Config>> {
+   *     return super.wait(config);
+   *   };
+   * }
+   * ```
    */
-  static wait<Options extends DialogV2.WaitOptions>(config?: Options): Promise<DialogV2.WaitReturn<Options>>;
+  static wait<const Config extends DialogV2.WaitOptions>(config: Config): Promise<DialogV2.WaitReturn<Config>>;
 
   /**
    * Present an asynchronous Dialog query to a specific User for response.
@@ -172,49 +264,39 @@ declare class DialogV2<
    * @see {@link DialogV2.prompt}
    * @see {@link DialogV2.confirm}
    * @see {@link DialogV2.wait}
+   *
+   * @remarks The callbacks within `config.buttons` are called with an instance of the current class.
+   * While many users likely will not notice, if this ends up effecting you then you will need to
+   * make an override to provide the current class. For example:
+   * ```typescript
+   * class YourDialog extends DialogV2 {
+   *   static query<T extends DialogV2.Type, const Options extends DialogV2.QueryConfig<T>>(
+   *     user: User.Implementation | string,
+   *     type: T,
+   *     config: Options,
+   *   ): Promise<DialogV2.QueryReturn<T, Options>> {
+   *     return super.query(user, type, config);
+   *   };
+   * }
+   * ```
    */
-  static query<T extends Exclude<DialogV2.Type, "input">, _FD, Options extends DialogV2.QueryConfig<T>>(
-    user: User.Implementation | string,
+  static query<T extends DialogV2.Type, const Options extends DialogV2.QueryConfig<T>>(
+    user: User.Implementation | User.UUID,
     type: T,
-    config?: Options,
+    config: Options,
   ): Promise<DialogV2.QueryReturn<T, Options>>;
-  static query<T extends "input" & DialogV2.Type, FD extends object, Options extends DialogV2.InputConfig<FD>>(
-    user: User.Implementation | string,
-    type: T,
-    config?: Options,
-  ): Promise<DialogV2.InputReturn<FD, Options>>;
 
   /**
    * The dialog query handler.
    */
-  static _handleQuery<T extends DialogV2.Type, _FD, Options extends DialogV2.QueryConfig<T>>(queryData: {
+  static _handleQuery<T extends DialogV2.Type, const Options extends DialogV2.QueryConfig<T>>(config: {
     type: T;
     config: Options;
   }): Promise<DialogV2.QueryReturn<T, Options>>;
-  static _handleQuery<
-    T extends "input" & DialogV2.Type,
-    FD extends object,
-    Options extends DialogV2.InputConfig<FD>,
-  >(queryData: { type: T; config: Options }): Promise<DialogV2.InputReturn<FD, Options>>;
 }
 
 declare namespace DialogV2 {
-  interface Button<CallbackReturn> extends NoCallbackButton {
-    /**
-     * A function to invoke when the button is clicked. The value returned
-     * from this function will be used as the dialog's submitted value.
-     * Otherwise, the button's identifier is used.
-     */
-    callback?: ButtonCallback<CallbackReturn>;
-  }
-
-  type ButtonCallback<T> = (
-    event: PointerEvent | SubmitEvent,
-    button: HTMLButtonElement,
-    dialog: HTMLDialogElement,
-  ) => MaybePromise<T>;
-
-  interface NoCallbackButton {
+  interface Button<Dialog extends DialogV2 = DialogV2> {
     /**
      * The button action identifier.
      */
@@ -241,18 +323,33 @@ declare namespace DialogV2 {
      * keypress.
      */
     default?: boolean;
+
+    /**
+     * A function to invoke when the button is clicked. The value returned
+     * from this function will be used as the dialog's submitted value.
+     * Otherwise, the button's identifier is used.
+     */
+    callback?: ButtonCallback<Dialog>;
   }
 
-  interface Configuration extends ApplicationV2.Configuration {
+  type ButtonCallback<Dialog extends DialogV2 = DialogV2> = (
+    event: PointerEvent | SubmitEvent,
+    button: HTMLButtonElement,
+    dialog: Dialog,
+  ) => MaybePromise<unknown>;
+
+  interface Configuration<Dialog extends DialogV2 = DialogV2> extends ApplicationV2.Configuration {
     /**
      * Modal dialogs prevent interaction with the rest of the UI until they are dismissed or submitted.
      */
-    modal?: boolean;
+    modal?: boolean | null | undefined;
 
     /**
      * Button configuration.
+     * @remarks Must have at least one button or else `DialogV2#_initializeApplicationOptions` will
+     * throw.
      */
-    buttons: Button<unknown>[];
+    buttons: Button<Dialog>[];
 
     /**
      * The dialog content: a HTML string or a <div> element.
@@ -260,24 +357,27 @@ declare namespace DialogV2 {
      * Otherwise, the content is not cleaned.
      * @defaultValue `''`
      */
-    content: string | HTMLDivElement;
+    content: string | HTMLDivElement | Content<AnyObject>;
 
     /**
      * A function to invoke when the dialog is submitted.
      * This will not be called if the dialog is dismissed.
      */
-    submit?: SubmitCallback | null | undefined;
+    // TODO(LukeAbby): This will probably never be sufficiently typed.
+    submit?: SubmitCallback<unknown, Dialog> | null | undefined;
   }
+
+  type Content<Data extends AnyObject> =
+    | (string & Internal.FormContent<Data>)
+    | (HTMLDivElement & Internal.FormContent<Data>);
 
   type RenderCallback = (event: Event, dialog: HTMLDialogElement) => void;
 
   type CloseCallback = (event: Event, dialog: DialogV2) => void;
 
-  // This is nominally receiving the results of the button callbacks,
-  // but that just further complicates the conditional types
-  type SubmitCallback = (result: unknown) => Promise<void>;
+  type SubmitCallback<Result, Dialog extends DialogV2 = DialogV2> = (result: Result, dialog: Dialog) => Promise<void>;
 
-  interface WaitOptions extends DeepPartial<Configuration> {
+  interface WaitOptions<Dialog extends DialogV2 = DialogV2> extends DeepInexactPartial<Configuration<Dialog>> {
     /**
      * A synchronous function to invoke whenever the dialog is rendered.
      */
@@ -295,111 +395,184 @@ declare namespace DialogV2 {
      */
     rejectClose?: boolean | null | undefined;
 
-    /**
-     * The user that the dialog should be shown to.
-     */
-    user?: User.Implementation;
+    // TODO(LukeAbby): Once ApplicationV2's required options infrastructure is set up this shouldn't
+    // be necessary.
+    buttons: Button<Dialog>[];
   }
 
-  interface ConfirmConfig<YesReturn, NoReturn> extends WaitOptions {
+  // Note(LukeAbby): `IntentionalPartial` is used for all the buttons because `mergeObject` is
+  // called. For example `{ action: undefined }` would be a logical bug.
+  interface ConfirmConfig<Dialog extends DialogV2 = DialogV2> extends InexactPartial<WaitOptions<Dialog>, "buttons"> {
     /** Options to overwrite the default yes button configuration. */
-    yes?: InexactPartial<Button<YesReturn>> | null | undefined;
+    yes?: IntentionalPartial<Button<Dialog>> | null | undefined;
 
     /** Options to overwrite the default no button configuration. */
-    no?: InexactPartial<Button<NoReturn>> | null | undefined;
+    no?: IntentionalPartial<Button<Dialog>> | null | undefined;
   }
 
-  interface PromptConfig<OKReturn> extends WaitOptions {
+  interface PromptConfig<Dialog extends DialogV2 = DialogV2> extends InexactPartial<WaitOptions<Dialog>, "buttons"> {
     /** Options to overwrite the default confirmation button configuration. */
-    ok?: InexactPartial<Button<OKReturn>> | null | undefined;
+    ok?: IntentionalPartial<Button<Dialog>> | null | undefined;
   }
 
   type FormContent<FormData extends object> = (string | HTMLDivElement) & { " __fvtt_types_form_data": FormData };
 
   /** @typeParam FD - The form data */
-  interface InputConfig<FD extends object> extends PromptConfig<FD> {
-    content?: FormContent<FD>;
-  }
+  interface InputConfig<Dialog extends DialogV2 = DialogV2> extends PromptConfig<Dialog> {}
 
   type Type = "prompt" | "confirm" | "wait" | "input";
 
   /**
    * @remarks Query gets passed through a socket which means it can't take a callback function on its buttons
    */
-  type QueryConfig<T extends Type> = Omit<
-    | (T extends "wait" ? WaitOptions : never)
-    | (T extends "prompt" ? PromptConfig<never> : never)
-    | (T extends "confirm" ? ConfirmConfig<never, never> : never),
-    "buttons"
-  > & {
-    /**
-     * Button configuration.
-     */
-    buttons?: NoCallbackButton[];
-  };
+  type QueryConfig<T extends Type, Dialog extends DialogV2 = DialogV2> =
+    | (T extends "wait" ? Internal.QueryWaitOptions<Dialog> : never)
+    | (T extends "prompt" ? Internal.QueryPromptConfig<Dialog> : never)
+    | (T extends "confirm" ? Internal.QueryConfirmConfig<Dialog> : never)
+    | (T extends "input" ? Internal.QueryInputConfig<Dialog> : never);
 
-  type WaitReturn<Options extends WaitOptions> = Internal.ButtonReturnType<Options> | Internal.DismissType<Options>;
+  // Note(LukeAbby): The usage of `<never>` is because `WaitOptions` is contravariant over `Dialog`.
+  // This applies in many different places but is only noted here.
+  type WaitReturn<Options extends WaitOptions<never>> = Internal.WaitReturn<Options>;
 
-  type ConfirmReturn<Options extends ConfirmConfig<unknown, unknown>> =
-    | Internal.ConfirmReturnType<Options>
-    | WaitReturn<Options>;
+  interface ConfirmYesButton {
+    action: "yes";
+    label: "Yes";
+    icon: "fa-solid fa-check";
+    callback: () => true;
+  }
 
-  type PromptReturn<Options extends PromptConfig<unknown>> = Internal.PromptReturnType<Options> | WaitReturn<Options>;
+  interface ConfirmNoButton {
+    action: "no";
+    label: "No";
+    icon: "fa-solid fa-xmark";
+    default: true;
+    callback: () => false;
+  }
 
-  type InputReturn<FD extends object, Options extends InputConfig<FD>> =
-    | Internal.InputReturnType<Options>
-    | WaitReturn<Options>;
+  type ConfirmReturn<Options extends ConfirmConfig<never> | undefined> =
+    Options extends ConfirmConfig<never>
+      ? WaitReturn<{
+          buttons: [
+            Internal.MergePartial<ConfirmYesButton, Options["yes"]>,
+            Internal.MergePartial<ConfirmNoButton, Options["no"]>,
+            ...Coalesce<Options["buttons"], []>,
+          ];
+        }>
+      : WaitReturn<{ buttons: [ConfirmYesButton, ConfirmNoButton] }>;
 
-  type QueryReturn<T extends Type, Options extends QueryConfig<T>> =
-    | (T extends "confirm" ? boolean : string)
-    | DialogV2.Internal.DismissType<Options>;
+  interface PromptOkButton {
+    action: "ok";
+    label: "Confirm";
+    icon: "fa-solid fa-check";
+    default: true;
+  }
+
+  type PromptReturn<Config extends PromptConfig<never> | undefined> =
+    Config extends PromptConfig<never>
+      ? Internal.WaitReturn<
+          SimpleMerge<
+            Config,
+            {
+              buttons: [
+                // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+                Internal.MergePartial<PromptOkButton, GetKey<Config, "ok", {}>>,
+                ...Coalesce<GetKey<Config, "buttons", undefined>, []>,
+              ];
+            }
+          >
+        >
+      : WaitReturn<{ buttons: [PromptOkButton] }>;
+
+  type InputReturn<Config extends PromptConfig<never> | undefined> =
+    Config extends PromptConfig<never>
+      ? PromptReturn<
+          {
+            // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+            ok: SimpleMerge<{ callback: () => Internal.ContentFormData<Config> }, GetKey<Config, "ok", {}>>;
+          } & Omit<Config, "ok">
+        >
+      : PromptReturn<{ ok: { callback: () => EmptyObject } }>;
+
+  type QueryReturn<T extends Type, Options extends QueryConfig<T, never>> =
+    | (T extends "prompt" ? PromptReturn<Options> : never)
+    | (T extends "confirm" ? ConfirmReturn<Options> : never)
+    // Note(LukeAbby): `Internal.WaitReturn` is used to get around the fact that TypeScript can't be
+    // sure that `buttons` is required in `QueryConfig<T, never>` if `T = "wait"`. TypeScript is
+    // technically correct as this does subvert the soundness as if `T = "wait" | OtherType` then
+    // invalid options would be possible.
+    | (T extends "wait" ? Internal.WaitReturn<Options> : never)
+    | (T extends "input" ? InputReturn<Options> : never);
 
   namespace Internal {
-    type DismissType<Options extends { rejectClose?: boolean | null | undefined }> = Options["rejectClose"] extends true
+    type WaitReturn<Options> = Internal.ButtonReturnType<Options> | Internal.DismissType<Options>;
+
+    type DismissType<Options> = Options extends {
+      readonly rejectClose: true;
+    }
       ? never
       : null;
 
-    type ButtonReturnType<Options extends { buttons?: Button<unknown>[] }> =
-      // All buttons have a callback
-      Options["buttons"] extends ReadonlyArray<{ callback: ButtonCallback<infer Callback> }>
-        ? Callback extends undefined
-          ? string
-          : Callback
-        : // No buttons have a callback
-          Options["buttons"] extends ReadonlyArray<Button<never>>
-          ? string
-          : // Some buttons have a callback
-            Options["buttons"] extends ReadonlyArray<Button<infer Callback>>
-            ? Callback | string
-            : never;
+    type ButtonReturnType<Options> =
+      GetKey<Options, "buttons", undefined> extends ReadonlyArray<infer B extends Button<never>>
+        ? B extends unknown
+          ? OneButtonReturnType<B["callback"], B["action"]>
+          : never
+        : undefined;
 
-    type ConfirmReturnType<Options extends ConfirmConfig<unknown, unknown>> =
-      | (Options extends { yes: { readonly callback: ButtonCallback<infer YesReturn> } }
+    type OneButtonReturnType<Callback, Action> = Callback extends () => infer Return ? Return : Action;
+
+    type ConfirmReturnType<Options extends ConfirmConfig<never> | undefined> =
+      | (Options extends { readonly yes: { readonly callback: ButtonCallback<infer YesReturn> } }
           ? NullishCoalesce<YesReturn, true>
           : true)
-      | (Options extends { no: { readonly callback: ButtonCallback<infer NoReturn> } }
+      | (Options extends { readonly no: { readonly callback: ButtonCallback<infer NoReturn> } }
           ? NullishCoalesce<NoReturn, false>
           : false);
 
-    type PromptReturnType<Options extends PromptConfig<unknown>> = Options extends {
-      ok: {
-        readonly callback: ButtonCallback<infer OKReturn>;
-      };
-    }
-      ? NullishCoalesce<OKReturn, string>
-      : string;
+    type ContentFormData<Config extends PromptConfig<never> | undefined> = GetFormContent<
+      GetKey<Config, "content", undefined>
+    >;
 
-    type InputReturnType<Options extends InputConfig<object>> = Options extends {
-      ok: {
-        readonly callback: ButtonCallback<infer OKReturn>;
-      };
+    // Note(LukeAbby): The constraint should be `string | HTMLDivElement | Content<AnyObject> | undefined`
+    // but currently it's actually `DeepInexactPartial<HTMLDivElement>` which, needless to say, is incorrect.
+    // However this will require an `ApplicationV2` refactor to fix.
+    type GetFormContent<C> = C extends Content<infer Content> ? Content : C extends undefined ? EmptyObject : AnyObject;
+
+    interface NoCallbackButton extends Button<never> {
+      /**
+       * @deprecated A callback is not allowed in `query` as the data must all be serializable.
+       */
+      callback?: never;
     }
-      ? NullishCoalesce<OKReturn, string>
-      : Options extends {
-            content: FormContent<infer FD>;
-          }
-        ? FD
-        : AnyObject;
+
+    interface QueryWaitOptions<Dialog extends DialogV2> extends WaitOptions<Dialog> {
+      buttons: NoCallbackButton[];
+    }
+
+    interface QueryPromptConfig<Dialog extends DialogV2> extends PromptConfig<Dialog> {
+      buttons?: NoCallbackButton[];
+    }
+
+    interface QueryConfirmConfig<Dialog extends DialogV2> extends ConfirmConfig<Dialog> {
+      buttons?: NoCallbackButton[];
+    }
+
+    interface QueryInputConfig<Dialog extends DialogV2> extends InputConfig<Dialog> {
+      buttons?: NoCallbackButton[];
+    }
+
+    // Merges `T` and `U` while assuming `U` is essentially `Partial<T>`.
+    // This is useful in `ConfirmReturn` as it allows modelling the _valid_ uses of `mergeObject` in
+    // `DialogV2.confirm`.
+    // May need to be polished later.
+    type MergePartial<T, U> = {
+      [K in keyof T]: U extends { readonly [_ in K]: infer V } ? V : T[K];
+    } & Omit<U, keyof T>;
+
+    class FormContent<Content extends AnyObject> {
+      #content: Content;
+    }
   }
 }
 

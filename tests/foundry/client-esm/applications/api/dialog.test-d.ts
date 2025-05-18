@@ -1,6 +1,10 @@
 import { expectTypeOf } from "vitest";
 
+// TODO(LukeAbby): This file is full of tests with unsightly type display. Cleaning this up would be nice.
+// There's also a lot of `Config extends ...` going on here which means that excess property checks aren't being done.
+
 import DialogV2 = foundry.applications.api.DialogV2;
+import type { AnyObject, EmptyObject } from "../../../../../src/utils/index.d.mts";
 
 const numberCallback = async () => 5;
 
@@ -26,7 +30,7 @@ const okButton = {
   callback: numberCallback,
 };
 
-expectTypeOf(await DialogV2.prompt()).toEqualTypeOf<string | null>();
+expectTypeOf(await DialogV2.prompt()).toEqualTypeOf<"ok" | null>();
 expectTypeOf(
   await DialogV2.prompt({
     ok: okButton,
@@ -78,36 +82,44 @@ expectTypeOf(
       },
     ],
   }),
-).toEqualTypeOf<number | string | null>();
+).toEqualTypeOf<number | "bar" | null>();
 
-type InputTest = {
-  label: string;
-  value: number;
-};
-
-// this of course does not actually represent the form,
-// users must perform their own cast accurately
-const testContent = "";
-
+// Without any content there is no form and therefore the default `new FormDataExtended(button.form).object` results in `EmptyObject`.
+// Technically depends on the `_renderHTML` implementation but that's probably unrealistic to worry about.
 expectTypeOf(
   await DialogV2.input({
-    content: testContent as DialogV2.FormContent<InputTest>,
     rejectClose: true,
   }),
-).toEqualTypeOf<InputTest>();
+).toEqualTypeOf<EmptyObject>();
 
-// overriding the ok callback
+type ChoiceFormData = { choice: "one" | "two" | "three" };
+
+// There's no way beyond parsing HTML at the type level to infer the type.
+// Therefore the caller is forced to provide the form data.
+const choiceForm = `
+  <label><input type="radio" name="choice" value="one" checked> Option 1</label>
+  <label><input type="radio" name="choice" value="two"> Option 2</label>
+  <label><input type="radio" name="choice" value="three"> Options 3</label>
+` as DialogV2.Content<ChoiceFormData>;
+
 expectTypeOf(
   await DialogV2.input({
-    content: testContent as DialogV2.FormContent<InputTest>,
-    ok: okButton,
     rejectClose: true,
+    content: choiceForm,
   }),
-).toEqualTypeOf<number>();
+).toEqualTypeOf<ChoiceFormData>();
+
 expectTypeOf(
   await DialogV2.input({
-    content: testContent as DialogV2.FormContent<InputTest>,
-    ok: okButton,
+    rejectClose: true,
+    // If no additional hint for the type is provided then the best we can do is return `AnyObject`.
+    content: "",
+  }),
+).toEqualTypeOf<AnyObject>();
+
+expectTypeOf(
+  await DialogV2.input({
+    content: choiceForm,
     buttons: [
       {
         label: "Foo",
@@ -121,27 +133,10 @@ expectTypeOf(
       },
     ],
   }),
-).toEqualTypeOf<number | boolean | null>();
+).toEqualTypeOf<ChoiceFormData | number | boolean | null>();
 expectTypeOf(
   await DialogV2.input({
-    content: testContent as DialogV2.FormContent<InputTest>,
-    buttons: [
-      {
-        label: "Foo",
-        action: "foo",
-        callback: async () => 3 > 2,
-      },
-      {
-        label: "Bar",
-        action: "bar",
-        callback: async () => 3,
-      },
-    ],
-  }),
-).toEqualTypeOf<InputTest | number | boolean | null>();
-expectTypeOf(
-  await DialogV2.input({
-    content: testContent as DialogV2.FormContent<InputTest>,
+    content: choiceForm,
     buttons: [
       {
         label: "Foo",
@@ -153,21 +148,7 @@ expectTypeOf(
       },
     ],
   }),
-).toEqualTypeOf<InputTest | string | null>();
-
-declare const _inputTest: DialogV2.Internal.ButtonReturnType<{
-  // content: HTMLDivElement;
-  buttons: [
-    {
-      label: "Foo";
-      action: "foo";
-    },
-    {
-      label: "Bar";
-      action: "bar";
-    },
-  ];
-}>;
+).toEqualTypeOf<ChoiceFormData | "foo" | "bar" | null>();
 
 expectTypeOf(
   await DialogV2.wait({
@@ -183,7 +164,7 @@ expectTypeOf(
     ],
     rejectClose: true,
   }),
-).toEqualTypeOf<string>();
+).toEqualTypeOf<"foo" | "bar">();
 
 expectTypeOf(
   await DialogV2.wait({
@@ -200,7 +181,7 @@ expectTypeOf(
     ],
     rejectClose: true,
   }),
-).toEqualTypeOf<boolean | string>();
+).toEqualTypeOf<boolean | "bar">();
 
 expectTypeOf(
   await DialogV2.wait({
@@ -217,9 +198,11 @@ expectTypeOf(
     ],
     rejectClose: false,
   }),
-).toEqualTypeOf<boolean | string | null>();
+).toEqualTypeOf<boolean | "bar" | null>();
 
-const queryReturnConfirm = await DialogV2.query(foundry.utils.randomID(), "confirm", {
+const userUUID = foundry.utils.randomID() as User.UUID;
+
+const queryReturnConfirm = await DialogV2.query(userUUID, "confirm", {
   yes: {
     label: "foo",
   },
@@ -227,7 +210,7 @@ const queryReturnConfirm = await DialogV2.query(foundry.utils.randomID(), "confi
 
 expectTypeOf(queryReturnConfirm).toEqualTypeOf<boolean | null>();
 
-const queryReturnWait = await DialogV2.query(foundry.utils.randomID(), "wait", {
+const queryReturnWait = await DialogV2.query(userUUID, "wait", {
   buttons: [
     {
       action: "foo",
@@ -236,27 +219,109 @@ const queryReturnWait = await DialogV2.query(foundry.utils.randomID(), "wait", {
   ],
 });
 
-expectTypeOf(queryReturnWait).toEqualTypeOf<string | null>();
+expectTypeOf(queryReturnWait).toEqualTypeOf<"foo" | null>();
 
-const queryReturnInput = await DialogV2.query(foundry.utils.randomID(), "input", {
-  content: testContent as DialogV2.FormContent<InputTest>,
+const queryReturnInput = await DialogV2.query(userUUID, "input", {
+  content: choiceForm,
 });
 
-expectTypeOf(queryReturnInput).toEqualTypeOf<InputTest | null>();
+expectTypeOf(queryReturnInput).toEqualTypeOf<ChoiceFormData | null>();
 
-/*********************
- *
- * UNHANDLED BEHAVIOR
- *
- *********************/
+declare const unhandledOptionalYes: { yes?: { callback: typeof numberCallback } };
+
+expectTypeOf(await DialogV2.confirm(unhandledOptionalYes)).toEqualTypeOf<number | boolean | null>();
+
+/*
+ * Pathological inputs
+ */
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 const unsoundTest: {} = { yes: { callback: numberCallback } };
 
-// @ts-expect-error Inferring from type not assigned value, unsound variable assignment
+// At runtime this will be `number`, however the provided type is `{}` which has no indication about the type.
 expectTypeOf(await DialogV2.confirm(unsoundTest)).toEqualTypeOf<number | false | null>();
 
-declare const unhandledOptionalYes: { yes?: { callback: typeof numberCallback } };
+// Edge case: `config.ok.callback` is overriden, this makes it useless to use over `DialogV2.submit`
+// but is a valid call.
+expectTypeOf(
+  await DialogV2.input({
+    rejectClose: true,
+    content: choiceForm,
+    ok: {
+      callback: () => 123,
+    },
+  }),
+).toEqualTypeOf<number>();
 
-// @ts-expect-error Declaring the yes/no/ok properties to be optional is not supported
-expectTypeOf(await DialogV2.confirm(unhandledOptionalYes)).toEqualTypeOf<number | boolean | null>();
+// Overrides ok (pathological) and sets buttons
+expectTypeOf(
+  await DialogV2.input({
+    content: choiceForm,
+    ok: okButton,
+    buttons: [
+      {
+        label: "Foo",
+        action: "foo",
+        callback: async () => 3 > 2,
+      },
+      {
+        label: "Bar",
+        action: "bar",
+        callback: async () => 3,
+      },
+    ],
+  }),
+).toEqualTypeOf<number | boolean | null>();
+
+// This input is pathological because for `"wait"` the options `{}` should not be allowed. So
+// ideally this should error. However this would be pretty annoying to enforce and it's unlikely
+// to actually be encountered by a real user.
+await DialogV2.query(userUUID, Math.random() > 0.5 ? "wait" : "input", {});
+
+/**
+ * Internal tests
+ */
+expectTypeOf<
+  DialogV2.Internal.ButtonReturnType<{
+    buttons: readonly [
+      {
+        label: "Read";
+        action: "read";
+        callback: () => number;
+      },
+    ];
+  }>
+>().toEqualTypeOf<number>();
+
+expectTypeOf<
+  DialogV2.Internal.ButtonReturnType<{
+    buttons: readonly [
+      {
+        label: "Read";
+        action: "read";
+      },
+    ];
+  }>
+>().toEqualTypeOf<"read">();
+
+expectTypeOf<
+  DialogV2.Internal.ButtonReturnType<{
+    buttons: readonly [
+      {
+        label: "Read";
+        readonly action: "read";
+        readonly callback?: () => number;
+      },
+    ];
+  }>
+>().toEqualTypeOf<number | "read">();
+
+// Both of these would be runtime errors, therefore `never` makes sense.
+// This could be prevented by writing `buttons: [Button<unknown>, ...Button<unknown>[]]` but this
+// can make ordinary code annoying to write.
+expectTypeOf<DialogV2.Internal.ButtonReturnType<{ buttons: [] }>>().toEqualTypeOf<never>();
+expectTypeOf<DialogV2.Internal.ButtonReturnType<{ buttons: readonly [] }>>().toEqualTypeOf<never>();
+
+expectTypeOf<
+  DialogV2.Internal.ContentFormData<{ content: DialogV2.Content<ChoiceFormData> }>
+>().toEqualTypeOf<ChoiceFormData>();
