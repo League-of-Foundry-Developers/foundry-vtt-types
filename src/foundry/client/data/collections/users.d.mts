@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial } from "fvtt-types/utils";
+import type { Identity } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 declare global {
@@ -42,10 +42,10 @@ declare global {
     /**
      * Handle receipt of activity data from another User connected to the Game session
      * @param userId       - The User id who generated the activity data
-     * @param activityData - The object of activity data
-     *                       (default: `{}`)
+     * @param activityData - The object of activity data (default: `{}`)
      */
-    protected static _handleUserActivity(userId: string, activityData?: InexactPartial<User.ActivityData>): void;
+    // activityData: not null (parameter default only)
+    protected static _handleUserActivity(userId: string, activityData?: User.ActivityData): void;
   }
 
   namespace Users {

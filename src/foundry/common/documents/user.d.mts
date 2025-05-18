@@ -1,4 +1,4 @@
-import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -26,23 +26,29 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    */
   constructor(...args: User.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "User",
+   *   collection: "users",
+   *   label: "DOCUMENT.User",
+   *   labelPlural: "DOCUMENT.Users",
+   *   permissions: {
+   *     create: this.#canCreate,
+   *     update: this.#canUpdate,
+   *     delete: this.#canDelete
+   *   },
+   *   schemaVersion: "12.324",
+   * });
+   * ```
+   */
   static override metadata: User.Metadata;
 
+  /** @defaultValue `["USER"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
   static override defineSchema(): BaseUser.Schema;
-
-  /**
-   * Validate the structure of the User hotbar object
-   * @param bar - The attempted hotbar data
-   * @internal
-   */
-  static #validateHotbar(bar: AnyObject): boolean;
-
-  /**
-   * Validate the structure of the User permissions object
-   * @param perms - The attempted permissions data
-   * @internal
-   */
-  static #validatePermissions(perms: AnyObject): boolean;
 
   /**
    * A convenience test for whether this User has the NONE role.
@@ -57,12 +63,11 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   /**
    * Test whether the User is able to perform a certain permission action.
    * The provided permission string may pertain to an explicit permission setting or a named user role.
-   * Alternatively, Gamemaster users are assumed to be allowed to take all actions.
    *
    * @param action - The action to test
    * @returns Does the user have the ability to perform this action?
    */
-  can(action: keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES): boolean;
+  can(action: BaseUser.TestablePermissionOrRole): boolean;
 
   /** @remarks Returns `.OWNER` for the User in question, `.NONE` for everyone else */
   override getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS;
@@ -79,34 +84,8 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param role - The role name from USER_ROLES to test
    * @returns Does the user have at this role level (or greater)?
    */
-  hasRole(role: CONST.USER_ROLE_NAMES | CONST.USER_ROLES, { exact }?: User.HasRoleOptions): boolean;
-
-  /**
-   * Is a user able to create an existing User?
-   * @param user - The user attempting the creation.
-   * @param doc  - The User document being created.
-   * @param data - The supplied creation data.
-   * @internal
-   */
-  static #canCreate(user: User.Implementation, doc: BaseUser, data?: BaseUser.CreateData): boolean;
-
-  /**
-   * Is a user able to update an existing User?
-   * @param user    - The user attempting the update.
-   * @param doc     - The User document being updated.
-   * @param changes - Proposed changes.
-   * @internal
-   */
-  static #canUpdate(user: User.Implementation, doc: BaseUser, changes: BaseUser.CreateData): boolean;
-
-  /**
-   * Is a user able to delete an existing User?
-   * Only Assistants and Gamemasters can delete users, and only if the target user has a lesser or equal role.
-   * @param user - The user attempting the deletion.
-   * @param doc  - The User document being deleted.
-   * @internal
-   */
-  static #canDelete(user: User.Implementation, doc: BaseUser): boolean;
+  // options: not null (destructured)
+  hasRole(role: CONST.USER_ROLE_NAMES | CONST.USER_ROLES, options?: BaseUser.HasRoleOptions): boolean;
 
   /*
    * After this point these are not really overridden methods.
@@ -374,4 +353,6 @@ declare namespace BaseUser {
    * @deprecated {@link BaseUser.CreateData | `BaseUser.CreateData`}
    */
   type ConstructorData = BaseUser.CreateData;
+
+  type TestablePermissionOrRole = keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
 }
