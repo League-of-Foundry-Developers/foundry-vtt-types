@@ -5,6 +5,7 @@ import type { documents } from "../../client-esm/client.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
+import type EmbeddedCollection from "../abstract/embedded-collection.d.mts";
 
 /**
  * The ActorDelta Document.
@@ -30,6 +31,23 @@ declare abstract class BaseActorDelta<
    */
   constructor(...args: ActorDelta.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "ActorDelta",
+   *   collection: "delta",
+   *   label: "DOCUMENT.ActorDelta",
+   *   labelPlural: "DOCUMENT.ActorDeltas",
+   *   isEmbedded: true,
+   *   embedded: {
+   *     Item: "items",
+   *     ActiveEffect: "effects"
+   *   },
+   *   schemaVersion: "12.324"
+   * });
+   * ```
+   */
   static override metadata: BaseActorDelta.Metadata;
 
   static override defineSchema(): BaseActorDelta.Schema;
@@ -56,14 +74,24 @@ declare abstract class BaseActorDelta<
   /**
    * Retrieve the base actor's collection, if it exists.
    * @param collectionName - The collection name.
+   * @remarks Passes `collectionName` to the token's `baseActor`'s {@link Actor.getEmbeddedCollection | `#getEmbeddedCollection`}
    */
-  getBaseCollection(collectionName: string): Collection<Actor.Implementation> | undefined;
+  getBaseCollection<DocType extends Actor.Embedded.Name>(
+    collectionName: DocType,
+  ): EmbeddedCollection<Document.ImplementationFor<DocType>, Actor.Implementation> | undefined;
 
+  /**
+   * Apply an ActorDelta to an Actor and return the resultant synthetic Actor.
+   * @param delta     - The ActorDelta.
+   * @param baseActor - The base Actor.
+   * @param context   - Context to supply to synthetic Actor instantiation.
+   * @remarks `context` is spread into an object, so it being `null` is effectively the same as omitted
+   */
   static applyDelta(
     delta: BaseActorDelta,
     baseActor: documents.BaseActor,
-    context: unknown,
-  ): Document.ImplementationClassFor<"Actor"> | null;
+    context?: BaseActorDelta.ApplyDeltaContext | null,
+  ): Actor.Implementation | null;
 
   /**
    * @remarks
@@ -334,7 +362,6 @@ declare abstract class BaseActorDelta<
 
   static get schema(): SchemaField<ActorDelta.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: ActorDelta.Source): void;
 
   // options: not null (parameter default only, destructured in super)
@@ -376,6 +403,17 @@ declare namespace BaseActorDelta {
   export import Schema = ActorDelta.Schema;
   export import DatabaseOperation = ActorDelta.Database;
   export import Flags = ActorDelta.Flags;
+
+  /**
+   * @internal
+   * This interface is spread into an object that already has `parent` defined, and as this is ActorDelta logic,
+   * let's assume that overwriting the parent is contraindicated.
+   */
+  type _ApplyDeltaContext = Omit<Document.ConstructionContext<TokenDocument.Implementation>, "parent">;
+
+  interface ApplyDeltaContext extends _ApplyDeltaContext {
+    parent?: never;
+  }
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
