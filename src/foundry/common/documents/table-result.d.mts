@@ -27,6 +27,23 @@ declare abstract class BaseTableResult<
    */
   constructor(...args: TableResult.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "TableResult",
+   *   collection: "results",
+   *   label: "DOCUMENT.TableResult",
+   *   labelPlural: "DOCUMENT.TableResults",
+   *   coreTypes: Object.values(CONST.TABLE_RESULT_TYPES),
+   *   permissions: {
+   *     update: this.#canUpdate
+   *   },
+   *   compendiumIndexFields: ["type"],
+   *   schemaVersion: "12.324"
+   * });
+   * ```
+   */
   static override metadata: BaseTableResult.Metadata;
 
   static override defineSchema(): BaseTableResult.Schema;
