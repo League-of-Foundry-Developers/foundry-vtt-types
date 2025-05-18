@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
   "tagDefinitions": [
     {
-      "tagName": "@abstract",
-      "syntaxKind": "modifier"
+      "tagName": "@linkcode",
+      "syntaxKind": "inline"
     },
     {
-      "tagName": "@yields",
+      "tagName": "@abstract",
       "syntaxKind": "modifier"
     },
     {
@@ -15,7 +15,11 @@
       "syntaxKind": "modifier"
     },
     {
-      "tagName": "@private",
+      "tagName": "@template",
+      "syntaxKind": "block"
+    },
+    {
+      "tagName": "@yields",
       "syntaxKind": "modifier"
     }
   ]
