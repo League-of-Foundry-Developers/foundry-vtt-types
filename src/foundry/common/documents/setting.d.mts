@@ -25,6 +25,23 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    */
   constructor(...args: Setting.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Setting",
+   *   collection: "settings",
+   *   label: "DOCUMENT.Setting",
+   *   labelPlural: "DOCUMENT.Settings",
+   *   permissions: {
+   *     create: this.#canModify,
+   *     update: this.#canModify,
+   *     delete: this.#canModify
+   *   },
+   *   schemaVersion: "12.324"
+   * });
+   * ```
+   */
   static override metadata: BaseSetting.Metadata;
 
   static override defineSchema(): BaseSetting.Schema;
