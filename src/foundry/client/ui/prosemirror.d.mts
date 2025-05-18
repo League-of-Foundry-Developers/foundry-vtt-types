@@ -5,7 +5,7 @@ import type { Socket } from "socket.io-client";
 
 declare global {
   /**
-   * @deprecated {@link ProseMirrorEditor.History | `ProseMirrorEditor.History`}
+   * @deprecated Replaced with {@linkcode ProseMirrorEditor.History}
    */
   type ProseMirrorHistory = ProseMirrorEditor.History;
 
@@ -17,12 +17,16 @@ declare global {
     interface CreateOptions {
       /** A string to uniquely identify this ProseMirror instance. Ignored for a collaborative editor. */
       uuid: string;
+
       /** A Document whose content is being edited. Required for collaborative editing. */
       document: ClientDocument;
+
       /** The field within the Document that is being edited. Required for collaborative editing. */
       fieldName: string;
+
       /** Plugins to include with the editor. */
       plugins: Record<string, Plugin>;
+
       /** Whether to enable collaborative editing for this editor. */
       collaborate: boolean;
     }
@@ -30,6 +34,7 @@ declare global {
     interface History {
       /** The ID of the user who submitted the step. */
       userId: string;
+
       /** The step that was submitted. */
       step: Step;
     }

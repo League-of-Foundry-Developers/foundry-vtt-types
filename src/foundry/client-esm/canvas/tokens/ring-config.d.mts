@@ -82,7 +82,7 @@ declare class TokenRingConfig {
    * Core token rings used in Foundry VTT.
    * Each key is a string identifier for a ring, and the value is an object containing the ring's data.
    * This object is frozen to prevent any modifications.
-   * @remarks The outer object is frozen, but the individual rings' data isn't, and that object gets passed into a {@link DynamicRingData | `DynamicRingData`} constructor, leading to, for example,
+   * @remarks The outer object is frozen, but the individual rings' data isn't, and that object gets passed into a {@linkcode DynamicRingData} constructor, leading to, for example,
    * ```js
    * CONFIG.Token.ring.getConfig("coreSteel")._source === TokenRingConfig.CORE_TOKEN_RINGS.coreSteel
    * ```
@@ -97,7 +97,7 @@ declare class TokenRingConfig {
 
   /**
    * Register the token ring config and initialize it
-   * @remarks Calls the {@link Hooks.StaticCallbacks.initializeDynamicTokenRingConfig | `initializeDynamicTokenRingConfig`} hook via {@link Hooks.callAll | `Hooks.callAll`}
+   * @remarks Calls the {@link Hooks.StaticCallbacks.initializeDynamicTokenRingConfig | `initializeDynamicTokenRingConfig`} hook via {@linkcode Hooks.callAll}
    */
   static initialize(): void;
 
@@ -213,7 +213,7 @@ declare namespace TokenRingConfig {
   type CoreRingIDs = "coreSteel" | "coreBronze";
 
   /**
-   * @remarks The type of any given {@link TokenRingConfig.CORE_TOKEN_RINGS | `TokenRingConfig.CORE_TOKEN_RINGS`} entry prior to
+   * @remarks The type of any given {@linkcode TokenRingConfig.CORE_TOKEN_RINGS} entry prior to
    * {@link TokenRingConfig.initialize | `TokenRingConfig#initialize`} being called between the `setup` and `ready` hooks; Plain objects at this point
    */
   interface InitialCoreRingData extends Required<Pick<SourceCoreRingData, "id" | "label" | "spritesheet">> {}
@@ -221,8 +221,8 @@ declare namespace TokenRingConfig {
   interface InitialCoreRings extends Record<CoreRingIDs, InitialCoreRingData> {}
 
   /**
-   * @remarks Due to the way the core configs are initialized, {@link TokenRingConfig.CORE_TOKEN_RINGS | `TokenRingConfig.CORE_TOKEN_RINGS`}
-   * ends up becoming the `_source` of the constructed DataModels in {@link CONFIG.Token.ring | `CONFIG.Token.ring`}, that is:
+   * @remarks Due to the way the core configs are initialized, {@linkcode TokenRingConfig.CORE_TOKEN_RINGS}
+   * ends up becoming the `_source` of the constructed DataModels in {@linkcode CONFIG.Token.ring}, that is:
    * ```js
    * CONFIG.Token.ring.getConfig("coreSteel")._source === TokenRingConfig.CORE_TOKEN_RINGS.coreSteel
    * ```
@@ -236,7 +236,7 @@ declare namespace TokenRingConfig {
    * Core token rings used in Foundry VTT.
    * Each key is a string identifier for a ring, and the value is an object containing the ring's data.
    * This object is frozen to prevent any modifications.
-   * @remarks The outer object is frozen, but the individual rings' data isn't, and that object gets passed into a {@link DynamicRingData | `DynamicRingData`} constructor, leading to, for example,
+   * @remarks The outer object is frozen, but the individual rings' data isn't, and that object gets passed into a {@linkcode DynamicRingData} constructor, leading to, for example,
    * ```js
    * CONFIG.Token.ring.getConfig("coreSteel")._source === TokenRingConfig.CORE_TOKEN_RINGS.coreSteel
    * ```

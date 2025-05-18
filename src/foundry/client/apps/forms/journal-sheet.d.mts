@@ -1,12 +1,12 @@
 import type { MaybePromise, InexactPartial } from "fvtt-types/utils";
 
 declare global {
-  /** @deprecated {@link JournalSheet.Options | `JournalSheet.Options`} */
+  /** @deprecated Replaced with {@linkcode JournalSheet.Options} */
   type JournalSheetOptions = JournalSheet.Options;
 
   /**
    * The Application responsible for displaying and editing a single JournalEntry document.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class JournalSheet<Options extends JournalSheet.Options = JournalSheet.Options> extends DocumentSheet<
     JournalEntry.Implementation,
@@ -286,7 +286,7 @@ declare global {
     type RenderOptions<Options extends JournalSheet.Options = JournalSheet.Options> =
       Application.RenderOptions<Options> &
         InexactPartial<{
-          /** Render the sheet in a given view mode, see {@link JournalSheet.VIEW_MODES | `JournalSheet.VIEW_MODES`}. */
+          /** Render the sheet in a given view mode, see {@linkcode JournalSheet.VIEW_MODES}. */
           mode: number;
 
           /** Render the sheet with the page with the given ID in view. */

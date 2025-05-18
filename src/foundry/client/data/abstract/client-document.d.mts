@@ -3,7 +3,7 @@ import type Document from "#common/abstract/document.d.mts";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 
-declare class InternalClientDocument<BaseDocument extends Document.Internal.Instance.Any = Document.Any> {
+declare class InternalClientDocument<DocumentName extends Document.Type> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
   constructor(...args: any[]);
 
@@ -20,16 +20,15 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * A cached reference to the FormApplication instance used to configure this Document.
    * @defaultValue `null`
    */
-  protected readonly _sheet: FixedInstanceType<
-    Document.ConfiguredSheetClassFor<Document.Internal.DocumentNameFor<BaseDocument>>
-  > | null;
+  protected readonly _sheet: FixedInstanceType<Document.ConfiguredSheetClassFor<DocumentName>> | null;
 
   static name: "ClientDocumentMixin";
 
   /**
    * @see {@link abstract.Document._initialize | `abstract.Document#_initialize`}
    */
-  protected _initialize(): void;
+  // options: not null (parameter default only)
+  protected _initialize(options?: Document.InitializeOptions): void;
 
   /**
    * Return a reference to the parent Collection instance which contains this Document.
@@ -39,10 +38,8 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): Document.MetadataFor<
-    Document.Internal.DocumentNameFor<BaseDocument>
-  > extends CompendiumCollection.Metadata
-    ? CompendiumCollection<Document.MetadataFor<Document.Internal.DocumentNameFor<BaseDocument>>>
+  get compendium(): Document.MetadataFor<DocumentName> extends CompendiumCollection.Metadata
+    ? CompendiumCollection<Document.MetadataFor<DocumentName>>
     : undefined;
 
   /**
@@ -161,10 +158,11 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    */
   _onClickDocumentLink(event: MouseEvent): unknown;
 
-  /**
-   * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-   * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-   */
+  // _preCreate, _preUpdate, and _preDelete are all overridden with no signature changes,
+  // just to call `this.system._preX` if `super` doesn't return `false`
+
+  //  _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
   /**
    * Orchestrate dispatching descendant document events to parent documents when embedded children are modified.
@@ -325,7 +323,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   /**
    * Serialize salient information about this Document when dragging it.
    */
-  toDragData(): Document.DropData<Document.Internal.Instance.Complete<BaseDocument>>;
+  toDragData(): Document.DropData<Document.ImplementationFor<DocumentName>>;
 
   /**
    * A helper function to handle obtaining the relevant Document from dropped data provided via a DataTransfer event.
@@ -346,7 +344,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    *
    * This function must be used to create a document from data that predates the current core version.
    * It must be given nonpartial data matching the schema it had in the core version it is coming from.
-   * It applies legacy migrations to the source data before calling {@link Document.fromSource | `Document.fromSource`}.
+   * It applies legacy migrations to the source data before calling {@linkcode Document.fromSource}.
    * If this function is not used to import old data, necessary migrations may not applied to the data
    * resulting in an incorrectly imported document.
    *
@@ -354,7 +352,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * doesn't contain a `_stats` field, the data is assumed to be pre-V10, when the `_stats` field didn't exist yet.
    * The `_stats` field must not be stripped from the data before it is exported!
    * @param source - The document data that is imported.
-   * @param context - The model construction context passed to {@link Document.fromSource | `Document.fromSource`}.
+   * @param context - The model construction context passed to {@linkcode Document.fromSource}.
    *                  (default: `context.strict=true`) Strict validation is enabled by default.
    */
   static fromImport(source: never, context?: never): Promise<unknown>;
@@ -382,7 +380,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
     pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
     options?: Options,
-  ): ClientDocument.ToCompendiumReturnType<BaseDocument, Options>;
+  ): ClientDocument.ToCompendiumReturnType<DocumentName, Options>;
 
   /**
    * Create a content link for this Document.
@@ -533,7 +531,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
   ): void;
 }
 
-type _ClientDocumentType = InternalClientDocument & Document.AnyConstructor;
+type _ClientDocumentType = InternalClientDocument<Document.Type> & Document.AnyConstructor;
 declare const _ClientDocument: _ClientDocumentType;
 
 type ClientDocumentMixinBaseClass = Document.Internal.Constructor;
@@ -551,8 +549,17 @@ declare global {
   // However this easily leads to circularities.
   function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
     Base: BaseClass,
-  ): Mixin<typeof InternalClientDocument<FixedInstanceType<BaseClass>>, BaseClass>;
+  ): ClientDocumentMixin.Mix<BaseClass>;
 
+  namespace ClientDocumentMixin {
+    type Mix<BaseClass extends Document.Internal.Constructor> = Mixin<
+      typeof InternalClientDocument<Document.NameFor<BaseClass>>,
+      BaseClass
+    >;
+  }
+
+  // TODO: Namespaces typically match the Mixin, not the non-exported class, but we're exporting the class for type reasons,
+  // TODO: so this is an exception?
   namespace ClientDocument {
     interface SortOptions<T, SortKey extends string = "sort"> extends SortingHelpers.SortOptions<T, SortKey> {
       /**
@@ -567,6 +574,7 @@ declare global {
 
     // Note(LukeAbby): If the property could be omitted it is. This is the safest option because in indeterminate cases access would be unsafe.
     // In the future the indeterminate case could turn the property optional but that isn't done today because that's annoying to do for little benefit.
+
     /** @internal */
     type _OmitProperty<Omit extends boolean | undefined, Default extends boolean, ToOmit extends string> = Omit extends
       | true
@@ -631,12 +639,12 @@ declare global {
     }
 
     type ToCompendiumReturnType<
-      BaseDocument extends Document.Internal.Instance.Any,
+      DocumentName extends Document.Type,
       Options extends ToCompendiumOptions,
     > = _ToCompendiumReturnType<
       Options["clearSource"],
       Omit<
-        Document.Internal.Instance.Complete<BaseDocument>["_source"],
+        Document.ImplementationFor<DocumentName>["_source"],
         | ClientDocument._OmitProperty<Options["clearFlags"], false, "flags">
         | ClientDocument._OmitProperty<Options["clearSort"], true, "sort" | "navigation" | "navOrder"> // helping out Scene
         | ClientDocument._OmitProperty<Options["clearFolder"], true, "folder">
@@ -663,16 +671,4 @@ declare global {
       sheetOpen?: boolean | undefined;
     }
   }
-}
-
-// This is yet another `AnyDocument` type.
-// It exists specifically because the `Document.AnyConstructor` type is too safe to be merged in with a mixin.
-// The `...args: never` trick trips up the base constructor check and so this one with an actual `...args: any[]` one is used instead.
-//
-// `{}` is used to avoid merging `DataSchema` with the real schema.
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-declare class AnyDocument extends Document<Document.Type, {}, Document.Any | null> {
-  constructor(...args: any[]);
-
-  getFlag(scope: never, key: never): any;
 }

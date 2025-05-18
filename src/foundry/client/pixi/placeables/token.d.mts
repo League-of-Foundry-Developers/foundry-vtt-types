@@ -15,8 +15,8 @@ import sources = foundry.canvas.sources;
 declare global {
   /**
    * A Token is an implementation of PlaceableObject which represents an Actor within a viewed Scene on the game canvas.
-   * @see {@link TokenDocument | `TokenDocument`}
-   * @see {@link TokenLayer | `TokenLayer`}
+   * @see {@linkcode TokenDocument}
+   * @see {@linkcode TokenLayer}
    */
   class Token extends PlaceableObject<TokenDocument.Implementation> {
     static override embeddedName: "Token";
@@ -51,7 +51,7 @@ declare global {
      * A Graphics instance which renders the border frame for this Token inside the GridLayer.
      * @defaultValue `undefined`
      * @remarks Only `undefined` prior to first draw
-     * */
+     */
     border: PIXI.Graphics | undefined;
 
     /**
@@ -492,7 +492,7 @@ declare global {
      * Draw a status effect icon
      * @param src  - Path to a texture
      * @param tint - A tint to apply to the returned sprite (default: `0xFFFFFF`)
-     * @remarks Returns early if `src` is falsey, but otherwise calls {@link loadTexture | `loadTexture`} with `{ fallback: "icons/svg/hazard.svg" }` and returns that
+     * @remarks Returns early if `src` is falsey, but otherwise calls {@linkcode loadTexture} with `{ fallback: "icons/svg/hazard.svg" }` and returns that
      */
     protected _drawEffect(src: string, tint?: number | null): Promise<PIXI.Sprite | undefined>;
 
@@ -845,40 +845,40 @@ declare global {
   namespace Token {
     /**
      * The implementation of the `Token` placeable configured through `CONFIG.Token.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link TokenDocument.Implementation | `TokenDocument.Implementation`}
+     * Not to be confused with {@linkcode TokenDocument.Implementation}
      * which refers to the implementation for the Token document.
      */
     type Implementation = FixedInstanceType<ImplementationClass>;
 
     /**
      * The implementation of the `Token` placeable configured through `CONFIG.Token.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link TokenDocument.ImplementationClass | `TokenDocument.ImplementationClass`}
+     * Not to be confused with {@linkcode TokenDocument.ImplementationClass}
      * which refers to the implementation for the Token document.
      */
     // eslint-disable-next-line no-restricted-syntax
     type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Token>;
 
     /**
-     * @deprecated {@link ImplementationClass | `ImplementationClass`}
+     * @deprecated Replaced with {@linkcode ImplementationClass}
      */
     type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Implementation | `Implementation`}
+     * @deprecated Replaced with {@linkcode Implementation}
      */
     type Object = Implementation;
 
     /**
-     * @deprecated {@link Drawing.ImplementationClass | `Drawing.ImplementationClass`}
+     * @deprecated Replaced with {@linkcode Drawing.ImplementationClass}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Drawing.Implementation | `Drawing.Implementation`}
+     * @deprecated Replaced with {@linkcode Drawing.Implementation}
      */
     type ConfiguredInstance = Implementation;
 
@@ -1085,7 +1085,7 @@ declare global {
     /**
      * The return type of {@link Token.getRingColors | `Token#getRingColors`}. Core's implementation returns `{}`.
      * Values returned by subclasses should not be nullish, as they are `mergeObject`'d into the default color values
-     * from {@link TokenRing.ConfiguredClass | `TokenRing.ConfiguredClass`}
+     * from {@linkcode TokenRing.ConfiguredClass}
      */
     interface RingColors {
       ring?: Color;

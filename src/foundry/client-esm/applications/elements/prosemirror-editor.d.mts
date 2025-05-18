@@ -18,6 +18,7 @@ declare class HTMLProseMirrorElement extends AbstractFormInputElement<string> {
   override _buildElements(): (HTMLButtonElement | HTMLDivElement)[];
 
   override _getValue(): string;
+
   /**
    * Configure ProseMirror editor plugins.
    */

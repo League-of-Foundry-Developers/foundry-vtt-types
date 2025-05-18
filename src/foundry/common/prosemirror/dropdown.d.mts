@@ -3,8 +3,10 @@ import type { ProseMirrorDropDown as ProseMirrorDropDownMenu } from "./menu.d.mt
 interface Options {
   /** The menu CSS class name. Required if providing an action. */
   cssClass?: string;
+
   /** Use an icon for the dropdown rather than a text label. */
   icon?: string;
+
   /** A callback to fire when a menu item is clicked. */
   onAction?: (event: MouseEvent) => void;
 }

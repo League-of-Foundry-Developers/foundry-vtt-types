@@ -5,8 +5,8 @@ import type { Document } from "#common/abstract/_module.d.mts";
 declare global {
   /**
    * Document Sheet Configuration Application
-   * @typeParam Options          - The type of the options object
-   * @typeParam ConcreteDocument - The type of the Document which is being managed
+   * @template Options          - The type of the options object
+   * @template ConcreteDocument - The type of the Document which is being managed
    */
   class DocumentSheetConfig<
     ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,

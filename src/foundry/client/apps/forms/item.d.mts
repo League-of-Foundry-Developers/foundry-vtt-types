@@ -7,7 +7,7 @@ declare global {
    * @param item    - The Item instance being displayed within the sheet.
    * @param options - Additional application configuration options.
    *
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class ItemSheet<
     Options extends DocumentSheet.Options<Item.Implementation> = DocumentSheet.Options<Item.Implementation>,

@@ -26,7 +26,7 @@ declare abstract class BaseGrid {
   alpha: number;
 
   /**
-   * The grid type (see {@link CONST.GRID_TYPES | `CONST.GRID_TYPES`}).
+   * The grid type (see {@linkcode CONST.GRID_TYPES}).
    */
   type: CONST.GRID_TYPES;
 
@@ -93,7 +93,7 @@ declare abstract class BaseGrid {
    * In square grids with illegal diagonals the offset of the given coordinates is returned
    * if the direction is diagonal.
    * @param coords    - The coordinates
-   * @param direction - The direction (see {@link CONST.MOVEMENT_DIRECTIONS | `CONST.MOVEMENT_DIRECTIONS`})
+   * @param direction - The direction (see {@linkcode CONST.MOVEMENT_DIRECTIONS})
    * @returns The offset
    */
   abstract getShiftedOffset(coords: BaseGrid.Coordinates, direction: number): BaseGrid.Offset;
@@ -104,7 +104,7 @@ declare abstract class BaseGrid {
    * In square grids with illegal diagonals the point is not shifted if the direction is diagonal.
    * In gridless grids the point coordinates are shifted by the grid size.
    * @param point     - The point that is to be shifted
-   * @param direction - The direction (see {@link CONST.MOVEMENT_DIRECTIONS | `CONST.MOVEMENT_DIRECTIONS`})
+   * @param direction - The direction (see {@linkcode CONST.MOVEMENT_DIRECTIONS})
    * @returns The shifted point
    */
   abstract getShiftedPoint(point: Canvas.Point, direction: number): Canvas.Point;
@@ -369,9 +369,11 @@ declare abstract class BaseGrid {
   measureDistances(
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     segments: BaseGrid.Segment[],
+
     /**
      * @defaultValue `{}`
-     * @remarks Unused */
+     * @remarks Unused
+     */
     options?: EmptyObject,
   ): number[];
 
@@ -396,6 +398,7 @@ declare abstract class BaseGrid {
     x: number,
     y: number,
     interval?: number | null,
+
     /**
      * @defaultValue `{}`
      * @remarks Unused
@@ -549,7 +552,7 @@ declare namespace BaseGrid {
   type Coordinates = Offset | Canvas.Point;
 
   interface SnappingBehavior {
-    /** The snapping mode (a union of {@link CONST.GRID_SNAPPING_MODES | `CONST.GRID_SNAPPING_MODES`}) */
+    /** The snapping mode (a union of {@linkcode CONST.GRID_SNAPPING_MODES}) */
     mode: number;
 
     /**

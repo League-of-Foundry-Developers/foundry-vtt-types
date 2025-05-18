@@ -2,6 +2,7 @@ import type { InexactPartial, Merge } from "fvtt-types/utils";
 import type Sound from "#client-esm/audio/sound.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
+import type BasePlaylistSound from "#common/documents/playlist-sound.mjs";
 
 import fields = foundry.data.fields;
 
@@ -24,13 +25,13 @@ declare global {
 
     /**
      * The implementation of the `PlaylistSound` document instance configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredPlaylistSound | `fvtt-types/configuration/ConfiguredPlaylistSound`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredPlaylistSound | `fvtt-types/configuration/ConfiguredPlaylistSound`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `PlaylistSound` document configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -105,7 +106,7 @@ declare global {
     type Collection = never;
 
     /**
-     * An instance of `PlaylistSound` that comes from the database but failed validation meaining that
+     * An instance of `PlaylistSound` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<PlaylistSound.Implementation> {}
@@ -120,20 +121,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link PlaylistSound.Source | `PlaylistSound.Source`}
+     * @deprecated Replaced with {@linkcode PlaylistSound.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link PlaylistSound.create | `PlaylistSound.create`}
+     * The data necessary to create a document. Used in places like {@linkcode PlaylistSound.create}
      * and {@link PlaylistSound | `new PlaylistSound(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -143,7 +144,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link PlaylistSound.name | `PlaylistSound#name`}.
      *
-     * This is data transformed from {@link PlaylistSound.Source | `PlaylistSound.Source`} and turned into more
+     * This is data transformed from {@linkcode PlaylistSound.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -157,10 +158,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link PlaylistSound | `PlaylistSound`}. This is the source of truth for how an PlaylistSound document
+     * The schema for {@linkcode PlaylistSound}. This is the source of truth for how an PlaylistSound document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link PlaylistSound | `PlaylistSound`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode PlaylistSound}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -258,19 +259,19 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<PlaylistSound.UpdateData, PlaylistSound.Parent> {}
 
-      /** Operation for {@link PlaylistSound.createDocuments | `PlaylistSound.createDocuments`} */
+      /** Operation for {@linkcode PlaylistSound.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<PlaylistSound.Database.Create<Temporary>> {}
 
-      /** Operation for {@link PlaylistSound.updateDocuments | `PlaylistSound.updateDocuments`} */
+      /** Operation for {@linkcode PlaylistSound.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<PlaylistSound.Database.Update> {}
 
-      /** Operation for {@link PlaylistSound.deleteDocuments | `PlaylistSound.deleteDocuments`} */
+      /** Operation for {@linkcode PlaylistSound.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<PlaylistSound.Database.Delete> {}
 
-      /** Operation for {@link PlaylistSound.create | `PlaylistSound.create`} */
+      /** Operation for {@linkcode PlaylistSound.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<PlaylistSound.Database.Create<Temporary>> {}
 
@@ -279,7 +280,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link PlaylistSound.get | `PlaylistSound.get`} */
+      /** Options for {@linkcode PlaylistSound.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link PlaylistSound._preCreate | `PlaylistSound#_preCreate`} */
@@ -288,7 +289,7 @@ declare global {
       /** Options for {@link PlaylistSound._onCreate | `PlaylistSound#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link PlaylistSound._preCreateOperation | `PlaylistSound._preCreateOperation`} */
+      /** Operation for {@linkcode PlaylistSound._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<PlaylistSound.Database.Create> {}
 
       /** Operation for {@link PlaylistSound._onCreateOperation | `PlaylistSound#_onCreateOperation`} */
@@ -300,7 +301,7 @@ declare global {
       /** Options for {@link PlaylistSound._onUpdate | `PlaylistSound#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link PlaylistSound._preUpdateOperation | `PlaylistSound._preUpdateOperation`} */
+      /** Operation for {@linkcode PlaylistSound._preUpdateOperation} */
       interface PreUpdateOperation extends PlaylistSound.Database.Update {}
 
       /** Operation for {@link PlaylistSound._onUpdateOperation | `PlaylistSound._preUpdateOperation`} */
@@ -318,13 +319,13 @@ declare global {
       /** Options for {@link PlaylistSound._onDeleteOperation | `PlaylistSound#_onDeleteOperation`} */
       interface OnDeleteOperation extends PlaylistSound.Database.Delete {}
 
-      /** Context for {@link PlaylistSound._onDeleteOperation | `PlaylistSound._onDeleteOperation`} */
+      /** Context for {@linkcode PlaylistSound._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<PlaylistSound.Parent> {}
 
-      /** Context for {@link PlaylistSound._onCreateDocuments | `PlaylistSound._onCreateDocuments`} */
+      /** Context for {@linkcode PlaylistSound._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<PlaylistSound.Parent> {}
 
-      /** Context for {@link PlaylistSound._onUpdateDocuments | `PlaylistSound._onUpdateDocuments`} */
+      /** Context for {@linkcode PlaylistSound._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<PlaylistSound.Parent> {}
 
       /**
@@ -369,23 +370,23 @@ declare global {
     }
 
     /**
-     * @deprecated {@link PlaylistSound.Database | `PlaylistSound.Database`}
+     * @deprecated Replaced with {@linkcode PlaylistSound.Database}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<PlaylistSound.Implementation> {}
 
     /**
-     * @deprecated {@link PlaylistSound.CreateData | `PlaylistSound.CreateData`}
+     * @deprecated Replaced with {@linkcode PlaylistSound.CreateData}
      */
     interface ConstructorData extends PlaylistSound.CreateData {}
 
     /**
-     * @deprecated {@link PlaylistSound.implementation | `PlaylistSound.ImplementationClass`}
+     * @deprecated Replaced with {@link PlaylistSound.implementation | `PlaylistSound.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link PlaylistSound.Implementation | `PlaylistSound.Implementation`}
+     * @deprecated Replaced with {@linkcode PlaylistSound.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -394,12 +395,12 @@ declare global {
    * The client-side PlaylistSound document which extends the common BasePlaylistSound model.
    * Each PlaylistSound belongs to the sounds collection of a Playlist document.
    *
-   * @see {@link Playlist | `Playlist`}                       The Playlist document which contains PlaylistSound embedded documents
-   * @see {@link PlaylistSoundConfig | `PlaylistSoundConfig`}   The PlaylistSound configuration application
-   * @see {@link Sound | `Sound`}                          The Sound API which manages web audio playback
+   * @see {@linkcode Playlist}                       The Playlist document which contains PlaylistSound embedded documents
+   * @see {@linkcode PlaylistSoundConfig}   The PlaylistSound configuration application
+   * @see {@linkcode Sound}                          The Sound API which manages web audio playback
    *
    */
-  class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSound) {
+  class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `PlaylistSound`
      * @param context - Construction context options
@@ -462,10 +463,8 @@ declare global {
 
     _onClickDocumentLink(event: MouseEvent): ReturnType<Playlist.Implementation["stopSound" | "playSound"]>;
 
-    /**
-     * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-     * For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
-     */
+    //_onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+    // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     /**
      * Special handling that occurs when playback of a PlaylistSound is started.

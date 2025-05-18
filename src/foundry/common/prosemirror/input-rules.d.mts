@@ -16,6 +16,7 @@ export declare namespace ProseMirrorInputRules {
 }
 
 export default ProseMirrorInputRules;
+
 /**
  * A class responsible for building the input rules for the ProseMirror editor.
  */
@@ -24,7 +25,7 @@ declare class ProseMirrorInputRules extends ProseMirrorPlugin {
    * Build the plugin.
    * @param schema  - The ProseMirror schema to build the plugin against.
    * @param options - Additional options to pass to the plugin.
-   * */
+   */
   static build(schema: Schema, options?: ProseMirrorInputRules.ProseMirrorInputRulesOptions): Plugin;
 
   /**

@@ -41,7 +41,7 @@ declare abstract class DatabaseBackend {
 
   /**
    * Create new Documents using provided data and context.
-   * It is recommended to use {@link Document.createDocuments | `Document.createDocuments`} or {@link Document.create | `Document.create`} rather than calling this
+   * It is recommended to use {@linkcode Document.createDocuments} or {@linkcode Document.create} rather than calling this
    * method directly.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the create operation
@@ -69,7 +69,7 @@ declare abstract class DatabaseBackend {
 
   /**
    * Update Documents using provided data and context.
-   * It is recommended to use {@link Document.updateDocuments | `Document.updateDocuments`} or {@link Document.update | `Document#update`} rather than calling this
+   * It is recommended to use {@linkcode Document.updateDocuments} or {@link Document.update | `Document#update`} rather than calling this
    * method directly.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the update operation
@@ -97,7 +97,7 @@ declare abstract class DatabaseBackend {
 
   /**
    * Delete Documents using provided ids and context.
-   * It is recommended to use {@link foundry.abstract.Document.deleteDocuments | `foundry.abstract.Document.deleteDocuments`} or
+   * It is recommended to use {@linkcode foundry.abstract.Document.deleteDocuments} or
    * {@link foundry.abstract.Document.delete | `foundry.abstract.Document#delete`} rather than calling this method directly.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the delete operation

@@ -7,7 +7,7 @@ declare global {
    * The singleton collection of Folder documents which exist within the active World.
    * This Collection is accessible within the Game object as game.fog.
    *
-   * @see {@link Folder | `Folder`} The Folder document
+   * @see {@linkcode Folder} The Folder document
    */
   class Folders extends WorldCollection<Folder.ImplementationClass, "Folders"> {
     static documentName: "Folder";

@@ -6,7 +6,7 @@ declare global {
    *
    * @param sound   - The PlaylistSound document being configured
    * @param options - Additional application rendering options
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class PlaylistSoundConfig<
     Options extends

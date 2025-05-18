@@ -3,7 +3,7 @@ import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 declare global {
   /**
    * The Application responsible for configuring the CombatTracker and its contents.
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   class CombatTrackerConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     FormApplication.NoObject,

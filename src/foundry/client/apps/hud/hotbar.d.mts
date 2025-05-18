@@ -11,10 +11,10 @@ declare global {
    * The number keys 1 through 0 activate numbered hotbar slots.
    * Pressing the delete key while hovering over a Macro will remove it from the bar.
    *
-   * @see {@link Macros | `Macros`}
-   * @see {@link Macro | `Macro`}
+   * @see {@linkcode Macros}
+   * @see {@linkcode Macro}
    *
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class Hotbar<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options?: Partial<Options>);

@@ -1,4 +1,4 @@
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -50,6 +50,14 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    */
   static DEFAULT_ICON: string;
 
+  /**
+   * @remarks Returns `true` for GMs regardless of `options.exact`
+   *
+   * If this is an unlinked note (lacks an `entryId`), returns `user.hasPermission("NOTE_CREATE")`. Otherwise,
+   * `this.entry.testUserPermission`, or `false` if `!this.entry`. Core's `JournalEntry` implementation doesn't
+   * override this method, so without further extension that's equivalent to {@link Document.testUserPermission | `Document#testUserPermission`}
+   */
+  // options: not null (destructured)
   override testUserPermission(
     user: User.Internal.Implementation,
     permission: Document.TestableOwnershipLevel,
@@ -217,16 +225,31 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
 
-  protected static _addDataFieldMigration(
-    data: AnyObject,
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static override _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
+
+  // options: not null (parameter default only)
+  protected static override _addDataFieldShim(
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyObject) => unknown,
-  ): unknown;
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
-  protected static _logDataFieldMigration(
+  protected static override _addDataFieldMigration(
+    data: AnyMutableObject,
+    oldKey: string,
+    newKey: string,
+    apply?: ((data: AnyMutableObject) => unknown) | null,
+  ): boolean;
+
+  // options: not null (destructured where forwarded)
+  protected static override _logDataFieldMigration(
     oldKey: string,
     newKey: string,
     options?: LogCompatibilityWarningOptions,
@@ -253,11 +276,13 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   static get schema(): SchemaField<NoteDocument.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: NoteDocument.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: NoteDocument.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): NoteDocument.Implementation;
 
   static override fromJSON(json: string): NoteDocument.Implementation;
@@ -289,6 +314,14 @@ declare namespace BaseNote {
   export import DatabaseOperation = NoteDocument.Database;
   export import Flags = NoteDocument.Flags;
 
+  namespace Internal {
+    // Note(LukeAbby): The point of this is to give the base class of `NoteDocument` a name.
+    // The expression `CanvasDocumentMixin(BaseNote)` is more intuitive but it has worse
+    // caching, likely due to the majority of tsc's caching working off of names.
+    // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
+    const CanvasDocument: CanvasDocumentMixin.Mix<typeof BaseNote>;
+  }
+
   /**
    * @deprecated This type is used by Foundry too vaguely.
    * In one context the most correct type is after initialization whereas in another one it should be
@@ -297,12 +330,12 @@ declare namespace BaseNote {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseNote.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseNote.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseNote.CreateData | `BaseNote.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseNote.CreateData}
    */
   type ConstructorData = BaseNote.CreateData;
 }

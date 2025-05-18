@@ -25,13 +25,13 @@ declare global {
 
     /**
      * The implementation of the `TableResult` document instance configured through `CONFIG.TableResult.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredTableResult | `fvtt-types/configuration/ConfiguredTableResult`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredTableResult | `fvtt-types/configuration/ConfiguredTableResult`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `TableResult` document configured through `CONFIG.TableResult.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -92,7 +92,7 @@ declare global {
      * {@link ConfiguredTableResult | `fvtt-types/configuration/ConfiguredTableResult`}.
      *
      * Note that `TableResult` does not have a `system` property and therefore there is no way for a user
-     * to configure custom subtypes. See {@link TableResult.SubType | `TableResult.SubType`} for more information.
+     * to configure custom subtypes. See {@linkcode TableResult.SubType} for more information.
      */
     // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredTableResult<Type>, TableResult<Type>>;
@@ -147,7 +147,7 @@ declare global {
     type Collection = never;
 
     /**
-     * An instance of `TableResult` that comes from the database but failed validation meaining that
+     * An instance of `TableResult` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends TableResult.SubType = TableResult.SubType>
@@ -164,20 +164,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link TableResult.Source | `TableResult.Source`}
+     * @deprecated Replaced with {@linkcode TableResult.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link TableResult.create | `TableResult.create`}
+     * The data necessary to create a document. Used in places like {@linkcode TableResult.create}
      * and {@link TableResult | `new TableResult(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -187,7 +187,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link TableResult.name | `TableResult#name`}.
      *
-     * This is data transformed from {@link TableResult.Source | `TableResult.Source`} and turned into more
+     * This is data transformed from {@linkcode TableResult.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -201,10 +201,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link TableResult | `TableResult`}. This is the source of truth for how an TableResult document
+     * The schema for {@linkcode TableResult}. This is the source of truth for how an TableResult document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link TableResult | `TableResult`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode TableResult}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -304,19 +304,19 @@ declare global {
         animate?: boolean;
       }
 
-      /** Operation for {@link TableResult.createDocuments | `TableResult.createDocuments`} */
+      /** Operation for {@linkcode TableResult.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<TableResult.Database.Create<Temporary>> {}
 
-      /** Operation for {@link TableResult.updateDocuments | `TableResult.updateDocuments`} */
+      /** Operation for {@linkcode TableResult.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<TableResult.Database.Update> {}
 
-      /** Operation for {@link TableResult.deleteDocuments | `TableResult.deleteDocuments`} */
+      /** Operation for {@linkcode TableResult.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<TableResult.Database.Delete> {}
 
-      /** Operation for {@link TableResult.create | `TableResult.create`} */
+      /** Operation for {@linkcode TableResult.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<TableResult.Database.Create<Temporary>> {}
 
@@ -325,7 +325,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link TableResult.get | `TableResult.get`} */
+      /** Options for {@linkcode TableResult.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link TableResult._preCreate | `TableResult#_preCreate`} */
@@ -334,7 +334,7 @@ declare global {
       /** Options for {@link TableResult._onCreate | `TableResult#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link TableResult._preCreateOperation | `TableResult._preCreateOperation`} */
+      /** Operation for {@linkcode TableResult._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TableResult.Database.Create> {}
 
       /** Operation for {@link TableResult._onCreateOperation | `TableResult#_onCreateOperation`} */
@@ -346,7 +346,7 @@ declare global {
       /** Options for {@link TableResult._onUpdate | `TableResult#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link TableResult._preUpdateOperation | `TableResult._preUpdateOperation`} */
+      /** Operation for {@linkcode TableResult._preUpdateOperation} */
       interface PreUpdateOperation extends TableResult.Database.Update {}
 
       /** Operation for {@link TableResult._onUpdateOperation | `TableResult._preUpdateOperation`} */
@@ -364,13 +364,13 @@ declare global {
       /** Options for {@link TableResult._onDeleteOperation | `TableResult#_onDeleteOperation`} */
       interface OnDeleteOperation extends TableResult.Database.Delete {}
 
-      /** Context for {@link TableResult._onDeleteOperation | `TableResult._onDeleteOperation`} */
+      /** Context for {@linkcode TableResult._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<TableResult.Parent> {}
 
-      /** Context for {@link TableResult._onCreateDocuments | `TableResult._onCreateDocuments`} */
+      /** Context for {@linkcode TableResult._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<TableResult.Parent> {}
 
-      /** Context for {@link TableResult._onUpdateDocuments | `TableResult._onUpdateDocuments`} */
+      /** Context for {@linkcode TableResult._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<TableResult.Parent> {}
 
       /**
@@ -415,28 +415,28 @@ declare global {
     }
 
     /**
-     * @deprecated {@link TableResult.Database | `TableResult.DatabaseOperation`}
+     * @deprecated Replaced with {@link TableResult.Database | `TableResult.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<TableResult.Implementation> {}
 
     /**
-     * @deprecated {@link TableResult.SubType | `TableResult.SubType`}
+     * @deprecated Replaced with {@linkcode TableResult.SubType}
      */
     type TypeNames = TableResult.SubType;
 
     /**
-     * @deprecated {@link TableResult.CreateData | `TableResult.CreateData`}
+     * @deprecated Replaced with {@linkcode TableResult.CreateData}
      */
     interface ConstructorData extends TableResult.CreateData {}
 
     /**
-     * @deprecated {@link TableResult.implementation | `TableResult.ImplementationClass`}
+     * @deprecated Replaced with {@link TableResult.implementation | `TableResult.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link TableResult.Implementation | `TableResult.Implementation`}
+     * @deprecated Replaced with {@linkcode TableResult.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -444,11 +444,10 @@ declare global {
   /**
    * The client-side TableResult document which extends the common BaseTableResult model.
    *
-   * @see {@link RollTable | `RollTable`}         The RollTable document which contains TableResult embedded documents
+   * @see {@linkcode RollTable}         The RollTable document which contains TableResult embedded documents
    */
-  class TableResult<out SubType extends TableResult.SubType = TableResult.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseTableResult,
-  )<SubType> {
+  class TableResult<out SubType extends TableResult.SubType = TableResult.SubType> extends foundry.documents
+    .BaseTableResult.Internal.ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `TableResult`
      * @param context - Construction context options

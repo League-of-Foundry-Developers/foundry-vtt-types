@@ -33,12 +33,12 @@ import type BaseWall from "./wall.d.mts";
 export type ActiveEffectData = BaseActiveEffect.Properties;
 
 /**
- * @deprecated {@link ActiveEffect.DurationData | `ActiveEffect.DurationData`}
+ * @deprecated Replaced with {@linkcode ActiveEffect.DurationData}
  */
 export type EffectDurationData = ActiveEffect.DurationData;
 
 /**
- * @deprecated {@link ActiveEffect.EffectChangeData | `ActiveEffect.EffectChangeData`}
+ * @deprecated Replaced with {@linkcode ActiveEffect.EffectChangeData}
  */
 export type EffectChangeData = ActiveEffect.EffectChangeData;
 export interface AmbientSoundEffect {

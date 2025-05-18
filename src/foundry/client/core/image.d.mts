@@ -8,7 +8,7 @@ declare global {
     /**
      * Create thumbnail preview for a provided image path.
      * @param src     - The string URL or DisplayObject of the texture to render to a thumbnail
-     * @param options - Additional named options passed to the {@link ImageHelper.compositeCanvasTexture | `ImageHelper.compositeCanvasTexture`} method
+     * @param options - Additional named options passed to the {@linkcode ImageHelper.compositeCanvasTexture} method
      *                  (default: `{}`)
      * @returns The parsed and converted thumbnail data
      */
@@ -98,10 +98,12 @@ declare global {
 
   namespace ImageHelper {
     /**
-     * @internal Helper type to simplify NullishProps usage.
+     * Helper type to simplify NullishProps usage.
+     *
      * @remarks Letting this be NullishProps instead of InexactPartial because despite `tx` and `ty` only
      * having defaults via `{=0}`, they either get overwritten or `*=`ed which casts null to `0`, their default anyway.
      *
+     * @internal
      */
     type _CompositeOptions = NullishProps<{
       /**
@@ -112,7 +114,7 @@ declare global {
 
       /**
        * The desired height of the output texture
-       * @defaultValue The height of the object passed to {@link ImageHelper.compositeCanvasTexture | `ImageHelper.compositeCanvasTexture`}
+       * @defaultValue The height of the object passed to {@linkcode ImageHelper.compositeCanvasTexture}
        */
       height: number;
 
@@ -130,13 +132,13 @@ declare global {
 
       /**
        * The desired width of the output texture
-       * @defaultValue The width of the object passed to {@link ImageHelper.compositeCanvasTexture | `ImageHelper.compositeCanvasTexture`}
+       * @defaultValue The width of the object passed to {@linkcode ImageHelper.compositeCanvasTexture}
        */
       width: number;
     }>;
 
     /**
-     * An interface for options for the {@link ImageHelper.createThumbnail | `ImageHelper.createThumbnail`} and {@link ImageHelper.compositeCanvasTexture | `ImageHelper.compositeCanvasTexture`}
+     * An interface for options for the {@linkcode ImageHelper.createThumbnail} and {@linkcode ImageHelper.compositeCanvasTexture}
      * methods.
      */
     interface CompositeOptions extends _CompositeOptions {}
@@ -146,9 +148,11 @@ declare global {
     type Format = "image/png" | "image/jpeg" | "image/webp";
 
     /**
-     * @internal Helper type to simplify NullishProps usage
+     * Helper type to simplify NullishProps usage
      * @remarks Letting this be NullishProps, as, after testing, passing null values to `HTMLCanvasElement#toBlob()`,
      * where these eventually end up, doesn't break anything and seems to apply the defaults
+     *
+     * @internal
      */
     type _TextureToImageOptions = NullishProps<{
       /**
@@ -166,7 +170,11 @@ declare global {
 
     interface TextureToImageOptions extends _TextureToImageOptions {}
 
-    /** @internal Intermediary type to simplify use of optionality- and nullish-permissiveness-modifying helpers */
+    /**
+     * Intermediary type to simplify use of optionality- and nullish-permissiveness-modifying helpers
+     *
+     * @internal
+     */
     type _UploadBase64Options = InexactPartial<{
       /**
        * The data storage location to which the file should be uploaded
@@ -192,11 +200,11 @@ declare global {
     interface UploadBase64Options extends _UploadBase64Options {}
 
     /**
-     * An interface for return values of the {@link ImageHelper.createThumbnail | `ImageHelper.createThumbnail`} method.
+     * An interface for return values of the {@linkcode ImageHelper.createThumbnail} method.
      */
     interface ThumbnailReturn {
       /**
-       * The height of the {@link PIXI.Sprite | `PIXI.Sprite`}, created by {@link ImageHelper.createThumbnail | `ImageHelper.createThumbnail`}
+       * The height of the {@linkcode PIXI.Sprite}, created by {@linkcode ImageHelper.createThumbnail}
        */
       height: number;
 
@@ -206,17 +214,17 @@ declare global {
       src: string | PIXI.DisplayObject;
 
       /**
-       * The Texture, returned from {@link ImageHelper.compositeCanvasTexture | `ImageHelper.compositeCanvasTexture`}, with `destroy(true)` already called on it.
+       * The Texture, returned from {@linkcode ImageHelper.compositeCanvasTexture}, with `destroy(true)` already called on it.
        */
       texture: PIXI.Texture;
 
       /**
-       * The base64 encoded image data, returned from {@link ImageHelper.textureToImage | `ImageHelper.textureToImage`}
+       * The base64 encoded image data, returned from {@linkcode ImageHelper.textureToImage}
        */
       thumb: string;
 
       /**
-       * The width of the {@link PIXI.Sprite | `PIXI.Sprite`}, created by {@link ImageHelper.createThumbnail | `ImageHelper.createThumbnail`}
+       * The width of the {@linkcode PIXI.Sprite}, created by {@linkcode ImageHelper.createThumbnail}
        */
       width: number;
     }

@@ -129,7 +129,7 @@ declare class DataModelValidationError extends Error {
 }
 
 declare namespace DataModelValidationFailure {
-  /** @deprecated {@link ConstructorOptions | `ConstructorOptions`} */
+  /** @deprecated Replaced with {@linkcode ConstructorOptions} */
   type ConstructorArgs = ConstructorOptions;
 
   interface ConstructorOptions {

@@ -12,8 +12,8 @@ import type {
 declare global {
   /**
    * An AmbientSound is an implementation of PlaceableObject which represents a dynamic audio source within the Scene.
-   * @see {@link AmbientSoundDocument | `AmbientSoundDocument`}
-   * @see {@link SoundsLayer | `SoundsLayer`}
+   * @see {@linkcode AmbientSoundDocument}
+   * @see {@linkcode SoundsLayer}
    */
   class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implementation> {
     constructor(document: AmbientSoundDocument.Implementation);
@@ -32,7 +32,7 @@ declare global {
     /**
      * A SoundSource object which manages the area of effect for this ambient sound
      * @remarks Not initialized to a value in the class body, but {@link AmbientSound._onCreate | `AmbientSound#_onCreate`}
-     * calls {@link AmbientSound.initializeSoundSource | `AmbientSound.initializeSoundSource`}.
+     * calls {@linkcode AmbientSound.initializeSoundSource}.
      *
      * Set `undefined` by {@link AmbientSound._destroy | `AmbientSound#_destroy`}.
      */
@@ -163,40 +163,40 @@ declare global {
   namespace AmbientSound {
     /**
      * The implementation of the `AmbientSound` placeable configured through `CONFIG.AmbientSound.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link AmbientSoundDocument.Implementation | `AmbientSoundDocument.Implementation`}
+     * Not to be confused with {@linkcode AmbientSoundDocument.Implementation}
      * which refers to the implementation for the ambientSound document.
      */
     type Implementation = FixedInstanceType<ImplementationClass>;
 
     /**
      * The implementation of the `AmbientSound` placeable configured through `CONFIG.AmbientSound.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link AmbientSoundDocument.ImplementationClass | `AmbientSoundDocument.ImplementationClass`}
+     * Not to be confused with {@linkcode AmbientSoundDocument.ImplementationClass}
      * which refers to the implementation for the ambientSound document.
      */
     // eslint-disable-next-line no-restricted-syntax
     type ImplementationClass = ConfiguredObjectClassOrDefault<typeof AmbientSound>;
 
     /**
-     * @deprecated {@link ImplementationClass | `ImplementationClass`}
+     * @deprecated Replaced with {@linkcode ImplementationClass}
      */
     type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Implementation | `Implementation`}
+     * @deprecated Replaced with {@linkcode Implementation}
      */
     type Object = Implementation;
 
     /**
-     * @deprecated {@link AmbientSound.ImplementationClass | `AmbientSound.ImplementationClass`}
+     * @deprecated Replaced with {@linkcode AmbientSound.ImplementationClass}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link AmbientSound.Implementation | `AmbientSound.Implementation`}
+     * @deprecated Replaced with {@linkcode AmbientSound.Implementation}
      */
     type ConfiguredInstance = Implementation;
 
@@ -254,7 +254,8 @@ declare global {
     interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
 
     /**
-     * @internal */
+     * @internal
+     */
     type _InitializeSoundSourceOptions = NullishProps<{
       /**
        * Indicate that this SoundSource has been deleted.

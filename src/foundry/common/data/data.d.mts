@@ -8,9 +8,11 @@ import type {
   ToMethod,
   ValueOf,
 } from "fvtt-types/utils";
+import type { SchemaField } from "./fields.d.mts";
 
 import fields = foundry.data.fields;
 import documents = foundry.documents;
+import Document = foundry.abstract.Document;
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -112,7 +114,7 @@ declare namespace LightData {
     /**
      * The coloration technique applied in the shader
      * @defaultValue `1`
-     * @remarks This should match the `id` of the desired property of {@link AdaptiveLightingShader.SHADER_TECHNIQUES | `AdaptiveLightingShader.SHADER_TECHNIQUES`}
+     * @remarks This should match the `id` of the desired property of {@linkcode AdaptiveLightingShader.SHADER_TECHNIQUES}
      */
     coloration: fields.NumberField<{ required: true; integer: true; initial: 1 }>;
 
@@ -182,6 +184,11 @@ declare class LightData extends DataModel<LightData.Schema, LightData.Parent> {
   /** @defaultValue `["LIGHT"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
+  /**
+   * @remarks
+   * Migrations:
+   * - negative `luminosity`s to `1 - luminosity` and setting `negative` true
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 }
 
@@ -444,10 +451,11 @@ declare namespace TextureData {
   }
 
   /**
-   * @internal
-   * The `initial` property of the `srcOptions` parameter of the {@link TextureData | `TextureData`} constructor
+   * The `initial` property of the `srcOptions` parameter of the {@linkcode TextureData} constructor
    * is not the `initial` for any one field, but instead is an object that gets parcelled out by key to the
    * fields of the schema
+   *
+   * @internal
    */
   type _SrcOptionsInitial<T> = {
     [K in keyof T]: fields.DataField.Options.InitialType<T[K]>;
@@ -464,7 +472,7 @@ declare namespace TextureData {
      * The URL of the texture source.
      * @defaultValue `initial.src ?? null`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     src: fields.FilePathField<{
       categories: NullishCoalesce<Options["categories"], DefaultOptions["categories"]>;
@@ -477,7 +485,7 @@ declare namespace TextureData {
      * The X coordinate of the texture anchor.
      * @defaultValue `initial.anchorX ?? 0`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     anchorX: fields.NumberField<{
       nullable: false;
@@ -488,7 +496,7 @@ declare namespace TextureData {
      * The Y coordinate of the texture anchor.
      * @defaultValue `initial.anchorY ?? 0`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     anchorY: fields.NumberField<{
       nullable: false;
@@ -499,7 +507,7 @@ declare namespace TextureData {
      * The X offset of the texture with (0,0) in the top left.
      * @defaultValue `initial.offsetX ?? 0`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     offsetX: fields.NumberField<{
       nullable: false;
@@ -511,7 +519,7 @@ declare namespace TextureData {
      * The Y offset of the texture with (0,0) in the top left.
      * @defaultValue `initial.offsetY ?? 0`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     offsetY: fields.NumberField<{
       nullable: false;
@@ -522,7 +530,7 @@ declare namespace TextureData {
     /**
      * @defaultValue `initial.fit ?? "fill"`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     fit: fields.StringField<
       {
@@ -538,7 +546,7 @@ declare namespace TextureData {
      * The scale of the texture in the X dimension.
      * @defaultValue `initial.scaleX ?? 1`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     scaleX: fields.NumberField<{
       nullable: false;
@@ -549,7 +557,7 @@ declare namespace TextureData {
      * The scale of the texture in the Y dimension.
      * @defaultValue `initial.scaleY ?? 1`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     scaleY: fields.NumberField<{
       nullable: false;
@@ -560,7 +568,7 @@ declare namespace TextureData {
      * An angle of rotation by which this texture is rotated around its center.
      * @defaultValue `initial.rotation ?? 0`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     rotation: fields.AngleField<{
       initial: NullishCoalesce<GetKey<Options["initial"], "rotation", 0>, 0>;
@@ -570,18 +578,19 @@ declare namespace TextureData {
      * The tint applied to the texture.
      * @defaultValue `initial.tint ?? "#ffffff"`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     tint: fields.ColorField<{
       nullable: false;
       initial: NullishCoalesce<GetKey<Options["initial"], "tint", "#ffffff">, "#ffffff">;
     }>;
+
     /**
      * Only pixels with an alpha value at or above this value are consider solid
      * w.r.t. to occlusion testing and light/weather blocking.
      * @defaultValue `initial.alphaThreshold ?? 0`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@link TextureData | `TextureData`} constructor
+     * parameter of the {@linkcode TextureData} constructor
      */
     alphaThreshold: fields.AlphaField<{
       nullable: false;
@@ -591,7 +600,7 @@ declare namespace TextureData {
 }
 
 /**
- * A {@link fields.SchemaField | `fields.SchemaField`} subclass used to represent texture data.
+ * A {@linkcode fields.SchemaField} subclass used to represent texture data.
  */
 declare class TextureData<
   SrcOptions extends TextureData.SrcOptions = TextureData.DefaultOptions,
@@ -608,8 +617,9 @@ declare namespace PrototypeToken {
   type Parent = documents.BaseActor;
 
   /**
-   * @internal
    * The fields foundry omits from the BaseToken schema. Not used, left as reference
+   *
+   * @internal
    */
   type ExcludedProperties =
     | "_id"
@@ -627,7 +637,7 @@ declare namespace PrototypeToken {
    * @remarks This has `PrototypeToken.#applyDefaultTokenSettings` run on it before actually being returned, so `initial`
    * values may not be exactly accurate as typed
    * @privateRemarks Since the {@link TokenDocument.Schema | `TokenDocument` schema} also extends `SharedProtoSchema`,
-   * overrides & extensions specific to {@link PrototypeToken | `PrototypeToken`} must go here
+   * overrides & extensions specific to {@linkcode PrototypeToken} must go here
    */
   interface Schema extends TokenDocument.SharedProtoSchema {
     /**
@@ -646,11 +656,15 @@ declare namespace PrototypeToken {
   }
 
   /**
-   * {@link PrototypeToken.CreateData | `PrototypeToken.CreateData`}
+   * {@linkcode PrototypeToken.CreateData}
    */
   type ConstructorData = CreateData;
 
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  export import Flags = TokenDocument.Flags;
 }
 
 /**
@@ -660,7 +674,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
   // options: not null (destructured when passed to super)
   constructor(
     data?: PrototypeToken.ConstructorData | null,
-    options?: DataModel.DataValidationOptions<PrototypeToken.Parent>,
+    options?: DataModel.ConstructionContext<PrototypeToken.Parent>,
   );
 
   /**
@@ -681,8 +695,9 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
    */
   get actor(): this["parent"];
 
-  override toObject(source: true): this["_source"] & { actorId: string | undefined };
-  override toObject(source?: boolean): ReturnType<this["schema"]["toObject"]> & { actorId: string | undefined };
+  override toObject(
+    source?: boolean | null,
+  ): SchemaField.SourceData<PrototypeToken.Schema> & { actorId: string | undefined };
 
   static get database(): CONFIG["DatabaseBackend"];
 
@@ -694,32 +709,50 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
 
   /**
    * @see {@link foundry.abstract.Document.update | `foundry.abstract.Document#update`}
+   * @remarks Despite the above `@see`, forwards to {@link Actor.update | `this.actor.update`} after wrapping `data`
+   * in `{prototypeToken: data}`
    */
-  update(data: unknown, options: unknown): unknown;
+  update(
+    data: PrototypeToken.UpdateData | undefined,
+    operation?: Actor.Database.UpdateOperation,
+  ): Promise<Actor.Implementation | undefined>;
 
   /**
    * @see {@link foundry.abstract.Document.getFlag | `foundry.abstract.Document#getFlag`}
    */
-  getFlag(args: unknown): unknown;
+  getFlag<Scope extends TokenDocument.Flags.Scope, Key extends TokenDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Document.GetFlag<TokenDocument.Name, Scope, Key>;
 
   /**
    * @see {@link foundry.abstract.Document.setFlag | `foundry.abstract.Document#setFlag`}
    */
-  setFlag(args: unknown): unknown;
+  setFlag<
+    Scope extends TokenDocument.Flags.Scope,
+    Key extends TokenDocument.Flags.Key<Scope>,
+    Value extends Document.GetFlag<TokenDocument.Name, Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   /**
    * @see {@link foundry.abstract.Document.unsetFlag | `foundry.abstract.Document#unsetFlag`}
    */
-  unsetFlag(args: unknown): Promise<unknown>;
+  unsetFlag<Scope extends TokenDocument.Flags.Scope, Key extends TokenDocument.Flags.Key<Scope>>(
+    scope: Scope,
+    key: Key,
+  ): Promise<this>;
 
   /**
-   * @see {@link foundry.abstract.Document.testUserPermission | `foundry.abstract.Document#testUserPermission`}
+   * @see {@link Document.testUserPermission | `Document#testUserPermission`}
+   * @remarks Forwards to {@link Actor.testUserPermission | `this.actor.testUserPermission`}. Core's `Actor` implementation
+   * doesn't override this method, so without further extension, that's equivalent to `Document#testUserPermission`
    */
+  // options: not null (destructured)
   testUserPermission(
     user: User.Implementation,
-    permission: unknown,
-    { exact }: { exact: boolean },
-  ): ReturnType<this["actor"]["testUserPermission"]>;
+    permission: Document.TestableOwnershipLevel,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
 
   /**
    * @see {@link foundry.abstract.Document.isOwner | `foundry.abstract.Document#isOwner`}

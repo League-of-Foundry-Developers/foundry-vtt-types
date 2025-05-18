@@ -4,12 +4,12 @@ import type { DatabaseCreateOperation } from "#common/abstract/_types.d.mts";
 
 declare global {
   /**
-   * @deprecated {@link CompendiumCollection.ManageCompendiumRequest | `CompendiumCollection.ManageCompendiumRequest`}
+   * @deprecated Replaced with {@linkcode CompendiumCollection.ManageCompendiumRequest}
    */
   type ManageCompendiumRequest = CompendiumCollection.ManageCompendiumRequest;
 
   /**
-   * @deprecated {@link CompendiumCollection.ManageCompendiumResponse | `CompendiumCollection.ManageCompendiumResponse`}
+   * @deprecated Replaced with {@linkcode CompendiumCollection.ManageCompendiumResponse}
    */
   type ManageCompendiumResponse = CompendiumCollection.ManageCompendiumResponse;
 
@@ -106,7 +106,7 @@ declare global {
 
     /**
      * The visibility configuration of this compendium pack.
-     * */
+     */
     get ownership(): InexactPartial<foundry.packages.BasePackage.OwnershipRecord>;
 
     /** Is this Compendium pack visible to the current game User? */
@@ -176,10 +176,11 @@ declare global {
 
     /**
      * Get the ownership level that a User has for this Compendium pack.
-     * @param user - The user being tested
-     * @returns The ownership level in CONST.DOCUMENT_OWNERSHIP_LEVELS
+     * @param user - The user being tested (default: `game.user`)
+     * @returns The ownership level in {@link CONST.DOCUMENT_OWNERSHIP_LEVELS | `CONST.DOCUMENT_OWNERSHIP_LEVELS`}
      */
-    getUserLevel(user?: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+    // user: not null (parameter default only)
+    getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
     /**
      * Test whether a certain User has a requested permission level (or greater) over the Compendium pack
@@ -247,7 +248,7 @@ declare global {
     /**
      * Fully import the contents of a Compendium pack into a World folder.
      * @param options    - Options which modify the import operation. Additional options are forwarded to
-     *                     {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@link Document.createDocuments | `Document.createDocuments`}
+     *                     {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@linkcode Document.createDocuments}
      *                     (default: `{}`)
      * @returns The imported Documents, now existing within the World
      */
@@ -257,12 +258,13 @@ declare global {
           /**
            * An existing Folder _id to use.
            * @defaultValue `null`
-           * */
+           */
           folderId: string | null;
+
           /**
            * A new Folder name to create.
            * @defaultValue `""`
-           * */
+           */
           folderName: string;
         } & Document.Database.CreateOperation<DatabaseCreateOperation> &
           WorldCollection.FromCompendiumOptions
@@ -455,15 +457,17 @@ interface ImportAllOptions {
   /**
    * An existing Folder _id to use.
    * @defaultValue `null`
-   * */
+   */
   folderId?: string | null | undefined;
+
   /**
    * A new Folder name to create.
    * @defaultValue `""`
-   * */
+   */
   folderName?: string | undefined;
+
   /**
-   * Additional options forwarded to {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@link Document.createDocuments | `Document.createDocuments`}
+   * Additional options forwarded to {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@linkcode Document.createDocuments}
    * @defaultValue `{}`
    */
   options?: (Document.ModificationContext<Document.Any | null> & WorldCollection.FromCompendiumOptions) | undefined;

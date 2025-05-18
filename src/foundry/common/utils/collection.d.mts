@@ -12,7 +12,7 @@ declare class Map<K, V> extends globalThis.Map<K, V> {
 /**
  * A reusable storage concept which blends the functionality of an Array with the efficient key-based lookup of a Map.
  * This concept is reused throughout Foundry VTT where a collection of uniquely identified elements is required.
- * @typeParam T - The type of the objects contained in the Collection
+ * @template T - The type of the objects contained in the Collection
  */
 declare class Collection<V, Methods extends Collection.Methods.Any = Collection.Methods<V>> extends Map<string, V> {
   constructor(entries?: Iterable<readonly [string, V]> | null);
@@ -116,7 +116,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * Transform each element of the Collection into a new form, returning an Array of transformed values
    * @param transformer - A transformation function applied to each entry value. Positional arguments are the value, the
    *                      index of iteration, and the collection being mapped.
-   * @typeParam M       - The type of the mapped values
+   * @template M       - The type of the mapped values
    * @returns An Array of transformed values
    */
   map<M>(/** @immediate */ transformer: (entity: V, index: number, collection: Collection<V>) => M): M[];
@@ -127,7 +127,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * @param reducer   - A reducer function applied to each entry value. Positional arguments are the accumulator, the
    *                    value, the index of iteration, and the collection being reduced.
    * @param initial   - An initial value which accumulates with each iteration
-   * @typeParam A     - The type of the accumulator and the return value
+   * @template A     - The type of the accumulator and the return value
    * @returns The accumulated result
    *
    * @example Reduce a collection to an array of transformed values

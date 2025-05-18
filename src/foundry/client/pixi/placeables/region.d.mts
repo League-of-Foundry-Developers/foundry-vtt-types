@@ -9,8 +9,8 @@ declare global {
   /**
    * A Region is an implementation of PlaceableObject which represents a Region document
    * within a viewed Scene on the game canvas.
-   * @see {@link RegionDocument | `RegionDocument`}
-   * @see {@link RegionLayer | `RegionLayer`}
+   * @see {@linkcode RegionDocument}
+   * @see {@linkcode RegionLayer}
    */
   class Region extends PlaceableObject<RegionDocument.Implementation> {
     constructor(document: RegionDocument.Implementation);
@@ -154,40 +154,40 @@ declare global {
   namespace Region {
     /**
      * The implementation of the `Region` placeable configured through `CONFIG.Region.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link RegionDocument.Implementation | `RegionDocument.Implementation`}
+     * Not to be confused with {@linkcode RegionDocument.Implementation}
      * which refers to the implementation for the region document.
      */
     type Implementation = FixedInstanceType<ImplementationClass>;
 
     /**
      * The implementation of the `Region` placeable configured through `CONFIG.Region.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link RegionDocument.ImplementationClass | `RegionDocument.ImplementationClass`}
+     * Not to be confused with {@linkcode RegionDocument.ImplementationClass}
      * which refers to the implementation for the region document.
      */
     // eslint-disable-next-line no-restricted-syntax
     type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Region>;
 
     /**
-     * @deprecated {@link ImplementationClass | `ImplementationClass`}
+     * @deprecated Replaced with {@linkcode ImplementationClass}
      */
     type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Implementation | `Implementation`}
+     * @deprecated Replaced with {@linkcode Implementation}
      */
     type Object = Implementation;
 
     /**
-     * @deprecated {@link Region.ImplementationClass | `Region.ImplementationClass`}
+     * @deprecated Replaced with {@linkcode Region.ImplementationClass}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Region.Implementation | `Region.Implementation`}
+     * @deprecated Replaced with {@linkcode Region.Implementation}
      */
     type ConfiguredInstance = Implementation;
 
@@ -241,7 +241,7 @@ declare global {
     }
 
     interface MovementSegment {
-      /** The type of this segment (see {@link Region.MovementSegmentTypes | `Region.MovementSegmentTypes`}) */
+      /** The type of this segment (see {@linkcode Region.MovementSegmentTypes}) */
       type: MOVEMENT_SEGMENT_TYPES;
 
       /** The waypoint that this segment starts from */

@@ -46,6 +46,7 @@ declare class DirectoryApplication {
    */
   protected _matchSearchFolders(
     query: RegExp,
+
     /** @immediate */ includeFolder: (folder: Folder.Implementation, autoExpand?: boolean) => boolean,
   ): void;
 
@@ -61,6 +62,7 @@ declare class DirectoryApplication {
     query: RegExp,
     entryIds: Set<string>,
     folderIds: Set<string>,
+
     /** @immediate */ includeFolder: (folder: Folder.Implementation, autoExpand?: boolean) => boolean,
   ): void;
 
@@ -159,6 +161,7 @@ declare class DirectoryApplication {
        * The sort key to use for sorting
        */
       sortKey: string;
+
       /**
        * Sort before the target?
        */
@@ -227,10 +230,12 @@ declare class DirectoryApplication {
        * The sort key to use for sorting
        */
       sortKey: string;
+
       /**
        * Sort before the target?
        */
       sortBefore: boolean;
+
       /**
        * Additional data to update on the entry
        */
@@ -255,7 +260,7 @@ declare class DirectoryApplication {
 
 declare global {
   /**
-   * @deprecated {@link DirectoryApplicationMixin.Entry | `DirectoryApplicationMixin.Entry`}
+   * @deprecated Replaced with {@linkcode DirectoryApplicationMixin.Entry}
    */
   type DirectoryMixinEntry = DirectoryApplicationMixin.Entry;
 
@@ -274,14 +279,17 @@ declare global {
        * The unique id of the entry
        */
       id: string;
+
       /**
        * The folder id or folder object to which this entry belongs
        */
       folder: Folder.Implementation | string;
+
       /**
        * An image path to display for the entry
        */
       img?: string;
+
       /**
        * A numeric sort value which orders this entry relative to others
        */

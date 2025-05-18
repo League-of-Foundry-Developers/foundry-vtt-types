@@ -1,7 +1,7 @@
 import type { Identity, IntentionalPartial, RequiredProps } from "fvtt-types/utils";
 
 /**
- * The blending weight calculation filter for {@link foundry.canvas.SMAAFilter | `foundry.canvas.SMAAFilter`}.
+ * The blending weight calculation filter for {@linkcode foundry.canvas.SMAAFilter}.
  */
 declare class SMAABWeightCalculationFilter extends PIXI.Filter {
   constructor(config: SMAABWeightCalculationFilter.Config);

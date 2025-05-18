@@ -26,13 +26,13 @@ declare global {
 
     /**
      * The implementation of the `Combat` document instance configured through `CONFIG.Combat.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `Combat` document configured through `CONFIG.Combat.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -74,12 +74,12 @@ declare global {
     /**
      * Allowed subtypes of `Combat`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
-     * under {@link CONFIG.Combat.dataModels | `CONFIG.Combat.dataModels`}. This corresponds to
-     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     * under {@linkcode CONFIG.Combat.dataModels}. This corresponds to
+     * fvtt-type's {@linkcode DataModelConfig}.
      *
      * Subtypes can also be registered through a `template.json` though this is discouraged.
-     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
-     * {@link DataConfig | `DataConfig`}.
+     * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
+     * {@linkcode DataConfig}.
      */
     type SubType = Game.Model.TypeNames<"Combat">;
 
@@ -229,7 +229,7 @@ declare global {
     type Collection = CombatEncounters.Configured;
 
     /**
-     * An instance of `Combat` that comes from the database but failed validation meaining that
+     * An instance of `Combat` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends Combat.SubType = Combat.SubType> extends Document.Invalid<OfType<SubType>> {}
@@ -244,20 +244,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link Combat.Source | `Combat.Source`}
+     * @deprecated Replaced with {@linkcode Combat.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link Combat.create | `Combat.create`}
+     * The data necessary to create a document. Used in places like {@linkcode Combat.create}
      * and {@link Combat | `new Combat(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -267,7 +267,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Combat.name | `Combat#name`}.
      *
-     * This is data transformed from {@link Combat.Source | `Combat.Source`} and turned into more
+     * This is data transformed from {@linkcode Combat.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -281,10 +281,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link Combat | `Combat`}. This is the source of truth for how an Combat document
+     * The schema for {@linkcode Combat}. This is the source of truth for how an Combat document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link Combat | `Combat`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode Combat}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -352,7 +352,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
+       * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -375,17 +375,17 @@ declare global {
         turnEvents: boolean;
       }
 
-      /** Operation for {@link Combat.createDocuments | `Combat.createDocuments`} */
+      /** Operation for {@linkcode Combat.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Combat.Database.Create<Temporary>> {}
 
-      /** Operation for {@link Combat.updateDocuments | `Combat.updateDocuments`} */
+      /** Operation for {@linkcode Combat.updateDocuments} */
       interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Combat.Database.Update> {}
 
-      /** Operation for {@link Combat.deleteDocuments | `Combat.deleteDocuments`} */
+      /** Operation for {@linkcode Combat.deleteDocuments} */
       interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Combat.Database.Delete> {}
 
-      /** Operation for {@link Combat.create | `Combat.create`} */
+      /** Operation for {@linkcode Combat.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Combat.Database.Create<Temporary>> {}
 
@@ -394,7 +394,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link Combat.get | `Combat.get`} */
+      /** Options for {@linkcode Combat.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link Combat._preCreate | `Combat#_preCreate`} */
@@ -403,7 +403,7 @@ declare global {
       /** Options for {@link Combat._onCreate | `Combat#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link Combat._preCreateOperation | `Combat._preCreateOperation`} */
+      /** Operation for {@linkcode Combat._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Combat.Database.Create> {}
 
       /** Operation for {@link Combat._onCreateOperation | `Combat#_onCreateOperation`} */
@@ -415,7 +415,7 @@ declare global {
       /** Options for {@link Combat._onUpdate | `Combat#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link Combat._preUpdateOperation | `Combat._preUpdateOperation`} */
+      /** Operation for {@linkcode Combat._preUpdateOperation} */
       interface PreUpdateOperation extends Combat.Database.Update {}
 
       /** Operation for {@link Combat._onUpdateOperation | `Combat._preUpdateOperation`} */
@@ -433,13 +433,13 @@ declare global {
       /** Options for {@link Combat._onDeleteOperation | `Combat#_onDeleteOperation`} */
       interface OnDeleteOperation extends Combat.Database.Delete {}
 
-      /** Context for {@link Combat._onDeleteOperation | `Combat._onDeleteOperation`} */
+      /** Context for {@linkcode Combat._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<Combat.Parent> {}
 
-      /** Context for {@link Combat._onCreateDocuments | `Combat._onCreateDocuments`} */
+      /** Context for {@linkcode Combat._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<Combat.Parent> {}
 
-      /** Context for {@link Combat._onUpdateDocuments | `Combat._onUpdateDocuments`} */
+      /** Context for {@linkcode Combat._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<Combat.Parent> {}
 
       /**
@@ -520,7 +520,7 @@ declare global {
     >;
 
     /**
-     * @deprecated {@link Combat.Database | `Combat.Database`}
+     * @deprecated Replaced with {@linkcode Combat.Database}
      */
     /* eslint-disable @typescript-eslint/no-empty-object-type */
     interface DatabaseOperations
@@ -534,22 +534,22 @@ declare global {
     /* eslint-enable @typescript-eslint/no-empty-object-type */
 
     /**
-     * @deprecated {@link Combat.SubType | `Combat.SubType`}
+     * @deprecated Replaced with {@linkcode Combat.SubType}
      */
     type TypeNames = Combat.SubType;
 
     /**
-     * @deprecated {@link Combat.CreateData | `Combat.CreateData`}
+     * @deprecated Replaced with {@linkcode Combat.CreateData}
      */
     interface ConstructorData extends Combat.CreateData {}
 
     /**
-     * @deprecated {@link Combat.implementation | `Combat.ImplementationClass`}
+     * @deprecated Replaced with {@link Combat.implementation | `Combat.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Combat.Implementation | `Combat.Implementation`}
+     * @deprecated Replaced with {@linkcode Combat.Implementation}
      */
     type ConfiguredInstance = Implementation;
 
@@ -586,13 +586,12 @@ declare global {
   /**
    * The client-side Combat document which extends the common BaseCombat model.
    *
-   * @see {@link Combats | `Combats`}                       The world-level collection of Combat documents
-   * @see {@link Combatant | `Combatant`}                     The Combatant embedded document which exists within a Combat document
-   * @see {@link CombatConfig | `CombatConfig`}                  The Combat configuration application
+   * @see {@linkcode Combats}                       The world-level collection of Combat documents
+   * @see {@linkcode Combatant}                     The Combatant embedded document which exists within a Combat document
+   * @see {@linkcode CombatConfig}                  The Combat configuration application
    */
-  class Combat<out SubType extends Combat.SubType = Combat.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseCombat,
-  )<SubType> {
+  class Combat<out SubType extends Combat.SubType = Combat.SubType> extends BaseCombat.Internal
+    .ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `Combat`
      * @param context - Construction context options
@@ -746,13 +745,11 @@ declare global {
      */
     protected _refreshTokenHUD(documents: Array<Combatant.Implementation>): void;
 
-    /**
-     * @privateRemarks _onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes from BaseCombat.
-     */
+    //_onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes from BaseCombat.
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class GurpsCombat extends Combat {
      *   protected override _onCreateDescendantDocuments(...args: Combat.OnCreateDescendantDocumentsArgs) {
@@ -770,7 +767,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class Ptr2eCombat extends Combat {
      *   protected override _onUpdateDescendantDocuments(...args: Combat.OnUpdateDescendantDocumentsArgs) {
@@ -788,7 +785,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class BladesCombat extends Combat {
      *   protected override _onDeleteDescendantDocuments(...args: Combat.OnUpdateDescendantDocuments) {
@@ -887,7 +884,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class SwadeCombat extends Combat {
      *   protected override _preCreateDescendantDocuments(...args: Combat.PreCreateDescendantDocumentsArgs) {
@@ -905,7 +902,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class LancerCombat extends Combat {
      *   protected override _preUpdateDescendantDocuments(...args: Combat.OnUpdateDescendantDocuments) {
@@ -923,7 +920,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class KultCombat extends Combat {
      *   protected override _preDeleteDescendantDocuments(...args: Combat.PreDeleteDescendantDocumentsArgs) {

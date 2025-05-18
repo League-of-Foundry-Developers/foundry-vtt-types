@@ -1,7 +1,7 @@
 import type { Brand, Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
 
 declare global {
-  /** @deprecated {@link Quadtree.Object | `Quadtree.Object`} */
+  /** @deprecated Replaced with {@linkcode Quadtree.Object} */
   type QuadtreeObject<T> = Quadtree.Object<T>;
 
   /**
@@ -150,7 +150,7 @@ declare global {
       t: T;
     }
 
-    /** @deprecated {@link Quadtree.Object | `Quadtree.Object`} */
+    /** @deprecated Replaced with {@linkcode Quadtree.Object} */
     type QuadtreeObject<T> = Object<T>;
 
     interface Object<T> extends _ObjectBase<T>, _OptionalSet<T> {}
@@ -230,6 +230,7 @@ declare global {
 
     interface VisualizeOptions extends _VisualizeOptions {}
   }
+
   /**
    * A subclass of Quadtree specifically intended for classifying the location of objects on the game canvas.
    * @remarks Foundry never uses `Quadtree` directly, only this class, and only ever fills it with `PrimaryCanvasObject`s or `PlaceableObject`s

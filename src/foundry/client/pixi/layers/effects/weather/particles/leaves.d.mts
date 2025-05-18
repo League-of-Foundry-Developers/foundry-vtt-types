@@ -9,6 +9,7 @@ declare global {
      * @remarks `options` is completely unused in this subclass, as it gets passed to `#getParticleEmitters`, which, unlike super's method, takes no arguments
      */
     constructor(options?: PIXI.particles.EmitterConfigV3 | null);
+
     /**
      * @defaultValue `"WEATHER.AutumnLeaves"`
      * @remarks A localization key. Appears to be unused in v12.331, probably vestigial, is identical to the

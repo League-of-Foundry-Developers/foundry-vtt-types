@@ -4,7 +4,7 @@ import type Document from "#common/abstract/document.d.mts";
 declare global {
   /**
    * The Camera UI View that displays all the camera feeds as individual video elements.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class CameraViews<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options: Options);

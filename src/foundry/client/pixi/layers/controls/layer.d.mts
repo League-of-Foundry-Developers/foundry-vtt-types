@@ -184,6 +184,7 @@ declare global {
     handlePing(
       user: User.Implementation,
       position: Canvas.Point,
+
       /** @remarks Despite being a `={}` parameter, an object containing a valid `scene` property (a scene ID) must be passed */
       data: ControlsLayer.HandlePingOptions,
     ): Promise<boolean>;

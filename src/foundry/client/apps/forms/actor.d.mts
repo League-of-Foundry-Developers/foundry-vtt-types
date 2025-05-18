@@ -8,7 +8,7 @@ declare global {
    * @param actor   - The Actor instance being displayed within the sheet.
    * @param options - Additional application configuration options.
    *
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options> extends DocumentSheet<
     Actor.Implementation,

@@ -3,7 +3,7 @@ export {};
 declare global {
   /**
    * A singleton Tour Collection class responsible for registering and activating Tours, accessible as game.tours
-   * @see {@link Game.tours | `Game.tours`}
+   * @see {@linkcode Game.tours}
    */
   class Tours extends foundry.utils.Collection<Tour> {
     /** @throws `"You can only have one TourManager instance"` */

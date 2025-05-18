@@ -5,6 +5,7 @@ import type ProseMirrorPlugin from "./plugin.d.mts";
 import type { EmptyObject } from "fvtt-types/utils";
 
 export default ProseMirrorImagePlugin;
+
 /**
  * A class responsible for handle drag-and-drop and pasting of image content. Ensuring no base64 data is injected
  * directly into the journal content and it is instead uploaded to the user's data directory.

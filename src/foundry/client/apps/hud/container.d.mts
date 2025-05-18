@@ -3,7 +3,7 @@ import type { MaybePromise } from "fvtt-types/utils";
 declare global {
   /**
    * Render the HUD container
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class HeadsUpDisplay<Options extends Application.Options = Application.Options> extends Application<Options> {
     /**

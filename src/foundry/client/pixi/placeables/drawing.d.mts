@@ -285,40 +285,40 @@ declare global {
   namespace Drawing {
     /**
      * The implementation of the `Drawing` placeable configured through `CONFIG.Drawing.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link DrawingDocument.Implementation | `DrawingDocument.Implementation`}
+     * Not to be confused with {@linkcode DrawingDocument.Implementation}
      * which refers to the implementation for the drawing document.
      */
     type Implementation = FixedInstanceType<ImplementationClass>;
 
     /**
      * The implementation of the `Drawing` placeable configured through `CONFIG.Drawing.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link DrawingDocument.ImplementationClass | `DrawingDocument.ImplementationClass`}
+     * Not to be confused with {@linkcode DrawingDocument.ImplementationClass}
      * which refers to the implementation for the drawing document.
      */
     // eslint-disable-next-line no-restricted-syntax
     type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Drawing>;
 
     /**
-     * @deprecated {@link ImplementationClass | `ImplementationClass`}
+     * @deprecated Replaced with {@linkcode ImplementationClass}
      */
     type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Implementation | `Implementation`}
+     * @deprecated Replaced with {@linkcode Implementation}
      */
     type Object = Implementation;
 
     /**
-     * @deprecated {@link Drawing.ImplementationClass | `Drawing.ImplementationClass`}
+     * @deprecated Replaced with {@linkcode Drawing.ImplementationClass}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Drawing.Implementation | `Drawing.Implementation`}
+     * @deprecated Replaced with {@linkcode Drawing.Implementation}
      */
     type ConfiguredInstance = Implementation;
 

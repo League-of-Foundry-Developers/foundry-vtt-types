@@ -1,4 +1,4 @@
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -64,7 +64,8 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    */
   can(action: keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES): boolean;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  /** @remarks Returns `.OWNER` for the User in question, `.NONE` for everyone else */
+  override getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Test whether the User has at least a specific permission
@@ -171,7 +172,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override delete(operation?: User.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: User.Database.GetOptions): User.Implementation | null;
+  static override get(documentId: string, options?: User.Database.GetOptions): User.Implementation | null;
 
   static override getCollectionName(name: string): null;
 
@@ -256,16 +257,31 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   static get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
-  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
 
-  protected static _addDataFieldMigration(
-    data: AnyObject,
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static override _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
+
+  // options: not null (parameter default only)
+  protected static override _addDataFieldShim(
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyObject) => unknown,
-  ): unknown;
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
-  protected static _logDataFieldMigration(
+  protected static override _addDataFieldMigration(
+    data: AnyMutableObject,
+    oldKey: string,
+    newKey: string,
+    apply?: ((data: AnyMutableObject) => unknown) | null,
+  ): boolean;
+
+  // options: not null (destructured where forwarded)
+  protected static override _logDataFieldMigration(
     oldKey: string,
     newKey: string,
     options?: LogCompatibilityWarningOptions,
@@ -292,12 +308,11 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static get schema(): SchemaField<User.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: User.Source): void;
 
-  static override fromSource(
-    source: User.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): User.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: User.CreateData, context?: DataModel.FromSourceOptions): User.Implementation;
 
   static override fromJSON(json: string): User.Implementation;
 }
@@ -331,6 +346,14 @@ declare namespace BaseUser {
   export import ActivityData = User.ActivityData;
   export import HasRoleOptions = User.HasRoleOptions;
 
+  namespace Internal {
+    // Note(LukeAbby): The point of this is to give the base class of `User` a name.
+    // The expression `ClientDocumentMixin(BaseUser)` is more intuitive but it has worse
+    // caching, likely due to the majority of tsc's caching working off of names.
+    // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
+    const ClientDocument: ClientDocumentMixin.Mix<typeof BaseUser>;
+  }
+
   /**
    * @deprecated This type is used by Foundry too vaguely.
    * In one context the most correct type is after initialization whereas in another one it should be
@@ -339,12 +362,12 @@ declare namespace BaseUser {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseUser.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseUser.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseUser.CreateData | `BaseUser.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseUser.CreateData}
    */
   type ConstructorData = BaseUser.CreateData;
 }

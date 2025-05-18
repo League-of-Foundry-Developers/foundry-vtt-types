@@ -3,6 +3,7 @@ import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 
 import fields = foundry.data.fields;
+import type BaseAmbientSound from "#common/documents/ambient-sound.mjs";
 
 declare global {
   namespace AmbientSoundDocument {
@@ -23,13 +24,13 @@ declare global {
 
     /**
      * The implementation of the `AmbientSoundDocument` document instance configured through `CONFIG.AmbientSound.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `AmbientSoundDocument` document configured through `CONFIG.AmbientSound.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -103,7 +104,7 @@ declare global {
     type Collection = never;
 
     /**
-     * An instance of `AmbientSoundDocument` that comes from the database but failed validation meaining that
+     * An instance of `AmbientSoundDocument` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<AmbientSoundDocument.Implementation> {}
@@ -118,20 +119,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link AmbientSoundDocument.Source | `AmbientSoundDocument.Source`}
+     * @deprecated Replaced with {@linkcode AmbientSoundDocument.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link AmbientSoundDocument.create | `AmbientSoundDocument.create`}
+     * The data necessary to create a document. Used in places like {@linkcode AmbientSoundDocument.create}
      * and {@link AmbientSoundDocument | `new AmbientSoundDocument(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -141,7 +142,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link AmbientSoundDocument.name | `AmbientSoundDocument#name`}.
      *
-     * This is data transformed from {@link AmbientSoundDocument.Source | `AmbientSoundDocument.Source`} and turned into more
+     * This is data transformed from {@linkcode AmbientSoundDocument.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -155,10 +156,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link AmbientSoundDocument | `AmbientSoundDocument`}. This is the source of truth for how an AmbientSoundDocument document
+     * The schema for {@linkcode AmbientSoundDocument}. This is the source of truth for how an AmbientSoundDocument document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link AmbientSoundDocument | `AmbientSoundDocument`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode AmbientSoundDocument}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -308,19 +309,19 @@ declare global {
           AmbientSoundDocument.Parent
         > {}
 
-      /** Operation for {@link AmbientSoundDocument.createDocuments | `AmbientSoundDocument.createDocuments`} */
+      /** Operation for {@linkcode AmbientSoundDocument.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<AmbientSoundDocument.Database.Create<Temporary>> {}
 
-      /** Operation for {@link AmbientSoundDocument.updateDocuments | `AmbientSoundDocument.updateDocuments`} */
+      /** Operation for {@linkcode AmbientSoundDocument.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<AmbientSoundDocument.Database.Update> {}
 
-      /** Operation for {@link AmbientSoundDocument.deleteDocuments | `AmbientSoundDocument.deleteDocuments`} */
+      /** Operation for {@linkcode AmbientSoundDocument.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<AmbientSoundDocument.Database.Delete> {}
 
-      /** Operation for {@link AmbientSoundDocument.create | `AmbientSoundDocument.create`} */
+      /** Operation for {@linkcode AmbientSoundDocument.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<AmbientSoundDocument.Database.Create<Temporary>> {}
 
@@ -329,7 +330,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link AmbientSoundDocument.get | `AmbientSoundDocument.get`} */
+      /** Options for {@linkcode AmbientSoundDocument.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link AmbientSoundDocument._preCreate | `AmbientSoundDocument#_preCreate`} */
@@ -338,7 +339,7 @@ declare global {
       /** Options for {@link AmbientSoundDocument._onCreate | `AmbientSoundDocument#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link AmbientSoundDocument._preCreateOperation | `AmbientSoundDocument._preCreateOperation`} */
+      /** Operation for {@linkcode AmbientSoundDocument._preCreateOperation} */
       interface PreCreateOperation
         extends Document.Database.PreCreateOperationStatic<AmbientSoundDocument.Database.Create> {}
 
@@ -351,7 +352,7 @@ declare global {
       /** Options for {@link AmbientSoundDocument._onUpdate | `AmbientSoundDocument#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link AmbientSoundDocument._preUpdateOperation | `AmbientSoundDocument._preUpdateOperation`} */
+      /** Operation for {@linkcode AmbientSoundDocument._preUpdateOperation} */
       interface PreUpdateOperation extends AmbientSoundDocument.Database.Update {}
 
       /** Operation for {@link AmbientSoundDocument._onUpdateOperation | `AmbientSoundDocument._preUpdateOperation`} */
@@ -369,13 +370,13 @@ declare global {
       /** Options for {@link AmbientSoundDocument._onDeleteOperation | `AmbientSoundDocument#_onDeleteOperation`} */
       interface OnDeleteOperation extends AmbientSoundDocument.Database.Delete {}
 
-      /** Context for {@link AmbientSoundDocument._onDeleteOperation | `AmbientSoundDocument._onDeleteOperation`} */
+      /** Context for {@linkcode AmbientSoundDocument._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<AmbientSoundDocument.Parent> {}
 
-      /** Context for {@link AmbientSoundDocument._onCreateDocuments | `AmbientSoundDocument._onCreateDocuments`} */
+      /** Context for {@linkcode AmbientSoundDocument._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<AmbientSoundDocument.Parent> {}
 
-      /** Context for {@link AmbientSoundDocument._onUpdateDocuments | `AmbientSoundDocument._onUpdateDocuments`} */
+      /** Context for {@linkcode AmbientSoundDocument._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<AmbientSoundDocument.Parent> {}
 
       /**
@@ -420,23 +421,23 @@ declare global {
     }
 
     /**
-     * @deprecated {@link AmbientSoundDocument.Database | `AmbientSoundDocument.DatabaseOperation`}
+     * @deprecated Replaced with {@link AmbientSoundDocument.Database | `AmbientSoundDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<AmbientSoundDocument.Implementation> {}
 
     /**
-     * @deprecated {@link AmbientSoundDocument.CreateData | `AmbientSoundDocument.CreateData`}
+     * @deprecated Replaced with {@linkcode AmbientSoundDocument.CreateData}
      */
     interface ConstructorData extends AmbientSoundDocument.CreateData {}
 
     /**
-     * @deprecated {@link AmbientSoundDocument.implementation | `AmbientSoundDocument.ImplementationClass`}
+     * @deprecated Replaced with {@link AmbientSoundDocument.implementation | `AmbientSoundDocument.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link AmbientSoundDocument.Implementation | `AmbientSoundDocument.Implementation`}
+     * @deprecated Replaced with {@linkcode AmbientSoundDocument.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -444,10 +445,10 @@ declare global {
   /**
    * The client-side AmbientSound document which extends the common BaseAmbientSound document model.
    *
-   * @see {@link Scene | `Scene`}                   The Scene document type which contains AmbientSound documents
-   * @see {@link AmbientSoundConfig | `AmbientSoundConfig`}      The AmbientSound configuration application
+   * @see {@linkcode Scene}                   The Scene document type which contains AmbientSound documents
+   * @see {@linkcode AmbientSoundConfig}      The AmbientSound configuration application
    */
-  class AmbientSoundDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientSound) {
+  class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `AmbientSoundDocument`
      * @param context - Construction context options

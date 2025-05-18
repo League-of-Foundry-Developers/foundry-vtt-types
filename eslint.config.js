@@ -1,10 +1,12 @@
-// @ts-check
+// In this file JSDoc is used simply to bring proper types, not documentation.
+/* eslint-disable jsdoc/no-types, jsdoc/require-param-description, jsdoc/require-returns-description */
 
 import globals from "globals";
 import { includeIgnoreFile } from "@eslint/compat";
 import js from "@eslint/js";
 import tsESLint from "typescript-eslint";
 import tsParser from "@typescript-eslint/parser";
+import jsdoc from "eslint-plugin-jsdoc";
 import eslintConfigPrettier from "eslint-config-prettier";
 import tsdoc from "eslint-plugin-tsdoc";
 import importPlugin from "eslint-plugin-import-x";
@@ -244,6 +246,7 @@ for (const placeable of placeables) {
 const rules = [
   includeIgnoreFile(path.resolve(dirname, ".gitignore")),
   js.configs.recommended,
+  jsdoc.configs["flat/recommended-typescript"],
   ...tsESLint.configs.strictTypeChecked,
   ...tsESLint.configs.stylisticTypeChecked,
   importPlugin.flatConfigs.recommended,
@@ -265,6 +268,7 @@ const rules = [
       sourceType: "module",
     },
     plugins: {
+      jsdoc,
       tsdoc,
     },
     rules: {
@@ -359,6 +363,25 @@ const rules = [
       "import-x/no-useless-path-segments": "warn",
       "import-x/no-webpack-loader-syntax": "error",
       "import-x/no-named-as-default-member": "off",
+
+      // Adding our own JSDoc would be unlikely
+      "jsdoc/check-param-names": [
+        "error",
+        {
+          checkDestructured: false,
+        },
+      ],
+      "jsdoc/check-tag-names": [
+        "error",
+        {
+          definedTags: ["remarks", "privateRemarks", "defaultValue", "typeParam", "immediate"],
+        },
+      ],
+      "jsdoc/lines-before-block": "error",
+      "jsdoc/require-jsdoc": "off",
+      "jsdoc/require-param": "off",
+      "jsdoc/require-returns": "off",
+      "jsdoc/tag-lines": "off",
 
       "tsdoc/syntax": "warn",
 

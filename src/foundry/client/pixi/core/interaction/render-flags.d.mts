@@ -168,8 +168,10 @@ declare global {
     type RENDER_FLAGS = Record<string, RenderFlag.Any>;
 
     /**
-     * @internal This type exists only to make sure `ToBooleanFlags` isn't a homomorphic mapped type
+     * This type exists only to make sure `ToBooleanFlags` isn't a homomorphic mapped type
      * to avoid keeping documentation.
+     *
+     * @internal
      */
     type _KeyOf<T> = keyof T;
 

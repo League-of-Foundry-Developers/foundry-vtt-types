@@ -3,7 +3,7 @@ import type { MaybePromise } from "fvtt-types/utils";
 declare global {
   /**
    * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for Drawing objects.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class DrawingHUD<Options extends Application.Options = Application.Options> extends BasePlaceableHUD<
     Drawing.Implementation,

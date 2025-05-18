@@ -16,7 +16,7 @@ import type RollResolver from "../applications/dice/roll-resolver.d.mts";
  * An interface and API for constructing and evaluating dice rolls.
  * The basic structure for a dice roll is a string formula and an object of data against which to parse it.
  *
- * @typeParam D - the type of data object against which to parse attributes within the formula
+ * @template D - the type of data object against which to parse attributes within the formula
  *
  * @example Attack with advantage!
  * ```typescript
@@ -276,7 +276,7 @@ declare class Roll<D extends AnyObject = EmptyObject> {
 
   /**
    * A factory method which constructs a Roll instance using the default configured Roll class.
-   * @typeParam D - the type of data object against which to parse attributes within the formula
+   * @template D - the type of data object against which to parse attributes within the formula
    * @param formula - The formula used to create the Roll instance
    * @param data    - The data object which provides component data for the formula
    * @param options - Additional options which modify or describe this Roll
@@ -373,6 +373,7 @@ declare class Roll<D extends AnyObject = EmptyObject> {
        * If null, the unmatched key is left as-is.
        */
       missing?: string;
+
       /**
        * Display a warning notification when encountering an un-matched key.
        * (default: `false`)
@@ -482,10 +483,9 @@ declare class Roll<D extends AnyObject = EmptyObject> {
   static collapseInlineResult(a: HTMLAnchorElement): void;
 
   /**
-     * Construct an inline roll link for this Roll.
-     * @param object - Additional options to configure how the link is constructed.
-
-     */
+   * Construct an inline roll link for this Roll.
+   * @param object - Additional options to configure how the link is constructed.
+   */
   toAnchor(options?: InexactPartial<Roll.ToAnchorOptions>): HTMLAnchorElement;
 
   /**
@@ -548,6 +548,7 @@ declare namespace Roll {
      * @defaultValue `true`
      */
     allowInteractive?: boolean | undefined;
+
     /**
      * Throw an Error if the Roll contains non-deterministic terms that cannot be evaluated synchronously.
      *  If this is set to false, non-deterministic terms will be ignored.

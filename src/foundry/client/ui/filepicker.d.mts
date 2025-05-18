@@ -2,14 +2,14 @@ import type { EmptyObject, MaybePromise, ValueOf } from "fvtt-types/utils";
 
 declare global {
   /**
-   * @deprecated {@link FilePicker.Options | `FilePicker.Options`}
+   * @deprecated Replaced with {@linkcode FilePicker.Options}
    */
   type FilePickerOptions = FilePicker.Options;
 
   /**
    * The FilePicker application renders contents of the server-side public directory.
    * This app allows for navigating and uploading files to the public path.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class FilePicker<Options extends FilePicker.Options = FilePicker.Options> extends Application<Options> {
     /**
@@ -387,8 +387,10 @@ declare global {
     interface FavoriteFolder {
       /** The source of the folder (e.g. "data", "public") */
       source: string;
+
       /** The full path to the folder */
       path: string;
+
       /** The label for the path */
       label: string;
     }

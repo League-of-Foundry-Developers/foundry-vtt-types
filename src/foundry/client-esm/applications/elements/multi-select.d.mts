@@ -42,6 +42,7 @@ export abstract class AbstractMultiSelectElement extends AbstractFormInputElemen
 
   protected override _setValue(value: string[]): void;
 }
+
 /**
  * Provide a multi-select workflow using a select element as the input mechanism.
  *
@@ -74,6 +75,7 @@ export class HTMLMultiSelectElement extends AbstractMultiSelectElement {
    */
   static create(config: FormInputConfig<string[]> & Omit<SelectInputConfig, "blank">): HTMLMultiSelectElement;
 }
+
 /**
  * Provide a multi-select workflow as a grid of input checkbox elements.
  *

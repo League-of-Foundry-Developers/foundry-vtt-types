@@ -33,10 +33,13 @@ declare namespace ProseMirrorHighlightMatchesPlugin {
       position: InexactPartial<{
         /** Explicit top position for the tooltip */
         top?: string;
+
         /** Explicit right position for the tooltip */
         right?: string;
+
         /** Explicit bottom position for the tooltip */
         bottom?: string;
+
         /** Explicit left position for the tooltip */
         left?: string;
       }>,
@@ -67,7 +70,7 @@ declare namespace ProseMirrorHighlightMatchesPlugin {
 }
 
 /**
- * A ProseMirrorPlugin wrapper around the {@link PossibleMatchesTooltip | `PossibleMatchesTooltip`} class.
+ * A ProseMirrorPlugin wrapper around the {@linkcode PossibleMatchesTooltip} class.
  */
 declare class ProseMirrorHighlightMatchesPlugin extends ProseMirrorPlugin {
   /**

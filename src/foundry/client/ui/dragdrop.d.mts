@@ -2,14 +2,14 @@ import type { InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
-   * @deprecated {@link DragDrop.Configuration | `DragDrop.Configuration`}
+   * @deprecated Replaced with {@linkcode DragDrop.Configuration}
    */
   type DragDropConfiguration = DragDrop.Configuration;
 
   /**
    * A controller class for managing drag and drop workflows within an Application instance.
    * The controller manages the following actions: dragstart, dragover, drop
-   * @see {@link Application | `Application`}
+   * @see {@linkcode Application}
    *
    * @example Activate drag-and-drop handling for a certain set of elements
    * ```typescript

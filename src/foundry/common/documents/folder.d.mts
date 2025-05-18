@@ -1,4 +1,4 @@
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -106,6 +106,12 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 
   override delete(operation?: Folder.Database.DeleteOperation): Promise<this | undefined>;
 
+  /**
+   * @remarks Actual override, not just Document template typing.
+   *
+   * Never returns an index entry, only ever `Folder` or `null`, as the `folders` collection of a
+   * compendium is accessible at sync speed
+   */
   static override get(documentId: string, options?: Folder.Database.GetOptions): Folder.Implementation | null;
 
   static override getCollectionName(name: string): null;
@@ -189,21 +195,35 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
 
-  protected static _addDataFieldMigration(
-    data: AnyObject,
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static override _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
+
+  // options: not null (parameter default only)
+  protected static override _addDataFieldShim(
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyObject) => unknown,
-  ): unknown;
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
-  protected static _logDataFieldMigration(
+  protected static override _addDataFieldMigration(
+    data: AnyMutableObject,
+    oldKey: string,
+    newKey: string,
+    apply?: ((data: AnyMutableObject) => unknown) | null,
+  ): boolean;
+
+  // options: not null (destructured where forwarded)
+  protected static override _logDataFieldMigration(
     oldKey: string,
     newKey: string,
     options?: LogCompatibilityWarningOptions,
   ): void;
-
   protected static _onCreateDocuments(
     documents: Folder.Implementation[],
     context: Document.ModificationContext<Folder.Parent>,
@@ -225,12 +245,14 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 
   static get schema(): SchemaField<Folder.Schema>;
 
+  /**
+   * @remarks Actual override, not just part of the template
+   * @throws If `data.folder === data._id` (no putting folders inside themselves)
+   */
   static validateJoint(data: Folder.Source): void;
 
-  static override fromSource(
-    source: Folder.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
-  ): Folder.Implementation;
+  // options: not null (parameter default only, destructured in super)
+  static override fromSource(source: Folder.CreateData, context?: DataModel.FromSourceOptions): Folder.Implementation;
 
   static override fromJSON(json: string): Folder.Implementation;
 }
@@ -262,6 +284,14 @@ declare namespace BaseFolder {
   export import DatabaseOperation = Folder.Database;
   export import Flags = Folder.Flags;
 
+  namespace Internal {
+    // Note(LukeAbby): The point of this is to give the base class of `Folder` a name.
+    // The expression `ClientDocumentMixin(BaseFolder)` is more intuitive but it has worse
+    // caching, likely due to the majority of tsc's caching working off of names.
+    // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
+    const ClientDocument: ClientDocumentMixin.Mix<typeof BaseFolder>;
+  }
+
   /**
    * @deprecated This type is used by Foundry too vaguely.
    * In one context the most correct type is after initialization whereas in another one it should be
@@ -269,16 +299,16 @@ declare namespace BaseFolder {
    */
   type Properties = SchemaField.InitializedData<Schema>;
 
-  /** @deprecated {@link BaseFolder.SubType | `BaseFolder.SubType`} */
+  /** @deprecated Replaced with {@linkcode BaseFolder.SubType} */
   type TypeNames = SubType;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseFolder.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseFolder.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseFolder.CreateData | `BaseFolder.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseFolder.CreateData}
    */
   type ConstructorData = BaseFolder.CreateData;
 }

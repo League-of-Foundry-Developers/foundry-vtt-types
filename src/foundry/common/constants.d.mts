@@ -97,25 +97,25 @@ export type BASE_DOCUMENT_TYPE = "base";
 export declare const CARD_DRAW_MODES: Readonly<{
   /**
    * Draw the first card from the stack
-   * Synonymous with @see {@link CARD_DRAW_MODES.TOP | `CARD_DRAW_MODES.TOP`}
+   * Synonymous with @see {@linkcode CARD_DRAW_MODES.TOP}
    */
   FIRST: 0 & CARD_DRAW_MODES;
 
   /**
    * Draw the top card from the stack
-   * Synonymous with @see {@link CARD_DRAW_MODES.FIRST | `CARD_DRAW_MODES.FIRST`}
+   * Synonymous with @see {@linkcode CARD_DRAW_MODES.FIRST}
    */
   TOP: 0 & CARD_DRAW_MODES;
 
   /**
    * Draw the last card from the stack
-   * Synonymous with @see {@link CARD_DRAW_MODES.BOTTOM | `CARD_DRAW_MODES.BOTTOM`}
+   * Synonymous with @see {@linkcode CARD_DRAW_MODES.BOTTOM}
    */
   LAST: 1 & CARD_DRAW_MODES;
 
   /**
    * Draw the bottom card from the stack
-   * Synonymous with @see {@link CARD_DRAW_MODES.LAST | `CARD_DRAW_MODES.LAST`}
+   * Synonymous with @see {@linkcode CARD_DRAW_MODES.LAST}
    */
   BOTTOM: 1 & CARD_DRAW_MODES;
 
@@ -898,7 +898,7 @@ export type JOURNAL_ENTRY_PAGE_FORMATS = Brand<number, "constants.JOURNAL_ENTRY_
 
 /**
  * Define the valid anchor locations for a Tooltip displayed on a Placeable Object
- * @see {@link TooltipManager | `TooltipManager`}
+ * @see {@linkcode TooltipManager}
  */
 export declare const TEXT_ANCHOR_POINTS: Readonly<{
   /**
@@ -1706,6 +1706,7 @@ interface _AUDIO_FILE_EXTENSIONS {
   wav: "audio/wav";
   webm: "audio/webm";
 }
+
 /**
  * The supported file extensions for audio-type files, and their corresponding mime types.
  */
@@ -1723,6 +1724,7 @@ interface _TEXT_FILE_EXTENSIONS {
   yml: "application/yaml";
   yaml: "application/yaml";
 }
+
 /**
  * The supported file extensions for text files, and their corresponding mime types.
  */
@@ -1735,6 +1737,7 @@ interface _FONT_FILE_EXTENSIONS {
   woff: "font/woff";
   woff2: "font/woff2";
 }
+
 /**
  * Supported file extensions for font files, and their corresponding mime types.
  */
@@ -1750,6 +1753,7 @@ interface _GRAPHICS_FILE_EXTENSIONS {
   stl: "model/stl";
   usdz: "model/vnd.usdz+zip";
 }
+
 /**
  * Supported file extensions for 3D files, and their corresponding mime types.
  */

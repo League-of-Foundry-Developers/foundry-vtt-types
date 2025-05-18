@@ -6,8 +6,8 @@ type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;
 declare global {
   /**
    * The primary Canvas group which generally contains tangible physical objects which exist within the Scene.
-   * This group is a {@link CachedContainer | `CachedContainer`} which is rendered to the Scene as a {@link SpriteMesh | `SpriteMesh`}.
-   * This allows the rendered result of the Primary Canvas Group to be affected by a {@link BaseSamplerShader | `BaseSamplerShader`}.
+   * This group is a {@linkcode CachedContainer} which is rendered to the Scene as a {@linkcode SpriteMesh}.
+   * This allows the rendered result of the Primary Canvas Group to be affected by a {@linkcode BaseSamplerShader}.
    */
   class PrimaryCanvasGroup<
     DrawOptions extends PrimaryCanvasGroup.DrawOptions = PrimaryCanvasGroup.DrawOptions,

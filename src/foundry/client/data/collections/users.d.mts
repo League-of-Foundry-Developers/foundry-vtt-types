@@ -6,7 +6,7 @@ declare global {
    * The singleton collection of User documents which exist within the active World.
    * This Collection is accessible within the Game object as game.users.
    *
-   * @see {@link User | `User`} The User document
+   * @see {@linkcode User} The User document
    */
   class Users extends WorldCollection<User.ImplementationClass, "Users"> {
     constructor(data?: User.Source[]);

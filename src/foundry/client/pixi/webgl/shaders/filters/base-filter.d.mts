@@ -30,6 +30,7 @@ declare global {
      */
     static create<ThisType extends AbstractBaseFilter.AnyConstructor>(
       this: ThisType,
+
       /**
        * @defaultValue `{}`
        */

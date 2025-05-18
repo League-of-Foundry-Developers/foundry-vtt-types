@@ -5,7 +5,7 @@
  * @param data           - The data of the Request
  *                         (defalt: `{}`)
  * @param timeoutOptions - (default: `{}`)
- * @throws {@link HttpError | `HttpError`}
+ * @throws {@linkcode HttpError}
  */
 export declare function fetchWithTimeout(
   url: string,

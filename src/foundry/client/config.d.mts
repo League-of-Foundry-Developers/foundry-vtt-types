@@ -63,6 +63,7 @@ declare global {
       type FulfillmentHandler = (
         /** The term being fulfilled. */
         term: foundry.dice.terms.DiceTerm,
+
         /** Additional options to configure fulfillment. */
         options?: AnyObject,
       ) => Promise<number | void>;
@@ -240,7 +241,7 @@ declare global {
      * include or specifically exclude certain file paths or warning messages.
      * Exclusion rules take precedence over inclusion rules.
      *
-     * @see {@link CONST.COMPATIBILITY_MODES | `CONST.COMPATIBILITY_MODES`}
+     * @see {@linkcode CONST.COMPATIBILITY_MODES}
      *
      * @example Include Specific Errors
      * ```js
@@ -424,8 +425,10 @@ declare global {
       typeIcons: {
         /** @defaultValue `"fas fa-cards"` */
         deck: string;
+
         /** @defaultValue `"fa-duotone fa-cards"` */
         hand: string;
+
         /** @defaultValue `"fa-duotone fa-layer-group"` */
         pile: string;
 
@@ -929,7 +932,7 @@ declare global {
      *   padding: 1
      * })
      * ```
-     **/
+     */
     canvasTextStyle: PIXI.TextStyle;
 
     /**
@@ -1070,7 +1073,7 @@ declare global {
        *   }]
        * }
        * ```
-       * */
+       */
       snow: WeatherEffects.AmbienceConfiguration;
 
       /**
@@ -1575,10 +1578,13 @@ declare global {
 
         /** @defaultValue `"fas fa-file-image"` */
         image: string;
+
         /** @defaultValue `"fas fa-file-pdf"` */
         pdf: string;
+
         /** @defaultValue `"fas fa-file-lines"` */
         text: string;
+
         /** @defaultValue `"fas fa-file-video"` */
         video: string;
       };

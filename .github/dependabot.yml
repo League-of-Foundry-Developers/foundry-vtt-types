@@ -6,6 +6,10 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "npm"
+    allow:
+      # Only development dependencies can be updated due to the perculiar nature of fvtt-types.
+      # Specifically
+      - dependency-type: development
     groups:
       everything:
         patterns:
@@ -13,22 +17,3 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    ignore:
-      - dependency-name: "@pixi/graphics-smooth"
-      - dependency-name: "@pixi/particle-emitter"
-      - dependency-name: "@types/jquery"
-      - dependency-name: "@types/showdown"
-      - dependency-name: "@types/simple-peer"
-      - dependency-name: "@types/youtube"
-      - dependency-name: "handlebars"
-      - dependency-name: "pixi.js"
-      - dependency-name: "prosemirror-collab"
-      - dependency-name: "prosemirror-inputrules"
-      - dependency-name: "prosemirror-keymap"
-      - dependency-name: "prosemirror-model"
-      - dependency-name: "prosemirror-schema-list"
-      - dependency-name: "prosemirror-state"
-      - dependency-name: "prosemirror-transform"
-      - dependency-name: "prosemirror-view"
-      - dependency-name: "socket.io-client"
-      - dependency-name: "tinymce"

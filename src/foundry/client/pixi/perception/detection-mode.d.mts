@@ -23,7 +23,7 @@ declare global {
 
     /**
      * The type of the detection mode.
-     * @see {@link CONST.WALL_RESTRICTION_TYPES | `CONST.WALL_RESTRICTION_TYPES`}
+     * @see {@linkcode CONST.WALL_RESTRICTION_TYPES}
      * @remarks Set via `Object.defineProperty` with a frozen object, so `readonly` is justified both here and for the interface properties
      */
     static readonly DETECTION_TYPES: DetectionMode.DetectionTypes;
@@ -155,10 +155,13 @@ declare global {
     interface DetectionTypes {
       /** Sight, and anything depending on light perception */
       readonly SIGHT: 0 & DETECTION_TYPES;
+
       /** What you can hear. Includes echolocation for bats per example */
       readonly SOUND: 1 & DETECTION_TYPES;
+
       /** This is mostly a sense for touch and vibration, like tremorsense, movement detection, etc. */
       readonly MOVE: 2 & DETECTION_TYPES;
+
       /** Can't fit in other types (smell, life sense, trans-dimensional sense, sense of humor...) */
       readonly OTHER: 3 & DETECTION_TYPES;
     }

@@ -4,7 +4,7 @@ declare global {
   /**
    * A Macro configuration sheet
    *
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class MacroConfig<
     Options extends DocumentSheet.Options<Macro.Implementation> = DocumentSheet.Options<Macro.Implementation>,

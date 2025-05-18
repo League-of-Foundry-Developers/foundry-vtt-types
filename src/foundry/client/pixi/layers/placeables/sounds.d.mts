@@ -36,7 +36,7 @@ declare global {
      *  zIndex: 900
      * })
      * ```
-     * */
+     */
 
     static override get layerOptions(): SoundsLayer.LayerOptions;
 
@@ -143,6 +143,7 @@ declare global {
      */
     playAtPosition(
       src: string,
+
       /** @privateRemarks The examples in the docs show passing a simple `{x, y}` object here, so unlike other places in this layer `Canvas.Point` is appropriate */
       origin: Canvas.Point,
       radius: number,

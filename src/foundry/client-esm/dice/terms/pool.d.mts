@@ -220,7 +220,7 @@ declare namespace PoolTerm {
   /**
    * @remarks This interface is not defined by foundry itself. It only exists
    * to allow module and system authors to use it for declaration merging,
-   * enabling them to add additional modifiers for {@link PoolTerm | `PoolTerm`}s.
+   * enabling them to add additional modifiers for {@linkcode PoolTerm}s.
    */
   interface Modifiers {
     k: "keep";

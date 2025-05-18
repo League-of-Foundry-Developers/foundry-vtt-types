@@ -272,7 +272,7 @@ declare global {
     /**
      * Configure whether filter textures are cleared after binding.
      *
-     * Filter textures need not be cleared if the filter does not use pixel blending. {@link PIXI.CLEAR_MODES.BLIT | `PIXI.CLEAR_MODES.BLIT`} will detect
+     * Filter textures need not be cleared if the filter does not use pixel blending. {@linkcode PIXI.CLEAR_MODES.BLIT} will detect
      * this and skip clearing as an optimization.
      */
     const CLEAR_MODES: {
@@ -291,7 +291,7 @@ declare global {
       /** Always clear the filter texture. */
       CLEAR: 1 & CLEAR_MODES;
 
-      /** Clear only if {@link PIXI.FilterSystem.forceClear | `PIXI.FilterSystem.forceClear`} is set or if the filter uses pixel blending. */
+      /** Clear only if {@linkcode PIXI.FilterSystem.forceClear} is set or if the filter uses pixel blending. */
       BLIT: 2 & CLEAR_MODES;
     };
 
@@ -440,7 +440,7 @@ declare global {
     /**
      * The gc modes that are supported by pixi.
      *
-     * The {@link PIXI.TextureGCSystem.defaultMode | `PIXI.TextureGCSystem.defaultMode`} Garbage Collection mode for PixiJS textures is AUTO
+     * The {@linkcode PIXI.TextureGCSystem.defaultMode} Garbage Collection mode for PixiJS textures is AUTO
      * If set to GC_MODE, the renderer will occasionally check textures usage. If they are not
      * used for a specified period of time they will be removed from the GPU. They will of course
      * be uploaded again when they are required. This is a silent behind the scenes process that
@@ -633,7 +633,7 @@ declare global {
     /**
      * Mipmap filtering modes that are supported by pixi.
      *
-     * The {@link PIXI.BaseTexture.defaultOptions.mipmap | `PIXI.BaseTexture.defaultOptions.mipmap`} affects default texture filtering.
+     * The {@linkcode PIXI.BaseTexture.defaultOptions.mipmap} affects default texture filtering.
      * Mipmaps are generated for a baseTexture if its `mipmap` field is `ON`,
      * or its `POW2` and texture dimensions are powers of 2.
      * Since WebGL 1 don't support mipmap for non-power-of-two textures,
@@ -736,7 +736,7 @@ declare global {
     /**
      * The scale modes that are supported by pixi.
      *
-     * The {@link PIXI.BaseTexture.defaultOptions.scaleMode | `PIXI.BaseTexture.defaultOptions.scaleMode`} scale mode affects the default scaling mode of future operations.
+     * The {@linkcode PIXI.BaseTexture.defaultOptions.scaleMode} scale mode affects the default scaling mode of future operations.
      * It can be re-assigned to either LINEAR or NEAREST, depending upon suitability.
      */
     const SCALE_MODES: {
@@ -902,24 +902,24 @@ declare global {
 
     /**
      * Represents the update priorities used by internal PIXI classes when registered with
-     * the {@link PIXI.Ticker | `PIXI.Ticker`} object. Higher priority items are updated first and lower
+     * the {@linkcode PIXI.Ticker} object. Higher priority items are updated first and lower
      * priority items, such as render, should go later.
      * @remarks Includes Foundry's additions of `OBJECTS`, `PRIMARY`, and `PERCEPTION`
      */
     const UPDATE_PRIORITY: {
-      /** Highest priority used for interaction events in {@link PIXI.EventSystem | `PIXI.EventSystem`} */
+      /** Highest priority used for interaction events in {@linkcode PIXI.EventSystem} */
       INTERACTION: 50 & UPDATE_PRIORITY;
 
-      /** High priority updating, used by {@link PIXI.AnimatedSprite | `PIXI.AnimatedSprite`} */
+      /** High priority updating, used by {@linkcode PIXI.AnimatedSprite} */
       HIGH: 25 & UPDATE_PRIORITY;
 
       /** Default priority for ticker events, see {@link PIXI.Ticker.add | `PIXI.Ticker#add`}. */
       NORMAL: 0 & UPDATE_PRIORITY;
 
-      /** Low priority used for {@link PIXI.Application | `PIXI.Application`} rendering. */
+      /** Low priority used for {@linkcode PIXI.Application} rendering. */
       LOW: 25 & UPDATE_PRIORITY;
 
-      /** Lowest priority used for {@link PIXI.BasePrepare | `PIXI.BasePrepare`} utility. */
+      /** Lowest priority used for {@linkcode PIXI.BasePrepare} utility. */
       UTILITY: 50 & UPDATE_PRIORITY;
 
       /** @remarks Foundry addition, defined as `HIGH - 2` */

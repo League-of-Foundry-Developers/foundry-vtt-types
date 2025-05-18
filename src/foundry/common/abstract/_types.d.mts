@@ -106,7 +106,7 @@ export interface DatabaseCreateOperation<
    */
   parentUuid?: string | null;
 
-  /** @privateRemarks these are added from WorldCollection.importFromCompendium() **/
+  /** @privateRemarks these are added from WorldCollection.importFromCompendium() */
   fromCompendium?: boolean;
 
   /**

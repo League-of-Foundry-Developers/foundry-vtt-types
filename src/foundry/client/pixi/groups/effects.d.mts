@@ -11,7 +11,7 @@ declare global {
    *  - [TODO] A change in a darkness source should re-initialize all overlaping light and vision source.
    *
    * ### Hook Events
-   * - {@link hookEvents.lightingRefresh | `hookEvents.lightingRefresh`}
+   * - {@linkcode hookEvents.lightingRefresh}
    */
   class EffectsCanvasGroup<
     DrawOptions extends EffectsCanvasGroup.DrawOptions = EffectsCanvasGroup.DrawOptions,

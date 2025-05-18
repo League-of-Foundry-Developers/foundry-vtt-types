@@ -5,7 +5,7 @@ declare global {
    * The Module Management Application.
    * This application provides a view of which modules are available to be used and allows for configuration of the
    * set of modules which are active within the World.
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   class ModuleManagement<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     FormApplication.NoObject,

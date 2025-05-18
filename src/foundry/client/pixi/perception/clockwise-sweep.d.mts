@@ -3,7 +3,7 @@ import type Edge from "#client-esm/canvas/edges/edge.d.mts";
 
 declare global {
   /**
-   * @deprecated {@link ClockwiseSweepPolygon.Ray | `ClockwiseSweepPolygon.Ray`}
+   * @deprecated Replaced with {@linkcode ClockwiseSweepPolygon.Ray}
    */
   type PolygonRay = ClockwiseSweepPolygon.Ray;
 

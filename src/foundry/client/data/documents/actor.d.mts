@@ -28,13 +28,13 @@ declare global {
 
     /**
      * The implementation of the `Actor` document instance configured through `CONFIG.Actor.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<"Actor">;
 
     /**
      * The implementation of the `Actor` document configured through `CONFIG.Actor.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<"Actor">;
 
@@ -80,12 +80,12 @@ declare global {
     /**
      * Allowed subtypes of `Actor`. This is configured through various methods. Modern Foundry
      * recommends registering using [Data Models](https://foundryvtt.com/article/system-data-models/)
-     * under {@link CONFIG.Actor.dataModels | `CONFIG.Actor.dataModels`}. This corresponds to
-     * fvtt-type's {@link DataModelConfig | `DataModelConfig`}.
+     * under {@linkcode CONFIG.Actor.dataModels}. This corresponds to
+     * fvtt-type's {@linkcode DataModelConfig}.
      *
      * Subtypes can also be registered through a `template.json` though this is discouraged.
-     * The corresponding fvtt-type configs are {@link SourceConfig | `SourceConfig`} and
-     * {@link DataConfig | `DataConfig`}.
+     * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
+     * {@linkcode DataConfig}.
      */
     type SubType = Game.Model.TypeNames<"Actor">;
 
@@ -229,7 +229,7 @@ declare global {
     type Collection = Actors.Configured;
 
     /**
-     * An instance of `Actor` that comes from the database but failed validation meaining that
+     * An instance of `Actor` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends Actor.SubType = Actor.SubType> extends Document.Invalid<OfType<SubType>> {}
@@ -244,20 +244,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link Actor.Source | `Actor.Source`}
+     * @deprecated Replaced with {@linkcode Actor.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link Actor.create | `Actor.create`}
+     * The data necessary to create a document. Used in places like {@linkcode Actor.create}
      * and {@link Actor | `new Actor(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -267,7 +267,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Actor.name | `Actor#name`}.
      *
-     * This is data transformed from {@link Actor.Source | `Actor.Source`} and turned into more
+     * This is data transformed from {@linkcode Actor.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -281,10 +281,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link Actor | `Actor`}. This is the source of truth for how an Actor document
+     * The schema for {@linkcode Actor}. This is the source of truth for how an Actor document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link Actor | `Actor`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode Actor}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -317,7 +317,7 @@ declare global {
 
       /**
        * Default Token settings which are used for Tokens created from this Actor
-       * @defaultValue see {@link PrototypeToken | `PrototypeToken`}
+       * @defaultValue see {@linkcode PrototypeToken}
        */
       prototypeToken: fields.EmbeddedDataField<typeof PrototypeToken>;
 
@@ -359,7 +359,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
+       * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -378,17 +378,17 @@ declare global {
       /** Options passed along in Update operations for Actors */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Actor.UpdateData, Actor.Parent> {}
 
-      /** Operation for {@link Actor.createDocuments | `Actor.createDocuments`} */
+      /** Operation for {@linkcode Actor.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Actor.Database.Create<Temporary>> {}
 
-      /** Operation for {@link Actor.updateDocuments | `Actor.updateDocuments`} */
+      /** Operation for {@linkcode Actor.updateDocuments} */
       interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Actor.Database.Update> {}
 
-      /** Operation for {@link Actor.deleteDocuments | `Actor.deleteDocuments`} */
+      /** Operation for {@linkcode Actor.deleteDocuments} */
       interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Actor.Database.Delete> {}
 
-      /** Operation for {@link Actor.create | `Actor.create`} */
+      /** Operation for {@linkcode Actor.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Actor.Database.Create<Temporary>> {}
 
@@ -397,7 +397,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link Actor.get | `Actor.get`} */
+      /** Options for {@linkcode Actor.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link Actor._preCreate | `Actor#_preCreate`} */
@@ -406,7 +406,7 @@ declare global {
       /** Options for {@link Actor._onCreate | `Actor#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link Actor._preCreateOperation | `Actor._preCreateOperation`} */
+      /** Operation for {@linkcode Actor._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Actor.Database.Create> {}
 
       /** Operation for {@link Actor._onCreateOperation | `Actor#_onCreateOperation`} */
@@ -418,7 +418,7 @@ declare global {
       /** Options for {@link Actor._onUpdate | `Actor#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link Actor._preUpdateOperation | `Actor._preUpdateOperation`} */
+      /** Operation for {@linkcode Actor._preUpdateOperation} */
       interface PreUpdateOperation extends Actor.Database.Update {}
 
       /** Operation for {@link Actor._onUpdateOperation | `Actor._preUpdateOperation`} */
@@ -436,13 +436,13 @@ declare global {
       /** Options for {@link Actor._onDeleteOperation | `Actor#_onDeleteOperation`} */
       interface OnDeleteOperation extends Actor.Database.Delete {}
 
-      /** Context for {@link Actor._onDeleteOperation | `Actor._onDeleteOperation`} */
+      /** Context for {@linkcode Actor._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<Actor.Parent> {}
 
-      /** Context for {@link Actor._onCreateDocuments | `Actor._onCreateDocuments`} */
+      /** Context for {@linkcode Actor._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<Actor.Parent> {}
 
-      /** Context for {@link Actor._onUpdateDocuments | `Actor._onUpdateDocuments`} */
+      /** Context for {@linkcode Actor._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<Actor.Parent> {}
 
       /**
@@ -511,28 +511,28 @@ declare global {
       | Item.OnDeleteDescendantDocumentsArgs;
 
     /**
-     * @deprecated {@link Actor.Database | `Actor.DatabaseOperation`}
+     * @deprecated Replaced with {@link Actor.Database | `Actor.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Actor.Implementation> {}
 
     /**
-     * @deprecated {@link Actor.SubType | `Actor.SubType`}
+     * @deprecated Replaced with {@linkcode Actor.SubType}
      */
     type TypeNames = Actor.SubType;
 
     /**
-     * @deprecated {@link Actor.CreateData | `Actor.CreateData`}
+     * @deprecated Replaced with {@linkcode Actor.CreateData}
      */
     interface ConstructorData extends Actor.CreateData {}
 
     /**
-     * @deprecated {@link Actor.implementation | `Actor.ImplementationClass`}
+     * @deprecated Replaced with {@link Actor.implementation | `Actor.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Actor.Implementation | `Actor.Implementation`}
+     * @deprecated Replaced with {@linkcode Actor.Implementation}
      */
     type ConfiguredInstance = Implementation;
 
@@ -583,10 +583,10 @@ declare global {
    * The client-side Actor document which extends the common BaseActor model.
    *
    *  ### Hook Events
-   * {@link hookEvents.applyCompendiumArt | `hookEvents.applyCompendiumArt`}
+   * {@linkcode hookEvents.applyCompendiumArt}
    *
-   * @see {@link Actors | `Actors`}            The world-level collection of Actor documents
-   * @see {@link ActorSheet | `ActorSheet`}     The Actor configuration application
+   * @see {@linkcode Actors}            The world-level collection of Actor documents
+   * @see {@linkcode ActorSheet}     The Actor configuration application
    *
    * @example <caption>Create a new Actor</caption>
    * ```typescript
@@ -602,9 +602,8 @@ declare global {
    * let actor = game.actors.get(actorId);
    * ```
    */
-  class Actor<out SubType extends Actor.SubType = Actor.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseActor,
-  )<SubType> {
+  class Actor<out SubType extends Actor.SubType = Actor.SubType> extends foundry.documents.BaseActor.Internal
+    .ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `Actor`
      * @param context - Construction context options
@@ -613,16 +612,19 @@ declare global {
 
     static override metadata: Actor.Metadata;
 
-    protected override _configure(options?: { pack?: string | null }): void;
+    // options: not null (parameter default only, destructured in super)
+    protected override _configure(options?: Document.ConfigureOptions): void;
 
     /**
      * Maintain a list of Token Documents that represent this Actor, stored by Scene.
      */
     protected _dependentTokens: foundry.utils.IterableWeakMap<Scene.Implementation, TokenDocument.Implementation>;
 
+    /** @remarks `||=`s the `prototypeToken`'s `name` and `texture.src` fields with the main actor's values */
+    // options: not null (parameter default only)
     protected override _initializeSource(
       data: this | Actor.CreateData,
-      options?: Omit<foundry.abstract.DataModel.DataValidationOptions, "parent">,
+      options?: Document.InitializeSourceOptions,
     ): Actor.Source;
 
     /**
@@ -794,6 +796,7 @@ declare global {
          * A single Scene, or list of Scenes to filter by.
          */
         scenes: Scene.Implementation | Scene.Implementation[];
+
         /**
          * Limit the results to tokens that are linked to the actor.
          * @defaultValue `false`
@@ -820,13 +823,11 @@ declare global {
      */
     protected _unregisterDependentScene(scene: Scene.Implementation): void;
 
-    /**
-     * @privateRemarks _preCreate and _onUpdate are all overridden but with no signature changes from BaseActor.
-     */
+    // _preCreate and _onUpdate are all overridden but with no signature changes from BaseActor.
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class GurpsActor extends Actor {
      *   protected override _onCreateDescendantDocuments(...args: Actor.OnCreateDescendantDocumentsArgs) {
@@ -844,7 +845,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class Ptr2eActor extends Actor {
      *   protected override _onUpdateDescendantDocuments(...args: Actor.OnUpdateDescendantDocumentsArgs) {
@@ -862,7 +863,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class BladesActor extends Actor {
      *   protected override _onDeleteDescendantDocuments(...args: Actor.OnUpdateDescendantDocuments) {
@@ -908,7 +909,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class SwadeActor extends Actor {
      *   protected override _preCreateDescendantDocuments(...args: Actor.PreCreateDescendantDocumentsArgs) {
@@ -926,7 +927,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class LancerActor extends Actor {
      *   protected override _preUpdateDescendantDocuments(...args: Actor.OnUpdateDescendantDocuments) {
@@ -944,7 +945,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class KultActor extends Actor {
      *   protected override _preDeleteDescendantDocuments(...args: Actor.PreDeleteDescendantDocumentsArgs) {

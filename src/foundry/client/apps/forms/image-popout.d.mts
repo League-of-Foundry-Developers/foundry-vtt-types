@@ -1,7 +1,7 @@
 import type { MaybePromise } from "fvtt-types/utils";
 
 declare global {
-  /** @deprecated {@link ImagePopout.Options | `ImagePopout.Options`} */
+  /** @deprecated Replaced with {@linkcode ImagePopout.Options} */
   type ImagePopoutOptions = ImagePopout.Options;
 
   /**
@@ -9,7 +9,7 @@ declare global {
    * This popout can also be used as a form, allowing the user to edit an image which is being used.
    * Furthermore, this application allows for sharing the display of an image with other connected players.
    *
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    *
    * @example
    * ```typescript
@@ -171,7 +171,7 @@ declare global {
       caption: boolean;
 
       /**
-       * The UUID of some related {@link Document | `Document`}.
+       * The UUID of some related {@linkcode Document}.
        * @defaultValue `null`
        */
       uuid: string | null;

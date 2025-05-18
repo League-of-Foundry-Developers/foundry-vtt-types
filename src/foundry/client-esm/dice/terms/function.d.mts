@@ -10,16 +10,16 @@ import type DiceTerm from "./dice.d.mts";
 declare class FunctionTerm extends RollTerm {
   constructor(termData: FunctionTerm.TermData);
 
-  /** The name of the configured function, or one in the Math environment, which should be applied to the term. **/
+  /** The name of the configured function, or one in the Math environment, which should be applied to the term. */
   fn: string;
 
   /** An array of string argument terms for the function. */
   terms: string[];
 
-  /** The cached Roll instances for each function argument. **/
+  /** The cached Roll instances for each function argument. */
   rolls: Roll[];
 
-  /** The cached result of evaluating the method arguments. **/
+  /** The cached result of evaluating the method arguments. */
   result: string | number | undefined; // note: it will be undefined if the function has not yet been evaluated
 
   /** Is this term intermediate, and should be evaluated first as part of the simplification process? */
@@ -88,10 +88,13 @@ declare namespace FunctionTerm {
   interface TermData {
     /** The name of the configured function, or one in the Math environment, which should be applied to the term. */
     fn: string;
+
     /** An array of string argument terms for the function. */
     terms?: string[] | undefined;
+
     /** The cached Roll instances for each function argument. */
     rolls?: Roll[] | undefined;
+
     /** The cached result of evaluating the method arguments. */
     result?: string | number | undefined;
     options?: InexactPartial<FunctionTerm.Options>;

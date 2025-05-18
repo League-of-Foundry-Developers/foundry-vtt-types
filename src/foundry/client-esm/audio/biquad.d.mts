@@ -33,11 +33,12 @@ declare namespace BiquadFilterEffect {
   interface AnyConstructor extends Identity<typeof AnyBiquadFilterEffect> {}
 
   /**
-   * @internal
-   * Foundry keeps this specific list in a private static property of {@link BiquadFilterEffect | `BiquadFilterEffect`}.
+   * Foundry keeps this specific list in a private static property of {@linkcode BiquadFilterEffect}.
    * It is typed as it is to make obvious where it comes from.
    *
    * @privateRemarks An `Exclude` would have been shorter but for all we know the lib type might change, this is reliable
+   *
+   * @internal
    */
   type AspirationalAllowedFilterType = Extract<
     "lowpass" | "highpass" | "bandpass" | "lowshelf" | "highshelf" | "peaking" | "notch",
@@ -64,13 +65,13 @@ declare namespace BiquadFilterEffect {
      * @defaultValue `"lowpass"`
      * @remarks Can't be `null` as it only has a parameter default.
      *
-     * Only allows a subset of {@link BiquadFilterType | `BiquadFilterType`}s
+     * Only allows a subset of {@linkcode BiquadFilterType}s
      */
     type: AllowedFilterType;
   }>;
 
   /**
-   * @privateRemarks The {@link BiquadFilterEffect | `BiquadFilterEffect`} constructor only adds the one
+   * @privateRemarks The {@linkcode BiquadFilterEffect} constructor only adds the one
    * new property (`intensity`) to the parent interface. `type` is omitted and reimplemented to allow
    * explicit `undefined`, as there's a parameter default available, and limit to Foundry's allowed values
    */
@@ -85,8 +86,8 @@ declare namespace BiquadFilterEffect {
 
     /**
      * A new filter type
-     * @see {@link BiquadFilterEffect.AllowedFilterType | `BiquadFilterEffect.AllowedFilterType`}
-     * @see {@link BiquadFilterEffect.AspirationalAllowedFilterType | `BiquadFilterEffect.AspirationalAllowedFilterType`}
+     * @see {@linkcode BiquadFilterEffect.AllowedFilterType}
+     * @see {@linkcode BiquadFilterEffect.AspirationalAllowedFilterType}
      */
     type: AllowedFilterType;
   }>;

@@ -1,4 +1,12 @@
-import type { GetKey, AnyObject, InexactPartial, AnyMutableObject, Identity, AnyArray } from "fvtt-types/utils";
+import type {
+  GetKey,
+  AnyObject,
+  InexactPartial,
+  AnyMutableObject,
+  Identity,
+  AnyArray,
+  NullishProps,
+} from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -305,6 +313,7 @@ declare namespace BasePackage {
     media: fields.SetField<fields.SchemaField<PackageMediaSchema>>;
 
     // Moved to base-module and base-system to avoid conflict with base-world
+
     /**
      * The current package version
      */
@@ -381,9 +390,22 @@ declare namespace BasePackage {
     hasStorage: boolean;
   }
 
-  interface LogOptions extends InexactPartial<LogCompatibilityWarningOptions> {
+  /** @internal */
+  type _Installed = NullishProps<{
     /** Is the package installed? */
-    installed?: unknown;
+    installed: boolean;
+  }>;
+
+  interface LogOptions extends _Installed, InexactPartial<LogCompatibilityWarningOptions> {}
+
+  interface MigrateDataOptions extends _Installed {}
+
+  interface CleanDataOptions extends fields.DataField.CleanOptions {
+    /**
+     * Is the package installed?
+     * @remarks Only used to pass on to {@link BasePackage._logWarning | `BasePackage#_logWarning`}
+     */
+    installed?: boolean | null | undefined;
   }
 }
 
@@ -401,7 +423,7 @@ export class PackageRelationships extends fields.SchemaField<BasePackage.Package
   constructor(options: fields.SchemaField.Options<BasePackage.PackageRelationshipsSchema>);
 }
 
-// ommitted private class PackageRelationshipField
+// omitted private class PackageRelationshipField
 
 /**
  * A custom SchemaField for defining a related Package.
@@ -448,15 +470,17 @@ export class CompendiumOwnershipField extends fields.ObjectField<
   static override get _defaults(): {
     /** @defaultValue `{PLAYER: "OBSERVER", ASSISTANT: "OWNER"}` */
     initial: BasePackage.OwnershipRecord;
+
     /**
      * @defaultValue `"is not a mapping of USER_ROLES to DOCUMENT_OWNERSHIP_LEVELS"`
      */
     validationError: string;
   };
 
+  /** @remarks `options` is unused in `CompendiumOwnershipField` */
   protected override _validateType(
     value: Record<keyof typeof foundry.CONST.USER_ROLES, keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>,
-    options?: any,
+    options?: fields.DataField.ValidateOptions<this> | null,
   ): boolean | void;
 }
 
@@ -471,23 +495,25 @@ export class PackageCompendiumPacks<
     options?: fields.DataField.CleanOptions,
   ): Set<fields.ArrayField.InitializedElementType<ElementFieldType>>;
 
+  // options: not null (parameter default only)
   override initialize(
     value: fields.ArrayField.PersistedElementType<ElementFieldType>[],
     // In Foundry itself, this field is only used in `BasePackage`, however it should be able to accept any model.
     // NOTE(LukeAbby): This also has been seen in a circularity `Type of property 'packs' circularly references itself in mapped type ...`.
     model: DataModel.Any,
+    options?: fields.DataField.InitializeOptions,
   ):
     | Set<fields.ArrayField.InitializedElementType<ElementFieldType>>
     | (() => Set<fields.ArrayField.InitializedElementType<ElementFieldType>> | null);
 
   protected override _validateElements(
     value: AnyArray,
-    options?: fields.DataField.ValidationOptions<fields.DataField.Any>,
+    options?: fields.DataField.ValidateOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 
   protected override _validateElement(
     value: unknown,
-    options: fields.DataField.ValidationOptions<fields.DataField.Any>,
+    options: fields.DataField.ValidateOptions<fields.DataField.Any>,
   ): void | DataModelValidationFailure;
 }
 
@@ -535,7 +561,7 @@ declare class BasePackage<
   /**
    * Define the package type in CONST.PACKAGE_TYPES that this class represents.
    * Each BasePackage subclass must define this attribute.
-   * @virtual
+   * @abstract
    */
   static type: foundry.CONST.PACKAGE_TYPES;
 
@@ -605,7 +631,7 @@ declare class BasePackage<
    */
   static testDependencyCompatibility(compatibility: PackageCompatibility, dependency: BasePackage): boolean;
 
-  static cleanData(source?: AnyObject, options?: fields.DataField.CleanOptions): AnyObject;
+  static cleanData(source?: AnyObject, options?: BasePackage.CleanDataOptions): AnyMutableObject;
 
   /**
    * Validate that a Package ID is allowed.
@@ -627,12 +653,19 @@ declare class BasePackage<
    */
   static migratedKeys: Set<string>;
 
-  static migrateData(
-    data: AnyMutableObject,
-    logOptions?: InexactPartial<{
-      installed: boolean;
-    }>,
-  ): AnyMutableObject;
+  /**
+   * @remarks
+   * Migrations:
+   * - `name` to `id`, both at root and for any `dependencies` (since v10 until v13)
+   * - `dependencies` to `relationships` (structural change) (since v10 until v13)
+   * - `minimumCoreVersion` and `compatibleCoreVersion` to `compatibility.minimum` and `.verified`, respectively (since v10 until v13)
+   * - Inside `media` entries, `link` to `url` (since v11 until v13)
+   * - Inside `packs` entries:
+   *   - `private` to an `ownership` object with `{PLAYER: "LIMITED", ASSISTANT: "OWNER"}` (since v11 until v13)
+   *   - Slugifies the `name` if not already a valid slug (since v12, until v14)
+   *   - `entity` to `type` (since v9, no specified end)
+   */
+  static override migrateData(data: AnyMutableObject, options?: BasePackage.MigrateDataOptions): AnyMutableObject;
 
   protected static _migrateNameToId(data: AnyObject, logOptions: BasePackage.LogOptions): void;
 

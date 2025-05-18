@@ -161,7 +161,6 @@ declare global {
      *                   (defaultValue: `{}`)
      * @returns The translated and formatted string
      *
-
      * @example <caption>Localizing a formatted string in JavaScript</caption>
      * ```typescript
      * {

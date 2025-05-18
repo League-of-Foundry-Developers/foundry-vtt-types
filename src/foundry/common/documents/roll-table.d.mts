@@ -1,4 +1,4 @@
-import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -34,6 +34,11 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    */
   static DEFAULT_ICON: "icons/svg/d20-grey.svg";
 
+  /**
+   * @remarks
+   * Migrations:
+   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
+   */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /*
@@ -100,7 +105,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   override delete(operation?: RollTable.Database.DeleteOperation): Promise<this | undefined>;
 
-  static get(documentId: string, options?: RollTable.Database.GetOptions): RollTable.Implementation | null;
+  static override get(documentId: string, options?: RollTable.Database.GetOptions): RollTable.Implementation | null;
 
   static override getCollectionName<CollectionName extends RollTable.Embedded.Name>(
     name: CollectionName,
@@ -223,16 +228,31 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-  protected static _addDataFieldShims(data: AnyObject, shims: AnyObject, options?: Document.DataFieldShimOptions): void;
 
-  protected static _addDataFieldMigration(
-    data: AnyObject,
+  // options: not null (parameter default only in _addDataFieldShim)
+  protected static override _addDataFieldShims(
+    data: AnyMutableObject,
+    shims: Record<string, string>,
+    options?: Document.DataFieldShimOptions,
+  ): void;
+
+  // options: not null (parameter default only)
+  protected static override _addDataFieldShim(
+    data: AnyMutableObject,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyObject) => unknown,
-  ): unknown;
+    options?: Document.DataFieldShimOptions,
+  ): void;
 
-  protected static _logDataFieldMigration(
+  protected static override _addDataFieldMigration(
+    data: AnyMutableObject,
+    oldKey: string,
+    newKey: string,
+    apply?: ((data: AnyMutableObject) => unknown) | null,
+  ): boolean;
+
+  // options: not null (destructured where forwarded)
+  protected static override _logDataFieldMigration(
     oldKey: string,
     newKey: string,
     options?: LogCompatibilityWarningOptions,
@@ -259,11 +279,13 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   static get schema(): SchemaField<RollTable.Schema>;
 
+  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: RollTable.Source): void;
 
+  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: RollTable.CreateData,
-    { strict, ...context }?: DataModel.FromSourceOptions,
+    context?: DataModel.FromSourceOptions,
   ): RollTable.Implementation;
 
   static override fromJSON(json: string): RollTable.Implementation;
@@ -295,6 +317,14 @@ declare namespace BaseRollTable {
   export import DatabaseOperation = RollTable.Database;
   export import Flags = RollTable.Flags;
 
+  namespace Internal {
+    // Note(LukeAbby): The point of this is to give the base class of `RollTable` a name.
+    // The expression `ClientDocumentMixin(BaseRollTable)` is more intuitive but it has worse
+    // caching, likely due to the majority of tsc's caching working off of names.
+    // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
+    const ClientDocument: ClientDocumentMixin.Mix<typeof BaseRollTable>;
+  }
+
   /**
    * @deprecated This type is used by Foundry too vaguely.
    * In one context the most correct type is after initialization whereas in another one it should be
@@ -303,12 +333,12 @@ declare namespace BaseRollTable {
   type Properties = SchemaField.InitializedData<Schema>;
 
   /**
-   * @deprecated {@link foundry.data.fields.SchemaField | `SchemaField<BaseRollTable.Schema>`}
+   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseRollTable.Schema>`}
    */
   type SchemaField = foundry.data.fields.SchemaField<Schema>;
 
   /**
-   * @deprecated {@link BaseRollTable.CreateData | `BaseRollTable.CreateData`}
+   * @deprecated Replaced with {@linkcode BaseRollTable.CreateData}
    */
   type ConstructorData = BaseRollTable.CreateData;
 }

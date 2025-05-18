@@ -119,6 +119,7 @@ declare class EmbeddedCollection<
        * @defaultValue `false`
        */
       strict: false;
+
       /**
        * Allow retrieving an invalid Embedded Document.
        * @defaultValue `false`
@@ -126,12 +127,14 @@ declare class EmbeddedCollection<
       invalid: false;
     }>,
   ): ContainedDocument | undefined;
+
   /**
    * Get an element from the EmbeddedCollection by its ID.
    * @param id      - The ID of the Embedded Document to retrieve.
    * @param options - Additional options to configure retrieval.
    */
   get(id: string, options: { strict: true; invalid?: false }): ContainedDocument;
+
   /**
    * Get an element from the EmbeddedCollection by its ID.
    * @param id      - The ID of the Embedded Document to retrieve.
@@ -198,6 +201,7 @@ declare class EmbeddedCollection<
   ): void;
 
   // TODO: Improve typing on invalid documents
+
   /**
    * Obtain a temporary Document instance for a document id which currently has invalid source data.
    * @param id      - A document ID with invalid source data.
@@ -230,8 +234,7 @@ declare class EmbeddedCollection<
    *                 (default: `true`)
    * @returns The extracted array of primitive objects
    */
-  toObject(source?: true): ContainedDocument["_source"][];
-  toObject(source: false): ReturnType<ContainedDocument["schema"]["toObject"]>[];
+  toObject(source?: boolean | null): ContainedDocument["_source"][];
 
   /**
    * Follow-up actions to take when a database operation modifies Documents in this EmbeddedCollection.
@@ -265,11 +268,13 @@ declare class EmbeddedCollection<
        * @defaultValue `""`
        */
       query: string;
+
       /**
        * An array of filters to apply
        * @defaultValue `[]`
        */
       filters: SearchFilter.FieldFilter[];
+
       /**
        * An array of document IDs to exclude from search results
        * @defaultValue `[]`

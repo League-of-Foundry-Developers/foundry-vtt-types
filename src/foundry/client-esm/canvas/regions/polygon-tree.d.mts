@@ -1,6 +1,6 @@
 import type { Point } from "#common/_types.d.mts";
 
-/** The node of a {@link RegionPolygonTree | `RegionPolygonTree`}.*/
+/** The node of a {@linkcode RegionPolygonTree}.*/
 declare class RegionPolygonTreeNode {
   /**
    * Create a RegionPolygonTreeNode.
@@ -13,7 +13,7 @@ declare class RegionPolygonTreeNode {
    * Create a node from the Clipper path and add it to the children of the parent.
    * @param clipperPath   - The clipper path of this node.
    * @param parent        - The parent node or `null` if root.
-   * @remarks Foundry marked `@internal`, called exclusively  {@link RegionPolygonTree._fromClipperPolyTree | `RegionPolygonTree._fromClipperPolyTree`}
+   * @remarks Foundry marked `@internal`, called exclusively  {@linkcode RegionPolygonTree._fromClipperPolyTree}
    */
   protected static _fromClipperPath(
     clipperPath: ClipperLib.Path,
@@ -101,7 +101,7 @@ declare namespace RegionPolygonTreeNode {
   type AnyConstructor = typeof AnyRegionPolygonTreeNode;
 }
 
-/** The polygon tree of a {@link Region | `Region`}. */
+/** The polygon tree of a {@linkcode Region}. */
 declare class RegionPolygonTree extends RegionPolygonTreeNode {
   /**
    * Create a RegionPolygonTree
@@ -111,7 +111,7 @@ declare class RegionPolygonTree extends RegionPolygonTreeNode {
 
   /**
    * Create the tree from a Clipper polygon tree.
-   * @remarks Foundry marked `@internal`, called exclusively from {@link Region#polygonTree | `Region#polygonTree`}
+   * @remarks Foundry marked `@internal`, called exclusively from {@linkcode Region#polygonTree}
    */
   protected static _fromClipperPolyTree(clipperPolyTree: ClipperLib.PolyTree): RegionPolygonTree;
 }

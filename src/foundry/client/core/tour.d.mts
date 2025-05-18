@@ -3,10 +3,10 @@ import type { ValueOf } from "fvtt-types/utils";
 export { Tour };
 
 declare global {
-  /** @deprecated {@link Tour.Step | `Tour.Step`} */
+  /** @deprecated Replaced with {@linkcode Tour.Step} */
   type TourStep = Tour.Step;
 
-  /** @deprecated {@link Tour.Config | `Tour.Config`} */
+  /** @deprecated Replaced with {@linkcode Tour.Config} */
   type TourConfig = Tour.Config;
 
   namespace Tour {
@@ -81,6 +81,7 @@ declare global {
       config: Tour.Config,
       { id, namespace }?: { id?: Tour.Config["id"]; namespace?: Tour.Config["namespace"] },
     );
+
     /**
      * The configuration of the tour. Cloned to avoid mutating the original configuration.
      */
@@ -245,13 +246,13 @@ declare global {
 
     /**
      * Set-up operations performed before a step is shown.
-     * @virtual
+     * @abstract
      */
     protected _preStep(): Promise<void>;
 
     /**
      * Clean-up operations performed after a step is completed.
-     * @virtual
+     * @abstract
      */
     protected _postStep(): Promise<void>;
 

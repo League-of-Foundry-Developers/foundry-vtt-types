@@ -49,8 +49,8 @@ declare global {
      * @defaultValue `null`
      * @remarks Set to `null` in {@link PlaceableObject | `PlaceableObject#constructor`} and {@link AmbientSound.clear | `AmbientSound#clear`}.
      *
-     * In placeables which render an icon ({@link AmbientLight | `AmbientLight`}, {@link AmbientSound | `AmbientSound`},
-     * {@link Note | `Note`}, and {@link MeasuredTemplate | `MeasuredTemplate`}), it's only `null` prior to first draw; In all others, it is never set to other than `null`
+     * In placeables which render an icon ({@linkcode AmbientLight}, {@linkcode AmbientSound},
+     * {@linkcode Note}, and {@linkcode MeasuredTemplate}), it's only `null` prior to first draw; In all others, it is never set to other than `null`
      *
      * @privateRemarks Not defined in the class body, set during construction
      */
@@ -72,7 +72,7 @@ declare global {
 
     /**
      * Identify the official Document name for this PlaceableObject class
-     * @remarks This is abstract in {@link PlaceableObject | `PlaceableObject`}.
+     * @remarks This is abstract in {@linkcode PlaceableObject}.
      */
     static embeddedName: string;
 
@@ -254,6 +254,7 @@ declare global {
     /**
      * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
      */
+    // TODO: should be `MaybePromise<void>` to allow async subclassing?
     protected _onCreate(
       data: foundry.data.fields.SchemaField.CreateData<CanvasDocument["schema"]["fields"]>,
       options: Document.Database.CreateOptions<DatabaseCreateOperation>,
@@ -356,7 +357,7 @@ declare global {
      * @param user   - The User performing the action
      * @param action - The named action being attempted
      * @returns Does the User have rights to perform the action?
-     * @see {@link PlaceableObject.Action | `PlaceableObject.Action`}
+     * @see {@linkcode PlaceableObject.Action}
      */
     can(user: User.Implementation, action: PlaceableObject.Action): boolean;
 
@@ -648,7 +649,7 @@ declare global {
      * `Drawing`, `Region`, and `Token` extend `_onRelease` and pass the options back to `super`, but do no further checks.
      *
      * As it is completely unused and has been removed in v13, it is not included in this interface
-     * */
+     */
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface ReleaseOptions {}
 

@@ -130,7 +130,7 @@ declare global {
     interface Options extends FormApplication.Options {}
 
     /**
-     * @deprecated {@link FontConfig.Data | `FontConfig.Data`}
+     * @deprecated Replaced with {@linkcode FontConfig.Data}
      */
     type FontConfigData = Data;
 

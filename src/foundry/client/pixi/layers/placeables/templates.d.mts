@@ -2,7 +2,7 @@ import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
 
 /**
  * This Canvas Layer provides a container for MeasuredTemplate objects.
- * @see {@link MeasuredTemplate | `MeasuredTemplate`}
+ * @see {@linkcode MeasuredTemplate}
  */
 declare global {
   class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {

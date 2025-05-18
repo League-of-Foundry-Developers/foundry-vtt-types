@@ -2,6 +2,7 @@ import type { InexactPartial, Merge } from "fvtt-types/utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
+import type BaseRollTable from "#common/documents/roll-table.mjs";
 
 import fields = foundry.data.fields;
 
@@ -24,13 +25,13 @@ declare global {
 
     /**
      * The implementation of the `RollTable` document instance configured through `CONFIG.RollTable.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRollTable | `fvtt-types/configuration/ConfiguredRollTable`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredRollTable | `fvtt-types/configuration/ConfiguredRollTable`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `RollTable` document configured through `CONFIG.RollTable.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -92,6 +93,7 @@ declare global {
      * This is a union of all classes, or never if the document doesn't have any descendants.
      */
     type DescendantClass = DirectDescendantClass;
+
     /**
      * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
@@ -167,7 +169,7 @@ declare global {
     type Collection = RollTables.Configured;
 
     /**
-     * An instance of `RollTable` that comes from the database but failed validation meaining that
+     * An instance of `RollTable` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<RollTable.Implementation> {}
@@ -182,20 +184,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link RollTable.Source | `RollTable.Source`}
+     * @deprecated Replaced with {@linkcode RollTable.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link RollTable.create | `RollTable.create`}
+     * The data necessary to create a document. Used in places like {@linkcode RollTable.create}
      * and {@link RollTable | `new RollTable(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -205,7 +207,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link RollTable.name | `RollTable#name`}.
      *
-     * This is data transformed from {@link RollTable.Source | `RollTable.Source`} and turned into more
+     * This is data transformed from {@linkcode RollTable.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -219,10 +221,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link RollTable | `RollTable`}. This is the source of truth for how an RollTable document
+     * The schema for {@linkcode RollTable}. This is the source of truth for how an RollTable document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link RollTable | `RollTable`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode RollTable}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -294,7 +296,7 @@ declare global {
 
       /**
        * An object which configures ownership of this RollTable
-       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
+       * @defaultValue see {@linkcode fields.DocumentOwnershipField}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -306,7 +308,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
+       * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -325,19 +327,19 @@ declare global {
       /** Options passed along in Update operations for RollTables */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<RollTable.UpdateData, RollTable.Parent> {}
 
-      /** Operation for {@link RollTable.createDocuments | `RollTable.createDocuments`} */
+      /** Operation for {@linkcode RollTable.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<RollTable.Database.Create<Temporary>> {}
 
-      /** Operation for {@link RollTable.updateDocuments | `RollTable.updateDocuments`} */
+      /** Operation for {@linkcode RollTable.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<RollTable.Database.Update> {}
 
-      /** Operation for {@link RollTable.deleteDocuments | `RollTable.deleteDocuments`} */
+      /** Operation for {@linkcode RollTable.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<RollTable.Database.Delete> {}
 
-      /** Operation for {@link RollTable.create | `RollTable.create`} */
+      /** Operation for {@linkcode RollTable.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<RollTable.Database.Create<Temporary>> {}
 
@@ -346,7 +348,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link RollTable.get | `RollTable.get`} */
+      /** Options for {@linkcode RollTable.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link RollTable._preCreate | `RollTable#_preCreate`} */
@@ -355,7 +357,7 @@ declare global {
       /** Options for {@link RollTable._onCreate | `RollTable#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link RollTable._preCreateOperation | `RollTable._preCreateOperation`} */
+      /** Operation for {@linkcode RollTable._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RollTable.Database.Create> {}
 
       /** Operation for {@link RollTable._onCreateOperation | `RollTable#_onCreateOperation`} */
@@ -367,7 +369,7 @@ declare global {
       /** Options for {@link RollTable._onUpdate | `RollTable#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link RollTable._preUpdateOperation | `RollTable._preUpdateOperation`} */
+      /** Operation for {@linkcode RollTable._preUpdateOperation} */
       interface PreUpdateOperation extends RollTable.Database.Update {}
 
       /** Operation for {@link RollTable._onUpdateOperation | `RollTable._preUpdateOperation`} */
@@ -385,13 +387,13 @@ declare global {
       /** Options for {@link RollTable._onDeleteOperation | `RollTable#_onDeleteOperation`} */
       interface OnDeleteOperation extends RollTable.Database.Delete {}
 
-      /** Context for {@link RollTable._onDeleteOperation | `RollTable._onDeleteOperation`} */
+      /** Context for {@linkcode RollTable._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<RollTable.Parent> {}
 
-      /** Context for {@link RollTable._onCreateDocuments | `RollTable._onCreateDocuments`} */
+      /** Context for {@linkcode RollTable._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<RollTable.Parent> {}
 
-      /** Context for {@link RollTable._onUpdateDocuments | `RollTable._onUpdateDocuments`} */
+      /** Context for {@linkcode RollTable._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<RollTable.Parent> {}
 
       /**
@@ -569,23 +571,23 @@ declare global {
     }
 
     /**
-     * @deprecated {@link RollTable.Database | `RollTable.DatabaseOperation`}
+     * @deprecated Replaced with {@link RollTable.Database | `RollTable.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<RollTable.Implementation> {}
 
     /**
-     * @deprecated {@link RollTable.CreateData | `RollTable.CreateData`}
+     * @deprecated Replaced with {@linkcode RollTable.CreateData}
      */
     interface ConstructorData extends RollTable.CreateData {}
 
     /**
-     * @deprecated {@link RollTable.implementation | `RollTable.ImplementationClass`}
+     * @deprecated Replaced with {@link RollTable.implementation | `RollTable.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link RollTable.Implementation | `RollTable.Implementation`}
+     * @deprecated Replaced with {@linkcode RollTable.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -593,11 +595,11 @@ declare global {
   /**
    * The client-side RollTable document which extends the common BaseRollTable model.
    *
-   * @see {@link RollTables | `RollTables`}         The world-level collection of RollTable documents
-   * @see {@link TableResult | `TableResult`}        The embedded TableResult document
-   * @see {@link RollTableConfig | `RollTableConfig`}    The RollTable configuration application
+   * @see {@linkcode RollTables}         The world-level collection of RollTable documents
+   * @see {@linkcode TableResult}        The embedded TableResult document
+   * @see {@linkcode RollTableConfig}    The RollTable configuration application
    */
-  class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
+  class RollTable extends BaseRollTable.Internal.ClientDocument {
     /**
      * @param data    - Initial data from which to construct the `RollTable`
      * @param context - Construction context options
@@ -747,7 +749,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class GurpsRollTable extends RollTable {
      *   protected override _onCreateDescendantDocuments(...args: RollTable.OnCreateDescendantDocumentsArgs) {
@@ -765,7 +767,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class BladesRollTable extends RollTable {
      *   protected override _onDeleteDescendantDocuments(...args: RollTable.OnUpdateDescendantDocuments) {
@@ -784,7 +786,7 @@ declare global {
     toCompendium<Options extends ClientDocument.ToCompendiumOptions>(
       pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
       options?: Options,
-    ): ClientDocument.ToCompendiumReturnType<foundry.documents.BaseRollTable, Options>;
+    ): ClientDocument.ToCompendiumReturnType<"RollTable", Options>;
 
     /**
      * Create a new RollTable document using all of the Documents from a specific Folder as new results.
@@ -810,7 +812,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class SwadeRollTable extends RollTable {
      *   protected override _preCreateDescendantDocuments(...args: RollTable.PreCreateDescendantDocumentsArgs) {
@@ -828,7 +830,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class LancerRollTable extends RollTable {
      *   protected override _preUpdateDescendantDocuments(...args: RollTable.OnUpdateDescendantDocuments) {
@@ -846,7 +848,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class Ptr2eRollTable extends RollTable {
      *   protected override _onUpdateDescendantDocuments(...args: RollTable.OnUpdateDescendantDocumentsArgs) {
@@ -864,7 +866,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class KultRollTable extends RollTable {
      *   protected override _preDeleteDescendantDocuments(...args: RollTable.PreDeleteDescendantDocumentsArgs) {
@@ -899,7 +901,7 @@ declare global {
   }
 
   /**
-   * @deprecated {@link RollTable.Draw | `RollTable.Draw`}
+   * @deprecated Replaced with {@linkcode RollTable.Draw}
    */
   type RollTableDraw = RollTable.Draw;
 }

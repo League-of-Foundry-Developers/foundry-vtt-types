@@ -20,8 +20,8 @@ declare global {
     /**
      * Return a reference to the SidebarDirectory application for this WorldCollection.
      * @remarks
-     * In the case where `Lowercase<Name>` is not a property of {@link ui | `ui`}, this actually always returns `undefined`,
-     * but {@link RollTables | `RollTables`} overrides this, so we need to allow a wider return type.
+     * In the case where `Lowercase<Name>` is not a property of {@linkcode ui}, this actually always returns `undefined`,
+     * but {@linkcode RollTables} overrides this, so we need to allow a wider return type.
      */
     get directory(): Lowercase<Name> extends keyof typeof ui
       ? (typeof ui)[Lowercase<Name>]
@@ -48,7 +48,7 @@ declare global {
      * @param id         - The ID of the compendium entry to import
      * @param updateData - Optional additional data used to modify the imported Document before it is created
      *                     (default: `{}`)
-     * @param options    - Optional arguments passed to the {@link WorldCollection.fromCompendium | `WorldCollection.fromCompendium`} and {@link Document.create | `Document.create`} methods
+     * @param options    - Optional arguments passed to the {@linkcode WorldCollection.fromCompendium} and {@linkcode Document.create} methods
      *                     (default: `{}`)
      * @returns The imported Document instance
      */
@@ -84,8 +84,8 @@ declare global {
 
     /**
      * Register a Document sheet class as a candidate which can be used to display Documents of a given type.
-     * See {@link DocumentSheetConfig.registerSheet | `DocumentSheetConfig.registerSheet`} for details.
-     * @see {@link DocumentSheetConfig.registerSheet | `DocumentSheetConfig.registerSheet`}
+     * See {@linkcode DocumentSheetConfig.registerSheet} for details.
+     * @see {@linkcode DocumentSheetConfig.registerSheet}
      *
      * @example <caption>Register a new ActorSheet subclass for use with certain Actor types.</caption>
      * ```typescript
@@ -96,8 +96,8 @@ declare global {
 
     /**
      * Unregister a Document sheet class, removing it from the list of available sheet Applications to use.
-     * See {@link DocumentSheetConfig.unregisterSheet | `DocumentSheetConfig.unregisterSheet`} for details.
-     * @see {@link DocumentSheetConfig.unregisterSheet | `DocumentSheetConfig.unregisterSheet`}
+     * See {@linkcode DocumentSheetConfig.unregisterSheet} for details.
+     * @see {@linkcode DocumentSheetConfig.unregisterSheet}
      *
      * @example <caption>Deregister the default ActorSheet subclass to replace it with others.</caption>
      * Actors.unregisterSheet("core", ActorSheet);
@@ -107,8 +107,8 @@ declare global {
     /**
      * Return an array of currently registered sheet classes for this Document type.
      * @remarks
-     * This is documented to return only {@link DocumentSheet | `DocumentSheet`}s but {@link DrawingConfig | `DrawingConfig`} is just a
-     * {@link FormApplication | `FormApplication`}. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6454.
+     * This is documented to return only {@linkcode DocumentSheet}s but {@linkcode DrawingConfig} is just a
+     * {@linkcode FormApplication}. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6454.
      */
     static get registeredSheets(): FormApplication.Any[];
   }

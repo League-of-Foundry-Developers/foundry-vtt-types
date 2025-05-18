@@ -4,7 +4,7 @@ declare global {
   /**
    * The sidebar tab which displays various game settings, help messages, and configuration options.
    * The Settings sidebar is the furthest-to-right using a triple-cogs icon.
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   class Settings<Options extends Application.Options = Application.Options> extends SidebarTab<Options> {
     /**
@@ -46,7 +46,7 @@ declare global {
 
   /**
    * A simple window application which shows the built documentation pages within an iframe
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class FrameViewer<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(url: string, options?: Partial<Options>);

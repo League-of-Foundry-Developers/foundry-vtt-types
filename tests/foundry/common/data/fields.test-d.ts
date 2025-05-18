@@ -1,4 +1,5 @@
 import { expectTypeOf, test } from "vitest";
+
 import DataField = foundry.data.fields.DataField;
 
 type DataSchema = foundry.data.fields.DataSchema;
@@ -186,3 +187,50 @@ test("circular data model heritage regression test", () => {
 
   class MyActorSystem extends foundry.abstract.TypeDataModel<typeof schema, Actor.Implementation> {}
 });
+
+// TODO(LukeAbby): Relevant once requisite circularities are fixed.
+// type ActorSchema = foundry.data.fields.SchemaField<Actor.Schema>;
+
+// declare const actorSchema: ActorSchema;
+
+// test("SchemaField#getField", () => {
+//   expectTypeOf(actorSchema.getField("")).toEqualTypeOf<ActorSchema>();
+//   expectTypeOf(actorSchema.getField([])).toEqualTypeOf<ActorSchema>();
+//   expectTypeOf(actorSchema.getField("effects.element._id")).toEqualTypeOf<fields.DocumentIdField>();
+
+//   expectTypeOf(actorSchema.getField(["items"])).toEqualTypeOf<
+//     fields.EmbeddedCollectionField<typeof foundry.documents.BaseItem, Actor.Implementation>
+//   >();
+
+//   expectTypeOf(actorSchema.getField(["items", "element"])).toEqualTypeOf<SchemaField<Item._Schema>>();
+
+//   expectTypeOf(actorSchema.getField(["items", "element", "effects"])).toEqualTypeOf<
+//     fields.EmbeddedCollectionField<typeof foundry.documents.BaseActiveEffect, Actor.Implementation>
+//   >();
+
+//   expectTypeOf(actorSchema.getField(["items", "element", "effects", "element"])).toEqualTypeOf<
+//     SchemaField<ActiveEffect._Schema>
+//   >();
+
+//   expectTypeOf(actorSchema.getField(["items", "element", "effects", "element", "description"])).toEqualTypeOf<
+//     ActiveEffect.Schema["description"]
+//   >();
+
+//   expectTypeOf(actorSchema.getField("items")).toEqualTypeOf<
+//     fields.EmbeddedCollectionField<typeof foundry.documents.BaseItem, Actor.Implementation>
+//   >();
+
+//   expectTypeOf(actorSchema.getField("items.element")).toEqualTypeOf<SchemaField<Item._Schema>>();
+
+//   expectTypeOf(actorSchema.getField("items.element.effects")).toEqualTypeOf<
+//     fields.EmbeddedCollectionField<typeof foundry.documents.BaseActiveEffect, Actor.Implementation>
+//   >();
+
+//   expectTypeOf(actorSchema.getField("items.element.effects.element")).toEqualTypeOf<
+//     SchemaField<ActiveEffect._Schema>
+//   >();
+
+//   expectTypeOf(actorSchema.getField("items.element.effects.element.description")).toEqualTypeOf<
+//     ActiveEffect.Schema["description"]
+//   >();
+// });

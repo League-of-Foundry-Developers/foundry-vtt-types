@@ -3,7 +3,7 @@ import type { MaybePromise } from "fvtt-types/utils";
 declare global {
   /**
    * Support Info and Report
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class SupportDetails<Options extends Application.Options = Application.Options> extends Application<Options> {
     /**
@@ -120,7 +120,7 @@ declare global {
   }
 
   /**
-   * @deprecated {@link SupportDetails.ReportData | `SupportDetails.ReportData`}
+   * @deprecated Replaced with {@linkcode SupportDetails.ReportData}
    */
   type SupportReportData = SupportDetails.ReportData;
 }

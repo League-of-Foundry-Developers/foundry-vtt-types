@@ -1,4 +1,4 @@
-/** A mesh of a {@link Region | `Region`} */
+/** A mesh of a {@linkcode Region} */
 declare class RegionMesh extends PIXI.Container {
   /**
    * Create a RegionMesh
@@ -41,7 +41,7 @@ declare class RegionMesh extends PIXI.Container {
 
   /**
    * Initialize shader based on the shader class type.
-   * @param shaderClass - The shader class, which must inherit from {@link AbstractBaseShader | `AbstractBaseShader`}.
+   * @param shaderClass - The shader class, which must inherit from {@linkcode AbstractBaseShader}.
    */
   setShaderClass(shaderClass: AbstractBaseShader.AnyConstructor): void;
 

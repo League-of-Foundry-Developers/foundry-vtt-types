@@ -6,8 +6,8 @@ declare global {
    * The singleton collection of Combat documents which exist within the active World.
    * This Collection is accessible within the Game object as game.combats.
    *
-   * @see {@link Combat | `Combat`} The Combat document
-   * @see {@link CombatTracker | `CombatTracker`} The CombatTracker sidebar directory
+   * @see {@linkcode Combat} The Combat document
+   * @see {@linkcode CombatTracker} The CombatTracker sidebar directory
    */
   class CombatEncounters extends WorldCollection<Combat.ImplementationClass, "CombatEncounters"> {
     static documentName: "Combat";

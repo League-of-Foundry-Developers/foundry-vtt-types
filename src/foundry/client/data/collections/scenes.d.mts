@@ -6,8 +6,8 @@ declare global {
    * The singleton collection of Scene documents which exist within the active World.
    * This Collection is accessible within the Game object as game.scenes.
    *
-   * @see {@link Scene | `Scene`} The Scene document
-   * @see {@link SceneDirectory | `SceneDirectory`} The SceneDirectory sidebar directory
+   * @see {@linkcode Scene} The Scene document
+   * @see {@linkcode SceneDirectory} The SceneDirectory sidebar directory
    */
   class Scenes extends WorldCollection<Scene.ImplementationClass, "Scenes"> {
     static documentName: "Scene";

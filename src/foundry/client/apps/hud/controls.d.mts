@@ -3,7 +3,7 @@ import type { Identity } from "fvtt-types/utils";
 declare global {
   /**
    * Scene controls navigation menu
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class SceneControls<Options extends Application.Options = Application.Options> extends Application<Options> {
     constructor(options?: Partial<Options>);
@@ -166,42 +166,42 @@ declare global {
   }
 
   /**
-   * @deprecated {@link SceneControls.InitializeOptions | `SceneControls.InitializeOptions`}
+   * @deprecated Replaced with {@linkcode SceneControls.InitializeOptions}
    */
   type InitializeOptions = SceneControls.InitializeOptions;
 
   /**
-   * @deprecated {@link SceneControls.ToolBase | `SceneControls.ToolBase`}
+   * @deprecated Replaced with {@linkcode SceneControls.ToolBase}
    */
   type SceneControlToolBase = SceneControls.ToolBase;
 
   /**
-   * @deprecated {@link SceneControls.ToolToggle | `SceneControls.ToolToggle`}
+   * @deprecated Replaced with {@linkcode SceneControls.ToolToggle}
    */
   type SceneControlToolToggle = SceneControls.ToolToggle;
 
   /**
-   * @deprecated {@link SceneControls.ToolNoToggle | `SceneControls.ToolNoToggle`}
+   * @deprecated Replaced with {@linkcode SceneControls.ToolNoToggle}
    */
   type SceneControlToolNoToggle = SceneControls.ToolNoToggle;
 
   /**
-   * @deprecated {@link SceneControls.Tool | `SceneControls.Tool`}
+   * @deprecated Replaced with {@linkcode SceneControls.Tool}
    */
   type SceneControlTool = SceneControls.Tool;
 
   /**
-   * @deprecated {@link SceneControls.Control | `SceneControls.Control`}
+   * @deprecated Replaced with {@linkcode SceneControls.Control}
    */
   type SceneControl = SceneControls.Control;
 
   /**
-   * @deprecated {@link SceneControls.ToolclipConfiguration | `SceneControls.ToolclipConfiguration`}
+   * @deprecated Replaced with {@linkcode SceneControls.ToolclipConfiguration}
    */
   type ToolclipConfiguration = SceneControls.ToolclipConfiguration;
 
   /**
-   * @deprecated {@link SceneControls.ToolclipConfigurationItem | `SceneControls.ToolclipConfigurationItem`}
+   * @deprecated Replaced with {@linkcode SceneControls.ToolclipConfigurationItem}
    */
   type ToolclipConfigurationItem = SceneControls.ToolclipConfigurationItem;
 }

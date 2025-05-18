@@ -3,8 +3,8 @@ import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 declare global {
   /**
    * A generic application for configuring permissions for various Document types
-   * @typeParam Options          - the type of the options object
-   * @typeParam ConcreteDocument - the type of the Document which should be managed by this form sheet
+   * @template Options          - the type of the options object
+   * @template ConcreteDocument - the type of the Document which should be managed by this form sheet
    */
   class DocumentOwnershipConfig<
     Options extends DocumentSheet.Options<ConcreteDocument>,

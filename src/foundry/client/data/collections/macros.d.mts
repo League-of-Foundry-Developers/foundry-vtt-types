@@ -6,8 +6,8 @@ declare global {
    * The singleton collection of Macro documents which exist within the active World.
    * This Collection is accessible within the Game object as game.macros.
    *
-   * @see {@link Macro | `Macro`} The Macro document
-   * @see {@link MacroDirectory | `MacroDirectory`} The MacroDirectory sidebar directory
+   * @see {@linkcode Macro} The Macro document
+   * @see {@linkcode MacroDirectory} The MacroDirectory sidebar directory
    */
   class Macros extends WorldCollection<Macro.ImplementationClass, "Macros"> {
     static documentName: "Macro";

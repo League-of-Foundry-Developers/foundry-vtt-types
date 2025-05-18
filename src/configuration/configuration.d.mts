@@ -3,7 +3,7 @@ import type { fields } from "../foundry/common/data/_module.d.mts";
 import type Document from "../foundry/common/abstract/document.d.mts";
 
 /**
- * Some global variables (such as {@link game | `game`}) are only initialized after certain events have happened during the
+ * Some global variables (such as {@linkcode game}) are only initialized after certain events have happened during the
  * initialization of Foundry VTT. For that reason, the correct types for these variables include the types for the
  * uninitialized state.
  *
@@ -95,9 +95,9 @@ export interface DocumentClassConfig {}
 export interface PlaceableObjectClassConfig {}
 
 /**
- * This interface together with {@link SourceConfig | `SourceConfig`} is used to configure the
+ * This interface together with {@linkcode SourceConfig} is used to configure the
  * types of the `data`  and `data._source` properties of the
- * {@link foundry.documents.BaseActor | `foundry.documents.BaseActor`} and {@link foundry.documents.BaseItem | `foundry.documents.BaseItem`}
+ * {@linkcode foundry.documents.BaseActor} and {@linkcode foundry.documents.BaseItem}
  * classes. System authors should use declaration merging to provide the types
  * that match their `template.json` file. It is also very important for these
  * types to stay in sync with the `template.json` file, otherwise unexpected
@@ -187,7 +187,7 @@ export interface GetDataConfig {}
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface DataModelConfig {}
 
-/** @see {@link DataConfig | `DataConfig`} */
+/** @see {@linkcode DataConfig} */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SourceConfig {}
 
@@ -199,8 +199,8 @@ export interface WebRTCConfig {}
 
 /**
  * Injects extra data for modules from `game.modules.get("module-id")`.
- * @see {@link RequiredModules | `RequiredModules`} for removing the `undefined` type for required modules.
- *  @example
+ * @see {@linkcode RequiredModules} for removing the `undefined` type for required modules.
+ * @example
  * ```typescript
  * interface ModuleConfig {
  *   "module-id": {
@@ -216,7 +216,7 @@ export interface ModuleConfig {}
 /**
  * Removes `undefined` for modules listed as keys here from the return type of `game.modules.get`.
  * Useful if a module is a required dependency.
- * @see {@link ModuleConfig | `ModuleConfig`} for adding useful properties to the returned modules, like APIs.
+ * @see {@linkcode ModuleConfig} for adding useful properties to the returned modules, like APIs.
  * @example
  * ```typescript
  * interface RequiredModules {

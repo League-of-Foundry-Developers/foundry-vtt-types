@@ -26,13 +26,13 @@ declare global {
 
     /**
      * The implementation of the `Macro` document instance configured through `CONFIG.Macro.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredMacro | `fvtt-types/configuration/ConfiguredMacro`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredMacro | `fvtt-types/configuration/ConfiguredMacro`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `Macro` document configured through `CONFIG.Macro.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -98,7 +98,7 @@ declare global {
      * {@link ConfiguredMacro | `fvtt-types/configuration/ConfiguredMacro`}.
      *
      * Note that `Macro` does not have a `system` property and therefore there is no way for a user
-     * to configure custom subtypes. See {@link Macro.SubType | `Macro.SubType`} for more information.
+     * to configure custom subtypes. See {@linkcode Macro.SubType} for more information.
      */
     // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredMacro<Type>, Macro<Type>>;
@@ -154,7 +154,7 @@ declare global {
     type Collection = Macros.Configured;
 
     /**
-     * An instance of `Macro` that comes from the database but failed validation meaining that
+     * An instance of `Macro` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends Macro.SubType = Macro.SubType> extends Document.Invalid<OfType<SubType>> {}
@@ -169,20 +169,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link Macro.Source | `Macro.Source`}
+     * @deprecated Replaced with {@linkcode Macro.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link Macro.create | `Macro.create`}
+     * The data necessary to create a document. Used in places like {@linkcode Macro.create}
      * and {@link Macro | `new Macro(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -192,7 +192,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link Macro.name | `Macro#name`}.
      *
-     * This is data transformed from {@link Macro.Source | `Macro.Source`} and turned into more
+     * This is data transformed from {@linkcode Macro.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -206,10 +206,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link Macro | `Macro`}. This is the source of truth for how an Macro document
+     * The schema for {@linkcode Macro}. This is the source of truth for how an Macro document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link Macro | `Macro`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode Macro}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -297,7 +297,7 @@ declare global {
 
       /**
        * An object which configures ownership of this Macro
-       * @defaultValue see {@link fields.DocumentOwnershipField | `fields.DocumentOwnershipField`}
+       * @defaultValue see {@linkcode fields.DocumentOwnershipField}
        */
       ownership: fields.DocumentOwnershipField;
 
@@ -309,7 +309,7 @@ declare global {
 
       /**
        * An object of creation and access information
-       * @defaultValue see {@link fields.DocumentStatsField | `fields.DocumentStatsField`}
+       * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
     }
@@ -328,17 +328,17 @@ declare global {
       /** Options passed along in Update operations for Macros */
       interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Macro.UpdateData, Macro.Parent> {}
 
-      /** Operation for {@link Macro.createDocuments | `Macro.createDocuments`} */
+      /** Operation for {@linkcode Macro.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Macro.Database.Create<Temporary>> {}
 
-      /** Operation for {@link Macro.updateDocuments | `Macro.updateDocuments`} */
+      /** Operation for {@linkcode Macro.updateDocuments} */
       interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Macro.Database.Update> {}
 
-      /** Operation for {@link Macro.deleteDocuments | `Macro.deleteDocuments`} */
+      /** Operation for {@linkcode Macro.deleteDocuments} */
       interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Macro.Database.Delete> {}
 
-      /** Operation for {@link Macro.create | `Macro.create`} */
+      /** Operation for {@linkcode Macro.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<Macro.Database.Create<Temporary>> {}
 
@@ -347,7 +347,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link Macro.get | `Macro.get`} */
+      /** Options for {@linkcode Macro.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link Macro._preCreate | `Macro#_preCreate`} */
@@ -356,7 +356,7 @@ declare global {
       /** Options for {@link Macro._onCreate | `Macro#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link Macro._preCreateOperation | `Macro._preCreateOperation`} */
+      /** Operation for {@linkcode Macro._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Macro.Database.Create> {}
 
       /** Operation for {@link Macro._onCreateOperation | `Macro#_onCreateOperation`} */
@@ -368,7 +368,7 @@ declare global {
       /** Options for {@link Macro._onUpdate | `Macro#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link Macro._preUpdateOperation | `Macro._preUpdateOperation`} */
+      /** Operation for {@linkcode Macro._preUpdateOperation} */
       interface PreUpdateOperation extends Macro.Database.Update {}
 
       /** Operation for {@link Macro._onUpdateOperation | `Macro._preUpdateOperation`} */
@@ -386,13 +386,13 @@ declare global {
       /** Options for {@link Macro._onDeleteOperation | `Macro#_onDeleteOperation`} */
       interface OnDeleteOperation extends Macro.Database.Delete {}
 
-      /** Context for {@link Macro._onDeleteOperation | `Macro._onDeleteOperation`} */
+      /** Context for {@linkcode Macro._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<Macro.Parent> {}
 
-      /** Context for {@link Macro._onCreateDocuments | `Macro._onCreateDocuments`} */
+      /** Context for {@linkcode Macro._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<Macro.Parent> {}
 
-      /** Context for {@link Macro._onUpdateDocuments | `Macro._onUpdateDocuments`} */
+      /** Context for {@linkcode Macro._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<Macro.Parent> {}
 
       /**
@@ -438,8 +438,8 @@ declare global {
 
     /**
      * @deprecated This type always required properties for both a `"script"` and a `"chat"` message
-     * even when necessary. It has been superceded by {@link ScriptScope | `ScriptScope`},
-     * {@link ChatScope | `ChatScope`}, and {@link UnknownScope | `UnknownScope`}
+     * even when necessary. It has been superceded by {@linkcode ScriptScope},
+     * {@linkcode ChatScope}, and {@linkcode UnknownScope}
      */
     type Scope = ScriptScope;
 
@@ -479,28 +479,28 @@ declare global {
       | (SubType extends "script" ? Promise<unknown> | void : never);
 
     /**
-     * @deprecated {@link Macro.Database | `Macro.DatabaseOperation`}
+     * @deprecated Replaced with {@link Macro.Database | `Macro.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<Macro.Implementation> {}
 
     /**
-     * @deprecated {@link Macro.SubType | `Macro.SubType`}
+     * @deprecated Replaced with {@linkcode Macro.SubType}
      */
     type TypeNames = Macro.SubType;
 
     /**
-     * @deprecated {@link Macro.CreateData | `Macro.CreateData`}
+     * @deprecated Replaced with {@linkcode Macro.CreateData}
      */
     interface ConstructorData extends Macro.CreateData {}
 
     /**
-     * @deprecated {@link Macro.implementation | `Macro.ImplementationClass`}
+     * @deprecated Replaced with {@link Macro.implementation | `Macro.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Macro.Implementation | `Macro.Implementation`}
+     * @deprecated Replaced with {@linkcode Macro.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -508,14 +508,12 @@ declare global {
   /**
    * The client-side Macro document which extends the common BaseMacro model.
    *
-   * @see {@link Macros | `Macros`}            The world-level collection of Macro documents
-   * @see {@link MacroConfig | `MacroConfig`}       The Macro configuration application
+   * @see {@linkcode Macros}            The world-level collection of Macro documents
+   * @see {@linkcode MacroConfig}       The Macro configuration application
    *
    * @param data - Initial data provided to construct the Macro document
    */
-  class Macro<out SubType extends Macro.SubType = Macro.SubType> extends ClientDocumentMixin(
-    foundry.documents.BaseMacro,
-  )<SubType> {
+  class Macro<out SubType extends Macro.SubType = Macro.SubType> extends BaseMacro.Internal.ClientDocument<SubType> {
     /**
      * @param data    - Initial data from which to construct the `Macro`
      * @param context - Construction context options
@@ -547,7 +545,7 @@ declare global {
     /**
      * Execute the Macro command.
      * @param scope - Macro execution scope which is passed to script macros
-     * @returns A promising containing a created {@link ChatMessage | `ChatMessage`} (or `undefined`) if a chat
+     * @returns A promising containing a created {@linkcode ChatMessage} (or `undefined`) if a chat
      *          macro or the return value if a script macro. A void return is possible if the user
      *          is not permitted to execute macros or a script macro execution fails.
      */

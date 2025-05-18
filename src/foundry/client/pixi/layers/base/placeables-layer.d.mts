@@ -14,8 +14,8 @@ declare global {
   /**
    * A subclass of Canvas Layer which is specifically designed to contain multiple PlaceableObject instances,
    * each corresponding to an embedded Document.
-   * @typeParam DocumentName - The key of the configuration which defines the object and document class.
-   * @typeParam Options      - The type of the options in this layer.
+   * @template DocumentName - The key of the configuration which defines the object and document class.
+   * @template Options      - The type of the options in this layer.
    */
   // TODO(LukeAbby): Make `DocumentName` covariant.
   class PlaceablesLayer<DocumentName extends PlaceablesLayer.DocumentNames> extends InteractionLayer {
@@ -412,7 +412,7 @@ declare global {
     set _highlight(state);
   }
 
-  /** @deprecated {@link PlaceablesLayer.LayerOptions | `PlaceablesLayer.LayerOptions`} */
+  /** @deprecated Replaced with {@linkcode PlaceablesLayer.LayerOptions} */
   export import PlaceablesLayerOptions = PlaceablesLayer.LayerOptions;
 
   namespace PlaceablesLayer {
@@ -484,11 +484,13 @@ declare global {
        * @remarks Passed to {@link PlaceableObject._updateRotation | `PlaceableObject#_updateRotation`} where it is checked for `> 0` before being passed to the non-null-safe `Number#toNearest`
        */
       snap: number;
+
       /**
        * An Array of object IDs to target for rotation
        * @remarks Passed to {@link PlaceablesLayer._getMovableObjects | `PlaceablesLayer#_getMovableObjects`}
        */
       ids: string[];
+
       /**
        * Rotate objects whose documents are locked?
        * @defaultValue `false`

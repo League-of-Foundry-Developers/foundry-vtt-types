@@ -182,6 +182,7 @@ declare global {
   export import Roll = _dice.Roll;
 
   // Deprecated global namespace dump; done programmatically by fvtt
+
   /** @deprecated since v12 will be removed in v14 */
   export import Semaphore = _utils.Semaphore;
 
@@ -192,76 +193,111 @@ declare global {
   export import IterableWeakSet = _utils.IterableWeakSet;
 
   /* --- geometry --- */
+
   /** @deprecated since v12 will be removed in v14 */
   export import orient2dFast = _utils.orient2dFast;
+
   /** @deprecated since v12 will be removed in v14 */
   export import lineSegmentIntersects = _utils.lineSegmentIntersects;
+
   /** @deprecated since v12 will be removed in v14 */
   export import lineLineIntersection = _utils.lineLineIntersection;
+
   /** @deprecated since v12 will be removed in v14 */
   export import lineSegmentIntersection = _utils.lineSegmentIntersection;
+
   /** @deprecated since v12 will be removed in v14 */
   export import lineCircleIntersection = _utils.lineCircleIntersection;
+
   /** @deprecated since v12 will be removed in v14 */
   export import closestPointToSegment = _utils.closestPointToSegment;
+
   /** @deprecated since v12 will be removed in v14 */
   export import quadraticIntersection = _utils.quadraticIntersection;
 
   /* --- helpers --- */
+
   /** @deprecated since v12 will be removed in v14 */
   export import benchmark = _utils.benchmark;
+
   /** @deprecated since v12 will be removed in v14 */
   export import threadLock = _utils.threadLock;
+
   /** @deprecated since v12 will be removed in v14 */
   export import debounce = _utils.debounce;
+
   /** @deprecated since v12 will be removed in v14 */
   export import debouncedReload = _utils.debouncedReload;
+
   /** @deprecated since v12 will be removed in v14 */
   export import deepClone = _utils.deepClone;
+
   /** @deprecated since v12 will be removed in v14 */
   export import diffObject = _utils.diffObject;
+
   /** @deprecated since v12 will be removed in v14 */
   export import objectsEqual = _utils.objectsEqual;
+
   /** @deprecated since v12 will be removed in v14 */
   export import duplicate = _utils.duplicate;
+
   /** @deprecated since v12 will be removed in v14 */
   export import isSubclass = _utils.isSubclass;
+
   /** @deprecated since v12 will be removed in v14 */
   export import getDefiningClass = _utils.getDefiningClass;
+
   /** @deprecated since v12 will be removed in v14 */
   export import encodeURL = _utils.encodeURL;
+
   /** @deprecated since v12 will be removed in v14 */
   export import expandObject = _utils.expandObject;
+
   /** @deprecated since v12 will be removed in v14 */
   export import filterObject = _utils.filterObject;
+
   /** @deprecated since v12 will be removed in v14 */
   export import flattenObject = _utils.flattenObject;
+
   /** @deprecated since v12 will be removed in v14 */
   export import getParentClasses = _utils.getParentClasses;
+
   /** @deprecated since v12 will be removed in v14 */
   export import getRoute = _utils.getRoute;
+
   /** @deprecated since v12 will be removed in v14 */
   export import getType = _utils.getType;
+
   /** @deprecated since v12 will be removed in v14 */
   export import hasProperty = _utils.hasProperty;
+
   /** @deprecated since v12 will be removed in v14 */
   export import getProperty = _utils.getProperty;
+
   /** @deprecated since v12 will be removed in v14 */
   export import setProperty = _utils.setProperty;
+
   /** @deprecated since v12 will be removed in v14 */
   export import invertObject = _utils.invertObject;
+
   /** @deprecated since v12 will be removed in v14 */
   export import isEmpty = _utils.isEmpty;
+
   /** @deprecated since v12 will be removed in v14 */
   export import mergeObject = _utils.mergeObject;
+
   /** @deprecated since v12 will be removed in v14 */
   export import parseS3URL = _utils.parseS3URL;
+
   /** @deprecated since v12 will be removed in v14 */
   export import randomID = _utils.randomID;
+
   /** @deprecated since v12 will be removed in v14 */
   export import timeSince = _utils.timeSince;
+
   /** @deprecated since v12 will be removed in v14 */
   export import formatFileSize = _utils.formatFileSize;
+
   /** @deprecated since v12 will be removed in v14 */
   export import parseUuid = _utils.parseUuid;
 
@@ -269,6 +305,7 @@ declare global {
 
   /** @deprecated since v12 will be removed in v14 */
   export import fetchWithTimeout = _utils.fetchWithTimeout;
+
   /** @deprecated since v12 will be removed in v14 */
   export import fetchJsonWithTimeout = _utils.fetchJsonWithTimeout;
 

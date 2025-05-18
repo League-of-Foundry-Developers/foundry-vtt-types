@@ -23,6 +23,7 @@ declare class RegionBehaviorType<
   protected static _createEventsField(options?: {
     /** The event names to restrict to. */
     events?: string[];
+
     /** The initial set of events that should be default for the field */
     initial?: string[];
   }): RegionBehaviorType.EventsField;

@@ -6,7 +6,7 @@ declare global {
    * The Collection of Setting documents which exist within the active World.
    * This collection is accessible as game.settings.storage.get("world")
    *
-   * @see {@link Setting | `Setting`} The Setting document
+   * @see {@linkcode Setting} The Setting document
    */
   class WorldSettings extends WorldCollection<Setting.ImplementationClass, "WorldSettings"> {
     static documentName: "Setting";

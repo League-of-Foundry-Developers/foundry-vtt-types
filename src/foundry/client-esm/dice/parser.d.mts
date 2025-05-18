@@ -136,6 +136,7 @@ declare class RollParser {
   /* -------------------------------------------- */
   /*  Tree Manipulation                           */
   /* -------------------------------------------- */
+
   /**
    * Flatten a tree structure (either a parse tree or AST) into an array with operators in infix notation.
    * @param root -The root of the tree.

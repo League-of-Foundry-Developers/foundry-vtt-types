@@ -4,6 +4,7 @@ import type { DataSchema } from "#common/data/fields.d.mts";
 import type { LightData } from "#common/data/data.mjs";
 
 import fields = foundry.data.fields;
+import type BaseAmbientLight from "#common/documents/ambient-light.mjs";
 
 declare global {
   namespace AmbientLightDocument {
@@ -24,13 +25,13 @@ declare global {
 
     /**
      * The implementation of the `AmbientLightDocument` document instance configured through `CONFIG.AmbientLight.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `AmbientLightDocument` document configured through `CONFIG.AmbientLight.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -103,7 +104,7 @@ declare global {
     type Collection = never;
 
     /**
-     * An instance of `AmbientLightDocument` that comes from the database but failed validation meaining that
+     * An instance of `AmbientLightDocument` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<AmbientLightDocument.Implementation> {}
@@ -118,20 +119,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link AmbiendLightDocument.Source | `AmbiendLightDocument.Source`}
+     * @deprecated Replaced with {@linkcode AmbiendLightDocument.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link AmbientLightDocument.create | `AmbientLightDocument.create`}
+     * The data necessary to create a document. Used in places like {@linkcode AmbientLightDocument.create}
      * and {@link AmbientLightDocument | `new AmbientLightDocument(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -141,7 +142,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link AmbientLightDocument.name | `AmbientLightDocument#name`}.
      *
-     * This is data transformed from {@link AmbientLightDocument.Source | `AmbientLightDocument.Source`} and turned into more
+     * This is data transformed from {@linkcode AmbientLightDocument.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -155,10 +156,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link AmbientLightDocument | `AmbientLightDocument`}. This is the source of truth for how an AmbientLightDocument document
+     * The schema for {@linkcode AmbientLightDocument}. This is the source of truth for how an AmbientLightDocument document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link AmbientLightDocument | `AmbientLightDocument`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode AmbientLightDocument}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -209,7 +210,7 @@ declare global {
 
       /**
        * Light configuration data
-       * @defaultValue see {@link LightData | `LightData`}
+       * @defaultValue see {@linkcode LightData}
        */
       config: fields.EmbeddedDataField<typeof LightData>;
 
@@ -250,19 +251,19 @@ declare global {
         animate?: boolean;
       }
 
-      /** Operation for {@link AmbientLightDocument.createDocuments | `AmbientLightDocument.createDocuments`} */
+      /** Operation for {@linkcode AmbientLightDocument.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<AmbientLightDocument.Database.Create<Temporary>> {}
 
-      /** Operation for {@link AmbientLightDocument.updateDocuments | `AmbientLightDocument.updateDocuments`} */
+      /** Operation for {@linkcode AmbientLightDocument.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<AmbientLightDocument.Database.Update> {}
 
-      /** Operation for {@link AmbientLightDocument.deleteDocuments | `AmbientLightDocument.deleteDocuments`} */
+      /** Operation for {@linkcode AmbientLightDocument.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<AmbientLightDocument.Database.Delete> {}
 
-      /** Operation for {@link AmbientLightDocument.create | `AmbientLightDocument.create`} */
+      /** Operation for {@linkcode AmbientLightDocument.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<AmbientLightDocument.Database.Create<Temporary>> {}
 
@@ -271,7 +272,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link AmbientLightDocument.get | `AmbientLightDocument.get`} */
+      /** Options for {@linkcode AmbientLightDocument.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link AmbientLightDocument._preCreate | `AmbientLightDocument#_preCreate`} */
@@ -280,7 +281,7 @@ declare global {
       /** Options for {@link AmbientLightDocument._onCreate | `AmbientLightDocument#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link AmbientLightDocument._preCreateOperation | `AmbientLightDocument._preCreateOperation`} */
+      /** Operation for {@linkcode AmbientLightDocument._preCreateOperation} */
       interface PreCreateOperation
         extends Document.Database.PreCreateOperationStatic<AmbientLightDocument.Database.Create> {}
 
@@ -293,7 +294,7 @@ declare global {
       /** Options for {@link AmbientLightDocument._onUpdate | `AmbientLightDocument#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link AmbientLightDocument._preUpdateOperation | `AmbientLightDocument._preUpdateOperation`} */
+      /** Operation for {@linkcode AmbientLightDocument._preUpdateOperation} */
       interface PreUpdateOperation extends AmbientLightDocument.Database.Update {}
 
       /** Operation for {@link AmbientLightDocument._onUpdateOperation | `AmbientLightDocument._preUpdateOperation`} */
@@ -311,13 +312,13 @@ declare global {
       /** Options for {@link AmbientLightDocument._onDeleteOperation | `AmbientLightDocument#_onDeleteOperation`} */
       interface OnDeleteOperation extends AmbientLightDocument.Database.Delete {}
 
-      /** Context for {@link AmbientLightDocument._onDeleteOperation | `AmbientLightDocument._onDeleteOperation`} */
+      /** Context for {@linkcode AmbientLightDocument._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<AmbientLightDocument.Parent> {}
 
-      /** Context for {@link AmbientLightDocument._onCreateDocuments | `AmbientLightDocument._onCreateDocuments`} */
+      /** Context for {@linkcode AmbientLightDocument._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<AmbientLightDocument.Parent> {}
 
-      /** Context for {@link AmbientLightDocument._onUpdateDocuments | `AmbientLightDocument._onUpdateDocuments`} */
+      /** Context for {@linkcode AmbientLightDocument._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<AmbientLightDocument.Parent> {}
 
       /**
@@ -369,24 +370,24 @@ declare global {
     }
 
     /**
-     * @deprecated {@link AmbientLightDocument.Database | `AmbientLightDocument.DatabaseOperation`}
+     * @deprecated Replaced with {@link AmbientLightDocument.Database | `AmbientLightDocument.DatabaseOperation`}
      */
     interface DatabaseOperations
       // eslint-disable-next-line @typescript-eslint/no-deprecated, @typescript-eslint/no-empty-object-type
       extends Document.Database.Operations<AmbientLightDocument.Implementation, {}, { animate: boolean }, {}> {}
 
     /**
-     * @deprecated {@link AmbientLightDocument.CreateData | `AmbientLightDocument.CreateData`}
+     * @deprecated Replaced with {@linkcode AmbientLightDocument.CreateData}
      */
     interface ConstructorData extends AmbientLightDocument.CreateData {}
 
     /**
-     * @deprecated {@link AmbientLightDocument.implementation | `AmbientLightDocument.ImplementationClass`}
+     * @deprecated Replaced with {@link AmbientLightDocument.implementation | `AmbientLightDocument.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link AmbientLightDocument.Implementation | `AmbientLightDocument.Implementation`}
+     * @deprecated Replaced with {@linkcode AmbientLightDocument.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -394,19 +395,17 @@ declare global {
   /**
    * The client-side AmbientLight document which extends the common BaseAmbientLight model.
    *
-   * @see {@link Scene | `Scene`}                     The Scene document type which contains AmbientLight documents
-   * @see {@link AmbientLightConfig | `AmbientLightConfig`}        The AmbientLight configuration application
+   * @see {@linkcode Scene}                     The Scene document type which contains AmbientLight documents
+   * @see {@linkcode AmbientLightConfig}        The AmbientLight configuration application
    */
-  class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmbientLight) {
+  class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `AmbientLightDocument`
      * @param context - Construction context options
      */
     constructor(...args: AmbientLightDocument.ConstructorArgs);
 
-    /**
-     * @privateRemarks _onUpdate is overridden but with no signature changes from its implementation in BaseAmbientLight.
-     */
+    // _onUpdate is overridden but with no signature changes from its implementation in BaseAmbientLight.
 
     /**
      * Is this ambient light source global in nature?

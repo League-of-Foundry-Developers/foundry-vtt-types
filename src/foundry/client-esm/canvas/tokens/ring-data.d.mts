@@ -70,11 +70,11 @@ declare namespace DynamicRingData {
 
 /**
  * A special subclass of [DataField]{@link DataField} used to reference a class definition.
- * @typeParam BaseClass - The base class constructor linked to this data field.
- * @typeParam Options         - the options of the ClassReferenceField instance
- * @typeParam AssignmentType  - the type of the allowed assignment values of the ClassReferenceField
- * @typeParam InitializedType - the type of the initialized values of the ClassReferenceField
- * @typeParam PersistedType   - the type of the persisted values of the ClassReferenceField
+ * @template BaseClass - The base class constructor linked to this data field.
+ * @template Options         - the options of the ClassReferenceField instance
+ * @template AssignmentType  - the type of the allowed assignment values of the ClassReferenceField
+ * @template InitializedType - the type of the initialized values of the ClassReferenceField
+ * @template PersistedType   - the type of the persisted values of the ClassReferenceField
  */
 declare class ClassReferenceField<
   BaseClass extends AnyConstructor,
@@ -91,13 +91,14 @@ declare class ClassReferenceField<
 
   protected override _cast(value: AssignmentType): InitializedType;
 
-  override getInitialValue(data: DataField.CleanOptions["source"]): InitializedType;
+  /** @remarks `data` is unused, always returns `this.initial` */
+  override getInitialValue(data?: unknown): InitializedType;
 }
 
 declare namespace ClassReferenceField {
   /**
    * A shorthand for the options of a ClassReferenceField class.
-   * @typeParam BaseClass - The base class constructor linked to this data field.
+   * @template BaseClass - The base class constructor linked to this data field.
    */
   interface Options<BaseClass extends AnyConstructor> extends DataField.Options<BaseClass> {
     /**
@@ -115,8 +116,8 @@ declare namespace ClassReferenceField {
 
   /**
    * A helper type for the given options type merged into the default options of the ClassReferenceField class.
-   * @typeParam BaseClass - The base class constructor linked to this data field.
-   * @typeParam Options - the options that override the default options
+   * @template BaseClass - The base class constructor linked to this data field.
+   * @template Options - the options that override the default options
    */
   type MergedOptions<
     BaseClass extends AnyConstructor,
@@ -125,8 +126,8 @@ declare namespace ClassReferenceField {
 
   /**
    * A shorthand for the assignment type of a ClassReferenceField class.
-   * @typeParam BaseClass - The base class constructor linked to this data field.
-   * @typeParam Options - the options that override the default options
+   * @template BaseClass - The base class constructor linked to this data field.
+   * @template Options - the options that override the default options
    */
   type AssignmentType<
     BaseClass extends AnyConstructor,
@@ -136,8 +137,8 @@ declare namespace ClassReferenceField {
 
   /**
    * A shorthand for the initialized type of a NumberField class.
-   * @typeParam BaseClass - The base class constructor linked to this data field.
-   * @typeParam Options - the options that override the default options
+   * @template BaseClass - The base class constructor linked to this data field.
+   * @template Options - the options that override the default options
    */
   type InitializedType<
     BaseClass extends AnyConstructor,

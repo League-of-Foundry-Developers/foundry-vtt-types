@@ -3,7 +3,7 @@ import type { InterfaceToObject, AnyObject, GetDataReturnType, MaybePromise } fr
 declare global {
   /**
    * A tool for fine tuning the grid in a Scene
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class GridConfig<Options extends FormApplication.Options = FormApplication.Options> extends FormApplication<
     Scene.Implementation,

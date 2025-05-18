@@ -66,10 +66,12 @@ declare abstract class DiceTerm extends RollTerm {
   /*  Dice Term Attributes                        */
   /* -------------------------------------------- */
 
-  /** The number of dice of this term to roll. Returns undefined if the number is a
+  /**
+   * The number of dice of this term to roll. Returns undefined if the number is a
    * complex term that has not yet been evaluated.
    */
   get number(): number | undefined;
+
   /** The number of dice of this term to roll. */
   set number(value: number);
 
@@ -323,18 +325,25 @@ declare namespace DiceTerm {
   interface Result {
     /** The numeric result. */
     result: number;
+
     /** Is this result active, contributing to the total? */
     active?: boolean | undefined;
+
     /** A value that the result counts as, otherwise the result is not used directly as. */
     count?: number | undefined;
+
     /** Does this result denote a success? */
     success?: boolean | undefined;
+
     /** Does this result denote a failure? */
     failure?: boolean | undefined;
+
     /** Was this result discarded? */
     discarded?: boolean | undefined;
+
     /** Was this result rerolled? */
     rerolled?: boolean | undefined;
+
     /** Was this result exploded? */
     exploded?: boolean | undefined;
   }
@@ -350,11 +359,14 @@ declare namespace DiceTerm {
   }
 
   type _KeepOrDropOptions = InexactPartial<{
-    /** Keep results?
+    /**
+     * Keep results?
      * @defaultValue true
      */
     keep?: boolean | undefined; // not: null (function checks keep===highest)
-    /** Keep the highest?
+
+    /**
+     * Keep the highest?
      * @defaultValue true
      */
     highest?: boolean | undefined; // not: null (function checks keep===highest)
@@ -383,7 +395,8 @@ declare namespace DiceTerm {
   interface ApplyDeductOptions extends _ApplyDeductOptions {}
 
   type _MatchTermOptions = InexactPartial<{
-    /** Allow the number of dice to be optional, i.e. "d6"
+    /**
+     * Allow the number of dice to be optional, i.e. "d6"
      * @defaultValue true
      */
     imputeNumber: boolean | null;

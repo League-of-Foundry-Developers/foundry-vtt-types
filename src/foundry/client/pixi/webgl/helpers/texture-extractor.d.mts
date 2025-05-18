@@ -66,7 +66,7 @@ declare global {
       format: PIXI.FORMATS;
     }>;
 
-    /** Options for the constructor of {@link TextureExtractor | `TextureExtractor`} */
+    /** Options for the constructor of {@linkcode TextureExtractor} */
     interface ConstructorOptions extends _ConstructorOptions {}
 
     /** @internal */
@@ -93,7 +93,7 @@ declare global {
 
       /**
        * The optional image quality.
-       *  @privateRemarks Foundry types as `string` but is clearly meant to be `number` by usage. Allowing null due to
+       * @privateRemarks Foundry types as `string` but is clearly meant to be `number` by usage. Allowing null due to
        * it having a `??` default in the path any browser someone is realistically using for Foundry will take.
        */
       quality: number | null;

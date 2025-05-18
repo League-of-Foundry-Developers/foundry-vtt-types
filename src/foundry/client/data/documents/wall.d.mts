@@ -1,6 +1,7 @@
 import type { Merge } from "fvtt-types/utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
+import type BaseWall from "#common/documents/wall.mjs";
 
 import fields = foundry.data.fields;
 
@@ -23,13 +24,13 @@ declare global {
 
     /**
      * The implementation of the `WallDocument` document instance configured through `CONFIG.Wall.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredWallDocument | `fvtt-types/configuration/ConfiguredWallDocument`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredWallDocument | `fvtt-types/configuration/ConfiguredWallDocument`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `WallDocument` document configured through `CONFIG.Wall.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -110,7 +111,7 @@ declare global {
     type Collection = never;
 
     /**
-     * An instance of `WallDocument` that comes from the database but failed validation meaining that
+     * An instance of `WallDocument` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<WallDocument.Implementation> {}
@@ -125,20 +126,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link WallDocument.Source | `WallDocument.Source`}
+     * @deprecated Replaced with {@linkcode WallDocument.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link WallDocument.create | `WallDocument.create`}
+     * The data necessary to create a document. Used in places like {@linkcode WallDocument.create}
      * and {@link WallDocument | `new WallDocument(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -149,7 +150,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link WallDocument.name | `WallDocument#name`}.
      *
-     * This is data transformed from {@link WallDocument.Source | `WallDocument.Source`} and turned into more
+     * This is data transformed from {@linkcode WallDocument.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -190,10 +191,10 @@ declare global {
     }
 
     /**
-     * The schema for {@link WallDocument | `WallDocument`}. This is the source of truth for how an WallDocument document
+     * The schema for {@linkcode WallDocument}. This is the source of truth for how an WallDocument document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link WallDocument | `WallDocument`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode WallDocument}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -385,19 +386,19 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<WallDocument.UpdateData, WallDocument.Parent> {}
 
-      /** Operation for {@link WallDocument.createDocuments | `WallDocument.createDocuments`} */
+      /** Operation for {@linkcode WallDocument.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<WallDocument.Database.Create<Temporary>> {}
 
-      /** Operation for {@link WallDocument.updateDocuments | `WallDocument.updateDocuments`} */
+      /** Operation for {@linkcode WallDocument.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<WallDocument.Database.Update> {}
 
-      /** Operation for {@link WallDocument.deleteDocuments | `WallDocument.deleteDocuments`} */
+      /** Operation for {@linkcode WallDocument.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<WallDocument.Database.Delete> {}
 
-      /** Operation for {@link WallDocument.create | `WallDocument.create`} */
+      /** Operation for {@linkcode WallDocument.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<WallDocument.Database.Create<Temporary>> {}
 
@@ -406,7 +407,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link WallDocument.get | `WallDocument.get`} */
+      /** Options for {@linkcode WallDocument.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link WallDocument._preCreate | `WallDocument#_preCreate`} */
@@ -415,7 +416,7 @@ declare global {
       /** Options for {@link WallDocument._onCreate | `WallDocument#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link WallDocument._preCreateOperation | `WallDocument._preCreateOperation`} */
+      /** Operation for {@linkcode WallDocument._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<WallDocument.Database.Create> {}
 
       /** Operation for {@link WallDocument._onCreateOperation | `WallDocument#_onCreateOperation`} */
@@ -427,7 +428,7 @@ declare global {
       /** Options for {@link WallDocument._onUpdate | `WallDocument#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link WallDocument._preUpdateOperation | `WallDocument._preUpdateOperation`} */
+      /** Operation for {@linkcode WallDocument._preUpdateOperation} */
       interface PreUpdateOperation extends WallDocument.Database.Update {}
 
       /** Operation for {@link WallDocument._onUpdateOperation | `WallDocument._preUpdateOperation`} */
@@ -445,13 +446,13 @@ declare global {
       /** Options for {@link WallDocument._onDeleteOperation | `WallDocument#_onDeleteOperation`} */
       interface OnDeleteOperation extends WallDocument.Database.Delete {}
 
-      /** Context for {@link WallDocument._onDeleteOperation | `WallDocument._onDeleteOperation`} */
+      /** Context for {@linkcode WallDocument._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<WallDocument.Parent> {}
 
-      /** Context for {@link WallDocument._onCreateDocuments | `WallDocument._onCreateDocuments`} */
+      /** Context for {@linkcode WallDocument._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<WallDocument.Parent> {}
 
-      /** Context for {@link WallDocument._onUpdateDocuments | `WallDocument._onUpdateDocuments`} */
+      /** Context for {@linkcode WallDocument._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<WallDocument.Parent> {}
 
       /**
@@ -496,23 +497,23 @@ declare global {
     }
 
     /**
-     * @deprecated {@link WallDocument.Database | `WallDocument.DatabaseOperation`}
+     * @deprecated Replaced with {@link WallDocument.Database | `WallDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<WallDocument.Implementation> {}
 
     /**
-     * @deprecated {@link WallDocument.CreateData | `WallDocument.CreateData`}
+     * @deprecated Replaced with {@linkcode WallDocument.CreateData}
      */
     interface ConstructorData extends WallDocument.CreateData {}
 
     /**
-     * @deprecated {@link WallDocument.implementation | `WallDocument.ImplementationClass`}
+     * @deprecated Replaced with {@link WallDocument.implementation | `WallDocument.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link WallDocument.Implementation | `WallDocument.Implementation`}
+     * @deprecated Replaced with {@linkcode WallDocument.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -520,10 +521,10 @@ declare global {
   /**
    * The client-side Wall document which extends the common BaseWall model.
    *
-   * @see {@link Scene | `Scene`}            The Scene document type which contains Wall embedded documents
-   * @see {@link WallConfig | `WallConfig`}       The Wall configuration application
+   * @see {@linkcode Scene}            The Scene document type which contains Wall embedded documents
+   * @see {@linkcode WallConfig}       The Wall configuration application
    */
-  class WallDocument extends CanvasDocumentMixin(foundry.documents.BaseWall) {
+  class WallDocument extends BaseWall.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `WallDocument`
      * @param context - Construction context options

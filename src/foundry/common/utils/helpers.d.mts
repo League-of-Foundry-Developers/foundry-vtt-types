@@ -13,7 +13,6 @@ export function benchmark<F extends AnyFunction>(func: F, iterations: number, ..
  * A debugging function to test latency or timeouts by forcibly locking the thread for an amount of time.
  * @param ms    - A number of milliseconds to lock
  * @param debug - (default: `false`)
- * @returns
  */
 export function threadLock(ms: number, debug?: boolean): Promise<void>;
 
@@ -46,6 +45,7 @@ export interface DeepCloneOptions {
    * @defaultValue `false`
    */
   strict?: boolean;
+
   /**
    * An internal depth tracker
    * @defaultValue `0`
@@ -105,7 +105,7 @@ export function objectsEqual<B extends object>(a: object, b: B): a is B;
  * A cheap data duplication trick which is relatively robust.
  * For a subset of cases the deepClone function will offer better performance.
  * @param original - Some sort of data
- * @typeParam T    - Type of the original data.
+ * @template T    - Type of the original data.
  *
  * @remarks This function will actually convert any occurrences of `NaN` and `Infinity` to `null`. For ease of use, this
  * is _not_ reflected in the type. Be careful if your types might contain `NaN` or `Infinity`!
@@ -113,9 +113,9 @@ export function objectsEqual<B extends object>(a: object, b: B): a is B;
 export function duplicate<T>(original: T): Duplicated<T>;
 
 /**
- * The resulting type when using {@link duplicate | `duplicate`} on some data of type `T`.
+ * The resulting type when using {@linkcode duplicate} on some data of type `T`.
  *
- * @typeParam T - Original type.
+ * @template T - Original type.
  * @internal
  */
 export type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated<T>;
@@ -132,12 +132,12 @@ export function isSubclass<Parent extends AnyConstructor>(cls: AnyConstructor, p
 /**
  * Search up the prototype chain and return the class that defines the given property.
  * @param obj                - A class instance or class definition which contains a property.
- *                             - If a class instance is passed the property is treated as an instance attribute.
- *                             - If a class constructor is passed the property is treated as a static attribute.
+ *                             If a class instance is passed the property is treated as an instance attribute.
+ *                             If a class constructor is passed the property is treated as a static attribute.
  * @param property           - The property name
  * @returns     - The class that defines the property
  */
-export function getDefiningClass(cls: AnyConstructor, property: string): AnyConstructor;
+export function getDefiningClass(obj: AnyConstructor, property: string): AnyConstructor;
 
 /**
  * Encode a url-like string by replacing any characters which need encoding
@@ -471,7 +471,6 @@ export function timeSince(timeStamp: Date | string): string;
  * Format a file size to an appropriate order of magnitude.
  * @param size    - The size in bytes.
  * @param options - Additional options. (default: `{}`)
- * @returns
  */
 export function formatFileSize(size: number, options?: FormatFileSizeOptions): string;
 
@@ -568,7 +567,6 @@ export function parseUuid(uuid: string, options?: ParseUUIDOptions): ResolvedUUI
  * 2. If the number of parts is even, resolve embedded documents against the current document.
  * @param uuid     - The UUID to resolve.
  * @param relative - The document to resolve against.
- * @returns
  * @internal
  */
 declare function _resolveRelativeUuid(uuid: string, relative: Document.Any): ResolvedUUID;
@@ -591,7 +589,7 @@ export function rgbToHsv(r: number, g: number, b: number): [h: number, s: number
  * @param s - The saturation
  * @param v - The value
  * @returns The RGB representation
- * @deprecated since v10 until v12, hsvToRgb is deprecated in favor of {@link foundry.utils.Color.fromHSV | `foundry.utils.Color.fromHSV`}
+ * @deprecated since v10 until v12, hsvToRgb is deprecated in favor of {@linkcode foundry.utils.Color.fromHSV}
  */
 export function hsvToRgb(h: number, s: number, v: number): [r: number, g: number, b: number];
 
@@ -599,7 +597,7 @@ export function hsvToRgb(h: number, s: number, v: number): [r: number, g: number
  * Converts a color as an [R, G, B] array of normalized floats to a hexadecimal number.
  * @param rgb - Array of numbers where all values are normalized floats from 0.0 to 1.0.
  * @returns The numeric color as hexadecimal
- * @deprecated since v10 until v12, rgbToHex is deprecated in favor of {@link foundry.utils.Color.fromRGB | `foundry.utils.Color.fromRGB`}
+ * @deprecated since v10 until v12, rgbToHex is deprecated in favor of {@linkcode foundry.utils.Color.fromRGB}
  */
 export function rgbToHex(rgb: [r: number, g: number, b: number]): number;
 
@@ -625,21 +623,21 @@ export function hexToRGBAString(hex: number, alpha?: number): `rgba(${number}, $
  * Convert a string color to a hex integer
  * @param color - The string color
  * @returns The hexadecimal color code
- * @deprecated since v10 until v12, colorStringToHex is deprecated in favor of {@link foundry.utils.Color.from | `foundry.utils.Color.from`}
+ * @deprecated since v10 until v12, colorStringToHex is deprecated in favor of {@linkcode foundry.utils.Color.from}
  */
 export function colorStringToHex(color: string): number | null;
 
 /**
- * Internal Helper for {@link Duplicated | `Duplicated`}. A union type of all types that do not have a JSON representation.
+ * Internal Helper for {@linkcode Duplicated}. A union type of all types that do not have a JSON representation.
  *
  * @internal
  */
 type NonStringifiable = undefined | AnyFunction | AnyConstructor | symbol;
 
 /**
- * Internal helper for {@link InnerDuplicated | `InnerDuplicated`}. Maps the properties of `T` to their duplicated types.
+ * Internal helper for {@linkcode InnerDuplicated}. Maps the properties of `T` to their duplicated types.
  *
- * @typeParam T - The object type that should have its properties mapped.
+ * @template T - The object type that should have its properties mapped.
  * @internal
  */
 type MapToInnerDuplicated<T extends object> = { [k in keyof T]: InnerDuplicated<T[k]> };
@@ -647,16 +645,16 @@ type MapToInnerDuplicated<T extends object> = { [k in keyof T]: InnerDuplicated<
 /**
  * Omit properties of `T` which are of type `U`.
  *
- * @typeParam T - Object type from which properties will be omitted.
- * @typeParam U - Properties of this type will be omitted.
+ * @template T - Object type from which properties will be omitted.
+ * @template U - Properties of this type will be omitted.
  * @internal
  */
 type OmitOfType<T extends object, U> = { [k in keyof T as T[k] extends U ? never : k]: T[k] };
 
 /**
- * Internal helper type for {@link Duplicated | `Duplicated`}. It is the main part of the implementation, which does the recursion.
+ * Internal helper type for {@linkcode Duplicated}. It is the main part of the implementation, which does the recursion.
  *
- * @typeParam T - Type currently being converted.
+ * @template T - Type currently being converted.
  * @internal
  */
 // prettier-ignore
@@ -680,9 +678,9 @@ type InnerDuplicated<T> = T extends { toJSON(): infer U }
 /**
  * If T extends `U`, the resulting type is `R`, otherwise it is `T`.
  *
- * @typeParam T - Original type.
- * @typeParam U - Only convert types of this type.
- * @typeParam R - Adjust to this type.
+ * @template T - Original type.
+ * @template U - Only convert types of this type.
+ * @template R - Adjust to this type.
  * @internal
  */
 type TypeToType<T, U, R> = T extends U ? R : T;
@@ -690,9 +688,9 @@ type TypeToType<T, U, R> = T extends U ? R : T;
 /**
  * Map the types of properties of `T` to `R` if they are of type `U`.
  *
- * @typeParam T - Object type that will have its properties' types adjusted.
- * @typeParam U - Adjust the types of properties of this type.
- * @typeParam R - Type that properties' types will be adjusted to.
+ * @template T - Object type that will have its properties' types adjusted.
+ * @template U - Adjust the types of properties of this type.
+ * @template R - Type that properties' types will be adjusted to.
  * @internal
  */
 type MapTypeToType<T, U, R> = { [k in keyof T]: TypeToType<T[k], U, R> };
@@ -700,8 +698,8 @@ type MapTypeToType<T, U, R> = { [k in keyof T]: TypeToType<T[k], U, R> };
 /**
  * Omit properties of `T` which are assignable from `U`.
  *
- * @typeParam T - Object type that will have its properties omitted.
- * @typeParam U - Properties with types that are assignable from this type will be omitted.
+ * @template T - Object type that will have its properties omitted.
+ * @template U - Properties with types that are assignable from this type will be omitted.
  * @internal
  */
 type OmitAssignableFromType<T extends object, U> = { [k in keyof T as U extends T[k] ? never : k]: T[k] };
@@ -709,8 +707,8 @@ type OmitAssignableFromType<T extends object, U> = { [k in keyof T as U extends 
 /**
  * Omit properties of `T` which are not assignable from `U`.
  *
- * @typeParam T - Object type that will have its properties omitted.
- * @typeParam U - Properties with types that are not assignable from this type will be omitted.
+ * @template T - Object type that will have its properties omitted.
+ * @template U - Properties with types that are not assignable from this type will be omitted.
  * @internal
  */
 type OmitNotAssignableFromType<T extends object, U> = { [k in keyof T as U extends T[k] ? k : never]: T[k] };

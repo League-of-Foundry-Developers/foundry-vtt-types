@@ -2,6 +2,7 @@ import type { InexactPartial, Merge } from "fvtt-types/utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseShapeData } from "#common/data/data.mjs";
+import type BaseRegion from "#common/documents/region.mjs";
 
 import fields = foundry.data.fields;
 
@@ -24,13 +25,13 @@ declare global {
 
     /**
      * The implementation of the `RegionDocument` document instance configured through `CONFIG.Region.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredRegion | `fvtt-types/configuration/ConfiguredRegion`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredRegion | `fvtt-types/configuration/ConfiguredRegion`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `RegionDocument` document configured through `CONFIG.Region.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -166,7 +167,7 @@ declare global {
     type Collection = never;
 
     /**
-     * An instance of `Region` that comes from the database but failed validation meaining that
+     * An instance of `Region` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<RegionDocument.Implementation> {}
@@ -181,20 +182,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link RegionDocument.Source | `RegionDocument.Source`}
+     * @deprecated Replaced with {@linkcode RegionDocument.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link RegionDocument.create | `RegionDocument.create`}
+     * The data necessary to create a document. Used in places like {@linkcode RegionDocument.create}
      * and {@link RegionDocument | `new RegionDocument(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -204,7 +205,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link RegionDocument.name | `RegionDocument#name`}.
      *
-     * This is data transformed from {@link RegionDocument.Source | `RegionDocument.Source`} and turned into more
+     * This is data transformed from {@linkcode RegionDocument.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -218,10 +219,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link RegionDocument | `RegionDocument`}. This is the source of truth for how an Region document
+     * The schema for {@linkcode RegionDocument}. This is the source of truth for how an Region document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link RegionDocument | `RegionDocument`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode RegionDocument}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -347,19 +348,19 @@ declare global {
       interface Update
         extends foundry.abstract.types.DatabaseUpdateOperation<RegionDocument.UpdateData, RegionDocument.Parent> {}
 
-      /** Operation for {@link RegionDocument.createDocuments | `RegionDocument.createDocuments`} */
+      /** Operation for {@linkcode RegionDocument.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<RegionDocument.Database.Create<Temporary>> {}
 
-      /** Operation for {@link RegionDocument.updateDocuments | `RegionDocument.updateDocuments`} */
+      /** Operation for {@linkcode RegionDocument.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<RegionDocument.Database.Update> {}
 
-      /** Operation for {@link RegionDocument.deleteDocuments | `RegionDocument.deleteDocuments`} */
+      /** Operation for {@linkcode RegionDocument.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<RegionDocument.Database.Delete> {}
 
-      /** Operation for {@link RegionDocument.create | `RegionDocument.create`} */
+      /** Operation for {@linkcode RegionDocument.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<RegionDocument.Database.Create<Temporary>> {}
 
@@ -368,7 +369,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link RegionDocument.get | `RegionDocument.get`} */
+      /** Options for {@linkcode RegionDocument.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link RegionDocument._preCreate | `RegionDocument#_preCreate`} */
@@ -377,7 +378,7 @@ declare global {
       /** Options for {@link RegionDocument._onCreate | `RegionDocument#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link RegionDocument._preCreateOperation | `RegionDocument._preCreateOperation`} */
+      /** Operation for {@linkcode RegionDocument._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RegionDocument.Database.Create> {}
 
       /** Operation for {@link RegionDocument._onCreateOperation | `RegionDocument#_onCreateOperation`} */
@@ -389,7 +390,7 @@ declare global {
       /** Options for {@link RegionDocument._onUpdate | `RegionDocument#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link RegionDocument._preUpdateOperation | `RegionDocument._preUpdateOperation`} */
+      /** Operation for {@linkcode RegionDocument._preUpdateOperation} */
       interface PreUpdateOperation extends RegionDocument.Database.Update {}
 
       /** Operation for {@link RegionDocument._onUpdateOperation | `RegionDocument._preUpdateOperation`} */
@@ -407,13 +408,13 @@ declare global {
       /** Options for {@link RegionDocument._onDeleteOperation | `RegionDocument#_onDeleteOperation`} */
       interface OnDeleteOperation extends RegionDocument.Database.Delete {}
 
-      /** Context for {@link RegionDocument._onDeleteOperation | `RegionDocument._onDeleteOperation`} */
+      /** Context for {@linkcode RegionDocument._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
 
-      /** Context for {@link RegionDocument._onCreateDocuments | `RegionDocument._onCreateDocuments`} */
+      /** Context for {@linkcode RegionDocument._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
 
-      /** Context for {@link RegionDocument._onUpdateDocuments | `RegionDocument._onUpdateDocuments`} */
+      /** Context for {@linkcode RegionDocument._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
 
       /**
@@ -567,23 +568,23 @@ declare global {
     }
 
     /**
-     * @deprecated {@link RegionDocument.Database | `RegionDocument.DatabaseOperation`}
+     * @deprecated Replaced with {@link RegionDocument.Database | `RegionDocument.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<RegionDocument.Implementation> {}
 
     /**
-     * @deprecated {@link RegionDocument.CreateData | `RegionDocument.CreateData`}
+     * @deprecated Replaced with {@linkcode RegionDocument.CreateData}
      */
     interface ConstructorData extends RegionDocument.CreateData {}
 
     /**
-     * @deprecated {@link RegionDocument.implementation | `RegionDocument.ImplementationClass`}
+     * @deprecated Replaced with {@link RegionDocument.implementation | `RegionDocument.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link RegionDocument.Implementation | `RegionDocument.Implementation`}
+     * @deprecated Replaced with {@linkcode RegionDocument.Implementation}
      */
     type ConfiguredInstance = Implementation;
   }
@@ -591,7 +592,7 @@ declare global {
   /**
    * The client-side Region document which extends the common BaseRegion model.
    */
-  class RegionDocument extends ClientDocumentMixin(foundry.documents.BaseRegion) {
+  class RegionDocument extends BaseRegion.Internal.CanvasDocument {
     /**
      * @param data    - Initial data from which to construct the `RegionDocument`
      * @param context - Construction context options
@@ -621,7 +622,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class GurpsRegionDocument extends RegionDocument {
      *   protected override _onCreateDescendantDocuments(...args: RegionDocument.OnCreateDescendantDocumentsArgs) {
@@ -639,7 +640,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class Ptr2eRegionDocument extends RegionDocument {
      *   protected override _onUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocumentsArgs) {
@@ -657,7 +658,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class BladesRegionDocument extends RegionDocument {
      *   protected override _onDeleteDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocuments) {
@@ -712,7 +713,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class SwadeRegionDocument extends RegionDocument {
      *   protected override _preCreateDescendantDocuments(...args: RegionDocument.PreCreateDescendantDocumentsArgs) {
@@ -730,7 +731,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class LancerRegionDocument extends RegionDocument {
      *   protected override _preUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocuments) {
@@ -748,7 +749,7 @@ declare global {
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-     * this method must be overriden like so:
+     * this method must be overridden like so:
      * ```typescript
      * class KultRegionDocument extends RegionDocument {
      *   protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs) {

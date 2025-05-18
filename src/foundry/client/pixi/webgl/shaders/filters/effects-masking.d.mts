@@ -80,6 +80,7 @@ declare global {
       CONTRAST: { id: "CONTRAST" & VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES_ID; glsl: string };
       SATURATION: { id: "SATURATION" & VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES_ID; glsl: string };
     };
+
     /**
      * Memory allocations and headers for the VisualEffectsMaskingFilter
      */

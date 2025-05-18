@@ -1,10 +1,11 @@
-import type { Identity, InexactPartial, Merge } from "fvtt-types/utils";
+import type { Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "fvtt-types/utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type { DatabaseGetOperation } from "#common/abstract/_types.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 
 import fields = foundry.data.fields;
+import type BaseFogExploration from "#common/documents/fog-exploration.mjs";
 
 declare global {
   namespace FogExploration {
@@ -25,13 +26,13 @@ declare global {
 
     /**
      * The implementation of the `FogExploration` document instance configured through `CONFIG.FogExploration.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} or {@link ConfiguredFogExploration | `fvtt-types/configuration/ConfiguredFogExploration`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} or {@link ConfiguredFogExploration | `fvtt-types/configuration/ConfiguredFogExploration`} in fvtt-types.
      */
     type Implementation = Document.ImplementationFor<Name>;
 
     /**
      * The implementation of the `FogExploration` document configured through `CONFIG.FogExploration.documentClass` in Foundry and
-     * {@link DocumentClassConfig | `DocumentClassConfig`} in fvtt-types.
+     * {@linkcode DocumentClassConfig} in fvtt-types.
      */
     type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -115,7 +116,7 @@ declare global {
     type Collection = FogExplorations.Configured;
 
     /**
-     * An instance of `FogExploration` that comes from the database but failed validation meaining that
+     * An instance of `FogExploration` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid extends Document.Invalid<FogExploration.Implementation> {}
@@ -130,20 +131,20 @@ declare global {
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link FogExploration.Source | `FogExploration.Source`}
+     * @deprecated Replaced with {@linkcode FogExploration.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a document. Used in places like {@link FogExploration.create | `FogExploration.create`}
+     * The data necessary to create a document. Used in places like {@linkcode FogExploration.create}
      * and {@link FogExploration | `new FogExploration(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
@@ -153,7 +154,7 @@ declare global {
      * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
      * {@link FogExploration.name | `FogExploration#name`}.
      *
-     * This is data transformed from {@link FogExploration.Source | `FogExploration.Source`} and turned into more
+     * This is data transformed from {@linkcode FogExploration.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -167,10 +168,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link FogExploration | `FogExploration`}. This is the source of truth for how an FogExploration document
+     * The schema for {@linkcode FogExploration}. This is the source of truth for how an FogExploration document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link FogExploration | `FogExploration`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode FogExploration}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -247,19 +248,19 @@ declare global {
         loadFog?: boolean;
       }
 
-      /** Operation for {@link FogExploration.createDocuments | `FogExploration.createDocuments`} */
+      /** Operation for {@linkcode FogExploration.createDocuments} */
       interface CreateDocumentsOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<FogExploration.Database.Create<Temporary>> {}
 
-      /** Operation for {@link FogExploration.updateDocuments | `FogExploration.updateDocuments`} */
+      /** Operation for {@linkcode FogExploration.updateDocuments} */
       interface UpdateDocumentsOperation
         extends Document.Database.UpdateDocumentsOperation<FogExploration.Database.Update> {}
 
-      /** Operation for {@link FogExploration.deleteDocuments | `FogExploration.deleteDocuments`} */
+      /** Operation for {@linkcode FogExploration.deleteDocuments} */
       interface DeleteDocumentsOperation
         extends Document.Database.DeleteDocumentsOperation<FogExploration.Database.Delete> {}
 
-      /** Operation for {@link FogExploration.create | `FogExploration.create`} */
+      /** Operation for {@linkcode FogExploration.create} */
       interface CreateOperation<Temporary extends boolean | undefined>
         extends Document.Database.CreateOperation<FogExploration.Database.Create<Temporary>> {}
 
@@ -268,7 +269,7 @@ declare global {
 
       interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
 
-      /** Options for {@link FogExploration.get | `FogExploration.get`} */
+      /** Options for {@linkcode FogExploration.get} */
       interface GetOptions extends Document.Database.GetOptions {}
 
       /** Options for {@link FogExploration._preCreate | `FogExploration#_preCreate`} */
@@ -277,7 +278,7 @@ declare global {
       /** Options for {@link FogExploration._onCreate | `FogExploration#_onCreate`} */
       interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
-      /** Operation for {@link FogExploration._preCreateOperation | `FogExploration._preCreateOperation`} */
+      /** Operation for {@linkcode FogExploration._preCreateOperation} */
       interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<FogExploration.Database.Create> {}
 
       /** Operation for {@link FogExploration._onCreateOperation | `FogExploration#_onCreateOperation`} */
@@ -289,7 +290,7 @@ declare global {
       /** Options for {@link FogExploration._onUpdate | `FogExploration#_onUpdate`} */
       interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
-      /** Operation for {@link FogExploration._preUpdateOperation | `FogExploration._preUpdateOperation`} */
+      /** Operation for {@linkcode FogExploration._preUpdateOperation} */
       interface PreUpdateOperation extends FogExploration.Database.Update {}
 
       /** Operation for {@link FogExploration._onUpdateOperation | `FogExploration._preUpdateOperation`} */
@@ -307,13 +308,13 @@ declare global {
       /** Options for {@link FogExploration._onDeleteOperation | `FogExploration#_onDeleteOperation`} */
       interface OnDeleteOperation extends FogExploration.Database.Delete {}
 
-      /** Context for {@link FogExploration._onDeleteOperation | `FogExploration._onDeleteOperation`} */
+      /** Context for {@linkcode FogExploration._onDeleteOperation} */
       interface OnDeleteDocumentsContext extends Document.ModificationContext<FogExploration.Parent> {}
 
-      /** Context for {@link FogExploration._onCreateDocuments | `FogExploration._onCreateDocuments`} */
+      /** Context for {@linkcode FogExploration._onCreateDocuments} */
       interface OnCreateDocumentsContext extends Document.ModificationContext<FogExploration.Parent> {}
 
-      /** Context for {@link FogExploration._onUpdateDocuments | `FogExploration._onUpdateDocuments`} */
+      /** Context for {@linkcode FogExploration._onUpdateDocuments} */
       interface OnUpdateDocumentsContext extends Document.ModificationContext<FogExploration.Parent> {}
 
       /**
@@ -358,31 +359,50 @@ declare global {
     }
 
     /**
-     * @deprecated {@link FogExploration.Database | `FogExploration.DatabaseOperation`}
+     * @deprecated Replaced with {@link FogExploration.Database | `FogExploration.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<FogExploration.Implementation> {}
 
     /**
-     * @deprecated {@link FogExploration.CreateData | `FogExploration.CreateData`}
+     * @deprecated Replaced with {@linkcode FogExploration.CreateData}
      */
     interface ConstructorData extends FogExploration.CreateData {}
 
     /**
-     * @deprecated {@link FogExploration.implementation | `FogExploration.ImplementationClass`}
+     * @deprecated Replaced with {@link FogExploration.implementation | `FogExploration.ImplementationClass`}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link FogExploration.Implementation | `FogExploration.Implementation`}
+     * @deprecated Replaced with {@linkcode FogExploration.Implementation}
      */
     type ConfiguredInstance = Implementation;
+
+    /** @internal */
+    type _LoadQuery = NullishProps<{
+      /**
+       * A certain Scene ID
+       * @defaultValue `canvas.scene`
+       */
+      scene: string;
+
+      /**
+       * A certain User ID
+       * @defaultValue `game.user`
+       */
+      user: string;
+    }>;
+    interface LoadQuery extends _LoadQuery {}
+
+    /** @remarks {@link FogExploration.load | `#load`} takes the `query` property separately as its first argument, then merges later*/
+    interface LoadOptions extends Omit<IntentionalPartial<DatabaseGetOperation>, "query"> {}
   }
 
   /**
    * The client-side FogExploration document which extends the common BaseFogExploration model.
    */
-  class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExploration) {
+  class FogExploration extends BaseFogExploration.Internal.ClientDocument {
     /**
      * @param data    - Initial data from which to construct the `FogExploration`
      * @param context - Construction context options
@@ -397,12 +417,7 @@ declare global {
      * @returns
      */
     static load(
-      query?: InexactPartial<{
-        /** A certain Scene ID **/
-        scene: string;
-        /** A certain User ID **/
-        user: string;
-      }>,
+      query?: FogExploration.LoadQuery,
       options?: InexactPartial<DatabaseGetOperation>,
     ): Promise<FogExploration.Implementation | null>;
 
@@ -411,9 +426,7 @@ declare global {
      */
     getTexture(): PIXI.Texture | null;
 
-    /**
-     * @privateRemarks _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseFogExploration.
-     */
+    // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseFogExploration.
 
     /*
      * After this point these are not really overridden methods.
@@ -445,6 +458,20 @@ declare global {
       source: FogExploration.Source,
       context?: Document.FromImportContext<FogExploration.Parent>,
     ): Promise<FogExploration.Implementation>;
+
+    static override get(
+      documentId: string,
+      options?: FogExploration.Database.GetOptions,
+    ): FogExploration.Implementation | null;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War exploration data, an operation which has been renamed to {@link FogExploration.load | `FogExploration.load`}"
+     */
+    static override get(
+      query: FogExploration.LoadQuery,
+      options: FogExploration.LoadOptions,
+    ): Promise<FogExploration.Implementation | null>;
   }
 
   namespace FogExploration {

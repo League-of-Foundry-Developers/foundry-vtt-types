@@ -3,7 +3,7 @@ import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 declare global {
   /**
    * The Application responsible for configuring a single User document.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class UserConfig<Options extends UserConfig.Options = UserConfig.Options> extends DocumentSheet<
     User.Implementation,

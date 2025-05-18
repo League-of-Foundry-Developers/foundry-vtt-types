@@ -13,8 +13,8 @@ declare global {
    * Game object as as game.settings.
    *
    * @see {@link Game.settings | `Game#settings`}
-   * @see {@link Settings | `Settings`}
-   * @see {@link SettingsConfig | `SettingsConfig`}
+   * @see {@linkcode Settings}
+   * @see {@linkcode SettingsConfig}
    */
   class ClientSettings {
     constructor(worldSettings?: Setting.Implementation["_source"][]);
@@ -89,13 +89,7 @@ declare global {
       T extends ClientSettings.Type,
       N extends ClientSettings.Namespace = ClientSettings.Namespace,
       K extends ClientSettings.KeyFor<N> = ClientSettings.KeyFor<N>,
-    >(
-      namespace: N,
-      key: K,
-      data: ClientSettings.Type extends T
-        ? ClientSettings.RegisterOptions<globalThis.SettingConfig[`${N}.${K}` & keyof SettingConfig]>
-        : ClientSettings.RegisterOptions<NoInfer<T>>,
-    ): void;
+    >(namespace: N, key: K, data: ClientSettings.RegisterData<T, N, K>): void;
 
     /**
      * Register a new sub-settings menu
@@ -103,8 +97,8 @@ declare global {
      * @param namespace - The namespace under which the menu is registered
      * @param key       - The key name for the setting under the namespace module
      * @param data      - Configuration for setting data
-     * @typeParam N     - The namespace under which the menu is registered, as a type
-     * @typeParam K     - The key name for the setting under the namespace module, as a type
+     * @template N     - The namespace under which the menu is registered, as a type
+     * @template K     - The key name for the setting under the namespace module, as a type
      *
      * @example Define a settings submenu which handles advanced configuration needs
      * ```typescript
@@ -125,8 +119,8 @@ declare global {
      *
      * @param namespace - The namespace under which the setting is registered
      * @param key       - The setting key to retrieve
-     * @typeParam N     - The namespace under which the setting is registered, as a type
-     * @typeParam K     - The setting key to retrieve, as a type
+     * @template N     - The namespace under which the setting is registered, as a type
+     * @template K     - The setting key to retrieve, as a type
      *
      * @example Retrieve the current setting value
      * ```typescript
@@ -145,9 +139,9 @@ declare global {
      * @param key       - The setting key to retrieve
      * @param value     - The data to assign to the setting key
      * @param options   - Additional options passed to the server when updating world-scope settings
-     * @typeParam N     - The namespace under which the setting is registered, as a type
-     * @typeParam K     - The setting key to retrieve, as a type
-     * @typeParam V     - The type of the value being set
+     * @template N     - The namespace under which the setting is registered, as a type
+     * @template K     - The setting key to retrieve, as a type
+     * @template V     - The type of the value being set
      * @returns         - The assigned setting value
      *
      * @example
@@ -168,8 +162,28 @@ declare global {
     type Namespace = GetNamespaces<keyof globalThis.SettingConfig>;
     type KeyFor<N extends Namespace> = GetKeys<N, keyof globalThis.SettingConfig>;
 
+    interface RegisterData<
+      T extends ClientSettings.Type,
+      N extends ClientSettings.Namespace,
+      K extends ClientSettings.KeyFor<N>,
+    > extends _RegisterData<_RegisterType<T, N, K>> {}
+
     /**
-     * A compile type is a type for a setting that only exists at compile time.
+     * @internal
+     */
+    type _RegisterType<
+      T extends ClientSettings.Type,
+      N extends ClientSettings.Namespace,
+      K extends ClientSettings.KeyFor<N>,
+    > = ClientSettings.Type extends T ? globalThis.SettingConfig[`${N}.${K}` & keyof SettingConfig] : NoInfer<T>;
+
+    /**
+     * @internal
+     */
+    type _RegisterData<T extends ClientSettings.Type> = InexactPartial<Omit<SettingConfig<T>, "key" | "namespace">>;
+
+    /**
+     * A TypeScript type is a type for a setting that only exists at compile time.
      * For example `string` does not correspond to a real runtime value like `String` does.
      */
     type TypeScriptType = string | number | boolean | symbol | bigint | AnyArray | AnyObject;
@@ -192,6 +206,7 @@ declare global {
     type SettingAssignmentType<N extends Namespace, K extends KeyFor<N>> = ToSettingAssignmentType<
       ConfiguredType<N, K>
     >;
+
     type ToSettingAssignmentType<T extends Type> = ReplaceUndefinedWithNull<
       | SettingType<T>
       // TODO(LukeAbby): The `fromSource` function is called with `strict` which changes how fallback behaviour works. See `ClientSettings#set`
@@ -204,6 +219,7 @@ declare global {
     type SettingInitializedType<N extends Namespace, K extends KeyFor<N>> = ToSettingInitializedType<
       ConfiguredType<N, K>
     >;
+
     type ToSettingInitializedType<T extends Type> = ReplaceUndefinedWithNull<
       SettingType<T> | (T extends DataModel.Any ? T : never)
     >;
@@ -270,11 +286,14 @@ declare global {
     /**
      * A Client Setting
      * @remarks Copied from `resources/app/common/types.mjs`
-     * @remarks Not to be confused with {@link globalThis.SettingConfig | `globalThis.SettingConfig`} which is how you register setting types in this project
+     * @remarks Not to be confused with {@linkcode globalThis.SettingConfig} which is how you register setting types in this project
      */
     interface SettingConfig<T extends Type = (value: unknown) => unknown>
       extends _SettingConfig<ToRuntimeType<T>, ToSettingAssignmentType<T>> {}
 
+    /**
+     * @deprecated {@link ClientSettings.RegisterData | `ClientSettings.RegisterData`}
+     */
     interface RegisterOptions<T extends Type> extends InexactPartial<Omit<SettingConfig<T>, "key" | "namespace">> {}
 
     /**

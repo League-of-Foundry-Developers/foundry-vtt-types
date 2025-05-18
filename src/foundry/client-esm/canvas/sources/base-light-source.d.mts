@@ -32,9 +32,9 @@ declare abstract class BaseLightSource<
 
   /**
    * The corresponding animation config.
-   * @privateRemarks Only uses {@link CONFIG.Canvas.lightAnimations | `CONFIG.Canvas.lightAnimations`} in
-   * {@link foundry.canvas.sources.BaseLightSource | `foundry.canvas.sources.BaseLightSource`}, but
-   * {@link foundry.canvas.sources.PointDarknessSource | `foundry.canvas.sources.PointDarknessSource`}
+   * @privateRemarks Only uses {@linkcode CONFIG.Canvas.lightAnimations} in
+   * {@linkcode foundry.canvas.sources.BaseLightSource}, but
+   * {@linkcode foundry.canvas.sources.PointDarknessSource}
    * overrides to use `.darknessAnimations`, so the union type is necessary
    */
   protected static get ANIMATIONS(): typeof CONFIG.Canvas.lightAnimations | typeof CONFIG.Canvas.darknessAnimations;

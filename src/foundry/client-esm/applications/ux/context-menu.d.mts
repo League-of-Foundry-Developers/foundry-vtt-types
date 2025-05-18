@@ -2,7 +2,7 @@ import type { InexactPartial } from "fvtt-types/utils";
 
 declare global {
   /**
-   * @deprecated Use {@link foundry.applications.ux.ContextMenu.Entry | `foundry.applications.ux.ContextMenu.Entry`}
+   * @deprecated Use {@linkcode foundry.applications.ux.ContextMenu.Entry}
    */
   type ContextMenuEntry = ContextMenu.Entry<JQuery>;
 }

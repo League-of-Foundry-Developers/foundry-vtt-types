@@ -49,9 +49,8 @@ declare class AdjustDarknessLevelRegionBehaviorType extends RegionBehaviorType<A
 
   static override events: Record<string, RegionBehaviorType.EventBehaviorStaticHandler>;
 
-  /**
-   * @privateRemarks _onUpdate is overridden but without signature changes.
-   * For type simplicity it is left off. Methods like this historically have been the source of a large amount of computation from tsc.
-   */
+  // _onUpdate is overridden but without signature changes.
+  // For type simplicity it is left off. Methods like this historically have been the source of a large amount of computation from tsc.
 }
+
 export default AdjustDarknessLevelRegionBehaviorType;

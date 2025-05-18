@@ -56,10 +56,11 @@ declare namespace Sound {
   interface LoadOptions extends _LoadOptions {}
 
   /**
-   * @internal
    * Since `Sound##playback` isn't exposed, this interface can *just* be accurate to what's allowable to pass
    * to {@link Sound.play | `Sound#play`} or {@link Sound.stop | `#stop`}, which in reality is what's allowed
    * by `Sound##configurePlayback`
+   *
+   * @internal
    */
   type _PlaybackOptions = NullishProps<{
     /**
@@ -355,6 +356,7 @@ declare class Sound extends EventEmitterMixin() {
    * @returns A Promise which resolves once playback has started (excluding fade)
    */
   play(options?: Sound.PlaybackOptions): Promise<this>;
+
   /**
    * @deprecated since v12, until v14
    * @remarks "`Sound#play` now takes an object of playback options instead of positional arguments."
@@ -456,7 +458,7 @@ declare class Sound extends EventEmitterMixin() {
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "`AudioContainer.LOAD_STATES` is deprecated in favor of {@link Sound.STATES | `Sound.STATES`}"
+   * @remarks "`AudioContainer.LOAD_STATES` is deprecated in favor of {@linkcode Sound.STATES}"
    */
   static get LOAD_STATES(): Sound.States;
 

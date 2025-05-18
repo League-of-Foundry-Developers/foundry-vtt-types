@@ -2,6 +2,7 @@ import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
 import type { CONST } from "#client-esm/client.d.mts";
 import type BasePackage from "#common/packages/base-package.d.mts";
 import type AdditionalTypesField from "#common/packages/sub-types.d.mts";
+import type DataModel from "#common/abstract/data.mjs";
 
 import fields = foundry.data.fields;
 
@@ -169,34 +170,34 @@ declare global {
 
   namespace Module {
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@linkcode DataModel._source}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link Module.Source | `Module.Source`}
+     * @deprecated Replaced with {@linkcode Module.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a data model. Used in places like {@link Module.create | `Module.create`}
+     * The data necessary to create a data model. Used in places like {@linkcode Module.create}
      * and {@link Module | `new Module(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link DataModel | `DataModel`} has been initialized, for example
+     * The data after a {@linkcode DataModel} has been initialized, for example
      * {@link Module.name | `Module#name`}.
      *
-     * This is data transformed from {@link Module.Source | `Module.Source`} and turned into more
+     * This is data transformed from {@linkcode Module.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -210,10 +211,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link Module | `Module`}. This is the source of truth for how an Module document
+     * The schema for {@linkcode Module}. This is the source of truth for how an Module document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link Module | `Module`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode Module}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -246,7 +247,8 @@ declare global {
   class System extends ClientPackageMixin(foundry.packages.BaseSystem) {
     constructor(data: ClientPackage.SystemCreateData, options: unknown);
 
-    override _configure(options: unknown): void;
+    // options: not null (parameter default only, destructured in super)
+    protected override _configure(options?: DataModel.ConfigureOptions): void;
 
     /**
      * @deprecated since v12, will be removed in v14
@@ -257,34 +259,34 @@ declare global {
 
   namespace System {
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@linkcode DataModel._source}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link System.Source | `System.Source`}
+     * @deprecated Replaced with {@linkcode System.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a data model. Used in places like {@link System.create | `System.create`}
+     * The data necessary to create a data model. Used in places like {@linkcode System.create}
      * and {@link System | `new System(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link DataModel | `DataModel`} has been initialized, for example
+     * The data after a {@linkcode DataModel} has been initialized, for example
      * {@link System.name | `System#name`}.
      *
-     * This is data transformed from {@link System.Source | `System.Source`} and turned into more
+     * This is data transformed from {@linkcode System.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -298,10 +300,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link System | `System`}. This is the source of truth for how an System document
+     * The schema for {@linkcode System}. This is the source of truth for how an System document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link System | `System`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode System}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any
@@ -407,34 +409,34 @@ declare global {
 
   namespace World {
     /**
-     * The data put in {@link DataModel._source | `DataModel._source`}. This data is what was
+     * The data put in {@linkcode DataModel._source}. This data is what was
      * persisted to the database and therefore it must be valid JSON.
      *
      * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
-     * but initialized as a {@link Set | `Set`}.
+     * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated {@link World.Source | `World.Source`}
+     * @deprecated Replaced with {@linkcode World.Source}
      */
     type PersistedData = Source;
 
     /**
-     * The data necessary to create a data model. Used in places like {@link World.create | `World.create`}
+     * The data necessary to create a data model. Used in places like {@linkcode World.create}
      * and {@link World | `new World(...)`}.
      *
-     * For example a {@link fields.SetField | `SetField`} can accept any {@link Iterable | `Iterable`}
+     * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
      * with the right values. This means you can pass a `Set` instance, an array of values,
      * a generator, or any other iterable.
      */
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
     /**
-     * The data after a {@link DataModel | `DataModel`} has been initialized, for example
+     * The data after a {@linkcode DataModel} has been initialized, for example
      * {@link World.name | `World#name`}.
      *
-     * This is data transformed from {@link World.Source | `World.Source`} and turned into more
+     * This is data transformed from {@linkcode World.Source} and turned into more
      * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
      * persisted to the database as an array of values but at runtime it is a `Set` instance.
      */
@@ -448,10 +450,10 @@ declare global {
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
     /**
-     * The schema for {@link World | `World`}. This is the source of truth for how an World document
+     * The schema for {@linkcode World}. This is the source of truth for how an World document
      * must be structured.
      *
-     * Foundry uses this schema to validate the structure of the {@link World | `World`}. For example
+     * Foundry uses this schema to validate the structure of the {@linkcode World}. For example
      * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
      * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
      * starting as an array in the database, initialized as a set, and allows updates with any

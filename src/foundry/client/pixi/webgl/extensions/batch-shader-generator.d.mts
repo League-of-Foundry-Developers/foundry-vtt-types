@@ -11,6 +11,7 @@ declare global {
     constructor(
       vertexSrc: string,
       fragTemplate: string,
+
       /**
        * @defaultValue `{}`
        */

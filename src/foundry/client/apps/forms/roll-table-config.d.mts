@@ -3,7 +3,7 @@ import type { MaybePromise } from "fvtt-types/utils";
 declare global {
   /**
    * The Application responsible for displaying and editing a single RollTable document.
-   * @typeParam Options - the type of the options object
+   * @template Options - the type of the options object
    */
   class RollTableConfig<
     Options extends DocumentSheet.Options<RollTable.Implementation> = DocumentSheet.Options<RollTable.Implementation>,

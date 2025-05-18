@@ -103,7 +103,9 @@ declare global {
       maxVal: number,
       t: number,
       p?: number,
-      /** @immediate */ func?: (radians: number) => number,
+
+      /** @immediate */
+      func?: (radians: number) => number,
     ): number;
   }
 }

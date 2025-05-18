@@ -1,7 +1,7 @@
 import type Document from "#common/abstract/document.d.mts";
 
 declare global {
-  /** @deprecated {@link DocumentDirectory.Options | `DocumentDirectory.Options`} */
+  /** @deprecated Replaced with {@linkcode DocumentDirectory.Options} */
   type DocumentDirectoryOptions<T extends Document.AnyConstructor = Document.AnyConstructor> =
     DocumentDirectory.Options<T>;
 

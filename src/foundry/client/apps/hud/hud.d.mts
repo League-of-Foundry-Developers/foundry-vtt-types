@@ -3,8 +3,8 @@ import type { MaybePromise } from "fvtt-types/utils";
 declare global {
   /**
    * An abstract base class for displaying a heads-up-display interface bound to a Placeable Object on the canvas
-   * @typeParam Object - the type of the PlaceableObject
-   * @typeParam Options - the type of the options object
+   * @template Object - the type of the PlaceableObject
+   * @template Options - the type of the options object
    */
   abstract class BasePlaceableHUD<
     Object extends PlaceableObject.Any = PlaceableObject,

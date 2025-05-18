@@ -12,6 +12,7 @@ declare global {
        * @remarks Default is applied if `options` is `instanceof PIXI.Texture`, or neither that nor `instanceof Object`
        */
       options?: PrimarySpriteMesh.ConstructorOptions | PIXI.Texture | null,
+
       /**
        * The shader class used to render this sprite.
        * @defaultValue `PrimaryBaseSamplerShader`
@@ -76,6 +77,7 @@ declare global {
      */
     containsCanvasPoint(
       point: PIXI.IPointData,
+
       /** @defaultValue `this.textureAlphaThreshold` */
       textureAlphaThreshold?: number,
     ): boolean;
@@ -87,6 +89,7 @@ declare global {
      */
     containsPoint(
       point: PIXI.IPointData,
+
       /** @defaultValue `this.textureAlphaThreshold` */
       textureAlphaThreshold?: number,
     ): boolean;
@@ -167,7 +170,7 @@ declare global {
        * The fit type.
        * @defaultValue `"fill"`
        * @remarks Can't be `null` because it only has a parameter default, and is then fed into a switch statement where the default is throw
-       * */
+       */
       fit: FitType;
 
       /**

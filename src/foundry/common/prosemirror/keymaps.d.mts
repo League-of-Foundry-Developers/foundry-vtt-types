@@ -22,6 +22,7 @@ export declare namespace ProseMirrorKeyMaps {
 }
 
 export default ProseMirrorKeyMaps;
+
 /**
  * A class responsible for building the keyboard commands for the ProseMirror editor.
  */

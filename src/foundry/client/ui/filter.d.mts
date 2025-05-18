@@ -2,18 +2,18 @@ import type { ValueOf } from "fvtt-types/utils";
 
 declare global {
   /**
-   * @deprecated {@link SearchFilter.Configuration | `SearchFilter.Configuration`}
+   * @deprecated Replaced with {@linkcode SearchFilter.Configuration}
    */
   type SearchFilterConfiguration = SearchFilter.Configuration;
 
   /**
-   * @deprecated {@link SearchFilter.FieldFilter | `SearchFilter.FieldFilter`}
+   * @deprecated Replaced with {@linkcode SearchFilter.FieldFilter}
    */
   type FieldFilter = SearchFilter.FieldFilter;
 
   /**
    * A controller class for managing a text input widget that filters the contents of some other UI element
-   * @see {@link Application | `Application`}
+   * @see {@linkcode Application}
    */
   class SearchFilter {
     static readonly OPERATORS: {

@@ -40,6 +40,7 @@ declare class ConvolverEffect extends ConvolverNode {
 
   /** @remarks Foundry only supports the "pass a node, get that node returned" signature */
   override connect(destinationNode: AudioNode, output?: number, input?: number): AudioNode;
+
   /** @deprecated Foundry does not support this signature, only the other overload */
   override connect(destinationParam: AudioParam, output?: number): AudioParam;
 

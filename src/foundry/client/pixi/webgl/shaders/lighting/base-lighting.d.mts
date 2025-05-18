@@ -13,7 +13,7 @@ declare global {
 
     /**
      * Called before rendering.
-     * */
+     */
     update(): void;
 
     /**

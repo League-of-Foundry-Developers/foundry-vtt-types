@@ -39,6 +39,7 @@ declare namespace ProseMirrorContentLinkPlugin {
   interface ProseMirrorContentLinkOptions {
     /** The parent document housing this editor. */
     document?: foundry.abstract.Document.Any | undefined;
+
     /** @defaultValue `false` */
     relativeLinks?: boolean | undefined;
   }

@@ -22,6 +22,7 @@ declare class AdaptiveFragmentChannel {
      * @defaultValue `r`
      */
     channel,
+
     /**
      * Initial uniforms provided to the filter
      */

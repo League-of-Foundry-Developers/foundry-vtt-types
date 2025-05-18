@@ -5,8 +5,8 @@ declare global {
   /**
    * A Note is an implementation of PlaceableObject which represents an annotated location within the Scene.
    * Each Note links to a JournalEntry document and represents its location on the map.
-   * @see {@link NoteDocument | `NoteDocument`}
-   * @see {@link NotesLayer | `NotesLayer`}
+   * @see {@linkcode NoteDocument}
+   * @see {@linkcode NotesLayer}
    */
   class Note extends PlaceableObject<NoteDocument.Implementation> {
     static override embeddedName: "Note";
@@ -131,40 +131,40 @@ declare global {
   namespace Note {
     /**
      * The implementation of the `Note` placeable configured through `CONFIG.Note.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link NoteDocument.Implementation | `NoteDocument.Implementation`}
+     * Not to be confused with {@linkcode NoteDocument.Implementation}
      * which refers to the implementation for the note document.
      */
     type Implementation = FixedInstanceType<ImplementationClass>;
 
     /**
      * The implementation of the `Note` placeable configured through `CONFIG.Note.objectClass`
-     * in Foundry and {@link PlaceableObjectClassConfig | `PlaceableObjectClassConfig`} in fvtt-types.
+     * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
      *
-     * Not to be confused with {@link NoteDocument.ImplementationClass | `NoteDocument.ImplementationClass`}
+     * Not to be confused with {@linkcode NoteDocument.ImplementationClass}
      * which refers to the implementation for the note document.
      */
     // eslint-disable-next-line no-restricted-syntax
     type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Note>;
 
     /**
-     * @deprecated {@link ImplementationClass | `ImplementationClass`}
+     * @deprecated Replaced with {@linkcode ImplementationClass}
      */
     type ObjectClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Implementation | `Implementation`}
+     * @deprecated Replaced with {@linkcode Implementation}
      */
     type Object = Implementation;
 
     /**
-     * @deprecated {@link Note.ImplementationClass | `Note.ImplementationClass`}
+     * @deprecated Replaced with {@linkcode Note.ImplementationClass}
      */
     type ConfiguredClass = ImplementationClass;
 
     /**
-     * @deprecated {@link Note.Implementation | `Note.Implementation`}
+     * @deprecated Replaced with {@linkcode Note.Implementation}
      */
     type ConfiguredInstance = Implementation;
 

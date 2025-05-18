@@ -48,6 +48,7 @@ import type {
   // Defer,
   // MustBeValidUuid,
   // Quote,
+  SplitString,
 } from "fvtt-types/utils";
 
 expectTypeOf<GetKey<{ abc: string }, "foo">>().toEqualTypeOf<never>();
@@ -186,3 +187,8 @@ expectTypeOf(await numberMaybePromise).toEqualTypeOf<number>();
 // TODO: Defer
 // TODO: MustBeValidUuid
 // TODO: Quote
+
+expectTypeOf<SplitString<"", ".">>().toEqualTypeOf<[]>();
+expectTypeOf<SplitString<"abc", "">>().toEqualTypeOf<["a", "b", "c"]>();
+expectTypeOf<SplitString<"lorem.ipusm", ".">>().toEqualTypeOf<["lorem", "ipusm"]>();
+expectTypeOf<SplitString<"" | "a" | "b.c" | "d.e.f", ".">>().toEqualTypeOf<[] | ["a"] | ["b", "c"] | ["d", "e", "f"]>();

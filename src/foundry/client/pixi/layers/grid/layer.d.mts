@@ -149,11 +149,13 @@ declare global {
     getSnappedPosition(
       x: number,
       y: number,
+
       /**
        * @defaultValue `1`
        * @remarks Can't be `null` due to being used directly as a divisor
        */
       interval?: number,
+
       /** @remarks Unused */
       options?: EmptyObject | null,
     ): PIXI.IPointData;
@@ -165,6 +167,7 @@ declare global {
     measureDistance(
       origin: Canvas.Point,
       target: Canvas.Point,
+
       /** @remarks Unused */
       options?: EmptyObject | null,
     ): number;

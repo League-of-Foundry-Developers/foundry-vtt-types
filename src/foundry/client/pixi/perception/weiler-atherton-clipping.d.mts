@@ -97,6 +97,7 @@ declare global {
     static combine(
       polygon: PIXI.Polygon,
       clipObject: PIXI.Rectangle | PIXI.Circle,
+
       /** @remarks Despite foundry marking this parameter optional, if an object with a valid `clipType` property is not passed, this will throw */
       options: WeilerAthertonClipper.CombineOptions,
     ): PIXI.Polygon[];

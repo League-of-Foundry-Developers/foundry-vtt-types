@@ -1,12 +1,12 @@
 import type { MaybePromise } from "fvtt-types/utils";
 
 declare global {
-  /** @deprecated {@link WorldConfig.Options | `WorldConfig.Options`} */
+  /** @deprecated Replaced with {@linkcode WorldConfig.Options} */
   type WorldConfigOptions = WorldConfig.Options;
 
   /**
    * The World Management setup application
-   * @typeParam Options - The type of the options object
+   * @template Options - The type of the options object
    */
   class WorldConfig<Options extends WorldConfig.Options = WorldConfig.Options> extends FormApplication<World, Options> {
     /**
