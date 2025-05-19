@@ -303,7 +303,7 @@ declare global {
         { label: "REGION.FIELDS.behaviors.label"; hint: "REGION.FIELDS.behaviors.hint" }
       >;
 
-      /** @defaultValue `CONST.REGION_VISIBILITY.LAYER` (`0`) */
+      /** @defaultValue `CONST.REGION_VISIBILITY.LAYER` */
       visibility: fields.NumberField<
         {
           required: true;

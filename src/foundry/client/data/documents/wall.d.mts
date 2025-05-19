@@ -296,7 +296,7 @@ declare global {
 
       /**
        * The direction of effect imposed by this wall
-       * @defaultValue `CONST.WALL_DIRECTIONS.BOTH` (`0`)
+       * @defaultValue `CONST.WALL_DIRECTIONS.BOTH`
        */
       dir: fields.NumberField<
         {
@@ -313,7 +313,7 @@ declare global {
 
       /**
        * The type of door which this wall contains, if any
-       * @defaultValue `CONST.WALL_DOOR_TYPES.NONE` (`0`)
+       * @defaultValue `CONST.WALL_DOOR_TYPES.NONE`
        */
       door: fields.NumberField<
         {
@@ -330,7 +330,7 @@ declare global {
 
       /**
        * The state of the door this wall contains, if any
-       * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED` (`0`)
+       * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED`
        */
       ds: fields.NumberField<
         {

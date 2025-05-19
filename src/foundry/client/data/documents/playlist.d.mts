@@ -269,7 +269,7 @@ declare global {
 
       /**
        * The playback mode for sounds in this playlist
-       * @defaultValue `CONST.PLAYLIST_MODES.SEQUENTIAL` (`0`)
+       * @defaultValue `CONST.PLAYLIST_MODES.SEQUENTIAL`
        */
       mode: fields.NumberField<
         {
