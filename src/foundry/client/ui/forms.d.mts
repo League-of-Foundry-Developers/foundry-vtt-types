@@ -1,4 +1,4 @@
-export {};
+import type { AnyMutableObject } from "fvtt-types/utils";
 
 declare global {
   /**
@@ -34,7 +34,7 @@ declare global {
     /**
      * The object representation of the form data, available once processed.
      */
-    get object(): Record<string, string | number>;
+    get object(): AnyMutableObject;
 
     /**
      * Process the HTML form element to populate the FormData instance.

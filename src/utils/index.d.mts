@@ -27,12 +27,21 @@ export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";
 /**
  * `GetKey` accesses a property while intentionally ignoring index signatures. This means `GetKey<Record<string, unknown>, "foo">` will return `never`.
  */
-// Note(LukeAbby): There are two tricky cases:
-// - `T = {}` would regularly always return `unknown`. The fix here adding a single dummy property with `{ _?: unknown } & T`.
-// - `T = never` would regularly always return `unknown`. The fix here is checking if `any` is assignable to it.
-export type GetKey<T, K extends PropertyKey, D = never> = [any] extends [T] ? _GetKey<{ _?: unknown } & T, K, D> : D;
+// Note(LukeAbby): There are five tricky cases:
+// - `T = {}` and `T = object` could easily return `unknown` and must be excluded.
+// - `T = never` might either distribute out or return `unknown`. The fix here is checking if `any` is assignable to it.
+// - `T = { prop?: U }` with `exactOptionalPropertyTypes` should return `U | undefined` not `U`.
+// - `T` has getters `GetKey` should still access it, this means checking `keyof T` is not helpful.
+export type GetKey<T, K extends PropertyKey, D = never> = [object] extends [T] // Handle `{}` and `object`
+  ? D
+  : [any] extends [T] // Handle never
+    ? _GetKey<T, K, D>
+    : D;
 
-type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infer V } ? V : D;
+// Note(LukeAbby): This uses `infer _V` specifically to avoid index signatures.
+// However it isn't `T extends { readonly [_ in K]?: infer V } ? V : D` as under
+// `exactOptionalPropertyTypes` this would not include `undefined` whereas `T[K]` does.
+type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infer _V } ? T[K] : D;
 
 /**
  * `Partial` is usually the wrong type.
@@ -505,12 +514,15 @@ export type UnionToIntersection<U> = (U extends unknown ? (arg: U) => void : nev
  */
 // Allowing passing any `object` is done because it's more convenient for the end user.
 // Note that `{}` should always be assignable to `DeepPartial<T>`.
-export type DeepPartial<T extends object> = {
-  [K in keyof T]?: _DeepPartial<T[K]>;
-};
+export type DeepPartial<T extends object> = _DeepPartial<T>;
 
-// This type has to be factored out for distributivity.
-type _DeepPartial<T> = T extends object ? (T extends AnyArray | AnyFunction | AnyConstructor ? T : DeepPartial<T>) : T;
+type _DeepPartial<T> = T extends object
+  ? T extends AnyArray | AnyFunction | AnyConstructor
+    ? T
+    : {
+        [K in keyof T]?: _DeepPartial<T[K]>;
+      }
+  : T;
 
 /**
  * Gets all possible keys of `T`. This is useful because if `T` is a union type
