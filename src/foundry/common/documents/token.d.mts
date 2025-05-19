@@ -64,7 +64,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 

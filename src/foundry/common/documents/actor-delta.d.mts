@@ -5,6 +5,7 @@ import type { documents } from "../../client-esm/client.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
+import type EmbeddedCollection from "../abstract/embedded-collection.d.mts";
 
 /**
  * The ActorDelta Document.
@@ -30,6 +31,23 @@ declare abstract class BaseActorDelta<
    */
   constructor(...args: ActorDelta.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "ActorDelta",
+   *   collection: "delta",
+   *   label: "DOCUMENT.ActorDelta",
+   *   labelPlural: "DOCUMENT.ActorDeltas",
+   *   isEmbedded: true,
+   *   embedded: {
+   *     Item: "items",
+   *     ActiveEffect: "effects"
+   *   },
+   *   schemaVersion: "12.324"
+   * });
+   * ```
+   */
   static override metadata: BaseActorDelta.Metadata;
 
   static override defineSchema(): BaseActorDelta.Schema;
@@ -49,21 +67,31 @@ declare abstract class BaseActorDelta<
   // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   /**
    * Retrieve the base actor's collection, if it exists.
    * @param collectionName - The collection name.
+   * @remarks Passes `collectionName` to the token's `baseActor`'s {@link Actor.getEmbeddedCollection | `#getEmbeddedCollection`}
    */
-  getBaseCollection(collectionName: string): Collection<Actor.Implementation> | undefined;
+  getBaseCollection<DocType extends Actor.Embedded.Name>(
+    collectionName: DocType,
+  ): EmbeddedCollection<Document.ImplementationFor<DocType>, Actor.Implementation> | undefined;
 
+  /**
+   * Apply an ActorDelta to an Actor and return the resultant synthetic Actor.
+   * @param delta     - The ActorDelta.
+   * @param baseActor - The base Actor.
+   * @param context   - Context to supply to synthetic Actor instantiation.
+   * @remarks `context` is spread into an object, so it being `null` is effectively the same as omitted
+   */
   static applyDelta(
     delta: BaseActorDelta,
     baseActor: documents.BaseActor,
-    context: unknown,
-  ): Document.ImplementationClassFor<"Actor"> | null;
+    context?: BaseActorDelta.ApplyDeltaContext | null,
+  ): Actor.Implementation | null;
 
   /**
    * @remarks
@@ -95,39 +123,39 @@ declare abstract class BaseActorDelta<
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: ActorDelta.ParentCollectionName | null;
+  override readonly parentCollection: ActorDelta.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
   static override get implementation(): ActorDelta.ImplementationClass;
 
-  static get baseDocument(): typeof BaseActorDelta;
+  static override get baseDocument(): typeof BaseActorDelta;
 
-  static get collectionName(): ActorDelta.ParentCollectionName;
+  static override get collectionName(): ActorDelta.ParentCollectionName;
 
-  static get documentName(): ActorDelta.Name;
+  static override get documentName(): ActorDelta.Name;
 
-  static get TYPES(): BaseActorDelta.SubType[];
+  static override get TYPES(): BaseActorDelta.SubType[];
 
-  static get hasTypeData(): true;
+  static override get hasTypeData(): true;
 
-  static get hierarchy(): ActorDelta.Hierarchy;
+  static override get hierarchy(): ActorDelta.Hierarchy;
 
   override system: ActorDelta.SystemOfType<SubType>;
 
   override parent: BaseActorDelta.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<ActorDelta.Implementation | ActorDelta.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ActorDelta.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<ActorDelta.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: ActorDelta.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<ActorDelta.Database.Update>,
   ): Promise<ActorDelta.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<ActorDelta.Database.Delete>,
   ): Promise<ActorDelta.Implementation[]>;
@@ -200,74 +228,74 @@ declare abstract class BaseActorDelta<
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: ActorDelta.CreateData,
     options: ActorDelta.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
+  protected override _onCreate(
     data: ActorDelta.CreateData,
     options: ActorDelta.Database.OnCreateOperation,
     userId: string,
   ): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: ActorDelta.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<ActorDelta.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: ActorDelta.Implementation[],
     operation: ActorDelta.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: ActorDelta.UpdateData,
     options: ActorDelta.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
+  protected override _onUpdate(
     changed: ActorDelta.UpdateData,
     options: ActorDelta.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: ActorDelta.Implementation[],
     operation: ActorDelta.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: ActorDelta.Implementation[],
     operation: ActorDelta.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
+  protected override _preDelete(
     options: ActorDelta.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: ActorDelta.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: ActorDelta.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: ActorDelta.Implementation[],
     operation: ActorDelta.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: ActorDelta.Implementation[],
     operation: ActorDelta.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): true;
+  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -305,7 +333,7 @@ declare abstract class BaseActorDelta<
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
    */
-  protected static _onCreateDocuments(
+  protected static override _onCreateDocuments(
     documents: ActorDelta.Implementation[],
     context: Document.ModificationContext<ActorDelta.Parent>,
   ): Promise<void>;
@@ -314,7 +342,7 @@ declare abstract class BaseActorDelta<
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
    */
-  protected static _onUpdateDocuments(
+  protected static override _onUpdateDocuments(
     documents: ActorDelta.Implementation[],
     context: Document.ModificationContext<ActorDelta.Parent>,
   ): Promise<void>;
@@ -323,19 +351,18 @@ declare abstract class BaseActorDelta<
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
    */
-  protected static _onDeleteDocuments(
+  protected static override _onDeleteDocuments(
     documents: ActorDelta.Implementation[],
     context: Document.ModificationContext<ActorDelta.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<ActorDelta.Schema>;
+  protected static override _schema: SchemaField<ActorDelta.Schema>;
 
-  static get schema(): SchemaField<ActorDelta.Schema>;
+  static override get schema(): SchemaField<ActorDelta.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: ActorDelta.Source): void;
+  static override validateJoint(data: ActorDelta.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(
@@ -376,6 +403,21 @@ declare namespace BaseActorDelta {
   export import Schema = ActorDelta.Schema;
   export import DatabaseOperation = ActorDelta.Database;
   export import Flags = ActorDelta.Flags;
+
+  /**
+   * @internal
+   * This interface is spread into an object that already has `parent` defined, and as this is ActorDelta logic,
+   * let's assume that overwriting the parent is contraindicated.
+   */
+  type _ApplyDeltaContext = Omit<Document.ConstructionContext<TokenDocument.Implementation>, "parent">;
+
+  interface ApplyDeltaContext extends _ApplyDeltaContext {
+    /**
+     * @deprecated This context is spread into an `Actor` creation context for the synthetic actor,
+     * overriding the provided default of `parent: delta.parent` is nonsensical
+     */
+    parent?: never;
+  }
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
