@@ -412,6 +412,10 @@ declare namespace BaseActorDelta {
   type _ApplyDeltaContext = Omit<Document.ConstructionContext<TokenDocument.Implementation>, "parent">;
 
   interface ApplyDeltaContext extends _ApplyDeltaContext {
+    /**
+     * @deprecated This context is spread into an `Actor` creation context for the synthetic actor,
+     * overriding the provided default of `parent: delta.parent` is nonsensical
+     */
     parent?: never;
   }
 

@@ -58,7 +58,8 @@ type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.In
 // `name?: string` etc. were to be put in `Document` directly they'd actually override the schema.
 // Therefore this workaround is used to force `DataModel` to override the properties.
 declare const _InternalDocument: (new (...args: any[]) => {
-  name?: string | undefined;
+  // TODO: removing undefined breaks everything, but should be valid to do, investigate
+  name?: string | null | undefined;
 
   // `{}` is used so that `{}` and the actual shape of `system` are merged.
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
