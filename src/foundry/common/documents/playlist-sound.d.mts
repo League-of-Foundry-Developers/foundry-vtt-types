@@ -25,6 +25,20 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    */
   constructor(...args: PlaylistSound.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "PlaylistSound",
+   *   collection: "sounds",
+   *   indexed: true,
+   *   label: "DOCUMENT.PlaylistSound",
+   *   labelPlural: "DOCUMENT.PlaylistSounds",
+   *   compendiumIndexFields: ["name", "sort"],
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BasePlaylistSound.Metadata;
 
   static override defineSchema(): BasePlaylistSound.Schema;
@@ -57,37 +71,37 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: PlaylistSound.ParentCollectionName | null;
+  override readonly parentCollection: PlaylistSound.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
-  static get implementation(): PlaylistSound.ImplementationClass;
+  static override get implementation(): PlaylistSound.ImplementationClass;
 
-  static get baseDocument(): typeof BasePlaylistSound;
+  static override get baseDocument(): typeof BasePlaylistSound;
 
-  static get collectionName(): PlaylistSound.ParentCollectionName;
+  static override get collectionName(): PlaylistSound.ParentCollectionName;
 
-  static get documentName(): PlaylistSound.Name;
+  static override get documentName(): PlaylistSound.Name;
 
-  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+  static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): undefined;
+  static override get hasTypeData(): undefined;
 
-  static get hierarchy(): PlaylistSound.Hierarchy;
+  static override get hierarchy(): PlaylistSound.Hierarchy;
 
   override parent: PlaylistSound.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<PlaylistSound.Implementation | PlaylistSound.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<PlaylistSound.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<PlaylistSound.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: PlaylistSound.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<PlaylistSound.Database.Update>,
   ): Promise<PlaylistSound.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<PlaylistSound.Database.Delete>,
   ): Promise<PlaylistSound.Implementation[]>;
@@ -130,68 +144,68 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: PlaylistSound.CreateData,
     options: PlaylistSound.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
+  protected override _onCreate(
     data: PlaylistSound.CreateData,
     options: PlaylistSound.Database.OnCreateOperation,
     userId: string,
   ): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: PlaylistSound.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<PlaylistSound.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: PlaylistSound.Implementation[],
     operation: PlaylistSound.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: PlaylistSound.UpdateData,
     options: PlaylistSound.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
+  protected override _onUpdate(
     changed: PlaylistSound.UpdateData,
     options: PlaylistSound.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: PlaylistSound.Implementation[],
     operation: PlaylistSound.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: PlaylistSound.Implementation[],
     operation: PlaylistSound.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
+  protected override _preDelete(
     options: PlaylistSound.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: PlaylistSound.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: PlaylistSound.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: PlaylistSound.Implementation[],
     operation: PlaylistSound.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  static get hasSystemData(): undefined;
+  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -225,7 +239,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     options?: LogCompatibilityWarningOptions,
   ): void;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: PlaylistSound.Implementation[],
     operation: PlaylistSound.Database.Delete,
     user: User.Implementation,
@@ -235,7 +249,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
    */
-  protected static _onCreateDocuments(
+  protected static override _onCreateDocuments(
     documents: PlaylistSound.Implementation[],
     context: Document.ModificationContext<PlaylistSound.Parent>,
   ): Promise<void>;
@@ -244,7 +258,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
    */
-  protected static _onUpdateDocuments(
+  protected static override _onUpdateDocuments(
     documents: PlaylistSound.Implementation[],
     context: Document.ModificationContext<PlaylistSound.Parent>,
   ): Promise<void>;
@@ -253,19 +267,18 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
    */
-  protected static _onDeleteDocuments(
+  protected static override _onDeleteDocuments(
     documents: PlaylistSound.Implementation[],
     context: Document.ModificationContext<PlaylistSound.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<PlaylistSound.Schema>;
+  protected static override _schema: SchemaField<PlaylistSound.Schema>;
 
-  static get schema(): SchemaField<PlaylistSound.Schema>;
+  static override get schema(): SchemaField<PlaylistSound.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: PlaylistSound.Source): void;
+  static override validateJoint(data: PlaylistSound.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(
