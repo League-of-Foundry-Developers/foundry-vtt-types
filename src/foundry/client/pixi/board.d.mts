@@ -390,8 +390,9 @@ declare global {
      * Draw the game canvas.
      * @param scene - A specific Scene document to render on the Canvas
      * @returns A Promise which resolves once the Canvas is fully drawn
+     * @privateRemarks Foundry calls this with `null` in `Scene#_onDelete` and `Scene#_onActivate`
      */
-    draw(scene?: Scene.Implementation): Promise<this>;
+    draw(scene?: Scene.Implementation | null): Promise<this>;
 
     /**
      * When re-drawing the canvas, first tear down or discontinue some existing processes
