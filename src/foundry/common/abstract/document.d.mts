@@ -253,7 +253,7 @@ declare abstract class Document<
   // options: not null (destructured)
   testUserPermission(
     user: User.Internal.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
@@ -2091,7 +2091,10 @@ declare namespace Document {
     strict?: boolean | null;
   }
 
-  type TestableOwnershipLevel = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  type ActionPermission = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  /** @deprecated Use {@linkcode Document.ActionPermission} instead */
+  type TestableOwnershipLevel = ActionPermission;
 
   /** @internal */
   type _TestUserPermissionsOptions = NullishProps<{

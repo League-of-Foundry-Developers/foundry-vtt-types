@@ -56,7 +56,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 

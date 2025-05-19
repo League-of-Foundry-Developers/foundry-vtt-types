@@ -63,7 +63,7 @@ declare abstract class BaseActiveEffect<
   // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
