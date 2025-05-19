@@ -98,37 +98,37 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: TileDocument.ParentCollectionName | null;
+  override readonly parentCollection: TileDocument.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
   static override get implementation(): TileDocument.ImplementationClass;
 
-  static get baseDocument(): typeof BaseTile;
+  static override get baseDocument(): typeof BaseTile;
 
-  static get collectionName(): TileDocument.ParentCollectionName;
+  static override get collectionName(): TileDocument.ParentCollectionName;
 
-  static get documentName(): TileDocument.Name;
+  static override get documentName(): TileDocument.Name;
 
-  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+  static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): undefined;
+  static override get hasTypeData(): undefined;
 
-  static get hierarchy(): TileDocument.Hierarchy;
+  static override get hierarchy(): TileDocument.Hierarchy;
 
   override parent: TileDocument.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<TileDocument.Implementation | TileDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<TileDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<TileDocument.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: TileDocument.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<TileDocument.Database.Update>,
   ): Promise<TileDocument.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<TileDocument.Database.Delete>,
   ): Promise<TileDocument.Implementation[]>;
@@ -171,62 +171,62 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: TileDocument.CreateData,
     options: TileDocument.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
+  protected override _onCreate(
     data: TileDocument.CreateData,
     options: TileDocument.Database.OnCreateOperation,
     userId: string,
   ): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: TileDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<TileDocument.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: TileDocument.Implementation[],
     operation: TileDocument.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: TileDocument.UpdateData,
     options: TileDocument.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
+  protected override _onUpdate(
     changed: TileDocument.UpdateData,
     options: TileDocument.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: TileDocument.Implementation[],
     operation: TileDocument.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: TileDocument.Implementation[],
     operation: TileDocument.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
+  protected override _preDelete(
     options: TileDocument.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: TileDocument.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: TileDocument.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: TileDocument.Implementation[],
     operation: TileDocument.Database.Delete,
     user: User.Implementation,
@@ -264,7 +264,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
     options?: LogCompatibilityWarningOptions,
   ): void;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: TileDocument.Implementation[],
     operation: TileDocument.Database.Delete,
     user: User.Implementation,
@@ -274,7 +274,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
    */
-  protected static _onCreateDocuments(
+  protected static override _onCreateDocuments(
     documents: TileDocument.Implementation[],
     context: Document.ModificationContext<TileDocument.Parent>,
   ): Promise<void>;
@@ -283,7 +283,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
    */
-  protected static _onUpdateDocuments(
+  protected static override _onUpdateDocuments(
     documents: TileDocument.Implementation[],
     context: Document.ModificationContext<TileDocument.Parent>,
   ): Promise<void>;
@@ -292,19 +292,18 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
    */
-  protected static _onDeleteDocuments(
+  protected static override _onDeleteDocuments(
     documents: TileDocument.Implementation[],
     context: Document.ModificationContext<TileDocument.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<TileDocument.Schema>;
+  protected static override _schema: SchemaField<TileDocument.Schema>;
 
-  static get schema(): SchemaField<TileDocument.Schema>;
+  static override get schema(): SchemaField<TileDocument.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: TileDocument.Source): void;
+  static override validateJoint(data: TileDocument.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(

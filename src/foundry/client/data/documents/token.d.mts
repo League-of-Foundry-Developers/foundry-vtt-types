@@ -1332,6 +1332,8 @@ declare global {
     override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // TODO: The deprecated Embedded Document Operations
+
+    #TokenDocument: true;
   }
 
   /**

@@ -654,7 +654,8 @@ declare global {
      *
      * @param permission - The permission name from USER_PERMISSIONS
      * @param allowed    - Whether to allow or restrict the permission
-     * @remarks @throws If the calling user is not at least an Assistant GM
+     * @remarks
+     * @throws If the calling user is not at least an Assistant GM
      */
     assignPermission(permission: keyof typeof CONST.USER_PERMISSIONS, allowed: boolean): Promise<this | undefined>;
 

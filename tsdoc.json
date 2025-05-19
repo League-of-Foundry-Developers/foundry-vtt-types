@@ -21,6 +21,10 @@
     {
       "tagName": "@yields",
       "syntaxKind": "modifier"
+    },
+    {
+      "tagName": "@private",
+      "syntaxKind": "modifier"
     }
   ]
 }

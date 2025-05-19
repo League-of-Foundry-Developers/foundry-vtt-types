@@ -303,13 +303,14 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static override get schema(): SchemaField<User.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static override validateJoint(data: User.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(source: User.CreateData, context?: DataModel.FromSourceOptions): User.Implementation;
 
   static override fromJSON(json: string): User.Implementation;
+
+  static #BaseUser: true;
 }
 
 export default BaseUser;

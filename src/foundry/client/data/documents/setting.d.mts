@@ -374,11 +374,6 @@ declare global {
     constructor(...args: Setting.ConstructorArgs);
 
     /**
-     * @privateRemarks This exists to let ts know that this class has a private property
-     */
-    static #PRIMITIVE_TYPES: [typeof String, typeof Number, typeof Boolean, typeof Array, typeof Symbol, typeof BigInt];
-
-    /**
      * The setting configuration for this setting document.
      */
     get config(): SettingsConfig | undefined;
@@ -436,5 +431,7 @@ declare global {
     override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // Embedded document operations have been left out because Setting does not have any embedded documents.
+
+    static #Setting: true;
   }
 }

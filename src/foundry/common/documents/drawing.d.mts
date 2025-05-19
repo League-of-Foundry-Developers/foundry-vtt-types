@@ -76,6 +76,12 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
+   * @remarks
+   * @throws If `data` fails `BaseDrawing.#validateVisibleContent` validation (must have some visible text, fill, *or* line)
+   */
+  static validateJoint(data: DrawingDocument.Source): void;
+
+  /**
    * @deprecated since v12, until v14
    * @remarks "You are accessing `z` which has been migrated to `elevation`"
    */
@@ -92,37 +98,37 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: DrawingDocument.ParentCollectionName | null;
+  override readonly parentCollection: DrawingDocument.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
   static override get implementation(): DrawingDocument.ImplementationClass;
 
-  static get baseDocument(): typeof BaseDrawing;
+  static override get baseDocument(): typeof BaseDrawing;
 
-  static get collectionName(): DrawingDocument.ParentCollectionName;
+  static override get collectionName(): DrawingDocument.ParentCollectionName;
 
-  static get documentName(): DrawingDocument.Name;
+  static override get documentName(): DrawingDocument.Name;
 
-  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+  static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): undefined;
+  static override get hasTypeData(): undefined;
 
-  static get hierarchy(): DrawingDocument.Hierarchy;
+  static override get hierarchy(): DrawingDocument.Hierarchy;
 
   override parent: DrawingDocument.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<DrawingDocument.Implementation | DrawingDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<DrawingDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<DrawingDocument.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: DrawingDocument.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<DrawingDocument.Database.Update>,
   ): Promise<DrawingDocument.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<DrawingDocument.Database.Delete>,
   ): Promise<DrawingDocument.Implementation[]>;
@@ -165,74 +171,74 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: DrawingDocument.CreateData,
     options: DrawingDocument.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
+  protected override _onCreate(
     data: DrawingDocument.CreateData,
     options: DrawingDocument.Database.OnCreateOperation,
     userId: string,
   ): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: DrawingDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<DrawingDocument.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: DrawingDocument.Implementation[],
     operation: DrawingDocument.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: DrawingDocument.UpdateData,
     options: DrawingDocument.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
+  protected override _onUpdate(
     changed: DrawingDocument.UpdateData,
     options: DrawingDocument.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: DrawingDocument.Implementation[],
     operation: DrawingDocument.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: DrawingDocument.Implementation[],
     operation: DrawingDocument.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
+  protected override _preDelete(
     options: DrawingDocument.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: DrawingDocument.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: DrawingDocument.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: DrawingDocument.Implementation[],
     operation: DrawingDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: DrawingDocument.Implementation[],
     operation: DrawingDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): undefined;
+  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -270,7 +276,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
    */
-  protected static _onCreateDocuments(
+  protected static override _onCreateDocuments(
     documents: DrawingDocument.Implementation[],
     context: Document.ModificationContext<DrawingDocument.Parent>,
   ): Promise<void>;
@@ -279,7 +285,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
    */
-  protected static _onUpdateDocuments(
+  protected static override _onUpdateDocuments(
     documents: DrawingDocument.Implementation[],
     context: Document.ModificationContext<DrawingDocument.Parent>,
   ): Promise<void>;
@@ -288,22 +294,16 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
    */
-  protected static _onDeleteDocuments(
+  protected static override _onDeleteDocuments(
     documents: DrawingDocument.Implementation[],
     context: Document.ModificationContext<DrawingDocument.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<DrawingDocument.Schema>;
+  protected static override _schema: SchemaField<DrawingDocument.Schema>;
 
-  static get schema(): SchemaField<DrawingDocument.Schema>;
-
-  /**
-   * @remarks Actual override, not just part of the template
-   * @throws If `data` fails `BaseDrawing.#validateVisibleContent` validation (must have some visible text, fill, *or* line)
-   * */
-  static validateJoint(data: DrawingDocument.Source): void;
+  static override get schema(): SchemaField<DrawingDocument.Schema>;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(
@@ -312,6 +312,8 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   ): DrawingDocument.Implementation;
 
   static override fromJSON(json: string): DrawingDocument.Implementation;
+
+  static #BaseDrawing: true;
 }
 
 export default BaseDrawing;
