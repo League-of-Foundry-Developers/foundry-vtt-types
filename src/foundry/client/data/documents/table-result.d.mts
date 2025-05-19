@@ -241,7 +241,8 @@ declare global {
 
       /**
        * A named collection from which this result is drawn
-       * @defaultValue `""`
+       * @defaultValue `undefined`
+       * @remarks If this is a `compendium` type result, will be the pack ID; If `document`, the DocumentName
        */
       documentCollection: fields.StringField;
 
@@ -456,8 +457,12 @@ declare global {
 
     /**
      * A path reference to the icon image used to represent this result
+     * @remarks Returns {@linkcode CONFIG.RollTable.resultIcon} if `this.img` is falsey
      */
     get icon(): string;
+
+    /** @remarks Overrides `this.img` with the `img` of the associated Document, if this result is a `document` or `compendium` type */
+    override prepareBaseData(): void;
 
     /**
      * Prepare a string representation for the result which (if possible) will be a dynamic link or otherwise plain text
