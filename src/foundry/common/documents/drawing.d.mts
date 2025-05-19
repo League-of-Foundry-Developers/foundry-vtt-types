@@ -266,16 +266,28 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     options?: LogCompatibilityWarningOptions,
   ): void;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
   protected static _onCreateDocuments(
     documents: DrawingDocument.Implementation[],
     context: Document.ModificationContext<DrawingDocument.Parent>,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
   protected static _onUpdateDocuments(
     documents: DrawingDocument.Implementation[],
     context: Document.ModificationContext<DrawingDocument.Parent>,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
   protected static _onDeleteDocuments(
     documents: DrawingDocument.Implementation[],
     context: Document.ModificationContext<DrawingDocument.Parent>,

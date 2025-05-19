@@ -235,16 +235,28 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     options?: LogCompatibilityWarningOptions,
   ): void;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
   protected static override _onCreateDocuments(
     documents: WallDocument.Implementation[],
     context: WallDocument.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
   protected static override _onUpdateDocuments(
     documents: WallDocument.Implementation[],
     context: WallDocument.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
   protected static override _onDeleteDocuments(
     documents: WallDocument.Implementation[],
     context: WallDocument.Database.OnDeleteDocumentsContext,

@@ -269,16 +269,28 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     options?: LogCompatibilityWarningOptions,
   ): void;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
   protected static _onCreateDocuments(
     documents: Scene.Implementation[],
     context: Document.ModificationContext<Scene.Parent>,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
   protected static _onUpdateDocuments(
     documents: Scene.Implementation[],
     context: Document.ModificationContext<Scene.Parent>,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
   protected static _onDeleteDocuments(
     documents: Scene.Implementation[],
     context: Document.ModificationContext<Scene.Parent>,

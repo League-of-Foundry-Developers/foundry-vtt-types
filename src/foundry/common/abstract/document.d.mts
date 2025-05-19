@@ -871,7 +871,7 @@ declare abstract class Document<
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks `"The Document._onCreateDocuments static method is deprecated in favor of Document._onCreateOperation"`
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onCreateDocuments` directly.
   protected static _onCreateDocuments(
@@ -881,7 +881,7 @@ declare abstract class Document<
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks `"The Document._onUpdateDocuments static method is deprecated in favor of Document._onUpdateOperation"`
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onUpdateDocuments` directly.
   protected static _onUpdateDocuments(
@@ -891,7 +891,7 @@ declare abstract class Document<
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks `"The Document._onDeleteDocuments static method is deprecated in favor of Document._onDeleteOperation"`
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onDeleteDocuments` directly.
   protected static _onDeleteDocuments(

@@ -231,16 +231,28 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     user: User.Implementation,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
   protected static _onCreateDocuments(
     documents: PlaylistSound.Implementation[],
     context: Document.ModificationContext<PlaylistSound.Parent>,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
   protected static _onUpdateDocuments(
     documents: PlaylistSound.Implementation[],
     context: Document.ModificationContext<PlaylistSound.Parent>,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
   protected static _onDeleteDocuments(
     documents: PlaylistSound.Implementation[],
     context: Document.ModificationContext<PlaylistSound.Parent>,
