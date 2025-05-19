@@ -311,26 +311,26 @@ declare namespace DialogV2 {
     /**
      * FontAwesome icon classes.
      */
-    icon?: string;
+    icon?: string | undefined;
 
     /**
      * CSS classes to apply to the button.
      */
-    class?: string;
+    class?: string | undefined;
 
     /**
      * Whether this button represents the default action to take if the user
      * submits the form without pressing a button, i.e. with an Enter
      * keypress.
      */
-    default?: boolean;
+    default?: boolean | undefined;
 
     /**
      * A function to invoke when the button is clicked. The value returned
      * from this function will be used as the dialog's submitted value.
      * Otherwise, the button's identifier is used.
      */
-    callback?: ButtonCallback<Dialog>;
+    callback?: ButtonCallback<Dialog> | undefined;
   }
 
   type ButtonCallback<Dialog extends DialogV2 = DialogV2> = (
@@ -452,13 +452,15 @@ declare namespace DialogV2 {
 
   type ConfirmReturn<Options extends ConfirmConfig<never> | undefined> =
     Options extends ConfirmConfig<never>
-      ? WaitReturn<{
-          buttons: [
-            Internal.MergePartial<ConfirmYesButton, Options["yes"]>,
-            Internal.MergePartial<ConfirmNoButton, Options["no"]>,
-            ...Coalesce<Options["buttons"], []>,
-          ];
-        }>
+      ? WaitReturn<
+          {
+            buttons: [
+              Internal.MergePartial<ConfirmYesButton, Options["yes"]>,
+              Internal.MergePartial<ConfirmNoButton, Options["no"]>,
+              ...Coalesce<Options["buttons"], []>,
+            ];
+          } & Omit<Options, "buttons">
+        >
       : WaitReturn<{ buttons: [ConfirmYesButton, ConfirmNoButton] }>;
 
   interface PromptOkButton {
@@ -563,12 +565,22 @@ declare namespace DialogV2 {
     }
 
     // Merges `T` and `U` while assuming `U` is essentially `Partial<T>`.
+    // The key detail is that `MergePartial<{ prop: number }, { prop?: string }>` results in `{ prop: string | number }`
+    //
     // This is useful in `ConfirmReturn` as it allows modelling the _valid_ uses of `mergeObject` in
     // `DialogV2.confirm`.
     // May need to be polished later.
     type MergePartial<T, U> = {
-      [K in keyof T]: U extends { readonly [_ in K]: infer V } ? V : T[K];
-    } & Omit<U, keyof T>;
+      [K in keyof T]: U extends { readonly [_ in K]: infer V }
+        ? // The additional `& {}` is useless with `exactOptionalPropertyTypes` set to `true`, the
+          // default, but unfortunately `{ prop: undefined }` is valid for `{ prop?: T }` with
+          // `exactOptionalPropertyTypes` set to false. Otherwise would cause a required prop like
+          // `{ action: string }` to be able to be `{ action: string | undefined }`.
+          V & {}
+        : T[K] | (U extends { readonly [_ in K]?: infer V } ? V & {} : never);
+    };
+
+    type A = MergePartial<{ prop: number }, { prop?: string }>;
 
     class FormContent<Content extends AnyObject> {
       #content: Content;
