@@ -212,7 +212,8 @@ declare class DialogV2<
    *   </form>` as DialogV2.Content<{ choice: "one" | "two" | "three" }>;
    * });
    * ```
-   * The added `as DialogV2.Content` allows fvtt-types to extract out the
+   * The added `as DialogV2.Content` allows fvtt-types to extract out the shape of the form content.
+   * This gives you the correct return type instead of `AnyObject`.
    *
    * Additionally, the callbacks within `config.buttons` are called with an instance of the current class.
    * While many users likely will not notice, if this ends up effecting you then you will need to
@@ -281,7 +282,7 @@ declare class DialogV2<
    * ```
    */
   static query<T extends DialogV2.Type, const Options extends DialogV2.QueryConfig<T>>(
-    user: User.Implementation | User.UUID,
+    user: User.Implementation | string,
     type: T,
     config: Options,
   ): Promise<DialogV2.QueryReturn<T, Options>>;
@@ -367,9 +368,8 @@ declare namespace DialogV2 {
     submit?: SubmitCallback<unknown, Dialog> | null | undefined;
   }
 
-  type Content<Data extends AnyObject> =
-    | (string & Internal.FormContent<Data>)
-    | (HTMLDivElement & Internal.FormContent<Data>);
+  type Content<Data extends AnyObject, BaseType extends string | HTMLDivElement = string | HTMLDivElement> = BaseType &
+    Internal.FormContent<Data>;
 
   type RenderCallback = (event: Event, dialog: HTMLDialogElement) => void;
 

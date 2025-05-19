@@ -200,7 +200,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<boolean | "bar" | null>();
 
-const userUUID = foundry.utils.randomID() as User.UUID;
+const userUUID = foundry.utils.randomID();
 
 const queryReturnConfirm = await DialogV2.query(userUUID, "confirm", {
   yes: {
