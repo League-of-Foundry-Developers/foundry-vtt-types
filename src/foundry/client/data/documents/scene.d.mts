@@ -3,6 +3,7 @@ import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields, TextureData } from "../../../common/data/module.d.mts";
+import LightData = foundry.data.LightData;
 
 declare global {
   namespace Scene {
@@ -244,6 +245,81 @@ declare global {
      */
     interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
+    interface EnvironmentDataSchemaDefaults {
+      hue: number;
+      intensity: number;
+      luminosity: number;
+      saturation: number;
+      shadows: number;
+    }
+
+    interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends DataSchema {
+      /**
+       * The normalized hue angle.
+       * @defaultValue `0` for `environment.base`, `257/360` for `environment.dark`
+       */
+      hue: fields.HueField<{
+        required: true;
+        initial: Defaults["hue"];
+        label: "SCENES.ENVIRONMENT.Hue";
+        hint: "SCENES.ENVIRONMENT.HueHint";
+      }>;
+
+      /**
+       * The intensity of the tinting (0 = no tinting).
+       * @defaultValue `0`
+       */
+      intensity: fields.AlphaField<{
+        required: true;
+        nullable: false;
+        initial: Defaults["intensity"];
+        label: "SCENES.ENVIRONMENT.Intensity";
+        hint: "SCENES.ENVIRONMENT.IntensityHint";
+      }>;
+
+      /**
+       * The luminosity.
+       * @defaultValue `0` in `environment.base`, `0.25` in `environment.dark`
+       */
+      luminosity: fields.NumberField<{
+        required: true;
+        nullable: false;
+        initial: Defaults["luminosity"];
+        min: -1;
+        max: 1;
+        label: "SCENES.ENVIRONMENT.Luminosity";
+        hint: "SCENES.ENVIRONMENT.LuminosityHint";
+      }>;
+
+      /**
+       * The saturation.
+       * @defaultValue `0`
+       */
+      saturation: fields.NumberField<{
+        required: true;
+        nullable: false;
+        initial: Defaults["saturation"];
+        min: -1;
+        max: 1;
+        label: "SCENES.ENVIRONMENT.Saturation";
+        hint: "SCENES.ENVIRONMENT.SaturationHint";
+      }>;
+
+      /**
+       * The strength of the shadows.
+       * @defaultValue `0`
+       */
+      shadows: fields.NumberField<{
+        required: true;
+        nullable: false;
+        initial: Defaults["shadows"];
+        min: 0;
+        max: 1;
+        label: "SCENES.ENVIRONMENT.Shadows";
+        hint: "SCENES.ENVIRONMENT.ShadowsHint";
+      }>;
+    }
+
     /**
      * The schema for {@link Scene | `Scene`}. This is the source of truth for how an Scene document
      * must be structured.
@@ -263,9 +339,9 @@ declare global {
 
       /**
        * The name of this scene
-       * @defaultValue `""`
        */
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
 
       /**
        * Is this scene currently active? Only one scene may be active at a given time
@@ -293,7 +369,7 @@ declare global {
 
       /**
        * An image or video file that provides the background texture for the scene.
-       * @defaultValue see {@link TextureData | `TextureData`}
+       * @defaultValue see {@linkcode TextureData}
        */
       background: TextureData;
 
@@ -306,6 +382,9 @@ declare global {
       /**
        * The elevation of the foreground layer where overhead tiles reside
        * @defaultValue `null`
+       * @remarks If falsey, {@link Scene.prepareBaseData | `Scene#prepareBaseData`} initializes this to `this.grid.distance * 4`, with the comment:
+       *
+       * "A temporary assumption until a more robust long-term solution when we implement Scene Levels."
        */
       foregroundElevation: fields.NumberField<{ required: false; positive: true; integer: true }>;
 
@@ -336,35 +415,46 @@ declare global {
 
       /**
        * The initial view coordinates for the scene
-       * @defaultValue `undefined`
        */
       initial: fields.SchemaField<{
-        x: fields.NumberField<{ integer: true; nullable: true; initial: undefined }>;
-        y: fields.NumberField<{ integer: true; nullable: true; initial: undefined }>;
-        scale: fields.NumberField<{ nullable: true; min: 0.25; max: 3; initial: undefined }>;
+        /** @defaultValue `null` */
+        x: fields.NumberField<{ integer: true; nullable: true }>;
+
+        /** @defaultValue `null` */
+        y: fields.NumberField<{ integer: true; nullable: true }>;
+
+        /** @defaultValue `0.5` */
+        scale: fields.NumberField<{ nullable: true; min: 0.25; max: 3; initial: 0.5 }>;
       }>;
 
       /**
        * The color of the canvas displayed behind the scene background
        * @defaultValue `"#999999"`
        */
-      backgroundColor: fields.ColorField<{ initial: "#999999" }>;
+      backgroundColor: fields.ColorField<{ nullable: false; initial: "#999999" }>;
 
       /**
        * Grid configuration for the scene
        * @defaultValue see properties
+       * @remarks Initialized in {@link Scene.prepareBaseData | `Scene#prepareBaseData`} to `Scene.#getGrid(this)`, which returns {@linkcode BaseGrid} or a subclass
        */
       grid: fields.SchemaField<{
         /**
          * The type of grid, a number from CONST.GRID_TYPES.
-         * @defaultValue `CONST.GRID_TYPES.SQUARE`
+         * @defaultValue `game.system.grid.type`
          */
-        type: fields.NumberField<{
-          required: true;
-          choices: CONST.GRID_TYPES[];
-          initial: typeof CONST.GRID_TYPES.SQUARE;
-          validationError: "must be a value in CONST.GRID_TYPES";
-        }>;
+        type: fields.NumberField<
+          {
+            required: true;
+            choices: CONST.GRID_TYPES[];
+            initial: () => CONST.GRID_TYPES;
+            validationError: "must be a value in CONST.GRID_TYPES";
+          },
+          // FIXME: overrides required to enforce branded type
+          CONST.GRID_TYPES | null | undefined,
+          CONST.GRID_TYPES,
+          CONST.GRID_TYPES
+        >;
 
         /**
          * The grid size which represents the width (or height) of a single grid space.
@@ -380,6 +470,19 @@ declare global {
         }>;
 
         /**
+         * @remarks The style of grid line used. This field has no special validation, but provided values
+         * should match keys of {@linkcode CONFIG.Canvas.gridStyles}
+         * @defaultValue `"solidLines"`
+         */
+        style: fields.StringField<{ required: true; blank: false; initial: "solidLines" }>;
+
+        /**
+         * @remarks The width of drawn grid lines
+         * @defaultValue `1`
+         */
+        thickness: fields.NumberField<{ required: true; nullable: false; positive: true; integer: true; initial: 1 }>;
+
+        /**
          * A string representing the color used to render the grid lines.
          * @defaultValue `"#000000"`
          */
@@ -393,15 +496,15 @@ declare global {
 
         /**
          * The number of distance units which are represented by a single grid space.
-         * @defaultValue `game.system.gridDistance || 1`
+         * @defaultValue `game.system.grid.distance`
          */
         distance: fields.NumberField<{ required: true; nullable: false; positive: true; initial: () => number }>;
 
         /**
          * A label for the units of measure which are used for grid distance.
-         * @defaultValue `game.system.gridUnits ?? ""`
+         * @defaultValue `game.system.grid.units`
          */
-        units: fields.StringField<{ initial: () => string }>;
+        units: fields.StringField<{ required: true; initial: () => string }>;
       }>;
 
       /**
@@ -411,55 +514,146 @@ declare global {
       tokenVision: fields.BooleanField<{ initial: true }>;
 
       /**
-       * Is a global source of illumination present which provides dim light to all
-       * areas of the Scene?
-       * @defaultValue `true`
+       * @remarks Fog data for this scene
        */
-      fogExploration: fields.BooleanField<{ initial: true }>;
+      fog: fields.SchemaField<{
+        /**
+         * Should fog exploration progress be tracked for this Scene?
+         * @defaultValue `true`
+         */
+        exploration: fields.BooleanField<{ initial: true }>;
+
+        /**
+         * The timestamp at which fog of war was last reset for this Scene.
+         * @defaultValue `undefined`
+         */
+        reset: fields.NumberField<{ required: false; initial: undefined }>;
+
+        /**
+         * A special overlay image or video texture which is used for fog of war
+         * @defaultValue `null`
+         */
+        overlay: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
+
+        colors: fields.SchemaField<{
+          /**
+           * A color tint applied to explored regions of fog of war
+           * @defaultValue `null`
+           */
+          explored: fields.ColorField<{ label: "SCENES.FogExploredColor" }>;
+
+          /**
+           * A color tint applied to unexplored regions of fog of war
+           * @defaultValue `null`
+           */
+          unexplored: fields.ColorField<{ label: "SCENES.FogUnexploredColor" }>;
+        }>;
+      }>;
 
       /**
-       * The ambient darkness level in this Scene, where 0 represents midday
-       * (maximum illumination) and 1 represents midnight (maximum darkness)
-       * @defaultValue `Date.now`
+       * The environment data applied to the Scene.
        */
-      fogReset: fields.NumberField<{ nullable: false; initial: number }>;
+      environment: fields.SchemaField<{
+        /**
+         * The environment darkness level.
+         * @defaultValue `0`
+         */
+        darknessLevel: fields.AlphaField<{ initial: 0 }>;
 
-      /**
-       * A darkness threshold between 0 and 1. When the Scene darkness level
-       * exceeds this threshold Global Illumination is automatically disabled
-       * @defaultValue `false`
-       */
-      globalLight: fields.BooleanField;
+        /**
+         * The darkness level lock state.
+         * @defaultValue `false`
+         */
+        darknessLock: fields.BooleanField<{ initial: false }>;
 
-      /**
-       * Should fog exploration progress be tracked for this Scene?
-       * @defaultValue `null`
-       */
-      globalLightThreshold: fields.AlphaField<{ nullable: true; initial: null }>;
+        /**
+         * The global light data configuration.
+         */
+        globalLight: fields.SchemaField<{
+          /**
+           * Is the global light enabled?
+           * @defaultValue `false`
+           */
+          enabled: fields.BooleanField<{ required: true; initial: false }>;
 
-      /**
-       * The timestamp at which fog of war was last reset for this Scene.
-       * @defaultValue `0`
-       */
-      darkness: fields.AlphaField<{ initial: 0 }>;
+          /**
+           * @see {@linkcode foundry.data.LightData.Schema.alpha}
+           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+           */
+          alpha: LightData.Schema["alpha"];
 
-      /**
-       * A special overlay image or video texture which is used for fog of war
-       * @defaultValue `null`
-       */
-      fogOverlay: fields.FilePathField<{ categories: ("IMAGE" | "VIDEO")[] }>;
+          /**
+           * Is the global light in bright mode?
+           * @defaultValue `false`
+           * @remarks This is `boolean` here instead {@linkcode foundry.data.LightData} schema's `number`, because the global light has infinite range
+           */
+          bright: fields.BooleanField<{ required: true; initial: false }>;
 
-      /**
-       * A color tint applied to explored regions of fog of war
-       * @defaultValue `null`
-       */
-      fogExploredColor: fields.ColorField<{ label: "SCENES.FogExploredColor" }>;
+          /**
+           * @see {@linkcode foundry.data.LightData.Schema.color}
+           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+           */
+          color: LightData.Schema["color"];
 
-      /**
-       * A color tint applied to unexplored regions of fog of war
-       * @defaultValue `null`
-       */
-      fogUnexploredColor: fields.ColorField<{ label: "SCENES.FogUnexploredColor" }>;
+          /**
+           * @see {@linkcode foundry.data.LightData.Schema.coloration}
+           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+           */
+          coloration: LightData.Schema["coloration"];
+
+          /**
+           * The luminosity applied in the shader
+           * @defaultValue `0`
+           * @remarks Doesn't pull from the {@linkcode foundry.data.LightData} schema, unlike its siblings, as it has a different `initial`
+           */
+          luminosity: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; max: 1 }>;
+
+          /**
+           * @see {@linkcode foundry.data.LightData.Schema.saturation}
+           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+           */
+          saturation: LightData.Schema["saturation"];
+
+          /**
+           * @see {@linkcode foundry.data.LightData.Schema.contrast}
+           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+           */
+          contrast: LightData.Schema["contrast"];
+
+          /**
+           * @see {@linkcode foundry.data.LightData.Schema.shadows}
+           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+           */
+          shadows: LightData.Schema["shadows"];
+
+          /**
+           * @see {@linkcode foundry.data.LightData.Schema.darkness}
+           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+           */
+          darkness: LightData.Schema["darkness"];
+        }>;
+
+        /**
+         * If cycling between Night and Day is activated.
+         * @defaultValue `true`
+         */
+        cycle: fields.BooleanField<{ initial: true }>;
+
+        /**
+         * The base (darkness level 0) ambience lighting data.
+         */
+        base: fields.SchemaField<
+          EnvironmentDataSchema<{ hue: 0; intensity: 0; luminosity: 0; saturation: 0; shadows: 0 }>
+        >;
+
+        /**
+         * The dark (darkness level 1) ambience lighting data.
+         * @privateRemarks The `hue` default is actually `257/360` but you can't do division in types. This precision should be more than sufficient.
+         */
+        dark: fields.SchemaField<
+          EnvironmentDataSchema<{ hue: 0.71388889; intensity: 0; luminosity: -0.25; saturation: 0; shadows: 0 }>
+        >;
+      }>;
 
       /**
        * A collection of embedded Drawing objects.
@@ -516,8 +710,7 @@ declare global {
       walls: fields.EmbeddedCollectionField<typeof documents.BaseWall, Scene.Implementation>;
 
       /**
-       * A linked Playlist document which should begin automatically playing when this
-       * Scene becomes active.
+       * A linked Playlist document which should begin automatically playing when this Scene becomes active.
        * @defaultValue `null`
        */
       playlist: fields.ForeignDocumentField<typeof documents.BasePlaylist>;
@@ -526,6 +719,9 @@ declare global {
        * A linked PlaylistSound document from the selected playlist that will
        * begin automatically playing when this Scene becomes active
        * @defaultValue `null`
+       * @remarks This is `idOnly` because {@link fields.ForeignDocumentField | `ForeignDocumentField`} doesn't know how to get embedded documents;
+       * {@link Scene.prepareBaseData | `Scene#prepareBaseData`} attempts to `get()` this ID from the provided `playlist`, if any, making this
+       * `PlaylistSound.Implementation | undefined | null` at runtime
        */
       playlistSound: fields.ForeignDocumentField<typeof documents.BasePlaylistSound, { idOnly: true }>;
 
@@ -545,7 +741,7 @@ declare global {
        * A named weather effect which should be rendered in this Scene.
        * @defaultValue `""`
        */
-      weather: fields.StringField;
+      weather: fields.StringField<{ required: true }>;
 
       /**
        * The _id of a Folder which contains this Actor
@@ -569,7 +765,7 @@ declare global {
        * An object of optional key/value flags
        * @defaultValue `{}`
        */
-      flags: fields.ObjectField.FlagsField<"Scene">;
+      flags: fields.ObjectField.FlagsField<Name>;
 
       /**
        * An object of creation and access information
@@ -869,24 +1065,29 @@ declare global {
 
     /**
      * Track whether the scene is the active view
+     * @defaultValue `this.active`
      */
-    protected _view: this["active"];
+    protected _view: boolean;
 
     /**
      * The grid instance
+     * @remarks Foundry initializes this to `this.grid` in the class body, which before data prep is the data from the `grid` SchemaField.
+     *
+     * This gets set to {@linkcode BaseGrid} or a subclass in {@link Scene.prepareBaseData | `Scene#prepareBaseData`}
      */
-    grid: foundry.grid.BaseGrid;
+    grid: foundry.grid.BaseGrid | foundry.documents.BaseScene["grid"];
 
     /**
      * Determine the canvas dimensions this Scene would occupy, if rendered
      * @defaultValue `{}`
+     * @remarks Technically `undefined` prior to the first time {@link Scene.prepareBaseData | `Scene#prepareBaseData`} is called
      */
-    dimensions: ReturnType<this["getDimensions"]>;
+    dimensions: Scene.Dimensions;
 
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this["thumb"];
+    get thumbnail(): string | null;
 
     /**
      * A convenience accessor for whether the Scene is currently viewed
@@ -901,8 +1102,9 @@ declare global {
 
     /**
      * Set this scene as the current view
+     * @remarks If `canvas.loading`, returns a `ui.notifications.warn`, thence the `| number` in the return type
      */
-    view(): Promise<this | undefined>;
+    view(): Promise<this | number>;
 
     /**
      * @param createData - (default: `{}`)
@@ -918,10 +1120,17 @@ declare global {
 
     /**
      * @remarks If `source` is falsey, and the grid is hexagonal with the `legacyHex` flag set,
-     * does some conversion on `object.grid.size` before returning
+     * does some conversion on `object.grid.size` (leaving it numeric, no type change) before returning
      */
     override toObject(source?: boolean | null): fields.SchemaField.SourceData<Scene.Schema>;
 
+    /**
+     * @remarks
+     * - Transforms `this.grid` from source data to a {@linkcode BaseGrid} (or subclass) instance
+     * - Sets `this.dimensions` to `this.getDimensions()`
+     * - If a `playlist` is set, attempts to initialize `this.playlistSound` to a Document reference (it's an `idOnly` field in the schema)
+     * - Sets `this.foregroundElevation` to `this.grid.distance * 4` if its otherwise falsey
+     */
     override prepareBaseData(): void;
 
     /**
@@ -934,19 +1143,20 @@ declare global {
     /** @remarks If the scene has a `journal`, forwards to that journal's `#_onClickDocumentLink` */
     override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
-    // _onCreate, _preUpdate, _onUpdate, _preDelete, and _onDelete are all overridden but with no signature changes.
+    // _preCreate, _preCreateOperation, _onCreate, and _preUpdate, _onUpdate, _preDelete, and _onDelete are all overridden but with no signature changes.
     // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     /**
      * Handle repositioning of placed objects when the Scene dimensions change
+     * @private
      */
-    protected _repositionObject(sceneUpdateData: Scene.CreateData): Scene.CreateData;
+    protected _repositionObject(sceneUpdateData: Scene.UpdateData): Scene.UpdateData;
 
     /**
      * Handle Scene activation workflow if the active state is changed to true
      * @param active - Is the scene now active?
      */
-    protected _onActivate(active: boolean): ReturnType<this["view"]> | ReturnType<Canvas["draw"]>;
+    protected _onActivate(active: boolean): Promise<this | Canvas>;
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
@@ -1031,6 +1241,7 @@ declare global {
      * @param data - (default: `{}`)
      * @returns The created thumbnail data.
      */
+    // data: not null (destructured)
     createThumbnail(data?: Scene.ThumbnailCreationData): Promise<ImageHelper.ThumbnailReturn>;
 
     /*
