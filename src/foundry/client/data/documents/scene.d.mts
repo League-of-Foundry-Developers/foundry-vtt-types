@@ -415,7 +415,6 @@ declare global {
 
       /**
        * The initial view coordinates for the scene
-       * @defaultValue See properties
        */
       initial: fields.SchemaField<{
         /** @defaultValue `null` */
@@ -516,7 +515,6 @@ declare global {
 
       /**
        * @remarks Fog data for this scene
-       * @defaultValue See properties
        */
       fog: fields.SchemaField<{
         /**
@@ -537,7 +535,6 @@ declare global {
          */
         overlay: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
 
-        /** @defaultValue See properties */
         colors: fields.SchemaField<{
           /**
            * A color tint applied to explored regions of fog of war
@@ -555,7 +552,6 @@ declare global {
 
       /**
        * The environment data applied to the Scene.
-       * @defaultValue See properties
        */
       environment: fields.SchemaField<{
         /**
@@ -572,7 +568,6 @@ declare global {
 
         /**
          * The global light data configuration.
-         * @defaultValue See properties
          */
         globalLight: fields.SchemaField<{
           /**
@@ -646,7 +641,6 @@ declare global {
 
         /**
          * The base (darkness level 0) ambience lighting data.
-         * @defaultValue See properties
          */
         base: fields.SchemaField<
           EnvironmentDataSchema<{ hue: 0; intensity: 0; luminosity: 0; saturation: 0; shadows: 0 }>
@@ -654,7 +648,7 @@ declare global {
 
         /**
          * The dark (darkness level 1) ambience lighting data.
-         * @defaultValue See properties
+         * @privateRemarks The `hue` default is actually `257/360` but you can't do division in types. This precision should be more than sufficient.
          */
         dark: fields.SchemaField<
           EnvironmentDataSchema<{ hue: 0.71388889; intensity: 0; luminosity: -0.25; saturation: 0; shadows: 0 }>
@@ -725,8 +719,9 @@ declare global {
        * A linked PlaylistSound document from the selected playlist that will
        * begin automatically playing when this Scene becomes active
        * @defaultValue `null`
-       * @remarks This is `idOnly` because FDF doesn't know how to get embedded documents; {@link Scene.prepareBaseData | `Scene#prepareBaseData`}
-       * attempts to `get()` this ID from the provided `playlist`, if any, making this `PlaylistSound.Implementation | undefined | null` at runtime
+       * @remarks This is `idOnly` because {@link fields.ForeignDocumentField | `ForeignDocumentField`} doesn't know how to get embedded documents;
+       * {@link Scene.prepareBaseData | `Scene#prepareBaseData`} attempts to `get()` this ID from the provided `playlist`, if any, making this
+       * `PlaylistSound.Implementation | undefined | null` at runtime
        */
       playlistSound: fields.ForeignDocumentField<typeof documents.BasePlaylistSound, { idOnly: true }>;
 
