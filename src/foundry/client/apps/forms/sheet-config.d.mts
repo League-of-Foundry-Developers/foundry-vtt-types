@@ -1,6 +1,6 @@
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
-import type DocumentSheetV2 from "#client-esm/applications/api/document-sheet.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
+import type ApplicationV2 from "#client-esm/applications/api/application.mjs";
 
 declare global {
   /**
@@ -71,7 +71,7 @@ declare global {
     static registerSheet(
       documentClass: Document.AnyConstructor,
       scope: string,
-      sheetClass: FormApplication.AnyConstructor | DocumentSheetV2.AnyConstructor,
+      sheetClass: Application.AnyConstructor | ApplicationV2.AnyConstructor,
       config?: DocumentSheetConfig.RegisterSheetOptions,
     ): void;
 
@@ -85,8 +85,8 @@ declare global {
     static unregisterSheet(
       documentClass: Document.AnyConstructor,
       scope: string,
-      sheetClass: typeof FormApplication<any, FormApplication.Options>,
-      { types }?: { types?: string[] },
+      sheetClass: Application.AnyConstructor | ApplicationV2.AnyConstructor,
+      { types }?: DocumentSheetConfig.UnregisterSheetOptions,
     ): void;
 
     /**
@@ -150,28 +150,39 @@ declare global {
 
     interface RegisterSheetOptions {
       /** A human-readable label for the sheet name, which will be localized */
-      label?: string;
+      label?: string | undefined;
 
       /** An array of document types for which this sheet should be used */
-      types?: string[];
+      types?: string[] | undefined;
+
+      /**
+       * An object of theme keys to labels that the sheet supports. If this option is not supplied,
+       * the sheet is assumed to support both light and dark themes. If null is supplied, it
+       * indicates that the sheet does not support theming.
+       */
+      themes?: Record<string, string> | null | undefined;
 
       /**
        * Whether to make this sheet the default for provided types
        * @defaultValue `false`
        */
-      makeDefault?: boolean;
+      makeDefault?: boolean | undefined;
 
       /**
        * Whether this sheet is available to be selected as a default sheet for all Documents of that type.
        * @defaultValue `true`
        */
-      canBeDefault?: boolean;
+      canBeDefault?: boolean | undefined;
 
       /**
        * Whether this sheet appears in the sheet configuration UI for users.
        * @defaultValue `true`
        */
-      canConfigure?: boolean;
+      canConfigure?: boolean | undefined;
+    }
+
+    interface UnregisterSheetOptions {
+      types?: string[] | undefined;
     }
 
     interface SheetClassesForSubType {

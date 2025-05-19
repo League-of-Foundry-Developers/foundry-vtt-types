@@ -24,7 +24,7 @@ export const instances: Map<string, foundry.applications.api.ApplicationV2.Any>;
 
 /**
  * Parse an HTML string, returning a processed HTMLElement or HTMLCollection.
- * A single HTMLElement is returned if the provided string contains only a single top-level element.
- * An HTMLCollection is returned if the provided string contains multiple top-level elements.
+ * @deprecated since v13
+ * @see {@linkcode foundry.utils.parseHTML}
  */
 export function parseHTML(htmlString: string): HTMLCollection | HTMLElement;

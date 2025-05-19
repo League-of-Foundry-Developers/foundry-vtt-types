@@ -253,7 +253,7 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
 
   /**
    * @deprecated since v13 until v15
-   * @remarks ""ContextMenu#_expandUp is deprecated. Please use ContextMenu#expandUp instead."
+   * @remarks "ContextMenu#_expandUp is deprecated. Please use ContextMenu#expandUp instead."
    */
   get _expandUp(): boolean;
 
