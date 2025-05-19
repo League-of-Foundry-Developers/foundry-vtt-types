@@ -63,7 +63,7 @@ declare abstract class BaseActiveEffect<
   // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
@@ -329,7 +329,6 @@ declare abstract class BaseActiveEffect<
 
   static override get schema(): SchemaField<ActiveEffect.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static override validateJoint(data: ActiveEffect.Source): void;
 
   // options: not null (parameter default only, destructured in super)

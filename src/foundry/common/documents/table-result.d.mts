@@ -55,14 +55,14 @@ declare abstract class BaseTableResult<
   // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
   /**
    * @remarks
    * Migrations:
-   * - Numeric `type`s to their new (since v12) string values
+   * - Numeric `type`s to their new — since v12 — string values
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
@@ -83,37 +83,37 @@ declare abstract class BaseTableResult<
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: TableResult.ParentCollectionName | null;
+  override readonly parentCollection: TableResult.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
   static override get implementation(): TableResult.ImplementationClass;
 
-  static get baseDocument(): typeof BaseTableResult;
+  static override get baseDocument(): typeof BaseTableResult;
 
-  static get collectionName(): TableResult.ParentCollectionName;
+  static override get collectionName(): TableResult.ParentCollectionName;
 
-  static get documentName(): TableResult.Name;
+  static override get documentName(): TableResult.Name;
 
-  static get TYPES(): BaseTableResult.SubType[];
+  static override get TYPES(): BaseTableResult.SubType[];
 
-  static get hasTypeData(): undefined;
+  static override get hasTypeData(): undefined;
 
-  static get hierarchy(): TableResult.Hierarchy;
+  static override get hierarchy(): TableResult.Hierarchy;
 
   override parent: BaseTableResult.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<TableResult.Implementation | TableResult.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<TableResult.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<TableResult.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: TableResult.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<TableResult.Database.Update>,
   ): Promise<TableResult.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<TableResult.Database.Delete>,
   ): Promise<TableResult.Implementation[]>;
@@ -153,74 +153,74 @@ declare abstract class BaseTableResult<
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: TableResult.CreateData,
     options: TableResult.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
+  protected override _onCreate(
     data: TableResult.CreateData,
     options: TableResult.Database.OnCreateOperation,
     userId: string,
   ): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: TableResult.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<TableResult.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: TableResult.Implementation[],
     operation: TableResult.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: TableResult.UpdateData,
     options: TableResult.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
+  protected override _onUpdate(
     changed: TableResult.UpdateData,
     options: TableResult.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: TableResult.Implementation[],
     operation: TableResult.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: TableResult.Implementation[],
     operation: TableResult.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
+  protected override _preDelete(
     options: TableResult.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: TableResult.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: TableResult.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: TableResult.Implementation[],
     operation: TableResult.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: TableResult.Implementation[],
     operation: TableResult.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): undefined;
+  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -258,7 +258,7 @@ declare abstract class BaseTableResult<
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
    */
-  protected static _onCreateDocuments(
+  protected static override _onCreateDocuments(
     documents: TableResult.Implementation[],
     context: Document.ModificationContext<TableResult.Parent>,
   ): Promise<void>;
@@ -267,7 +267,7 @@ declare abstract class BaseTableResult<
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
    */
-  protected static _onUpdateDocuments(
+  protected static override _onUpdateDocuments(
     documents: TableResult.Implementation[],
     context: Document.ModificationContext<TableResult.Parent>,
   ): Promise<void>;
@@ -276,19 +276,18 @@ declare abstract class BaseTableResult<
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
    */
-  protected static _onDeleteDocuments(
+  protected static override _onDeleteDocuments(
     documents: TableResult.Implementation[],
     context: Document.ModificationContext<TableResult.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<TableResult.Schema>;
+  protected static override _schema: SchemaField<TableResult.Schema>;
 
-  static get schema(): SchemaField<TableResult.Schema>;
+  static override get schema(): SchemaField<TableResult.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: TableResult.Source): void;
+  static override validateJoint(data: TableResult.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(
@@ -297,6 +296,8 @@ declare abstract class BaseTableResult<
   ): TableResult.Implementation;
 
   static override fromJSON(json: string): TableResult.Implementation;
+
+  static #BaseTableResult: true;
 }
 
 export default BaseTableResult;

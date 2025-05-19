@@ -67,7 +67,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param action - The action to test
    * @returns Does the user have the ability to perform this action?
    */
-  can(action: BaseUser.TestablePermissionOrRole): boolean;
+  can(action: BaseUser.ActionPermission): boolean;
 
   /** @remarks Returns `.OWNER` for the User in question, `.NONE` for everyone else */
   override getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS;
@@ -104,37 +104,37 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: User.ParentCollectionName | null;
+  override readonly parentCollection: User.ParentCollectionName | null;
 
-  readonly pack: null;
+  override readonly pack: null;
 
-  static get implementation(): User.ImplementationClass;
+  static override get implementation(): User.ImplementationClass;
 
-  static get baseDocument(): typeof BaseUser;
+  static override get baseDocument(): typeof BaseUser;
 
-  static get collectionName(): User.ParentCollectionName;
+  static override get collectionName(): User.ParentCollectionName;
 
-  static get documentName(): User.Name;
+  static override get documentName(): User.Name;
 
-  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+  static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): undefined;
+  static override get hasTypeData(): undefined;
 
-  static get hierarchy(): User.Hierarchy;
+  static override get hierarchy(): User.Hierarchy;
 
   override parent: User.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<User.Implementation | User.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<User.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<User.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: User.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<User.Database.Update>,
   ): Promise<User.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<User.Database.Delete>,
   ): Promise<User.Implementation[]>;
@@ -174,66 +174,70 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: User.CreateData,
     options: User.Database.PreCreateOptions,
     user: User.Internal.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(data: User.CreateData, options: User.Database.OnCreateOperation, userId: string): void;
+  protected override _onCreate(data: User.CreateData, options: User.Database.OnCreateOperation, userId: string): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: User.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<User.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: User.Implementation[],
     operation: User.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: User.UpdateData,
     options: User.Database.PreUpdateOptions,
     user: User.Internal.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(changed: User.UpdateData, options: User.Database.OnUpdateOperation, userId: string): void;
+  protected override _onUpdate(
+    changed: User.UpdateData,
+    options: User.Database.OnUpdateOperation,
+    userId: string,
+  ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: User.Implementation[],
     operation: User.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: User.Implementation[],
     operation: User.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
+  protected override _preDelete(
     options: User.Database.PreDeleteOptions,
     user: User.Internal.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: User.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: User.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: User.Implementation[],
     operation: User.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: User.Implementation[],
     operation: User.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): undefined;
+  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
 
@@ -270,7 +274,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
    */
-  protected static _onCreateDocuments(
+  protected static override _onCreateDocuments(
     documents: User.Implementation[],
     context: Document.ModificationContext<User.Parent>,
   ): Promise<void>;
@@ -279,7 +283,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
    */
-  protected static _onUpdateDocuments(
+  protected static override _onUpdateDocuments(
     documents: User.Implementation[],
     context: Document.ModificationContext<User.Parent>,
   ): Promise<void>;
@@ -288,24 +292,25 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
    */
-  protected static _onDeleteDocuments(
+  protected static override _onDeleteDocuments(
     documents: User.Implementation[],
     context: Document.ModificationContext<User.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<User.Schema>;
+  protected static override _schema: SchemaField<User.Schema>;
 
-  static get schema(): SchemaField<User.Schema>;
+  static override get schema(): SchemaField<User.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: User.Source): void;
+  static override validateJoint(data: User.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(source: User.CreateData, context?: DataModel.FromSourceOptions): User.Implementation;
 
   static override fromJSON(json: string): User.Implementation;
+
+  static #BaseUser: true;
 }
 
 export default BaseUser;
@@ -336,7 +341,7 @@ declare namespace BaseUser {
   export import PingData = User.PingData;
   export import ActivityData = User.ActivityData;
   export import HasRoleOptions = User.HasRoleOptions;
-
+  export import ActionPermission = User.ActionPermission;
   /**
    * @deprecated This type is used by Foundry too vaguely.
    * In one context the most correct type is after initialization whereas in another one it should be
@@ -353,6 +358,4 @@ declare namespace BaseUser {
    * @deprecated {@link BaseUser.CreateData | `BaseUser.CreateData`}
    */
   type ConstructorData = BaseUser.CreateData;
-
-  type TestablePermissionOrRole = keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
 }

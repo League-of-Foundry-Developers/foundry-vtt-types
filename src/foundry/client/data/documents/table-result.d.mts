@@ -509,5 +509,7 @@ declare global {
     override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // Embedded document operations have been left out because TableResult does not have any embedded documents.
+
+    static #TableResult: true;
   }
 }

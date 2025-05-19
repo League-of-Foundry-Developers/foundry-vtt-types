@@ -9,18 +9,18 @@ class TestAD extends BaseActorDelta {}
 
 declare const someToken: TokenDocument.Implementation;
 // @ts-expect-error ActorDeltas require a valid `parent` to be passed in its `context`
-let myDelta = new TestAD();
+new TestAD();
 
 // @ts-expect-error ActorDeltas require a valid `parent` to be passed in its `context`
-myDelta = new TestAD(undefined, { strict: false });
+new TestAD(undefined, { strict: false });
 
-myDelta = new TestAD({}, { parent: someToken });
+let myDelta = new TestAD({}, { parent: someToken });
 
 declare const someActor: Actor.Implementation;
 expectTypeOf(TestAD.applyDelta(myDelta, someActor)).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(TestAD.applyDelta(myDelta, someActor, null)).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(TestAD.applyDelta(myDelta, someActor, {})).toEqualTypeOf<Actor.Implementation | null>();
-// @ts-expect-error parent cannot be provided in the `context`, because ActorDelta
+// @ts-expect-error parent is not allowed to be passed, as that context is used for the synthetic actor creation, its parent must be the same as the delta's parent
 expectTypeOf(TestAD.applyDelta(myDelta, someActor, { parent: someToken })).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(
   TestAD.applyDelta(myDelta, someActor, {
@@ -94,19 +94,17 @@ myDelta = new TestAD(
 expectTypeOf(myDelta).toEqualTypeOf<BaseActorDelta>();
 
 expectTypeOf(myDelta._id).toEqualTypeOf<string | null>();
+expectTypeOf(myDelta.name).toEqualTypeOf<string | null>();
+expectTypeOf(myDelta.type).toEqualTypeOf<string | null>();
+expectTypeOf(myDelta.img).toEqualTypeOf<string | null>();
 // overridden in template, ActorDelta's `system` field is just an ObjectField
-expectTypeOf(myDelta.system).toEqualTypeOf<Document.SystemFor<"ActorDelta", BaseActorDelta.SubType>>();
+expectTypeOf(myDelta.system).toEqualTypeOf<BaseActorDelta.SystemOfType<BaseActorDelta.SubType>>();
 expectTypeOf(myDelta.items).toEqualTypeOf<EmbeddedCollectionDelta<Item.Implementation, ActorDelta.Implementation>>();
 expectTypeOf(myDelta.effects).toEqualTypeOf<
   EmbeddedCollectionDelta<ActiveEffect.Implementation, ActorDelta.Implementation>
 >();
 expectTypeOf(myDelta.ownership).toEqualTypeOf<Record<string, CONST.DOCUMENT_OWNERSHIP_LEVELS> | null | undefined>();
 expectTypeOf(myDelta.flags).toEqualTypeOf<InterfaceToObject<Document.CoreFlags>>();
-
-// The following fields can't really be `undefined` because they have `initial`s, see https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3055
-expectTypeOf(myDelta.name).toEqualTypeOf<string | null | undefined>();
-expectTypeOf(myDelta.type).toEqualTypeOf<string | null | undefined>();
-expectTypeOf(myDelta.img).toEqualTypeOf<string | null | undefined>();
 
 // non-schema:
 declare const someUser: User.Implementation;
