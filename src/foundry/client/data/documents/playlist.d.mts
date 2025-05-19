@@ -246,11 +246,12 @@ declare global {
       /**
        * The name of this playlist
        */
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
 
       /**
        * The description of this playlist
-       * @defaultValue `""`
+       * @defaultValue `undefined`
        */
       description: fields.StringField<{ textSearch: true }>;
 
@@ -264,18 +265,24 @@ declare global {
        * A channel in CONST.AUDIO_CHANNELS where all sounds in this playlist are played
        * @defaultValue `"music"`
        */
-      channel: fields.StringField<{ choices: typeof foundry.CONST.AUDIO_CHANNELS; initial: string; blank: false }>;
+      channel: fields.StringField<{ choices: typeof CONST.AUDIO_CHANNELS; initial: string; blank: false }>;
 
       /**
        * The playback mode for sounds in this playlist
-       * @defaultValue `CONST.PLAYLIST_MODES.SEQUENTIAL`
+       * @defaultValue `CONST.PLAYLIST_MODES.SEQUENTIAL` (`0`)
        */
-      mode: fields.NumberField<{
-        required: true;
-        choices: foundry.CONST.PLAYLIST_MODES[];
-        initial: typeof CONST.PLAYLIST_MODES.SEQUENTIAL;
-        validationError: "must be a value in CONST.PLAYLIST_MODES";
-      }>;
+      mode: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.PLAYLIST_MODES[];
+          initial: typeof CONST.PLAYLIST_MODES.SEQUENTIAL;
+          validationError: "must be a value in CONST.PLAYLIST_MODES";
+        },
+        // FIXME: Overrides required to enforce the branded type
+        CONST.PLAYLIST_MODES | null | undefined,
+        CONST.PLAYLIST_MODES,
+        CONST.PLAYLIST_MODES
+      >;
 
       /**
        * Is this playlist currently playing?
@@ -299,12 +306,18 @@ declare global {
        * The sorting mode used for this playlist.
        * @defaultValue `CONST.PLAYLIST_SORT_MODES.ALPHABETICAL`
        */
-      sorting: fields.StringField<{
-        required: true;
-        choices: foundry.CONST.PLAYLIST_SORT_MODES[];
-        initial: typeof CONST.PLAYLIST_SORT_MODES.ALPHABETICAL;
-        validationError: "must be a value in CONST.PLAYLIST_SORTING_MODES";
-      }>;
+      sorting: fields.StringField<
+        {
+          required: true;
+          choices: CONST.PLAYLIST_SORT_MODES[];
+          initial: typeof CONST.PLAYLIST_SORT_MODES.ALPHABETICAL;
+          validationError: "must be a value in CONST.PLAYLIST_SORTING_MODES";
+        },
+        // FIXME: Overrides required to enforce the branded type
+        CONST.PLAYLIST_SORT_MODES | null | undefined,
+        CONST.PLAYLIST_SORT_MODES,
+        CONST.PLAYLIST_SORT_MODES
+      >;
 
       /**
        * A seed used for playlist randomization to guarantee that all clients generate the same random order.
@@ -495,6 +508,19 @@ declare global {
       Playlist.Metadata.Embedded
     >;
 
+    /** @internal */
+    type _PlayNextOptions = InexactPartial<{
+      /**
+       * Whether to advance forward (if 1) or backwards (if -1)
+       * @defaultValue `1`
+       * @remarks Can't be `null` as it only has a parameter default.
+       * @privateRemarks This is only checked for `=== 1`, restricting 'backward' values to `-1` based on core's description
+       */
+      direction: 1 | -1;
+    }>;
+
+    interface PlayNextOptions extends _PlayNextOptions {}
+
     /**
      * @deprecated {@link Playlist.Database.Operation | `Playlist.Database.Operation`}
      */
@@ -515,13 +541,6 @@ declare global {
      * @deprecated {@link Playlist.Implementation | `Playlist.Implementation`}
      */
     type ConfiguredInstance = Implementation;
-    interface PlayNextOptions {
-      /**
-       * Whether to advance forward (if 1) or backwards (if -1)
-       * @defaultValue `1`
-       */
-      direction: 1 | -1;
-    }
   }
 
   /**
@@ -542,7 +561,6 @@ declare global {
     /**
      * Playlists may have a playback order which defines the sequence of Playlist Sounds
      * @defaultValue `undefined`
-     * @internal
      */
     protected _playbackOrder: string[] | undefined;
 
@@ -555,7 +573,7 @@ declare global {
     override get visible(): boolean;
 
     /**
-     * Find all content links belonging to a given {@link Playlist | `Playlist`} or {@link PlaylistSound | `PlaylistSound`}.
+     * Find all content links belonging to a given {@linkcode Playlist} or {@linkcode PlaylistSound}.
      * @param doc - The Playlist or PlaylistSound.
      */
     static _getSoundContentLinks(doc: Playlist.Implementation | PlaylistSound.Implementation): NodeListOf<Element>;
@@ -574,7 +592,8 @@ declare global {
      * @param options - Additional options which configure the next track
      * @returns The updated Playlist document
      */
-    playNext(soundId?: string, options?: Partial<Playlist.PlayNextOptions>): Promise<this | undefined | null>;
+    // options: not null (destructured)
+    playNext(soundId?: string | null, options?: Playlist.PlayNextOptions): Promise<this | undefined | null>;
 
     /**
      * Begin playback of a specific Sound within this Playlist.
@@ -606,13 +625,13 @@ declare global {
 
     /**
      * Get the next sound in the cached playback order. For internal use.
-     * @internal
+     * @private
      */
     protected _getNextSound(soundId: string): PlaylistSound.Implementation | undefined;
 
     /**
      * Get the previous sound in the cached playback order. For internal use.
-     * @internal
+     * @private
      */
     protected _getPreviousSound(soundId: string): PlaylistSound.Implementation | undefined;
 
@@ -620,26 +639,19 @@ declare global {
      * Define the sorting order for the Sounds within this Playlist. For internal use.
      * If sorting alphabetically, the sounds are sorted with a locale-independent comparator
      * to ensure the same order on all clients.
-     * @internal
+     * @private
      */
     protected _sortSounds(a: PlaylistSound.Implementation, b: PlaylistSound.Implementation): number;
 
-    override toAnchor(
-      options?: InexactPartial<{
-        attrs: Record<string, string>;
-        dataset: Record<string, string>;
-        classes: string[];
-        name: string;
-        icon: string;
-      }>,
-    ): HTMLAnchorElement;
+    // options: not null (destructured)
+    override toAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
     /**
      * @remarks Returns {@link Playlist.playAll | `this.playAll()`} or {@link Playlist.stopAll | `this.stopAll()`}
      */
     override _onClickDocumentLink(event: MouseEvent): Promise<this | undefined>;
 
-    //_preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes from the BasePlaylist class.
+    // _preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes from the BasePlaylist class.
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
@@ -698,8 +710,9 @@ declare global {
     /**
      * Handle callback logic when an individual sound within the Playlist concludes playback naturally
      * @internal
+     * @privateRemarks Possibly returns `this.playNext()` so possibly `null`
      */
-    _onSoundEnd(sound: PlaylistSound.Implementation): Promise<this | undefined>;
+    _onSoundEnd(sound: PlaylistSound.Implementation): Promise<this | null | undefined>;
 
     /**
      * Handle callback logic when playback for an individual sound within the Playlist is started.
@@ -799,5 +812,7 @@ declare global {
       source: Playlist.Source,
       context?: Document.FromImportContext<Playlist.Parent> | null,
     ): Promise<Playlist.Implementation>;
+
+    #Playlist: true;
   }
 }
