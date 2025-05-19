@@ -36,7 +36,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
