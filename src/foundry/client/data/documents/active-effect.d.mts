@@ -4,6 +4,7 @@ import type {
   AnyObject,
   IntentionalPartial,
   InterfaceToObject,
+  JSONValue,
   Merge,
   RequiredProps,
 } from "fvtt-types/utils";
@@ -232,7 +233,7 @@ declare global {
        * The name of the ActiveEffect
        * @defaultValue `""`
        */
-      // TODO: (LukeAbby): fix this when redoing DataField
+      // TODO(LukeAbby): fix this when redoing DataField
       // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
       name: fields.StringField<{ required: true; blank: false; label: "EFFECT.Name"; textSearch: true }, string>;
 
@@ -574,17 +575,19 @@ declare global {
 
     interface PrepareDurationReturn extends RequiredProps<IntentionalPartial<Duration>, "type"> {}
 
+    interface InitialDurationData {
+      /** @defaultValue `game.time.worldTime` */
+      startTime: number;
+
+      /** @remarks Only exists `if (game.combat)` */
+      startRound?: number;
+
+      /** @remarks Only exists `if (game.combat)` */
+      startTurn?: number;
+    }
+
     interface GetInitialDurationReturn {
-      duration: {
-        /** @defaultValue `game.time.worldTime` */
-        startTime: number;
-
-        /** @remarks Only exists `if (game.combat)` */
-        startRound?: number;
-
-        /** @remarks Only exists `if (game.combat)` */
-        startTurn?: number;
-      };
+      duration: InitialDurationData;
     }
 
     interface EffectChangeData {
@@ -616,6 +619,10 @@ declare global {
        */
       priority: number | null | undefined;
     }
+
+    type ApplyFieldReturn<Field extends DataField.Any | null | undefined> = Field extends DataField.Any
+      ? DataField.InitializedTypeFor<Field>
+      : unknown;
 
     /**
      * @deprecated {@link ActiveEffect.Database | `ActiveEffect.DatabaseOperation`}
@@ -785,11 +792,11 @@ declare global {
      *
      * @remarks `field` default provided by `??= model.schema.getField(change.key)`
      */
-    static applyField<Field extends DataField.Any | null = null>(
+    static applyField<Field extends DataField.Any | null | undefined = undefined>(
       model: DataModel.Any,
       change: ActiveEffect.EffectChangeData,
       field?: Field,
-    ): Field extends DataField.Any ? DataField.InitializedTypeFor<Field> : unknown;
+    ): ActiveEffect.ApplyFieldReturn<Field>;
 
     /**
      * Apply this ActiveEffect to a provided Actor.
@@ -822,8 +829,7 @@ declare global {
      * @private
      * @remarks Core's implementation returns `boolean | number | string` or the return of {@link ActiveEffect._parseOrString | `ActiveEffect#_parseOrString`}
      */
-    // TODO: replace `object` with AnyValidJSON-y type
-    protected _castDelta(raw: string, type: string): boolean | number | string | object;
+    protected _castDelta(raw: string, type: string): JSONValue;
 
     /**
      * Cast a raw ActiveEffect.EffectChangeData change string to an Array of an inner type.
@@ -831,8 +837,7 @@ declare global {
      * @param type - The target data type of inner array elements
      * @returns The parsed delta cast as a typed array
      */
-    // TODO: replace `object` with AnyValidJSON-y type
-    protected _castArray(raw: string, type: string): Array<boolean | string | number | object>;
+    protected _castArray(raw: string, type: string): JSONValue[];
 
     /**
      * Parse serialized JSON, or retain the raw string.
@@ -840,8 +845,7 @@ declare global {
      * @returns The parsed value, or the original value if parsing failed
      * @remarks Tries to `JSON.parse(raw)`, simply returns `raw` if error
      */
-    // TODO: replace `object` with AnyValidJSON-y type
-    protected _parseOrString(raw: string): string | object;
+    protected _parseOrString(raw: string): JSONValue;
 
     /**
      * Apply an ActiveEffect that uses an ADD application mode.

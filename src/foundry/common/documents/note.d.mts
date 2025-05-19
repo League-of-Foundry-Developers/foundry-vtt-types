@@ -60,7 +60,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   // options: not null (destructured)
   override testUserPermission(
     user: User.Internal.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
