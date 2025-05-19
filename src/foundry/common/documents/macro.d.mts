@@ -55,7 +55,7 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
   // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 

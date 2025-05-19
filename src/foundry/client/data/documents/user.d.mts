@@ -196,7 +196,7 @@ declare global {
 
       /**
        * The user's role, see CONST.USER_ROLES.
-       * @defaultValue `CONST.USER_ROLES.PLAYER` (`1`)
+       * @defaultValue `CONST.USER_ROLES.PLAYER`
        */
       // FIXME: Overrides required to enforce the branded type
       role: fields.NumberField<
@@ -552,6 +552,8 @@ declare global {
       macro: Macro.Implementation | null;
     }
 
+    type ActionPermission = keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
+
     /**
      * @deprecated {@link User.Database | `User.DatabaseOperation`}
      */
@@ -652,7 +654,7 @@ declare global {
      *
      * @param permission - The permission name from USER_PERMISSIONS
      * @param allowed    - Whether to allow or restrict the permission
-     * @throws If the calling user is not at least an Assistant GM
+     * @remarks @throws If the calling user is not at least an Assistant GM
      */
     assignPermission(permission: keyof typeof CONST.USER_PERMISSIONS, allowed: boolean): Promise<this | undefined>;
 

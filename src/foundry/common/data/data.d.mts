@@ -745,7 +745,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
   // options: not null (destructured)
   testUserPermission(
     user: User.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 

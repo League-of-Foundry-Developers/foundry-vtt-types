@@ -65,7 +65,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
