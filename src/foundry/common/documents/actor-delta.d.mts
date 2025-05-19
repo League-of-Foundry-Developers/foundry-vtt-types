@@ -371,6 +371,8 @@ declare abstract class BaseActorDelta<
   ): ActorDelta.Implementation;
 
   static override fromJSON(json: string): ActorDelta.Implementation;
+
+  static #BaseActorDelta: true;
 }
 
 export default BaseActorDelta;

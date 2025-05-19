@@ -785,5 +785,7 @@ declare global {
     ): Promise<RegionDocument.Implementation>;
 
     override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
+    static #RegionDocument: true;
   }
 }

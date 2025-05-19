@@ -296,6 +296,8 @@ declare abstract class BaseTableResult<
   ): TableResult.Implementation;
 
   static override fromJSON(json: string): TableResult.Implementation;
+
+  static #BaseTableResult: true;
 }
 
 export default BaseTableResult;
