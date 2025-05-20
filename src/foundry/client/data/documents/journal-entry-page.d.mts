@@ -1,5 +1,5 @@
 import type { ConfiguredJournalEntryPage } from "../../../../configuration/index.d.mts";
-import type { AnyObject, InexactPartial, LazyUnknown, Merge } from "fvtt-types/utils";
+import type { AnyObject, Merge, NullishProps } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
@@ -230,18 +230,17 @@ declare global {
       /**
        * The text name of this page.
        */
-      name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true }>;
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      name: fields.StringField<
+        { required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true },
+        string
+      >;
 
       /**
        * The type of this page, in {@link BaseJournalEntryPage.TYPES | `BaseJournalEntryPage.TYPES`}.
        * @defaultValue `"text"`
        */
-      type: fields.DocumentTypeField<
-        typeof BaseJournalEntryPage,
-        {
-          initial: "text";
-        }
-      >;
+      type: fields.DocumentTypeField<typeof BaseJournalEntryPage, { initial: "text" }>;
 
       /**
        * System-specific data.
@@ -297,17 +296,26 @@ declare global {
          * The format of the page's content, in {@link CONST.JOURNAL_ENTRY_PAGE_FORMATS | `CONST.JOURNAL_ENTRY_PAGE_FORMATS`}.
          * @defaultValue `CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML`
          */
-        format: fields.NumberField<{
-          label: "JOURNALENTRYPAGE.Format";
-          initial: typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML;
-          choices: foundry.CONST.JOURNAL_ENTRY_PAGE_FORMATS[];
-        }>;
+        format: fields.NumberField<
+          {
+            label: "JOURNALENTRYPAGE.Format";
+            initial: typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML;
+            choices: CONST.JOURNAL_ENTRY_PAGE_FORMATS[];
+          },
+          // FIXME: overrides required to enforce branded type
+          CONST.JOURNAL_ENTRY_PAGE_FORMATS | null | undefined,
+          CONST.JOURNAL_ENTRY_PAGE_FORMATS,
+          CONST.JOURNAL_ENTRY_PAGE_FORMATS
+        >;
       }>;
 
       /**
        * Data particular to video journal entry pages.
        */
       video: fields.SchemaField<{
+        /**
+         * @defaultValue `true`
+         */
         controls: fields.BooleanField<{ initial: true }>;
 
         /**
@@ -548,6 +556,36 @@ declare global {
     }
 
     /**
+     * @internal
+     * Slightly editorializing the description with the addition of parentheses to make this scan
+     * for both {@linkcode JournalEntryPage.buildTOC} and {@linkcode JournalEntryPage._makeHeadingNode}
+     */
+    type _IncludeElement = NullishProps<{
+      /**
+       * Include reference(s) to the heading DOM element(s) in the returned ToC.
+       * @defaultValue `true`
+       */
+      includeElement: boolean;
+    }>;
+
+    interface BuildTOCOptions extends _IncludeElement {}
+
+    interface MakeHeadingNodeOptions extends _IncludeElement {}
+
+    interface EmbedTextPageConfig extends TextEditor.EnrichmentOptions, TextEditor.DocumentHTMLEmbedConfig {}
+
+    /** @internal*/
+    type _EmbedImagePageConfig = NullishProps<{
+      /**
+       * Alt text for the image, otherwise the caption will be used.
+       * @remarks If both `alt` and `label` are omitted, the returned Element's `alt` will fall back to using `this.image.caption || this.name`
+       */
+      alt: string;
+    }>;
+
+    interface EmbedImagePageConfig extends _EmbedImagePageConfig, Pick<TextEditor.DocumentHTMLEmbedConfig, "label"> {}
+
+    /**
      * @deprecated {@link JournalEntryPage.Database | `JournalEntryPage.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -598,7 +636,7 @@ declare global {
      */
     get toc(): Record<string, JournalEntryPage.JournalEntryPageHeading>;
 
-    override get permission(): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+    override get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
     /**
      * Return a reference to the Note instance for this Journal Entry Page in the current Scene, if any.
@@ -609,23 +647,20 @@ declare global {
     /**
      * Convert a heading into slug suitable for use as an identifier.
      * @param heading - The heading element or some text content.
+     * @remarks Foundry types `heading` as `HTMLHeadingElement | string`, but only checks for `instanceof HTMLElement`,
+     * and this could be useful for slugifying the text of arbitrary elements.
      */
-    static slugifyHeading(heading: HTMLHeadingElement | string): string;
+    static slugifyHeading(heading: HTMLElement | string): string;
 
     /**
      * Build a table of contents for the given HTML content.
      * @param html    - The HTML content to generate a ToC outline for.
      * @param options - Additional options to configure ToC generation.
      */
+    // options: not null (destructured)
     static buildTOC(
       html: HTMLElement[],
-      options: InexactPartial<{
-        /**
-         * Include references to the heading DOM elements in the returned ToC.
-         * @defaultValue `true`
-         */
-        includeElement: boolean;
-      }>,
+      options?: JournalEntryPage.BuildTOCOptions,
     ): Record<string, JournalEntryPage.JournalEntryPageHeading>;
 
     /**
@@ -641,15 +676,10 @@ declare global {
      * @param heading - The heading element.
      * @param options - Additional options to configure the returned node.
      */
+    // options: not null (destructured)
     protected static _makeHeadingNode(
       heading: HTMLHeadingElement,
-      options: InexactPartial<{
-        /**
-         * Whether to include the DOM element in the returned ToC node.
-         * @defaultValue `true`
-         */
-        includeElement: boolean;
-      }>,
+      options?: JournalEntryPage.MakeHeadingNodeOptions,
     ): JournalEntryPage.JournalEntryPageHeading;
 
     /** @remarks Uses `eventData`, unlike {@link ClientDocument._createDocumentLink | `ClientDocument#_createDocumentLink`} */
@@ -719,8 +749,9 @@ declare global {
      * </section>
      * ```
      */
+    // options: not null (parameter default only)
     protected _embedTextPage(
-      config: TextEditor.DocumentHTMLEmbedConfig & TextEditor.EnrichmentOptions,
+      config: JournalEntryPage.EmbedTextPageConfig,
       options?: TextEditor.EnrichmentOptions,
     ): Promise<HTMLCollection>;
 
@@ -729,7 +760,6 @@ declare global {
      * @param config            - Configuration for embedding behavior.
      * @param options           - The original enrichment options for cases where the Document embed content
      *                            also contains text that must be enriched.
-     * @returns
      *
      * @example Create an embedded image from a sibling journal entry page.
      * ```
@@ -752,13 +782,13 @@ declare global {
      *   </figcaption>
      * </figure>
      * ```
+     *
+     * @remarks Core's implementation always returns a {@linkcode HTMLImageElement}, and does not use `options`
      */
+    // config: not null (destructured), options: not null (parameter default only)
     protected _embedImagePage(
-      config: TextEditor.DocumentHTMLEmbedConfig & {
-        /** Alt text for the image, otherwise the caption will be used. **/
-        alt?: string | LazyUnknown;
-      },
-      options?: InexactPartial<TextEditor.EnrichmentOptions>,
+      config?: JournalEntryPage.EmbedImagePageConfig,
+      options?: TextEditor.EnrichmentOptions,
     ): Promise<HTMLElement | HTMLCollection | null>;
 
     /*

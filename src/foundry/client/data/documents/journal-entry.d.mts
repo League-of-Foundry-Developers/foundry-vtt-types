@@ -246,6 +246,7 @@ declare global {
       /**
        * The name of this JournalEntry
        */
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
       name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
       /**
@@ -499,7 +500,7 @@ declare global {
 
     /**
      * @remarks "Upgrade to OBSERVER ownership if the journal entry is in a LIMITED compendium,
-     * as LIMITED has no special meaning for journal entries in this context.""
+     * as LIMITED has no special meaning for journal entries in this context."
      */
     // user: not null (parameter default only where forwarded)
     override getUserLevel(user?: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
@@ -515,11 +516,10 @@ declare global {
      * By default the entry will only be shown to players who have permission to observe it.
      * If the parameter force is passed, the entry will be shown to all players regardless of normal permission.
      *
-     * @param force - Display the entry to all players regardless of normal permissions
-     *                (default: `false`)
+     * @param force - Display the entry to all players regardless of normal permissions (default: `false`)
      * @returns A Promise that resolves back to the shown entry once the request is processed
      */
-    show(force?: boolean): Promise<this>;
+    show(force?: boolean | null): Promise<this>;
 
     /**
      * If the JournalEntry has a pinned note on the canvas, this method will animate to that note
@@ -527,9 +527,10 @@ declare global {
      * @param options - Options which modify the pan operation
      * @returns A Promise which resolves once the pan animation has concluded
      */
-    panToNote(options?: PanToNoteOptions): Promise<void>;
+    // options: not null (parameter default only, destructured where forwarded)
+    panToNote(options?: NotesLayer.PanToNoteOptions): Promise<void>;
 
-    // _onUpdate and _onDelete are all overridden but with no signature changes from their definition in BaseJournalEntry.
+    // _onUpdate and _onDelete are overridden but with no signature changes from their definition in BaseJournalEntry.
 
     /*
      * After this point these are not really overridden methods.
@@ -673,18 +674,4 @@ declare global {
 
     override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
-}
-
-interface PanToNoteOptions {
-  /**
-   * The speed of the pan animation in milliseconds
-   * @defaultValue `250`
-   */
-  duration?: number;
-
-  /**
-   * The resulting zoom level
-   * @defaultValue `1.5`
-   */
-  scale?: number;
 }

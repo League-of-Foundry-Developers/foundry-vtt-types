@@ -92,7 +92,7 @@ declare class InternalClientDocument<BaseDocument extends Document.Internal.Inst
    * actor.permission; // 2
    * ```
    */
-  get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Lazily obtain a FormApplication instance used to configure this Document, or null if no sheet is available.
