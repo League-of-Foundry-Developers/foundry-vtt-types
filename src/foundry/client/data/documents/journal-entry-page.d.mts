@@ -583,7 +583,7 @@ declare global {
       alt: string;
     }>;
 
-    interface EmbedImagePageConfig extends _EmbedImagePageConfig, Pick<TextEditor.DocumentHTMLEmbedConfig, "label"> {}
+    interface EmbedImagePageConfig extends _EmbedImagePageConfig, TextEditor.DocumentHTMLEmbedConfig {}
 
     /**
      * @deprecated {@link JournalEntryPage.Database | `JournalEntryPage.DatabaseOperation`}
