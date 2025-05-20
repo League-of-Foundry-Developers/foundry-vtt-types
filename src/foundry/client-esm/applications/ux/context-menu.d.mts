@@ -72,8 +72,7 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
    * @param html      - The Application's rendered HTML.
    * @param selector  - The target CSS selector which activates the menu.
    * @param menuItems - The array of menu items being rendered.
-   * @param options   - Additional options to configure context menu initialization.
-   *                    (default: `"EntryContext"`)
+   * @param options   - Additional options to configure context menu initialization. (default: `"EntryContext"`)
    */
   static create<UsesJQuery extends boolean = true>(
     app: Application.Any,

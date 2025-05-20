@@ -9,8 +9,7 @@ declare class TextEditor {
   /**
    * Create a Rich Text Editor. The current implementation uses TinyMCE
    * @param options - Configuration options provided to the Editor init
-   * @param content - Initial HTML or text content to populate the editor with
-   *                  (default: `""`)
+   * @param content - Initial HTML or text content to populate the editor with (default: `""`)
    * @returns The editor instance.
    */
   static create(options: TextEditor.Options<"prosemirror">, content?: string): Promise<tinyMCE.Editor | EditorView>;
@@ -30,8 +29,7 @@ declare class TextEditor {
   /**
    * Enrich HTML content by replacing or augmenting components of it
    * @param content  - The original HTML content (as a string)
-   * @param options  - Additional options which configure how HTML is enriched
-   *                   (default: `{}`)
+   * @param options  - Additional options which configure how HTML is enriched (default: `{}`)
    * @returns The enriched HTML content
    */
   static enrichHTML(content: string, options?: TextEditor.EnrichmentOptions): Promise<string>;
@@ -96,8 +94,7 @@ declare class TextEditor {
   /**
    * Preview an HTML fragment by constructing a substring of a given length from its inner text.
    * @param content - The raw HTML to preview
-   * @param length  - The desired length
-   *                  (default: `250`)
+   * @param length  - The desired length (default: `250`)
    * @returns The previewed HTML
    */
   static previewHTML(content: string, length?: number): string;
@@ -195,8 +192,7 @@ declare class TextEditor {
    * Replace an inline roll formula with a rollable &lt;a&gt; element or an eagerly evaluated roll result
    * @param match    - The regular expression match array
    * @param rollData - Provided roll data for use in roll evaluation
-   * @param options  - Options provided to customize text enrichment
-   *                   (default: `{}`)
+   * @param options  - Options provided to customize text enrichment (default: `{}`)
    * @returns The replaced match. Returns null if the contained command is not a valid roll expression.
    * @internal
    */
@@ -220,8 +216,7 @@ declare class TextEditor {
   /**
    * Extract JSON data from a drag/drop event.
    * @param event - The drag event which contains JSON data.
-   * @returns The extracted JSON data. The object will be empty if the DragEvent did not contain
-   *          JSON-parseable data.
+   * @returns The extracted JSON data. The object will be empty if the DragEvent did not contain JSON-parseable data.
    * @remarks `TokensLayer#_onDropActorData` returns a number - a notification ID - the  if the user lacks permissions
    * @remarks `User#assignHotbarMacro` returns a promise to a user document
    */
