@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import Document = foundry.abstract.Document;
-import type { FixedInstanceType, InexactPartial, MaybePromise } from "../../../../../src/utils/index.d.mts";
+import type { FixedInstanceType, InexactPartial } from "../../../../../src/utils/index.d.mts";
 
 const item = new Item.implementation({ name: "foo", type: "base" });
 declare const someActor: Actor.Implementation;
@@ -186,7 +186,7 @@ expectTypeOf(
 
 declare const mouseEvent: MouseEvent;
 // this is typed by a fake overload, but does represent the average case
-expectTypeOf(item._onClickDocumentLink(mouseEvent)).toEqualTypeOf<MaybePromise<NonNullable<(typeof item)["sheet"]>>>();
+expectTypeOf(item._onClickDocumentLink(mouseEvent)).toEqualTypeOf<ClientDocument.OnClickDocumentLinkReturn>();
 
 declare const storedItem: Item.Stored;
 declare const aeCreateDataArray: ActiveEffect.CreateData[];

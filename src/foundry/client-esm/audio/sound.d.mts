@@ -76,7 +76,7 @@ declare class Sound extends EventEmitterMixin(Object) {
 
   /**
    * The life-cycle state of the sound.
-   * @defaultValue `Sound.STATES.NONE` (`0`)
+   * @defaultValue `Sound.STATES.NONE`
    */
   protected _state: Sound.STATES;
 

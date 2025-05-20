@@ -278,8 +278,8 @@ declare global {
             // TODO: (LukeAbby): fix this when redoing DataField
             // FIXME: Overrides required to enforce the branded type
             CONST.ACTIVE_EFFECT_MODES | null | undefined,
-            CONST.ACTIVE_EFFECT_MODES | null,
-            CONST.ACTIVE_EFFECT_MODES | null
+            CONST.ACTIVE_EFFECT_MODES,
+            CONST.ACTIVE_EFFECT_MODES
           >;
 
           /**

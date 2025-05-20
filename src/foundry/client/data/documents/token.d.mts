@@ -242,7 +242,7 @@ declare global {
 
       /**
        * The display mode of the Token nameplate, from CONST.TOKEN_DISPLAY_MODES
-       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE` (`0`)
+       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
        */
       displayName: fields.NumberField<
         {
@@ -294,7 +294,7 @@ declare global {
       }>;
 
       /**
-       * @defaultValue `CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1` (`0`)
+       * @defaultValue `CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1`
        */
       hexagonalShape: fields.NumberField<
         {
@@ -344,7 +344,7 @@ declare global {
 
       /**
        * The display mode of Token resource bars, from CONST.TOKEN_DISPLAY_MODES
-       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE` (`0`)
+       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
        */
       displayBars: fields.NumberField<
         {
