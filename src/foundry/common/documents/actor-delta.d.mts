@@ -370,7 +370,8 @@ declare namespace BaseActorDelta {
     // The expression `ClientDocumentMixin(BaseActorDelta)` is more intuitive but it has worse
     // caching, likely due to the majority of tsc's caching working off of names.
     // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
-    const ClientDocument: ClientDocumentMixin.Mix<typeof BaseActorDelta>;
+    interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseActorDelta> {}
+    const ClientDocument: ClientDocument;
   }
 
   // The document subclasses override `system` anyways.

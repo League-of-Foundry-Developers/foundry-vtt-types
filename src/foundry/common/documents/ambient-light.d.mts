@@ -294,7 +294,8 @@ declare namespace BaseAmbientLight {
     // The expression `CanvasDocumentMixin(BaseAmbientLight)` is more intuitive but it has worse
     // caching, likely due to the majority of tsc's caching working off of names.
     // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
-    const CanvasDocument: CanvasDocumentMixin.Mix<typeof BaseAmbientLight>;
+    interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BaseAmbientLight> {}
+    const CanvasDocument: CanvasDocument;
   }
 
   /**

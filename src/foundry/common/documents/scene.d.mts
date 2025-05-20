@@ -330,7 +330,8 @@ declare namespace BaseScene {
     // The expression `ClientDocumentMixin(BaseScene)` is more intuitive but it has worse
     // caching, likely due to the majority of tsc's caching working off of names.
     // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
-    const ClientDocument: ClientDocumentMixin.Mix<typeof BaseScene>;
+    interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseScene> {}
+    const ClientDocument: ClientDocument;
   }
 
   /**
