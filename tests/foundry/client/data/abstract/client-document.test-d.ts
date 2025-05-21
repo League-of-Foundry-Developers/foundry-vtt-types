@@ -125,7 +125,7 @@ expectTypeOf(item.link).toBeString();
 // @ts-expect-error Only getter, no setter
 item.link = "foo";
 
-expectTypeOf(item.permission).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>();
+expectTypeOf(item.permission).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS | null>();
 // @ts-expect-error Only getter, no setter
 item.permission = CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER;
 
