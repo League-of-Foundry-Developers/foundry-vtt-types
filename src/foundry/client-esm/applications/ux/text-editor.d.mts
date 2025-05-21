@@ -1,6 +1,6 @@
-import type { EditorView } from "prosemirror-view";
 import type { AnyObject, JSONValue, MaybePromise } from "../../../../utils/index.d.mts";
-import type HTMLEnrichedContentElement from "../elements/enriched-content.d.mts";
+import type { HTMLEnrichedContentElement } from "../elements/_module.d.mts";
+import type ProseMirrorEditor from "./prosemirror-editor.mjs";
 
 /**
  * A collection of helper functions and utility methods related to the rich text editor.
@@ -12,12 +12,20 @@ declare class TextEditor {
    * @param content - Initial HTML or text content to populate the editor with (default: `""`)
    * @returns The editor instance.
    */
-  static create(options: TextEditor.Options<"prosemirror">, content?: string): Promise<tinyMCE.Editor | EditorView>;
+  static create(options: TextEditor.ProseMirrorOptions, content?: string): Promise<ProseMirrorEditor>;
 
   /**
    * @deprecated "The editor engine option of "tinymce" is deprecated and will be removed in V14. Please use "prosemirror" instead."
    */
-  static create(options: TextEditor.Options<"tinymce">, content?: string): Promise<tinyMCE.Editor | EditorView>;
+  static create(options: TextEditor.TinyMCEOptions, content?: string): Promise<tinyMCE.Editor>;
+
+  /**
+   * Create a TinyMCE editor instance.
+   * @param options - Configuration options passed to the editor.
+   * @param content - Initial HTML or text content to populate the editor with.
+   * @returns The TinyMCE editor instance.
+   */
+  protected static _createTinyMCE(options: TextEditor.TinyMCEOptions, content?: string): Promise<tinyMCE.Editor>;
 
   /**
    * Safely decode an HTML string, removing invalid tags and converting entities back to unicode characters.
@@ -227,7 +235,10 @@ declare class TextEditor {
    * @param eventData - The parsed object of data provided by the transfer event
    * @param options   - Additional options to configure link creation.
    */
-  static getContentLink(eventData: JSONValue, options?: TextEditor.GetContentLinkOptions): Promise<string | null>;
+  static getContentLink(
+    eventData: JSONValue,
+    options?: ClientDocument.CreateDocumentLinkOptions,
+  ): Promise<string | null>;
 
   /**
    * Upload an image to a document's asset path.
@@ -248,97 +259,24 @@ declare class TextEditor {
 }
 
 declare namespace TextEditor {
-  interface Options<Engine extends "tinymce" | "prosemirror"> {
+  interface ProseMirrorOptions extends ProseMirrorEditor.CreateOptions {
     /**
      * Which rich text editor engine to use, "tinymce" or "prosemirror". TinyMCE
      * is deprecated and will be removed in a later version.
      * @defaultValue `"tinymce"`
      */
-    engine?: Engine;
-
-    /**
-     * @defaultValue `false`
-     */
-    branding?: boolean;
-
-    /**
-     * @defaultValue `["/css/mce.css"]`
-     */
-    content_css?: string[];
-
-    /**
-     * @defaultValue `false`
-     */
-    menubar?: boolean;
-
-    /**
-     * @defaultValue `"lists image table hr code save link"`
-     */
-    plugins?: string;
-
-    /**
-     * @defaultValue `true`
-     */
-    save_enablewhendirty?: boolean;
-
-    /**
-     * @defaultValue `false`
-     */
-    statusbar?: boolean;
-
-    style_formats?: [
-      {
-        items?: [
-          {
-            /**
-             * @defaultValue `"section"`
-             */
-            block?: string;
-
-            /**
-             * @defaultValue `"secrect"`
-             */
-            classes?: string;
-
-            /**
-             * @defaultValue `"Secret"`
-             */
-            title?: string;
-
-            /**
-             * @defaultValue `true`
-             */
-            wrapper?: boolean;
-          },
-        ];
-
-        /**
-         * @defaultValue `"Custom"`
-         */
-        title?: string;
-      },
-    ];
-
-    /**
-     * @defaultValue `true`
-     */
-    style_formats_merge?: boolean;
-
-    /**
-     * @defaultValue `{}`
-     */
-    table_default_styles?: object;
+    engine: "prosemirror";
 
     target: HTMLElement;
+  }
 
+  interface TinyMCEOptions extends tinyMCE.RawEditorOptions {
     /**
-     * @defaultValue `"styleselect bullist numlist image table hr link removeformat code save"`
+     * Which rich text editor engine to use, "tinymce" or "prosemirror". TinyMCE
+     * is deprecated and will be removed in a later version.
+     * @defaultValue `"tinymce"`
      */
-    toolbar?: string;
-
-    fitToSize?: boolean;
-
-    height?: number;
+    engine: "tinymce";
   }
 
   interface EnrichmentOptions {
@@ -498,33 +436,22 @@ declare namespace TextEditor {
      * The maximum allowed length of the truncated string.
      * @defaultValue `50`
      */
-    maxLength?: number;
+    maxLength?: number | undefined;
 
     /**
      * Whether to truncate by splitting on white space (if true) or breaking words.
      * @defaultValue `true`
      */
-    splitWords?: boolean;
+    splitWords?: boolean | undefined;
 
     /**
      * A suffix string to append to denote that the text was truncated.
      * @defaultValue `"…"`
      */
-    suffix?: string;
+    suffix?: string | undefined;
   }
 
-  interface GetContentLinkOptions {
-    /** A document to generate the link relative to. */
-    relativeTo?: foundry.abstract.Document.Any | undefined;
-
-    /** A custom label to use instead of the document's name. */
-    label?: string;
-  }
-
-  interface CreateContentLinkOptions {
-    /** A document to resolve relative UUIDs against.*/
-    relativeTo?: foundry.abstract.Document.Any | undefined;
-  }
+  type CreateContentLinkOptions = Omit<ClientDocument.CreateDocumentLinkOptions, "label">;
 }
 
 export default TextEditor;
