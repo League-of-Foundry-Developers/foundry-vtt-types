@@ -1,4 +1,4 @@
-import type { AnyArray, ValueOf } from "fvtt-types/utils";
+import type { AnyArray, AnyFunction, ValueOf } from "fvtt-types/utils";
 
 // TODO: smarter types for named functions
 declare global {
@@ -42,8 +42,7 @@ declare global {
      * @param functionRef  - A reference to the function that should be loaded
      * @returns A Promise which resolves once the Worker has loaded the function.
      */
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-    loadFunction(functionName: string, functionRef: Function): Promise<unknown>;
+    loadFunction(functionName: string, functionRef: AnyFunction): Promise<unknown>;
 
     /**
      * Execute a task on a specific Worker.
