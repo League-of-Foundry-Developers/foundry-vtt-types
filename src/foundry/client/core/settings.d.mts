@@ -175,7 +175,7 @@ declare global {
       T extends ClientSettings.Type,
       N extends ClientSettings.Namespace,
       K extends ClientSettings.KeyFor<N>,
-    > = ClientSettings.Type extends T ? globalThis.SettingConfig[`${N}.${K}` & keyof SettingConfig] : NoInfer<T>;
+    > = ClientSettings.Type extends T ? ConfiguredType<N, K> : NoInfer<T>;
 
     /**
      * @internal
@@ -386,7 +386,7 @@ type PrimitiveConstructorToSettingType<T extends PRIMITIVE_TYPES[number]> = T ex
 type ConfiguredType<
   N extends ClientSettings.Namespace,
   K extends ClientSettings.KeyFor<N>,
-> = globalThis.SettingConfig[`${N}.${K}` & keyof SettingConfig];
+> = globalThis.SettingConfig[`${N}.${K}` & keyof globalThis.SettingConfig];
 
 type SettingType<T extends ClientSettings.Type> =
   // Note(LukeAbby): This isn't written as `T extends ClientSettings.TypeScriptType ? T : never` because then types like `DataField.Any` would be matched.
