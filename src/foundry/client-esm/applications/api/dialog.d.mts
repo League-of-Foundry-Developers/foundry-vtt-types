@@ -578,9 +578,7 @@ declare namespace DialogV2 {
           // `{ action: string }` to be able to be `{ action: string | undefined }`.
           V & {}
         : T[K] | (U extends { readonly [_ in K]?: infer V } ? V & {} : never);
-    };
-
-    type A = MergePartial<{ prop: number }, { prop?: string }>;
+    } & Omit<U, keyof T>;
 
     class FormContent<Content extends AnyObject> {
       #content: Content;

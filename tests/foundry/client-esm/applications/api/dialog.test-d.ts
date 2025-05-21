@@ -134,6 +134,7 @@ expectTypeOf(
     ],
   }),
 ).toEqualTypeOf<ChoiceFormData | number | boolean | null>();
+
 expectTypeOf(
   await DialogV2.input({
     content: choiceForm,
