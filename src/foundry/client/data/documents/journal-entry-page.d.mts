@@ -574,7 +574,7 @@ declare global {
 
     interface EmbedTextPageConfig extends TextEditor.EnrichmentOptions, TextEditor.DocumentHTMLEmbedConfig {}
 
-    /** @internal*/
+    /** @internal */
     type _EmbedImagePageConfig = NullishProps<{
       /**
        * Alt text for the image, otherwise the caption will be used.
@@ -647,10 +647,8 @@ declare global {
     /**
      * Convert a heading into slug suitable for use as an identifier.
      * @param heading - The heading element or some text content.
-     * @remarks Foundry types `heading` as `HTMLHeadingElement | string`, but only checks for `instanceof HTMLElement`,
-     * and this could be useful for slugifying the text of arbitrary elements.
      */
-    static slugifyHeading(heading: HTMLElement | string): string;
+    static slugifyHeading(heading: HTMLHeadingElement | string): string;
 
     /**
      * Build a table of contents for the given HTML content.
