@@ -4,7 +4,7 @@ import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
  * An extension of the Collection class which adds behaviors specific to tree-based collections of entries and folders.
  */
 declare class DirectoryCollection {
-  /** @privateRemarks All mixin classses need a constructor like this */
+  /** @privateRemarks All mixin classes need a constructor like this */
   constructor(...args: any[]);
 
   // Note(LukeAbby): This isn't really a property on this class but rather it exists on `Collection`.
