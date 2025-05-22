@@ -602,7 +602,7 @@ declare global {
      * calls `exportDialog` with `null`.
      */
     // options: not null (parameter default only)
-    exportDialog(pack: string | null, options?: Dialog.Options): Promise<void>;
+    exportDialog(pack: string | null, options?: Folder.ExportDialogOptions): Promise<void>;
 
     /**
      * Get the Folder documents which are sub-folders of the current folder, either direct children or recursively.
