@@ -2,8 +2,7 @@
   "$schema": "https://json.schemastore.org/tsconfig.json",
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "types": [],
-    "outDir": "./.typescript-build/src"
+    "types": []
   },
   // Annoyingly, TypeScript doesn't include hidden files by default for whatever reason.
   "include": ["**/*", ".*", ".**/**/*"],
