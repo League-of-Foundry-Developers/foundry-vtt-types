@@ -414,7 +414,9 @@ declare global {
     /**
      * Actual document types that go in folders
      */
-    type DocumentType = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
+    type DocumentType = Exclude<CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
+
+    type DocumentCollection<Type extends SubType> = Type extends "Compendium" ? Collection.Any : WorldCollection.Any;
 
     /** @internal */
     type _ExportToCompendiumOptions = NullishProps<{
@@ -557,7 +559,7 @@ declare global {
      */
     // TODO: Compendium Pack index
     // TODO: Infer specific world collection from SubType
-    get documentCollection(): this["pack"] extends string ? Collection.Any : WorldCollection.Any;
+    get documentCollection(): Folder.DocumentCollection<SubType>;
 
     /**
      * Return whether the folder is currently expanded within the sidebar interface.

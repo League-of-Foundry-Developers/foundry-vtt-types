@@ -60,7 +60,7 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 
   /**
    * @remarks Never returns an index entry, only ever {@linkcode Folder.Implementation} or `null`, as the `folders` collection of a
-   * compendium is accessible at sync speed
+   * compendium is always loaded and available synchronously
    */
   static override get(documentId: string, options?: Folder.Database.GetOptions): Folder.Implementation | null;
 
