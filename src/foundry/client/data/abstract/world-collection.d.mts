@@ -1,4 +1,4 @@
-import type { DeepPartial, DropFirst, FixedInstanceType, GetKey, InexactPartial } from "fvtt-types/utils";
+import type { DeepPartial, DropFirst, FixedInstanceType, GetKey, Identity, InexactPartial } from "fvtt-types/utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 
@@ -114,6 +114,9 @@ declare global {
   }
 
   namespace WorldCollection {
+    interface Any extends AnyWorldCollection {}
+    interface AnyConstructor extends Identity<typeof AnyWorldCollection> {}
+
     interface FromCompendiumOptions {
       /**
        * Clear the currently assigned folder
@@ -154,4 +157,8 @@ declare global {
       | (GetKey<Options, "keepId", undefined> extends true ? never : never)
     >;
   }
+}
+
+declare abstract class AnyWorldCollection extends WorldCollection<Document.AnyConstructor, string> {
+  constructor(...args: never[]);
 }
