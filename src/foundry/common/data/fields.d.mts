@@ -2056,6 +2056,144 @@ declare namespace ObjectField {
   >;
 }
 
+/**
+ * A subclass of ObjectField that represents a mapping of keys to the provided DataField type.
+ */
+declare class TypedObjectField<
+  const Element extends DataField.Any,
+  const Options extends TypedObjectField.Options<AnyObject> = TypedObjectField.DefaultOptions,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const AssignmentType = TypedObjectField.AssignmentType<Element, Options>,
+  const InitializedType = TypedObjectField.InitializedType<Element, Options>,
+  const PersistedType extends AnyObject | null | undefined = TypedObjectField.InitializedType<Element, Options>,
+> extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
+  /**
+   * @param element - The value type of each entry in this object.
+   * @param options - Options which configure the behavior of the field.
+   * @param context - Additional context which describes the field
+   */
+  constructor(element: Element, options?: Options, context?: DataField.ConstructionContext);
+
+  /**
+   * The value type of each entry in this object.
+   */
+  element: Element;
+
+  static override recursive: boolean;
+
+  protected static override get _defaults(): DataField.Options<AnyObject>;
+
+  protected _cleanType(value: InitializedType, options?: DataField.CleanOptions | null): InitializedType;
+
+  protected _validateType(
+    value: InitializedType,
+    options?: DataField.ValidateOptions<this>,
+  ): boolean | DataModelValidationFailure | void;
+
+  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
+
+  // options: not null (parameter default only)
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: DataField.InitializeOptions,
+  ): InitializedType | (() => InitializedType | null);
+
+  /**
+   * @remarks TODO: Stub
+   * Please let us know if you want this type definition prioritised.
+   */
+  _updateDiff(...args: never): unknown;
+
+  /**
+   * @remarks TODO: Stub
+   * Please let us know if you want this type definition prioritised.
+   */
+  _updateCommit(...args: never): unknown;
+
+  override toObject(value: InitializedType): PersistedType;
+
+  // options: not null (could be forwarded somewhere destructured, parameter default only)
+  override apply<Options, Return>(
+    fn: keyof this | ((this: this, value: AnyObject, options: Options) => Return),
+    value?: AnyObject,
+    options?: Options,
+  ): Return;
+
+  /**
+   * @remarks TODO: Stub
+   * Please let us know if you want this type definition prioritised.
+   */
+  _addTypes(...args: never): unknown;
+
+  protected override _getField(path: string[]): DataField.Any;
+
+  /**
+   * Migrate this field's candidate source data.
+   * @param sourceData - Candidate source data of the root model
+   * @param fieldData  - The value of this field within the source data
+   */
+  migrateSource(sourceData: AnyObject, fieldData: unknown): void;
+}
+
+declare namespace TypedObjectField {
+  /** The type of the default options for the {@linkcode ObjectField} class. */
+  type DefaultOptions = SimpleMerge<
+    ObjectField.DefaultOptions,
+    {
+      validateKey: undefined;
+    }
+  >;
+
+  interface Options<BaseAssignmentType> extends DataField.Options<BaseAssignmentType> {
+    /**
+     * @remarks `validateKey` is called for each key in a `TypedObjectField`. An explicit return of
+     * exactly `false` will strip that key. Falsey values like `undefined` will consider the key as
+     * valid.
+     */
+    validateKey?: ((key: string) => boolean | void) | undefined;
+  }
+
+  /**
+   * A helper type for the given options type merged into the default options of the ObjectField class.
+   * @template Options - the options that override the default options
+   */
+  type MergedOptions<Options extends TypedObjectField.Options<AnyObject>> = SimpleMerge<DefaultOptions, Options>;
+
+  /**
+   * A shorthand for the assignment type of a ObjectField class.
+   * @template Options - the options that override the default options
+   *
+   * @deprecated - AssignmentData is being phased out. See {@linkcode SchemaField.AssignmentData}
+   * for more details.
+   */
+  type AssignmentType<
+    Element extends DataField.Any,
+    Options extends TypedObjectField.Options<AnyObject>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+  > = DataField.DerivedAssignmentType<
+    {
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      [K: string]: DataField.AssignmentTypeFor<Element>;
+    },
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a ObjectField class.
+   * @template Options - the options that override the default options
+   */
+  type InitializedType<
+    Element extends DataField.Any,
+    Options extends TypedObjectField.Options<AnyObject>,
+  > = DataField.DerivedInitializedType<
+    {
+      [K: string]: DataField.InitializedTypeFor<Element>;
+    },
+    MergedOptions<Options>
+  >;
+}
+
 type ArrayFieldElement<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
   ElementFieldType extends abstract new (...args: infer _1) => {
     " __fvtt_types_internal_schema": infer Schema extends DataSchema;
@@ -5125,6 +5263,7 @@ export {
   JSONField,
   NumberField,
   ObjectField,
+  TypedObjectField,
   TypedSchemaField,
   SchemaField,
   SetField,
