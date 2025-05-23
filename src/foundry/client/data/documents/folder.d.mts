@@ -416,7 +416,9 @@ declare global {
      */
     type DocumentType = Exclude<CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
 
-    type DocumentCollection<Type extends SubType> = Type extends "Compendium" ? Collection.Any : WorldCollection.Any;
+    type DocumentCollection<Type extends SubType> = Type extends "Compendium"
+      ? Collection.Any | undefined
+      : WorldCollection.Any;
 
     /** @internal */
     type _ExportToCompendiumOptions = NullishProps<{
