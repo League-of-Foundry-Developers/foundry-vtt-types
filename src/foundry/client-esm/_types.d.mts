@@ -5,5 +5,5 @@
 // them here because it has poor discoverability. The names Foundry has chosen
 // also overlaps with other existing names, such as SettingConfig vs. ClientSetting.SettingConfig
 
-// eslint-disable-next-line import-x/export, import-x/extensions
+// eslint-disable-next-line import-x/export
 export * from "#common/_types.mjs";
