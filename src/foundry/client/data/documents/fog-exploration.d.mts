@@ -208,7 +208,7 @@ declare global {
 
       /**
        * The timestamp at which this fog exploration was last updated
-       * @defaultValue `Date.now`
+       * @defaultValue `Date.now()`
        */
       timestamp: fields.NumberField<{ nullable: false; initial: typeof Date.now }>;
 
