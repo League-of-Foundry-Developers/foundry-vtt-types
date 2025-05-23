@@ -1,4 +1,4 @@
-import type { GetKey, ValueOf } from "fvtt-types/utils";
+import type { GetKey, ValueOf } from "#utils";
 
 declare global {
   /** @deprecated {@link AVSettings.Data | `AVSettings.Data`} */

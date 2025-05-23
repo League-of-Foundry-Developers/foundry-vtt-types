@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "#utils";
 
 declare global {
   /**

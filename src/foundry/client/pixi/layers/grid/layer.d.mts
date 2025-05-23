@@ -1,4 +1,4 @@
-import type { EmptyObject, HandleEmptyObject, Identity, NullishProps, RemoveIndexSignatures } from "fvtt-types/utils";
+import type { EmptyObject, HandleEmptyObject, Identity, NullishProps, RemoveIndexSignatures } from "#utils";
 
 declare global {
   /**

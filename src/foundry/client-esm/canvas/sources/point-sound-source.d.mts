@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Identity, NullishProps, RequiredProps } from "fvtt-types/utils";
+import type { FixedInstanceType, Identity, NullishProps, RequiredProps } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 

@@ -25,7 +25,7 @@ import type {
   Brand,
   AnyMutableObject,
   MaybePromise,
-} from "fvtt-types/utils";
+} from "#utils";
 import type * as CONST from "../constants.mts";
 import type {
   DataSchema,

@@ -1,4 +1,4 @@
-import type { ConformRecord, InterfaceToObject, MustConform, DeepPartial } from "fvtt-types/utils";
+import type { ConformRecord, InterfaceToObject, MustConform, DeepPartial } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type CompendiumArt from "../../helpers/compendium-art.d.mts";

@@ -1,4 +1,4 @@
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyObject } from "#utils";
 import type { DatabaseAction, DatabaseOperation, DocumentSocketRequest } from "./_types.d.mts";
 
 /**

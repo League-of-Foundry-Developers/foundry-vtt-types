@@ -1,6 +1,6 @@
 import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
-import type { GetDataReturnType, Identity } from "fvtt-types/utils";
+import type { GetDataReturnType, Identity } from "#utils";
 
 import Document = foundry.abstract.Document;
 

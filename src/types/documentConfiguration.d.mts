@@ -3,7 +3,7 @@
 
 import type { documents } from "../foundry/client-esm/client.d.mts";
 import type { Document } from "../foundry/common/abstract/module.d.mts";
-import type { InterfaceToObject, MakeConform, MustConform, FixedInstanceType } from "fvtt-types/utils";
+import type { InterfaceToObject, MakeConform, MustConform, FixedInstanceType } from "#utils";
 
 type DocumentConform<T> = MakeConform<T, Document.AnyConstructor>;
 

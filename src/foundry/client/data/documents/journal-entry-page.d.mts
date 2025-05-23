@@ -1,5 +1,5 @@
 import type { ConfiguredJournalEntryPage } from "../../../../configuration/index.d.mts";
-import type { AnyObject, Merge, NullishProps } from "fvtt-types/utils";
+import type { AnyObject, Merge, NullishProps } from "#utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";

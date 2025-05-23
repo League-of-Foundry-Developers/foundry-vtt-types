@@ -1,4 +1,4 @@
-import type { AnyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type { AnyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type BaseLightSource from "./base-light-source.d.mts";
 

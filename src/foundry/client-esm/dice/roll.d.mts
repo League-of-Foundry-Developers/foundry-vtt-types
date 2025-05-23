@@ -1,11 +1,4 @@
-import type {
-  AnyObject,
-  InexactPartial,
-  FixedInstanceType,
-  IntentionalPartial,
-  EmptyObject,
-  Identity,
-} from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, FixedInstanceType, IntentionalPartial, EmptyObject, Identity } from "#utils";
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
 import type PoolTerm from "./terms/pool.d.mts";

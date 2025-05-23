@@ -1,4 +1,4 @@
-import type { AnyObject, Identity, Merge, NullishProps, RequiredProps } from "fvtt-types/utils";
+import type { AnyObject, Identity, Merge, NullishProps, RequiredProps } from "#utils";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
 import type { BaseActorDelta } from "../../../common/documents/_module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";

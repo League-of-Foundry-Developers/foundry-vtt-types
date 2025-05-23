@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";

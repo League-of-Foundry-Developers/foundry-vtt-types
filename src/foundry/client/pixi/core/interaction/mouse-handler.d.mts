@@ -1,4 +1,4 @@
-import type { AnyArray, Brand, Identity, NullishProps } from "fvtt-types/utils";
+import type { AnyArray, Brand, Identity, NullishProps } from "#utils";
 
 declare global {
   /**

@@ -1,4 +1,4 @@
-import type { AnyMutableObject, AnyObject, EmptyObject, Identity, NullishProps } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject, EmptyObject, Identity, NullishProps } from "#utils";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";

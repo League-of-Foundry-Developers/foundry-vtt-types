@@ -1,4 +1,4 @@
-import type { Identity } from "fvtt-types/utils";
+import type { Identity } from "#utils";
 
 declare class InternalBitMask<T extends Record<string, boolean>> extends Number {
   /**

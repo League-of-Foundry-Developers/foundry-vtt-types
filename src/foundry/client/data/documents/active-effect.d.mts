@@ -7,7 +7,7 @@ import type {
   JSONValue,
   Merge,
   RequiredProps,
-} from "fvtt-types/utils";
+} from "#utils";
 import type { DataModel } from "../../../common/abstract/data.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataField, DataSchema } from "../../../common/data/fields.d.mts";

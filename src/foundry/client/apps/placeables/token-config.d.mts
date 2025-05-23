@@ -1,4 +1,4 @@
-import type { InterfaceToObject, AnyObject, Identity } from "fvtt-types/utils";
+import type { InterfaceToObject, AnyObject, Identity } from "#utils";
 
 declare global {
   /**

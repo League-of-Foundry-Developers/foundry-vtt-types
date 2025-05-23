@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, InexactPartial, FixedInstanceType } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, InexactPartial, FixedInstanceType } from "#utils";
 import type {
   DatabaseAction,
   DatabaseOperationMap,

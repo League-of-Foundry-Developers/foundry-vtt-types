@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, EmptyObject } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, EmptyObject } from "#utils";
 import type { FormFooterButton, FormNode } from "../_types.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";

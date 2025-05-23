@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps, FixedInstanceType } from "fvtt-types/utils";
+import type { InexactPartial, NullishProps, FixedInstanceType } from "#utils";
 import type { CANVAS_PERFORMANCE_MODES } from "../../common/constants.d.mts";
 
 type InternalCanvas = new (...args: never) => {

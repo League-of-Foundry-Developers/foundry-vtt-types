@@ -1,4 +1,4 @@
-import type { EarlierHook, FixedInstanceType, InitializationHook } from "fvtt-types/utils";
+import type { EarlierHook, FixedInstanceType, InitializationHook } from "#utils";
 
 type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationHook>;
 

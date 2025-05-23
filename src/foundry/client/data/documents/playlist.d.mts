@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, Merge } from "#utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type { Document } from "../../../common/abstract/module.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";

@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, Mixin } from "fvtt-types/utils";
+import type { Identity, InexactPartial, Mixin } from "#utils";
 
 declare class BatchPlugin<BaseSamplerShaderClass extends BaseSamplerShader.AnyConstructor> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

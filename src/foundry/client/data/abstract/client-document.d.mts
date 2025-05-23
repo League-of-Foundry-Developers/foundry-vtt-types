@@ -7,7 +7,7 @@ import type {
   MaybePromise,
   InexactPartial,
   NullishCoalesce,
-} from "fvtt-types/utils";
+} from "#utils";
 import type Document from "../../../common/abstract/document.d.mts";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;

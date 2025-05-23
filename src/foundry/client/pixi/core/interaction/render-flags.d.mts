@@ -1,11 +1,4 @@
-import type {
-  AnyConstructor,
-  ConcreteKeys,
-  FixedInstanceType,
-  InexactPartial,
-  MakeConform,
-  Mixin,
-} from "fvtt-types/utils";
+import type { AnyConstructor, ConcreteKeys, FixedInstanceType, InexactPartial, MakeConform, Mixin } from "#utils";
 import type { LogCompatibilityWarningOptions } from "../../../../common/utils/logging.d.mts";
 
 declare class RenderFlagObject {

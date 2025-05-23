@@ -1,4 +1,4 @@
-import type { Brand, Coalesce, Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Brand, Coalesce, Identity, InexactPartial, NullishProps } from "#utils";
 import type PointEffectSourceMixin from "../../../../client-esm/canvas/sources/point-effect-source.d.mts";
 
 declare global {

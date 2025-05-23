@@ -1,4 +1,4 @@
-import type { FixedInstanceType, HandleEmptyObject, NullishProps } from "fvtt-types/utils";
+import type { FixedInstanceType, HandleEmptyObject, NullishProps } from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import Edge = foundry.canvas.edges.Edge;
 

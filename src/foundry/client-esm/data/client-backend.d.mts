@@ -1,4 +1,4 @@
-import type { FixedInstanceType, LoggingLevels } from "fvtt-types/utils";
+import type { FixedInstanceType, LoggingLevels } from "#utils";
 import type Document from "../../common/abstract/document.d.mts";
 import type {
   DatabaseGetOperation,

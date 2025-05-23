@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "#utils";
 import type Document from "../abstract/document.mts";
 import type { fields } from "../data/module.d.mts";
 import type { documents } from "../../client-esm/client.d.mts";

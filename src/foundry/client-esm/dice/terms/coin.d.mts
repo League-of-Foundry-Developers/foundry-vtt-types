@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial } from "fvtt-types/utils";
+import type { Identity, InexactPartial } from "#utils";
 import type DiceTerm from "./dice.d.mts";
 
 /**

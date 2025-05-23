@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { InexactPartial, NullishProps } from "#utils";
 import * as _PIXI from "pixi.js";
 
 declare global {

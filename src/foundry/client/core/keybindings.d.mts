@@ -1,4 +1,4 @@
-import type { LazyUnknown, ValueOf } from "fvtt-types/utils";
+import type { LazyUnknown, ValueOf } from "#utils";
 
 declare global {
   /**

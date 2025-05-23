@@ -1,4 +1,4 @@
-import type { AnyObject, InterfaceToObject, Merge, ValueOf } from "fvtt-types/utils";
+import type { AnyObject, InterfaceToObject, Merge, ValueOf } from "#utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type { documents } from "../../../client-esm/client.d.mts";

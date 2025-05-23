@@ -1,4 +1,4 @@
-import type { Brand, FixedInstanceType, Identity, InitializedOn } from "fvtt-types/utils";
+import type { Brand, FixedInstanceType, Identity, InitializedOn } from "#utils";
 import type DynamicRingData from "./ring-data.d.mts";
 
 /**

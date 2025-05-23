@@ -7,7 +7,7 @@ import type {
   RemoveIndexSignatures,
   ToMethod,
   ValueOf,
-} from "fvtt-types/utils";
+} from "#utils";
 import fields = foundry.data.fields;
 import documents = foundry.documents;
 import Document = foundry.abstract.Document;

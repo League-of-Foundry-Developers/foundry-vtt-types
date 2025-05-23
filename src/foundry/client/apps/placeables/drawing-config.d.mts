@@ -1,4 +1,4 @@
-import type { MaybePromise } from "fvtt-types/utils";
+import type { MaybePromise } from "#utils";
 
 declare global {
   /** @deprecated {@link DrawingConfig.Options | `DrawingConfig.Options`} */

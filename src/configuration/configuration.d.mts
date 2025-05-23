@@ -1,4 +1,4 @@
-import type { DeepPartial, MaybeEmpty } from "fvtt-types/utils";
+import type { DeepPartial, MaybeEmpty } from "#utils";
 import type { fields } from "../foundry/common/data/module.d.mts";
 import type Document from "../foundry/common/abstract/document.d.mts";
 

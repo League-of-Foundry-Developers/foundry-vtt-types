@@ -1,4 +1,4 @@
-import type { AnyObject, Identity, IntentionalPartial, Merge, NullishProps } from "fvtt-types/utils";
+import type { AnyObject, Identity, IntentionalPartial, Merge, NullishProps } from "#utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type { DatabaseGetOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";

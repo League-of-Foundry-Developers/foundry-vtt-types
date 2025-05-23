@@ -1,4 +1,4 @@
-import type { AnyObject, EmptyObject, InexactPartial, Identity } from "fvtt-types/utils";
+import type { AnyObject, EmptyObject, InexactPartial, Identity } from "#utils";
 
 /**
  * The base grid class.

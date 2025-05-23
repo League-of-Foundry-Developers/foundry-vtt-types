@@ -10,7 +10,7 @@ import type {
   PrettifyType,
   InterfaceToObject,
   AnyArray,
-} from "fvtt-types/utils";
+} from "#utils";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection, EmbeddedCollectionDelta, TypeDataModel } from "../abstract/module.d.mts";

@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, NullishProps, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, NullishProps, Merge } from "#utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../common/abstract/embedded-collection.d.mts";

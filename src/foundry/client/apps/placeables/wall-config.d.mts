@@ -1,4 +1,4 @@
-import type { AnyObject, InterfaceToObject, MaybePromise } from "fvtt-types/utils";
+import type { AnyObject, InterfaceToObject, MaybePromise } from "#utils";
 
 declare global {
   /**

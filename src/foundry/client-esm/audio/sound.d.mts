@@ -1,4 +1,4 @@
-import type { Brand, Identity, InexactPartial, MaybePromise, NullishProps } from "fvtt-types/utils";
+import type { Brand, Identity, InexactPartial, MaybePromise, NullishProps } from "#utils";
 import EventEmitterMixin = foundry.utils.EventEmitterMixin;
 
 /**

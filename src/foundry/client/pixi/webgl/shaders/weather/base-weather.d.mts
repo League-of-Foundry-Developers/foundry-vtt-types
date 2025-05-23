@@ -1,4 +1,4 @@
-import type { RemoveIndexSignatures, FixedInstanceType, Identity } from "fvtt-types/utils";
+import type { RemoveIndexSignatures, FixedInstanceType, Identity } from "#utils";
 
 type AbstractBaseShaderClass = typeof AbstractBaseShader;
 

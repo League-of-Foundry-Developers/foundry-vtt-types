@@ -1,4 +1,4 @@
-import type { NullishProps } from "fvtt-types/utils";
+import type { NullishProps } from "#utils";
 import type { LineCircleIntersection } from "../../../common/utils/geometry.d.mts";
 import * as _PIXI from "pixi.js";
 

@@ -1,4 +1,4 @@
-import type { MaybePromise, InexactPartial } from "fvtt-types/utils";
+import type { MaybePromise, InexactPartial } from "#utils";
 
 declare global {
   /** @deprecated {@link JournalSheet.Options | `JournalSheet.Options`} */

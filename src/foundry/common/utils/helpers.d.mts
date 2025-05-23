@@ -1,4 +1,4 @@
-import type { AnyConstructor, AnyFunction, DeepPartial, InexactPartial, NonNullish } from "fvtt-types/utils";
+import type { AnyConstructor, AnyFunction, DeepPartial, InexactPartial, NonNullish } from "#utils";
 import type Document from "../abstract/document.d.mts";
 
 /**

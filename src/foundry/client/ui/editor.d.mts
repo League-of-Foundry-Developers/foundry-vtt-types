@@ -1,5 +1,5 @@
 import type { EditorView } from "prosemirror-view";
-import type { AnyObject, JSONValue, MaybePromise } from "fvtt-types/utils";
+import type { AnyObject, JSONValue, MaybePromise } from "#utils";
 
 declare global {
   /**

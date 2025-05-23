@@ -1,5 +1,5 @@
 import type BasePackage from "./base-package.d.mts";
-import type { AnyMutableObject, InexactPartial } from "fvtt-types/utils";
+import type { AnyMutableObject, InexactPartial } from "#utils";
 import type { ReleaseData } from "../config.d.mts";
 
 declare namespace BaseWorld {

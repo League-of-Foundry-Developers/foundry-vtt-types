@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Identity } from "fvtt-types/utils";
+import type { FixedInstanceType, Identity } from "#utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 

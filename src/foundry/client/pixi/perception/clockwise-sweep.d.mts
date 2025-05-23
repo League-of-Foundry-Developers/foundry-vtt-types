@@ -1,4 +1,4 @@
-import type { Identity, IntentionalPartial } from "fvtt-types/utils";
+import type { Identity, IntentionalPartial } from "#utils";
 import type Edge from "../../../client-esm/canvas/edges/edge.d.mts";
 
 declare global {

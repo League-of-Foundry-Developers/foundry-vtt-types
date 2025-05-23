@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Identity, ToMethod } from "fvtt-types/utils";
+import type { FixedInstanceType, Identity, ToMethod } from "#utils";
 
 declare global {
   /**

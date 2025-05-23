@@ -6,7 +6,7 @@ import type {
   InexactPartial,
   IntentionalPartial,
   NullishProps,
-} from "fvtt-types/utils";
+} from "#utils";
 import type Document from "../../../../common/abstract/document.d.mts";
 import type EmbeddedCollection from "../../../../common/abstract/embedded-collection.d.mts";
 

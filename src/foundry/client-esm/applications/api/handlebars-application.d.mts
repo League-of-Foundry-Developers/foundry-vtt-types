@@ -1,4 +1,4 @@
-import type { DeepPartial, FixedInstanceType, Mixin } from "fvtt-types/utils";
+import type { DeepPartial, FixedInstanceType, Mixin } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
 import type DocumentSheetV2 from "./document-sheet.d.mts";
 

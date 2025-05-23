@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
+import type { FixedInstanceType, Mixin } from "#utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { InternalClientDocument } from "./client-document.d.mts";
 

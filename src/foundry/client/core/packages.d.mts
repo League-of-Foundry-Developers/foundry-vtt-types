@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
+import type { FixedInstanceType, Mixin } from "#utils";
 import type { CONST } from "../../client-esm/client.d.mts";
 import type BasePackage from "../../common/packages/base-package.d.mts";
 import type AdditionalTypesField from "../../common/packages/sub-types.d.mts";

@@ -1,4 +1,4 @@
-import type { Identity, NullishProps } from "fvtt-types/utils";
+import type { Identity, NullishProps } from "#utils";
 import type TokenRing from "../../../../../client-esm/canvas/tokens/ring.d.mts";
 
 declare global {

@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType } from "fvtt-types/utils";
+import type { InexactPartial, FixedInstanceType } from "#utils";
 import type { FunctionRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";

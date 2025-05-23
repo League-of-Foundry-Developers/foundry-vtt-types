@@ -1,5 +1,5 @@
 import type { EditorState, Plugin } from "prosemirror-state";
-import type { DeepPartial, EmptyObject, ValueOf } from "fvtt-types/utils";
+import type { DeepPartial, EmptyObject, ValueOf } from "#utils";
 import type Document from "../common/abstract/document.d.mts";
 import type { ProseMirrorDropDown } from "../common/prosemirror/menu.d.mts";
 import type ProseMirrorMenu from "../common/prosemirror/menu.d.mts";

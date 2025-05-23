@@ -1,4 +1,4 @@
-import type { FixedInstanceType, HandleEmptyObject, PrettifyType, RemoveIndexSignatures } from "fvtt-types/utils";
+import type { FixedInstanceType, HandleEmptyObject, PrettifyType, RemoveIndexSignatures } from "#utils";
 
 declare const DynamicClass: new <_Computed extends object>(...args: never) => _Computed;
 

@@ -1,4 +1,4 @@
-import type { ToMethod, InexactPartial, IntentionalPartial, Identity } from "fvtt-types/utils";
+import type { ToMethod, InexactPartial, IntentionalPartial, Identity } from "#utils";
 import type { IBatchableElement, ViewableBuffer } from "pixi.js";
 
 declare global {

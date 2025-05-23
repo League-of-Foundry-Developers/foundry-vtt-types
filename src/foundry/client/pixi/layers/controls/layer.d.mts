@@ -1,4 +1,4 @@
-import type { FixedInstanceType, HandleEmptyObject, Identity, NullishProps } from "fvtt-types/utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity, NullishProps } from "#utils";
 import type { LineIntersection } from "../../../../common/utils/geometry.d.mts";
 
 declare global {

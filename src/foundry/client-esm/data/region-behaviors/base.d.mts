@@ -1,5 +1,5 @@
 import type TypeDataModel from "../../../common/abstract/type-data.d.mts";
-import type { AnyObject, EmptyObject } from "fvtt-types/utils";
+import type { AnyObject, EmptyObject } from "#utils";
 
 import fields = foundry.data.fields;
 

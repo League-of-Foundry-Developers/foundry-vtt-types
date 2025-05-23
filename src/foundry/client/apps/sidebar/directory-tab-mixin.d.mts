@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
+import type { FixedInstanceType, Mixin } from "#utils";
 
 declare class DirectoryApplication {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial } from "#utils";
 import type ApplicationV2 from "../../client-esm/applications/api/application.d.mts";
 
 declare global {

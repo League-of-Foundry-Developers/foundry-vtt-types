@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity } from "#utils";
 
 declare global {
   /**

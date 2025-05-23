@@ -1,4 +1,4 @@
-import type { DeepPartial, DropFirst, FixedInstanceType, GetKey, Identity, InexactPartial } from "fvtt-types/utils";
+import type { DeepPartial, DropFirst, FixedInstanceType, GetKey, Identity, InexactPartial } from "#utils";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DatabaseCreateOperation } from "../../../common/abstract/_types.d.mts";
 

@@ -1,12 +1,4 @@
-import type {
-  GetKey,
-  AnyObject,
-  InexactPartial,
-  AnyMutableObject,
-  Identity,
-  AnyArray,
-  NullishProps,
-} from "fvtt-types/utils";
+import type { GetKey, AnyObject, InexactPartial, AnyMutableObject, Identity, AnyArray, NullishProps } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";
 import type * as fields from "../data/fields.d.mts";

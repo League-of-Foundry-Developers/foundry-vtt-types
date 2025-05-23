@@ -1,4 +1,4 @@
-import type { AnyObject, Brand, DeepPartial, EmptyObject, Identity } from "fvtt-types/utils";
+import type { AnyObject, Brand, DeepPartial, EmptyObject, Identity } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
 
 declare namespace DocumentSheetV2 {

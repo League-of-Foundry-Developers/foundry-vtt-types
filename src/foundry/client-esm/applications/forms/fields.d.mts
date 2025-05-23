@@ -1,4 +1,4 @@
-import type { NullishProps } from "fvtt-types/utils";
+import type { NullishProps } from "#utils";
 
 export type CustomFormGroup = (
   field: foundry.data.fields.DataField,

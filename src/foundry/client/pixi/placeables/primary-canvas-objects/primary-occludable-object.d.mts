@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Mixin, NullishProps } from "fvtt-types/utils";
+import type { FixedInstanceType, Mixin, NullishProps } from "#utils";
 
 declare class PrimaryOccludableObject {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

@@ -1,4 +1,4 @@
-import type { GetDataReturnType, Identity } from "fvtt-types/utils";
+import type { GetDataReturnType, Identity } from "#utils";
 
 declare global {
   /**

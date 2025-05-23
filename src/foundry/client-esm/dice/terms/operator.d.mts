@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial } from "#utils";
 
 import type RollTerm from "./term.d.mts";
 

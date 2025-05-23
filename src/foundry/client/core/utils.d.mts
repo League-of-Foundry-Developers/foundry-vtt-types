@@ -1,4 +1,4 @@
-import type { AnyObject, MustBeValidUuid } from "fvtt-types/utils";
+import type { AnyObject, MustBeValidUuid } from "#utils";
 import type Document from "../../common/abstract/document.d.mts";
 
 declare const __Unset: unique symbol;

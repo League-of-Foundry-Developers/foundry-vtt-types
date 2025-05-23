@@ -1,6 +1,6 @@
 import type { Schema } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyObject } from "#utils";
 
 export default ProseMirrorPlugin;
 declare abstract class ProseMirrorPlugin {

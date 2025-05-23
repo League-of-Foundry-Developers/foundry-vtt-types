@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity } from "fvtt-types/utils";
+import type { DeepPartial, Identity } from "#utils";
 
 declare global {
   /**

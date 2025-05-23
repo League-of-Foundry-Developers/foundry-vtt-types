@@ -1,4 +1,4 @@
-import type { InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial } from "#utils";
 import type Document from "./document.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
 

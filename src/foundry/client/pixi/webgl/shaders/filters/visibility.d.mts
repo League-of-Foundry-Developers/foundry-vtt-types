@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Identity, NullishProps } from "fvtt-types/utils";
+import type { FixedInstanceType, Identity, NullishProps } from "#utils";
 
 declare global {
   /**

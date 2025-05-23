@@ -1,4 +1,4 @@
-import type { Identity, NullishProps } from "fvtt-types/utils";
+import type { Identity, NullishProps } from "#utils";
 import type Edge from "./edge.d.mts";
 import type PolygonVertex from "./vertex.d.mts";
 

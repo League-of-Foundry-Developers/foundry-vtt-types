@@ -1,12 +1,4 @@
-import type {
-  MustConform,
-  AnyObject,
-  DeepPartial,
-  EmptyObject,
-  InexactPartial,
-  MaybePromise,
-  Identity,
-} from "fvtt-types/utils";
+import type { MustConform, AnyObject, DeepPartial, EmptyObject, InexactPartial, MaybePromise, Identity } from "#utils";
 import type EventEmitterMixin from "../../../common/utils/event-emitter.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial

@@ -1,4 +1,4 @@
-import type { Brand, ValueOf } from "fvtt-types/utils";
+import type { Brand, ValueOf } from "#utils";
 
 /**
  * The shortened software name

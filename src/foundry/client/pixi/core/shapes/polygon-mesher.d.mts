@@ -1,4 +1,4 @@
-import type { Identity, IntentionalPartial } from "fvtt-types/utils";
+import type { Identity, IntentionalPartial } from "#utils";
 
 declare global {
   /**
