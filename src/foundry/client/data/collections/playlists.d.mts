@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity } from "fvtt-types/utils";
+import type { Identity } from "fvtt-types/utils";
 import type Document from "#common/abstract/document.d.mts";
 
 declare global {
@@ -15,7 +15,7 @@ declare global {
     /**
      * Return the subset of Playlist documents which are currently playing
      */
-    get playing(): ReturnType<this["filter"]>;
+    get playing(): Playlist.Implementation[];
 
     /**
      * Perform one-time initialization to begin playback of audio.
@@ -24,10 +24,11 @@ declare global {
 
     /**
      * Handle changes to a Scene to determine whether to trigger changes to Playlist documents.
-     * @param scene - The Scene document being updated
-     * @param data  - The incremental update data
+     * @param scene      - The new active Scene
+     * @param priorScene - The previously active Scene
+     * @internal
      */
-    protected _onChangeScene(scene: Scene.Stored, data: DeepPartial<Scene.Implementation["_source"]>): Promise<void>;
+    protected _onChangeScene(scene: Scene.Stored | null, priorScene: Scene.Stored | null): Promise<void>;
   }
 
   namespace Playlists {
