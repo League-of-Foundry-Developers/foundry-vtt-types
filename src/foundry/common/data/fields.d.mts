@@ -2103,13 +2103,13 @@ declare class TypedObjectField<
    * @remarks TODO: Stub
    * Please let us know if you want this type definition prioritised.
    */
-  _updateDiff(...args: never): unknown;
+  _updateDiff(...args: any): unknown;
 
   /**
    * @remarks TODO: Stub
    * Please let us know if you want this type definition prioritised.
    */
-  _updateCommit(...args: never): unknown;
+  _updateCommit(...args: any): unknown;
 
   override toObject(value: InitializedType): PersistedType;
 
@@ -2124,7 +2124,7 @@ declare class TypedObjectField<
    * @remarks TODO: Stub
    * Please let us know if you want this type definition prioritised.
    */
-  _addTypes(...args: never): unknown;
+  _addTypes(...args: any): unknown;
 
   protected override _getField(path: string[]): DataField.Any;
 
