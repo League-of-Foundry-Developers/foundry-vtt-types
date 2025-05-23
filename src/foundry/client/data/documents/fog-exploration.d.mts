@@ -1,4 +1,4 @@
-import type { AnyObject, Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "fvtt-types/utils";
+import type { AnyObject, Identity, IntentionalPartial, Merge, NullishProps } from "fvtt-types/utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type { DatabaseGetOperation } from "../../../common/abstract/_types.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
@@ -210,7 +210,7 @@ declare global {
        * The timestamp at which this fog exploration was last updated
        * @defaultValue `Date.now()`
        */
-      timestamp: fields.NumberField<{ nullable: false; initial: ReturnType<typeof Date.now> }>;
+      timestamp: fields.NumberField<{ nullable: false; initial: typeof Date.now }>;
 
       /**
        * An object of optional key/value flags
@@ -393,7 +393,10 @@ declare global {
     }>;
     interface LoadQuery extends _LoadQuery {}
 
-    /** @remarks {@link FogExploration.load | `#load`} takes the `query` property separately as its first argument, then merges later*/
+    /**
+     * @remarks {@link FogExploration.load | `FogExploration#load`} takes the `query` property separately as its first argument, then merges that
+     * with this interface via `{query, ...options}` before passing to {@link ClientDatabaseBackend.get | `this.database.get`}
+     */
     interface LoadOptions extends Omit<IntentionalPartial<DatabaseGetOperation>, "query"> {}
   }
 
@@ -410,13 +413,13 @@ declare global {
     /**
      * Obtain the fog of war exploration progress for a specific Scene and User.
      * @param query      - Parameters for which FogExploration document is retrieved
-     * @param options    - Additional options passed to DatabaseBackend#get.
-     *                     (default: `{}`)
+     * @param options    - Additional options passed to DatabaseBackend#get. (default: `{}`)
      * @returns
      */
+    // query: not null (destructured)
     static load(
       query?: FogExploration.LoadQuery,
-      options?: InexactPartial<DatabaseGetOperation>,
+      options?: FogExploration.LoadOptions | null,
     ): Promise<FogExploration.Implementation | null>;
 
     /**
@@ -425,6 +428,26 @@ declare global {
     getTexture(): PIXI.Texture | null;
 
     // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseFogExploration.
+
+    static override get(
+      documentId: string,
+      options?: FogExploration.Database.GetOptions,
+    ): FogExploration.Implementation | null;
+
+    /**
+     * @deprecated since v12, will be removed in v14
+     * @remarks "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War exploration data, an operation which has been renamed to {@link FogExploration.load | `FogExploration.load`}"
+     */
+    static override get(
+      query: FogExploration.LoadQuery,
+      options: FogExploration.LoadOptions,
+    ): Promise<FogExploration.Implementation | null>;
+
+    /**
+     * @deprecated since v11, until v13
+     * @remarks "`explore` is obsolete and always returns `true`. The fog exploration does not record position anymore."
+     */
+    explore(source: unknown, force?: boolean): true;
 
     /*
      * After this point these are not really overridden methods.
@@ -459,20 +482,6 @@ declare global {
       source: FogExploration.Source,
       context?: Document.FromImportContext<FogExploration.Parent> | null,
     ): Promise<FogExploration.Implementation>;
-
-    static override get(
-      documentId: string,
-      options?: FogExploration.Database.GetOptions,
-    ): FogExploration.Implementation | null;
-
-    /**
-     * @deprecated since v12, will be removed in v14
-     * @remarks "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War exploration data, an operation which has been renamed to {@link FogExploration.load | `FogExploration.load`}"
-     */
-    static override get(
-      query: FogExploration.LoadQuery,
-      options: FogExploration.LoadOptions,
-    ): Promise<FogExploration.Implementation | null>;
 
     override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
