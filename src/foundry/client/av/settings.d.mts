@@ -1,3 +1,5 @@
+import type { fields } from "#common/data/_module.mjs";
+import type { DataSchema } from "#common/data/fields.mjs";
 import type { GetKey, ValueOf } from "fvtt-types/utils";
 
 declare global {
@@ -45,10 +47,65 @@ declare global {
      */
     static DOCK_POSITIONS: AVSettings.DockPositions;
 
+    static get schemaFields(): AVSettings.SchemaFields;
+
     /**
      * Default Client Settings
      */
-    static DEFAULT_CLIENT_SETTINGS: {
+    static DEFAULT_CLIENT_SETTINGS: AVSettings.ClientSettings;
+
+    /**
+     * Default world-level AV settings.
+     */
+    static DEFAULT_WORLD_SETTINGS: AVSettings.WorldSettings;
+
+    static DEFAULT_USER_SETTINGS: AVSettings.StoredUserSettings;
+
+    /**
+     * Stores the transient AV activity data received from other users.
+     */
+    activity: Record<string, AVSettings.Data>;
+
+    initialize(): void;
+
+    changed(): void;
+
+    get<S extends "client" | "world">(scope: S, setting: string): unknown; // TODO: Improve once we have proper typing for dot notation
+
+    getUser(userId: string): AVSettings.UserSettings | null;
+
+    set<S extends "client" | "world">(scope: S, setting: string, value: unknown): void; // TODO: Improve once we have proper typing for dot notation
+
+    /**
+     * Return a mapping of AV settings for each game User.
+     */
+    get users(): Record<string, AVSettings.UserSettings>;
+
+    /**
+     * A helper to determine if the dock is configured in a vertical position.
+     */
+    get verticalDock(): boolean;
+
+    /**
+     * Prepare a standardized object of user settings data for a single User
+     * @internal
+     */
+    protected _getUserSettings(user: User.Implementation): AVSettings.UserSettings;
+
+    /**
+     * Handle setting changes to either rctClientSettings or rtcWorldSettings.
+     * @internal
+     */
+    protected _onSettingsChanged(): void;
+
+    /**
+     * Handle another connected user changing their AV settings.
+     */
+    handleUserActivity(userId: string, settings: AVSettings.Data): void;
+  }
+
+  namespace AVSettings {
+    interface ClientSettings {
       /**
        * @defaultValue `"default"`
        */
@@ -133,12 +190,9 @@ declare global {
        * @defaultValue `{}`
        */
       users: Record<string, AVSettings.StoredUserSettings>;
-    };
+    }
 
-    /**
-     * Default world-level AV settings.
-     */
-    static DEFAULT_WORLD_SETTINGS: {
+    interface WorldSettings {
       /**
        * @defaultValue `AVSettings.AV_MODES.DISABLED`
        */
@@ -165,9 +219,9 @@ declare global {
          */
         password: string;
       };
-    };
+    }
 
-    static DEFAULT_USER_SETTINGS: {
+    interface StoredUserSettings {
       /**
        * @defaultValue `false`
        */
@@ -217,56 +271,13 @@ declare global {
        * @defaultValue `240`
        */
       dockWidth: number;
-    };
+    }
 
-    /**
-     * Stores the transient AV activity data received from other users.
-     */
-    activity: Record<string, AVSettings.Data>;
+    interface UserSettings extends StoredUserSettings {
+      canBroadcastAudio: boolean;
+      canBroadcastVideo: boolean;
+    }
 
-    initialize(): void;
-
-    changed(): void;
-
-    get<S extends "client" | "world">(scope: S, setting: string): unknown; // TODO: Improve once we have proper typing for dot notation
-
-    getUser(userId: string): AVSettings.UserSettings | null;
-
-    set<S extends "client" | "world">(scope: S, setting: string, value: unknown): void; // TODO: Improve once we have proper typing for dot notation
-
-    /**
-     * Return a mapping of AV settings for each game User.
-     */
-    get users(): Record<string, AVSettings.UserSettings>;
-
-    /**
-     * A helper to determine if the dock is configured in a vertical position.
-     */
-    get verticalDock(): boolean;
-
-    /**
-     * Prepare a standardized object of user settings data for a single User
-     * @internal
-     */
-    protected _getUserSettings(user: User.Implementation): AVSettings.UserSettings;
-
-    /**
-     * Handle setting changes to either rctClientSettings or rtcWorldSettings.
-     * @internal
-     */
-    protected _onSettingsChanged(): void;
-
-    /**
-     * Handle another connected user changing their AV settings.
-     */
-    handleUserActivity(userId: string, settings: AVSettings.Data): void;
-  }
-
-  namespace AVSettings {
-    type ClientSettings = typeof AVSettings.DEFAULT_CLIENT_SETTINGS;
-    type WorldSettings = typeof AVSettings.DEFAULT_WORLD_SETTINGS;
-    type StoredUserSettings = typeof AVSettings.DEFAULT_USER_SETTINGS;
-    type UserSettings = StoredUserSettings & { canBroadcastAudio: boolean; canBroadcastVideo: boolean };
     interface Settings {
       client: ClientSettings;
       world: WorldSettings;
@@ -300,6 +311,79 @@ declare global {
     }
     type DockPositions = GetKey<AVSettings.Overrides, "DockPositions", DefaultDockPositions>;
     type DOCK_POSITIONS = ValueOf<DockPositions>;
+
+    interface WorldSchema extends DataSchema {
+      mode: fields.NumberField<{
+        required: true;
+        nullable: false;
+        choices: AVSettings.AV_MODES[];
+        initial: typeof AVSettings.AV_MODES.DISABLED;
+      }>;
+      turn: fields.SchemaField<{
+        type: fields.StringField<{ required: true; choices: ["server", "custom"]; initial: "server" }>;
+        url: fields.StringField<{ required: true }>;
+        username: fields.StringField<{ required: true }>;
+        password: fields.StringField<{ required: true }>;
+      }>;
+    }
+
+    interface ClientSchema extends DataSchema {
+      videoSrc: fields.StringField<{ required: true; initial: "default" }>;
+      audioSrc: fields.StringField<{ required: true; initial: "default" }>;
+      audioSink: fields.StringField<{ required: true; initial: "default" }>;
+      dockPosition: fields.StringField<{
+        required: true;
+        // choices: Object.values(AVSettings.DOCK_POSITIONS>,
+        initial: typeof AVSettings.DOCK_POSITIONS.LEFT;
+      }>;
+      hidePlayerList: fields.BooleanField;
+      hideDock: fields.BooleanField;
+      muteAll: fields.BooleanField;
+      disableVideo: fields.BooleanField;
+      borderColors: fields.BooleanField;
+      dockWidth: fields.NumberField<{
+        required: true;
+        nullable: false;
+        integer: true;
+        positive: true;
+        initial: 240;
+      }>;
+      nameplates: fields.NumberField<{
+        required: true;
+        nullable: false;
+        choices: AVSettings.NAMEPLATE_MODES[];
+        initial: typeof AVSettings.NAMEPLATE_MODES.BOTH;
+      }>;
+      voice: fields.SchemaField<{
+        mode: fields.StringField<{
+          required: true;
+          choices: AVSettings.VOICE_MODES[];
+          initial: typeof AVSettings.VOICE_MODES.PTT;
+        }>;
+        pttName: fields.StringField<{ required: true; initial: "`" }>;
+        pttDelay: fields.NumberField<{ required: true; nullable: false; integer: true; min: 0; initial: 100 }>;
+        activityThreshold: fields.NumberField<{ required: true; nullable: false; integer: true; initial: -45 }>;
+      }>;
+      users: fields.TypedObjectField<
+        fields.SchemaField<{
+          popout: fields.BooleanField;
+          left: fields.NumberField<{ required: true; nullable: false; integer: true; initial: 100 }>;
+          top: fields.NumberField<{ required: true; nullable: false; integer: true; initial: 100 }>;
+          z: fields.NumberField<{ required: true; nullable: false; integer: true; initial: 0 }>;
+          width: fields.NumberField<{ required: true; nullable: false; integer: true; positive: true; initial: 320 }>;
+          volume: fields.NumberField<{ required: true; nullable: false; min: 0; max: 1; initial: 1 }>;
+          muted: fields.BooleanField;
+          hidden: fields.BooleanField;
+          blocked: fields.BooleanField;
+        }>,
+        { validateKey: typeof foundry.data.validators.isValidId }
+      >;
+    }
+
+    interface SchemaFields {
+      world: fields.SchemaField<WorldSchema>;
+      client: fields.SchemaField<ClientSchema>;
+    }
 
     type AV_MODES = ValueOf<typeof AVSettings.AV_MODES>;
 

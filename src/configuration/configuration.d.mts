@@ -301,8 +301,8 @@ export interface SettingConfig {
     initial: typeof CONST.DICE_ROLL_MODES.PUBLIC;
     choices: typeof CONFIG.Dice.rollModes;
   }>;
-  "core.rtcClientSettings": typeof AVSettings.DEFAULT_CLIENT_SETTINGS;
-  "core.rtcWorldSettings": typeof AVSettings.DEFAULT_WORLD_SETTINGS;
+  "core.rtcClientSettings": typeof AVSettings.schemaFields.client;
+  "core.rtcWorldSettings": typeof AVSettings.schemaFields.world;
   "core.scrollingStatusText": fields.BooleanField<{ initial: true }>;
   "core.sheetClasses": {
     [Key in Document.Type as Document.SubTypesOf<Key> extends string ? Key : never]?: Record<
