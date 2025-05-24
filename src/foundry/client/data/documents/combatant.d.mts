@@ -1,5 +1,5 @@
 import type { ConfiguredCombatant } from "../../../../configuration/index.d.mts";
-import type { AnyObject, Merge, ValueOf } from "#utils";
+import type { AnyObject, Merge } from "#utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -232,6 +232,7 @@ declare global {
        */
       _id: fields.DocumentIdField;
 
+      /** @defaultValue `"base"` */
       type: fields.DocumentTypeField<typeof BaseCombatant, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
 
       system: fields.TypeDataField<typeof BaseCombatant>;
@@ -264,7 +265,7 @@ declare global {
 
       /**
        * A customized name which replaces the name of the Token in the tracker
-       * @defaultValue `""`
+       * @defaultValue `undefined`
        */
       name: fields.StringField<{ label: "COMBAT.CombatantName"; textSearch: true }>;
 
@@ -272,7 +273,7 @@ declare global {
        * A customized image which replaces the Token image in the tracker
        * @defaultValue `null`
        */
-      img: fields.FilePathField<{ categories: "IMAGE"[]; label: "COMBAT.CombatantImage" }>;
+      img: fields.FilePathField<{ categories: ["IMAGE"]; label: "COMBAT.CombatantImage" }>;
 
       /**
        * The initiative score for the Combatant which determines its turn order
@@ -434,6 +435,9 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    // TODO: figure out why boolean is supposedly allowed here
+    type Resource = `${number}` | number | boolean;
+
     /**
      * @deprecated {@link Combatant.Database | `Combatant.DatabaseOperation`}
      */
@@ -484,11 +488,12 @@ declare global {
 
     /**
      * The token video source image (if any)
+     * @defaultValue `null`
      */
     _videoSrc: string | null;
 
     /** The current value of the special tracked resource which pertains to this Combatant */
-    resource: `${number}` | number | boolean | null;
+    resource: Combatant.Resource | null;
 
     /**
      * A convenience alias of Combatant#parent which is more semantically intuitive
@@ -500,8 +505,9 @@ declare global {
 
     /**
      * Eschew `ClientDocument`'s redirection to `Combat#permission` in favor of special ownership determination.
+     * @remarks Uses {@link BaseCombatant.getUserLevel | `BaseCombatant#getUserLevel`}, so can't return `null`
      */
-    override get permission(): ValueOf<typeof CONST.DOCUMENT_OWNERSHIP_LEVELS>;
+    override get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
     override get visible(): boolean;
 
@@ -511,7 +517,7 @@ declare global {
     /** A reference to the Token document which this Combatant represents, if any */
     get token(): TokenDocument.Implementation | null;
 
-    /** An array of User documents who have ownership of this Document */
+    /** An array of non-Gamemaster Users who have ownership of this Combatant. */
     get players(): User.Implementation[];
 
     /**
@@ -537,7 +543,7 @@ declare global {
      * @param formula -  An explicit Roll formula to use for the combatant.
      * @returns The Roll instance to use for the combatant.
      */
-    getInitiativeRoll(formula?: string): Roll;
+    getInitiativeRoll(formula?: string): Roll.ConfiguredInstance;
 
     /**
      * Roll initiative for this particular combatant.
@@ -546,12 +552,15 @@ declare global {
      */
     rollInitiative(formula: string): Promise<this | undefined>;
 
+    /**
+     * @remarks Initializes `_videoSrc`, applies `img` and `name` fallbacks, and calls {@link Combatant.updateResource | `Combatant#updateResource`}
+     */
     override prepareDerivedData(): void;
 
     /**
      * Update the value of the tracked resource for this Combatant.
      */
-    updateResource(): this["resource"];
+    updateResource(): Combatant.Resource;
 
     /**
      * Acquire the default dice formula which should be used to roll initiative for this combatant.

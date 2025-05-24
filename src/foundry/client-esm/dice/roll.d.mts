@@ -538,6 +538,10 @@ declare namespace Roll {
   interface Any extends AnyRoll {}
   interface AnyConstructor extends Identity<typeof AnyRoll> {}
 
+  // TODO: Make this actually configurable
+  type ConfiguredClass = CONFIG["Dice"]["rolls"][0];
+  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+
   interface _Options extends RollTerm.EvaluationOptions {
     /**
      * If false, force the use of non-interactive rolls and do not prompt the user to make manual rolls.
