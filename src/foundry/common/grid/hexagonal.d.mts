@@ -1,6 +1,6 @@
 import type BaseGrid from "./base.d.mts";
 
-import type { InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial } from "#utils";
 
 declare class HexagonalGrid extends BaseGrid {
   /**

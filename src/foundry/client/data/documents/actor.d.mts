@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, NullishProps, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, NullishProps, Merge } from "#utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
@@ -961,21 +961,26 @@ declare global {
      */
     protected override _preDeleteDescendantDocuments(...args: Actor.PreDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<Actor.SubType, Actor.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Actor", Actor.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<Actor.CreateData>,
-      context?: Document.CreateDialogContext<Actor.SubType, Actor.Parent>,
+      context?: Document.CreateDialogContext<"Actor", Actor.Parent>,
     ): Promise<Actor.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Actor.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Actor.Implementation | undefined>;
 
     static override fromImport(
       source: Actor.Source,
-      context?: Document.FromImportContext<Actor.Parent>,
+      context?: Document.FromImportContext<Actor.Parent> | null,
     ): Promise<Actor.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

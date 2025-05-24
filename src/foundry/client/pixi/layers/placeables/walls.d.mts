@@ -1,4 +1,4 @@
-import type { Coalesce, HandleEmptyObject, Identity, NullishProps } from "fvtt-types/utils";
+import type { Coalesce, HandleEmptyObject, Identity, NullishProps } from "#utils";
 
 declare global {
   /**

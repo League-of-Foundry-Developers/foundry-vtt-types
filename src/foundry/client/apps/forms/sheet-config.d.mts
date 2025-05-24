@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type ApplicationV2 from "#client-esm/applications/api/application.mjs";
 

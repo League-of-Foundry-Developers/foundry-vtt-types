@@ -1,4 +1,4 @@
-import type { MaybePromise } from "fvtt-types/utils";
+import type { MaybePromise } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 
 declare global {

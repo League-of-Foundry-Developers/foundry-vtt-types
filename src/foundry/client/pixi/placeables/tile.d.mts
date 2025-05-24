@@ -1,5 +1,5 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { FixedInstanceType, HandleEmptyObject } from "fvtt-types/utils";
+import type { FixedInstanceType, HandleEmptyObject } from "#utils";
 
 declare global {
   /**

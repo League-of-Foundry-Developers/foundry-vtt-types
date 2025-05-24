@@ -1,4 +1,4 @@
-import type { EmptyObject } from "fvtt-types/utils";
+import type { EmptyObject } from "#utils";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type DialogV2 from "../../api/dialog.d.mts";
 

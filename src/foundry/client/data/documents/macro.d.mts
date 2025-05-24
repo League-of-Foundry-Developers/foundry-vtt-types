@@ -1,5 +1,5 @@
 import type { ConfiguredMacro } from "fvtt-types/configuration";
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, Merge, NullishProps } from "#utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -226,24 +226,14 @@ declare global {
        * The name of this Macro
        * @defaultValue `""`
        */
-      name: fields.StringField<{
-        required: true;
-        blank: false;
-        label: "Name";
-        textSearch: true;
-      }>;
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      name: fields.StringField<{ required: true; blank: false; label: "Name"; textSearch: true }, string>;
 
       /**
        * A Macro subtype from CONST.MACRO_TYPES
        * @defaultValue `CONST.MACRO_TYPES.CHAT`
        */
-      type: fields.DocumentTypeField<
-        typeof BaseMacro,
-        {
-          initial: typeof CONST.MACRO_TYPES.CHAT;
-          label: "Type";
-        }
-      >;
+      type: fields.DocumentTypeField<typeof BaseMacro, { initial: typeof CONST.MACRO_TYPES.CHAT; label: "Type" }>;
 
       /**
        * The _id of a User document which created this Macro *
@@ -264,6 +254,8 @@ declare global {
       /**
        * The scope of this Macro application from CONST.MACRO_SCOPES
        * @defaultValue `"global"`
+       * @privateRemarks This field (and `CONST.MACRO_SCOPES`) is entirely vestigial, it's never checked anywhere,
+       * and its `<select>` in MacroConfig has been unconditionally disabled since at least 11.315
        */
       scope: fields.StringField<{
         required: true;
@@ -438,33 +430,61 @@ declare global {
 
     /**
      * @deprecated This type always required properties for both a `"script"` and a `"chat"` message
-     * even when necessary. It has been superceded by {@linkcode ScriptScope},
+     * even when unnecessary. It has been superseded by {@linkcode ScriptScope},
      * {@linkcode ChatScope}, and {@linkcode UnknownScope}
      */
     type Scope = ScriptScope;
 
     /** @internal */
-    interface _ScriptScope {
+    type _ScriptScope = NullishProps<{
       /** An Actor who is the protagonist of the executed action. */
       actor: Actor.Implementation;
 
-      /**  A Token which is the protagonist of the executed action. */
+      /** A Token which is the protagonist of the executed action. */
       token: Token.Implementation;
 
-      /** An optional event passed to the executed macro. */
-      event: Event | RegionDocument.RegionEvent;
+      /** The speaker data */
+      speaker: ChatMessage.SpeakerData;
 
       /**
-       * @remarks Additional arguments passed as part of the scope
+       * @remarks Sometimes provided by core:
+       * - When called in {@link foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | `ExecuteMacroRegionBehaviorType#_handleRegionEvent`},
+       * will be a {@linkcode Scene.Implementation} (possibly `null` if somehow called on a `RegionBehavior` whose `RegionDocument` doesn't have a parent `Scene`)
        */
-      [arg: string]: unknown;
-    }
+      scene?: unknown;
 
-    interface ScriptScope extends InexactPartial<_ScriptScope> {}
+      /**
+       * @remarks Sometimes provided by core:
+       * - When called in {@link foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | `ExecuteMacroRegionBehaviorType#_handleRegionEvent`},
+       * will be a {@linkcode RegionDocument.Implementation} (possibly `null` if somehow called on a `RegionBehavior` without a parent `RegionDocument`)
+       */
+      region?: unknown;
 
-    interface ChatScope {
-      speaker?: ChatMessage.SpeakerData | undefined;
-    }
+      /**
+       * @remarks Sometimes provided by core:
+       * - When called in {@link foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | `ExecuteMacroRegionBehaviorType#_handleRegionEvent`},
+       * will be a {@linkcode RegionBehavior.Implementation} (possibly `null` if somehow called on a `RegionBehaviorType` without a parent `RegionBehavior`)
+       */
+      behavior?: unknown;
+
+      /**
+       * @remarks Sometimes provided by core:
+       * - When called in {@link Macro._onClickDocumentLink | `Macro#_onClickDocumentLink`},
+       * will be a {@linkcode MouseEvent}
+       * - When called in {@link foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | `ExecuteMacroRegionBehaviorType#_handleRegionEvent`},
+       * will be a {@linkcode RegionDocument.RegionEvent}
+       */
+      event?: unknown;
+
+      /**
+       * @remarks Additional arguments passed as part of the scope. Numeric keys are disallowed (`##executeScript` throws).
+       */
+      [arg: string | symbol]: unknown;
+    }>;
+
+    interface ScriptScope extends _ScriptScope {}
+
+    interface ChatScope extends Pick<ScriptScope, "speaker"> {}
 
     interface UnknownScope extends ScriptScope, ChatScope {}
 
@@ -475,7 +495,7 @@ declare global {
     // Note: If extra types ever get added this will need to be updated to account for them, even if
     // just to return `undefined`.
     type ExecuteReturn<SubType extends Macro.SubType> =
-      | (SubType extends "chat" ? Promise<ChatMessage.Implementation | void> : never)
+      | (SubType extends "chat" ? Promise<ChatMessage.Implementation | undefined | void> : never)
       | (SubType extends "script" ? Promise<unknown> | void : never);
 
     /**
@@ -548,12 +568,13 @@ declare global {
      * @returns A promising containing a created {@linkcode ChatMessage} (or `undefined`) if a chat
      *          macro or the return value if a script macro. A void return is possible if the user
      *          is not permitted to execute macros or a script macro execution fails.
+     * @remarks Forwards to either `#executeChat` or `#executeScript`
      */
+    // scope: not null (parameter default only, destructured where forwarded)
     execute(scope?: Macro.ExecuteScope<SubType>): Macro.ExecuteReturn<SubType>;
 
-    #executeScript();
-
-    _onClickDocumentLink(event: MouseEvent): ReturnType<this["execute"]>;
+    /** @remarks Returns `this.execute({event})` */
+    override _onClickDocumentLink(event: MouseEvent): Macro.ExecuteReturn<SubType>;
 
     /*
      * After this point these are not really overridden methods.
@@ -569,21 +590,26 @@ declare global {
 
     // Descendant Document operations have been left out because Macro does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<Macro.SubType, Macro.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Macro", Macro.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Macro.CreateData,
-      context?: Document.CreateDialogContext<Macro.SubType, Macro.Parent>,
+      context?: Document.CreateDialogContext<"Macro", Macro.Parent>,
     ): Promise<Macro.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Macro.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Macro.Implementation | undefined>;
 
     static override fromImport(
       source: Macro.Source,
-      context?: Document.FromImportContext<Macro.Parent>,
+      context?: Document.FromImportContext<Macro.Parent> | null,
     ): Promise<Macro.Implementation>;
+
+    #Macro: true;
   }
 }

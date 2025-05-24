@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -25,6 +25,23 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    */
   constructor(...args: Setting.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Setting",
+   *   collection: "settings",
+   *   label: "DOCUMENT.Setting",
+   *   labelPlural: "DOCUMENT.Settings",
+   *   permissions: {
+   *     create: this.#canModify,
+   *     update: this.#canModify,
+   *     delete: this.#canModify
+   *   },
+   *   schemaVersion: "12.324"
+   * });
+   * ```
+   */
   static override metadata: BaseSetting.Metadata;
 
   static override defineSchema(): BaseSetting.Schema;
@@ -49,37 +66,37 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: Setting.ParentCollectionName | null;
+  override readonly parentCollection: Setting.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
-  static get baseDocument(): typeof BaseSetting;
+  static override get baseDocument(): typeof BaseSetting;
 
-  static get implementation(): Setting.ImplementationClass;
+  static override get implementation(): Setting.ImplementationClass;
 
-  static get collectionName(): Setting.ParentCollectionName;
+  static override get collectionName(): Setting.ParentCollectionName;
 
-  static get documentName(): Setting.Name;
+  static override get documentName(): Setting.Name;
 
-  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+  static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): undefined;
+  static override get hasTypeData(): undefined;
 
-  static get hierarchy(): Setting.Hierarchy;
+  static override get hierarchy(): Setting.Hierarchy;
 
   override parent: Setting.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Setting.Implementation | Setting.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Setting.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Setting.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: Setting.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<Setting.Database.Update>,
   ): Promise<Setting.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<Setting.Database.Delete>,
   ): Promise<Setting.Implementation[]>;
@@ -103,63 +120,74 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: Setting.CreateData,
     options: Setting.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(data: Setting.CreateData, options: Setting.Database.OnCreateOperation, userId: string): void;
+  protected override _onCreate(
+    data: Setting.CreateData,
+    options: Setting.Database.OnCreateOperation,
+    userId: string,
+  ): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: Setting.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<Setting.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: Setting.Implementation[],
     operation: Setting.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: Setting.UpdateData,
     options: Setting.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(changed: Setting.UpdateData, options: Setting.Database.OnUpdateOperation, userId: string): void;
+  protected override _onUpdate(
+    changed: Setting.UpdateData,
+    options: Setting.Database.OnUpdateOperation,
+    userId: string,
+  ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: Setting.Implementation[],
     operation: Setting.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: Setting.Implementation[],
     operation: Setting.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(options: Setting.Database.PreDeleteOptions, user: User.Implementation): Promise<boolean | void>;
+  protected override _preDelete(
+    options: Setting.Database.PreDeleteOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
 
-  protected _onDelete(options: Setting.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: Setting.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: Setting.Implementation[],
     operation: Setting.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: Setting.Implementation[],
     operation: Setting.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): undefined;
+  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -193,34 +221,47 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
     options?: LogCompatibilityWarningOptions,
   ): void;
 
-  protected static _onCreateDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
+  protected static override _onCreateDocuments(
     documents: Setting.Implementation[],
     context: Document.ModificationContext<Setting.Parent>,
   ): Promise<void>;
 
-  protected static _onUpdateDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
+  protected static override _onUpdateDocuments(
     documents: Setting.Implementation[],
     context: Document.ModificationContext<Setting.Parent>,
   ): Promise<void>;
 
-  protected static _onDeleteDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
+  protected static override _onDeleteDocuments(
     documents: Setting.Implementation[],
     context: Document.ModificationContext<Setting.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<Setting.Schema>;
+  protected static override _schema: SchemaField<Setting.Schema>;
 
-  static get schema(): SchemaField<Setting.Schema>;
+  static override get schema(): SchemaField<Setting.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: Setting.Source): void;
+  static override validateJoint(data: Setting.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(source: Setting.CreateData, context?: DataModel.FromSourceOptions): Setting.Implementation;
 
   static override fromJSON(json: string): Setting.Implementation;
+
+  static #BaseSetting: true;
 }
 
 export default BaseSetting;

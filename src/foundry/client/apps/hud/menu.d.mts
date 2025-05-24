@@ -1,4 +1,4 @@
-import type { MaybePromise, Identity } from "fvtt-types/utils";
+import type { MaybePromise, Identity } from "#utils";
 
 declare global {
   /**

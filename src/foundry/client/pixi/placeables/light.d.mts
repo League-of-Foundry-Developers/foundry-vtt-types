@@ -1,11 +1,5 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type {
-  FixedInstanceType,
-  HandleEmptyObject,
-  IntentionalPartial,
-  NullishProps,
-  RequiredProps,
-} from "fvtt-types/utils";
+import type { FixedInstanceType, HandleEmptyObject, IntentionalPartial, NullishProps, RequiredProps } from "#utils";
 import PointDarknessSource = foundry.canvas.sources.PointDarknessSource;
 import PointLightSource = foundry.canvas.sources.PointLightSource;
 

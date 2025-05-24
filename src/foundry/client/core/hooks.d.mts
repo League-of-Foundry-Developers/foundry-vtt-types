@@ -1,4 +1,4 @@
-import type { AnyFunction } from "fvtt-types/utils";
+import type { AnyFunction } from "#utils";
 
 declare global {
   /**

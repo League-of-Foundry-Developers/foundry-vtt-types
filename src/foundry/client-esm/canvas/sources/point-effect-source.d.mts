@@ -1,4 +1,4 @@
-import type { Mixin, IntentionalPartial, FixedInstanceType, RequiredProps } from "fvtt-types/utils";
+import type { Mixin, IntentionalPartial, FixedInstanceType, RequiredProps } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

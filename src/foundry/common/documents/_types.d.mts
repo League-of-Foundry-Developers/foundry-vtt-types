@@ -101,8 +101,6 @@ export type SceneData = BaseScene.Properties;
 
 export type GridData = BaseScene.Properties["grid"];
 
-// TODO: Remove when BaseScene's schema is updated.
-// @ts-expect-error This still has to be typed
 export type EnvironmentData = BaseScene.Properties["environment"]["base"];
 
 export interface _GlobalLightData {
@@ -110,12 +108,8 @@ export interface _GlobalLightData {
   bright: boolean;
 }
 
-// TODO: Remove when BaseScene's schema is updated.
-// @ts-expect-error This still has to be typed
 export type GlobalLightData = BaseScene.Properties["environment"]["globalLight"];
 
-// TODO: Remove when BaseScene's schema is updated.
-// @ts-expect-error This still has to be typed
 export type SceneEnvironmentData = BaseScene.Properties["environment"];
 
 export type RegionData = BaseRegion.Properties;

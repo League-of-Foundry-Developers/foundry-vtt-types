@@ -1,4 +1,4 @@
-import type { Brand, InexactPartial } from "fvtt-types/utils";
+import type { Brand, InexactPartial } from "#utils";
 
 declare class SMAAFilter extends PIXI.Filter {
   /**

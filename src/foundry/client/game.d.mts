@@ -7,7 +7,7 @@ import type {
   FixedInstanceType,
   InitializationHook,
   InitializedOn,
-} from "fvtt-types/utils";
+} from "#utils";
 import type BasePackage from "#common/packages/base-package.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 

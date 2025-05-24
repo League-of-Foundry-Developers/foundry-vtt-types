@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "#utils";
 
 declare global {
   /**

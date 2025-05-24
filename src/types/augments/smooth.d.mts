@@ -1,4 +1,4 @@
-import type { Brand } from "fvtt-types/utils";
+import type { Brand } from "#utils";
 
 type JOINT_TYPE = Brand<number, "PIXI.smooth.JOINT_TYPE">;
 declare const JOINT_TYPE: {

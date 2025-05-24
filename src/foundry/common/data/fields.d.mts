@@ -13,7 +13,7 @@ import type {
   GetKey,
   SplitString,
   ValueOf,
-} from "fvtt-types/utils";
+} from "#utils";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection, EmbeddedCollectionDelta, TypeDataModel } from "../abstract/_module.d.mts";

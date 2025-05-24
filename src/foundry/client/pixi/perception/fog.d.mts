@@ -1,5 +1,5 @@
 import type EventEmitterMixin from "#common/utils/event-emitter.mjs";
-import type { FixedInstanceType, Identity } from "fvtt-types/utils";
+import type { FixedInstanceType, Identity } from "#utils";
 
 declare global {
   /**

@@ -7,7 +7,7 @@ import type {
   NullishProps,
   Titlecase,
   GetKey,
-} from "fvtt-types/utils";
+} from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type {
   DatabaseCreateOperation,

@@ -1,4 +1,4 @@
-import type { Identity } from "fvtt-types/utils";
+import type { Identity } from "#utils";
 
 /**
  * A specialized cache used for audio buffers.

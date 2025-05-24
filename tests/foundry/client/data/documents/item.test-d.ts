@@ -49,7 +49,7 @@ expectTypeOf(item.actor).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(item.img).toEqualTypeOf<string | null | undefined>();
 expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
 expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
-expectTypeOf(item.type).toEqualTypeOf<"weapon" | "armor" | "base" | Document.ModuleSubtype>();
+expectTypeOf(item.type).toEqualTypeOf<"base" | "armor" | "weapon" | Document.ModuleSubtype>();
 expectTypeOf(item.getRollData()).toEqualTypeOf<AnyObject>();
 
 // Reported by @n3dst4 on Discord, see https://discord.com/channels/732325252788387980/803646399014109205/1372236409402032231

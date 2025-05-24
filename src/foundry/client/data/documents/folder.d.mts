@@ -1,5 +1,5 @@
 import type { ConfiguredFolder } from "fvtt-types/configuration";
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseFolder from "#common/documents/folder.d.mts";
@@ -215,9 +215,10 @@ declare global {
       _id: fields.DocumentIdField;
 
       /** The name of this Folder */
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
 
-      /** The document type which this Folder contains, from CONST.FOLDER_DOCUMENT_TYPES */
+      /** The document type which this Folder contains, from {@linkcode CONST.FOLDER_DOCUMENT_TYPES} */
       type: fields.DocumentTypeField<typeof BaseFolder>;
 
       /**
@@ -414,12 +415,74 @@ declare global {
     /**
      * Actual document types that go in folders
      */
-    type DocumentType = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
+    type DocumentType = Exclude<CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
 
-    interface ExportToCompendiumOptions {
-      /** Update existing entries in the Compendium pack, matching by name */
-      updateByName?: boolean | undefined;
-    }
+    type DocumentCollection<Type extends SubType> = Type extends "Compendium"
+      ? Collection.Any | undefined
+      : WorldCollection.Any;
+
+    /** @internal */
+    type _ExportToCompendiumOptions = NullishProps<{
+      /**
+       * Update existing entries in the Compendium pack, matching by name
+       * @defaultValue `false`
+       */
+      updateByName: boolean;
+
+      /**
+       * Retain the original _id attribute when updating an entity
+       * @defaultValue `false`
+       * @remarks No default applied despite Foundry's typing, but `undefined` will be treated falsily
+       */
+      keepId: boolean;
+
+      /**
+       * Retain the existing Folder structure
+       * @defaultValue `false`
+       * @remarks No default applied despite Foundry's typing, but `undefined` will be treated falsily
+       */
+      keepFolders: boolean;
+
+      /**
+       * A target folder id to which the documents will be exported
+       * @defaultValue `null`
+       */
+      folder: string;
+    }>;
+
+    /** @privateRemarks `keepId` omitted to override comment */
+    interface ExportToCompendiumOptions
+      extends _ExportToCompendiumOptions,
+        Omit<ClientDocument.ToCompendiumOptions, "keepId"> {}
+
+    /** @internal */
+    type _ExportDialogOptions = NullishProps<{
+      /**
+       * @remarks A compendium to preselect in the dialog
+       * @defaultValue `null`
+       */
+      pack: string;
+
+      /**
+       * @remarks Initial state of the `Merge by Name` checkbox in the dialog
+       * @defaultValue `true`
+       */
+      merge: boolean;
+
+      /**
+       * @remarks Initial state of the `Keep Document IDs` checkbox in the dialog
+       * @defaultValue `true`
+       */
+      keepId: boolean;
+
+      /**
+       * @remarks Initial state of the `Keep Folder Structure` checkbox in the dialog
+       * @defaultValue `true`
+       */
+      keepFolders: boolean;
+    }>;
+
+    interface ExportDialogOptions extends _ExportDialogOptions, IntentionalPartial<Dialog.Options> {}
 
     // TODO: Handle compendium. This requires the index to be configured.
     type Contents<SubType extends Folder.SubType> = Document.ImplementationFor<Extract<SubType, Document.Type>>[];
@@ -428,6 +491,16 @@ declare global {
     type DocumentClass<SubType extends Folder.SubType> = Document.ImplementationClassFor<
       Extract<SubType, Document.Type>
     >;
+
+    /**
+     * @remarks Rather than a simple `Dialog`, {@link Folder.createDialog | `Folder.createDialog`} creates a {@link FolderConfig | `FolderConfig`},
+     * passing along the returned `Promise`'s `resolve` to the app.
+     */
+    // TODO (v13): `options.document` is also force set
+    interface CreateDialogOptions extends InexactPartial<Omit<FolderConfig.Options, "resolve">> {
+      /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
+      resolve?: never;
+    }
   }
 
   /**
@@ -449,14 +522,18 @@ declare global {
      *
      * @remarks For folders that have been populated by the {@linkcode SidebarDirectory}, this is always be defined
      */
-    depth?: number;
+    depth: number | undefined;
 
     /**
      * An array of other Folders which are the displayed children of this one. This differs from the results of
-     * {@linkcode Folder.getSubfolders} because reports the subset of child folders which  are displayed to the current User
-     * in the UI.
+     * {@link Folder.getSubfolders | `Folder#getSubfolders`} because reports the subset of child folders which
+     * are displayed to the current User in the UI.
+     * @remarks Despite Foundry's typing, this is not an array of Folder documents.
+     *
+     * Initialized by {@link DirectoryCollection.initializeTree | `DirectoryCollection#initializeTree`}, so always
+     * `undefined` in temporary documents, and prior to first UI render in stored documents
      */
-    children: Folder.Implementation[];
+    children: DirectoryCollectionMixin.TreeNode<Folder.Implementation>[] | undefined;
 
     /**
      * Return whether the folder is displayed in the sidebar to the current User.
@@ -483,7 +560,8 @@ declare global {
      * A world Folder containing CompendiumCollections will have neither.
      */
     // TODO: Compendium Pack index
-    get documentCollection(): this["pack"] extends string ? unknown : undefined;
+    // TODO: Infer specific world collection from SubType
+    get documentCollection(): Folder.DocumentCollection<SubType>;
 
     /**
      * Return whether the folder is currently expanded within the sidebar interface.
@@ -498,19 +576,21 @@ declare global {
     // _preCreate overridden but with no signature changes.
     // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
+    /** @remarks Creates and renders a {@link FolderConfig | `FolderConfig`} instead of a simple Dialog */
+    // data, options: not null (parameter defaults only)
     static override createDialog(
       data?: Document.CreateDialogData<Folder.CreateData>,
-      context?: InexactPartial<Omit<FolderConfig.Options, "resolve">>,
+      context?: Folder.CreateDialogOptions,
     ): Promise<Folder.Stored | null | undefined>;
 
     /**
      * Export all Documents contained in this Folder to a given Compendium pack.
      * Optionally update existing Documents within the Pack by name, otherwise append all new entries.
      * @param pack    - A Compendium pack to which the documents will be exported
-     * @param options - Additional options which customize how content is exported. See {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`}
-     *                  (default: `{}`)
+     * @param options - Additional options which customize how content is exported. See {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`} (default: `{}`)
      * @returns The updated Compendium Collection instance
      */
+    // options: not null (parameter default only)
     exportToCompendium<Metadata extends CompendiumCollection.Metadata>(
       pack: CompendiumCollection<Metadata>,
       options?: Folder.ExportToCompendiumOptions,
@@ -519,22 +599,21 @@ declare global {
     /**
      * Provide a dialog form that allows for exporting the contents of a Folder into an eligible Compendium pack.
      * @param pack    - A pack ID to set as the default choice in the select input
-     * @param options - Additional options passed to the Dialog.prompt method
-     *                  (default: `{}`)
+     * @param options - Additional options passed to the Dialog.prompt method (default: `{}`)
      * @returns A Promise which resolves or rejects once the dialog has been submitted or closed
      *
-     * @remarks - Foundry documents `pack` as just being a `string` but it is unused and Foundry itself
+     * @remarks - Foundry documents `pack` as just being a `string` but it is unused in favor of `options.pack`, and Foundry itself
      * calls `exportDialog` with `null`.
      */
-    exportDialog(pack: string | null, options?: Dialog.Options): Promise<void>;
+    // options: not null (parameter default only)
+    exportDialog(pack: string | null, options?: Folder.ExportDialogOptions): Promise<void>;
 
     /**
      * Get the Folder documents which are sub-folders of the current folder, either direct children or recursively.
-     * @param recursive - Identify child folders recursively, if false only direct children are returned
-     *                    (default: `false`)
+     * @param recursive - Identify child folders recursively, if false only direct children are returned (default: `false`)
      * @returns An array of Folder documents which are subfolders of this one
      */
-    getSubfolders(recursive?: boolean): Folder.Implementation[];
+    getSubfolders(recursive?: boolean | null): Folder.Implementation[];
 
     /**
      * Get the Folder documents which are parent folders of the current folder or any if its parents.
@@ -556,16 +635,22 @@ declare global {
 
     // Descendant Document operations have been left out because Folder does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<Folder.SubType, Folder.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Folder", Folder.Parent>): string;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Folder.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Folder.Implementation | undefined>;
 
     static override fromImport(
       source: Folder.Source,
-      context?: Document.FromImportContext<Folder.Parent>,
+      context?: Document.FromImportContext<Folder.Parent> | null,
     ): Promise<Folder.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
+    #Folder: true;
   }
 }

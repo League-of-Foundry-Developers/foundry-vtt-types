@@ -12,7 +12,7 @@ import type {
   MaybePromise,
   NullishCoalesce,
   SimpleMerge,
-} from "fvtt-types/utils";
+} from "#utils";
 import type ApplicationV2 from "./application.d.mts";
 
 type DeepInexactPartial<T> = T extends object

@@ -25,7 +25,7 @@ import type {
   Brand,
   AnyMutableObject,
   MaybePromise,
-} from "fvtt-types/utils";
+} from "#utils";
 import type * as CONST from "../constants.mts";
 import type {
   DataSchema,
@@ -58,7 +58,8 @@ type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.In
 // `name?: string` etc. were to be put in `Document` directly they'd actually override the schema.
 // Therefore this workaround is used to force `DataModel` to override the properties.
 declare const _InternalDocument: (new (...args: any[]) => {
-  name?: string | undefined;
+  // TODO: removing undefined breaks everything, but should be valid to do, investigate
+  name?: string | null | undefined;
 
   // `{}` is used so that `{}` and the actual shape of `system` are merged.
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -252,7 +253,7 @@ declare abstract class Document<
   // options: not null (destructured)
   testUserPermission(
     user: User.Internal.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
@@ -872,7 +873,7 @@ declare abstract class Document<
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks `"The Document._onCreateDocuments static method is deprecated in favor of Document._onCreateOperation"`
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onCreateDocuments` directly.
   protected static _onCreateDocuments(
@@ -882,7 +883,7 @@ declare abstract class Document<
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks `"The Document._onUpdateDocuments static method is deprecated in favor of Document._onUpdateOperation"`
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onUpdateDocuments` directly.
   protected static _onUpdateDocuments(
@@ -892,7 +893,7 @@ declare abstract class Document<
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks `"The Document._onDeleteDocuments static method is deprecated in favor of Document._onDeleteOperation"`
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onDeleteDocuments` directly.
   protected static _onDeleteDocuments(
@@ -2002,6 +2003,11 @@ declare namespace Document {
     value?: unknown;
   }
 
+  /**
+   * If a `parent` is required for a given Document's creation, its template must pass `NonNullable<X.Parent>` to `CreateDialogContext`
+   *
+   * @internal
+   */
   type ParentContext<Parent extends Document.Any | null> = Parent extends null
     ? {
         /** A parent document within which the created Document should belong */
@@ -2012,39 +2018,73 @@ declare namespace Document {
         parent: Parent;
       };
 
-  type DefaultNameContext<SubType extends string, Parent extends Document.Any | null> = {
-    /** The sub-type of the document */
-    type?: SubType | undefined;
+  /** @internal */
+  type _PossibleSubtypeContext<DocumentName extends Document.Type> =
+    GetKey<Document.MetadataFor<DocumentName>, "hasTypeData"> extends true
+      ? NullishProps<{
+          /**
+           * The sub-type of the document
+           * @remarks Pulls from `CONFIG[documentName].typeLabels?.[type]` if provided. Ignored if falsey.
+           */
+          type: Document.SubTypesOf<DocumentName>;
+        }>
+      : {
+          /** @deprecated This Document type does not support subtypes */
+          type?: never;
+        };
 
-    /** A compendium pack within which the Document should be created */
-    pack?: string | undefined;
-  } & ParentContext<Parent>;
-
-  interface FromDropDataOptions {
+  type DefaultNameContext<DocumentName extends Document.Type, Parent extends Document.Any | null> = NullishProps<{
     /**
-     * Import the provided document data into the World, if it is not already a World-level Document reference
-     * @defaultValue `false`
+     * A compendium pack within which the Document should be created
+     * @remarks Only used to generate the list of existing names to check against when incrementing the index for the `(number)` suffix.
+     * Ignored if falsey, or if `parent` is provided and truthy.
      */
-    importWorld?: boolean;
-  }
+    pack: string;
+
+    /**
+     * A parent document within which the created Document should belong
+     * @remarks Only used to generate the list of existing names to check against when incrementing the index for the `(number)` suffix.
+     * Ignored if falsey.
+     */
+    parent: Parent;
+  }> &
+    _PossibleSubtypeContext<DocumentName>;
 
   type CreateDialogData<CreateData extends object> = InexactPartial<
     CreateData,
     Extract<AllKeysOf<CreateData>, "name" | "type" | "folder">
   >;
 
-  type CreateDialogContext<
-    SubType extends string,
-    Parent extends Document.Any | null,
-  > = InexactPartial<Dialog.Options> & {
-    /**
-     * A compendium pack within which the Document should be created
-     */
-    pack?: string | null | undefined;
+  /** @internal */
+  type _PossibleSubtypesContext<DocumentName extends Document.Type> =
+    GetKey<Document.MetadataFor<DocumentName>, "hasTypeData"> extends true
+      ? {
+          /** @deprecated This Document type does not support subtypes */
+          types?: never;
+        }
+      : NullishProps<{
+          /**
+           * A restriction the selectable sub-types of the Dialog.
+           * @remarks Only checked if the document has `static TYPES` of length \> 1 (i.e it both `hasTypeData` and has
+           * at least one non-`"base"` type registered). The computed list will always exclude {@link CONST.BASE_DOCUMENT_TYPE | `CONST.BASE_DOCUMENT_TYPE`},
+           * so it is disallowed in this whitelist.
+           */
+          types: Exclude<Document.SubTypesOf<DocumentName>, "base">[];
+        }>;
 
-    /** A restriction the selectable sub-types of the Dialog. */
-    types?: SubType[] | null | undefined;
-  } & ParentContext<Parent>;
+  type CreateDialogContext<
+    DocumentName extends Document.Type,
+    Parent extends Document.Any | null,
+  > = InexactPartial<Dialog.Options> &
+    NullishProps<{
+      /**
+       * A compendium pack within which the Document should be created
+       * @remarks Only checked if `parent` is falsey, and only used to generate the list of folders for the dialog
+       */
+      pack: string;
+    }> &
+    _PossibleSubtypesContext<DocumentName> &
+    ParentContext<Parent>;
 
   interface FromImportContext<Parent extends Document.Any | null> extends Omit<ConstructionContext<Parent>, "strict"> {
     /**
@@ -2057,7 +2097,10 @@ declare namespace Document {
     strict?: boolean | null;
   }
 
-  type TestableOwnershipLevel = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  type ActionPermission = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  /** @deprecated Use {@linkcode Document.ActionPermission} instead */
+  type TestableOwnershipLevel = ActionPermission;
 
   /** @internal */
   type _TestUserPermissionsOptions = NullishProps<{

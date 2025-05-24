@@ -1,4 +1,4 @@
-import type { InitializedOn } from "fvtt-types/utils";
+import type { InitializedOn } from "#utils";
 import type DynamicRingData from "./ring-data.d.mts";
 
 /**

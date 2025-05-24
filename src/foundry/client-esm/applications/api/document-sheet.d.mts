@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity } from "fvtt-types/utils";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
 
 import Document = foundry.abstract.Document;

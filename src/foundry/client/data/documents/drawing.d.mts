@@ -1,4 +1,4 @@
-import type { Merge } from "fvtt-types/utils";
+import type { AnyObject, Merge } from "#utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -542,23 +542,28 @@ declare global {
 
     // Descendant Document operations have been left out because Drawing does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<DrawingDocument.Parent>>,
+      context?: Document.DefaultNameContext<"Drawing", NonNullable<DrawingDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<DrawingDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<DrawingDocument.Parent>>,
+      data: Document.CreateDialogData<DrawingDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Drawing", NonNullable<DrawingDocument.Parent>>,
     ): Promise<DrawingDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<DrawingDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<DrawingDocument.Implementation | undefined>;
 
     static override fromImport(
       source: DrawingDocument.Source,
-      context?: Document.FromImportContext<DrawingDocument.Parent>,
+      context?: Document.FromImportContext<DrawingDocument.Parent> | null,
     ): Promise<DrawingDocument.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

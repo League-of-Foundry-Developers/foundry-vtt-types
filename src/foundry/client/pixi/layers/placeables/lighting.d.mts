@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity } from "#utils";
 
 /**
  * The Lighting Layer which ambient light sources as part of the CanvasEffectsGroup.

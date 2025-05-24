@@ -1,4 +1,4 @@
-import type { EmptyObject, InexactPartial } from "fvtt-types/utils";
+import type { EmptyObject, InexactPartial } from "#utils";
 
 export declare const FORMATS: {
   RED: typeof PIXI.FORMATS.RED;

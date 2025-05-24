@@ -1,5 +1,5 @@
 import type { ConfiguredTableResult } from "fvtt-types/configuration";
-import type { Merge } from "fvtt-types/utils";
+import type { AnyObject, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseTableResult from "#common/documents/table-result.d.mts";
@@ -242,7 +242,8 @@ declare global {
 
       /**
        * A named collection from which this result is drawn
-       * @defaultValue `""`
+       * @defaultValue `undefined`
+       * @remarks If this is a `compendium` type result, will be the pack ID; If `document`, the DocumentName
        */
       documentCollection: fields.StringField;
 
@@ -456,8 +457,12 @@ declare global {
 
     /**
      * A path reference to the icon image used to represent this result
+     * @remarks Returns {@linkcode CONFIG.RollTable.resultIcon} if `this.img` is falsey
      */
     get icon(): string;
+
+    /** @remarks Overrides `this.img` with the `img` of the associated Document, if this result is a `document` or `compendium` type */
+    override prepareBaseData(): void;
 
     /**
      * Prepare a string representation for the result which (if possible) will be a dynamic link or otherwise plain text
@@ -479,25 +484,32 @@ declare global {
 
     // Descendant Document operations have been left out because TableResult does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<TableResult.SubType, NonNullable<TableResult.Parent>>,
+      context?: Document.DefaultNameContext<"TableResult", NonNullable<TableResult.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<TableResult.CreateData>,
-      context: Document.CreateDialogContext<TableResult.SubType, NonNullable<TableResult.Parent>>,
+      data: Document.CreateDialogData<TableResult.CreateData> | undefined,
+      context: Document.CreateDialogContext<"TableResult", NonNullable<TableResult.Parent>>,
     ): Promise<TableResult.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<TableResult.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<TableResult.Implementation | undefined>;
 
     static override fromImport(
       source: TableResult.Source,
-      context?: Document.FromImportContext<TableResult.Parent>,
+      context?: Document.FromImportContext<TableResult.Parent> | null,
     ): Promise<TableResult.Implementation>;
 
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
     // Embedded document operations have been left out because TableResult does not have any embedded documents.
+
+    static #TableResult: true;
   }
 }

@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, EmptyObject, Identity, InexactPartial } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, EmptyObject, Identity, InexactPartial } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 

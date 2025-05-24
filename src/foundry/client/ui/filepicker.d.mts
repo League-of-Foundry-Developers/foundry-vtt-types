@@ -1,4 +1,4 @@
-import type { EmptyObject, MaybePromise, ValueOf } from "fvtt-types/utils";
+import type { EmptyObject, MaybePromise, ValueOf } from "#utils";
 
 declare global {
   /**

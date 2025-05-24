@@ -1,4 +1,4 @@
-import type { InterfaceToObject, NullishProps } from "fvtt-types/utils";
+import type { InterfaceToObject, NullishProps } from "#utils";
 
 declare global {
   /**

@@ -1,6 +1,6 @@
 // This class exists make it as sound as possible to override these parts of the class and make them
 
-import type { AnyArray, Identity } from "fvtt-types/utils";
+import type { AnyArray, Identity } from "#utils";
 
 // completely unrelated. It's done this way specifically to avoid situations with broken inheritance.
 declare class Map<K, V> extends globalThis.Map<K, V> {

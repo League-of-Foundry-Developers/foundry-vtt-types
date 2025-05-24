@@ -1,4 +1,4 @@
-import type { ValueOf, FixedInstanceType, HandleEmptyObject, RequiredProps, NullishProps } from "fvtt-types/utils";
+import type { ValueOf, FixedInstanceType, HandleEmptyObject, RequiredProps, NullishProps } from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare global {

@@ -1,5 +1,5 @@
 import type { ConfiguredCombat } from "fvtt-types/configuration";
-import type { Merge } from "fvtt-types/utils";
+import type { AnyObject, Merge } from "#utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -936,21 +936,26 @@ declare global {
      */
     protected override _preDeleteDescendantDocuments(...args: Combat.PreDeleteDescendantDocumentsArgs): void;
 
-    static override defaultName(context?: Document.DefaultNameContext<Combat.SubType, Combat.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Combat", Combat.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<Combat.CreateData>,
-      context?: Document.CreateDialogContext<Combat.SubType, Combat.Parent>,
+      context?: Document.CreateDialogContext<"Combat", Combat.Parent>,
     ): Promise<Combat.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Combat.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Combat.Implementation | undefined>;
 
     static override fromImport(
       source: Combat.Source,
-      context?: Document.FromImportContext<Combat.Parent>,
+      context?: Document.FromImportContext<Combat.Parent> | null,
     ): Promise<Combat.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

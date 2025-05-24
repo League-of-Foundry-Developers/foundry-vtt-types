@@ -1,4 +1,4 @@
-import type { Brand, HandleEmptyObject, Identity } from "fvtt-types/utils";
+import type { Brand, HandleEmptyObject, Identity } from "#utils";
 
 // Included to match Foundry's documented types
 type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;

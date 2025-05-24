@@ -1,4 +1,4 @@
-import type { AnyArray, AnyFunction, ValueOf } from "fvtt-types/utils";
+import type { AnyArray, AnyFunction, ValueOf } from "#utils";
 
 // TODO: smarter types for named functions
 declare global {

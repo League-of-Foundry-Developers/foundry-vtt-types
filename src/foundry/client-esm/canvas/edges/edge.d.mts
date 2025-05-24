@@ -1,6 +1,6 @@
 import type PolygonVertex from "./vertex.d.mts";
 import type { LineIntersection } from "#common/utils/geometry.d.mts";
-import type { Identity, NullishProps } from "fvtt-types/utils";
+import type { Identity, NullishProps } from "#utils";
 import type { WallThresholdData } from "#common/documents/_types.d.mts";
 
 /**

@@ -1,6 +1,6 @@
 import type BaseGrid from "./base.d.mts";
 
-import type { InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial } from "#utils";
 
 declare class Gridless extends BaseGrid {
   override type: typeof CONST.GRID_TYPES.GRIDLESS;

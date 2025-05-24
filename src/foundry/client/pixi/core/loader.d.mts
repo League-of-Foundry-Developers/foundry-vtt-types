@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Identity, InexactPartial, NullishProps } from "#utils";
 import type { TranscoderWorker } from "@pixi/basis";
 
 declare global {

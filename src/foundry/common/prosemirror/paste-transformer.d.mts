@@ -2,7 +2,7 @@ import type { Schema, Slice } from "prosemirror-model";
 import type ProseMirrorPlugin from "./plugin.d.mts";
 import type { Plugin } from "prosemirror-state";
 import type { EditorView } from "prosemirror-view";
-import type { EmptyObject } from "fvtt-types/utils";
+import type { EmptyObject } from "#utils";
 
 export default ProseMirrorPasteTransformer;
 

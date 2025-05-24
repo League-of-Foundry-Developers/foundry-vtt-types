@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -25,6 +25,32 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    */
   constructor(...args: Scene.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Scene",
+   *   collection: "scenes",
+   *   indexed: true,
+   *   compendiumIndexFields: ["_id", "name", "thumb", "sort", "folder"],
+   *   embedded: {
+   *     AmbientLight: "lights",
+   *     AmbientSound: "sounds",
+   *     Drawing: "drawings",
+   *     MeasuredTemplate: "templates",
+   *     Note: "notes",
+   *     Region: "regions",
+   *     Tile: "tiles",
+   *     Token: "tokens",
+   *     Wall: "walls"
+   *   },
+   *   label: "DOCUMENT.Scene",
+   *   labelPlural: "DOCUMENT.Scenes",
+   *   preserveOnImport: [...super.metadata.preserveOnImport, "active"],
+   *   schemaVersion: "12.325"
+   * });
+   * ```
+   */
   static override metadata: BaseScene.Metadata;
 
   static override defineSchema(): BaseScene.Schema;
@@ -58,6 +84,78 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    */
   // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks Replaced with `fog.exploration`
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   */
+  get fogExploration(): this["fog"]["exploration"];
+
+  set fogExploration(value);
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks Replaced with `fog.reset`
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   */
+  get fogReset(): this["fog"]["reset"];
+
+  set fogReset(value);
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks Replaced with `fog.overlay`
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   */
+  get fogOverlay(): this["fog"]["overlay"];
+
+  set fogOverlay(value);
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks Replaced with `fog.colors.explored`
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   */
+  get fogExploredColor(): this["fog"]["colors"]["explored"];
+
+  set fogExploredColor(value);
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks Replaced with `fog.colors.unexplored`
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   */
+  get fogUnexploredColor(): this["fog"]["colors"]["unexplored"];
+
+  set fogUnexploredColor(value);
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks Replaced with `environment.globalLight.enabled`
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   */
+  get globalLight(): this["environment"]["globalLight"]["enabled"];
+
+  set globalLight(value);
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks Replaced with `environment.globalLight.darkness.max`
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   */
+  get globalLightThreshold(): this["environment"]["globalLight"]["darkness"]["max"];
+
+  set globalLightThreshold(value);
+
+  /**
+   * @deprecated since v12, until v14
+   * @remarks Replaced with `environment.darknessLevel`
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   */
+  get darkness(): this["environment"]["darknessLevel"];
+
+  set darkness(value);
 
   /*
    * After this point these are not really overridden methods.
@@ -96,17 +194,17 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   override parent: Scene.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Scene.Implementation | Scene.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Scene.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Scene.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: Scene.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<Scene.Database.Update>,
   ): Promise<Scene.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<Scene.Database.Delete>,
   ): Promise<Scene.Implementation[]>;
@@ -179,63 +277,70 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: Scene.CreateData,
     options: Scene.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(data: Scene.CreateData, options: Scene.Database.OnCreateOperation, userId: string): void;
+  protected override _onCreate(data: Scene.CreateData, options: Scene.Database.OnCreateOperation, userId: string): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: Scene.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<Scene.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: Scene.Implementation[],
     operation: Scene.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: Scene.UpdateData,
     options: Scene.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(changed: Scene.UpdateData, options: Scene.Database.OnUpdateOperation, userId: string): void;
+  protected override _onUpdate(
+    changed: Scene.UpdateData,
+    options: Scene.Database.OnUpdateOperation,
+    userId: string,
+  ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: Scene.Implementation[],
     operation: Scene.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: Scene.Implementation[],
     operation: Scene.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(options: Scene.Database.PreDeleteOptions, user: User.Implementation): Promise<boolean | void>;
+  protected override _preDelete(
+    options: Scene.Database.PreDeleteOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
 
-  protected _onDelete(options: Scene.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: Scene.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: Scene.Implementation[],
     operation: Scene.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: Scene.Implementation[],
     operation: Scene.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): undefined;
+  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -269,29 +374,40 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     options?: LogCompatibilityWarningOptions,
   ): void;
 
-  protected static _onCreateDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
+  protected static override _onCreateDocuments(
     documents: Scene.Implementation[],
     context: Document.ModificationContext<Scene.Parent>,
   ): Promise<void>;
 
-  protected static _onUpdateDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
+  protected static override _onUpdateDocuments(
     documents: Scene.Implementation[],
     context: Document.ModificationContext<Scene.Parent>,
   ): Promise<void>;
 
-  protected static _onDeleteDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
+  protected static override _onDeleteDocuments(
     documents: Scene.Implementation[],
     context: Document.ModificationContext<Scene.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<Scene.Schema>;
+  protected static override _schema: SchemaField<Scene.Schema>;
 
-  static get schema(): SchemaField<Scene.Schema>;
+  static override get schema(): SchemaField<Scene.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: Scene.Source): void;
+  static override validateJoint(data: Scene.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(source: Scene.CreateData, context?: DataModel.FromSourceOptions): Scene.Implementation;

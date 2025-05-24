@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -61,23 +61,23 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: WallDocument.ParentCollectionName | null;
+  override readonly parentCollection: WallDocument.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
   static override get implementation(): WallDocument.ImplementationClass;
 
-  static get baseDocument(): typeof BaseWall;
+  static override get baseDocument(): typeof BaseWall;
 
-  static get collectionName(): WallDocument.ParentCollectionName;
+  static override get collectionName(): WallDocument.ParentCollectionName;
 
-  static get documentName(): WallDocument.Name;
+  static override get documentName(): WallDocument.Name;
 
-  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+  static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): undefined;
+  static override get hasTypeData(): undefined;
 
-  static get hierarchy(): WallDocument.Hierarchy;
+  static override get hierarchy(): WallDocument.Hierarchy;
 
   override parent: WallDocument.Parent;
 
@@ -201,7 +201,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): undefined;
+  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -235,16 +235,28 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     options?: LogCompatibilityWarningOptions,
   ): void;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
   protected static override _onCreateDocuments(
     documents: WallDocument.Implementation[],
     context: WallDocument.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
   protected static override _onUpdateDocuments(
     documents: WallDocument.Implementation[],
     context: WallDocument.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
   protected static override _onDeleteDocuments(
     documents: WallDocument.Implementation[],
     context: WallDocument.Database.OnDeleteDocumentsContext,
@@ -256,7 +268,6 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static override get schema(): SchemaField<WallDocument.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static override validateJoint(data: WallDocument.Source): void;
 
   // options: not null (parameter default only, destructured in super)
@@ -266,6 +277,8 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
   ): WallDocument.Implementation;
 
   static override fromJSON(json: string): WallDocument.Implementation;
+
+  static #BaseWall: true;
 }
 
 export default BaseWall;

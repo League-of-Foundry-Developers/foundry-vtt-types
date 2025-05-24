@@ -1,5 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../../types/documentConfiguration.d.mts";
-import type { AnyObject, FixedInstanceType, InexactPartial, Merge, NullishProps } from "fvtt-types/utils";
+import type { AnyObject, FixedInstanceType, InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseActor, BaseUser } from "#common/documents/_module.d.mts";
@@ -185,12 +185,14 @@ declare global {
       /**
        * The user's name.
        */
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
       name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
 
       /**
        * The user's role, see CONST.USER_ROLES.
        * @defaultValue `CONST.USER_ROLES.PLAYER`
        */
+      // FIXME: Overrides required to enforce the branded type
       role: fields.NumberField<
         {
           required: true;
@@ -211,15 +213,16 @@ declare global {
 
       /**
        * The user's password salt. Available only on the Server side for security.
-       * @defaultValue `""`
+       * @defaultValue `undefined`
        */
       passwordSalt: fields.StringField;
 
       /**
        * The user's avatar image.
        * @defaultValue `null`
+       * @remarks Initialized to `this.avatar || this.character?.img || CONST.DEFAULT_TOKEN` in {@link User.prepareDerivedData | `User#prepareDerivedData`}
        */
-      avatar: fields.FilePathField<{ categories: "IMAGE"[] }>;
+      avatar: fields.FilePathField<{ categories: ["IMAGE"] }>;
 
       /**
        * A linked Actor document that is this user's impersonated character.
@@ -229,12 +232,13 @@ declare global {
 
       /**
        * A color to represent this user.
-       * @defaultValue a randomly chosen color string
+       * @defaultValue A CSS hex code representing an HSV color, with random hue, 0.8 saturation, and 0.8 value
        */
       color: fields.ColorField<{ required: true; nullable: false; initial: () => string }>;
 
       /**
-       *
+       * @remarks Omitted from the `UserData` typedef as of 13.342, so no official description; Fairly self-explanatory though.
+       * @defaultValue `""`
        */
       pronouns: fields.StringField<{ required: true }>;
 
@@ -263,9 +267,9 @@ declare global {
           validate: (perms: AnyObject) => boolean;
           validationError: "must be a mapping of permission names to booleans";
         },
-        InexactPartial<Permissions> | null | undefined,
-        InexactPartial<Permissions>,
-        InexactPartial<Permissions>
+        Record<string, boolean> | null | undefined,
+        Record<string, boolean>,
+        Record<string, boolean>
       >;
 
       /**
@@ -428,14 +432,14 @@ declare global {
         /**
          * The ping style, see CONFIG.Canvas.pings.
          * @defaultValue `"pulse"`
-         * @remarks Overriden with `"arrow"` if the position of the ping is outside the viewport
+         * @remarks Overridden with `"arrow"` if the position of the ping is outside the viewport
          *
          * Overridden with `CONFIG.Canvas.pings.types.PULL` (`"chevron"` by default) if photosensitive mode is enabled and the ping is within the viewport
          */
         style: Ping.ConfiguredStyles;
       }>;
 
-    /** @privateRemarks Only consumed by {@link ControlsLayer#handlePing} */
+    /** @privateRemarks Only consumed by {@link ControlsLayer.handlePing | `ControlsLayer#handlePing`} */
     interface PingData extends _PingData {
       /**
        * The ID of the scene that was pinged.
@@ -443,39 +447,110 @@ declare global {
       scene: string;
     }
 
-    interface ActivityData {
-      /** The ID of the scene that the user is viewing. */
+    /**
+     * No core {@link User.broadcastActivity | `User#broadcastActivity`} call provides all keys, most only provide one,
+     * this is essentially bundling a bunch of unrelated update types into one socket handler, but the socket drops
+     * explicit `undefined` keys, so `IntentionalPartial` and `| null` as appropriate it is.
+     *
+     * @internal
+     */
+    type _ActivityData = IntentionalPartial<{
+      /**
+       * The ID of the scene that the user is viewing.
+       * @remarks Foundry types this as possibly being `null`, but no code path in core seems to be able to produce such a broadcast,
+       * and it appears to be ignored if explicitly sent as `null`. Can't be explicit `undefined` as the socket drops such keys.
+       */
       sceneId: string | null;
 
-      /** The position of the user's cursor. */
+      /**
+       * The position of the user's cursor.
+       * @remarks Can't be explicit `undefined` as the socket drops such keys, and {@link ControlsLayer.updateCursor | `ControlsLayer#updateCursor`}
+       * has an `=== null` check.
+       */
       cursor: { x: number; y: number } | null;
 
-      /** The state of the user's ruler, if they are currently using one. */
+      /**
+       * The state of the user's ruler, if they are currently using one.
+       * @remarks Can't be explicit `undefined` as the socket drops such keys.
+       */
       ruler: Ruler.MeasurementData | null;
 
-      /** The IDs of the tokens the user has targeted in the currently viewed */
+      /**
+       * The IDs of the tokens the user has targeted in the currently viewed
+       * @remarks Can't be explicit `undefined` as the socket drops such keys, and can't be `null` as its passed to {@link User.updateTokenTargets | `User#updateTokenTargets`},
+       * where it only has a parameter default.
+       */
       targets: string[];
 
-      /** Whether the user has an open WS connection to the server or not. */
+      /**
+       * Whether the user has an open WS connection to the server or not.
+       * @defaultValue `true`
+       * @remarks Can't be nullish as, if provided, gets directly assigned to {@link User.active | `User#active`},
+       * and the default is applied only on a negative `in` check.
+       */
       active: boolean;
 
-      /** Is the user emitting a ping at the cursor coordinates? */
-      ping: PingData;
+      /**
+       * Is the user emitting a ping at the cursor coordinates?
+       * @remarks Can't be explicit `undefined` as the socket drops such keys, and can't be `null` as its passed to {@link ControlsLayer.handlePing | `CanvasLayer#handlePing`}'s third argument,
+       * where it is destructured and only has a parameter default.
+       */
+      ping: User.PingData;
 
-      /** The state of the user's AV settings. */
+      /**
+       * The state of the user's AV settings.
+       * @remarks Can't be nullish, as it's passed to {@link AVSettings._handleUserActivity | `game.webrtc.settings._handleUserActivity`}'s second argument,
+       * which has no default and has `in` checks applied.
+       */
       av: AVSettings.Data;
-    }
+    }>;
 
-    interface HasRoleOptions {
+    interface ActivityData extends _ActivityData {}
+
+    /** @internal */
+    type _BroadcastActivityOptions = NullishProps<{
+      /**
+       * If undefined, volatile is inferred from the activity data.
+       * @remarks The update is assumed volatile if it has `av`, `targets`, or `ping` data,
+       *  lacks a `sceneId`, or has `ruler` data of exactly `null`
+       */
+      volatile: boolean;
+    }>;
+
+    interface BroadcastActivityOptions extends _BroadcastActivityOptions {}
+
+    /** @internal */
+    type _HasRoleOptions = NullishProps<{
       /**
        * Require the role match to be exact
        * @defaultValue `false`
        */
       exact?: boolean | undefined;
+    }>;
+
+    interface HasRoleOptions extends _HasRoleOptions {}
+
+    /** @internal */
+    type _AssignHotbarMacroOptions = NullishProps<{
+      /**
+       * An optional origin slot from which the Macro is being shifted
+       * @remarks No default value, and non-numeric values are ignored
+       */
+      fromSlot: number;
+    }>;
+
+    interface AssignHotbarMacroOptions extends _AssignHotbarMacroOptions {}
+
+    /** The data {@link User.getHotbarMacros | `User#getHotbarMacros`} returns for each of the 10 entries in its returned array */
+    interface GetHotbarMacrosData {
+      slot: number;
+      macro: Macro.Implementation | null;
     }
 
+    type ActionPermission = keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
+
     /**
-     * @deprecated Replaced with {@link User.Database | `User.DatabaseOperation`}
+     * @deprecated {@link User.Database | `User.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     interface DatabaseOperations extends Document.Database.Operations<User.Implementation> {}
@@ -540,17 +615,33 @@ declare global {
     override prepareDerivedData(): void;
 
     /**
+     * @remarks Doesn't exist prior to data prep, set in {@link User.prepareDerivedData | `User#prepareDerivedData`}
+     * @defaultValue `this.color.multiply(2)`
+     */
+    border?: Color;
+
+    /**
      * Assign a Macro to a numbered hotbar slot between 1 and 50
      * @param macro    - The Macro document to assign
      * @param slot     - A specific numbered hotbar slot to fill
-     * @param fromSlot - An optional origin slot from which the Macro is being shifted
      * @returns A Promise which resolves once the User update is complete
+     * @remarks
+     * Passing `null` for `macro` requires passing a `slot` to clear.
+     *
+     * `slot` defaults to the first unused slot if not provided. Slots are `1`-indexed.
+     * @throws If `slot` is provided and either less than `1` or more than `50`, or not provided when there's no open slots
      */
+    // options: not null (destructured)
     assignHotbarMacro(
-      macro: Macro.Implementation | null,
-      slot: string | number,
-      { fromSlot }?: InexactPartial<{ fromSlot: number }>,
-    ): Promise<this>;
+      macro: Macro.Implementation,
+      slot?: `${number}` | number,
+      options?: User.AssignHotbarMacroOptions,
+    ): Promise<this | undefined>;
+    assignHotbarMacro(
+      macro: null,
+      slot: `${number}` | number,
+      options?: User.AssignHotbarMacroOptions,
+    ): Promise<this | undefined>;
 
     /**
      * Assign a specific boolean permission to this user.
@@ -558,38 +649,33 @@ declare global {
      *
      * @param permission - The permission name from USER_PERMISSIONS
      * @param allowed    - Whether to allow or restrict the permission
+     * @remarks
+     * @throws If the calling user is not at least an Assistant GM
      */
-    assignPermission(permission: keyof typeof CONST.USER_PERMISSIONS, allowed: boolean): Promise<this>;
+    assignPermission(permission: keyof typeof CONST.USER_PERMISSIONS, allowed: boolean): Promise<this | undefined>;
 
     /**
      * Submit User activity data to the server for broadcast to other players.
      * This type of data is transient, persisting only for the duration of the session and not saved to any database.
      * Activity data uses a volatile event to prevent unnecessary buffering if the client temporarily loses connection.
-     * @param activityData - An object of User activity data to submit to the server for broadcast.
-     *                       (default: `{}`)
+     * @param activityData - An object of User activity data to submit to the server for broadcast. (default: `{}`)
      */
-    broadcastActivity(
-      activityData?: InexactPartial<User.ActivityData>,
-      options?: InexactPartial<{
-        /**
-         * If undefined, volatile is inferred from the activity data
-         */
-        volatile: boolean;
-      }>,
-    ): void;
+    // activityData: not null (parameter default only), options: not null (destructured)
+    broadcastActivity(activityData?: User.ActivityData, options?: User.BroadcastActivityOptions): void;
 
     /**
      * Get an Array of Macro Documents on this User's Hotbar by page
-     * @param page - The hotbar page number
-     *               (default: `1`)
+     * @param page - The hotbar page number (default: `1`)
+     * @remarks Core's implementation hardcodes returning 10 results at a time (single page of the hotbar)
      */
-    getHotbarMacros(page?: number): Array<{ slot: number; macro: Macro.Implementation | null }>;
+    // page: not null (would produce negative hotbar indices)
+    getHotbarMacros(page?: number): User.GetHotbarMacrosData[];
 
     /**
      * Update the set of Token targets for the user given an array of provided Token ids.
-     * @param targetIds - An array of Token ids which represents the new target set
-     *                    (default: `[]`)
+     * @param targetIds - An array of Token ids which represents the new target set (default: `[]`)
      */
+    // targetIds: not null (parameter default only)
     updateTokenTargets(targetIds?: string[]): void;
 
     // _onUpdate and _onDelete are overridden but with no signature changes.
@@ -609,22 +695,27 @@ declare global {
 
     // Descendant Document operations have been left out because User does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<string, User.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"User", User.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<User.CreateData>,
-      context?: Document.CreateDialogContext<string, User.Parent>,
+      context?: Document.CreateDialogContext<"User", User.Parent>,
     ): Promise<User.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<User.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<User.Implementation | undefined>;
 
     static override fromImport(
       source: User.Source,
-      context?: Document.FromImportContext<User.Parent>,
+      context?: Document.FromImportContext<User.Parent> | null,
     ): Promise<User.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // Embedded document operations have been left out because User does not have any embedded documents.
   }

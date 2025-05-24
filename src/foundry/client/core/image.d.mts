@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { InexactPartial, NullishProps } from "#utils";
 
 declare global {
   /**

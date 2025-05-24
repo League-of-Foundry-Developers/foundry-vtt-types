@@ -8,7 +8,7 @@ import type {
   RemoveIndexSignatures,
   SimpleMerge,
   Identity,
-} from "fvtt-types/utils";
+} from "#utils";
 import type { SchemaField } from "../data/fields.d.mts";
 import type { DatabaseCreateOperation, DatabaseDeleteOperation, DatabaseUpdateOperation } from "./_types.d.mts";
 import type { DataModel } from "./data.d.mts";

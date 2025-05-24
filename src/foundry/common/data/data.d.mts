@@ -7,7 +7,7 @@ import type {
   RemoveIndexSignatures,
   ToMethod,
   ValueOf,
-} from "fvtt-types/utils";
+} from "#utils";
 import type { SchemaField } from "./fields.d.mts";
 
 import fields = foundry.data.fields;
@@ -750,7 +750,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
   // options: not null (destructured)
   testUserPermission(
     user: User.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 

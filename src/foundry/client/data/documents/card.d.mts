@@ -1,5 +1,5 @@
 import type { ConfiguredCard } from "fvtt-types/configuration";
-import type { DeepPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, Merge } from "#utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -637,21 +637,26 @@ declare global {
 
     // Descendant Document operations have been left out because Card does not have any descendant documents.
 
-    static override defaultName(context: Document.DefaultNameContext<Card.SubType, NonNullable<Card.Parent>>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Card", NonNullable<Card.Parent>>): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<Card.CreateData>,
-      context: Document.CreateDialogContext<Card.SubType, NonNullable<Card.Parent>>,
+      data: Document.CreateDialogData<Card.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Card", NonNullable<Card.Parent>>,
     ): Promise<Card.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Card.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Card.Implementation | undefined>;
 
     static override fromImport(
       source: Card.Source,
-      context?: Document.FromImportContext<Card.Parent>,
+      context?: Document.FromImportContext<Card.Parent> | null,
     ): Promise<Card.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

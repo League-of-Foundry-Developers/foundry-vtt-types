@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, InexactPartial, InterfaceToObject, Merge } from "fvtt-types/utils";
+import type { AnyObject, DeepPartial, InexactPartial, InterfaceToObject, Merge } from "#utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -244,7 +244,7 @@ declare global {
 
       /**
        * The display mode of the Token nameplate, from CONST.TOKEN_DISPLAY_MODES
-       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE` (`0`)
+       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
        */
       displayName: fields.NumberField<
         {
@@ -296,7 +296,7 @@ declare global {
       }>;
 
       /**
-       * @defaultValue `CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1` (`0`)
+       * @defaultValue `CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1`
        */
       hexagonalShape: fields.NumberField<
         {
@@ -346,7 +346,7 @@ declare global {
 
       /**
        * The display mode of Token resource bars, from CONST.TOKEN_DISPLAY_MODES
-       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE` (`0`)
+       * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
        */
       displayBars: fields.NumberField<
         {
@@ -1311,26 +1311,33 @@ declare global {
 
     // ClientDocument overrides
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<TokenDocument.Parent>>,
+      context?: Document.DefaultNameContext<"Token", NonNullable<TokenDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<TokenDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<TokenDocument.Parent>>,
+      data: Document.CreateDialogData<TokenDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Token", NonNullable<TokenDocument.Parent>>,
     ): Promise<TokenDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<TokenDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<TokenDocument.Implementation | undefined>;
 
     static override fromImport(
       source: TokenDocument.Source,
-      context?: Document.FromImportContext<TokenDocument.Parent>,
+      context?: Document.FromImportContext<TokenDocument.Parent> | null,
     ): Promise<TokenDocument.Implementation>;
 
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
     // TODO: The deprecated Embedded Document Operations
+
+    #TokenDocument: true;
   }
 
   /**

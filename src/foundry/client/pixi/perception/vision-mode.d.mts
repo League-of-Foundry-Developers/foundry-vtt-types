@@ -1,4 +1,4 @@
-import type { Brand, InterfaceToObject, RemoveIndexSignatures, SimpleMerge } from "fvtt-types/utils";
+import type { Brand, InterfaceToObject, RemoveIndexSignatures, SimpleMerge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import DataField = foundry.data.fields.DataField;

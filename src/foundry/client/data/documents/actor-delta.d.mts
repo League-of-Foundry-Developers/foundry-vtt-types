@@ -2,7 +2,7 @@ import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseActorDelta } from "#common/documents/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { ConfiguredActorDelta } from "fvtt-types/configuration";
-import type { Merge, NullishProps } from "fvtt-types/utils";
+import type { AnyObject, Identity, Merge, NullishProps, RequiredProps } from "#utils";
 import type DataModel from "#common/abstract/data.d.mts";
 
 import fields = foundry.data.fields;
@@ -16,8 +16,16 @@ declare global {
 
     /**
      * The arguments to construct the document.
+     * @privateRemarks This is off-template, as ActorDelta throws if not provided a valid TokenDocument
+     * parent in the construction context for any construction, not just `.create`ion
      */
-    type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+    interface ConstructorArgs
+      extends Identity<
+        [
+          data: CreateData | undefined,
+          context: RequiredProps<Document.ConstructionContext<TokenDocument.Implementation>, "parent">,
+        ]
+      > {}
 
     /**
      * The documents embedded within `ActorDelta`.
@@ -281,16 +289,19 @@ declare global {
 
       /**
        * The name override, if any.
+       * @defaultValue `null`
        */
       name: fields.StringField<{ required: false; nullable: true; initial: null }>;
 
       /**
        * The type override, if any.
+       * @defaultValue `null`
        */
       type: fields.StringField<{ required: false; nullable: true; initial: null }>;
 
       /**
        * The image override, if any.
+       * @defaultValue `null`
        */
       img: fields.FilePathField<{ categories: ["IMAGE"]; nullable: true; initial: null; required: false }>;
 
@@ -314,6 +325,7 @@ declare global {
 
       /**
        * Ownership overrides.
+       * @defaultValue `null`
        */
       ownership: fields.DocumentOwnershipField<{ required: false; nullable: true; initial: null }>;
 
@@ -558,8 +570,9 @@ declare global {
     /**
      * Apply this ActorDelta to the base Actor and return a synthetic Actor.
      * @param context - Context to supply to synthetic Actor instantiation.
+     * @remarks Forwards `context` to {@link BaseActorDelta.applyDelta | `this.constructor.applyDelta(this, this.parent.baseActor, context)`}
      */
-    apply(context: unknown): Actor.Implementation;
+    apply(context?: BaseActorDelta.ApplyDeltaContext | null): Actor.Implementation | null;
 
     /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
     override prepareEmbeddedDocuments(): void;
@@ -733,23 +746,28 @@ declare global {
      */
     protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs): void;
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<ActorDelta.SubType, NonNullable<ActorDelta.Parent>>,
+      context?: Document.DefaultNameContext<"ActorDelta", NonNullable<ActorDelta.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<ActorDelta.CreateData>,
-      context: Document.CreateDialogContext<ActorDelta.SubType, NonNullable<ActorDelta.Parent>>,
+      data: Document.CreateDialogData<ActorDelta.CreateData> | undefined,
+      context: Document.CreateDialogContext<"ActorDelta", NonNullable<ActorDelta.Parent>>,
     ): Promise<ActorDelta.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<ActorDelta.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<ActorDelta.Implementation | undefined>;
 
     static override fromImport(
       source: ActorDelta.Source,
-      context?: Document.FromImportContext<ActorDelta.Parent>,
+      context?: Document.FromImportContext<ActorDelta.Parent> | null,
     ): Promise<ActorDelta.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

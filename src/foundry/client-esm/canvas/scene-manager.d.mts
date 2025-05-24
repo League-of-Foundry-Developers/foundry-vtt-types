@@ -1,4 +1,4 @@
-import type { AnyFunction, Identity } from "fvtt-types/utils";
+import type { AnyFunction, Identity } from "#utils";
 
 /**
  * A framework for imbuing special scripted behaviors into a single specific Scene.

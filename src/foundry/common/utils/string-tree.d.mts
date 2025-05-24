@@ -1,4 +1,4 @@
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyObject } from "#utils";
 
 /**
  * A data structure representing a tree of string nodes with arbitrary object leaves.

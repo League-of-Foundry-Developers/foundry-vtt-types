@@ -1,5 +1,5 @@
 import type { Socket } from "socket.io-client";
-import type { Identity } from "fvtt-types/utils";
+import type { Identity } from "#utils";
 
 declare global {
   /**

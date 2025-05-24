@@ -1,4 +1,4 @@
-import type { MaybePromise } from "fvtt-types/utils";
+import type { MaybePromise } from "#utils";
 
 declare global {
   /** An application for configuring data across all installed and active packages. */

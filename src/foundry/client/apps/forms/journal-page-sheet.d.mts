@@ -1,6 +1,6 @@
 import type { Editor } from "tinymce";
 import type { EditorView } from "prosemirror-view";
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise } from "#utils";
 import type Showdown from "showdown";
 
 declare global {

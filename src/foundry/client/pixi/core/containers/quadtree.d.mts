@@ -1,4 +1,4 @@
-import type { Brand, Identity, InexactPartial, NullishProps } from "fvtt-types/utils";
+import type { Brand, Identity, InexactPartial, NullishProps } from "#utils";
 
 declare global {
   /** @deprecated Replaced with {@linkcode Quadtree.Object} */

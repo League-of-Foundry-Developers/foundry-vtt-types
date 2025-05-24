@@ -1,4 +1,4 @@
-import type { ValueOf } from "fvtt-types/utils";
+import type { ValueOf } from "#utils";
 
 export { Tour };
 

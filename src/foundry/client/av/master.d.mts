@@ -1,4 +1,4 @@
-import type { DeepPartial, FixedInstanceType } from "fvtt-types/utils";
+import type { DeepPartial, FixedInstanceType } from "#utils";
 
 declare global {
   /**

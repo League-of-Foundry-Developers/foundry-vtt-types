@@ -1,4 +1,4 @@
-import type { Brand, Identity, NullishProps } from "fvtt-types/utils";
+import type { Brand, Identity, NullishProps } from "#utils";
 
 declare global {
   /**

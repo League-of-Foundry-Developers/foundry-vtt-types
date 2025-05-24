@@ -7,7 +7,7 @@ import type {
   ValueOf,
   AnyArray,
   Identity,
-} from "fvtt-types/utils";
+} from "#utils";
 import type EventEmitterMixin from "#common/utils/event-emitter.d.mts";
 import type ContextMenu from "../ux/context-menu.d.mts";
 

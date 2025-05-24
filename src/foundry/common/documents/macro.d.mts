@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
@@ -29,14 +29,34 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    */
   constructor(...args: Macro.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Macro",
+   *   collection: "macros",
+   *   indexed: true,
+   *   compendiumIndexFields: ["_id", "name", "img", "sort", "folder"],
+   *   label: "DOCUMENT.Macro",
+   *   labelPlural: "DOCUMENT.Macros",
+   *   coreTypes: Object.values(CONST.MACRO_TYPES),
+   *   permissions: {
+   *     create: this.#canCreate,
+   *     update: this.#canUpdate
+   *   },
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseMacro.Metadata;
 
   static override defineSchema(): BaseMacro.Schema;
 
   /**
    * The default icon used for newly created Macro documents.
+   * @defaultValue `"icons/svg/dice-target.svg"`
    */
-  static DEFAULT_ICON: "icons/svg/dice-target.svg";
+  static DEFAULT_ICON: string;
 
   /**
    * @remarks
@@ -44,6 +64,12 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /**
+   * @remarks
+   * @throws If `data.command` doesn't pass {@link foundry.data.fields.JavaScriptField | `JavaScriptField`} validation
+   */
+  static override validateJoint(data: Macro.Source): void;
 
   /** @remarks Returns `user.hasRole("PLAYER")` */
   static override canUserCreate(user: User.Implementation): boolean;
@@ -55,9 +81,11 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
   // options: not null (destructured)
   override testUserPermission(
     user: User.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
+
+  // _preCreate is overridden with no type changes
 
   /*
    * After this point these are not really overridden methods.
@@ -73,37 +101,37 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
 
   static " fvtt_types_internal_document_name_static": "Macro";
 
-  readonly parentCollection: Macro.ParentCollectionName | null;
+  override readonly parentCollection: Macro.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
   static override get implementation(): Macro.ImplementationClass;
 
-  static get baseDocument(): typeof BaseMacro;
+  static override get baseDocument(): typeof BaseMacro;
 
-  static get collectionName(): Macro.ParentCollectionName;
+  static override get collectionName(): Macro.ParentCollectionName;
 
-  static get documentName(): Macro.Name;
+  static override get documentName(): Macro.Name;
 
-  static get TYPES(): BaseMacro.SubType[];
+  static override get TYPES(): BaseMacro.SubType[];
 
-  static get hasTypeData(): true;
+  static override get hasTypeData(): true;
 
-  static get hierarchy(): Macro.Hierarchy;
+  static override get hierarchy(): Macro.Hierarchy;
 
   override parent: BaseMacro.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Macro.Implementation | Macro.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Macro.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Macro.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: Macro.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<Macro.Database.Update>,
   ): Promise<Macro.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<Macro.Database.Delete>,
   ): Promise<Macro.Implementation[]>;
@@ -143,63 +171,70 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: Macro.CreateData,
     options: Macro.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(data: Macro.CreateData, options: Macro.Database.OnCreateOperation, userId: string): void;
+  protected override _onCreate(data: Macro.CreateData, options: Macro.Database.OnCreateOperation, userId: string): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: Macro.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<Macro.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: Macro.Implementation[],
     operation: Macro.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: Macro.UpdateData,
     options: Macro.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(changed: Macro.UpdateData, options: Macro.Database.OnUpdateOperation, userId: string): void;
+  protected override _onUpdate(
+    changed: Macro.UpdateData,
+    options: Macro.Database.OnUpdateOperation,
+    userId: string,
+  ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: Macro.Implementation[],
     operation: Macro.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: Macro.Implementation[],
     operation: Macro.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(options: Macro.Database.PreDeleteOptions, user: User.Implementation): Promise<boolean | void>;
+  protected override _preDelete(
+    options: Macro.Database.PreDeleteOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
 
-  protected _onDelete(options: Macro.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: Macro.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: Macro.Implementation[],
     operation: Macro.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: Macro.Implementation[],
     operation: Macro.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): true;
+  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -233,37 +268,45 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
     options?: LogCompatibilityWarningOptions,
   ): void;
 
-  protected static _onCreateDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
+  protected static override _onCreateDocuments(
     documents: Macro.Implementation[],
     context: Document.ModificationContext<Macro.Parent>,
   ): Promise<void>;
 
-  protected static _onUpdateDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
+  protected static override _onUpdateDocuments(
     documents: Macro.Implementation[],
     context: Document.ModificationContext<Macro.Parent>,
   ): Promise<void>;
 
-  protected static _onDeleteDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
+  protected static override _onDeleteDocuments(
     documents: Macro.Implementation[],
     context: Document.ModificationContext<Macro.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<Macro.Schema>;
+  protected static override _schema: SchemaField<Macro.Schema>;
 
-  static get schema(): SchemaField<Macro.Schema>;
-
-  /**
-   * @remarks Actual override, not just part of the template.
-   * @throws If `data.command` doesn't pass {@link foundry.data.fields.JavaScriptField | `JavaScriptField`} validation
-   */
-  static override validateJoint(data: Macro.Source): void;
+  static override get schema(): SchemaField<Macro.Schema>;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(source: Macro.CreateData, context?: DataModel.FromSourceOptions): Macro.Implementation;
 
   static override fromJSON(json: string): Macro.Implementation;
+
+  static #BaseMacro: true;
 }
 export default BaseMacro;
 

@@ -2,7 +2,7 @@ import type { ConfiguredRegionBehavior } from "fvtt-types/configuration";
 import type Document from "#common/abstract/document.d.mts";
 import type BaseRegionBehavior from "#common/documents/region-behavior.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { Merge } from "fvtt-types/utils";
+import type { AnyObject, Merge } from "#utils";
 
 import fields = foundry.data.fields;
 
@@ -469,9 +469,14 @@ declare global {
      */
     protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;
 
+    /**
+     * @remarks No type changes, just removes `executeScript` from `options.types` if the user lacks the `MACRO_SCRIPT` permission
+     *
+     * `context.parent` is required as creation requires one
+     */
     static override createDialog(
-      data: Document.CreateDialogData<RegionBehavior.CreateData>,
-      context: Document.CreateDialogContext<RegionBehavior.SubType, NonNullable<RegionBehavior.Parent>>,
+      data: Document.CreateDialogData<RegionBehavior.CreateData> | undefined,
+      context: Document.CreateDialogContext<"RegionBehavior", NonNullable<RegionBehavior.Parent>>,
     ): Promise<RegionBehavior.Stored | null | undefined>;
 
     /*
@@ -488,19 +493,23 @@ declare global {
 
     // Descendant Document operations have been left out because RegionBehavior does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<RegionBehavior.SubType, NonNullable<RegionBehavior.Parent>>,
+      context?: Document.DefaultNameContext<"RegionBehavior", NonNullable<RegionBehavior.Parent>>,
     ): string;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<RegionBehavior.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<RegionBehavior.Implementation | undefined>;
 
     static override fromImport(
       source: RegionBehavior.Source,
-      context?: Document.FromImportContext<RegionBehavior.Parent>,
+      context?: Document.FromImportContext<RegionBehavior.Parent> | null,
     ): Promise<RegionBehavior.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // Embedded document operations have been left out because RegionBehavior does not have any embedded documents.
   }

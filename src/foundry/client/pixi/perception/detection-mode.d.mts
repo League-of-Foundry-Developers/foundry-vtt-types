@@ -1,4 +1,4 @@
-import type { Brand, Identity, NullishProps } from "fvtt-types/utils";
+import type { Brand, Identity, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { TokenDetectionMode } from "#common/documents/_types.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";

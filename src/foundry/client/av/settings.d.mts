@@ -1,6 +1,6 @@
 import type { fields } from "#common/data/_module.mjs";
 import type { DataSchema } from "#common/data/fields.mjs";
-import type { GetKey, ValueOf } from "fvtt-types/utils";
+import type { GetKey, ValueOf } from "#utils";
 
 declare global {
   /** @deprecated Replaced with {@linkcode AVSettings.Data} */

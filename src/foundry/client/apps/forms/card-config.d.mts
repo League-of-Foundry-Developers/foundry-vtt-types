@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise, Identity } from "fvtt-types/utils";
+import type { GetDataReturnType, MaybePromise, Identity } from "#utils";
 
 declare global {
   /**

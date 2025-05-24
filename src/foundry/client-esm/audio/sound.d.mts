@@ -1,4 +1,4 @@
-import type { Brand, InexactPartial, MaybePromise, NullishProps, Identity } from "fvtt-types/utils";
+import type { Brand, InexactPartial, MaybePromise, NullishProps, Identity } from "#utils";
 import type EventEmitterMixin from "#common/utils/event-emitter.d.mts";
 
 declare namespace Sound {
@@ -240,7 +240,7 @@ declare class Sound extends EventEmitterMixin() {
 
   /**
    * The life-cycle state of the sound.
-   * @defaultValue `Sound.STATES.NONE` (`0`)
+   * @defaultValue `Sound.STATES.NONE`
    */
   protected _state: Sound.STATES;
 

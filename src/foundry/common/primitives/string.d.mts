@@ -1,4 +1,4 @@
-import type { Titlecase } from "fvtt-types/utils";
+import type { Titlecase } from "#utils";
 
 declare global {
   interface String {

@@ -1,4 +1,4 @@
-import type { Identity, NullishProps } from "fvtt-types/utils";
+import type { Identity, NullishProps } from "#utils";
 
 declare global {
   class ResizeHandle extends PIXI.Graphics {

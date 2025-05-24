@@ -1,14 +1,15 @@
 import { expectTypeOf } from "vitest";
-
+import SchemaField = foundry.data.fields.SchemaField;
 // @ts-expect-error - A Scene requires name.
 new Scene.implementation();
 
 // @ts-expect-error - A Scene requires name.
 new Scene.implementation({});
-
 const scene = new Scene.implementation({ name: "My scene" });
 expectTypeOf(scene).toEqualTypeOf<Scene.Implementation>();
-
+if (!(scene.grid instanceof foundry.grid.BaseGrid)) {
+  expectTypeOf(scene.grid).toEqualTypeOf<SchemaField.InitializedData<Scene.Schema>["grid"]>();
+}
 expectTypeOf(scene.dimensions).toEqualTypeOf<SceneDimensions>();
 expectTypeOf(scene.active).toEqualTypeOf<boolean>();
 expectTypeOf(scene.background.src).toEqualTypeOf<string | null | undefined>();
@@ -17,7 +18,7 @@ expectTypeOf(scene.journal).toEqualTypeOf<JournalEntry.Implementation | null>();
 expectTypeOf(scene.playlist).toEqualTypeOf<Playlist.Implementation | null>();
 expectTypeOf(scene.playlistSound).toEqualTypeOf<string | null>();
 expectTypeOf(scene.activate()).toEqualTypeOf<Promise<Scene.Implementation | undefined>>();
-expectTypeOf(scene.view()).toEqualTypeOf<Promise<Scene.Implementation | undefined>>();
+expectTypeOf(scene.view()).toEqualTypeOf<Promise<typeof scene | number>>();
 expectTypeOf(scene.clone()).toEqualTypeOf<Scene.Implementation>();
 expectTypeOf(scene.prepareBaseData()).toEqualTypeOf<void>();
 expectTypeOf(scene.createThumbnail()).toEqualTypeOf<Promise<ImageHelper.ThumbnailReturn>>();

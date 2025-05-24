@@ -1,4 +1,4 @@
-import type { InexactPartial, Identity } from "fvtt-types/utils";
+import type { InexactPartial, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 
 declare global {

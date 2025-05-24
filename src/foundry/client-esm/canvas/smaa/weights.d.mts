@@ -1,4 +1,4 @@
-import type { Identity, IntentionalPartial, RequiredProps } from "fvtt-types/utils";
+import type { Identity, IntentionalPartial, RequiredProps } from "#utils";
 
 /**
  * The blending weight calculation filter for {@linkcode foundry.canvas.SMAAFilter}.

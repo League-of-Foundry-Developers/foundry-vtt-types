@@ -1,4 +1,4 @@
-import type { Identity } from "fvtt-types/utils";
+import type { Identity } from "#utils";
 import type { DatabaseAction, DatabaseOperationMap } from "#common/abstract/_types.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 

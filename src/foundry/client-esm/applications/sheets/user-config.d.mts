@@ -1,4 +1,4 @@
-import type { InterfaceToObject, AnyObject, DeepPartial } from "fvtt-types/utils";
+import type { InterfaceToObject, AnyObject, DeepPartial } from "#utils";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type { CustomFormGroup } from "../forms/fields.d.mts";

@@ -1,4 +1,4 @@
-import type { Identity, NullishProps } from "fvtt-types/utils";
+import type { Identity, NullishProps } from "#utils";
 
 /**
  * A special error class used for cancellation.

@@ -1,4 +1,4 @@
-import type { Merge } from "fvtt-types/utils";
+import type { AnyObject, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 
@@ -469,23 +469,28 @@ declare global {
 
     // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<AmbientSoundDocument.Parent>>,
+      context?: Document.DefaultNameContext<"AmbientSound", NonNullable<AmbientSoundDocument.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<AmbientSoundDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<AmbientSoundDocument.Parent>>,
+      data: Document.CreateDialogData<AmbientSoundDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"AmbientSound", NonNullable<AmbientSoundDocument.Parent>>,
     ): Promise<AmbientSoundDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<AmbientSoundDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<AmbientSoundDocument.Implementation | undefined>;
 
     static override fromImport(
       source: AmbientSoundDocument.Source,
-      context?: Document.FromImportContext<AmbientSoundDocument.Parent>,
+      context?: Document.FromImportContext<AmbientSoundDocument.Parent> | null,
     ): Promise<AmbientSoundDocument.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

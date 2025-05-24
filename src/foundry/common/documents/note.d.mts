@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -60,7 +60,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   // options: not null (destructured)
   override testUserPermission(
     user: User.Internal.Implementation,
-    permission: Document.TestableOwnershipLevel,
+    permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
@@ -81,37 +81,37 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: NoteDocument.ParentCollectionName | null;
+  override readonly parentCollection: NoteDocument.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
   static override get implementation(): NoteDocument.ImplementationClass;
 
-  static get baseDocument(): typeof BaseNote;
+  static override get baseDocument(): typeof BaseNote;
 
-  static get collectionName(): NoteDocument.ParentCollectionName;
+  static override get collectionName(): NoteDocument.ParentCollectionName;
 
-  static get documentName(): NoteDocument.Name;
+  static override get documentName(): NoteDocument.Name;
 
-  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+  static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): undefined;
+  static override get hasTypeData(): undefined;
 
-  static get hierarchy(): NoteDocument.Hierarchy;
+  static override get hierarchy(): NoteDocument.Hierarchy;
 
   override parent: NoteDocument.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<NoteDocument.Implementation | NoteDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<NoteDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<NoteDocument.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: NoteDocument.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<NoteDocument.Database.Update>,
   ): Promise<NoteDocument.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<NoteDocument.Database.Delete>,
   ): Promise<NoteDocument.Implementation[]>;
@@ -154,74 +154,74 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: NoteDocument.CreateData,
     options: NoteDocument.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
+  protected override _onCreate(
     data: NoteDocument.CreateData,
     options: NoteDocument.Database.OnCreateOperation,
     userId: string,
   ): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: NoteDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<NoteDocument.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: NoteDocument.Implementation[],
     operation: NoteDocument.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: NoteDocument.UpdateData,
     options: NoteDocument.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
+  protected override _onUpdate(
     changed: NoteDocument.UpdateData,
     options: NoteDocument.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: NoteDocument.Implementation[],
     operation: NoteDocument.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: NoteDocument.Implementation[],
     operation: NoteDocument.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
+  protected override _preDelete(
     options: NoteDocument.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: NoteDocument.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: NoteDocument.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: NoteDocument.Implementation[],
     operation: NoteDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: NoteDocument.Implementation[],
     operation: NoteDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): undefined;
+  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -255,29 +255,40 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     options?: LogCompatibilityWarningOptions,
   ): void;
 
-  protected static _onCreateDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
+  protected static override _onCreateDocuments(
     documents: NoteDocument.Implementation[],
     context: Document.ModificationContext<NoteDocument.Parent>,
   ): Promise<void>;
 
-  protected static _onUpdateDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
+  protected static override _onUpdateDocuments(
     documents: NoteDocument.Implementation[],
     context: Document.ModificationContext<NoteDocument.Parent>,
   ): Promise<void>;
 
-  protected static _onDeleteDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
+  protected static override _onDeleteDocuments(
     documents: NoteDocument.Implementation[],
     context: Document.ModificationContext<NoteDocument.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<NoteDocument.Schema>;
+  protected static override _schema: SchemaField<NoteDocument.Schema>;
 
-  static get schema(): SchemaField<NoteDocument.Schema>;
+  static override get schema(): SchemaField<NoteDocument.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: NoteDocument.Source): void;
+  static override validateJoint(data: NoteDocument.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(

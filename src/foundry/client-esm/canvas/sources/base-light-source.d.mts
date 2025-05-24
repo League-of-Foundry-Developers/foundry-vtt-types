@@ -1,4 +1,4 @@
-import type { Identity, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type { Identity, IntentionalPartial, NullishProps } from "#utils";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 
 /**

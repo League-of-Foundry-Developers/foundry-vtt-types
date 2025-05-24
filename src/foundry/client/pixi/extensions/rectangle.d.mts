@@ -1,4 +1,4 @@
-import type { Brand, InexactPartial } from "fvtt-types/utils";
+import type { Brand, InexactPartial } from "#utils";
 import * as _PIXI from "pixi.js";
 
 declare global {

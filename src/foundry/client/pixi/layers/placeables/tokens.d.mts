@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity, NullishProps } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 
 declare global {

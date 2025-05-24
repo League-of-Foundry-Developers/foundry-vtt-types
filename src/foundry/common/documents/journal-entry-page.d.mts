@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -26,6 +26,22 @@ declare abstract class BaseJournalEntryPage<
 
   _source: BaseJournalEntryPage.Source;
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "JournalEntryPage",
+   *   collection: "pages",
+   *   hasTypeData: true,
+   *   indexed: true,
+   *   label: "DOCUMENT.JournalEntryPage",
+   *   labelPlural: "DOCUMENT.JournalEntryPages",
+   *   coreTypes: ["text", "image", "pdf", "video"],
+   *   compendiumIndexFields: ["name", "type", "sort"],
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseJournalEntryPage.Metadata;
 
   static override defineSchema(): BaseJournalEntryPage.Schema;
@@ -36,7 +52,7 @@ declare abstract class BaseJournalEntryPage<
    * If this page's ownership is `.INHERIT` for this user (specified or default),
    * forwards to `this.parent.getUserLevel`.
    */
-  override getUserLevel(user?: User.Implementation | null): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  override getUserLevel(user?: User.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /*
    * After this point these are not really overridden methods.
@@ -55,39 +71,39 @@ declare abstract class BaseJournalEntryPage<
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: JournalEntryPage.ParentCollectionName | null;
+  override readonly parentCollection: JournalEntryPage.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
-  static get implementation(): JournalEntryPage.ImplementationClass;
+  static override get implementation(): JournalEntryPage.ImplementationClass;
 
-  static get baseDocument(): typeof BaseJournalEntryPage;
+  static override get baseDocument(): typeof BaseJournalEntryPage;
 
-  static get collectionName(): JournalEntryPage.ParentCollectionName;
+  static override get collectionName(): JournalEntryPage.ParentCollectionName;
 
-  static get documentName(): JournalEntryPage.Name;
+  static override get documentName(): JournalEntryPage.Name;
 
-  static get TYPES(): BaseJournalEntryPage.SubType[];
+  static override get TYPES(): BaseJournalEntryPage.SubType[];
 
-  static get hasTypeData(): true;
+  static override get hasTypeData(): true;
 
-  static get hierarchy(): JournalEntryPage.Hierarchy;
+  static override get hierarchy(): JournalEntryPage.Hierarchy;
 
   override system: JournalEntryPage.SystemOfType<SubType>;
 
   override parent: BaseJournalEntryPage.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<JournalEntryPage.Implementation | JournalEntryPage.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<JournalEntryPage.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<JournalEntryPage.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: JournalEntryPage.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<JournalEntryPage.Database.Update>,
   ): Promise<JournalEntryPage.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<JournalEntryPage.Database.Delete>,
   ): Promise<JournalEntryPage.Implementation[]>;
@@ -130,74 +146,74 @@ declare abstract class BaseJournalEntryPage<
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: JournalEntryPage.CreateData,
     options: JournalEntryPage.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
+  protected override _onCreate(
     data: JournalEntryPage.CreateData,
     options: JournalEntryPage.Database.OnCreateOperation,
     userId: string,
   ): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: JournalEntryPage.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<JournalEntryPage.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: JournalEntryPage.Implementation[],
     operation: JournalEntryPage.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: JournalEntryPage.UpdateData,
     options: JournalEntryPage.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
+  protected override _onUpdate(
     changed: JournalEntryPage.UpdateData,
     options: JournalEntryPage.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: JournalEntryPage.Implementation[],
     operation: JournalEntryPage.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: JournalEntryPage.Implementation[],
     operation: JournalEntryPage.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
+  protected override _preDelete(
     options: JournalEntryPage.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: JournalEntryPage.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: JournalEntryPage.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: JournalEntryPage.Implementation[],
     operation: JournalEntryPage.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: JournalEntryPage.Implementation[],
     operation: JournalEntryPage.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): true;
+  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -231,29 +247,40 @@ declare abstract class BaseJournalEntryPage<
     options?: LogCompatibilityWarningOptions,
   ): void;
 
-  protected static _onCreateDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
+  protected static override _onCreateDocuments(
     documents: JournalEntryPage.Implementation[],
     context: Document.ModificationContext<JournalEntryPage.Parent>,
   ): Promise<void>;
 
-  protected static _onUpdateDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
+  protected static override _onUpdateDocuments(
     documents: JournalEntryPage.Implementation[],
     context: Document.ModificationContext<JournalEntryPage.Parent>,
   ): Promise<void>;
 
-  protected static _onDeleteDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
+  protected static override _onDeleteDocuments(
     documents: JournalEntryPage.Implementation[],
     context: Document.ModificationContext<JournalEntryPage.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<JournalEntryPage.Schema>;
+  protected static override _schema: SchemaField<JournalEntryPage.Schema>;
 
-  static get schema(): SchemaField<JournalEntryPage.Schema>;
+  static override get schema(): SchemaField<JournalEntryPage.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: JournalEntryPage.Source): void;
+  static override validateJoint(data: JournalEntryPage.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(

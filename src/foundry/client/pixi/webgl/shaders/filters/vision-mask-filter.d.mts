@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Identity } from "fvtt-types/utils";
+import type { FixedInstanceType, Identity } from "#utils";
 
 declare global {
   class VisionMaskFilter extends AbstractBaseMaskFilter {

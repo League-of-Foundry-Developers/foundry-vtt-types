@@ -1,4 +1,4 @@
-import type { Merge } from "fvtt-types/utils";
+import type { AnyObject, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseWall from "#common/documents/wall.mjs";
@@ -299,7 +299,7 @@ declare global {
 
       /**
        * The direction of effect imposed by this wall
-       * @defaultValue `CONST.WALL_DIRECTIONS.BOTH` (`0`)
+       * @defaultValue `CONST.WALL_DIRECTIONS.BOTH`
        */
       dir: fields.NumberField<
         {
@@ -316,7 +316,7 @@ declare global {
 
       /**
        * The type of door which this wall contains, if any
-       * @defaultValue `CONST.WALL_DOOR_TYPES.NONE` (`0`)
+       * @defaultValue `CONST.WALL_DOOR_TYPES.NONE`
        */
       door: fields.NumberField<
         {
@@ -333,7 +333,7 @@ declare global {
 
       /**
        * The state of the door this wall contains, if any
-       * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED` (`0`)
+       * @defaultValue `CONST.WALL_DOOR_STATES.CLOSED`
        */
       ds: fields.NumberField<
         {
@@ -545,22 +545,29 @@ declare global {
 
     // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
-    static override defaultName(context: Document.DefaultNameContext<"base", NonNullable<WallDocument.Parent>>): string;
+    // context: not null (destructured)
+    static override defaultName(
+      context?: Document.DefaultNameContext<"Wall", NonNullable<WallDocument.Parent>>,
+    ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<WallDocument.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<WallDocument.Parent>>,
+      data: Document.CreateDialogData<WallDocument.CreateData> | undefined,
+      context: Document.CreateDialogContext<"Wall", NonNullable<WallDocument.Parent>>,
     ): Promise<WallDocument.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<WallDocument.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<WallDocument.Implementation | undefined>;
 
     static override fromImport(
       source: WallDocument.Source,
-      context?: Document.FromImportContext<WallDocument.Parent>,
+      context?: Document.FromImportContext<WallDocument.Parent> | null,
     ): Promise<WallDocument.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
     // Embedded document operations have been left out because Wall does not have any embedded documents.
   }

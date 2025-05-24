@@ -1,4 +1,4 @@
-import type { OverlapsWith } from "fvtt-types/utils";
+import type { OverlapsWith } from "#utils";
 
 declare global {
   namespace Array {

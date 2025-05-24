@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Mixin } from "fvtt-types/utils";
+import type { FixedInstanceType, Mixin } from "#utils";
 import type ApplicationV2 from "../../api/application.d.mts";
 
 /**

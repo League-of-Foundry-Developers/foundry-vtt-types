@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
@@ -59,37 +59,37 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: RegionDocument.ParentCollectionName | null;
+  override readonly parentCollection: RegionDocument.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
-  static get implementation(): RegionDocument.ImplementationClass;
+  static override get implementation(): RegionDocument.ImplementationClass;
 
-  static get baseDocument(): typeof BaseRegion;
+  static override get baseDocument(): typeof BaseRegion;
 
-  static get collectionName(): RegionDocument.ParentCollectionName;
+  static override get collectionName(): RegionDocument.ParentCollectionName;
 
-  static get documentName(): RegionDocument.Name;
+  static override get documentName(): RegionDocument.Name;
 
-  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+  static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): undefined;
+  static override get hasTypeData(): undefined;
 
-  static get hierarchy(): RegionDocument.Hierarchy;
+  static override get hierarchy(): RegionDocument.Hierarchy;
 
   override parent: BaseRegion.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<RegionDocument.Implementation | RegionDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RegionDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<RegionDocument.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: RegionDocument.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<RegionDocument.Database.Update>,
   ): Promise<RegionDocument.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<RegionDocument.Database.Delete>,
   ): Promise<RegionDocument.Implementation[]>;
@@ -165,74 +165,74 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: RegionDocument.CreateData,
     options: RegionDocument.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
+  protected override _onCreate(
     data: RegionDocument.CreateData,
     options: RegionDocument.Database.OnCreateOperation,
     userId: string,
   ): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: RegionDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<RegionDocument.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: RegionDocument.Implementation[],
     operation: RegionDocument.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: RegionDocument.UpdateData,
     options: RegionDocument.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
+  protected override _onUpdate(
     changed: RegionDocument.UpdateData,
     options: RegionDocument.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: RegionDocument.Implementation[],
     operation: RegionDocument.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: RegionDocument.Implementation[],
     operation: RegionDocument.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
+  protected override _preDelete(
     options: RegionDocument.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: RegionDocument.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: RegionDocument.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: RegionDocument.Implementation[],
     operation: RegionDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: RegionDocument.Implementation[],
     operation: RegionDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): undefined;
+  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -266,29 +266,40 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     options?: LogCompatibilityWarningOptions,
   ): void;
 
-  protected static _onCreateDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   */
+  protected static override _onCreateDocuments(
     documents: RegionDocument.Implementation[],
     context: Document.ModificationContext<RegionDocument.Parent>,
   ): Promise<void>;
 
-  protected static _onUpdateDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   */
+  protected static override _onUpdateDocuments(
     documents: RegionDocument.Implementation[],
     context: Document.ModificationContext<RegionDocument.Parent>,
   ): Promise<void>;
 
-  protected static _onDeleteDocuments(
+  /**
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   */
+  protected static override _onDeleteDocuments(
     documents: RegionDocument.Implementation[],
     context: Document.ModificationContext<RegionDocument.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<RegionDocument.Schema>;
+  protected static override _schema: SchemaField<RegionDocument.Schema>;
 
-  static get schema(): SchemaField<RegionDocument.Schema>;
+  static override get schema(): SchemaField<RegionDocument.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: RegionDocument.Source): void;
+  static override validateJoint(data: RegionDocument.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(

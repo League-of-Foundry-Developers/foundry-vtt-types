@@ -7,7 +7,7 @@ import type {
   IntentionalPartial,
   NullishProps,
   RequiredProps,
-} from "fvtt-types/utils";
+} from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import BaseToken = foundry.documents.BaseToken;
 import sources = foundry.canvas.sources;

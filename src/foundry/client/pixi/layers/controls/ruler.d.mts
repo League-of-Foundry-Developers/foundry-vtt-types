@@ -1,4 +1,4 @@
-import type { Brand, FixedInstanceType, Identity, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type { Brand, FixedInstanceType, Identity, IntentionalPartial, NullishProps } from "#utils";
 
 declare global {
   /**

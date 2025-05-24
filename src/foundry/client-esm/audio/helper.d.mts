@@ -1,6 +1,6 @@
 import type Sound from "./sound.d.mts";
 import type AudioBufferCache from "./cache.d.mts";
-import type { Identity, InexactPartial, IntentionalPartial, NullishProps } from "fvtt-types/utils";
+import type { Identity, InexactPartial, IntentionalPartial, NullishProps } from "#utils";
 
 /**
  * A helper class to provide common functionality for working with the Web Audio API.

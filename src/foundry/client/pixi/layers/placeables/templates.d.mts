@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity } from "fvtt-types/utils";
+import type { HandleEmptyObject, Identity } from "#utils";
 
 /**
  * This Canvas Layer provides a container for MeasuredTemplate objects.

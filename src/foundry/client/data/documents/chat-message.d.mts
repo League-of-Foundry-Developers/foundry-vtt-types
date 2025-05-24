@@ -1,5 +1,5 @@
 import type { ConfiguredChatMessage } from "fvtt-types/configuration";
-import type { AnyObject, InexactPartial, InterfaceToObject, Merge } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, InterfaceToObject, Merge } from "#utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -741,21 +741,26 @@ declare global {
 
     // Descendant Document operations have been left out because ChatMessage does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<ChatMessage.SubType, ChatMessage.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"ChatMessage", ChatMessage.Parent>): string;
 
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Document.CreateDialogData<ChatMessage.CreateData>,
-      context?: Document.CreateDialogContext<ChatMessage.SubType, ChatMessage.Parent>,
+      context?: Document.CreateDialogContext<"ChatMessage", ChatMessage.Parent>,
     ): Promise<ChatMessage.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<ChatMessage.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<ChatMessage.Implementation | undefined>;
 
     static override fromImport(
       source: ChatMessage.Source,
-      context?: Document.FromImportContext<ChatMessage.Parent>,
+      context?: Document.FromImportContext<ChatMessage.Parent> | null,
     ): Promise<ChatMessage.Implementation>;
+
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
 }

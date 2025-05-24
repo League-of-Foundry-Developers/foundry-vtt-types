@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "fvtt-types/utils";
+import type { AnyObject, Merge } from "#utils";
 import type Sound from "#client-esm/audio/sound.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -177,11 +177,12 @@ declare global {
       /**
        * The name of this sound
        */
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
 
       /**
        * The description of this sound
-       * @defaultValue `""`
+       * @defaultValue `undefined`
        */
       description: fields.StringField;
 
@@ -195,7 +196,7 @@ declare global {
        * A channel in CONST.AUDIO_CHANNELS where this sound is are played
        * @defaultValue `"music"`
        */
-      channel: fields.StringField<{ choices: typeof foundry.CONST.AUDIO_CHANNELS; initial: string; blank: false }>;
+      channel: fields.StringField<{ choices: typeof CONST.AUDIO_CHANNELS; initial: string; blank: true }>;
 
       /**
        * Is this sound currently playing?
@@ -415,8 +416,9 @@ declare global {
 
     /**
      * The Sound which manages playback for this playlist sound
+     * @remarks Only `undefined` prior to first {@link PlaylistSound._createSound | `PlaylistSound#_createSound`} call
      */
-    sound: Sound | null;
+    sound: Sound | null | undefined;
 
     /**
      * A debounced function, accepting a single volume parameter to adjust the volume of this sound
@@ -426,7 +428,6 @@ declare global {
 
     /**
      * Create a Sound used to play this PlaylistSound document
-     * @internal
      */
     protected _createSound(): Sound | null;
 
@@ -444,50 +445,44 @@ declare global {
     /**
      * Synchronize playback for this particular PlaylistSound instance
      */
-    sync(): void | Promise<void> | Promise<Sound>;
+    sync(): void;
 
     /**
      * Load the audio for this sound for the current client.
      */
     load(): Promise<void>;
 
-    toAnchor(
-      options?: InexactPartial<{
-        attrs: Record<string, string>;
-        dataset: Record<string, string>;
-        classes: string[];
-        name: string;
-        icon: string;
-      }>,
-    ): HTMLAnchorElement;
+    // options: not null (destructured)
+    toAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
-    _onClickDocumentLink(event: MouseEvent): ReturnType<Playlist.Implementation["stopSound" | "playSound"]>;
+    /**
+     * @remarks Returns {@link Playlist.stopSound | `this.parent.stopSound()`} or {@link Playlist.playSound | `this.parent.playSound()`}
+     */
+    override _onClickDocumentLink(event: MouseEvent): Promise<Playlist.Implementation | undefined>;
 
-    //_onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+    // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
     // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
     /**
      * Special handling that occurs when playback of a PlaylistSound is started.
-     * @internal
      */
-    protected _onStart(): Promise<void>;
+    protected _onStart(): Promise<Sound | void>;
 
     /**
      * Special handling that occurs when a PlaylistSound reaches the natural conclusion of its playback.
-     * @internal
      */
-    protected _onEnd(): Promise<void | Playlist.Implementation | undefined>;
+    protected _onEnd(): Promise<void | Playlist.Implementation | null | undefined>;
 
     /**
      * Special handling that occurs when a PlaylistSound is manually stopped before its natural conclusion.
-     * @internal
+     * @remarks Core's implementation is a no-op, this is soft abstract
      */
     protected _onStop(): Promise<void>;
 
     /**
      * The effective volume at which this playlist sound is played, incorporating the global playlist volume setting.
-     * @deprecated PlaylistSound#effectiveVolume is deprecated in favor of using PlaylistSound#volume directly
-     *
+     * @deprecated since v12 until v14
+     * @remarks "`PlaylistSound#effectiveVolume` is deprecated in favor of using {@link PlaylistSound.volume | `PlaylistSound#volume`} directly"
      */
     get effectiveVolume(): number;
 
@@ -505,23 +500,26 @@ declare global {
 
     // Descendant Document operations have been left out because PlaylistSound does not have any descendant documents.
 
+    // context: not null (destructured)
     static override defaultName(
-      context: Document.DefaultNameContext<"base", NonNullable<PlaylistSound.Parent>>,
+      context?: Document.DefaultNameContext<"PlaylistSound", NonNullable<PlaylistSound.Parent>>,
     ): string;
 
+    /** @remarks `context.parent` is required as creation requires one */
     static override createDialog(
-      data: Document.CreateDialogData<PlaylistSound.CreateData>,
-      context: Document.CreateDialogContext<string, NonNullable<PlaylistSound.Parent>>,
+      data: Document.CreateDialogData<PlaylistSound.CreateData> | undefined,
+      context: Document.CreateDialogContext<"PlaylistSound", NonNullable<PlaylistSound.Parent>>,
     ): Promise<PlaylistSound.Stored | null | undefined>;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<PlaylistSound.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<PlaylistSound.Implementation | undefined>;
 
     static override fromImport(
       source: PlaylistSound.Source,
-      context?: Document.FromImportContext<PlaylistSound.Parent>,
+      context?: Document.FromImportContext<PlaylistSound.Parent> | null,
     ): Promise<PlaylistSound.Implementation>;
 
     // Embedded document operations have been left out because PlaylistSound does not have any embedded documents.

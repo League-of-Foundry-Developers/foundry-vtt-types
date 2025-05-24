@@ -1,4 +1,4 @@
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyObject } from "#utils";
 import type { DatabaseOperationMap, DocumentSocketRequest } from "#common/abstract/_types.d.mts";
 
 declare global {

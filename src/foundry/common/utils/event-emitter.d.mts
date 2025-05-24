@@ -1,11 +1,4 @@
-import type {
-  AnyConstructor,
-  Coalesce,
-  FixedInstanceType,
-  Mixin,
-  PhantomConstructor,
-  NullishProps,
-} from "fvtt-types/utils";
+import type { AnyConstructor, Coalesce, FixedInstanceType, Mixin, PhantomConstructor, NullishProps } from "#utils";
 
 /**
  * A mixin class which implements the behavior of EventTarget.

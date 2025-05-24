@@ -1,4 +1,4 @@
-import type { Merge } from "fvtt-types/utils";
+import type { AnyObject, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 
@@ -184,6 +184,7 @@ declare global {
        * The setting key, a composite of \{scope\}.\{name\}
        * @defaultValue `""`
        */
+      // TODO: enforce `${string}.${string}`? Not worth it since nobody touches directly?
       key: fields.StringField<{
         required: true;
         nullable: false;
@@ -194,7 +195,7 @@ declare global {
 
       /**
        * The setting value, which is serialized to JSON
-       * @defaultValue `undefined`
+       * @defaultValue `null`
        */
       value: fields.JSONField<{
         required: true;
@@ -312,7 +313,7 @@ declare global {
     /**
      * @deprecated `Settings` does not have any flags.
      *
-     * This permenantly deprecated type helps to alleviate confusion as a user might expect it to exist.
+     * This permanently deprecated type helps to alleviate confusion as a user might expect it to exist.
      */
     type Flags = never;
 
@@ -320,21 +321,21 @@ declare global {
       /**
        * @deprecated `Settings` does not have any flags.
        *
-       * This permenantly deprecated type helps to alleviate confusion as a user might expect it to exist.
+       * This permanently deprecated type helps to alleviate confusion as a user might expect it to exist.
        */
       type Scope = never;
 
       /**
        * @deprecated `Settings` does not have any flags.
        *
-       * This permenantly deprecated type helps to alleviate confusion as a user might expect it to exist.
+       * This permanently deprecated type helps to alleviate confusion as a user might expect it to exist.
        */
       type Key<_Scope> = never;
 
       /**
        * @deprecated `Settings` does not have any flags.
        *
-       * This permenantly deprecated type helps to alleviate confusion as a user might expect it to exist.
+       * This permanently deprecated type helps to alleviate confusion as a user might expect it to exist.
        */
       type Get<_Scope, _Key> = never;
     }
@@ -374,11 +375,6 @@ declare global {
     constructor(...args: Setting.ConstructorArgs);
 
     /**
-     * @privateRemarks This exists to let ts know that this class has a private property
-     */
-    static #PRIMITIVE_TYPES: any;
-
-    /**
      * The setting configuration for this setting document.
      */
     get config(): SettingsConfig | undefined;
@@ -394,7 +390,7 @@ declare global {
      * @returns The initialized type of the Setting document.
      */
     // TODO: This could probably be derived
-    protected _castType(): any;
+    protected _castType(): unknown;
 
     /*
      * After this point these are not really overridden methods.
@@ -410,26 +406,33 @@ declare global {
 
     // Descendant Document operations have been left out because Setting does not have any descendant documents.
 
-    static override defaultName(context?: Document.DefaultNameContext<string, Setting.Parent>): string;
+    // context: not null (destructured)
+    static override defaultName(context?: Document.DefaultNameContext<"Setting", Setting.Parent>): string;
 
     /**
      * @throws Foundry tries to figure out the folders for the world collection and errors out
      */
+    // data: not null (parameter default only), context: not null (destructured)
     static override createDialog(
       data?: Setting.CreateData,
-      context?: Document.CreateDialogContext<string, Setting.Parent>,
+      context?: Document.CreateDialogContext<"Setting", Setting.Parent>,
     ): never;
 
+    // options: not null (parameter default only)
     static override fromDropData(
       data: Document.DropData<Setting.Implementation>,
-      options?: Document.FromDropDataOptions,
+      options?: AnyObject,
     ): Promise<Setting.Implementation | undefined>;
 
     static override fromImport(
       source: Setting.Source,
-      context?: Document.FromImportContext<Setting.Parent>,
+      context?: Document.FromImportContext<Setting.Parent> | null,
     ): Promise<Setting.Implementation>;
 
+    override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
     // Embedded document operations have been left out because Setting does not have any embedded documents.
+
+    static #Setting: true;
   }
 }

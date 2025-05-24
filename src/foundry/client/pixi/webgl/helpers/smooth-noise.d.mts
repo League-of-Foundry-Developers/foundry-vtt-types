@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial } from "fvtt-types/utils";
+import type { Identity, InexactPartial } from "#utils";
 
 declare global {
   /**

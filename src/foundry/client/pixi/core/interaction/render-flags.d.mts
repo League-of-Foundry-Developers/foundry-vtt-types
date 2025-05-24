@@ -7,7 +7,7 @@ import type {
   MakeConform,
   Mixin,
   PhantomConstructor,
-} from "fvtt-types/utils";
+} from "#utils";
 import type { LogCompatibilityWarningOptions } from "#common/utils/logging.d.mts";
 
 declare class RenderFlagObject {

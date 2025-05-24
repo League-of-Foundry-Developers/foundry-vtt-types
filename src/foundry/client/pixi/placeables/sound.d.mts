@@ -7,7 +7,7 @@ import type {
   IntentionalPartial,
   NullishProps,
   RequiredProps,
-} from "fvtt-types/utils";
+} from "#utils";
 
 declare global {
   /**

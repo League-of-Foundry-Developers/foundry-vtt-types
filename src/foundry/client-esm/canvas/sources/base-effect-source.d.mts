@@ -1,4 +1,4 @@
-import type { NullishProps, IntentionalPartial, AnyObject, Identity } from "fvtt-types/utils";
+import type { NullishProps, IntentionalPartial, AnyObject, Identity } from "#utils";
 
 /**
  * TODO - Re-document after ESM refactor.
