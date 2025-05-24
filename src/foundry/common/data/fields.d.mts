@@ -349,7 +349,7 @@ declare abstract class DataField<
    * @param change - The change to apply.
    * @returns The updated value.
    */
-  applyChange(value: InitializedType, model: DataModel.Any, change: ActiveEffect.EffectChangeData): InitializedType;
+  applyChange(value: InitializedType, model: DataModel.Any, change: ActiveEffect.ChangeData): InitializedType;
 
   /**
    * Cast a change delta into an appropriate type to be applied to this field.
@@ -374,7 +374,7 @@ declare abstract class DataField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType;
 
   /**
@@ -391,7 +391,7 @@ declare abstract class DataField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType | undefined;
 
   /**
@@ -408,7 +408,7 @@ declare abstract class DataField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType;
 
   /**
@@ -425,7 +425,7 @@ declare abstract class DataField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType | undefined;
 
   /**
@@ -442,7 +442,7 @@ declare abstract class DataField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType | undefined;
 
   /**
@@ -458,7 +458,7 @@ declare abstract class DataField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType | undefined;
 }
 
@@ -1328,7 +1328,7 @@ declare class BooleanField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType;
 
   /** @remarks Returns `value && delta`. `model` and `change` are unused in `BooleanField` */
@@ -1336,7 +1336,7 @@ declare class BooleanField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType;
 
   /** @remarks Returns `delta > value ? delta : value`. `model` and `change` are unused in `BooleanField` */
@@ -1344,7 +1344,7 @@ declare class BooleanField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType;
 
   /** @remarks Returns `delta < value ? delta : value`. `model` and `change` are unused in `BooleanField` */
@@ -1352,7 +1352,7 @@ declare class BooleanField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType;
 }
 
@@ -1521,7 +1521,7 @@ declare class NumberField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType;
 
   /** @remarks Returns `delta > value ? delta : value`. `model` and `change` are unused in `NumberField` */
@@ -1529,7 +1529,7 @@ declare class NumberField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType;
 
   /** @remarks Returns `delta < value ? delta : value`. `model` and `change` are unused in `NumberField` */
@@ -1537,7 +1537,7 @@ declare class NumberField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType;
 }
 
@@ -2357,7 +2357,7 @@ declare class ArrayField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType;
 }
 
@@ -2558,7 +2558,7 @@ declare class SetField<
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ): InitializedType;
 }
 

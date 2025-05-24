@@ -38,9 +38,10 @@ export type ActiveEffectData = BaseActiveEffect.Properties;
 export type EffectDurationData = ActiveEffect.DurationData;
 
 /**
- * @deprecated Replaced with {@linkcode ActiveEffect.EffectChangeData}
+ * @deprecated Replaced with {@linkcode ActiveEffect.ChangeData}
  */
-export type EffectChangeData = ActiveEffect.EffectChangeData;
+export type EffectChangeData = ActiveEffect.ChangeData;
+
 export interface AmbientSoundEffect {
   type: keyof CONFIG["soundEffects"];
 

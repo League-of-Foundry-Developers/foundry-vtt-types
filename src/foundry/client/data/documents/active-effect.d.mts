@@ -591,7 +591,10 @@ declare global {
       duration: InitialDurationData;
     }
 
-    interface EffectChangeData {
+    /** @deprecated Replaced with {@linkcode ActiveEffect.ChangeData} */
+    type EffectChangeData = ChangeData;
+
+    interface ChangeData {
       /**
        * The attribute path in the Actor or Item data which the change modifies
        * @defaultValue `""`
@@ -794,7 +797,7 @@ declare global {
      */
     static applyField<Field extends DataField.Any | null | undefined = undefined>(
       model: DataModel.Any,
-      change: ActiveEffect.EffectChangeData,
+      change: ActiveEffect.ChangeData,
       field?: Field,
     ): ActiveEffect.ApplyFieldReturn<Field>;
 
@@ -806,7 +809,7 @@ declare global {
      * @param change - The change data being applied
      * @returns An object of property paths and their updated values.
      */
-    apply(actor: Actor.Implementation, change: ActiveEffect.EffectChangeData): AnyMutableObject;
+    apply(actor: Actor.Implementation, change: ActiveEffect.ChangeData): AnyMutableObject;
 
     /**
      * Apply this ActiveEffect to a provided Actor using a heuristic to infer the value types based on the current value
@@ -817,7 +820,7 @@ declare global {
      */
     protected _applyLegacy(
       actor: Actor.Implementation,
-      change: ActiveEffect.EffectChangeData,
+      change: ActiveEffect.ChangeData,
       changes: AnyMutableObject,
     ): void;
 
@@ -867,7 +870,7 @@ declare global {
      */
     protected _applyAdd(
       actor: Actor.Implementation,
-      change: ActiveEffect.EffectChangeData,
+      change: ActiveEffect.ChangeData,
       current: unknown,
       delta: unknown,
       changes: AnyMutableObject,
@@ -887,7 +890,7 @@ declare global {
      */
     protected _applyMultiply(
       actor: Actor.Implementation,
-      change: ActiveEffect.EffectChangeData,
+      change: ActiveEffect.ChangeData,
       current: unknown,
       delta: unknown,
       changes: AnyMutableObject,
@@ -907,7 +910,7 @@ declare global {
      */
     protected _applyOverride(
       actor: Actor.Implementation,
-      change: ActiveEffect.EffectChangeData,
+      change: ActiveEffect.ChangeData,
       current: unknown,
       delta: unknown,
       changes: AnyMutableObject,
@@ -927,7 +930,7 @@ declare global {
      */
     protected _applyUpgrade(
       actor: Actor.Implementation,
-      change: ActiveEffect.EffectChangeData,
+      change: ActiveEffect.ChangeData,
       current: unknown,
       delta: unknown,
       changes: AnyMutableObject,
@@ -945,7 +948,7 @@ declare global {
      */
     protected _applyCustom(
       actor: Actor.Implementation,
-      change: ActiveEffect.EffectChangeData,
+      change: ActiveEffect.ChangeData,
       current: unknown,
       delta: unknown,
       changes: AnyMutableObject,

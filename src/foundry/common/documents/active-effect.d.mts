@@ -374,6 +374,7 @@ declare namespace BaseActiveEffect {
   export import DurationData = ActiveEffect.DurationData;
   export import Duration = ActiveEffect.Duration;
   export import EffectChangeData = ActiveEffect.EffectChangeData;
+  export import ChangeData = ActiveEffect.ChangeData;
 
   namespace Internal {
     // Note(LukeAbby): The point of this is to give the base class of `ActiveEffect` a name.
