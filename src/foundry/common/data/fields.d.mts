@@ -2145,14 +2145,24 @@ declare namespace TypedObjectField {
     }
   >;
 
+  type ValidateKey<Key extends string> =
+    | ((key: string) => key is Key)
+    | ((key: string) => asserts key is Key)
+    | ((key: string) => boolean | void);
+
   interface Options<BaseAssignmentType> extends DataField.Options<BaseAssignmentType> {
     /**
      * @remarks `validateKey` is called for each key in a `TypedObjectField`. An explicit return of
      * exactly `false` will strip that key. Falsey values like `undefined` will consider the key as
      * valid.
      */
-    validateKey?: ((key: string) => boolean | void) | undefined;
+    validateKey?: ValidateKey<string> | undefined;
   }
+
+  type ValidKey<Options extends TypedObjectField.Options<unknown>> = _ValidKey<Options["validateKey"]>;
+
+  /** @internal */
+  type _ValidKey<V> = V extends ValidateKey<infer Key> ? Key : never;
 
   /**
    * A helper type for the given options type merged into the default options of the ObjectField class.
@@ -2174,7 +2184,7 @@ declare namespace TypedObjectField {
   > = DataField.DerivedAssignmentType<
     {
       // eslint-disable-next-line @typescript-eslint/no-deprecated
-      [K: string]: DataField.AssignmentTypeFor<Element>;
+      [K in ValidKey<Options>]: DataField.AssignmentTypeFor<Element>;
     },
     MergedOptions<Options>
   >;
@@ -2188,7 +2198,7 @@ declare namespace TypedObjectField {
     Options extends TypedObjectField.Options<AnyObject>,
   > = DataField.DerivedInitializedType<
     {
-      [K: string]: DataField.InitializedTypeFor<Element>;
+      [K in ValidKey<Options>]: DataField.InitializedTypeFor<Element>;
     },
     MergedOptions<Options>
   >;
