@@ -397,7 +397,7 @@ declare global {
       passCards: (
         origin: Cards.Implementation,
         destination: Cards.Implementation,
-        context: Cards.DealContext,
+        context: Cards.PassContext,
       ) => boolean | void;
 
       /**
