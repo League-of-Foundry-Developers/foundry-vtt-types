@@ -539,8 +539,8 @@ declare namespace Roll {
   interface AnyConstructor extends Identity<typeof AnyRoll> {}
 
   // TODO: Make this actually configurable
-  type ConfiguredClass = CONFIG["Dice"]["rolls"][0];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+  interface ConfiguredClass extends Identity<CONFIG["Dice"]["rolls"][0]> {}
+  interface ConfiguredInstance extends FixedInstanceType<ConfiguredClass> {}
 
   interface _Options extends RollTerm.EvaluationOptions {
     /**
