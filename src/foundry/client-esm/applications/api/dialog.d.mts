@@ -290,10 +290,9 @@ declare class DialogV2<
   /**
    * The dialog query handler.
    */
-  static _handleQuery<T extends DialogV2.Type, const Options extends DialogV2.QueryConfig<T>>(config: {
-    type: T;
-    config: Options;
-  }): Promise<DialogV2.QueryReturn<T, Options>>;
+  static _handleQuery<T extends DialogV2.Type, const Options extends DialogV2.QueryConfig<T>>(
+    config: DialogV2.HandleQueryConfig<T, Options>,
+  ): Promise<DialogV2.QueryReturn<T, Options>>;
 }
 
 declare namespace DialogV2 {
@@ -495,6 +494,11 @@ declare namespace DialogV2 {
           } & Omit<Config, "ok">
         >
       : PromptReturn<{ ok: { callback: () => EmptyObject } }>;
+
+  interface HandleQueryConfig<T extends DialogV2.Type, Options extends DialogV2.QueryConfig<T>> {
+    type: T;
+    config: Options;
+  }
 
   type QueryReturn<T extends Type, Options extends QueryConfig<T, never>> =
     | (T extends "prompt" ? PromptReturn<Options> : never)
