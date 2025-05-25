@@ -29,6 +29,25 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    */
   constructor(...args: Card.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Card",
+   *   collection: "cards",
+   *   hasTypeData: true,
+   *   indexed: true,
+   *   label: "DOCUMENT.Card",
+   *   labelPlural: "DOCUMENT.Cards",
+   *   permissions: {
+   *     create: this.#canCreate,
+   *     update: this.#canUpdate
+   *   },
+   *   compendiumIndexFields: ["name", "type", "suit", "sort"],
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseCard.Metadata;
 
   static override defineSchema(): BaseCard.Schema;
@@ -38,16 +57,6 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    * @defaultValue `"icons/svg/card-joker.svg"`
    */
   static DEFAULT_ICON: string;
-
-  /**
-   * Is a User able to create a new Card within this parent?
-   */
-  static #canCreate(user: User.Implementation, doc: BaseCard, data: BaseCard.CreateData): boolean;
-
-  /**
-   * Is a user able to update an existing Card?
-   */
-  static #canUpdate(user: User.Implementation, doc: BaseCard, data: BaseCard.UpdateData): boolean;
 
   /**
    * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Cards` implementation
@@ -77,39 +86,39 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: Card.ParentCollectionName | null;
+  override readonly parentCollection: Card.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
-  static get implementation(): Card.ImplementationClass;
+  static override get implementation(): Card.ImplementationClass;
 
-  static get baseDocument(): typeof BaseCard;
+  static override get baseDocument(): typeof BaseCard;
 
-  static get collectionName(): Card.ParentCollectionName;
+  static override get collectionName(): Card.ParentCollectionName;
 
-  static get documentName(): Card.Name;
+  static override get documentName(): Card.Name;
 
-  static get TYPES(): BaseCard.SubType[];
+  static override get TYPES(): BaseCard.SubType[];
 
-  static get hasTypeData(): true;
+  static override get hasTypeData(): true;
 
-  static get hierarchy(): Card.Hierarchy;
+  static override get hierarchy(): Card.Hierarchy;
 
   override system: Card.SystemOfType<SubType>;
 
   override parent: BaseCard.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Card.Implementation | Card.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Card.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Card.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: Card.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<Card.Database.Update>,
   ): Promise<Card.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<Card.Database.Delete>,
   ): Promise<Card.Implementation[]>;
@@ -149,63 +158,70 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: Card.CreateData,
     options: Card.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(data: Card.CreateData, options: Card.Database.OnCreateOperation, userId: string): void;
+  protected override _onCreate(data: Card.CreateData, options: Card.Database.OnCreateOperation, userId: string): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: Card.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<Card.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: Card.Implementation[],
     operation: Card.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: Card.UpdateData,
     options: Card.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(changed: Card.UpdateData, options: Card.Database.OnUpdateOperation, userId: string): void;
+  protected override _onUpdate(
+    changed: Card.UpdateData,
+    options: Card.Database.OnUpdateOperation,
+    userId: string,
+  ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: Card.Implementation[],
     operation: Card.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: Card.Implementation[],
     operation: Card.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(options: Card.Database.PreDeleteOptions, user: User.Implementation): Promise<boolean | void>;
+  protected override _preDelete(
+    options: Card.Database.PreDeleteOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
 
-  protected _onDelete(options: Card.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: Card.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: Card.Implementation[],
     operation: Card.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: Card.Implementation[],
     operation: Card.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): true;
+  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -243,7 +259,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
    */
-  protected static _onCreateDocuments(
+  protected static override _onCreateDocuments(
     documents: Card.Implementation[],
     context: Document.ModificationContext<Card.Parent>,
   ): Promise<void>;
@@ -252,7 +268,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
    */
-  protected static _onUpdateDocuments(
+  protected static override _onUpdateDocuments(
     documents: Card.Implementation[],
     context: Document.ModificationContext<Card.Parent>,
   ): Promise<void>;
@@ -261,24 +277,25 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
    */
-  protected static _onDeleteDocuments(
+  protected static override _onDeleteDocuments(
     documents: Card.Implementation[],
     context: Document.ModificationContext<Card.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<Card.Schema>;
+  protected static override _schema: SchemaField<Card.Schema>;
 
-  static get schema(): SchemaField<Card.Schema>;
+  static override get schema(): SchemaField<Card.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: Card.Source): void;
+  static override validateJoint(data: Card.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(source: Card.CreateData, context?: DataModel.FromSourceOptions): Card.Implementation;
 
   static override fromJSON(json: string): Card.Implementation;
+
+  static #BaseCard: true;
 }
 
 export default BaseCard;
