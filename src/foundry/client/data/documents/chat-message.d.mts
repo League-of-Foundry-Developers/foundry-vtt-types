@@ -498,7 +498,7 @@ declare global {
       /** The Token who is speaking */
       token: TokenDocument.Implementation | Token.Object;
 
-      /** The Actor whom is speaking */
+      /** The Actor who is speaking */
       actor: Actor.Implementation;
 
       /** The Scene in which the speaker resides */
