@@ -98,7 +98,7 @@ type GetDocumentInstance<ConcreteDocumentType extends Document.Type> =
 
 // This interface exists as a way to catch circular errors easier.
 // This makes it more verbose than it might seem it has to be but it's important to stay this way.
-interface _ConfiguredDocumentClass {
+export interface ConfiguredDocumentClass {
   ActiveEffect: GetDocumentClass<"ActiveEffect">;
   ActorDelta: GetDocumentClass<"ActorDelta">;
   Actor: GetDocumentClass<"Actor">;
@@ -134,7 +134,7 @@ interface _ConfiguredDocumentClass {
   Wall: GetDocumentClass<"Wall">;
 }
 
-interface _ConfiguredDocumentInstance {
+export interface ConfiguredDocumentInstance {
   ActiveEffect: GetDocumentInstance<"ActiveEffect">;
   ActorDelta: GetDocumentInstance<"ActorDelta">;
   Actor: GetDocumentInstance<"Actor">;
@@ -171,29 +171,14 @@ interface _ConfiguredDocumentInstance {
 }
 
 type TestConfiguredClassesValid = MustConform<
-  InterfaceToObject<_ConfiguredDocumentClass>,
+  InterfaceToObject<ConfiguredDocumentClass>,
   Record<string, Document.AnyConstructor>
 >;
 
-type ConformedConfiguredClass = {
-  [K in keyof _ConfiguredDocumentClass]: MakeConform<
-    _ConfiguredDocumentClass[K],
-    Document.Internal.Constructor,
-    ConfigurationFailure[K]
-  >;
-};
-
 type TestConfiguredInstanceValid = MustConform<
-  InterfaceToObject<_ConfiguredDocumentInstance>,
+  InterfaceToObject<ConfiguredDocumentInstance>,
   Record<string, Document.Any>
 >;
-
-type ConformedConfiguredInstance = {
-  [K in keyof _ConfiguredDocumentInstance]: MakeConform<_ConfiguredDocumentInstance[K], Document.Any>;
-};
-
-export interface ConfiguredDocumentClass extends ConformedConfiguredClass {}
-export interface ConfiguredDocumentInstance extends ConformedConfiguredInstance {}
 
 export interface ConfiguredMetadata {
   ActiveEffect: ActiveEffect.Metadata;
