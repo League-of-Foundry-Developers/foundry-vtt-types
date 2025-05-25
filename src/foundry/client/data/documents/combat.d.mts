@@ -1,5 +1,5 @@
 import type { ConfiguredCombat } from "../../../../configuration/index.d.mts";
-import type { AnyObject, Merge } from "#utils";
+import type { AnyObject, InexactPartial, Merge, NullishProps } from "#utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -296,7 +296,7 @@ declare global {
        */
       _id: fields.DocumentIdField;
 
-      type: fields.DocumentTypeField<typeof BaseCombat, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
+      type: fields.DocumentTypeField<typeof BaseCombat, { initial: typeof CONST.BASE_DOCUMENT_TYPE }>;
 
       system: fields.TypeDataField<typeof BaseCombat>;
 
@@ -552,25 +552,30 @@ declare global {
      */
     type ConfiguredInstance = Implementation;
 
-    interface InitiativeOptions {
+    /** @internal */
+    type _InitiativeOptions = NullishProps<{
       /**
        * A non-default initiative formula to roll. Otherwise the system default is used.
        * @defaultValue `null`
        */
-      formula?: string | null;
+      formula: string;
 
       /**
        * Update the Combat turn after adding new initiative scores to keep the turn on the same Combatant.
        * @defaultValue `true`
        */
-      updateTurn?: boolean;
+      updateTurn: boolean;
+    }> &
+      InexactPartial<{
+        /**
+         * Additional options with which to customize created Chat Messages
+         * @defaultValue `{}`
+         * @remarks Can't be `null` as it only has a parameter default
+         */
+        messageOptions: ChatMessage.CreateData;
+      }>;
 
-      /**
-       * Additional options with which to customize created Chat Messages
-       * @defaultValue `{}`
-       */
-      messageOptions?: foundry.documents.BaseChatMessage.CreateData;
-    }
+    interface InitiativeOptions extends _InitiativeOptions {}
 
     interface HistoryData {
       round: number | null;
@@ -604,17 +609,24 @@ declare global {
     /** Record the current round, turn, and tokenId to understand changes in the encounter state */
     current: Combat.HistoryData;
 
-    /** Track the previous round, turn, and tokenId to understand changes in the encounter state */
-    previous: Combat.HistoryData;
+    /**
+     * Track the previous round, turn, and tokenId to understand changes in the encounter state
+     * @remarks Only `undefined` prior to first {@link Combat._onUpdate | `Combat#_onUpdate`} or {@link Combat.setupTurns | `Combat#setupTurns`} (which is called in
+     * {@link Combat.prepareDerivedData | `Combat#prepareDerivedData`}) call
+     */
+    previous: Combat.HistoryData | undefined;
 
     /**
      * The configuration setting used to record Combat preferences
-     * Default: `"combatTrackerConfig"`
+     * @defaultValue `"combatTrackerConfig"`
+     * @privateRemarks Right now it doesn't make sense to make this not a literal, as `type CONFIG_SETTING` is static, so changing this would
+     * just make {@link Combat.settings | `Combat#settings`} and {@linkcode CombatEncounters.settings} incorrect
      */
-    static CONFIG_SETTING: string;
+    // TODO: Make the setting name configurable?
+    static CONFIG_SETTING: "combatTrackerConfig";
 
     /** Get the Combatant who has the current turn. */
-    get combatant(): this["turns"][number] | undefined;
+    get combatant(): Combatant.Implementation | undefined;
 
     /**
      * Get the Combatant who has the next turn.
@@ -623,12 +635,14 @@ declare global {
 
     /** Return the object of settings which modify the Combat Tracker behavior */
     // Type is copied here to avoid recursion issue
+    // TODO: Make the setting name configurable?
     get settings(): ClientSettings.SettingInitializedType<"core", Combat.CONFIG_SETTING>;
 
     /** Has this combat encounter been started? */
     get started(): boolean;
 
-    get visible(): true;
+    /** @remarks Foundry's implementation in {@linkcode Combat} always returns `true` */
+    override get visible(): boolean;
 
     /** Is this combat active in the current scene? */
     get isActive(): boolean;
@@ -640,6 +654,7 @@ declare global {
      */
     activate(options?: Combat.Database.UpdateOperation): Promise<Combat.Implementation[]>;
 
+    /** @remarks Calls {@link Combat.setupTurns | `Combat#setupTurns`} if there is at least one Combatant and `this.turns` is empty */
     override prepareDerivedData(): void;
 
     /**
@@ -656,49 +671,46 @@ declare global {
     getCombatantsByActor(actorOrId: string | Actor.Implementation): Combatant.Implementation[];
 
     /** Begin the combat encounter, advancing to round 1 and turn 1 */
-    startCombat(): Promise<this>;
+    startCombat(): Promise<this | undefined>;
 
     /** Advance the combat to the next round */
-    nextRound(): Promise<this>;
+    nextRound(): Promise<this | undefined>;
 
     /** Rewind the combat to the previous round */
-    previousRound(): Promise<this>;
+    previousRound(): Promise<this | undefined>;
 
     /** Advance the combat to the next turn */
-    nextTurn(): Promise<this>;
+    nextTurn(): Promise<this | undefined>;
 
     /** Rewind the combat to the previous turn */
-    previousTurn(): Promise<this>;
+    previousTurn(): Promise<this | undefined>;
 
     /** Display a dialog querying the GM whether they wish to end the combat encounter and empty the tracker */
-    endCombat(): Promise<this>;
+    endCombat(): Promise<this | undefined>;
 
     /** Toggle whether this combat is linked to the scene or globally available. */
-    toggleSceneLink(): Promise<this>;
+    toggleSceneLink(): Promise<this | undefined>;
 
     /** Reset all combatant initiative scores, setting the turn back to zero */
-    resetAll(): Promise<this>;
+    resetAll(): Promise<this | undefined>;
 
     /**
      * Roll initiative for one or multiple Combatants within the Combat document
      * @param ids     - A Combatant id or Array of ids for which to roll
-     * @param options - Additional options which modify how initiative rolls are created or presented.
-     *                  default `{}`
+     * @param options - Additional options which modify how initiative rolls are created or presented. (default: `{}`)
      * @returns A promise which resolves to the updated Combat document once updates are complete.
      */
     rollInitiative(ids: string | string[], options?: Combat.InitiativeOptions): Promise<this>;
 
     /**
      * Roll initiative for all combatants which have not already rolled
-     * @param options - Additional options forwarded to the Combat.rollInitiative method
-     *                  default `{}`
+     * @param options - Additional options forwarded to the Combat.rollInitiative method (default: `{}`)
      */
     rollAll(options?: Combat.InitiativeOptions): Promise<this>;
 
     /**
      * Roll initiative for all non-player actors who have not already rolled
-     * @param options - Additional options forwarded to the Combat.rollInitiative method
-     *                  default `{}`
+     * @param options - Additional options forwarded to the Combat.rollInitiative method (default: `{}`)
      */
     rollNPC(options?: Combat.InitiativeOptions): Promise<this>;
 
@@ -711,13 +723,13 @@ declare global {
     setInitiative(id: string, value: number): Promise<void>;
 
     /** Return the Array of combatants sorted into initiative order, breaking ties alphabetically by name. */
-    setupTurns(): this["turns"];
+    setupTurns(): Combatant.Implementation[];
 
     /**
      * Debounce changes to the composition of the Combat encounter to de-duplicate multiple concurrent Combatant changes.
      * If this is the currently viewed encounter, re-render the CombatTracker application.
      */
-    debounceSetup: () => ReturnType<typeof foundry.utils.debounce>;
+    debounceSetup: () => void;
 
     /**
      * Update active effect durations for all actors present in this Combat encounter.
@@ -729,13 +741,14 @@ declare global {
      * If multiple exist for that type, one is chosen at random.
      * @param announcement - The announcement that should be played: "startEncounter", "nextUp", or "yourTurn".
      */
-    protected _playCombatSound(announcement: foundry.CONST.COMBAT_ANNOUNCEMENTS): void;
+    protected _playCombatSound(announcement: CONST.COMBAT_ANNOUNCEMENTS): void;
 
     /**
      * Define how the array of Combatants is sorted in the displayed list of the tracker.
      * This method can be overridden by a system or module which needs to display combatants in an alternative order.
-     * By default sort by initiative, next falling back to name, lastly tie-breaking by combatant id.
-     * @internal
+     * The default sorting rules sort in descending order of initiative using combatant IDs for tiebreakers.
+     * @param  a - Some combatant
+     * @param  b - Some other combatant
      */
     protected _sortCombatants(a: Combatant.Implementation, b: Combatant.Implementation): number;
 
@@ -743,9 +756,9 @@ declare global {
      * Refresh the Token HUD under certain circumstances.
      * @param documents - A list of Combatant documents that were added or removed.
      */
-    protected _refreshTokenHUD(documents: Array<Combatant.Implementation>): void;
+    protected _refreshTokenHUD(documents: Combatant.Implementation[]): void;
 
-    //_onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes from BaseCombat.
+    // _onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes from BaseCombat.
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
@@ -805,9 +818,9 @@ declare global {
 
     /**
      * Get the current history state of the Combat encounter.
-     * @param combatant - The new active combatant
+     * @param combatant - The new active combatant (default: `this.combatant`)
      */
-    protected _getCurrentState(combatant: Combatant.Implementation): Combat.HistoryData;
+    protected _getCurrentState(combatant?: Combatant.Implementation): Combat.HistoryData;
 
     /**
      * Manage the execution of Combat lifecycle events.
@@ -817,9 +830,8 @@ declare global {
      * 3. Begin Round
      * 4. Begin Turn
      * Each lifecycle event is an async method, and each is awaited before proceeding.
-     * @param adjustedTurn - Optionally, an adjusted turn to commit to the Combat.
      */
-    protected _manageTurnEvents(adjustedTurn: number): Promise<void>;
+    protected _manageTurnEvents(): Promise<void>;
 
     /**
      * A workflow that occurs at the end of each Combat Turn.
@@ -856,19 +868,22 @@ declare global {
     protected _onStartTurn(combatant: Combatant.Implementation): Promise<void>;
 
     /**
-     * @deprecated Since v11 until v13. Use {@link Combat.updateCombatantActors | `Combat#updateCombatantActors`} instead.
+     * @deprecated Since v11 until v13.
+     * @remarks "`Combat#updateEffectDurations` is renamed to  {@link Combat.updateCombatantActors | `Combat#updateCombatantActors`}"
      */
     updateEffectDurations(): void;
 
     /**
-     * @deprecated Since v12. Use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
+     * @deprecated Since v12, no stated end
+     * @remarks Foundry provides no deprecation warning; use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
      */
-    getCombatantByActor(actor: Actor.Implementation): Combatant.Implementation[];
+    getCombatantByActor(actor: string | Actor.Implementation): Combatant.Implementation | null;
 
     /**
-     * @deprecated Since v12. Use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
+     * @deprecated Since v12, no stated end
+     * @remarks Foundry provides no deprecation warning; use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
      */
-    getCombatantByToken(token: Token.Object): Combatant.Implementation[];
+    getCombatantByToken(token: string | Token.Object): Combatant.Implementation | null;
 
     /*
      * After this point these are not really overridden methods.
@@ -957,5 +972,7 @@ declare global {
     ): Promise<Combat.Implementation>;
 
     override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
+    #Combat: true;
   }
 }
