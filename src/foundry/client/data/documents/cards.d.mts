@@ -668,10 +668,9 @@ declare global {
     /**
      * @remarks {@link Cards.draw | `Cards#draw`} spreads this into an object, minus `how`, with the `action` preset to `"draw"`,
      * which wouldn't make sense to change, then passes that to {@link Cards.pass | `Cards#pass`}
-     * @privateRemarks `updateData` omitted to override comment, `action` as it's already provided. This is equivalent to just
-     * {@linkcode _ChatNotificationOption}, unless `PassOptions` has been merged into
+     * @privateRemarks `action` omitted as it's already provided.
      */
-    interface DrawOptions extends _HowOption, Omit<PassOptions, "updateData" | "action"> {}
+    interface DrawOptions extends _HowOption, Omit<PassOptions, "action"> {}
 
     interface ShuffleOptions extends _UpdateDataOption, _ChatNotificationOption {}
 
