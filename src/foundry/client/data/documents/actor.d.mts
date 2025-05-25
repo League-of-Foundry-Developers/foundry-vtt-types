@@ -111,7 +111,7 @@ declare global {
      * {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`}.
      */
     // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActor<Type>, Actor<Type>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActor<Type>, () => Actor<Type>>;
 
     /**
      * `SystemOfType` returns the system property for a specific `Actor` subtype.

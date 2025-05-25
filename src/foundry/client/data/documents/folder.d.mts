@@ -93,7 +93,7 @@ declare global {
      * to configure custom subtypes. See {@linkcode Folder.SubType} for more information.
      */
     // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredFolder<Type>, Folder<Type>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredFolder<Type>, () => Folder<Type>>;
 
     /**
      * A document's parent is something that can contain it.

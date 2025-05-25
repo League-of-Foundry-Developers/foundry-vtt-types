@@ -100,7 +100,7 @@ declare global {
      * {@link ConfiguredCard | `fvtt-types/configuration/ConfiguredCard`}.
      */
     // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCard<Type>, Card<Type>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCard<Type>, () => Card<Type>>;
 
     /**
      * `SystemOfType` returns the system property for a specific `Card` subtype.

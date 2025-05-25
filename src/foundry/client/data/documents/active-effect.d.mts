@@ -97,7 +97,10 @@ declare global {
      * {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`}.
      */
     // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActiveEffect<Type>, ActiveEffect<Type>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<
+      ConfiguredActiveEffect<Type>,
+      () => ActiveEffect<Type>
+    >;
 
     /**
      * `SystemOfType` returns the system property for a specific `ActiveEffect` subtype.

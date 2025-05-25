@@ -95,7 +95,7 @@ declare global {
      * to configure custom subtypes. See {@linkcode TableResult.SubType} for more information.
      */
     // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredTableResult<Type>, TableResult<Type>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredTableResult<Type>, () => TableResult<Type>>;
 
     /**
      * A document's parent is something that can contain it.

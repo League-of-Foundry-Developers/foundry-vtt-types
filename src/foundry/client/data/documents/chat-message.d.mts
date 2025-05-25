@@ -99,7 +99,7 @@ declare global {
      * {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`}.
      */
     // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredChatMessage<Type>, ChatMessage<Type>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredChatMessage<Type>, () => ChatMessage<Type>>;
 
     /**
      * `SystemOfType` returns the system property for a specific `ChatMessage` subtype.

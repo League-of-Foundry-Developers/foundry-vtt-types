@@ -107,7 +107,7 @@ declare global {
      * {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`}.
      */
     // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredItem<Type>, Item<Type>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredItem<Type>, () => Item<Type>>;
 
     /**
      * `SystemOfType` returns the system property for a specific `Item` subtype.

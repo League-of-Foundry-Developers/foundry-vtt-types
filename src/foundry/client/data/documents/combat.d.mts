@@ -105,7 +105,7 @@ declare global {
      * {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`}.
      */
     // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCombat<Type>, Combat<Type>>;
+    type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCombat<Type>, () => Combat<Type>>;
 
     /**
      * `SystemOfType` returns the system property for a specific `Combat` subtype.

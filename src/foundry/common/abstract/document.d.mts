@@ -1,5 +1,4 @@
 import type {
-  ConfigurationFailure,
   ConfiguredDocumentClass,
   ConfiguredDocumentInstance,
   ConfiguredMetadata,
@@ -1125,11 +1124,13 @@ declare namespace Document {
       type Complete<T extends Any> = T extends Document.Any ? T : never;
     }
 
-    type OfType<Configured, Document extends Document.Any> = Configured extends { document: infer D }
-      ? D extends Document
-        ? D
-        : FixedInstanceType<ConfigurationFailure[Document["documentName"]]>
-      : Document;
+    // Note(LukeAbby): `Configured` is not checked for validity. This means that it's easy to
+    // accidently misconfigure without warning. However it helps stymy some circularities this way.
+    // This is also why `LazyDocument` takes a callback.
+    // See: https://gist.github.com/LukeAbby/a7892327633587ba89e760b599572322
+    type OfType<Configured, LazyDocument extends () => unknown> = "document" extends keyof Configured
+      ? Configured["document"]
+      : ReturnType<LazyDocument>;
 
     type SystemMap<Name extends Document.WithSystem> = _SystemMap<
       Name,

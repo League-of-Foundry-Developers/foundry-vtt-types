@@ -94,7 +94,7 @@ declare global {
     type OfType<Type extends SubType> = Document.Internal.OfType<
       ConfiguredJournalEntryPage<Type>,
       // eslint-disable-next-line @typescript-eslint/no-restricted-types
-      JournalEntryPage<Type>
+      () => JournalEntryPage<Type>
     >;
 
     /**
