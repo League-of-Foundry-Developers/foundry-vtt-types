@@ -524,7 +524,7 @@ declare global {
     }
 
     /** @internal */
-    type _SpeakerData = SchemaField.InitializedData<ChatMessage.Schema>["speaker"];
+    type _SpeakerData = SchemaField.InitializedData<ChatMessage.SpeakerSchema>;
 
     interface SpeakerData extends _SpeakerData {}
 
