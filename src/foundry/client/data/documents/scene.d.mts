@@ -417,8 +417,7 @@ declare global {
        * The name of this scene
        * @defaultValue `""`
        */
-      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
       /**
        * Is this scene currently active? Only one scene may be active at a given time
@@ -1135,7 +1134,7 @@ declare global {
    * @see {@linkcode SceneConfig}       The Scene configuration application
    *
    */
-  class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
+  class Scene extends foundry.documents.BaseScene.Internal.ClientDocument {
     /**
      * @param data    - Initial data from which to construct the `Scene`
      * @param context - Construction context options

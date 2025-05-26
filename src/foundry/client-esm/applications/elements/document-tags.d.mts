@@ -55,6 +55,7 @@ declare class HTMLDocumentTagsElement extends AbstractFormInputElement<Record<st
    * @param document - A candidate document or compendium index entry to tag
    * @throws An error if the candidate document is not allowed
    */
+  // TODO: Fix once compendium index types are added.
   _validateDocument(document: foundry.abstract.Document.Any | Record<string, unknown>): void;
 
   protected override _getValue(): string | string[];

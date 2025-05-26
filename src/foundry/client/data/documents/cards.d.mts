@@ -287,8 +287,7 @@ declare global {
       _id: fields.DocumentIdField;
 
       /** The text name of this stack */
-      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-      name: fields.StringField<{ required: true; blank: false; label: "CARDS.Name"; textSearch: true }, string>;
+      name: fields.StringField<{ required: true; blank: false; label: "CARDS.Name"; textSearch: true }>;
 
       /**
        * The type of this stack, in BaseCards.metadata.types

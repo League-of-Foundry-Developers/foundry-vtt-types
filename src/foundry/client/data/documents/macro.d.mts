@@ -226,8 +226,7 @@ declare global {
        * The name of this Macro
        * @defaultValue `""`
        */
-      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-      name: fields.StringField<{ required: true; blank: false; label: "Name"; textSearch: true }, string>;
+      name: fields.StringField<{ required: true; blank: false; label: "Name"; textSearch: true }>;
 
       /**
        * A Macro subtype from CONST.MACRO_TYPES

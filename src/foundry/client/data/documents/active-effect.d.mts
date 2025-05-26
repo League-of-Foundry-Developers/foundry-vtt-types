@@ -237,9 +237,7 @@ declare global {
        * The name of the ActiveEffect
        * @defaultValue `""`
        */
-      // TODO(LukeAbby): fix this when redoing DataField
-      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-      name: fields.StringField<{ required: true; blank: false; label: "EFFECT.Name"; textSearch: true }, string>;
+      name: fields.StringField<{ required: true; blank: false; label: "EFFECT.Name"; textSearch: true }>;
 
       /**
        * An image path used to depict the ActiveEffect as an icon

@@ -294,8 +294,7 @@ declare global {
       _id: fields.DocumentIdField;
 
       /** The name of this Item */
-      // FIXME: required with no initial, assignment type override required
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
       /** An Item subtype which configures the system data model applied */
       // TODO: required with no initial, needs assignment type override

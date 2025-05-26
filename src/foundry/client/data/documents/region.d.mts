@@ -238,8 +238,7 @@ declare global {
       /**
        * The name used to describe the Region
        */
-      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-      name: fields.StringField<{ required: true; blank: false; label: "Name"; textSearch: true }, string>;
+      name: fields.StringField<{ required: true; blank: false; label: "Name"; textSearch: true }>;
 
       /**
        * The color used to highlight the Region

@@ -232,8 +232,7 @@ declare global {
       _id: fields.DocumentIdField;
 
       /** The text name of this card */
-      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-      name: fields.StringField<{ required: true; blank: false; label: "CARD.Name" }, string>;
+      name: fields.StringField<{ required: true; blank: false; label: "CARD.Name" }>;
 
       /**
        * A text description of this card which applies to all faces

@@ -177,8 +177,7 @@ declare global {
       /**
        * The name of this sound
        */
-      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
       /**
        * The description of this sound

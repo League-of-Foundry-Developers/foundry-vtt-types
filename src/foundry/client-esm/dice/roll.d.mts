@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, FixedInstanceType, IntentionalPartial, EmptyObject, Identity } from "#utils";
+import type { AnyObject, InexactPartial, FixedInstanceType, EmptyObject, Identity } from "#utils";
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
 import type PoolTerm from "./terms/pool.d.mts";
@@ -607,30 +607,31 @@ declare namespace Roll {
 
   interface ClassifyStringTermOptions extends _ClassifyStringTermOptions {}
 
+  /** @internal */
   // TODO(LukeAbby): When shims are added then `"user"` should also be added here #3065. Specifically `user` should be added as partial.
   //
   // This is `IntentionalPartial` because Foundry merges in defaults with `mergeObject`.
-  interface _MessageData extends IntentionalPartial<ChatMessage.CreateData, "content" | "sound" | "rolls"> {
+  interface _MessageData extends InexactPartial<ChatMessage.CreateData> {
     /**
      * The HTML content of this chat message
      * @defaultValue `String(this.total)`
      */
-    content?: ChatMessage.CreateData["content"];
+    content?: ChatMessage.CreateData["content"] | undefined;
 
     /**
      * The URL of an audio file which plays when this message is received
      * @defaultValue `CONFIG.sounds.dice`
      */
-    sound?: ChatMessage.CreateData["sound"];
+    sound?: ChatMessage.CreateData["sound"] | undefined;
 
     /**
      * @deprecated In `Roll.MessageData`, Foundry always overrides `rolls` to `[this]`.
      * This makes it useless to set. Do not use.
      */
-    rolls?: ChatMessage.CreateData["rolls"];
+    rolls?: ChatMessage.CreateData["rolls"] | undefined;
   }
 
-  interface MessageData extends InexactPartial<_MessageData> {}
+  interface MessageData extends _MessageData {}
 
   type Evaluated<T extends Roll<any>> = T & { _evaluated: true; _total: number; get total(): number };
 

@@ -4,15 +4,18 @@ import BaseActiveEffect = foundry.documents.BaseActiveEffect;
 import Document = foundry.abstract.Document;
 import fields = foundry.data.fields;
 
-class TestAE<
+class TestActiveEffect<
   out SubType extends BaseActiveEffect.SubType = BaseActiveEffect.SubType,
 > extends BaseActiveEffect<SubType> {}
 
 // @ts-expect-error Active effects require a `name` in construction data
-let creationTestAE = new TestAE();
+new TestActiveEffect();
 
 // @ts-expect-error Active effects require a `name` in construction data
-creationTestAE = new TestAE({});
+new TestActiveEffect({});
+
+// @ts-expect-error - Name cannot be undefined.
+new TestActiveEffect({ name: undefined });
 
 const fullSource = {
   _id: "XXXXXSomeIDXXXXX",
@@ -57,9 +60,9 @@ const fullSource = {
 } as const;
 
 // TODO: infer type from creation data
-const fullTestAE = new TestAE<"base">(fullSource);
+const fullTestAE = new TestActiveEffect<"base">(fullSource);
 
-creationTestAE = new TestAE({
+new TestActiveEffect({
   _id: null,
   name: "Stuff +1", // necessary for construction
   img: null,
@@ -96,13 +99,15 @@ creationTestAE = new TestAE({
     duplicateSource: null,
   },
 });
-creationTestAE = new TestAE({
+
+new TestActiveEffect({
   name: "Stuff +1", // necessary for construction
   changes: null,
   duration: null,
   _stats: null,
 });
-creationTestAE = new TestAE({
+
+new TestActiveEffect({
   _id: undefined,
   name: "Stuff +1", // necessary for construction
   img: undefined,
@@ -139,15 +144,15 @@ creationTestAE = new TestAE({
     duplicateSource: undefined,
   },
 });
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-creationTestAE = new TestAE({
+
+new TestActiveEffect({
   name: "Stuff +1", // necessary for construction
   changes: undefined,
   duration: undefined,
   _stats: undefined,
 });
 
-expectTypeOf(fullTestAE).toEqualTypeOf<TestAE<"base">>();
+expectTypeOf(fullTestAE).toEqualTypeOf<TestActiveEffect<"base">>();
 
 expectTypeOf(fullTestAE._id).toEqualTypeOf<string | null>();
 expectTypeOf(fullTestAE.name).toBeString();
@@ -213,32 +218,38 @@ expectTypeOf((fullTestAE.icon = "path/to/tex.png")).toBeString();
 
 // Document template static overrides
 
-expectTypeOf(TestAE["_initializationOrder"]()).toEqualTypeOf<Generator<[string, fields.DataField.Any]>>();
-expectTypeOf(TestAE.implementation).toEqualTypeOf<ActiveEffect.ImplementationClass>();
-expectTypeOf(TestAE.baseDocument).toEqualTypeOf<typeof BaseActiveEffect>();
-expectTypeOf(TestAE.collectionName).toEqualTypeOf<"effects">();
-expectTypeOf(TestAE.documentName).toEqualTypeOf<"ActiveEffect">();
-expectTypeOf(TestAE.TYPES).toEqualTypeOf<BaseActiveEffect.SubType[]>();
-expectTypeOf(TestAE.hasTypeData).toEqualTypeOf<true>();
-expectTypeOf(TestAE.hierarchy).toExtend<EmptyObject>();
+expectTypeOf(TestActiveEffect["_initializationOrder"]()).toEqualTypeOf<Generator<[string, fields.DataField.Any]>>();
+expectTypeOf(TestActiveEffect.implementation).toEqualTypeOf<ActiveEffect.ImplementationClass>();
+expectTypeOf(TestActiveEffect.baseDocument).toEqualTypeOf<typeof BaseActiveEffect>();
+expectTypeOf(TestActiveEffect.collectionName).toEqualTypeOf<"effects">();
+expectTypeOf(TestActiveEffect.documentName).toEqualTypeOf<"ActiveEffect">();
+expectTypeOf(TestActiveEffect.TYPES).toEqualTypeOf<BaseActiveEffect.SubType[]>();
+expectTypeOf(TestActiveEffect.hasTypeData).toEqualTypeOf<true>();
+expectTypeOf(TestActiveEffect.hierarchy).toExtend<EmptyObject>();
 
-expectTypeOf(TestAE.createDocuments([])).branded.toEqualTypeOf<Promise<ActiveEffect.Stored[]>>();
-expectTypeOf(TestAE.updateDocuments([])).toEqualTypeOf<Promise<ActiveEffect.Implementation[]>>();
-expectTypeOf(TestAE.deleteDocuments([])).toEqualTypeOf<Promise<ActiveEffect.Implementation[]>>();
+expectTypeOf(TestActiveEffect.createDocuments([])).branded.toEqualTypeOf<Promise<ActiveEffect.Stored[]>>();
+expectTypeOf(TestActiveEffect.updateDocuments([])).toEqualTypeOf<Promise<ActiveEffect.Implementation[]>>();
+expectTypeOf(TestActiveEffect.deleteDocuments([])).toEqualTypeOf<Promise<ActiveEffect.Implementation[]>>();
 
 // TODO: should error, AE creation requires a parent
-expectTypeOf(TestAE.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
-expectTypeOf(TestAE.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
-expectTypeOf(TestAE.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
+expectTypeOf(TestActiveEffect.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
+expectTypeOf(TestActiveEffect.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
+expectTypeOf(TestActiveEffect.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
 
-expectTypeOf(TestAE.get("XXXXXSomeIDXXXXX")).toEqualTypeOf<ActiveEffect.Implementation | null>();
-expectTypeOf(TestAE.get("XXXXXSomeIDXXXXX", {})).toEqualTypeOf<ActiveEffect.Implementation | null>();
-expectTypeOf(TestAE.get("XXXXXSomeIDXXXXX", { pack: "some.pack" })).toEqualTypeOf<ActiveEffect.Implementation | null>();
-expectTypeOf(TestAE.get("XXXXXSomeIDXXXXX", { pack: null })).toEqualTypeOf<ActiveEffect.Implementation | null>();
-expectTypeOf(TestAE.get("XXXXXSomeIDXXXXX", { pack: undefined })).toEqualTypeOf<ActiveEffect.Implementation | null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX")).toEqualTypeOf<ActiveEffect.Implementation | null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", {})).toEqualTypeOf<ActiveEffect.Implementation | null>();
+expectTypeOf(
+  TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: "some.pack" }),
+).toEqualTypeOf<ActiveEffect.Implementation | null>();
+expectTypeOf(
+  TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: null }),
+).toEqualTypeOf<ActiveEffect.Implementation | null>();
+expectTypeOf(
+  TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: undefined }),
+).toEqualTypeOf<ActiveEffect.Implementation | null>();
 
 // no hierarchy, no collections
-expectTypeOf(TestAE.getCollectionName("literally anything")).toBeNull();
+expectTypeOf(TestActiveEffect.getCollectionName("literally anything")).toBeNull();
 
 declare const user: User.Implementation;
 declare const nonBaseAE: ActiveEffect.Implementation;
@@ -249,7 +260,7 @@ const effect = someItem.effects.get("effect")!;
 
 // TODO: better tests for the operation interfaces, beyond the minimum (probably in Document tests)
 expectTypeOf(
-  TestAE["_preCreateOperation"](
+  TestActiveEffect["_preCreateOperation"](
     [effect, nonBaseAE],
     { data: createDataArray, modifiedTime: 0, render: false, renderSheet: false },
     user,
@@ -257,7 +268,7 @@ expectTypeOf(
 ).toEqualTypeOf<Promise<boolean | void>>();
 
 expectTypeOf(
-  TestAE["_onCreateOperation"](
+  TestActiveEffect["_onCreateOperation"](
     [effect, nonBaseAE],
     { data: createDataArray, modifiedTime: 0, render: false, renderSheet: false },
     user,
@@ -266,7 +277,7 @@ expectTypeOf(
 
 declare const updateDataArray: ActiveEffect.UpdateData[];
 expectTypeOf(
-  TestAE["_preUpdateOperation"](
+  TestActiveEffect["_preUpdateOperation"](
     [effect, nonBaseAE],
     { modifiedTime: 0, render: false, diff: true, recursive: true, pack: null, updates: updateDataArray },
     user,
@@ -274,7 +285,7 @@ expectTypeOf(
 ).toEqualTypeOf<Promise<boolean | void>>();
 
 expectTypeOf(
-  TestAE["_onUpdateOperation"](
+  TestActiveEffect["_onUpdateOperation"](
     [effect, nonBaseAE],
     { modifiedTime: 0, render: false, diff: true, recursive: true, pack: null, updates: updateDataArray },
     user,
@@ -282,7 +293,7 @@ expectTypeOf(
 ).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(
-  TestAE["_preDeleteOperation"](
+  TestActiveEffect["_preDeleteOperation"](
     [effect, nonBaseAE],
     { modifiedTime: 0, render: false, deleteAll: false, ids: ["YYYYYSomeIDYYYYY"] },
     user,
@@ -290,26 +301,26 @@ expectTypeOf(
 ).toEqualTypeOf<Promise<boolean | void>>();
 
 expectTypeOf(
-  TestAE["_onDeleteOperation"](
+  TestActiveEffect["_onDeleteOperation"](
     [effect, nonBaseAE],
     { modifiedTime: 0, render: false, deleteAll: false, ids: ["YYYYYSomeIDYYYYY"] },
     user,
   ),
 ).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(TestAE.hasSystemData).toEqualTypeOf<true>();
+expectTypeOf(TestActiveEffect.hasSystemData).toEqualTypeOf<true>();
 // shim methods and _logDataFieldMigration have no type changes from Document
 
 // core's implementation for these three are actual no-ops, no point testing the modification context
-expectTypeOf(TestAE["_onCreateDocuments"]([effect, nonBaseAE], {}));
-expectTypeOf(TestAE["_onUpdateDocuments"]([effect, nonBaseAE], {}));
-expectTypeOf(TestAE["_onDeleteDocuments"]([effect, nonBaseAE], {}));
+expectTypeOf(TestActiveEffect["_onCreateDocuments"]([effect, nonBaseAE], {}));
+expectTypeOf(TestActiveEffect["_onUpdateDocuments"]([effect, nonBaseAE], {}));
+expectTypeOf(TestActiveEffect["_onDeleteDocuments"]([effect, nonBaseAE], {}));
 
-expectTypeOf(TestAE["_schema"]).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
-expectTypeOf(TestAE.schema).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
+expectTypeOf(TestActiveEffect["_schema"]).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
+expectTypeOf(TestActiveEffect.schema).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
 
 expectTypeOf(
-  TestAE.validateJoint({
+  TestActiveEffect.validateJoint({
     name: "foo",
     flags: {
       core: {
@@ -357,11 +368,11 @@ expectTypeOf(
   }),
 ).toBeVoid();
 
-expectTypeOf(TestAE.fromSource(fullSource)).toEqualTypeOf<ActiveEffect.Implementation>();
-expectTypeOf(TestAE.fromSource(fullSource, {})).toEqualTypeOf<ActiveEffect.Implementation>();
-expectTypeOf(TestAE.fromSource(fullSource)).toEqualTypeOf<ActiveEffect.Implementation>();
+expectTypeOf(TestActiveEffect.fromSource(fullSource)).toEqualTypeOf<ActiveEffect.Implementation>();
+expectTypeOf(TestActiveEffect.fromSource(fullSource, {})).toEqualTypeOf<ActiveEffect.Implementation>();
+expectTypeOf(TestActiveEffect.fromSource(fullSource)).toEqualTypeOf<ActiveEffect.Implementation>();
 
-expectTypeOf(TestAE.fromJSON("some JSON")).toEqualTypeOf<ActiveEffect.Implementation>();
+expectTypeOf(TestActiveEffect.fromJSON("some JSON")).toEqualTypeOf<ActiveEffect.Implementation>();
 
 // Document template instance overrides
 expectTypeOf(fullTestAE.parentCollection).toEqualTypeOf<"effects" | null>();
@@ -374,11 +385,11 @@ expectTypeOf(fullTestAE.system).toEqualTypeOf<ActiveEffect.SystemOfType<"base">>
 expectTypeOf(fullTestAE.parent).toEqualTypeOf<Actor.Implementation | Item.Implementation | null>();
 
 // @ts-expect-error updating without data is not allowed
-expectTypeOf(fullTestAE.update()).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
-expectTypeOf(fullTestAE.update({})).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+expectTypeOf(fullTestAE.update()).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
+expectTypeOf(fullTestAE.update({})).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 
 // context tests
-expectTypeOf(fullTestAE.update({}, {})).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+expectTypeOf(fullTestAE.update({}, {})).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 expectTypeOf(
   fullTestAE.update(
     {},
@@ -395,7 +406,7 @@ expectTypeOf(
       render: false,
     },
   ),
-).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 expectTypeOf(
   fullTestAE.update(
     {},
@@ -412,7 +423,7 @@ expectTypeOf(
       render: undefined,
     },
   ),
-).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 // TODO: audit nullability of this interface
 expectTypeOf(
   fullTestAE.update(
@@ -430,7 +441,7 @@ expectTypeOf(
       // render not allowed to be null
     },
   ),
-).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 
 // UpdateData tests
 
@@ -484,7 +495,7 @@ const fullUpdateData = {
   // TODO: mock subtype to test
   type: "base",
 } as const;
-expectTypeOf(fullTestAE.update(fullUpdateData)).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+expectTypeOf(fullTestAE.update(fullUpdateData)).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 expectTypeOf(
   fullTestAE.update({
     name: "some name", // no initial, can't be undefined
@@ -518,13 +529,13 @@ expectTypeOf(
     // TODO: mock subtype to test
     type: undefined,
   }),
-).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 expectTypeOf(
   fullTestAE.update({
     changes: undefined,
     duration: undefined,
   }),
-).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 expectTypeOf(
   fullTestAE.update({
     changes: fullTestAE.changes.concat([
@@ -556,16 +567,16 @@ expectTypeOf(
     system: null,
     type: null,
   }),
-).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 expectTypeOf(
   fullTestAE.update({
     changes: null,
     duration: null,
   }),
-).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 
-expectTypeOf(fullTestAE.delete()).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
-expectTypeOf(fullTestAE.delete({})).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+expectTypeOf(fullTestAE.delete()).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
+expectTypeOf(fullTestAE.delete({})).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 // TODO: audit DeleteOperation interface generally
 expectTypeOf(
   fullTestAE.delete({
@@ -579,7 +590,7 @@ expectTypeOf(
     parentUuid: "someUUID",
     render: false,
   }),
-).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 expectTypeOf(
   fullTestAE.delete({
     animate: undefined,
@@ -592,7 +603,7 @@ expectTypeOf(
     parentUuid: undefined,
     render: undefined,
   }),
-).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 expectTypeOf(
   fullTestAE.delete({
     // animate: not allowed to be null
@@ -605,15 +616,15 @@ expectTypeOf(
     parentUuid: null,
     // render: not allowed to be null
   }),
-).toEqualTypeOf<Promise<TestAE<"base"> | undefined>>();
+).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 
 // traverseEmbeddedDocuments is in the Document boilerplate template but has no signature changes yet
 
 // TODO: wire up core flags to get/set/unsetFlag types
 // TODO: mock up configured flags to test
 expectTypeOf(fullTestAE.getFlag("core", "overlay")).toEqualTypeOf<boolean | undefined>();
-expectTypeOf(fullTestAE.setFlag("core", "overlay", true)).toEqualTypeOf<Promise<TestAE<"base">>>();
-expectTypeOf(fullTestAE.unsetFlag("core", "overlay")).toEqualTypeOf<Promise<TestAE<"base">>>();
+expectTypeOf(fullTestAE.setFlag("core", "overlay", true)).toEqualTypeOf<Promise<TestActiveEffect<"base">>>();
+expectTypeOf(fullTestAE.unsetFlag("core", "overlay")).toEqualTypeOf<Promise<TestActiveEffect<"base">>>();
 
 expectTypeOf(
   fullTestAE["_preCreate"](

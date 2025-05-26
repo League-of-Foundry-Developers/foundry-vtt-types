@@ -215,8 +215,7 @@ declare global {
       _id: fields.DocumentIdField;
 
       /** The name of this Folder */
-      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
       /** The document type which this Folder contains, from {@linkcode CONST.FOLDER_DOCUMENT_TYPES} */
       type: fields.DocumentTypeField<typeof BaseFolder>;

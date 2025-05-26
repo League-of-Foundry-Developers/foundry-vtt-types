@@ -162,7 +162,9 @@ declare abstract class DataModel<
    * with no opportunity to pass an alternative.
    */
   // null would be fine for either/both params here, but it breaks Document, and its never *expected*, just incidentally doesn't break
-  clone(data?: fields.SchemaField.CreateData<Schema>, context?: DataModel.CloneContext & ExtraConstructorOptions): this;
+  // Note(LukeAbby): This is really like `DeepPartial<fields.SchemaField.UpdateData<Schema>>`.
+  // However the difference is subtle enough that it's unlikely to come into play in common usage.
+  clone(data?: fields.SchemaField.UpdateData<Schema>, context?: DataModel.CloneContext & ExtraConstructorOptions): this;
 
   /**
    * Validate the data contained in the document to check for type and content

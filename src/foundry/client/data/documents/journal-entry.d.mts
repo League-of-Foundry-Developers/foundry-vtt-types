@@ -248,8 +248,7 @@ declare global {
       /**
        * The name of this JournalEntry
        */
-      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
       /**
        * The pages contained within this JournalEntry document

@@ -175,17 +175,13 @@ declare global {
       /**
        * The human-readable name of the Adventure
        */
-      // FIXME: required with no initial, assignment type override required
-      name: fields.StringField<
-        {
-          required: true;
-          blank: false;
-          label: "ADVENTURE.Name";
-          hint: "ADVENTURE.NameHint";
-          textSearch: true;
-        },
-        string
-      >;
+      name: fields.StringField<{
+        required: true;
+        blank: false;
+        label: "ADVENTURE.Name";
+        hint: "ADVENTURE.NameHint";
+        textSearch: true;
+      }>;
 
       /**
        * The file path for the primary image of the adventure

@@ -231,11 +231,7 @@ declare global {
       /**
        * The text name of this page.
        */
-      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-      name: fields.StringField<
-        { required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true },
-        string
-      >;
+      name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true }>;
 
       /**
        * The type of this page, in {@linkcode BaseJournalEntryPage.TYPES}.

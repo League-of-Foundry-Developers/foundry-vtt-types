@@ -600,8 +600,9 @@ declare namespace DataField {
           Options["required"] extends true
           ? // when required and not nullable, null can only be passed when initial is present
             "initial" extends keyof Options
-            ? // when initial is present, null can be passed
-              null
+            ? Options["initial"] extends undefined
+              ? never
+              : null // when initial is present, null can be passed
             : // when initial is not in the options, then null can not be passed
               never
           : // when not required, null can safely be passed
@@ -609,8 +610,9 @@ declare namespace DataField {
     | (Options["required"] extends true // determine whether undefined is in the union
         ? // when required, it depends on initial
           "initial" extends keyof Options
-          ? // when initial is in the options, undefined is allowed
-            undefined
+          ? Options["initial"] extends undefined
+            ? never
+            : undefined // when initial is in the options, undefined is allowed
           : // when initial is not in the options, then undefined is not allowed
             never
         : // when not required, undefined can safely be passed
@@ -987,8 +989,28 @@ declare namespace SchemaField {
   // Note(LukeAbby): Currently this is identical to the assignment type. The intent is to make this
   // More accurate in the future, e.g. requiring some requisite properties instead of always being
   // optional. This does mean the deprecation of `AssignmentData` is a "lie"
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type CreateData<Fields extends DataSchema> = AssignmentData<Fields>;
+  type CreateData<Fields extends DataSchema> = PrettifyType<
+    RemoveIndexSignatures<{
+      [Key in keyof Fields]?: _FieldType<Fields[Key]>;
+    }>
+  >;
+
+  /** @internal */
+  type _FieldType<Field extends DataField.Any> =
+    Field extends EmbeddedDataField<any, any, infer AssignmentType, any, any>
+      ? AssignmentType
+      : Field extends SchemaField<infer SubSchema, any, any, any, any>
+        ? // FIXME(LukeAbby): This is a quick hack into AssignmentData that assumes that the `initial` of `SchemaField` is not changed from the default of `{}`
+          // This will be fixed with the refactoring of the types
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          EmptyObject extends AssignmentData<SubSchema>
+          ? // eslint-disable-next-line @typescript-eslint/no-deprecated
+            AssignmentData<SubSchema> | undefined | null
+          : // eslint-disable-next-line @typescript-eslint/no-deprecated
+            AssignmentData<SubSchema>
+        : Field extends DataField<any, infer AssignType, any, any>
+          ? AssignType
+          : never;
 
   /**
    * Get the inner assignment type for the given DataSchema.
@@ -1004,20 +1026,7 @@ declare namespace SchemaField {
    */
   type AssignmentData<Fields extends DataSchema> = PrettifyType<
     RemoveIndexSignatures<{
-      [Key in keyof Fields]?: Fields[Key] extends EmbeddedDataField<any, any, infer AssignmentType, any, any>
-        ? AssignmentType
-        : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-          ? // FIXME(LukeAbby): This is a quick hack into AssignmentData that assumes that the `initial` of `SchemaField` is not changed from the default of `{}`
-            // This will be fixed with the refactoring of the types
-            // eslint-disable-next-line @typescript-eslint/no-deprecated
-            EmptyObject extends AssignmentData<SubSchema>
-            ? // eslint-disable-next-line @typescript-eslint/no-deprecated
-              AssignmentData<SubSchema> | undefined | null
-            : // eslint-disable-next-line @typescript-eslint/no-deprecated
-              AssignmentData<SubSchema>
-          : Fields[Key] extends DataField<any, infer AssignType, any, any>
-            ? AssignType
-            : never;
+      [Key in keyof Fields]?: _FieldType<Fields[Key]>;
     }>
   >;
 
@@ -1783,11 +1792,10 @@ declare namespace StringField {
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
     {
-      initial: string;
       blank: true;
       trim: true;
-      nullable: false;
       choices: undefined;
+      textSearch: false;
     }
   >;
 
@@ -1837,8 +1845,13 @@ declare namespace StringField {
   // FIXME: `"initial" extends keyof Options` does not work for modeling `"initial" in options`.
   type _OptionsForInitial<Options extends StringField.Options<unknown>> = "initial" extends keyof Options
     ? Options
-    : SimpleMerge<Options, { initial: _InitialForOptions<Options> }>;
+    : // eslint-disable-next-line @typescript-eslint/no-deprecated
+      SimpleMerge<Options, { initial: _InitialForOptions<Options> }>;
 
+  /**
+   * @deprecated - Foundry no longer directly modifies the options for `initial`, it uses .
+   * @internal
+   */
   type _InitialForOptions<Options extends StringField.Options<unknown>> = Options["required"] extends false | undefined
     ? undefined
     : Options["blank"] extends true
@@ -1984,6 +1997,13 @@ declare namespace ObjectField {
    */
   type MergedOptions<Options extends DataField.Options<AnyObject>> = SimpleMerge<DefaultOptions, Options>;
 
+  /** @internal */
+  type _EffectiveOptions<Options extends DataField.Options<AnyObject>> =
+    MergedOptions<Options> extends { readonly initial: undefined }
+      ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+        SimpleMerge<MergedOptions<Options>, { initial: {} }>
+      : MergedOptions<Options>;
+
   /**
    * A shorthand for the assignment type of a ObjectField class.
    * @template Options - the options that override the default options
@@ -1994,7 +2014,7 @@ declare namespace ObjectField {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type AssignmentType<Options extends DataField.Options<AnyObject>> = DataField.DerivedAssignmentType<
     AnyObject,
-    MergedOptions<Options>
+    _EffectiveOptions<Options>
   >;
 
   /**
@@ -2003,7 +2023,7 @@ declare namespace ObjectField {
    */
   type InitializedType<Options extends DataField.Options<AnyObject>> = DataField.DerivedInitializedType<
     AnyObject,
-    MergedOptions<Options>
+    _EffectiveOptions<Options>
   >;
 
   namespace FlagsField {
@@ -2410,6 +2430,12 @@ declare namespace ArrayField {
     Opts
   >;
 
+  /** @internal */
+  type _EffectiveOptions<AssignmentElementType, Options extends AnyOptions> =
+    MergedOptions<AssignmentElementType, Options> extends { readonly initial: undefined }
+      ? SimpleMerge<MergedOptions<AssignmentElementType, Options>, { initial: [] }>
+      : MergedOptions<AssignmentElementType, Options>;
+
   /**
    * A type to infer the assignment element type of an ArrayField from its ElementFieldType.
    * @template ElementFieldType - the DataField type of the elements in the ArrayField
@@ -2457,7 +2483,7 @@ declare namespace ArrayField {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type AssignmentType<AssignmentElementType, Opts extends AnyOptions> = DataField.DerivedAssignmentType<
     BaseAssignmentType<AssignmentElementType>,
-    MergedOptions<AssignmentElementType, Opts>
+    _EffectiveOptions<AssignmentElementType, Opts>
   >;
 
   /**
@@ -2470,7 +2496,7 @@ declare namespace ArrayField {
     AssignmentElementType,
     InitializedElementType,
     Opts extends AnyOptions,
-  > = DataField.DerivedInitializedType<InitializedElementType[], MergedOptions<AssignmentElementType, Opts>>;
+  > = DataField.DerivedInitializedType<InitializedElementType[], _EffectiveOptions<AssignmentElementType, Opts>>;
 
   /**
    * A shorthand for the persisted type of an ArrayField class.
@@ -2482,7 +2508,7 @@ declare namespace ArrayField {
     AssignmentElementType,
     PersistedElementType,
     Opts extends AnyOptions,
-  > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
+  > = DataField.DerivedInitializedType<PersistedElementType[], _EffectiveOptions<AssignmentElementType, Opts>>;
 }
 
 /**

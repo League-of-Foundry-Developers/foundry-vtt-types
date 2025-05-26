@@ -5,13 +5,13 @@ import Document = foundry.abstract.Document;
 
 class TestTile extends BaseTile {}
 
-let myTile;
 // @ts-expect-error Tiles require a provided width and height
-myTile = new TestTile();
-// @ts-expect-error Tiles require a provided width and height
-myTile = new TestTile({});
+new TestTile();
 
-myTile = new TestTile({
+// @ts-expect-error Tiles require a provided width and height
+new TestTile({});
+
+let myTile = new TestTile({
   _id: "XXXXXSomeIDXXXXX",
   texture: {
     src: "path/to/some/image.png",

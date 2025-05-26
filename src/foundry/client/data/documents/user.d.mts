@@ -185,8 +185,7 @@ declare global {
       /**
        * The user's name.
        */
-      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
       /**
        * The user's role, see CONST.USER_ROLES.
