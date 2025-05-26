@@ -2,7 +2,6 @@ import type {
   ConfiguredDocumentClass,
   ConfiguredDocumentInstance,
   ConfiguredMetadata,
-  CreateData,
 } from "../../../types/documentConfiguration.d.mts";
 import type {
   GetKey,

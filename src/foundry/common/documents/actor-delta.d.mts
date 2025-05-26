@@ -1,6 +1,5 @@
 import type { AnyMutableObject } from "#utils";
 import type Document from "../abstract/document.mts";
-import type { fields } from "../data/_module.d.mts";
 import type { documents } from "#client-esm/client.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type DataModel from "../abstract/data.d.mts";
@@ -195,19 +194,19 @@ declare abstract class BaseActorDelta<
     // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
     // However this causes a number of errors.
     operation?: object,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
 
   override updateEmbeddedDocuments<EmbeddedName extends ActorDelta.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
     operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends ActorDelta.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
     operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
