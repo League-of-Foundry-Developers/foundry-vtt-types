@@ -628,15 +628,15 @@ declare global {
 
     /**
      * Trigger the Region event.
-     * @param eventName     - The event name
-     * @param eventData     - The event data
+     * @param eventName - The event name
+     * @param eventData - The event data
      * @internal
      */
     protected _triggerEvent(eventName: string, eventData: RegionDocument.EventData): Promise<void>;
 
     /**
      * Handle the Region event.
-     * @param event     - The Region event
+     * @param event - The Region event
      * @internal
      */
     protected _handleEvent(event: RegionDocument.RegionEvent): Promise<void>;

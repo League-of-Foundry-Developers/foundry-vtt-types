@@ -862,7 +862,7 @@ declare global {
         >
       | ActorDelta.OnDeleteDescendantDocumentsArgs;
 
-    // The getBarAttribute monkeypatch is simply inside the data model definition at `src\foundry\common\data\data.d.mts`
+    // The getBarAttribute monkeypatch is simply inside the data model definition at `src/foundry/common/data/data.d.mts`
 
     interface PseudoActorCollection extends foundry.utils.Collection<Actor.Implementation> {
       documentClass: Actor.ImplementationClass;
