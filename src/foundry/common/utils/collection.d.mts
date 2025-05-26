@@ -1,6 +1,6 @@
 // This class exists make it as sound as possible to override these parts of the class and make them
 
-import type { AnyArray, Identity } from "#utils";
+import type { AnyArray, GetKey, Identity } from "#utils";
 
 // completely unrelated. It's done this way specifically to avoid situations with broken inheritance.
 declare class Map<K, V> extends globalThis.Map<K, V> {
@@ -172,7 +172,7 @@ declare namespace Collection {
   }
 
   interface Methods<V> {
-    get<Options extends DocumentCollection.GetOptions>(
+    get<Options extends DocumentCollection.GetOptions | undefined = undefined>(
       key: string,
       { strict }?: Options,
     ): Collection.GetReturnType<V, Options>;
@@ -184,7 +184,7 @@ declare namespace Collection {
     }
   }
 
-  type GetReturnType<T, Options extends GetOptions> = _ApplyStrict<T, Options["strict"]>;
+  type GetReturnType<T, Options extends GetOptions | undefined> = _ApplyStrict<T, GetKey<Options, "strict", undefined>>;
 
   /** @internal */
   type _ApplyStrict<ConcreteDocument, Strict extends boolean | undefined> =

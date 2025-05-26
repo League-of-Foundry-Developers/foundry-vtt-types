@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, InexactPartial, FixedInstanceType } from "#utils";
+import type { AnyObject, DeepPartial, InexactPartial, FixedInstanceType, GetKey } from "#utils";
 import type { DatabaseAction, DatabaseOperationMap, DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 
@@ -154,7 +154,7 @@ declare global {
     interface Any extends DocumentCollection<Document.AnyConstructor, string> {}
 
     interface Methods<T extends Document.AnyConstructor> {
-      get<Options extends DocumentCollection.GetOptions>(
+      get<Options extends DocumentCollection.GetOptions | undefined = undefined>(
         key: string,
         options?: Options,
       ): DocumentCollection.GetReturnType<T, Options>;
@@ -228,8 +228,8 @@ declare global {
 
     type GetReturnType<
       ConcreteDocument extends Document.AnyConstructor,
-      Options extends GetOptions,
-    > = Collection.GetReturnType<_ApplyInvalid<FixedInstanceType<ConcreteDocument>, Options["invalid"]>, Options>;
+      Options extends GetOptions | undefined,
+    > = _ApplyInvalid<FixedInstanceType<ConcreteDocument>, GetKey<Options, "invalid", false>>;
 
     /** @internal */
     type _ApplyInvalid<
