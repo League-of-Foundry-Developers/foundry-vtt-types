@@ -1847,13 +1847,10 @@ declare namespace StringField {
         ? null
         : undefined;
 
-  // choices?: string[] | Record<string, string> | (() => string[] | Record<string, string>) | undefined;
+  type ValidChoice<Options extends StringField.Options<unknown>> = _ValidChoice<Options["choices"]>;
 
-  type ValidChoice<Options extends StringField.Options<unknown>> = Options["choices"] extends undefined
-    ? string
-    : Options["choices"] extends (...args: infer _1) => infer Choices
-      ? FixedChoice<Choices>
-      : FixedChoice<Options["choices"]>;
+  /** @internal */
+  type _ValidChoice<Choices> = Choices extends (...args: infer _1) => infer C ? FixedChoice<C> : FixedChoice<Choices>;
 
   type FixedChoice<Choices> =
     Choices extends ReadonlyArray<infer U>
