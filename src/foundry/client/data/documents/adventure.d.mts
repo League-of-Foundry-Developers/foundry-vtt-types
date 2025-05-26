@@ -1,7 +1,8 @@
-import type { AnyObject, FolderDocumentTypes, InexactPartial, FixedInstanceType, Merge } from "#utils";
+import type { AnyObject, FolderDocumentTypes, InexactPartial, Merge, NullishProps } from "#utils";
 import type { fields } from "../../../common/data/module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type DataModel from "#common/abstract/data.mjs";
 
 declare global {
   namespace Adventure {
@@ -173,13 +174,17 @@ declare global {
       /**
        * The human-readable name of the Adventure
        */
-      name: fields.StringField<{
-        required: true;
-        blank: false;
-        label: "ADVENTURE.Name";
-        hint: "ADVENTURE.NameHint";
-        textSearch: true;
-      }>;
+      // FIXME: required with no initial, assignment type override required
+      name: fields.StringField<
+        {
+          required: true;
+          blank: false;
+          label: "ADVENTURE.Name";
+          hint: "ADVENTURE.NameHint";
+          textSearch: true;
+        },
+        string
+      >;
 
       /**
        * The file path for the primary image of the adventure
@@ -408,21 +413,49 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
-    interface PrepareImportOptions {
-      /**
-       * A subset of adventure fields to import.
-       */
-      // TODO: This isn't *quite* right as the keyof is including all the nevers.
-      importFields: Array<keyof typeof foundry.documents.BaseAdventure.contentFields | "all">;
+    type DocumentDataRecord = {
+      [K in ContainedDocumentType]?: Document.CreateDataForName<K>[];
+    };
+
+    type DocumentResult = {
+      [K in ContainedDocumentType]?: Document.ImplementationFor<K>[];
+    };
+
+    type ContainedDocumentType = Exclude<FolderDocumentTypes, "Adventure"> | "Folder";
+
+    interface ImportData {
+      toCreate: DocumentDataRecord;
+      toUpdate: DocumentDataRecord;
+      documentCount: number;
     }
 
-    interface ImportOptions extends PrepareImportOptions {
+    interface ImportResult {
+      created: DocumentResult;
+      updated: DocumentResult;
+    }
+
+    /** @internal */
+    type _PrepareImportOptions = InexactPartial<{
+      /**
+       * A subset of adventure fields to import.
+       * @defaultValue `[]`
+       * @remarks Can't be `null` as it only has a parameter default
+       */
+      importFields: Array<keyof typeof foundry.documents.BaseAdventure.contentFields | "all">;
+    }>;
+
+    interface PrepareImportOptions extends _PrepareImportOptions {}
+
+    /** @internal */
+    type _ImportOptions = NullishProps<{
       /**
        * Display a warning dialog if existing documents would be overwritten
        * @defaultValue `true`
        */
       dialog: boolean;
-    }
+    }>;
+
+    interface ImportOptions extends _ImportOptions, PrepareImportOptions {}
 
     /**
      * @deprecated {@link Adventure.Database | `Adventure.DatabaseOperation`}
@@ -444,17 +477,6 @@ declare global {
      * @deprecated {@link Adventure.Implementation | `Adventure.Implementation`}
      */
     type ConfiguredInstance = Implementation;
-
-    interface ImportData {
-      toCreate?: DocumentDataRecord;
-      toUpdate?: DocumentDataRecord;
-      documentCount: number;
-    }
-
-    interface ImportResult {
-      created: DocumentResult;
-      updated: DocumentResult;
-    }
   }
 
   /**
@@ -468,24 +490,38 @@ declare global {
     constructor(...args: Adventure.ConstructorArgs);
 
     /**
+     * @remarks If this creation is happening in a provided `pack`, and that pack is **not** system-specific,
+     * strips `Actor`s, `Item`s, and `Actor` and `Item` `Folders` from `source`s
+     */
+    // options: not null (parameter default only, destructured in super)
+    static override fromSource(
+      source: Adventure.CreateData,
+      context?: DataModel.FromSourceOptions,
+    ): Adventure.Implementation;
+
+    /**
      * Perform a full import workflow of this Adventure.
      * Create new and update existing documents within the World.
      * @param options - Options which configure and customize the import process
      * @returns The import result
      */
-    import(options?: InexactPartial<Adventure.ImportOptions>): Promise<Adventure.ImportResult>;
+    // options: not null (destructured)
+    import(options?: Adventure.ImportOptions): Promise<Adventure.ImportResult>;
 
     /**
      * Prepare Adventure data for import into the World.
      * @param options - Options passed in from the import dialog to configure the import behavior
      * @returns A subset of adventure fields to import.
      */
-    prepareImport(options?: InexactPartial<Adventure.PrepareImportOptions>): Promise<Adventure.ImportData>;
+    // options: not null (destructured)
+    prepareImport(options?: Adventure.PrepareImportOptions): Promise<Adventure.ImportData>;
 
     /**
      * Execute an Adventure import workflow, creating and updating documents in the World.
+     * @remarks Despite having a parameter default, neither `data` nor any of its keys are optional, as the keys themselves have no defaults,
+     * and `toCreate` and `toUpdate` get passed to `Object.entries` which throws on nullish values, and `documentCount`is used as a divisor
      */
-    importContent(data?: InexactPartial<Adventure.ImportData>): Promise<Adventure.ImportResult>;
+    importContent(data: Adventure.ImportData): Promise<Adventure.ImportResult>;
 
     /*
      * After this point these are not really overridden methods.
@@ -530,15 +566,3 @@ declare global {
   /** @deprecated {@link Adventure.ImportResult | `Adventure.ImportResult`} */
   type AdventureImportResult = Adventure.ImportResult;
 }
-
-type DocumentDataRecord = {
-  [K in AdventureDocumentTypes]?: foundry.data.fields.SchemaField.AssignmentData<
-    ReturnType<Document.ImplementationClassFor<K>["defineSchema"]>
-  >[];
-};
-
-type DocumentResult = {
-  [K in AdventureDocumentTypes]?: FixedInstanceType<Document.ImplementationClassFor<K>>[];
-};
-
-type AdventureDocumentTypes = Exclude<FolderDocumentTypes, "Adventure"> | "Folder";

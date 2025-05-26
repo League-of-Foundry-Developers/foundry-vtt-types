@@ -29,6 +29,26 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    */
   constructor(...args: Actor.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Actor",
+   *   collection: "actors",
+   *   indexed: true,
+   *   compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"],
+   *   embedded: {ActiveEffect: "effects", Item: "items"},
+   *   hasTypeData: true,
+   *   label: "DOCUMENT.Actor",
+   *   labelPlural: "DOCUMENT.Actors",
+   *   permissions: {
+   *     create: this.#canCreate,
+   *     update: this.#canUpdate
+   *   },
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseActor.Metadata;
 
   static override defineSchema(): BaseActor.Schema;
@@ -42,11 +62,9 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   /**
    * Determine default artwork based on the provided actor data
    * @param actorData - The source actor data
+   * @remarks Core's implementation does not use `actorData`
    */
-  static getDefaultArtwork(actorData: BaseActor.CreateData): {
-    img: string;
-    texture: { src: string };
-  };
+  static getDefaultArtwork(actorData?: BaseActor.CreateData): BaseActor.GetDefaultArtworkReturn;
 
   // options: not null (parameter default only)
   protected override _initializeSource(
@@ -81,39 +99,39 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: Actor.ParentCollectionName | null;
+  override readonly parentCollection: Actor.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
-  static get implementation(): Actor.ImplementationClass;
+  static override get implementation(): Actor.ImplementationClass;
 
-  static get baseDocument(): typeof BaseActor;
+  static override get baseDocument(): typeof BaseActor;
 
-  static get collectionName(): Actor.ParentCollectionName;
+  static override get collectionName(): Actor.ParentCollectionName;
 
-  static get documentName(): Actor.Name;
+  static override get documentName(): Actor.Name;
 
-  static get TYPES(): BaseActor.SubType[];
+  static override get TYPES(): BaseActor.SubType[];
 
-  static get hasTypeData(): true;
+  static override get hasTypeData(): true;
 
-  static get hierarchy(): Actor.Hierarchy;
+  static override get hierarchy(): Actor.Hierarchy;
 
   override system: Actor.SystemOfType<SubType>;
 
   override parent: BaseActor.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Actor.Implementation | Actor.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Actor.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Actor.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: Actor.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<Actor.Database.Update>,
   ): Promise<Actor.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<Actor.Database.Delete>,
   ): Promise<Actor.Implementation[]>;
@@ -186,63 +204,70 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: Actor.CreateData,
     options: Actor.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(data: Actor.CreateData, options: Actor.Database.OnCreateOperation, userId: string): void;
+  protected override _onCreate(data: Actor.CreateData, options: Actor.Database.OnCreateOperation, userId: string): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: Actor.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<Actor.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: Actor.Implementation[],
     operation: Actor.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: Actor.UpdateData,
     options: Actor.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(changed: Actor.UpdateData, options: Actor.Database.OnUpdateOperation, userId: string): void;
+  protected override _onUpdate(
+    changed: Actor.UpdateData,
+    options: Actor.Database.OnUpdateOperation,
+    userId: string,
+  ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: Actor.Implementation[],
     operation: Actor.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: Actor.Implementation[],
     operation: Actor.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(options: Actor.Database.PreDeleteOptions, user: User.Implementation): Promise<boolean | void>;
+  protected override _preDelete(
+    options: Actor.Database.PreDeleteOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
 
-  protected _onDelete(options: Actor.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: Actor.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: Actor.Implementation[],
     operation: Actor.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: Actor.Implementation[],
     operation: Actor.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): true;
+  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -280,7 +305,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
    */
-  protected static _onCreateDocuments(
+  protected static override _onCreateDocuments(
     documents: Actor.Implementation[],
     context: Document.ModificationContext<Actor.Parent>,
   ): Promise<void>;
@@ -289,7 +314,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
    */
-  protected static _onUpdateDocuments(
+  protected static override _onUpdateDocuments(
     documents: Actor.Implementation[],
     context: Document.ModificationContext<Actor.Parent>,
   ): Promise<void>;
@@ -298,26 +323,25 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
    */
-  protected static _onDeleteDocuments(
+  protected static override _onDeleteDocuments(
     documents: Actor.Implementation[],
     context: Document.ModificationContext<Actor.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<Actor.Schema>;
+  protected static override _schema: SchemaField<Actor.Schema>;
 
-  static get schema(): SchemaField<Actor.Schema>;
+  static override get schema(): SchemaField<Actor.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: Actor.Source): void;
+  static override validateJoint(data: Actor.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(source: Actor.CreateData, context?: DataModel.FromSourceOptions): Actor.Implementation;
 
   static override fromJSON(json: string): Actor.Implementation;
 
-  #baseActor: true;
+  static #BaseActor: true;
 }
 
 declare namespace BaseActor {
@@ -348,6 +372,8 @@ declare namespace BaseActor {
   export import Schema = Actor.Schema;
   export import DatabaseOperation = Actor.Database;
   export import Flags = Actor.Flags;
+  export import GetDefaultArtworkReturn = Actor.GetDefaultArtworkReturn;
+  export import GetDefaultArtworkTextureReturn = Actor.GetDefaultArtworkTextureReturn;
 
   // The document subclasses override `system` anyways.
   // There's no point in doing expensive computation work comparing the base class system.
