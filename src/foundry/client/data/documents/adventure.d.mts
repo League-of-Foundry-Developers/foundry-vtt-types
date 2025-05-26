@@ -414,14 +414,14 @@ declare global {
     }
 
     type DocumentDataRecord = {
-      [K in DocumentTypes]?: Document.CreateDataForName<K>[];
+      [K in ContainedDocumentType]?: Document.CreateDataForName<K>[];
     };
 
     type DocumentResult = {
-      [K in DocumentTypes]?: Document.ImplementationFor<K>[];
+      [K in ContainedDocumentType]?: Document.ImplementationFor<K>[];
     };
 
-    type DocumentTypes = Exclude<FolderDocumentTypes, "Adventure"> | "Folder";
+    type ContainedDocumentType = Exclude<FolderDocumentTypes, "Adventure"> | "Folder";
 
     interface ImportData {
       toCreate: DocumentDataRecord;
