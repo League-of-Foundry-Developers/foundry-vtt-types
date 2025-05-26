@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, Merge } from "#utils";
+import type { AnyObject, Merge, NullishProps } from "#utils";
 import type { BaseShapeData, fields } from "../../../common/data/module.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -522,7 +522,8 @@ declare global {
       eventDataUuids: string[];
     }
 
-    interface UpdateTokenOptions {
+    /** @internal */
+    type _UpdateTokensOptions = NullishProps<{
       /**
        * Are the Region documents deleted?
        * @defaultValue `false`
@@ -534,7 +535,9 @@ declare global {
        * @defaultValue `true`
        */
       reset: boolean;
-    }
+    }>;
+
+    interface UpdateTokensOptions extends _UpdateTokensOptions {}
 
     type EventData =
       | {
@@ -598,25 +601,45 @@ declare global {
 
     /**
      * Activate the Socket event listeners.
-     * @param socket    - The active game socket
+     * @param socket - The active game socket
      * @internal
      */
     protected static _activateSocketListeners(socket: WebSocket): void;
 
     /**
      * Update the tokens of the given regions.
-     * @param regions   - The regions to update the tokens for
-     * @remarks
-     *  If called during Region/Scene create/update/delete workflows, the Token documents are always reset and
-     *  so never in an animated state, which means the reset option may be false. It is important that the
-     *  containment test is not done in an animated state.
+     *
+     * If called during Region/Scene create/update/delete workflows, the Token documents are always reset and
+     * so never in an animated state, which means the reset option may be false. It is important that the
+     * containment test is not done in an animated state.
+     * @param regions - The regions to update the tokens for
      * @internal
      */
+    // options: not null (destructured)
     protected static _updateTokens(
       regions: RegionDocument.Implementation[],
-      options?: InexactPartial<RegionDocument.UpdateTokenOptions>,
+      options?: RegionDocument.UpdateTokensOptions,
     ): Promise<void>;
 
+    // _onCreateOperation, _onUpdateOperation, and _onDeleteOperation are overridden from BaseRegion without signature changes.
+
+    /** The tokens inside this region. */
+    tokens: Set<TokenDocument.Implementation>;
+
+    /**
+     * Trigger the Region event.
+     * @param eventName     - The event name
+     * @param eventData     - The event data
+     * @internal
+     */
+    protected _triggerEvent(eventName: string, eventData: RegionDocument.EventData): Promise<void>;
+
+    /**
+     * Handle the Region event.
+     * @param event     - The Region event
+     * @internal
+     */
+    protected _handleEvent(event: RegionDocument.RegionEvent): Promise<void>;
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
      * this method must be overridden like so:
@@ -670,31 +693,6 @@ declare global {
      * ```
      */
     protected override _onDeleteDescendantDocuments(...args: RegionDocument.OnDeleteDescendantDocumentsArgs): void;
-
-    /** The tokens inside this region. */
-    tokens: Set<TokenDocument.Implementation>;
-
-    /**
-     * Trigger the Region event.
-     * @param eventName     - The event name
-     * @param eventData     - The event data
-     * @internal
-     */
-    protected _triggerEvent(eventName: string, eventData: RegionDocument.EventData): Promise<void>;
-
-    /**
-     * Handle the Region event.
-     * @param event     - The Region event
-     * @internal
-     */
-    protected _handleEvent(event: RegionDocument.RegionEvent): Promise<void>;
-
-    /**
-     * @privateRemarks _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
-     * _onUpdateOperation, _onDeleteOperation, are overridden from BaseRegion without signature changes.
-     */
-
-    #regionDocument: true;
 
     /*
      * After this point these are not really overridden methods.
