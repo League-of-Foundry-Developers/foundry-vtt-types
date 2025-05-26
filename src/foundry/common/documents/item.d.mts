@@ -183,19 +183,19 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
     // However this causes a number of errors.
     operation?: object,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
 
   override updateEmbeddedDocuments<EmbeddedName extends Item.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
     operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends Item.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
     operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
