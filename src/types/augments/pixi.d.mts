@@ -1010,6 +1010,15 @@ declare global {
       interface Any extends AnyPIXIShader {}
       interface AnyConstructor extends Identity<typeof AnyPIXIShader> {}
     }
+
+    class Texture<R extends PIXI.Resource = PIXI.Resource> extends _PIXI.Texture<R> {
+      // Note(LukeAbby): `Texture.from` does not correctly.
+      static from<R extends PIXI.Resource = PIXI.Resource, RO = any>(
+        source: PIXI.Resource | PIXI.TextureSource | PIXI.TextureSource[],
+        options?: PIXI.IBaseTextureOptions<RO>,
+        strict?: boolean,
+      ): PIXI.Texture<R>;
+    }
   }
 }
 

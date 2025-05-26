@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { test, expectTypeOf } from "vitest";
 
 expectTypeOf(Token.embeddedName).toEqualTypeOf<"Token">();
 expectTypeOf(Token.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
@@ -541,3 +541,8 @@ expectTypeOf(token.toggleEffect(CONFIG.statusEffects[0]!, { active: null, overla
 
 expectTypeOf(token.toggleVisibility()).toEqualTypeOf<Promise<TokenDocument.Stored[]>>();
 expectTypeOf(token["_recoverFromPreview"]()).toBeVoid();
+
+// Reported by emily3k on Discord, see https://discord.com/channels/732325252788387980/803646399014109205/1375296418478030930
+test("Ensure that PIXI.Texture.from can accept PIXI.Resource", () => {
+  PIXI.Texture.from(token.mesh!.texture!.baseTexture.resource);
+});
