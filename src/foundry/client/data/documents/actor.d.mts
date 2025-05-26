@@ -519,12 +519,13 @@ declare global {
     }
 
     type ItemTypes = {
-      [SubType in Game.Model.TypeNames<"Item">]: Array<Item.OfType<SubType>>;
+      [SubType in Item.SubType]: Array<Item.OfType<SubType>>;
     };
 
     type GetActiveTokensReturn<Document extends boolean | null | undefined> = Document extends true
       ? TokenDocument.Implementation[]
       : Token.Object[];
+
     /** @internal */
     type _RollInitiativeOptions = NullishProps<{
       /**
