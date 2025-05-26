@@ -107,9 +107,9 @@ declare global {
      * builtin `RegionBehavior` class or a custom subclass if that is set up in
      * {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`}.
      */
-    // eslint-disable-next-line @typescript-eslint/no-restricted-types
     type OfType<Type extends SubType> = Document.Internal.OfType<
       ConfiguredRegionBehavior<Type>,
+      // eslint-disable-next-line @typescript-eslint/no-restricted-types
       () => RegionBehavior<Type>
     >;
 

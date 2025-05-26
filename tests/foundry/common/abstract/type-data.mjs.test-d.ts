@@ -1,9 +1,6 @@
 import { expectTypeOf, test } from "vitest";
 import type { DeepPartial, EmptyObject } from "fvtt-types/utils";
 
-import fields = foundry.data.fields;
-import BaseJournalEntryPage = foundry.documents.BaseJournalEntryPage;
-
 import TypeDataModel = foundry.abstract.TypeDataModel;
 import type Document from "../../../../src/foundry/common/abstract/document.d.mts";
 import type {
@@ -11,9 +8,11 @@ import type {
   DatabaseUpdateOperation,
 } from "../../../../src/foundry/common/abstract/_types.d.mts";
 
+import fields = foundry.data.fields;
+
 /* attempting to use the example as a test */
 
-export interface QuestSchema extends BaseJournalEntryPage.Schema {
+export interface QuestSchema extends JournalEntryPage.Schema {
   description: fields.HTMLField<{ required: false; blank: true; initial: "" }>;
   steps: fields.ArrayField<fields.StringField<{ required: true }>>;
 }
@@ -30,11 +29,11 @@ type DerivedQuestData = { totalSteps: number };
 
 // Test With specified Base and DerivedData.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-class QuestModel extends TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQuestData, DerivedQuestData> {
+class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementation, BaseQuestData, DerivedQuestData> {
   otherMethod() {}
 
   // This override may seem random but it's a regression test for this error:
-  //   Class 'QuestModel' incorrectly extends base class 'TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQuestData, DerivedQuestData>'.
+  //   Class 'QuestModel' incorrectly extends base class 'TypeDataModel<QuestSchema, JournalEntryPage.Implementation, BaseQuestData, DerivedQuestData>'.
   //     Property '_initialize' is protected but type 'QuestModel' is not a class derived from 'DataModel<Schema, Parent, ExtraConstructorOptions>'.
   // See: https://gist.github.com/LukeAbby/b9fd57eeba778a25297721e88b3e6bdd
   override _initialize(): void {}
@@ -81,7 +80,7 @@ class QuestModel extends TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQu
   }
 
   protected override async _preCreate(
-    data: TypeDataModel.ParentAssignmentType<QuestSchema, BaseJournalEntryPage>,
+    data: TypeDataModel.ParentAssignmentType<QuestSchema, JournalEntryPage.Implementation>,
     _options: Document.Database.PreCreateOptions<DatabaseCreateOperation>,
     _user: User.Implementation,
   ): Promise<boolean | void> {
@@ -89,17 +88,17 @@ class QuestModel extends TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQu
   }
 
   protected override async _preUpdate(
-    data: DeepPartial<TypeDataModel.ParentAssignmentType<QuestSchema, BaseJournalEntryPage>>,
-    _options: Document.Database.PreCreateOptions<DatabaseUpdateOperation>,
-    _userId: string,
+    changes: DeepPartial<TypeDataModel.ParentAssignmentType<QuestSchema, JournalEntryPage.Implementation>>,
+    _options: Document.Database.PreUpdateOptions<DatabaseUpdateOperation>,
+    _user: User.Implementation,
   ): Promise<boolean | void> {
-    expectTypeOf(data.system?.steps).toEqualTypeOf<string[] | undefined>();
+    expectTypeOf(changes.system?.steps).toEqualTypeOf<string[] | undefined>();
   }
 }
 
 /* Test with default BaseData and DerivedData */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-class QuestModel2 extends foundry.abstract.TypeDataModel<QuestSchema, BaseJournalEntryPage> {
+class QuestModel2 extends foundry.abstract.TypeDataModel<QuestSchema, JournalEntryPage.Implementation> {
   override prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void {
     // From JournalEntryPage
     expectTypeOf(this.flags).toEqualTypeOf<EmptyObject>;
@@ -131,7 +130,7 @@ class QuestModel2 extends foundry.abstract.TypeDataModel<QuestSchema, BaseJourna
 
 /* Test with no DerivedData */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-class QuestModel3 extends foundry.abstract.TypeDataModel<QuestSchema, BaseJournalEntryPage, BaseQuestData> {
+class QuestModel3 extends foundry.abstract.TypeDataModel<QuestSchema, JournalEntryPage.Implementation, BaseQuestData> {
   override prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void {
     // From JournalEntryPage
     expectTypeOf(this.flags).toEqualTypeOf<EmptyObject>;

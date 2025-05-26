@@ -244,10 +244,13 @@ declare const user: User.Implementation;
 declare const nonBaseAE: ActiveEffect.Implementation;
 declare const createDataArray: ActiveEffect.CreateData[];
 declare const someItem: Item.Implementation;
+
+const effect = someItem.effects.get("effect")!;
+
 // TODO: better tests for the operation interfaces, beyond the minimum (probably in Document tests)
 expectTypeOf(
   TestAE["_preCreateOperation"](
-    [someItem.effects[0]!, nonBaseAE],
+    [effect, nonBaseAE],
     { data: createDataArray, modifiedTime: 0, render: false, renderSheet: false },
     user,
   ),
@@ -255,7 +258,7 @@ expectTypeOf(
 
 expectTypeOf(
   TestAE["_onCreateOperation"](
-    [someItem.effects[0]!, nonBaseAE],
+    [effect, nonBaseAE],
     { data: createDataArray, modifiedTime: 0, render: false, renderSheet: false },
     user,
   ),
@@ -264,7 +267,7 @@ expectTypeOf(
 declare const updateDataArray: ActiveEffect.UpdateData[];
 expectTypeOf(
   TestAE["_preUpdateOperation"](
-    [someItem.effects[0]!, nonBaseAE],
+    [effect, nonBaseAE],
     { modifiedTime: 0, render: false, diff: true, recursive: true, pack: null, updates: updateDataArray },
     user,
   ),
@@ -272,7 +275,7 @@ expectTypeOf(
 
 expectTypeOf(
   TestAE["_onUpdateOperation"](
-    [someItem.effects[0]!, nonBaseAE],
+    [effect, nonBaseAE],
     { modifiedTime: 0, render: false, diff: true, recursive: true, pack: null, updates: updateDataArray },
     user,
   ),
@@ -280,7 +283,7 @@ expectTypeOf(
 
 expectTypeOf(
   TestAE["_preDeleteOperation"](
-    [someItem.effects[0]!, nonBaseAE],
+    [effect, nonBaseAE],
     { modifiedTime: 0, render: false, deleteAll: false, ids: ["YYYYYSomeIDYYYYY"] },
     user,
   ),
@@ -288,7 +291,7 @@ expectTypeOf(
 
 expectTypeOf(
   TestAE["_onDeleteOperation"](
-    [someItem.effects[0]!, nonBaseAE],
+    [effect, nonBaseAE],
     { modifiedTime: 0, render: false, deleteAll: false, ids: ["YYYYYSomeIDYYYYY"] },
     user,
   ),
@@ -298,9 +301,9 @@ expectTypeOf(TestAE.hasSystemData).toEqualTypeOf<true>();
 // shim methods and _logDataFieldMigration have no type changes from Document
 
 // core's implementation for these three are actual no-ops, no point testing the modification context
-expectTypeOf(TestAE["_onCreateDocuments"]([someItem.effects[0], nonBaseAE], {}));
-expectTypeOf(TestAE["_onUpdateDocuments"]([someItem.effects[0], nonBaseAE], {}));
-expectTypeOf(TestAE["_onDeleteDocuments"]([someItem.effects[0], nonBaseAE], {}));
+expectTypeOf(TestAE["_onCreateDocuments"]([effect, nonBaseAE], {}));
+expectTypeOf(TestAE["_onUpdateDocuments"]([effect, nonBaseAE], {}));
+expectTypeOf(TestAE["_onDeleteDocuments"]([effect, nonBaseAE], {}));
 
 expectTypeOf(TestAE["_schema"]).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
 expectTypeOf(TestAE.schema).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
@@ -717,7 +720,7 @@ expectTypeOf(
       // keepId wil never be undefined
       // noHook wil never be undefined
       // pack wil never be undefined
-      parent: undefined,
+      parent: null,
       // parentUuid not allowed to be undefined
       // deprecated since v12:
       temporary: undefined,
@@ -831,7 +834,7 @@ expectTypeOf(
       // animate will never be undefined
       // broadcast will never be undefined
       // noHook will never be undefined
-      parent: undefined,
+      parent: null,
       // parentUuid will never be undefined
     },
     "UUUUUSomeIDUUUUU",
@@ -922,7 +925,7 @@ expectTypeOf(
       // broadcast will never be undefined,
       // noHook will never be undefined,
       // pack will never be undefined,
-      parent: undefined,
+      parent: null,
       // parentUuid will never be undefined,
     },
     "UUUUUSomeIDUUUUU",
