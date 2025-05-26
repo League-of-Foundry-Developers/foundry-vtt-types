@@ -1,6 +1,5 @@
-import type { DeepPartial, EmptyObject, InexactPartial } from "#utils";
+import type { DeepPartial, EmptyObject, InexactPartial, SimpleMerge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
-import type { DatabaseCreateOperation } from "#common/abstract/_types.d.mts";
 
 declare global {
   /**
@@ -107,7 +106,7 @@ declare global {
     /**
      * The visibility configuration of this compendium pack.
      */
-    get ownership(): InexactPartial<foundry.packages.BasePackage.OwnershipRecord>;
+    get ownership(): foundry.packages.BasePackage.OwnershipRecord;
 
     /** Is this Compendium pack visible to the current game User? */
     get visible(): boolean;
@@ -192,13 +191,7 @@ declare global {
     testUserPermission(
       user: User.Implementation,
       permission: string | number,
-      options?: InexactPartial<{
-        /**
-         * Require the exact permission level requested?
-         * @defaultValue `false`
-         */
-        exact: boolean;
-      }>,
+      options?: CompendiumCollection.TestUserPermissionOptions,
     ): boolean;
 
     /**
@@ -210,7 +203,7 @@ declare global {
      */
     importDocument(
       document: Document.ImplementationFor<T["type"]>,
-      options?: InexactPartial<ClientDocument.ToCompendiumOptions>,
+      options?: ClientDocument.ToCompendiumOptions,
     ): Promise<Document.StoredForName<T["type"]> | undefined>;
 
     /**
@@ -218,58 +211,21 @@ declare global {
      * @param folder  - The existing Folder you wish to import
      * @param options - Additional options which modify how the data is imported.
      */
-    importFolder(
-      folder: Folder.Implementation,
-      options?: InexactPartial<{
-        /**
-         * Import any parent folders which are not already present in the Compendium
-         * @defaultValue `true`
-         */
-        importParents: boolean;
-      }>,
-    ): Promise<void>;
+    importFolder(folder: Folder.Implementation, options?: CompendiumCollection.ImportFolderOptions): Promise<void>;
 
     /**
      * Import an array of Folders into this Compendium Collection.
      * @param folders - The existing Folders you wish to import
      * @param options - Additional options which modify how the data is imported.
      */
-    importFolders(
-      folders: Folder.Implementation[],
-      options?: InexactPartial<{
-        /**
-         * Import any parent folders which are not already present in the Compendium
-         * @defaultValue `true`
-         */
-        importParents: boolean;
-      }>,
-    ): Promise<void>;
+    importFolders(folders: Folder.Implementation[], options?: CompendiumCollection.ImportFoldersOptions): Promise<void>;
 
     /**
      * Fully import the contents of a Compendium pack into a World folder.
-     * @param options    - Options which modify the import operation. Additional options are forwarded to
-     *                     {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@linkcode Document.createDocuments}
-     *                     (default: `{}`)
+     * @param options - Options which modify the import operation. Additional options are forwarded to {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@linkcode Document.createDocuments} (default: `{}`)
      * @returns The imported Documents, now existing within the World
      */
-    importAll(
-      options?: InexactPartial<
-        {
-          /**
-           * An existing Folder _id to use.
-           * @defaultValue `null`
-           */
-          folderId: string | null;
-
-          /**
-           * A new Folder name to create.
-           * @defaultValue `""`
-           */
-          folderName: string;
-        } & Document.Database.CreateOperation<DatabaseCreateOperation> &
-          WorldCollection.FromCompendiumOptions
-      >,
-    ): Promise<Document.StoredForName<T["type"]>[]>;
+    importAll(options?: CompendiumCollection.ImportAllOptions<T>): Promise<Document.StoredForName<T["type"]>[]>;
 
     /**
      * Provide a dialog form that prompts the user to import the full contents of a Compendium pack into the World.
@@ -291,7 +247,7 @@ declare global {
      * Prompt the gamemaster with a dialog to configure ownership of this Compendium pack.
      * @returns The configured ownership for the pack
      */
-    configureOwnershipDialog(): Promise<InexactPartial<foundry.packages.BasePackage.OwnershipRecord>>;
+    configureOwnershipDialog(): Promise<foundry.packages.BasePackage.OwnershipRecord>;
 
     /**
      * Activate the Socket event listeners used to receive responses to compendium management events.
@@ -339,7 +295,7 @@ declare global {
      * Duplicate a compendium pack to the current World.
      * @param label - A new Compendium label
      */
-    duplicateCompendium({ label }?: { label?: string | undefined }): Promise<this>;
+    duplicateCompendium({ label }?: CompendiumCollection.DuplicateCompendiumOptions): Promise<this>;
 
     /**
      * Migrate a compendium pack.
@@ -367,7 +323,7 @@ declare global {
     interface Any extends CompendiumCollection<any> {}
 
     interface Configuration {
-      ownership: InexactPartial<foundry.packages.BasePackage.OwnershipRecord>;
+      ownership: foundry.packages.BasePackage.OwnershipRecord;
       locked: boolean;
     }
 
@@ -391,7 +347,7 @@ declare global {
       name: string;
 
       flags: Record<string, never>; // created by the server, but always empty and no way to change it in a way that is s
-      ownership: InexactPartial<foundry.packages.BasePackage.OwnershipRecord>;
+      ownership: foundry.packages.BasePackage.OwnershipRecord;
       path: string;
       package: string;
       system: string;
@@ -448,29 +404,57 @@ declare global {
        */
       result: PackageCompendiumData | string;
     }
+
+    interface TestUserPermissionOptions {
+      /**
+       * Require the exact permission level requested?
+       * @defaultValue `false`
+       */
+      exact?: boolean | undefined;
+    }
+
+    interface ImportFolderOptions {
+      /**
+       * Import any parent folders which are not already present in the Compendium
+       * @defaultValue `true`
+       */
+      importParents?: boolean | undefined;
+    }
+
+    interface ImportFoldersOptions {
+      /**
+       * Import any parent folders which are not already present in the Compendium
+       * @defaultValue `true`
+       */
+      importParents?: boolean | undefined;
+    }
+
+    interface ImportAllOptions<T extends CompendiumCollection.Metadata>
+      extends _DynamicBase<
+        SimpleMerge<Document.Database.CreateOperationForName<T["type"]>, WorldCollection.FromCompendiumOptions>
+      > {
+      /**
+       * An existing Folder _id to use.
+       * @defaultValue `null`
+       */
+      folderId?: string | null | undefined;
+
+      /**
+       * A new Folder name to create.
+       * @defaultValue `""`
+       */
+      folderName?: string | undefined;
+    }
+
+    interface DuplicateCompendiumOptions {
+      label?: string | undefined;
+    }
   }
-}
-
-interface ImportAllOptions {
-  /**
-   * An existing Folder _id to use.
-   * @defaultValue `null`
-   */
-  folderId?: string | null | undefined;
-
-  /**
-   * A new Folder name to create.
-   * @defaultValue `""`
-   */
-  folderName?: string | undefined;
-
-  /**
-   * Additional options forwarded to {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@linkcode Document.createDocuments}
-   * @defaultValue `{}`
-   */
-  options?: (Document.ModificationContext<Document.Any | null> & WorldCollection.FromCompendiumOptions) | undefined;
 }
 
 type IndexTypeForMetadata<T extends CompendiumCollection.Metadata> = foundry.utils.Collection<
   CompendiumCollection.IndexEntry<T>
 >;
+
+// @ts-expect-error - This pattern is inherently an error.
+interface _DynamicBase<T extends object> extends T {}

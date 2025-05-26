@@ -50,7 +50,7 @@ export interface DatabaseCreateOperation<
   /**
    * Whether the database operation is broadcast to other connected clients
    */
-  broadcast?: boolean;
+  broadcast?: boolean | undefined;
 
   /**
    * An array of data objects from which to create Documents
@@ -60,13 +60,13 @@ export interface DatabaseCreateOperation<
   /**
    * Retain the _id values of provided data instead of generating new ids
    */
-  keepId?: boolean;
+  keepId?: boolean | undefined;
 
   /**
    * Retain the _id values of embedded document data instead of generating
    *    new ids for each embedded document
    */
-  keepEmbeddedIds?: boolean;
+  keepEmbeddedIds?: boolean | undefined;
 
   /**
    * The timestamp when the operation was performed
@@ -77,7 +77,7 @@ export interface DatabaseCreateOperation<
   /**
    * Block the dispatch of hooks related to this operation
    */
-  noHook?: boolean;
+  noHook?: boolean | undefined;
 
   /**
    * Re-render Applications whose display depends on the created Documents
@@ -94,40 +94,40 @@ export interface DatabaseCreateOperation<
   /**
    * A parent Document within which Documents are embedded
    */
-  parent?: Parent | null;
+  parent?: Parent | undefined;
 
   /**
    * A compendium collection ID which contains the Documents
    */
-  pack?: string | null;
+  pack?: string | undefined;
 
   /**
    * A parent Document UUID provided when the parent instance is unavailable
    */
-  parentUuid?: string | null;
+  parentUuid?: string | undefined;
 
   /** @privateRemarks these are added from WorldCollection.importFromCompendium() */
-  fromCompendium?: boolean;
+  fromCompendium?: boolean | undefined;
 
   /**
    * Clear the currently assigned folder
    */
-  clearFolder?: boolean | null;
+  clearFolder?: boolean | undefined;
 
   /**
    * Clear the current sort order
    */
-  clearSort?: boolean | null;
+  clearSort?: boolean | undefined;
 
   /**
    * Clear Document ownership
    */
-  clearOwnership?: boolean | null;
+  clearOwnership?: boolean | undefined;
 
   /**
    * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
    */
-  temporary?: Temporary;
+  temporary?: Temporary | undefined;
 }
 
 export interface DatabaseUpdateOperation<
