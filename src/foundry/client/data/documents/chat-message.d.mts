@@ -1,8 +1,8 @@
 import type { ConfiguredChatMessage } from "../../../../configuration/index.d.mts";
-import type { AnyObject, InexactPartial, InterfaceToObject, Merge } from "#utils";
+import type { AnyObject, InterfaceToObject, Merge, NullishProps } from "#utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
-import type { DataSchema } from "../../../common/data/fields.d.mts";
+import type { DataSchema, SchemaField } from "../../../common/data/fields.d.mts";
 import type { fields } from "../../../common/data/module.d.mts";
 import type BaseChatMessage from "../../../common/documents/chat-message.d.mts";
 
@@ -231,7 +231,8 @@ declare global {
        */
       _id: fields.DocumentIdField;
 
-      type: fields.DocumentTypeField<typeof BaseChatMessage, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
+      /** @defaultValue `"base"` */
+      type: fields.DocumentTypeField<typeof BaseChatMessage, { initial: typeof CONST.BASE_DOCUMENT_TYPE }>;
 
       system: fields.TypeDataField<typeof BaseChatMessage>;
 
@@ -239,12 +240,18 @@ declare global {
        * The message type from CONST.CHAT_MESSAGE_STYLES
        * @defaultValue `CONST.CHAT_MESSAGE_STYLES.OTHER`
        */
-      style: fields.NumberField<{
-        required: true;
-        choices: CONST.CHAT_MESSAGE_STYLES[];
-        initial: typeof CONST.CHAT_MESSAGE_STYLES.OTHER;
-        validationError: "must be a value in CONST.CHAT_MESSAGE_TYPES";
-      }>;
+      // FIXME: overrides to enforce the branded type
+      style: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.CHAT_MESSAGE_STYLES[];
+          initial: typeof CONST.CHAT_MESSAGE_STYLES.OTHER;
+          validationError: "must be a value in CONST.CHAT_MESSAGE_TYPES";
+        },
+        CONST.CHAT_MESSAGE_STYLES | null | undefined,
+        CONST.CHAT_MESSAGE_STYLES,
+        CONST.CHAT_MESSAGE_STYLES
+      >;
 
       /**
        * The _id of the User document who generated this message
@@ -272,7 +279,6 @@ declare global {
 
       /**
        * A ChatSpeakerData object which describes the origin of the ChatMessage
-       * @defaultValue see properties
        */
       speaker: fields.SchemaField<SpeakerSchema>;
 
@@ -295,8 +301,9 @@ declare global {
       rolls: fields.ArrayField<
         fields.JSONField<
           { validate: (rollJson: string) => void },
-          fields.JSONField.AssignmentType<{ validate: (rollJson: string) => void }>,
-          Roll // TODO: If initialization fails can this possibly be not-roll?
+          // TODO: Figure out why passing whole Roll objects doesn't lose `terms` complex objects without calling `.toJSON()`
+          fields.JSONField.AssignmentType<{ validate: (rollJson: string) => void }> | Roll.Any,
+          Roll
         >
       >;
 
@@ -342,7 +349,7 @@ declare global {
 
       /**
        * An overridden alias name used instead of the Actor or Token name
-       * @defaultValue `""`
+       * @defaultValue `undefined`
        */
       alias: fields.StringField;
     }
@@ -486,30 +493,94 @@ declare global {
       };
     }
 
-    interface GetSpeakerOptions {
+    /** @internal */
+    interface _BaseSpeakerOptions {
+      /** The Token who is speaking */
+      token: TokenDocument.Implementation | Token.Object;
+
+      /** The Actor who is speaking */
+      actor: Actor.Implementation;
+
       /** The Scene in which the speaker resides */
-      scene: Scene.Implementation | null;
-
-      /** The Actor whom is speaking */
-      actor: Actor.Implementation | null | undefined;
-
-      /** The Token whom is speaking */
-      token: TokenDocument.Implementation | Token.Object | null | undefined;
+      scene: Scene.Implementation;
 
       /** The name of the speaker to display */
-      alias: string | undefined;
+      alias: string;
     }
 
+    interface GetSpeakerOptions extends NullishProps<_BaseSpeakerOptions> {}
+
+    /** @remarks `token` is required, `alias` falls back to `token.name` */
+    interface GetSpeakerFromTokenOptions extends NullishProps<Pick<_BaseSpeakerOptions, "token" | "alias">, "alias"> {}
+
+    /** @remarks `actor` is required, `scene` falls back to `canvas.scene`, `alias` falls back to `actor.name` */
+    interface GetSpeakerFromActorOptions
+      extends NullishProps<Pick<_BaseSpeakerOptions, "scene" | "actor" | "alias">, "scene" | "alias"> {}
+
+    /** @remarks `user` is required, `scene` falls back to `canvas.scene`, `alias` falls back to `user.name` */
+    interface GetSpeakerFromUserOptions extends NullishProps<Pick<_BaseSpeakerOptions, "scene" | "alias">> {
+      /** The User who is speaking */
+      user: User.Implementation;
+    }
+
+    /** @internal */
+    type _SpeakerData = SchemaField.InitializedData<ChatMessage.SpeakerSchema>;
+
+    interface SpeakerData extends _SpeakerData {}
+
+    /**
+     * @remarks
+     * {@linkcode ChatMessage.getWhisperRecipients} has a couple special-cased values, and a couple fallback behaviors.
+     * _ALL_ comparisons are case-**in**sensitive, compared lowercase.
+     * - `"GM"` or `"DM"` inputs returns `game.users.filter(u => u.isGM)`
+     * - `"players"` returns `game.users.players`
+     * - Then if any User names match, returns all that do
+     * - Then returns any Users whose assigned `character` matches
+     * - Finally returns `[]`
+     */
+    type WhisperRecipient = "GM" | "DM" | "players" | (string & {});
+
+    /**
+     * @remarks Serves two purposes:
+     * - Template context for either calling `renderTemplate` on `CONFIG.ChatMessage.template` or passing to {@link ChatMessage._renderRollContent | `ChatMessage#_renderRollContent`}
+     * - Context passed to the {@linkcode Hooks.StaticCallbacks.renderChatMessage | `renderChatMessage`} hook.
+     */
     interface MessageData {
+      /** @remarks This is the return of `ChatMessage#toObject(false)`, but that doesn't seem to make a difference */
       message: ChatMessage.Source;
+
+      /** @remarks Always `game.user` */
       user: User.Stored;
-      author: User.Implementation | undefined;
+
+      /** @remarks The message's {@link ChatMessage.author | `author`} */
+      author: User.Implementation;
+
+      /** @remarks The message's {@link ChatMessage.alias | `alias`} */
       alias: string;
+
+      /** @remarks Possibly more than one class name, space-separated */
       cssClass: string;
-      isWhisper: boolean;
+
+      /**
+       * @remarks The `.length` of the message's {@link ChatMessage.whisper | `whisper`} array,
+       * despite the name implying a `boolean`
+       */
+      isWhisper: number;
+
+      /**
+       * @remarks Always `game.user.isGM`. Foundry comments: "Only GM users are allowed to have the
+       * trash-bin icon in the chat log itself"
+       */
       canDelete: boolean;
+
+      /**
+       * @remarks A `", "`-separated list of the `name`s of the `User`s whose IDs are in the message's
+       * {@link ChatMessage.whisper | `whisper`} array
+       */
       whisperTo: string;
     }
+
+    type PassableRollMode = CONST.DICE_ROLL_MODES | "roll";
 
     /**
      * @deprecated {@link ChatMessage.DatabaseOperation | `ChatMessage.DatabaseOperation`}
@@ -565,13 +636,15 @@ declare global {
     /**
      * Is the display of dice rolls in this message collapsed (false) or expanded (true)
      * @defaultValue `false`
-     * @internal
+     * @private
+     * @remarks Toggled in {@link ChatLog._onDiceRollClick | `ChatLog#_onDiceRollClick`}
      */
     protected _rollExpanded: boolean;
 
     /**
      * Is this ChatMessage currently displayed in the sidebar ChatLog?
      * @defaultValue `false`
+     * @remarks Set `true` in {@link ChatLog.postOne | `ChatLog#postOne`} and {@link ChatLog._renderBatch | `ChatLog#_renderBatch`}
      */
     logged: boolean;
 
@@ -604,6 +677,10 @@ declare global {
      */
     get visible(): boolean;
 
+    /**
+     * @remarks Initializes `this.rolls` from an array of JSON-serializable objects to instances of their listed Roll class,
+     * dropping any that throw when passed to {@linkcode Roll.fromData}
+     */
     override prepareDerivedData(): void;
 
     /**
@@ -613,78 +690,55 @@ declare global {
      * @returns The modified ChatMessage data with rollMode preferences applied
      */
     static applyRollMode(
-      chatData: foundry.documents.BaseChatMessage.CreateData,
-      rollMode: keyof typeof CONFIG.Dice.rollModes | "roll",
-    ): foundry.documents.BaseChatMessage.CreateData;
+      chatData: ChatMessage.CreateData,
+      rollMode: ChatMessage.PassableRollMode,
+    ): ChatMessage.CreateData;
 
     /**
      * Update the data of a ChatMessage instance to apply a requested rollMode
      * @param rollMode - The rollMode preference to apply to this message data
+     * @remarks Only calls `this.updateSource`, doesn't db update messages already stored
      */
-    applyRollMode(rollMode: keyof typeof CONFIG.Dice.rollModes | "roll"): void;
+    applyRollMode(rollMode: ChatMessage.PassableRollMode): void;
 
     /**
      * Attempt to determine who is the speaking character (and token) for a certain Chat Message
      * First assume that the currently controlled Token is the speaker
      *
-     * @param options - (default: `{}`)
+     * @param options - Options which affect speaker identification (default: `{}`)
      *
      * @returns The identified speaker data
      */
-    static getSpeaker(
-      options?: InexactPartial<ChatMessage.GetSpeakerOptions>,
-    ): ChatMessage.Implementation["_source"]["speaker"];
+    // options: not null (destructured)
+    static getSpeaker(options?: ChatMessage.GetSpeakerOptions): ChatMessage.SpeakerData;
 
     /**
      * A helper to prepare the speaker object based on a target TokenDocument
      * @param options - Options which affect speaker identification
      * @returns The identified speaker data
      */
-    protected static _getSpeakerFromToken(options: {
-      /** The TokenDocument of the speaker */
-      token: TokenDocument.Implementation;
-
-      /** The name of the speaker to display */
-      alias?: string | undefined;
-    }): ChatMessage.Implementation["_source"]["speaker"];
+    protected static _getSpeakerFromToken(options: ChatMessage.GetSpeakerFromTokenOptions): ChatMessage.SpeakerData;
 
     /**
      * A helper to prepare the speaker object based on a target Actor
      * @param options - Options which affect speaker identification
      * @returns The identified speaker data
      */
-    protected static _getSpeakerFromActor(options: {
-      /** The Scene is which the speaker resides */
-      scene?: Scene.Implementation | undefined;
-
-      /** The Actor that is speaking */
-      actor: Actor.Implementation;
-
-      /** The name of the speaker to display */
-      alias?: string | undefined;
-    }): ChatMessage.Implementation["_source"]["speaker"];
+    protected static _getSpeakerFromActor(options: ChatMessage.GetSpeakerFromActorOptions): ChatMessage.SpeakerData;
 
     /**
      * A helper to prepare the speaker object based on a target User
      * @param options - Options which affect speaker identification
      * @returns The identified speaker data
      */
-    protected static _getSpeakerFromUser(options: {
-      /** The Scene in which the speaker resides */
-      scene?: Scene.Implementation | undefined;
-
-      /** The User who is speaking */
-      user: User.Implementation;
-
-      /** The name of the speaker to display */
-      alias?: string | undefined;
-    }): ChatMessage.Implementation["_source"]["speaker"];
+    protected static _getSpeakerFromUser(options: ChatMessage.GetSpeakerFromUserOptions): ChatMessage.SpeakerData;
 
     /**
      * Obtain an Actor instance which represents the speaker of this message (if any)
      * @param speaker - The speaker data object
+     * @remarks `speaker` has no parameter default, if it's falsey this returns `null`
      */
-    static getSpeakerActor(speaker: ChatMessage.Implementation["_source"]["speaker"]): Actor.Implementation | null;
+    static getSpeakerActor(speaker?: ChatMessage.SpeakerData | null): Actor.Implementation | null;
 
     /**
      * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
@@ -696,8 +750,9 @@ declare global {
      *
      * @param name - The target name of the whisper target
      * @returns An array of User instances
+     * @remarks See {@linkcode ChatMessage.WhisperRecipient}
      */
-    static getWhisperRecipients(name: string): User.Stored[];
+    static getWhisperRecipients(name: ChatMessage.WhisperRecipient): User.Stored[];
 
     /**
      * Render the HTML for the ChatMessage which should be added to the log
@@ -713,10 +768,11 @@ declare global {
 
     /**
      * Render HTML for the array of Roll objects included in this message.
-     * @param isPrivate - Is the chat message private?
+     * @param isPrivate - Is the chat message private? (default: `false`)
      * @returns The rendered HTML string
+     * @remarks `isPrivate` is passed into {@link Roll.render | `Roll#render`} where it has a parameter default of `false`
      */
-    protected _renderRollHTML(isPrivate: boolean): Promise<string>;
+    protected _renderRollHTML(isPrivate?: boolean | null): Promise<string>;
 
     // _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
     // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
