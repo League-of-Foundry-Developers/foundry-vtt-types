@@ -292,9 +292,11 @@ declare global {
       _id: fields.DocumentIdField;
 
       /** The name of this Item */
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+      // FIXME: required with no initial, assignment type override required
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
 
       /** An Item subtype which configures the system data model applied */
+      // TODO: required with no initial, needs assignment type override
       type: fields.DocumentTypeField<typeof documents.BaseItem>;
 
       /**
@@ -302,7 +304,7 @@ declare global {
        * @defaultValue `null`
        */
       img: fields.FilePathField<{
-        categories: "IMAGE"[];
+        categories: ["IMAGE"];
         initial: (data: unknown) => string;
       }>;
 
@@ -507,6 +509,11 @@ declare global {
       Item.Metadata.Embedded
     >;
 
+    interface GetDefaultArtworkReturn {
+      /** @defaultValue `Item.DEFAULT_ICON` */
+      img: string;
+    }
+
     /**
      * @deprecated {@link Item.Database | `Item.DatabaseOperation`}
      */
@@ -556,23 +563,23 @@ declare global {
     /**
      * A convenience alias of Item#parent which is more semantically intuitive
      */
-    get actor(): this["parent"];
+    get actor(): Actor.Implementation | null;
 
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this["img"];
+    get thumbnail(): string;
 
     /**
      * A convenience alias of Item#isEmbedded which is preserves legacy support
      */
-    get isOwned(): this["isEmbedded"];
+    get isOwned(): boolean;
 
     /**
      * Return an array of the Active Effect instances which originated from this Item.
      * The returned instances are the ActiveEffect instances which exist on the Item itself.
      */
-    get transferredEffects(): ReturnType<this["effects"]["filter"]>;
+    get transferredEffects(): ActiveEffect.Implementation[];
 
     /**
      * Prepare a data object which defines the data schema used by dice roll commands against this Item
@@ -580,7 +587,7 @@ declare global {
      */
     getRollData(): AnyObject;
 
-    // _preCreate, _onCreateDocuments and _onDeleteDocuments are all overridden but with no signature changes from BaseItem.
+    // _preCreate, _onCreateOperation and _onDeleteOperation are all overridden but with no signature changes from BaseItem.
 
     /*
      * After this point these are not really overridden methods.
