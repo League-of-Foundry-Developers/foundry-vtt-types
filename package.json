@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "@league-of-foundry-developers/foundry-vtt-types",
-  "version": "12.331.4-beta",
+  "version": "12.331.5",
   "description": "TypeScript type definitions for Foundry VTT",
   "type": "module",
   "types": "./index.d.mts",
