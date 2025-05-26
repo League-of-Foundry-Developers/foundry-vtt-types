@@ -1,5 +1,5 @@
 import type { ConfiguredCards } from "../../../../configuration/index.d.mts";
-import type { AnyObject, DeepPartial, InexactPartial, Merge } from "#utils";
+import type { AnyObject, InexactPartial, Merge, NullishProps } from "#utils";
 import type { documents } from "../../../client-esm/client.d.mts";
 import type Document from "../../../common/abstract/document.d.mts";
 import type { DataSchema } from "../../../common/data/fields.d.mts";
@@ -286,12 +286,14 @@ declare global {
       _id: fields.DocumentIdField;
 
       /** The text name of this stack */
-      name: fields.StringField<{ required: true; blank: false; label: "CARDS.Name"; textSearch: true }>;
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      name: fields.StringField<{ required: true; blank: false; label: "CARDS.Name"; textSearch: true }, string>;
 
       /**
        * The type of this stack, in BaseCards.metadata.types
        * @defaultValue `BaseCards.TYPES[0]`
        */
+      // TODO: type is required at construction, no "base" allowed
       type: fields.DocumentTypeField<typeof BaseCards>;
 
       /**
@@ -541,125 +543,148 @@ declare global {
       Cards.Metadata.Embedded
     >;
 
-    type CardsAction = "deal" | "pass";
+    /**
+     * @remarks Passing anything else errors downstream when a lookup table lacking the provided key causes
+     * {@link Cards._postChatNotification | `Cards#_postChatNotification`} to call {@link Localization.format | `game.i18n.format`}
+     * with an `undefined` first argument
+     */
+    type DealAction = "deal" | "pass";
 
-    interface BaseOperationOptions {
+    /**
+     * @remarks Passing anything else errors downstream when a lookup table lacking the provided key causes
+     * {@link Cards._postChatNotification | `Cards#_postChatNotification`} to call {@link Localization.format | `game.i18n.format`}
+     * with an `undefined` first argument
+     */
+    type PassAction = "pass" | "play" | "draw" | "discard";
+
+    /** @internal */
+    type _ChatNotificationOption = NullishProps<{
       /**
        * Create a ChatMessage which notifies that this action has occurred
        * @defaultValue `true`
        */
-      chatNotification: boolean | undefined;
-    }
+      chatNotification: boolean;
+    }>;
 
-    interface DealOptions extends BaseOperationOptions {
+    /**
+     * @internal Omitting one word from the different descriptions in various methods' JSDocs lets
+     * this be a reusable property
+     */
+    type _UpdateDataOption = InexactPartial<{
+      /**
+       * Modifications to make to each Card as part of the [...] operation, for example the displayed face
+       * @defaultValue `{}`
+       * @remarks Can't be `null` as it only has a parameter default
+       */
+      updateData: Card.UpdateData;
+    }>;
+
+    type _HowOption = InexactPartial<{
       /**
        * How to draw, a value from CONST.CARD_DRAW_MODES
-       * @defaultValue `foundry.CONST.CARD_DRAW_MODES.FIRST`
+       * @defaultValue `CONST.CARD_DRAW_MODES.FIRST`
+       * @remarks Can't be `null` as it only has a parameter default
        */
-      how: foundry.CONST.CARD_DRAW_MODES;
+      how: CONST.CARD_DRAW_MODES;
+    }>;
 
-      /**
-       * Modifications to make to each Card as part of the deal operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       */
-      updateData: DeepPartial<Cards.Implementation["_source"]>;
-
+    /** @internal */
+    type _DealOptions = InexactPartial<{
       /**
        * The name of the action being performed, used as part of the dispatched Hook event
        * @defaultValue `"deal"`
+       * @remarks Can't be `null` as it only has a parameter default. See {@linkcode Cards.DealAction}
        */
-      action: CardsAction;
-    }
+      action: DealAction;
+    }>;
 
-    /** Additional context which describes the operation */
+    interface DealOptions extends _DealOptions, _HowOption, _UpdateDataOption, _ChatNotificationOption {}
+
+    /**
+     * Additional context which describes the operation
+     * @remarks This is the context provided to the {@link Hooks.StaticCallbacks.dealCards | `dealCards`} hook
+     */
     interface DealContext {
-      /** The action name being performed, i.e. "deal", "pass" */
-      action: CardsAction;
+      /**
+       * The action name being performed, i.e. "deal", "pass"
+       * @remarks See {@linkcode Cards.DealAction}
+       */
+      action: DealAction;
 
-      /** An array of Card creation operations to be performed in each destination Cards document */
-      toCreate: Card.Implementation["_source"][][];
+      /**
+       * An array of Card creation operations to be performed in each destination Cards document
+       * @remarks Outer array: one element per `to` provided to this {@link Cards.deal | `Cards#deal`} call
+       */
+      toCreate: Card.CreateData[][];
 
-      /** Card update operations to be performed in the origin Cards document */
-      fromUpdate: { _id: string; drawn: true }[];
+      /**
+       * Card update operations to be performed in the origin Cards document
+       * @remarks Core will only ever provide elements of `{ _id: string; drawn: true}`
+       */
+      fromUpdate: Card.UpdateData[];
 
-      /** Card deletion operations to be performed in the origin Cards document */
+      /**
+       * Card deletion operations to be performed in the origin Cards document
+       * @remarks An array of `_id`s
+       */
       fromDelete: string[];
     }
 
-    interface PassOptions extends BaseOperationOptions {
-      /**
-       * Modifications to make to each Card as part of the pass operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       */
-      updateData: DeepPartial<Card.Implementation["_source"]> | undefined;
-
+    /** @internal */
+    type _PassOptions = InexactPartial<{
       /**
        * The name of the action being performed, used as part of the dispatched Hook event
        * @defaultValue `"pass"`
+       * @remarks Can't be `null` as it only has a parameter default. See {@linkcode PassAction}
        */
-      action: string | undefined;
+      action: PassAction;
+    }>;
+
+    interface PassOptions extends _PassOptions, _UpdateDataOption, _ChatNotificationOption {}
+
+    /**
+     * Additional context which describes the operation
+     * @remarks This is the context provided to the {@link Hooks.StaticCallbacks.passCards | `passCards`} hook
+     */
+    interface PassContext extends Pick<DealContext, "fromUpdate" | "fromDelete"> {
+      /**
+       * The action name being performed, i.e. "pass", "play", "discard", "draw"
+       * @remarks See {@linkcode Cards.PassAction}
+       */
+      action: PassAction;
 
       /**
-       * Create a ChatMessage which notifies that this action has occurred
-       * @defaultValue `true`
+       * Card creation operations to be performed in the destination Cards document
        */
-      chatNotification: boolean | undefined;
+      toCreate: Card.CreateData[];
+
+      /**
+       * Card update operations to be performed in the destination Cards document
+       * @remarks Core will only ever provide elements of `{ _id: string; drawn: false }`
+       */
+      toUpdate: Card.UpdateData[];
     }
 
-    interface DrawOptions extends PassOptions {
-      /**
-       * How to draw, a value from CONST.CARD_DRAW_MODES
-       * @defaultValue `foundry.CONST.CARD_DRAW_MODES.FIRST`
-       */
-      how: foundry.CONST.CARD_DRAW_MODES;
+    /**
+     * @remarks {@link Cards.draw | `Cards#draw`} spreads this into an object, minus `how`, with the `action` preset to `"draw"`,
+     * which wouldn't make sense to change, then passes that to {@link Cards.pass | `Cards#pass`}
+     * @privateRemarks `action` omitted as it's already provided.
+     */
+    interface DrawOptions extends _HowOption, Omit<PassOptions, "action"> {}
 
-      /**
-       * Modifications to make to each Card as part of the draw operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       */
-      updateData: DeepPartial<Card.Implementation["_source"]>;
-    }
+    interface ShuffleOptions extends _UpdateDataOption, _ChatNotificationOption {}
 
-    interface ShuffleOptions extends BaseOperationOptions {
-      /**
-       * Modifications to make to each Card as part of the shuffle operation,
-       * for example the displayed face
-       * @defaultValue `{}`
-       */
-      updateData: DeepPartial<Card.Implementation["_source"]>;
+    interface RecallOptions extends _UpdateDataOption, _ChatNotificationOption {}
 
-      /** Create a ChatMessage which notifies that this action has occurred
-       *  @defaultValue `true`
-       */
-      chatNotification: boolean | undefined;
-    }
-
-    /** Options which modify the reset operation */
-    interface ResetOptions extends BaseOperationOptions {
+    /**
+     * Additional context which describes the operation.
+     * @remarks This is the context provided to the {@link Hooks.StaticCallbacks.returnCards | `returnCards`} hook
+     */
+    interface ReturnContext extends Pick<DealContext, "fromDelete"> {
       /**
-       * Modifications to make to each Card as part of the reset operation,
-       * for example the displayed face
-       * @defaultValue `{}`
+       * A mapping of Card deck IDs to the update operations that will be performed on them.
        */
-      updateData: DeepPartial<Card.Implementation["_source"]>;
-    }
-
-    /** Additional context which describes the operation. */
-    interface ReturnContext {
-      /**
-       * A mapping of Card deck IDs to the update operations that
-       * will be performed on them.
-       */
-      toUpdate: Record<string, DeepPartial<Card.Implementation["_source"]>[]>;
-
-      /**
-       * Card deletion operations to be performed on the origin Cards
-       * document.
-       */
-      fromDelete: string[];
+      toUpdate: Record<string, Card.UpdateData[]>;
     }
 
     /**
@@ -708,7 +733,7 @@ declare global {
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this["img"];
+    get thumbnail(): string | null;
 
     /**
      * The Card documents within this stack which are able to be drawn.
@@ -731,73 +756,79 @@ declare global {
     get canClone(): boolean;
 
     /**
+     * @remarks Sets `context.keepEmbeddedIds` to `false` if it's `=== undefined`
+     */
+    static override createDocuments<Temporary extends boolean | undefined = false>(
+      data: Array<Cards.Implementation | Cards.CreateData> | undefined,
+      operation?: Document.Database.CreateOperation<Cards.Database.Create<Temporary>>,
+    ): Promise<Array<Document.TemporaryIf<Cards.Implementation, Temporary>>>;
+
+    /**
      * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.
      * Cards are allocated from the top of the deck in cyclical order until the required number of Cards have been dealt.
      * @param to      - An array of other Cards documents to which cards are dealt
-     * @param number  - The number of cards to deal to each other document
-     *                  (default: `1`)
-     * @param options - (default: `{}`)
+     * @param number  - The number of cards to deal to each other document (default: `1`)
+     * @param options - Options which modify how the deal operation is performed (default: `{}`)
      * @returns This Cards document after the deal operation has completed
      */
-    deal(
-      to: Cards.Implementation[],
-      number?: number,
-      options?: InexactPartial<Cards.DealOptions>,
-    ): Promise<Cards.Implementation>;
+    // number: not null (dealing 0 cards makes no sense), options: not null (destructured)
+    deal(to: Cards.Implementation[], number?: number, options?: Cards.DealOptions): Promise<Cards.Implementation>;
 
     /**
      * Pass an array of specific Card documents from this document to some other Cards stack.
      * @param to      - Some other Cards document that is the destination for the pass operation
      * @param ids     - The embedded Card ids which should be passed
-     * @param options - Additional options which modify the pass operation
-     *                  (default: `{}`)
+     * @param options - Additional options which modify the pass operation (default: `{}`)
      * @returns An array of the Card embedded documents created within the destination stack
      */
-    pass(
-      to: Cards.Implementation,
-      ids: string[],
-      options?: InexactPartial<Cards.PassOptions>,
-    ): Promise<Card.Implementation[]>;
+    // options: not null (destructured)
+    pass(to: Cards.Implementation, ids: string[], options?: Cards.PassOptions): Promise<Card.Implementation[]>;
 
     /**
      * Draw one or more cards from some other Cards document.
      * @param from    - Some other Cards document from which to draw
-     * @param number  - The number of cards to draw
-     *                  (default: `1`)
-     * @param options - (default: `{}`)
+     * @param number  - The number of cards to draw (default: `1`)
+     * @param options - Options which modify how the draw operation is performed (default: `{}`)
      * @returns An array of the Card documents which were drawn
      */
-    draw(
-      from: Cards.Implementation,
-      number?: number,
-      options?: InexactPartial<Cards.DrawOptions>,
-    ): Promise<Card.Implementation[]>;
+    // number: not null (drawing 0 cards makes no sense), options: not null (destructured)
+    draw(from: Cards.Implementation, number?: number, options?: Cards.DrawOptions): Promise<Card.Implementation[]>;
 
     /**
      * Shuffle this Cards stack, randomizing the sort order of all the cards it contains.
-     * @param options - (default: `{}`)
+     * @param options - Options which modify how the shuffle operation is performed. (default: `{}`)
      * @returns The Cards document after the shuffle operation has completed
      */
-    shuffle(options?: InexactPartial<Cards.ShuffleOptions>): Promise<Cards.Implementation>;
+    // options: not null (destructured)
+    shuffle(options?: Cards.ShuffleOptions): Promise<this>;
+
+    /**
+     * Recall the Cards stack, retrieving all original cards from other stacks where they may have been drawn if this is a
+     * deck, otherwise returning all the cards in this stack to the decks where they originated.
+     * @param options - Options which modify the recall operation
+     * @returns The Cards document after the recall operation has completed.
+     */
+    // options: not null (destructured where forwarded)
+    recall(options?: Cards.RecallOptions): Promise<this>;
 
     /**
      * Perform a reset operation for a deck, retrieving all original cards from other stacks where they may have been
      * drawn.
-     * @param options - Options which modify the reset operation.
-     *                  (default: `{}`)
+     * @param options - Options which modify the reset operation. (default: `{}`)
      * @returns The Cards document after the reset operation has completed.
-     * @internal
+     * @private
      */
-    protected _resetDeck(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.Implementation>;
+    // options: not null (destructured)
+    protected _resetDeck(options?: Cards.RecallOptions): Promise<this>;
 
     /**
      * Return all cards in this stack to their original decks.
-     * @param options - Options which modify the return operation.
-     *                  (default: `{}`)
+     * @param options - Options which modify the return operation. (default: `{}`)
      * @returns The Cards document after the return operation has completed.
-     * @internal
+     * @private
      */
-    protected _resetStack(options?: InexactPartial<Cards.ResetOptions>): Promise<Cards.Implementation>;
+    // options: not null (destructured)
+    protected _resetStack(options?: InexactPartial<Cards.RecallOptions>): Promise<this>;
 
     /**
      * A sorting function that is used to determine the standard order of Card documents within an un-shuffled stack.
@@ -819,7 +850,7 @@ declare global {
      * @param how    - A draw mode from CONST.CARD_DRAW_MODES
      * @returns An array of drawn Card documents
      */
-    protected _drawCards(number: number, how: foundry.CONST.CARD_DRAW_MODES): Card.Implementation[];
+    protected _drawCards(number: number, how: CONST.CARD_DRAW_MODES): Card.Implementation[];
 
     /**
      * Create a ChatMessage which provides a notification of the cards operation which was just performed.
@@ -828,7 +859,7 @@ declare global {
      * @param action  - The localization key which formats the chat message notification
      * @param context - Data passed to the i18n.format method for the localization key
      * @returns A created ChatMessage document
-     * @internal
+     * @private
      */
     protected _postChatNotification(
       source: Cards.Implementation,
@@ -842,7 +873,7 @@ declare global {
      * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.
      * @see {@link Cards.deal | `Cards#deal`}
      */
-    dealDialog(): Promise<Cards.Implementation | null>;
+    dealDialog(): Promise<this | null>;
 
     /**
      * Display a dialog which prompts the user to draw cards from some other deck-type Cards documents.
@@ -854,22 +885,23 @@ declare global {
      * Display a dialog which prompts the user to pass cards from this document to some other other Cards document.
      * @see {@link Cards.deal | `Cards#deal`}
      */
-    passDialog(): Promise<Cards.Implementation | null>;
+    passDialog(): Promise<this | null>;
 
     /**
      * Display a dialog which prompts the user to play a specific Card to some other Cards document
      * @see {@link Cards.pass | `Cards#pass`}
      * @param card - The specific card being played as part of this dialog
      */
-    playDialog(card: Card.Implementation): Promise<Card.Implementation[] | void | null>;
+    playDialog(card: Card.Implementation): Promise<Card.Implementation[] | null>;
 
     /**
      * Display a confirmation dialog for whether or not the user wishes to reset a Cards stack
      * @see {@link Cards.reset | `Cards#reset`}
      */
-    resetDialog(): Promise<Cards.Implementation | false | null>;
+    resetDialog(): Promise<this | false | null>;
 
-    override deleteDialog(options?: Partial<Dialog.Options>): Promise<this | false | null | undefined>;
+    // options: not null (parameter default only)
+    override deleteDialog(options?: InexactPartial<Dialog.Options>): Promise<this | false | null | undefined>;
 
     /** @remarks No type changes, just creates a fancier `Dialog` than `super` */
     // data: not null (parameter default only), context: not null (destructured)
