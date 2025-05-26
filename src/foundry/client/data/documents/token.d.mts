@@ -1,12 +1,13 @@
-import type { AnyObject, DeepPartial, InexactPartial, InterfaceToObject, Merge } from "#utils";
+import type { AnyArray, AnyObject, InexactPartial, InterfaceToObject, Merge, NullishProps } from "#utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
 import type { ActorDeltaField } from "#common/documents/token.d.mts";
 import type BaseToken from "#common/documents/token.d.mts";
 import type { LightData, TextureData } from "#common/data/data.mjs";
 
 import fields = foundry.data.fields;
+import type DataModel from "#common/abstract/data.mjs";
 
 declare global {
   namespace TokenDocument {
@@ -863,28 +864,49 @@ declare global {
         >
       | ActorDelta.OnDeleteDescendantDocumentsArgs;
 
-    /**
-     * @deprecated Replaced with {@link TokenDocument.Database | `TokenDocument.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<TokenDocument.Implementation> {}
+    // The getBarAttribute monkeypatch is simply inside the data model definition at `src/foundry/common/data/data.d.mts`
 
-    /**
-     * @deprecated Replaced with {@linkcode TokenDocument.CreateData}
-     */
-    interface ConstructorData extends TokenDocument.CreateData {}
+    interface PseudoActorCollection extends foundry.utils.Collection<Actor.Implementation> {
+      documentClass: Actor.ImplementationClass;
+    }
 
-    /**
-     * @deprecated Replaced with {@link TokenDocument.implementation | `TokenDocument.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
+    /** @internal */
+    type _GetBarAttributeOptions = NullishProps<{
+      /**
+       * An alternative attribute path to get instead of the default one
+       * @defaultValue `this[barName]?.attribute`
+       * @remarks If the above default returns falsey, the {@link TokenDocument.getBarAttribute | `TokenDocument#getBarAttribute`}
+       * call returns `null`
+       */
+      alternative: string;
+    }>;
 
-    /**
-     * @deprecated Replaced with {@linkcode TokenDocument.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
+    interface GetBarAttributeOptions extends _GetBarAttributeOptions {}
 
-    // The getBarAttribute monkeypatch is simply inside the data model definition at `src\foundry\common\data\data.d.mts`
+    type GetBarAttributeReturn = SingleAttributeBar | ObjectAttributeBar | null;
+
+    /** @internal */
+    type _CreateCombatantsOptions = NullishProps<{
+      /**
+       * A specific Combat instance which should be modified. If undefined,
+       * the current active combat will be modified if one exists. Otherwise, a new
+       * Combat encounter will be created if the requesting user is a Gamemaster.
+       * @defaultValue `game.combats.viewed`
+       */
+      combat: Combat.Implementation;
+    }>;
+
+    interface CreateCombatantsOptions extends _CreateCombatantsOptions {}
+
+    interface DeleteCombatantsOptions extends _CreateCombatantsOptions {}
+
+    type TrackedAttributesSubject =
+      | DataModel.Any
+      | DataModel.AnyConstructor
+      | SchemaField.Any
+      | Actor.SubType
+      | AnyObject
+      | AnyArray;
 
     interface TrackedAttributesDescription {
       /** A list of property path arrays to attributes with both a value and a max property. */
@@ -894,24 +916,19 @@ declare global {
       value: string[][];
     }
 
-    interface CreateCombatantOptions {
-      /**
-       * A specific Combat instance which should be modified. If undefined,
-       * the current active combat will be modified if one exists. Otherwise, a new
-       * Combat encounter will be created if the requesting user is a Gamemaster.
-       */
-      combat?: Combat.Implementation | undefined;
+    interface TrackedAttributesChoice {
+      group: string;
+      value: string;
+      label: string;
     }
 
-    interface ToggleCombatantOptions extends InexactPartial<TokenDocument.CreateCombatantOptions> {
+    interface ToggleCombatantOptions extends InexactPartial<TokenDocument.CreateCombatantsOptions> {
       /**
        * Require this token to be an active Combatant or to be removed.
        * Otherwise, the current combat state of the Token is toggled.
        */
       active: boolean;
     }
-
-    type GetBarAttributeReturn = SingleAttributeBar | ObjectAttributeBar | null;
 
     type GetEmbeddedCollectionName = Embedded.CollectionName | "Actor" | "Item" | "ActiveEffect";
 
@@ -922,6 +939,27 @@ declare global {
     // | (Name extends "ActiveEffect" ? globalThis.Collection<ActiveEffect.Implementation> : never)
     // | (Name extends Embedded.CollectionName ? Embedded.CollectionFor<Name> : never);
     type GetEmbeddedCollectionResult<_Name extends GetEmbeddedCollectionName> = Collection.Any;
+
+    /**
+     * @deprecated {@link TokenDocument.Database | `TokenDocument.DatabaseOperation`}
+     */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    interface DatabaseOperations extends Document.Database.Operations<TokenDocument.Implementation> {}
+
+    /**
+     * @deprecated {@link TokenDocument.CreateData | `TokenDocument.CreateData`}
+     */
+    interface ConstructorData extends TokenDocument.CreateData {}
+
+    /**
+     * @deprecated {@link TokenDocument.implementation | `TokenDocument.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link TokenDocument.Implementation | `TokenDocument.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
   }
 
   /**
@@ -939,8 +977,9 @@ declare global {
 
     /**
      * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
+     * @remarks Initialized by an IIFE that makes a base-model {@linkcode Collection} and adds a `documentClass` property to it
      */
-    actors(): Collection<Actor.Implementation>;
+    actors: TokenDocument.PseudoActorCollection;
 
     /**
      * A lazily evaluated reference to the Actor this Token modifies.
@@ -1010,14 +1049,10 @@ declare global {
      * @param barName     - The named bar to retrieve the attribute for
      * @returns The attribute displayed on the Token bar, if any
      */
+    // options: not null (destructured)
     getBarAttribute(
       barName: string,
-      options?: InexactPartial<{
-        /**
-         * An alternative attribute path to get instead of the default one
-         */
-        alternative: string;
-      }>,
+      options?: TokenDocument.GetBarAttributeOptions,
     ): TokenDocument.GetBarAttributeReturn;
 
     /**
@@ -1029,47 +1064,45 @@ declare global {
 
     /**
      * Add or remove this Token from a Combat encounter.
-     * @param options - Additional options passed to TokenDocument.createCombatants or
-     *                  TokenDocument.deleteCombatants
-     *                  Default: `{}`
+     * @param options - Additional options passed to TokenDocument.createCombatants or TokenDocument.deleteCombatants (default: `{}`)
      * @returns Is this Token now an active Combatant?
      */
-    toggleCombatant({ active, ...options }?: TokenDocument.ToggleCombatantOptions): Promise<boolean>;
+    // options: not null (destructured)
+    toggleCombatant(options?: TokenDocument.ToggleCombatantOptions): Promise<boolean>;
 
     /**
      * Create or remove Combatants for an array of provided Token objects.
      * @param tokens  - The tokens which should be added to the Combat
-     * @param options - Options which modify the toggle operation
-     *                  Default: `{}`
+     * @param options - Options which modify the toggle operation (default: `{}`)
      * @returns An array of created Combatant documents
      */
+    // options: not null (destructured)
     static createCombatants(
       tokens: TokenDocument.Implementation[],
-      options?: TokenDocument.CreateCombatantOptions,
+      options?: TokenDocument.CreateCombatantsOptions,
     ): Promise<Combatant.Implementation[]>;
 
     /**
      * Remove Combatants for the array of provided Tokens.
      * @param tokens  - The tokens which should removed from the Combat
-     * @param options - Options which modify the operation
-     *                  Default: `{}`
+     * @param options - Options which modify the operation (default: `{}`)
      * @returns An array of deleted Combatant documents
      */
+    // options: not null (destructured)
     static deleteCombatants(
       tokens: TokenDocument.Implementation[],
-      options?: TokenDocument.CreateCombatantOptions,
+      options?: TokenDocument.DeleteCombatantsOptions,
     ): Promise<Combatant.Implementation[]>;
 
     /**
      * Convenience method to change a token vision mode.
      * @param visionMode - The vision mode to apply to this token.
-     * @param defaults   - If the vision mode should be updated with its defaults.
-     *                     Default = `true`
+     * @param defaults   - If the vision mode should be updated with its defaults. (default: `true`)
      */
     updateVisionMode(
-      visionMode: typeof CONFIG.Canvas.visionModes,
-      defaults?: boolean,
-    ): Promise<ReturnType<this["update"]>>;
+      visionMode: VisionMode.ConfiguredModes,
+      defaults?: boolean | null,
+    ): Promise<TokenDocument.Implementation | undefined>;
 
     /**
      * @remarks Foundry specifically overrides this method such that unlinked `TokenDocument` instances
@@ -1082,8 +1115,16 @@ declare global {
       embeddedName: EmbeddedName,
     ): TokenDocument.GetEmbeddedCollectionResult<EmbeddedName>;
 
-    //_onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
+    // _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
     // _onUpdateOperation, _onDeleteOperation are all overridden but with no signature changes from their definition in BaseToken.
+
+    /**
+     * Is to Token document updated such that the Regions the Token is contained in may change?
+     * Called as part of the preUpdate workflow.
+     * @param changes - The changes.
+     * @returns Could this Token update change Region containment?
+     */
+    protected _couldRegionsChange(changes: TokenDocument.UpdateData): boolean;
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
@@ -1194,20 +1235,11 @@ declare global {
     protected override _onDeleteDescendantDocuments(...args: TokenDocument.OnDeleteDescendantDocumentsArgs): void;
 
     /**
-     * Is to Token document updated such that the Regions the Token is contained in may change?
-     * Called as part of the preUpdate workflow.
-     * @param changes - The changes.
-     * @returns Could this Token update change Region containment?
-     */
-    protected _couldRegionsChange(changes: Token.UpdateData): boolean;
-
-    /**
      * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
+     * @remarks After updating the synthetic actor, forwards to {@link TokenDocument._onRelatedUpdate | `TokenDocument#_onRelatedUpdate`}
      */
-    protected _onUpdateBaseActor(
-      update?: DeepPartial<Actor.Implementation["_source"]>,
-      options?: Actor.Database.OnUpdateOperation,
-    ): void;
+    // update, options: not null (parameter defaults only)
+    protected _onUpdateBaseActor(update?: Actor.UpdateData, options?: Actor.Database.OnUpdateOperation): void;
 
     /**
      * Whenever the token's actor delta changes, or the base actor changes, perform associated refreshes.
@@ -1215,7 +1247,7 @@ declare global {
      * @param options - The options provided to the update.
      */
     protected _onRelatedUpdate(
-      update?: DeepPartial<Actor.Implementation["_source"]>,
+      update?: Actor.UpdateData | ActorDelta.UpdateData,
 
       /**
        * @privateRemarks foundry calls this field operation
@@ -1226,11 +1258,13 @@ declare global {
 
     /**
      * Get an Array of attribute choices which could be tracked for Actors in the Combat Tracker
+     * @param data  - The object to explore for attributes, or an Actor type.
      * @param _path - (default: `[]`)
      */
     // TODO: There's some very complex handling for non-datamodel Actor system implementations if we want
+    // _path: not null (parameter default only)
     static getTrackedAttributes(
-      data?: Actor.Implementation["system"],
+      data?: TokenDocument.TrackedAttributesSubject | null,
       _path?: string[],
     ): TokenDocument.TrackedAttributesDescription;
 
@@ -1238,8 +1272,9 @@ declare global {
      * Retrieve an Array of attribute choices from a plain object.
      * @param schema - The schema to explore for attributes.
      */
+    // _path: not null (parameter default only)
     protected static _getTrackedAttributesFromObject(
-      data: object,
+      data: AnyObject | AnyArray,
       _path?: string[],
     ): TokenDocument.TrackedAttributesDescription;
 
@@ -1248,27 +1283,31 @@ declare global {
      * @param schema - The schema to explore for attributes.
      */
     protected static _getTrackedAttributesFromSchema(
-      schema: foundry.data.fields.SchemaField.Any,
+      schema: SchemaField.Any,
       _path?: string[],
     ): TokenDocument.TrackedAttributesDescription;
 
     /**
      * Retrieve any configured attributes for a given Actor type.
      * @param type - The Actor type.
+     * @remarks If `type` is invalid, or doesn't have an entry in {@linkcode CONFIG.Actor.trackableAttributes}, returns the merged
+     * tracked attributes of all types. If no types have any configured, returns `void`
      */
-    static _getConfiguredTrackedAttributes(type: string): TokenDocument.TrackedAttributesDescription | void;
+    static _getConfiguredTrackedAttributes(
+      type?: Actor.SubType | null,
+    ): TokenDocument.TrackedAttributesDescription | void;
 
     /**
      * Inspect the Actor data model and identify the set of attributes which could be used for a Token Bar
-     * @param attributes - The tracked attributes which can be chosen from
+     * @param attributes - The tracked attributes which can be chosen from (default: `this.getTrackedAttributes()`)
      * @returns A nested object of attribute choices to display
      */
     static getTrackedAttributeChoices(
-      attributes?: TokenDocument.TrackedAttributesDescription,
-    ): Record<string, string[]>;
+      attributes?: TokenDocument.TrackedAttributesDescription | null,
+    ): TokenDocument.TrackedAttributesChoice[];
 
     /**
-     * @deprecated since v11
+     * @deprecated since v11, no specified end
      * @remarks `"TokenDocument#getActor has been deprecated. Please use the`
      * `TokenDocument#actor getter to retrieve the Actor instance that the TokenDocument represents, or use`
      * `TokenDocument#delta#apply to generate a new synthetic Actor instance."`
@@ -1276,14 +1315,14 @@ declare global {
     getActor(): Actor.Implementation;
 
     /**
-     * @deprecated since v11
+     * @deprecated since v11, until v13
+     * @remarks "You are accessing `TokenDocument#actorData` which is deprecated. Source data may be retrieved via
+     * {@link TokenDocument.delta | `TokenDocument#delta`} but all modifications/access should be done via the
+     * synthetic Actor at {@link TokenDocument.actor | `TokenDocument#actor`} if possible."
      */
-    get actorData(): this["delta"]["_source"];
+    get actorData(): ActorDelta.Source;
 
-    /**
-     * @deprecated since v11
-     */
-    set actorData(actorData: this["delta"]["_source"]);
+    set actorData(actorData: ActorDelta.CreateData);
 
     /**
      * A helper function to toggle a status effect which includes an Active Effect template
@@ -1292,12 +1331,10 @@ declare global {
      *                     (default: `{}`)
      * @returns Whether the Active Effect is now on or off
      * @deprecated since v12
-     * @remarks `TokenDocument#toggleActiveEffect is deprecated in favor of Actor#toggleStatusEffect"`
+     * @remarks "`TokenDocument#toggleActiveEffect` is deprecated in favor of {@link Actor.toggleStatusEffect | `Actor#toggleStatusEffect`}"
      */
-    toggleActiveEffect(
-      effectData: CONFIG.StatusEffect,
-      options?: InexactPartial<ToggleActiveEffectOptions>,
-    ): Promise<boolean>;
+    // options: not null (destructured)
+    toggleActiveEffect(effectData: CONFIG.StatusEffect, options?: Actor.ToggleStatusEffectOptions): Promise<boolean>;
 
     /*
      * After this point these are not really overridden methods.
@@ -1346,9 +1383,9 @@ declare global {
   type TrackedAttributesDescription = TokenDocument.TrackedAttributesDescription;
 
   /**
-   * @deprecated Replaced with {@linkcode TokenDocument.CreateCombatantOptions}
+   * @deprecated Replaced with {@linkcode TokenDocument.CreateCombatantsOptions}
    */
-  type CreateCombatantOptions = TokenDocument.CreateCombatantOptions;
+  type CreateCombatantOptions = TokenDocument.CreateCombatantsOptions;
 }
 
 interface SingleAttributeBar {
@@ -1364,15 +1401,4 @@ interface ObjectAttributeBar {
   value: number;
   max: number;
   editable: boolean;
-}
-
-interface ToggleActiveEffectOptions {
-  /**
-   * Should the Active Effect icon be displayed as an overlay on the token?
-   * @defaultValue `false`
-   */
-  overlay: boolean;
-
-  /** Force a certain active state for the effect. */
-  active: boolean;
 }

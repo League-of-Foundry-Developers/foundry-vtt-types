@@ -80,7 +80,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    * @remarks
    * @throws If `data` fails `BaseDrawing.#validateVisibleContent` validation (must have some visible text, fill, *or* line)
    */
-  static validateJoint(data: DrawingDocument.Source): void;
+  static override validateJoint(data: DrawingDocument.Source): void;
 
   /**
    * @deprecated since v12, until v14

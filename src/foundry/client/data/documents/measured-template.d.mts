@@ -463,7 +463,7 @@ declare global {
     /**
      * Rotation is an alias for direction
      */
-    get rotation(): this["direction"];
+    get rotation(): number;
 
     /**
      * Is the current User the author of this template?

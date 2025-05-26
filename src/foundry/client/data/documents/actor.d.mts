@@ -1,7 +1,6 @@
 import type { AnyObject, InexactPartial, NullishProps, Merge } from "#utils";
 import type { documents } from "#client-esm/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
-import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
 import type BaseActor from "#common/documents/actor.d.mts";
 import type { ConfiguredActor } from "fvtt-types/configuration";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -298,16 +297,18 @@ declare global {
       _id: fields.DocumentIdField;
 
       /** The name of this Actor */
-      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+      // FIXME: required with no initial, assignment type override required
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }, string>;
 
       /** An Actor subtype which configures the system data model applied */
+      // TODO: required with no initial, needs assignment type override
       type: fields.DocumentTypeField<typeof BaseActor>;
 
       /**
        * An image file path which provides the artwork for this Actor
-       * @defaultValue `null`
+       * @defaultValue `Actor.DEFAULT_ICON`
        */
-      img: fields.FilePathField<{ categories: "IMAGE"[]; initial: (data: unknown) => string }>;
+      img: fields.FilePathField<{ categories: ["IMAGE"]; initial: (data: unknown) => string }>;
 
       /**
        * The system data object which is defined by the system template.json model
@@ -510,55 +511,47 @@ declare global {
       | Document.OnDeleteDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
       | Item.OnDeleteDescendantDocumentsArgs;
 
-    /**
-     * @deprecated Replaced with {@link Actor.Database | `Actor.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Actor.Implementation> {}
+    interface GetDefaultArtworkReturn {
+      img: string;
+      texture: GetDefaultArtworkTextureReturn;
+    }
 
-    /**
-     * @deprecated Replaced with {@linkcode Actor.SubType}
-     */
-    type TypeNames = Actor.SubType;
-
-    /**
-     * @deprecated Replaced with {@linkcode Actor.CreateData}
-     */
-    interface ConstructorData extends Actor.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link Actor.implementation | `Actor.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Actor.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
+    interface GetDefaultArtworkTextureReturn {
+      src: string;
+    }
 
     type ItemTypes = {
-      [SubType in Game.Model.TypeNames<"Item">]: Array<Item.OfType<SubType>>;
+      [SubType in Item.SubType]: Array<Item.OfType<SubType>>;
     };
 
-    interface RollInitiativeOptions {
+    type GetActiveTokensReturn<Document extends boolean | null | undefined> = Document extends true
+      ? TokenDocument.Implementation[]
+      : Token.Implementation[];
+
+    /** @internal */
+    type _RollInitiativeOptions = NullishProps<{
       /**
        * Create new Combatant entries for Tokens associated with this actor.
        * @defaultValue `false`
        */
-      createCombatants?: boolean;
+      createCombatants: boolean;
 
       /**
        * Re-roll the initiative for this Actor if it has already been rolled.
        * @defaultValue `false`
        */
-      rerollInitiative?: boolean;
+      rerollInitiative: boolean;
+    }> &
+      InexactPartial<{
+        /**
+         * Additional options passed to the Combat#rollInitiative method.
+         * @defaultValue `{}`
+         * @remarks Can't be `null` as it only has a parameter default
+         */
+        initiativeOptions: Combat.InitiativeOptions;
+      }>;
 
-      /**
-       * Additional options passed to the Combat#rollInitiative method.
-       * @defaultValue `{}`
-       */
-      initiativeOptions?: Combat.InitiativeOptions;
-    }
+    interface RollInitiativeOptions extends _RollInitiativeOptions {}
 
     /** @internal */
     type _ToggleStatusEffectOptions = NullishProps<{
@@ -576,7 +569,63 @@ declare global {
        */
       overlay: boolean;
     }>;
+
     interface ToggleStatusEffectOptions extends _ToggleStatusEffectOptions {}
+
+    /** @internal */
+    type _RequestTokenImagesOptions = NullishProps<{
+      /**
+       * The name of the compendium the actor is in.
+       * @defaultValue `null`
+       * @remarks The default comes from the `"requestTokenImages"` socket handler in `dist/database/documents/actor.mjs` where it's the parameter default
+       */
+      pack: string;
+    }>;
+
+    interface RequestTokenImagesOptions extends _RequestTokenImagesOptions {}
+
+    /** @internal */
+    type _GetDependentTokensOptions = NullishProps<{
+      /**
+       * A single Scene, or list of Scenes to filter by.
+       * @defaultValue `Array.from(this._dependentTokens.keys())`
+       */
+      scenes: Scene.Implementation | Scene.Implementation[];
+
+      /**
+       * Limit the results to tokens that are linked to the actor.
+       * @defaultValue `false`
+       */
+      linked: boolean;
+    }>;
+
+    interface GetDependentTokensOptions extends _GetDependentTokensOptions {}
+
+    /**
+     * @deprecated {@link Actor.Database | `Actor.DatabaseOperation`}
+     */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    interface DatabaseOperations extends Document.Database.Operations<Actor.Implementation> {}
+
+    /**
+     * @deprecated {@link Actor.SubType | `Actor.SubType`}
+     */
+    type TypeNames = Actor.SubType;
+
+    /**
+     * @deprecated {@link Actor.CreateData | `Actor.CreateData`}
+     */
+    interface ConstructorData extends Actor.CreateData {}
+
+    /**
+     * @deprecated {@link Actor.implementation | `Actor.ImplementationClass`}
+     */
+    type ConfiguredClass = ImplementationClass;
+
+    /**
+     * @deprecated {@link Actor.Implementation | `Actor.Implementation`}
+     */
+    type ConfiguredInstance = Implementation;
   }
 
   /**
@@ -610,15 +659,17 @@ declare global {
      */
     constructor(...args: Actor.ConstructorArgs);
 
-    static override metadata: Actor.Metadata;
-
     // options: not null (parameter default only, destructured in super)
     protected override _configure(options?: Document.ConfigureOptions): void;
 
     /**
      * Maintain a list of Token Documents that represent this Actor, stored by Scene.
+     * @remarks Doesn't exist prior to being `defineProperty`'d in {@link Actor._configure | `Actor#_configure`}
      */
-    protected _dependentTokens: foundry.utils.IterableWeakMap<Scene.Implementation, TokenDocument.Implementation>;
+    protected _dependentTokens?: foundry.utils.IterableWeakMap<
+      Scene.Implementation,
+      foundry.utils.IterableWeakSet<TokenDocument.Implementation>
+    >;
 
     /** @remarks `||=`s the `prototypeToken`'s `name` and `texture.src` fields with the main actor's values */
     // options: not null (parameter default only)
@@ -642,6 +693,7 @@ declare global {
      * A cached array of image paths which can be used for this Actor's token.
      * Null if the list has not yet been populated.
      * @defaultValue `null`
+     * @private
      */
     protected _tokenImages: string[] | null;
 
@@ -654,7 +706,7 @@ declare global {
     /**
      * Provide a thumbnail image path used to represent this document.
      */
-    get thumbnail(): this["img"];
+    get thumbnail(): string;
 
     /**
      * Provide an object which organizes all embedded Item instances by their type
@@ -674,7 +726,7 @@ declare global {
     /**
      * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
      */
-    get temporaryEffects(): EmbeddedCollection<ActiveEffect.Implementation, Actor.Implementation>;
+    get temporaryEffects(): ActiveEffect.Implementation[];
 
     /**
      * Return a reference to the TokenDocument which owns this Actor as a synthetic override
@@ -698,13 +750,14 @@ declare global {
      *
      * @param linked   - Limit results to Tokens which are linked to the Actor. Otherwise return all
      *                   Tokens even those which are not linked. (default: `false`)
-     * @param document - Return the Document instance rather than the PlaceableObject (default: `false`)
+     * @param document - Return the Document instance rather than the PlaceableObject
+     *                   (default: `false`)
      * @returns An array of Token instances in the current Scene which reference this Actor.
      */
-    getActiveTokens<ReturnDocument extends boolean | undefined = undefined>(
-      linked?: boolean,
+    getActiveTokens<ReturnDocument extends boolean | null | undefined = false>(
+      linked?: boolean | null,
       document?: ReturnDocument,
-    ): ReturnDocument extends true ? TokenDocument.Implementation[] : Token.Implementation[];
+    ): Actor.GetActiveTokensReturn<ReturnDocument>;
 
     /**
      * Get all ActiveEffects that may apply to this Actor.
@@ -725,7 +778,11 @@ declare global {
      * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
      * @returns The created TokenData instance
      */
-    getTokenDocument(data?: TokenDocument.CreateData): Promise<TokenDocument.Implementation>;
+    // data, options: not null (parameter defaults only)
+    getTokenDocument(
+      data?: TokenDocument.CreateData,
+      options?: Document.ConstructionContext<TokenDocument.Parent>,
+    ): Promise<TokenDocument.Implementation>;
 
     /**
      * Get an Array of Token images which could represent this Actor
@@ -741,7 +798,13 @@ declare global {
      * @param isBar     - Whether the new value is part of an attribute bar, or just a direct value (default: `true`)
      * @returns The updated Actor document
      */
-    modifyTokenAttribute(attribute: string, value: number, isDelta: boolean, isBar: boolean): Promise<this | undefined>;
+    modifyTokenAttribute(
+      attribute: string,
+      // TODO: tighten Combatant.Resource with the justification of this being simply `number`
+      value: number,
+      isDelta?: boolean,
+      isBar?: boolean,
+    ): Promise<this | undefined>;
 
     override prepareData(): void;
 
@@ -755,6 +818,7 @@ declare global {
      * @param options - Configuration for how initiative for this Actor is rolled.
      * @returns A promise which resolves to the Combat document once rolls are complete.
      */
+    // options: not null (destructured)
     rollInitiative(options?: Actor.RollInitiativeOptions): Promise<void>;
 
     /**
@@ -776,54 +840,40 @@ declare global {
     /**
      * Request wildcard token images from the server and return them.
      * @param actorId - The actor whose prototype token contains the wildcard image path.
-     * @internal
+     * @private
      */
-    protected static _requestTokenImages(
-      actorId: string,
-      options?: {
-        /** The name of the compendium the actor is in. */
-        pack: string;
-      },
-    ): Promise<string[]>;
+    // options: not null (parameter default only)
+    protected static _requestTokenImages(actorId: string, options?: Actor.RequestTokenImagesOptions): Promise<string[]>;
 
     /**
      * Get this actor's dependent tokens.
      * If the actor is a synthetic token actor, only the exact Token which it represents will be returned.
      */
-    getDependentTokens(
-      options?: InexactPartial<{
-        /**
-         * A single Scene, or list of Scenes to filter by.
-         */
-        scenes: Scene.Implementation | Scene.Implementation[];
-
-        /**
-         * Limit the results to tokens that are linked to the actor.
-         * @defaultValue `false`
-         */
-        linked: boolean;
-      }>,
-    ): TokenDocument.Implementation[];
+    // options: not null (destructured)
+    getDependentTokens(options?: Actor.GetDependentTokensOptions): TokenDocument.Implementation[];
 
     /**
      * Register a token as a dependent of this actor.
      * @param token - The Token
+     * @internal
      */
     protected _registerDependantToken(token: TokenDocument.Implementation): void;
 
     /**
      * Remove a token from this actor's dependents.
      * @param token - The Token
+     * @internal
      */
     protected _unregisterDependentToken(token: TokenDocument.Implementation): void;
 
     /**
      * Prune a whole scene from this actor's dependent tokens.
      * @param scene - The scene
+     * @internal
      */
     protected _unregisterDependentScene(scene: Scene.Implementation): void;
 
-    // _preCreate and _onUpdate are all overridden but with no signature changes from BaseActor.
+    // _onUpdate is overridden but with no signature changes from BaseActor.
 
     /**
      * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
@@ -881,7 +931,6 @@ declare global {
 
     /**
      * Additional workflows to perform when any descendant document within this Actor changes.
-     * @internal
      */
     protected _onEmbeddedDocumentChange(): void;
 
@@ -889,11 +938,9 @@ declare global {
      * Update the active TokenDocument instances which represent this Actor.
      * @param update  - The update delta.
      * @param options - The update context.
+     * @remarks Forwards to {@link Token._onUpdateBaseActor | `Token#_onUpdateBaseActor`}
      */
-    protected _updateDependentTokens(
-      update: TokenDocument.UpdateData,
-      options: TokenDocument.Database.UpdateOperation,
-    ): void;
+    protected _updateDependentTokens(update: Actor.UpdateData, options: Actor.Database.UpdateOperation): void;
 
     /*
      * After this point these are not really overridden methods.

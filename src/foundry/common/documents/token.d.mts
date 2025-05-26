@@ -53,7 +53,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   /**
    * The default icon used for newly created Token documents
-   * @defaultValue `CONST.DEFAULT_TOKEN` (`"icons/svg/mystery-man.svg"`)
+   * @defaultValue `CONST.DEFAULT_TOKEN`
    */
   static DEFAULT_ICON: string;
 
@@ -75,7 +75,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): TokenDocument.UpdateData;
 
   // TODO: Update with the Delta conditionality
-  override toObject(source?: boolean | null): SchemaField.SourceData<TokenDocument.Schema>;
+  override toObject(source?: boolean | null): TokenDocument.Source;
 
   /**
    * @remarks
@@ -89,7 +89,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * Shims:
    * - `actorData` to `delta` (since v11, until v13)
    * - `effects` to nothing (since v12, until v14)
-   *   - "`TokenDocument#effects` is deprecated in favor of using {@link ActiveEffect | `ActiveEffect`} documents on the associated `Actor`")
+   *   - "`TokenDocument#effects` is deprecated in favor of using {@linkcode ActiveEffect} documents on the associated `Actor`")
    * - `overlayEffect` to nothing (since v12, until v14)
    *   - "`TokenDocument#overlayEffect` is deprecated in favor of using `ActiveEffect` documents on the associated `Actor`")
    */
@@ -98,13 +98,13 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   /**
    * @deprecated since v12, until v14
-   * @remarks "TokenDocument#overlayEffect is deprecated in favor of using {@link ActiveEffect | `ActiveEffect`} documents on the associated Actor"
+   * @remarks "TokenDocument#overlayEffect is deprecated in favor of using {@linkcode ActiveEffect} documents on the associated Actor"
    */
   get effects(): [];
 
   /**
    * @deprecated since v12, until v14
-   * @remarks "TokenDocument# is deprecated in favor of using {@link ActiveEffect | `ActiveEffect`} documents on the associated Actor"
+   * @remarks "TokenDocument# is deprecated in favor of using {@linkcode ActiveEffect} documents on the associated Actor"
    */
   get overlayEffect(): "";
 

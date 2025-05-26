@@ -35,7 +35,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    *     RegionBehavior: "behaviors"
    *   },
    *   schemaVersion: "12.324"
-   * }
+   * })
    * ```
    */
   static override metadata: BaseRegion.Metadata;

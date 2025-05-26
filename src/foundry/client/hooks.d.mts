@@ -397,7 +397,7 @@ declare global {
       passCards: (
         origin: Cards.Implementation,
         destination: Cards.Implementation,
-        context: Cards.DealContext,
+        context: Cards.PassContext,
       ) => boolean | void;
 
       /**
@@ -520,7 +520,7 @@ declare global {
        */
       preImportAdventure: (
         adventure: Adventure.Implementation,
-        formData: object, // TODO: Improve this. Also relevant to `AdventureImporter#_updateObject`
+        formData: Adventure.ImportOptions,
         toCreate: Adventure.ImportData["toCreate"],
         toUpdate: Adventure.ImportData["toUpdate"],
       ) => boolean | void;
@@ -536,9 +536,9 @@ declare global {
        */
       importAdventure: (
         adventure: Adventure.Implementation,
-        formData: object, // TODO: Improve this. Also relevant to `AdventureImporter#_updateObject`
-        toCreate: Adventure.ImportData["toCreate"],
-        toUpdate: Adventure.ImportData["toUpdate"],
+        formData: Adventure.ImportOptions,
+        created: Adventure.ImportResult["created"],
+        updated: Adventure.ImportResult["updated"],
       ) => void;
 
       /** Socket */
@@ -713,23 +713,14 @@ declare global {
        * @param message        - The ChatMessage document being rendered
        * @param html           - The pending HTML as a jQuery object
        * @param messageData    - The input data provided for template rendering
-       * @remarks This is called by {@linkcode Hooks.call}.
+       * @remarks This is called by {@linkcode Hooks.call}, but its return is not checked;
+       * returning `false` only prevents later hooks running
        * @see {@link ChatMessage.render | `ChatMessage#render`}
        */
       renderChatMessage: (
         message: ChatMessage.Implementation,
         html: JQuery,
-        messageData: {
-          message: ChatMessage.Source;
-          user: Game["user"];
-          author: User.Implementation | null;
-          alias: string;
-          cssClass: string;
-          isWhisper: boolean;
-          canDelete: boolean;
-          whisperTo: string;
-          borderColor?: string;
-        },
+        messageData: ChatMessage.MessageData,
       ) => boolean | void;
 
       /** Audio-Video */

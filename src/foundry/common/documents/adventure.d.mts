@@ -26,6 +26,19 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    */
   constructor(...args: Adventure.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "Adventure",
+   *   collection: "adventures",
+   *   compendiumIndexFields: ["_id", "name", "description", "img", "sort", "folder"],
+   *   label: "DOCUMENT.Adventure",
+   *   labelPlural: "DOCUMENT.Adventures",
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: Adventure.Metadata;
 
   static override defineSchema(): BaseAdventure.Schema;
@@ -38,7 +51,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   /**
    * Provide a thumbnail image path used to represent the Adventure document.
    */
-  get thumbnail(): string;
+  get thumbnail(): string | null;
 
   /*
    * After this point these are not really overridden methods.
@@ -57,37 +70,37 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  readonly parentCollection: Adventure.ParentCollectionName | null;
+  override readonly parentCollection: Adventure.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
   static override get implementation(): Adventure.ImplementationClass;
 
-  static get baseDocument(): typeof BaseAdventure;
+  static override get baseDocument(): typeof BaseAdventure;
 
-  static get collectionName(): Adventure.ParentCollectionName;
+  static override get collectionName(): Adventure.ParentCollectionName;
 
-  static get documentName(): Adventure.Name;
+  static override get documentName(): Adventure.Name;
 
-  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+  static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): undefined;
+  static override get hasTypeData(): undefined;
 
-  static get hierarchy(): Adventure.Hierarchy;
+  static override get hierarchy(): Adventure.Hierarchy;
 
   override parent: Adventure.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<Adventure.Implementation | Adventure.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Adventure.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Adventure.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: Adventure.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<Adventure.Database.Update>,
   ): Promise<Adventure.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<Adventure.Database.Delete>,
   ): Promise<Adventure.Implementation[]>;
@@ -127,70 +140,74 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: Adventure.CreateData,
     options: Adventure.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(data: Adventure.CreateData, options: Adventure.Database.OnCreateOperation, userId: string): void;
+  protected override _onCreate(
+    data: Adventure.CreateData,
+    options: Adventure.Database.OnCreateOperation,
+    userId: string,
+  ): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: Adventure.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<Adventure.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: Adventure.Implementation[],
     operation: Adventure.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: Adventure.UpdateData,
     options: Adventure.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
+  protected override _onUpdate(
     changed: Adventure.UpdateData,
     options: Adventure.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: Adventure.Implementation[],
     operation: Adventure.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: Adventure.Implementation[],
     operation: Adventure.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
+  protected override _preDelete(
     options: Adventure.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: Adventure.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: Adventure.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: Adventure.Implementation[],
     operation: Adventure.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: Adventure.Implementation[],
     operation: Adventure.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): undefined;
+  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -228,7 +245,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
    */
-  protected static _onCreateDocuments(
+  protected static override _onCreateDocuments(
     documents: Adventure.Implementation[],
     context: Document.ModificationContext<Adventure.Parent>,
   ): Promise<void>;
@@ -237,7 +254,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
    */
-  protected static _onUpdateDocuments(
+  protected static override _onUpdateDocuments(
     documents: Adventure.Implementation[],
     context: Document.ModificationContext<Adventure.Parent>,
   ): Promise<void>;
@@ -246,26 +263,19 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
    */
-  protected static _onDeleteDocuments(
+  protected static override _onDeleteDocuments(
     documents: Adventure.Implementation[],
     context: Document.ModificationContext<Adventure.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<Adventure.Schema>;
+  protected static override _schema: SchemaField<Adventure.Schema>;
 
-  static get schema(): SchemaField<Adventure.Schema>;
+  static override get schema(): SchemaField<Adventure.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: Adventure.Source): void;
+  static override validateJoint(data: Adventure.Source): void;
 
-  /**
-   * @remarks Actual override, not just document template typing
-   *
-   * If this creation is happening in a provided `pack`, and that pack is system-agnostic,
-   * strips `Actor`s, `Item`s, and `Actor` and `Item` `Folders` from `source`d
-   */
   // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: Adventure.CreateData,

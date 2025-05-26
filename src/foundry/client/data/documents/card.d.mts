@@ -232,7 +232,8 @@ declare global {
       _id: fields.DocumentIdField;
 
       /** The text name of this card */
-      name: fields.StringField<{ required: true; blank: false; label: "CARD.Name" }>;
+      // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
+      name: fields.StringField<{ required: true; blank: false; label: "CARD.Name" }, string>;
 
       /**
        * A text description of this card which applies to all faces
@@ -242,14 +243,9 @@ declare global {
 
       /**
        * A category of card (for example, a suit) to which this card belongs
-       * @defaultValue `BaseCard.TYPES[0]`
+       * @defaultValue `"base"`
        */
-      type: fields.DocumentTypeField<
-        typeof BaseCard,
-        {
-          initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE;
-        }
-      >;
+      type: fields.DocumentTypeField<typeof BaseCard, { initial: typeof CONST.BASE_DOCUMENT_TYPE }>;
 
       /**
        * Game system data which is defined by the system template.json model
@@ -259,7 +255,7 @@ declare global {
 
       /**
        * An optional suit designation which is used by default sorting
-       * @defaultValue `""`
+       * @defaultValue `undefined`
        */
       suit: fields.StringField<{ label: "CARD.Suit" }>;
 
@@ -271,12 +267,11 @@ declare global {
 
       /**
        * An object of face data which describes the back of this card
-       * @defaultValue see properties
        */
       back: fields.SchemaField<{
         /**
          * A name for this card face
-         * @defaultValue `""`
+         * @defaultValue `undefined`
          */
         name: fields.StringField<{ label: "CARD.BackName" }>;
 
@@ -293,6 +288,10 @@ declare global {
         img: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; label: "CARD.BackImage" }>;
       }>;
 
+      /**
+       * An array of face data which represent displayable faces of this card
+       * @defaultValue `[]`
+       */
       faces: fields.ArrayField<fields.SchemaField<Card.FaceSchema>>;
 
       /**
@@ -349,7 +348,7 @@ declare global {
     interface FaceSchema extends DataSchema {
       /**
        * A name for this card face
-       * @defaultValue `""`
+       * @defaultValue `undefined`
        */
       name: fields.StringField<{ label: "CARD.FaceName" }>;
 
@@ -495,6 +494,27 @@ declare global {
     }
 
     /**
+     * @remarks {@link Card.pass | `Card#pass`} calls {@link Cards.pass | `this.parent.pass`} with `action: "pass"` provided
+     */
+    interface PassOptions extends Omit<Cards.PassOptions, "action"> {}
+
+    /**
+     * @remarks {@link Card.play | `Card#play`} calls {@link Cards.pass | `this.parent.pass`} with `action: "play"` provided
+     */
+    interface PlayOptions extends PassOptions {}
+
+    /**
+     * @remarks {@link Card.discard | `Card#discard`} calls {@link Cards.pass | `this.parent.pass`} with `action: "discard"` provided
+     */
+    interface DiscardOptions extends PassOptions {}
+
+    /**
+     * @deprecated {@link Card.Database | `Card.DatabaseOperation`}
+     */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    interface DatabaseOperations extends Document.Database.Operations<Card.Implementation> {}
+
+    /**
      * @deprecated Replaced with {@link Card.Database | `Card.DatabaseOperation`}
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -540,13 +560,14 @@ declare global {
 
     /**
      * The image of the currently displayed card face or back
+     * @remarks Falls back to {@linkcode Card.DEFAULT_ICON}
      */
     get img(): string;
 
     /**
      * A reference to the source Cards document which defines this Card.
      */
-    get source(): Cards.Implementation | undefined | null;
+    get source(): Cards.Implementation | null;
 
     /**
      * A convenience property for whether or not the Card is within its source Cards stack. Cards in decks are always
@@ -569,6 +590,7 @@ declare global {
      */
     get hasPreviousFace(): boolean;
 
+    /** @remarks Provides fallback value for `back.img`, and overrides `name` with the face/back's name if appropriate */
     override prepareDerivedData(): void;
 
     /**
@@ -583,39 +605,41 @@ declare global {
     /**
      * Pass this Card to some other Cards document.
      * @param to      - A new Cards document this card should be passed to
-     * @param options - (default: `{}`)
+     * @param options - Options which modify the pass operation (default: `{}`)
      * @returns A reference to this card after the it has been passed to another parent document
      */
-    pass(to: Cards.Implementation, options?: Cards.PassOptions): Promise<Card.Implementation | undefined>;
+    // options: not null (destructured)
+    pass(to: Cards.Implementation, options?: Card.PassOptions): Promise<Card.Implementation | undefined>;
 
     /**
      * Play a specific card to some other Cards document.
-     * This method is currently a more semantic alias for {@link Card.pass | `Card#pass`}.
      * @see {@link Card.pass | `Card#pass`}
+     * @remarks This method is currently a more semantic alias for {@link Card.pass | `Card#pass`}.
      */
-    play(to: Cards.Implementation, options?: Cards.PassOptions): Promise<Card.Implementation | undefined>;
+    // options: not null (destructured)
+    play(to: Cards.Implementation, options?: Card.PlayOptions): Promise<Card.Implementation | undefined>;
 
     /**
      * Discard a specific card to some other Cards document.
-     * This method is currently a more semantic alias for {@link Card.pass | `Card#pass`}.
      * @see {@link Card.pass | `Card#pass`}
+     * @remarks This method is currently a more semantic alias for {@link Card.pass | `Card#pass`}.
      */
-    discard(to: Cards.Implementation, options?: Cards.PassOptions): Promise<Card.Implementation | undefined>;
+    // options: not null (destructured)
+    discard(to: Cards.Implementation, options?: Card.DiscardOptions): Promise<Card.Implementation | undefined>;
 
     /**
      * Recall this Card to its original Cards parent.
-     * @param options - Options which modify the recall operation
-     *                  (default: `{}`)
-     * @returns A reference to the recallled card belonging to its original parent
+     * @param options - Options which modify the recall operation (default: `{}`)
+     * @returns A reference to the recalled card belonging to its original parent
+     * @remarks Core's implementation doesn't use `options` at all
      */
-    recall(options?: Cards.ResetOptions): Promise<Card.Implementation>;
+    // options: not null (parameter default only)
+    recall(options?: AnyObject): Promise<Card.Implementation | undefined>;
 
     /**
      * Create a chat message which displays this Card.
-     * @param messageData - Additional data which becomes part of the created ChatMessageData
-     *                      (default: `{}`)
-     * @param options     - Options which modify the message creation operation
-     *                      (default: `{}`)
+     * @param messageData - Additional data which becomes part of the created ChatMessageData (default: `{}`)
+     * @param options     - Options which modify the message creation operation (default: `{}`)
      * @returns The created chat message
      */
     toMessage<Temporary extends boolean | undefined = false>(

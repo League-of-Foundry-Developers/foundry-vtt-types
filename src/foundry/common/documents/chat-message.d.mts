@@ -27,6 +27,24 @@ declare abstract class BaseChatMessage<
    */
   constructor(...args: ChatMessage.ConstructorArgs);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "ChatMessage",
+   *   collection: "messages",
+   *   label: "DOCUMENT.ChatMessage",
+   *   labelPlural: "DOCUMENT.ChatMessages",
+   *   hasTypeData: true,
+   *   isPrimary: true,
+   *   permissions: {
+   *     create: this.#canCreate,
+   *     update: this.#canUpdate
+   *   },
+   *   schemaVersion: "12.324"
+   * })
+   * ```
+   */
   static override metadata: BaseChatMessage.Metadata;
 
   static override defineSchema(): BaseChatMessage.Schema;
@@ -78,39 +96,39 @@ declare abstract class BaseChatMessage<
 
   static " fvtt_types_internal_document_name_static": "ChatMessage";
 
-  readonly parentCollection: ChatMessage.ParentCollectionName | null;
+  override readonly parentCollection: ChatMessage.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override readonly pack: string | null;
 
   static override get implementation(): ChatMessage.ImplementationClass;
 
-  static get baseDocument(): typeof BaseChatMessage;
+  static override get baseDocument(): typeof BaseChatMessage;
 
-  static get collectionName(): ChatMessage.ParentCollectionName;
+  static override get collectionName(): ChatMessage.ParentCollectionName;
 
-  static get documentName(): ChatMessage.Name;
+  static override get documentName(): ChatMessage.Name;
 
-  static get TYPES(): BaseChatMessage.SubType[];
+  static override get TYPES(): BaseChatMessage.SubType[];
 
-  static get hasTypeData(): true;
+  static override get hasTypeData(): true;
 
-  static get hierarchy(): ChatMessage.Hierarchy;
+  static override get hierarchy(): ChatMessage.Hierarchy;
 
   override system: ChatMessage.SystemOfType<SubType>;
 
   override parent: BaseChatMessage.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = false>(
     data: Array<ChatMessage.Implementation | ChatMessage.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ChatMessage.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<ChatMessage.Implementation, Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: ChatMessage.UpdateData[] | undefined,
     operation?: Document.Database.UpdateDocumentsOperation<ChatMessage.Database.Update>,
   ): Promise<ChatMessage.Implementation[]>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[] | undefined,
     operation?: Document.Database.DeleteDocumentsOperation<ChatMessage.Database.Delete>,
   ): Promise<ChatMessage.Implementation[]>;
@@ -150,74 +168,74 @@ declare abstract class BaseChatMessage<
     key: Key,
   ): Promise<this>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: ChatMessage.CreateData,
     options: ChatMessage.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
+  protected override _onCreate(
     data: ChatMessage.CreateData,
     options: ChatMessage.Database.OnCreateOperation,
     userId: string,
   ): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: ChatMessage.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<ChatMessage.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: ChatMessage.Implementation[],
     operation: ChatMessage.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: ChatMessage.UpdateData,
     options: ChatMessage.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
+  protected override _onUpdate(
     changed: ChatMessage.UpdateData,
     options: ChatMessage.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: ChatMessage.Implementation[],
     operation: ChatMessage.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: ChatMessage.Implementation[],
     operation: ChatMessage.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
+  protected override _preDelete(
     options: ChatMessage.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: ChatMessage.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: ChatMessage.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: ChatMessage.Implementation[],
     operation: ChatMessage.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: ChatMessage.Implementation[],
     operation: ChatMessage.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): true;
+  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -255,7 +273,7 @@ declare abstract class BaseChatMessage<
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
    */
-  protected static _onCreateDocuments(
+  protected static override _onCreateDocuments(
     documents: ChatMessage.Implementation[],
     context: Document.ModificationContext<ChatMessage.Parent>,
   ): Promise<void>;
@@ -264,7 +282,7 @@ declare abstract class BaseChatMessage<
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
    */
-  protected static _onUpdateDocuments(
+  protected static override _onUpdateDocuments(
     documents: ChatMessage.Implementation[],
     context: Document.ModificationContext<ChatMessage.Parent>,
   ): Promise<void>;
@@ -273,19 +291,18 @@ declare abstract class BaseChatMessage<
    * @deprecated since v12, will be removed in v14
    * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
    */
-  protected static _onDeleteDocuments(
+  protected static override _onDeleteDocuments(
     documents: ChatMessage.Implementation[],
     context: Document.ModificationContext<ChatMessage.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<ChatMessage.Schema>;
+  protected static override _schema: SchemaField<ChatMessage.Schema>;
 
-  static get schema(): SchemaField<ChatMessage.Schema>;
+  static override get schema(): SchemaField<ChatMessage.Schema>;
 
-  /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: ChatMessage.Source): void;
+  static override validateJoint(data: ChatMessage.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(
@@ -295,7 +312,7 @@ declare abstract class BaseChatMessage<
 
   static override fromJSON(json: string): ChatMessage.Implementation;
 
-  #baseChatMessage: true;
+  static #BaseChatMessage: true;
 }
 
 export default BaseChatMessage;
