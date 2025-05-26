@@ -273,9 +273,10 @@ declare global {
            */
           mode: fields.NumberField<
             {
+              required: true;
+              nullable: false;
               integer: true;
               initial: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
-              label: "EFFECT.ChangeMode";
             },
             // TODO: (LukeAbby): fix this when redoing DataField
             // FIXME: Overrides required to enforce the branded type

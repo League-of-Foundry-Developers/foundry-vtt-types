@@ -596,27 +596,19 @@ declare namespace DataField {
     | (Options["nullable"] extends true // determine whether null is in the union
         ? // when nullable, null is always allowed
           null
-        : // otherwise, it depends on required
-          Options["required"] extends true
-          ? // when required and not nullable, null can only be passed when initial is present
-            "initial" extends keyof Options
-            ? Options["initial"] extends undefined
-              ? never
-              : null // when initial is present, null can be passed
-            : // when initial is not in the options, then null can not be passed
-              never
-          : // when not required, null can safely be passed
-            null)
+        : never)
     | (Options["required"] extends true // determine whether undefined is in the union
-        ? // when required, it depends on initial
-          "initial" extends keyof Options
-          ? Options["initial"] extends undefined
-            ? never
-            : undefined // when initial is in the options, undefined is allowed
-          : // when initial is not in the options, then undefined is not allowed
-            never
+        ? never
         : // when not required, undefined can safely be passed
-          undefined);
+          undefined)
+    | ("initial" extends keyof Options
+        ? _Has<Options["initial"], null | undefined> extends true
+          ? never
+          : null | undefined // when initial is not `undefined` then `null | undefined` are valid.
+        : never);
+
+  /** @internal */
+  type _Has<T, U> = U extends unknown ? (U extends T ? true : false) : never;
 
   /**
    * A type to decorate the base initialized type of a DataField, based on the options of the field.
@@ -636,13 +628,13 @@ declare namespace DataField {
    * for more details.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type AssignmentType<Options extends DataField.Options.Any> = DerivedAssignmentType<any, MergedOptions<Options>>;
+  type AssignmentType<Options extends DataField.Options.Any> = DerivedAssignmentType<unknown, MergedOptions<Options>>;
 
   /**
    * A shorthand for the initialized type of a DataField class.
    * @template Options - the options overriding the defaults
    */
-  type InitializedType<Options extends DataField.Options.Any> = DerivedInitializedType<any, MergedOptions<Options>>;
+  type InitializedType<Options extends DataField.Options.Any> = DerivedInitializedType<unknown, MergedOptions<Options>>;
 
   /** @internal */
   type _ConstructionContext = NullishProps<{
@@ -1849,7 +1841,7 @@ declare namespace StringField {
       SimpleMerge<Options, { initial: _InitialForOptions<Options> }>;
 
   /**
-   * @deprecated - Foundry no longer directly modifies the options for `initial`, it uses .
+   * @deprecated - Foundry no longer directly modifies the options for `initial`, it uses `getInitialValue` for this purpose instead.
    * @internal
    */
   type _InitialForOptions<Options extends StringField.Options<unknown>> = Options["required"] extends false | undefined

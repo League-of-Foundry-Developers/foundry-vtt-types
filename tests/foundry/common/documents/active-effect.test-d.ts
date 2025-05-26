@@ -163,7 +163,7 @@ const firstChange = fullTestAE.changes[0]!;
 
 expectTypeOf(firstChange.key).toBeString();
 expectTypeOf(firstChange.value).toBeString();
-expectTypeOf(firstChange.mode).toEqualTypeOf<CONST.ACTIVE_EFFECT_MODES | null>();
+expectTypeOf(firstChange.mode).toEqualTypeOf<CONST.ACTIVE_EFFECT_MODES>();
 expectTypeOf(firstChange.priority).toEqualTypeOf<number | null | undefined>();
 
 expectTypeOf(fullTestAE.disabled).toBeBoolean();
