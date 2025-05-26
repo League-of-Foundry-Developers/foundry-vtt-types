@@ -515,74 +515,15 @@ declare global {
        * @defaultValue see properties
        * @remarks Initialized in {@link Scene.prepareBaseData | `Scene#prepareBaseData`} to `Scene.#getGrid(this)`, which returns {@linkcode BaseGrid} or a subclass
        */
-      grid: fields.SchemaField<{
-        /**
-         * The type of grid, a number from CONST.GRID_TYPES.
-         * @defaultValue `game.system.grid.type`
-         */
-        type: fields.NumberField<
-          {
-            required: true;
-            choices: CONST.GRID_TYPES[];
-            initial: () => CONST.GRID_TYPES;
-            validationError: "must be a value in CONST.GRID_TYPES";
-          },
-          // FIXME: overrides required to enforce branded type
-          CONST.GRID_TYPES | null | undefined,
-          CONST.GRID_TYPES,
-          CONST.GRID_TYPES
-        >;
-
-        /**
-         * The grid size which represents the width (or height) of a single grid space.
-         * @defaultValue `100`
-         */
-        size: fields.NumberField<{
-          required: true;
-          nullable: false;
-          integer: true;
-          min: typeof CONST.GRID_MIN_SIZE;
-          initial: 100;
-          validationError: `must be an integer number of pixels, ${typeof CONST.GRID_MIN_SIZE} or greater`;
-        }>;
-
-        /**
-         * @remarks The style of grid line used. This field has no special validation, but provided values
-         * should match keys of {@linkcode CONFIG.Canvas.gridStyles}
-         * @defaultValue `"solidLines"`
-         */
-        style: fields.StringField<{ required: true; blank: false; initial: "solidLines" }>;
-
-        /**
-         * @remarks The width of drawn grid lines
-         * @defaultValue `1`
-         */
-        thickness: fields.NumberField<{ required: true; nullable: false; positive: true; integer: true; initial: 1 }>;
-
-        /**
-         * A string representing the color used to render the grid lines.
-         * @defaultValue `"#000000"`
-         */
-        color: fields.ColorField<{ required: true; nullable: false; initial: "#000000" }>;
-
-        /**
-         * A number between 0 and 1 for the opacity of the grid lines.
-         * @defaultValue `0.2`
-         */
-        alpha: fields.AlphaField<{ initial: 0.2 }>;
-
-        /**
-         * The number of distance units which are represented by a single grid space.
-         * @defaultValue `game.system.grid.distance`
-         */
-        distance: fields.NumberField<{ required: true; nullable: false; positive: true; initial: () => number }>;
-
-        /**
-         * A label for the units of measure which are used for grid distance.
-         * @defaultValue `game.system.grid.units`
-         */
-        units: fields.StringField<{ required: true; initial: () => string }>;
-      }>;
+      grid: fields.SchemaField<
+        GridSchema,
+        // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+        {},
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        fields.SchemaField.Internal.AssignmentType<GridSchema, fields.SchemaField.DefaultOptions>,
+        | foundry.grid.BaseGrid
+        | fields.SchemaField.Internal.InitializedType<GridSchema, fields.SchemaField.DefaultOptions>
+      >;
 
       /**
        * Do Tokens require vision in order to see the Scene environment?
@@ -849,6 +790,75 @@ declare global {
        * @defaultValue see {@linkcode fields.DocumentStatsField}
        */
       _stats: fields.DocumentStatsField;
+    }
+
+    interface GridSchema extends DataSchema {
+      /**
+       * The type of grid, a number from CONST.GRID_TYPES.
+       * @defaultValue `game.system.grid.type`
+       */
+      type: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.GRID_TYPES[];
+          initial: () => CONST.GRID_TYPES;
+          validationError: "must be a value in CONST.GRID_TYPES";
+        },
+        // FIXME: overrides required to enforce branded type
+        CONST.GRID_TYPES | null | undefined,
+        CONST.GRID_TYPES,
+        CONST.GRID_TYPES
+      >;
+
+      /**
+       * The grid size which represents the width (or height) of a single grid space.
+       * @defaultValue `100`
+       */
+      size: fields.NumberField<{
+        required: true;
+        nullable: false;
+        integer: true;
+        min: typeof CONST.GRID_MIN_SIZE;
+        initial: 100;
+        validationError: `must be an integer number of pixels, ${typeof CONST.GRID_MIN_SIZE} or greater`;
+      }>;
+
+      /**
+       * @remarks The style of grid line used. This field has no special validation, but provided values
+       * should match keys of {@linkcode CONFIG.Canvas.gridStyles}
+       * @defaultValue `"solidLines"`
+       */
+      style: fields.StringField<{ required: true; blank: false; initial: "solidLines" }>;
+
+      /**
+       * @remarks The width of drawn grid lines
+       * @defaultValue `1`
+       */
+      thickness: fields.NumberField<{ required: true; nullable: false; positive: true; integer: true; initial: 1 }>;
+
+      /**
+       * A string representing the color used to render the grid lines.
+       * @defaultValue `"#000000"`
+       */
+      color: fields.ColorField<{ required: true; nullable: false; initial: "#000000" }>;
+
+      /**
+       * A number between 0 and 1 for the opacity of the grid lines.
+       * @defaultValue `0.2`
+       */
+      alpha: fields.AlphaField<{ initial: 0.2 }>;
+
+      /**
+       * The number of distance units which are represented by a single grid space.
+       * @defaultValue `game.system.grid.distance`
+       */
+      distance: fields.NumberField<{ required: true; nullable: false; positive: true; initial: () => number }>;
+
+      /**
+       * A label for the units of measure which are used for grid distance.
+       * @defaultValue `game.system.grid.units`
+       */
+      units: fields.StringField<{ required: true; initial: () => string }>;
     }
 
     namespace Database {
@@ -1145,14 +1155,6 @@ declare global {
      * @defaultValue `this.active`
      */
     protected _view: boolean;
-
-    /**
-     * The grid instance
-     * @remarks Foundry initializes this to `this.grid` in the class body, which before data prep is the data from the `grid` SchemaField.
-     *
-     * This gets set to {@linkcode BaseGrid} or a subclass in {@link Scene.prepareBaseData | `Scene#prepareBaseData`}
-     */
-    grid: foundry.grid.BaseGrid | foundry.documents.BaseScene["grid"];
 
     /**
      * Determine the canvas dimensions this Scene would occupy, if rendered
