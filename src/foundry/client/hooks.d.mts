@@ -520,7 +520,7 @@ declare global {
        */
       preImportAdventure: (
         adventure: Adventure.Implementation,
-        formData: object, // TODO: Improve this. Also relevant to `AdventureImporter#_updateObject`
+        formData: Adventure.ImportOptions,
         toCreate: Adventure.ImportData["toCreate"],
         toUpdate: Adventure.ImportData["toUpdate"],
       ) => boolean | void;
@@ -536,9 +536,9 @@ declare global {
        */
       importAdventure: (
         adventure: Adventure.Implementation,
-        formData: object, // TODO: Improve this. Also relevant to `AdventureImporter#_updateObject`
-        toCreate: Adventure.ImportData["toCreate"],
-        toUpdate: Adventure.ImportData["toUpdate"],
+        formData: Adventure.ImportOptions,
+        created: Adventure.ImportResult["created"],
+        updated: Adventure.ImportResult["updated"],
       ) => void;
 
       /** Socket */
