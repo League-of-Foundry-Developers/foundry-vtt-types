@@ -8,7 +8,7 @@ declare global {
    *
    * @see {@linkcode User} The User document
    */
-  class Users extends WorldCollection<User.ImplementationClass, "Users"> {
+  class Users extends WorldCollection<"User", "Users"> {
     constructor(data?: User.Source[]);
 
     /**

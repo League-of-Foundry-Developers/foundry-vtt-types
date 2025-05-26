@@ -228,12 +228,14 @@ declare global {
      * An instance of `Item` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid<out SubType extends Item.SubType = Item.SubType> extends Document.Invalid<OfType<SubType>> {}
+    interface Invalid<out SubType extends Item.SubType = Item.SubType>
+      extends Document.Internal.Invalid<OfType<SubType>> {}
 
     /**
      * An instance of `Item` that comes from the database.
      */
-    interface Stored<out SubType extends Item.SubType = Item.SubType> extends Document.Stored<OfType<SubType>> {}
+    interface Stored<out SubType extends Item.SubType = Item.SubType>
+      extends Document.Internal.Stored<OfType<SubType>> {}
 
     /**
      * The data put in {@link Item._source | `Item#_source`}. This data is what was

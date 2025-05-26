@@ -6,7 +6,7 @@ declare global {
    * The singleton collection of FogExploration documents which exist within the active World.
    * @see {@linkcode FogExploration} The FogExploration document
    */
-  class FogExplorations extends WorldCollection<FogExploration.ImplementationClass, "FogExplorations"> {
+  class FogExplorations extends WorldCollection<"FogExploration", "FogExplorations"> {
     static documentName: "FogExploration";
 
     /**

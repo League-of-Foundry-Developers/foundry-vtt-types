@@ -9,7 +9,7 @@ declare global {
    * @see {@linkcode RollTable} The RollTable document
    * @see {@linkcode RollTableDirectory} The RollTableDirectory sidebar directory
    */
-  class RollTables extends WorldCollection<RollTable.ImplementationClass, "RollTables"> {
+  class RollTables extends WorldCollection<"RollTable", "RollTables"> {
     static documentName: "RollTable";
 
     override get directory(): typeof ui.tables;

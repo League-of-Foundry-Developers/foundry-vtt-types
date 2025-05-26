@@ -117,7 +117,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
   readonly collections: SimpleInitializedOn<
-    foundry.utils.Collection<WorldCollection<Document.AnyConstructor, string>>,
+    foundry.utils.Collection<WorldCollection<Document.Type, string>>,
     "setup",
     RunEvents
   >;

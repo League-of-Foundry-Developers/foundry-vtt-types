@@ -119,12 +119,12 @@ declare global {
      * An instance of `DrawingDocument` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<DrawingDocument.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<DrawingDocument.Implementation> {}
 
     /**
      * An instance of `DrawingDocument` that comes from the database.
      */
-    interface Stored extends Document.Stored<DrawingDocument.Implementation> {}
+    interface Stored extends Document.Internal.Stored<DrawingDocument.Implementation> {}
 
     /**
      * The data put in {@link DrawingDocument._source | `DrawingDocument#_source`}. This data is what was

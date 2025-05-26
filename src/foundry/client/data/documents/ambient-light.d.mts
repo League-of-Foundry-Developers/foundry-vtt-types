@@ -107,12 +107,12 @@ declare global {
      * An instance of `AmbientLightDocument` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<AmbientLightDocument.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<AmbientLightDocument.Implementation> {}
 
     /**
      * An instance of `AmbientLightDocument` that comes from the database.
      */
-    interface Stored extends Document.Stored<AmbientLightDocument.Implementation> {}
+    interface Stored extends Document.Internal.Stored<AmbientLightDocument.Implementation> {}
 
     /**
      * The data put in {@link AmbientLightDocument._source | `AmbientLightDocument#_source`}. This data is what was

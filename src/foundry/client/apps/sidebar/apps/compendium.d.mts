@@ -1,4 +1,4 @@
-import type Document from "#common/abstract/document.d.mts";
+export {};
 
 declare global {
   /**
@@ -87,7 +87,7 @@ declare global {
     interface Any extends Compendium<any, any> {}
 
     interface Options<Metadata extends CompendiumCollection.Metadata = CompendiumCollection.Metadata>
-      extends DocumentDirectory.Options<Document.ImplementationClassFor<Metadata["type"]>> {
+      extends DocumentDirectory.Options<Metadata["type"]> {
       // TODO(LukeAbby): Replace with `CompendiumCollection<Metadata>` when possible.
       collection: any;
     }

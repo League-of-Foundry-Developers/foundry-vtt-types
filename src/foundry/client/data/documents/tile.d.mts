@@ -106,12 +106,12 @@ declare global {
      * An instance of `TileDocument` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<TileDocument.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<TileDocument.Implementation> {}
 
     /**
      * An instance of `TileDocument` that comes from the database.
      */
-    interface Stored extends Document.Stored<TileDocument.Implementation> {}
+    interface Stored extends Document.Internal.Stored<TileDocument.Implementation> {}
 
     /**
      * The data put in {@link TileDocument._source | `TileDocument#_source`}. This data is what was

@@ -9,7 +9,7 @@ declare global {
    *
    * @see {@linkcode Folder} The Folder document
    */
-  class Folders extends WorldCollection<Folder.ImplementationClass, "Folders"> {
+  class Folders extends WorldCollection<"Folder", "Folders"> {
     static documentName: "Folder";
 
     /**

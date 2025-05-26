@@ -53,9 +53,7 @@ declare global {
      * Get the alphabetized Documents which can be chosen as a configuration for the Scene
      * @internal
      */
-    protected _getDocuments(
-      collection: WorldCollection<Document.AnyConstructor, string>,
-    ): { _id: string; name: string }[];
+    protected _getDocuments(collection: WorldCollection<Document.Type, string>): { _id: string; name: string }[];
 
     override activateListeners(html: JQuery): void;
 

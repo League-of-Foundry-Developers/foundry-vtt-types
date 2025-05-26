@@ -109,12 +109,12 @@ declare global {
      * An instance of `PlaylistSound` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<PlaylistSound.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<PlaylistSound.Implementation> {}
 
     /**
      * An instance of `PlaylistSound` that comes from the database.
      */
-    interface Stored extends Document.Stored<PlaylistSound.Implementation> {}
+    interface Stored extends Document.Internal.Stored<PlaylistSound.Implementation> {}
 
     /**
      * The data put in {@link PlaylistSound._source | `PlaylistSound#_source`}. This data is what was

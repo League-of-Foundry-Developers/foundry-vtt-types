@@ -21,7 +21,7 @@ declare global {
    */
   class CompendiumCollection<T extends CompendiumCollection.Metadata> extends DirectoryCollectionMixin(
     DocumentCollection,
-  )<Document.ImplementationClassFor<T["type"]>, T["name"]> {
+  )<T["type"], T["name"]> {
     /** @param metadata - The compendium metadata, an object provided by game.data */
     constructor(metadata: CompendiumCollection.ConstructorMetadata<T>);
 
@@ -149,7 +149,7 @@ declare global {
      * @param id -  The requested Document id
      * @returns The retrieved Document instance
      */
-    getDocument(id: string): Promise<Document.Stored<Document.ImplementationFor<T["type"]>> | undefined | null>;
+    getDocument(id: string): Promise<Document.StoredForName<T["type"]> | undefined | null>;
 
     /**
      * Load multiple documents from the Compendium pack using a provided query object.
@@ -172,7 +172,7 @@ declare global {
      * await pack.getDocuments({ type__in: ["weapon", "armor"] });
      * ```
      */
-    getDocuments(query?: Record<string, unknown>): Promise<Document.Stored<Document.ImplementationFor<T["type"]>>[]>;
+    getDocuments(query?: Record<string, unknown>): Promise<Document.StoredForName<T["type"]>[]>;
 
     /**
      * Get the ownership level that a User has for this Compendium pack.
@@ -211,7 +211,7 @@ declare global {
     importDocument(
       document: Document.ImplementationFor<T["type"]>,
       options?: InexactPartial<ClientDocument.ToCompendiumOptions>,
-    ): Promise<Document.Stored<Document.ImplementationFor<T["type"]>> | undefined>;
+    ): Promise<Document.StoredForName<T["type"]> | undefined>;
 
     /**
      * Import a Folder into this Compendium Collection.
@@ -269,7 +269,7 @@ declare global {
         } & Document.Database.CreateOperation<DatabaseCreateOperation> &
           WorldCollection.FromCompendiumOptions
       >,
-    ): Promise<Document.Stored<Document.ImplementationFor<T["type"]>>[]>;
+    ): Promise<Document.StoredForName<T["type"]>[]>;
 
     /**
      * Provide a dialog form that prompts the user to import the full contents of a Compendium pack into the World.
@@ -279,15 +279,13 @@ declare global {
      *          Documents if the "yes" button was pressed, false if the "no" button was pressed, or
      *          null if the dialog was closed without making a choice.
      */
-    importDialog(
-      options?: Dialog.Options,
-    ): Promise<Document.Stored<Document.ImplementationFor<T["type"]>>[] | null | false>;
+    importDialog(options?: Dialog.Options): Promise<Document.StoredForName<T["type"]>[] | null | false>;
 
     /**
      * Add a Document to the index, capturing it's relevant index attributes
      * @param document -The document to index
      */
-    indexDocument(document: Document.Stored<Document.ImplementationFor<T["type"]>>): void;
+    indexDocument(document: Document.StoredForName<T["type"]>): void;
 
     /**
      * Prompt the gamemaster with a dialog to configure ownership of this Compendium pack.

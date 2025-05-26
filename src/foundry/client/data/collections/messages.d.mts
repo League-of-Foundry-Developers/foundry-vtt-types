@@ -9,7 +9,7 @@ declare global {
    * @see {@linkcode ChatMessage} The ChatMessage document
    * @see {@linkcode ChatLog} The ChatLog sidebar directory
    */
-  class Messages extends WorldCollection<ChatMessage.ImplementationClass, "Messages"> {
+  class Messages extends WorldCollection<"ChatMessage", "Messages"> {
     static documentName: "ChatMessage";
 
     override get directory(): typeof ui.chat;

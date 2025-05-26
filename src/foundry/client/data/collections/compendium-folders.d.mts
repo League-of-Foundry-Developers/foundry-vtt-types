@@ -4,7 +4,7 @@ declare global {
   /**
    * A Collection of Folder documents within a Compendium pack.
    */
-  class CompendiumFolderCollection extends DocumentCollection<Folder.ImplementationClass, "Folders"> {
+  class CompendiumFolderCollection extends DocumentCollection<"Folder", "Folders"> {
     constructor(pack: CompendiumPacks, data: Folder.Source[]);
 
     pack: CompendiumPacks;

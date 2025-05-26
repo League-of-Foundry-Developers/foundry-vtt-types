@@ -116,12 +116,12 @@ declare global {
      * An instance of `NoteDocument` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<NoteDocument.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<NoteDocument.Implementation> {}
 
     /**
      * An instance of `NoteDocument` that comes from the database.
      */
-    interface Stored extends Document.Stored<NoteDocument.Implementation> {}
+    interface Stored extends Document.Internal.Stored<NoteDocument.Implementation> {}
 
     /**
      * The data put in {@link NoteDocument._source | `NoteDocument#_source`}. This data is what was

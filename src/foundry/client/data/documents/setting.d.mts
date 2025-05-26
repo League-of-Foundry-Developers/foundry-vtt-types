@@ -115,12 +115,12 @@ declare global {
      * An instance of `Setting` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<Setting.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<Setting.Implementation> {}
 
     /**
      * An instance of `Setting` that comes from the database.
      */
-    interface Stored extends Document.Stored<Setting.Implementation> {}
+    interface Stored extends Document.Internal.Stored<Setting.Implementation> {}
 
     /**
      * The data put in {@link Setting._source | `Setting#_source`}. This data is what was

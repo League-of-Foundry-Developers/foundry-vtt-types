@@ -9,7 +9,7 @@ declare global {
    * @see {@linkcode Scene} The Scene document
    * @see {@linkcode SceneDirectory} The SceneDirectory sidebar directory
    */
-  class Scenes extends WorldCollection<Scene.ImplementationClass, "Scenes"> {
+  class Scenes extends WorldCollection<"Scene", "Scenes"> {
     static documentName: "Scene";
 
     /**
@@ -48,7 +48,7 @@ declare global {
     override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
       document: Scene.Implementation | Scene.CreateData,
       options?: Options,
-    ): WorldCollection.FromCompendiumReturnType<Scene.ImplementationClass, Options>;
+    ): WorldCollection.FromCompendiumReturnType<"Scene", Options>;
   }
 
   namespace Scenes {

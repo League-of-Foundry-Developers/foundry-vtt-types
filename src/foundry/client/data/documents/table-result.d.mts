@@ -151,13 +151,13 @@ declare global {
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends TableResult.SubType = TableResult.SubType>
-      extends Document.Invalid<OfType<SubType>> {}
+      extends Document.Internal.Invalid<OfType<SubType>> {}
 
     /**
      * An instance of `TableResult` that comes from the database.
      */
     interface Stored<out SubType extends TableResult.SubType = TableResult.SubType>
-      extends Document.Stored<OfType<SubType>> {}
+      extends Document.Internal.Stored<OfType<SubType>> {}
 
     /**
      * The data put in {@link TableResult._source | `TableResult#_source`}. This data is what was

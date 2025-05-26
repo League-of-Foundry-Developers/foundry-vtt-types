@@ -166,13 +166,13 @@ declare global {
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends Combatant.SubType = Combatant.SubType>
-      extends Document.Invalid<OfType<SubType>> {}
+      extends Document.Internal.Invalid<OfType<SubType>> {}
 
     /**
      * An instance of `Combatant` that comes from the database.
      */
     interface Stored<out SubType extends Combatant.SubType = Combatant.SubType>
-      extends Document.Stored<OfType<SubType>> {}
+      extends Document.Internal.Stored<OfType<SubType>> {}
 
     /**
      * The data put in {@link Combatant._source | `Combatant#_source`}. This data is what was

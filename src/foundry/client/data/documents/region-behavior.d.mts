@@ -178,13 +178,13 @@ declare global {
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends RegionBehavior.SubType = RegionBehavior.SubType>
-      extends Document.Invalid<OfType<SubType>> {}
+      extends Document.Internal.Invalid<OfType<SubType>> {}
 
     /**
      * An instance of `RegionBehavior` that comes from the database.
      */
     interface Stored<out SubType extends RegionBehavior.SubType = RegionBehavior.SubType>
-      extends Document.Stored<OfType<SubType>> {}
+      extends Document.Internal.Stored<OfType<SubType>> {}
 
     /**
      * The data put in {@link RegionBehavior._source | `RegionBehavior#_source`}. This data is what was

@@ -14,7 +14,7 @@ declare global {
    * let actor = game.actors.get(actorId);
    * ```
    */
-  class Actors extends WorldCollection<Actor.ImplementationClass, "Actors"> {
+  class Actors extends WorldCollection<"Actor", "Actors"> {
     /**
      * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
      * Each Actor is referenced by the Token.id.
@@ -26,7 +26,7 @@ declare global {
     override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
       document: Actor.Implementation | foundry.documents.BaseActor.CreateData,
       options?: Options,
-    ): WorldCollection.FromCompendiumReturnType<Actor.ImplementationClass, Options>;
+    ): WorldCollection.FromCompendiumReturnType<"Actor", Options>;
   }
 
   namespace Actors {

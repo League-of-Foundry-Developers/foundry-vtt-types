@@ -223,12 +223,12 @@ declare global {
      * An instance of `ActorDelta` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<ActorDelta.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<ActorDelta.Implementation> {}
 
     /**
      * An instance of `ActorDelta` that comes from the database.
      */
-    interface Stored extends Document.Stored<ActorDelta.Implementation> {}
+    interface Stored extends Document.Internal.Stored<ActorDelta.Implementation> {}
 
     /**
      * The data put in {@link ActorDelta._source | `ActorDelta#_source`}. This data is what was

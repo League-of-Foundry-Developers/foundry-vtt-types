@@ -7,7 +7,7 @@ declare global {
    * This Collection is accessible within the Game object as game.cards.
    * @see {@linkcode Cards} The Cards document
    */
-  class CardStacks extends WorldCollection<Cards.ImplementationClass, "Cards"> {
+  class CardStacks extends WorldCollection<"Cards", "Cards"> {
     static documentName: "Cards";
   }
 

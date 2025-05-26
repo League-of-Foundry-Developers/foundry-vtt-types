@@ -49,7 +49,7 @@ declare global {
      * @internal
      */
     _trackValidationFailures(
-      collection: WorldCollection<Document.AnyConstructor, string>,
+      collection: WorldCollection<Document.Type, string>,
       source: unknown,
       error: DataModelValidationError,
     ): void;

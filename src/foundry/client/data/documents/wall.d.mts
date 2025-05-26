@@ -114,12 +114,12 @@ declare global {
      * An instance of `WallDocument` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<WallDocument.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<WallDocument.Implementation> {}
 
     /**
      * An instance of `WallDocument` that comes from the database.
      */
-    interface Stored extends Document.Stored<WallDocument.Implementation> {}
+    interface Stored extends Document.Internal.Stored<WallDocument.Implementation> {}
 
     /**
      * The data put in {@link foundry.abstract.DataModel._source | `DataModel#_source`}. This data is what was

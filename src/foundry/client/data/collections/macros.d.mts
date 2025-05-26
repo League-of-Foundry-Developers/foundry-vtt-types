@@ -9,7 +9,7 @@ declare global {
    * @see {@linkcode Macro} The Macro document
    * @see {@linkcode MacroDirectory} The MacroDirectory sidebar directory
    */
-  class Macros extends WorldCollection<Macro.ImplementationClass, "Macros"> {
+  class Macros extends WorldCollection<"Macro", "Macros"> {
     static documentName: "Macro";
 
     override get directory(): typeof ui.macros;
@@ -17,7 +17,7 @@ declare global {
     override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
       document: Macro.Implementation | Macro.CreateData,
       options?: Options,
-    ): WorldCollection.FromCompendiumReturnType<Macro.ImplementationClass, Options>;
+    ): WorldCollection.FromCompendiumReturnType<"Macro", Options>;
   }
 
   namespace Macros {

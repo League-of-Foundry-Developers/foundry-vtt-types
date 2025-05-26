@@ -3,7 +3,7 @@ import type Document from "#common/abstract/document.d.mts";
 declare global {
   /** @deprecated Replaced with {@linkcode DocumentDirectory.Options} */
   type DocumentDirectoryOptions<T extends Document.AnyConstructor = Document.AnyConstructor> =
-    DocumentDirectory.Options<T>;
+    DocumentDirectory.Options<T[" fvtt_types_internal_document_name_static"]>;
 
   abstract class DocumentDirectory<
     FolderType extends foundry.CONST.FOLDER_DOCUMENT_TYPES,
@@ -48,7 +48,7 @@ declare global {
 
     override get tabName(): string;
 
-    static get collection(): WorldCollection<Document.AnyConstructor, string>;
+    static get collection(): WorldCollection<Document.Type, string>;
 
     /**
      * The collection of Documents which are displayed in this Sidebar Directory
@@ -154,7 +154,7 @@ declare global {
   namespace DocumentDirectory {
     interface Any extends DocumentDirectory<any, any> {}
 
-    interface Options<T extends Document.AnyConstructor = Document.AnyConstructor> extends Application.Options {
+    interface Options<T extends Document.Type = Document.Type> extends Application.Options {
       /**
        * A list of data property keys that will trigger a rerender of the tab if
        * they are updated on a Document that this tab is responsible for.

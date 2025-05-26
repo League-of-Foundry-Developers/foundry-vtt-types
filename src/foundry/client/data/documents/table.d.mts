@@ -172,12 +172,12 @@ declare global {
      * An instance of `RollTable` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<RollTable.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<RollTable.Implementation> {}
 
     /**
      * An instance of `RollTable` that comes from the database.
      */
-    interface Stored extends Document.Stored<RollTable.Implementation> {}
+    interface Stored extends Document.Internal.Stored<RollTable.Implementation> {}
 
     /**
      * The data put in {@link RollTable._source | `RollTable#_source`}. This data is what was

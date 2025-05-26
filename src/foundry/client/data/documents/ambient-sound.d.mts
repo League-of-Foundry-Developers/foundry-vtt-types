@@ -107,12 +107,12 @@ declare global {
      * An instance of `AmbientSoundDocument` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<AmbientSoundDocument.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<AmbientSoundDocument.Implementation> {}
 
     /**
      * An instance of `AmbientSoundDocument` that comes from the database.
      */
-    interface Stored extends Document.Stored<AmbientSoundDocument.Implementation> {}
+    interface Stored extends Document.Internal.Stored<AmbientSoundDocument.Implementation> {}
 
     /**
      * The data put in {@link AmbientSoundDocument._source | `AmbientSoundDocument#_source`}. This data is what was

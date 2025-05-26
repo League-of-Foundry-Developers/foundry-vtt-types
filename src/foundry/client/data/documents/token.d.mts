@@ -187,12 +187,12 @@ declare global {
      * An instance of `TokenDocument` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<TokenDocument.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<TokenDocument.Implementation> {}
 
     /**
      * An instance of `TokenDocument` that comes from the database.
      */
-    interface Stored extends Document.Stored<TokenDocument.Implementation> {}
+    interface Stored extends Document.Internal.Stored<TokenDocument.Implementation> {}
 
     /**
      * The data put in {@link TokenDocument._source | `TokenDocument#_source`}. This data is what was

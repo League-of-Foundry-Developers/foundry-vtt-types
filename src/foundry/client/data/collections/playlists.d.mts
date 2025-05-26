@@ -9,7 +9,7 @@ declare global {
    * @see {@linkcode Playlist} The Playlist document
    * @see {@linkcode PlaylistDirectory} The PlaylistDirectory sidebar directory
    */
-  class Playlists extends WorldCollection<Playlist.ImplementationClass, "Playlists"> {
+  class Playlists extends WorldCollection<"Playlist", "Playlists"> {
     static documentName: "Playlist";
 
     /**

@@ -9,7 +9,7 @@ declare global {
    * @see {@linkcode Item} The Item document
    * @see {@linkcode ItemDirectory} The ItemDirectory sidebar directory
    */
-  class Items extends WorldCollection<Item.ImplementationClass, "Items"> {
+  class Items extends WorldCollection<"Item", "Items"> {
     static documentName: "Item";
   }
 

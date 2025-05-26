@@ -8,7 +8,7 @@ declare global {
    *
    * @see {@linkcode Setting} The Setting document
    */
-  class WorldSettings extends WorldCollection<Setting.ImplementationClass, "WorldSettings"> {
+  class WorldSettings extends WorldCollection<"Setting", "WorldSettings"> {
     static documentName: "Setting";
 
     override get directory(): null;

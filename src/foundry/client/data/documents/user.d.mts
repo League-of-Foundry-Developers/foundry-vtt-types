@@ -117,12 +117,12 @@ declare global {
      * An instance of `User` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<User.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<User.Implementation> {}
 
     /**
      * An instance of `User` that comes from the database.
      */
-    interface Stored extends Document.Stored<User.Implementation> {}
+    interface Stored extends Document.Internal.Stored<User.Implementation> {}
 
     /**
      * The data put in {@link User._source | `User#_source`}. This data is what was

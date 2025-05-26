@@ -149,12 +149,14 @@ declare global {
      * An instance of `Folder` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid<out SubType extends Folder.SubType = Folder.SubType> extends Document.Invalid<OfType<SubType>> {}
+    interface Invalid<out SubType extends Folder.SubType = Folder.SubType>
+      extends Document.Internal.Invalid<OfType<SubType>> {}
 
     /**
      * An instance of `Folder` that comes from the database.
      */
-    interface Stored<out SubType extends Folder.SubType = Folder.SubType> extends Document.Stored<OfType<SubType>> {}
+    interface Stored<out SubType extends Folder.SubType = Folder.SubType>
+      extends Document.Internal.Stored<OfType<SubType>> {}
 
     /**
      * The data put in {@link Folder._source | `Folder#_source`}. This data is what was

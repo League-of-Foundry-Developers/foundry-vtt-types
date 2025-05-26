@@ -198,12 +198,12 @@ declare global {
      * An instance of `Scene` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<Scene.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<Scene.Implementation> {}
 
     /**
      * An instance of `Scene` that comes from the database.
      */
-    interface Stored extends Document.Stored<Scene.Implementation> {}
+    interface Stored extends Document.Internal.Stored<Scene.Implementation> {}
 
     /**
      * The data put in {@link Scene._source | `Scene#_source`}. This data is what was

@@ -919,7 +919,7 @@ declare abstract class AnyDocument extends Document<Document.Type, {}, Document.
 
 declare namespace Document {
   interface Any extends AnyDocument {}
-  interface AnyStored extends Stored<Any> {}
+  interface AnyStored extends Document.Internal.Stored<Any> {}
   interface AnyValid extends AnyDocument {}
   interface AnyConstructor extends Identity<typeof AnyDocument> {}
 
@@ -1156,6 +1156,22 @@ declare namespace Document {
     type SystemOfType<SystemMap extends Record<SubType, object>, SubType extends string> =
       | DiscriminatedUnion<SystemMap[SubType]>
       | (SubType extends ModuleSubtype ? UnknownSystem : never);
+
+    type Stored<D extends Document.Any> = D & {
+      id: string;
+      _id: string;
+      _source: GetKey<D, "_source"> & { _id: string };
+    };
+
+    type Invalid<D extends Document.Any> = SimpleMerge<
+      D,
+      {
+        id: string;
+        _id: string;
+        _source: object;
+        system: object;
+      }
+    >;
   }
 
   /** Any Document, that is a child of the given parent Document. */
@@ -1251,10 +1267,39 @@ declare namespace Document {
     | (DocumentType extends "Token" ? TokenDocument.UpdateData : never)
     | (DocumentType extends "Wall" ? WallDocument.UpdateData : never);
 
-  /**
-   * @deprecated Replaced with {@linkcode SchemaField.CreateData}
-   */
-  type ConstructorDataForSchema<Schema extends DataSchema> = SchemaField.CreateData<Schema>;
+  type SourceForName<DocumentType extends Document.Type> =
+    | (DocumentType extends "ActiveEffect" ? ActiveEffect.Source : never)
+    | (DocumentType extends "ActorDelta" ? ActorDelta.Source : never)
+    | (DocumentType extends "Actor" ? Actor.Source : never)
+    | (DocumentType extends "Adventure" ? Adventure.Source : never)
+    | (DocumentType extends "Card" ? Card.Source : never)
+    | (DocumentType extends "Cards" ? Cards.Source : never)
+    | (DocumentType extends "ChatMessage" ? ChatMessage.Source : never)
+    | (DocumentType extends "Combat" ? Combat.Source : never)
+    | (DocumentType extends "Combatant" ? Combatant.Source : never)
+    | (DocumentType extends "FogExploration" ? FogExploration.Source : never)
+    | (DocumentType extends "Folder" ? Folder.Source : never)
+    | (DocumentType extends "Item" ? Item.Source : never)
+    | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Source : never)
+    | (DocumentType extends "JournalEntry" ? JournalEntry.Source : never)
+    | (DocumentType extends "Macro" ? Macro.Source : never)
+    | (DocumentType extends "PlaylistSound" ? PlaylistSound.Source : never)
+    | (DocumentType extends "Playlist" ? Playlist.Source : never)
+    | (DocumentType extends "RegionBehavior" ? RegionBehavior.Source : never)
+    | (DocumentType extends "RollTable" ? RollTable.Source : never)
+    | (DocumentType extends "Scene" ? Scene.Source : never)
+    | (DocumentType extends "Setting" ? Setting.Source : never)
+    | (DocumentType extends "TableResult" ? TableResult.Source : never)
+    | (DocumentType extends "User" ? User.Source : never)
+    | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Source : never)
+    | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Source : never)
+    | (DocumentType extends "Drawing" ? DrawingDocument.Source : never)
+    | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Source : never)
+    | (DocumentType extends "Note" ? NoteDocument.Source : never)
+    | (DocumentType extends "Region" ? NoteDocument.Source : never)
+    | (DocumentType extends "Tile" ? TileDocument.Source : never)
+    | (DocumentType extends "Token" ? TokenDocument.Source : never)
+    | (DocumentType extends "Wall" ? WallDocument.Source : never);
 
   type SystemConstructor = AnyConstructor & {
     metadata: { name: SystemType };
@@ -1264,6 +1309,7 @@ declare namespace Document {
     NameFor<ConcreteDocument>
   >;
 
+  // TODO(LukeAbby): Look into why removing the conform causes an issue in `EmbeddedCollectionDeltaField`
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
     FixedInstanceType<ConfiguredDocumentClass[NameFor<ConcreteDocument>]>,
     Document.Any
@@ -1271,38 +1317,78 @@ declare namespace Document {
     // FixedInstanceType<ConfigurationFailure[Name]>
   >;
 
-  type ToConfiguredStored<D extends Document.AnyConstructor> = Stored<ToConfiguredInstance<D>>;
-
-  type Stored<D extends Document.Any> = D & {
-    id: string;
-    _id: string;
-    _source: GetKey<D, "_source"> & { _id: string };
-  };
-
-  type Invalid<D extends Document.Any> = SimpleMerge<
-    D,
-    {
-      id: string;
-      _id: string;
-      _source: object;
-      system: object;
-    }
-  >;
-
-  type ToStored<D extends Document.AnyConstructor> = Stored<FixedInstanceType<D>>;
-
-  type ToStoredIf<D extends Document.AnyConstructor, Temporary extends boolean | undefined> = Temporary extends true
-    ? FixedInstanceType<D>
-    : ToConfiguredStored<D>;
-
-  /** @deprecated Replaced with {@linkcode Document.TemporaryIf} */
-  type StoredIf<D extends Document.Any, Temporary extends boolean | undefined> = TemporaryIf<D, Temporary>;
-
   type TemporaryIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true
     ? D
-    : Stored<D>;
+    : // eslint-disable-next-line @typescript-eslint/no-deprecated
+      Stored<D>;
 
-  type Temporary<D extends Document.Any> = D extends Stored<infer U> ? U : D;
+  type StoredForName<DocumentType extends Document.Type> =
+    | (DocumentType extends "ActiveEffect" ? ActiveEffect.Stored : never)
+    | (DocumentType extends "ActorDelta" ? ActorDelta.Stored : never)
+    | (DocumentType extends "Actor" ? Actor.Stored : never)
+    | (DocumentType extends "Adventure" ? Adventure.Stored : never)
+    | (DocumentType extends "Card" ? Card.Stored : never)
+    | (DocumentType extends "Cards" ? Cards.Stored : never)
+    | (DocumentType extends "ChatMessage" ? ChatMessage.Stored : never)
+    | (DocumentType extends "Combat" ? Combat.Stored : never)
+    | (DocumentType extends "Combatant" ? Combatant.Stored : never)
+    | (DocumentType extends "FogExploration" ? FogExploration.Stored : never)
+    | (DocumentType extends "Folder" ? Folder.Stored : never)
+    | (DocumentType extends "Item" ? Item.Stored : never)
+    | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Stored : never)
+    | (DocumentType extends "JournalEntry" ? JournalEntry.Stored : never)
+    | (DocumentType extends "Macro" ? Macro.Stored : never)
+    | (DocumentType extends "PlaylistSound" ? PlaylistSound.Stored : never)
+    | (DocumentType extends "Playlist" ? Playlist.Stored : never)
+    | (DocumentType extends "RegionBehavior" ? RegionBehavior.Stored : never)
+    | (DocumentType extends "RollTable" ? RollTable.Stored : never)
+    | (DocumentType extends "Scene" ? Scene.Stored : never)
+    | (DocumentType extends "Setting" ? Setting.Stored : never)
+    | (DocumentType extends "TableResult" ? TableResult.Stored : never)
+    | (DocumentType extends "User" ? User.Stored : never)
+    | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Stored : never)
+    | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Stored : never)
+    | (DocumentType extends "Drawing" ? DrawingDocument.Stored : never)
+    | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Stored : never)
+    | (DocumentType extends "Note" ? NoteDocument.Stored : never)
+    | (DocumentType extends "Region" ? NoteDocument.Stored : never)
+    | (DocumentType extends "Tile" ? TileDocument.Stored : never)
+    | (DocumentType extends "Token" ? TokenDocument.Stored : never)
+    | (DocumentType extends "Wall" ? WallDocument.Stored : never);
+
+  type InvalidForName<DocumentType extends Document.Type> =
+    | (DocumentType extends "ActiveEffect" ? ActiveEffect.Invalid : never)
+    | (DocumentType extends "ActorDelta" ? ActorDelta.Invalid : never)
+    | (DocumentType extends "Actor" ? Actor.Invalid : never)
+    | (DocumentType extends "Adventure" ? Adventure.Invalid : never)
+    | (DocumentType extends "Card" ? Card.Invalid : never)
+    | (DocumentType extends "Cards" ? Cards.Invalid : never)
+    | (DocumentType extends "ChatMessage" ? ChatMessage.Invalid : never)
+    | (DocumentType extends "Combat" ? Combat.Invalid : never)
+    | (DocumentType extends "Combatant" ? Combatant.Invalid : never)
+    | (DocumentType extends "FogExploration" ? FogExploration.Invalid : never)
+    | (DocumentType extends "Folder" ? Folder.Invalid : never)
+    | (DocumentType extends "Item" ? Item.Invalid : never)
+    | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Invalid : never)
+    | (DocumentType extends "JournalEntry" ? JournalEntry.Invalid : never)
+    | (DocumentType extends "Macro" ? Macro.Invalid : never)
+    | (DocumentType extends "PlaylistSound" ? PlaylistSound.Invalid : never)
+    | (DocumentType extends "Playlist" ? Playlist.Invalid : never)
+    | (DocumentType extends "RegionBehavior" ? RegionBehavior.Invalid : never)
+    | (DocumentType extends "RollTable" ? RollTable.Invalid : never)
+    | (DocumentType extends "Scene" ? Scene.Invalid : never)
+    | (DocumentType extends "Setting" ? Setting.Invalid : never)
+    | (DocumentType extends "TableResult" ? TableResult.Invalid : never)
+    | (DocumentType extends "User" ? User.Invalid : never)
+    | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Invalid : never)
+    | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Invalid : never)
+    | (DocumentType extends "Drawing" ? DrawingDocument.Invalid : never)
+    | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Invalid : never)
+    | (DocumentType extends "Note" ? NoteDocument.Invalid : never)
+    | (DocumentType extends "Region" ? NoteDocument.Invalid : never)
+    | (DocumentType extends "Tile" ? TileDocument.Invalid : never)
+    | (DocumentType extends "Token" ? TokenDocument.Invalid : never)
+    | (DocumentType extends "Wall" ? WallDocument.Invalid : never);
 
   type NameFor<ConcreteDocument extends Document.Internal.Constructor> =
     ConcreteDocument[" fvtt_types_internal_document_name_static"];
@@ -1312,16 +1398,6 @@ declare namespace Document {
 
   type ObjectClassFor<Name extends PlaceableType> = CONFIG[Name]["objectClass"];
   type ObjectFor<Name extends PlaceableType> = FixedInstanceType<CONFIG[Name]["objectClass"]>;
-
-  /**
-   * @deprecated Replaced with {@linkcode ObjectClassFor}
-   */
-  type ConfiguredObjectClassForName<Name extends PlaceableType> = ObjectClassFor<Name>;
-
-  /**
-   * @deprecated Replaced with {@linkcode ObjectFor}
-   */
-  type ConfiguredObjectInstanceForName<Name extends PlaceableType> = ObjectFor<Name>;
 
   type ConfiguredDataForName<Name extends Type> = GetKey<DataConfig, Name, EmptyObject>;
 
@@ -1553,51 +1629,6 @@ declare namespace Document {
       Omit<Document.ConstructionContext, "parent"> {}
 
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
-
-  /* eslint-disable @typescript-eslint/no-deprecated */
-
-  /** @deprecated Use {@linkcode Database.PreCreateOptions} */
-  type PreCreateOptions<Name extends Type> = Omit<
-    Document.Database.OperationOf<Name, "create">,
-    "data" | "noHook" | "pack" | "parent"
-  >;
-
-  /** @deprecated Use {@linkcode Database.CreateOptions}  */
-  type OnCreateOptions<Name extends Type> = Omit<
-    Document.Database.OperationOf<Name, "create">,
-    "pack" | "parentUuid" | "syntheticActorUpdate"
-  >;
-
-  /** @deprecated Use {@link Database.PreUpdateOptions | `Database.PreUpdateOperation`}  */
-  type PreUpdateOptions<Name extends Type> = Omit<
-    Document.Database.OperationOf<Name, "update">,
-    "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
-  >;
-
-  /** @deprecated Use {@link Database.UpdateOptions | `Database.OnUpdateOperation`} */
-  type OnUpdateOptions<Name extends Type> = Omit<
-    Document.Database.OperationOf<Name, "update">,
-    "pack" | "parentUuid" | "syntheticActorUpdate"
-  >;
-
-  /** @deprecated Use {@linkcode Database.PreDeleteOperationInstance} */
-  type PreDeleteOptions<Name extends Type> = Omit<
-    Document.Database.OperationOf<Name, "delete">,
-    "ids" | "deleteAll" | "noHook" | "pack" | "parent"
-  >;
-
-  /** @deprecated Use {@link Database.DeleteOptions | `Database.OnDeleteOptions`} */
-  type OnDeleteOptions<Name extends Type> = Omit<
-    Document.Database.OperationOf<Name, "delete">,
-    "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
-  >;
-
-  /** @deprecated Use {@linkcode Database.PreCreateOptions} or {@link Database.PreUpdateOptions | `Database.PreUpdateOperation`}*/
-  type PreUpsertOptions<Name extends Type> = PreCreateOptions<Name> | PreUpdateOptions<Name>;
-
-  /** @deprecated Use {@linkcode Database.CreateOptions} or {@link Database.UpdateOptions | `Database.OnUpdateOperation`} */
-  type OnUpsertOptions<Name extends Type> = OnCreateOptions<Name> | OnUpdateOptions<Name>;
-  /* eslint-enable @typescript-eslint/no-deprecated */
 
   interface Metadata<out ThisType extends Document.Any> {
     readonly name: ThisType["documentName"];
@@ -2100,9 +2131,6 @@ declare namespace Document {
 
   type ActionPermission = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
-  /** @deprecated Use {@linkcode Document.ActionPermission} instead */
-  type TestableOwnershipLevel = ActionPermission;
-
   /** @internal */
   type _TestUserPermissionsOptions = NullishProps<{
     /**
@@ -2113,39 +2141,6 @@ declare namespace Document {
   }>;
 
   interface TestUserPermissionOptions extends _TestUserPermissionsOptions {}
-
-  /**
-   * @deprecated Replaced with {@linkcode ImplementationFor}
-   */
-  type ConfiguredInstanceForName<Name extends Type> = ImplementationFor<Name>;
-
-  /**
-   * @deprecated Replaced with {@linkcode ImplementationClassFor}
-   */
-  type ConfiguredClassForName<Name extends Type> = ImplementationClassFor<Name>;
-
-  /**
-   * @deprecated Replaced with {@link SchemaField.SourceData | `SchemaField.SourceData<Schema>`}
-   */
-  type ToObjectFalseType<T extends Document.Internal.Instance.Any> = T extends {
-    toObject: (source: false) => infer U;
-  }
-    ? U
-    : T;
-
-  /**
-   * @deprecated Replaced with {@linkcode Document.Database.OperationOf}
-   */
-  type DatabaseOperationsFor<
-    Name extends Document.Type,
-    ConcreteOperation extends Document.Database.Operation,
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-  > = Document.Database.OperationOf<Name, ConcreteOperation>;
-
-  /**
-   * @deprecated Replaced with {@linkcode CreateDataForName}
-   */
-  type ConstructorDataForName<T extends Document.Type> = CreateData[T];
 
   type CanUserModifyData<Schema extends DataSchema, Action extends "create" | "update" | "delete"> =
     | (Action extends "create" ? SchemaField.CreateData<Schema> : never)
@@ -2266,6 +2261,137 @@ declare namespace Document {
         userId: string,
       ]
     : never;
+
+  /**
+   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ToConfiguredStored<D extends Document.AnyConstructor> = Stored<ToConfiguredInstance<D>>;
+
+  /**
+   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
+   */
+  type Stored<D extends Document.Any> = Document.Internal.Stored<D>;
+
+  /**
+   * @deprecated This type should not be used directly. Use `InvalidForName` as this type does not account for anything declaration merged into `Invalid`.
+   */
+  type Invalid<D extends Document.Any> = Document.Internal.Invalid<D>;
+
+  /**
+   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ToStored<D extends Document.AnyConstructor> = Stored<FixedInstanceType<D>>;
+
+  /**
+   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
+   */
+  type ToStoredIf<D extends Document.AnyConstructor, Temporary extends boolean | undefined> = Temporary extends true
+    ? FixedInstanceType<D>
+    : // eslint-disable-next-line @typescript-eslint/no-deprecated
+      ToConfiguredStored<D>;
+
+  /** @deprecated Replaced with {@linkcode Document.TemporaryIf} */
+  type StoredIf<D extends Document.Any, Temporary extends boolean | undefined> = TemporaryIf<D, Temporary>;
+
+  /** @deprecated This type currently does not have a replacement as it was deemed too niche. If you have a use case for it let us know. */
+  type Temporary<D extends Document.Any> = D extends Internal.Stored<infer U> ? U : D;
+
+  /* eslint-disable @typescript-eslint/no-deprecated */
+
+  /** @deprecated Use {@linkcode Document.ActionPermission} instead */
+  type TestableOwnershipLevel = ActionPermission;
+
+  /**
+   * @deprecated Replaced with {@linkcode ImplementationFor}
+   */
+  type ConfiguredInstanceForName<Name extends Type> = ImplementationFor<Name>;
+
+  /**
+   * @deprecated Replaced with {@linkcode ImplementationClassFor}
+   */
+  type ConfiguredClassForName<Name extends Type> = ImplementationClassFor<Name>;
+
+  /**
+   * @deprecated Replaced with {@link SchemaField.SourceData | `SchemaField.SourceData<Schema>`}
+   */
+  type ToObjectFalseType<T extends Document.Internal.Instance.Any> = T extends {
+    toObject: (source: false) => infer U;
+  }
+    ? U
+    : T;
+
+  /**
+   * @deprecated Replaced with {@linkcode Document.Database.OperationOf}
+   */
+  type DatabaseOperationsFor<
+    Name extends Document.Type,
+    ConcreteOperation extends Document.Database.Operation,
+  > = Document.Database.OperationOf<Name, ConcreteOperation>;
+
+  /**
+   * @deprecated Replaced with {@linkcode CreateDataForName}
+   */
+  type ConstructorDataForName<T extends Document.Type> = CreateData[T];
+
+  /**
+   * @deprecated Replaced with {@linkcode SchemaField.CreateData}
+   */
+  type ConstructorDataForSchema<Schema extends DataSchema> = SchemaField.CreateData<Schema>;
+
+  /**
+   * @deprecated Replaced with {@linkcode ObjectClassFor}
+   */
+  type ConfiguredObjectClassForName<Name extends PlaceableType> = ObjectClassFor<Name>;
+
+  /**
+   * @deprecated Replaced with {@linkcode ObjectFor}
+   */
+  type ConfiguredObjectInstanceForName<Name extends PlaceableType> = ObjectFor<Name>;
+
+  /** @deprecated Use {@linkcode Database.PreCreateOptions} */
+  type PreCreateOptions<Name extends Type> = Omit<
+    Document.Database.OperationOf<Name, "create">,
+    "data" | "noHook" | "pack" | "parent"
+  >;
+
+  /** @deprecated Use {@linkcode Database.CreateOptions}  */
+  type OnCreateOptions<Name extends Type> = Omit<
+    Document.Database.OperationOf<Name, "create">,
+    "pack" | "parentUuid" | "syntheticActorUpdate"
+  >;
+
+  /** @deprecated Use {@link Database.PreUpdateOptions | `Database.PreUpdateOperation`}  */
+  type PreUpdateOptions<Name extends Type> = Omit<
+    Document.Database.OperationOf<Name, "update">,
+    "updates" | "restoreDelta" | "noHook" | "parent" | "pack"
+  >;
+
+  /** @deprecated Use {@link Database.UpdateOptions | `Database.OnUpdateOperation`} */
+  type OnUpdateOptions<Name extends Type> = Omit<
+    Document.Database.OperationOf<Name, "update">,
+    "pack" | "parentUuid" | "syntheticActorUpdate"
+  >;
+
+  /** @deprecated Use {@linkcode Database.PreDeleteOperationInstance} */
+  type PreDeleteOptions<Name extends Type> = Omit<
+    Document.Database.OperationOf<Name, "delete">,
+    "ids" | "deleteAll" | "noHook" | "pack" | "parent"
+  >;
+
+  /** @deprecated Use {@link Database.DeleteOptions | `Database.OnDeleteOptions`} */
+  type OnDeleteOptions<Name extends Type> = Omit<
+    Document.Database.OperationOf<Name, "delete">,
+    "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
+  >;
+
+  /** @deprecated Use {@linkcode Database.PreCreateOptions} or {@link Database.PreUpdateOptions | `Database.PreUpdateOperation`}*/
+  type PreUpsertOptions<Name extends Type> = PreCreateOptions<Name> | PreUpdateOptions<Name>;
+
+  /** @deprecated Use {@linkcode Database.CreateOptions} or {@link Database.UpdateOptions | `Database.OnUpdateOperation`} */
+  type OnUpsertOptions<Name extends Type> = OnCreateOptions<Name> | OnUpdateOptions<Name>;
+  /* eslint-enable @typescript-eslint/no-deprecated */
 }
 
 /** @deprecated Replaced with {@linkcode Document.Database.Operation} */

@@ -167,13 +167,13 @@ declare global {
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends ActiveEffect.SubType = ActiveEffect.SubType>
-      extends Document.Invalid<OfType<SubType>> {}
+      extends Document.Internal.Invalid<OfType<SubType>> {}
 
     /**
      * An instance of `ActiveEffect` that comes from the database.
      */
     interface Stored<out SubType extends ActiveEffect.SubType = ActiveEffect.SubType>
-      extends Document.Stored<OfType<SubType>> {}
+      extends Document.Internal.Stored<OfType<SubType>> {}
 
     /**
      * The data put in {@link ActiveEffect._source | `ActiveEffect#_source`}. This data is what was

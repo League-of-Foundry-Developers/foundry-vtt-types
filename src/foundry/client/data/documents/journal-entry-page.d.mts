@@ -162,13 +162,13 @@ declare global {
      * its `system` and `_source` could theoretically be anything.
      */
     interface Invalid<out SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType>
-      extends Document.Invalid<OfType<SubType>> {}
+      extends Document.Internal.Invalid<OfType<SubType>> {}
 
     /**
      * An instance of `JournalEntryPage` that comes from the database.
      */
     interface Stored<out SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType>
-      extends Document.Stored<OfType<SubType>> {}
+      extends Document.Internal.Stored<OfType<SubType>> {}
 
     /**
      * The data put in {@link JournalEntryPage._source | `JournalEntryPage#_source`}. This data is what was

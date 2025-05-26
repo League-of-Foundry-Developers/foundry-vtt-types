@@ -118,12 +118,12 @@ declare global {
      * An instance of `MeasuredTemplateDocument` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<MeasuredTemplateDocument.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<MeasuredTemplateDocument.Implementation> {}
 
     /**
      * An instance of `MeasuredTemplateDocument` that comes from the database.
      */
-    interface Stored extends Document.Stored<MeasuredTemplateDocument.Implementation> {}
+    interface Stored extends Document.Internal.Stored<MeasuredTemplateDocument.Implementation> {}
 
     /**
      * The data put in {@link MeasuredTemplate._source | `MeasuredTemplate#_source`}. This data is what was

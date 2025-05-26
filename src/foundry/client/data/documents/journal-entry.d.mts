@@ -180,12 +180,12 @@ declare global {
      * An instance of `JournalEntry` that comes from the database but failed validation meaning that
      * its `system` and `_source` could theoretically be anything.
      */
-    interface Invalid extends Document.Invalid<JournalEntry.Implementation> {}
+    interface Invalid extends Document.Internal.Invalid<JournalEntry.Implementation> {}
 
     /**
      * An instance of `JournalEntry` that comes from the database.
      */
-    interface Stored extends Document.Stored<JournalEntry.Implementation> {}
+    interface Stored extends Document.Internal.Stored<JournalEntry.Implementation> {}
 
     /**
      * The data put in {@link JournalEntry._source | `JournalEntry#_source`}. This data is what was

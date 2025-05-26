@@ -9,7 +9,7 @@ declare global {
    * @see {@linkcode Combat} The Combat document
    * @see {@linkcode CombatTracker} The CombatTracker sidebar directory
    */
-  class CombatEncounters extends WorldCollection<Combat.ImplementationClass, "CombatEncounters"> {
+  class CombatEncounters extends WorldCollection<"Combat", "CombatEncounters"> {
     static documentName: "Combat";
 
     /**

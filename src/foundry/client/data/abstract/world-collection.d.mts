@@ -1,4 +1,4 @@
-import type { DeepPartial, DropFirst, FixedInstanceType, GetKey, Identity, InexactPartial } from "#utils";
+import type { DeepPartial, DropFirst, GetKey, Identity, InexactPartial } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DatabaseCreateOperation } from "#common/abstract/_types.d.mts";
 
@@ -9,9 +9,9 @@ declare global {
    * @see {@link Game.collections | `Game#collections`}
    */
   abstract class WorldCollection<
-    DocumentClass extends Document.AnyConstructor,
+    DocumentName extends Document.Type,
     Name extends string,
-  > extends DirectoryCollectionMixin(DocumentCollection)<DocumentClass, Name> {
+  > extends DirectoryCollectionMixin(DocumentCollection)<DocumentName, Name> {
     /**
      * Reference the set of Folders which contain documents in this collection
      */
@@ -26,9 +26,7 @@ declare global {
     get directory(): Lowercase<Name> extends keyof typeof ui
       ? (typeof ui)[Lowercase<Name>]
       :
-          | (DocumentClass["metadata"]["name"] extends foundry.CONST.FOLDER_DOCUMENT_TYPES
-              ? DocumentDirectory<DocumentClass["metadata"]["name"]>
-              : never)
+          | (DocumentName extends foundry.CONST.FOLDER_DOCUMENT_TYPES ? DocumentDirectory<DocumentName> : never)
           | SidebarTab
           | undefined
           | null;
@@ -36,7 +34,7 @@ declare global {
     /**
      * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
      */
-    static get instance(): WorldCollection<Document.AnyConstructor, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
+    static get instance(): WorldCollection<Document.Type, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
 
     // Note(LukeAbby): Due to the usage of `this["contents"]` in the parent class the override has
     // to stay like this.
@@ -61,13 +59,13 @@ declare global {
      * DatabaseCreateOperation but the foundry typedef doesn't have them).
      */
     importFromCompendium(
-      pack: CompendiumCollection<CompendiumCollection.Metadata & { type: DocumentClass["metadata"]["name"] }>,
+      pack: CompendiumCollection<CompendiumCollection.Metadata & { type: DocumentName }>,
       id: string,
-      updateData?: DeepPartial<FixedInstanceType<DocumentClass>["_source"]>,
+      updateData?: DeepPartial<Document.SourceForName<DocumentName>>,
       options?: InexactPartial<
         Document.Database.CreateOperation<DatabaseCreateOperation> & WorldCollection.FromCompendiumOptions
       >,
-    ): Promise<Document.ToStored<DocumentClass>>;
+    ): Promise<Document.StoredForName<DocumentName>>;
 
     /**
      * Apply data transformations when importing a Document from a Compendium pack
@@ -78,9 +76,9 @@ declare global {
      * @remarks FromCompendiumOptions is inflated to account for expanded downstream use
      */
     fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
-      document: FixedInstanceType<DocumentClass> | Document.CreateDataFor<DocumentClass>,
+      document: Document.ImplementationFor<DocumentName> | Document.CreateDataForName<DocumentName>,
       options?: Options,
-    ): WorldCollection.FromCompendiumReturnType<DocumentClass, Options>;
+    ): WorldCollection.FromCompendiumReturnType<DocumentName, Options>;
 
     /**
      * Register a Document sheet class as a candidate which can be used to display Documents of a given type.
@@ -147,10 +145,10 @@ declare global {
     }
 
     type FromCompendiumReturnType<
-      DocumentClass extends Document.AnyConstructor,
+      DocumentType extends Document.Type,
       Options extends FromCompendiumOptions | undefined,
     > = Omit<
-      FixedInstanceType<DocumentClass>["_source"],
+      Document.SourceForName<DocumentType>,
       | ClientDocument._OmitProperty<GetKey<Options, "clearFolder", undefined>, false, "folder">
       | ClientDocument._OmitProperty<GetKey<Options, "clearSort", undefined>, true, "sort" | "navigation" | "navOrder">
       | ClientDocument._OmitProperty<GetKey<Options, "clearOwnership", undefined>, true, "ownership">
@@ -159,6 +157,6 @@ declare global {
   }
 }
 
-declare abstract class AnyWorldCollection extends WorldCollection<Document.AnyConstructor, string> {
+declare abstract class AnyWorldCollection extends WorldCollection<Document.Type, string> {
   constructor(...args: never[]);
 }

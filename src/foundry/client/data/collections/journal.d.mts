@@ -9,7 +9,7 @@ declare global {
    * @see {@linkcode JournalEntry} The JournalEntry document
    * @see {@linkcode JournalDirectory} The JournalDirectory sidebar directory
    */
-  class Journal extends WorldCollection<JournalEntry.ImplementationClass, "Journal"> {
+  class Journal extends WorldCollection<"JournalEntry", "Journal"> {
     static documentName: "JournalEntry";
 
     /**

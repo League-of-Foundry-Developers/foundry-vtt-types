@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, InexactPartial, FixedInstanceType, GetKey } from "#utils";
+import type { AnyObject, DeepPartial, InexactPartial, GetKey } from "#utils";
 import type { DatabaseAction, DatabaseOperationMap, DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 
@@ -7,16 +7,16 @@ declare global {
    * An abstract subclass of the Collection container which defines a collection of Document instances.
    */
   class DocumentCollection<
-    DocumentClass extends Document.AnyConstructor,
+    DocumentType extends Document.Type,
     Name extends string,
-    Methods extends Collection.Methods.Any = DocumentCollection.Methods<DocumentClass>,
-  > extends foundry.utils.Collection<Document.ToStored<DocumentClass>, Methods> {
-    constructor(data: FixedInstanceType<DocumentClass>["_source"][]);
+    Methods extends Collection.Methods.Any = DocumentCollection.Methods<DocumentType>,
+  > extends foundry.utils.Collection<Document.StoredForName<DocumentType>, Methods> {
+    constructor(data: Document.SourceForName<DocumentType>[]);
 
     /**
      * The source data array from which the Documents in the WorldCollection are created
      */
-    _source: FixedInstanceType<DocumentClass>["_source"][];
+    _source: Document.SourceForName<DocumentType>[];
 
     /**
      * An Array of application references which will be automatically updated when the collection content changes
@@ -33,13 +33,13 @@ declare global {
     /**
      * A reference to the Document class definition which is contained within this DocumentCollection.
      */
-    get documentClass(): DocumentClass;
+    get documentClass(): Document.ImplementationClassFor<DocumentType>;
 
     /**
      * A reference to the named Document class which is contained within this DocumentCollection.
      * @remarks This accessor is abstract: A subclass of DocumentCollection must implement the documentName getter
      */
-    get documentName(): DocumentClass["metadata"]["name"];
+    get documentName(): DocumentType;
 
     /**
      * The base Document type which is contained within this DocumentCollection
@@ -62,10 +62,10 @@ declare global {
      * @param context - Document creation context
      */
     createDocument(
-      data: Document.CreateDataFor<DocumentClass>,
+      data: Document.CreateDataForName<DocumentType>,
       // TODO: Should be `Document.ParentOf<T>` or some equivalent.
       context: Document.ConstructionContext<Document.Any | null>,
-    ): DocumentClass;
+    ): DocumentType;
 
     /**
      * Obtain a temporary Document instance for a document id which currently has invalid source data.
@@ -74,17 +74,14 @@ declare global {
      * @returns An in-memory instance for the invalid Document
      * @throws If strict is true and the requested ID is not in the set of invalid IDs for this collection.
      */
-    getInvalid(
-      id: string,
-      options?: DocumentCollection.GetInvalidOptions,
-    ): Document.Invalid<FixedInstanceType<DocumentClass>>;
+    getInvalid(id: string, options?: DocumentCollection.GetInvalidOptions): Document.InvalidForName<DocumentType>;
 
     get: Methods["get"];
 
     /**
      * @remarks The parameter `id` is ignored, instead `document.id` is used as the key.
      */
-    set(id: string, document: Document.ToStored<DocumentClass>): this;
+    set(id: string, document: Document.StoredForName<DocumentType>): this;
 
     /** @remarks Actually returns void */
     delete: (id: string) => boolean;
@@ -113,7 +110,7 @@ declare global {
      * If filters are provided, results are filtered to only those that match the provided values.
      * @param search   - An object configuring the search
      */
-    search(search?: DocumentCollection.SearchOptions): FixedInstanceType<DocumentClass>[];
+    search(search?: DocumentCollection.SearchOptions): Document.ImplementationFor<DocumentType>[];
 
     /**
      * Update all objects in this DocumentCollection with a provided transformation.
@@ -127,9 +124,9 @@ declare global {
      */
     updateAll(
       transformation:
-        | Document.UpdateDataFor<DocumentClass>
-        | ((doc: Document.ToStored<DocumentClass>) => Document.UpdateDataFor<DocumentClass>),
-      condition?: ((obj: Document.ToStored<DocumentClass>) => boolean) | null,
+        | Document.UpdateDataForName<DocumentType>
+        | ((doc: Document.StoredForName<DocumentType>) => Document.UpdateDataForName<DocumentType>),
+      condition?: ((obj: Document.StoredForName<DocumentType>) => boolean) | null,
       options?: Document.Database.UpdateDocumentsOperation<DatabaseUpdateOperation>,
     ): ReturnType<this["documentClass"]["updateDocuments"]>;
 
@@ -143,7 +140,7 @@ declare global {
      */
     _onModifyContents<A extends DatabaseAction>(
       action: A,
-      documents: Document.ToStored<DocumentClass>[],
+      documents: Document.StoredForName<DocumentType>[],
       result: readonly AnyObject[] | readonly string[],
       operation: DatabaseOperationMap[A],
       user: User.Implementation,
@@ -151,9 +148,9 @@ declare global {
   }
 
   namespace DocumentCollection {
-    interface Any extends DocumentCollection<Document.AnyConstructor, string> {}
+    interface Any extends DocumentCollection<Document.Type, string> {}
 
-    interface Methods<T extends Document.AnyConstructor> {
+    interface Methods<T extends Document.Type> {
       get<Options extends DocumentCollection.GetOptions | undefined = undefined>(
         key: string,
         options?: Options,
@@ -161,9 +158,9 @@ declare global {
     }
 
     namespace RenderContext {
-      interface Base<T extends Document.AnyConstructor> {
-        documentType: T["metadata"]["name"];
-        documents: Document.ToConfiguredStored<T>[];
+      interface Base<T extends Document.Type> {
+        documentType: T;
+        documents: Document.StoredForName<T>[];
 
         /** @deprecated The "entities" render context is deprecated. Please use "documents" instead. */
         get entities(): this["documents"];
@@ -172,17 +169,17 @@ declare global {
         get entityType(): this["documentType"];
       }
 
-      interface Create<T extends Document.AnyConstructor> extends Base<T> {
+      interface Create<T extends Document.Type> extends Base<T> {
         action: "create";
-        data: (FixedInstanceType<T>["_source"] & { _id: string })[];
+        data: (Document.SourceForName<T> & { _id: string })[];
       }
 
-      interface Update<T extends Document.AnyConstructor> extends Base<T> {
+      interface Update<T extends Document.Type> extends Base<T> {
         action: "update";
-        data: (DeepPartial<FixedInstanceType<T>["_source"]> & { _id: string })[];
+        data: (DeepPartial<Document.SourceForName<T>> & { _id: string })[];
       }
 
-      interface Delete<T extends Document.AnyConstructor> extends Base<T> {
+      interface Delete<T extends Document.Type> extends Base<T> {
         action: "delete";
         data: string[];
       }
@@ -226,17 +223,14 @@ declare global {
       invalid?: boolean | undefined;
     }
 
-    type GetReturnType<
-      ConcreteDocument extends Document.AnyConstructor,
-      Options extends GetOptions | undefined,
-    > = _ApplyInvalid<FixedInstanceType<ConcreteDocument>, GetKey<Options, "invalid", false>>;
+    type GetReturnType<DocumentType extends Document.Type, Options extends GetOptions | undefined> = _ApplyInvalid<
+      DocumentType,
+      GetKey<Options, "invalid", false>
+    >;
 
     /** @internal */
-    type _ApplyInvalid<
-      ConcreteDocument extends Document.Any,
-      Invalid extends boolean | undefined,
-    > = Invalid extends true
-      ? Document.Invalid<ConcreteDocument> | Document.Stored<ConcreteDocument>
-      : Document.Stored<ConcreteDocument>;
+    type _ApplyInvalid<DocumentType extends Document.Type, Invalid extends boolean | undefined> = Invalid extends true
+      ? Document.InvalidForName<DocumentType> | Document.StoredForName<DocumentType>
+      : Document.StoredForName<DocumentType>;
   }
 }
