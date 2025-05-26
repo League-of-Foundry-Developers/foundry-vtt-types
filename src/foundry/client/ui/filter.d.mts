@@ -2,16 +2,6 @@ import type { ValueOf } from "#utils";
 
 declare global {
   /**
-   * @deprecated Replaced with {@linkcode SearchFilter.Configuration}
-   */
-  type SearchFilterConfiguration = SearchFilter.Configuration;
-
-  /**
-   * @deprecated Replaced with {@linkcode SearchFilter.FieldFilter}
-   */
-  type FieldFilter = SearchFilter.FieldFilter;
-
-  /**
    * A controller class for managing a text input widget that filters the contents of some other UI element
    * @see {@linkcode Application}
    */

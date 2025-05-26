@@ -5,9 +5,6 @@ import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "#common/prosemirror/_m
 import type Document from "#common/abstract/document.d.mts";
 
 declare global {
-  /** @deprecated Replaced with {@linkcode FormApplication.Options} */
-  type FormApplicationOptions = FormApplication.Options;
-
   /**
    * An abstract pattern for defining an Application responsible for updating some object using an HTML form
    *
@@ -348,12 +345,6 @@ declare global {
       preventRender?: boolean | undefined;
     }
   }
-
-  /**
-   * @deprecated Replaced with {@linkcode DocumentSheet.Options}
-   */
-  type DocumentSheetOptions<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> =
-    DocumentSheet.Options<ConcreteDocument>;
 
   /**
    * Extend the FormApplication pattern to incorporate specific logic for viewing or editing Document instances.

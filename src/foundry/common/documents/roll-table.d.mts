@@ -321,7 +321,6 @@ declare namespace BaseRollTable {
   export import Invalid = RollTable.Invalid;
   export import Stored = RollTable.Stored;
   export import Source = RollTable.Source;
-  export import PersistedData = RollTable.PersistedData;
   export import CreateData = RollTable.CreateData;
   export import InitializedData = RollTable.InitializedData;
   export import UpdateData = RollTable.UpdateData;
@@ -337,21 +336,4 @@ declare namespace BaseRollTable {
     interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseRollTable> {}
     const ClientDocument: ClientDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseRollTable.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseRollTable.CreateData}
-   */
-  type ConstructorData = BaseRollTable.CreateData;
 }

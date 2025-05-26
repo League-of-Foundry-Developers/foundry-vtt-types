@@ -335,7 +335,6 @@ declare namespace BaseDrawing {
   export import Invalid = DrawingDocument.Invalid;
   export import Stored = DrawingDocument.Stored;
   export import Source = DrawingDocument.Source;
-  export import PersistedData = DrawingDocument.PersistedData;
   export import CreateData = DrawingDocument.CreateData;
   export import InitializedData = DrawingDocument.InitializedData;
   export import UpdateData = DrawingDocument.UpdateData;
@@ -351,21 +350,4 @@ declare namespace BaseDrawing {
     interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BaseDrawing> {}
     const CanvasDocument: CanvasDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseDrawing.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseDrawing.CreateData}
-   */
-  type ConstructorData = BaseDrawing.CreateData;
 }

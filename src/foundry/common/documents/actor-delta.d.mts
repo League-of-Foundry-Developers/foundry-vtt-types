@@ -398,7 +398,6 @@ declare namespace BaseActorDelta {
   export import Invalid = ActorDelta.Invalid;
   export import Stored = ActorDelta.Stored;
   export import Source = ActorDelta.Source;
-  export import PersistedData = ActorDelta.PersistedData;
   export import CreateData = ActorDelta.CreateData;
   export import InitializedData = ActorDelta.InitializedData;
   export import UpdateData = ActorDelta.UpdateData;
@@ -438,24 +437,4 @@ declare namespace BaseActorDelta {
   interface _Schema extends ActorDelta.Schema {
     system: any;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = fields.SchemaField.InitializedData<Schema>;
-
-  /** @deprecated Replaced with {@linkcode BaseActorDelta.SubType} */
-  type TypeNames = Game.Model.TypeNames<"Actor">;
-
-  /**
-   * @deprecated Replaced with {@link fields.SchemaField | `SchemaField<BaseActorDelta.Schema>`}
-   */
-  type SchemaField = fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseActorDelta.CreateData}
-   */
-  type ConstructorData = fields.SchemaField.CreateData<Schema>;
 }

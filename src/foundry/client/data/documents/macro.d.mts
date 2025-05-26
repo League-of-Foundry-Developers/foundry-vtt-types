@@ -176,11 +176,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode Macro.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode Macro.create}
      * and {@link Macro | `new Macro(...)`}.
      *
@@ -429,13 +424,6 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
-    /**
-     * @deprecated This type always required properties for both a `"script"` and a `"chat"` message
-     * even when unnecessary. It has been superseded by {@linkcode ScriptScope},
-     * {@linkcode ChatScope}, and {@linkcode UnknownScope}
-     */
-    type Scope = ScriptScope;
-
     /** @internal */
     type _ScriptScope = NullishProps<{
       /** An Actor who is the protagonist of the executed action. */
@@ -498,32 +486,6 @@ declare global {
     type ExecuteReturn<SubType extends Macro.SubType> =
       | (SubType extends "chat" ? Promise<ChatMessage.Implementation | undefined | void> : never)
       | (SubType extends "script" ? Promise<unknown> | void : never);
-
-    /**
-     * @deprecated Replaced with {@link Macro.Database | `Macro.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Macro.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode Macro.SubType}
-     */
-    type TypeNames = Macro.SubType;
-
-    /**
-     * @deprecated Replaced with {@linkcode Macro.CreateData}
-     */
-    interface ConstructorData extends Macro.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link Macro.implementation | `Macro.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Macro.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

@@ -1,4 +1,4 @@
-import type { Point } from "#common/_types.d.mts";
+export {};
 
 /** The node of a {@linkcode RegionPolygonTree}.*/
 declare class RegionPolygonTreeNode {

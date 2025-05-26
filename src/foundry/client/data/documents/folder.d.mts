@@ -168,11 +168,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode Folder.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode Folder.create}
      * and {@link Folder | `new Folder(...)`}.
      *
@@ -386,32 +381,6 @@ declare global {
        */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
-
-    /**
-     * @deprecated Replaced with {@link Folder.Database | `Folder.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Folder.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode Folder.SubType}
-     */
-    type TypeNames = Folder.SubType;
-
-    /**
-     * @deprecated Replaced with {@linkcode Folder.CreateData}
-     */
-    interface ConstructorData extends Folder.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link Folder.implementation | `Folder.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Folder.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
 
     /**
      * Actual document types that go in folders

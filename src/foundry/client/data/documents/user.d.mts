@@ -134,11 +134,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode User.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode User.create}
      * and {@link User | `new User(...)`}.
      *
@@ -547,27 +542,6 @@ declare global {
     }
 
     type ActionPermission = keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
-
-    /**
-     * @deprecated {@link User.Database | `User.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<User.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode User.CreateData}
-     */
-    interface ConstructorData extends User.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link User.implementation | `User.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode User.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

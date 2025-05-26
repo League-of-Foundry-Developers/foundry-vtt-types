@@ -299,7 +299,6 @@ declare namespace BaseWall {
   export import Invalid = WallDocument.Invalid;
   export import Stored = WallDocument.Stored;
   export import Source = WallDocument.Source;
-  export import PersistedData = WallDocument.PersistedData;
   export import CreateData = WallDocument.CreateData;
   export import InitializedData = WallDocument.InitializedData;
   export import UpdateData = WallDocument.UpdateData;
@@ -315,21 +314,4 @@ declare namespace BaseWall {
     interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BaseWall> {}
     const CanvasDocument: CanvasDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseWallDocument.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseWall.CreateData}
-   */
-  type ConstructorData = BaseWall.CreateData;
 }

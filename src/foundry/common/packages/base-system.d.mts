@@ -4,7 +4,6 @@ import type BasePackage from "./base-package.d.mts";
 
 declare namespace BaseSystem {
   export import Source = System.Source;
-  export import PersistedData = System.Source;
   export import CreateData = System.CreateData;
   export import InitializedData = System.InitializedData;
   export import UpdateData = System.UpdateData;

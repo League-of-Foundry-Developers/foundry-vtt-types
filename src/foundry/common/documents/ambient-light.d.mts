@@ -291,7 +291,6 @@ declare namespace BaseAmbientLight {
   export import Invalid = AmbientLightDocument.Invalid;
   export import Stored = AmbientLightDocument.Stored;
   export import Source = AmbientLightDocument.Source;
-  export import PersistedData = AmbientLightDocument.PersistedData;
   export import CreateData = AmbientLightDocument.CreateData;
   export import InitializedData = AmbientLightDocument.InitializedData;
   export import UpdateData = AmbientLightDocument.UpdateData;
@@ -308,21 +307,4 @@ declare namespace BaseAmbientLight {
     interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BaseAmbientLight> {}
     const CanvasDocument: CanvasDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseAmbientLight.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseAmbientLight.CreateData}
-   */
-  type ConstructorData = BaseAmbientLight.CreateData;
 }

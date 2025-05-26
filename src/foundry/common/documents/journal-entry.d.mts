@@ -340,7 +340,6 @@ declare namespace BaseJournalEntry {
   export import Invalid = JournalEntry.Invalid;
   export import Stored = JournalEntry.Stored;
   export import Source = JournalEntry.Source;
-  export import PersistedData = JournalEntry.PersistedData;
   export import CreateData = JournalEntry.CreateData;
   export import InitializedData = JournalEntry.InitializedData;
   export import UpdateData = JournalEntry.UpdateData;
@@ -357,21 +356,4 @@ declare namespace BaseJournalEntry {
     interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseJournalEntry> {}
     const ClientDocument: ClientDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseJournalEntry.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseJournalEntry.CreateData}
-   */
-  type ConstructorData = BaseJournalEntry.CreateData;
 }

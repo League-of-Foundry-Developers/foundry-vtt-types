@@ -185,11 +185,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode Card.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode Card.create}
      * and {@link Card | `new Card(...)`}.
      *
@@ -508,38 +503,6 @@ declare global {
      * @remarks {@link Card.discard | `Card#discard`} calls {@link Cards.pass | `this.parent.pass`} with `action: "discard"` provided
      */
     interface DiscardOptions extends PassOptions {}
-
-    /**
-     * @deprecated {@link Card.Database | `Card.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Card.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@link Card.Database | `Card.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Card.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode Card.SubType}
-     */
-    type TypeNames = Card.SubType;
-
-    /**
-     * @deprecated Replaced with {@linkcode Card.CreateData}
-     */
-    interface ConstructorData extends Card.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link Card.implementation | `Card.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Card.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

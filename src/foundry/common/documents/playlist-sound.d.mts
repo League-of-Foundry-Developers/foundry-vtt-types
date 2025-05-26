@@ -307,7 +307,6 @@ declare namespace BasePlaylistSound {
   export import Invalid = PlaylistSound.Invalid;
   export import Stored = PlaylistSound.Stored;
   export import Source = PlaylistSound.Source;
-  export import PersistedData = PlaylistSound.Source;
   export import CreateData = PlaylistSound.CreateData;
   export import InitializedData = PlaylistSound.InitializedData;
   export import UpdateData = PlaylistSound.UpdateData;
@@ -323,21 +322,4 @@ declare namespace BasePlaylistSound {
     interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BasePlaylistSound> {}
     const CanvasDocument: CanvasDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BasePlaylistSound.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BasePlaylistSound.CreateData}
-   */
-  type ConstructorData = BasePlaylistSound.CreateData;
 }

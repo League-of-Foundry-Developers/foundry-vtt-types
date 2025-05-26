@@ -124,11 +124,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode AmbiendLightDocument.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode AmbientLightDocument.create}
      * and {@link AmbientLightDocument | `new AmbientLightDocument(...)`}.
      *
@@ -368,28 +363,6 @@ declare global {
         animationSeed?: number;
       };
     }
-
-    /**
-     * @deprecated Replaced with {@link AmbientLightDocument.Database | `AmbientLightDocument.DatabaseOperation`}
-     */
-    interface DatabaseOperations
-      // eslint-disable-next-line @typescript-eslint/no-deprecated, @typescript-eslint/no-empty-object-type
-      extends Document.Database.Operations<AmbientLightDocument.Implementation, {}, { animate: boolean }, {}> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode AmbientLightDocument.CreateData}
-     */
-    interface ConstructorData extends AmbientLightDocument.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link AmbientLightDocument.implementation | `AmbientLightDocument.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode AmbientLightDocument.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

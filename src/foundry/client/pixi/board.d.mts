@@ -667,16 +667,6 @@ declare global {
     get colorManager(): this["environment"];
   }
 
-  /**
-   * @deprecated Replaced with {@linkcode Canvas.PerformanceSettings}
-   */
-  type CanvasPerformanceSettings = Canvas.PerformanceSettings;
-
-  /**
-   * @deprecated Replaced with {@linkcode Canvas.SupportedComponents}
-   */
-  type CanvasSupportedComponents = Canvas.SupportedComponents;
-
   namespace Canvas {
     interface Dimensions extends Scene.Dimensions {
       /** The canvas rectangle. */

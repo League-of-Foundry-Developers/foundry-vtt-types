@@ -3,11 +3,6 @@ import type { AnyArray, AnyFunction, ValueOf } from "#utils";
 // TODO: smarter types for named functions
 declare global {
   /**
-   * @deprecated Replaced with {@linkcode AsyncWorker.WorkerTask}
-   */
-  type WorkerTask = AsyncWorker.WorkerTask;
-
-  /**
    * An asynchronous web Worker which can load user-defined functions and await execution using Promises.
    * @param name    - The worker name to be initialized
    * @param options - Worker initialization options (default: `{}`)

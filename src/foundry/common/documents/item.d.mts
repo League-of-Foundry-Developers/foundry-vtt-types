@@ -377,7 +377,6 @@ declare namespace BaseItem {
   export import Invalid = Item.Invalid;
   export import Stored = Item.Stored;
   export import Source = Item.Source;
-  export import PersistedData = Item.PersistedData;
   export import CreateData = Item.CreateData;
   export import InitializedData = Item.InitializedData;
   export import UpdateData = Item.UpdateData;
@@ -404,26 +403,4 @@ declare namespace BaseItem {
     // This is overridden anyways.
     system: any;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  interface Properties extends SchemaField.InitializedData<Schema> {}
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseItem.SubType}
-   */
-  type TypeNames = Game.Model.TypeNames<"Item">;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseItem.Schema>`}
-   */
-  interface SchemaField extends foundry.data.fields.SchemaField<Schema> {}
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseItem.CreateData}
-   */
-  interface ConstructorData extends SchemaField.CreateData<Schema> {}
 }

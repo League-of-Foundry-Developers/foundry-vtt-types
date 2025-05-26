@@ -332,7 +332,6 @@ declare namespace BaseTile {
   export import Invalid = TileDocument.Invalid;
   export import Stored = TileDocument.Stored;
   export import Source = TileDocument.Source;
-  export import PersistedData = TileDocument.PersistedData;
   export import CreateData = TileDocument.CreateData;
   export import InitializedData = TileDocument.InitializedData;
   export import UpdateData = TileDocument.UpdateData;
@@ -349,21 +348,4 @@ declare namespace BaseTile {
     interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BaseTile> {}
     const CanvasDocument: CanvasDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseTileDocument.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseTile.CreateData}
-   */
-  type ConstructorData = BaseTile.CreateData;
 }

@@ -1,9 +1,6 @@
 import type { MaybePromise, InexactPartial } from "#utils";
 
 declare global {
-  /** @deprecated Replaced with {@linkcode JournalSheet.Options} */
-  type JournalSheetOptions = JournalSheet.Options;
-
   /**
    * The Application responsible for displaying and editing a single JournalEntry document.
    * @template Options - the type of the options object

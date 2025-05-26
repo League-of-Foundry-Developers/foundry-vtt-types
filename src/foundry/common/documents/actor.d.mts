@@ -365,7 +365,6 @@ declare namespace BaseActor {
   export import Invalid = Actor.Invalid;
   export import Stored = Actor.Stored;
   export import Source = Actor.Source;
-  export import PersistedData = Actor.PersistedData;
   export import CreateData = Actor.CreateData;
   export import InitializedData = Actor.InitializedData;
   export import UpdateData = Actor.UpdateData;
@@ -393,28 +392,6 @@ declare namespace BaseActor {
     // This is overridden anyways.
     system: any;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  interface Properties extends SchemaField.InitializedData<Schema> {}
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseActor.SubType}
-   */
-  type TypeNames = Game.Model.TypeNames<"Actor">;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseActor.Schema>`}
-   */
-  interface SchemaField extends foundry.data.fields.SchemaField<Schema> {}
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseActor.CreateData}
-   */
-  interface ConstructorData extends SchemaField.CreateData<Schema> {}
 }
 
 export default BaseActor;

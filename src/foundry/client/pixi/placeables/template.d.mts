@@ -236,26 +236,6 @@ declare global {
     // eslint-disable-next-line no-restricted-syntax
     type ImplementationClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
 
-    /**
-     * @deprecated Replaced with {@linkcode ImplementationClass}
-     */
-    type ObjectClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Implementation}
-     */
-    type Object = Implementation;
-
-    /**
-     * @deprecated Replaced with {@linkcode MeasuredTemplate.ImplementationClass}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode MeasuredTemplate.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
-
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<this, "redraw">;

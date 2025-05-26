@@ -337,7 +337,6 @@ declare namespace BasePlaylist {
   export import Invalid = Playlist.Invalid;
   export import Stored = Playlist.Stored;
   export import Source = Playlist.Source;
-  export import PersistedData = Playlist.Source;
   export import CreateData = Playlist.CreateData;
   export import InitializedData = Playlist.InitializedData;
   export import UpdateData = Playlist.UpdateData;
@@ -353,21 +352,4 @@ declare namespace BasePlaylist {
     interface ClientDocument extends ClientDocumentMixin.Mix<typeof BasePlaylist> {}
     const ClientDocument: ClientDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BasePlaylist.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BasePlaylist.CreateData}
-   */
-  type ConstructorData = BasePlaylist.CreateData;
 }

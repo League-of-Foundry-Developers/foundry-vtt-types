@@ -322,7 +322,6 @@ declare namespace BaseTableResult {
   export import Invalid = TableResult.Invalid;
   export import Stored = TableResult.Stored;
   export import Source = TableResult.Source;
-  export import PersistedData = TableResult.PersistedData;
   export import CreateData = TableResult.CreateData;
   export import InitializedData = TableResult.InitializedData;
   export import UpdateData = TableResult.UpdateData;
@@ -338,24 +337,4 @@ declare namespace BaseTableResult {
     interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseTableResult> {}
     const ClientDocument: ClientDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /** @deprecated Replaced with {@linkcode BaseTableResult.SubType} */
-  type TypeNames = SubType;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseTableResult.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseTableResult.CreateData}
-   */
-  type ConstructorData = BaseTableResult.CreateData;
 }

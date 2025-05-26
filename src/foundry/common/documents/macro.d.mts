@@ -330,7 +330,6 @@ declare namespace BaseMacro {
   export import Invalid = Macro.Invalid;
   export import Stored = Macro.Stored;
   export import Source = Macro.Source;
-  export import PersistedData = Macro.PersistedData;
   export import CreateData = Macro.CreateData;
   export import InitializedData = Macro.InitializedData;
   export import UpdateData = Macro.UpdateData;
@@ -346,24 +345,4 @@ declare namespace BaseMacro {
     interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseMacro> {}
     const ClientDocument: ClientDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /** @deprecated Replaced with {@linkcode BaseMacro.SubType} */
-  type TypeNames = SubType;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseMacro.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseMacro.CreateData}
-   */
-  type ConstructorData = BaseMacro.CreateData;
 }

@@ -197,11 +197,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode JournalEntry.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode JournalEntry.create}
      * and {@link JournalEntry | `new JournalEntry(...)`}.
      *
@@ -458,27 +453,6 @@ declare global {
         searchMode?: CONST.DIRECTORY_SEARCH_MODES;
       };
     }
-
-    /**
-     * @deprecated Replaced with {@link JournalEntry.Database | `JournalEntry.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<JournalEntry.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode JournalEntry.CreateData}
-     */
-    interface ConstructorData extends JournalEntry.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link JournalEntry.implementation | `JournalEntry.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode JournalEntry.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

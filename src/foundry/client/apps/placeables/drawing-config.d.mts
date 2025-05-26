@@ -1,9 +1,6 @@
 import type { MaybePromise } from "#utils";
 
 declare global {
-  /** @deprecated Replaced with {@linkcode DrawingConfig.Options} */
-  type DrawingConfigOptions = DrawingConfig.Options;
-
   /**
    * The Application responsible for configuring a single Drawing document within a parent Scene.
    * @template Options - the type of the options object

@@ -77,11 +77,6 @@ declare global {
 
     interface ConstructorOptions extends Ping._ConstructorOptions {}
   }
-
-  /**
-   * @deprecated Replaced with {@linkcode Ping.ConstructorOptions}
-   */
-  type PingOptions = Ping.ConstructorOptions;
 }
 
 declare abstract class AnyPing extends Ping {

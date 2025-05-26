@@ -136,11 +136,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode DrawingDocument.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode DrawingDocument.create}
      * and {@link DrawingDocument | `new DrawingDocument(...)`}.
      *
@@ -487,27 +482,6 @@ declare global {
        */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
-
-    /**
-     * @deprecated Replaced with {@link DrawingDocument.Database | `DrawingDocument.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<DrawingDocument.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode DrawingDocument.CreateData}
-     */
-    interface ConstructorData extends DrawingDocument.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link DrawingDocument.implementation | `DrawingDocument.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode DrawingDocument.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

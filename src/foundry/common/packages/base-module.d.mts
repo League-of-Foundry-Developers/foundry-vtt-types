@@ -2,7 +2,6 @@ import type BasePackage from "./base-package.d.mts";
 
 declare namespace BaseModule {
   export import Source = Module.Source;
-  export import PersistedData = Module.Source;
   export import CreateData = Module.CreateData;
   export import InitializedData = Module.InitializedData;
   export import UpdateData = Module.UpdateData;

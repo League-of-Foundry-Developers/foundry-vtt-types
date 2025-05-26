@@ -118,9 +118,4 @@ declare global {
       messages: number;
     }
   }
-
-  /**
-   * @deprecated Replaced with {@linkcode SupportDetails.ReportData}
-   */
-  type SupportReportData = SupportDetails.ReportData;
 }

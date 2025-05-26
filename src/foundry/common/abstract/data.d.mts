@@ -438,12 +438,6 @@ declare namespace DataModel {
 
   interface ValidateOptions<Schema extends DataSchema> extends _ValidateOptions<Schema> {}
 
-  /**
-   * @deprecated Use {@link DataModel.ConstructionContext | `DataModel.ConstructionContext`} for `new`/`#clone()`/`.create()`,
-   * {@link DataModel.ValidateOptions | `DataModel.ValidateOptions`} for `#validate()`
-   */
-  interface DataValidationOptions<Parent extends Any | null = Any | null> extends ConstructionContext<Parent> {}
-
   /** `DataModel#constructor` pulls `parent` out of the passed `ConstructionContext` before forwarding to `#_initializeSource` */
   interface InitializeSourceOptions extends _ConstructionContext {}
 

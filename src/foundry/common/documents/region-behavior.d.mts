@@ -323,7 +323,6 @@ declare namespace BaseRegionBehavior {
   export import Invalid = RegionBehavior.Invalid;
   export import Stored = RegionBehavior.Stored;
   export import Source = RegionBehavior.Source;
-  export import PersistedData = RegionBehavior.PersistedData;
   export import CreateData = RegionBehavior.CreateData;
   export import InitializedData = RegionBehavior.InitializedData;
   export import UpdateData = RegionBehavior.UpdateData;
@@ -347,24 +346,4 @@ declare namespace BaseRegionBehavior {
   interface _Schema extends RegionBehavior.Schema {
     system: any;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /** @deprecated Replaced with {@linkcode BaseRegionBehavior.SubType} */
-  type TypeNames = SubType;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseRegionBehavior.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseRegionBehavior.CreateData}
-   */
-  type ConstructorData = BaseRegionBehavior.CreateData;
 }

@@ -4,7 +4,6 @@ import type { ReleaseData } from "../config.d.mts";
 
 declare namespace BaseWorld {
   export import Source = World.Source;
-  export import PersistedData = World.Source;
   export import CreateData = World.CreateData;
   export import InitializedData = World.InitializedData;
   export import UpdateData = World.UpdateData;

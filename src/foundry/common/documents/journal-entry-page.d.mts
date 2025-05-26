@@ -314,7 +314,6 @@ declare namespace BaseJournalEntryPage {
   export import Invalid = JournalEntryPage.Invalid;
   export import Stored = JournalEntryPage.Stored;
   export import Source = JournalEntryPage.Source;
-  export import PersistedData = JournalEntryPage.PersistedData;
   export import CreateData = JournalEntryPage.CreateData;
   export import InitializedData = JournalEntryPage.InitializedData;
   export import UpdateData = JournalEntryPage.UpdateData;
@@ -338,24 +337,4 @@ declare namespace BaseJournalEntryPage {
   interface _Schema extends JournalEntryPage.Schema {
     system: any;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /** @deprecated Replaced with {@linkcode BaseJournalEntryPage.SubType} */
-  type TypeNames = SubType;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseJournalEntryPage.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseJournalEntryPage.CreateData}
-   */
-  type ConstructorData = BaseJournalEntryPage.CreateData;
 }

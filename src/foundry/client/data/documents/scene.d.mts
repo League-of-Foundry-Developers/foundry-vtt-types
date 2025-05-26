@@ -215,11 +215,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode Scene.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode Scene.create}
      * and {@link Scene | `new Scene(...)`}.
      *
@@ -570,107 +565,7 @@ declare global {
       /**
        * The environment data applied to the Scene.
        */
-      environment: fields.SchemaField<{
-        /**
-         * The environment darkness level.
-         * @defaultValue `0`
-         */
-        darknessLevel: fields.AlphaField<{ initial: 0 }>;
-
-        /**
-         * The darkness level lock state.
-         * @defaultValue `false`
-         */
-        darknessLock: fields.BooleanField<{ initial: false }>;
-
-        /**
-         * The global light data configuration.
-         */
-        globalLight: fields.SchemaField<{
-          /**
-           * Is the global light enabled?
-           * @defaultValue `false`
-           */
-          enabled: fields.BooleanField<{ required: true; initial: false }>;
-
-          /**
-           * @see {@linkcode foundry.data.LightData.Schema.alpha}
-           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
-           */
-          alpha: LightData.Schema["alpha"];
-
-          /**
-           * Is the global light in bright mode?
-           * @defaultValue `false`
-           * @remarks This is `boolean` here instead {@linkcode foundry.data.LightData} schema's `number`, because the global light has infinite range
-           */
-          bright: fields.BooleanField<{ required: true; initial: false }>;
-
-          /**
-           * @see {@linkcode foundry.data.LightData.Schema.color}
-           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
-           */
-          color: LightData.Schema["color"];
-
-          /**
-           * @see {@linkcode foundry.data.LightData.Schema.coloration}
-           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
-           */
-          coloration: LightData.Schema["coloration"];
-
-          /**
-           * The luminosity applied in the shader
-           * @defaultValue `0`
-           * @remarks Doesn't pull from the {@linkcode foundry.data.LightData} schema, unlike its siblings, as it has a different `initial`
-           */
-          luminosity: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; max: 1 }>;
-
-          /**
-           * @see {@linkcode foundry.data.LightData.Schema.saturation}
-           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
-           */
-          saturation: LightData.Schema["saturation"];
-
-          /**
-           * @see {@linkcode foundry.data.LightData.Schema.contrast}
-           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
-           */
-          contrast: LightData.Schema["contrast"];
-
-          /**
-           * @see {@linkcode foundry.data.LightData.Schema.shadows}
-           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
-           */
-          shadows: LightData.Schema["shadows"];
-
-          /**
-           * @see {@linkcode foundry.data.LightData.Schema.darkness}
-           * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
-           */
-          darkness: LightData.Schema["darkness"];
-        }>;
-
-        /**
-         * If cycling between Night and Day is activated.
-         * @defaultValue `true`
-         */
-        cycle: fields.BooleanField<{ initial: true }>;
-
-        /**
-         * The base (darkness level 0) ambience lighting data.
-         */
-        base: fields.SchemaField<
-          EnvironmentDataSchema<{ hue: 0; intensity: 0; luminosity: 0; saturation: 0; shadows: 0 }>
-        >;
-
-        /**
-         * The dark (darkness level 1) ambience lighting data.
-         * @privateRemarks The `hue` default is actually `257/360` but you can't do division in types. This precision should be more than sufficient.
-         */
-        dark: fields.SchemaField<
-          EnvironmentDataSchema<{ hue: 0.71388889; intensity: 0; luminosity: -0.25; saturation: 0; shadows: 0 }>
-        >;
-      }>;
+      environment: fields.SchemaField<EnvironmentSchema>;
 
       /**
        * A collection of embedded Drawing objects.
@@ -790,6 +685,110 @@ declare global {
        */
       _stats: fields.DocumentStatsField;
     }
+
+    interface EnvironmentSchema extends DataSchema {
+      /**
+       * The environment darkness level.
+       * @defaultValue `0`
+       */
+      darknessLevel: fields.AlphaField<{ initial: 0 }>;
+
+      /**
+       * The darkness level lock state.
+       * @defaultValue `false`
+       */
+      darknessLock: fields.BooleanField<{ initial: false }>;
+
+      /**
+       * The global light data configuration.
+       */
+      globalLight: fields.SchemaField<{
+        /**
+         * Is the global light enabled?
+         * @defaultValue `false`
+         */
+        enabled: fields.BooleanField<{ required: true; initial: false }>;
+
+        /**
+         * @see {@linkcode foundry.data.LightData.Schema.alpha}
+         * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+         */
+        alpha: LightData.Schema["alpha"];
+
+        /**
+         * Is the global light in bright mode?
+         * @defaultValue `false`
+         * @remarks This is `boolean` here instead {@linkcode foundry.data.LightData} schema's `number`, because the global light has infinite range
+         */
+        bright: fields.BooleanField<{ required: true; initial: false }>;
+
+        /**
+         * @see {@linkcode foundry.data.LightData.Schema.color}
+         * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+         */
+        color: LightData.Schema["color"];
+
+        /**
+         * @see {@linkcode foundry.data.LightData.Schema.coloration}
+         * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+         */
+        coloration: LightData.Schema["coloration"];
+
+        /**
+         * The luminosity applied in the shader
+         * @defaultValue `0`
+         * @remarks Doesn't pull from the {@linkcode foundry.data.LightData} schema, unlike its siblings, as it has a different `initial`
+         */
+        luminosity: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; max: 1 }>;
+
+        /**
+         * @see {@linkcode foundry.data.LightData.Schema.saturation}
+         * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+         */
+        saturation: LightData.Schema["saturation"];
+
+        /**
+         * @see {@linkcode foundry.data.LightData.Schema.contrast}
+         * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+         */
+        contrast: LightData.Schema["contrast"];
+
+        /**
+         * @see {@linkcode foundry.data.LightData.Schema.shadows}
+         * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+         */
+        shadows: LightData.Schema["shadows"];
+
+        /**
+         * @see {@linkcode foundry.data.LightData.Schema.darkness}
+         * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+         */
+        darkness: LightData.Schema["darkness"];
+      }>;
+
+      /**
+       * If cycling between Night and Day is activated.
+       * @defaultValue `true`
+       */
+      cycle: fields.BooleanField<{ initial: true }>;
+
+      /**
+       * The base (darkness level 0) ambience lighting data.
+       */
+      base: fields.SchemaField<
+        EnvironmentDataSchema<{ hue: 0; intensity: 0; luminosity: 0; saturation: 0; shadows: 0 }>
+      >;
+
+      /**
+       * The dark (darkness level 1) ambience lighting data.
+       * @privateRemarks The `hue` default is actually `257/360` but you can't do division in types. This precision should be more than sufficient.
+       */
+      dark: fields.SchemaField<
+        EnvironmentDataSchema<{ hue: 0.71388889; intensity: 0; luminosity: -0.25; saturation: 0; shadows: 0 }>
+      >;
+    }
+
+    interface EnvironmentData extends fields.SchemaField.InitializedData<EnvironmentSchema> {}
 
     interface GridSchema extends DataSchema {
       /**
@@ -1104,27 +1103,6 @@ declare global {
     }
 
     interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}
-
-    /**
-     * @deprecated Replaced with {@link Scene.Database | `Scene.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Scene.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode Scene.CreateData}
-     */
-    interface ConstructorData extends Scene.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link Scene.implementation | `Scene.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Scene.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**
@@ -1392,7 +1370,4 @@ declare global {
       context?: Document.FromImportContext<Scene.Parent> | null,
     ): Promise<Scene.Implementation>;
   }
-
-  /** @deprecated Replaced with {@linkcode Scene.Dimensions} */
-  type SceneDimensions = Scene.Dimensions;
 }

@@ -240,11 +240,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode ActorDelta.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode ActorDelta.create}
      * and {@link ActorDelta | `new ActorDelta(...)`}.
      *
@@ -507,32 +502,6 @@ declare global {
           ActorDelta.Metadata.Embedded
         >
       | Item.OnDeleteDescendantDocumentsArgs;
-
-    /**
-     * @deprecated Replaced with {@link ActorDelta.Database | `ActorDelta.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<ActorDelta.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode ActorDelta.SubType}
-     */
-    type TypeNames = ActorDelta.SubType;
-
-    /**
-     * @deprecated Replaced with {@linkcode ActorDelta.CreateData}
-     */
-    interface ConstructorData extends ActorDelta.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link ActorDelta.implementation | `ActorDelta.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode ActorDelta.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
 
     /** @internal */
     type _InitializeOptions = NullishProps<{

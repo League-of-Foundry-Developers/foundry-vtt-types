@@ -416,7 +416,6 @@ declare namespace BaseToken {
   export import Invalid = TokenDocument.Invalid;
   export import Stored = TokenDocument.Stored;
   export import Source = TokenDocument.Source;
-  export import PersistedData = TokenDocument.PersistedData;
   export import CreateData = TokenDocument.CreateData;
   export import InitializedData = TokenDocument.InitializedData;
   export import UpdateData = TokenDocument.UpdateData;
@@ -433,23 +432,4 @@ declare namespace BaseToken {
     interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BaseToken> {}
     const CanvasDocument: CanvasDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseToken.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseToken.CreateData}
-   */
-  type ConstructorData = BaseToken.CreateData;
 }
-
-declare namespace ActorDeltaField {}

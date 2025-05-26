@@ -14,9 +14,6 @@ declare global {
   const MIN_WINDOW_WIDTH: 200;
   const MIN_WINDOW_HEIGHT: 50;
 
-  /** @deprecated Replaced with {@linkcode Application.Options} */
-  type ApplicationOptions = Application.Options;
-
   /**
    * The standard application window that is rendered for a large variety of UI elements in Foundry VTT.
    * @template Options - the type of the options object

@@ -1,10 +1,6 @@
 import type Document from "#common/abstract/document.d.mts";
 
 declare global {
-  /** @deprecated Replaced with {@linkcode DocumentDirectory.Options} */
-  type DocumentDirectoryOptions<T extends Document.AnyConstructor = Document.AnyConstructor> =
-    DocumentDirectory.Options<T[" fvtt_types_internal_document_name_static"]>;
-
   abstract class DocumentDirectory<
     FolderType extends foundry.CONST.FOLDER_DOCUMENT_TYPES,
     Options extends DocumentDirectory.Options = DocumentDirectory.Options,

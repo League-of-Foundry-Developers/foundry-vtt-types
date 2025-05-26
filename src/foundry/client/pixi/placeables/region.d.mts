@@ -3,7 +3,6 @@ import type { Brand, FixedInstanceType, HandleEmptyObject, NullishProps } from "
 import type RegionShape from "#client-esm/canvas/regions/shape.d.mts";
 import type RegionPolygonTree from "#client-esm/canvas/regions/polygon-tree.d.mts";
 import type RegionGeometry from "#client-esm/canvas/regions/geometry.d.mts";
-import type { Point } from "#common/_types.d.mts";
 
 declare global {
   /**
@@ -170,26 +169,6 @@ declare global {
      */
     // eslint-disable-next-line no-restricted-syntax
     type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Region>;
-
-    /**
-     * @deprecated Replaced with {@linkcode ImplementationClass}
-     */
-    type ObjectClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Implementation}
-     */
-    type Object = Implementation;
-
-    /**
-     * @deprecated Replaced with {@linkcode Region.ImplementationClass}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Region.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
 
     interface RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */

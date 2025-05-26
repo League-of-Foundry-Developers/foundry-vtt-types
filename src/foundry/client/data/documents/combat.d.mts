@@ -251,11 +251,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode Combat.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode Combat.create}
      * and {@link Combat | `new Combat(...)`}.
      *
@@ -520,40 +515,6 @@ declare global {
       Combat.DirectDescendant,
       Combat.Metadata.Embedded
     >;
-
-    /**
-     * @deprecated Replaced with {@linkcode Combat.Database}
-     */
-    /* eslint-disable @typescript-eslint/no-empty-object-type */
-    interface DatabaseOperations
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      extends Document.Database.Operations<
-        Combat.Implementation,
-        {},
-        { direction: -1 | 1; worldTime: { delta: number }; turnEvents: boolean },
-        {}
-      > {}
-    /* eslint-enable @typescript-eslint/no-empty-object-type */
-
-    /**
-     * @deprecated Replaced with {@linkcode Combat.SubType}
-     */
-    type TypeNames = Combat.SubType;
-
-    /**
-     * @deprecated Replaced with {@linkcode Combat.CreateData}
-     */
-    interface ConstructorData extends Combat.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link Combat.implementation | `Combat.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Combat.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
 
     /** @internal */
     type _InitiativeOptions = NullishProps<{

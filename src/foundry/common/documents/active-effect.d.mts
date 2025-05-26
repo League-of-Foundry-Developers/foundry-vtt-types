@@ -363,7 +363,6 @@ declare namespace BaseActiveEffect {
   export import Invalid = ActiveEffect.Invalid;
   export import Stored = ActiveEffect.Stored;
   export import Source = ActiveEffect.Source;
-  export import PersistedData = ActiveEffect.PersistedData;
   export import CreateData = ActiveEffect.CreateData;
   export import InitializedData = ActiveEffect.InitializedData;
   export import UpdateData = ActiveEffect.UpdateData;
@@ -373,7 +372,6 @@ declare namespace BaseActiveEffect {
   export import CoreFlags = ActiveEffect.CoreFlags;
   export import DurationData = ActiveEffect.DurationData;
   export import Duration = ActiveEffect.Duration;
-  export import EffectChangeData = ActiveEffect.EffectChangeData;
   export import ChangeData = ActiveEffect.ChangeData;
 
   namespace Internal {
@@ -392,24 +390,4 @@ declare namespace BaseActiveEffect {
   interface _Schema extends ActiveEffect.Schema {
     system: any;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /** @deprecated Replaced with {@linkcode BaseActiveEffect.SubType} */
-  type TypeNames = SubType;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseActiveEffect.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseActiveEffect.CreateData}
-   */
-  type ConstructorData = BaseActiveEffect.CreateData;
 }

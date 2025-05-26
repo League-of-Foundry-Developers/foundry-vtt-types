@@ -136,11 +136,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode FogExploration.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode FogExploration.create}
      * and {@link FogExploration | `new FogExploration(...)`}.
      *
@@ -357,27 +352,6 @@ declare global {
        */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
-
-    /**
-     * @deprecated Replaced with {@link FogExploration.Database | `FogExploration.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<FogExploration.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode FogExploration.CreateData}
-     */
-    interface ConstructorData extends FogExploration.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link FogExploration.implementation | `FogExploration.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode FogExploration.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
 
     /** @internal */
     type _LoadQuery = NullishProps<{

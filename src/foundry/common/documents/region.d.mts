@@ -328,7 +328,6 @@ declare namespace BaseRegion {
   export import Invalid = RegionDocument.Invalid;
   export import Stored = RegionDocument.Stored;
   export import Source = RegionDocument.Source;
-  export import PersistedData = RegionDocument.PersistedData;
   export import CreateData = RegionDocument.CreateData;
   export import InitializedData = RegionDocument.InitializedData;
   export import UpdateData = RegionDocument.UpdateData;
@@ -344,21 +343,4 @@ declare namespace BaseRegion {
     interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BaseRegion> {}
     const CanvasDocument: CanvasDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseRegionDocument.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link BaseRegion.CreateData | `BaseRegionDocument.CreateData`}
-   */
-  type ConstructorData = BaseRegion.CreateData;
 }

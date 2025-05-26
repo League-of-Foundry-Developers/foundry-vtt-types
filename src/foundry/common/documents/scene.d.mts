@@ -433,7 +433,6 @@ declare namespace BaseScene {
   export import Invalid = Scene.Invalid;
   export import Stored = Scene.Stored;
   export import Source = Scene.Source;
-  export import PersistedData = Scene.PersistedData;
   export import CreateData = Scene.CreateData;
   export import InitializedData = Scene.InitializedData;
   export import UpdateData = Scene.UpdateData;
@@ -449,21 +448,4 @@ declare namespace BaseScene {
     interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseScene> {}
     const ClientDocument: ClientDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseScene.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseScene.CreateData}
-   */
-  type ConstructorData = BaseScene.CreateData;
 }

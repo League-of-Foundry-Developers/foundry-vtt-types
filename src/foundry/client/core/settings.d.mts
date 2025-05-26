@@ -292,11 +292,6 @@ declare global {
       extends _SettingConfig<ToRuntimeType<T>, ToSettingAssignmentType<T>> {}
 
     /**
-     * @deprecated {@link ClientSettings.RegisterData | `ClientSettings.RegisterData`}
-     */
-    interface RegisterOptions<T extends Type> extends InexactPartial<Omit<SettingConfig<T>, "key" | "namespace">> {}
-
-    /**
      * A Client Setting Submenu
      * @remarks Copied from `resources/app/common/types.mjs`
      */

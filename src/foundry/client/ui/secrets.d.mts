@@ -2,21 +2,6 @@ import type Document from "#common/abstract/document.d.mts";
 
 declare global {
   /**
-   * @deprecated Replaced with {@linkcode HTMLSecret.ContentCallback}
-   */
-  export import HTMLSecretContentCallback = HTMLSecret.ContentCallback;
-
-  /**
-   * @deprecated Replaced with {@linkcode HTMLSecret.UpdateCallback}
-   */
-  export import HTMLSecretUpdateCallback = HTMLSecret.UpdateCallback;
-
-  /**
-   * @deprecated Replaced with {@linkcode HTMLSecret.Configuration}
-   */
-  export import HTMLSecretConfiguration = HTMLSecret.Configuration;
-
-  /**
    * A composable class for managing functionality for secret blocks within DocumentSheets.
    * @see {@linkcode DocumentSheet}
    * @example Activate secret revealing functionality within a certain block of content.

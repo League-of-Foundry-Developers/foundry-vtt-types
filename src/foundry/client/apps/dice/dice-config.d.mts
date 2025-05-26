@@ -33,12 +33,6 @@ declare global {
     interface Any extends AnyDiceConfig {}
     interface AnyConstructor extends Identity<typeof AnyDiceConfig> {}
 
-    /** @deprecated Replaced with {@linkcode DiceConfig.Data} */
-    type DiceConfigData = Data;
-
-    /** @deprecated Replaced with {@linkcode DiceConfig.DiceDat} */
-    type DiceConfigDiceData = DiceData;
-
     interface Data {
       dice: DiceData[];
       methods: Record<string, CONFIG.Dice.FulfillmentMethod>;

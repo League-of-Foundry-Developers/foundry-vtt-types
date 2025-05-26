@@ -3,11 +3,6 @@ import type Edge from "#client-esm/canvas/edges/edge.d.mts";
 
 declare global {
   /**
-   * @deprecated Replaced with {@linkcode ClockwiseSweepPolygon.Ray}
-   */
-  type PolygonRay = ClockwiseSweepPolygon.Ray;
-
-  /**
    * A PointSourcePolygon implementation that uses CCW (counter-clockwise) geometry orientation.
    * Sweep around the origin, accumulating collision points based on the set of active walls.
    * This algorithm was created with valuable contributions from https://github.com/caewok

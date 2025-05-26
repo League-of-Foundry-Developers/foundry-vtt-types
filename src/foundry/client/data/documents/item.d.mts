@@ -247,11 +247,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode Item.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode Item.create}
      * and {@link Item | `new Item(...)`}.
      *
@@ -516,32 +511,6 @@ declare global {
       /** @defaultValue `Item.DEFAULT_ICON` */
       img: string;
     }
-
-    /**
-     * @deprecated Replaced with {@link Item.Database | `Item.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Item.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode Item.SubType}
-     */
-    type TypeNames = Item.SubType;
-
-    /**
-     * @deprecated Replaced with {@linkcode Item.CreateData}
-     */
-    interface ConstructorData extends Item.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link Item.implementation | `Item.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Item.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

@@ -2,11 +2,6 @@ export {};
 
 declare global {
   /**
-   * @deprecated Replaced with {@linkcode Tabs.Configuration}
-   */
-  type TabsConfiguration = Tabs.Configuration;
-
-  /**
    * A controller class for managing tabbed navigation within an Application instance.
    * @see {@linkcode Application}
    *

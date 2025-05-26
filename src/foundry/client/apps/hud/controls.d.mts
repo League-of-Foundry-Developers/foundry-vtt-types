@@ -164,46 +164,6 @@ declare global {
       tool?: string;
     }
   }
-
-  /**
-   * @deprecated Replaced with {@linkcode SceneControls.InitializeOptions}
-   */
-  type InitializeOptions = SceneControls.InitializeOptions;
-
-  /**
-   * @deprecated Replaced with {@linkcode SceneControls.ToolBase}
-   */
-  type SceneControlToolBase = SceneControls.ToolBase;
-
-  /**
-   * @deprecated Replaced with {@linkcode SceneControls.ToolToggle}
-   */
-  type SceneControlToolToggle = SceneControls.ToolToggle;
-
-  /**
-   * @deprecated Replaced with {@linkcode SceneControls.ToolNoToggle}
-   */
-  type SceneControlToolNoToggle = SceneControls.ToolNoToggle;
-
-  /**
-   * @deprecated Replaced with {@linkcode SceneControls.Tool}
-   */
-  type SceneControlTool = SceneControls.Tool;
-
-  /**
-   * @deprecated Replaced with {@linkcode SceneControls.Control}
-   */
-  type SceneControl = SceneControls.Control;
-
-  /**
-   * @deprecated Replaced with {@linkcode SceneControls.ToolclipConfiguration}
-   */
-  type ToolclipConfiguration = SceneControls.ToolclipConfiguration;
-
-  /**
-   * @deprecated Replaced with {@linkcode SceneControls.ToolclipConfigurationItem}
-   */
-  type ToolclipConfigurationItem = SceneControls.ToolclipConfigurationItem;
 }
 
 declare abstract class AnySceneControls extends SceneControls<Application.Options> {

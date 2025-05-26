@@ -682,13 +682,6 @@ declare namespace DataField {
    */
   interface ValidationOptions extends _ValidationOptions {}
 
-  /**
-   * @deprecated Use {@link ValidateOptions | `DataField.ValidationOptions`} instead if you need a direct replacement,
-   * or {@link ValidateOptions | `DataField.ValidateOptions`} if you're typing the options of `#validate` or an associated
-   * method.
-   */
-  interface DataValidationOptions extends ValidationOptions {}
-
   /** @internal */
   type _CleanOptions = NullishProps<{
     /** Whether to perform partial cleaning? */
@@ -1048,11 +1041,6 @@ declare namespace SchemaField {
   >;
 
   /**
-   * @deprecated Replaced with {@linkcode SourceData}
-   */
-  type PersistedData<Fields extends DataSchema> = SourceData<Fields>;
-
-  /**
    * Get the persisted type for the given DataSchema. This is the type used for source.
    * @template Fields - the DataSchema fields of the SchemaField
    */
@@ -1144,39 +1132,6 @@ declare namespace SchemaField {
   }
 
   /**
-   * This is deprecated because of likely confusion between `SchemaField.AssignmentData` and `SchemaField.AssignmentType`.
-   * @deprecated Replaced with {@linkcode SchemaField.Internal.AssignmentType}
-   */
-  type AssignmentType<
-    Fields extends DataSchema,
-    Opts extends Options<Fields> = DefaultOptions,
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-  > = Internal.AssignmentType<Fields, Opts>;
-
-  /**
-   * This is deprecated because of likely confusion between `SchemaField.InitializedData` and `SchemaField.InitializedType`.
-   * @deprecated Replaced with {@linkcode SchemaField.Internal.InitializedType}
-   */
-  type InitializedType<
-    Fields extends DataSchema,
-    Opts extends Options<Fields> = DefaultOptions,
-  > = Internal.InitializedType<Fields, Opts>;
-
-  /**
-   * This is deprecated because of likely confusion between `SchemaField.PersistedData` and `SchemaField.PersistedType`.
-   * @deprecated Replaced with {@linkcode SchemaField.Internal.PersistedType}
-   */
-  type PersistedType<Fields extends DataSchema, Opts extends Options<Fields> = DefaultOptions> = Internal.PersistedType<
-    Fields,
-    Opts
-  >;
-
-  /**
-   * @deprecated Replaced with {@linkcode SchemaField.CreateData}
-   */
-  type InnerConstructorType<Fields extends DataSchema> = CreateData<Fields>;
-
-  /**
    * @deprecated This type is a relic of the early days of data models. It was meant to represent
    * the types that would be valid for the expression `this.schemaProperty = ...`. Modern users will
    * recognize that the only sane thing to do here is to use `InitializedData` but when data models
@@ -1187,21 +1142,6 @@ declare namespace SchemaField {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type InnerAssignmentType<Fields extends DataSchema> = AssignmentData<Fields>;
-
-  /**
-   * @deprecated Replaced with {@linkcode SchemaField.InitializedData}
-   */
-  type InnerInitializedType<Fields extends DataSchema> = InitializedData<Fields>;
-
-  /**
-   * @deprecated Replaced with {@linkcode SchemaField.UpdateData}
-   */
-  type InnerUpdateData<Fields extends DataSchema> = UpdateData<Fields>;
-
-  /**
-   * @deprecated Replaced with {@linkcode SchemaField.SourceData}
-   */
-  type InnerPersistedType<Fields extends DataSchema> = SourceData<Fields>;
 
   type Get<Schema extends DataSchema, FieldName extends string> = GetKey<Schema, FieldName, undefined>;
 
@@ -4654,15 +4594,6 @@ declare namespace DocumentStatsField {
   interface InitializedData extends SchemaField.InitializedData<Schema> {}
 
   interface SourceData extends SchemaField.SourceData<Schema> {}
-
-  /** @deprecated Replaced with {@linkcode DocumentStatsField.CreateData} */
-  type ConstructorData = CreateData;
-
-  /** @deprecated Replaced with {@linkcode DocumentStatsField.InitializedData} */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /** @deprecated Replaced with {@linkcode DocumentStatsField.SourceData} */
-  type Source = SchemaField.SourceData<Schema>;
 
   interface Schema extends DataSchema {
     /**

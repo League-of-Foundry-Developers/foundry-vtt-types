@@ -618,9 +618,6 @@ declare global {
   interface SetupGame extends _SetupGame {}
   interface ReadyGame extends _ReadyGame {}
 
-  /** @deprecated Replaced with {@link Hooks.HotReloadData | `HotReloadData`} */
-  type HotReloadData = Hooks.HotReloadData;
-
   namespace Game {
     interface ModuleCollection extends Collection<Module> {
       /**

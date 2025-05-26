@@ -126,11 +126,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode PlaylistSound.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode PlaylistSound.create}
      * and {@link PlaylistSound | `new PlaylistSound(...)`}.
      *
@@ -368,27 +363,6 @@ declare global {
        */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
-
-    /**
-     * @deprecated Replaced with {@linkcode PlaylistSound.Database}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<PlaylistSound.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode PlaylistSound.CreateData}
-     */
-    interface ConstructorData extends PlaylistSound.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link PlaylistSound.implementation | `PlaylistSound.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode PlaylistSound.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

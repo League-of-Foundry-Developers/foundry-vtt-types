@@ -123,11 +123,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode TileDocument.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode TileDocument.create}
      * and {@link TileDocument | `new TileDocument(...)`}.
      *
@@ -446,27 +441,6 @@ declare global {
         randomizeVideo?: boolean;
       };
     }
-
-    /**
-     * @deprecated Replaced with {@link TileDocument.Database | `TileDocument.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<TileDocument.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode TileDocument.CreateData}
-     */
-    interface ConstructorData extends TileDocument.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link TileDocument.implementation | `TileDocument.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode TileDocument.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

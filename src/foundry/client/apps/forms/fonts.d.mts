@@ -129,11 +129,6 @@ declare global {
 
     interface Options extends FormApplication.Options {}
 
-    /**
-     * @deprecated Replaced with {@linkcode FontConfig.Data}
-     */
-    type FontConfigData = Data;
-
     interface Data {
       fonts: { family: string; index: number; font: string }[];
       selected: { family: string; index: number } | null;

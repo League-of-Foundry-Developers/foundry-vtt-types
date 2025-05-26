@@ -259,11 +259,6 @@ declare class DirectoryApplication {
 }
 
 declare global {
-  /**
-   * @deprecated Replaced with {@linkcode DirectoryApplicationMixin.Entry}
-   */
-  type DirectoryMixinEntry = DirectoryApplicationMixin.Entry;
-
   function DirectoryApplicationMixin<BaseApplication extends DirectoryApplicationMixin.BaseClass>(
     Base: BaseApplication,
   ): Mixin<typeof DirectoryApplication, BaseApplication>;
