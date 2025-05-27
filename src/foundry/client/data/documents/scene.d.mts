@@ -1170,7 +1170,7 @@ declare global {
     override clone<Save extends boolean | null | undefined = false>(
       data?: Scene.CreateData,
       context?: Document.CloneContext<Save>,
-    ): Save extends true ? Promise<this> : this;
+    ): Document.Clone<this, Save>;
 
     override reset(): void;
 

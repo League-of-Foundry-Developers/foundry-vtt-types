@@ -279,10 +279,10 @@ declare abstract class Document<
    * @returns The cloned Document instance
    */
   // data: not null (property access), context: not null (destructured)
-  override clone<Save extends boolean | null | undefined = false>(
+  override clone<Save extends boolean | null | undefined = undefined>(
     data?: SchemaField.UpdateData<Schema>,
     context?: Document.CloneContext<Save>,
-  ): Save extends true ? Promise<this> : this;
+  ): Document.Clone<this, Save>;
 
   /**
    * For Documents which include game system data, migrate the system data object to conform to its latest data model.
@@ -2262,6 +2262,10 @@ declare namespace Document {
         userId: string,
       ]
     : never;
+
+  type Clone<This extends Document.Any, Save extends boolean | null | undefined> = Save extends true
+    ? Promise<This>
+    : This;
 
   /**
    * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
