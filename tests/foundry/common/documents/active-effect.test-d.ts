@@ -500,14 +500,15 @@ expectTypeOf(fullTestAE.update(fullUpdateData)).toEqualTypeOf<Promise<TestActive
 expectTypeOf(
   fullTestAE.update({
     name: "some name", // no initial, can't be undefined
-    changes: fullTestAE.changes.concat([
+    changes: [
+      ...fullTestAE.changes,
       {
         key: "name", // required, no initial
-        mode: undefined, // should be allowed, because initial
+        mode: undefined,
         priority: undefined,
         value: " the Second", // required, no initial
       },
-    ]),
+    ],
     description: undefined,
     disabled: undefined,
     duration: {
@@ -539,14 +540,15 @@ expectTypeOf(
 ).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 expectTypeOf(
   fullTestAE.update({
-    changes: fullTestAE.changes.concat([
+    changes: [
+      ...fullTestAE.changes,
       {
         key: "name", // required, no initial
-        mode: null, // should be allowed, because initial
+        mode: null,
         priority: null,
         value: " the Second", // required, no initial
       },
-    ]),
+    ],
     description: null,
     disabled: null,
     duration: {
@@ -682,7 +684,7 @@ expectTypeOf(
       // fromCompendium not allowed to be null
       // keepEmbeddedIds not allowed to be null
       // keepId not allowed to be null
-      parentUuid: null,
+      // parentUuid not allowed to be null,
     },
     someUser,
   ),
@@ -757,9 +759,9 @@ expectTypeOf(
       // keepEmbeddedIds will never be null
       // keepId will never be null
       // noHook will never be null
-      pack: null,
+      // pack: null,
       parent: null,
-      parentUuid: null,
+      // parentUuid: null,
       // deprecated since v12:
       // TODO: `temporary` is only checked for `in`, it could be any set value and apply
       // temporary will never be null
