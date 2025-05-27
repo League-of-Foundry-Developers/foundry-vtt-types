@@ -112,17 +112,17 @@ export interface DatabaseCreateOperation<
   /**
    * Clear the currently assigned folder
    */
-  clearFolder?: boolean | undefined;
+  clearFolder?: boolean | null | undefined;
 
   /**
    * Clear the current sort order
    */
-  clearSort?: boolean | undefined;
+  clearSort?: boolean | null | undefined;
 
   /**
    * Clear Document ownership
    */
-  clearOwnership?: boolean | undefined;
+  clearOwnership?: boolean | null | undefined;
 
   /**
    * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`

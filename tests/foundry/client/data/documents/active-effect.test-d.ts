@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyMutableObject } from "../../../../../src/utils/index.d.mts";
+import type { AnyMutableObject, JSONValue } from "../../../../../src/utils/index.d.mts";
 
 import DataModel = foundry.abstract.DataModel;
 import Document = foundry.abstract.Document;
@@ -11,7 +11,7 @@ new ActiveEffect.implementation();
 new ActiveEffect.implementation({});
 
 declare const model: DataModel.Any;
-declare const change: ActiveEffect.EffectChangeData;
+declare const change: ActiveEffect.ChangeData;
 declare const aeContext: Document.ConstructionContext<ActiveEffect.Parent>;
 
 // Static methods native to this Document
@@ -71,7 +71,8 @@ expectTypeOf(
   ActiveEffect.createDialog(createData, {
     parent: someActor,
     pack: "some.pack",
-    type: "base",
+    // TODO: add mock subtypes so this has valid values to test ("base" is excluded)
+    //types: [],
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
 expectTypeOf(
@@ -80,7 +81,6 @@ expectTypeOf(
     {
       parent: someActor,
       pack: undefined,
-      type: undefined,
     },
   ),
 ).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
@@ -88,7 +88,6 @@ expectTypeOf(
   ActiveEffect.createDialog(createData, {
     parent: someActor,
     pack: null,
-    type: null,
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
 
@@ -192,11 +191,9 @@ effect.sourceName = "foo";
 expectTypeOf(effect.apply(someActor, change)).toEqualTypeOf<AnyMutableObject>();
 expectTypeOf(effect["_applyLegacy"](someActor, change, {})).toBeVoid();
 
-expectTypeOf(effect["_castDelta"]("7", "number")).toEqualTypeOf<boolean | number | string | object>();
-expectTypeOf(effect["_castArray"](`["foo", 7, "bar"]`, "string")).toEqualTypeOf<
-  Array<boolean | number | string | object>
->();
-expectTypeOf(effect["_parseOrString"](`{ "foo": undefined, "bar": "invalidJSON", }`)).toEqualTypeOf<string | object>();
+expectTypeOf(effect["_castDelta"]("7", "number")).toEqualTypeOf<JSONValue>();
+expectTypeOf(effect["_castArray"](`["foo", 7, "bar"]`, "string")).toEqualTypeOf<Array<JSONValue>>();
+expectTypeOf(effect["_parseOrString"](`{ "foo": undefined, "bar": "invalidJSON", }`)).toEqualTypeOf<JSONValue>();
 
 expectTypeOf(effect["_applyAdd"](someActor, change, 5, 1, {})).toBeVoid();
 expectTypeOf(effect["_applyMultiply"](someActor, change, 2, 4, {})).toBeVoid();

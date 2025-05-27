@@ -232,15 +232,15 @@ declare global {
        * The name of the ActiveEffect
        * @defaultValue `""`
        */
-      name: fields.StringField<{ required: true; blank: false; label: "EFFECT.Name"; textSearch: true }>;
+      name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
       /**
        * An image path used to depict the ActiveEffect as an icon
        * @defaultValue `null`
        */
-      img: fields.FilePathField<{ categories: ["IMAGE"]; label: "EFFECT.Image" }>;
+      img: fields.FilePathField<{ categories: ["IMAGE"] }>;
 
-      type: fields.DocumentTypeField<typeof BaseActiveEffect, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
+      type: fields.DocumentTypeField<typeof BaseActiveEffect, { initial: typeof CONST.BASE_DOCUMENT_TYPE }>;
 
       system: fields.TypeDataField<typeof BaseActiveEffect>;
 
@@ -248,45 +248,7 @@ declare global {
        * The array of EffectChangeData objects which the ActiveEffect applies
        * @defaultValue `[]`
        */
-      changes: fields.ArrayField<
-        fields.SchemaField<{
-          /**
-           * The attribute path in the Actor or Item data which the change modifies
-           * @defaultValue `""`
-           */
-          key: fields.StringField<{ required: true; label: "EFFECT.ChangeKey" }>;
-
-          /**
-           * The value of the change effect
-           * @defaultValue `""`
-           */
-          value: fields.StringField<{ required: true; label: "EFFECT.ChangeValue" }>;
-
-          /**
-           * The modification mode with which the change is applied
-           * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
-           */
-          mode: fields.NumberField<
-            {
-              required: true;
-              nullable: false;
-              integer: true;
-              initial: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
-            },
-            // TODO: (LukeAbby): fix this when redoing DataField
-            // FIXME: Overrides required to enforce the branded type
-            CONST.ACTIVE_EFFECT_MODES | null | undefined,
-            CONST.ACTIVE_EFFECT_MODES,
-            CONST.ACTIVE_EFFECT_MODES
-          >;
-
-          /**
-           * The priority level with which this change is applied
-           * @defaultValue `null`
-           */
-          priority: fields.NumberField;
-        }>
-      >;
+      changes: fields.ArrayField<fields.SchemaField<ChangeSchema>>;
 
       /**
        * Is this ActiveEffect currently disabled?
@@ -296,75 +258,32 @@ declare global {
 
       /**
        * An ActiveEffect.DurationData object which describes the duration of the ActiveEffect
-       * @defaultValue see properties
        */
-      duration: fields.SchemaField<{
-        /**
-         * The world time when the active effect first started
-         * @defaultValue `null`
-         */
-        startTime: fields.NumberField<{ initial: null; label: "EFFECT.StartTime" }>;
-
-        /**
-         * The maximum duration of the effect, in seconds
-         * @defaultValue `null`
-         */
-        seconds: fields.NumberField<{ integer: true; min: 0; label: "EFFECT.DurationSecs" }>;
-
-        /**
-         * The _id of the CombatEncounter in which the effect first started
-         * @defaultValue `null`
-         */
-        combat: fields.ForeignDocumentField<typeof foundry.documents.BaseCombat, { label: "EFFECT.Combat" }>;
-
-        /**
-         * The maximum duration of the effect, in combat rounds
-         * @defaultValue `null`
-         */
-        rounds: fields.NumberField<{ integer: true; min: 0 }>;
-
-        /**
-         * The maximum duration of the effect, in combat turns
-         * @defaultValue `null`
-         */
-        turns: fields.NumberField<{ integer: true; min: 0; label: "EFFECT.DurationTurns" }>;
-
-        /**
-         * The round of the CombatEncounter in which the effect first started
-         * @defaultValue `null`
-         */
-        startRound: fields.NumberField<{ integer: true; min: 0 }>;
-
-        /**
-         * The turn of the CombatEncounter in which the effect first started
-         * @defaultValue `null`
-         */
-        startTurn: fields.NumberField<{ integer: true; min: 0; label: "EFFECT.StartTurns" }>;
-      }>;
+      duration: fields.SchemaField<DurationSchema>;
 
       /**
        * The HTML text description for this ActiveEffect document.
        * @defaultValue `""`
        */
-      description: fields.HTMLField<{ label: "EFFECT.Description"; textSearch: true }>;
+      description: fields.HTMLField<{ textSearch: true }>;
 
       /**
        * A UUID reference to the document from which this ActiveEffect originated
        * @defaultValue `null`
        */
-      origin: fields.StringField<{ nullable: true; blank: false; initial: null; label: "EFFECT.Origin" }>;
+      origin: fields.StringField<{ nullable: true; blank: false; initial: null }>;
 
       /**
        * A color string which applies a tint to the ActiveEffect icon
        * @defaultValue `"#ffffff"`
        */
-      tint: fields.ColorField<{ nullable: false; initial: "#ffffff"; label: "EFFECT.IconTint" }>;
+      tint: fields.ColorField<{ nullable: false; initial: "#ffffff" }>;
 
       /**
        * Does this ActiveEffect automatically transfer from an Item to an Actor?
        * @defaultValue `false`
        */
-      transfer: fields.BooleanField<{ initial: true; label: "EFFECT.Transfer" }>;
+      transfer: fields.BooleanField<{ initial: true }>;
 
       /**
        * Special status IDs that pertain to this effect
@@ -372,6 +291,10 @@ declare global {
        */
       statuses: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
 
+      /**
+       * The sort value
+       * @defaultValue `0`
+       */
       sort: fields.IntegerSortField;
 
       /**
@@ -381,6 +304,88 @@ declare global {
       flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
 
       _stats: fields.DocumentStatsField;
+    }
+
+    interface ChangeSchema extends DataSchema {
+      /**
+       * The attribute path in the Actor or Item data which the change modifies
+       * @defaultValue `""`
+       */
+      key: fields.StringField<{ required: true }>;
+
+      /**
+       * The value of the change effect
+       * @defaultValue `""`
+       */
+      value: fields.StringField<{ required: true }>;
+
+      /**
+       * The modification mode with which the change is applied
+       * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
+       */
+      mode: fields.NumberField<
+        {
+          required: true;
+          nullable: false;
+          integer: true;
+          initial: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
+        },
+        // TODO: (LukeAbby): fix this when redoing DataField
+        // FIXME: Overrides required to enforce the branded type
+        CONST.ACTIVE_EFFECT_MODES | null | undefined,
+        CONST.ACTIVE_EFFECT_MODES,
+        CONST.ACTIVE_EFFECT_MODES
+      >;
+
+      /**
+       * The priority level with which this change is applied
+       * @defaultValue `undefined`
+       */
+      priority: fields.NumberField;
+    }
+
+    interface DurationSchema extends DataSchema {
+      /**
+       * The world time when the active effect first started
+       * @defaultValue `null`
+       */
+      startTime: fields.NumberField<{ initial: null }>;
+
+      /**
+       * The maximum duration of the effect, in seconds
+       * @defaultValue `undefined`
+       */
+      seconds: fields.NumberField<{ integer: true; min: 0 }>;
+
+      /**
+       * The _id of the CombatEncounter in which the effect first started
+       * @defaultValue `null`
+       */
+      combat: fields.ForeignDocumentField<typeof foundry.documents.BaseCombat>;
+
+      /**
+       * The maximum duration of the effect, in combat rounds
+       * @defaultValue `undefined`
+       */
+      rounds: fields.NumberField<{ integer: true; min: 0 }>;
+
+      /**
+       * The maximum duration of the effect, in combat turns
+       * @defaultValue `undefined`
+       */
+      turns: fields.NumberField<{ integer: true; min: 0 }>;
+
+      /**
+       * The round of the CombatEncounter in which the effect first started
+       * @defaultValue `undefined`
+       */
+      startRound: fields.NumberField<{ integer: true; min: 0 }>;
+
+      /**
+       * The turn of the CombatEncounter in which the effect first started
+       * @defaultValue `undefined`
+       */
+      startTurn: fields.NumberField<{ integer: true; min: 0 }>;
     }
 
     namespace Database {
