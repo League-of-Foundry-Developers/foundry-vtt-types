@@ -129,9 +129,6 @@ declare class DataModelValidationError extends Error {
 }
 
 declare namespace DataModelValidationFailure {
-  /** @deprecated Replaced with {@linkcode ConstructorOptions} */
-  type ConstructorArgs = ConstructorOptions;
-
   interface ConstructorOptions {
     /** The value that failed validation for this field. */
     invalidValue?: unknown;

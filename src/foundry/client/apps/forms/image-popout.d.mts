@@ -1,9 +1,6 @@
 import type { MaybePromise } from "#utils";
 
 declare global {
-  /** @deprecated Replaced with {@linkcode ImagePopout.Options} */
-  type ImagePopoutOptions = ImagePopout.Options;
-
   /**
    * An Image Popout Application which features a single image in a lightbox style frame.
    * This popout can also be used as a form, allowing the user to edit an image which is being used.

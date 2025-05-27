@@ -157,19 +157,19 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
     // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
     // However this causes a number of errors.
     operation?: object,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
 
   override updateEmbeddedDocuments<EmbeddedName extends Combat.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
     operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends Combat.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
     operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -357,7 +357,6 @@ declare namespace BaseCombat {
   export import Invalid = Combat.Invalid;
   export import Stored = Combat.Stored;
   export import Source = Combat.Source;
-  export import PersistedData = Combat.PersistedData;
   export import CreateData = Combat.CreateData;
   export import InitializedData = Combat.InitializedData;
   export import UpdateData = Combat.UpdateData;
@@ -381,24 +380,4 @@ declare namespace BaseCombat {
   interface _Schema extends Combat.Schema {
     system: any;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /** @deprecated Replaced with {@linkcode BaseCombat.SubType} */
-  type TypeNames = SubType;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseCombat.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseCombat.CreateData}
-   */
-  type ConstructorData = BaseCombat.CreateData;
 }

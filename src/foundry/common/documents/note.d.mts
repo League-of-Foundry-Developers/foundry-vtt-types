@@ -317,7 +317,6 @@ declare namespace BaseNote {
   export import Invalid = NoteDocument.Invalid;
   export import Stored = NoteDocument.Stored;
   export import Source = NoteDocument.Source;
-  export import PersistedData = NoteDocument.PersistedData;
   export import CreateData = NoteDocument.CreateData;
   export import InitializedData = NoteDocument.InitializedData;
   export import UpdateData = NoteDocument.UpdateData;
@@ -333,21 +332,4 @@ declare namespace BaseNote {
     interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BaseNote> {}
     const CanvasDocument: CanvasDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseNote.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseNote.CreateData}
-   */
-  type ConstructorData = BaseNote.CreateData;
 }

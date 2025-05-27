@@ -303,7 +303,6 @@ declare namespace BaseAdventure {
   export import Invalid = Adventure.Invalid;
   export import Stored = Adventure.Stored;
   export import Source = Adventure.Source;
-  export import PersistedData = Adventure.PersistedData;
   export import CreateData = Adventure.CreateData;
   export import InitializedData = Adventure.InitializedData;
   export import UpdateData = Adventure.UpdateData;
@@ -319,23 +318,6 @@ declare namespace BaseAdventure {
     interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseAdventure> {}
     const ClientDocument: ClientDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseAdventure.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseAdventure.CreateData}
-   */
-  type ConstructorData = BaseAdventure.CreateData;
 
   /**
    * A helper type to extract the return value for {@linkcode BaseAdventure.contentFields}

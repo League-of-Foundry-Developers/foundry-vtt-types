@@ -338,7 +338,6 @@ declare namespace BaseChatMessage {
   export import Invalid = ChatMessage.Invalid;
   export import Stored = ChatMessage.Stored;
   export import Source = ChatMessage.Source;
-  export import PersistedData = ChatMessage.Source;
   export import CreateData = ChatMessage.CreateData;
   export import InitializedData = ChatMessage.InitializedData;
   export import UpdateData = ChatMessage.UpdateData;
@@ -365,24 +364,4 @@ declare namespace BaseChatMessage {
   interface _Schema extends ChatMessage.Schema {
     system: any;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /** @deprecated Replaced with {@linkcode BaseChatMessage.SubType} */
-  type TypeNames = SubType;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseChatMessage.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseChatMessage.CreateData}
-   */
-  type ConstructorData = BaseChatMessage.CreateData;
 }

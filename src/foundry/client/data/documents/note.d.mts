@@ -133,11 +133,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode NoteDocument.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode NoteDocument.create}
      * and {@link NoteDocument | `new NoteDocument(...)`}.
      *
@@ -436,27 +431,6 @@ declare global {
        */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
-
-    /**
-     * @deprecated Replaced with {@link NoteDocument.Database | `NoteDocument.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<NoteDocument.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode NoteDocument.CreateData}
-     */
-    interface ConstructorData extends NoteDocument.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link NoteDocument.implementation | `NoteDocument.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode NoteDocument.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

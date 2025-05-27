@@ -185,11 +185,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode ActiveEffect.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode ActiveEffect.create}
      * and {@link ActiveEffect | `new ActiveEffect(...)`}.
      *
@@ -598,9 +593,6 @@ declare global {
       duration: InitialDurationData;
     }
 
-    /** @deprecated Replaced with {@linkcode ActiveEffect.ChangeData} */
-    type EffectChangeData = ChangeData;
-
     interface ChangeData {
       /**
        * The attribute path in the Actor or Item data which the change modifies
@@ -634,38 +626,6 @@ declare global {
     type ApplyFieldReturn<Field extends DataField.Any | null | undefined> = Field extends DataField.Any
       ? DataField.InitializedTypeFor<Field>
       : unknown;
-
-    /**
-     * @deprecated Replaced with {@link ActiveEffect.Database | `ActiveEffect.DatabaseOperation`}
-     */
-    interface DatabaseOperations
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      extends Document.Database.Operations<
-        ActiveEffect.Implementation,
-        { animate: boolean },
-        { animate: boolean },
-        { animate: boolean }
-      > {}
-
-    /**
-     * @deprecated Replaced with {@linkcode ActiveEffect.SubType}
-     */
-    type TypeNames = ActiveEffect.SubType;
-
-    /**
-     * @deprecated Replaced with {@linkcode ActiveEffect.CreateData}
-     */
-    interface ConstructorData extends ActiveEffect.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link ActiveEffect.implementation | `ActiveEffect.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode ActiveEffect.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**
@@ -1030,9 +990,4 @@ declare global {
 
     override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
-
-  /**
-   * @deprecated Replaced with {@linkcode ActiveEffect.Duration}
-   */
-  type ActiveEffectDuration = ActiveEffect.Duration;
 }

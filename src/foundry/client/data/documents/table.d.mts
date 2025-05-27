@@ -189,11 +189,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode RollTable.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode RollTable.create}
      * and {@link RollTable | `new RollTable(...)`}.
      *
@@ -569,27 +564,6 @@ declare global {
        */
       rollable?: boolean | undefined;
     }
-
-    /**
-     * @deprecated Replaced with {@link RollTable.Database | `RollTable.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<RollTable.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode RollTable.CreateData}
-     */
-    interface ConstructorData extends RollTable.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link RollTable.implementation | `RollTable.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode RollTable.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**
@@ -905,9 +879,4 @@ declare global {
 
     override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
   }
-
-  /**
-   * @deprecated Replaced with {@linkcode RollTable.Draw}
-   */
-  type RollTableDraw = RollTable.Draw;
 }

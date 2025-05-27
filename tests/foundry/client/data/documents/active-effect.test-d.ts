@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyMutableObject, GetKey, JSONValue } from "../../../../../src/utils/index.d.mts";
+import type { AnyMutableObject, JSONValue } from "../../../../../src/utils/index.d.mts";
 
 import DataModel = foundry.abstract.DataModel;
 import Document = foundry.abstract.Document;
@@ -67,7 +67,6 @@ expectTypeOf(
     },
   ),
 ).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
-declare const x: GetKey<Document.MetadataFor<"ActiveEffect">, "hasTypeData">;
 expectTypeOf(
   ActiveEffect.createDialog(createData, {
     parent: someActor,

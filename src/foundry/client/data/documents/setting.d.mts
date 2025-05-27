@@ -132,11 +132,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode Setting.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode Setting.create}
      * and {@link Setting | `new Setting(...)`}.
      *
@@ -339,27 +334,6 @@ declare global {
        */
       type Get<_Scope, _Key> = never;
     }
-
-    /**
-     * @deprecated Replaced with {@link Setting.Database | `Setting.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Setting.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode Setting.CreateData}
-     */
-    interface ConstructorData extends Setting.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link Setting.implementation | `Setting.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Setting.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

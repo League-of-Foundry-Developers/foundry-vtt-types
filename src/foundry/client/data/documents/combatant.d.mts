@@ -184,11 +184,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode Combatant.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode Combatant.create}
      * and {@link Combatant | `new Combatant(...)`}.
      *
@@ -452,38 +447,6 @@ declare global {
      * make us any more wrong than currently.
      */
     type Resource = string | number | null;
-
-    /**
-     * @deprecated Replaced with {@link Combatant.Database | `Combatant.DatabaseOperation`}
-     */
-    interface DatabaseOperations
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      extends Document.Database.Operations<
-        Combatant.Implementation,
-        { combatTurn: number },
-        { combatTurn: number },
-        { combatTurn: number }
-      > {}
-
-    /**
-     * @deprecated Replaced with {@linkcode Combatant.SubType}
-     */
-    type TypeNames = Combatant.SubType;
-
-    /**
-     * @deprecated Replaced with {@linkcode Combatant.CreateData}
-     */
-    interface ConstructorData extends Combatant.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link Combatant.implementation | `Combatant.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Combatant.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

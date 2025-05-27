@@ -302,7 +302,6 @@ declare namespace BaseFogExploration {
   export import Invalid = FogExploration.Invalid;
   export import Stored = FogExploration.Stored;
   export import Source = FogExploration.Source;
-  export import PersistedData = FogExploration.PersistedData;
   export import CreateData = FogExploration.CreateData;
   export import InitializedData = FogExploration.InitializedData;
   export import UpdateData = FogExploration.UpdateData;
@@ -318,21 +317,4 @@ declare namespace BaseFogExploration {
     interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseFogExploration> {}
     const ClientDocument: ClientDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseFogExploration.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseFogExploration.CreateData}
-   */
-  type ConstructorData = BaseFogExploration.CreateData;
 }

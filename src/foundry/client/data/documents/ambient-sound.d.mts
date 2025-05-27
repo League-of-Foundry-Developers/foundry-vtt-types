@@ -124,11 +124,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode AmbientSoundDocument.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode AmbientSoundDocument.create}
      * and {@link AmbientSoundDocument | `new AmbientSoundDocument(...)`}.
      *
@@ -420,26 +415,15 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
-    /**
-     * @deprecated Replaced with {@link AmbientSoundDocument.Database | `AmbientSoundDocument.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<AmbientSoundDocument.Implementation> {}
+    interface Effect {
+      type: keyof CONFIG["soundEffects"];
 
-    /**
-     * @deprecated Replaced with {@linkcode AmbientSoundDocument.CreateData}
-     */
-    interface ConstructorData extends AmbientSoundDocument.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link AmbientSoundDocument.implementation | `AmbientSoundDocument.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode AmbientSoundDocument.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
+      /**
+       * @defaultValue `5`
+       * @remarks Can't be `null` as {@link BiquadFilterNode} and {@link ConvolverNode} constructors both only have parameter defaults
+       */
+      intensity?: number | undefined;
+    }
   }
 
   /**

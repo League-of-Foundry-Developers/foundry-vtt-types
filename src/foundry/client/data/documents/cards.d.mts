@@ -240,11 +240,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode Cards.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode Cards.create}
      * and {@link Cards | `new Cards(...)`}.
      *
@@ -690,32 +685,6 @@ declare global {
        */
       toUpdate: Record<string, Card.UpdateData[]>;
     }
-
-    /**
-     * @deprecated Replaced with {@link Cards.Database | `Cards.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Cards.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode Cards.SubType}
-     */
-    type TypeNames = Cards.SubType;
-
-    /**
-     * @deprecated Replaced with {@linkcode Cards.CreateData}
-     */
-    interface ConstructorData extends Cards.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link Cards.implementation | `Cards.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Cards.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

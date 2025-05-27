@@ -153,19 +153,19 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
     // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
     // However this causes a number of errors.
     operation?: object,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
 
   override updateEmbeddedDocuments<EmbeddedName extends Cards.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
     operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends Cards.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
     operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -347,7 +347,6 @@ declare namespace BaseCards {
   export import Invalid = Cards.Invalid;
   export import Stored = Cards.Stored;
   export import Source = Cards.Source;
-  export import PersistedData = Cards.PersistedData;
   export import CreateData = Cards.CreateData;
   export import InitializedData = Cards.InitializedData;
   export import UpdateData = Cards.UpdateData;
@@ -371,24 +370,4 @@ declare namespace BaseCards {
   interface _Schema extends Cards.Schema {
     system: any;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /** @deprecated Replaced with {@linkcode BaseCards.SubType} */
-  type TypeNames = SubType;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseCards.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseCards.CreateData}
-   */
-  type ConstructorData = BaseCards.CreateData;
 }

@@ -412,9 +412,6 @@ declare global {
     set _highlight(state);
   }
 
-  /** @deprecated Replaced with {@linkcode PlaceablesLayer.LayerOptions} */
-  export import PlaceablesLayerOptions = PlaceablesLayer.LayerOptions;
-
   namespace PlaceablesLayer {
     interface Any extends AnyPlaceablesLayer {}
     interface AnyConstructor extends Identity<typeof AnyPlaceablesLayer> {}

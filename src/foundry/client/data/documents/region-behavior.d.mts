@@ -196,11 +196,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode RegionBehavior.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode RegionBehavior.create}
      * and {@link RegionBehavior | `new RegionBehavior(...)`}.
      *
@@ -406,32 +401,6 @@ declare global {
        */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
-
-    /**
-     * @deprecated Replaced with {@link RegionBehavior.Database | `RegionBehavior.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<RegionBehavior.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode RegionBehavior.SubType}
-     */
-    type TypeNames = RegionBehavior.SubType;
-
-    /**
-     * @deprecated Replaced with {@linkcode RegionBehavior.CreateData}
-     */
-    interface ConstructorData extends RegionBehavior.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link RegionBehavior.implementation | `RegionBehavior.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode RegionBehavior.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

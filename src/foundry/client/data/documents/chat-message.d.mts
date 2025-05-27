@@ -184,11 +184,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode ChatMessage.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode ChatMessage.create}
      * and {@link ChatMessage | `new ChatMessage(...)`}.
      *
@@ -583,40 +578,6 @@ declare global {
     }
 
     type PassableRollMode = CONST.DICE_ROLL_MODES | "roll";
-
-    /**
-     * @deprecated Replaced with {@linkcode ChatMessage.DatabaseOperation}
-     */
-    /* eslint-disable @typescript-eslint/no-empty-object-type */
-    interface DatabaseOperations
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      extends Document.Database.Operations<
-        ChatMessage.Implementation,
-        { rollMode: foundry.CONST.DICE_ROLL_MODES; chatBubble: boolean },
-        {},
-        {}
-      > {}
-    /* eslint-enable @typescript-eslint/no-empty-object-type */
-
-    /**
-     * @deprecated Replaced with {@linkcode ChatMessage.SubType}
-     */
-    type TypeNames = ChatMessage.SubType;
-
-    /**
-     * @deprecated Replaced with {@linkcode ChatMessage.CreateData}
-     */
-    interface ConstructorData extends ChatMessage.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link ChatMessage.implementation | `ChatMessage.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode ChatMessage.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

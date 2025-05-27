@@ -1,15 +1,6 @@
 import type { MaybePromise } from "#utils";
 
 declare global {
-  /** @deprecated Replaced with {@linkcode Dialog.Options} */
-  type DialogOptions = Dialog.Options;
-
-  /** @deprecated Replaced with {@linkcode Dialog.Button} */
-  type DialogButton = Dialog.Button;
-
-  /** @deprecated Replaced with {@linkcode Dialog.Data} */
-  type DialogData<JQueryOrHTML extends JQuery | HTMLElement = JQuery | HTMLElement> = Dialog.Data<JQueryOrHTML>;
-
   /**
    * Create a modal dialog window displaying a title, a message, and a set of buttons which trigger callback functions.
    *

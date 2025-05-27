@@ -3,16 +3,6 @@ import type Document from "#common/abstract/document.d.mts";
 
 declare global {
   /**
-   * @deprecated Replaced with {@linkcode CompendiumCollection.ManageCompendiumRequest}
-   */
-  type ManageCompendiumRequest = CompendiumCollection.ManageCompendiumRequest;
-
-  /**
-   * @deprecated Replaced with {@linkcode CompendiumCollection.ManageCompendiumResponse}
-   */
-  type ManageCompendiumResponse = CompendiumCollection.ManageCompendiumResponse;
-
-  /**
    * A collection of Document objects contained within a specific compendium pack.
    * Each Compendium pack has its own associated instance of the CompendiumCollection class which contains its contents.
    *

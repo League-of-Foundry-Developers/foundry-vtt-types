@@ -331,7 +331,6 @@ declare namespace BaseMeasuredTemplate {
   export import Invalid = MeasuredTemplateDocument.Invalid;
   export import Stored = MeasuredTemplateDocument.Stored;
   export import Source = MeasuredTemplateDocument.Source;
-  export import PersistedData = MeasuredTemplateDocument.PersistedData;
   export import CreateData = MeasuredTemplateDocument.CreateData;
   export import InitializedData = MeasuredTemplateDocument.InitializedData;
   export import UpdateData = MeasuredTemplateDocument.UpdateData;
@@ -347,21 +346,4 @@ declare namespace BaseMeasuredTemplate {
     interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BaseMeasuredTemplate> {}
     const CanvasDocument: CanvasDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseMeasuredTemplate.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseMeasuredTemplate.CreateData}
-   */
-  type ConstructorData = BaseMeasuredTemplate.CreateData;
 }

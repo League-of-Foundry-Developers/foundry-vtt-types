@@ -8,5 +8,5 @@
   "include": ["**/*", ".*", ".**/**/*"],
   // `src/index-lenient.d.mts` is skipped because it sets `AssumeHookRan` which has some pretty global effects that would make it easy to write broken code.
   // `tests` also mess around with configuration, add a lot of overhead, and currently don't all pass.
-  "exclude": ["src/index-lenient.d.mts", "tests"]
+  "exclude": ["src/index-lenient.d.mts", "tests", "test", "cvise"]
 }

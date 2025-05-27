@@ -3,9 +3,6 @@ import type { DataSchema } from "#common/data/fields.mjs";
 import type { GetKey, ValueOf } from "#utils";
 
 declare global {
-  /** @deprecated Replaced with {@linkcode AVSettings.Data} */
-  type AVSettingsData = AVSettings.Data;
-
   class AVSettings {
     constructor();
 

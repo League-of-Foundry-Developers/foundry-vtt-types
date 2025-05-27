@@ -317,7 +317,6 @@ declare namespace BaseCombatant {
   export import Invalid = Combatant.Invalid;
   export import Stored = Combatant.Stored;
   export import Source = Combatant.Source;
-  export import PersistedData = Combatant.PersistedData;
   export import CreateData = Combatant.CreateData;
   export import InitializedData = Combatant.InitializedData;
   export import UpdateData = Combatant.UpdateData;
@@ -341,24 +340,4 @@ declare namespace BaseCombatant {
   interface _Schema extends Combatant.Schema {
     system: any;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /** @deprecated Replaced with {@linkcode BaseCombatant.SubType} */
-  type TypeNames = SubType;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseCombatant.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseCombatant.CreateData}
-   */
-  type ConstructorData = BaseCombatant.CreateData;
 }

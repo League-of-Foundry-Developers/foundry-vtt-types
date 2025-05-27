@@ -308,7 +308,6 @@ declare namespace BaseFolder {
   export import Invalid = Folder.Invalid;
   export import Stored = Folder.Stored;
   export import Source = Folder.Source;
-  export import PersistedData = Folder.PersistedData;
   export import CreateData = Folder.CreateData;
   export import InitializedData = Folder.InitializedData;
   export import UpdateData = Folder.UpdateData;
@@ -324,24 +323,4 @@ declare namespace BaseFolder {
     interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseFolder> {}
     const ClientDocument: ClientDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /** @deprecated Replaced with {@linkcode BaseFolder.SubType} */
-  type TypeNames = SubType;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseFolder.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseFolder.CreateData}
-   */
-  type ConstructorData = BaseFolder.CreateData;
 }

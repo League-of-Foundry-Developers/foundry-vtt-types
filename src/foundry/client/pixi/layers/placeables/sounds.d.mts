@@ -1,5 +1,4 @@
 import type { IntentionalPartial, InexactPartial, NullishProps, HandleEmptyObject, Identity } from "#utils";
-import type { AmbientSoundEffect } from "#common/documents/_types.d.mts";
 
 declare global {
   /**
@@ -225,10 +224,10 @@ declare global {
       gmAlways: boolean;
 
       /** A base sound effect to apply to playback */
-      baseEffect: AmbientSoundEffect;
+      baseEffect: AmbientSoundDocument.Effect;
 
       /** A muffled sound effect to apply to playback, a sound may only be muffled if it is not constrained by walls */
-      muffledEffect: AmbientSoundEffect;
+      muffledEffect: AmbientSoundDocument.Effect;
 
       /**
        * Additional data passed to the SoundSource constructor

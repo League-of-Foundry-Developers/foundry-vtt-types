@@ -1,6 +1,5 @@
 import type { Brand, Identity, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { TokenDetectionMode } from "#common/documents/_types.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 
 declare global {
@@ -42,7 +41,7 @@ declare global {
      */
     testVisibility(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
-      mode: TokenDetectionMode,
+      mode: TokenDocument.DetectionModeData,
       { object, tests }: DetectionMode.TestConfig, // not:null (destructured)
     ): boolean;
 
@@ -68,7 +67,7 @@ declare global {
      */
     protected _testPoint(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
-      mode: TokenDetectionMode,
+      mode: TokenDocument.DetectionModeData,
       target: CanvasVisibility.TestObject,
       test: CanvasVisibility.Test,
     ): boolean;
@@ -85,7 +84,7 @@ declare global {
      */
     protected _testLOS(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
-      mode: TokenDetectionMode,
+      mode: TokenDocument.DetectionModeData,
       target: CanvasVisibility.TestObject,
       test: CanvasVisibility.Test,
     ): boolean;
@@ -100,7 +99,7 @@ declare global {
      */
     protected _testAngle(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
-      mode: TokenDetectionMode,
+      mode: TokenDocument.DetectionModeData,
       target: CanvasVisibility.TestObject,
       test: CanvasVisibility.Test,
     ): boolean;
@@ -115,7 +114,7 @@ declare global {
      */
     protected _testRange(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
-      mode: TokenDetectionMode,
+      mode: TokenDocument.DetectionModeData,
       target: CanvasVisibility.TestObject,
       test: CanvasVisibility.Test,
     ): boolean;
@@ -180,7 +179,7 @@ declare global {
 
     protected override _testPoint(
       visionSource: foundry.canvas.sources.PointVisionSource.Any,
-      mode: TokenDetectionMode,
+      mode: TokenDocument.DetectionModeData,
       target: CanvasVisibility.TestObject,
       test: CanvasVisibility.Test,
     ): boolean;

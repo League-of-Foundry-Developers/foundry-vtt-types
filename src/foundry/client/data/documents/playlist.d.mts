@@ -196,11 +196,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode Playlist.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode Playlist.create}
      * and {@link Playlist | `new Playlist(...)`}.
      *
@@ -520,27 +515,6 @@ declare global {
     }>;
 
     interface PlayNextOptions extends _PlayNextOptions {}
-
-    /**
-     * @deprecated Replaced with {@linkcode Playlist.Database.Operation}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<Playlist.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode Playlist.CreateData}
-     */
-    interface ConstructorData extends Playlist.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link Playlist.implementation | `Playlist.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Playlist.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

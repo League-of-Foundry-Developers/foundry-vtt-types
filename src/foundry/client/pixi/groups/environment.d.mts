@@ -1,5 +1,4 @@
 import type { HandleEmptyObject, Identity, InexactPartial, NullishProps } from "#utils";
-import type { SceneEnvironmentData } from "#common/documents/_types.d.mts";
 
 declare global {
   /**
@@ -114,7 +113,7 @@ declare global {
          * @defaultValue `{}`
          * @remarks Can't be `null` as it only has a parameter default and has properties accessed
          */
-        environment: NullishProps<SceneEnvironmentData>;
+        environment: NullishProps<Scene.EnvironmentData>;
       }>;
 
     interface InitializeOptions extends _InitializeOptions {}

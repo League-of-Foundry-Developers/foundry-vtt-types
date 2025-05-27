@@ -331,7 +331,6 @@ declare namespace BaseUser {
   export import Invalid = User.Invalid;
   export import Stored = User.Stored;
   export import Source = User.Source;
-  export import PersistedData = User.PersistedData;
   export import CreateData = User.CreateData;
   export import InitializedData = User.InitializedData;
   export import UpdateData = User.UpdateData;
@@ -351,21 +350,4 @@ declare namespace BaseUser {
     interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseUser> {}
     const ClientDocument: ClientDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseUser.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseUser.CreateData}
-   */
-  type ConstructorData = BaseUser.CreateData;
 }

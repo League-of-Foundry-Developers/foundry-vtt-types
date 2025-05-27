@@ -163,7 +163,7 @@ const firstChange = fullTestAE.changes[0]!;
 
 expectTypeOf(firstChange.key).toBeString();
 expectTypeOf(firstChange.value).toBeString();
-expectTypeOf(firstChange.mode).toEqualTypeOf<CONST.ACTIVE_EFFECT_MODES | null>();
+expectTypeOf(firstChange.mode).toEqualTypeOf<CONST.ACTIVE_EFFECT_MODES>();
 expectTypeOf(firstChange.priority).toEqualTypeOf<number | null | undefined>();
 
 expectTypeOf(fullTestAE.disabled).toBeBoolean();
@@ -475,6 +475,7 @@ const fullUpdateData = {
   img: "new/path/to/img.png",
   // @ts-expect-error TODO: possibly include shims
   icon: "new/path/to/img.jpg",
+  foo: 7,
   origin: "A UUID",
   statuses: ["status1", "status2"],
   tint: "#EDCBAF",
@@ -494,7 +495,7 @@ const fullUpdateData = {
   },
   // TODO: mock subtype to test
   type: "base",
-} as const;
+} as const satisfies ActiveEffect.UpdateData;
 expectTypeOf(fullTestAE.update(fullUpdateData)).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 expectTypeOf(
   fullTestAE.update({

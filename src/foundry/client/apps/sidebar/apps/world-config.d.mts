@@ -1,9 +1,6 @@
 import type { MaybePromise } from "#utils";
 
 declare global {
-  /** @deprecated Replaced with {@linkcode WorldConfig.Options} */
-  type WorldConfigOptions = WorldConfig.Options;
-
   /**
    * The World Management setup application
    * @template Options - The type of the options object

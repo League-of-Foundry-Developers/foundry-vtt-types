@@ -4,11 +4,6 @@ import type { EditorView } from "prosemirror-view";
 import type { Socket } from "socket.io-client";
 
 declare global {
-  /**
-   * @deprecated Replaced with {@linkcode ProseMirrorEditor.History}
-   */
-  type ProseMirrorHistory = ProseMirrorEditor.History;
-
   namespace ProseMirrorEditor {
     interface Options {
       document?: ClientDocument;

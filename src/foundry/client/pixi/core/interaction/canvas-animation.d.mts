@@ -229,12 +229,6 @@ declare global {
       reject: (err: Error) => void;
     }
   }
-
-  /** @deprecated Replaced with {@linkcode CanvasAnimation.AnimateOptions} */
-  type CanvasAnimationOptions = CanvasAnimation.AnimateOptions;
-
-  /** @deprecated Replaced with {@linkcode CanvasAnimation.AnimationData} */
-  type CanvasAnimationData = CanvasAnimation.AnimationData;
 }
 
 declare abstract class AnyCanvasAnimation extends CanvasAnimation {

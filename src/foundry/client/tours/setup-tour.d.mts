@@ -25,7 +25,4 @@ declare global {
       closeWindows: boolean;
     }
   }
-
-  /** @deprecated Replaced with {@linkcode SetupTour.Config} */
-  type SetupTourConfig = SetupTour.Config;
 }

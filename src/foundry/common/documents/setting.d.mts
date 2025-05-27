@@ -282,7 +282,6 @@ declare namespace BaseSetting {
   export import Invalid = Setting.Invalid;
   export import Stored = Setting.Stored;
   export import Source = Setting.Source;
-  export import PersistedData = Setting.PersistedData;
   export import CreateData = Setting.CreateData;
   export import InitializedData = Setting.InitializedData;
   export import UpdateData = Setting.UpdateData;
@@ -297,21 +296,4 @@ declare namespace BaseSetting {
     interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseSetting> {}
     const ClientDocument: ClientDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseSetting.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseSetting.CreateData}
-   */
-  type ConstructorData = BaseSetting.CreateData;
 }

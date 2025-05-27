@@ -1,7 +1,6 @@
 import type PolygonVertex from "./vertex.d.mts";
 import type { LineIntersection } from "#common/utils/geometry.d.mts";
 import type { Identity, NullishProps } from "#utils";
-import type { WallThresholdData } from "#common/documents/_types.d.mts";
 
 /**
  * A data structure used to represent potential edges used by the ClockwiseSweepPolygon.
@@ -78,7 +77,7 @@ declare class Edge {
    * Specialized threshold data for this edge.
    * @remarks Foundry only accesses this in nullish-safe ways as of 12.331
    */
-  threshold: WallThresholdData | undefined | null;
+  threshold: WallDocument.ThresholdData | undefined | null;
 
   /**
    * The endpoint of the edge which is oriented towards the top-left.
@@ -231,7 +230,7 @@ declare namespace Edge {
      * Configuration of threshold data for this edge
      * @remarks Foundry only accesses this in nullish-safe ways as of 12.331
      */
-    threshold: WallThresholdData;
+    threshold: WallDocument.ThresholdData;
   }>;
 
   interface ConstructorOptions extends _ConstructorOptions {}

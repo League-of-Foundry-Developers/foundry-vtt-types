@@ -862,35 +862,12 @@ declare global {
     // eslint-disable-next-line no-restricted-syntax
     type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Token>;
 
-    /**
-     * @deprecated Replaced with {@linkcode ImplementationClass}
-     */
-    type ObjectClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Implementation}
-     */
-    type Object = Implementation;
-
-    /**
-     * @deprecated Replaced with {@linkcode Drawing.ImplementationClass}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Drawing.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
-
     type Schema = BaseToken.Schema;
     type Parent = BaseToken.Parent;
 
     type Metadata = BaseToken.Metadata;
 
-    export import SchemaField = BaseToken.SchemaField;
-    export import ConstructorData = BaseToken.ConstructorData;
     export import UpdateData = BaseToken.UpdateData;
-    export import Properties = BaseToken.Properties;
     export import Source = BaseToken.Source;
 
     interface RENDER_FLAGS {

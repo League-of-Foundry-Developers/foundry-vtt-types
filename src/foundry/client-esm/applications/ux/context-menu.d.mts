@@ -1,12 +1,5 @@
 import type { InexactPartial } from "#utils";
 
-declare global {
-  /**
-   * @deprecated Use {@linkcode foundry.applications.ux.ContextMenu.Entry}
-   */
-  type ContextMenuEntry = ContextMenu.Entry<JQuery>;
-}
-
 /**
  * Display a right-click activated Context Menu which provides a dropdown menu of options.
  * A ContextMenu is constructed by designating a parent HTML container and a target selector.

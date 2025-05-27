@@ -3,12 +3,6 @@ import type { ValueOf } from "#utils";
 export { Tour };
 
 declare global {
-  /** @deprecated Replaced with {@linkcode Tour.Step} */
-  type TourStep = Tour.Step;
-
-  /** @deprecated Replaced with {@linkcode Tour.Config} */
-  type TourConfig = Tour.Config;
-
   namespace Tour {
     type STATUS = ValueOf<typeof Tour.STATUS>;
 

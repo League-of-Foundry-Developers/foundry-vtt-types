@@ -1,5 +1,4 @@
 import type { GetDataReturnType, MaybePromise, Identity } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
 
 declare global {
   /**
@@ -165,9 +164,9 @@ declare global {
     interface AnyConstructor extends Identity<typeof AnyCameraViews> {}
 
     interface User {
-      user: Document.Stored<globalThis.User.Implementation>;
+      user: User.Stored;
       settings: AVSettings.UserSettings;
-      local: Document.Stored<globalThis.User.Implementation>["isSelf"];
+      local: User.Stored["isSelf"];
       charname: string;
       volume: number;
       cameraViewClass: string;

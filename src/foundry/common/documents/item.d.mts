@@ -183,19 +183,19 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
     // However this causes a number of errors.
     operation?: object,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
 
   override updateEmbeddedDocuments<EmbeddedName extends Item.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
     operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends Item.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
     operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.Stored<Document.ImplementationFor<EmbeddedName>>>>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
@@ -377,7 +377,6 @@ declare namespace BaseItem {
   export import Invalid = Item.Invalid;
   export import Stored = Item.Stored;
   export import Source = Item.Source;
-  export import PersistedData = Item.PersistedData;
   export import CreateData = Item.CreateData;
   export import InitializedData = Item.InitializedData;
   export import UpdateData = Item.UpdateData;
@@ -404,26 +403,4 @@ declare namespace BaseItem {
     // This is overridden anyways.
     system: any;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  interface Properties extends SchemaField.InitializedData<Schema> {}
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseItem.SubType}
-   */
-  type TypeNames = Game.Model.TypeNames<"Item">;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseItem.Schema>`}
-   */
-  interface SchemaField extends foundry.data.fields.SchemaField<Schema> {}
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseItem.CreateData}
-   */
-  interface ConstructorData extends SchemaField.CreateData<Schema> {}
 }

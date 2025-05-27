@@ -2,11 +2,6 @@ import type { InexactPartial } from "#utils";
 
 declare global {
   /**
-   * @deprecated Replaced with {@linkcode DragDrop.Configuration}
-   */
-  type DragDropConfiguration = DragDrop.Configuration;
-
-  /**
    * A controller class for managing drag and drop workflows within an Application instance.
    * The controller manages the following actions: dragstart, dragover, drop
    * @see {@linkcode Application}

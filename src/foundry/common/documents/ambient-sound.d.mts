@@ -292,7 +292,6 @@ declare namespace BaseAmbientSound {
   export import Invalid = AmbientSoundDocument.Invalid;
   export import Stored = AmbientSoundDocument.Stored;
   export import Source = AmbientSoundDocument.Source;
-  export import PersistedData = AmbientSoundDocument.PersistedData;
   export import CreateData = AmbientSoundDocument.CreateData;
   export import InitializedData = AmbientSoundDocument.InitializedData;
   export import UpdateData = AmbientSoundDocument.UpdateData;
@@ -308,21 +307,4 @@ declare namespace BaseAmbientSound {
     interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BaseAmbientSound> {}
     const CanvasDocument: CanvasDocument;
   }
-
-  /**
-   * @deprecated This type is used by Foundry too vaguely.
-   * In one context the most correct type is after initialization whereas in another one it should be
-   * before but Foundry uses it interchangeably.
-   */
-  type Properties = SchemaField.InitializedData<Schema>;
-
-  /**
-   * @deprecated Replaced with {@link foundry.data.fields.SchemaField | `SchemaField<BaseAmbientSound.Schema>`}
-   */
-  type SchemaField = foundry.data.fields.SchemaField<Schema>;
-
-  /**
-   * @deprecated Replaced with {@linkcode BaseAmbientSound.CreateData}
-   */
-  type ConstructorData = BaseAmbientSound.CreateData;
 }

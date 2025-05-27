@@ -2,11 +2,6 @@ import type { InterfaceToObject, NullishProps } from "#utils";
 
 declare global {
   /**
-   * @deprecated Replaced with {@linkcode PerceptionManager.RenderFlags}
-   */
-  type PerceptionManagerFlags = PerceptionManager.RenderFlags;
-
-  /**
    * A helper class which manages the refresh workflow for perception layers on the canvas.
    * This controls the logic which batches multiple requested updates to minimize the amount of work required.
    * A singleton instance is available as {@link Canvas.perception | `Canvas#perception`}.

@@ -2,11 +2,6 @@ import type { Identity } from "#utils";
 
 declare global {
   /**
-   * @deprecated Replaced with {@linkcode ChatLog.Options}
-   */
-  type ChatLogOptions = ChatLog.Options;
-
-  /**
    * The sidebar directory which organizes and displays world-level ChatMessage documents.
    * @see {@linkcode Sidebar}
    */

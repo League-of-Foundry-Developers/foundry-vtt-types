@@ -169,11 +169,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode TableResult.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode TableResult.create}
      * and {@link TableResult | `new TableResult(...)`}.
      *
@@ -414,32 +409,6 @@ declare global {
        */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
-
-    /**
-     * @deprecated Replaced with {@link TableResult.Database | `TableResult.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<TableResult.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode TableResult.SubType}
-     */
-    type TypeNames = TableResult.SubType;
-
-    /**
-     * @deprecated Replaced with {@linkcode TableResult.CreateData}
-     */
-    interface ConstructorData extends TableResult.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link TableResult.implementation | `TableResult.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode TableResult.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

@@ -131,11 +131,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode WallDocument.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode WallDocument.create}
      * and {@link WallDocument | `new WallDocument(...)`}.
      *
@@ -189,6 +184,8 @@ declare global {
        */
       attenuation: fields.BooleanField;
     }
+
+    interface ThresholdData extends fields.SchemaField.InitializedData<ThresholdSchema> {}
 
     /**
      * The schema for {@linkcode WallDocument}. This is the source of truth for how an WallDocument document
@@ -495,27 +492,6 @@ declare global {
        */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
-
-    /**
-     * @deprecated Replaced with {@link WallDocument.Database | `WallDocument.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<WallDocument.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode WallDocument.CreateData}
-     */
-    interface ConstructorData extends WallDocument.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link WallDocument.implementation | `WallDocument.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode WallDocument.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

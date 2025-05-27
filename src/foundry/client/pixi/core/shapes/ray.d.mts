@@ -3,11 +3,6 @@ import type { LineIntersection } from "#common/utils/geometry.d.mts";
 
 declare global {
   /**
-   * @deprecated Replaced with {@linkcode Ray.Intersection}
-   */
-  type RayIntersection = Ray.Intersection;
-
-  /**
    * A ray for the purposes of computing sight and collision
    * Given points A[x,y] and B[x,y]
    *

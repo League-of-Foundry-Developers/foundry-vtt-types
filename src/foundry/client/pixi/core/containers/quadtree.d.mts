@@ -1,9 +1,6 @@
 import type { Brand, Identity, InexactPartial, NullishProps } from "#utils";
 
 declare global {
-  /** @deprecated Replaced with {@linkcode Quadtree.Object} */
-  type QuadtreeObject<T> = Quadtree.Object<T>;
-
   /**
    * A Quadtree implementation that supports collision detection for rectangles.
    */
@@ -149,9 +146,6 @@ declare global {
       r: Canvas.Rectangle;
       t: T;
     }
-
-    /** @deprecated Replaced with {@linkcode Quadtree.Object} */
-    type QuadtreeObject<T> = Object<T>;
 
     interface Object<T> extends _ObjectBase<T>, _OptionalSet<T> {}
 

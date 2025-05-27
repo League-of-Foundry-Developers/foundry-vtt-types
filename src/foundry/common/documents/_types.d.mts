@@ -1,142 +1,107 @@
-import type BaseActiveEffect from "./active-effect.d.mts";
-import type BaseCard from "./card.d.mts";
-import type BaseCards from "./cards.d.mts";
-import type BaseChatMessage from "./chat-message.d.mts";
-import type BaseCombat from "./combat.d.mts";
-import type BaseCombatant from "./combatant.d.mts";
-import type BaseDrawing from "./drawing.d.mts";
-import type BaseFogExploration from "./fog-exploration.d.mts";
-import type BaseFolder from "./folder.d.mts";
-import type BaseItem from "./item.d.mts";
-import type BaseJournalEntryPage from "./journal-entry-page.d.mts";
-import type BaseJournalEntry from "./journal-entry.d.mts";
-import type BaseMacro from "./macro.d.mts";
-import type BaseMeasuredTemplate from "./measured-template.d.mts";
-import type BaseNote from "./note.d.mts";
-import type BasePlaylistSound from "./playlist-sound.d.mts";
-import type BasePlaylist from "./playlist.d.mts";
-import type BaseRegionBehavior from "./region-behavior.d.mts";
-import type BaseRegion from "./region.d.mts";
-import type BaseRollTable from "./roll-table.d.mts";
-import type BaseScene from "./scene.d.mts";
-import type BaseSetting from "./setting.d.mts";
-import type BaseTableResult from "./table-result.d.mts";
-import type BaseTile from "./tile.d.mts";
-import type BaseToken from "./token.d.mts";
-import type BaseUser from "./user.d.mts";
-import type BaseWall from "./wall.d.mts";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
-/**
- * @deprecated This does not specify whether this is for source, initialized, or update data and
- * is used interchangeably with all of those.
- */
-export type ActiveEffectData = BaseActiveEffect.Properties;
+// After seeing that none of these types add anything or are even exported a
+// very reasonable question may be: Why on earth does this file exist?
+//
+// Well this is the file in which Foundry defines these types. We don't house
+// them here because it has poor discoverability. The names Foundry has chosen
+// also overlaps with other existing names, such as SettingConfig vs. ClientSetting.SettingConfig
 
-/**
- * @deprecated Replaced with {@linkcode ActiveEffect.DurationData}
- */
-export type EffectDurationData = ActiveEffect.DurationData;
+export {};
 
-/**
- * @deprecated Replaced with {@linkcode ActiveEffect.ChangeData}
- */
-export type EffectChangeData = ActiveEffect.ChangeData;
+type ActiveEffectData = ActiveEffect.InitializedData;
 
-export interface AmbientSoundEffect {
-  type: keyof CONFIG["soundEffects"];
+type EffectDurationData = ActiveEffect.DurationData;
 
-  /**
-   * @defaultValue `5`
-   * @remarks Can't be `null` as {@link BiquadFilterNode} and {@link ConvolverNode} constructors both only have parameter defaults
-   */
-  intensity?: number | undefined;
-} // TODO: Maybe move when BaseAmbientSound's schema is updated.
+type EffectChangeData = ActiveEffect.ChangeData;
 
-export type CardData = BaseCard.Properties;
+type AmbientSoundEffect = AmbientSoundDocument.Effect;
 
-export type CardFaceData = BaseCard.Properties["faces"][number];
+type CardData = Card.InitializedData;
 
-export type CardsData = BaseCards.Properties;
+type CardFaceData = Card.FaceData;
 
-export type ChatMessageData = BaseChatMessage.Properties;
+type CardsData = Cards.InitializedData;
 
-export type ChatSpeakerData = BaseChatMessage.Properties["speaker"];
+type ChatMessageData = ChatMessage.InitializedData;
 
-export type CombatData = BaseCombat.Properties;
+type ChatSpeakerData = ChatMessage.SpeakerData;
 
-export type CombatantData = BaseCombatant.Properties;
+type CombatData = Combat.InitializedData;
 
-export type DrawingData = BaseDrawing.Properties;
+type CombatantData = Combatant.InitializedData;
 
-export type FogExplorationData = BaseFogExploration.Properties;
+type DrawingData = DrawingDocument.InitializedData;
 
-export type FolderData = BaseFolder.Properties;
+type FogExplorationData = FogExploration.InitializedData;
 
-export type ItemData = BaseItem.Properties;
+type FolderData = Folder.InitializedData;
 
-export type JournalEntryData = BaseJournalEntry.Properties;
+type ItemData = Item.InitializedData;
 
-export type JournalEntryPageImageData = BaseJournalEntryPage.Properties["image"];
+type JournalEntryData = JournalEntry.InitializedData;
 
-export type JournalEntryPageTextData = BaseJournalEntryPage.Properties["text"];
+type JournalEntryPageImageData = JournalEntryPage.InitializedData["image"];
 
-export type JournalEntryPageVideoData = BaseJournalEntryPage.Properties["video"];
+type JournalEntryPageTextData = JournalEntryPage.InitializedData["text"];
 
-export type JournalEntryPageTitleData = BaseJournalEntryPage.Properties["title"];
+type JournalEntryPageVideoData = JournalEntryPage.InitializedData["video"];
 
-export type JournalEntryPageData = BaseJournalEntryPage.Properties;
+type JournalEntryPageTitleData = JournalEntryPage.InitializedData["title"];
 
-export type MacroData = BaseMacro.Properties;
+type JournalEntryPageData = JournalEntryPage.InitializedData;
 
-export type MeasuredTemplateData = BaseMeasuredTemplate.Properties;
+type MacroData = Macro.InitializedData;
 
-export type NoteData = BaseNote.Properties;
+type MeasuredTemplateData = MeasuredTemplateDocument.InitializedData;
 
-export type PlaylistData = BasePlaylist.Properties;
+type NoteData = NoteDocument.InitializedData;
 
-export type PlaylistSoundData = BasePlaylistSound.Properties;
+type PlaylistData = Playlist.InitializedData;
 
-export type RollTableData = BaseRollTable.Properties;
+type PlaylistSoundData = PlaylistSound.InitializedData;
 
-export type SceneData = BaseScene.Properties;
+type RollTableData = RollTable.InitializedData;
 
-export type GridData = BaseScene.Properties["grid"];
+type SceneData = Scene.InitializedData;
 
-export type EnvironmentData = BaseScene.Properties["environment"]["base"];
+type GridData = Scene.InitializedData["grid"];
 
-export interface _GlobalLightData {
+type EnvironmentData = Scene.InitializedData["environment"]["base"];
+
+interface _GlobalLightData {
   enabled: number; // TODO: Report as a likely error.
   bright: boolean;
 }
 
-export type GlobalLightData = BaseScene.Properties["environment"]["globalLight"];
+type GlobalLightData = Scene.InitializedData["environment"]["globalLight"];
 
-export type SceneEnvironmentData = BaseScene.Properties["environment"];
+type SceneEnvironmentData = Scene.InitializedData["environment"];
 
-export type RegionData = BaseRegion.Properties;
+type RegionData = RegionDocument.InitializedData;
 
-export type RegionBehaviorData = BaseRegionBehavior.Properties;
+type RegionBehaviorData = RegionBehavior.InitializedData;
 
-export type SettingData = BaseSetting.Properties;
+type SettingData = Setting.InitializedData;
 
-export type TableResultData = BaseTableResult.Properties;
+type TableResultData = TableResult.InitializedData;
 
-export type TileOcclusionData = BaseTile.Properties["occlusion"];
+type TileOcclusionData = TileDocument.InitializedData["occlusion"];
 
-export type TileVideoData = BaseTile.Properties["video"];
+type TileVideoData = TileDocument.InitializedData["video"];
 
-export type TileData = BaseTile.Properties;
+type TileData = TileDocument.InitializedData;
 
-export type TokenData = BaseToken.Properties;
+type TokenData = TokenDocument.InitializedData;
 
-export type TokenSightData = BaseToken.Properties["sight"];
+type TokenSightData = TokenDocument.InitializedData["sight"];
 
-export type TokenDetectionMode = BaseToken.Properties["detectionModes"][number];
+type TokenDetectionMode = TokenDocument.DetectionModeData;
 
-export type TokenBarData = BaseToken.Properties["bar1"];
+type TokenBarData = TokenDocument.InitializedData["bar1"];
 
-export type UserData = BaseUser.Properties;
+type UserData = User.InitializedData;
 
-export type WallData = BaseWall.Properties;
+type WallData = WallDocument.InitializedData;
 
-export type WallThresholdData = BaseWall.Properties["threshold"];
+type WallThresholdData = WallDocument.ThresholdData;

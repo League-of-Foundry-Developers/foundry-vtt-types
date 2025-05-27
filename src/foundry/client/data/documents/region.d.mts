@@ -187,11 +187,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode RegionDocument.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode RegionDocument.create}
      * and {@link RegionDocument | `new RegionDocument(...)`}.
      *
@@ -568,27 +563,6 @@ declare global {
     interface _EventData {
       readonly [K: string]: Document.Any | _EventData | _EventData[];
     }
-
-    /**
-     * @deprecated Replaced with {@link RegionDocument.Database | `RegionDocument.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<RegionDocument.Implementation> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode RegionDocument.CreateData}
-     */
-    interface ConstructorData extends RegionDocument.CreateData {}
-
-    /**
-     * @deprecated Replaced with {@link RegionDocument.implementation | `RegionDocument.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode RegionDocument.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**

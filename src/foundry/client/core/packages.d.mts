@@ -179,11 +179,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode Module.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a data model. Used in places like {@linkcode Module.create}
      * and {@link Module | `new Module(...)`}.
      *
@@ -266,11 +261,6 @@ declare global {
      * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode System.Source}
-     */
-    type PersistedData = Source;
 
     /**
      * The data necessary to create a data model. Used in places like {@linkcode System.create}
@@ -416,11 +406,6 @@ declare global {
      * but initialized as a {@linkcode Set}.
      */
     interface Source extends fields.SchemaField.SourceData<Schema> {}
-
-    /**
-     * @deprecated Replaced with {@linkcode World.Source}
-     */
-    type PersistedData = Source;
 
     /**
      * The data necessary to create a data model. Used in places like {@linkcode World.create}

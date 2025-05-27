@@ -204,11 +204,6 @@ declare global {
     interface Source extends fields.SchemaField.SourceData<Schema> {}
 
     /**
-     * @deprecated Replaced with {@linkcode TokenDocument.Source}
-     */
-    type PersistedData = Source;
-
-    /**
      * The data necessary to create a document. Used in places like {@linkcode TokenDocument.create}
      * and {@link TokenDocument | `new TokenDocument(...)`}.
      *
@@ -504,25 +499,7 @@ declare global {
        * @remarks The validation function is a `BaseToken.#validateDetectionModes` reference, which throws if there's a duplicate mode ID
        */
       detectionModes: fields.ArrayField<
-        fields.SchemaField<{
-          /**
-           * The id of the detection mode, a key from CONFIG.Canvas.detectionModes
-           * @defaultValue `""`
-           */
-          id: fields.StringField;
-
-          /**
-           * Whether or not this detection mode is presently enabled
-           * @defaultValue `true`
-           */
-          enabled: fields.BooleanField<{ initial: true }>;
-
-          /**
-           * The maximum range in distance units at which this mode can detect targets
-           * @defaultValue `null`
-           */
-          range: fields.NumberField<{ required: true; min: 0; step: 0.01 }>;
-        }>,
+        fields.SchemaField<DetectionModeSchema>,
         {
           validate: () => void;
         }
@@ -594,6 +571,28 @@ declare global {
        */
       flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
     }
+
+    interface DetectionModeSchema extends DataSchema {
+      /**
+       * The id of the detection mode, a key from CONFIG.Canvas.detectionModes
+       * @defaultValue `""`
+       */
+      id: fields.StringField;
+
+      /**
+       * Whether or not this detection mode is presently enabled
+       * @defaultValue `true`
+       */
+      enabled: fields.BooleanField<{ initial: true }>;
+
+      /**
+       * The maximum range in distance units at which this mode can detect targets
+       * @defaultValue `null`
+       */
+      range: fields.NumberField<{ required: true; min: 0; step: 0.01 }>;
+    }
+
+    interface DetectionModeData extends SchemaField.InitializedData<DetectionModeSchema> {}
 
     /**
      * The schema for {@linkcode TokenDocument}. This is the source of truth for how an TokenDocument document
@@ -939,27 +938,6 @@ declare global {
     // | (Name extends "ActiveEffect" ? globalThis.Collection<ActiveEffect.Implementation> : never)
     // | (Name extends Embedded.CollectionName ? Embedded.CollectionFor<Name> : never);
     type GetEmbeddedCollectionResult<_Name extends GetEmbeddedCollectionName> = Collection.Any;
-
-    /**
-     * @deprecated {@link TokenDocument.Database | `TokenDocument.DatabaseOperation`}
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    interface DatabaseOperations extends Document.Database.Operations<TokenDocument.Implementation> {}
-
-    /**
-     * @deprecated {@link TokenDocument.CreateData | `TokenDocument.CreateData`}
-     */
-    interface ConstructorData extends TokenDocument.CreateData {}
-
-    /**
-     * @deprecated {@link TokenDocument.implementation | `TokenDocument.ImplementationClass`}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated {@link TokenDocument.Implementation | `TokenDocument.Implementation`}
-     */
-    type ConfiguredInstance = Implementation;
   }
 
   /**
@@ -1376,16 +1354,6 @@ declare global {
 
     #TokenDocument: true;
   }
-
-  /**
-   * @deprecated Replaced with {@linkcode TokenDocument.TrackedAttributesDescription}
-   */
-  type TrackedAttributesDescription = TokenDocument.TrackedAttributesDescription;
-
-  /**
-   * @deprecated Replaced with {@linkcode TokenDocument.CreateCombatantsOptions}
-   */
-  type CreateCombatantOptions = TokenDocument.CreateCombatantsOptions;
 }
 
 interface SingleAttributeBar {

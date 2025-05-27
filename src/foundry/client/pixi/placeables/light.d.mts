@@ -197,26 +197,6 @@ declare global {
     // eslint-disable-next-line no-restricted-syntax
     type ImplementationClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;
 
-    /**
-     * @deprecated Replaced with {@linkcode ImplementationClass}
-     */
-    type ObjectClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode Implementation}
-     */
-    type Object = Implementation;
-
-    /**
-     * @deprecated Replaced with {@linkcode AmbientLight.ImplementationClass}
-     */
-    type ConfiguredClass = ImplementationClass;
-
-    /**
-     * @deprecated Replaced with {@linkcode AmbientLight.Implementation}
-     */
-    type ConfiguredInstance = Implementation;
-
     interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
       /** @defaultValue `{ propagate: ["refresh"] }` */
       redraw: RenderFlag<this, "redraw">;
