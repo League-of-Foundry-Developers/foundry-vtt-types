@@ -1,5 +1,7 @@
-import type { AnyConstructor, AnyFunction, DeepPartial, InexactPartial, NonNullish } from "#utils";
+import type { AnyArray, AnyConstructor, AnyFunction, InexactPartial, NonNullish } from "#utils";
 import type Document from "../abstract/document.d.mts";
+
+export {};
 
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.
@@ -352,23 +354,7 @@ export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
  * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null}, {performDeletions: true});   // {k2: "v2"}
  * ```
  */
-export function mergeObject<
-  T extends object,
-  U extends DeepPartial<WithWidenedArrayTypes<T>>,
-  M extends MergeObjectOptions & { enforceTypes: true },
->(original: T, other?: U, options?: M, _d?: number): MergeObject<T, U, M>;
-export function mergeObject<
-  T extends object,
-  U extends DeepPartial<Record<keyof T, never>> & object,
-  M extends MergeObjectOptions & { enforceTypes: true },
->(original: T, other?: U, options?: M, _d?: number): MergeObject<T, U, M>;
-export function mergeObject<T extends object, U extends object, M extends MergeObjectOptions & { enforceTypes: true }>(
-  original: T,
-  other?: U,
-  options?: M,
-  _d?: number,
-): never;
-export function mergeObject<T extends object, U extends object, M extends MergeObjectOptions>(
+export function mergeObject<const T extends object, const U extends object, const M extends MergeObjectOptions>(
   original: T,
   other?: U,
   options?: M,
@@ -474,7 +460,7 @@ export function timeSince(timeStamp: Date | string): string;
  */
 export function formatFileSize(size: number, options?: FormatFileSizeOptions): string;
 
-interface FormatFileSizeOptions {
+export interface FormatFileSizeOptions {
   /**
    * The number of decimal places to round to.
    * @defaultValue `2`
@@ -488,7 +474,7 @@ interface FormatFileSizeOptions {
   base?: 2 | 10 | undefined;
 }
 
-interface ResolvedUUID {
+export interface ResolvedUUID {
   /**
    * The original UUID.
    */
@@ -540,7 +526,7 @@ interface ResolvedUUID {
   documentId?: string | undefined;
 }
 
-interface ParseUUIDOptions {
+export interface ParseUUIDOptions {
   /**
    * A document to resolve relative UUIDs against.
    */
@@ -727,8 +713,11 @@ type RemoveDeletingObjectKeys<T, M extends MergeObjectOptions> = M["performDelet
     }>
   : T;
 
-type MergeObjectProperty<T, U, M extends MergeObjectOptions> =
-  T extends Array<any>
+type NonObject = number | string | boolean | bigint | symbol | null | undefined;
+
+type MergeObjectProperty<T, U, M extends MergeObjectOptions> = U extends NonObject
+  ? U
+  : T extends AnyArray
     ? U
     : T extends Record<string, any>
       ? U extends Record<string, any>
@@ -751,10 +740,3 @@ type InsertKeys<T, U> = T & Omit<U, keyof T>;
 type UpdateInsert<T, U, M extends MergeObjectOptions> = M extends { insertKeys: false }
   ? UpdateKeys<T, U, M>
   : InsertKeys<UpdateKeys<T, U, M>, U>;
-
-type WithWidenedArrayTypes<T> =
-  T extends Array<any>
-    ? Array<any>
-    : T extends Record<string, any>
-      ? { [K in keyof T]: WithWidenedArrayTypes<T[K]> }
-      : T;
