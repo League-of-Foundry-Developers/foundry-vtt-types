@@ -699,17 +699,27 @@ type OmitAssignableFromType<T extends object, U> = { [k in keyof T as U extends 
  */
 type OmitNotAssignableFromType<T extends object, U> = { [k in keyof T as U extends T[k] ? k : never]: T[k] };
 
-type OmitByValue<T, ValueType> = { [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };
+type OmitByValue<T, ValueType> = { -readonly [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };
 type RemoveNever<T> = OmitByValue<T, never>;
 type PropWithMinus<K> = K extends string ? `-=${K}` : never;
 type DeleteByObjectKeys<T, U, M extends MergeObjectOptions> = M["performDeletions"] extends true
   ? RemoveNever<{
-      [K in keyof T]: PropWithMinus<K> extends keyof U ? (U[PropWithMinus<K>] extends null ? never : T[K]) : T[K];
+      -readonly [K in keyof T]: PropWithMinus<K> extends keyof U
+        ? U[PropWithMinus<K>] extends null
+          ? never
+          : T[K]
+        : T[K];
     }>
   : T;
 type RemoveDeletingObjectKeys<T, M extends MergeObjectOptions> = M["performDeletions"] extends true
   ? RemoveNever<{
-      [K in keyof T]: K extends string ? (Capitalize<K> extends K ? (T[K] extends null ? never : T[K]) : T[K]) : T[K];
+      -readonly [K in keyof T]: K extends string
+        ? Capitalize<K> extends K
+          ? T[K] extends null
+            ? never
+            : T[K]
+          : T[K]
+        : T[K];
     }>
   : T;
 
@@ -718,11 +728,11 @@ type NonObject = number | string | boolean | bigint | symbol | null | undefined;
 type MergeObjectProperty<T, U, M extends MergeObjectOptions> = U extends NonObject
   ? U
   : T extends AnyArray
-    ? U
+    ? { -readonly [K in keyof U]: U[K] }
     : T extends Record<string, any>
       ? U extends Record<string, any>
         ? M extends { recursive: false }
-          ? U
+          ? { -readonly [K in keyof U]: U[K] }
           : MergeObject<
               T,
               U,
@@ -734,9 +744,9 @@ type MergeObjectProperty<T, U, M extends MergeObjectOptions> = U extends NonObje
         : U
       : U;
 type UpdateKeys<T, U, M extends MergeObjectOptions> = M extends { overwrite: false }
-  ? T
-  : { [K in keyof T]: K extends keyof U ? MergeObjectProperty<T[K], U[K], M> : T[K] };
-type InsertKeys<T, U> = T & Omit<U, keyof T>;
+  ? { -readonly [K in keyof T]: T[K] }
+  : { -readonly [K in keyof T]: K extends keyof U ? MergeObjectProperty<T[K], U[K], M> : T[K] };
+type InsertKeys<T, U> = { -readonly [K in keyof T]: T[K] } & { -readonly [K in keyof U as Exclude<K, keyof T>]: U[K] };
 type UpdateInsert<T, U, M extends MergeObjectOptions> = M extends { insertKeys: false }
   ? UpdateKeys<T, U, M>
   : InsertKeys<UpdateKeys<T, U, M>, U>;
