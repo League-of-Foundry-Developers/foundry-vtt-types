@@ -356,7 +356,7 @@ declare global {
        * @remarks This is called by {@linkcode Hooks.callAll}.
        * @see {@link UserTargets._hook | `UserTargets#_hook`}
        */
-      targetToken: (user: User.Implementation, token: Document.ObjectClassFor<"Token">, targeted: boolean) => void;
+      targetToken: (user: User.Implementation, token: Token.Implementation, targeted: boolean) => void;
 
       /** Note */
 

@@ -41,14 +41,13 @@ expectTypeOf(foundry.packages.BasePackage.migratedKeys).toEqualTypeOf<Set<string
 expectTypeOf(foundry.packages.BasePackage.migrateData({})).toEqualTypeOf<AnyMutableObject>();
 expectTypeOf(foundry.packages.BasePackage.fromRemoteManifest("", { strict: true })).toEqualTypeOf<Promise<never>>();
 
-const packageCompendia: foundry.data.fields.SchemaField.InnerInitializedType<{ ownership: CompendiumOwnershipField }> =
-  {
-    ownership: {
-      ASSISTANT: "OBSERVER",
-      // @ts-expect-error Foobar is not a valid value
-      PLAYER: "foobar",
-    },
-  };
+const packageCompendia: foundry.data.fields.SchemaField.InitializedData<{ ownership: CompendiumOwnershipField }> = {
+  ownership: {
+    ASSISTANT: "OBSERVER",
+    // @ts-expect-error Foobar is not a valid value
+    PLAYER: "foobar",
+  },
+};
 
 expectTypeOf(packageCompendia.ownership.ASSISTANT).toEqualTypeOf<
   keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | undefined

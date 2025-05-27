@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { WallThresholdData } from "../../../../../src/foundry/common/documents/_types.d.mts";
 import type PolygonVertex from "../../../../../src/foundry/client-esm/canvas/edges/vertex.d.mts";
 import type Edge from "../../../../../src/foundry/client-esm/canvas/edges/edge.d.mts";
 
@@ -34,7 +33,7 @@ expectTypeOf(edge.light).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
 expectTypeOf(edge.move).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
 expectTypeOf(edge.sight).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
 expectTypeOf(edge.sound).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
-expectTypeOf(edge.threshold).toEqualTypeOf<WallThresholdData | undefined | null>();
+expectTypeOf(edge.threshold).toEqualTypeOf<WallDocument.ThresholdData | undefined | null>();
 expectTypeOf(edge.nw).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(edge.se).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(edge.bounds).toEqualTypeOf<PIXI.Rectangle>();

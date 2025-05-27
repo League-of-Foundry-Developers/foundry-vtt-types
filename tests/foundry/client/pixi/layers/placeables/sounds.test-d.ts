@@ -4,11 +4,11 @@ expectTypeOf(SoundsLayer.documentName).toEqualTypeOf<"AmbientSound">();
 expectTypeOf(SoundsLayer.instance).toEqualTypeOf<SoundsLayer | undefined>();
 expectTypeOf(SoundsLayer.layerOptions).toEqualTypeOf<SoundsLayer.LayerOptions>();
 expectTypeOf(SoundsLayer.layerOptions.name).toEqualTypeOf<"sounds">();
-expectTypeOf(SoundsLayer.layerOptions.objectClass).toEqualTypeOf<AmbientSound.ObjectClass>();
+expectTypeOf(SoundsLayer.layerOptions.objectClass).toEqualTypeOf<AmbientSound.Implementation>();
 
 const layer = new SoundsLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<AmbientSound.ObjectClass>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<AmbientSound.Implementation>();
 expectTypeOf(layer.options).toEqualTypeOf<SoundsLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"sounds">();
 
@@ -107,4 +107,4 @@ expectTypeOf(
     x: 500,
     y: 500,
   }),
-).toEqualTypeOf<Promise<AmbientSound.Object | false>>();
+).toEqualTypeOf<Promise<AmbientSound.Implementation | false>>();

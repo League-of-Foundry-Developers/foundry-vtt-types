@@ -1,14 +1,12 @@
 import { expectTypeOf } from "vitest";
 
-import Document = foundry.abstract.Document;
-
 const doc = new AmbientLightDocument.implementation();
 
 // Test the inheritance
 expectTypeOf(doc.documentName).toEqualTypeOf<"AmbientLight">(); // Document
 expectTypeOf(doc.uuid).toEqualTypeOf<string>(); // clientDocumentMixin
-expectTypeOf(CONFIG.AmbientLight.objectClass).toEqualTypeOf<Document.ConfiguredObjectClassForName<"AmbientLight">>(); // proof the following should work
-expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Object | null>(); // canvasDocumentMixin
+expectTypeOf(CONFIG.AmbientLight.objectClass).toEqualTypeOf<AmbientLight.ImplementationClass>(); // proof the following should work
+expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Implementation | null>(); // canvasDocumentMixin
 expectTypeOf(doc.layer).toEqualTypeOf<LightingLayer>(); // canvasDocumentMixin
 expectTypeOf(doc.isGlobal).toEqualTypeOf<boolean>(); // class itself
 expectTypeOf(doc.compendium).toEqualTypeOf<undefined>(); // TODO: Determine if embedded documents can have this metadata
@@ -20,6 +18,6 @@ expectTypeOf(AmbientLightDocument.createDialog({}, { parent: new Scene.implement
 >(); // ClientDocumentMixin
 
 // Test the props
-expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Object | null>();
+expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Implementation | null>();
 expectTypeOf(doc.layer).toEqualTypeOf<LightingLayer.Any>();
 expectTypeOf(doc.rendered).toEqualTypeOf<boolean>();

@@ -28,7 +28,7 @@ expectTypeOf(sound.sync(true, 10)).toEqualTypeOf<void>();
 expectTypeOf(sound.sync(true, 10, {})).toEqualTypeOf<void>();
 expectTypeOf(sound.sync(true, 10, { fade: 250 })).toEqualTypeOf<void>();
 
-expectTypeOf(sound.clear()).toEqualTypeOf<AmbientSound.Object>();
+expectTypeOf(sound.clear()).toEqualTypeOf<AmbientSound.Implementation>();
 
 // @ts-expect-error _draw always gets passed a value
 expectTypeOf(sound["_draw"]()).toEqualTypeOf<Promise<void>>();

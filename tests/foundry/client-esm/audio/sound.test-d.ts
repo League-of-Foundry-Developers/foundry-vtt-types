@@ -48,7 +48,7 @@ expectTypeOf(sound.currentTime).toEqualTypeOf<number | undefined>();
 expectTypeOf(sound.loop).toEqualTypeOf<boolean>();
 sound.loop = true;
 
-expectTypeOf(sound._manager).toEqualTypeOf<AmbientSound.Object | null>();
+expectTypeOf(sound._manager).toEqualTypeOf<AmbientSound.Implementation | null>();
 
 const callback = (sound: Sound) => {
   console.log(sound);

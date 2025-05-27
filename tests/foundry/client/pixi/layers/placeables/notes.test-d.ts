@@ -4,13 +4,13 @@ expectTypeOf(NotesLayer.documentName).toEqualTypeOf<"Note">();
 expectTypeOf(NotesLayer.instance).toEqualTypeOf<NotesLayer | undefined>();
 expectTypeOf(NotesLayer.layerOptions).toEqualTypeOf<NotesLayer.LayerOptions>();
 expectTypeOf(NotesLayer.layerOptions.name).toEqualTypeOf<"notes">();
-expectTypeOf(NotesLayer.layerOptions.objectClass).toEqualTypeOf<Note.ObjectClass>();
+expectTypeOf(NotesLayer.layerOptions.objectClass).toEqualTypeOf<Note.ImplementationClass>();
 expectTypeOf(NotesLayer.TOGGLE_SETTING).toEqualTypeOf<"notesDisplayToggle">();
 expectTypeOf(NotesLayer.registerSettings()).toBeVoid();
 
 const layer = new NotesLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<Note.ObjectClass>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Note.ImplementationClass>();
 expectTypeOf(layer.options).toEqualTypeOf<NotesLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"notes">();
 
@@ -21,7 +21,7 @@ expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(layer.hintMapNotes()).toBeVoid();
 
-declare const someNote: Note.Object;
+declare const someNote: Note.Implementation;
 expectTypeOf(layer.panToNote(someNote)).toEqualTypeOf<Promise<void>>();
 expectTypeOf(
   layer.panToNote(someNote, {
@@ -38,7 +38,7 @@ expectTypeOf(
 
 declare const someEvent: PIXI.FederatedEvent;
 declare const someDragEvent: DragEvent;
-expectTypeOf(layer["_onClickLeft"](someEvent)).toEqualTypeOf<Promise<Note.Object | void>>();
+expectTypeOf(layer["_onClickLeft"](someEvent)).toEqualTypeOf<Promise<Note.Implementation | void>>();
 
 expectTypeOf(
   layer["_onDropData"](someDragEvent, {
@@ -48,7 +48,7 @@ expectTypeOf(
     x: 50,
     y: 50,
   }),
-).toEqualTypeOf<Promise<false | Note.Object>>();
+).toEqualTypeOf<Promise<false | Note.Implementation>>();
 expectTypeOf(
   layer["_onDropData"](someDragEvent, {
     type: "JournalEntry",
@@ -56,4 +56,4 @@ expectTypeOf(
     x: 50,
     y: 50,
   }),
-).toEqualTypeOf<Promise<false | Note.Object>>();
+).toEqualTypeOf<Promise<false | Note.Implementation>>();

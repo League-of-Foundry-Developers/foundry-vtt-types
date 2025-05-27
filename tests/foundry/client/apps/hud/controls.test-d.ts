@@ -13,40 +13,40 @@ expectTypeOf(controls.initialize({ control: "token" })).toEqualTypeOf<void>();
 expectTypeOf(controls.initialize({ layer: "tokens" })).toEqualTypeOf<void>();
 expectTypeOf(controls.initialize({ tool: "select" })).toEqualTypeOf<void>();
 
-expectTypeOf(controls.controls).toEqualTypeOf<SceneControl[]>();
-expectTypeOf(controls.controls.map((each) => each.tools)).toEqualTypeOf<SceneControlTool[][]>();
+expectTypeOf(controls.controls).toEqualTypeOf<SceneControls.Control[]>();
+expectTypeOf(controls.controls.map((each) => each.tools)).toEqualTypeOf<SceneControls.Tool[][]>();
 
-expectTypeOf(controls.control).toEqualTypeOf<SceneControl | null>();
+expectTypeOf(controls.control).toEqualTypeOf<SceneControls.Control | null>();
 expectTypeOf(controls.activeTool).toEqualTypeOf<string | null>();
-expectTypeOf(controls.tool).toEqualTypeOf<SceneControlTool | null>();
+expectTypeOf(controls.tool).toEqualTypeOf<SceneControls.Tool | null>();
 expectTypeOf(controls.isRuler).toEqualTypeOf<boolean>();
 expectTypeOf(controls.getData()).toEqualTypeOf<{
-  controls: SceneControl[];
+  controls: SceneControls.Control[];
   active: boolean;
   cssClass: "" | "disabled";
 }>();
 
-assertType<SceneControlTool>({
+assertType<SceneControls.Tool>({
   name: "foo",
   title: "bar",
   icon: "baz",
   onClick: () => undefined,
 });
-assertType<SceneControlTool>({
+assertType<SceneControls.Tool>({
   name: "foo",
   title: "bar",
   icon: "baz",
   toggle: false,
   onClick: () => undefined,
 });
-assertType<SceneControlTool>({
+assertType<SceneControls.Tool>({
   name: "foo",
   title: "bar",
   icon: "baz",
   button: true,
   onClick: () => undefined,
 });
-assertType<SceneControlTool>({
+assertType<SceneControls.Tool>({
   name: "foo",
   title: "bar",
   icon: "baz",
@@ -55,7 +55,7 @@ assertType<SceneControlTool>({
 });
 
 // @ts-expect-error the onClick function isn't toggleable.
-assertType<SceneControlTool>({
+assertType<SceneControls.Tool>({
   name: "foo",
   title: "bar",
   icon: "baz",
@@ -64,7 +64,7 @@ assertType<SceneControlTool>({
 });
 
 // @ts-expect-error the onClick function isn't toggleable.
-assertType<SceneControlTool>({
+assertType<SceneControls.Tool>({
   name: "foo",
   title: "bar",
   icon: "baz",

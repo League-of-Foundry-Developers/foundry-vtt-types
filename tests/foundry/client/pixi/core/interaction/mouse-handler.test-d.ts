@@ -3,7 +3,7 @@ import { expectTypeOf } from "vitest";
 expectTypeOf(MouseInteractionManager.INTERACTION_STATES.CLICKED).toExtend<MouseInteractionManager.INTERACTION_STATES>();
 
 declare const someEvent: PIXI.FederatedEvent;
-declare const someRegion: Region.Object;
+declare const someRegion: Region.Implementation;
 
 const permissions = {
   dragLeftStart: (_user: User.Implementation, _e: Event | PIXI.FederatedEvent) => true,

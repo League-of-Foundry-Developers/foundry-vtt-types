@@ -1,8 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
-type ChatSpeakerData = foundry.documents.BaseChatMessage.Properties["speaker"];
-
 expectTypeOf(new ChatMessage.implementation()).toEqualTypeOf<ChatMessage.Implementation>();
 expectTypeOf(new ChatMessage.implementation({})).toEqualTypeOf<ChatMessage.Implementation>();
 
@@ -36,11 +34,11 @@ expectTypeOf(
 // @ts-expect-error - "unknown-roll-mode" is not a valid roll mode
 ChatMessage.applyRollMode({}, "unknown-roll-mode");
 
-expectTypeOf(ChatMessage.getSpeaker()).toEqualTypeOf<ChatSpeakerData>();
-expectTypeOf(ChatMessage.getSpeaker({})).toEqualTypeOf<ChatSpeakerData>();
+expectTypeOf(ChatMessage.getSpeaker()).toEqualTypeOf<ChatMessage.SpeakerData>();
+expectTypeOf(ChatMessage.getSpeaker({})).toEqualTypeOf<ChatMessage.SpeakerData>();
 if (game instanceof Game) {
-  expectTypeOf(ChatMessage.getSpeaker({ scene: game.scenes?.active })).toEqualTypeOf<ChatSpeakerData>();
-  expectTypeOf(ChatMessage.getSpeaker({ actor: game.user?.character })).toEqualTypeOf<ChatSpeakerData>();
+  expectTypeOf(ChatMessage.getSpeaker({ scene: game.scenes?.active })).toEqualTypeOf<ChatMessage.SpeakerData>();
+  expectTypeOf(ChatMessage.getSpeaker({ actor: game.user?.character })).toEqualTypeOf<ChatMessage.SpeakerData>();
   expectTypeOf(
     ChatMessage.getSpeaker({
       scene: game.scenes?.active,
@@ -48,10 +46,12 @@ if (game instanceof Game) {
       token: new TokenDocument.implementation(),
       alias: "Mario",
     }),
-  ).toEqualTypeOf<ChatSpeakerData>();
+  ).toEqualTypeOf<ChatMessage.SpeakerData>();
 }
-expectTypeOf(ChatMessage.getSpeaker({ token: new TokenDocument.implementation() })).toEqualTypeOf<ChatSpeakerData>();
-expectTypeOf(ChatMessage.getSpeaker({ alias: "Mario" })).toEqualTypeOf<ChatSpeakerData>();
+expectTypeOf(
+  ChatMessage.getSpeaker({ token: new TokenDocument.implementation() }),
+).toEqualTypeOf<ChatMessage.SpeakerData>();
+expectTypeOf(ChatMessage.getSpeaker({ alias: "Mario" })).toEqualTypeOf<ChatMessage.SpeakerData>();
 
 expectTypeOf(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker())).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(ChatMessage.getWhisperRecipients("Mario")).toEqualTypeOf<User.Stored[]>();

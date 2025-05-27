@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type Document from "../../../../../../src/foundry/common/abstract/document.d.mts";
 
 expectTypeOf(TokenLayer.documentName).toEqualTypeOf<"Token">();
 expectTypeOf(TokenLayer.instance).toEqualTypeOf<TokenLayer | undefined>();
@@ -28,13 +27,11 @@ expectTypeOf(layer["_deactivate"]()).toBeVoid();
 
 declare const someToken: Token.Implementation;
 declare const somePoint: PIXI.Point;
-expectTypeOf(layer["_pasteObject"](someToken, somePoint)).toEqualTypeOf<Document.ConfiguredSourceForName<"Token">>();
-expectTypeOf(layer["_pasteObject"](someToken, somePoint, { hidden: true, snap: false })).toEqualTypeOf<
-  Document.ConfiguredSourceForName<"Token">
->();
-expectTypeOf(layer["_pasteObject"](someToken, somePoint, { hidden: undefined, snap: null })).toEqualTypeOf<
-  Document.ConfiguredSourceForName<"Token">
->();
+expectTypeOf(layer["_pasteObject"](someToken, somePoint)).toEqualTypeOf<Token.Source>();
+expectTypeOf(layer["_pasteObject"](someToken, somePoint, { hidden: true, snap: false })).toEqualTypeOf<Token.Source>();
+expectTypeOf(
+  layer["_pasteObject"](someToken, somePoint, { hidden: undefined, snap: null }),
+).toEqualTypeOf<Token.Source>();
 
 expectTypeOf(layer["_getMovableObjects"]()).toEqualTypeOf<Token.Implementation[]>();
 expectTypeOf(layer["_getMovableObjects"](null, null)).toEqualTypeOf<Token.Implementation[]>();
@@ -71,9 +68,9 @@ expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<Token
 
 // deprecated since v12, until v14
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<1>();
-declare const someCombat: Combat.ConfiguredInstance;
-expectTypeOf(layer.toggleCombat()).toEqualTypeOf<Promise<Combatant.ConfiguredInstance[]>>();
-expectTypeOf(layer.toggleCombat(null, null, { token: null })).toEqualTypeOf<Promise<Combatant.ConfiguredInstance[]>>();
+declare const someCombat: Combat.Implementation;
+expectTypeOf(layer.toggleCombat()).toEqualTypeOf<Promise<Combatant.Implementation[]>>();
+expectTypeOf(layer.toggleCombat(null, null, { token: null })).toEqualTypeOf<Promise<Combatant.Implementation[]>>();
 expectTypeOf(layer.toggleCombat(true, someCombat, { token: someToken })).toEqualTypeOf<
-  Promise<Combatant.ConfiguredInstance[]>
+  Promise<Combatant.Implementation[]>
 >();

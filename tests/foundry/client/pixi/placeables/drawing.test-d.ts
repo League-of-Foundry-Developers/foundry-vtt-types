@@ -54,8 +54,8 @@ expectTypeOf(drawing["_getLineStyle"]()).toEqualTypeOf<Drawing.LineStyleData>();
 expectTypeOf(drawing["_getFillStyle"]()).toEqualTypeOf<Drawing.FillStyleData>();
 expectTypeOf(drawing["_getTextStyle"]()).toEqualTypeOf<PIXI.TextStyle>();
 
-expectTypeOf(drawing.clone()).toEqualTypeOf<Drawing.Object>();
-expectTypeOf(drawing.clear()).toEqualTypeOf<Drawing.Object>();
+expectTypeOf(drawing.clone()).toEqualTypeOf<Drawing.Implementation>();
+expectTypeOf(drawing.clear()).toEqualTypeOf<Drawing.Implementation>();
 
 // @ts-expect-error an object must be passed
 expectTypeOf(drawing["_applyRenderFlags"]()).toBeVoid();

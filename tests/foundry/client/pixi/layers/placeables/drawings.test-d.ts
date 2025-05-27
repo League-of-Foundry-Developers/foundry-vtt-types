@@ -4,16 +4,16 @@ expectTypeOf(DrawingsLayer.documentName).toEqualTypeOf<"Drawing">();
 expectTypeOf(DrawingsLayer.instance).toEqualTypeOf<DrawingsLayer | undefined>();
 expectTypeOf(DrawingsLayer.layerOptions).toEqualTypeOf<DrawingsLayer.LayerOptions>();
 expectTypeOf(DrawingsLayer.layerOptions.name).toEqualTypeOf<"drawings">();
-expectTypeOf(DrawingsLayer.layerOptions.objectClass).toEqualTypeOf<Drawing.ObjectClass>();
+expectTypeOf(DrawingsLayer.layerOptions.objectClass).toEqualTypeOf<Drawing.ImplementationClass>();
 expectTypeOf(DrawingsLayer.DEFAULT_CONFIG_SETTING).toEqualTypeOf<"defaultDrawingConfig">();
 
 const layer = new DrawingsLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<Drawing.ObjectClass>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Drawing.ImplementationClass>();
 expectTypeOf(layer.options).toEqualTypeOf<DrawingsLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"drawings">();
 
-expectTypeOf(layer.graphics).toEqualTypeOf<Collection<Drawing.Object>>();
+expectTypeOf(layer.graphics).toEqualTypeOf<Collection<Drawing.Implementation>>();
 expectTypeOf(layer.hud).toEqualTypeOf<DrawingHUD>();
 expectTypeOf(layer.hookName).toEqualTypeOf<"DrawingsLayer">();
 
@@ -24,7 +24,7 @@ expectTypeOf(layer.configureDefault()).toEqualTypeOf<void>();
 expectTypeOf(layer["_deactivate"]()).toBeVoid();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(layer._getNewDrawingData(somePoint)).toEqualTypeOf<DrawingDocument.ConstructorData>();
+expectTypeOf(layer._getNewDrawingData(somePoint)).toEqualTypeOf<DrawingDocument.CreateData>();
 
 declare const someEvent: PIXI.FederatedEvent;
 declare const somePointerEvent: PointerEvent;

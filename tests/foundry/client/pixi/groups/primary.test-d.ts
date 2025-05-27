@@ -7,7 +7,7 @@ expectTypeOf(PrimaryCanvasGroup.BACKGROUND_ELEVATION).toEqualTypeOf<number>();
 declare const someMesh: SpriteMesh;
 declare const someToken: Token.Implementation;
 declare const someTile: Tile.Implementation;
-declare const someDrawing: Drawing.Object;
+declare const someDrawing: Drawing.Implementation;
 const myPrimaryGroup = new PrimaryCanvasGroup(someMesh);
 
 expectTypeOf(myPrimaryGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor<"primary">>();

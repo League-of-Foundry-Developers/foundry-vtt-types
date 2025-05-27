@@ -1,10 +1,10 @@
 import { expectTypeOf } from "vitest";
 
-declare const someRegion: Region.Object;
+declare const someRegion: Region.Implementation;
 
 const myRM = new foundry.canvas.regions.RegionMesh(someRegion, RegionShader);
 
-expectTypeOf(myRM.region).toEqualTypeOf<Region.Object>();
+expectTypeOf(myRM.region).toEqualTypeOf<Region.Implementation>();
 expectTypeOf(myRM.shader).toEqualTypeOf<AbstractBaseShader>();
 
 expectTypeOf(myRM.blendMode).toExtend<PIXI.BLEND_MODES>();

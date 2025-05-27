@@ -10,7 +10,7 @@ expectTypeOf(scene).toEqualTypeOf<Scene.Implementation>();
 if (!(scene.grid instanceof foundry.grid.BaseGrid)) {
   expectTypeOf(scene.grid).toEqualTypeOf<SchemaField.InitializedData<Scene.Schema>["grid"]>();
 }
-expectTypeOf(scene.dimensions).toEqualTypeOf<SceneDimensions>();
+expectTypeOf(scene.dimensions).toEqualTypeOf<Scene.Dimensions>();
 expectTypeOf(scene.active).toEqualTypeOf<boolean>();
 expectTypeOf(scene.background.src).toEqualTypeOf<string | null | undefined>();
 expectTypeOf(scene.isView).toEqualTypeOf<boolean>();

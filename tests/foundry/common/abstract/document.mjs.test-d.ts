@@ -10,14 +10,14 @@ expectTypeOf(helperConfigAE).toEqualTypeOf<ActiveEffect.Implementation>();
 
 declare const baseActiveEffect: foundry.documents.BaseActiveEffect;
 
-expectTypeOf(baseActiveEffect.toJSON().changes).toEqualTypeOf<ActiveEffect.EffectChangeData[]>();
-expectTypeOf(baseActiveEffect.toObject().changes).toEqualTypeOf<ActiveEffect.EffectChangeData[]>();
-expectTypeOf(baseActiveEffect.toObject(true).changes).toEqualTypeOf<ActiveEffect.EffectChangeData[]>();
-expectTypeOf(baseActiveEffect.toObject(false).changes).toEqualTypeOf<ActiveEffect.EffectChangeData[]>();
+expectTypeOf(baseActiveEffect.toJSON().changes).toEqualTypeOf<ActiveEffect.ChangeData[]>();
+expectTypeOf(baseActiveEffect.toObject().changes).toEqualTypeOf<ActiveEffect.ChangeData[]>();
+expectTypeOf(baseActiveEffect.toObject(true).changes).toEqualTypeOf<ActiveEffect.ChangeData[]>();
+expectTypeOf(baseActiveEffect.toObject(false).changes).toEqualTypeOf<ActiveEffect.ChangeData[]>();
 
 const item = await Item.create({ name: "Some Item", type: "base" });
 if (item) {
-  expectTypeOf(item.toObject(false).effects[0]!.changes).toEqualTypeOf<ActiveEffect.EffectChangeData[]>();
+  expectTypeOf(item.toObject(false).effects[0]!.changes).toEqualTypeOf<ActiveEffect.ChangeData[]>();
   expectTypeOf(item.toObject().effects).toEqualTypeOf<
     foundry.data.fields.SchemaField.SourceData<BaseActiveEffect["schema"]["fields"]>[]
   >();

@@ -26,7 +26,7 @@ expectTypeOf(FilePicker.S3_BUCKETS).toEqualTypeOf<string[] | null>();
 expectTypeOf(FilePicker.favorites).toEqualTypeOf<Record<string, FilePicker.FavoriteFolder>>();
 expectTypeOf(FilePicker.setFavorite("", "")).toEqualTypeOf<Promise<void>>();
 expectTypeOf(FilePicker.setFavorite("", "")).toEqualTypeOf<Promise<void>>();
-expectTypeOf(FilePicker.defaultOptions).toEqualTypeOf<FilePickerOptions>();
+expectTypeOf(FilePicker.defaultOptions).toEqualTypeOf<FilePicker.Options>();
 expectTypeOf(FilePicker.matchS3URL("")).toEqualTypeOf<RegExpMatchArray | null>();
 
 expectTypeOf(filepicker.title).toEqualTypeOf<string>();
