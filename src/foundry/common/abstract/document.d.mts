@@ -1303,7 +1303,7 @@ declare namespace Document {
 
   // TODO(LukeAbby): Look into why removing the conform causes an issue in `EmbeddedCollectionDeltaField`
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
-    FixedInstanceType<ConfiguredDocumentClass[NameFor<ConcreteDocument>]>,
+    ImplementationFor<NameFor<ConcreteDocument>>,
     Document.Any
     // TODO(LukeAbby): Look into if there's a way to do this without causing circular loops.
     // FixedInstanceType<ConfigurationFailure[Name]>
