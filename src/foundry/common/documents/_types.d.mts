@@ -15,7 +15,7 @@ type EffectDurationData = ActiveEffect.DurationData;
 
 type EffectChangeData = ActiveEffect.ChangeData;
 
-type AmbientSoundEffect  = AmbientSoundDocument.Effect;
+type AmbientSoundEffect = AmbientSoundDocument.Effect;
 
 type CardData = Card.InitializedData;
 
