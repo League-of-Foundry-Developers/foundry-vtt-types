@@ -1938,6 +1938,12 @@ declare namespace StringField {
   interface GetChoicesOptions extends InexactPartial<_GetChoicesOptions> {
     choices: { readonly [K: string]: string } | { readonly [K: number]: string } | ReadonlyArray<number | string>;
   }
+
+  interface PrepareChoiceConfig {
+    choices:
+  }
+
+  type StringChoicesObjectOrArray = { readonly [K: string]: string } | { readonly [K: number]: string } | ReadonlyArray<number | string>
 }
 
 /**
