@@ -4,15 +4,10 @@ import TokenRing = foundry.canvas.tokens.TokenRing;
 
 expectTypeOf(TokenRing.effects).toExtend<Record<keyof TokenRing.Effects, TokenRing.EFFECTS>>();
 
-if (game.ready) {
-  expectTypeOf(TokenRing.initialized).toBeBoolean();
-  expectTypeOf(TokenRing.tokenRingSamplerShader).toEqualTypeOf<PrimaryBaseSamplerShader.AnyConstructor>();
-} else {
-  // @ts-expect-error This would pass if `game.ready` narrowing worked on things other than `game` itself
-  expectTypeOf(TokenRing.initialized).toBeNull();
-  // @ts-expect-error This would pass if `game.ready` narrowing worked on things other than `game` itself
-  expectTypeOf(TokenRing.tokenRingSamplerShader).toBeUndefined();
-}
+// Ideally `TokenRing.initialized` could be used to narrow `TokenRing` but that would require
+// turning `TokenRing` into a discriminated union which would make it impossible to extend.
+expectTypeOf(TokenRing.initialized).toEqualTypeOf<true | null>();
+expectTypeOf(TokenRing.tokenRingSamplerShader).toEqualTypeOf<PrimaryBaseSamplerShader.AnyConstructor | undefined>();
 
 expectTypeOf(TokenRing.baseTexture).toEqualTypeOf<PIXI.BaseTexture | undefined>();
 expectTypeOf(TokenRing.texturesData).toEqualTypeOf<Record<string, TokenRing.TextureData> | undefined>();
@@ -35,15 +30,9 @@ const myTR = new TokenRing(someToken);
 expectTypeOf(myTR.ringName).toEqualTypeOf<string | undefined>();
 expectTypeOf(myTR.bkgName).toEqualTypeOf<string | undefined>();
 
-if (game.ready) {
-  expectTypeOf(myTR.ringUVs).toEqualTypeOf<Float32Array>();
-  expectTypeOf(myTR.bkgUVs).toEqualTypeOf<Float32Array>();
-} else {
-  // @ts-expect-error This would pass if `game.ready` narrowing worked on things other than `game` itself
-  expectTypeOf(myTR.ringUVs).toBeUndefined();
-  // @ts-expect-error This would pass if `game.ready` narrowing worked on things other than `game` itself
-  expectTypeOf(myTR.bkgUVs).toBeUndefined();
-}
+// Ideally these would narrow based upon `initialized`.
+expectTypeOf(myTR.ringUVs).toEqualTypeOf<Float32Array | undefined>();
+expectTypeOf(myTR.bkgUVs).toEqualTypeOf<Float32Array | undefined>();
 
 expectTypeOf(myTR.ringColorLittleEndian).toBeNumber();
 expectTypeOf(myTR.bkgColorLittleEndian).toBeNumber();

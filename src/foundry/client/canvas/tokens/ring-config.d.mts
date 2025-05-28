@@ -1,4 +1,4 @@
-import type { InitializedOn } from "#utils";
+import type { InitializedOn, RequiredProps } from "#utils";
 import type DynamicRingData from "./ring-data.d.mts";
 
 /**
@@ -232,6 +232,9 @@ declare namespace TokenRingConfig {
 
   interface SourceCoreRings extends Record<CoreRingIDs, SourceCoreRingData> {}
 
+  interface MaybeCoreRings
+    extends Record<CoreRingIDs, RequiredProps<Partial<SourceCoreRingData>, "id" | "label" | "spritesheet">> {}
+
   /**
    * Core token rings used in Foundry VTT.
    * Each key is a string identifier for a ring, and the value is an object containing the ring's data.
@@ -242,7 +245,7 @@ declare namespace TokenRingConfig {
    * ```
    * after {@link TokenRingConfig.initialize | `TokenRingConfig#initialize`} has been called, which happens between the `setup` and `ready` hooks
    */
-  type CoreTokenRings = InitializedOn<SourceCoreRings, "ready", InitialCoreRings>;
+  type CoreTokenRings = InitializedOn<SourceCoreRings, "ready", MaybeCoreRings>;
 }
 
 declare abstract class AnyTokenRingConfig extends TokenRingConfig {

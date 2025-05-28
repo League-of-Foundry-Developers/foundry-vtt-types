@@ -1145,7 +1145,7 @@ export type InitializedOn<
   InitializedTo,
   InitializedOnHook extends InitializationHook,
   BeforeInitialization = InitializedTo | undefined,
-> = Extract<HooksRan<ValidHooksRan>, InitializedOnHook> extends never ? InitializedTo : BeforeInitialization;
+> = [InitializedOnHook] extends [HooksRan<ValidHooksRan>] ? InitializedTo : BeforeInitialization;
 
 /**
  * Returns the inputted type. This may seem like a useless type but it exists due to limitations

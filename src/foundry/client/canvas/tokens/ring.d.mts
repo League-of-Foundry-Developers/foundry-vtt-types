@@ -15,7 +15,7 @@ declare class TokenRing {
    * Is the token rings framework enabled? Will be `null` if the system hasn't initialized yet.
    * @remarks {@link TokenRing.initialize | `CONFIG.Token.ring.ringClass.initialize`} is called inside {@linkcode Canvas.initialize}, which is called between the `setup` and `ready` hooks.
    */
-  static get initialized(): InitializedOn<true, "ready", null>;
+  static get initialized(): InitializedOn<true, "ready", true | null>;
 
   /**
    * Token Rings sprite sheet base texture.
@@ -33,7 +33,7 @@ declare class TokenRing {
    * The token ring shader class definition.
    * @remarks Set in {@link TokenRing.initialize | `initialize`}
    */
-  static tokenRingSamplerShader: InitializedOn<DynamicRingData["framework"]["shaderClass"], "ready", undefined>;
+  static tokenRingSamplerShader: InitializedOn<DynamicRingData["framework"]["shaderClass"], "ready">;
 
   /** Initialize the Token Rings system, registering the batch plugin and patching `PrimaryCanvasGroup#addToken`. */
   static initialize(): void;
@@ -70,9 +70,9 @@ declare class TokenRing {
    */
   bkgName: TokenRing.RingData["bkgName"];
 
-  ringUVs: InitializedOn<Float32Array, "ready", undefined>;
+  ringUVs: InitializedOn<Float32Array, "ready">;
 
-  bkgUVs: InitializedOn<Float32Array, "ready", undefined>;
+  bkgUVs: InitializedOn<Float32Array, "ready">;
 
   /**
    * Little endian format =\> BBGGRR

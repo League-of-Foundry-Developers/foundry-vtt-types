@@ -3,12 +3,7 @@ import TokenRingConfig = foundry.canvas.tokens.TokenRingConfig;
 import TokenRing = foundry.canvas.tokens.TokenRing;
 import DynamicRingData = foundry.canvas.tokens.DynamicRingData;
 
-if (game.ready) {
-  expectTypeOf(TokenRingConfig.CORE_TOKEN_RINGS).toEqualTypeOf<TokenRingConfig.SourceCoreRings>;
-} else {
-  // @ts-expect-error This would pass if `game.ready` narrowing worked on things other than `game` itself
-  expectTypeOf(TokenRingConfig.CORE_TOKEN_RINGS).toEqualTypeOf<TokenRingConfig.InitialCoreRings>();
-}
+expectTypeOf(TokenRingConfig.CORE_TOKEN_RINGS).toEqualTypeOf<TokenRingConfig.MaybeCoreRings>;
 
 expectTypeOf(TokenRingConfig.CORE_TOKEN_RINGS_FIT_MODES).toEqualTypeOf<TokenRingConfig.CoreTokenRingsFitModes>();
 expectTypeOf(TokenRingConfig.initialize()).toBeVoid();

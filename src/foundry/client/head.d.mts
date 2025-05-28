@@ -2,7 +2,7 @@ import type { EarlierHook, FixedInstanceType, InitializationHook } from "#utils"
 
 type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationHook>;
 
-type _UninitializedGame = { [K in keyof Game]?: never };
+type _UninitializedGame = { [K in keyof foundry.Game]?: never };
 
 interface UninitializedGame extends _UninitializedGame {}
 
