@@ -14,6 +14,40 @@ import type CompendiumArt from "#client/helpers/compendium-art.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
 
+export {};
+
+type PreCreateDocumentHook = {
+  [K in Document.Type as `preCreate${K}`]: Hooks.PreCreateDocument<Document.ImplementationClassFor<K>>;
+};
+
+type CreateDocumentHook = {
+  [K in Document.Type as `create${K}`]: Hooks.CreateDocument<Document.ImplementationClassFor<K>>;
+};
+
+type PreUpdateDocumentHook = {
+  [K in Document.Type as `preUpdate${K}`]: Hooks.PreCreateDocument<Document.ImplementationClassFor<K>>;
+};
+
+type UpdateDocumentHook = {
+  [K in Document.Type as `update${K}`]: Hooks.UpdateDocument<Document.ImplementationClassFor<K>>;
+};
+
+type PreDeleteDocumentHook = {
+  [K in Document.Type as `preDelete${K}`]: Hooks.PreDeleteDocument<Document.ImplementationClassFor<K>>;
+};
+
+type DeleteDocumentHook = {
+  [K in Document.Type as `delete${K}`]: Hooks.DeleteDocument<Document.ImplementationClassFor<K>>;
+};
+
+interface DocumentHooks
+  extends PreCreateDocumentHook,
+    CreateDocumentHook,
+    PreUpdateDocumentHook,
+    UpdateDocumentHook,
+    PreDeleteDocumentHook,
+    DeleteDocumentHook {}
+
 declare global {
   /**
    * This namespace contains typescript specific type definitions for the {@linkcode Hooks} callback functions. It contains an
@@ -76,7 +110,7 @@ declare global {
       extension: string;
     }
 
-    interface StaticCallbacks {
+    interface StaticCallbacks extends DocumentHooks {
       /** Core lifecycle */
 
       /**
@@ -1004,10 +1038,30 @@ declare global {
      */
     type PreCreateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      data: ConstructorParameters<D>[0],
+      data: Document.CreateDataFor<D>,
       options: Document.Database.PreCreateOptions<DatabaseCreateOperation>,
       userId: string,
     ) => boolean | void;
+
+    /**
+     * A hook event that fires for every embedded Document type after conclusion of a creation workflow.
+     * Substitute the Document name in the hook event to target a specific type, for example "createToken".
+     * This hook fires for all connected clients after the creation has been processed.
+     *
+     * @param document - The new Document instance which has been created
+     * @param options  - Additional options which modified the creation request
+     * @param userId   - The ID of the User who triggered the creation workflow
+     * @template D    - the type of the Document constructor
+     * @remarks The name for this hook is dynamically created by joining "create" and the type name of the Document.
+     * @remarks This is called by {@linkcode Hooks.callAll}.
+     * @see {@link ClientDatabaseBackend._postCreateDocumentCallbacks | `ClientDatabaseBackend#_postCreateDocumentCallbacks`}
+     * @see {@link TokenDocument._onUpdateTokenActor | `TokenDocument#_onUpdateTokenActor`}
+     */
+    type CreateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
+      document: Document.ToConfiguredInstance<D>,
+      options: Document.Database.CreateOptionsFor<Document.NameFor<D>>,
+      userId: string,
+    ) => void;
 
     /**
      * A hook event that fires for every Document type before execution of an update workflow. Substitute the Document
@@ -1030,12 +1084,32 @@ declare global {
      */
     type PreUpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      changed: DeepPartial<
-        D extends abstract new (arg0: infer Data extends object, ...args: infer _1) => unknown ? Data : never
-      >,
+      changed: Document.UpdateDataFor<D>,
       options: Document.Database.PreUpdateOptions<DatabaseUpdateOperation>,
       userId: string,
     ) => boolean | void;
+
+    /**
+     * A hook event that fires for every Document type after conclusion of an update workflow.
+     * Substitute the Document name in the hook event to target a specific Document type, for example "updateActor".
+     * This hook fires for all connected clients after the update has been processed.
+     *
+     * @param document - The existing Document which was updated
+     * @param change   - Differential data that was used used to update the document
+     * @param options  - Additional options which modified the update request
+     * @param userId   - The ID of the User who triggered the update workflow
+     * @template D    - the type of the Document constructor
+     * @remarks The name for this hook is dynamically created by joining "update" with the type name of the Document.
+     * @remarks This is called by {@linkcode Hooks.callAll}.
+     * @see {@link ClientDatabaseBackend._postUpdateDocumentCallbacks | `ClientDatabaseBackend#_postUpdateDocumentCallbacks`}
+     * @see {@link TokenDocument._onUpdateTokenActor | `TokenDocument#_onUpdateTokenActor`}
+     */
+    type UpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
+      document: Document.ToConfiguredInstance<D>,
+      change: Document.UpdateDataFor<D>,
+      options: Document.Database.UpdateOptionsFor<Document.NameFor<D>>,
+      userId: string,
+    ) => void;
 
     /**
      * A hook event that fires for every Document type before execution of a deletion workflow. Substitute the
@@ -1062,50 +1136,6 @@ declare global {
     ) => boolean | void;
 
     /**
-     * A hook event that fires for every embedded Document type after conclusion of a creation workflow.
-     * Substitute the Document name in the hook event to target a specific type, for example "createToken".
-     * This hook fires for all connected clients after the creation has been processed.
-     *
-     * @param document - The new Document instance which has been created
-     * @param options  - Additional options which modified the creation request
-     * @param userId   - The ID of the User who triggered the creation workflow
-     * @template D    - the type of the Document constructor
-     * @remarks The name for this hook is dynamically created by joining "create" and the type name of the Document.
-     * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link ClientDatabaseBackend._postCreateDocumentCallbacks | `ClientDatabaseBackend#_postCreateDocumentCallbacks`}
-     * @see {@link TokenDocument._onUpdateTokenActor | `TokenDocument#_onUpdateTokenActor`}
-     */
-    type CreateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
-      document: Document.ToConfiguredInstance<D>,
-      options: Document.Database.CreateOptions<DatabaseCreateOperation>,
-      userId: string,
-    ) => void;
-
-    /**
-     * A hook event that fires for every Document type after conclusion of an update workflow.
-     * Substitute the Document name in the hook event to target a specific Document type, for example "updateActor".
-     * This hook fires for all connected clients after the update has been processed.
-     *
-     * @param document - The existing Document which was updated
-     * @param change   - Differential data that was used used to update the document
-     * @param options  - Additional options which modified the update request
-     * @param userId   - The ID of the User who triggered the update workflow
-     * @template D    - the type of the Document constructor
-     * @remarks The name for this hook is dynamically created by joining "update" with the type name of the Document.
-     * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link ClientDatabaseBackend._postUpdateDocumentCallbacks | `ClientDatabaseBackend#_postUpdateDocumentCallbacks`}
-     * @see {@link TokenDocument._onUpdateTokenActor | `TokenDocument#_onUpdateTokenActor`}
-     */
-    type UpdateDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
-      document: Document.ToConfiguredInstance<D>,
-      change: DeepPartial<
-        D extends abstract new (arg0: infer Data extends object, ...args: infer _1) => unknown ? Data : never
-      >,
-      options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
-      userId: string,
-    ) => void;
-
-    /**
      * A hook event that fires for every Document type after conclusion of an deletion workflow.
      * Substitute the Document name in the hook event to target a specific Document type, for example "deleteActor".
      * This hook fires for all connected clients after the deletion has been processed.
@@ -1121,7 +1151,7 @@ declare global {
      */
     type DeleteDocument<D extends Document.AnyConstructor = Document.AnyConstructor> = (
       document: Document.ToConfiguredInstance<D>,
-      options: Document.Database.DeleteOptions<DatabaseDeleteOperation>,
+      options: Document.Database.DeleteOptionsFor<Document.NameFor<D>>,
       userId: string,
     ) => void;
 
