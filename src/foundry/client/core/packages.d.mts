@@ -5,6 +5,7 @@ import type AdditionalTypesField from "#common/packages/sub-types.d.mts";
 import type DataModel from "#common/abstract/data.mjs";
 
 import fields = foundry.data.fields;
+import Game = foundry.Game;
 
 declare class ClientPackage {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -249,7 +250,7 @@ declare global {
      * @deprecated since v12, will be removed in v14
      * @remarks `"System#template is deprecated in favor of System#documentTypes"`
      */
-    get template(): foundry.Game["model"];
+    get template(): Game["model"];
   }
 
   namespace System {

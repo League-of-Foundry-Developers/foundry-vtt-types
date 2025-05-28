@@ -7,6 +7,8 @@ import type {
   DatabaseDeleteOperation,
 } from "#common/abstract/_types.d.mts";
 
+import Game = foundry.Game;
+
 /**
  * The client-side database backend implementation which handles Document modification operations.
  */
@@ -39,7 +41,7 @@ declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
    * Activate the Socket event listeners used to receive responses from events which modify database documents
    * @param socket - The active game socket
    */
-  activateSocketListeners(socket: foundry.Game["socket"]): void;
+  activateSocketListeners(socket: Game["socket"]): void;
 
   override getFlagScopes(): string[];
 

@@ -1,7 +1,9 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
-const view = ui.webrtc as CameraViews;
+import Game = foundry.Game;
+
+const view = ui.webrtc!;
 
 expectTypeOf(CameraViews.defaultOptions).toEqualTypeOf<Application.Options>();
 expectTypeOf(view.render(true)).toEqualTypeOf<CameraViews>();

@@ -1,5 +1,8 @@
 import type { GetDataReturnType, MaybePromise, Identity } from "#utils";
 
+import AVMaster = foundry.av.AVMaster;
+import AVSettings = foundry.av.AVSettings;
+
 declare global {
   /**
    * Audio/Video Conferencing Configuration Sheet

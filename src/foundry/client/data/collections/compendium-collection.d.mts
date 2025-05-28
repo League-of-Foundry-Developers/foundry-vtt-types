@@ -1,6 +1,8 @@
 import type { DeepPartial, EmptyObject, InexactPartial, SimpleMerge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 
+import Game = foundry.Game;
+
 declare global {
   /**
    * A collection of Document objects contained within a specific compendium pack.
