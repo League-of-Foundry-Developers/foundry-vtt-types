@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 
 expectTypeOf(InterfaceCanvasGroup.groupName).toEqualTypeOf<"interface">();
 
-declare const someDrawing: Drawing.Object;
+declare const someDrawing: Drawing.Implementation;
 const myInterfaceGroup = new InterfaceCanvasGroup();
 
 expectTypeOf(myInterfaceGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor<"interface">>();

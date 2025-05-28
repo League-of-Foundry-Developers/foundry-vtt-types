@@ -44,7 +44,7 @@ expectTypeOf(template["_destroy"]({ baseTexture: true, children: true, texture: 
 expectTypeOf(template["_destroy"](true)).toBeVoid();
 expectTypeOf(template["_destroy"](undefined)).toBeVoid();
 
-expectTypeOf(template.clear()).toEqualTypeOf<MeasuredTemplate.Object>();
+expectTypeOf(template.clear()).toEqualTypeOf<MeasuredTemplate.Implementation>();
 
 // @ts-expect-error an object must be passed
 expectTypeOf(template["_applyRenderFlags"]()).toBeVoid();
@@ -78,7 +78,7 @@ expectTypeOf(template.highlightGrid()).toBeVoid();
 expectTypeOf(template["_getGridHighlightShape"]()).toEqualTypeOf<PIXI.Circle | PIXI.Rectangle | PIXI.Polygon>();
 expectTypeOf(template["_getGridHighlightPositions"]()).toEqualTypeOf<Canvas.Point[]>();
 
-expectTypeOf(template.rotate(52, 3)).toEqualTypeOf<Promise<MeasuredTemplate.Object>>();
+expectTypeOf(template.rotate(52, 3)).toEqualTypeOf<Promise<MeasuredTemplate.Implementation>>();
 
 expectTypeOf(
   template["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),

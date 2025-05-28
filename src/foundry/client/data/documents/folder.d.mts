@@ -66,7 +66,7 @@ declare global {
      * {@linkcode Playlist}, {@linkcode RollTable}, {@linkcode Cards}, or a
      * {@linkcode Macro}
      */
-    type SubType = Game.Model.TypeNames<Name>;
+    type SubType = foundry.Game.Model.TypeNames<Name>;
 
     /**
      * @deprecated `Folder` does not have `system` and therefore there is no way for a user to

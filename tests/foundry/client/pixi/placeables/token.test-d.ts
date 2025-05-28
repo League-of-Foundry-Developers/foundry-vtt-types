@@ -400,7 +400,7 @@ expectTypeOf(token.getSnappedPosition({ x: 5, y: 7 })).toEqualTypeOf<Canvas.Poin
 expectTypeOf(token.getSnappedPosition(doc)).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(token.getSnappedPosition(null)).toEqualTypeOf<Canvas.Point>();
 
-declare const someRegion: Region.Object;
+declare const someRegion: Region.Implementation;
 expectTypeOf(token.testInsideRegion(someRegion)).toBeBoolean();
 // @ts-expect-error If `position` is non-nullish, it must contain `{x, y}` data
 expectTypeOf(token.testInsideRegion(someRegion), {}).toBeBoolean();

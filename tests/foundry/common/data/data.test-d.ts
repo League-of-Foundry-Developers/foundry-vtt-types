@@ -38,7 +38,7 @@ expectTypeOf(myShape.points).toEqualTypeOf<Array<number | undefined>>();
 /******************************************************************/
 
 // BaseShapeData, RectangleShapeData, CircleShapeData, EllipseShapeData, and PolygonShapeData
-// are tested in `tests/foundry/client-esm/canvas/regions/shape.test-d.ts`
+// are tested in `tests/foundry/client/canvas/regions/shape.test-d.ts`
 
 /******************************************************************/
 

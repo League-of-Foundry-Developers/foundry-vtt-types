@@ -4,6 +4,7 @@ import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseActor, BaseUser } from "#common/documents/_module.d.mts";
 
+import AVSettings = foundry.av.AVSettings;
 import fields = foundry.data.fields;
 
 declare global {

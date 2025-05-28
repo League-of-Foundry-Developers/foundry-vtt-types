@@ -1,8 +1,10 @@
 import type * as CONST from "#common/constants.d.mts";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "#utils";
-import type BaseLightSource from "#client-esm/canvas/sources/base-light-source.d.mts";
-import type RenderedEffectSource from "#client-esm/canvas/sources/rendered-effect-source.d.mts";
+import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
+import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
+
+import SimplePeerAVClient = foundry.av.clients.SimplePeerAVClient;
 
 declare global {
   namespace CONFIG {

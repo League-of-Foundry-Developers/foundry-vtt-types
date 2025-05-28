@@ -3,7 +3,7 @@ import type { Container, DisplayObject } from "pixi.js";
 import type Document from "../../../../../../src/foundry/common/abstract/document.d.mts";
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
-type CAL = AmbientLight.Object;
+type CAL = AmbientLight.Implementation;
 type CALDoc = AmbientLightDocument.Implementation;
 
 class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
@@ -13,12 +13,12 @@ class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
     });
   }
 
-  override options: PlaceablesLayer.LayerOptions<AmbientLight.ObjectClass> = SomeLightLayer.layerOptions;
+  override options: PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass> = SomeLightLayer.layerOptions;
 }
 
 expectTypeOf(SomeLightLayer.instance).toEqualTypeOf<CanvasLayer | Container<DisplayObject> | undefined>();
 // The following fails as the static `layerOptions` can't access the `DocumentName` type param
-// expectTypeOf(SomeLightLayer.layerOptions).toEqualTypeOf<PlaceablesLayer.LayerOptions<AmbientLight.ObjectClass>>();
+// expectTypeOf(SomeLightLayer.layerOptions).toEqualTypeOf<PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass>>();
 
 expectTypeOf(SomeLightLayer.layerOptions.objectClass).toEqualTypeOf<any>(); // TODO: Can this be typed to Document.AnyConstructor?
 expectTypeOf(PlaceablesLayer.documentName).toEqualTypeOf<
@@ -34,19 +34,15 @@ const firstHistoryEntry = layer.history[0]!;
 if (firstHistoryEntry.type === "create") {
   expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<Array<{ _id: string }>>();
 } else if (firstHistoryEntry.type === "update") {
-  expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<
-    Array<Document.UpdateDataFor<AmbientLightDocument.ImplementationClass> & { _id: string }>
-  >();
+  expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<Array<AmbientLightDocument.UpdateData & { _id: string }>>();
 } else {
-  expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<
-    Array<Document.ConstructorDataFor<AmbientLightDocument.ImplementationClass> & { _id: string }>
-  >();
+  expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<Array<AmbientLightDocument.UpdateData & { _id: string }>>();
 }
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<AmbientLight.ObjectClass>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<AmbientLight.ImplementationClass>();
 expectTypeOf(layer.objects).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.preview).toEqualTypeOf<PIXI.Container | null>();
-expectTypeOf(layer.quadtree).toExtend<CanvasQuadtree<AmbientLight.Object> | null>();
+expectTypeOf(layer.quadtree).toExtend<CanvasQuadtree<AmbientLight.Implementation> | null>();
 expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<CALDoc, Scene.Implementation> | null>();
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<number>();
 expectTypeOf(layer.hud).toEqualTypeOf<BasePlaceableHUD<CAL> | null>();

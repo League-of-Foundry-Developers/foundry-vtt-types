@@ -6,8 +6,8 @@ const journalSheet = new JournalSheet(journalEntry);
 
 expectTypeOf(journalSheet.object).toEqualTypeOf<JournalEntry.Implementation>();
 expectTypeOf(journalSheet.document).toEqualTypeOf<JournalEntry.Implementation>();
-expectTypeOf(JournalSheet.defaultOptions).toEqualTypeOf<JournalSheetOptions>();
-expectTypeOf(journalSheet.options).toEqualTypeOf<JournalSheetOptions>();
+expectTypeOf(JournalSheet.defaultOptions).toEqualTypeOf<JournalSheet.Options>();
+expectTypeOf(journalSheet.options).toEqualTypeOf<JournalSheet.Options>();
 expectTypeOf(journalSheet.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(journalSheet.render(true)).toEqualTypeOf<JournalSheet>();
 

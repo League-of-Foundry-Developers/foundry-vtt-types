@@ -90,8 +90,7 @@ if (game.ready) {
 }
 
 // Game model
-type ItemType = Game.Model.TypeNames<"Item">;
-expectTypeOf<ItemType>().toEqualTypeOf<"weapon" | "armor" | "base" | Document.ModuleSubtype>();
+expectTypeOf<Item.SubType>().toEqualTypeOf<"weapon" | "armor" | "base" | Document.ModuleSubtype>();
 expectTypeOf<Document.ImplementationClassFor<"Item">>().toEqualTypeOf<Item.ImplementationClass>();
 expectTypeOf(game.documentTypes!.Item).toEqualTypeOf<Array<"weapon" | "armor" | "base" | Document.ModuleSubtype>>();
 

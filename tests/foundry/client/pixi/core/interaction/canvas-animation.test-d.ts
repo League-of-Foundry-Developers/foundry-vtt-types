@@ -21,4 +21,4 @@ expectTypeOf(
     },
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
-expectTypeOf(CanvasAnimation.getAnimation("darknessShift")).toEqualTypeOf<CanvasAnimationData | undefined>;
+expectTypeOf(CanvasAnimation.getAnimation("darknessShift")).toEqualTypeOf<CanvasAnimation.AnimationData | undefined>;

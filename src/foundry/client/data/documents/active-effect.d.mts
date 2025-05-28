@@ -73,7 +73,7 @@ declare global {
      * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
      * {@linkcode DataConfig}.
      */
-    type SubType = Game.Model.TypeNames<"ActiveEffect">;
+    type SubType = foundry.Game.Model.TypeNames<"ActiveEffect">;
 
     /**
      * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes

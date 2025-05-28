@@ -2,6 +2,9 @@ import type { DeepPartial, MaybeEmpty } from "#utils";
 import type { fields } from "../foundry/common/data/_module.d.mts";
 import type Document from "../foundry/common/abstract/document.d.mts";
 
+import AVSettings = foundry.av.AVSettings;
+import Game = foundry.Game;
+
 /**
  * Some global variables (such as {@linkcode game}) are only initialized after certain events have happened during the
  * initialization of Foundry VTT. For that reason, the correct types for these variables include the types for the

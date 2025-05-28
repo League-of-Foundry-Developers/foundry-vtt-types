@@ -1,5 +1,5 @@
 import type { AnyObject, InexactPartial, Merge } from "#utils";
-import type { documents } from "#client-esm/client.d.mts";
+import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { LightData, TextureData } from "#common/data/data.mjs";
@@ -1170,7 +1170,7 @@ declare global {
     override clone<Save extends boolean | null | undefined = false>(
       data?: Scene.CreateData,
       context?: Document.CloneContext<Save>,
-    ): Save extends true ? Promise<this> : this;
+    ): Document.Clone<this, Save>;
 
     override reset(): void;
 

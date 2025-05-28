@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type PointDarknessSource from "../../../../../src/foundry/client-esm/canvas/sources/point-darkness-source.d.mts";
-import type PointLightSource from "../../../../../src/foundry/client-esm/canvas/sources/point-light-source.d.mts";
+import type PointDarknessSource from "../../../../../src/foundry/client/canvas/sources/point-darkness-source.d.mts";
+import type PointLightSource from "../../../../../src/foundry/client/canvas/sources/point-light-source.d.mts";
 
 expectTypeOf(AmbientLight.embeddedName).toEqualTypeOf<"AmbientLight">();
 expectTypeOf(AmbientLight.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
@@ -38,7 +38,7 @@ expectTypeOf(light["_destroy"](undefined)).toBeVoid();
 expectTypeOf(light["_draw"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(light["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(light.clear()).toEqualTypeOf<AmbientLight.Object>();
+expectTypeOf(light.clear()).toEqualTypeOf<AmbientLight.Implementation>();
 
 // @ts-expect-error an object must be passed
 expectTypeOf(light["_applyRenderFlags"]()).toBeVoid();

@@ -1,10 +1,11 @@
 import type { FixedInstanceType, Mixin } from "#utils";
-import type { CONST } from "#client-esm/client.d.mts";
+import type { CONST } from "#client/client.d.mts";
 import type BasePackage from "#common/packages/base-package.d.mts";
 import type AdditionalTypesField from "#common/packages/sub-types.d.mts";
 import type DataModel from "#common/abstract/data.mjs";
 
 import fields = foundry.data.fields;
+import Game = foundry.Game;
 
 declare class ClientPackage {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

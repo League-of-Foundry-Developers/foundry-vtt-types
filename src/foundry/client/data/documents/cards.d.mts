@@ -3,7 +3,7 @@ import type { AnyObject, InexactPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseCards from "#common/documents/cards.d.mts";
-import type { documents } from "#client-esm/client.d.mts";
+import type { documents } from "#client/client.d.mts";
 
 import fields = foundry.data.fields;
 
@@ -76,7 +76,7 @@ declare global {
      * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
      * {@linkcode DataConfig}.
      */
-    type SubType = Game.Model.TypeNames<"Cards">;
+    type SubType = foundry.Game.Model.TypeNames<"Cards">;
 
     /**
      * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes

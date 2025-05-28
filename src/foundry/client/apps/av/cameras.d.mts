@@ -1,5 +1,8 @@
 import type { GetDataReturnType, MaybePromise, Identity } from "#utils";
 
+import AVSettings = foundry.av.AVSettings;
+import Game = foundry.Game;
+
 declare global {
   /**
    * The Camera UI View that displays all the camera feeds as individual video elements.

@@ -5,8 +5,8 @@ declare const drawing: DrawingDocument.Implementation;
 const drawingConfig = new DrawingConfig(drawing);
 
 expectTypeOf(drawingConfig.object).toEqualTypeOf<DrawingDocument.Implementation>();
-expectTypeOf(DrawingConfig.defaultOptions).toEqualTypeOf<DrawingConfigOptions>();
-expectTypeOf(drawingConfig.options).toEqualTypeOf<DrawingConfigOptions>();
+expectTypeOf(DrawingConfig.defaultOptions).toEqualTypeOf<DrawingConfig.Options>();
+expectTypeOf(drawingConfig.options).toEqualTypeOf<DrawingConfig.Options>();
 expectTypeOf(drawingConfig.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(drawingConfig.render(true)).toEqualTypeOf<DrawingConfig>();
 

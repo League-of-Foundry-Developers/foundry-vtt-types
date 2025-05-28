@@ -1,6 +1,8 @@
 import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 
+import Game = foundry.Game;
+
 declare global {
   /**
    * The singleton collection of FogExploration documents which exist within the active World.

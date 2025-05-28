@@ -4,11 +4,11 @@ expectTypeOf(RegionLayer.documentName).toEqualTypeOf<"Region">();
 expectTypeOf(RegionLayer.instance).toEqualTypeOf<RegionLayer | undefined>();
 expectTypeOf(RegionLayer.layerOptions).toEqualTypeOf<RegionLayer.LayerOptions>();
 expectTypeOf(RegionLayer.layerOptions.name).toEqualTypeOf<"regions">();
-expectTypeOf(RegionLayer.layerOptions.objectClass).toEqualTypeOf<Region.ObjectClass>();
+expectTypeOf(RegionLayer.layerOptions.objectClass).toEqualTypeOf<Region.ImplementationClass>();
 
 const layer = new RegionLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<Region.ObjectClass>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<Region.ImplementationClass>();
 expectTypeOf(layer.options).toEqualTypeOf<RegionLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"regions">();
 

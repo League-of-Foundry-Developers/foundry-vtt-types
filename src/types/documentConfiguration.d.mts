@@ -1,7 +1,7 @@
 // This file pertains to setting up documents, including defaults. For this reason there's a lot of references to `SomeDocument` instead of `SomeDocument.implementation`.
 /* eslint-disable @typescript-eslint/no-restricted-types, no-restricted-syntax */
 
-import type { documents } from "../foundry/client-esm/client.d.mts";
+import type { documents } from "../foundry/client/client.d.mts";
 import type { Document } from "../foundry/common/abstract/_module.d.mts";
 import type { InterfaceToObject, MakeConform, MustConform, FixedInstanceType } from "#utils";
 

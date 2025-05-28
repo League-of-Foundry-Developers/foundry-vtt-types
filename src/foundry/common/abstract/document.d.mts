@@ -279,10 +279,10 @@ declare abstract class Document<
    * @returns The cloned Document instance
    */
   // data: not null (property access), context: not null (destructured)
-  override clone<Save extends boolean | null | undefined = false>(
+  override clone<Save extends boolean | null | undefined = undefined>(
     data?: SchemaField.UpdateData<Schema>,
     context?: Document.CloneContext<Save>,
-  ): Save extends true ? Promise<this> : this;
+  ): Document.Clone<this, Save>;
 
   /**
    * For Documents which include game system data, migrate the system data object to conform to its latest data model.
@@ -1303,7 +1303,7 @@ declare namespace Document {
 
   // TODO(LukeAbby): Look into why removing the conform causes an issue in `EmbeddedCollectionDeltaField`
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
-    FixedInstanceType<ConfiguredDocumentClass[NameFor<ConcreteDocument>]>,
+    ImplementationFor<NameFor<ConcreteDocument>>,
     Document.Any
     // TODO(LukeAbby): Look into if there's a way to do this without causing circular loops.
     // FixedInstanceType<ConfigurationFailure[Name]>
@@ -2262,6 +2262,10 @@ declare namespace Document {
         userId: string,
       ]
     : never;
+
+  type Clone<This extends Document.Any, Save extends boolean | null | undefined> = Save extends true
+    ? Promise<This>
+    : This;
 
   /**
    * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.

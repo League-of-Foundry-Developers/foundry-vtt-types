@@ -9,7 +9,7 @@ declare class DirectoryCollection {
 
   // Note(LukeAbby): This isn't really a property on this class but rather it exists on `Collection`.
   // However since this is only used when merged with a Collection class, it's fine to define it here.
-  contents: readonly unknown[];
+  contents: unknown;
 
   /**
    * Reference the set of Folders which contain documents in this collection

@@ -68,7 +68,7 @@ declare global {
      * there is no way for a user to configure custom subtypes. Nevertheless Foundry has a number of
      * built in subtypes usable for `TableResult`.
      */
-    type SubType = Game.Model.TypeNames<Name>;
+    type SubType = foundry.Game.Model.TypeNames<Name>;
 
     /**
      * @deprecated `TableResult` does not have `system` and therefore there is no way for a user to

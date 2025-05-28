@@ -1,5 +1,7 @@
 import type { LazyUnknown, ValueOf } from "#utils";
 
+import Game = foundry.Game;
+
 declare global {
   /**
    * A class responsible for managing defined game keybinding.

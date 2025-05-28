@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type TokenRing from "../../../../../../../src/foundry/client-esm/canvas/tokens/ring.d.mts";
+import type TokenRing from "../../../../../../../src/foundry/client/canvas/tokens/ring.d.mts";
 
 const TRSS = TokenRingSamplerShader;
 let myTRSS;

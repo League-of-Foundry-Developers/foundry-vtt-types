@@ -1,3 +1,5 @@
+import Game = foundry.Game;
+
 export {};
 
 declare global {

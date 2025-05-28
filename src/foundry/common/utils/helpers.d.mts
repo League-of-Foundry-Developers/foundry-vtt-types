@@ -1,5 +1,7 @@
-import type { AnyConstructor, AnyFunction, DeepPartial, InexactPartial, NonNullish } from "#utils";
+import type { AnyArray, AnyConstructor, AnyFunction, InexactPartial, NonNullish } from "#utils";
 import type Document from "../abstract/document.d.mts";
+
+export {};
 
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.
@@ -352,23 +354,7 @@ export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
  * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null}, {performDeletions: true});   // {k2: "v2"}
  * ```
  */
-export function mergeObject<
-  T extends object,
-  U extends DeepPartial<WithWidenedArrayTypes<T>>,
-  M extends MergeObjectOptions & { enforceTypes: true },
->(original: T, other?: U, options?: M, _d?: number): MergeObject<T, U, M>;
-export function mergeObject<
-  T extends object,
-  U extends DeepPartial<Record<keyof T, never>> & object,
-  M extends MergeObjectOptions & { enforceTypes: true },
->(original: T, other?: U, options?: M, _d?: number): MergeObject<T, U, M>;
-export function mergeObject<T extends object, U extends object, M extends MergeObjectOptions & { enforceTypes: true }>(
-  original: T,
-  other?: U,
-  options?: M,
-  _d?: number,
-): never;
-export function mergeObject<T extends object, U extends object, M extends MergeObjectOptions>(
+export function mergeObject<const T extends object, const U extends object, const M extends MergeObjectOptions>(
   original: T,
   other?: U,
   options?: M,
@@ -474,7 +460,7 @@ export function timeSince(timeStamp: Date | string): string;
  */
 export function formatFileSize(size: number, options?: FormatFileSizeOptions): string;
 
-interface FormatFileSizeOptions {
+export interface FormatFileSizeOptions {
   /**
    * The number of decimal places to round to.
    * @defaultValue `2`
@@ -488,7 +474,7 @@ interface FormatFileSizeOptions {
   base?: 2 | 10 | undefined;
 }
 
-interface ResolvedUUID {
+export interface ResolvedUUID {
   /**
    * The original UUID.
    */
@@ -540,7 +526,7 @@ interface ResolvedUUID {
   documentId?: string | undefined;
 }
 
-interface ParseUUIDOptions {
+export interface ParseUUIDOptions {
   /**
    * A document to resolve relative UUIDs against.
    */
@@ -713,27 +699,40 @@ type OmitAssignableFromType<T extends object, U> = { [k in keyof T as U extends 
  */
 type OmitNotAssignableFromType<T extends object, U> = { [k in keyof T as U extends T[k] ? k : never]: T[k] };
 
-type OmitByValue<T, ValueType> = { [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };
+type OmitByValue<T, ValueType> = { -readonly [Key in keyof T as T[Key] extends ValueType ? never : Key]: T[Key] };
 type RemoveNever<T> = OmitByValue<T, never>;
 type PropWithMinus<K> = K extends string ? `-=${K}` : never;
 type DeleteByObjectKeys<T, U, M extends MergeObjectOptions> = M["performDeletions"] extends true
   ? RemoveNever<{
-      [K in keyof T]: PropWithMinus<K> extends keyof U ? (U[PropWithMinus<K>] extends null ? never : T[K]) : T[K];
+      -readonly [K in keyof T]: PropWithMinus<K> extends keyof U
+        ? U[PropWithMinus<K>] extends null
+          ? never
+          : T[K]
+        : T[K];
     }>
   : T;
 type RemoveDeletingObjectKeys<T, M extends MergeObjectOptions> = M["performDeletions"] extends true
   ? RemoveNever<{
-      [K in keyof T]: K extends string ? (Capitalize<K> extends K ? (T[K] extends null ? never : T[K]) : T[K]) : T[K];
+      -readonly [K in keyof T]: K extends string
+        ? Capitalize<K> extends K
+          ? T[K] extends null
+            ? never
+            : T[K]
+          : T[K]
+        : T[K];
     }>
   : T;
 
-type MergeObjectProperty<T, U, M extends MergeObjectOptions> =
-  T extends Array<any>
-    ? U
+type NonObject = number | string | boolean | bigint | symbol | null | undefined;
+
+type MergeObjectProperty<T, U, M extends MergeObjectOptions> = U extends NonObject
+  ? U
+  : T extends AnyArray
+    ? { -readonly [K in keyof U]: U[K] }
     : T extends Record<string, any>
       ? U extends Record<string, any>
         ? M extends { recursive: false }
-          ? U
+          ? { -readonly [K in keyof U]: U[K] }
           : MergeObject<
               T,
               U,
@@ -745,16 +744,9 @@ type MergeObjectProperty<T, U, M extends MergeObjectOptions> =
         : U
       : U;
 type UpdateKeys<T, U, M extends MergeObjectOptions> = M extends { overwrite: false }
-  ? T
-  : { [K in keyof T]: K extends keyof U ? MergeObjectProperty<T[K], U[K], M> : T[K] };
-type InsertKeys<T, U> = T & Omit<U, keyof T>;
+  ? { -readonly [K in keyof T]: T[K] }
+  : { -readonly [K in keyof T]: K extends keyof U ? MergeObjectProperty<T[K], U[K], M> : T[K] };
+type InsertKeys<T, U> = { -readonly [K in keyof T]: T[K] } & { -readonly [K in keyof U as Exclude<K, keyof T>]: U[K] };
 type UpdateInsert<T, U, M extends MergeObjectOptions> = M extends { insertKeys: false }
   ? UpdateKeys<T, U, M>
   : InsertKeys<UpdateKeys<T, U, M>, U>;
-
-type WithWidenedArrayTypes<T> =
-  T extends Array<any>
-    ? Array<any>
-    : T extends Record<string, any>
-      ? { [K in keyof T]: WithWidenedArrayTypes<T[K]> }
-      : T;

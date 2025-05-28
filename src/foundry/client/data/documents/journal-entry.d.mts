@@ -1,5 +1,5 @@
 import type Document from "#common/abstract/document.d.mts";
-import type { documents } from "#client-esm/client.d.mts";
+import type { documents } from "#client/client.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { AnyObject, InterfaceToObject, Merge, ValueOf } from "#utils";
 import type BaseJournalEntry from "#common/documents/journal-entry.mjs";

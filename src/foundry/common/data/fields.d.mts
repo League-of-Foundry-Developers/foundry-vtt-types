@@ -19,7 +19,7 @@ import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
 import type { EmbeddedCollection, EmbeddedCollectionDelta, TypeDataModel } from "../abstract/_module.d.mts";
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
-import type { CONST } from "#client-esm/client.d.mts";
+import type { CONST } from "#client/client.d.mts";
 import type { DataModelValidationFailure } from "./validation-failure.mts";
 import type {
   FormGroupConfig,
@@ -28,7 +28,7 @@ import type {
   MultiSelectInputConfig,
   SelectInputConfig,
   TextAreaInputConfig,
-} from "#client-esm/applications/forms/fields.d.mts";
+} from "#client/applications/forms/fields.d.mts";
 
 export type DataSchema = Record<string, DataField.Any>;
 

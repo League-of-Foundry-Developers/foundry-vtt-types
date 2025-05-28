@@ -5,12 +5,12 @@ expectTypeOf(Quadtree.INDICES).toExtend<Record<keyof Quadtree.Indices, Quadtree.
 type TCI = Token.Implementation;
 declare const someToken: TCI;
 declare const someRect: PIXI.Rectangle;
-declare const collisionTest: (o: QuadtreeObject<TCI>, rect: Canvas.Rectangle) => boolean;
+declare const collisionTest: (o: Quadtree.Object<TCI>, rect: Canvas.Rectangle) => boolean;
 
 const myQuadtree = new Quadtree<TCI>({ x: undefined, y: null, height: 100, width: 100 });
 
-expectTypeOf(myQuadtree.all).toEqualTypeOf<QuadtreeObject<TCI>[]>();
-expectTypeOf(myQuadtree.objects).toEqualTypeOf<QuadtreeObject<TCI>[]>();
+expectTypeOf(myQuadtree.all).toEqualTypeOf<Quadtree.Object<TCI>[]>();
+expectTypeOf(myQuadtree.objects).toEqualTypeOf<Quadtree.Object<TCI>[]>();
 expectTypeOf(myQuadtree.bounds).toEqualTypeOf<PIXI.Rectangle>();
 expectTypeOf(myQuadtree.root).toEqualTypeOf<Quadtree<TCI>>();
 expectTypeOf(myQuadtree.split()).toEqualTypeOf<Quadtree<TCI>>();
