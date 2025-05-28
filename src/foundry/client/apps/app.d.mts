@@ -12,15 +12,15 @@ declare global {
   /**
    * @defaultValue `0`
    */
-  let _appId: number;
+  // let _appId: number;
 
-  /**
-   * @defaultValue `Number(getComputedStyle(document.body).getPropertyValue("--z-index-window") ?? 100)`
-   */
-  let _maxZ: number;
+  // /**
+  //  * @defaultValue `Number(getComputedStyle(document.body).getPropertyValue("--z-index-window") ?? 100)`
+  //  */
+  // let _maxZ: number;
 
-  const MIN_WINDOW_WIDTH: 200;
-  const MIN_WINDOW_HEIGHT: 50;
+  // const MIN_WINDOW_WIDTH: 200;
+  // const MIN_WINDOW_HEIGHT: 50;
 
   /**
    * The standard application window that is rendered for a large variety of UI elements in Foundry VTT.
