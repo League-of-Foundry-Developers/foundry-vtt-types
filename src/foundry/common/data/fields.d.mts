@@ -13,6 +13,7 @@ import type {
   GetKey,
   SplitString,
   ValueOf,
+  AnyMutableObject,
 } from "#utils";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -58,7 +59,6 @@ declare abstract class DataField<
    * @param options - Options which configure the behavior of the field
    * @param context - Additional context which describes the field
    */
-  // options: not null (unchecked `in` operation), context: not null (destructured)
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @internal */
@@ -70,8 +70,36 @@ declare abstract class DataField<
   /** @internal */
   " __fvtt_types_internal_initialized_data": InitializedType;
 
+  /**
+   * The field name of this DataField instance.
+   * This is assigned by SchemaField#initialize.
+   * @internal
+   */
+  name: string | undefined;
+
+  /**
+   * A reference to the parent schema to which this DataField belongs.
+   * This is assigned by SchemaField#initialize.
+   * @internal
+   */
+  parent: DataField.Any | undefined;
+
   /** The initially provided options which configure the data field */
   options: Options;
+
+  /**
+   * Whether this field defines part of a Document/Embedded Document hierarchy.
+   * @defaultValue `false`
+   */
+  static hierarchical: boolean;
+
+  /**
+   * Does this field type contain other fields in a recursive structure?
+   * Examples of recursive fields are SchemaField, ArrayField, or TypeDataField
+   * Examples of non-recursive fields are StringField, NumberField, or ObjectField
+   * @defaultValue `false`
+   */
+  static recursive: boolean;
 
   /**
    * Is this field required to be populated?
@@ -126,36 +154,6 @@ declare abstract class DataField<
   validationError: string;
 
   /**
-   * The name of this data field within the schema that contains it
-   *
-   * The field name of this DataField instance.
-   * This is assigned by SchemaField#initialize.
-   * @remarks Foundry marked `@internal`
-   */
-  name: string | undefined;
-
-  /**
-   * A reference to the parent schema to which this DataField belongs.
-   * This is assigned by SchemaField#initialize.
-   * @remarks Foundry marked `@internal`
-   */
-  parent: DataField.Any | undefined;
-
-  /**
-   * Whether this field defines part of a Document/Embedded Document hierarchy.
-   * @defaultValue `false`
-   */
-  static hierarchical: boolean;
-
-  /**
-   * Does this field type contain other fields in a recursive structure?
-   * Examples of recursive fields are SchemaField, ArrayField, or TypeDataField
-   * Examples of non-recursive fields are StringField, NumberField, or ObjectField
-   * @defaultValue `false`
-   */
-  static recursive: boolean;
-
-  /**
    * Default parameters for this field type
    * @remarks This is not entirely type-safe, overrides should specify a more concrete return type.
    */
@@ -175,7 +173,6 @@ declare abstract class DataField<
    * @returns The results object
    */
   // TODO: Determine `value` based upon the field metadata in fields-v2 (while allowing subclasses to narrow allowed values)
-  // options: not null (could be forwarded somewhere destructured, parameter default only)
   apply<Options, Return>(
     fn: keyof this | ((this: this, value: unknown, options: Options) => Return),
     value?: unknown,
@@ -183,14 +180,37 @@ declare abstract class DataField<
   ): Return;
 
   /**
+   * Add types of the source to the data if they are missing.
+   * @param source  - The source data
+   * @param changes - The partial data
+   * @param options - Additional options (default: `{}`)
+   * @internal
+   *
+   * @remarks
+   * Called externally by Foundry in `ClientDatabaseBackend##preUpdateDocumentArray`, {@link DataModel.validate | `DataModel#validate`},
+   * and {@link DataModel.updateSource | `DataModel#updateSource`}.
+   *
+   * The `options` arg is not expected to be passed, it's assembled using the passed `source` and `changes` then used internally for recursive calls.
+   */
+  protected _addTypes(source?: AnyObject, changes?: AnyObject, options?: DataField.AddTypesOptions): void;
+
+  /**
+   * Recursively traverse a schema and retrieve a field specification by a given path
+   * @param path - The field path as an array of strings
+   * @returns The corresponding DataField definition for that field, or undefined
+   * @internal
+   */
+  protected _getField(path: string[]): DataField.Any | undefined;
+
+  /**
    * Coerce source data to ensure that it conforms to the correct data type for the field.
    * Data coercion operations should be simple and synchronous as these are applied whenever a DataModel is constructed.
    * For one-off cleaning of user-provided input the sanitize method should be used.
-   * @param value   - The initial value
+   * @param value   - An initial requested value
    * @param options - Additional options for how the field is cleaned
    * @returns The cast value
    */
-  // options: not null (parameter default only, property access)
+  // TODO (LukeAbby): Because `getInitialValue` trusts function `initial`s too much, this can actually return `| null | undefined` regardless of options, if `value === undefined`
   clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
   /**
@@ -200,12 +220,15 @@ declare abstract class DataField<
    * @returns The cleaned value.
    * @remarks Simply returns `value` in `DataField`. `options` is unused in `DataField`
    */
-  protected _cleanType(value: InitializedType, options?: DataField.CleanOptions | null): InitializedType;
+  protected _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   /**
    * Cast a non-default value to ensure it is the correct type for the field
    * @param value - The provided non-default value
    * @returns The standardized value
+   * @remarks No longer so effectively abstract in v13, `DataField`'s implementation now simply returns the provided value,
+   * but since subclasses *should* still implement an `_cast` that matches their `AssignmentType` and `InitializedType`, it
+   * remains `abstract` here
    */
   protected abstract _cast(value: AssignmentType): InitializedType;
 
@@ -213,13 +236,16 @@ declare abstract class DataField<
    * Attempt to retrieve a valid initial value for the DataField.
    * @param data - The source data object for which an initial value is required
    * @returns A valid initial value
-   * @throws An error if there is no valid initial value defined
-   * @remarks The `@throws` is Foundry's, and is wrong, as all fields will at a minimum inherit `initial: undefined` from DataField.
-   *
-   * `data` is unused if the field's `initial` is not a function.
+   * @remarks `data` is unused if the field's `initial` is not a function.
    */
-  // TODO: the @throws is omitted in v13, clean up remarks
   getInitialValue(data?: unknown): InitializedType;
+
+  /**
+   * Export the current value of the field into a serializable object.
+   * @param value - The initialized value of the field
+   * @returns An exported representation of the field
+   */
+  toObject(value: InitializedType): PersistedType;
 
   /**
    * Validate a candidate input for this field, ensuring it meets the field requirements.
@@ -227,11 +253,9 @@ declare abstract class DataField<
    * a DataModelValidationFailure instance.
    * A validator which returns true denotes that the result is certainly valid and further validations are unnecessary.
    * @param value   - The initial value
-   * @param options - Options which affect validation behavior
-   *                  (default: `{}`)
+   * @param options - Options which affect validation behavior (default: `{}`)
    * @returns Returns a ModelValidationError if a validation failure occurred
    */
-  // options: not null (parameter default only, property access)
   validate(value: AssignmentType, options?: DataField.ValidateOptions<this>): DataModelValidationFailure | void;
 
   /**
@@ -248,12 +272,9 @@ declare abstract class DataField<
    * A default type-specific validator that can be overridden by child classes
    * @param value   - The candidate value
    * @param options - Options which affect validation behavior
-   * @returns A boolean to indicate with certainty whether the value is
-   *          valid, or specific DataModelValidationFailure information,
-   *          otherwise void.
+   * @returns A boolean to indicate with certainty whether the value is valid, or specific DataModelValidationFailure information, otherwise void.
    * @throws May throw a specific error if the value is not valid
    */
-  // options: not null (parameter default only, property access in subclasses)
   protected _validateType(
     value: InitializedType,
     options?: DataField.ValidateOptions<this>,
@@ -265,7 +286,9 @@ declare abstract class DataField<
    * @param data    - Candidate data for joint model validation
    * @param options - Options which modify joint model validation
    * @throws  An error if joint model validation fails
-   * @remarks Foundry marked `@internal`
+   * @internal
+   *
+   * @remarks Core never checks the return of this, it should simply either `throw` or not `throw`
    *
    * The only place core checks the `options` for any property is in {@link TypeDataField._validateModel | `TypeDataField#_validateModel`},
    * where it checks `options.source?.type`
@@ -275,7 +298,7 @@ declare abstract class DataField<
    * The only place core *calls* this at a top level, it does not pass anything for `options`, relying on SchemaField above
    * to make TypeDataField work
    */
-  protected _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions | null): void; // TODO: Type further.
+  protected _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
 
   /**
    * Initialize the original source data into a mutable copy for the DataModel instance.
@@ -289,7 +312,6 @@ declare abstract class DataField<
    */
   // TODO: investigate narrowing return to just `InitializedType` on inheritance lines that don't possibly return one
   // TODO: (everything except SchemaField and ObjectField and their descendants)
-  // options: not null (parameter default only)
   initialize(
     value: PersistedType,
     model: DataModel.Any,
@@ -297,17 +319,49 @@ declare abstract class DataField<
   ): InitializedType | (() => InitializedType | null);
 
   /**
-   * Export the current value of the field into a serializable object.
-   * @param value - The initialized value of the field
-   * @returns An exported representation of the field
+   * Update the source data for a DataModel which includes this DataField.
+   * This method is responsible for modifying the provided source data as well as updating the tracked diff included
+   * in provided metadata.
+   * @param source - Source data of the DataModel which should be updated. This object is always a partial node of source data, relative to which this field belongs.
+   * @param key        - The name of this field within the context of the source data.
+   * @param value      - The candidate value that should be applied as an update.
+   * @param difference - The accumulated diff that is recursively populated as the model traverses through its schema fields.
+   * @param options    - Options which modify how this update workflow is performed.
+   * @throws An error if the requested update cannot be performed.
+   * @internal
+   * @remarks Only `recursive` is checked in `options` by any core fields. Mutates `source`.
+   *
+   * Called externally by Foundry in {@link DataModel.updateSource | `DataModel#updateSource`} and various core field class's overrides (`this.element._updateDiff()`, `field._updateDiff()` etc);
+   * it's been left public for use in user subclasses
    */
-  toObject(value: InitializedType): PersistedType;
+  _updateDiff(
+    source: AnyMutableObject,
+    key: string,
+    value: unknown,
+    difference: AnyObject,
+    options?: DataModel.UpdateOptions,
+  ): void;
 
   /**
-   * Recursively traverse a schema and retrieve a field specification by a given path
-   * @param path - The field path as an array of strings
+   * Commit a prepared update to DataModel#_source.
+   * @param source  - The parent source object within which the `key` field exists
+   * @param key     - The named field in source to commit
+   * @param value   - The new value of the field which should be committed to source
+   * @param diff    - The reported change to the field
+   * @param options - Options which modify how this update workflow is performed.
+   * @internal
+   * @remarks Mutates `source`.
+   *
+   * Called externally by Foundry in {@link DataModel.updateSource | `DataModel#updateSource`} and various core field class's overrides (`this.element._updateCommit()`, `field._updateCommit()` etc);
+   * it's been left public for use in user subclasses
    */
-  protected _getField(path: string[]): DataField.Any | undefined;
+  _updateCommit(
+    source: AnyMutableObject,
+    key: string,
+    value: unknown,
+    diff: unknown,
+    options?: DataModel.UpdateOptions,
+  ): void;
 
   /**
    * Does this form field class have defined form support?
@@ -328,6 +382,7 @@ declare abstract class DataField<
    * @param config - Form element configuration parameters
    * @throws An Error if this DataField subclass does not support input rendering
    * @returns A rendered HTMLElement for the field
+   * @remarks Would be `abstract` except not all fields are designed to be used in forms
    */
   protected _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
 
@@ -637,22 +692,37 @@ declare namespace DataField {
   type InitializedType<Options extends DataField.Options.Any> = DerivedInitializedType<unknown, MergedOptions<Options>>;
 
   /** @internal */
-  type _ConstructionContext = NullishProps<{
+  type _ConstructionContext = InexactPartial<{
     /** A field name to assign to the constructed field */
-    name?: string;
-  }> &
-    InexactPartial<{
-      /**
-       * Another data field which is a hierarchical parent of this one
-       * @remarks Can't be `null` as there's a `!== undefined` check in {@link SchemaField._initialize | `SchemaField#_initialize`}
-       */
-      parent?: DataField.Any;
-    }>;
+    name: string;
+
+    /**
+     * Another data field which is a hierarchical parent of this one
+     * @remarks Can't be `null` as there's a `!== undefined` check in {@link SchemaField._initialize | `SchemaField#_initialize`}
+     */
+    parent: DataField.Any;
+  }>;
 
   interface ConstructionContext extends _ConstructionContext {}
 
+  interface AddTypesOptions {
+    /**
+     * The root data model source
+     * @remarks Not expected to be passed externally, the top level `_addTypes` call sets this to the passed `source`,
+     * making it available to subsidiary calls
+     */
+    source?: AnyObject;
+
+    /**
+     * The root data model changes
+     * @remarks Not expected to be passed externally, the top level `_addTypes` call sets this to the passed `changes`,
+     * making it available to subsidiary calls
+     */
+    changes?: AnyObject;
+  }
+
   /** @internal */
-  type _ValidationOptions = NullishProps<{
+  type _ValidationOptions = InexactPartial<{
     /** Whether this is a partial schema validation, or a complete one. */
     partial: boolean;
 
@@ -660,19 +730,14 @@ declare namespace DataField {
     fallback: boolean;
 
     /**
-     * If true, invalid embedded documents will emit a warning and be placed in the invalidDocuments
+     * If true, invalid embedded documents will emit a warning and be placed in the `invalidDocuments`
      * collection rather than causing the parent to be considered invalid.
      */
-    dropInvalidEmbedded?: boolean;
-  }> &
-    InexactPartial<{
-      /**
-       * The full source object being evaluated.
-       * @privateRemarks Disallowing `null` as this value gets passed to provided `initial` functions,
-       * and users shouldn't have to expect `null`
-       */
-      source: AnyObject;
-    }>;
+    dropInvalidEmbedded: boolean;
+
+    /** The full source object being evaluated. */
+    source: AnyObject;
+  }>;
 
   /**
    * @remarks This is the type for the options for `#validate` and associate methods *without* the
@@ -683,7 +748,7 @@ declare namespace DataField {
   interface ValidationOptions extends _ValidationOptions {}
 
   /** @internal */
-  type _CleanOptions = NullishProps<{
+  type _CleanOptions = InexactPartial<{
     /** Whether to perform partial cleaning? */
     partial: boolean;
 
@@ -836,9 +901,6 @@ declare class SchemaField<
   /** @defaultValue `false` */
   override nullable: boolean;
 
-  /** @defaultValue `() => this.clean({})` */
-  override initial: DataField.Options.InitialType<InitializedType>;
-
   protected static override get _defaults(): SchemaField.Options<DataSchema>;
 
   /** @defaultValue `true` */
@@ -853,6 +915,8 @@ declare class SchemaField<
    * Initialize and validate the structure of the provided field definitions.
    * @param fields - The provided field definitions
    * @returns The validated schema
+   * @remarks
+   * @throws If any field is named `_source`
    */
   protected _initialize(fields: Fields): Fields;
 
@@ -892,7 +956,7 @@ declare class SchemaField<
    */
   // TODO(LukeAbby): Enabling this signatures causes a circularity but it would be ideal.
   // get<FieldName extends string>(fieldName: OverlapsWith<FieldName, keyof Fields>): SchemaField.Get<Fields, FieldName>;
-  get(fieldName: string): DataField.Unknown | undefined;
+  get(fieldName: string): DataField.Unknown | void;
 
   /**
    * Traverse the schema, obtaining the DataField definition for a particular field.
@@ -905,42 +969,57 @@ declare class SchemaField<
   //   fieldName: FieldName,
   // ): SchemaField.GetField<this, Fields, FieldName>;
 
-  protected override _getField(path: string[]): DataField.Any;
+  protected override _getField(path: string[]): DataField.Any | undefined;
+
+  override getInitialValue(data?: unknown): InitializedType;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
   /**
    * @remarks Ensures `options.source` is set via effectively `||= data`, then forwards to each field's `#clean`
    *
-   * Deletes any keys from `value` not in the schema
+   * Deletes any keys from `value` not in the schema, including `-=` and `==` keys
    */
-  // options: not null (parameter default only, property access)
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
-  // options: not null (parameter default only)
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
-  // options: not null (parameter default only, property access)
+  override _updateDiff(
+    source: AnyMutableObject,
+    key: string,
+    value: unknown,
+    difference: AnyObject,
+    options?: DataModel.UpdateOptions,
+  ): void;
+
+  override _updateCommit(
+    source: AnyMutableObject,
+    key: string,
+    value: unknown,
+    diff: unknown,
+    options?: DataModel.UpdateOptions,
+  ): void;
+
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
-  // options: not null (parameter default only, property access)
   protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
 
   override toObject(value: InitializedType): PersistedType;
 
-  // options: not null (could be forwarded somewhere destructured, parameter default only)
   override apply<Options, Return>(
     fn: keyof this | ((this: this, value: AnyObject, options: Options) => Return),
     value?: AnyObject,
     options?: Options,
   ): Return;
+
+  protected override _addTypes(source?: AnyObject, changes?: AnyObject, options?: DataField.AddTypesOptions): void;
 
   /**
    * Migrate this field's candidate source data.
@@ -962,7 +1041,7 @@ declare namespace SchemaField {
    * @template Fields - the DataSchema fields of the SchemaField
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type Options<Fields extends DataSchema> = DataField.Options<AssignmentData<Fields> | __SchemaFieldInitial>;
+  type Options<Fields extends DataSchema> = DataField.Options<AssignmentData<Fields>>;
 
   /** Any SchemaField. */
   interface Any extends SchemaField<any, any, any, any, any> {}
@@ -1005,7 +1084,7 @@ declare namespace SchemaField {
    * the types that would be valid for the expression `this.schemaProperty = ...`. Modern users will
    * recognize that the only sane thing to do here is to use `InitializedData` but when data models
    * were first being introduced there was an attempt to support a sort of strange compromise between
-   * `InitializedData`, `SourceData`, and even `CreateData` for backwards compatability with existing patterns.
+   * `InitializedData`, `SourceData`, and even `CreateData` for backwards compatibility with existing patterns.
    *
    * You should instead use those types as appropriate.
    */
@@ -1074,7 +1153,6 @@ declare namespace SchemaField {
     {
       required: true;
       nullable: false;
-      initial: __SchemaFieldInitial;
     }
   >;
 
@@ -1307,7 +1385,7 @@ declare namespace BooleanField {
     {
       required: true;
       nullable: false;
-      initial: boolean;
+      initial: false;
     }
   >;
 
@@ -1359,10 +1437,9 @@ declare class NumberField<
    * @param context - Additional context which describes the field
    * @remarks Changes the default of `nullable` if passed `choices`
    */
-  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
-  /** @defaultValue `null` */
+  /** @defaultValue `undefined` */
   override initial: DataField.Options.InitialType<InitializedType>;
 
   /**
@@ -1418,12 +1495,12 @@ declare class NumberField<
    *
    * `options` is only passed to super, so effectively unused
    */
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions | null): InitializedType;
+  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   /** @remarks `options` is unused in `NumberField` */
   protected override _validateType(
     value: InitializedType,
-    options?: DataField.ValidateOptions<this> | null,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
   // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
@@ -1480,6 +1557,8 @@ declare class NumberField<
     model: DataModel.Any,
     change: ActiveEffect.ChangeData,
   ): InitializedType;
+
+  #NumberField: true;
 }
 
 declare namespace NumberField {
@@ -1487,7 +1566,6 @@ declare namespace NumberField {
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
     {
-      initial: null;
       nullable: true;
       min: undefined;
       max: undefined;
@@ -1614,7 +1692,7 @@ declare namespace NumberField {
  * - AssignmentType: `string | null | undefined`
  * - InitializedType: `string`
  * - PersistedType: `string`
- * - InitialValue: `""`
+ * - InitialValue: `undefined`
  */
 declare class StringField<
   const Options extends StringField.Options<unknown> = StringField.DefaultOptions,
@@ -1666,8 +1744,9 @@ declare class StringField<
 
   protected static override get _defaults(): StringField.Options<unknown>;
 
-  // options: not null (parameter default only, property access)
   override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
+
+  override getInitialValue(data?: unknown): InitializedType;
 
   protected override _cast(value: AssignmentType): InitializedType;
 
