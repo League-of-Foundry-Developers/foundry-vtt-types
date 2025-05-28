@@ -1,5 +1,5 @@
 import type { Identity, NullishProps } from "#utils";
-import type TokenRing from "#client-esm/canvas/tokens/ring.d.mts";
+import type TokenRing from "#client/canvas/tokens/ring.d.mts";
 
 declare global {
   /**

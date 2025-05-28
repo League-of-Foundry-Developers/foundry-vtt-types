@@ -1,6 +1,6 @@
 import type { AnyArray, AnyObject, InexactPartial, FixedInstanceType } from "#utils";
-import type ApplicationV2 from "#client-esm/applications/api/application.d.mts";
-import type { CustomFormInput } from "#client-esm/applications/forms/fields.d.mts";
+import type ApplicationV2 from "#client/applications/api/application.d.mts";
+import type { CustomFormInput } from "#client/applications/forms/fields.d.mts";
 import type DataModel from "#common/abstract/data.d.mts";
 import type { DataField } from "#common/data/fields.d.mts";
 

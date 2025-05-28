@@ -1,6 +1,6 @@
 import type { ConfiguredCombatant } from "fvtt-types/configuration";
 import type { AnyObject, Merge } from "#utils";
-import type { documents } from "#client-esm/client.d.mts";
+import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseCombatant from "#common/documents/combatant.d.mts";
@@ -75,7 +75,7 @@ declare global {
      * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
      * {@linkcode DataConfig}.
      */
-    type SubType = Game.Model.TypeNames<"Combatant">;
+    type SubType = foundry.Game.Model.TypeNames<"Combatant">;
 
     /**
      * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes

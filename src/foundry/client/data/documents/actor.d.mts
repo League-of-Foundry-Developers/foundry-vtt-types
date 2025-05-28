@@ -1,5 +1,5 @@
 import type { AnyObject, InexactPartial, NullishProps, Merge } from "#utils";
-import type { documents } from "#client-esm/client.d.mts";
+import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type BaseActor from "#common/documents/actor.d.mts";
 import type { ConfiguredActor } from "fvtt-types/configuration";
@@ -86,7 +86,7 @@ declare global {
      * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
      * {@linkcode DataConfig}.
      */
-    type SubType = Game.Model.TypeNames<"Actor">;
+    type SubType = foundry.Game.Model.TypeNames<"Actor">;
 
     /**
      * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes

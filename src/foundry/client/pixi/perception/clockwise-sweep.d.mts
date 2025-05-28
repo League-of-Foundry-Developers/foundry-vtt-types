@@ -1,5 +1,5 @@
 import type { Identity, IntentionalPartial } from "#utils";
-import type Edge from "#client-esm/canvas/edges/edge.d.mts";
+import type Edge from "#client/canvas/edges/edge.d.mts";
 
 declare global {
   /**

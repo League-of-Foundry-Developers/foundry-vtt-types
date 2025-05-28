@@ -11,6 +11,8 @@ import type {
 import type BasePackage from "#common/packages/base-package.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 
+import AVMaster = foundry.av.AVMaster;
+
 // Must be called with all hooks in a union.
 // Do not increase the complexity of this type. If you do Game related types may get complex enough to complain about not being statically known.
 type SimpleInitializedOn<
@@ -602,13 +604,13 @@ type _I18nInitGame = Game & InternalGame<"init" | "i18nInit">;
 type _SetupGame = Game & InternalGame<"init" | "i18nInit" | "setup">;
 type _ReadyGame = Game & InternalGame<"init" | "i18nInit" | "setup" | "ready">;
 
-declare global {
-  /**
-   * The core Game instance which encapsulates the data, settings, and states relevant for managing the game experience.
-   * The singleton instance of the Game class is available as the global variable game.
-   */
-  class Game extends InternalGame<any> {}
+/**
+ * The core Game instance which encapsulates the data, settings, and states relevant for managing the game experience.
+ * The singleton instance of the Game class is available as the global variable game.
+ */
+declare class Game extends InternalGame<any> {}
 
+declare global {
   // These helper types show `Game` at different points in its life cycle.
   // They're merged with `Game` to preserve the invariant `XYZGame instanceof Game`.
   // They're interfaces for easier user declaration merges as well as to give intellisense better names to use as the expanded type is intimidating.
@@ -617,130 +619,126 @@ declare global {
   interface I18nInitGame extends _I18nInitGame {}
   interface SetupGame extends _SetupGame {}
   interface ReadyGame extends _ReadyGame {}
+}
 
-  namespace Game {
-    interface ModuleCollection extends Collection<Module> {
-      /**
-       * Gets the module requested for by ID
-       * @see {@linkcode ModuleConfig} to add custom properties to modules like APIs.
-       * @see {@linkcode RequiredModules} to remove `undefined` from the return type for a given module
-       * @param id - The module ID to look up
-       */
-      get<T extends string>(id: T): Module & ConfiguredModule<T>;
-    }
-
-    namespace Model {
-      /**
-       * Get the configured core and system type names for a specific document type.
-       *
-       * Because of module subtypes, extra types of the form `${moduleName}.${subtype}` are
-       * possible when `hasTypeData` is true.
-       *
-       * @template DocumentName - the type of the Document this data is for
-       */
-      type TypeNames<DocumentType extends Document.Type> = Document.SubTypesOf<DocumentType>;
-    }
-
-    type _Model = {
-      [DocumentType in Document.Type]: {
-        // The `& string` is helpful even though there should never be any numeric/symbol keys.
-        // This is because when `keyof Config<...>` is deferred then TypeScript does a bunch of proofs under the assumption that `SystemTypeNames` could be a `string | number` until proven otherwise.
-        // This causes issues where there shouldn't be, for example it has been observed to obstruct the resolution of the `Actor` class.
-        [SubType in Model.TypeNames<DocumentType>]: GetKey<GetKey<SourceConfig, DocumentType>, SubType, EmptyObject>;
-      };
-    };
-    interface Model extends _Model {}
-
-    type Data = {
-      activeUsers: string[];
-      addresses: {
-        local: string;
-        remote?: string | undefined;
-        remoteIsAccessible: boolean | null;
-      };
-      coreUpdate: {
-        channel: string | null;
-        couldReachWebsite: boolean;
-        hasUpdate: boolean;
-        slowResponse: boolean;
-        version: string | null;
-        willDisableModules: boolean;
-      };
-      demoMode: boolean;
-      files: {
-        s3?: {
-          endpoint: {
-            protocol: string;
-            host: string;
-            port: number;
-            hostname: string;
-            pathname: string;
-            path: string;
-            href: string;
-          };
-          buckets: string[];
-        } | null;
-        storages: ("public" | "data" | "s3")[];
-      };
-      modules: Module["_source"][];
-      options: {
-        language: string;
-        port: number;
-        routePrefix: string | null;
-        updateChannel: string;
-      };
-      packageWarnings: Record<string, unknown>;
-      packs: Array<
-        PackageCompendiumData & {
-          /** @deprecated since v11 */
-          private?: boolean;
-          system?: string | undefined;
-          type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-          packageName: BasePackage["_source"]["id"];
-          packageType: BasePackage["type"];
-          id: string;
-        }
-      >;
-      paused: boolean;
-      release: foundry.config.ReleaseData["_source"];
-      system: System["_source"];
-      systemUpdate: {
-        hasUpdate: boolean;
-        version: string;
-      };
-      // TODO: I think this is only for configurable types
-      template: Record<Document.Type, DocumentTemplate> | null;
-      // TODO: This is also inheriting the configured types,
-      // but is only filled in if there's `template.json`
-      model: Model;
-      userId: string;
-      world: World["_source"];
-    } & {
-      [DocumentType in  // eslint-disable-next-line @typescript-eslint/no-deprecated
-        | foundry.CONST.DOCUMENT_TYPES
-        | "Setting" as Document.ImplementationClassFor<DocumentType>["metadata"]["collection"]]?: FixedInstanceType<
-        Document.ImplementationClassFor<DocumentType>
-      >["_source"][];
-    };
-
-    type Permissions = {
-      [Key in keyof typeof foundry.CONST.USER_PERMISSIONS]: foundry.CONST.USER_ROLES[];
-    };
-
-    type View = ValueOf<typeof foundry.CONST.GAME_VIEWS>;
+declare namespace Game {
+  interface ModuleCollection extends Collection<Module> {
+    /**
+     * Gets the module requested for by ID
+     * @see {@linkcode ModuleConfig} to add custom properties to modules like APIs.
+     * @see {@linkcode RequiredModules} to remove `undefined` from the return type for a given module
+     * @param id - The module ID to look up
+     */
+    get<T extends string>(id: T): Module & ConfiguredModule<T>;
   }
 
+  namespace Model {
+    /**
+     * Get the configured core and system type names for a specific document type.
+     *
+     * Because of module subtypes, extra types of the form `${moduleName}.${subtype}` are
+     * possible when `hasTypeData` is true.
+     *
+     * @template DocumentName - the type of the Document this data is for
+     */
+    type TypeNames<DocumentType extends Document.Type> = Document.SubTypesOf<DocumentType>;
+  }
+
+  type _Model = {
+    [DocumentType in Document.Type]: {
+      // The `& string` is helpful even though there should never be any numeric/symbol keys.
+      // This is because when `keyof Config<...>` is deferred then TypeScript does a bunch of proofs under the assumption that `SystemTypeNames` could be a `string | number` until proven otherwise.
+      // This causes issues where there shouldn't be, for example it has been observed to obstruct the resolution of the `Actor` class.
+      [SubType in Model.TypeNames<DocumentType>]: GetKey<GetKey<SourceConfig, DocumentType>, SubType, EmptyObject>;
+    };
+  };
+  interface Model extends _Model {}
+
+  type Data = {
+    activeUsers: string[];
+    addresses: {
+      local: string;
+      remote?: string | undefined;
+      remoteIsAccessible: boolean | null;
+    };
+    coreUpdate: {
+      channel: string | null;
+      couldReachWebsite: boolean;
+      hasUpdate: boolean;
+      slowResponse: boolean;
+      version: string | null;
+      willDisableModules: boolean;
+    };
+    demoMode: boolean;
+    files: {
+      s3?: {
+        endpoint: {
+          protocol: string;
+          host: string;
+          port: number;
+          hostname: string;
+          pathname: string;
+          path: string;
+          href: string;
+        };
+        buckets: string[];
+      } | null;
+      storages: ("public" | "data" | "s3")[];
+    };
+    modules: Module["_source"][];
+    options: {
+      language: string;
+      port: number;
+      routePrefix: string | null;
+      updateChannel: string;
+    };
+    packageWarnings: Record<string, unknown>;
+    packs: Array<
+      PackageCompendiumData & {
+        /** @deprecated since v11 */
+        private?: boolean;
+        system?: string | undefined;
+        type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+        packageName: BasePackage["_source"]["id"];
+        packageType: BasePackage["type"];
+        id: string;
+      }
+    >;
+    paused: boolean;
+    release: foundry.config.ReleaseData["_source"];
+    system: System["_source"];
+    systemUpdate: {
+      hasUpdate: boolean;
+      version: string;
+    };
+    // TODO: I think this is only for configurable types
+    template: Record<Document.Type, DocumentTemplate> | null;
+    // TODO: This is also inheriting the configured types,
+    // but is only filled in if there's `template.json`
+    model: Model;
+    userId: string;
+    world: World["_source"];
+  } & {
+    [DocumentType in  // eslint-disable-next-line @typescript-eslint/no-deprecated
+      | foundry.CONST.DOCUMENT_TYPES
+      | "Setting" as Document.ImplementationClassFor<DocumentType>["metadata"]["collection"]]?: FixedInstanceType<
+      Document.ImplementationClassFor<DocumentType>
+    >["_source"][];
+  };
+
+  type Permissions = {
+    [Key in keyof typeof foundry.CONST.USER_PERMISSIONS]: foundry.CONST.USER_ROLES[];
+  };
+
+  type View = ValueOf<typeof foundry.CONST.GAME_VIEWS>;
+}
+
+declare global {
   /**
    * @defaultValue `undefined`
    * Initialized just before the `"init"` hook event.
    */
   let canvas: InitializedOn<Canvas, "init">;
-
-  /**
-   * @defaultValue `undefined`
-   * Initialized just before the `"ready"` hook event.
-   */
-  let keyboard: InitializedOn<KeyboardManager, "ready">;
 }
 
 type ConfiguredCollectionClassForName<Name extends foundry.CONST.WORLD_DOCUMENT_TYPES> = FixedInstanceType<
@@ -751,3 +749,5 @@ interface DocumentTemplate {
   htmlFields: string[];
   types: string[];
 }
+
+export default Game;

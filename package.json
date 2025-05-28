@@ -29,9 +29,6 @@
     "#client/*": {
       "import": "./src/foundry/client/*"
     },
-    "#client-esm/*": {
-      "import": "./src/foundry/client-esm/*"
-    },
     "#common/*": {
       "import": "./src/foundry/common/*"
     },

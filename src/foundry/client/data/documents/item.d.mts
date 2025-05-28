@@ -1,5 +1,5 @@
 import type { ConfiguredItem } from "fvtt-types/configuration";
-import type { documents } from "#client-esm/client.d.mts";
+import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { AnyObject, Merge } from "#utils";
@@ -83,7 +83,7 @@ declare global {
      * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
      * {@linkcode DataConfig}.
      */
-    type SubType = Game.Model.TypeNames<"Item">;
+    type SubType = foundry.Game.Model.TypeNames<"Item">;
 
     /**
      * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes

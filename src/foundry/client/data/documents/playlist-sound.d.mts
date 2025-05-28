@@ -1,5 +1,5 @@
 import type { AnyObject, Merge } from "#utils";
-import type Sound from "#client-esm/audio/sound.d.mts";
+import type Sound from "#client/audio/sound.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BasePlaylistSound from "#common/documents/playlist-sound.mjs";

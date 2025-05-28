@@ -1,6 +1,6 @@
 import type { ConfiguredMacro } from "fvtt-types/configuration";
 import type { AnyObject, Merge, NullishProps } from "#utils";
-import type { documents } from "#client-esm/client.d.mts";
+import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseMacro from "#common/documents/macro.d.mts";
@@ -74,7 +74,7 @@ declare global {
      * `Macro` has two subtypes `"chat"` and `"script"`. A `Macro` with type `"chat"` will create a
      * `ChatMessage` whereas a `"script"` allows executing arbitrary JavaScript code
      */
-    type SubType = Game.Model.TypeNames<Name>;
+    type SubType = foundry.Game.Model.TypeNames<Name>;
 
     /**
      * @deprecated `Macro` does not have `system` and therefore there is no way for a user to

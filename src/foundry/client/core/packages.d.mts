@@ -1,5 +1,5 @@
 import type { FixedInstanceType, Mixin } from "#utils";
-import type { CONST } from "#client-esm/client.d.mts";
+import type { CONST } from "#client/client.d.mts";
 import type BasePackage from "#common/packages/base-package.d.mts";
 import type AdditionalTypesField from "#common/packages/sub-types.d.mts";
 import type DataModel from "#common/abstract/data.mjs";
@@ -249,7 +249,7 @@ declare global {
      * @deprecated since v12, will be removed in v14
      * @remarks `"System#template is deprecated in favor of System#documentTypes"`
      */
-    get template(): Game["model"];
+    get template(): foundry.Game["model"];
   }
 
   namespace System {

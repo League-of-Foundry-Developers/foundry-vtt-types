@@ -3,7 +3,7 @@ import type { fields } from "#common/data/_module.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import DataField = foundry.data.fields.DataField;
 import type DataModel from "#common/abstract/data.d.mts";
-import type PointVisionSource from "#client-esm/canvas/sources/point-vision-source.d.mts";
+import type PointVisionSource from "#client/canvas/sources/point-vision-source.d.mts";
 
 declare global {
   class ShaderField<

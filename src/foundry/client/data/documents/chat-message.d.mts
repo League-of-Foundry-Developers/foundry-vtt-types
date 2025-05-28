@@ -1,6 +1,6 @@
 import type { ConfiguredChatMessage } from "fvtt-types/configuration";
 import type { AnyObject, InterfaceToObject, Merge, NullishProps } from "#utils";
-import type { documents } from "#client-esm/client.d.mts";
+import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
 import type BaseChatMessage from "#common/documents/chat-message.d.mts";
@@ -75,7 +75,7 @@ declare global {
      * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
      * {@linkcode DataConfig}.
      */
-    type SubType = Game.Model.TypeNames<"ChatMessage">;
+    type SubType = foundry.Game.Model.TypeNames<"ChatMessage">;
 
     /**
      * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes

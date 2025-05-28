@@ -1,6 +1,6 @@
 import type { GetDataReturnType, MaybePromise } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
-import type ApplicationV2 from "#client-esm/applications/api/application.mjs";
+import type ApplicationV2 from "#client/applications/api/application.mjs";
 
 declare global {
   /**

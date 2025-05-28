@@ -67,7 +67,7 @@ declare global {
      * The corresponding fvtt-type configs are {@linkcode SourceConfig} and
      * {@linkcode DataConfig}.
      */
-    type SubType = Game.Model.TypeNames<"JournalEntryPage">;
+    type SubType = foundry.Game.Model.TypeNames<"JournalEntryPage">;
 
     /**
      * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
