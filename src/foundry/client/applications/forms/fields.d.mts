@@ -170,8 +170,8 @@ export interface NumberInputConfig extends FormInputConfig<number> {
 export function createNumberInput(config: NumberInputConfig): HTMLInputElement;
 
 export interface FormSelectOption {
-  value?: string;
-  label?: string;
+  value: string;
+  label: string;
   group?: string;
   disabled?: boolean;
   selected?: boolean;
