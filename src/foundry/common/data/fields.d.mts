@@ -696,7 +696,7 @@ declare namespace DataField {
     /** A field name to assign to the constructed field */
     name: string;
 
-    /**Another data field which is a hierarchical parent of this one */
+    /** Another data field which is a hierarchical parent of this one */
     parent: DataField.Any;
   }>;
 
