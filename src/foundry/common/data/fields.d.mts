@@ -696,10 +696,7 @@ declare namespace DataField {
     /** A field name to assign to the constructed field */
     name: string;
 
-    /**
-     * Another data field which is a hierarchical parent of this one
-     * @remarks Can't be `null` as there's a `!== undefined` check in {@link SchemaField._initialize | `SchemaField#_initialize`}
-     */
+    /**Another data field which is a hierarchical parent of this one */
     parent: DataField.Any;
   }>;
 
