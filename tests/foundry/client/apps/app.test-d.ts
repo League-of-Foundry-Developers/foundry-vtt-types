@@ -25,3 +25,9 @@ expectTypeOf(app.close({ force: false })).toEqualTypeOf<Promise<void>>();
 expectTypeOf(app.close()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(app.render(true)).toEqualTypeOf<Application>();
 expectTypeOf(app.render(false, { height: "auto" })).toEqualTypeOf<Application>();
+
+Hooks.on("renderApplication", (app, html, data) => {
+  expectTypeOf(app).toEqualTypeOf<Application>();
+  expectTypeOf(html).toEqualTypeOf<JQuery>();
+  expectTypeOf(data).toEqualTypeOf<object>();
+});

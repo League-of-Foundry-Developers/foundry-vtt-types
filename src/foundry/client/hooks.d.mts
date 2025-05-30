@@ -28,11 +28,7 @@ type PlaceablesLayerConfig = HookConfigs.PlaceablesLayerConfig;
 // TODO(LukeAbby): Add warning for invalid configuration.
 // Grabs only valid items.
 type ApplicationName = {
-  [K in keyof ApplicationConfig]: K extends string
-    ? ApplicationV2Config[K] extends ApplicationV2.Any
-      ? K
-      : never
-    : never;
+  [K in keyof ApplicationConfig]: K extends string ? (ApplicationConfig[K] extends Application.Any ? K : never) : never;
 }[keyof ApplicationConfig];
 
 type RenderApplicationHooks = {
@@ -1068,9 +1064,9 @@ declare global {
      * The hook provides the pending application HTML which will be added to the DOM.
      * Hooked functions may modify that HTML or attach interactive listeners to it.
      *
-     * @param app   - The Application instance being rendered
-     * @param html  - The inner HTML of the document that will be displayed and may be modified
-     * @param data  - The object of data used when rendering the application
+     * @param app  - The Application instance being rendered
+     * @param html - The inner HTML of the document that will be displayed and may be modified
+     * @param data - The object of data used when rendering the application
      * @template A - the type of the Application
      * @remarks The name for this hook is dynamically created by joining "render" with the type name of the Application.
      * @remarks This is called by {@linkcode Hooks.callAll}.

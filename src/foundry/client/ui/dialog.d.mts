@@ -1,4 +1,12 @@
-import type { MaybePromise } from "#utils";
+import type { Identity, MaybePromise } from "#utils";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationConfig {
+      Dialog: Dialog.Any;
+    }
+  }
+}
 
 declare global {
   /**
@@ -140,6 +148,9 @@ declare global {
   }
 
   namespace Dialog {
+    interface Any extends AnyDialog {}
+    interface AnyConstructor extends Identity<typeof AnyDialog> {}
+
     /** @internal */
     type _JQueryOrHTML<IsJQuery extends boolean | undefined> = IsJQuery extends true ? JQuery : HTMLElement;
 
@@ -325,4 +336,8 @@ declare global {
       close?: (element: JQueryOrHTML) => void;
     }
   }
+}
+
+declare abstract class AnyDialog extends Dialog<Dialog.Options> {
+  constructor(...args: never);
 }

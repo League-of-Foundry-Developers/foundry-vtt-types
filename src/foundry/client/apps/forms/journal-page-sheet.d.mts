@@ -1,7 +1,16 @@
 import type { Editor } from "tinymce";
 import type { EditorView } from "prosemirror-view";
-import type { GetDataReturnType, MaybePromise } from "#utils";
+import type { GetDataReturnType, Identity, MaybePromise } from "#utils";
 import type Showdown from "showdown";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationConfig {
+      JournalPageSheet: JournalPageSheet.Any;
+      JournalTextTinyMCESheet: JournalTextTinyMCESheet.Any;
+    }
+  }
+}
 
 declare global {
   /**
@@ -67,7 +76,8 @@ declare global {
   }
 
   namespace JournalPageSheet {
-    interface Any extends JournalPageSheet<any> {}
+    interface Any extends AnyJournalPageSheet {}
+    interface AnyConstructor extends Identity<typeof AnyJournalPageSheet> {}
 
     interface Options extends DocumentSheet.Options<JournalEntryPage.Implementation> {}
 
@@ -310,6 +320,17 @@ declare global {
   }
 
   namespace JournalTextTinyMCESheet {
+    interface Any extends AnyJournalTextTinyMCESheet {}
+    interface AnyConstructor extends Identity<typeof AnyJournalTextTinyMCESheet> {}
+
     interface MCEData extends JournalTextPageSheet.TextData {}
   }
+}
+
+declare abstract class AnyJournalPageSheet extends JournalPageSheet<JournalPageSheet.Options> {
+  constructor(...args: never);
+}
+
+declare abstract class AnyJournalTextTinyMCESheet extends JournalTextTinyMCESheet {
+  constructor(...args: never);
 }
