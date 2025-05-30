@@ -153,7 +153,7 @@ declare global {
     set<N extends ClientSettings.Namespace, K extends ClientSettings.KeyFor<N>>(
       namespace: N,
       key: K,
-      value: ClientSettings.SettingAssignmentType<N, K>,
+      value: ClientSettings.SettingCreateData<N, K>,
       options?: Setting.Database.CreateOperation<undefined | false> | Setting.Database.UpdateOperation,
     ): Promise<ClientSettings.SettingInitializedType<N, K>>;
   }
@@ -188,7 +188,7 @@ declare global {
      */
     type TypeScriptType = string | number | boolean | symbol | bigint | AnyArray | AnyObject;
 
-    // The type `typeof DataModel<any, any>` is used because Foundry actually constructs with its regular constructor parameters in this case.
+    // TODO(LukeAbby): Look into why switching to `DataModel.AnyConstructor` causes a circularity.
     type RuntimeType = DataField.Any | typeof DataModel<any, any> | SettingFunction | SettingConstructor;
 
     type Type = TypeScriptType | RuntimeType;
@@ -203,17 +203,12 @@ declare global {
       | (T extends readonly (infer V)[] ? typeof Array<V> : never)
       | (T extends AnyObject ? typeof Object : never);
 
-    type SettingAssignmentType<N extends Namespace, K extends KeyFor<N>> = ToSettingAssignmentType<
-      ConfiguredType<N, K>
-    >;
+    type SettingCreateData<N extends Namespace, K extends KeyFor<N>> = ToSettingCreateData<ConfiguredType<N, K>>;
 
-    type ToSettingAssignmentType<T extends Type> = ReplaceUndefinedWithNull<
+    type ToSettingCreateData<T extends Type> = ReplaceUndefinedWithNull<
       | SettingType<T>
       // TODO(LukeAbby): The `fromSource` function is called with `strict` which changes how fallback behaviour works. See `ClientSettings#set`
-      // Note(LukeAbby): This doesn't use `InstanceType` because of this TypeScript issue: https://github.com/microsoft/TypeScript/issues/60839
-      | (T extends (abstract new (...args: infer _1) => infer Instance extends DataModel.Any)
-          ? DataModel.ConstructorDataFor<Instance>
-          : never)
+      | (T extends (abstract new (...args: infer _1) => infer Instance extends DataModel.Any) ? Instance : never)
     >;
 
     type SettingInitializedType<N extends Namespace, K extends KeyFor<N>> = ToSettingInitializedType<
@@ -227,7 +222,7 @@ declare global {
     /**
      * @internal
      */
-    interface _SettingConfig<RuntimeType extends ClientSettings.RuntimeType, AssignmentType> {
+    interface _SettingConfig<RuntimeType extends ClientSettings.RuntimeType, CreateData, InitializedData> {
       /** A unique machine-readable id for the setting */
       key: string;
 
@@ -253,14 +248,14 @@ declare global {
       type?: RuntimeType;
 
       /** For string Types, defines the allowable values */
-      choices?: AssignmentType extends string
+      choices?: CreateData extends string
         ? {
-            readonly [K in AssignmentType]?: string;
+            readonly [K in CreateData]?: string;
           }
         : never;
 
       /** For numeric Types, defines the allowable range */
-      range?: AssignmentType extends number
+      range?: CreateData extends number
         ? {
             max: number;
             min: number;
@@ -269,13 +264,13 @@ declare global {
         : never;
 
       /** The default value */
-      default: AssignmentType;
+      default: CreateData;
 
       /** Whether setting requires Foundry to be reloaded on change  */
       requiresReload?: boolean;
 
       /** Executes when the value of this Setting changes */
-      onChange?: (value: AssignmentType) => void;
+      onChange?: (value: InitializedData) => void;
 
       /**
        * A custom form field input used in conjunction with a DataField type
@@ -289,7 +284,7 @@ declare global {
      * @remarks Not to be confused with {@linkcode globalThis.SettingConfig} which is how you register setting types in this project
      */
     interface SettingConfig<T extends Type = (value: unknown) => unknown>
-      extends _SettingConfig<ToRuntimeType<T>, ToSettingAssignmentType<T>> {}
+      extends _SettingConfig<ToRuntimeType<T>, ToSettingInitializedType<T>, ToSettingCreateData<T>> {}
 
     /**
      * A Client Setting Submenu
@@ -343,6 +338,16 @@ declare global {
       /** If true, only a GM can edit this Setting */
       restricted: boolean;
     }
+
+    /**
+     * @deprecated Replaced with {@linkcode ClientSettings.SettingInitializedType}.
+     */
+    export import SettingAssignmentType = ClientSettings.SettingInitializedType;
+
+    /**
+     * @deprecated Replaced with {@linkcode ClientSettings.ToSettingInitializedType}.
+     */
+    export import ToSettingAssignmentType = ClientSettings.ToSettingInitializedType;
   }
 }
 
