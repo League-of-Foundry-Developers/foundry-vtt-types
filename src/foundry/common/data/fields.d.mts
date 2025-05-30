@@ -1023,12 +1023,6 @@ declare class SchemaField<
   migrateSource(sourceData: AnyObject, fieldData: unknown): unknown;
 }
 
-// FIXME(LukeAbby): This is a quick patch that avoids issues with the fact that the `initial` in `SchemaField` is not actually assignable to its assignment type etc.
-// This will be superseded once proper field treatment is applied.
-declare const __SchemaFieldInitialSymbol: unique symbol;
-
-type __SchemaFieldInitial = typeof __SchemaFieldInitialSymbol;
-
 declare namespace SchemaField {
   /**
    * A shorthand for the options of a SchemaField class.
@@ -2287,6 +2281,18 @@ declare class ArrayField<
   override nullable: boolean;
 
   /**
+   * @deprecated `empty` is a vestigial option that has no function anymore, if you want to prevent an empty array use `min: 1` or higher
+   * @defaultValue `true`
+   */
+  empty: boolean;
+
+  /**
+   * @deprecated `exact` is a vestigial option that has no function anymore, if you want an exact number of elements set `min` and `max` to the same value
+   * @defaultValue `undefined`
+   */
+  exact: number | undefined;
+
+  /**
    * The data type of each element in this array
    */
   element: ElementFieldType;
@@ -2416,8 +2422,17 @@ declare namespace ArrayField {
      */
     max?: number;
 
-    // The two apparently vestigial properties `exact` and `empty` have been omitted. They are not checked by anything in core.
-    // Their presumed functionality can be replicated with `min` and `max`.
+    /**
+     * @deprecated `empty` is a vestigial option that has no function anymore, if you want to prevent an empty array use `min: 1` or higher
+     * @defaultValue `true`
+     */
+    empty?: boolean;
+
+    /**
+     * @deprecated `exact` is a vestigial option that has no function anymore, if you want an exact number of elements set `min` and `max` to the same value
+     * @defaultValue `undefined`
+     */
+    exact?: number | undefined;
   }
 
   type AnyOptions = Options<unknown>;
@@ -2441,8 +2456,8 @@ declare namespace ArrayField {
     {
       required: true;
       nullable: false;
-      // The two apparently vestigial properties `exact` and `empty` have been omitted. They are not checked by anything in core.
-      // Their presumed functionality can be replicated with `min` and `max`.
+      empty: true;
+      exact: undefined;
       min: 0;
       max: number; // Infinity
     }
