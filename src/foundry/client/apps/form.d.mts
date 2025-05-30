@@ -4,15 +4,6 @@ import type { AnyObject, GetDataReturnType, MaybePromise, Identity } from "#util
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "#common/prosemirror/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 
-declare module "#configuration" {
-  namespace Hooks {
-    interface ApplicationConfig {
-      FormApplication: FormApplication.Any;
-      DocumentSheet: DocumentSheet.Any;
-    }
-  }
-}
-
 declare global {
   /**
    * An abstract pattern for defining an Application responsible for updating some object using an HTML form

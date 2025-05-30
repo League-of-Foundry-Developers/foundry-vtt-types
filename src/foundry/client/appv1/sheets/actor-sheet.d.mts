@@ -1,6 +1,14 @@
 import type { GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationConfig {
+      ActorSheet: ActorSheet.Any;
+    }
+  }
+}
+
 /**
  * The Application responsible for displaying and editing a single Actor document.
  * This Application is responsible for rendering an actor's attributes and allowing the actor to be edited.

@@ -3,7 +3,13 @@ import type { Editor } from "tinymce";
 import type { GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 
-// TODO: Migrate DocumentSheet
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationConfig {
+      DocumentSheet: DocumentSheet.Any;
+    }
+  }
+}
 
 /**
  * Extend the FormApplication pattern to incorporate specific logic for viewing or editing Document instances.

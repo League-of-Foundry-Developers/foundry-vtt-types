@@ -1,13 +1,5 @@
 import type { MaybePromise, Identity, ValueOf } from "#utils";
 
-declare module "#configuration" {
-  namespace Hooks {
-    interface ApplicationConfig {
-      Application: Application.Any;
-    }
-  }
-}
-
 declare global {
   /**
    * @defaultValue `0`

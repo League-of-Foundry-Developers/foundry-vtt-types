@@ -1,5 +1,13 @@
 import type { MaybePromise, InexactPartial } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationConfig {
+      JournalSheet: JournalSheet.Any;
+    }
+  }
+}
+
 /**
  * The Application responsible for displaying and editing a single JournalEntry document.
  * @template Options - the type of the options object
