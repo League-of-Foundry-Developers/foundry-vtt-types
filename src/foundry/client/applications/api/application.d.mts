@@ -13,6 +13,14 @@ import type ContextMenu from "../ux/context-menu.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      ApplicationV2: ApplicationV2.Any;
+    }
+  }
+}
+
 declare const __ApplicationV2Brand: unique symbol;
 
 declare const __Configuration: unique symbol;
@@ -57,6 +65,9 @@ declare namespace ApplicationV2 {
       interface Any extends Instance<any, any, any> {}
     }
   }
+
+  type RenderContextOf<Application extends ApplicationV2.Any> = Application[typeof __RenderContext];
+  type RenderOptionsOf<Application extends ApplicationV2.Any> = Application[typeof __RenderOptions];
 
   type EmittedEvents = Readonly<["render", "close", "position"]>;
 

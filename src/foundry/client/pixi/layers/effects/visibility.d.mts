@@ -1,12 +1,23 @@
 import type { HandleEmptyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface CanvasGroupConfig {
+      CanvasVisibility: CanvasVisibility.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * The visibility Layer which implements dynamic vision, lighting, and fog of war
    * This layer uses an event-driven workflow to perform the minimal required calculation in response to changes.
    * @see {@linkcode PointSource}
    */
-  class CanvasVisibility extends CanvasLayer {
+  class CanvasVisibility<
+    DrawOptions extends CanvasVisibility.DrawOptions = CanvasVisibility.DrawOptions,
+    TearDownOptions extends CanvasVisibility.TearDownOptions = CanvasVisibility.TearDownOptions,
+  > extends CanvasGroupMixin<typeof PIXI.Container, "visibility">(PIXI.Container)<DrawOptions, TearDownOptions> {
     /**
      * The currently revealed vision.
      * @remarks Only `undefined` prior to first draw
@@ -98,9 +109,9 @@ declare global {
      */
     initializeVisionMode(): void;
 
-    protected override _draw(options: HandleEmptyObject<CanvasVisibility.DrawOptions>): Promise<void>;
+    protected override _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-    protected override _tearDown(options: HandleEmptyObject<CanvasVisibility.TearDownOptions>): Promise<void>;
+    protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
 
     /**
      * Update the display of the sight layer.
@@ -157,9 +168,9 @@ declare global {
     interface Any extends AnyCanvasVisibility {}
     interface AnyConstructor extends Identity<typeof AnyCanvasVisibility> {}
 
-    interface DrawOptions extends CanvasLayer.DrawOptions {}
+    interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 
-    interface TearDownOptions extends CanvasLayer.TearDownOptions {}
+    interface TearDownOptions extends CanvasGroupMixin.TearDownOptions {}
 
     type TestObject = PlaceableObject.Any | null;
 

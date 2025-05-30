@@ -1,4 +1,4 @@
-import type { FixedInstanceType, HandleEmptyObject, PrettifyType, RemoveIndexSignatures } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity, PrettifyType, RemoveIndexSignatures } from "#utils";
 
 declare const DynamicClass: new <_Computed extends object>(...args: never) => _Computed;
 
@@ -98,7 +98,7 @@ declare global {
     // In `_createLayers` the code assigns top level properties to the class.
     // This is why Group exists.`
     Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup = NoLayerGroup,
-  >(ContainerClass: BaseClass): CanvasGroupMixin.Mixed<BaseClass, Group>;
+  >(ContainerClass: BaseClass): CanvasGroupMixin.Mix<BaseClass, Group>;
 
   /**
    * @deprecated since v12, until 14
@@ -107,15 +107,14 @@ declare global {
   const BaseCanvasMixin: typeof CanvasGroupMixin;
 
   namespace CanvasGroupMixin {
-    interface AnyMixedConstructor
-      extends ReturnType<
-        typeof CanvasGroupMixin<CanvasGroupMixin.BaseClass, CanvasGroupMixin.LayerGroup | NoLayerGroup>
-      > {}
-    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
+    // Note(LukeAbby): This doesn't just use `Mix` because piecing together an `AnyMixed` type is
+    // more subtle than typical here. Specifically
+    interface AnyMixedConstructor extends Identity<typeof AnyCanvasGroup> {}
+    interface AnyMixed extends AnyCanvasGroup {}
 
     type BaseClass = PIXI.Container.AnyConstructor;
 
-    type Mixed<
+    type Mix<
       BaseClass extends CanvasGroupMixin.BaseClass,
       Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
     > = BaseClass & ApplyGroup<BaseClass, Group>;
@@ -147,9 +146,29 @@ declare global {
     type _FilterOutNever<T> = {
       [K in keyof T as [T[K]] extends [never] ? never : K]: T[K];
     };
+
+    /**
+     * @deprecated Replaced by {@linkcode CanvasGroupMixin.Mix}.
+     */
+    export import Mixed = CanvasGroupMixin.Mix;
   }
 }
 
-declare abstract class AnyCanvasGroup extends CanvasGroup<NoLayerGroup> {
+declare abstract class InnerAnyCanvasGroup extends CanvasGroup<
+  NoLayerGroup,
+  CanvasGroupMixin.DrawOptions,
+  CanvasGroupMixin.TearDownOptions
+> {
   constructor(...args: never);
 }
+
+declare class MixableContainer extends PIXI.Container {
+  constructor(...args: any[]);
+}
+
+declare const MergedCanvasGroup: typeof MixableContainer & typeof InnerAnyCanvasGroup & CanvasGroupStatic<any>;
+
+// Note(LukeAbby) It's more involved than typical to get a proper `AnyCanvasGroup` type because
+// static side and instance side have been split apart and mixing `PIXI.Container` has to be done
+// carefully.
+declare abstract class AnyCanvasGroup extends MergedCanvasGroup {}

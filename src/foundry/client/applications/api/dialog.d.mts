@@ -7,6 +7,7 @@ import type {
   DeepPartial,
   EmptyObject,
   GetKey,
+  Identity,
   InexactPartial,
   IntentionalPartial,
   MaybePromise,
@@ -14,6 +15,14 @@ import type {
   SimpleMerge,
 } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      DialogV2: DialogV2.Any;
+    }
+  }
+}
 
 type DeepInexactPartial<T> = T extends object
   ? T extends AnyArray | AnyFunction | AnyConstructor
@@ -87,7 +96,7 @@ declare class DialogV2<
   RenderContext extends object = EmptyObject,
   // TODO(LukeAbby): The `any` is unideal but it's to to stymy a circularity when it's `DialogV2`.
   Configuration extends DialogV2.Configuration = DialogV2.Configuration<any>,
-  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+  RenderOptions extends DialogV2.RenderOptions = DialogV2.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
   static override DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration> & object;
 
@@ -296,6 +305,9 @@ declare class DialogV2<
 }
 
 declare namespace DialogV2 {
+  interface Any extends AnyDialogV2 {}
+  interface AnyConstructor extends Identity<typeof AnyDialogV2> {}
+
   interface Button<Dialog extends DialogV2 = DialogV2> {
     /**
      * The button action identifier.
@@ -338,6 +350,8 @@ declare namespace DialogV2 {
     dialog: Dialog,
   ) => MaybePromise<unknown>;
 
+  interface RenderContext extends ApplicationV2.RenderContext {}
+
   interface Configuration<Dialog extends DialogV2 = DialogV2> extends ApplicationV2.Configuration {
     /**
      * Modal dialogs prevent interaction with the rest of the UI until they are dismissed or submitted.
@@ -366,6 +380,8 @@ declare namespace DialogV2 {
     // TODO(LukeAbby): This will probably never be sufficiently typed.
     submit?: SubmitCallback<unknown, Dialog> | null | undefined;
   }
+
+  interface RenderOptions extends ApplicationV2.RenderOptions {}
 
   type Content<Data extends AnyObject, BaseType extends string | HTMLDivElement = string | HTMLDivElement> = BaseType &
     Internal.FormContent<Data>;
@@ -588,6 +604,10 @@ declare namespace DialogV2 {
       #content: Content;
     }
   }
+}
+
+declare abstract class AnyDialogV2 extends DialogV2<object, DialogV2.Configuration, DialogV2.RenderOptions> {
+  constructor(...args: never);
 }
 
 export default DialogV2;

@@ -1,8 +1,16 @@
 import type ContextMenu from "#client/applications/ux/context-menu.mjs";
-import type { DeepPartial } from "../../../../../utils/index.d.mts";
+import type { DeepPartial, Identity } from "../../../../../utils/index.d.mts";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type AbstractSidebarTab from "../sidebar-tab.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      CombatTracker: CombatTracker.Any;
+    }
+  }
+}
 
 /**
  * An Application that manages switching between Combats and tracking the Combatants in those Combats.
@@ -10,8 +18,8 @@ import type AbstractSidebarTab from "../sidebar-tab.d.mts";
  */
 declare class CombatTracker<
   RenderContext extends CombatTracker.RenderContext = CombatTracker.RenderContext,
-  Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
-  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+  Configuration extends CombatTracker.Configuration = CombatTracker.Configuration,
+  RenderOptions extends CombatTracker.RenderOptions = CombatTracker.RenderOptions,
 > extends HandlebarsApplicationMixin(AbstractSidebarTab)<RenderContext, Configuration, RenderOptions> {
   static override tabName: "combat";
 
@@ -200,7 +208,12 @@ declare class CombatTracker<
 }
 
 declare namespace CombatTracker {
-  interface RenderContext extends AbstractSidebarTab.RenderContext {}
+  interface Any extends AnyCombatTracker {}
+  interface AnyConstructor extends Identity<typeof AnyCombatTracker> {}
+
+  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, AbstractSidebarTab.RenderContext {}
+  interface Configuration extends HandlebarsApplicationMixin.Configuration, AbstractSidebarTab.Configuration {}
+  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, AbstractSidebarTab.RenderOptions {}
 
   interface EffectContext {
     name: string;
@@ -255,6 +268,14 @@ declare namespace CombatTracker {
     icons: EffectContext[];
     tooltip: string;
   }
+}
+
+declare abstract class AnyCombatTracker extends CombatTracker<
+  CombatTracker.RenderContext,
+  CombatTracker.Configuration,
+  CombatTracker.RenderOptions
+> {
+  constructor(...args: never);
 }
 
 export default CombatTracker;

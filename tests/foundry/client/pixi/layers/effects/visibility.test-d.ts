@@ -2,7 +2,6 @@ import { expectTypeOf } from "vitest";
 
 const layer = new CanvasVisibility();
 
-expectTypeOf(layer.options.baseClass).toEqualTypeOf<typeof CanvasLayer>();
 expectTypeOf(layer.vision).toEqualTypeOf<CanvasVisionMask.CanvasVisionContainer | undefined>();
 expectTypeOf(layer.explored).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(layer.visibilityOverlay).toEqualTypeOf<PIXI.Sprite | undefined>();

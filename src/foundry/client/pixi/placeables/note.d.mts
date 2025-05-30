@@ -1,6 +1,14 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { FixedInstanceType, HandleEmptyObject } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceableObjectConfig {
+      Note: Note.Implementation;
+    }
+  }
+}
+
 declare global {
   /**
    * A Note is an implementation of PlaceableObject which represents an annotated location within the Scene.

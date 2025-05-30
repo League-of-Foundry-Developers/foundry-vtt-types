@@ -1,5 +1,13 @@
 import type { EmptyObject, HandleEmptyObject, Identity, NullishProps, RemoveIndexSignatures } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface CanvasLayerConfig {
+      GridLayer: GridLayer.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * A CanvasLayer responsible for drawing a square grid

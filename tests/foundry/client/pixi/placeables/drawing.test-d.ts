@@ -24,6 +24,28 @@ expectTypeOf(Drawing.SHAPE_TYPES).toEqualTypeOf<foundry.data.ShapeData.TYPES>();
 expectTypeOf(Drawing.rescaleDimensions(drawingDoc.toObject(), 50, 72)).toEqualTypeOf<DrawingDocument.Source>();
 expectTypeOf(Drawing.normalizeShape(drawingDoc.toObject())).toEqualTypeOf<DrawingDocument.Source>();
 
+Hooks.on("drawDrawing", (object) => {
+  expectTypeOf(object).toEqualTypeOf<Drawing.Implementation>();
+});
+
+Hooks.on("refreshDrawing", (object) => {
+  expectTypeOf(object).toEqualTypeOf<Drawing.Implementation>();
+});
+
+Hooks.on("destroyDrawing", (object) => {
+  expectTypeOf(object).toEqualTypeOf<Drawing.Implementation>();
+});
+
+Hooks.on("controlDrawing", (object, controlled) => {
+  expectTypeOf(object).toEqualTypeOf<Drawing.Implementation>();
+  expectTypeOf(controlled).toEqualTypeOf<boolean>();
+});
+
+Hooks.on("hoverDrawing", (object, hover) => {
+  expectTypeOf(object).toEqualTypeOf<Drawing.Implementation>();
+  expectTypeOf(hover).toEqualTypeOf<boolean>();
+});
+
 const drawing = new CONFIG.Drawing.objectClass(drawingDoc);
 
 expectTypeOf(drawing.isAuthor).toBeBoolean();

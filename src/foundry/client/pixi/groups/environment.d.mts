@@ -1,5 +1,13 @@
 import type { HandleEmptyObject, Identity, InexactPartial, NullishProps } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface CanvasGroupConfig {
+      EnvironmentCanvasGroup: EffectsCanvasGroup.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * A container group which contains the primary canvas group and the effects canvas group.

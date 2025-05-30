@@ -1,5 +1,13 @@
 import type { HandleEmptyObject, Identity } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceablesLayerConfig {
+      LightingLayer: LightingLayer.Any;
+    }
+  }
+}
+
 /**
  * The Lighting Layer which ambient light sources as part of the CanvasEffectsGroup.
  */

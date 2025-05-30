@@ -105,3 +105,19 @@ expectTypeOf(layer["_findViewportIntersection"](somePoint)).toEqualTypeOf<{
   ray: Ray;
   intersection: LineIntersection | undefined;
 }>();
+
+Hooks.on("drawControlsLayer", (layer) => {
+  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Any>();
+});
+
+Hooks.on("tearDownControlsLayer", (layer) => {
+  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Any>();
+});
+
+Hooks.on("activateControlsLayer", (layer) => {
+  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Any>();
+});
+
+Hooks.on("deactivateControlsLayer", (layer) => {
+  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Any>();
+});

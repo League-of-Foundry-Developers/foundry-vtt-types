@@ -38,3 +38,9 @@ expectTypeOf(layer["_onClickRight"](someEvent)).toBeVoid();
 
 // deprecated since v12 until v14
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<16 | 8 | 0>();
+
+Hooks.on("pasteDrawing", (objects, data, options) => {
+  expectTypeOf(objects).toEqualTypeOf<Drawing.Implementation[]>();
+  expectTypeOf(data).toEqualTypeOf<DrawingDocument.Source>();
+  expectTypeOf(options).toEqualTypeOf<Hooks.PastePlaceableObjectOptions>();
+});

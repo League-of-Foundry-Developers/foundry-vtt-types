@@ -1,13 +1,21 @@
-import type { DeepPartial } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      AbstractSidebarTab: AbstractSidebarTab.Any;
+    }
+  }
+}
 
 /**
  * The sidebar tab interface that allows any sidebar tab to also be rendered as a popout.
  */
 declare abstract class AbstractSidebarTab<
   RenderContext extends AbstractSidebarTab.RenderContext = AbstractSidebarTab.RenderContext,
-  Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
-  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+  Configuration extends AbstractSidebarTab.Configuration = AbstractSidebarTab.Configuration,
+  RenderOptions extends AbstractSidebarTab.RenderOptions = AbstractSidebarTab.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
   static tabName: string;
 
@@ -73,14 +81,26 @@ declare abstract class AbstractSidebarTab<
 }
 
 declare namespace AbstractSidebarTab {
-  type Any = AbstractSidebarTab<any, any, any>;
-  type AnyConstructor = typeof AbstractSidebarTab;
+  interface Any extends AnyAbstractSidebarTab {}
+  interface AnyConstructor extends Identity<typeof AnyAbstractSidebarTab> {}
+
+  interface RenderContext extends ApplicationV2.RenderContext {}
+  interface Configuration extends ApplicationV2.Configuration {}
+  interface RenderOptions extends ApplicationV2.RenderOptions {}
 
   type EmittedEvents = Readonly<["render", "close", "position", "activate", "deactivate"]>;
 
   interface RenderContext extends ApplicationV2.RenderContext {
     user: User.Implementation;
   }
+}
+
+declare abstract class AnyAbstractSidebarTab extends AbstractSidebarTab<
+  AbstractSidebarTab.RenderContext,
+  AbstractSidebarTab.Configuration,
+  AbstractSidebarTab.RenderOptions
+> {
+  constructor(...args: never);
 }
 
 export default AbstractSidebarTab;

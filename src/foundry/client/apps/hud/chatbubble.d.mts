@@ -44,7 +44,7 @@ declare global {
     broadcast(
       token: TokenDocument.Implementation,
       message: string,
-      options: ChatBubbles.ChatBubbleOptions,
+      options: ChatBubbles.Options,
     ): Promise<JQuery | null>;
 
     /**
@@ -112,11 +112,16 @@ declare global {
       unconstrained: number;
     }
 
-    interface ChatBubbleOptions {
+    interface Options {
       cssClasses?: string;
       pan: boolean;
       requireVisible: false;
     }
+
+    /**
+     * @deprecated Replaced with {@linkcode ChatBubbles.Options}.
+     */
+    type ChatBubbleOptions = ChatBubbles.Options;
   }
 }
 

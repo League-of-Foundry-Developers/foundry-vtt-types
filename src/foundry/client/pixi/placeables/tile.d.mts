@@ -1,6 +1,14 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { FixedInstanceType, HandleEmptyObject } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceableObjectConfig {
+      Tile: Tile.Implementation;
+    }
+  }
+}
+
 declare global {
   /**
    * A Tile is an implementation of PlaceableObject which represents a static piece of artwork or prop within the Scene.

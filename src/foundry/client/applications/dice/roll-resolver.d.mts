@@ -1,16 +1,22 @@
-import type { AnyObject, DeepPartial, EmptyObject, Identity, InexactPartial } from "#utils";
+import type { DeepPartial, EmptyObject, Identity, InexactPartial } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      RollResolver: RollResolver.Any;
+    }
+  }
+}
 
 /**
  * An application responsible for handling unfulfilled dice terms in a roll.
  */
-
 declare class RollResolver<
-  RenderContext extends AnyObject = EmptyObject,
-  Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
-  RenderOptions extends
-    HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
+  RenderContext extends RollResolver.RenderContext = EmptyObject,
+  Configuration extends RollResolver.Configuration = RollResolver.Configuration,
+  RenderOptions extends RollResolver.RenderOptions = RollResolver.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   constructor(roll: Roll, options?: DeepPartial<Configuration>);
 
@@ -92,6 +98,10 @@ declare namespace RollResolver {
   interface Any extends AnyRollResolver {}
   interface AnyConstructor extends Identity<typeof AnyRollResolver> {}
 
+  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
+  interface Configuration extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration {}
+  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
+
   interface DiceTermFulfillmentDescriptor {
     id: string;
     term: foundry.dice.terms.DiceTerm;
@@ -101,9 +111,9 @@ declare namespace RollResolver {
 }
 
 declare abstract class AnyRollResolver extends RollResolver<
-  AnyObject,
-  ApplicationV2.Configuration,
-  ApplicationV2.RenderOptions
+  RollResolver.RenderContext,
+  RollResolver.Configuration,
+  RollResolver.RenderOptions
 > {
   constructor(...args: never);
 }

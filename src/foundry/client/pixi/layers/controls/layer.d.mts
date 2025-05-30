@@ -1,6 +1,14 @@
 import type { FixedInstanceType, HandleEmptyObject, Identity, NullishProps } from "#utils";
 import type { LineIntersection } from "#common/utils/geometry.d.mts";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface InteractionLayerConfig {
+      ControlsLayer: ControlsLayer.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * A CanvasLayer for displaying UI controls which are overlayed on top of other layers.

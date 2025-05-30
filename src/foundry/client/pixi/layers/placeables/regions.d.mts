@@ -2,6 +2,14 @@ import type { HandleEmptyObject, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type DataModel from "#common/abstract/data.d.mts";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceablesLayerConfig {
+      RegionLayer: RegionLayer.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * The Region Container.

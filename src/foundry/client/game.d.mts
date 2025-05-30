@@ -483,12 +483,16 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   get activeTool(): string;
 
   /**
-   * Toggle the pause state of the game
-   * Trigger the `pauseGame` Hook when the paused state changes
-   * @param pause - The desired pause state; true for paused, false for un-paused
-   * @param push  - Push the pause state change to other connected clients? Requires an GM user.
-   *                (default: `false`)
+   * Toggle the pause state of the game, triggering the {@link hookEvents.pauseGame} hook when the paused
+   * state changes.
+   * @param pause   - The desired pause state; true for paused, false for un-paused
+   * @param options - Additional options which modify the pause operation
    * @returns The new paused state
+   */
+  togglePause(pause: boolean, options?: Game.TogglePauseOptions): void;
+
+  /**
+   * @deprecated "You are passing the legacy `push` boolean to `Game#togglePause`. This is replaced by the `broadcast` option, for example `game.togglePause(true, {broadcast: true})`" (since v13 until v15)
    */
   togglePause(pause: boolean, push?: boolean): void;
 
@@ -731,6 +735,21 @@ declare namespace Game {
   };
 
   type View = ValueOf<typeof foundry.CONST.GAME_VIEWS>;
+
+  interface TogglePauseOptions {
+    /**
+     * Broadcast the pause state change to other connected clients?
+     * Broadcasting to other clients can only be done by a GM user.
+     * @defaultValue `false`
+     */
+    broadcast?: boolean | undefined;
+
+    /**
+     * The ID of the user who triggered the pause operation. This is
+     * populated automatically by the game server.
+     */
+    userId?: string | undefined;
+  }
 }
 
 declare global {

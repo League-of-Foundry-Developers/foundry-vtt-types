@@ -1,4 +1,13 @@
+import type { Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      BasePlaceableHUD: BasePlaceableHUD.Any;
+    }
+  }
+}
 
 /**
  * An abstract base class for displaying a heads-up-display interface bound to a Placeable Object on the Canvas.
@@ -7,8 +16,8 @@ import type ApplicationV2 from "../api/application.d.mts";
 declare class BasePlaceableHUD<
   ActiveHUDObject extends PlaceableObject.Any = PlaceableObject,
   RenderContext extends object = BasePlaceableHUD.RenderContext,
-  Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
-  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+  Configuration extends BasePlaceableHUD.Configuration = BasePlaceableHUD.Configuration,
+  RenderOptions extends BasePlaceableHUD.RenderOptions = BasePlaceableHUD.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
   /**
    * Reference a PlaceableObject this HUD is currently bound to.
@@ -27,6 +36,9 @@ declare class BasePlaceableHUD<
 }
 
 declare namespace BasePlaceableHUD {
+  interface Any extends AnyBasePlaceableHUD {}
+  interface AnyConstructor extends Identity<typeof AnyBasePlaceableHUD> {}
+
   // TODO: Make generic so it can extend the document source data (calls document#toObject with Object.assign)
   interface RenderContext {
     id: string;
@@ -36,6 +48,18 @@ declare namespace BasePlaceableHUD {
     isGamePaused: boolean;
     // TODO: Remaining properties
   }
+
+  interface Configuration extends ApplicationV2.Configuration {}
+  interface RenderOptions extends ApplicationV2.RenderOptions {}
+}
+
+declare abstract class AnyBasePlaceableHUD extends BasePlaceableHUD<
+  PlaceableObject.Any,
+  object,
+  BasePlaceableHUD.Configuration,
+  BasePlaceableHUD.RenderOptions
+> {
+  constructor(...args: never);
 }
 
 export default BasePlaceableHUD;

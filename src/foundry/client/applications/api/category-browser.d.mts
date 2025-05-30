@@ -1,6 +1,14 @@
-import type { DeepPartial } from "../../../../utils/index.d.mts";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
 import type HandlebarsApplicationMixin from "./handlebars-application.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      CategoryBrowser: CategoryBrowser.Any;
+    }
+  }
+}
 
 /**
  * An abstract class responsible for displaying a 2-pane Application that allows for entries to be grouped and filtered
@@ -10,8 +18,7 @@ declare abstract class CategoryBrowser<
   Entry,
   RenderContext extends CategoryBrowser.RenderContext<Entry> = CategoryBrowser.RenderContext<Entry>,
   Configuration extends CategoryBrowser.Configuration = CategoryBrowser.Configuration,
-  RenderOptions extends
-    HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
+  RenderOptions extends CategoryBrowser.RenderOptions = CategoryBrowser.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   static DEFAULT_OPTIONS: DeepPartial<CategoryBrowser.Configuration> & object;
 
@@ -71,13 +78,31 @@ declare abstract class CategoryBrowser<
 }
 
 declare namespace CategoryBrowser {
-  interface Configuration extends ApplicationV2.Configuration {
+  interface Any extends AnyCategoryBrowser {}
+  interface AnyConstructor extends Identity<typeof AnyCategoryBrowser> {}
+
+  /**
+   * @remarks Foundry's override of `_prepareContext` does not call `super`. Therefore it does not
+   * inherit context from its parent class.
+   */
+  interface RenderContext<Entry> {
+    rootId: string;
+    loading: boolean | null;
+    categories: CategoryData<Entry>;
+    packageList: boolean;
+    subtemplates: Subtemplates;
+    submitButton: boolean;
+  }
+
+  interface Configuration extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration {
     /** The initial category tab: omitting this will result in an initial active tab that corresponds with the first category by insertion order. */
     initialCategory: string | null;
 
     /** Additional Template partials for specific use with this class */
     subtemplates: Subtemplates;
   }
+
+  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
 
   interface Subtemplates {
     /** The markup used for each category: required to be set by any subclass */
@@ -90,20 +115,18 @@ declare namespace CategoryBrowser {
     sidebarFooter: string | null;
   }
 
-  interface RenderContext<Entry> {
-    rootId: string;
-    loading: boolean | null;
-    categories: CategoryData<Entry>;
-    packageList: boolean;
-    subtemplates: Subtemplates;
-    submitButton: boolean;
-  }
-
   interface CategoryData<Entry> {
     id: string;
     label: string;
     entries: Entry[];
   }
 }
+
+declare abstract class AnyCategoryBrowser extends CategoryBrowser<
+  unknown,
+  CategoryBrowser.RenderContext<unknown>,
+  CategoryBrowser.Configuration,
+  CategoryBrowser.RenderOptions
+> {}
 
 export default CategoryBrowser;

@@ -1,5 +1,13 @@
 import type { HandleEmptyObject, Identity, NullishProps } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface CanvasGroupConfig {
+      EffectsCanvasGroup: EffectsCanvasGroup.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * A container group which contains visual effects rendered above the primary group.

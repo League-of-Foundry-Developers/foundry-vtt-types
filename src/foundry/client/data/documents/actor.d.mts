@@ -596,6 +596,20 @@ declare global {
     }>;
 
     interface GetDependentTokensOptions extends _GetDependentTokensOptions {}
+
+    interface ModifyTokenAttributeData {
+      /** The attribute path */
+      attribute: string;
+
+      /** The target attribute value */
+      value: number;
+
+      /** Whether the number represents a relative change (true) or an absolute change (false) */
+      isDelta: boolean;
+
+      /** Whether the new value is part of an attribute bar, or just a direct value */
+      isBar: boolean;
+    }
   }
 
   /**
@@ -768,6 +782,7 @@ declare global {
      * @param isBar     - Whether the new value is part of an attribute bar, or just a direct value (default: `true`)
      * @returns The updated Actor document
      */
+    // Note: Must be kept in sync with `Actor.ModifyTokenAttributeData`
     modifyTokenAttribute(
       attribute: string,
       // TODO: tighten Combatant.Resource with the justification of this being simply `number`

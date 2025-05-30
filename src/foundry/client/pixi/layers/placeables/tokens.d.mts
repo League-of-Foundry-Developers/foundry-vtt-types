@@ -1,6 +1,14 @@
 import type { HandleEmptyObject, Identity, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceablesLayerConfig {
+      TokenLayer: TokenLayer.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * The Tokens Container

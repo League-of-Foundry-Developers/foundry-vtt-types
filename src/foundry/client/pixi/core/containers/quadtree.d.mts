@@ -4,7 +4,7 @@ declare global {
   /**
    * A Quadtree implementation that supports collision detection for rectangles.
    */
-  class Quadtree<T> {
+  class Quadtree<out T> {
     /**
      * @param bounds  - The outer bounds of the region
      * @param options - Additional options which configure the Quadtree
@@ -201,7 +201,8 @@ declare global {
        * after a potential collision is found. Parameters are the object and rect, and the
        * function should return true if the object should be added to the result set.
        */
-      collisionTest: (o: Quadtree.Object<T>, rect: Canvas.Rectangle) => boolean;
+      // Note(LukeAbby): Made a method to preserve covariance.
+      collisionTest(o: Quadtree.Object<T>, rect: Canvas.Rectangle): boolean;
 
       /**
        * The existing result set, for internal use.
@@ -229,7 +230,7 @@ declare global {
    * A subclass of Quadtree specifically intended for classifying the location of objects on the game canvas.
    * @remarks Foundry never uses `Quadtree` directly, only this class, and only ever fills it with `PrimaryCanvasObject`s or `PlaceableObject`s
    */
-  class CanvasQuadtree<T extends CanvasQuadtree.CanvasQuadtreeObject> extends Quadtree<T> {
+  class CanvasQuadtree<out T extends CanvasQuadtree.CanvasQuadtreeObject> extends Quadtree<T> {
     constructor(options?: Quadtree.Options<T>);
 
     /** @remarks A getter for `canvas.dimensions.rect` */

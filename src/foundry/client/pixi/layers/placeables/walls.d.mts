@@ -1,5 +1,13 @@
 import type { Coalesce, HandleEmptyObject, Identity, NullishProps } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceablesLayerConfig {
+      WallsLayer: WallsLayer.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * The Walls canvas layer which provides a container for Wall objects within the rendered Scene.

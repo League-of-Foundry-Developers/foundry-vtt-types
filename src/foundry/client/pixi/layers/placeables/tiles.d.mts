@@ -1,5 +1,13 @@
 import type { HandleEmptyObject, Identity } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceablesLayerConfig {
+      TilesLayer: TilesLayer.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * A PlaceablesLayer designed for rendering the visual Scene for a specific vertical cross-section.

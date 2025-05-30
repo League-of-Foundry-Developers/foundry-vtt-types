@@ -1,6 +1,6 @@
 // Note(LukeAbby): This exists so that you can do stuff like this:
 // ```typescript
-// declare module "fvtt-types" {
+// declare module "fvtt-types/configuration" {
 //   namespace foundry.dice.terms.RollTerm {
 //     interface Options {
 //       rollOrder?: number;

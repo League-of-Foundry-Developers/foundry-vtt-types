@@ -1,5 +1,14 @@
+import type { Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      DependencyResolution: DependencyResolution.Any;
+    }
+  }
+}
 
 /**
  * A class responsible for prompting the user about dependency resolution for their modules.
@@ -7,13 +16,25 @@ import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts
  */
 declare class DependencyResolution<
   RenderContext extends DependencyResolution.RenderContext = DependencyResolution.RenderContext,
-  Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
-  RenderOptions extends
-    HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
+  Configuration extends DependencyResolution.Configuration = DependencyResolution.Configuration,
+  RenderOptions extends DependencyResolution.RenderOptions = DependencyResolution.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {}
 
 declare namespace DependencyResolution {
-  interface RenderContext extends ApplicationV2.RenderContext {}
+  interface Any extends AnyRollResolver {}
+  interface AnyConstructor extends Identity<typeof AnyRollResolver> {}
+
+  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
+  interface Configuration extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration {}
+  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
+}
+
+declare abstract class AnyRollResolver extends DependencyResolution<
+  DependencyResolution.RenderContext,
+  DependencyResolution.Configuration,
+  DependencyResolution.RenderOptions
+> {
+  constructor(...args: never);
 }
 
 export default DependencyResolution;

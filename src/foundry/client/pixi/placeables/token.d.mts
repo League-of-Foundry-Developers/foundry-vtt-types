@@ -12,6 +12,14 @@ import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import BaseToken = foundry.documents.BaseToken;
 import sources = foundry.canvas.sources;
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceableObjectConfig {
+      Token: Token.Implementation;
+    }
+  }
+}
+
 declare global {
   /**
    * A Token is an implementation of PlaceableObject which represents an Actor within a viewed Scene on the game canvas.

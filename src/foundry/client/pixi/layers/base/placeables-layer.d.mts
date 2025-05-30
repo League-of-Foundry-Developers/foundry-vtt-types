@@ -4,8 +4,8 @@ import type {
   HandleEmptyObject,
   Identity,
   InexactPartial,
-  IntentionalPartial,
   NullishProps,
+  ToMethod,
 } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
@@ -17,8 +17,7 @@ declare global {
    * @template DocumentName - The key of the configuration which defines the object and document class.
    * @template Options      - The type of the options in this layer.
    */
-  // TODO(LukeAbby): Make `DocumentName` covariant.
-  class PlaceablesLayer<DocumentName extends PlaceablesLayer.DocumentNames> extends InteractionLayer {
+  class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentNames> extends InteractionLayer {
     /**
      * Sort order for placeables belonging to this layer
      * @defaultValue `0`
@@ -345,10 +344,8 @@ declare global {
      * @throws An error if the `transformation` parameter is neither a function nor a plain object
      */
     updateAll(
-      transformation:
-        | ((placeable: Document.ObjectFor<DocumentName>) => Document.UpdateDataForName<DocumentName>)
-        | Document.UpdateDataForName<DocumentName>,
-      condition?: ((placeable: Document.ObjectFor<DocumentName>) => boolean) | null,
+      transformation: PlaceablesLayer.UpdateAllTransformation<DocumentName>,
+      condition?: PlaceablesLayer.UpdateAllCondition<DocumentName> | null,
       options?: PlaceablesLayer.UpdateAllOptions<DocumentName>, // not:null (updateEmbeddedDocuments tries to set `parent` on it)
     ): Promise<Array<Document.ImplementationFor<DocumentName>>>;
 
@@ -420,6 +417,13 @@ declare global {
 
     type ImplementationClassFor<Name extends DocumentNames> = CONFIG[Name]["layerClass"];
     type ImplementationFor<Name extends DocumentNames> = FixedInstanceType<CONFIG[Name]["layerClass"]>;
+
+    type DocumentNameOf<ConcretePlaceablesLayer extends PlaceablesLayer.Any> =
+      ConcretePlaceablesLayer extends PlaceablesLayer<infer DocumentName> ? DocumentName : never;
+
+    type ObjectOf<ConcretePlaceablesLayer extends PlaceablesLayer.Any> = Document.ObjectFor<
+      DocumentNameOf<ConcretePlaceablesLayer>
+    >;
 
     interface DrawOptions extends InteractionLayer.DrawOptions {}
 
@@ -631,9 +635,17 @@ declare global {
 
     interface SelectObjectsAdditionalOptions extends _SelectObjectAdditionalOptions {}
 
-    type UpdateAllOptions<DocumentName extends DocumentNames> = IntentionalPartial<
-      Document.UpdateDataForName<DocumentName>
-    >;
+    // Note(LukeAbby): This uses `ToMethod` for variance reasons. Specifically this should be
+    // covariant over `DocumentName`.
+    type UpdateAllTransformation<DocumentName extends DocumentNames> =
+      | ToMethod<(placeable: Document.ObjectFor<DocumentName>) => Document.UpdateDataForName<DocumentName>>
+      | Document.UpdateDataForName<DocumentName>;
+
+    type UpdateAllCondition<DocumentName extends DocumentNames> = (
+      placeable: Document.ObjectFor<DocumentName>,
+    ) => boolean;
+
+    type UpdateAllOptions<DocumentName extends DocumentNames> = Document.Database.UpdateOperationForName<DocumentName>;
 
     /** @internal */
     type _CanvasCoordinatesFromDropOptions = NullishProps<{

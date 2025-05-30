@@ -1,5 +1,13 @@
 import type { HandleEmptyObject, Identity } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface CanvasGroupConfig {
+      HiddenCanvasGroup: HiddenCanvasGroup.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * A specialized canvas group for rendering hidden containers before all others (like masks).

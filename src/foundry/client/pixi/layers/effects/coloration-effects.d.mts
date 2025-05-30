@@ -1,5 +1,13 @@
 import type { HandleEmptyObject, Identity } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface CanvasLayerConfig {
+      CanvasColorationEffects: CanvasColorationEffects.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * A CanvasLayer for displaying coloration visual effects

@@ -1,6 +1,6 @@
 /**
  * A controller class for managing tabbed navigation within an Application instance.
- * @see {@link foundry.applications.api.ApplicationV2}
+ * @see {@linkcode foundry.applications.api.ApplicationV2}
  *
  * @example Configure tab-control for a set of HTML elements
  * ```html

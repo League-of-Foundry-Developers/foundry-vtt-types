@@ -2,6 +2,14 @@ import type { FixedInstanceType, HandleEmptyObject, NullishProps } from "#utils"
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import Edge = foundry.canvas.edges.Edge;
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceableObjectConfig {
+      Wall: Wall.Implementation;
+    }
+  }
+}
+
 declare global {
   /**
    * A Wall is an implementation of PlaceableObject which represents a physical or visual barrier within the Scene.

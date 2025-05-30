@@ -1,5 +1,13 @@
 import type { HandleEmptyObject, Identity } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceablesLayerConfig {
+      DrawingsLayer: DrawingsLayer.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * The DrawingsLayer subclass of PlaceablesLayer.

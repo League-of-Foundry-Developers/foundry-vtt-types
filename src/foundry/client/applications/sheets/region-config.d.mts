@@ -1,16 +1,22 @@
-import type { AnyObject, DeepPartial, EmptyObject } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      RegionConfig: RegionConfig.Any;
+    }
+  }
+}
 
 /**
  * The Scene Region configuration application.
  */
-export default class RegionConfig<
-  RenderContext extends AnyObject = EmptyObject,
-  Configuration extends
-    DocumentSheetV2.Configuration<RegionDocument.Implementation> = DocumentSheetV2.Configuration<RegionDocument.Implementation>,
-  RenderOptions extends
-    HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
+declare class RegionConfig<
+  RenderContext extends object = RegionConfig.RenderContext,
+  Configuration extends RegionConfig.Configuration = RegionConfig.Configuration,
+  RenderOptions extends RegionConfig.RenderOptions = RegionConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
   RegionDocument.Implementation,
   RenderContext,
@@ -41,3 +47,28 @@ export default class RegionConfig<
 
   #regionConfig: true;
 }
+
+declare namespace RegionConfig {
+  interface Any extends AnyRegionConfig {}
+  interface AnyConstructor extends Identity<typeof AnyRegionConfig> {}
+
+  interface RenderContext
+    extends HandlebarsApplicationMixin.RenderContext,
+      DocumentSheetV2.RenderContext<RegionDocument.Implementation> {}
+
+  interface Configuration
+    extends HandlebarsApplicationMixin.Configuration,
+      DocumentSheetV2.Configuration<RegionDocument.Implementation> {}
+
+  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
+}
+
+declare abstract class AnyRegionConfig extends RegionConfig<
+  object,
+  RegionConfig.Configuration,
+  RegionConfig.RenderOptions
+> {
+  constructor(...args: never);
+}
+
+export default RegionConfig;

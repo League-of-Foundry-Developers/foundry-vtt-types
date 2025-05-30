@@ -1,5 +1,13 @@
 import type { HandleEmptyObject, Identity, InexactPartial, NullishProps } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceablesLayerConfig {
+      NotesLayer: NotesLayer.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * The Notes Layer which contains Note canvas objects

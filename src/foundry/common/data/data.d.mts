@@ -656,13 +656,15 @@ declare namespace PrototypeToken {
   }
 
   /**
-   * {@linkcode PrototypeToken.CreateData}
+   * @deprecated Replace with {@linkcode PrototypeToken.CreateData}.
    */
   type ConstructorData = CreateData;
 
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   export import Flags = TokenDocument.Flags;
 }
@@ -672,10 +674,7 @@ declare namespace PrototypeToken {
  */
 declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeToken.Parent> {
   // options: not null (destructured when passed to super)
-  constructor(
-    data?: PrototypeToken.ConstructorData | null,
-    options?: DataModel.ConstructionContext<PrototypeToken.Parent>,
-  );
+  constructor(data?: PrototypeToken.Source | null, options?: DataModel.ConstructionContext<PrototypeToken.Parent>);
 
   /**
    * @defaultValue `{}`

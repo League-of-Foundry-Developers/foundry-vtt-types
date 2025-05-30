@@ -1,6 +1,14 @@
 import type { FixedInstanceType, HandleEmptyObject } from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceableObjectConfig {
+      MeasuredTemplate: MeasuredTemplate.Implementation;
+    }
+  }
+}
+
 declare global {
   /**
    * A type of Placeable Object which highlights an area of the grid as covered by some area of effect.

@@ -1,5 +1,13 @@
 import type { Identity } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface CanvasGroupConfig {
+      RenderedCanvasGroup: RenderedCanvasGroup.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * A container group which contains the environment canvas group and the interface canvas group.

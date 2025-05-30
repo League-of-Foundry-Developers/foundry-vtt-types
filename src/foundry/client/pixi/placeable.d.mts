@@ -176,6 +176,19 @@ declare global {
      */
     getSnappedPosition(position?: Canvas.Point | null): Canvas.Point;
 
+    /**
+     * Get the data of the copied object pasted at the position given by the offset.
+     * Called by {@linkcode foundry.canvas.layers.PlaceablesLayer#pasteObjects} for each copied object.
+     * @param offset - The offset relative from the current position to the destination
+     * @param options - Options of {@linkcode foundry.canvas.layers.PlaceablesLayer#pasteObjects}
+     * @returns The update data
+     * @internal
+     */
+    _pasteObject(
+      offset: Canvas.Point,
+      { hidden, snap }?: PlaceableObject.PasteObjectOptions,
+    ): PlaceableObject.PasteObjectReturn<CanvasDocument>;
+
     override applyRenderFlags(): void;
 
     /**
@@ -727,6 +740,24 @@ declare global {
        */
       rotation: number | undefined;
     }
+
+    interface PasteObjectOptions {
+      /**
+       * Paste in a hidden state, if applicable. Default is false.
+       * @defaultValue `false`
+       */
+      hidden?: boolean | undefined;
+
+      /**
+       * Snap to the grid. Default is true.
+       * @defaultValue `true`
+       */
+      snap?: boolean | undefined;
+    }
+
+    type PasteObjectReturn<CanvasDocument extends PlaceableObject.AnyCanvasDocument> = Document.SourceForName<
+      CanvasDocument["documentName"]
+    >;
   }
 }
 

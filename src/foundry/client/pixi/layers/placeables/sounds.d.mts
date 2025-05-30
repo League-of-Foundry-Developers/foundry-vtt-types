@@ -1,5 +1,13 @@
 import type { IntentionalPartial, InexactPartial, NullishProps, HandleEmptyObject, Identity } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceablesLayerConfig {
+      SoundsLayer: SoundsLayer.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * This Canvas Layer provides a container for AmbientSound objects.

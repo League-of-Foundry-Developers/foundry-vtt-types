@@ -1,6 +1,14 @@
 import type { ValueOf, FixedInstanceType, HandleEmptyObject, RequiredProps, NullishProps } from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceableObjectConfig {
+      Drawing: Drawing.Implementation;
+    }
+  }
+}
+
 declare global {
   /**
    * The Drawing object is an implementation of the PlaceableObject container.

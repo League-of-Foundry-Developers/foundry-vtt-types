@@ -4,6 +4,14 @@ import type RegionShape from "#client/canvas/regions/shape.d.mts";
 import type RegionPolygonTree from "#client/canvas/regions/polygon-tree.d.mts";
 import type RegionGeometry from "#client/canvas/regions/geometry.d.mts";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceableObjectConfig {
+      Region: Region.Implementation;
+    }
+  }
+}
+
 declare global {
   /**
    * A Region is an implementation of PlaceableObject which represents a Region document

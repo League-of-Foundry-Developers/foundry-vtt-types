@@ -9,6 +9,14 @@ import type {
   RequiredProps,
 } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceableObjectConfig {
+      AmbientSound: AmbientSound.Implementation;
+    }
+  }
+}
+
 declare global {
   /**
    * An AmbientSound is an implementation of PlaceableObject which represents a dynamic audio source within the Scene.

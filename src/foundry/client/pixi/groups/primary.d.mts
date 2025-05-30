@@ -3,6 +3,14 @@ import type { Brand, HandleEmptyObject, Identity } from "#utils";
 // Included to match Foundry's documented types
 type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface CanvasGroupConfig {
+      PrimaryCanvasGroup: PrimaryCanvasGroup.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * The primary Canvas group which generally contains tangible physical objects which exist within the Scene.

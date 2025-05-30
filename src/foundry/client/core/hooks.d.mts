@@ -1,4 +1,5 @@
 import type { AnyFunction } from "#utils";
+import type { Hooks as HookConfig } from "#configuration";
 
 declare global {
   /**
@@ -20,12 +21,30 @@ declare global {
      * @param options - Options which customize hook registration
      * @returns An ID number of the hooked function which can be used to turn off the hook later
      */
-    static on<K extends keyof Hooks.StaticCallbacks>(
+    static on<K extends keyof HookConfig.HookConfig>(
       hook: K,
-      fn: Hooks.StaticCallbacks[K],
+      fn: HookConfig.HookConfig[K],
       options?: Hooks.OnOptions,
     ): number;
+
+    /**
+     * @deprecated These hooks are now designed to be automatically inferred.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     static on<H extends Hooks.DynamicCallbacks>(hook: string, fn: H, options?: Hooks.OnOptions): number;
+
+    /**
+     * @deprecated This hook has been deprecated. See the hook's definition for more details.
+     */
+    static on<K extends keyof HookConfig.DeprecatedHookConfig>(
+      hook: K,
+      fn: HookConfig.DeprecatedHookConfig[K],
+      options?: Hooks.OnOptions,
+    ): number;
+
+    /**
+     * @deprecated Please merge into {@linkcode HookConfig.HookConfig | "fvtt-types/configuration/Hooks.HookConfig"} instead.
+     */
     static on<H extends AnyFunction>(hook: string, fn: H, options?: Hooks.OnOptions): number;
 
     /**
@@ -35,12 +54,24 @@ declare global {
      * @param fn   - The callback function which should be triggered when the hook event occurs
      * @returns An ID number of the hooked function which can be used to turn off the hook later
      */
-    static once<K extends keyof Hooks.StaticCallbacks>(
+    static once<K extends keyof HookConfig.HookConfig>(hook: K, fn: HookConfig.HookConfig[K]): number;
+
+    /**
+     * @deprecated These hooks are now designed to be automatically inferred.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    static once<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): number;
+
+    /**
+     * @deprecated This hook has been deprecated. See the hook's definition for more details.
+     */
+    static once<K extends keyof HookConfig.DeprecatedHookConfig>(
       hook: K,
-      fn: Hooks.StaticCallbacks[K],
-    ): ReturnType<(typeof Hooks)["on"]>;
-    static once<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): ReturnType<(typeof Hooks)["on"]>;
-    static once<H extends (...args: any) => any>(hook: string, fn: H): ReturnType<(typeof Hooks)["on"]>;
+      fn: HookConfig.DeprecatedHookConfig[K],
+      options?: Hooks.OnOptions,
+    ): number;
+
+    static once<H extends AnyFunction>(hook: string, fn: H): number;
 
     /**
      * Unregister a callback handler for a particular hook event
@@ -48,9 +79,27 @@ declare global {
      * @param hook - The unique name of the hooked event
      * @param fn   - The function, or ID number for the function, that should be turned off
      */
-    static off<K extends keyof Hooks.StaticCallbacks>(hook: K, fn: number | Hooks.StaticCallbacks[K]): void;
+    static off<K extends keyof HookConfig.HookConfig>(hook: K, fn: number | HookConfig.HookConfig[K]): void;
+
+    /**
+     * @deprecated These hooks are now designed to be automatically inferred.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     static off<H extends Hooks.DynamicCallbacks>(hook: string, fn: number | H): void;
-    static off<H extends (...args: any) => any>(hook: string, fn: number | H): void;
+
+    /**
+     * @deprecated This hook has been deprecated. See the hook's definition for more details.
+     */
+    static off<K extends keyof HookConfig.DeprecatedHookConfig>(
+      hook: K,
+      fn: number | HookConfig.DeprecatedHookConfig[K],
+      options?: Hooks.OnOptions,
+    ): void;
+
+    /**
+     * @deprecated Please merge into {@linkcode HookConfig.HookConfig | "fvtt-types/configuration/Hooks.HookConfig"} instead.
+     */
+    static off<H extends AnyFunction>(hook: string, fn: number | H): void;
 
     /**
      * Call all hook listeners in the order in which they were registered
@@ -59,9 +108,26 @@ declare global {
      * @param hook - The hook being triggered
      * @param args - Arguments passed to the hook callback functions
      */
-    static callAll<K extends keyof Hooks.StaticCallbacks>(hook: K, ...args: Parameters<Hooks.StaticCallbacks[K]>): true;
+    static callAll<K extends keyof HookConfig.HookConfig>(hook: K, ...args: Parameters<HookConfig.HookConfig[K]>): true;
+
+    /**
+     * @deprecated These hooks are now designed to be automatically inferred.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     static callAll<H extends Hooks.DynamicCallbacks>(hook: string, ...args: Parameters<H>): true;
-    static callAll<H extends (...args: any) => any>(hook: string, ...args: Parameters<H>): true;
+
+    /**
+     * @deprecated This hook has been deprecated. See the hook's definition for more details.
+     */
+    static callAll<K extends keyof HookConfig.DeprecatedHookConfig>(
+      hook: K,
+      ...args: Parameters<HookConfig.DeprecatedHookConfig[K]>
+    ): true;
+
+    /**
+     * @deprecated Please merge into {@linkcode HookConfig.HookConfig | "fvtt-types/configuration/Hooks.HookConfig"} instead.
+     */
+    static callAll<H extends (...args: unknown[]) => unknown>(hook: string, ...args: Parameters<H>): true;
 
     /**
      * Call hook listeners in the order in which they were registered.
@@ -73,9 +139,26 @@ declare global {
      * @param hook - The hook being triggered
      * @param args - Arguments passed to the hook callback functions
      */
-    static call<K extends keyof Hooks.StaticCallbacks>(hook: K, ...args: Parameters<Hooks.StaticCallbacks[K]>): boolean;
+    static call<K extends keyof HookConfig.HookConfig>(hook: K, ...args: Parameters<HookConfig.HookConfig[K]>): boolean;
+
+    /**
+     * @deprecated These hooks are now designed to be automatically inferred.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     static call<H extends Hooks.DynamicCallbacks>(hook: string, ...args: Parameters<H>): boolean;
-    static call<H extends (...args: any) => any>(hook: string, ...args: Parameters<H>): boolean;
+
+    /**
+     * @deprecated This hook has been deprecated. See the hook's definition for more details.
+     */
+    static call<K extends keyof HookConfig.DeprecatedHookConfig>(
+      hook: K,
+      ...args: Parameters<HookConfig.DeprecatedHookConfig[K]>
+    ): boolean;
+
+    /**
+     * @deprecated Please merge into {@linkcode HookConfig.HookConfig | "fvtt-types/configuration/Hooks.HookConfig"} instead.
+     */
+    static call<H extends (...args: unknown[]) => unknown>(hook: string, ...args: Parameters<H>): boolean;
 
     /**
      * Notify subscribers that an error has occurred within foundry.
@@ -83,40 +166,7 @@ declare global {
      * @param error    - The error.
      * @param options  - Additional options to configure behaviour.
      */
-    static onError(
-      location: string,
-      error: Error,
-      {
-        msg,
-        notify,
-        log,
-        ...data
-      }?: {
-        /**
-         * Additional data to pass to the hook subscribers.
-         * @defaultValue `{}`
-         */
-        [key: string]: unknown;
-
-        /**
-         * A message which should prefix the resulting error or notification.
-         * @defaultValue `""`
-         */
-        msg?: string | undefined;
-
-        /**
-         * The level at which to log the error to console (if at all).
-         * @defaultValue `null`
-         */
-        notify?: keyof NonNullable<(typeof ui)["notifications"]> | null | undefined;
-
-        /**
-         * The level at which to spawn a notification in the UI (if at all).
-         * @defaultValue `null`
-         */
-        log?: keyof typeof console | null | undefined;
-      },
-    ): void;
+    static onError(location: string, error: Error, { msg, notify, log, ...data }?: Hooks.OnError): void;
   }
 
   namespace Hooks {
@@ -125,6 +175,32 @@ declare global {
       id: number;
       fn: AnyFunction;
       once: boolean;
+    }
+
+    interface OnError {
+      /**
+       * Additional data to pass to the hook subscribers.
+       * @defaultValue `{}`
+       */
+      [key: string]: unknown;
+
+      /**
+       * A message which should prefix the resulting error or notification.
+       * @defaultValue `""`
+       */
+      msg?: string | undefined;
+
+      /**
+       * The level at which to log the error to console (if at all).
+       * @defaultValue `null`
+       */
+      notify?: keyof NonNullable<typeof ui.notifications> | null | undefined;
+
+      /**
+       * The level at which to spawn a notification in the UI (if at all).
+       * @defaultValue `null`
+       */
+      log?: keyof typeof console | null | undefined;
     }
   }
 }

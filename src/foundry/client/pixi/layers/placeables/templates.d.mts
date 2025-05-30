@@ -1,5 +1,13 @@
 import type { HandleEmptyObject, Identity } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceablesLayerConfig {
+      TemplateLayer: TemplateLayer.Any;
+    }
+  }
+}
+
 /**
  * This Canvas Layer provides a container for MeasuredTemplate objects.
  * @see {@linkcode MeasuredTemplate}

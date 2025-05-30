@@ -3,6 +3,14 @@ import type { FixedInstanceType, HandleEmptyObject, IntentionalPartial, NullishP
 import PointDarknessSource = foundry.canvas.sources.PointDarknessSource;
 import PointLightSource = foundry.canvas.sources.PointLightSource;
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface PlaceableObjectConfig {
+      AmbientLight: AmbientLight.Implementation;
+    }
+  }
+}
+
 declare global {
   /**
    * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.

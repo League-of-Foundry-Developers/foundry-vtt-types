@@ -1,5 +1,13 @@
 import type { Identity } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface CanvasGroupConfig {
+      OverlayCanvasGroup: OverlayCanvasGroup.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * A container group which is not bound to the stage world transform.

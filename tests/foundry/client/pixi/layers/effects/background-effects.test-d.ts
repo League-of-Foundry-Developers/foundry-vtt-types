@@ -9,3 +9,11 @@ expectTypeOf(layer.lighting).toEqualTypeOf<PIXI.Container>();
 expectTypeOf(layer.draw()).toEqualTypeOf<Promise<CanvasBackgroundAlterationEffects>>();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(layer.clear()).toBeVoid();
+
+Hooks.on("drawCanvasBackgroundAlterationEffects", (layer) => {
+  expectTypeOf(layer).toEqualTypeOf<CanvasBackgroundAlterationEffects.Any>();
+});
+
+Hooks.on("tearDownCanvasBackgroundAlterationEffects", (layer) => {
+  expectTypeOf(layer).toEqualTypeOf<CanvasBackgroundAlterationEffects.Any>();
+});

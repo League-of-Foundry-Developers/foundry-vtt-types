@@ -1,5 +1,13 @@
 import type { HandleEmptyObject, Identity, InexactPartial, NullishProps } from "#utils";
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface CanvasGroupConfig {
+      InterfaceCanvasGroup: InterfaceCanvasGroup.Any;
+    }
+  }
+}
+
 declare global {
   /**
    * A container group which displays interface elements rendered above other canvas groups.
