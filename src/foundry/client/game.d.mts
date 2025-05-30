@@ -234,7 +234,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * The singleton compendium art manager.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  readonly compendiumArt: foundry.helpers.CompendiumArt;
+  readonly compendiumArt: foundry.helpers.media.CompendiumArt;
 
   /**
    * A singleton instance of the Audio Helper class

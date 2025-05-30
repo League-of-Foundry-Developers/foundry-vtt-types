@@ -1,5 +1,5 @@
 import type { SchemaField } from "#common/data/fields.d.mts";
-import type { PrototypeToken } from "../data/_module.d.mts";
+import type { PrototypeToken } from "../../data/_module.d.mts";
 
 /**
  * A class responsible for managing package-provided art and applying it to Documents in compendium packs.

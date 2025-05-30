@@ -1,7 +1,7 @@
 import type { InterfaceToObject, ConformRecord, MustConform, DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
-import type CompendiumArt from "../../helpers/compendium-art.d.mts";
+import type CompendiumArt from "../../helpers/media/compendium-art.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
