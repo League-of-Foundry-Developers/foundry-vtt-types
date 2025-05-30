@@ -10,7 +10,7 @@ import type {
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
 } from "#common/abstract/_types.d.mts";
-import type CompendiumArt from "#client/helpers/compendium-art.d.mts";
+import type CompendiumArt from "#client/helpers/media/compendium-art.mjs";
 import type { Hooks as HookConfigs } from "#configuration";
 
 import AVSettings = foundry.av.AVSettings;

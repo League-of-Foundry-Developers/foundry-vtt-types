@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import type CompendiumArt from "./compendium-art.d.mts";
+import type CompendiumArt from "./media/compendium-art.d.mts";
 
 export {};
 
