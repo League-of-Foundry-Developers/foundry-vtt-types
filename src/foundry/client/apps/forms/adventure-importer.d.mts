@@ -1,13 +1,5 @@
 import type { GetDataReturnType, Identity } from "#utils";
 
-declare module "#configuration" {
-  namespace Hooks {
-    interface ApplicationConfig {
-      AdventureImporter: AdventureImporter.Any;
-    }
-  }
-}
-
 declare global {
   /**
    * An interface for importing an adventure from a compendium pack.

@@ -1,13 +1,5 @@
 import type { Identity, MaybePromise } from "#utils";
 
-declare module "#configuration" {
-  namespace Hooks {
-    interface ApplicationConfig {
-      Dialog: Dialog.Any;
-    }
-  }
-}
-
 declare global {
   /**
    * Create a modal dialog window displaying a title, a message, and a set of buttons which trigger callback functions.

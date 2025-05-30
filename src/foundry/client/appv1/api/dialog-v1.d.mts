@@ -1,7 +1,13 @@
-import type { MaybePromise } from "#utils";
+import type { Identity, MaybePromise } from "#utils";
 import type Application from "./application-v1.d.mts";
 
-// TODO: Migrate Dialog
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationConfig {
+      Dialog: Dialog.Any;
+    }
+  }
+}
 
 /**
  * Create a modal dialog window displaying a title, a message, and a set of buttons which trigger callback functions.
@@ -142,6 +148,9 @@ declare class Dialog<Options extends Dialog.Options = Dialog.Options> extends Ap
 }
 
 declare namespace Dialog {
+  interface Any extends AnyDialog {}
+  interface AnyConstructor extends Identity<typeof AnyDialog> {}
+
   /** @internal */
   type _JQueryOrHTML<IsJQuery extends boolean | undefined> = IsJQuery extends true ? JQuery : HTMLElement;
 
@@ -326,6 +335,10 @@ declare namespace Dialog {
      */
     close?: (element: JQueryOrHTML) => void;
   }
+}
+
+declare abstract class AnyDialog extends Dialog<Dialog.Options> {
+  constructor(...args: never);
 }
 
 export default Dialog;

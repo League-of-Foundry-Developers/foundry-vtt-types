@@ -3,15 +3,6 @@ import type { EditorView } from "prosemirror-view";
 import type { GetDataReturnType, Identity, MaybePromise } from "#utils";
 import type Showdown from "showdown";
 
-declare module "#configuration" {
-  namespace Hooks {
-    interface ApplicationConfig {
-      JournalPageSheet: JournalPageSheet.Any;
-      JournalTextTinyMCESheet: JournalTextTinyMCESheet.Any;
-    }
-  }
-}
-
 declare global {
   /**
    * The Application responsible for displaying and editing a single JournalEntryPage document.

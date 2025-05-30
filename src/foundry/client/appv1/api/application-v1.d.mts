@@ -5,6 +5,14 @@ declare global {
   const MIN_WINDOW_HEIGHT: 50;
 }
 
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationConfig {
+      Application: Application.Any;
+    }
+  }
+}
+
 /**
  * The standard application window that is rendered for a large variety of UI elements in Foundry VTT.
  * @template Options - the type of the options object

@@ -2,7 +2,13 @@ import type { EditorView } from "prosemirror-view";
 import type { AnyObject, GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "#common/prosemirror/_module.d.mts";
 
-// TODO: Migrate FormApplication
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationConfig {
+      FormApplication: FormApplication.Any;
+    }
+  }
+}
 
 /**
  * An abstract pattern for defining an Application responsible for updating some object using an HTML form

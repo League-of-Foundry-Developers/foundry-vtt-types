@@ -1,13 +1,5 @@
 import type { GetDataReturnType, MaybePromise } from "#utils";
 
-declare module "#configuration" {
-  namespace Hooks {
-    interface ApplicationConfig {
-      ItemSheet: ItemSheet.Any;
-    }
-  }
-}
-
 declare global {
   /**
    * The Application responsible for displaying and editing a single Item document.
