@@ -452,7 +452,7 @@ declare global {
       keepFolders: boolean;
     }>;
 
-    interface ExportDialogOptions extends _ExportDialogOptions, IntentionalPartial<Dialog.Options> {}
+    interface ExportDialogOptions extends _ExportDialogOptions, IntentionalPartial<foundry.appv1.api.Dialog.Options> {}
 
     // TODO: Handle compendium. This requires the index to be configured.
     type Contents<SubType extends Folder.SubType> = Document.ImplementationFor<Extract<SubType, Document.Type>>[];
@@ -466,8 +466,10 @@ declare global {
      * @remarks Rather than a simple `Dialog`, {@link Folder.createDialog | `Folder.createDialog`} creates a {@link FolderConfig | `FolderConfig`},
      * passing along the returned `Promise`'s `resolve` to the app.
      */
+    // TODO: Generally fix this up to be correct, temp fix here for the appv1 removal
     // TODO (v13): `options.document` is also force set
-    interface CreateDialogOptions extends InexactPartial<Omit<FolderConfig.Options, "resolve">> {
+    interface CreateDialogOptions
+      extends InexactPartial<Omit<foundry.applications.sheets.FolderConfig.Configuration, "resolve">> {
       /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
       resolve?: never;
     }

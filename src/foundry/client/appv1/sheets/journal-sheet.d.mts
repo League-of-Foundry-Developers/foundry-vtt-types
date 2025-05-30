@@ -1,4 +1,6 @@
 import type { MaybePromise, InexactPartial } from "#utils";
+import type { Application, DocumentSheet, FormApplication } from "../api/_module.d.mts";
+import type { JournalPageSheet } from "./journal-page-sheet.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

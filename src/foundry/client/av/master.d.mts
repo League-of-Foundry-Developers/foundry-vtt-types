@@ -1,6 +1,7 @@
 import type { DeepPartial, FixedInstanceType } from "#utils";
 
 import AVSettings = foundry.av.AVSettings;
+import type AVConfig from "#client/applications/settings/menus/av-config.mjs";
 
 /**
  * The master Audio/Video controller instance.

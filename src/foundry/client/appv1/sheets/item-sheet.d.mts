@@ -1,4 +1,5 @@
 import type { GetDataReturnType, MaybePromise } from "#utils";
+import type { DocumentSheet } from "../api/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

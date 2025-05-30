@@ -1,5 +1,6 @@
 import type { AnyArray, AnyObject, InexactPartial, FixedInstanceType } from "#utils";
 import type ApplicationV2 from "#client/applications/api/application.d.mts";
+import type FormApplication from "#client/appv1/api/form-application-v1.mjs";
 import type { CustomFormInput } from "#client/applications/forms/fields.d.mts";
 import type DataModel from "#common/abstract/data.d.mts";
 import type { DataField } from "#common/data/fields.d.mts";
@@ -39,7 +40,7 @@ declare global {
     /**
      * Return a singleton instance of the Game Settings Configuration app
      */
-    get sheet(): SettingsConfig;
+    get sheet(): foundry.applications.settings.SettingsConfig;
 
     /**
      * Register a new game setting under this setting scope

@@ -685,7 +685,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
    * @defaultValue `{}`
    * @remarks Created via `defineProperty` in constructor
    */
-  apps: Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>;
+  apps: Record<string, foundry.appv1.api.Application.Any | foundry.applications.api.ApplicationV2.Any>;
 
   static override defineSchema(): PrototypeToken.Schema;
 

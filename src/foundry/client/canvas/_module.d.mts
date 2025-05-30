@@ -26,6 +26,6 @@ export * as sources from "./sources/_module.mjs";
 // export * as primary from "./primary/_module.mjs";
 // export * as geometry from "./geometry/_module.mjs";
 // export * as interaction from "./interaction/_module.mjs";
-// export * as animation from "./animation/_module.mjs";
+export * as animation from "./animation/_module.mjs";
 // export * as rendering from "./rendering/_module.mjs";
 // export * as percception from "./perception/_module.mjs";

@@ -19,7 +19,7 @@ export interface DeprecatedHookConfig {
     token: Token.Implementation,
     html: JQuery,
     message: string,
-    options: ChatBubbles.Options,
+    options: foundry.canvas.animation.ChatBubbles.Options,
   ) => boolean | void;
 
   /**

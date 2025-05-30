@@ -1,4 +1,5 @@
 import type { GetDataReturnType, Identity } from "#utils";
+import type { Application, DocumentSheet } from "../api/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
