@@ -21,7 +21,11 @@ declare class DocumentSheetConfig<
   RenderContext extends DocumentSheetConfig.RenderContext<Document> = DocumentSheetConfig.RenderContext<Document>,
   Configuration extends DocumentSheetConfig.Configuration<Document> = DocumentSheetConfig.Configuration<Document>,
   RenderOptions extends DocumentSheetConfig.RenderOptions = DocumentSheetConfig.RenderOptions,
-> extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, RenderContext, Configuration, RenderOptions> {}
+> extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, RenderContext, Configuration, RenderOptions> {
+  static registerSheet: () => unknown;
+
+  static unregisterSheet: () => unknown;
+}
 
 declare namespace DocumentSheetConfig {
   interface Any extends AnyDocumentSheetConfig {}

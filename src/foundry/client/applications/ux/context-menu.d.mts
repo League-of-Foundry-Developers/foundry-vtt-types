@@ -1,4 +1,5 @@
 import type { InexactPartial } from "#utils";
+import type Application from "#client/appv1/api/application-v1.d.mts";
 
 /**
  * Display a right-click activated Context Menu which provides a dropdown menu of options.

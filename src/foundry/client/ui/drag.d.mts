@@ -1,4 +1,4 @@
-export {};
+import type Application from "#client/appv1/api/application-v1.mjs";
 
 declare global {
   /**

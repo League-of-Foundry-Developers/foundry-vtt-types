@@ -2,6 +2,7 @@ import type { Editor } from "tinymce";
 import type { EditorView } from "prosemirror-view";
 import type { GetDataReturnType, Identity, MaybePromise } from "#utils";
 import type Showdown from "showdown";
+import type { Application, DocumentSheet, FormApplication } from "../api/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

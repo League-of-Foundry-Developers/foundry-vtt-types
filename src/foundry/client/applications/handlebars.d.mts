@@ -93,7 +93,7 @@ export function concat(...values: string[]): Handlebars.SafeString;
  * {{editor world.description target="description" button=false engine="prosemirror" collaborate=false}}
  * ```
  */
-export function editor(content: string, options: HandlebarsHelpers.TextEditorOptions): Handlebars.SafeString;
+export function editor(content: string, options: TextEditorOptions): Handlebars.SafeString;
 
 /**
  * A ternary expression that allows inserting A or B depending on the value of C.
@@ -105,7 +105,7 @@ export function editor(content: string, options: HandlebarsHelpers.TextEditorOpt
  * {{ifThen true "It is true" "It is false"}}
  * ```
  */
-export function ifThen(options: HandlebarsHelpers.IfThenOptions): string;
+export function ifThen(options: IfThenOptions): string;
 
 /**
  * Translate a provided string key by using the loaded dictionary of localization strings.
@@ -116,7 +116,7 @@ export function ifThen(options: HandlebarsHelpers.IfThenOptions): string;
  * <label>{{localize "CHAT.InvalidCommand" command=foo}}</label> <!-- "foo is not a valid chat message command." -->
  * ```
  */
-export function localize(value: string, options: HandlebarsHelpers.LocalizeOptions): string;
+export function localize(value: string, options: LocalizeOptions): string;
 
 /**
  * A string formatting helper to display a number with a certain fixed number of decimals and an explicit sign.
@@ -133,7 +133,7 @@ export function localize(value: string, options: HandlebarsHelpers.LocalizeOptio
  * {{formatNumber undefined decimals=0 sign=true}} <!-- NaN -->
  * ```
  */
-export function numberFormat(value: string | number, options: HandlebarsHelpers.NumberFormatOptions): string;
+export function numberFormat(value: string | number, options: NumberFormatOptions): string;
 
 /**
  * Render a form input field of type number with value appropriately rounded to step size.
@@ -143,7 +143,7 @@ export function numberFormat(value: string | number, options: HandlebarsHelpers.
  * {{numberInput value name="numberField" step=1 min=0 max=10}}
  * ```
  */
-export function numberInput(value: string, options: HandlebarsHelpers.NumberInputOptions): Handlebars.SafeString;
+export function numberInput(value: string, options: NumberInputOptions): Handlebars.SafeString;
 
 /**
  * A helper to create a set of radio checkbox input elements in a named set.
@@ -173,7 +173,7 @@ export function numberInput(value: string, options: HandlebarsHelpers.NumberInpu
 export function radioBoxes(
   name: string,
   choices: Record<string, string>,
-  options: HandlebarsHelpers.RadioBoxesOptions,
+  options: RadioBoxesOptions,
 ): Handlebars.SafeString;
 
 /**
@@ -247,7 +247,7 @@ export function radioBoxes(
  */
 export function selectOptions(
   choices: Record<string, string> | Array<string>,
-  options: HandlebarsHelpers.SelectOptionsOptions,
+  options: SelectOptionsOptions,
 ): Handlebars.SafeString;
 
 /**
@@ -277,23 +277,23 @@ export function formGroup<Field extends foundry.data.fields.DataField.Any>(
 /**
  * @deprecated since v12, will be removed in v14
  */
-export function filePicker(options: HandlebarsHelpers.FilePickerOptions): Handlebars.SafeString | string;
+export function filePicker(options: FilePickerOptions): Handlebars.SafeString | string;
 
 /**
  * @deprecated since v12, will be removed in v14
  */
-export function colorPicker(options: HandlebarsHelpers.ColorPickerOptions): Handlebars.SafeString;
+export function colorPicker(options: ColorPickerOptions): Handlebars.SafeString;
 
 /**
  * @deprecated since v12, will be removed in v14
  */
-export function select(selected: string, options: HandlebarsHelpers.SelectOptions): string;
+export function select(selected: string, options: SelectOptions): string;
 
 /**
  * @deprecated since v13, will be removed in v15
  * @remarks "The \{\{rangePicker\}\} Handlebars helper is deprecated and replaced by use of the <range-picker> custom HTML element"
  */
-export function rangePicker(options: HandlebarsHelpers.RangePickerOptions): Handlebars.SafeString;
+export function rangePicker(options: RangePickerOptions): Handlebars.SafeString;
 
 interface ColorPickerOptions extends Partial<Handlebars.HelperOptions> {
   hash: {

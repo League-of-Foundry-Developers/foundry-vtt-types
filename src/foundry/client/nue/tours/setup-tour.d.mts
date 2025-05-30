@@ -9,7 +9,7 @@ declare class SetupTour extends Tour {
   /**
    * Stores a currently open Application for future steps
    */
-  focusedApp: Application;
+  focusedApp: foundry.appv1.api.Application.Any | foundry.applications.api.ApplicationV2.Any;
 
   override get canStart(): boolean;
   override get steps(): Tour.Step[];

@@ -872,7 +872,9 @@ declare global {
     resetDialog(): Promise<this | false | null>;
 
     // options: not null (parameter default only)
-    override deleteDialog(options?: InexactPartial<Dialog.Options>): Promise<this | false | null | undefined>;
+    override deleteDialog(
+      options?: InexactPartial<foundry.appv1.api.Dialog.Options>,
+    ): Promise<this | false | null | undefined>;
 
     /** @remarks No type changes, just creates a fancier `Dialog` than `super` */
     // data: not null (parameter default only), context: not null (destructured)

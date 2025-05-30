@@ -45,7 +45,7 @@ declare global {
       steps: Tour.Step[];
 
       /** A map of translations for the Tour that should be merged into the default translations */
-      localization?: Localization.Translations;
+      localization?: foundry.helpers.Localization.Translations;
 
       /** Whether the Tour is restricted to the GM only */
       restricted?: boolean;

@@ -1,6 +1,7 @@
 import type { DeepPartial, DropFirst, GetKey, Identity, InexactPartial } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DatabaseCreateOperation } from "#common/abstract/_types.d.mts";
+import type { AbstractSidebarTab, DocumentDirectory } from "#client/applications/sidebar/_module.mjs";
 
 declare global {
   /**
@@ -26,8 +27,10 @@ declare global {
     get directory(): Lowercase<Name> extends keyof typeof ui
       ? (typeof ui)[Lowercase<Name>]
       :
-          | (DocumentName extends foundry.CONST.FOLDER_DOCUMENT_TYPES ? DocumentDirectory<DocumentName> : never)
-          | SidebarTab
+          | (DocumentName extends foundry.CONST.FOLDER_DOCUMENT_TYPES
+              ? DocumentDirectory<Document.ImplementationClassFor<DocumentName>>
+              : never)
+          | AbstractSidebarTab.Any
           | undefined
           | null;
 
@@ -90,7 +93,9 @@ declare global {
      * Actors.registerSheet("dnd5e", ActorSheet5eCharacter, { types: ["character], makeDefault: true });
      * ```
      */
-    static registerSheet(...args: DropFirst<Parameters<typeof DocumentSheetConfig.registerSheet>>): void;
+    static registerSheet(
+      ...args: DropFirst<Parameters<typeof foundry.applications.apps.DocumentSheetConfig.registerSheet>>
+    ): void;
 
     /**
      * Unregister a Document sheet class, removing it from the list of available sheet Applications to use.
@@ -100,15 +105,17 @@ declare global {
      * @example <caption>Deregister the default ActorSheet subclass to replace it with others.</caption>
      * Actors.unregisterSheet("core", ActorSheet);
      */
-    static unregisterSheet(...args: DropFirst<Parameters<typeof DocumentSheetConfig.unregisterSheet>>): void;
+    static unregisterSheet(
+      ...args: DropFirst<Parameters<typeof foundry.applications.apps.DocumentSheetConfig.unregisterSheet>>
+    ): void;
 
     /**
      * Return an array of currently registered sheet classes for this Document type.
-     * @remarks
-     * This is documented to return only {@linkcode DocumentSheet}s but {@linkcode DrawingConfig} is just a
-     * {@linkcode FormApplication}. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6454.
      */
-    static get registeredSheets(): FormApplication.Any[];
+    static get registeredSheets(): (
+      | foundry.appv1.api.DocumentSheet.AnyConstructor
+      | foundry.applications.api.ApplicationV2.AnyConstructor
+    )[];
   }
 
   namespace WorldCollection {

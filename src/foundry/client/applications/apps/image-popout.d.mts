@@ -73,6 +73,33 @@ declare namespace ImagePopout {
   }
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
+
+  interface ShareImageConfig {
+    /**
+     * The image URL to share.
+     */
+    image: string;
+
+    /**
+     * The image title.
+     */
+    title: string;
+
+    /**
+     * The UUID of a {@linkcode foundry.abstract.Document} related to the image, used to determine permission to see the image title.
+     */
+    uuid?: string | undefined;
+
+    /**
+     * If this is provided, the permissions of the related Document will be ignored and the title will be shown based on this parameter.
+     */
+    showTitle?: string | undefined;
+
+    /**
+     * A list of user IDs to show the image to.
+     */
+    users?: string[] | undefined;
+  }
 }
 
 declare abstract class AnyImagePopout extends ImagePopout<

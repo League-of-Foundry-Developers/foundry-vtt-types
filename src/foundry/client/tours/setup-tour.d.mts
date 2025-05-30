@@ -8,7 +8,7 @@ declare global {
     );
     config: SetupTour.Config;
 
-    focusedApp: Application.Any;
+    focusedApp: foundry.appv1.api.Application.Any | foundry.applications.api.ApplicationV2.Any;
     override get canStart(): boolean;
     override get steps(): Tour.Step[];
     protected override _preStep(): Promise<void>;

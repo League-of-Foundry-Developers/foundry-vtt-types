@@ -2,6 +2,8 @@ import type { EditorView } from "prosemirror-view";
 import type { Editor } from "tinymce";
 import type { GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
+import type Application from "./application-v1.mjs";
+import type FormApplication from "./form-application-v1.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

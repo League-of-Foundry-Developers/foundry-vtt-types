@@ -49,7 +49,10 @@ declare global {
      * @param src    - The image URL to share.
      * @param config - Image sharing configuration.
      */
-    static showImage(src: string, config?: InexactPartial<ImagePopout.ShareImageConfig>): void;
+    static showImage(
+      src: string,
+      config?: InexactPartial<foundry.applications.apps.ImagePopout.ShareImageConfig>,
+    ): void;
 
     /**
      * Open Socket listeners which transact JournalEntry data

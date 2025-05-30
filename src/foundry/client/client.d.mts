@@ -14,7 +14,9 @@ import * as _prosemirror from "#common/prosemirror/_module.mjs";
 import * as _grid from "#common/grid/_module.mjs";
 import _Game from "./game.mjs";
 
+// TODO: Refactor to use _module.d.mts
 // client
+import * as _appv1 from "./appv1/_module.mjs";
 import * as _applications from "./applications/_module.mjs";
 import * as _av from "./av/_module.mjs";
 import * as _audio from "./audio/_module.mjs";
@@ -63,6 +65,8 @@ export * as prosemirror from "#common/prosemirror/_module.mjs";
  * Grid classes.
  */
 export * as grid from "#common/grid/_module.mjs";
+
+export * as appv1 from "./appv1/_module.mjs";
 
 /**
  * A library for rendering and managing HTML user interface elements within the Foundry Virtual Tabletop game client.
@@ -142,6 +146,8 @@ declare global {
      * Grid classes.
      */
     export import grid = _grid;
+
+    export import appv1 = _appv1;
 
     /**
      * A library for rendering and managing HTML user interface elements within the Foundry Virtual Tabletop game client.

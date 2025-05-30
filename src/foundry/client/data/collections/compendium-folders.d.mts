@@ -11,7 +11,10 @@ declare global {
 
     get documentName(): "Folder";
 
-    override render(force?: boolean, options?: Application.Options): void;
+    override render(
+      force?: boolean,
+      options?: foundry.appv1.api.Application.Options | foundry.applications.api.ApplicationV2.RenderOptions,
+    ): void;
 
     /**
      * @privateRemarks Possible this causes depth issues, this is just a small extension in the code with no meaningful transformations

@@ -1,7 +1,7 @@
 import type Document from "#common/abstract/document.d.mts";
 import type { documents } from "#client/client.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { AnyObject, InterfaceToObject, Merge, ValueOf } from "#utils";
+import type { AnyObject, InterfaceToObject, Merge } from "#utils";
 import type BaseJournalEntry from "#common/documents/journal-entry.mjs";
 
 import fields = foundry.data.fields;
@@ -449,7 +449,7 @@ declare global {
 
     interface CoreFlags {
       core?: {
-        viewMode?: ValueOf<typeof JournalSheet.VIEW_MODES>;
+        viewMode?: foundry.applications.sheets.journal.JournalEntrySheet.VIEW_MODES;
         searchMode?: CONST.DIRECTORY_SEARCH_MODES;
       };
     }

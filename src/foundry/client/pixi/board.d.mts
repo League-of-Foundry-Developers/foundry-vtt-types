@@ -213,7 +213,7 @@ declare global {
      * The singleton HeadsUpDisplay container which overlays HTML rendering on top of this Canvas.
      * @defaultValue `undefined`
      */
-    readonly hud: HeadsUpDisplay | undefined;
+    readonly hud: foundry.applications.hud.HeadsUpDisplayContainer | undefined;
 
     /**
      * Position of the mouse on stage.

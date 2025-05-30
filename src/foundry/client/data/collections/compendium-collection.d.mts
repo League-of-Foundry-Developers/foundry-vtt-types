@@ -50,7 +50,9 @@ declare global {
      * A reference to the Application class which provides an interface to interact with this compendium content.
      * @defaultValue `Compendium`
      */
-    applicationClass: typeof Application;
+    applicationClass:
+      | foundry.appv1.api.Application.AnyConstructor
+      | foundry.applications.api.ApplicationV2.AnyConstructor;
 
     /**
      * A subsidiary collection which contains the folders within the pack
@@ -227,7 +229,9 @@ declare global {
      *          Documents if the "yes" button was pressed, false if the "no" button was pressed, or
      *          null if the dialog was closed without making a choice.
      */
-    importDialog(options?: Dialog.Options): Promise<Document.StoredForName<T["type"]>[] | null | false>;
+    importDialog(
+      options?: foundry.appv1.api.Dialog.Options,
+    ): Promise<Document.StoredForName<T["type"]>[] | null | false>;
 
     /**
      * Add a Document to the index, capturing it's relevant index attributes

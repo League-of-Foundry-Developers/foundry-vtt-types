@@ -1,6 +1,7 @@
 import type { EditorView } from "prosemirror-view";
 import type { AnyObject, GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "#common/prosemirror/_module.d.mts";
+import type Application from "./application-v1.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

@@ -10,8 +10,8 @@ import type {
   InexactPartial,
 } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
-
-import ApplicationV2 = foundry.applications.api.ApplicationV2;
+import type { Application, FormApplication } from "#client/appv1/api/_module.d.mts";
+import type ApplicationV2 from "#client/applications/api/application.d.mts";
 
 declare class InternalClientDocument<DocumentName extends Document.Type> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */
@@ -343,7 +343,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @returns A Promise which resolves to the deleted Document
    */
   // options: not null (parameter default only)
-  deleteDialog(options?: InexactPartial<Dialog.Options>): Promise<this | false | null | undefined>;
+  deleteDialog(options?: InexactPartial<foundry.appv1.api.Dialog.Options>): Promise<this | false | null | undefined>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.

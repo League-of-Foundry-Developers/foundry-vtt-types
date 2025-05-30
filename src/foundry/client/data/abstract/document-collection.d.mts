@@ -1,6 +1,8 @@
 import type { AnyObject, DeepPartial, InexactPartial, GetKey } from "#utils";
 import type { DatabaseAction, DatabaseOperationMap, DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
 import type Document from "#common/abstract/document.d.mts";
+import type Application from "#client/appv1/api/application-v1.d.mts";
+import type ApplicationV2 from "#client/applications/api/application.d.mts";
 
 declare global {
   /**
@@ -22,7 +24,7 @@ declare global {
      * An Array of application references which will be automatically updated when the collection content changes
      * @defaultValue `[]`
      */
-    apps: Application.Any[];
+    apps: (Application.Any | ApplicationV2.Any)[];
 
     /**
      * Initialize the DocumentCollection by constructing any initially provided Document instances
@@ -89,7 +91,7 @@ declare global {
     /**
      * Render any Applications associated with this DocumentCollection.
      */
-    render(force?: boolean, options?: Application.Options): void;
+    render(force?: boolean, options?: Application.Options | ApplicationV2.RenderOptions): void;
 
     /**
      * Get the searchable fields for a given document or index, based on its data model

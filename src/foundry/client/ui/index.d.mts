@@ -1,4 +1,3 @@
-import "./dialog.d.mts";
 import "./drag.d.mts";
 import "./dragdrop.d.mts";
 import "./editor.d.mts";
