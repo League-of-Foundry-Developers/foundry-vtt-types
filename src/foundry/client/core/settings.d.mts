@@ -188,8 +188,7 @@ declare global {
      */
     type TypeScriptType = string | number | boolean | symbol | bigint | AnyArray | AnyObject;
 
-    // TODO(LukeAbby): Look into why switching to `DataModel.AnyConstructor` causes a circularity.
-    type RuntimeType = DataField.Any | typeof DataModel<any, any> | SettingFunction | SettingConstructor;
+    type RuntimeType = DataField.Any | DataModel.AnyConstructor | SettingFunction | SettingConstructor;
 
     type Type = TypeScriptType | RuntimeType;
 
