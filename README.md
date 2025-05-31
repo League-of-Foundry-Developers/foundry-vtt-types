@@ -17,6 +17,10 @@ We aim to support the latest release of each Foundry VTT version (0.7, 0.8, 9, e
 
 At the moment, versions 0.7, 0.8, and 9 are fully supported with partial support for versions 10, 11, and 12. Work on support for version 13 is currently underway.
 
+## AI
+
+AI cannot be provided the source of Foundry VTT Types. This is because Foundry VTT Types contains documentation from Foundry and AI is _**not**_ allowed to be used on the source of Foundry due to its [End User License Agreement (EULA)](https://foundryvtt.com/article/license/). Staff members have confirmed there is no exception for AI.
+
 ## V13 Installation
 
 Currently v13 is still in beta. There are known bugs, issues in the ergonomics, and major unfinished work in the current implementation. To get a direct line of communication about the current status of development as well as to help us understand what areas need to be prioritized first, join the [League of Extraordinary FoundryVTT Developers Discord](https://discord.gg/73HTMuK7dT) or file an issue.
