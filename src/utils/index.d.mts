@@ -280,18 +280,27 @@ export type ToMethod<T extends AnyFunction> = {
   method(...args: Parameters<T>): ReturnType<T>;
 }["method"];
 
+/**
+ * @deprecated Replaced by {@linkcode Document.SheetClassFor}
+ */
 export type ConfiguredSheetClass<T extends Document.AnyConstructor> = GetKey<
   GetKey<CONFIG, T["metadata"]["name"]>,
   "sheetClass",
   T
 >;
 
+/**
+ * @deprecated Replaced by {@linkcode Document.ObjectClassFor}
+ */
 export type ObjectClass<T extends Document.AnyConstructor> = GetKey<
   GetKey<CONFIG, T["metadata"]["name"]>,
   "objectClass",
   T
 >;
 
+/**
+ * @deprecated Replaced by {@linkcode Document.LayerClassFor}
+ */
 export type LayerClass<T extends Document.AnyConstructor> = GetKey<
   GetKey<CONFIG, T["metadata"]["name"]>,
   "layerClass",
@@ -300,6 +309,7 @@ export type LayerClass<T extends Document.AnyConstructor> = GetKey<
 
 /**
  * Actual document types that go in folders
+ * @deprecated No replacement as this was deemed too niche.
  */
 export type FolderDocumentTypes = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
 

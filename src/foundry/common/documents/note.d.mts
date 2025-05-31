@@ -76,8 +76,6 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "Note";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

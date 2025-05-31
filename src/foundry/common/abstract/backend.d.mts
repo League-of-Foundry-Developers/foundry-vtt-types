@@ -63,7 +63,7 @@ declare abstract class DatabaseBackend {
    */
   protected abstract _createDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
-    operation: DatabaseCreateOperation<FixedInstanceType<T>>,
+    operation: Document.Database.CreateOperationForName<T["documentName"], boolean | undefined>,
     user?: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 
@@ -187,9 +187,15 @@ declare abstract class DatabaseBackend {
 
 declare namespace DatabaseBackend {
   type CreateOperation<T extends Document.AnyConstructor> =
-    Document.Database.CreateOperation<DatabaseCreateOperation> & { data: Document.CreateDataFor<T>[] };
+    Document.Database.CreateOperation<DatabaseCreateOperation> & {
+      data: Document.CreateDataForName<T["documentName"]>[];
+    };
+
   type UpdateOperation<T extends Document.AnyConstructor> =
-    Document.Database.UpdateDocumentsOperation<DatabaseUpdateOperation> & { updates: Document.UpdateDataFor<T>[] };
+    Document.Database.UpdateDocumentsOperation<DatabaseUpdateOperation> & {
+      updates: Document.UpdateDataForName<T["documentName"]>[];
+    };
+
   type DeleteOperation = Document.Database.DeleteDocumentsOperation<DatabaseDeleteOperation> & { ids: string[] };
 }
 

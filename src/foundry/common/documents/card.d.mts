@@ -81,8 +81,6 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "Card";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

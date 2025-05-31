@@ -66,8 +66,6 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "JournalEntry";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

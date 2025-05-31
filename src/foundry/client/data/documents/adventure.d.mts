@@ -1,4 +1,4 @@
-import type { FolderDocumentTypes, InexactPartial, Merge, AnyObject, NullishProps } from "#utils";
+import type { InexactPartial, Merge, AnyObject, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -413,7 +413,7 @@ declare global {
       [K in ContainedDocumentType]?: Document.ImplementationFor<K>[];
     };
 
-    type ContainedDocumentType = Exclude<FolderDocumentTypes, "Adventure"> | "Folder";
+    type ContainedDocumentType = Exclude<Extract<Folder.SubType, Document.Type>, "Adventure"> | "Folder";
 
     interface ImportData {
       toCreate: DocumentDataRecord;

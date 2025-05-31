@@ -50,8 +50,6 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " fvtt_types_internal_document_name_static": "AmbientLight";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

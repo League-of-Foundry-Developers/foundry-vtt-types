@@ -99,8 +99,6 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "Macro";
-
   override readonly parentCollection: Macro.ParentCollectionName | null;
 
   override readonly pack: string | null;

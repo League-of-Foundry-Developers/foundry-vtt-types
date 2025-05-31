@@ -99,8 +99,6 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "User";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

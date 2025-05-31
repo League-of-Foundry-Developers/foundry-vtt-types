@@ -1,6 +1,5 @@
 import type { HandleEmptyObject, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
-import type DataModel from "#common/abstract/data.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -80,7 +79,7 @@ declare global {
      * @param data - The shape to highlight, or null to clear the highlight
      * @remarks Foundry marked `@internal`. If `data` is falsey, clears the current highly and returns early
      */
-    protected _highlightShape(data?: DataModel.ConstructorDataFor<foundry.data.BaseShapeData> | null): void;
+    protected _highlightShape(data?: foundry.data.BaseShapeData.CreateData | null): void;
 
     protected override _onClickLeft(event: PIXI.FederatedEvent): void;
 

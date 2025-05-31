@@ -53,8 +53,6 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "RollTable";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

@@ -65,8 +65,6 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "Adventure";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

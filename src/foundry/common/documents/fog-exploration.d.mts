@@ -59,8 +59,6 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "FogExploration";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

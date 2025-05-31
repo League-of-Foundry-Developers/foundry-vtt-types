@@ -94,8 +94,6 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " fvtt_types_internal_document_name_static": "Drawing";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

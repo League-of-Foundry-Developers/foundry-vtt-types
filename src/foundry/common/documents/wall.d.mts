@@ -56,8 +56,6 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   /* Document overrides */
 
-  static override " fvtt_types_internal_document_name_static": WallDocument.Name;
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

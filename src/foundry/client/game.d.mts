@@ -648,6 +648,7 @@ declare namespace Game {
     type TypeNames<DocumentType extends Document.Type> = Document.SubTypesOf<DocumentType>;
   }
 
+  /** @internal */
   type _Model = {
     [DocumentType in Document.Type]: {
       // The `& string` is helpful even though there should never be any numeric/symbol keys.

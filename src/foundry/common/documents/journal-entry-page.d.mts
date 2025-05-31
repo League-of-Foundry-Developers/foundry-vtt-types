@@ -66,8 +66,6 @@ declare abstract class BaseJournalEntryPage<
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "JournalEntryPage";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

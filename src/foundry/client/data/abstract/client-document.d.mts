@@ -34,7 +34,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    *
    * Foundry marked `@private`
    */
-  protected readonly _sheet: FixedInstanceType<Document.ConfiguredSheetClassFor<DocumentName>> | null;
+  protected readonly _sheet: FixedInstanceType<Document.SheetClassFor<DocumentName>> | null;
 
   static name: "ClientDocumentMixin";
 

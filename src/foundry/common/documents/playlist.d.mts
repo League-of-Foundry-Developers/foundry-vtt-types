@@ -66,8 +66,6 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "Playlist";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

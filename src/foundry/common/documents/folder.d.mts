@@ -70,8 +70,6 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "Folder";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

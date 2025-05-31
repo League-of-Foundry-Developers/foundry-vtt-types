@@ -90,8 +90,6 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "MeasuredTemplate";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

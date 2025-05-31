@@ -117,8 +117,6 @@ declare abstract class BaseActorDelta<
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "ActorDelta";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

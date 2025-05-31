@@ -94,8 +94,6 @@ declare abstract class BaseChatMessage<
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "ChatMessage";
-
   override readonly parentCollection: ChatMessage.ParentCollectionName | null;
 
   override readonly pack: string | null;

@@ -94,8 +94,6 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "Actor";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

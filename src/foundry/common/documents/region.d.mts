@@ -54,8 +54,6 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "Region";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

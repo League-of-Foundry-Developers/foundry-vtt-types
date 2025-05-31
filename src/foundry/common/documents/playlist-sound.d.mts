@@ -66,8 +66,6 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "PlaylistSound";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

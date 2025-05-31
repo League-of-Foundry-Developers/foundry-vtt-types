@@ -175,7 +175,7 @@ declare abstract class Document<
   /**
    * The canonical name of this Document type, for example "Actor".
    */
-  static get documentName(): string;
+  static get documentName(): Document.Type;
 
   /**
    * The canonical name of this Document type, for example "Actor".
@@ -899,8 +899,6 @@ declare abstract class Document<
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
 
-  static " fvtt_types_internal_document_name_static": Document.Type;
-
   " fvtt_types_internal_document_name": DocumentName;
   " fvtt_types_internal_document_schema": Schema;
   " fvtt_types_internal_document_parent": Parent;
@@ -1097,7 +1095,7 @@ declare namespace Document {
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
     type Constructor = (abstract new (...args: never) => Instance.Any) & {
-      " fvtt_types_internal_document_name_static": Document.Type;
+      documentName: Document.Type;
     };
 
     interface Instance<
@@ -1177,17 +1175,6 @@ declare namespace Document {
   // An empty schema is the most appropriate type due to removing index signatures.
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   type AnyChild<Parent extends Any | null> = Document<Document.Type, {}, Parent>;
-
-  /**
-   * Returns the type of the constructor data for the given {@linkcode foundry.abstract.Document}.
-   */
-  type CreateDataFor<T extends Document.Internal.Constructor> = SchemaField.CreateData<
-    T extends { defineSchema: () => infer R extends DataSchema } ? R : never
-  >;
-
-  type UpdateDataFor<T extends Document.Internal.Constructor> = SchemaField.UpdateData<
-    T extends { defineSchema: () => infer R extends DataSchema } ? R : never
-  >;
 
   // These helper types exist to help break a loop
 
@@ -1382,8 +1369,7 @@ declare namespace Document {
     | (DocumentType extends "Token" ? TokenDocument.Invalid : never)
     | (DocumentType extends "Wall" ? WallDocument.Invalid : never);
 
-  type NameFor<ConcreteDocument extends Document.Internal.Constructor> =
-    ConcreteDocument[" fvtt_types_internal_document_name_static"];
+  type NameFor<ConcreteDocument extends Document.Internal.Constructor> = ConcreteDocument["documentName"];
 
   type ImplementationFor<Name extends Type> = ConfiguredDocumentInstance[Name];
   type ImplementationClassFor<Name extends Type> = ConfiguredDocumentClass[Name];
@@ -1666,14 +1652,12 @@ declare namespace Document {
     interface Embedded extends Identity<{ [K in Document.Type]?: string }> {}
   }
 
-  type ConfiguredSheetClassFor<Name extends Document.Type> = MakeConform<
+  type SheetClassFor<Name extends Document.Type> = MakeConform<
     GetKey<GetKey<CONFIG, Name>, "sheetClass">,
     AnyConstructor
   >;
 
-  type ConfiguredObjectClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "objectClass">;
-
-  type ConfiguredLayerClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "layerClass">;
+  type LayerClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "layerClass">;
 
   type DropData<T extends Document.Any> = T extends { id: string | undefined }
     ? DropData.Data<T> & DropData.UUID
@@ -2299,4 +2283,34 @@ declare namespace Document {
 
   /** @deprecated This type currently does not have a replacement as it was deemed too niche. If you have a use case for it let us know. */
   type Temporary<D extends Document.Any> = D extends Internal.Stored<infer U> ? U : D;
+
+  /**
+   * @deprecated Replaced with {@linkcode Document.SheetClassFor}
+   */
+  export import ConfiguredSheetClassFor = Document.SheetClassFor;
+
+  /**
+   * @deprecated Replaced with {@linkcode Document.ObjectClassFor}
+   */
+  export import ConfiguredObjectClassFor = Document.ObjectClassFor;
+
+  /**
+   * @deprecated Replaced with {@linkcode Document.LayerClassFor}
+   */
+  export import ConfiguredLayerClassFor = Document.LayerClassFor;
+
+  /**
+   * Returns the type of the constructor data for the given {@linkcode foundry.abstract.Document}.
+   * @deprecated Replaced with {@linkcode CreateDataForName}
+   */
+  type CreateDataFor<T extends Document.Internal.Constructor> = SchemaField.CreateData<
+    T extends { defineSchema: () => infer R extends DataSchema } ? R : never
+  >;
+
+  /**
+   * @deprecated Replaced with {@linkcode UpdateDataForName}
+   */
+  type UpdateDataFor<T extends Document.Internal.Constructor> = SchemaField.UpdateData<
+    T extends { defineSchema: () => infer R extends DataSchema } ? R : never
+  >;
 }

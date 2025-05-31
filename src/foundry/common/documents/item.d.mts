@@ -106,8 +106,6 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "Item";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 

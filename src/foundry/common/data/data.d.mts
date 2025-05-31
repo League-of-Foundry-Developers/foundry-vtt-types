@@ -246,6 +246,11 @@ declare class ShapeData extends DataModel<ShapeData.Schema> {
 }
 
 declare namespace BaseShapeData {
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
   interface Schema<ShapeType extends ShapeTypes = ShapeTypes> extends DataSchema {
     /**
      * The type of shape, a value in BaseShapeData.TYPES.
