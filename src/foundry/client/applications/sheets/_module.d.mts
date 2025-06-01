@@ -6,9 +6,11 @@
 export * as journal from "./journal/_module.mjs";
 export { default as ActiveEffectConfig } from "./active-effect-config.mjs";
 export { default as ActorSheetV2, default as ActorSheet } from "./actor-sheet.mjs";
+export { default as AdventureExporter } from "./adventure-exporter.mjs";
 export { default as AdventureImporterV2, default as AdventureImporter } from "./adventure-importer.mjs";
 export { default as AmbientLightConfig } from "./ambient-light-config.mjs";
 export { default as AmbientSoundConfig } from "./ambient-sound-config.mjs";
+export { default as BaseSheet } from "./base-sheet.mjs";
 export { default as CardConfig } from "./card-config.mjs";
 export { CardsConfig, CardDeckConfig, CardHandConfig, CardPileConfig } from "./cards-config.mjs";
 export { default as CombatantConfig } from "./combatant-config.mjs";
