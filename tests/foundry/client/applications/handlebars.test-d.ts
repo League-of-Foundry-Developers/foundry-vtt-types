@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
 
-new HandlebarsHelpers();
 const myNumField = new foundry.data.fields.NumberField({});
 
 expectTypeOf(HandlebarsHelpers.checked("")).toEqualTypeOf<string>();

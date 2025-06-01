@@ -196,7 +196,33 @@ declare global {
 
   export import Roll = _dice.Roll;
 
-  // Select v13 deprecated globals. Will be vastly expanded soon.
+  // Programmatic foundry deprecations
+  // While Foundry has the benefit of applying deprecations purely programmatically,
+  // We must list them one by one. This is that section, organized as best can be.
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Application} which is now namespaced under {@linkcode foundry.appv1.api.Application}"
+   * (since v13 will be removed in v16)
+   */
+  export import Application = foundry.appv1.api.Application;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Dialog} which is now namespaced under {@linkcode foundry.appv1.api.Dialog}"
+   * (since v13 will be removed in v16)
+   */
+  export import Dialog = foundry.appv1.api.Dialog;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode FormApplication} which is now namespaced under {@linkcode foundry.appv1.api.FormApplication}"
+   * (since v13 will be removed in v16)
+   */
+  export import FormApplication = foundry.appv1.api.FormApplication;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DocumentSheet} which is now namespaced under {@linkcode foundry.appv1.api.DocumentSheet}"
+   * (since v13 will be removed in v16)
+   */
+  export import DocumentSheet = foundry.appv1.api.DocumentSheet;
 
   /**
    * @deprecated "You are accessing the global {@linkcode Game} which is now namespaced under {@linkcode foundry.Game}"
@@ -771,6 +797,103 @@ declare global {
    * (since v13 will be removed in v15)
    */
   export import JournalTextTinyMCESheet = foundry.appv1.sheets.JournalTextTinyMCESheet;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AsyncWorker} which is now namespaced under {@linkcode foundry.helpers.AsyncWorker}"
+   * (since v13 will be removed in v15)
+   */
+  // export import AsyncWorker = foundry.helpers.AsyncWorker;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ClientIssues} which is now namespaced under {@linkcode foundry.helpers.ClientIssues}"
+   * (since v13 will be removed in v15)
+   */
+  // export import ClientIssues = foundry.helpers.ClientIssues;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ClientKeybindings} which is now namespaced under {@linkcode foundry.helpers.interaction.ClientKeybindings}"
+   * (since v13 will be removed in v15)
+   */
+  // export import ClientKeybindings = foundry.helpers.interaction.ClientKeybindings;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ClientSettings} which is now namespaced under {@linkcode foundry.helpers.ClientSettings}"
+   * (since v13 will be removed in v15)
+   */
+  // export import ClientSettings = foundry.helpers.ClientSettings;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ClipboardHelper} which is now namespaced under {@linkcode foundry.helpers.interaction.ClipboardHelper}"
+   * (since v13 will be removed in v15)
+   */
+  // export import ClipboardHelper = foundry.helpers.interaction.ClipboardHelper;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DocumentIndex} which is now namespaced under {@linkcode foundry.helpers.DocumentIndex}"
+   * (since v13 will be removed in v15)
+   */
+  // export import DocumentIndex = foundry.helpers.DocumentIndex;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode GameTime} which is now namespaced under {@linkcode foundry.helpers.GameTime}"
+   * (since v13 will be removed in v15)
+   */
+  // export import GameTime = foundry.helpers.GameTime;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode GamepadManager} which is now namespaced under {@linkcode foundry.helpers.interaction.GamepadManager}"
+   * (since v13 will be removed in v15)
+   */
+  // export import GamepadManager = foundry.helpers.interaction.GamepadManager;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ImageHelper} which is now namespaced under {@linkcode foundry.helpers.media.ImageHelper}"
+   * (since v13 will be removed in v15)
+   */
+  // export import ImageHelper = foundry.helpers.media.ImageHelper;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode KeyboardManager} which is now namespaced under {@linkcode foundry.helpers.interaction.KeyboardManager}"
+   * (since v13 will be removed in v15)
+   */
+  // export import KeyboardManager = foundry.helpers.interaction.KeyboardManager;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Localization} which is now namespaced under {@linkcode foundry.helpers.Localization}"
+   * (since v13 will be removed in v15)
+   */
+  export import Localization = foundry.helpers.Localization;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode MouseManager} which is now namespaced under {@linkcode foundry.helpers.interaction.MouseManager}"
+   * (since v13 will be removed in v15)
+   */
+  // export import MouseManager = foundry.helpers.interaction.MouseManager;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SocketInterface} which is now namespaced under {@linkcode foundry.helpers.SocketInterface}"
+   * (since v13 will be removed in v15)
+   */
+  // export import SocketInterface = foundry.helpers.SocketInterface;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode TooltipManager} which is now namespaced under {@linkcode foundry.helpers.interaction.TooltipManager.implementation}"
+   * (since v13 will be removed in v15)
+   * @privateRemarks TODO: This should return the configured class
+   */
+  // export import TooltipManager = foundry.helpers.interaction.TooltipManager;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode VideoHelper} which is now namespaced under {@linkcode foundry.helpers.media.VideoHelper}"
+   * (since v13 will be removed in v15)
+   */
+  // export import VideoHelper = foundry.helpers.media.VideoHelper;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode WorkerManager} which is now namespaced under {@linkcode foundry.helpers.WorkerManager}"
+   * (since v13 will be removed in v15)
+   */
+  // export import WorkerManager = foundry.helpers.WorkerManager;
 
   // v12 deprecations
 
