@@ -51,10 +51,6 @@ declare namespace DocumentSheetConfig {
       DocumentSheetV2.Configuration<Document> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
-
-  /** @deprecated Renamed to SheetRegistrationOptions to match core */
-  interface RegisterSheetOptions extends SheetRegistrationOptions {}
-
   interface SheetRegistrationOptions {
     /**
      * A human-readable label for the sheet name, or a function that returns one. Will be localized.
@@ -96,6 +92,9 @@ declare namespace DocumentSheetConfig {
   interface UnregisterSheetOptions {
     types?: string[] | undefined;
   }
+
+  /** @deprecated Renamed to SheetRegistrationOptions to match core */
+  interface RegisterSheetOptions extends SheetRegistrationOptions {}
 }
 
 declare abstract class AnyDocumentSheetConfig extends DocumentSheetConfig<
