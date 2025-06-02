@@ -72,7 +72,6 @@ export import ChromaColorationShader = globalThis.ChromaColorationShader;
 export import ClientDocument = globalThis.ClientDocument;
 export import ClientIssues = globalThis.ClientIssues;
 export import ClientKeybindings = globalThis.ClientKeybindings;
-export import ClientPackage = globalThis.ClientPackage;
 export import ClientPackageMixin = globalThis.ClientPackageMixin;
 export import ClientSettings = globalThis.ClientSettings;
 export import ClipperLib = globalThis.ClipperLib;

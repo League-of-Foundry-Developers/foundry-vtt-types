@@ -7,7 +7,7 @@ import "#common/primitives/_module.mjs";
 import * as _CONST from "#common/constants.mjs";
 import * as _abstract from "#common/abstract/_module.mjs";
 import * as _documents from "#common/documents/_module.mjs";
-import * as _packages from "#common/packages/_module.mjs";
+import * as _packages from "#client/packages/_module.mjs";
 // utils is exported here in the foundry file
 import * as _config from "#common/config.mjs";
 import * as _prosemirror from "#common/prosemirror/_module.mjs";
@@ -961,6 +961,41 @@ declare global {
    * (since v13 will be removed in v15)
    */
   export import SidebarTour = foundry.nue.tours.SidebarTour;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ClientPackageMixin} which is now namespaced under {@linkcode foundry.packages.ClientPackageMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import ClientPackageMixin = foundry.packages.ClientPackageMixin;
+
+  /**
+   * @deprecated The ClientPackage namespace has been adjusted to ClientPackageMixin
+   */
+  export import ClientPackage = foundry.packages.ClientPackageMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Module} which is now namespaced under {@linkcode foundry.packages.Module}"
+   * (since v13 will be removed in v15)
+   */
+  export import Module = foundry.packages.Module;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode System} which is now namespaced under {@linkcode foundry.packages.System}"
+   * (since v13 will be removed in v15)
+   */
+  export import System = foundry.packages.System;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode World} which is now namespaced under {@linkcode foundry.packages.World}"
+   * (since v13 will be removed in v15)
+   */
+  export import World = foundry.packages.World;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PACKAGE_TYPES} which is now namespaced under {@linkcode foundry.packages.PACKAGE_TYPES}"
+   * (since v13 will be removed in v15)
+   */
+  export import PACKAGE_TYPES = foundry.packages.PACKAGE_TYPES;
 
   // v12 deprecations
 
