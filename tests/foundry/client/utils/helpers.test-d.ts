@@ -6,8 +6,6 @@ expectTypeOf(saveDataToFile("", "", "")).toEqualTypeOf<void>();
 declare const file: File;
 expectTypeOf(readTextFromFile(file)).toEqualTypeOf<Promise<string>>();
 
-declare const actor: Actor.Implementation;
-expectTypeOf(_resolveEmbedded(actor, [])).toEqualTypeOf<foundry.abstract.Document.Any>();
 expectTypeOf(getDocumentClass("Actor")).toEqualTypeOf<Actor.ImplementationClass>();
 expectTypeOf(getDocumentClass("Item")).toEqualTypeOf<Item.ImplementationClass>();
 
@@ -37,3 +35,15 @@ fromUuidSync("invalid");
 
 // @ts-expect-error - The error emitted here is subpar. Would benefit from throw types.
 fromUuidSync("Item.uuid1.Abc.uuid2");
+
+interface SortingStructure {
+  target: number;
+  update: {
+    sortKey: number;
+  };
+}
+
+declare const input: SortingStructure;
+expectTypeOf(SortingHelpers.performIntegerSort(input, {})).toEqualTypeOf<
+  Array<{ target: SortingStructure; update: { sort: number } }>
+>();

@@ -195,11 +195,17 @@ declare global {
    */
   export import CONST = _CONST;
 
+  // Blessed globals - will remain global without deprecation
+
   // Color is currently handled in src/foundry/client/head.d.mts
 
   export import Collection = _utils.Collection;
 
   export import Roll = _dice.Roll;
+
+  export import fromUuid = foundry.utils.fromUuid;
+  export import fromUuidSync = foundry.utils.fromUuidSync;
+  export import getDocumentClass = foundry.utils.getDocumentClass;
 
   // Programmatic foundry deprecations
   // While Foundry has the benefit of applying deprecations purely programmatically,
