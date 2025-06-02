@@ -1,3 +1,5 @@
+import type ClientKeybindings from "./client-keybindings.mjs";
+
 /**
  * A set of helpers and management functions for dealing with user input from keyboard events.
  * {@link https://keycode.info/}

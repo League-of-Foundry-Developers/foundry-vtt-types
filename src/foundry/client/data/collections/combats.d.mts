@@ -15,7 +15,7 @@ declare global {
     /**
      * Provide the settings object which configures the Combat document
      */
-    static get settings(): ClientSettings.SettingInitializedType<"core", Combat.CONFIG_SETTING>;
+    static get settings(): foundry.helpers.ClientSettings.SettingInitializedType<"core", Combat.CONFIG_SETTING>;
 
     override get directory(): typeof ui.combat;
 

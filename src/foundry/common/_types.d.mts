@@ -3,6 +3,10 @@
 import type { AnyConcreteConstructor, AnyConstructor, AnyFunction } from "#utils";
 import type { Document } from "./abstract/_module.d.mts";
 
+import ClientSettings = foundry.helpers.ClientSettings;
+import ClientKeybindings = foundry.helpers.interaction.ClientKeybindings;
+import SocketInterface = foundry.helpers.SocketInterface;
+
 export {};
 
 // After seeing that none of these types add anything or are even exported a
@@ -67,9 +71,9 @@ type KeybindingActionBinding = ClientKeybindings.KeybindingActionBinding;
 
 type KeybindingAction = ClientKeybindings.KeybindingAction;
 
-type KeyboardEventContext = KeyboardManager.KeyboardEventContext;
+type KeyboardEventContext = foundry.helpers.interaction.KeyboardManager.KeyboardEventContext;
 
-type ConnectedGamepad = GamepadManager.ConnectedGamepad;
+type ConnectedGamepad = foundry.helpers.interaction.GamepadManager.ConnectedGamepad;
 
 type RequestData = SocketInterface.RequestData;
 

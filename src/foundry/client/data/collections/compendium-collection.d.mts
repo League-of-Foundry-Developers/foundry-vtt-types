@@ -1,6 +1,7 @@
 import type { DeepPartial, EmptyObject, InexactPartial, SimpleMerge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 
+import SocketInterface = foundry.helpers.SocketInterface;
 import Game = foundry.Game;
 
 declare global {

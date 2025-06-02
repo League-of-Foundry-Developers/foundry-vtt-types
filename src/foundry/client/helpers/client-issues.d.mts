@@ -58,7 +58,7 @@ declare class ClientIssues {
    * Get the Document sub-type counts for a given module.
    * @param module - The module or its ID.
    */
-  getSubTypeCountsFor(module: Module | string): ClientIssues.ModuleSubTypeCounts | undefined;
+  getSubTypeCountsFor(module: foundry.packages.Module | string): ClientIssues.ModuleSubTypeCounts | undefined;
 
   /**
    * Retrieve all sub-type counts in the world.

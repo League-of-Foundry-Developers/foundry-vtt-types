@@ -344,7 +344,7 @@ declare global {
      * Move the Token along the measured path when the move key is pressed.
      * @remarks `context` is unused in 12.331
      */
-    protected _onMoveKeyDown(context: KeyboardManager.KeyboardEventContext): void;
+    protected _onMoveKeyDown(context: foundry.helpers.interaction.KeyboardManager.KeyboardEventContext): void;
   }
 
   namespace Ruler {

@@ -65,12 +65,12 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   /**
    * The game World which is currently active.
    */
-  readonly world: World;
+  readonly world: foundry.packages.World;
 
   /**
    * The System which is used to power this game World.
    */
-  readonly system: System;
+  readonly system: foundry.packages.System;
 
   /**
    * A Map of active Modules which are currently eligible to be enabled in this World.
@@ -106,7 +106,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * The global document index.
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
-  readonly documentIndex: SimpleInitializedOn<DocumentIndex, "setup", RunEvents>;
+  readonly documentIndex: SimpleInitializedOn<foundry.helpers.DocumentIndex, "setup", RunEvents>;
 
   /**
    * The UUID redirects tree.
@@ -250,7 +250,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   /**
    * The singleton Clipboard Helper.
    */
-  readonly clipboard: ClipboardHelper;
+  readonly clipboard: foundry.helpers.interaction.ClipboardHelper;
 
   /**
    * Localization support
@@ -261,71 +261,71 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   /**
    * The singleton instance of the ClientIssues manager.
    */
-  readonly issues: ClientIssues;
+  readonly issues: foundry.helpers.ClientIssues;
 
   /**
    * The Gamepad Manager
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  readonly gamepad: SimpleInitializedOn<GamepadManager, "ready", RunEvents>;
+  readonly gamepad: SimpleInitializedOn<foundry.helpers.interaction.GamepadManager, "ready", RunEvents>;
 
   /**
    * The Keyboard Manager
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  readonly keyboard: SimpleInitializedOn<KeyboardManager, "ready", RunEvents>;
+  readonly keyboard: SimpleInitializedOn<foundry.helpers.interaction.KeyboardManager, "ready", RunEvents>;
 
   /**
    * Client keybindings which are used to configure application behavior
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  readonly keybindings: SimpleInitializedOn<ClientKeybindings, "ready", RunEvents>;
+  readonly keybindings: SimpleInitializedOn<foundry.helpers.interaction.ClientKeybindings, "ready", RunEvents>;
 
   /**
    * The Mouse Manager
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  readonly mouse: SimpleInitializedOn<MouseManager, "ready", RunEvents>;
+  readonly mouse: SimpleInitializedOn<foundry.helpers.interaction.MouseManager, "ready", RunEvents>;
 
   /**
    * The New User Experience manager.
    * @remarks Initialized just after the `"ready"` hook event.
    */
-  readonly nue: NewUserExperience;
+  readonly nue: foundry.nue.NewUserExperienceManager;
 
   /**
    * Client settings which are used to configure application behavior
    * @remarks Settings are registered between `"init"` and `"i18nInit"` hook events.
    */
-  readonly settings: ClientSettings;
+  readonly settings: foundry.helpers.ClientSettings;
 
   /**
    * A singleton GameTime instance which manages the progression of time within the game world.
    */
-  readonly time: GameTime;
+  readonly time: foundry.helpers.GameTime;
 
   /**
    * A singleton instance of the TooltipManager class
    * @remarks Initialized just before the `"setup"` hook events is called.
    */
-  readonly tooltip: SimpleInitializedOn<TooltipManager, "setup", RunEvents>;
+  readonly tooltip: SimpleInitializedOn<foundry.helpers.interaction.TooltipManager, "setup", RunEvents>;
 
   /**
    * A singleton instance of the Tour collection class
    * @remarks Initialized just before the `"setup"` hook events is called.
    */
-  readonly tours: SimpleInitializedOn<Tours, "setup", RunEvents>;
+  readonly tours: SimpleInitializedOn<foundry.nue.ToursCollection, "setup", RunEvents>;
 
   /**
    * A singleton instance of the Video Helper class
    * @remarks Initialized just before the `"setup"` hook events is called.
    */
-  readonly video: SimpleInitializedOn<VideoHelper, "setup", RunEvents>;
+  readonly video: SimpleInitializedOn<foundry.helpers.media.VideoHelper, "setup", RunEvents>;
 
   /**
    * A singleton web Worker manager.
    */
-  readonly workers: WorkerManager;
+  readonly workers: foundry.helpers.WorkerManager;
 
   /**
    * Fetch World data and return a Game instance
@@ -626,14 +626,14 @@ declare global {
 }
 
 declare namespace Game {
-  interface ModuleCollection extends Collection<Module> {
+  interface ModuleCollection extends Collection<foundry.packages.Module> {
     /**
      * Gets the module requested for by ID
      * @see {@linkcode ModuleConfig} to add custom properties to modules like APIs.
      * @see {@linkcode RequiredModules} to remove `undefined` from the return type for a given module
      * @param id - The module ID to look up
      */
-    get<T extends string>(id: T): Module & ConfiguredModule<T>;
+    get<T extends string>(id: T): foundry.packages.Module & ConfiguredModule<T>;
   }
 
   namespace Model {
@@ -690,7 +690,7 @@ declare namespace Game {
       } | null;
       storages: ("public" | "data" | "s3")[];
     };
-    modules: Module["_source"][];
+    modules: foundry.packages.Module["_source"][];
     options: {
       language: string;
       port: number;
@@ -711,7 +711,7 @@ declare namespace Game {
     >;
     paused: boolean;
     release: foundry.config.ReleaseData["_source"];
-    system: System["_source"];
+    system: foundry.packages.System["_source"];
     systemUpdate: {
       hasUpdate: boolean;
       version: string;
@@ -722,7 +722,7 @@ declare namespace Game {
     // but is only filled in if there's `template.json`
     model: Model;
     userId: string;
-    world: World["_source"];
+    world: foundry.packages.World["_source"];
   } & {
     [DocumentType in  // eslint-disable-next-line @typescript-eslint/no-deprecated
       | foundry.CONST.DOCUMENT_TYPES
