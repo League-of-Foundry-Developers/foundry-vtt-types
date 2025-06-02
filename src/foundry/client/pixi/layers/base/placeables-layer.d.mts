@@ -107,7 +107,7 @@ declare global {
      * If objects on this PlaceablesLayer have a HUD UI, provide a reference to its instance
      * @remarks Returns `null` unless overridden by subclass
      */
-    get hud(): BasePlaceableHUD<Document.ObjectFor<DocumentName>> | null;
+    get hud(): foundry.applications.hud.BasePlaceableHUD<Document.ObjectFor<DocumentName>> | null;
 
     /**
      * A convenience method for accessing the placeable object instances contained in this layer

@@ -1719,7 +1719,7 @@ declare global {
       layerClass: typeof DrawingsLayer;
 
       /** @defaultValue `typeof DrawingHUD` */
-      hudClass: typeof DrawingHUD;
+      hudClass: typeof foundry.applications.hud.DrawingHUD;
     };
 
     /**
@@ -1841,7 +1841,7 @@ declare global {
       layerClass: TilesLayer.AnyConstructor;
 
       /** @defaultValue `typeof TileHUD` */
-      hudClass: TileHUD.AnyConstructor;
+      hudClass: foundry.applications.hud.TileHUD.AnyConstructor;
     };
 
     /**
@@ -1869,10 +1869,10 @@ declare global {
       layerClass: TokenLayer.AnyConstructor;
 
       /** @defaultValue `typeof TokenConfig` */
-      prototypeSheetClass: TokenConfig.AnyConstructor;
+      prototypeSheetClass: foundry.applications.sheets.TokenConfig.AnyConstructor;
 
       /** @defaultValue `typeof TokenHUD` */
-      hudClass: TokenHUD.AnyConstructor;
+      hudClass: foundry.applications.hud.TokenHUD.AnyConstructor;
 
       /** @defaultValue `"TOKEN.Adjectives"` */
       adjectivesPrefix: string;
@@ -2247,67 +2247,67 @@ declare global {
   namespace CONFIG {
     interface UI {
       /** @defaultValue `MainMenu` */
-      menu: MainMenu.AnyConstructor;
+      menu: foundry.applications.ui.MainMenu.AnyConstructor;
 
       /** @defaultValue `Sidebar` */
-      sidebar: Sidebar.AnyConstructor;
+      sidebar: foundry.applications.sidebar.Sidebar.AnyConstructor;
 
       /** @defaultValue `Pause` */
-      pause: Pause.AnyConstructor;
+      pause: foundry.applications.ui.GamePause.AnyConstructor;
 
       /** @defaultValue `SceneNavigation` */
-      nav: SceneNavigation.AnyConstructor;
+      nav: foundry.applications.ui.SceneNavigation.AnyConstructor;
 
       /** @defaultValue `Notifications` */
       notifications: foundry.applications.ui.Notifications.AnyConstructor;
 
       /** @defaultValue `ActorDirectory` */
-      actors: ActorDirectory.AnyConstructor;
+      actors: foundry.applications.sidebar.tabs.ActorDirectory.AnyConstructor;
 
       /** @defaultValue `CardsDirectory` */
-      cards: CardsDirectory.AnyConstructor;
+      cards: foundry.applications.sidebar.tabs.CardsDirectory.AnyConstructor;
 
       /** @defaultValue `ChatLog` */
-      chat: ChatLog.AnyConstructor;
+      chat: foundry.applications.sidebar.tabs.ChatLog.AnyConstructor;
 
       /** @defaultValue `CombatTracker` */
-      combat: CombatTracker.AnyConstructor;
+      combat: foundry.applications.sidebar.tabs.CombatTracker.AnyConstructor;
 
       /** @defaultValue `CompendiumDirectory` */
-      compendium: CompendiumDirectory.AnyConstructor;
+      compendium: foundry.applications.sidebar.tabs.CompendiumDirectory.AnyConstructor;
 
       /** @defaultValue `SceneControls` */
-      controls: SceneControls.AnyConstructor;
+      controls: foundry.applications.ui.SceneControls.AnyConstructor;
 
       /** @defaultValue `Hotbar` */
-      hotbar: Hotbar.AnyConstructor;
+      hotbar: foundry.applications.ui.Hotbar.AnyConstructor;
 
       /** @defaultValue `ItemDirectory` */
-      items: ItemDirectory.AnyConstructor;
+      items: foundry.applications.sidebar.tabs.ItemDirectory.AnyConstructor;
 
       /** @defaultValue `JournalDirectory` */
-      journal: JournalDirectory.AnyConstructor;
+      journal: foundry.applications.sidebar.tabs.JournalDirectory.AnyConstructor;
 
       /** @defaultValue `MacroDirectory` */
-      macros: MacroDirectory.AnyConstructor;
+      macros: foundry.applications.sidebar.tabs.MacroDirectory.AnyConstructor;
 
       /** @defaultValue `PlayerList` */
-      players: PlayerList.AnyConstructor;
+      players: foundry.applications.ui.Players.AnyConstructor;
 
       /** @defaultValue `PlaylistDirectory` */
-      playlists: PlaylistDirectory.AnyConstructor;
+      playlists: foundry.applications.sidebar.tabs.PlaylistDirectory.AnyConstructor;
 
       /** @defaultValue `SceneDirectory` */
-      scenes: SceneDirectory.AnyConstructor;
+      scenes: foundry.applications.sidebar.tabs.SceneDirectory.AnyConstructor;
 
       /** @defaultValue `Settings` */
-      settings: Settings.AnyConstructor;
+      settings: foundry.applications.sidebar.tabs.Settings.AnyConstructor;
 
       /** @defaultValue `RollTableDirectory` */
-      tables: RollTableDirectory.AnyConstructor;
+      tables: foundry.applications.sidebar.tabs.RollTableDirectory.AnyConstructor;
 
       /** @defaultValue `CameraViews` */
-      webrtc: CameraViews.AnyConstructor;
+      webrtc: foundry.applications.apps.av.CameraViews.AnyConstructor;
     }
 
     interface Canvas {
@@ -2326,7 +2326,7 @@ declare global {
       /** @defaultValue `0xffffff` */
       brightestColor: number;
 
-      chatBubblesClass: ChatBubbles.AnyConstructor;
+      chatBubblesClass: foundry.canvas.animation.ChatBubbles;
 
       /** @defaultValue `0.25` */
       darknessLightPenalty: number;
@@ -3316,7 +3316,7 @@ interface SheetClassConfig {
 
   canConfigure: boolean;
 
-  cls: DocumentSheet.AnyConstructor;
+  cls: foundry.applications.api.DocumentSheetV2.AnyConstructor | foundry.appv1.api.DocumentSheet.AnyConstructor;
 
   default: boolean;
 

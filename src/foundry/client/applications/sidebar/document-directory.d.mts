@@ -34,7 +34,7 @@ declare namespace DocumentDirectory {
 
   interface Configuration extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.Configuration {
     /** The Document collection that this directory represents. */
-    collection: DirectoryApplicationMixin.AnyMixed;
+    collection: DirectoryCollectionMixin.AnyMixed;
 
     /** Updating one of these properties of a displayed Document will trigger a re-render of the tab. */
     renderUpdateKeys: string[];

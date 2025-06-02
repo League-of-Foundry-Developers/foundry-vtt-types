@@ -30,9 +30,6 @@ declare class ActorSheetV2<
 
   protected override _getHeaderControls(): ApplicationV2.HeaderControlsEntry[];
 
-  // ActorSheetV2 *does* override _renderHTML and _replaceHTML but these should always be overridden by the rendering mixin
-  // They are both leftovers from Atro hastily testing/putting together these subclasses
-
   // The class includes a number of protected static functions for its actions
   static #protected;
 }

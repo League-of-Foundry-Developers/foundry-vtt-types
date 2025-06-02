@@ -1,4 +1,5 @@
 import type { Identity } from "#utils";
+import type { ValueOf } from "type-fest";
 import type DocumentSheetV2 from "../../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 
@@ -23,7 +24,15 @@ declare class JournalEntrySheet<
   RenderContext,
   Configuration,
   RenderOptions
-> {}
+> {
+  /**
+   * The available view modes for journal entries.
+   */
+  static VIEW_MODES: {
+    SINGLE: 1;
+    MULTIPLE: 2;
+  };
+}
 
 declare namespace JournalEntrySheet {
   interface Any extends AnyJournalEntrySheet {}
@@ -46,6 +55,8 @@ declare namespace JournalEntrySheet {
     /** The category name. */
     name: string;
   }
+
+  type VIEW_MODES = ValueOf<typeof JournalEntrySheet.VIEW_MODES>;
 }
 
 declare abstract class AnyJournalEntrySheet extends JournalEntrySheet<

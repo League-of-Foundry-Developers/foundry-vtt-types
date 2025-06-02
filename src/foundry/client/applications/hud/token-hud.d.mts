@@ -44,4 +44,4 @@ declare abstract class AnyTokenHUD extends TokenHUD<
   constructor(...args: never);
 }
 
-export default TileHUD;
+export default TokenHUD;

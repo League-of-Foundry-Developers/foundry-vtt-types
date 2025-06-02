@@ -30,7 +30,10 @@ declare global {
      */
     protected _refreshJournalEntrySheets(): void;
 
-    render(force?: boolean, context?: Application.Options): void;
+    render(
+      force?: boolean,
+      context?: foundry.appv1.api.Application.Options | foundry.applications.api.ApplicationV2.RenderOptions,
+    ): void;
   }
 
   namespace Folders {

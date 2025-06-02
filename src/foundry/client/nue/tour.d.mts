@@ -215,7 +215,7 @@ declare namespace Tour {
     description?: string | undefined;
 
     /** A map of localizations for the Tour that should be merged into the default localizations */
-    localization?: Localization.Translations | undefined;
+    localization?: foundry.helpers.Localization.Translations | undefined;
 
     /** Whether the Tour is restricted to the GM only. Defaults to false. */
     restricted?: boolean | undefined;

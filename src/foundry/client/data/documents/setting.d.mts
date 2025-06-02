@@ -351,7 +351,7 @@ declare global {
     /**
      * The setting configuration for this setting document.
      */
-    get config(): SettingsConfig | undefined;
+    get config(): foundry.applications.settings.SettingsConfig | undefined;
 
     // options: not null (parameter default only)
     protected override _initialize(options?: Document.InitializeOptions): void;

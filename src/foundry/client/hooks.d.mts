@@ -10,10 +10,11 @@ import type {
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
 } from "#common/abstract/_types.d.mts";
-import type CompendiumArt from "#client/helpers/compendium-art.d.mts";
+import type CompendiumArt from "#client/helpers/media/compendium-art.mjs";
 import type { Hooks as HookConfigs } from "#configuration";
 
 import AVSettings = foundry.av.AVSettings;
+import Application = foundry.appv1.api.Application;
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import ContextMenu = foundry.applications.ux.ContextMenu;
 
@@ -395,8 +396,9 @@ export interface AllHooks extends DynamicHooks {
    * @param controls - The SceneControl configurations
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@link SceneControls._getControlButtons | `SceneControls#_getControlButtons`}
+   * TODO: This saw a major rework in v13 and needs individual attention
    */
-  getSceneControlButtons: (controls: SceneControls.Control[]) => void;
+  // getSceneControlButtons: (controls: foundry.applications.ui.SceneControls.Control[]) => void;
 
   /**
    * A hook event that fires whenever data is dropped into a Hotbar slot.
@@ -409,7 +411,11 @@ export interface AllHooks extends DynamicHooks {
    * @remarks An explicit return value of `false` prevents the Document being created.
    * @see {@link Hotbar._onDrop | `Hotbar#_onDrop`}
    */
-  hotbarDrop: (hotbar: Hotbar, data: Document.DropData<Macro.Implementation>, slot: number) => boolean | void;
+  hotbarDrop: (
+    hotbar: foundry.applications.ui.Hotbar,
+    data: Document.DropData<Macro.Implementation>,
+    slot: number,
+  ) => boolean | void;
 
   /**
    * A hook event that fires when the SceneNavigation menu is expanded or collapsed.
@@ -419,7 +425,7 @@ export interface AllHooks extends DynamicHooks {
    * @see {@link SceneNavigation.expand | `SceneNavigation#expand`}
    * @see {@link SceneNavigation.collapse | `SceneNavigation#collapse`}
    */
-  collapseSceneNavigation: (nav: SceneNavigation, collapsed: boolean) => void;
+  collapseSceneNavigation: (nav: foundry.applications.ui.SceneNavigation, collapsed: boolean) => void;
 
   /**
    * A hook event that fires when the Sidebar is collapsed or expanded.
@@ -429,7 +435,7 @@ export interface AllHooks extends DynamicHooks {
    * @see {@link Sidebar.expand | `Sidebar#expand`}
    * @see {@link Sidebar.collapse | `Sidebar#collapse`}
    */
-  collapseSidebar: (sidebar: Sidebar, collapsed: boolean) => void;
+  collapseSidebar: (sidebar: foundry.applications.sidebar.Sidebar, collapsed: boolean) => void;
 
   /**
    * A hook event that fires when the Sidebar tab is changed.
@@ -437,7 +443,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@link Sidebar._onChangeTab | `Sidebar#_onChangeTab`}
    */
-  changeSidebarTab: (app: SidebarTab) => void;
+  changeSidebarTab: (app: foundry.applications.sidebar.AbstractSidebarTab) => void;
 
   /** Active Effects */
 
@@ -492,7 +498,7 @@ export interface AllHooks extends DynamicHooks {
     token: Token.Implementation,
     html: HTMLElement,
     message: string,
-    options: ChatBubbles.Options,
+    options: foundry.canvas.animation.ChatBubbles.Options,
   ) => boolean | void;
 
   /**
@@ -526,7 +532,12 @@ export interface AllHooks extends DynamicHooks {
    * @param options - Options for rendering the associated {@linkcode JournalSheet}
    * @remarks This is called by {@linkcode Hooks.call}.
    */
-  activateNote: (note: Note.Implementation, options: JournalSheet.RenderOptions) => true | false;
+  activateNote: (
+    note: Note.Implementation,
+    options:
+      | foundry.appv1.sheets.JournalSheet.Options
+      | foundry.applications.sheets.journal.JournalEntrySheet.RenderOptions,
+  ) => true | false;
 
   /** Cards */
 
@@ -600,7 +611,11 @@ export interface AllHooks extends DynamicHooks {
    * @remarks An explicit return value of `false` prevents the Document being created.
    * @see {@link ActorSheet._onDrop | `ActorSheet#_onDrop`}
    */
-  dropActorSheetData: (actor: Actor.Implementation, sheet: ActorSheet, data: ActorSheet.DropData) => boolean | void;
+  dropActorSheetData: (
+    actor: Actor.Implementation,
+    sheet: foundry.appv1.sheets.ActorSheet.Any | foundry.applications.sheets.ActorSheetV2.Any,
+    data: foundry.appv1.sheets.ActorSheet.DropData,
+  ) => boolean | void;
 
   /** CanvasVisibility */
 
@@ -850,7 +865,7 @@ export interface AllHooks extends DynamicHooks {
    * @see {@link ChatLog.processMessage | `ChatLog#processMessage`}
    */
   chatMessage: (
-    chatLog: ChatLog,
+    chatLog: foundry.applications.sidebar.tabs.ChatLog,
     message: string,
     chatData: {
       /** The id of the User sending the message */
@@ -922,7 +937,11 @@ export interface AllHooks extends DynamicHooks {
    * @remarks An explicit return value of `false` prevents the Document being created.
    * @see {@link RollTableConfig._onDrop | `RollTableConfig#_onDrop`}
    */
-  dropRollTableSheetData: (table: RollTable.Implementation, config: RollTableConfig, data: object) => boolean | void;
+  dropRollTableSheetData: (
+    table: RollTable.Implementation,
+    config: foundry.applications.sheets.RollTableSheet.Any,
+    data: object,
+  ) => boolean | void;
 
   /**
    * A hook event that allows to pass custom dynamic ring configurations.

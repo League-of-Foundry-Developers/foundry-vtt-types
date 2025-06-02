@@ -234,7 +234,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * The singleton compendium art manager.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  readonly compendiumArt: foundry.helpers.CompendiumArt;
+  readonly compendiumArt: foundry.helpers.media.CompendiumArt;
 
   /**
    * A singleton instance of the Audio Helper class
@@ -256,7 +256,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * Localization support
    * @remarks Initialized just before the `"i18nInit"` hook event.
    */
-  readonly i18n: SimpleInitializedOn<Localization, "i18nInit", RunEvents>;
+  readonly i18n: SimpleInitializedOn<foundry.helpers.Localization, "i18nInit", RunEvents>;
 
   /**
    * The singleton instance of the ClientIssues manager.
@@ -500,7 +500,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * Open Character sheet for current token or controlled actor
    * @returns The ActorSheet which was toggled, or null if the User has no character
    */
-  toggleCharacterSheet(): ActorSheet | null;
+  toggleCharacterSheet(): foundry.appv1.sheets.ActorSheet.Any | foundry.applications.sheets.ActorSheetV2.Any | null;
 
   /**
    * Log out of the game session by returning to the Join screen

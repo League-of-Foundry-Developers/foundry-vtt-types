@@ -29,7 +29,7 @@ declare global {
      * A record of TinyMCE editors which are linked to this form.
      * @defaultValue `{}`
      */
-    editors: Partial<Record<string, FormApplication.FormApplicationEditor>>;
+    editors: Partial<Record<string, foundry.appv1.api.FormApplication.FormApplicationEditor>>;
 
     /**
      * The object representation of the form data, available once processed.

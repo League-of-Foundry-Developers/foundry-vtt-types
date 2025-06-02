@@ -2092,7 +2092,7 @@ declare namespace Document {
   type CreateDialogContext<
     DocumentName extends Document.Type,
     Parent extends Document.Any | null,
-  > = InexactPartial<Dialog.Options> &
+  > = InexactPartial<foundry.appv1.api.Dialog.Options> &
     NullishProps<{
       /**
        * A compendium pack within which the Document should be created

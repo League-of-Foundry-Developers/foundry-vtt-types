@@ -1,4 +1,5 @@
-import type { InexactPartial } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
+import type Application from "#client/appv1/api/application-v1.d.mts";
 
 /**
  * Display a right-click activated Context Menu which provides a dropdown menu of options.
@@ -244,6 +245,12 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
   static eventListeners(): void;
 
   /**
+   * Retrieve the configured DragDrop implementation
+   * @privateRemarks TODO: Config.ux handling
+   */
+  static get implementation(): typeof ContextMenu;
+
+  /**
    * @deprecated since v13 until v15
    * @remarks "ContextMenu#_expandUp is deprecated. Please use ContextMenu#expandUp instead."
    */
@@ -259,6 +266,9 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
 }
 
 declare namespace ContextMenu {
+  interface Any extends AnyContextMenu {}
+  interface AnyConstructor extends Identity<typeof AnyContextMenu> {}
+
   interface Entry<ElementType extends JQuery | HTMLElement> {
     /**
      * The context menu label. Can be localized.
@@ -366,6 +376,10 @@ declare namespace ContextMenu {
   }
 
   type JQueryOrHTML<IsJQuery extends boolean | undefined> = IsJQuery extends false ? HTMLElement : JQuery;
+}
+
+declare abstract class AnyContextMenu extends ContextMenu<boolean> {
+  constructor(...args: never);
 }
 
 export default ContextMenu;
