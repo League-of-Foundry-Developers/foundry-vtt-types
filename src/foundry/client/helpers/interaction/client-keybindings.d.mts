@@ -1,4 +1,5 @@
 import type { LazyUnknown, ValueOf } from "#utils";
+import type KeyboardManager from "./keyboard-manager.d.mts";
 
 /**
  * A class responsible for managing defined game keybinding.

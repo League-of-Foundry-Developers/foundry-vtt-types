@@ -12,7 +12,7 @@ declare global {
    * Wrapper for a web worker meant to convert a pixel buffer to the specified image format
    * and quality and return a base64 image
    */
-  class TextureCompressor extends AsyncWorker {
+  class TextureCompressor extends foundry.helpers.AsyncWorker {
     /**
      * @param name   - The worker name to be initialized
      *                 (default: `"Texture Compressor"`)

@@ -245,7 +245,7 @@ declare namespace Tour {
     selector?: string | undefined;
 
     /** How the tooltip for the step should be displayed relative to the target element. If omitted, the best direction will be attempted to be auto-selected. */
-    tooltipDirection?: TooltipManager.TOOLTIP_DIRECTIONS | undefined;
+    tooltipDirection?: foundry.helpers.interaction.TooltipManager.TOOLTIP_DIRECTIONS | undefined;
 
     /** Whether the Step is restricted to the GM only. Defaults to false. */
     restricted?: boolean | undefined;

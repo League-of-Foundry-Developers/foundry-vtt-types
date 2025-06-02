@@ -111,7 +111,10 @@ declare class Localization {
    * @param lang - The target language to filter on
    * @returns An array of translation file paths
    */
-  protected _filterLanguagePaths(pkg: World | Module | System, lang: string): string[];
+  protected _filterLanguagePaths(
+    pkg: foundry.packages.World | foundry.packages.Module | foundry.packages.System,
+    lang: string,
+  ): string[];
 
   /**
    * Load a single translation file and return its contents as processed JSON

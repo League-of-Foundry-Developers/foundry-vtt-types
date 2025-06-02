@@ -2,7 +2,8 @@ import type { InexactPartial, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { LightData, TextureData } from "#common/data/data.mjs";
+import type { LightData, TextureData } from "#common/data/data.d.mts";
+import type ImageHelper from "#client/helpers/media/image-helper.d.mts";
 
 import fields = foundry.data.fields;
 

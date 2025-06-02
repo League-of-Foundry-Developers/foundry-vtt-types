@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-expectTypeOf(Hooks.events).toEqualTypeOf<Hooks.HookedFunction[]>();
+expectTypeOf(foundry.helpers.Hooks.events).toEqualTypeOf<Hooks.HookedFunction[]>();
 expectTypeOf(Hooks.on("", () => {})).toEqualTypeOf<number>();
 expectTypeOf(Hooks.once("", () => {})).toEqualTypeOf<number>();
 expectTypeOf(Hooks.off("", () => {})).toEqualTypeOf<void>();

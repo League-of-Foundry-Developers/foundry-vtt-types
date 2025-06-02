@@ -4771,7 +4771,7 @@ declare class TypeDataField<
    * Return the package that provides the sub-type for the given model.
    * @param model - The model instance created for this sub-type.
    */
-  static getModelProvider(model: DataModel.Any): System | Module | null;
+  static getModelProvider(model: DataModel.Any): foundry.packages.System | foundry.packages.Module | null;
 
   /**
    * A convenience accessor for the name of the document type associated with this TypeDataField

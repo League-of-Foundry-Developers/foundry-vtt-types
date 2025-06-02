@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-const newUserExperience = new NewUserExperience();
+new NewUserExperience();
+const newUserExperience = new foundry.nue.NewUserExperienceManager();
 
 expectTypeOf(newUserExperience.initialize()).toEqualTypeOf<void>();

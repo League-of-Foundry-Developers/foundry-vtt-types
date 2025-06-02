@@ -7,7 +7,7 @@ import "#common/primitives/_module.mjs";
 import * as _CONST from "#common/constants.mjs";
 import * as _abstract from "#common/abstract/_module.mjs";
 import * as _documents from "#common/documents/_module.mjs";
-import * as _packages from "#common/packages/_module.mjs";
+import * as _packages from "#client/packages/_module.mjs";
 // utils is exported here in the foundry file
 import * as _config from "#common/config.mjs";
 import * as _prosemirror from "#common/prosemirror/_module.mjs";
@@ -24,6 +24,7 @@ import * as _canvas from "./canvas/_module.mjs";
 import * as _helpers from "./helpers/_module.mjs";
 import * as _data from "./data/_module.mjs";
 import * as _dice from "./dice/_module.mjs";
+import * as _nue from "./nue/_module.mjs";
 import * as _utils from "./utils/_module.mjs"; // moved here to match other client exports
 
 /**
@@ -97,6 +98,8 @@ export * as data from "./data/_module.mjs";
  * A module for parsing and executing dice roll syntax.
  */
 export * as dice from "./dice/_module.mjs";
+
+export * as nue from "./nue/_module.mjs";
 
 /**
  * Shared importable types.
@@ -183,6 +186,8 @@ declare global {
      * A module for parsing and executing dice roll syntax.
      */
     export import dice = _dice;
+
+    export import nue = _nue;
   }
 
   /**
@@ -190,11 +195,19 @@ declare global {
    */
   export import CONST = _CONST;
 
+  // Blessed globals - will remain global without deprecation
+
   // Color is currently handled in src/foundry/client/head.d.mts
 
   export import Collection = _utils.Collection;
 
   export import Roll = _dice.Roll;
+
+  export import fromUuid = foundry.utils.fromUuid;
+  export import fromUuidSync = foundry.utils.fromUuidSync;
+  export import getDocumentClass = foundry.utils.getDocumentClass;
+  // Hooks are a blessed global
+  // export import Hooks = foundry.helpers.Hooks;
 
   // Programmatic foundry deprecations
   // While Foundry has the benefit of applying deprecations purely programmatically,
@@ -802,61 +815,61 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode AsyncWorker} which is now namespaced under {@linkcode foundry.helpers.AsyncWorker}"
    * (since v13 will be removed in v15)
    */
-  // export import AsyncWorker = foundry.helpers.AsyncWorker;
+  export import AsyncWorker = foundry.helpers.AsyncWorker;
 
   /**
    * @deprecated "You are accessing the global {@linkcode ClientIssues} which is now namespaced under {@linkcode foundry.helpers.ClientIssues}"
    * (since v13 will be removed in v15)
    */
-  // export import ClientIssues = foundry.helpers.ClientIssues;
+  export import ClientIssues = foundry.helpers.ClientIssues;
 
   /**
    * @deprecated "You are accessing the global {@linkcode ClientKeybindings} which is now namespaced under {@linkcode foundry.helpers.interaction.ClientKeybindings}"
    * (since v13 will be removed in v15)
    */
-  // export import ClientKeybindings = foundry.helpers.interaction.ClientKeybindings;
+  export import ClientKeybindings = foundry.helpers.interaction.ClientKeybindings;
 
   /**
    * @deprecated "You are accessing the global {@linkcode ClientSettings} which is now namespaced under {@linkcode foundry.helpers.ClientSettings}"
    * (since v13 will be removed in v15)
    */
-  // export import ClientSettings = foundry.helpers.ClientSettings;
+  export import ClientSettings = foundry.helpers.ClientSettings;
 
   /**
    * @deprecated "You are accessing the global {@linkcode ClipboardHelper} which is now namespaced under {@linkcode foundry.helpers.interaction.ClipboardHelper}"
    * (since v13 will be removed in v15)
    */
-  // export import ClipboardHelper = foundry.helpers.interaction.ClipboardHelper;
+  export import ClipboardHelper = foundry.helpers.interaction.ClipboardHelper;
 
   /**
    * @deprecated "You are accessing the global {@linkcode DocumentIndex} which is now namespaced under {@linkcode foundry.helpers.DocumentIndex}"
    * (since v13 will be removed in v15)
    */
-  // export import DocumentIndex = foundry.helpers.DocumentIndex;
+  export import DocumentIndex = foundry.helpers.DocumentIndex;
 
   /**
    * @deprecated "You are accessing the global {@linkcode GameTime} which is now namespaced under {@linkcode foundry.helpers.GameTime}"
    * (since v13 will be removed in v15)
    */
-  // export import GameTime = foundry.helpers.GameTime;
+  export import GameTime = foundry.helpers.GameTime;
 
   /**
    * @deprecated "You are accessing the global {@linkcode GamepadManager} which is now namespaced under {@linkcode foundry.helpers.interaction.GamepadManager}"
    * (since v13 will be removed in v15)
    */
-  // export import GamepadManager = foundry.helpers.interaction.GamepadManager;
+  export import GamepadManager = foundry.helpers.interaction.GamepadManager;
 
   /**
    * @deprecated "You are accessing the global {@linkcode ImageHelper} which is now namespaced under {@linkcode foundry.helpers.media.ImageHelper}"
    * (since v13 will be removed in v15)
    */
-  // export import ImageHelper = foundry.helpers.media.ImageHelper;
+  export import ImageHelper = foundry.helpers.media.ImageHelper;
 
   /**
    * @deprecated "You are accessing the global {@linkcode KeyboardManager} which is now namespaced under {@linkcode foundry.helpers.interaction.KeyboardManager}"
    * (since v13 will be removed in v15)
    */
-  // export import KeyboardManager = foundry.helpers.interaction.KeyboardManager;
+  export import KeyboardManager = foundry.helpers.interaction.KeyboardManager;
 
   /**
    * @deprecated "You are accessing the global {@linkcode Localization} which is now namespaced under {@linkcode foundry.helpers.Localization}"
@@ -868,32 +881,121 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode MouseManager} which is now namespaced under {@linkcode foundry.helpers.interaction.MouseManager}"
    * (since v13 will be removed in v15)
    */
-  // export import MouseManager = foundry.helpers.interaction.MouseManager;
+  export import MouseManager = foundry.helpers.interaction.MouseManager;
 
   /**
    * @deprecated "You are accessing the global {@linkcode SocketInterface} which is now namespaced under {@linkcode foundry.helpers.SocketInterface}"
    * (since v13 will be removed in v15)
    */
-  // export import SocketInterface = foundry.helpers.SocketInterface;
+  export import SocketInterface = foundry.helpers.SocketInterface;
 
   /**
    * @deprecated "You are accessing the global {@linkcode TooltipManager} which is now namespaced under {@linkcode foundry.helpers.interaction.TooltipManager.implementation}"
    * (since v13 will be removed in v15)
    * @privateRemarks TODO: This should return the configured class
    */
-  // export import TooltipManager = foundry.helpers.interaction.TooltipManager;
+  export import TooltipManager = foundry.helpers.interaction.TooltipManager;
 
   /**
    * @deprecated "You are accessing the global {@linkcode VideoHelper} which is now namespaced under {@linkcode foundry.helpers.media.VideoHelper}"
    * (since v13 will be removed in v15)
    */
-  // export import VideoHelper = foundry.helpers.media.VideoHelper;
+  export import VideoHelper = foundry.helpers.media.VideoHelper;
 
   /**
    * @deprecated "You are accessing the global {@linkcode WorkerManager} which is now namespaced under {@linkcode foundry.helpers.WorkerManager}"
    * (since v13 will be removed in v15)
    */
-  // export import WorkerManager = foundry.helpers.WorkerManager;
+  export import WorkerManager = foundry.helpers.WorkerManager;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SortingHelpers} which is now namespaced under {@linkcode foundry.utils.SortingHelpers}"
+   * (since v13 will be removed in v15)
+   */
+  export import SortingHelpers = foundry.utils.SortingHelpers;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode saveDataToFile} which is now namespaced under {@linkcode foundry.utils.saveDataToFile}"
+   * (since v13 will be removed in v15)
+   */
+  export import saveDataToFile = foundry.utils.saveDataToFile;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode readTextFromFile} which is now namespaced under {@linkcode foundry.utils.readTextFromFile}"
+   * (since v13 will be removed in v15)
+   */
+  export import readTextFromFile = foundry.utils.readTextFromFile;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode NewUserExperience} which is now namespaced under {@linkcode foundry.nue.NewUserExperienceManager}"
+   * (since v13 will be removed in v15)
+   */
+  export import NewUserExperience = foundry.nue.NewUserExperienceManager;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Tours} which is now namespaced under {@linkcode foundry.nue.ToursCollection}"
+   * (since v13 will be removed in v15)
+   */
+  export import Tours = foundry.nue.ToursCollection;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Tour} which is now namespaced under {@linkcode foundry.nue.Tour}"
+   * (since v13 will be removed in v15)
+   */
+  export import Tour = foundry.nue.Tour;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasTour} which is now namespaced under {@linkcode foundry.nue.tours.CanvasTour}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasTour = foundry.nue.tours.CanvasTour;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SetupTour} which is now namespaced under {@linkcode foundry.nue.tours.SetupTour}"
+   * (since v13 will be removed in v15)
+   */
+  export import SetupTour = foundry.nue.tours.SetupTour;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SidebarTour} which is now namespaced under {@linkcode foundry.nue.tours.SidebarTour}"
+   * (since v13 will be removed in v15)
+   */
+  export import SidebarTour = foundry.nue.tours.SidebarTour;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ClientPackageMixin} which is now namespaced under {@linkcode foundry.packages.ClientPackageMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import ClientPackageMixin = foundry.packages.ClientPackageMixin;
+
+  /**
+   * @deprecated The ClientPackage namespace has been adjusted to ClientPackageMixin
+   */
+  export import ClientPackage = foundry.packages.ClientPackageMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Module} which is now namespaced under {@linkcode foundry.packages.Module}"
+   * (since v13 will be removed in v15)
+   */
+  export import Module = foundry.packages.Module;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode System} which is now namespaced under {@linkcode foundry.packages.System}"
+   * (since v13 will be removed in v15)
+   */
+  export import System = foundry.packages.System;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode World} which is now namespaced under {@linkcode foundry.packages.World}"
+   * (since v13 will be removed in v15)
+   */
+  export import World = foundry.packages.World;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PACKAGE_TYPES} which is now namespaced under {@linkcode foundry.packages.PACKAGE_TYPES}"
+   * (since v13 will be removed in v15)
+   */
+  export import PACKAGE_TYPES = foundry.packages.PACKAGE_TYPES;
 
   // v12 deprecations
 

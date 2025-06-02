@@ -604,7 +604,7 @@ declare class BasePackage<
    * @param modulesCollection - A collection which defines the set of available modules
    * @returns Are all required dependencies satisfied?
    */
-  _testRequiredDependencies(modulesCollection: Collection<Module>): Promise<boolean>;
+  _testRequiredDependencies(modulesCollection: Collection<foundry.packages.Module>): Promise<boolean>;
 
   /**
    * Test compatibility of a package's supported systems.
@@ -613,7 +613,7 @@ declare class BasePackage<
    *          are compatible or if the package has no supported systems.
    *          Returns false otherwise, or if no supported systems are installed.
    */
-  _testSupportedSystems(systemCollection: Collection<System>): Promise<boolean>;
+  _testSupportedSystems(systemCollection: Collection<foundry.packages.System>): Promise<boolean>;
 
   /**
    * Determine if a dependency is within the given compatibility range.

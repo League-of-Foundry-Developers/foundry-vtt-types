@@ -234,7 +234,7 @@ declare abstract class TypeDataModel<
   [__BaseData]: RemoveIndexSignatures<BaseData>;
   [__DerivedData]: RemoveIndexSignatures<DerivedData>;
 
-  modelProvider: System | Module | null;
+  modelProvider: foundry.packages.System | foundry.packages.Module | null;
 
   /**
    * A set of localization prefix paths which are used by this data model.

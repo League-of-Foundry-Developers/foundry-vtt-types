@@ -122,7 +122,7 @@ declare class VideoHelper {
    * @returns The created and cached base64 thumbnail image, or a placeholder image if the canvas is
    *          disabled and no thumbnail can be generated.
    */
-  createThumbnail(src: string, options: ImageHelper.CompositeOptions): Promise<string>;
+  createThumbnail(src: string, options: foundry.helpers.media.ImageHelper.CompositeOptions): Promise<string>;
 
   /**
    * Lazily-load the YouTube API and retrieve a Player instance for a given iframe.

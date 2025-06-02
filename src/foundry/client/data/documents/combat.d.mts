@@ -602,7 +602,7 @@ declare global {
     /** Return the object of settings which modify the Combat Tracker behavior */
     // Type is copied here to avoid recursion issue
     // TODO: Make the setting name configurable?
-    get settings(): ClientSettings.SettingInitializedType<"core", Combat.CONFIG_SETTING>;
+    get settings(): foundry.helpers.ClientSettings.SettingInitializedType<"core", Combat.CONFIG_SETTING>;
 
     /** Has this combat encounter been started? */
     get started(): boolean;

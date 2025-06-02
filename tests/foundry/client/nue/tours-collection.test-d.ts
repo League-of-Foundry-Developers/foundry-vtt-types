@@ -1,7 +1,8 @@
 import { expectTypeOf } from "vitest";
 
 declare const tour: Tour;
-const tours = new Tours();
+new Tours();
+const tours = new foundry.nue.ToursCollection();
 
 expectTypeOf(tours.register("", "", tour)).toEqualTypeOf<void>();
 expectTypeOf(tours.set("", tour)).toEqualTypeOf<Tours>();

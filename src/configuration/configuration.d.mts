@@ -267,7 +267,7 @@ export interface SettingConfig {
   "core.globalAmbientVolume": number;
   "core.globalInterfaceVolume": number;
   "core.globalPlaylistVolume": number;
-  "core.keybindings": Record<string, ClientKeybindings.KeybindingActionBinding[]>;
+  "core.keybindings": Record<string, foundry.helpers.interaction.ClientKeybindings.KeybindingActionBinding[]>;
   "core.language": fields.StringField<{
     required: true;
     blank: false;

@@ -193,6 +193,12 @@ declare class TooltipManager {
     left?: null;
     textAlign?: string;
   }): void;
+
+  /**
+   * Retrieve the configured TooltipManager implementation
+   * @privateRemarks TODO: Config.ux handling
+   */
+  static get implementation(): typeof TooltipManager;
 }
 
 declare namespace TooltipManager {
