@@ -600,7 +600,7 @@ declare global {
   // TODO: Namespaces typically match the Mixin, not the non-exported class, but we're exporting the class for type reasons,
   // TODO: so this is an exception?
   namespace ClientDocument {
-    interface SortOptions<T, SortKey extends string = "sort"> extends SortingHelpers.SortOptions<T, SortKey> {
+    interface SortOptions<T, SortKey extends string = "sort"> extends foundry.utils.SortOptions<T, SortKey> {
       /**
        * Additional data changes which are applied to each sorted document
        * @defaultValue `{}`
