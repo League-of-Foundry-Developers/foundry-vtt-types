@@ -1169,6 +1169,21 @@ declare namespace Document {
         system: object;
       }
     >;
+
+    interface DropData<DocumentType extends Document.Type> {
+      /**
+       * The data used to create a new document.
+       * At least one of `data` and `uuid` must be set.
+       */
+      data?: Document.CreateDataForName<DocumentType>;
+
+      /**
+       * The uuid of an existing document.
+       * At least one of `data` and `uuid` must be set.
+       */
+      // TODO: Handle as part of the UUID update.
+      uuid?: string;
+    }
   }
 
   /** Any Document, that is a child of the given parent Document. */
@@ -1658,23 +1673,6 @@ declare namespace Document {
   >;
 
   type LayerClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "layerClass">;
-
-  type DropData<T extends Document.Any> = T extends { id: string | undefined }
-    ? DropData.Data<T> & DropData.UUID
-    : DropData.Data<T>;
-
-  namespace DropData {
-    type Any = DropData<any>;
-
-    interface Data<T extends Document.Any> {
-      type: T["documentName"];
-      data: T["_source"];
-    }
-
-    interface UUID {
-      uuid: string;
-    }
-  }
 
   namespace Database {
     type Operation = "create" | "update" | "delete";
@@ -2252,6 +2250,47 @@ declare namespace Document {
     : This;
 
   /**
+   * The options for `fromDropData`. Foundry never uses these so the interface is currently empty.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface DropDataOptions {}
+
+  type DropDataFor<Name extends Document.Type> = {
+    ActiveEffect: ActiveEffect.DropData;
+    ActorDelta: ActorDelta.DropData;
+    Actor: Actor.DropData;
+    Adventure: Adventure.DropData;
+    Card: Card.DropData;
+    Cards: Cards.DropData;
+    ChatMessage: ChatMessage.DropData;
+    Combat: Combat.DropData;
+    Combatant: Combatant.DropData;
+    FogExploration: FogExploration.DropData;
+    Folder: Folder.DropData;
+    Item: Item.DropData;
+    JournalEntryPage: JournalEntryPage.DropData;
+    JournalEntry: JournalEntry.DropData;
+    Macro: Macro.DropData;
+    PlaylistSound: PlaylistSound.DropData;
+    Playlist: Playlist.DropData;
+    RegionBehavior: RegionBehavior.DropData;
+    RollTable: RollTable.DropData;
+    Scene: Scene.DropData;
+    Setting: Setting.DropData;
+    TableResult: TableResult.DropData;
+    User: User.DropData;
+    AmbientLight: AmbientLightDocument.DropData;
+    AmbientSound: AmbientSoundDocument.DropData;
+    Drawing: DrawingDocument.DropData;
+    MeasuredTemplate: MeasuredTemplateDocument.DropData;
+    Note: NoteDocument.DropData;
+    Region: RegionDocument.DropData;
+    Tile: TileDocument.DropData;
+    Token: TokenDocument.DropData;
+    Wall: WallDocument.DropData;
+  }[Name];
+
+  /**
    * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -2313,4 +2352,38 @@ declare namespace Document {
   type UpdateDataFor<T extends Document.Internal.Constructor> = SchemaField.UpdateData<
     T extends { defineSchema: () => infer R extends DataSchema } ? R : never
   >;
+
+  /**
+   * @deprecated Use `[Document].DropData` instead.
+   */
+  type DropData<T extends Document.Any> = T extends { id: string | undefined }
+    ? // eslint-disable-next-line @typescript-eslint/no-deprecated
+      DropData.Data<T> & DropData.UUID
+    : // eslint-disable-next-line @typescript-eslint/no-deprecated
+      DropData.Data<T>;
+
+  namespace DropData {
+    /**
+     * @deprecated - This type is likely too broad to be useful. Deprecated without replacement.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type Any = DropData<any>;
+
+    /**
+     * @deprecated - This type is a part of the drop data which is now gotten through
+     * `[Document].DropData`. Use that instead.
+     */
+    interface Data<T extends Document.Any> {
+      type: T["documentName"];
+      data: T["_source"];
+    }
+
+    /**
+     * @deprecated - This type is a part of the drop data which is now gotten through
+     * `[Document].DropData`. Use that instead.
+     */
+    interface UUID {
+      uuid: string;
+    }
+  }
 }

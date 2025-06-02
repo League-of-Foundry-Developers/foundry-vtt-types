@@ -2,7 +2,7 @@ import type { ConfiguredRegionBehavior } from "fvtt-types/configuration";
 import type Document from "#common/abstract/document.d.mts";
 import type BaseRegionBehavior from "#common/documents/region-behavior.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { AnyObject, Merge } from "#utils";
+import type { Merge } from "#utils";
 
 import fields = foundry.data.fields;
 
@@ -401,6 +401,9 @@ declare global {
        */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
+
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
   }
 
   /**
@@ -472,8 +475,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<RegionBehavior.Implementation>,
-      options?: AnyObject,
+      data: RegionBehavior.DropData,
+      options?: RegionBehavior.DropDataOptions,
     ): Promise<RegionBehavior.Implementation | undefined>;
 
     static override fromImport(

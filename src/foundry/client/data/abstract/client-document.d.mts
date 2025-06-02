@@ -355,7 +355,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * Serialize salient information about this Document when dragging it.
    */
-  toDragData(): Document.DropData<Document.ImplementationFor<DocumentName>>;
+  toDragData(): Document.DropDataFor<DocumentName>;
 
   /**
    * A helper function to handle obtaining the relevant Document from dropped data provided via a DataTransfer event.
@@ -371,7 +371,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * anywhere in Foundry, and the JSDoc types it as simply `object`, so it cannot be typed more exactly than this.
    */
   // options: not null (parameter default only)
-  static fromDropData(data: Document.DropData<never>, options?: AnyObject): Promise<unknown>;
+  static fromDropData(data: never, options?: Document.DropDataOptions): Promise<unknown>;
 
   /**
    * Create the Document from the given source with migration applied to it.

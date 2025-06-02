@@ -507,6 +507,9 @@ declare global {
       | Document.OnDeleteDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
       | Item.OnDeleteDescendantDocumentsArgs;
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     interface GetDefaultArtworkReturn {
       img: string;
       texture: GetDefaultArtworkTextureReturn;
@@ -1004,8 +1007,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<Actor.Implementation>,
-      options?: AnyObject,
+      data: Actor.DropData,
+      options?: Actor.DropDataOptions,
     ): Promise<Actor.Implementation | undefined>;
 
     static override fromImport(

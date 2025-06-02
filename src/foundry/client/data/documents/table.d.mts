@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -447,6 +447,9 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
       RollTable.Stored,
       RollTable.DirectDescendant,
@@ -868,8 +871,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<RollTable.Implementation>,
-      options?: AnyObject,
+      data: RollTable.DropData,
+      options?: RollTable.DropDataOptions,
     ): Promise<RollTable.Implementation | undefined>;
 
     static override fromImport(

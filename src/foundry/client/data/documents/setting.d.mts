@@ -1,4 +1,4 @@
-import type { AnyObject, Merge } from "#utils";
+import type { Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 
@@ -179,12 +179,11 @@ declare global {
        * The setting key, a composite of \{scope\}.\{name\}
        * @defaultValue `""`
        */
-      // TODO: enforce `${string}.${string}`? Not worth it since nobody touches directly?
       key: fields.StringField<{
         required: true;
         nullable: false;
         blank: false;
-        validate: (k: string) => boolean;
+        validate: (k: string) => k is `${string}.${string}`;
         validationError: "must have the format {scope}.{field}";
       }>;
 
@@ -334,6 +333,9 @@ declare global {
        */
       type Get<_Scope, _Key> = never;
     }
+
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
   }
 
   /**
@@ -394,8 +396,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<Setting.Implementation>,
-      options?: AnyObject,
+      data: Setting.DropData,
+      options?: Setting.DropDataOptions,
     ): Promise<Setting.Implementation | undefined>;
 
     static override fromImport(

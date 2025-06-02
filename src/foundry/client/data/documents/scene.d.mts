@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -985,6 +985,9 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     type PreCreateDescendantDocumentsArgs =
       | Document.PreCreateDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
       | TokenDocument.PreCreateDescendantDocumentsArgs
@@ -1110,7 +1113,6 @@ declare global {
    *
    * @see {@linkcode Scenes}            The world-level collection of Scene documents
    * @see {@linkcode SceneConfig}       The Scene configuration application
-   *
    */
   class Scene extends foundry.documents.BaseScene.Internal.ClientDocument {
     /**
@@ -1361,8 +1363,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<Scene.Implementation>,
-      options?: AnyObject,
+      data: Scene.DropData,
+      options?: Scene.DropDataOptions,
     ): Promise<Scene.Implementation | undefined>;
 
     static override fromImport(

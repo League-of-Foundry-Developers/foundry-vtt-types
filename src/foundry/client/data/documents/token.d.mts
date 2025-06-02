@@ -815,6 +815,9 @@ declare global {
       };
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     type PreCreateDescendantDocumentsArgs =
       | Document.PreCreateDescendantDocumentsArgs<
           TokenDocument.Stored,
@@ -1339,8 +1342,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<TokenDocument.Implementation>,
-      options?: AnyObject,
+      data: TokenDocument.DropData,
+      options?: TokenDocument.DropDataOptions,
     ): Promise<TokenDocument.Implementation | undefined>;
 
     static override fromImport(

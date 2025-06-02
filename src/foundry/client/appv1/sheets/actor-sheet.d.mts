@@ -1,5 +1,4 @@
 import type { GetDataReturnType, MaybePromise, Identity } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
 import type { Application, DocumentSheet, FormApplication } from "../api/_module.d.mts";
 
 declare module "#configuration" {
@@ -165,7 +164,7 @@ declare namespace ActorSheet {
       type: "Actor";
     }
 
-    interface Item extends Document.DropData<Item.Implementation> {
+    interface Item extends Item.DropData {
       type: "Item";
     }
 

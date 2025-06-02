@@ -519,6 +519,9 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     interface JournalEntryPageHeading {
       /** The heading level, 1-6. */
       level: number;
@@ -783,8 +786,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<JournalEntryPage.Implementation>,
-      options?: AnyObject,
+      data: JournalEntryPage.DropData,
+      options?: JournalEntryPage.DropDataOptions,
     ): Promise<JournalEntryPage.Implementation | undefined>;
 
     static override fromImport(

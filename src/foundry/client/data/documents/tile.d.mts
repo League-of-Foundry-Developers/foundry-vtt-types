@@ -1,4 +1,4 @@
-import type { AnyObject, InterfaceToObject, Merge } from "#utils";
+import type { InterfaceToObject, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { TextureData } from "#common/data/data.mjs";
@@ -441,6 +441,9 @@ declare global {
         randomizeVideo?: boolean;
       };
     }
+
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
   }
 
   /**
@@ -484,8 +487,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<TileDocument.Implementation>,
-      options?: AnyObject,
+      data: TileDocument.DropData,
+      options?: TileDocument.DropDataOptions,
     ): Promise<TileDocument.Implementation | undefined>;
 
     static override fromImport(

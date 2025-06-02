@@ -2,7 +2,7 @@ import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseActorDelta } from "#common/documents/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { ConfiguredActorDelta } from "fvtt-types/configuration";
-import type { AnyObject, Identity, Merge, NullishProps, RequiredProps } from "#utils";
+import type { Identity, Merge, NullishProps, RequiredProps } from "#utils";
 import type DataModel from "#common/abstract/data.d.mts";
 
 import fields = foundry.data.fields;
@@ -503,6 +503,9 @@ declare global {
         >
       | Item.OnDeleteDescendantDocumentsArgs;
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     /** @internal */
     type _InitializeOptions = NullishProps<{
       /**
@@ -728,8 +731,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<ActorDelta.Implementation>,
-      options?: AnyObject,
+      data: ActorDelta.DropData,
+      options?: ActorDelta.DropDataOptions,
     ): Promise<ActorDelta.Implementation | undefined>;
 
     static override fromImport(

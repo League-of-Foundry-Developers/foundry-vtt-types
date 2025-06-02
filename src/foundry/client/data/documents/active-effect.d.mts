@@ -1,13 +1,5 @@
 import type { ConfiguredActiveEffect } from "fvtt-types/configuration";
-import type {
-  AnyMutableObject,
-  AnyObject,
-  IntentionalPartial,
-  InterfaceToObject,
-  JSONValue,
-  Merge,
-  RequiredProps,
-} from "#utils";
+import type { AnyMutableObject, IntentionalPartial, InterfaceToObject, JSONValue, Merge, RequiredProps } from "#utils";
 import type { DataModel } from "#common/abstract/data.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataField, DataSchema } from "#common/data/fields.d.mts";
@@ -530,6 +522,9 @@ declare global {
       core?: { overlay?: boolean };
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     interface DurationData {
       /** The world time when the active effect first started */
       startTime?: number | null | undefined;
@@ -979,8 +974,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<ActiveEffect.Implementation>,
-      options?: AnyObject,
+      data: ActiveEffect.DropData,
+      options?: ActiveEffect.DropDataOptions,
     ): Promise<ActiveEffect.Implementation | undefined>;
 
     static override fromImport(

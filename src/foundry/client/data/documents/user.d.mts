@@ -402,6 +402,9 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     // Note(LukeAbby): This namespace exists to break cycles because of extensive usage of `User` in
     // the `Document` class itself.
     namespace Internal {
@@ -680,8 +683,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<User.Implementation>,
-      options?: AnyObject,
+      data: User.DropData,
+      options?: User.DropDataOptions,
     ): Promise<User.Implementation | undefined>;
 
     static override fromImport(

@@ -1,4 +1,4 @@
-import type { AnyObject, Merge } from "#utils";
+import type { Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -431,6 +431,9 @@ declare global {
        */
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
+
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
   }
 
   /**
@@ -489,8 +492,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<NoteDocument.Implementation>,
-      options?: AnyObject,
+      data: NoteDocument.DropData,
+      options?: NoteDocument.DropDataOptions,
     ): Promise<NoteDocument.Implementation | undefined>;
 
     static override fromImport(

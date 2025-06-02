@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -467,6 +467,9 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
       Playlist.Stored,
       Playlist.DirectDescendant,
@@ -778,8 +781,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<Playlist.Implementation>,
-      options?: AnyObject,
+      data: Playlist.DropData,
+      options?: Playlist.DropDataOptions,
     ): Promise<Playlist.Implementation | undefined>;
 
     static override fromImport(

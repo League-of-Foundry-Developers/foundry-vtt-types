@@ -411,11 +411,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks An explicit return value of `false` prevents the Document being created.
    * @see {@link Hotbar._onDrop | `Hotbar#_onDrop`}
    */
-  hotbarDrop: (
-    hotbar: foundry.applications.ui.Hotbar,
-    data: Document.DropData<Macro.Implementation>,
-    slot: number,
-  ) => boolean | void;
+  hotbarDrop: (hotbar: foundry.applications.ui.Hotbar, data: Macro.DropData, slot: number) => boolean | void;
 
   /**
    * A hook event that fires when the SceneNavigation menu is expanded or collapsed.

@@ -1,7 +1,7 @@
 import type Document from "#common/abstract/document.d.mts";
 import type { documents } from "#client/client.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { AnyObject, InterfaceToObject, Merge } from "#utils";
+import type { InterfaceToObject, Merge } from "#utils";
 import type BaseJournalEntry from "#common/documents/journal-entry.mjs";
 
 import fields = foundry.data.fields;
@@ -411,6 +411,16 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    interface CoreFlags {
+      core?: {
+        viewMode?: foundry.applications.sheets.journal.JournalEntrySheet.VIEW_MODES;
+        searchMode?: CONST.DIRECTORY_SEARCH_MODES;
+      };
+    }
+
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
       JournalEntry.Stored,
       JournalEntry.DirectDescendant,
@@ -446,13 +456,6 @@ declare global {
       JournalEntry.DirectDescendant,
       JournalEntry.Metadata.Embedded
     >;
-
-    interface CoreFlags {
-      core?: {
-        viewMode?: foundry.applications.sheets.journal.JournalEntrySheet.VIEW_MODES;
-        searchMode?: CONST.DIRECTORY_SEARCH_MODES;
-      };
-    }
   }
 
   /**
@@ -638,8 +641,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<JournalEntry.Implementation>,
-      options?: AnyObject,
+      data: JournalEntry.DropData,
+      options?: JournalEntry.DropDataOptions,
     ): Promise<JournalEntry.Implementation | undefined>;
 
     static override fromImport(

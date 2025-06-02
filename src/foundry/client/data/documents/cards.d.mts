@@ -1,5 +1,5 @@
 import type { ConfiguredCards } from "fvtt-types/configuration";
-import type { AnyObject, InexactPartial, Merge, NullishProps } from "#utils";
+import type { InexactPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseCards from "#common/documents/cards.d.mts";
@@ -664,6 +664,9 @@ declare global {
       toUpdate: Card.UpdateData[];
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     /**
      * @remarks {@link Cards.draw | `Cards#draw`} spreads this into an object, minus `how`, with the `action` preset to `"draw"`,
      * which wouldn't make sense to change, then passes that to {@link Cards.pass | `Cards#pass`}
@@ -1008,8 +1011,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<Cards.Implementation>,
-      options?: AnyObject,
+      data: Cards.DropData,
+      options?: Cards.DropDataOptions,
     ): Promise<Cards.Implementation | undefined>;
 
     static override fromImport(

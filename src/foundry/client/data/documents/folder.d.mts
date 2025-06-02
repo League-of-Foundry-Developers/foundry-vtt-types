@@ -1,5 +1,5 @@
 import type { ConfiguredFolder } from "fvtt-types/configuration";
-import type { AnyObject, InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
+import type { InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseFolder from "#common/documents/folder.d.mts";
@@ -382,6 +382,9 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     /**
      * Actual document types that go in folders
      */
@@ -612,8 +615,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<Folder.Implementation>,
-      options?: AnyObject,
+      data: Folder.DropData,
+      options?: Folder.DropDataOptions,
     ): Promise<Folder.Implementation | undefined>;
 
     static override fromImport(

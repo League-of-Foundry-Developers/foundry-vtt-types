@@ -490,6 +490,9 @@ declare global {
       };
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     /** @internal */
     interface _BaseSpeakerOptions {
       /** The Scene in which the speaker resides */
@@ -769,8 +772,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<ChatMessage.Implementation>,
-      options?: AnyObject,
+      data: ChatMessage.DropData,
+      options?: ChatMessage.DropDataOptions,
     ): Promise<ChatMessage.Implementation | undefined>;
 
     static override fromImport(

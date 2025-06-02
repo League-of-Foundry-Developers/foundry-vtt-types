@@ -1,4 +1,4 @@
-import type { AnyObject, Identity, IntentionalPartial, Merge, NullishProps } from "#utils";
+import type { Identity, IntentionalPartial, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type { DatabaseGetOperation } from "#common/abstract/_types.d.mts";
 import type Document from "#common/abstract/document.d.mts";
@@ -353,6 +353,9 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     /** @internal */
     type _LoadQuery = NullishProps<{
       /**
@@ -450,8 +453,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<FogExploration.Implementation>,
-      options?: AnyObject,
+      data: FogExploration.DropData,
+      options?: FogExploration.DropDataOptions,
     ): Promise<FogExploration.Implementation | undefined>;
 
     static override fromImport(

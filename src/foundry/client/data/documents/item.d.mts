@@ -471,6 +471,9 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
       Item.Stored,
       Item.DirectDescendant,
@@ -690,8 +693,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<Item.Implementation>,
-      options?: AnyObject,
+      data: Item.DropData,
+      options?: Item.DropDataOptions,
     ): Promise<Item.Implementation | undefined>;
 
     static override fromImport(

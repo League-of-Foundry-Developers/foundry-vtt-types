@@ -62,7 +62,7 @@ expectTypeOf(
 expectTypeOf(Item.defaultName({ type: null, pack: null, parent: null })).toBeString();
 expectTypeOf(Item.defaultName({ type: undefined, pack: undefined, parent: undefined })).toBeString();
 
-declare const itemDropData: Document.DropData<Item.Implementation>;
+declare const itemDropData: Item.DropData;
 expectTypeOf(Item.fromDropData(itemDropData)).toEqualTypeOf<Promise<Item.Implementation>>();
 // there are no actual options to test
 expectTypeOf(Item.fromDropData(itemDropData, {})).toEqualTypeOf<Promise<Item.Implementation>>();

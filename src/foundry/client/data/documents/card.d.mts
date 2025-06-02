@@ -489,6 +489,9 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     /**
      * @remarks {@link Card.pass | `Card#pass`} calls {@link Cards.pass | `this.parent.pass`} with `action: "pass"` provided
      */
@@ -636,8 +639,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<Card.Implementation>,
-      options?: AnyObject,
+      data: Card.DropData,
+      options?: Card.DropDataOptions,
     ): Promise<Card.Implementation | undefined>;
 
     static override fromImport(

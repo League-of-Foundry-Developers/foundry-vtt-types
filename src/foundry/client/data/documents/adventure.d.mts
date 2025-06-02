@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge, AnyObject, NullishProps } from "#utils";
+import type { InexactPartial, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -405,6 +405,9 @@ declare global {
       type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
     }
 
+    interface DropData extends Document.Internal.DropData<Name> {}
+    interface DropDataOptions extends Document.DropDataOptions {}
+
     type DocumentDataRecord = {
       [K in ContainedDocumentType]?: Document.CreateDataForName<K>[];
     };
@@ -519,8 +522,8 @@ declare global {
 
     // options: not null (parameter default only)
     static override fromDropData(
-      data: Document.DropData<Adventure.Implementation>,
-      options?: AnyObject,
+      data: Adventure.DropData,
+      options?: Adventure.DropDataOptions,
     ): Promise<Adventure.Implementation | undefined>;
 
     static override fromImport(
