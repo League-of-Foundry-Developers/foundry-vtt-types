@@ -206,6 +206,8 @@ declare global {
   export import fromUuid = foundry.utils.fromUuid;
   export import fromUuidSync = foundry.utils.fromUuidSync;
   export import getDocumentClass = foundry.utils.getDocumentClass;
+  // Hooks are a blessed global
+  // export import Hooks = foundry.helpers.Hooks;
 
   // Programmatic foundry deprecations
   // While Foundry has the benefit of applying deprecations purely programmatically,
