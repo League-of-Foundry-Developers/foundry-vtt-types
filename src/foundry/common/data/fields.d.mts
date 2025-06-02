@@ -4917,7 +4917,13 @@ declare namespace TypeDataField {
   type PersistedType<
     ConcreteDocument extends Document.SystemConstructor,
     Opts extends Options<ConcreteDocument>,
-  > = DataField.DerivedInitializedType<AnyObject, MergedOptions<ConcreteDocument, Opts>>;
+  > = DataField.DerivedInitializedType<
+    _Source<DataModelsFor<ConcreteDocument["metadata"]["name"]>>,
+    MergedOptions<ConcreteDocument, Opts>
+  >;
+
+  /** @internal */
+  type _Source<T> = T;
 }
 
 /**
