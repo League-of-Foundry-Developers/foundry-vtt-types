@@ -11,7 +11,7 @@ export * as regions from "./regions/_module.mjs";
 
 // These exports are commented out until they're completed:
 
-// export { default as Canvas } from "./board.mjs";
+export { default as Canvas } from "./board.mjs";
 export { default as SceneManager } from "./scene-manager.mjs";
 export { default as TextureLoader, getTexture, loadTexture, srcExists } from "./loader.mjs";
 export { default as TextureExtractor } from "./texture-extractor.mjs";

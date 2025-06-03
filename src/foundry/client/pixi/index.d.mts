@@ -1,4 +1,3 @@
-import "./board.d.mts";
 import "./core/index.d.mts";
 import "./extensions/index.d.mts";
 import "./groups/index.d.mts";

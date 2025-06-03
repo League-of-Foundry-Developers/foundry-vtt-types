@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+const { Canvas } = foundry.canvas;
+
 const myCanvas = new Canvas();
 declare const someScene: Scene.Implementation;
 expectTypeOf(myCanvas.draw(someScene)).toEqualTypeOf<Promise<Canvas>>();

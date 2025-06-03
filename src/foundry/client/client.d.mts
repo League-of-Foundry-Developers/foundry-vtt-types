@@ -812,6 +812,12 @@ declare global {
   export import JournalTextTinyMCESheet = foundry.appv1.sheets.JournalTextTinyMCESheet;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode Canvas} which is now namespaced under {@linkcode foundry.canvas.Canvas}"
+   * (since v13 will be removed in v15)
+   */
+  export import Canvas = foundry.canvas.Canvas;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode TextureExtractor} which is now namespaced under {@linkcode foundry.canvas.TextureExtractor}"
    * (since v13 will be removed in v15)
    */
