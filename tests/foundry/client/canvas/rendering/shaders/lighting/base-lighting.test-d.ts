@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { AdaptiveLightingShader } from "#client/canvas/rendering/shaders/_module.mjs";
 
 let myALS;
 

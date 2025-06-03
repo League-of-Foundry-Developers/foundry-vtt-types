@@ -890,6 +890,36 @@ declare global {
   export import GridShader = foundry.canvas.rendering.shaders.GridShader;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode AdaptiveLightingShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AdaptiveLightingShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import AdaptiveLightingShader = foundry.canvas.rendering.shaders.AdaptiveLightingShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AdaptiveBackgroundShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AdaptiveBackgroundShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import AdaptiveBackgroundShader = foundry.canvas.rendering.shaders.AdaptiveBackgroundShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AdaptiveColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AdaptiveColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import AdaptiveColorationShader = foundry.canvas.rendering.shaders.AdaptiveColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AdaptiveDarknessShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AdaptiveDarknessShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import AdaptiveDarknessShader = foundry.canvas.rendering.shaders.AdaptiveDarknessShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AdaptiveIlluminationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AdaptiveIlluminationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import AdaptiveIlluminationShader = foundry.canvas.rendering.shaders.AdaptiveIlluminationShader;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode BLEND_MODES} which is now namespaced under {@linkcode foundry.canvas.rendering.BLEND_MODES}"
    * (since v13 will be removed in v15)
    */

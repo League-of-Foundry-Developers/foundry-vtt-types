@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { AdaptiveBackgroundShader } from "#client/canvas/rendering/shaders/_module.mjs";
 
 let myABS;
 

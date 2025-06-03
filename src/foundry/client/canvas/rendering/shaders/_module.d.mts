@@ -10,11 +10,11 @@ export { default as AbstractBaseShader } from "./base-shader.mjs";
 export { default as GridShader } from "./grid/grid.mjs";
 
 // Lighting
-// export { default as AdaptiveLightingShader } from "./lighting/base-lighting.mjs";
-// export { default as AdaptiveBackgroundShader } from "./lighting/background-lighting.mjs";
-// export { default as AdaptiveColorationShader } from "./lighting/coloration-lighting.mjs";
-// export { default as AdaptiveDarknessShader } from "./lighting/darkness-lighting.mjs";
-// export { default as AdaptiveIlluminationShader } from "./lighting/illumination-lighting.mjs";
+export { default as AdaptiveLightingShader } from "./lighting/base-lighting.mjs";
+export { default as AdaptiveBackgroundShader } from "./lighting/background-lighting.mjs";
+export { default as AdaptiveColorationShader } from "./lighting/coloration-lighting.mjs";
+export { default as AdaptiveDarknessShader } from "./lighting/darkness-lighting.mjs";
+export { default as AdaptiveIlluminationShader } from "./lighting/illumination-lighting.mjs";
 
 // Lighting effects
 // export {
