@@ -854,6 +854,24 @@ declare global {
   export import srcExists = foundry.canvas.srcExists;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode BatchRenderer} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchRenderer}"
+   * (since v13 will be removed in v15)
+   */
+  export import BatchRenderer = foundry.canvas.rendering.batching.BatchRenderer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode BatchShaderGenerator} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchShaderGenerator}"
+   * (since v13 will be removed in v15)
+   */
+  export import BatchShaderGenerator = foundry.canvas.rendering.batching.BatchShaderGenerator;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode BLEND_MODES} which is now namespaced under {@linkcode foundry.canvas.rendering.BLEND_MODES}"
+   * (since v13 will be removed in v15)
+   */
+  export import BLEND_MODES = foundry.canvas.rendering.BLEND_MODES;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode TextureCompressor} which is now namespaced under {@linkcode foundry.canvas.workers.TextureCompressor}"
    * (since v13 will be removed in v15)
    */
