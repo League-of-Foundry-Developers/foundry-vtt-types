@@ -1,5 +1,6 @@
 import type EventEmitterMixin from "#common/utils/event-emitter.mjs";
 import type { FixedInstanceType, Identity } from "#utils";
+import type TextureExtractor from "#client/canvas/texture-extractor.d.mts";
 
 declare global {
   /**
@@ -21,7 +22,7 @@ declare global {
 
     /**
      * Texture extractor
-     * @remarks Only `undefined` before first `#initialize()`ation. Set to `null` if `TextureExtractor` creation fails, and will not retry from that state.
+     * @remarks Only `undefined` before first `#initialize()`ation. Set to `null` if {@linkcode TextureExtractor} creation fails, and will not retry from that state.
      */
     get extractor(): TextureExtractor | undefined | null;
 
