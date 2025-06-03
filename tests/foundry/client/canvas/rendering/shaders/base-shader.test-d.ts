@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+const { AbstractBaseShader } = foundry.canvas.rendering.shaders;
+
 class TestShader extends AbstractBaseShader {}
 
 expectTypeOf(TestShader.defaultUniforms.foo).toEqualTypeOf<AbstractBaseShader.UniformValue | undefined>();

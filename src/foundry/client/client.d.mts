@@ -878,6 +878,12 @@ declare global {
   export import AdaptiveFragmentChannelMixin = foundry.canvas.rendering.mixins.AdaptiveFragmentChannelMixin;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode AbstractBaseShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AbstractBaseShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode BLEND_MODES} which is now namespaced under {@linkcode foundry.canvas.rendering.BLEND_MODES}"
    * (since v13 will be removed in v15)
    */
