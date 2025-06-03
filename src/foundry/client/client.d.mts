@@ -854,6 +854,12 @@ declare global {
   export import srcExists = foundry.canvas.srcExists;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode TextureCompressor} which is now namespaced under {@linkcode foundry.canvas.workers.TextureCompressor}"
+   * (since v13 will be removed in v15)
+   */
+  export import TextureCompressor = foundry.canvas.workers.TextureCompressor;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode AsyncWorker} which is now namespaced under {@linkcode foundry.helpers.AsyncWorker}"
    * (since v13 will be removed in v15)
    */

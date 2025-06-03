@@ -6,4 +6,3 @@ import "./perception/index.d.mts";
 import "./placeable.d.mts";
 import "./placeables/index.d.mts";
 import "./webgl/index.d.mts";
-import "./workers/index.d.mts";
