@@ -334,7 +334,7 @@ declare class Canvas extends _InternalCanvas {
    */
   #createApplication(canvas: HTMLCanvasElement, config: ConstructorParameters<typeof PIXI.Application>[0]): void;
 
-  readonly snapshot?: FramebufferSnapshot;
+  readonly snapshot?: foundry.canvas.FramebufferSnapshot;
 
   /**
    * Remap premultiplied blend modes/non premultiplied blend modes to fix PIXI bug with custom BM.

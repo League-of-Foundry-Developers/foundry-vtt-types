@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+const { FramebufferSnapshot } = foundry.canvas;
+
 const myFS = new FramebufferSnapshot();
 declare const someRenderer: PIXI.Renderer;
 

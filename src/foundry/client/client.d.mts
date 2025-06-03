@@ -818,6 +818,12 @@ declare global {
   export import Canvas = foundry.canvas.Canvas;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode FramebufferSnapshot} which is now namespaced under {@linkcode foundry.canvas.FramebufferSnapshot}"
+   * (since v13 will be removed in v15)
+   */
+  export import FramebufferSnapshot = foundry.canvas.FramebufferSnapshot;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode TextureExtractor} which is now namespaced under {@linkcode foundry.canvas.TextureExtractor}"
    * (since v13 will be removed in v15)
    */
