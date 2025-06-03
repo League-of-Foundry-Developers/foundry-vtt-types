@@ -7,7 +7,7 @@
 export { default as AbstractBaseShader } from "./base-shader.mjs";
 
 // Grid
-// export { default as GridShader } from "./grid/grid.mjs";
+export { default as GridShader } from "./grid/grid.mjs";
 
 // Lighting
 // export { default as AdaptiveLightingShader } from "./lighting/base-lighting.mjs";

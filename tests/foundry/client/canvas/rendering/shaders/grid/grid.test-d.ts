@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+const { GridShader } = foundry.canvas.rendering.shaders;
+
 let myGS;
 declare const someMesh: PIXI.Mesh;
 declare const someRenderer: PIXI.Renderer;

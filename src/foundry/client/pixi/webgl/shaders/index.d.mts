@@ -1,5 +1,4 @@
 import "./filters/index.d.mts";
-import "./grid/index.d.mts";
 import "./lighting/index.d.mts";
 import "./region/index.d.mts";
 import "./samplers/index.d.mts";

@@ -884,6 +884,12 @@ declare global {
   export import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode GridShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.GridShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import GridShader = foundry.canvas.rendering.shaders.GridShader;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode BLEND_MODES} which is now namespaced under {@linkcode foundry.canvas.rendering.BLEND_MODES}"
    * (since v13 will be removed in v15)
    */
