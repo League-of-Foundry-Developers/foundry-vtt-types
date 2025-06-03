@@ -90,4 +90,4 @@ export { default as GridShader } from "./grid/grid.mjs";
 // export { default as TokenRingSamplerShader } from "./samplers/primary/token-ring.mjs";
 
 // Graphics
-// export { default as DashLineShader } from "./graphics/dash-line.mjs";
+export { default as DashLineShader } from "./graphics/dash-line.mjs";
