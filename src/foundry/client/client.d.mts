@@ -812,10 +812,34 @@ declare global {
   export import JournalTextTinyMCESheet = foundry.appv1.sheets.JournalTextTinyMCESheet;
 
   /**
-   * @deprecated "You are accessing the global {@linkcode TextureExtractor} which is now namespaced under {@linkcode foundry.appv1.sheets.JournalTextTinyMCESheet}"
+   * @deprecated "You are accessing the global {@linkcode TextureExtractor} which is now namespaced under {@linkcode foundry.canvas.TextureExtractor}"
    * (since v13 will be removed in v15)
    */
   export import TextureExtractor = foundry.canvas.TextureExtractor;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode TextureLoader} which is now namespaced under {@linkcode foundry.canvas.TextureLoader}"
+   * (since v13 will be removed in v15)
+   */
+  export import TextureLoader = foundry.canvas.TextureLoader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode getTexture} which is now namespaced under {@linkcode foundry.canvas.getTexture}"
+   * (since v13 will be removed in v15)
+   */
+  export import getTexture = foundry.canvas.getTexture;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode loadTexture} which is now namespaced under {@linkcode foundry.canvas.loadTexture}"
+   * (since v13 will be removed in v15)
+   */
+  export import loadTexture = foundry.canvas.loadTexture;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode srcExists} which is now namespaced under {@linkcode foundry.canvas.srcExists}"
+   * (since v13 will be removed in v15)
+   */
+  export import srcExists = foundry.canvas.srcExists;
 
   /**
    * @deprecated "You are accessing the global {@linkcode AsyncWorker} which is now namespaced under {@linkcode foundry.helpers.AsyncWorker}"

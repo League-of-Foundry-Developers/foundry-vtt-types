@@ -13,7 +13,7 @@ export * as regions from "./regions/_module.mjs";
 
 // export { default as Canvas } from "./board.mjs";
 export { default as SceneManager } from "./scene-manager.mjs";
-// export { default as TextureLoader, getTexture, loadTexture, srcExists } from "./loader.mjs";
+export { default as TextureLoader, getTexture, loadTexture, srcExists } from "./loader.mjs";
 export { default as TextureExtractor } from "./texture-extractor.mjs";
 // export { default as FramebufferSnapshot } from "./framebuffer-snapshot.mjs";
 // export * as extensions from "./extensions/_module.mjs";

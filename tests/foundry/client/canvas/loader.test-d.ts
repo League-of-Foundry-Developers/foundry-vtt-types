@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+const { srcExists, getTexture, loadTexture, TextureLoader } = foundry.canvas;
+
 expectTypeOf(srcExists("path/to/texture")).toEqualTypeOf<Promise<boolean>>();
 
 expectTypeOf(getTexture("path/to/texture")).toEqualTypeOf<PIXI.Texture | PIXI.Spritesheet | null>();
