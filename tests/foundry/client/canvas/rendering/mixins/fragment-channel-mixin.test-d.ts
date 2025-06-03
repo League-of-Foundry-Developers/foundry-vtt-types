@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+const { AdaptiveFragmentChannelMixin } = foundry.canvas.rendering.mixins;
+
 class MyFragmentChannelShader extends AdaptiveFragmentChannelMixin(BaseSamplerShader) {}
 
 // TODO: figure out how to make this return the mixed shader or filter class

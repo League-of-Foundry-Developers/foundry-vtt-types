@@ -1,7 +1,8 @@
 import type { FixedInstanceType, Mixin } from "#utils";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class BaseShader {
-  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /**
@@ -104,16 +105,16 @@ declare class BaseShader {
   static GLSL1_COMPATIBILITY_FRAGMENT: string;
 }
 
-declare global {
-  function BaseShaderMixin<BaseClass extends BaseShaderMixin.BaseClass>(
-    ShaderClass: BaseClass,
-  ): Mixin<typeof BaseShader, BaseClass>;
+declare function BaseShaderMixin<BaseClass extends BaseShaderMixin.BaseClass>(
+  ShaderClass: BaseClass,
+): Mixin<typeof BaseShader, BaseClass>;
 
-  namespace BaseShaderMixin {
-    /** @privateRemarks Can't extend `AnyMixedConstructor` if it's using the `BaseClass` union; `PIXI.Shader` is the parent of `Filter`, so it's used instead */
-    type AnyMixedConstructor = ReturnType<typeof BaseShaderMixin<PIXI.Shader.AnyConstructor>>;
-    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
+declare namespace BaseShaderMixin {
+  /** @privateRemarks Can't extend `AnyMixedConstructor` if it's using the `BaseClass` union; `PIXI.Shader` is the parent of `Filter`, so it's used instead */
+  type AnyMixedConstructor = ReturnType<typeof BaseShaderMixin<PIXI.Shader.AnyConstructor>>;
+  interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
-    type BaseClass = PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor;
-  }
+  type BaseClass = PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor;
 }
+
+export default BaseShaderMixin;

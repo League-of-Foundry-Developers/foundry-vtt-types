@@ -866,6 +866,18 @@ declare global {
   export import BatchShaderGenerator = foundry.canvas.rendering.batching.BatchShaderGenerator;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode BaseShaderMixin} which is now namespaced under {@linkcode foundry.canvas.rendering.mixins.BaseShaderMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import BaseShaderMixin = foundry.canvas.rendering.mixins.BaseShaderMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AdaptiveFragmentChannelMixin} which is now namespaced under {@linkcode foundry.canvas.rendering.mixins.AdaptiveFragmentChannelMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import AdaptiveFragmentChannelMixin = foundry.canvas.rendering.mixins.AdaptiveFragmentChannelMixin;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode BLEND_MODES} which is now namespaced under {@linkcode foundry.canvas.rendering.BLEND_MODES}"
    * (since v13 will be removed in v15)
    */
