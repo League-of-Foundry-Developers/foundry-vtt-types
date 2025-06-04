@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { AdaptiveVisionShader } from "#client/canvas/rendering/shaders/_module.mjs";
 
 const AVS = AdaptiveVisionShader;
 let myAVS;

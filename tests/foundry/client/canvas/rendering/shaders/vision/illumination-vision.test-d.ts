@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { AbstractBaseShader, IlluminationVisionShader } from "#client/canvas/rendering/shaders/_module.mjs";
 
 const IVS = IlluminationVisionShader;
 let myIVS;

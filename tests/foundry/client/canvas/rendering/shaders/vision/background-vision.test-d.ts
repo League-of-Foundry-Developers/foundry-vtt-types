@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { AbstractBaseShader, BackgroundVisionShader } from "#client/canvas/rendering/shaders/_module.mjs";
 
 const BVS = BackgroundVisionShader;
 let myBVS;

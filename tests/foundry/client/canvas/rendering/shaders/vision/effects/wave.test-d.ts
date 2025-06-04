@@ -1,4 +1,9 @@
 import { expectTypeOf } from "vitest";
+import {
+  AbstractBaseShader,
+  WaveBackgroundVisionShader,
+  WaveColorationVisionShader,
+} from "#client/canvas/rendering/shaders/_module.mjs";
 
 const WBVS = WaveBackgroundVisionShader;
 let myWBVS;

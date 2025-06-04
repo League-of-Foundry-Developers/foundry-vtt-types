@@ -48,14 +48,14 @@ export { WaveColorationShader, WaveIlluminationShader } from "./lighting/effects
 export { DenseSmokeDarknessShader } from "./lighting/effects/dense-smoke.mjs";
 
 // Vision
-// export { default as AdaptiveVisionShader } from "./vision/base-vision.mjs";
-// export { default as BackgroundVisionShader } from "./vision/background-vision.mjs";
-// export { default as IlluminationVisionShader } from "./vision/illumination-vision.mjs";
-// export { default as ColorationVisionShader } from "./vision/coloration-vision.mjs";
+export { default as AdaptiveVisionShader } from "./vision/base-vision.mjs";
+export { default as BackgroundVisionShader } from "./vision/background-vision.mjs";
+export { default as IlluminationVisionShader } from "./vision/illumination-vision.mjs";
+export { default as ColorationVisionShader } from "./vision/coloration-vision.mjs";
 
 // Vision effects
-// export { AmplificationBackgroundVisionShader } from "./vision/effects/amplification.mjs";
-// export { WaveBackgroundVisionShader, WaveColorationVisionShader } from "./vision/effects/wave.mjs";
+export { AmplificationBackgroundVisionShader } from "./vision/effects/amplification.mjs";
+export { WaveBackgroundVisionShader, WaveColorationVisionShader } from "./vision/effects/wave.mjs";
 
 // Weather
 export { default as AbstractWeatherShader } from "./weather/base-weather.mjs";

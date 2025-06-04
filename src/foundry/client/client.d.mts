@@ -1136,6 +1136,48 @@ declare global {
   export import WaveIlluminationShader = foundry.canvas.rendering.shaders.WaveIlluminationShader;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode AdaptiveVisionShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AdaptiveVisionShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import AdaptiveVisionShader = foundry.canvas.rendering.shaders.AdaptiveVisionShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode BackgroundVisionShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.BackgroundVisionShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import BackgroundVisionShader = foundry.canvas.rendering.shaders.BackgroundVisionShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ColorationVisionShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.ColorationVisionShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import ColorationVisionShader = foundry.canvas.rendering.shaders.ColorationVisionShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode IlluminationVisionShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.IlluminationVisionShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import IlluminationVisionShader = foundry.canvas.rendering.shaders.IlluminationVisionShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AmplificationBackgroundVisionShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AmplificationBackgroundVisionShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import AmplificationBackgroundVisionShader = foundry.canvas.rendering.shaders.AmplificationBackgroundVisionShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode WaveBackgroundVisionShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.WaveBackgroundVisionShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import WaveBackgroundVisionShader = foundry.canvas.rendering.shaders.WaveBackgroundVisionShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode WaveColorationVisionShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.WaveColorationVisionShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import WaveColorationVisionShader = foundry.canvas.rendering.shaders.WaveColorationVisionShader;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode AbstractWeatherShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AbstractWeatherShader}"
    * (since v13 will be removed in v15)
    */
