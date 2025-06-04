@@ -1,19 +1,21 @@
 import { expectTypeOf } from "vitest";
+import { DepthSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
+import { BatchRenderer } from "#client/canvas/rendering/batching/_module.mjs";
 
-const DSS = DepthSamplerShader;
-let myDSS;
+const myDSS = DepthSamplerShader.create();
+expectTypeOf(myDSS).toEqualTypeOf<DepthSamplerShader>();
 
 declare const someVB: PIXI.ViewableBuffer;
 declare const someU16Array: Uint16Array;
 declare const someF32Array: Float32Array;
 declare const someTex: PIXI.Texture;
 
-expectTypeOf(DSS.pausable).toEqualTypeOf<boolean>();
-expectTypeOf(DSS.classPluginName).toEqualTypeOf<string | null>();
-expectTypeOf(DSS.fragmentShader).toEqualTypeOf<string>();
-expectTypeOf(DSS.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
+expectTypeOf(DepthSamplerShader.pausable).toEqualTypeOf<boolean>();
+expectTypeOf(DepthSamplerShader.classPluginName).toEqualTypeOf<string | null>();
+expectTypeOf(DepthSamplerShader.fragmentShader).toEqualTypeOf<string>();
+expectTypeOf(DepthSamplerShader.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
 expectTypeOf(
-  DSS["_packInterleavedGeometry"](
+  DepthSamplerShader["_packInterleavedGeometry"](
     {
       _texture: someTex,
       elevation: 0,
@@ -31,7 +33,6 @@ expectTypeOf(
     0,
   ),
 ).toEqualTypeOf<void>();
-expectTypeOf((myDSS = DSS.create())).toEqualTypeOf<DepthSamplerShader>();
 
 expectTypeOf(myDSS.paused).toEqualTypeOf<boolean>;
 expectTypeOf(myDSS.pluginName).toEqualTypeOf<string | null>();

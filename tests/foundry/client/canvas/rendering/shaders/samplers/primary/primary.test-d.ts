@@ -1,19 +1,21 @@
 import { expectTypeOf } from "vitest";
+import { PrimaryBaseSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
+import { BatchRenderer } from "#client/canvas/rendering/batching/_module.mjs";
 
-const PBSS = PrimaryBaseSamplerShader;
-let myPBSS;
+const myPBSS = PrimaryBaseSamplerShader.create();
+expectTypeOf(myPBSS).toEqualTypeOf<PrimaryBaseSamplerShader>();
 
 declare const someVB: PIXI.ViewableBuffer;
 declare const someU16Array: Uint16Array;
 declare const someF32Array: Float32Array;
 declare const someTex: PIXI.Texture;
 
-expectTypeOf(PBSS.reservedTextureUnits).toEqualTypeOf<number>();
-expectTypeOf(PBSS.classPluginName).toEqualTypeOf<string>();
-expectTypeOf(PBSS.fragmentShader).toEqualTypeOf<string>();
-expectTypeOf(PBSS.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
+expectTypeOf(PrimaryBaseSamplerShader.reservedTextureUnits).toEqualTypeOf<number>();
+expectTypeOf(PrimaryBaseSamplerShader.classPluginName).toEqualTypeOf<string>();
+expectTypeOf(PrimaryBaseSamplerShader.fragmentShader).toEqualTypeOf<string>();
+expectTypeOf(PrimaryBaseSamplerShader.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
 expectTypeOf(
-  PBSS["_packInterleavedGeometry"](
+  PrimaryBaseSamplerShader["_packInterleavedGeometry"](
     {
       _texture: someTex,
       elevation: 0,
@@ -35,7 +37,6 @@ expectTypeOf(
     0,
   ),
 ).toEqualTypeOf<void>();
-expectTypeOf((myPBSS = PBSS.create())).toEqualTypeOf<PrimaryBaseSamplerShader>();
 
 expectTypeOf(myPBSS.paused).toEqualTypeOf<boolean>;
 expectTypeOf(myPBSS.pluginName).toEqualTypeOf<string | null>();

@@ -1,19 +1,21 @@
 import { expectTypeOf } from "vitest";
+import { OccludableSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
+import { BatchRenderer } from "#client/canvas/rendering/batching/_module.mjs";
 
-const OSS = OccludableSamplerShader;
-let myOSS;
+const myOSS = OccludableSamplerShader.create();
+expectTypeOf(myOSS).toEqualTypeOf<OccludableSamplerShader>();
 
 declare const someVB: PIXI.ViewableBuffer;
 declare const someU16Array: Uint16Array;
 declare const someF32Array: Float32Array;
 declare const someTex: PIXI.Texture;
 
-expectTypeOf(OSS.reservedTextureUnits).toEqualTypeOf<number>();
-expectTypeOf(OSS.classPluginName).toEqualTypeOf<string>();
-expectTypeOf(OSS.fragmentShader).toEqualTypeOf<string>();
-expectTypeOf(OSS.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
+expectTypeOf(OccludableSamplerShader.reservedTextureUnits).toEqualTypeOf<number>();
+expectTypeOf(OccludableSamplerShader.classPluginName).toEqualTypeOf<string>();
+expectTypeOf(OccludableSamplerShader.fragmentShader).toEqualTypeOf<string>();
+expectTypeOf(OccludableSamplerShader.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
 expectTypeOf(
-  OSS["_packInterleavedGeometry"](
+  OccludableSamplerShader["_packInterleavedGeometry"](
     {
       _texture: someTex,
       elevation: 0,
@@ -35,7 +37,6 @@ expectTypeOf(
     0,
   ),
 ).toEqualTypeOf<void>();
-expectTypeOf((myOSS = OSS.create())).toEqualTypeOf<OccludableSamplerShader>();
 
 expectTypeOf(myOSS.paused).toEqualTypeOf<boolean>;
 expectTypeOf(myOSS.pluginName).toEqualTypeOf<string | null>();

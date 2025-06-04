@@ -1,8 +1,10 @@
 import { expectTypeOf } from "vitest";
-import type TokenRing from "../../../../../../../src/foundry/client/canvas/tokens/ring.d.mts";
+import { TokenRing } from "#client/canvas/tokens/_module.mjs";
+import { TokenRingSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
+import { BatchRenderer } from "#client/canvas/rendering/batching/_module.mjs";
 
-const TRSS = TokenRingSamplerShader;
-let myTRSS;
+const myTRSS = TokenRingSamplerShader.create();
+expectTypeOf(myTRSS).toEqualTypeOf<TokenRingSamplerShader>();
 
 declare const someVB: PIXI.ViewableBuffer;
 declare const someU16Array: Uint16Array;
@@ -10,12 +12,12 @@ declare const someF32Array: Float32Array;
 declare const someTex: PIXI.Texture;
 declare const someRing: TokenRing;
 
-expectTypeOf(TRSS.nullUvs).toEqualTypeOf<Float32Array>();
-expectTypeOf(TRSS.classPluginName).toEqualTypeOf<string>();
-expectTypeOf(TRSS["_batchFragmentShader"]).toEqualTypeOf<string>();
-expectTypeOf(TRSS.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
+expectTypeOf(TokenRingSamplerShader.nullUvs).toEqualTypeOf<Float32Array>();
+expectTypeOf(TokenRingSamplerShader.classPluginName).toEqualTypeOf<string>();
+expectTypeOf(TokenRingSamplerShader["_batchFragmentShader"]).toEqualTypeOf<string>();
+expectTypeOf(TokenRingSamplerShader.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
 expectTypeOf(
-  TRSS["_packInterleavedGeometry"](
+  TokenRingSamplerShader["_packInterleavedGeometry"](
     {
       object: {
         object: {
@@ -42,7 +44,6 @@ expectTypeOf(
     0,
   ),
 ).toEqualTypeOf<void>();
-expectTypeOf((myTRSS = TRSS.create())).toEqualTypeOf<TokenRingSamplerShader>();
 
 expectTypeOf(myTRSS.paused).toEqualTypeOf<boolean>;
 expectTypeOf(myTRSS.pluginName).toEqualTypeOf<string | null>();

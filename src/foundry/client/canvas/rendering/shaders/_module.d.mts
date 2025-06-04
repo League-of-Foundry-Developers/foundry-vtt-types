@@ -76,18 +76,18 @@ export { default as SnowShader } from "./weather/snow.mjs";
 // } from "./region/adjust-darkness-level.mjs";
 
 // Samplers
-// export { default as BaseSamplerShader } from "./samplers/base-sampler.mjs";
-// export { default as BaselineIlluminationSamplerShader } from "./samplers/baseline-illumination.mjs";
-// export { default as ColorAdjustmentsSamplerShader } from "./samplers/color-adjustments.mjs";
-// export { default as AmplificationSamplerShader } from "./samplers/amplification.mjs";
-// export { default as FogSamplerShader } from "./samplers/fog-of-war.mjs";
-// export { default as ColorizeBrightnessShader } from "./samplers/colorize-brightness.mjs";
+export { default as BaseSamplerShader } from "./samplers/base-sampler.mjs";
+export { default as BaselineIlluminationSamplerShader } from "./samplers/baseline-illumination.mjs";
+export { default as ColorAdjustmentsSamplerShader } from "./samplers/color-adjustments.mjs";
+export { default as AmplificationSamplerShader } from "./samplers/amplification.mjs";
+export { default as FogSamplerShader } from "./samplers/fog-of-war.mjs";
+export { default as ColorizeBrightnessShader } from "./samplers/colorize-brightness.mjs";
 
 // Primary Samplers
-// export { default as OccludableSamplerShader } from "./samplers/primary/occlusion.mjs";
-// export { default as DepthSamplerShader } from "./samplers/primary/depth.mjs";
-// export { default as PrimaryBaseSamplerShader } from "./samplers/primary/primary.mjs";
-// export { default as TokenRingSamplerShader } from "./samplers/primary/token-ring.mjs";
+export { default as OccludableSamplerShader } from "./samplers/primary/occlusion.mjs";
+export { default as DepthSamplerShader } from "./samplers/primary/depth.mjs";
+export { default as PrimaryBaseSamplerShader } from "./samplers/primary/primary.mjs";
+export { default as TokenRingSamplerShader } from "./samplers/primary/token-ring.mjs";
 
 // Graphics
 export { default as DashLineShader } from "./graphics/dash-line.mjs";

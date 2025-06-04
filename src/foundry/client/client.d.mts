@@ -1178,6 +1178,60 @@ declare global {
   export import WaveColorationVisionShader = foundry.canvas.rendering.shaders.WaveColorationVisionShader;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode BaseSamplerShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.BaseSamplerShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import BaseSamplerShader = foundry.canvas.rendering.shaders.BaseSamplerShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode BaselineIlluminationSamplerShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.BaselineIlluminationSamplerShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import BaselineIlluminationSamplerShader = foundry.canvas.rendering.shaders.BaselineIlluminationSamplerShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ColorAdjustmentsSamplerShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import ColorAdjustmentsSamplerShader = foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AmplificationSamplerShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AmplificationSamplerShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import AmplificationSamplerShader = foundry.canvas.rendering.shaders.AmplificationSamplerShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode FogSamplerShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.FogSamplerShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import FogSamplerShader = foundry.canvas.rendering.shaders.FogSamplerShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode OccludableSamplerShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.OccludableSamplerShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import OccludableSamplerShader = foundry.canvas.rendering.shaders.OccludableSamplerShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DepthSamplerShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.DepthSamplerShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import DepthSamplerShader = foundry.canvas.rendering.shaders.DepthSamplerShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryBaseSamplerShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.PrimaryBaseSamplerShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryBaseSamplerShader = foundry.canvas.rendering.shaders.PrimaryBaseSamplerShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode TokenRingSamplerShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.TokenRingSamplerShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import TokenRingSamplerShader = foundry.canvas.rendering.shaders.TokenRingSamplerShader;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode AbstractWeatherShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AbstractWeatherShader}"
    * (since v13 will be removed in v15)
    */
