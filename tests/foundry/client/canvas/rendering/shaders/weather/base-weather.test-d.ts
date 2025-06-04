@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { AbstractBaseShader, AbstractWeatherShader } from "#client/canvas/rendering/shaders/_module.mjs";
 
 declare class MyWeatherShader extends AbstractWeatherShader<{
   foo: number;

@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { WeatherShaderEffect } from "#client/canvas/rendering/shaders/_module.mjs";
 
 const myWSE = new WeatherShaderEffect(
   {

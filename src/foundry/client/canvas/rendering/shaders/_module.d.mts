@@ -58,13 +58,13 @@ export { DenseSmokeDarknessShader } from "./lighting/effects/dense-smoke.mjs";
 // export { WaveBackgroundVisionShader, WaveColorationVisionShader } from "./vision/effects/wave.mjs";
 
 // Weather
-// export { default as AbstractWeatherShader } from "./weather/base-weather.mjs";
-// export { default as WeatherShaderEffect } from "./weather/effect.mjs";
+export { default as AbstractWeatherShader } from "./weather/base-weather.mjs";
+export { default as WeatherShaderEffect } from "./weather/effect.mjs";
 
 // Weather effects
-// export { default as FogShader } from "./weather/fog.mjs";
-// export { default as RainShader } from "./weather/rain.mjs";
-// export { default as SnowShader } from "./weather/snow.mjs";
+export { default as FogShader } from "./weather/fog.mjs";
+export { default as RainShader } from "./weather/rain.mjs";
+export { default as SnowShader } from "./weather/snow.mjs";
 
 // Region
 // export { default as RegionShader } from "./region/base.mjs";

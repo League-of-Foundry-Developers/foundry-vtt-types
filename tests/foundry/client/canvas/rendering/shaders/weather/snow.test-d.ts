@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { AbstractBaseShader, SnowShader } from "#client/canvas/rendering/shaders/_module.mjs";
 
 const SS = SnowShader;
 let mySS;

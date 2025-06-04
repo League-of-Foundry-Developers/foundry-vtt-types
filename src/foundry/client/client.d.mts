@@ -1136,6 +1136,36 @@ declare global {
   export import WaveIlluminationShader = foundry.canvas.rendering.shaders.WaveIlluminationShader;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode AbstractWeatherShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AbstractWeatherShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import AbstractWeatherShader = foundry.canvas.rendering.shaders.AbstractWeatherShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode WeatherShaderEffect} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.WeatherShaderEffect}"
+   * (since v13 will be removed in v15)
+   */
+  export import WeatherShaderEffect = foundry.canvas.rendering.shaders.WeatherShaderEffect;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode FogShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.FogShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import FogShader = foundry.canvas.rendering.shaders.FogShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RainShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.RainShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import RainShader = foundry.canvas.rendering.shaders.RainShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SnowShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.SnowShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import SnowShader = foundry.canvas.rendering.shaders.SnowShader;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode BLEND_MODES} which is now namespaced under {@linkcode foundry.canvas.rendering.BLEND_MODES}"
    * (since v13 will be removed in v15)
    */
