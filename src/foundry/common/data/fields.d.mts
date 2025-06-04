@@ -2771,7 +2771,9 @@ declare class EmbeddedCollectionField<
   >,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentElementType = EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
-  InitializedElementType extends Document.Any = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
+  // Note(LukeAbby): This appears to be necessary due to issue with `this` and type parameters with defaults: https://gist.github.com/LukeAbby/9e4da476ddaabceffcb4a7c379f92cd2.
+  InitializedElementType extends
+    Document.Internal.Instance.Any = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentType = EmbeddedCollectionField.AssignmentType<AssignmentElementType, Options>,
   InitializedType = EmbeddedCollectionField.InitializedType<
@@ -3007,7 +3009,9 @@ declare class EmbeddedCollectionDeltaField<
   >,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentElementType = EmbeddedCollectionDeltaField.AssignmentElementType<ElementFieldType>,
-  InitializedElementType extends Document.Any = EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
+  // Note(LukeAbby): This appears to be necessary due to issue with `this` and type parameters with defaults: https://gist.github.com/LukeAbby/9e4da476ddaabceffcb4a7c379f92cd2.
+  InitializedElementType extends
+    Document.Internal.Instance.Any = EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentType = EmbeddedCollectionDeltaField.AssignmentType<AssignmentElementType, Options>,
   InitializedType = EmbeddedCollectionDeltaField.InitializedType<
