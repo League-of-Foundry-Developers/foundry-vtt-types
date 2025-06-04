@@ -21,8 +21,8 @@ export default class JSONReporter implements Reporter {
 
       const errorMessages =
         file.result?.errors?.map((error) => {
-          if (error.nameStr != null) {
-            return `${error.nameStr}: ${error.message}`;
+          if (error.name != null) {
+            return `${error.name}: ${error.message}`;
           }
 
           return error.message;
