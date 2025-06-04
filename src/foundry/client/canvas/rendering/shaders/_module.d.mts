@@ -67,13 +67,13 @@ export { default as RainShader } from "./weather/rain.mjs";
 export { default as SnowShader } from "./weather/snow.mjs";
 
 // Region
-// export { default as RegionShader } from "./region/base.mjs";
-// export { default as HighlightRegionShader } from "./region/highlight.mjs";
-// export {
-//   AbstractDarknessLevelRegionShader,
-//   AdjustDarknessLevelRegionShader,
-//   IlluminationDarknessLevelRegionShader,
-// } from "./region/adjust-darkness-level.mjs";
+export { default as RegionShader } from "./region/base.mjs";
+export { default as HighlightRegionShader } from "./region/highlight.mjs";
+export {
+  AbstractDarknessLevelRegionShader,
+  AdjustDarknessLevelRegionShader,
+  IlluminationDarknessLevelRegionShader,
+} from "./region/adjust-darkness-level.mjs";
 
 // Samplers
 export { default as BaseSamplerShader } from "./samplers/base-sampler.mjs";

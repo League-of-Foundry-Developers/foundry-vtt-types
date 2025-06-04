@@ -1178,6 +1178,36 @@ declare global {
   export import WaveColorationVisionShader = foundry.canvas.rendering.shaders.WaveColorationVisionShader;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode RegionShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.RegionShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import RegionShader = foundry.canvas.rendering.shaders.RegionShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode HighlightRegionShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.HighlightRegionShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import HighlightRegionShader = foundry.canvas.rendering.shaders.HighlightRegionShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AbstractDarknessLevelRegionShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AbstractDarknessLevelRegionShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import AbstractDarknessLevelRegionShader = foundry.canvas.rendering.shaders.AbstractDarknessLevelRegionShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AdjustDarknessLevelRegionShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.AdjustDarknessLevelRegionShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import AdjustDarknessLevelRegionShader = foundry.canvas.rendering.shaders.AdjustDarknessLevelRegionShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode IlluminationDarknessLevelRegionShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.IlluminationDarknessLevelRegionShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import IlluminationDarknessLevelRegionShader = foundry.canvas.rendering.shaders.IlluminationDarknessLevelRegionShader;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode BaseSamplerShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.BaseSamplerShader}"
    * (since v13 will be removed in v15)
    */
