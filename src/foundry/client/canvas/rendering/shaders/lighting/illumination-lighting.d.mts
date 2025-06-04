@@ -7,8 +7,6 @@ import type AbstractBaseShader from "../base-shader.mjs";
  * A fragment shader which creates a solid light source.
  */
 declare class AdaptiveIlluminationShader extends AdaptiveLightingShader {
-  static override FRAGMENT_BEGIN: string;
-
   static override FRAGMENT_END: string;
 
   /**
@@ -46,7 +44,6 @@ declare class AdaptiveIlluminationShader extends AdaptiveLightingShader {
    *   time: 0,
    *   useSampler: false,
    *   primaryTexture: null,
-   *   framebufferTexture: null,
    *   depthTexture: null,
    *   darknessLevelTexture: null,
    *   depthElevation: 1,

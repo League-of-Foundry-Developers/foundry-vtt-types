@@ -920,6 +920,222 @@ declare global {
   export import AdaptiveIlluminationShader = foundry.canvas.rendering.shaders.AdaptiveIlluminationShader;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode BewitchingWaveColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.BewitchingWaveColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import BewitchingWaveColorationShader = foundry.canvas.rendering.shaders.BewitchingWaveColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode BewitchingWaveIlluminationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.BewitchingWaveIlluminationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import BewitchingWaveIlluminationShader = foundry.canvas.rendering.shaders.BewitchingWaveIlluminationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode BlackHoleDarknessShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.BlackHoleDarknessShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import BlackHoleDarknessShader = foundry.canvas.rendering.shaders.BlackHoleDarknessShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ChromaColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.ChromaColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import ChromaColorationShader = foundry.canvas.rendering.shaders.ChromaColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode EmanationColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.EmanationColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import EmanationColorationShader = foundry.canvas.rendering.shaders.EmanationColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode EnergyFieldColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.EnergyFieldColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import EnergyFieldColorationShader = foundry.canvas.rendering.shaders.EnergyFieldColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode FairyLightColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.FairyLightColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import FairyLightColorationShader = foundry.canvas.rendering.shaders.FairyLightColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode FairyLightIlluminationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.FairyLightIlluminationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import FairyLightIlluminationShader = foundry.canvas.rendering.shaders.FairyLightIlluminationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode FlameColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.FlameColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import FlameColorationShader = foundry.canvas.rendering.shaders.FlameColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode FlameIlluminationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.FlameIlluminationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import FlameIlluminationShader = foundry.canvas.rendering.shaders.FlameIlluminationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode FogColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.FogColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import FogColorationShader = foundry.canvas.rendering.shaders.FogColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ForceGridColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.ForceGridColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import ForceGridColorationShader = foundry.canvas.rendering.shaders.ForceGridColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode GhostLightColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.GhostLightColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import GhostLightColorationShader = foundry.canvas.rendering.shaders.GhostLightColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode GhostLightIlluminationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.GhostLightIlluminationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import GhostLightIlluminationShader = foundry.canvas.rendering.shaders.GhostLightIlluminationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode HexaDomeColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.HexaDomeColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import HexaDomeColorationShader = foundry.canvas.rendering.shaders.HexaDomeColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode LightDomeColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.LightDomeColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import LightDomeColorationShader = foundry.canvas.rendering.shaders.LightDomeColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode MagicalGloomDarknessShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.MagicalGloomDarknessShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import MagicalGloomDarknessShader = foundry.canvas.rendering.shaders.MagicalGloomDarknessShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PulseColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.PulseColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import PulseColorationShader = foundry.canvas.rendering.shaders.PulseColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PulseIlluminationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.PulseIlluminationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import PulseIlluminationShader = foundry.canvas.rendering.shaders.PulseIlluminationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RadialRainbowColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.RadialRainbowColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import RadialRainbowColorationShader = foundry.canvas.rendering.shaders.RadialRainbowColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RevolvingColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.RevolvingColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import RevolvingColorationShader = foundry.canvas.rendering.shaders.RevolvingColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RoilingDarknessShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.RoilingDarknessShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import RoilingDarknessShader = foundry.canvas.rendering.shaders.RoilingDarknessShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SirenColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.SirenColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import SirenColorationShader = foundry.canvas.rendering.shaders.SirenColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SirenIlluminationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.SirenIlluminationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import SirenIlluminationShader = foundry.canvas.rendering.shaders.SirenIlluminationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SmokePatchColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.SmokePatchColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import SmokePatchColorationShader = foundry.canvas.rendering.shaders.SmokePatchColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SmokePatchIlluminationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.SmokePatchIlluminationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import SmokePatchIlluminationShader = foundry.canvas.rendering.shaders.SmokePatchIlluminationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode StarLightColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.StarLightColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import StarLightColorationShader = foundry.canvas.rendering.shaders.StarLightColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SunburstColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.SunburstColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import SunburstColorationShader = foundry.canvas.rendering.shaders.SunburstColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SunburstIlluminationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.SunburstIlluminationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import SunburstIlluminationShader = foundry.canvas.rendering.shaders.SunburstIlluminationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SwirlingRainbowColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.SwirlingRainbowColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import SwirlingRainbowColorationShader = foundry.canvas.rendering.shaders.SwirlingRainbowColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode TorchColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.TorchColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import TorchColorationShader = foundry.canvas.rendering.shaders.TorchColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode TorchIlluminationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.TorchIlluminationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import TorchIlluminationShader = foundry.canvas.rendering.shaders.TorchIlluminationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode VortexColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.VortexColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import VortexColorationShader = foundry.canvas.rendering.shaders.VortexColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode VortexIlluminationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.VortexIlluminationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import VortexIlluminationShader = foundry.canvas.rendering.shaders.VortexIlluminationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode WaveColorationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.WaveColorationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import WaveColorationShader = foundry.canvas.rendering.shaders.WaveColorationShader;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode WaveIlluminationShader} which is now namespaced under {@linkcode foundry.canvas.rendering.shaders.WaveIlluminationShader}"
+   * (since v13 will be removed in v15)
+   */
+  export import WaveIlluminationShader = foundry.canvas.rendering.shaders.WaveIlluminationShader;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode BLEND_MODES} which is now namespaced under {@linkcode foundry.canvas.rendering.BLEND_MODES}"
    * (since v13 will be removed in v15)
    */

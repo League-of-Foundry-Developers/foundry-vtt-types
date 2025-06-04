@@ -161,6 +161,8 @@ declare namespace AdaptiveLightingShader {
     /** The localization string that labels the technique */
     label: string;
 
+    // TODO: coloration, illumination, and background are no longer `| undefined` by Foundry's typing, investigate
+
     /**  The coloration shader fragment when the technique is used */
     coloration?: string | undefined;
 
