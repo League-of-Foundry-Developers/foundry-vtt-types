@@ -71,9 +71,9 @@ declare class Tabs {
 
   /**
    * Activate a new tab by name
-   * @param triggerCallback - (default: `false`)
+   * @param options - (default: `{}`)
    */
-  activate(tabName: string, { triggerCallback }?: { triggerCallback?: boolean }): void;
+  activate(tabName: string, options?: Tabs.ActivateOptions): void;
 
   /**
    * Handle click events on the tab navigation entries
@@ -87,7 +87,7 @@ declare namespace Tabs {
     /**
      * The name of the tabs group
      */
-    group?: string;
+    group?: string | undefined;
 
     /**
      * The CSS selector used to target the navigation element for these tabs
@@ -97,17 +97,24 @@ declare namespace Tabs {
     /**
      * The CSS selector used to target the content container for these tabs
      */
-    contentSelector?: string;
+    contentSelector?: string | undefined;
 
     /**
      * The tab name of the initially active tab
      */
-    initial?: string;
+    initial?: string | undefined;
 
     /**
      * An optional callback function that executes when the active tab is changed
      */
-    callback?: ((event: MouseEvent | null, tabs: Tabs, tabName: string) => unknown) | null;
+    callback?: ((event: MouseEvent | null, tabs: Tabs, tabName: string) => unknown) | undefined | null;
+  }
+
+  interface ActivateOptions {
+    /**
+     * @defaultValue `false`
+     */
+    triggerCallback?: boolean | undefined;
   }
 }
 
