@@ -1,6 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-const App = class extends Application {};
+const ApplicationV2 = foundry.applications.api.ApplicationV2;
+const Draggable = foundry.applications.ux.Draggable;
+
+const App = class extends ApplicationV2 {};
 const resizableUndefined = new Draggable(new App(), $(), new HTMLElement());
 expectTypeOf(resizableUndefined.resizable).toEqualTypeOf<false>();
 expectTypeOf(resizableUndefined.handlers).toEqualTypeOf<Draggable.Handlers>();

@@ -1,4 +1,5 @@
 import type Application from "#client/appv1/api/application-v1.mjs";
+import type ApplicationV2 from "#client/applications/api/application.d.mts";
 
 /**
  * A UI utility to make an element draggable.
@@ -6,32 +7,31 @@ import type Application from "#client/appv1/api/application-v1.mjs";
 declare class Draggable<R extends boolean | Draggable.Resizable = false> {
   /**
    * @param app       - The Application that is being made draggable.
-   * @param element   - A JQuery reference to the Application's outer-most element.
+   * @param element   - The application's outer-most element.
    * @param handle    - The element that acts as a drag handle. Supply false to disable dragging.
-   * @param resizable - Is the application resizable? Supply an object to configure resizing behaviour
+   * @param resizable - Is the application resizable? Supply an object to configure resizing behavior
    *                    or true to have it automatically configured.
    */
-  constructor(app: Draggable["app"], element: JQuery, handle: Draggable["handle"], resizable?: R);
+  constructor(app: Draggable["app"], element: JQuery | HTMLElement, handle: Draggable["handle"], resizable?: R);
 
-  app: Application.Any;
+  /**
+   * The Application being made draggable.
+   */
+  app: Application.Any | ApplicationV2.Any;
 
+  /**
+   * The Application's outer-most element.
+   */
   element: HTMLElement;
 
+  /**
+   * The drag handle, or false to disable dragging.
+   */
   handle: HTMLElement | boolean;
 
   /**
-   * @defaultValue `false`
-   */
-  resizable: R;
-
-  /**
-   * Duplicate the application's starting position to track differences
-   * @defaultValue `null`
-   */
-  position: foundry.utils.Duplicated<Application.Position> | null;
-
-  /**
-   * Remember event handlers associated with this Draggable class so they may be later unregistered
+   * Registered event handlers.
+   * @defaultValue `{}`
    */
   // prettier-ignore
   handlers: this["resizable"] extends true
@@ -41,10 +41,16 @@ declare class Draggable<R extends boolean | Draggable.Resizable = false> {
       : Draggable.Handlers | Draggable.ResizableHandlers;
 
   /**
-   * Throttle mousemove event handling to 60fps
-   * @defaultValue `0`
+   * The Application's starting position, pre-drag.
+   * @defaultValue `null`
    */
-  protected _moveTime: number;
+  position: foundry.utils.Duplicated<Application.Position> | null;
+
+  /**
+   * Resize configuration.
+   * @defaultValue `false`
+   */
+  resizable: R;
 
   /**
    * Activate event handling for a Draggable application
@@ -65,32 +71,32 @@ declare class Draggable<R extends boolean | Draggable.Resizable = false> {
   /**
    * Handle the initial mouse click which activates dragging behavior for the application
    */
-  protected _onDragMouseDown(event: Event): void;
+  protected _onDragMouseDown(event: PointerEvent): void;
 
   /**
    * Move the window with the mouse, bounding the movement to ensure the window stays within bounds of the viewport
    */
-  protected _onDragMouseMove(event: Event): void;
+  protected _onDragMouseMove(event: PointerEvent): void;
 
   /**
    * Conclude the dragging behavior when the mouse is release, setting the final position and removing listeners
    */
-  protected _onDragMouseUp(event: Event): void;
+  protected _onDragMouseUp(event: PointerEvent): void;
 
   /**
    * Handle the initial mouse click which activates dragging behavior for the application
    */
-  protected _onResizeMouseDown(event: Event): void;
+  protected _onResizeMouseDown(event: PointerEvent): void;
 
   /**
    * Move the window with the mouse, bounding the movement to ensure the window stays within bounds of the viewport
    */
-  protected _onResizeMouseMove(event: Event): void;
+  protected _onResizeMouseMove(event: PointerEvent): void;
 
   /**
    * Conclude the dragging behavior when the mouse is release, setting the final position and removing listeners
    */
-  protected _onResizeMouseUp(event: Event): void;
+  protected _onResizeMouseUp(event: PointerEvent): void;
 
   /**
    * Retrieve the configured Draggable implementation.
@@ -101,7 +107,9 @@ declare class Draggable<R extends boolean | Draggable.Resizable = false> {
 
 declare namespace Draggable {
   interface Resizable {
-    /** A selector for the resize handle. */
+    /**
+     * A CSS selector for the resize handle.
+     */
     selector?: string;
 
     /**
@@ -115,6 +123,11 @@ declare namespace Draggable {
      * @defaultValue `true`
      */
     resizeY?: boolean;
+
+    /**
+     * Modify the resizing direction to be right-to-left.
+     */
+    rt1?: boolean | null | undefined;
   }
 
   interface Handlers {
