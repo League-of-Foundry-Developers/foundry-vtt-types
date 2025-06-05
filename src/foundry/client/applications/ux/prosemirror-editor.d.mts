@@ -1,7 +1,6 @@
-import type { AnyObject } from "../../../../utils/index.d.mts";
 import type { EditorState, Plugin } from "prosemirror-state";
 import type { Step } from "prosemirror-transform";
-import type { EditorView } from "prosemirror-view";
+import type { EditorProps, EditorView } from "prosemirror-view";
 import type { Socket } from "socket.io-client";
 
 /**
@@ -113,9 +112,15 @@ declare class ProseMirrorEditor {
    * Create a plain EditorView without collaborative editing.
    * @param target  - An HTML element to mount the editor view to.
    * @param state   - The ProseMirror editor state.
-   * @param plugins - The editor plugins to load.
+   * @param plugins - The ProseMirror editor plugins to load.
+   * @param props   - Additional ProseMirror editor properties.
    */
-  protected static _createLocalEditorView(target: HTMLElement, state: EditorState, plugins: Plugin[]): EditorView;
+  protected static _createLocalEditorView(
+    target: HTMLElement,
+    state: EditorState,
+    plugins: Plugin[],
+    props: ProseMirrorEditor.Props,
+  ): EditorView;
 
   /**
    * Handle new editing steps supplied by the server.
@@ -147,8 +152,7 @@ declare class ProseMirrorEditor {
 }
 
 declare namespace ProseMirrorEditor {
-  // TODO: Improve typing here
-  type Props = AnyObject;
+  type Props = EditorProps;
 
   interface CreateOptions {
     /** A string to uniquely identify this ProseMirror instance. Ignored for a collaborative editor. */

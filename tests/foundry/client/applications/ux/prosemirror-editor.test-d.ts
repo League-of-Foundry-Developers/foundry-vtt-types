@@ -1,5 +1,7 @@
 import { assertType } from "vitest";
 
+const ProseMirrorEditor = foundry.applications.ux.ProseMirrorEditor;
+
 assertType<typeof ProseMirrorEditor>(ProseMirrorEditor);
 type ProseMirrorEditorCreateFuncOptions = Parameters<(typeof ProseMirrorEditor)["create"]>[2];
 declare const document: Actor.Implementation;
