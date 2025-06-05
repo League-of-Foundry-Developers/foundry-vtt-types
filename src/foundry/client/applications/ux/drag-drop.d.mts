@@ -14,7 +14,6 @@ import type { InexactPartial } from "#utils";
  * });
  * dragDrop.bind(html);
  * ```
- * @remarks TODO: Stub, copy from v12 implementation & update
  */
 declare class DragDrop {
   /**

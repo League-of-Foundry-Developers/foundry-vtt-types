@@ -25,5 +25,3 @@ tabs.bind(new HTMLDivElement());
 tabs.activate("tab1");
 tabs.activate("tab1", {});
 tabs.activate("tab1", { triggerCallback: true });
-
-expectTypeOf(TabsV2).toEqualTypeOf<typeof Tabs>();

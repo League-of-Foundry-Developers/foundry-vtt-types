@@ -14,7 +14,6 @@ import type Document from "#common/abstract/document.d.mts";
  * });
  * secrets.bind(html);
  * ```
- * @remarks TODO: Stub, copy from v12 implementation & update
  */
 declare class HTMLSecret<ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
   /**

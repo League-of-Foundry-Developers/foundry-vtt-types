@@ -760,7 +760,7 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode Tabs} which is now namespaced under {@linkcode foundry.applications.ux.Tabs}"
    * (since v13 will be removed in v15)
    */
-  // export import Tabs = foundry.applications.ux.Tabs;
+  export import Tabs = foundry.applications.ux.Tabs;
 
   /**
    * @deprecated "You are accessing the global {@linkcode TextEditor} which is now namespaced under {@linkcode foundry.applications.ux.TextEditor.implementation}"

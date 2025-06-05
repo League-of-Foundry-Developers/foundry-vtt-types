@@ -1,1 +1,0 @@
-import "./tabs.d.mts";
