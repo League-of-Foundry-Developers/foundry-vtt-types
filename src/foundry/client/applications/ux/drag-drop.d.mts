@@ -25,7 +25,7 @@ declare class DragDrop {
    * A set of callback functions for each action of the drag & drop workflow.
    * @defaultValue `{}`
    */
-  callbacks: InexactPartial<Record<DragDrop.Action, (event: DragEvent) => void>>;
+  callbacks: DragDrop.Callbacks;
 
   /**
    * The HTML selector which identifies draggable elements.
@@ -37,13 +37,13 @@ declare class DragDrop {
    * The HTML selector which identifies drop targets.
    * @defaultValue `undefined`
    */
-  dropSelector: string | null | undefined;
+  dropSelector: string | null;
 
   /**
    * A set of functions to control authorization to begin drag workflows, and drop content.
    * @defaultValue `{}`
    */
-  permissions: Partial<Record<DragDrop.PermissionKey, (selector: this["dragSelector"]) => boolean>>;
+  permissions: DragDrop.Permissions;
 
   /**
    * Bind the DragDrop controller to an HTML application
@@ -64,7 +64,7 @@ declare class DragDrop {
    * @param selector - The selector being targeted
    * @returns Can the action be performed?
    */
-  can(action: DragDrop.PermissionKey, selector?: this["dragSelector"]): boolean;
+  can(action: DragDrop.PermissionKey, selector?: DragDrop.DragSelector): boolean;
 
   /**
    * Handle the start of a drag workflow
@@ -96,14 +96,14 @@ declare class DragDrop {
    * @param event - The drag event being handled
    * @internal
    */
-  protected _handleDragOver(event: DragEvent): false;
+  protected _handleDragOver(event: DragEvent): void;
 
   /**
    * Handle a dragged element dropped on a droppable target
    * @param event - The drag event being handled
    * @internal
    */
-  protected _handleDrop(event: DragEvent): unknown;
+  protected _handleDrop(event: DragEvent): void;
 
   /**
    * A helper to create an image preview element for use during HTML element dragging.
@@ -120,6 +120,12 @@ declare namespace DragDrop {
   type Action = "dragstart" | "dragover" | "drop" | "dragenter" | "dragleave" | "dragend";
 
   type PermissionKey = "dragstart" | "drop";
+
+  type DragSelector = string | null | undefined;
+
+  interface Callbacks extends InexactPartial<Record<Action, (event: DragEvent) => void>> {}
+
+  interface Permissions extends Partial<Record<PermissionKey, (selector: DragSelector) => boolean>> {}
 
   /** @internal */
   interface _Configuration {
@@ -145,7 +151,7 @@ declare namespace DragDrop {
      * Callback functions for each action
      * @defaultValue `{}`
      */
-    callbacks?: DragDrop["callbacks"];
+    callbacks: Callbacks;
   }
 
   interface Configuration extends InexactPartial<_Configuration> {}
