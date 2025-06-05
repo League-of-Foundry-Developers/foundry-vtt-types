@@ -158,7 +158,6 @@ export import PrimaryCanvasGroup = globalThis.PrimaryCanvasGroup;
 export import PrimaryCanvasGroupAmbienceFilter = globalThis.PrimaryCanvasGroupAmbienceFilter;
 export import PrimaryCanvasObjectMixin = globalThis.PrimaryCanvasObjectMixin;
 export import PrimaryOccludableObjectMixin = globalThis.PrimaryOccludableObjectMixin;
-export import ProseMirrorEditor = globalThis.ProseMirrorEditor;
 export import PulseColorationShader = globalThis.PulseColorationShader;
 export import PulseIlluminationShader = globalThis.PulseIlluminationShader;
 export import PulsePing = globalThis.PulsePing;

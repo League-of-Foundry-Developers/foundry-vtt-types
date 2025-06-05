@@ -748,7 +748,7 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode ProseMirrorEditor} which is now namespaced under {@linkcode foundry.applications.ux.ProseMirrorEditor}"
    * (since v13 will be removed in v15)
    */
-  // export import ProseMirrorEditor = foundry.applications.ux.ProseMirrorEditor;
+  export import ProseMirrorEditor = foundry.applications.ux.ProseMirrorEditor;
 
   /**
    * @deprecated "You are accessing the global {@linkcode SearchFilter} which is now namespaced under {@linkcode foundry.applications.ux.SearchFilter}"
