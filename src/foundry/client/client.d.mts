@@ -736,7 +736,7 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode FormDataExtended} which is now namespaced under {@linkcode foundry.applications.ux.FormDataExtended}"
    * (since v13 will be removed in v15)
    */
-  // export import FormDataExtended = foundry.applications.ux.FormDataExtended;
+  export import FormDataExtended = foundry.applications.ux.FormDataExtended;
 
   /**
    * @deprecated "You are accessing the global {@linkcode HTMLSecret} which is now namespaced under {@linkcode foundry.applications.ux.HTMLSecret}"
