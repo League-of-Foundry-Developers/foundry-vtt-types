@@ -1,4 +1,3 @@
-import "./filepicker.d.mts";
 import "./filter.d.mts";
 import "./forms.d.mts";
 import "./prosemirror.d.mts";

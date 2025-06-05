@@ -94,7 +94,6 @@ export import EnergyFieldColorationShader = globalThis.EnergyFieldColorationShad
 export import EnvironmentCanvasGroup = globalThis.EnvironmentCanvasGroup;
 export import FairyLightColorationShader = globalThis.FairyLightColorationShader;
 export import FairyLightIlluminationShader = globalThis.FairyLightIlluminationShader;
-export import FilePicker = globalThis.FilePicker;
 export import FlameColorationShader = globalThis.FlameColorationShader;
 export import FlameIlluminationShader = globalThis.FlameIlluminationShader;
 export import FogColorationShader = globalThis.FogColorationShader;

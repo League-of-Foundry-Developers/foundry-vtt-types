@@ -3,6 +3,7 @@ import type { AnyObject, GetDataReturnType, MaybePromise, Identity } from "#util
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "#common/prosemirror/_module.d.mts";
 import type Application from "./application-v1.d.mts";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
+import type FilePicker from "#client/applications/apps/file-picker.mjs";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -228,7 +229,7 @@ declare abstract class FormApplication<
   /**
    * @deprecated since v12, will be removed in v14
    */
-  protected _getFilePickerOptions(event: PointerEvent): FilePicker.Options;
+  protected _getFilePickerOptions(event: PointerEvent): FilePicker.Configuration;
 
   /**
    * @deprecated since v12, will be removed in v14

@@ -295,7 +295,7 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode FilePicker} which is now namespaced under {@linkcode foundry.applications.apps.FilePicker.implementation}"
    * (since v13 will be removed in v15)
    */
-  // export import FilePicker = foundry.applications.apps.FilePicker.implementation;
+  export import FilePicker = foundry.applications.apps.FilePicker;
 
   /**
    * @deprecated "You are accessing the global {@linkcode GridConfig} which is now namespaced under {@linkcode foundry.applications.apps.GridConfig}"
