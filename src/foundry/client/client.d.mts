@@ -742,7 +742,7 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode HTMLSecret} which is now namespaced under {@linkcode foundry.applications.ux.HTMLSecret}"
    * (since v13 will be removed in v15)
    */
-  // export import HTMLSecret = foundry.applications.ux.HTMLSecret;
+  export import HTMLSecret = foundry.applications.ux.HTMLSecret;
 
   /**
    * @deprecated "You are accessing the global {@linkcode ProseMirrorEditor} which is now namespaced under {@linkcode foundry.applications.ux.ProseMirrorEditor}"
