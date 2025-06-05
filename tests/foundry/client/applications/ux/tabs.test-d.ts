@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-const Tabs = foundry.applications.ux.Tabs;
+import Tabs = foundry.applications.ux.Tabs;
 
 // @ts-expect-error - Tabs requires data.
 new Tabs();

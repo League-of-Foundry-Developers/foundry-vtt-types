@@ -1,7 +1,7 @@
 import type { AnyMutableObject } from "#utils";
 import { expectTypeOf } from "vitest";
 
-const FormDataExtended = foundry.applications.ux.FormDataExtended;
+import FormDataExtended = foundry.applications.ux.FormDataExtended;
 
 declare const htmlForm: HTMLFormElement;
 

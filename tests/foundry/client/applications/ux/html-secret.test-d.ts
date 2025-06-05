@@ -1,6 +1,6 @@
-export {};
+import HTMLSecret = foundry.applications.ux.HTMLSecret;
 
-const HTMLSecret = foundry.applications.ux.HTMLSecret;
+export {};
 
 declare const actor: Actor.Implementation;
 

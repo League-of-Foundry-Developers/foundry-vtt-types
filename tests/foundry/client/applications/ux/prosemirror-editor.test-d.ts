@@ -1,20 +1,19 @@
-import { assertType } from "vitest";
+import { assertType, expectTypeOf } from "vitest";
 
-const ProseMirrorEditor = foundry.applications.ux.ProseMirrorEditor;
+import ProseMirrorEditor = foundry.applications.ux.ProseMirrorEditor;
 
 assertType<typeof ProseMirrorEditor>(ProseMirrorEditor);
-type ProseMirrorEditorCreateFuncOptions = Parameters<(typeof ProseMirrorEditor)["create"]>[2];
 declare const document: Actor.Implementation;
 
 // @ts-expect-error - both `document` and `fieldName` are required.
-expectTypeOf({ collaborate: true }).toEqualTypeOf<ProseMirrorEditorCreateFuncOptions>();
+expectTypeOf({ collaborate: true }).toEqualTypeOf<ProseMirrorEditor.CreateOptions>();
 
 // @ts-expect-error - both `document` and `fieldName` are required.
-expectTypeOf({ collaborate: true, document }).toEqualTypeOf<ProseMirrorEditorCreateFuncOptions>();
+expectTypeOf({ collaborate: true, document }).toEqualTypeOf<ProseMirrorEditor.CreateOptions>();
 
 // @ts-expect-error - both `document` and `fieldName` are required.
-expectTypeOf({ collaborate: true, fieldName: "error" }).toEqualTypeOf<ProseMirrorEditorCreateFuncOptions>();
+expectTypeOf({ collaborate: true, fieldName: "error" }).toEqualTypeOf<ProseMirrorEditor.CreateOptions>();
 
-assertType<ProseMirrorEditorCreateFuncOptions>({ collaborate: true, document: document, fieldName: "valid" });
-assertType<ProseMirrorEditorCreateFuncOptions>({});
-assertType<ProseMirrorEditorCreateFuncOptions>({ collaborate: false });
+assertType<ProseMirrorEditor.CreateOptions>({ collaborate: true, document: document, fieldName: "valid" });
+assertType<ProseMirrorEditor.CreateOptions>({});
+assertType<ProseMirrorEditor.CreateOptions>({ collaborate: false });

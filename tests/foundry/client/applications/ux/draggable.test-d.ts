@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 
-const ApplicationV2 = foundry.applications.api.ApplicationV2;
-const Draggable = foundry.applications.ux.Draggable;
+import ApplicationV2 = foundry.applications.api.ApplicationV2;
+import Draggable = foundry.applications.ux.Draggable;
 
 const App = class extends ApplicationV2 {};
 const resizableUndefined = new Draggable(new App(), $(), new HTMLElement());

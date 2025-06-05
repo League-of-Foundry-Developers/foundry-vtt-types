@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-const SearchFilter = foundry.applications.ux.SearchFilter;
+import SearchFilter = foundry.applications.ux.SearchFilter;
 
 // @ts-expect-error - A SearchFilter requires data.
 new SearchFilter();

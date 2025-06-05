@@ -87,11 +87,7 @@ declare class ProseMirrorEditor {
   static create(
     target: HTMLElement,
     content?: string,
-    options?: Partial<ProseMirrorEditor.CreateOptions> &
-      (
-        | { collaborate?: false }
-        | ({ collaborate: true } & Pick<ProseMirrorEditor.CreateOptions, "document" | "fieldName">)
-      ),
+    options?: ProseMirrorEditor.CreateOptions,
   ): Promise<ProseMirrorEditor>;
 
   /**
@@ -154,7 +150,7 @@ declare class ProseMirrorEditor {
 declare namespace ProseMirrorEditor {
   type Props = EditorProps;
 
-  interface CreateOptions {
+  interface _CreateOptions {
     /** A string to uniquely identify this ProseMirror instance. Ignored for a collaborative editor. */
     uuid?: string | null | undefined;
 
@@ -183,8 +179,11 @@ declare namespace ProseMirrorEditor {
     props?: Props | undefined;
   }
 
+  type CreateOptions = Partial<_CreateOptions> &
+    ({ collaborate?: false } | ({ collaborate: true } & Pick<_CreateOptions, "document" | "fieldName">));
+
   interface Options {
-    document?: ClientDocument;
+    document?: ClientDocument | undefined;
   }
 
   interface History {
