@@ -85,7 +85,6 @@ export import DetectionMode = globalThis.DetectionMode;
 export import DirectoryCollectionMixin = globalThis.DirectoryCollectionMixin;
 export import DocumentCollection = globalThis.DocumentCollection;
 export import DoorControl = globalThis.DoorControl;
-export import DragDrop = globalThis.DragDrop;
 export import Drawing = globalThis.Drawing;
 export import DrawingDocument = globalThis.DrawingDocument;
 export import DrawingsLayer = globalThis.DrawingsLayer;

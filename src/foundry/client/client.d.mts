@@ -723,7 +723,7 @@ declare global {
    * (since v13 will be removed in v15)
    * @privateRemarks TODO: This should return the configured class
    */
-  // export import DragDrop = foundry.applications.ux.DragDrop;
+  export import DragDrop = foundry.applications.ux.DragDrop;
 
   /**
    * @deprecated "You are accessing the global {@linkcode Draggable} which is now namespaced under {@linkcode foundry.applications.ux.Draggable.implementation}"

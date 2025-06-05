@@ -1,4 +1,3 @@
-import "./dragdrop.d.mts";
 import "./editor.d.mts";
 import "./filepicker.d.mts";
 import "./filter.d.mts";
