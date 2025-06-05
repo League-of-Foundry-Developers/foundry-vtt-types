@@ -767,7 +767,7 @@ declare global {
    * (since v13 will be removed in v15)
    * @privateRemarks TODO: This should return the configured class
    */
-  // export import TextEditor = foundry.applications.ux.TextEditor;
+  export import TextEditor = foundry.applications.ux.TextEditor;
 
   /**
    * @deprecated "You are accessing the global {@linkcode ActorSheet} which is now namespaced under {@linkcode foundry.appv1.sheets.ActorSheet}"

@@ -621,7 +621,7 @@ declare global {
     protected _sortSounds(a: PlaylistSound.Implementation, b: PlaylistSound.Implementation): number;
 
     // options: not null (destructured)
-    override toAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
+    override toAnchor(options?: foundry.applications.ux.TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
     /**
      * @remarks Returns {@link Playlist.playAll | `this.playAll()`} or {@link Playlist.stopAll | `this.stopAll()`}

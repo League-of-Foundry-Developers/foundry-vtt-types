@@ -429,7 +429,7 @@ declare global {
     load(): Promise<void>;
 
     // options: not null (destructured)
-    toAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
+    toAnchor(options?: foundry.applications.ux.TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
     /**
      * @remarks Returns {@link Playlist.stopSound | `this.parent.stopSound()`} or {@link Playlist.playSound | `this.parent.playSound()`}

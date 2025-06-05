@@ -259,6 +259,8 @@ declare class TextEditor {
 }
 
 declare namespace TextEditor {
+  type Options = ProseMirrorOptions | TinyMCEOptions;
+
   interface ProseMirrorOptions extends ProseMirrorEditor.CreateOptions {
     /**
      * Which rich text editor engine to use, "tinymce" or "prosemirror". TinyMCE

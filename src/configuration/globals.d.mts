@@ -199,7 +199,6 @@ export import SunburstIlluminationShader = globalThis.SunburstIlluminationShader
 export import SwirlingRainbowColorationShader = globalThis.SwirlingRainbowColorationShader;
 export import TableResult = globalThis.TableResult;
 export import TemplateLayer = globalThis.TemplateLayer;
-export import TextEditor = globalThis.TextEditor;
 export import TextureCompressor = globalThis.TextureCompressor;
 export import TextureExtractor = globalThis.TextureExtractor;
 export import TextureLoader = globalThis.TextureLoader;

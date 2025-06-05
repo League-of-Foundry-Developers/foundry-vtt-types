@@ -2209,7 +2209,7 @@ declare global {
        * A collection of custom enrichers that can be applied to text content, allowing for the matching and handling of
        * custom patterns.
        */
-      enrichers: TextEditor.EnricherConfig[];
+      enrichers: foundry.applications.ux.TextEditor.EnricherConfig[];
     };
 
     /**

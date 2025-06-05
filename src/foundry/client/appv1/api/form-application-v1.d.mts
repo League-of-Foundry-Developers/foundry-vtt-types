@@ -2,6 +2,7 @@ import type { EditorView } from "prosemirror-view";
 import type { AnyObject, GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "#common/prosemirror/_module.d.mts";
 import type Application from "./application-v1.d.mts";
+import type TextEditor from "#client/applications/ux/text-editor.mjs";
 
 declare module "#configuration" {
   namespace Hooks {

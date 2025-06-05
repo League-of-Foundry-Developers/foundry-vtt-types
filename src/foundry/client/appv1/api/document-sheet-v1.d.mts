@@ -4,6 +4,7 @@ import type { GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type Application from "./application-v1.mjs";
 import type FormApplication from "./form-application-v1.d.mts";
+import type TextEditor from "#client/applications/ux/text-editor.mjs";
 
 declare module "#configuration" {
   namespace Hooks {
