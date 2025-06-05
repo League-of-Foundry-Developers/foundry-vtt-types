@@ -79,7 +79,7 @@ declare class Tabs {
    * Handle click events on the tab navigation entries
    * @param event - A left click event
    */
-  protected _onClickNav(event: MouseEvent): void;
+  protected _onClickNav(event: PointerEvent): void;
 }
 
 declare namespace Tabs {
