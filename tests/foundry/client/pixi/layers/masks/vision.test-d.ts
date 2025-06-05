@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import AlphaBlurFilter from "#client/canvas/rendering/filters/blur.mjs";
 
 expectTypeOf(CanvasVisionMask.textureConfiguration).toEqualTypeOf<CachedContainer.TextureConfiguration>();
 
