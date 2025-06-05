@@ -1,1 +1,1 @@
-// Intentionally blank, tested in base-shader.test-d.ts
+// Intentionally blank, tested in `../shaders/base-shader.test-d.ts`

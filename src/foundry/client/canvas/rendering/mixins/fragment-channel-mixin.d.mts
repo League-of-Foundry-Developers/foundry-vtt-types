@@ -1,4 +1,5 @@
 import type { AnyObject, FixedInstanceType, Mixin, ShapeWithIndexSignature } from "#utils";
+import type { AbstractBaseShader } from "../shaders/_module.mjs";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class AdaptiveFragmentChannel {
@@ -47,7 +48,7 @@ declare function AdaptiveFragmentChannelMixin<BaseClass extends AdaptiveFragment
 
 declare namespace AdaptiveFragmentChannelMixin {
   /** @privateRemarks Can't extend `AnyMixedConstructor` if it's using the `BaseClass` union; `PIXI.Shader` is the parent of `Filter`, so it's used instead */
-  type AnyMixedConstructor = ReturnType<typeof AdaptiveFragmentChannelMixin<PIXI.Shader.AnyConstructor>>;
+  interface AnyMixedConstructor extends ReturnType<typeof AdaptiveFragmentChannelMixin<PIXI.Shader.AnyConstructor>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor;

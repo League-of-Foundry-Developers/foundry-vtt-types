@@ -17,7 +17,12 @@ declare class BaseShader {
   static PERCEIVED_BRIGHTNESS: string;
 
   /**
-   * Convertion functions for sRGB and Linear RGB.
+   * Simplex 3D noise functions
+   */
+  static SIMPLEX_3D: string;
+
+  /**
+   * Conversion functions for sRGB and Linear RGB.
    */
   static COLOR_SPACES: string;
 
@@ -26,13 +31,17 @@ declare class BaseShader {
    * @param octaves - (default: `4`)
    * @param amp     - (default: `1.0`)
    */
-  static FBM(octaves: number, amp: number): string;
+  static FBM(octaves?: number, amp?: number): string;
 
   /**
-   * High Quality Fractional Brownian Motion
-   * @param octaves - (default: `3`)
+   * High Quality Fractional Brownian Motion.
+   * @param octaves       - Number of octaves (iteration). (default: `3`)
+   * @param fbmFuncName   - Name of the fbm function. (default `"fbm"`)
+   * @param noiseFuncName - Name of the noise function to use inside fbm (must return a `float`). (default: `"noise"`)
+   * @param vecType       - The vec type the function accepts as a parameter. (default: `"vec2"`)
+   * @returns The formed fbm function
    */
-  static FBMHQ(octaves: number): string;
+  static FBMHQ(octaves?: number, fbmFuncName?: string, noiseFuncName?: string, vecType?: string): string;
 
   /**
    * Angular constraint working with coordinates on the range [-1, 1]
@@ -77,10 +86,9 @@ declare class BaseShader {
   /**
    * Declare a wave function in a shader -\> wcos (default), wsin or wtan.
    * Wave on the [v1,v2] range with amplitude -\> a and speed -\> speed.
-   * @param func - the math function to use
-   *               (default: `"cos"`)
+   * @param func - the math function to use (default: `"cos"`)
    */
-  static WAVE(func?: string): string;
+  static WAVE(func?: BaseShaderMixin.WaveTrigFunction): string;
 
   /**
    * Rotation function.
@@ -115,6 +123,8 @@ declare namespace BaseShaderMixin {
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor;
+
+  type WaveTrigFunction = "cos" | "sin" | "tan";
 }
 
 export default BaseShaderMixin;
