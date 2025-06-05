@@ -730,7 +730,7 @@ declare global {
    * (since v13 will be removed in v15)
    * @privateRemarks TODO: This should return the configured class
    */
-  // export import Draggable = foundry.applications.ux.Draggable;
+  export import Draggable = foundry.applications.ux.Draggable;
 
   /**
    * @deprecated "You are accessing the global {@linkcode FormDataExtended} which is now namespaced under {@linkcode foundry.applications.ux.FormDataExtended}"
