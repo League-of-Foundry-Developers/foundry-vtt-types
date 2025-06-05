@@ -15,7 +15,7 @@ import type Document from "#common/abstract/document.d.mts";
  * secrets.bind(html);
  * ```
  */
-declare class HTMLSecret<ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> {
+declare class HTMLSecret<ConcreteDocument extends Document.Any = Document.Any> {
   /**
    * @param config - Configuration options.
    */
@@ -53,12 +53,12 @@ declare namespace HTMLSecret {
    * @param content - The content block containing the updated secret element.
    * @returns The updated Document.
    */
-  type UpdateCallback<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> = (
+  type UpdateCallback<ConcreteDocument extends Document.Any = Document.Any> = (
     secret: HTMLElement,
     content: string,
   ) => Promise<ConcreteDocument>;
 
-  interface Configuration<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> {
+  interface Configuration<ConcreteDocument extends Document.Any = Document.Any> {
     /** The CSS selector used to target content that contains secret blocks. */
     parentSelector: string;
 
@@ -66,7 +66,7 @@ declare namespace HTMLSecret {
     callbacks?: Callbacks<ConcreteDocument> | undefined;
   }
 
-  interface Callbacks<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any> {
+  interface Callbacks<ConcreteDocument extends Document.Any = Document.Any> {
     content: HTMLSecret.ContentCallback;
     update: HTMLSecret.UpdateCallback<ConcreteDocument>;
   }

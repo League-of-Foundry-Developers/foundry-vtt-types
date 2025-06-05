@@ -4,7 +4,7 @@ import type { GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type Application from "./application-v1.mjs";
 import type FormApplication from "./form-application-v1.d.mts";
-import type TextEditor from "#client/applications/ux/text-editor.mjs";
+import type { HTMLSecret, TextEditor } from "#client/applications/ux/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -144,8 +144,7 @@ declare namespace DocumentSheet {
     document: DocumentSheet<ConcreteDocument, Options>["document"];
   }
 
-  interface Options<ConcreteDocument extends Document.Internal.Instance.Any = Document.Internal.Instance.Any>
-    extends FormApplication.Options {
+  interface Options<ConcreteDocument extends Document.Any = Document.Any> extends FormApplication.Options {
     /**
      * The default permissions required to view this Document sheet.
      * @defaultValue {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED}

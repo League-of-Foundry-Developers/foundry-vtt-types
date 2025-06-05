@@ -33,12 +33,7 @@ declare class Draggable<R extends boolean | Draggable.Resizable = false> {
    * Registered event handlers.
    * @defaultValue `{}`
    */
-  // prettier-ignore
-  handlers: this["resizable"] extends true
-    ? Draggable.ResizableHandlers
-    : this["resizable"] extends false
-      ? Draggable.Handlers
-      : Draggable.Handlers | Draggable.ResizableHandlers;
+  handlers: Draggable.RegisteredHandlers<R>;
 
   /**
    * The Application's starting position, pre-drag.
@@ -110,19 +105,19 @@ declare namespace Draggable {
     /**
      * A CSS selector for the resize handle.
      */
-    selector?: string;
+    selector?: string | undefined;
 
     /**
      * Enable resizing in the X direction.
      * @defaultValue `true`
      */
-    resizeX?: boolean;
+    resizeX?: boolean | undefined;
 
     /**
      * Enable resizing in the y direction.
      * @defaultValue `true`
      */
-    resizeY?: boolean;
+    resizeY?: boolean | undefined;
 
     /**
      * Modify the resizing direction to be right-to-left.
@@ -130,9 +125,14 @@ declare namespace Draggable {
     rt1?: boolean | null | undefined;
   }
 
+  type RegisteredHandlers<R extends boolean | Resizable> = R extends true
+    ? ResizableHandlers
+    : R extends false
+      ? Handlers
+      : Handlers | ResizableHandlers;
+
   interface Handlers {
     click: ["click", (e: MouseEvent) => void, { capture: boolean; passive: boolean }];
-
     dragDown: ["pointerdown", (e: Event) => void, false];
     dragMove: ["pointermove", (e: Event) => void, false];
     dragUp: ["pointerup", (e: Event) => void, false];
