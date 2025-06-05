@@ -4,19 +4,6 @@ import type { ValueOf } from "#utils";
  * A controller class for managing a text input widget that filters the contents of some other UI element.
  */
 declare class SearchFilter {
-  static readonly OPERATORS: {
-    EQUALS: "equals";
-    CONTAINS: "contains";
-    STARTS_WITH: "starts_with";
-    ENDS_WITH: "ends_with";
-    LESS_THAN: "lt";
-    LESS_THAN_EQUAL: "lte";
-    GREATER_THAN: "gt";
-    GREATER_THAN_EQUAL: "gte";
-    BETWEEN: "between";
-    IS_EMPTY: "is_empty";
-  };
-
   /**
    * @param options - Options which customize the behavior of the filter
    */
@@ -30,7 +17,23 @@ declare class SearchFilter {
   /**
    * A callback function to trigger when the tab is changed
    */
-  callback: (event: KeyboardEvent, query: string, rgx: RegExp, content: HTMLElement | null) => void;
+  callback: SearchFilter.Callback;
+
+  /**
+   * The allowed Filter Operators which can be used to define a search filter
+   */
+  static OPERATORS: Readonly<{
+    EQUALS: "equals";
+    CONTAINS: "contains";
+    STARTS_WITH: "starts_with";
+    ENDS_WITH: "ends_with";
+    LESS_THAN: "lt";
+    LESS_THAN_EQUAL: "lte";
+    GREATER_THAN: "gt";
+    GREATER_THAN_EQUAL: "gte";
+    BETWEEN: "between";
+    IS_EMPTY: "is_empty";
+  }>;
 
   /**
    * The regular expression corresponding to the query that should be matched against
@@ -39,47 +42,19 @@ declare class SearchFilter {
   rgx: RegExp | undefined;
 
   /**
-   * The CSS selector used to target the tab navigation element
-   * @internal
-   */
-  protected _inputSelector: string;
-
-  /**
    * A reference to the HTML navigation element the tab controller is bound to
-   * @internal
    */
-  protected _input: HTMLElement | null;
-
-  /**
-   * The CSS selector used to target the tab content element
-   * @internal
-   */
-  protected _contentSelector: string;
-
-  /**
-   * A reference to the HTML container element of the tab content
-   * @internal
-   */
-  protected _content: HTMLElement | null;
-
-  /**
-   * A debounced function which applies the search filtering
-   * @internal
-   */
-  protected _filter: (...args: Parameters<this["callback"]>) => void;
-
-  /**
-   * Test whether a given object matches a provided filter
-   * @param obj    - An object to test against
-   * @param filter - The filter to test
-   * @returns Whether the object matches the filter
-   */
-  static evaluateFilter(obj: Record<string, any>, filter: SearchFilter.FieldFilter): boolean;
+  _input: HTMLElement | null;
 
   /**
    * Bind the SearchFilter controller to an HTML application
    */
   bind(html: HTMLElement): void;
+
+  /**
+   * Release all bound HTML elements and reset the query.
+   */
+  unbind(): void;
 
   /**
    * Perform a filtering of the content by invoking the callback function
@@ -95,9 +70,27 @@ declare class SearchFilter {
    * @returns A cleaned string of ASCII characters for comparison
    */
   static cleanQuery(query: string): string;
+
+  /**
+   * A helper method to test a value against a precomposed regex pattern.
+   * @param rgx   - The regular expression to test
+   * @param value - THe value to test against
+   * @returns Does the query match?
+   */
+  static testQuery(rgx: RegExp, value: string): boolean;
+
+  /**
+   * Test whether a given object matches a provided filter
+   * @param obj    - An object to test against
+   * @param filter - The filter to test
+   * @returns Whether the object matches the filter
+   */
+  static evaluateFilter(obj: Record<string, any>, filter: SearchFilter.FieldFilter): boolean;
 }
 
 declare namespace SearchFilter {
+  type Callback = (event: KeyboardEvent | null, query: string, rgx: RegExp, content: HTMLElement | null) => void;
+
   /** Options which customize the behavior of the filter */
   interface Configuration {
     /**
@@ -113,7 +106,7 @@ declare namespace SearchFilter {
     /**
      * A callback function which executes when the filter changes.
      */
-    callback?: SearchFilter["callback"];
+    callback?: Callback | undefined;
 
     /**
      * The initial value of the search query.
@@ -123,7 +116,7 @@ declare namespace SearchFilter {
 
     /**
      * The number of milliseconds to wait for text input before processing.
-     * @defaultValue `100`
+     * @defaultValue `200`
      */
     delay?: number;
   }
