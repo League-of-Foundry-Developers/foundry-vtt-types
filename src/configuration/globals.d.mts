@@ -30,8 +30,9 @@ export import AdaptiveVisionShader = globalThis.AdaptiveVisionShader;
 export import AdjustDarknessLevelRegionShader = globalThis.AdjustDarknessLevelRegionShader;
 export import Adventure = globalThis.Adventure;
 export import AlertPing = globalThis.AlertPing;
-export import AlphaBlurFilter = globalThis.AlphaBlurFilter;
-export import AlphaBlurFilterPass = globalThis.AlphaBlurFilterPass;
+// The two following are (possibly erroneously) not re-exported by their `_module.mjs`, despite being previously global and not `@internal`
+// export import AlphaBlurFilter = globalThis.AlphaBlurFilter;
+// export import AlphaBlurFilterPass = globalThis.AlphaBlurFilterPass;
 export import AmbientLight = globalThis.AmbientLight;
 export import AmbientLightDocument = globalThis.AmbientLightDocument;
 export import AmbientSound = globalThis.AmbientSound;

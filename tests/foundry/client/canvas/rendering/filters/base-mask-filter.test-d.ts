@@ -1,9 +1,10 @@
 import { expectTypeOf } from "vitest";
+import { AbstractBaseMaskFilter } from "#client/canvas/rendering/filters/_module.mjs";
 
 expectTypeOf(AbstractBaseMaskFilter.vertexShader).toEqualTypeOf<string>();
 
-let myABMF;
-expectTypeOf((myABMF = AbstractBaseMaskFilter.create())).toEqualTypeOf<AbstractBaseMaskFilter>();
+const myABMF = AbstractBaseMaskFilter.create();
+expectTypeOf(myABMF).toEqualTypeOf<AbstractBaseMaskFilter>();
 
 declare const someFilterSystem: PIXI.FilterSystem;
 declare const someRT1: PIXI.RenderTexture;

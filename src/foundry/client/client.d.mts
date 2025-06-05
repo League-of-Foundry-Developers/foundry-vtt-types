@@ -860,6 +860,78 @@ declare global {
   export import SMAAFilter = foundry.canvas.rendering.filters.SMAAFilter;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode AbstractBaseFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.AbstractBaseFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import AbstractBaseFilter = foundry.canvas.rendering.filters.AbstractBaseFilter;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AbstractBaseMaskFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.AbstractBaseMaskFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import AbstractBaseMaskFilter = foundry.canvas.rendering.filters.AbstractBaseMaskFilter;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode VisualEffectsMaskingFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.VisualEffectsMaskingFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import VisualEffectsMaskingFilter = foundry.canvas.rendering.filters.VisualEffectsMaskingFilter;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryCanvasGroupAmbienceFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.PrimaryCanvasGroupAmbienceFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryCanvasGroupAmbienceFilter = foundry.canvas.rendering.filters.PrimaryCanvasGroupAmbienceFilter;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode GlowOverlayFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.GlowOverlayFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import GlowOverlayFilter = foundry.canvas.rendering.filters.GlowOverlayFilter;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode InvisibilityFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.InvisibilityFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import InvisibilityFilter = foundry.canvas.rendering.filters.InvisibilityFilter;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode OutlineOverlayFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.OutlineOverlayFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import OutlineOverlayFilter = foundry.canvas.rendering.filters.OutlineOverlayFilter;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode TextureTransitionFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.TextureTransitionFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import TextureTransitionFilter = foundry.canvas.rendering.filters.TextureTransitionFilter;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode VisibilityFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.VisibilityFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import VisibilityFilter = foundry.canvas.rendering.filters.VisibilityFilter;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode VisionMaskFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.VisionMaskFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import VisionMaskFilter = foundry.canvas.rendering.filters.VisionMaskFilter;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode VoidFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.VoidFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import VoidFilter = foundry.canvas.rendering.filters.VoidFilter;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode WeatherOcclusionMaskFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.WeatherOcclusionMaskFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import WeatherOcclusionMaskFilter = foundry.canvas.rendering.filters.WeatherOcclusionMaskFilter;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode BatchRenderer} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchRenderer}"
    * (since v13 will be removed in v15)
    */

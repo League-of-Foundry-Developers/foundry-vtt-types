@@ -1,8 +1,11 @@
 import { expectTypeOf } from "vitest";
+import { TextureTransitionFilter } from "#client/canvas/rendering/filters/_module.mjs";
 
 declare const someSprite: PIXI.Sprite;
 declare const someTex: PIXI.Texture;
-let myTTF;
+
+const myTTF = TextureTransitionFilter.create();
+expectTypeOf(myTTF).toEqualTypeOf<TextureTransitionFilter>();
 
 expectTypeOf(TextureTransitionFilter.TYPES.CROSSHATCH).toExtend<TextureTransitionFilter.TYPES>();
 expectTypeOf(
@@ -15,5 +18,4 @@ expectTypeOf(
 ).toEqualTypeOf<Promise<boolean>>();
 expectTypeOf(TextureTransitionFilter.fragmentShader).toEqualTypeOf<string>();
 
-expectTypeOf((myTTF = TextureTransitionFilter.create())).toEqualTypeOf<TextureTransitionFilter>();
 expectTypeOf(myTTF.type).toEqualTypeOf<TextureTransitionFilter.TYPES>();
