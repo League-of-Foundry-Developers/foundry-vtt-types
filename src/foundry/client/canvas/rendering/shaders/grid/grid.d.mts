@@ -2,7 +2,7 @@ import type { Identity, NullishProps } from "#utils";
 import type AbstractBaseShader from "../base-shader.mjs";
 
 /**
- * The grid shader used by {@linkcode GridMesh}.
+ * The grid shader used by {@linkcode foundry.canvas.containers.GridMesh}.
  */
 declare class GridShader extends AbstractBaseShader {
   /**

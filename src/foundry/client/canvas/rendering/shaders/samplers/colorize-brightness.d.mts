@@ -1,6 +1,9 @@
 import type { Identity } from "#utils";
 import type { AbstractBaseShader, BaseSamplerShader } from "../_module.mjs";
 
+/**
+ * A colorization shader which keeps brightness contrary to "normal tinting"
+ */
 declare class ColorizeBrightnessShader extends BaseSamplerShader {
   /** @defaultValue `null` */
   static override classPluginName: string | null;

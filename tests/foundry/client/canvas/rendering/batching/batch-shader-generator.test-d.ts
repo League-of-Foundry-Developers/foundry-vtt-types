@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
-
-const { BatchShaderGenerator } = foundry.canvas.rendering.batching;
+import { BatchShaderGenerator } from "#client/canvas/rendering/batching/_module.mjs";
 
 const myBSG = new BatchShaderGenerator("some glsl", "some other glsl", {
   foo: true,

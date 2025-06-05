@@ -5,7 +5,7 @@
 
 // Note(LukeAbby): These imports should go away once this folder has been restructured according to v13.
 export * as tokens from "./tokens/_module.mjs";
-export { default as SMAAFilter } from "./smaa/smaa.mjs";
+export { default as SMAAFilter } from "./rendering/filters/smaa/smaa.mjs";
 export * as edges from "./edges/_module.mjs";
 export * as regions from "./regions/_module.mjs";
 

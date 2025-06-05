@@ -3,6 +3,7 @@ import type { AbstractBaseShader, RegionShader } from "../_module.mjs";
 
 /**
  * Shader for the Region highlight.
+ * @internal
  */
 declare class HighlightRegionShader extends RegionShader {
   /**

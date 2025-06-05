@@ -3,6 +3,7 @@ import type { AbstractBaseShader, RegionShader } from "../_module.mjs";
 
 /**
  * Abstract shader used for Adjust Darkness Level region behavior.
+ * @internal
  */
 declare abstract class AbstractDarknessLevelRegionShader extends RegionShader {
   /**

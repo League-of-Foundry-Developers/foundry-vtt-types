@@ -3,8 +3,7 @@ import type { AbstractBaseShader, BaseSamplerShader } from "../../_module.mjs";
 import type { BatchRenderer } from "../../../batching/_module.mjs";
 
 /**
- * An occlusion shader to reveal certain area with elevation comparisons.
- * This shader is also working as a batched plugin.
+ * The occlusion sampler shader.
  */
 declare class OccludableSamplerShader extends BaseSamplerShader {
   /**

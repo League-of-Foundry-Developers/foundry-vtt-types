@@ -1,6 +1,9 @@
 import type { Identity } from "#utils";
 import type AdaptiveDarknessShader from "../darkness-lighting.mjs";
 
+/**
+ * Creates a dense smoke area
+ */
 declare class DenseSmokeDarknessShader extends AdaptiveDarknessShader {
   static override fragmentShader: string;
 }

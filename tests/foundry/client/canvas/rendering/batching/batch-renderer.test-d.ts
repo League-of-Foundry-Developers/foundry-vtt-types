@@ -1,8 +1,7 @@
 import { expectTypeOf } from "vitest";
+import { BatchRenderer, BatchShaderGenerator } from "#client/canvas/rendering/batching/_module.mjs";
 
-const { BatchRenderer, BatchShaderGenerator: _BatchShaderGenerator } = foundry.canvas.rendering.batching;
-
-expectTypeOf(BatchRenderer.shaderGeneratorClass).toEqualTypeOf<typeof _BatchShaderGenerator>();
+expectTypeOf(BatchRenderer.shaderGeneratorClass).toEqualTypeOf<typeof BatchShaderGenerator>();
 expectTypeOf(BatchRenderer.hasPlugin("bob")).toEqualTypeOf<boolean>;
 
 declare const someRenderer: PIXI.Renderer;

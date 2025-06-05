@@ -26,7 +26,11 @@ declare class BatchGeometry extends PIXI.Geometry {
 }
 
 /**
- * A simple shader to emulate a PIXI.Sprite with a PIXI.Mesh (but faster!)
+ * The base sampler shader exposes a simple sprite shader and all the framework to handle:
+ * - Batched shaders and plugin subscription
+ * - Configure method (for special processing done once or punctually)
+ * - Update method (pre-binding, normally done each frame)
+ * All other sampler shaders (batched or not) should extend BaseSamplerShader
  */
 declare class BaseSamplerShader extends AbstractBaseShader {
   /**

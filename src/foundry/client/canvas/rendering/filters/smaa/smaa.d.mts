@@ -1,5 +1,11 @@
-import type { Brand, InexactPartial } from "#utils";
+import type { Brand, Identity, InexactPartial } from "#utils";
 
+/**
+ * The SMAA filter.
+ * @see {@link foundry.canvas.rendering.filters.SMAAEdgeDetectionFilter}
+ * @see {@link foundry.canvas.rendering.filters.SMAABlendingWeightCalculationFilter}
+ * @see {@link foundry.canvas.rendering.filters.SMAANeighborhoodBlendingFilter}
+ */
 declare class SMAAFilter extends PIXI.Filter {
   /**
    * @param config - The config
@@ -10,12 +16,9 @@ declare class SMAAFilter extends PIXI.Filter {
   // config: not null (destructured)
   constructor(config?: SMAAFilter.ConstructorOptions);
 
-  // a placeholder private method to help subclassing
-  #smaaFilter: true;
-
   /**
    * The presets.
-   * @remarks Unused in 12.331
+   * @remarks Unused as of 13.344
    */
   static get PRESETS(): SMAAFilter.Presets;
 
@@ -26,16 +29,22 @@ declare class SMAAFilter extends PIXI.Filter {
     clearMode: PIXI.CLEAR_MODES | undefined,
     currentState: PIXI.FilterState,
   ): void;
+
+  #SMAAFilter: true;
 }
 
 declare namespace SMAAFilter {
   interface Any extends AnySMAAFilter {}
-  type AnyConstructor = typeof AnySMAAFilter;
+  interface AnyConstructor extends Identity<typeof AnySMAAFilter> {}
 
   type PRESETS = Brand<Config, "SMAAFilter.PRESETS">;
 
-  interface Presets {
-    LOW: {
+  /**
+   * @privateRemarks This is frozen with {@linkcode foundry.utils.deepFreeze} and is
+   * only exposed as a getter for a private property, it's truly inextensible
+   */
+  type Presets = Readonly<{
+    LOW: Readonly<{
       threshold: 0.15;
       localContrastAdaptionFactor: 2.0;
       maxSearchSteps: 4;
@@ -43,8 +52,9 @@ declare namespace SMAAFilter {
       cornerRounding: 0;
       disableDiagDetection: true;
       disableCornerDetection: true;
-    } & PRESETS;
-    MEDIUM: {
+    }> &
+      PRESETS;
+    MEDIUM: Readonly<{
       threshold: 0.1;
       localContrastAdaptionFactor: 2.0;
       maxSearchSteps: 8;
@@ -52,8 +62,9 @@ declare namespace SMAAFilter {
       cornerRounding: 0;
       disableDiagDetection: true;
       disableCornerDetection: true;
-    } & PRESETS;
-    HIGH: {
+    }> &
+      PRESETS;
+    HIGH: Readonly<{
       threshold: 0.1;
       localContrastAdaptionFactor: 2.0;
       maxSearchSteps: 16;
@@ -61,8 +72,9 @@ declare namespace SMAAFilter {
       cornerRounding: 25;
       disableDiagDetection: false;
       disableCornerDetection: false;
-    } & PRESETS;
-    ULTRA: {
+    }> &
+      PRESETS;
+    ULTRA: Readonly<{
       threshold: 0.05;
       localContrastAdaptionFactor: 2.0;
       maxSearchSteps: 32;
@@ -70,8 +82,9 @@ declare namespace SMAAFilter {
       cornerRounding: 25;
       disableDiagDetection: false;
       disableCornerDetection: false;
-    } & PRESETS;
-  }
+    }> &
+      PRESETS;
+  }>;
 
   interface Config {
     /**
@@ -142,13 +155,11 @@ declare namespace SMAAFilter {
     disableCornerDetection: boolean;
   }
 
-  type _ConstructorOptions = InexactPartial<Config>;
-
-  interface ConstructorOptions extends _ConstructorOptions {}
+  interface ConstructorOptions extends InexactPartial<Config> {}
 }
+
+export default SMAAFilter;
 
 declare abstract class AnySMAAFilter extends SMAAFilter {
   constructor(...args: never);
 }
-
-export default SMAAFilter;

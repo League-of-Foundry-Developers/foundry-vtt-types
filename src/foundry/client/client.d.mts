@@ -854,6 +854,12 @@ declare global {
   export import srcExists = foundry.canvas.srcExists;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode SMAAFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.SMAAFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import SMAAFilter = foundry.canvas.rendering.filters.SMAAFilter;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode BatchRenderer} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchRenderer}"
    * (since v13 will be removed in v15)
    */
