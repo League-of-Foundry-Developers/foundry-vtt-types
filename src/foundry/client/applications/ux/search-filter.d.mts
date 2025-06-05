@@ -22,18 +22,7 @@ declare class SearchFilter {
   /**
    * The allowed Filter Operators which can be used to define a search filter
    */
-  static OPERATORS: Readonly<{
-    EQUALS: "equals";
-    CONTAINS: "contains";
-    STARTS_WITH: "starts_with";
-    ENDS_WITH: "ends_with";
-    LESS_THAN: "lt";
-    LESS_THAN_EQUAL: "lte";
-    GREATER_THAN: "gt";
-    GREATER_THAN_EQUAL: "gte";
-    BETWEEN: "between";
-    IS_EMPTY: "is_empty";
-  }>;
+  static OPERATORS: Readonly<SearchFilter.Operators>;
 
   /**
    * The regular expression corresponding to the query that should be matched against
@@ -84,12 +73,26 @@ declare class SearchFilter {
    * @param obj    - An object to test against
    * @param filter - The filter to test
    * @returns Whether the object matches the filter
+   * @remarks obj needs to work with both Document.Any *and* plain objects
    */
-  static evaluateFilter(obj: Record<string, any>, filter: SearchFilter.FieldFilter): boolean;
+  static evaluateFilter(obj: object, filter: SearchFilter.FieldFilter): boolean;
 }
 
 declare namespace SearchFilter {
   type Callback = (event: KeyboardEvent | null, query: string, rgx: RegExp, content: HTMLElement | null) => void;
+
+  interface Operators {
+    EQUALS: "equals";
+    CONTAINS: "contains";
+    STARTS_WITH: "starts_with";
+    ENDS_WITH: "ends_with";
+    LESS_THAN: "lt";
+    LESS_THAN_EQUAL: "lte";
+    GREATER_THAN: "gt";
+    GREATER_THAN_EQUAL: "gte";
+    BETWEEN: "between";
+    IS_EMPTY: "is_empty";
+  }
 
   /** Options which customize the behavior of the filter */
   interface Configuration {
@@ -118,7 +121,7 @@ declare namespace SearchFilter {
      * The number of milliseconds to wait for text input before processing.
      * @defaultValue `200`
      */
-    delay?: number;
+    delay?: number | undefined;
   }
 
   interface FieldFilter {
@@ -129,10 +132,13 @@ declare namespace SearchFilter {
      * The search operator, from CONST.OPERATORS
      * @defaultValue `SearchFilter.OPERATORS.EQUALS`
      */
-    operator: ValueOf<typeof SearchFilter.OPERATORS>;
+    operator?: ValueOf<typeof SearchFilter.OPERATORS> | undefined;
 
-    /** Negate the filter, returning results which do NOT match the filter criteria */
-    negate: boolean;
+    /**
+     * Negate the filter, returning results which do NOT match the filter criteria
+     * @remarks Defaults to false because undefined is falsy
+     */
+    negate?: boolean | undefined;
 
     /** The value against which to test */
     value: any;

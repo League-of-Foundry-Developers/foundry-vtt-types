@@ -37,3 +37,12 @@ expectTypeOf(filter.bind(new HTMLDivElement())).toEqualTypeOf<void>();
 expectTypeOf(filter.filter(new KeyboardEvent("keyup"), "Typed")).toEqualTypeOf<void>();
 
 expectTypeOf(SearchFilter.cleanQuery(" my-query")).toEqualTypeOf<string>();
+
+declare const doc: foundry.abstract.Document.Any;
+
+expectTypeOf(
+  SearchFilter.evaluateFilter(doc, {
+    field: "foo.bar",
+    value: 27,
+  }),
+).toBeBoolean();
