@@ -1,4 +1,5 @@
 import type { InexactPartial, NullishProps } from "#utils";
+import type FilePicker from "#client/applications/apps/file-picker.mjs";
 
 /**
  * A helper class to provide common functionality for working with Image objects

@@ -1,6 +1,5 @@
 import type { MaybePromise, Identity, ValueOf } from "#utils";
-import type DragDrop from "#client/applications/ux/drag-drop.mjs";
-import type SearchFilter from "#client/applications/ux/search-filter.mjs";
+import type { DragDrop, SearchFilter, Tabs } from "#client/applications/ux/_module.d.mts";
 
 declare global {
   const MIN_WINDOW_WIDTH: 200;

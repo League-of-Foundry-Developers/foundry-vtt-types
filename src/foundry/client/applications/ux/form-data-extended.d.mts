@@ -22,13 +22,13 @@ declare class FormDataExtended extends FormData {
    * A mapping of data types requested for each form field.
    * @defaultValue `{}`
    */
-  dtypes: Partial<Record<string, string>>;
+  dtypes: Record<string, string>;
 
   /**
    * A record of TinyMCE editors which are linked to this form.
    * @defaultValue `{}`
    */
-  editors: Partial<Record<string, foundry.appv1.api.FormApplication.FormApplicationEditor>>;
+  editors: Record<string, foundry.appv1.api.FormApplication.FormApplicationEditor>;
 
   /**
    * The object representation of the form data, available once processed.
@@ -64,25 +64,25 @@ declare namespace FormDataExtended {
      * A record of TinyMCE editor metadata objects, indexed by their update key
      * (default: `{}`)
      */
-    editors?: FormDataExtended["editors"];
+    editors?: FormDataExtended["editors"] | undefined;
 
     /**
      * A mapping of data types for form fields
      * (default: `{}`)
      */
-    dtypes?: FormDataExtended["dtypes"];
+    dtypes?: FormDataExtended["dtypes"] | undefined;
 
     /**
      * Include disabled fields?
      * (default: `false`)
      */
-    disabled?: boolean;
+    disabled?: boolean | undefined;
 
     /**
      * Include readonly fields?
      * (default: `true`)
      */
-    readonly?: boolean;
+    readonly?: boolean | undefined;
   }
 }
 

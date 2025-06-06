@@ -301,8 +301,8 @@ declare namespace FormApplication {
     target: string;
     button: HTMLElement;
     hasButton: boolean;
-    instance: Awaited<ReturnType<(typeof TextEditor)["create"]>> | null;
-    mce: Awaited<ReturnType<(typeof TextEditor)["create"]>> | null;
+    instance: tinyMCE.Editor | null;
+    mce: tinyMCE.Editor | null;
     active: boolean;
     changed: boolean;
     options: TextEditor.Options;

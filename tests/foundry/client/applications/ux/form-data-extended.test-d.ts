@@ -6,8 +6,8 @@ import FormDataExtended = foundry.applications.ux.FormDataExtended;
 declare const htmlForm: HTMLFormElement;
 
 const formData = new FormDataExtended(htmlForm);
-expectTypeOf(formData.dtypes).toEqualTypeOf<Partial<Record<string, string>>>();
-expectTypeOf(formData.editors).toEqualTypeOf<Partial<Record<string, FormApplication.FormApplicationEditor>>>();
+expectTypeOf(formData.dtypes).toEqualTypeOf<Record<string, string>>();
+expectTypeOf(formData.editors).toEqualTypeOf<Record<string, FormApplication.FormApplicationEditor>>();
 expectTypeOf(formData.object).toEqualTypeOf<AnyMutableObject>();
 expectTypeOf(formData.process(htmlForm, {})).toEqualTypeOf<void>();
 expectTypeOf(formData.set("field", "value")).toEqualTypeOf<void>();
