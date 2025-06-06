@@ -73,7 +73,11 @@ declare class RollResolver<
    * @param form      - The form element that was submitted.
    * @param formData  - Processed data for the submitted form.
    */
-  static _fulfillRoll(event: SubmitEvent, form: HTMLFormElement, formData: FormDataExtended): Promise<void>;
+  static _fulfillRoll(
+    event: SubmitEvent,
+    form: HTMLFormElement,
+    formData: foundry.applications.ux.FormDataExtended,
+  ): Promise<void>;
 
   /**
    * Add a new term to the resolver.

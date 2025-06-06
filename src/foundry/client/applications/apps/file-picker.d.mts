@@ -257,6 +257,12 @@ declare class FilePicker<
    * @param button - The button element
    */
   static fromButton(button: HTMLButtonElement): FilePicker;
+
+  /**
+   * Retrieve the configured FilePicker implementation.
+   * @privateRemarks TODO: Config.ux handling
+   */
+  static get implementation(): typeof FilePicker;
 }
 
 declare namespace FilePicker {
@@ -417,6 +423,11 @@ declare namespace FilePicker {
   }
 
   interface UploadBody extends AnyObject {}
+
+  /**
+   * @deprecated Old name for the construction options for FilePicker
+   */
+  interface Options extends Configuration {}
 }
 
 declare abstract class AnyFilePicker extends FilePicker<

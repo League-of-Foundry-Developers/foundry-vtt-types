@@ -13,6 +13,7 @@ import type { SchemaField } from "../data/fields.d.mts";
 import type { DatabaseCreateOperation, DatabaseDeleteOperation, DatabaseUpdateOperation } from "./_types.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
+import type TextEditor from "#client/applications/ux/text-editor.mjs";
 
 type DataSchema = foundry.data.fields.DataSchema;
 

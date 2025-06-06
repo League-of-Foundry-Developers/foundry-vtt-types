@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import Tabs = foundry.applications.ux.Tabs;
+
 // @ts-expect-error - Tabs requires data.
 new Tabs();
 
@@ -25,5 +27,3 @@ tabs.bind(new HTMLDivElement());
 tabs.activate("tab1");
 tabs.activate("tab1", {});
 tabs.activate("tab1", { triggerCallback: true });
-
-expectTypeOf(TabsV2).toEqualTypeOf<typeof Tabs>();

@@ -2,6 +2,8 @@ import type { EditorView } from "prosemirror-view";
 import type { AnyObject, GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "#common/prosemirror/_module.d.mts";
 import type Application from "./application-v1.d.mts";
+import type TextEditor from "#client/applications/ux/text-editor.mjs";
+import type FilePicker from "#client/applications/apps/file-picker.mjs";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -227,7 +229,7 @@ declare abstract class FormApplication<
   /**
    * @deprecated since v12, will be removed in v14
    */
-  protected _getFilePickerOptions(event: PointerEvent): FilePicker.Options;
+  protected _getFilePickerOptions(event: PointerEvent): FilePicker.Configuration;
 
   /**
    * @deprecated since v12, will be removed in v14
@@ -299,8 +301,8 @@ declare namespace FormApplication {
     target: string;
     button: HTMLElement;
     hasButton: boolean;
-    instance: Awaited<ReturnType<(typeof TextEditor)["create"]>> | null;
-    mce: Awaited<ReturnType<(typeof TextEditor)["create"]>> | null;
+    instance: tinyMCE.Editor | null;
+    mce: tinyMCE.Editor | null;
     active: boolean;
     changed: boolean;
     options: TextEditor.Options;

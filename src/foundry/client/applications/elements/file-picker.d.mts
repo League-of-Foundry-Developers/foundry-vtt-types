@@ -1,5 +1,6 @@
 import type { FormInputConfig } from "../forms/fields.d.mts";
 import type AbstractFormInputElement from "./form-element.d.mts";
+import type FilePicker from "../apps/file-picker.d.mts";
 
 /**
  * A custom HTML element responsible for rendering a file input field and associated FilePicker button.

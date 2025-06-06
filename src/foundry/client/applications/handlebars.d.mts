@@ -356,7 +356,7 @@ interface FilePickerOptions extends Partial<Handlebars.HelperOptions> {
     /**
      * The type of FilePicker instance to display
      */
-    type?: FilePicker.Type;
+    type?: foundry.applications.apps.FilePicker.Type;
 
     /**
      * The field name in the target data

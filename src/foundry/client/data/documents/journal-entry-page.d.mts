@@ -3,6 +3,7 @@ import type { AnyObject, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseJournalEntryPage from "#common/documents/journal-entry-page.d.mts";
+import type TextEditor from "#client/applications/ux/text-editor.mjs";
 
 import fields = foundry.data.fields;
 

@@ -295,7 +295,7 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode FilePicker} which is now namespaced under {@linkcode foundry.applications.apps.FilePicker.implementation}"
    * (since v13 will be removed in v15)
    */
-  // export import FilePicker = foundry.applications.apps.FilePicker.implementation;
+  export import FilePicker = foundry.applications.apps.FilePicker;
 
   /**
    * @deprecated "You are accessing the global {@linkcode GridConfig} which is now namespaced under {@linkcode foundry.applications.apps.GridConfig}"
@@ -723,51 +723,51 @@ declare global {
    * (since v13 will be removed in v15)
    * @privateRemarks TODO: This should return the configured class
    */
-  // export import DragDrop = foundry.applications.ux.DragDrop;
+  export import DragDrop = foundry.applications.ux.DragDrop;
 
   /**
    * @deprecated "You are accessing the global {@linkcode Draggable} which is now namespaced under {@linkcode foundry.applications.ux.Draggable.implementation}"
    * (since v13 will be removed in v15)
    * @privateRemarks TODO: This should return the configured class
    */
-  // export import Draggable = foundry.applications.ux.Draggable;
+  export import Draggable = foundry.applications.ux.Draggable;
 
   /**
    * @deprecated "You are accessing the global {@linkcode FormDataExtended} which is now namespaced under {@linkcode foundry.applications.ux.FormDataExtended}"
    * (since v13 will be removed in v15)
    */
-  // export import FormDataExtended = foundry.applications.ux.FormDataExtended;
+  export import FormDataExtended = foundry.applications.ux.FormDataExtended;
 
   /**
    * @deprecated "You are accessing the global {@linkcode HTMLSecret} which is now namespaced under {@linkcode foundry.applications.ux.HTMLSecret}"
    * (since v13 will be removed in v15)
    */
-  // export import HTMLSecret = foundry.applications.ux.HTMLSecret;
+  export import HTMLSecret = foundry.applications.ux.HTMLSecret;
 
   /**
    * @deprecated "You are accessing the global {@linkcode ProseMirrorEditor} which is now namespaced under {@linkcode foundry.applications.ux.ProseMirrorEditor}"
    * (since v13 will be removed in v15)
    */
-  // export import ProseMirrorEditor = foundry.applications.ux.ProseMirrorEditor;
+  export import ProseMirrorEditor = foundry.applications.ux.ProseMirrorEditor;
 
   /**
    * @deprecated "You are accessing the global {@linkcode SearchFilter} which is now namespaced under {@linkcode foundry.applications.ux.SearchFilter}"
    * (since v13 will be removed in v15)
    */
-  // export import SearchFilter = foundry.applications.ux.SearchFilter;
+  export import SearchFilter = foundry.applications.ux.SearchFilter;
 
   /**
    * @deprecated "You are accessing the global {@linkcode Tabs} which is now namespaced under {@linkcode foundry.applications.ux.Tabs}"
    * (since v13 will be removed in v15)
    */
-  // export import Tabs = foundry.applications.ux.Tabs;
+  export import Tabs = foundry.applications.ux.Tabs;
 
   /**
    * @deprecated "You are accessing the global {@linkcode TextEditor} which is now namespaced under {@linkcode foundry.applications.ux.TextEditor.implementation}"
    * (since v13 will be removed in v15)
    * @privateRemarks TODO: This should return the configured class
    */
-  // export import TextEditor = foundry.applications.ux.TextEditor;
+  export import TextEditor = foundry.applications.ux.TextEditor;
 
   /**
    * @deprecated "You are accessing the global {@linkcode ActorSheet} which is now namespaced under {@linkcode foundry.appv1.sheets.ActorSheet}"

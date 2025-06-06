@@ -12,6 +12,7 @@ import type {
 import type Document from "#common/abstract/document.d.mts";
 import type { Application, FormApplication } from "#client/appv1/api/_module.d.mts";
 import type ApplicationV2 from "#client/applications/api/application.d.mts";
+import type TextEditor from "#client/applications/ux/text-editor.mjs";
 
 declare class InternalClientDocument<DocumentName extends Document.Type> {
   /** @privateRemarks All mixin classses should accept anything for its constructor. */

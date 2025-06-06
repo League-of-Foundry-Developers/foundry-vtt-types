@@ -3,6 +3,7 @@ import type { EditorView } from "prosemirror-view";
 import type { GetDataReturnType, Identity, MaybePromise } from "#utils";
 import type Showdown from "showdown";
 import type { Application, DocumentSheet, FormApplication } from "../api/_module.d.mts";
+import type TextEditor from "#client/applications/ux/text-editor.mjs";
 
 declare module "#configuration" {
   namespace Hooks {

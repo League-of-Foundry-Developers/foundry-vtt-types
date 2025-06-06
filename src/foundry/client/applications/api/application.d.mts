@@ -330,7 +330,7 @@ declare namespace ApplicationV2 {
     form: HTMLFormElement,
 
     /** Processed data for the submitted form */
-    formData: FormDataExtended,
+    formData: foundry.applications.ux.FormDataExtended,
   ) => MaybePromise<void>;
 
   interface TabsConfiguration {

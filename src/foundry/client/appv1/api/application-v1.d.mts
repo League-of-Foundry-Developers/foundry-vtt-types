@@ -1,4 +1,5 @@
 import type { MaybePromise, Identity, ValueOf } from "#utils";
+import type { DragDrop, SearchFilter, Tabs } from "#client/applications/ux/_module.d.mts";
 
 declare global {
   const MIN_WINDOW_WIDTH: 200;
