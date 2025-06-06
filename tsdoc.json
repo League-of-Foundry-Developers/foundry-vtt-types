@@ -25,6 +25,10 @@
     {
       "tagName": "@private",
       "syntaxKind": "modifier"
+    },
+    {
+      "tagName": "@ignore",
+      "syntaxKind": "modifier"
     }
   ]
 }
