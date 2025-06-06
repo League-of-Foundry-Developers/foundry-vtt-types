@@ -37,7 +37,7 @@ declare global {
     /**
      * Get the icon texture to use for the Door Control icon based on the door state
      */
-    protected _getTexture(): LoadTexture.Return;
+    protected _getTexture(): foundry.canvas.loadTexture.Return;
 
     reposition(): void;
 
