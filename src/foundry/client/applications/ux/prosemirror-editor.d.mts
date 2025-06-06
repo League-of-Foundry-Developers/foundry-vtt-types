@@ -150,6 +150,7 @@ declare class ProseMirrorEditor {
 declare namespace ProseMirrorEditor {
   type Props = EditorProps;
 
+  /** @internal */
   interface _CreateOptions {
     /** A string to uniquely identify this ProseMirror instance. Ignored for a collaborative editor. */
     uuid?: string | null | undefined;
