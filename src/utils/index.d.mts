@@ -1027,12 +1027,6 @@ export type ShapeWithIndexSignature<
   readonly [K in keyof T & IndexSignature]: K extends keyof PrimaryShape ? PrimaryShape[K] : IndexType;
 };
 
-/**
- * Defer is a utility type that allows you to defer the evaluation of a type.
- * The use cases for this are extremely advanced. In essence they have to do with breaking cycles in evaluation.
- */
-export type Defer<T> = [T][T extends any ? 0 : never];
-
 export type MustBeValidUuid<Uuid extends string, Type extends Document.Type = Document.Type> = _MustBeValidUuid<
   Uuid,
   Uuid,
