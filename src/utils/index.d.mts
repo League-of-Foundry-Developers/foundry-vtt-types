@@ -686,18 +686,26 @@ export type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
 export type Merge<T, U> = U extends object ? (T extends object ? _Merge<T, U> : U) : U;
 
 type _Merge<T extends object, U extends object> =
-  | (T extends AnyArray
-      ? U extends AnyArray
-        ? // Assumes `U["length"]` is greater than `T["length"]`
-          // Ignores the possibility of `[...] & { ... }` for the time being.
-          U
-        : never
-      : never)
+  | (T extends AnyArray ? (U extends AnyArray ? MergeArray<T, U> : never) : never)
   | (U extends AnyObject
       ? T extends AnyObject
         ? _MergePlainObject<T, U>
         : _MergeComplexObject<T, U>
       : _MergeComplexObject<T, U>);
+
+type MergeArray<T extends AnyArray, U extends AnyArray> = number extends U["length"] | T["length"]
+  ? Array<T[number] | U[number]>
+  : [...U, ...DropFirstN<T, U["length"]>];
+
+type DropFirstN<
+  T extends AnyArray,
+  DropN extends number,
+  Accumulator extends AnyArray = [],
+> = Accumulator["length"] extends DropN
+  ? T
+  : T extends [unknown, ...infer Items]
+    ? DropFirstN<Items, DropN, [...Accumulator, 1]>
+    : [];
 
 // TODO(LukeAbby): This needs to be more complex as to account for stuff like optionality correctly.
 type _MergePlainObject<T extends object, U extends object> = {
