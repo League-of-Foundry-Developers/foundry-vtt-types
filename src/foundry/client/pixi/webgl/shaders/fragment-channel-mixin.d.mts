@@ -39,7 +39,6 @@ declare global {
   /**
    * A mixin wich decorates a shader or filter and construct a fragment shader according to a choosen channel.
    * @param ShaderClass - The parent ShaderClass class being mixed.
-   * @returns A Shader/Filter subclass mixed with AdaptiveFragmentChannelMixin.
    */
   function AdaptiveFragmentChannelMixin<BaseClass extends AdaptiveFragmentChannelMixin.BaseClass>(
     ShaderClass: BaseClass,

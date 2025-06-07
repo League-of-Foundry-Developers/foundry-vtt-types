@@ -16,6 +16,11 @@ declare class BaseShader {
   static PERCEIVED_BRIGHTNESS: string;
 
   /**
+   * Simplex 3D noise functions
+   */
+  static SIMPLEX_3D: string;
+
+  /**
    * Convertion functions for sRGB and Linear RGB.
    */
   static COLOR_SPACES: string;
@@ -28,10 +33,14 @@ declare class BaseShader {
   static FBM(octaves: number, amp: number): string;
 
   /**
-   * High Quality Fractional Brownian Motion
-   * @param octaves - (default: `3`)
+   * High Quality Fractional Brownian Motion.
+   * @param octaves       - Number of octaves (iteration). (default: `3`)
+   * @param fbmFuncName   - Name of the fbm function. (default: `"fbm"`)
+   * @param noiseFuncName - Name of the noise function to use inside fbm (must return a `float`). (default: `"noise"`)
+   * @param vecType       - The vec type the function accepts as a parameter. (default: `"vec2"`)
+   * @returns The formed fbm function
    */
-  static FBMHQ(octaves: number): string;
+  static FBMHQ(octaves: number, fbmFuncName: string, noiseFuncName: string, vecType: string): string;
 
   /**
    * Angular constraint working with coordinates on the range [-1, 1]
@@ -105,6 +114,10 @@ declare class BaseShader {
 }
 
 declare global {
+  /**
+   * A mixin which decorates a PIXI.Filter or PIXI.Shader with common properties.
+   * @param ShaderClass - The parent ShaderClass class being mixed.
+   */
   function BaseShaderMixin<BaseClass extends BaseShaderMixin.BaseClass>(
     ShaderClass: BaseClass,
   ): Mixin<typeof BaseShader, BaseClass>;
