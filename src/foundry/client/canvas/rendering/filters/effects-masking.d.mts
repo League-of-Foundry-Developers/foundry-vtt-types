@@ -1,4 +1,4 @@
-import type { AnyObject, Brand, FixedInstanceType, Identity, ShapeWithIndexSignature } from "#utils";
+import type { AnyObject, Brand, FixedInstanceType, Identity, InexactPartial, ShapeWithIndexSignature } from "#utils";
 import type { AbstractBaseFilter, AbstractBaseMaskFilter } from "./_module.d.mts";
 import type { AbstractBaseShader } from "../shaders/_module.mjs";
 
@@ -6,28 +6,20 @@ import type { AbstractBaseShader } from "../shaders/_module.mjs";
  * This filter handles masking and post-processing for visual effects.
  */
 declare class VisualEffectsMaskingFilter extends AbstractBaseMaskFilter {
+  /**
+   * @remarks `postProcessModes` is pulled out of `options` and passed to {@link VisualEffectsMaskingFilter.fragmentShader | `this.fragmentShader`},
+   * the rest of the object is treated as `initialUniforms` as per {@linkcode AbstractBaseFilter.create}
+   */
   static override create<ThisType extends AbstractBaseFilter.AnyConstructor, T extends AnyObject>(
     this: ThisType,
-    {
-      postProcessModes,
-      ...initialUniforms
-    }?: ShapeWithIndexSignature<
-      T,
-      VisualEffectsMaskingFilter.ConcreteCreateOptions,
-      string,
-      AbstractBaseShader.UniformValue
-    >,
+    { postProcessModes, ...initialUniforms }?: VisualEffectsMaskingFilter.CreateOptions<T>,
   ): FixedInstanceType<ThisType>;
 
   /**
    * Masking modes.
    * @remarks Object is frozen
    */
-  static FILTER_MODES: {
-    readonly BACKGROUND: 0 & VisualEffectsMaskingFilter.FILTER_MODES;
-    readonly ILLUMINATION: 1 & VisualEffectsMaskingFilter.FILTER_MODES;
-    readonly COLORATION: 2 & VisualEffectsMaskingFilter.FILTER_MODES;
-  };
+  static FILTER_MODES: VisualEffectsMaskingFilter.FilterModes;
 
   /**
    * @defaultValue
@@ -76,11 +68,7 @@ declare class VisualEffectsMaskingFilter extends AbstractBaseMaskFilter {
   /**
    * Filter post-process techniques.
    */
-  static POST_PROCESS_TECHNIQUES: {
-    EXPOSURE: { id: "EXPOSURE" & VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES_ID; glsl: string };
-    CONTRAST: { id: "CONTRAST" & VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES_ID; glsl: string };
-    SATURATION: { id: "SATURATION" & VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES_ID; glsl: string };
-  };
+  static POST_PROCESS_TECHNIQUES: VisualEffectsMaskingFilter.PostProcessTechniques;
 
   /**
    * Memory allocations and headers for the VisualEffectsMaskingFilter
@@ -98,7 +86,7 @@ declare class VisualEffectsMaskingFilter extends AbstractBaseMaskFilter {
 
   /**
    * Specify the fragment shader to use according to mode
-   * @param postProcessModes - (default: [])
+   * @param postProcessModes - (default: `[]`)
    */
   static override fragmentShader(postProcessModes?: VisualEffectsMaskingFilter.PostProcessModes): string;
 }
@@ -112,13 +100,38 @@ declare namespace VisualEffectsMaskingFilter {
 
   type PostProcessModes = Array<keyof typeof VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES>;
 
-  interface ConcreteCreateOptions {
-    postProcessModes?: PostProcessModes | undefined;
-  }
+  /** @internal */
+  type _ConcreteCreateOptions = InexactPartial<{
+    /**
+     * @defaultValue `[]`
+     * @privateRemarks Default not in construction signature, but provided by {@linkcode VisualEffectsMaskingFilter.fragmentShader}
+     */
+    postProcessModes: PostProcessModes;
+  }>;
+
+  interface ConcreteCreateOptions extends _ConcreteCreateOptions {}
+  type CreateOptions<T extends AnyObject> = ShapeWithIndexSignature<
+    T,
+    VisualEffectsMaskingFilter.ConcreteCreateOptions,
+    string,
+    AbstractBaseShader.UniformValue
+  >;
 
   type FILTER_MODES = Brand<number, "VisualEffectsMaskingFilter.FILTER_MODES">;
 
+  interface FilterModes {
+    readonly BACKGROUND: 0 & FILTER_MODES;
+    readonly ILLUMINATION: 1 & FILTER_MODES;
+    readonly COLORATION: 2 & FILTER_MODES;
+  }
+
   type POST_PROCESS_TECHNIQUES_ID = Brand<string, "VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES.ID">;
+
+  interface PostProcessTechniques {
+    EXPOSURE: { id: "EXPOSURE" & POST_PROCESS_TECHNIQUES_ID; glsl: string };
+    CONTRAST: { id: "CONTRAST" & POST_PROCESS_TECHNIQUES_ID; glsl: string };
+    SATURATION: { id: "SATURATION" & POST_PROCESS_TECHNIQUES_ID; glsl: string };
+  }
 }
 
 export default VisualEffectsMaskingFilter;
