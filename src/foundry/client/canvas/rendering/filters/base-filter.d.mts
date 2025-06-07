@@ -26,16 +26,12 @@ declare class AbstractBaseFilter extends BaseShaderMixin(PIXI.Filter) {
 
   /**
    * A factory method for creating the filter using its defined default values.
-   * @param initialUniforms - Initial uniform values which override filter defaults
+   * @param initialUniforms - Initial uniform values which override filter defaults (default: `{}`)
    * @returns The constructed AbstractFilter[sic] instance.
    */
   static create<ThisType extends AbstractBaseFilter.AnyConstructor>(
     this: ThisType,
-
-    /**
-     * @defaultValue `{}`
-     */
-    initialUniforms?: AbstractBaseShader.Uniforms | null,
+    initialUniforms?: AbstractBaseShader.Uniforms,
   ): FixedInstanceType<ThisType>;
 }
 

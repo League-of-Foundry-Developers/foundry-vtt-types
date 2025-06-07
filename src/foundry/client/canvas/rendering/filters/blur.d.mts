@@ -6,14 +6,10 @@ import type { Identity } from "#utils";
 declare class AlphaBlurFilterPass extends PIXI.Filter {
   /**
    * @param horizontal - If the pass is horizontal (true) or vertical (false).
-   * @param strength   - Strength of the blur (distance of sampling).
-   *                     (default: `8`)
-   * @param quality    - Number of passes to generate the blur. More passes = Higher quality = Lower Perf.
-   *                     (default: `4`)
-   * @param resolution - Resolution of the filter.
-   *                     (default: PIXI.Filter.defaultResolution)
-   * @param kernelSize - Number of kernels to use. More kernels = Higher quality = Lower Perf.
-   *                     (default: `5`)
+   * @param strength   - Strength of the blur (distance of sampling). (default: `8`)
+   * @param quality    - Number of passes to generate the blur. More passes = Higher quality = Lower Perf. (default: `4`)
+   * @param resolution - Resolution of the filter. (default: `PIXI.Filter.defaultResolution`)
+   * @param kernelSize - Number of kernels to use. More kernels = Higher quality = Lower Perf. (default: `5`)
    */
   constructor(horizontal: boolean, strength?: number, quality?: number, resolution?: number, kernelSize?: number);
 
@@ -48,6 +44,17 @@ declare class AlphaBlurFilterPass extends PIXI.Filter {
 
   /**
    * The kernels containing the gaussian constants.
+   * @defaultValue
+   * ```js
+   * {
+   *   5:  [0.153388, 0.221461, 0.250301],
+   *   7:  [0.071303, 0.131514, 0.189879, 0.214607],
+   *   9:  [0.028532, 0.067234, 0.124009, 0.179044, 0.20236],
+   *   11: [0.0093,   0.028002, 0.065984, 0.121703, 0.175713, 0.198596],
+   *   13: [0.002406, 0.009255, 0.027867, 0.065666, 0.121117, 0.174868, 0.197641],
+   *   15: [0.000489, 0.002403, 0.009246, 0.02784,  0.065602, 0.120999, 0.174697, 0.197448]
+   * }
+   * ```
    */
   static GAUSSIAN_VALUES: Record<number, number[]>;
 
@@ -99,21 +106,20 @@ declare namespace AlphaBlurFilterPass {
  */
 declare class AlphaBlurFilter extends PIXI.Filter {
   /**
-   * @param strength   - Strength of the blur (distance of sampling).
-   *                     (default: `8`)
-   * @param quality    - Number of passes to generate the blur. More passes = Higher quality = Lower Perf.
-   *                     (default: `4`)
-   * @param resolution - Resolution of the filter.
-   *                     (default: PIXI.Filter.defaultResolution)
-   * @param kernelSize - Number of kernels to use. More kernels = Higher quality = Lower Perf.
-   *                     (default: `5`)
+   * @param strength   - Strength of the blur (distance of sampling). (default: `8`)
+   * @param quality    - Number of passes to generate the blur. More passes = Higher quality = Lower Perf. (default: `4`)
+   * @param resolution - Resolution of the filter. (default: `PIXI.Filter.defaultResolution`)
+   * @param kernelSize - Number of kernels to use. More kernels = Higher quality = Lower Perf. (default: `5`)
    */
   constructor(strength?: number, quality?: number, resolution?: number, kernelSize?: number);
 
+  /** @privateRemarks Not in class body, set in constructor */
   blurXFilter: AlphaBlurFilterPass;
 
+  /** @privateRemarks Not in class body, set in constructor */
   blurYFilter: AlphaBlurFilterPass;
 
+  /** @privateRemarks Not in class body, set in constructor */
   _repeatEdgePixels: boolean;
 
   override apply(
