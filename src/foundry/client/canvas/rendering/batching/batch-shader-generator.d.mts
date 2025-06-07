@@ -1,20 +1,17 @@
 import type { Identity } from "#utils";
 import type BatchRenderer from "./batch-renderer.mjs";
+import type { AbstractBaseShader } from "../shaders/_module.mjs";
 
 /**
  * A batch shader generator that could handle extra uniforms during initialization.
  * @param vertexSrc    - The vertex shader source
  * @param fragTemplate - The fragment shader source template
- * @param uniforms     - Additional uniforms
+ * @param uniforms     - Additional uniforms (default: `{}`)
  */
 declare class BatchShaderGenerator extends PIXI.BatchShaderGenerator {
   constructor(
     vertexSrc: string,
     fragTemplate: string,
-
-    /**
-     * @defaultValue `{}`
-     */
     uniforms?: AbstractBaseShader.Uniforms | BatchRenderer.BatchDefaultUniformsFunction,
   );
 

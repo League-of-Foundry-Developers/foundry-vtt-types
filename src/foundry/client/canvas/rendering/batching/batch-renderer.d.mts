@@ -1,6 +1,7 @@
 import type { ToMethod, InexactPartial, IntentionalPartial, Identity } from "#utils";
 import type { IBatchableElement, ViewableBuffer } from "pixi.js";
 import type BatchShaderGenerator from "./batch-shader-generator.mjs";
+import type { AbstractBaseShader } from "../shaders/_module.mjs";
 
 /**
  * A batch renderer with a customizable data transfer function to packed geometries.
@@ -40,7 +41,7 @@ declare class BatchRenderer extends PIXI.BatchRenderer {
    */
   get reservedTextureUnits(): BatchRenderer.ReservedTextureUnits;
 
-  override setShaderGenerator(options?: InexactPartial<BatchRenderer.ShaderGeneratorOptions>): void;
+  override setShaderGenerator(options?: BatchRenderer.ShaderGeneratorOptions): void;
 
   /**
    * This override allows to allocate a given number of texture units reserved for a custom batched shader.
@@ -82,7 +83,7 @@ declare namespace BatchRenderer {
     (
       /**
        * @privateRemarks The `element` param is `Partial`'d here because at least one `_packInterleavedGeometry` implementation (`DepthSampleShader`'s)
-       * omits properties from the parent PIXI interface. Neither `PIXI.BatchRenderer` nor any Foundry implementations provide any default vaules for
+       * omits properties from the parent PIXI interface. Neither `PIXI.BatchRenderer` nor any Foundry implementations provide any default values for
        * properties of this interface, so no `InexactPartial` or `NullishProps`.
        */
       element: IntentionalPartial<PIXI.IBatchableElement>,
