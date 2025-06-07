@@ -17,15 +17,33 @@ export interface QuestSchema extends JournalEntryPage.Schema {
   steps: fields.ArrayField<fields.StringField<{ required: true }>>;
 }
 
+// Since this changes the schema `this.description` will have no perfect type. For example, during assignment it should be `HTMLElement` but during access it should be `string`.
+// This is a limitation of the current implementation. If a dynamic getter/setter pair becomes possible this could be fixed.
+// See https://github.com/microsoft/TypeScript/issues/43826
 type BaseQuestData = {
   // Overrides the schema.
-  // Since this changes the schema `this.description` will have no perfect type. During assignment it should be `HTMLElement` but during access it should be `string`.
-  // This is a limitation of the current implementation. If a dynamic getter/setter pair becomes possible this could be fixed.
-  // See https://github.com/microsoft/TypeScript/issues/43826
   description: HTMLElement;
   questName: string;
+  some: {
+    deep?: {
+      baseProp: string;
+      prop: string;
+    };
+  };
 };
-type DerivedQuestData = { totalSteps: number };
+
+type StepData = { name: string };
+
+type DerivedQuestData = {
+  totalSteps: number;
+  steps: StepData[];
+  some: {
+    deep?: {
+      derivedProp: number;
+      prop: number;
+    };
+  };
+};
 
 // Test With specified Base and DerivedData.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -43,7 +61,15 @@ class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementat
 
     // From schema
     expectTypeOf(this.steps).toEqualTypeOf<string[]>;
-    expectTypeOf(this.description).toEqualTypeOf<Partial<HTMLElement> | undefined>;
+    expectTypeOf(this.description).toEqualTypeOf<HTMLElement | undefined>;
+
+    // `some` is partial because of being new in `prepareBaseData`.
+    // `deep` is optional due to the type definition.
+    expectTypeOf(this.some!.deep!.baseProp).toEqualTypeOf<string>();
+    expectTypeOf(this.some!.deep!.prop).toEqualTypeOf<string>();
+
+    // Should match the schema type, not the type after derived data.
+    expectTypeOf(this.steps).toEqualTypeOf<string[]>();
 
     // @ts-expect-error Derived Data is not available yet
     this.totalSteps + 1;
@@ -62,12 +88,15 @@ class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementat
     expectTypeOf(this.flags).toEqualTypeOf<EmptyObject>;
 
     // From QuestSchema
-    expectTypeOf(this.steps).toEqualTypeOf<string[]>;
+    expectTypeOf(this.steps).toEqualTypeOf<StepData[] | undefined>();
 
     // From BaseData
     expectTypeOf(this.description).toEqualTypeOf<HTMLElement>;
 
     expectTypeOf(this.totalSteps).toEqualTypeOf<number | undefined>();
+
+    expectTypeOf(this.some.deep!.derivedProp).toEqualTypeOf<number>();
+    expectTypeOf(this.some.deep!.prop).toEqualTypeOf<number>();
 
     // @ts-expect-error this key was declared nowhere.
     this.afsdasdfqeqw + 1;
@@ -77,6 +106,16 @@ class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementat
 
     // @ts-expect-error Recursively calling is technically possible but wouldn't be desired. Removing it also seems to reduce the type complexity.
     this.prepareDerivedData();
+  }
+
+  method() {
+    expectTypeOf(this.description).toEqualTypeOf<HTMLElement>();
+    expectTypeOf(this._source.description).toEqualTypeOf<string | undefined>();
+    // Note(LukeAbby): Currently not working but should.
+    expectTypeOf(this.some.deep!.baseProp).toEqualTypeOf<string>();
+    expectTypeOf(this.some.deep!.derivedProp).toEqualTypeOf<number>();
+    expectTypeOf(this.some.deep!.prop).toEqualTypeOf<number>();
+    expectTypeOf(this.steps).toEqualTypeOf<StepData[]>();
   }
 
   protected override async _preCreate(
@@ -106,8 +145,8 @@ class QuestModel2 extends foundry.abstract.TypeDataModel<QuestSchema, JournalEnt
     // Comes from the schema
     expectTypeOf(this.steps).toEqualTypeOf<string[]>;
 
-    // @ts-expect-error there is no base data this time.
-    this.questName;
+    // @ts-expect-error there shouldn't be an index signature.
+    this.nonexistantProp;
 
     // @ts-expect-error there is no derived data this time.
     this.totalSteps + 1;
@@ -137,7 +176,7 @@ class QuestModel3 extends foundry.abstract.TypeDataModel<QuestSchema, JournalEnt
 
     // From BaseData
     expectTypeOf(this.steps).toEqualTypeOf<string[]>;
-    expectTypeOf(this.description).toEqualTypeOf<Partial<HTMLElement> | undefined>;
+    expectTypeOf(this.description).toEqualTypeOf<HTMLElement | undefined>;
 
     // @ts-expect-error There is no derived Data
     this.totalSteps + 1;

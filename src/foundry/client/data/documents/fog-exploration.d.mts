@@ -3,9 +3,9 @@ import type { documents } from "#client/client.d.mts";
 import type { DatabaseGetOperation } from "#common/abstract/_types.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
+import type BaseFogExploration from "#common/documents/fog-exploration.mjs";
 
 import fields = foundry.data.fields;
-import type BaseFogExploration from "#common/documents/fog-exploration.mjs";
 
 declare global {
   namespace FogExploration {

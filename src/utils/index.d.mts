@@ -683,17 +683,33 @@ export type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
  * @template T - The base type that `U` will be merged into.
  * @template U - The type that will be merged into `T`.
  */
-export type Merge<T, U> =
-  IsObject<U> extends true
-    ? IsObject<T> extends true
-      ? SimpleMerge<
-          T,
-          {
-            [K in keyof U]: T extends { readonly [_ in K]?: infer V } ? Merge<V, U[K]> : U[K];
-          }
-        >
-      : U
-    : U;
+export type Merge<T, U> = U extends object ? (T extends object ? _Merge<T, U> : U) : U;
+
+type _Merge<T extends object, U extends object> =
+  | (T extends AnyArray
+      ? U extends AnyArray
+        ? // Assumes `U["length"]` is greater than `T["length"]`
+          // Ignores the possibility of `[...] & { ... }` for the time being.
+          U
+        : never
+      : never)
+  | (U extends AnyObject
+      ? T extends AnyObject
+        ? _MergePlainObject<T, U>
+        : _MergeComplexObject<T, U>
+      : _MergeComplexObject<T, U>);
+
+// TODO(LukeAbby): This needs to be more complex as to account for stuff like optionality correctly.
+type _MergePlainObject<T extends object, U extends object> = {
+  [K in keyof T as K extends keyof U ? never : K]: T[K];
+} & {
+  [K in keyof U]: T extends { readonly [_ in K]?: infer V } ? Merge<V, U[K]> : U[K];
+};
+
+interface _MergeComplexObject<T extends object, U extends object> extends Override<T, _MergePlainObject<T, U>> {}
+
+// @ts-expect-error - This pattern is inherently an error.
+interface Override<T extends object, U extends object> extends U, T {}
 
 /**
  * Returns whether the type is a plain object. Excludes functions, arrays, and constructors while still being friendly to interfaces.
