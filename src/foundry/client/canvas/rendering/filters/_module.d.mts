@@ -3,8 +3,7 @@
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 /* eslint-disable import-x/extensions */
 
-// We don't export from _types files, so the following is commented out
-// export * as types from "./_types.mjs";
+export * as types from "./_types.mjs";
 
 export { default as SMAAFilter } from "./smaa/smaa.mjs";
 export { default as SMAANeighborhoodBlendingFilter } from "./smaa/blend.mjs";
