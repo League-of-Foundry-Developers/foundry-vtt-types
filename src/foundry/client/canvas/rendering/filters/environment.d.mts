@@ -1,5 +1,5 @@
 import type { Identity } from "#utils";
-import type { AbstractBaseMaskFilter } from "./_module.d.mts";
+import type { AbstractBaseMaskFilter } from "./_module.mjs";
 import type { AbstractBaseShader } from "../shaders/_module.mjs";
 
 /**

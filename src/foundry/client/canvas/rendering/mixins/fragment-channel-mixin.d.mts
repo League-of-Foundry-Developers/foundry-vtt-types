@@ -1,4 +1,4 @@
-import type { AnyObject, FixedInstanceType, Mixin, ShapeWithIndexSignature } from "#utils";
+import type { AnyObject, FixedInstanceType, InexactPartial, Mixin, ShapeWithIndexSignature } from "#utils";
 import type { AbstractBaseShader } from "../shaders/_module.mjs";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -55,9 +55,13 @@ declare namespace AdaptiveFragmentChannelMixin {
 
   type Channel = "r" | "g" | "b";
 
-  interface ConcreteCreateOptions {
-    channel?: AdaptiveFragmentChannelMixin.Channel | undefined;
-  }
+  /** @internal */
+  type _ConcreteCreateOptions = InexactPartial<{
+    /** @defaultValue `"r"` */
+    channel: Channel;
+  }>;
+
+  interface ConcreteCreateOptions extends _ConcreteCreateOptions {}
 }
 
 export default AdaptiveFragmentChannelMixin;

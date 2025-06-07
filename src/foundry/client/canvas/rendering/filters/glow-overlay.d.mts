@@ -55,14 +55,14 @@ declare class GlowOverlayFilter extends AbstractBaseFilter {
 
   static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
     this: ThisType,
-    initialUniforms?: AbstractBaseShader.Uniforms | null,
+    initialUniforms?: AbstractBaseShader.Uniforms,
   ): FixedInstanceType<ThisType>;
 
   override apply(
     filterManager: PIXI.FilterSystem,
     input: PIXI.RenderTexture,
     output: PIXI.RenderTexture,
-    clear: PIXI.CLEAR_MODES,
+    clear?: PIXI.CLEAR_MODES,
   ): void;
 }
 

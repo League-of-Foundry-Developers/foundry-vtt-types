@@ -15,7 +15,7 @@ declare class AbstractBaseMaskFilter extends AbstractBaseFilter {
     filterManager: PIXI.FilterSystem,
     input: PIXI.RenderTexture,
     output: PIXI.RenderTexture,
-    clear: PIXI.CLEAR_MODES,
+    clear?: PIXI.CLEAR_MODES,
     currentState?: PIXI.FilterState,
   ): void;
 }

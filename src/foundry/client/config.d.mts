@@ -3,6 +3,7 @@ import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "#utils";
 import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
+import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
 
 import SimplePeerAVClient = foundry.av.clients.SimplePeerAVClient;
 
@@ -2398,9 +2399,9 @@ declare global {
       /** @defaultValue `number` */
       darknessSourcePaddingMultiplier: number;
 
-      visibilityFilter: VisibilityFilter.AnyConstructor;
+      visibilityFilter: foundry.canvas.rendering.filters.VisibilityFilter.AnyConstructor;
 
-      visualEffectsMaskingFilter: VisualEffectsMaskingFilter.AnyConstructor;
+      visualEffectsMaskingFilter: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.AnyConstructor;
 
       /**
        * @defaultValue `Ruler`
@@ -2660,10 +2661,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `FlameIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: foundry.canvas.rendering.shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `FlameColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         torch: {
@@ -2674,10 +2675,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `TorchIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: foundry.canvas.rendering.shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `TorchColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         revolving: {
@@ -2688,7 +2689,7 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `RevolvingColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         siren: {
@@ -2699,10 +2700,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `SirenIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: foundry.canvas.rendering.shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `SirenIlluminationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         pulse: {
@@ -2713,10 +2714,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `PulseIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `PulseColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         chroma: {
@@ -2727,7 +2728,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `ChromaColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         wave: {
@@ -2738,10 +2739,10 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `WaveIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `WaveColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         fog: {
@@ -2752,7 +2753,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `FogColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         sunburst: {
@@ -2763,10 +2764,10 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `SunburstIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `SunburstColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         dome: {
@@ -2777,7 +2778,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `LightDomeColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         emanation: {
@@ -2788,7 +2789,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `EmanationColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         hexa: {
@@ -2799,7 +2800,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `HexaDomeColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         ghost: {
@@ -2810,10 +2811,10 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `GhostLightIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `GhostLightColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         energy: {
@@ -2824,7 +2825,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `EnergyFieldColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         vortex: {
@@ -2835,10 +2836,10 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `VortexIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `VortexColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         witchwave: {
@@ -2849,10 +2850,10 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `BewitchingWaveIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `BewitchingWaveColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         rainbowswirl: {
@@ -2863,7 +2864,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `SwirlingRainbowColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         radialrainbow: {
@@ -2874,7 +2875,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `RadialRainbowColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         fairy: {
@@ -2885,10 +2886,10 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `FairyLightIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `FairyLightColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
       }
 
@@ -2901,7 +2902,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `MagicalGloomDarknessShader` */
-          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+          darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
         };
 
         roiling: {
@@ -2912,7 +2913,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `RoilingDarknessShader` */
-          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+          darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
         };
 
         hole: {
@@ -2923,7 +2924,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `BlackHoleDarknessShader` */
-          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+          darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
         };
       }
 

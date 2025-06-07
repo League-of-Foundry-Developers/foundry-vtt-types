@@ -46,7 +46,7 @@ declare class AbstractWeatherShader<
 
   static override create<ThisType extends AbstractBaseShader.AnyConstructor>(
     this: ThisType,
-    initialUniforms?: AbstractBaseShader.Uniforms | null,
+    initialUniforms?: AbstractBaseShader.Uniforms,
   ): FixedInstanceType<ThisType>;
 
   /**

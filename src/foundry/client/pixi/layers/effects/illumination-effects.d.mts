@@ -1,4 +1,5 @@
 import type { HandleEmptyObject, Identity } from "#utils";
+import type { VisualEffectsMaskingFilter } from "#client/canvas/rendering/filters/_module.mjs";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -17,7 +18,7 @@ declare global {
      * The filter used to mask visual effects on this layer
      * @remarks Only `undefined` prior to first draw
      */
-    filter: VisualEffectsMaskingFilter.ConfiguredInstance | undefined;
+    filter: VisualEffectsMaskingFilter.ImplementationInstance | undefined;
 
     /**
      * The container holding the lights.

@@ -42,8 +42,8 @@ declare class WeatherOcclusionMaskFilter extends AbstractBaseMaskFilter {
     filterManager: PIXI.FilterSystem,
     input: PIXI.RenderTexture,
     output: PIXI.RenderTexture,
-    clear: PIXI.CLEAR_MODES,
-    currentState: PIXI.FilterState,
+    clear?: PIXI.CLEAR_MODES,
+    currentState?: PIXI.FilterState,
   ): void;
 }
 

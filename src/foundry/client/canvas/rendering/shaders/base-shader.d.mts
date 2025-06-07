@@ -48,7 +48,7 @@ declare abstract class AbstractBaseShader extends BaseShaderMixin(PIXI.Shader) {
    */
   static create<ThisType extends AbstractBaseShader.AnyConstructor>(
     this: ThisType,
-    initialUniforms?: AbstractBaseShader.Uniforms | null,
+    initialUniforms?: AbstractBaseShader.Uniforms,
   ): FixedInstanceType<ThisType>;
 
   /**

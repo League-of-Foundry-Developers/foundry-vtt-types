@@ -47,6 +47,7 @@ declare class OutlineOverlayFilter extends AbstractBaseFilter {
 
   /**
    * The thickness of the outline.
+   * @defaultValue `3`
    */
   get thickness(): number;
 
@@ -54,26 +55,21 @@ declare class OutlineOverlayFilter extends AbstractBaseFilter {
 
   static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
     this: ThisType,
-    initialUniforms?: AbstractBaseShader.Uniforms | null,
+    initialUniforms?: AbstractBaseShader.Uniforms,
   ): FixedInstanceType<ThisType>;
 
   override apply(
     filterManager: PIXI.FilterSystem,
     input: PIXI.RenderTexture,
     output: PIXI.RenderTexture,
-    clear: PIXI.CLEAR_MODES,
+    clear?: PIXI.CLEAR_MODES,
   ): void;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks OutlineOverlayFilter#animate is deprecated in favor of OutlineOverlayFilter#animated.
+   * @deprecated "`OutlineOverlayFilter#animate` is deprecated in favor of {@link OutlineOverlayFilter.animated | `OutlineOverlayFilter#animated`}." (since v12, until v14)
    */
   get animate(): boolean;
 
-  /**
-   * @deprecated since v12, until v14
-   * @remarks OutlineOverlayFilter#animate is deprecated in favor of OutlineOverlayFilter#animated.
-   */
   set animate(v);
 }
 

@@ -28,8 +28,8 @@ declare class VisibilityFilter extends AbstractBaseMaskFilter {
 
   static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
     this: ThisType,
-    initiaUniforms?: AbstractBaseShader.Uniforms | null,
-    options?: VisibilityFilter.FragmentShaderOptions, // not:null (passed to `this.fragmentShader()` where its properties are accesed unsafely),
+    initialUniforms?: AbstractBaseShader.Uniforms,
+    options?: VisibilityFilter.FragmentShaderOptions,
   ): FixedInstanceType<ThisType>;
 
   static override vertexShader: string;
@@ -48,7 +48,7 @@ declare class VisibilityFilter extends AbstractBaseMaskFilter {
     filterManager: PIXI.FilterSystem,
     input: PIXI.RenderTexture,
     output: PIXI.RenderTexture,
-    clear: PIXI.CLEAR_MODES,
+    clear?: PIXI.CLEAR_MODES,
   ): void;
 
   /**

@@ -26,8 +26,8 @@ declare class SMAAFilter extends PIXI.Filter {
     filterManager: PIXI.FilterSystem,
     input: PIXI.RenderTexture,
     output: PIXI.RenderTexture,
-    clearMode: PIXI.CLEAR_MODES | undefined,
-    currentState: PIXI.FilterState,
+    clearMode?: PIXI.CLEAR_MODES,
+    currentState?: PIXI.FilterState,
   ): void;
 
   #SMAAFilter: true;
