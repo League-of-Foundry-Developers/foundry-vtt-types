@@ -10,7 +10,7 @@ declare class TextureTransitionFilter extends AbstractBaseFilter {
 
   /**
    * The transition type (see {@linkcode TextureTransitionFilter.TYPES}).
-   * @defaultValue `TYPES.FADE`
+   * @defaultValue `TextureTransitionFilter.TYPES.FADE`
    */
   get type(): TextureTransitionFilter.TYPES;
 
@@ -26,8 +26,8 @@ declare class TextureTransitionFilter extends AbstractBaseFilter {
    * @param subject - The source mesh/sprite to apply a transition.
    * @param texture - The target texture.
    * @param options - Animation options.
-   * @returns   A Promise which resolves to true once the animation has concluded
-   *            or false if the animation was prematurely terminated
+   * @returns   A Promise which resolves to true once the animation has concluded or false
+   * if the animation was prematurely terminated
    */
   static animate(
     subject: PIXI.Sprite | SpriteMesh,
@@ -63,6 +63,8 @@ declare class TextureTransitionFilter extends AbstractBaseFilter {
     output: PIXI.RenderTexture,
     clearMode?: PIXI.CLEAR_MODES,
   ): void;
+
+  #TextureTransitionFilter: true;
 }
 
 declare namespace TextureTransitionFilter {
@@ -91,32 +93,29 @@ declare namespace TextureTransitionFilter {
   }
 
   /** @internal */
-  // TODO: audit allowances of null
   type _AnimateOptions = InexactPartial<{
     /**
      * The transition type
-     * @defaultValue `TYPES.FADE`
-     * @remarks Can't be null because it only has a signature-provided default.
+     * @defaultValue `this.TYPES.FADE`
      */
     type: TextureTransitionFilter.TYPES;
 
     /**
      * The name of the {@linkcode foundry.canvas.animation.CanvasAnimation}.
-     * @remarks All use of `name` in `CanvasAnimation.animate` is predicated on `if (name)`, so null should be equivalent to leaving it off.
      */
-    name: PropertyKey | null;
+    name: PropertyKey;
 
     /**
      * The animation duration
      * @defaultValue `1000`
-     * @remarks This function does not provide a default, but CanvasAnimation.animate does. Can't be null beause that default is only signature-provided.
+     * @remarks Default provided by {@linkcode foundry.canvas.animation.CanvasAnimation.animate}
      */
     duration: number;
 
     /**
      * The easing function of the animation
      */
-    easing: CanvasAnimation.EasingFunction | null;
+    easing: CanvasAnimation.EasingFunction;
   }>;
 
   interface AnimateOptions extends _AnimateOptions {}

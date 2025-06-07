@@ -24,7 +24,7 @@ declare class WeatherOcclusionMaskFilter extends AbstractBaseMaskFilter {
    *   depthElevation: 0,
    *   useOcclusion: true,
    *   occlusionTexture: null,
-   *   everseOcclusion: false,
+   *   reverseOcclusion: false,
    *   occlusionWeights: [0, 0, 1, 0],
    *   seTerrain: false,
    *   terrainTexture: null,

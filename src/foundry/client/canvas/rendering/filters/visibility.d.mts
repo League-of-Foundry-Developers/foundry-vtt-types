@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Identity, NullishProps } from "#utils";
+import type { FixedInstanceType, Identity, InexactPartial } from "#utils";
 import type { AbstractBaseFilter, AbstractBaseMaskFilter } from "./_module.d.mts";
 import type { AbstractBaseShader } from "../shaders/_module.mjs";
 
@@ -63,11 +63,12 @@ declare namespace VisibilityFilter {
   interface Any extends AnyVisibilityFilter {}
   interface AnyConstructor extends Identity<typeof AnyVisibilityFilter> {}
 
-  type ConfiguredClass = CONFIG["Canvas"]["visibilityFilter"];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+  // TODO: This can't be an interface yet because of 'An interface can only extend an object type or intersection of object types with statically known members' errors
+  type ImplementationClass = CONFIG["Canvas"]["visibilityFilter"];
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   /** @internal */
-  type _FragmentShaderOptions = NullishProps<{
+  type _FragmentShaderOptions = InexactPartial<{
     persistentVision: boolean;
   }>;
 

@@ -2,9 +2,9 @@ import type { Brand, Identity, InexactPartial } from "#utils";
 
 /**
  * The SMAA filter.
- * @see {@link foundry.canvas.rendering.filters.SMAAEdgeDetectionFilter}
- * @see {@link foundry.canvas.rendering.filters.SMAABlendingWeightCalculationFilter}
- * @see {@link foundry.canvas.rendering.filters.SMAANeighborhoodBlendingFilter}
+ * @see {@linkcode foundry.canvas.rendering.filters.SMAAEdgeDetectionFilter}
+ * @see {@linkcode foundry.canvas.rendering.filters.SMAABlendingWeightCalculationFilter}
+ * @see {@linkcode foundry.canvas.rendering.filters.SMAANeighborhoodBlendingFilter}
  */
 declare class SMAAFilter extends PIXI.Filter {
   /**

@@ -71,6 +71,8 @@ declare class OutlineOverlayFilter extends AbstractBaseFilter {
   get animate(): boolean;
 
   set animate(v);
+
+  #OutlineOverlayFilter: true;
 }
 
 declare namespace OutlineOverlayFilter {

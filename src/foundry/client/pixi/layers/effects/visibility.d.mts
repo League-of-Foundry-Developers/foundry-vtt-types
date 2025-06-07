@@ -1,4 +1,6 @@
 import type { HandleEmptyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "#utils";
+import type { Canvas } from "#client/canvas/_module.mjs";
+import type { VisibilityFilter } from "#client/canvas/rendering/filters/_module.mjs";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -36,7 +38,7 @@ declare global {
     visibilityOverlay: PIXI.Sprite | undefined;
 
     /** @remarks Doesn't exist until it's set on draw */
-    filter?: VisibilityFilter.ConfiguredInstance;
+    filter?: VisibilityFilter.Implementation;
 
     /**
      * The active vision source data object

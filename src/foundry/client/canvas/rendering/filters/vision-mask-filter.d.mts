@@ -21,7 +21,7 @@ declare class VisionMaskFilter extends AbstractBaseMaskFilter {
 
   /**
    * @remarks This is set as a property all the way up in PIXI.Filter, however Foundry has it
-   * as a getter, with a no-op setter. It's still like this in 13.332.
+   * as a getter, with a no-op setter. It's still like this in 13.345.
    */
   override readonly enabled: boolean;
 }

@@ -89,6 +89,8 @@ declare class VisualEffectsMaskingFilter extends AbstractBaseMaskFilter {
    * @param postProcessModes - (default: `[]`)
    */
   static override fragmentShader(postProcessModes?: VisualEffectsMaskingFilter.PostProcessModes): string;
+
+  #VisualEffectsMaskingFilter: true;
 }
 
 declare namespace VisualEffectsMaskingFilter {
