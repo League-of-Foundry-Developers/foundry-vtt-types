@@ -7,14 +7,9 @@ import type BaseShaderMixin from "../mixins/base-shader-mixin.mjs";
 declare abstract class AbstractBaseShader extends BaseShaderMixin(PIXI.Shader) {
   /**
    * @param program  - The program to use with this shader.
-   * @param uniforms - The current uniforms of the Shader
+   * @param uniforms - The current uniforms of the Shader (default: `{}`)
    */
-  constructor(
-    program: PIXI.Program,
-
-    /** @defaultValue `{}` */
-    uniforms?: AbstractBaseShader.Uniforms | null,
-  );
+  constructor(program: PIXI.Program, uniforms?: AbstractBaseShader.Uniforms);
 
   /**
    * The raw vertex shader used by this class.
@@ -79,6 +74,7 @@ declare abstract class AbstractBaseShader extends BaseShaderMixin(PIXI.Shader) {
 }
 
 declare namespace AbstractBaseShader {
+  interface Any extends AnyAbstractBaseShader {}
   interface AnyConstructor extends Identity<typeof AnyAbstractBaseShader> {}
 
   type Coordinates = { x: number; y: number; z?: number } | { x: number; y: number; z: number; w?: number };
@@ -108,7 +104,6 @@ declare namespace AbstractBaseShader {
 
 export default AbstractBaseShader;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare abstract class AnyAbstractBaseShader extends AbstractBaseShader {
   constructor(...args: never);
 }

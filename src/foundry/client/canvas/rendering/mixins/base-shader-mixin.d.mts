@@ -118,8 +118,8 @@ declare function BaseShaderMixin<BaseClass extends BaseShaderMixin.BaseClass>(
 ): Mixin<typeof BaseShader, BaseClass>;
 
 declare namespace BaseShaderMixin {
-  /** @privateRemarks Can't extend `AnyMixedConstructor` if it's using the `BaseClass` union; `PIXI.Shader` is the parent of `Filter`, so it's used instead */
-  type AnyMixedConstructor = ReturnType<typeof BaseShaderMixin<PIXI.Shader.AnyConstructor>>;
+  /** @privateRemarks `AnyMixed` can't extend `AnyMixedConstructor` if it's using the `BaseClass` union; `PIXI.Shader` is the parent of `Filter`, so it's used instead */
+  interface AnyMixedConstructor extends ReturnType<typeof BaseShaderMixin<PIXI.Shader.AnyConstructor>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor;
