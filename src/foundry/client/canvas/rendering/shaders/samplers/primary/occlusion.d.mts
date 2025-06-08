@@ -83,6 +83,8 @@ declare class OccludableSamplerShader extends BaseSamplerShader {
   static override defaultUniforms: AbstractBaseShader.Uniforms;
 
   protected override _preRender: AbstractBaseShader.PreRenderFunction;
+
+  static #OccludableSamplerShader: true;
 }
 
 declare namespace OccludableSamplerShader {

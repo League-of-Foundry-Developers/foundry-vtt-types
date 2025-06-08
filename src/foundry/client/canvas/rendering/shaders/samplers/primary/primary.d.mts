@@ -22,6 +22,8 @@ declare class PrimaryBaseSamplerShader extends OccludableSamplerShader {
    * @param depthShader - The depth shader
    */
   protected _configureDepthShader(depthShader: DepthSamplerShader): void;
+
+  #PrimaryBaseSamplerShader: true;
 }
 
 declare namespace PrimaryBaseSamplerShader {
