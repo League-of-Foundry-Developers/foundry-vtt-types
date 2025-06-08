@@ -100,16 +100,15 @@
     "@codemirror/lang-javascript": "^6.2.3",
     "@codemirror/lang-json": "^6.0.1",
     "@codemirror/lang-markdown": "^6.3.2",
-    "@pixi/basis": "^7.4.3",
+    "@pixi/basis": "github:foundry-vtt-types/pixi-basis#main",
     "@pixi/graphics-smooth": "^1.1.1",
     "@pixi/particle-emitter": "^5.0.8",
-    "@types/earcut": "^3.0.0",
+    "@pixi/utils": "github:foundry-vtt-types/pixi-utils#main",
     "@types/jquery": "^3.5.32",
     "@types/showdown": "~2.0.6",
     "@types/simple-peer": "~9.11.1",
     "@types/youtube": "~0.0.48",
     "codemirror": "^6.0.1",
-    "earcut": "^3.0.1",
     "handlebars": "^4.7.8",
     "handlebars-intl": "^1.1.2",
     "jquery": "^3.7.1",
@@ -170,12 +169,6 @@
   },
   "peerDependencies": {
     "typescript": "^5.4"
-  },
-  "overrides": {
-    "@types/css-font-loading-module": "^0.0.14",
-    "@pixi/utils": {
-      "@types/earcut": "3.0.0"
-    }
   },
   "files": [
     "index.d.mts",
