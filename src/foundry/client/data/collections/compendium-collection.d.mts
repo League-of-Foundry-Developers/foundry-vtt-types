@@ -1,4 +1,4 @@
-import type { DeepPartial, EmptyObject, InexactPartial, SimpleMerge } from "#utils";
+import type { DeepPartial, EmptyObject, InexactPartial, SimpleMerge, UnionToIntersection } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 
 import SocketInterface = foundry.helpers.SocketInterface;
@@ -11,17 +11,17 @@ declare global {
    *
    * @see {@link Game.packs | `Game#packs`}
    */
-  class CompendiumCollection<T extends CompendiumCollection.Metadata> extends DirectoryCollectionMixin(
+  class CompendiumCollection<Type extends CompendiumCollection.DocumentName> extends DirectoryCollectionMixin(
     DocumentCollection,
-  )<T["type"], T["name"]> {
+  )<Type> {
     /** @param metadata - The compendium metadata, an object provided by game.data */
-    constructor(metadata: CompendiumCollection.ConstructorMetadata<T>);
+    constructor(metadata: CompendiumCollection.ConstructorMetadata<Type>);
 
     /** The compendium metadata which defines the compendium content and location */
-    metadata: T;
+    metadata: CompendiumCollection.Metadata;
 
     /** A subsidiary collection which contains the more minimal index of the pack */
-    index: IndexTypeForMetadata<T>;
+    index: IndexTypeForMetadata<Type>;
 
     /**
      * A debounced function which will clear the contents of the Compendium pack if it is not accessed frequently.
@@ -93,7 +93,7 @@ declare global {
     /** Access the compendium configuration data for this pack */
     get config(): CompendiumCollection.Configuration | EmptyObject;
 
-    get documentName(): this["metadata"]["type"];
+    get documentName(): Type;
 
     /** Track whether the Compendium Collection is locked for editing */
     get locked(): boolean;
@@ -135,7 +135,7 @@ declare global {
      * Load the Compendium index and cache it as the keys and values of the Collection.
      * @param options - Options which customize how the index is created
      */
-    getIndex(options?: CompendiumCollection.GetIndexOptions<T>): Promise<this["index"]>;
+    getIndex(options?: CompendiumCollection.GetIndexOptions<Type>): Promise<this["index"]>;
 
     /**
      * Get a single Document from this Compendium by ID.
@@ -143,7 +143,7 @@ declare global {
      * @param id -  The requested Document id
      * @returns The retrieved Document instance
      */
-    getDocument(id: string): Promise<Document.StoredForName<T["type"]> | undefined | null>;
+    getDocument(id: string): Promise<Document.StoredForName<Type> | undefined | null>;
 
     /**
      * Load multiple documents from the Compendium pack using a provided query object.
@@ -166,7 +166,7 @@ declare global {
      * await pack.getDocuments({ type__in: ["weapon", "armor"] });
      * ```
      */
-    getDocuments(query?: Record<string, unknown>): Promise<Document.StoredForName<T["type"]>[]>;
+    getDocuments(query?: Record<string, unknown>): Promise<Document.StoredForName<Type>[]>;
 
     /**
      * Get the ownership level that a User has for this Compendium pack.
@@ -197,9 +197,9 @@ declare global {
      * @returns The imported Document instance
      */
     importDocument(
-      document: Document.ImplementationFor<T["type"]>,
+      document: Document.ImplementationFor<Type>,
       options?: ClientDocument.ToCompendiumOptions,
-    ): Promise<Document.StoredForName<T["type"]> | undefined>;
+    ): Promise<Document.StoredForName<Type> | undefined>;
 
     /**
      * Import a Folder into this Compendium Collection.
@@ -220,7 +220,7 @@ declare global {
      * @param options - Options which modify the import operation. Additional options are forwarded to {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@linkcode Document.createDocuments} (default: `{}`)
      * @returns The imported Documents, now existing within the World
      */
-    importAll(options?: CompendiumCollection.ImportAllOptions<T>): Promise<Document.StoredForName<T["type"]>[]>;
+    importAll(options?: CompendiumCollection.ImportAllOptions<Type>): Promise<Document.StoredForName<Type>[]>;
 
     /**
      * Provide a dialog form that prompts the user to import the full contents of a Compendium pack into the World.
@@ -230,15 +230,13 @@ declare global {
      *          Documents if the "yes" button was pressed, false if the "no" button was pressed, or
      *          null if the dialog was closed without making a choice.
      */
-    importDialog(
-      options?: foundry.appv1.api.Dialog.Options,
-    ): Promise<Document.StoredForName<T["type"]>[] | null | false>;
+    importDialog(options?: foundry.appv1.api.Dialog.Options): Promise<Document.StoredForName<Type>[] | null | false>;
 
     /**
      * Add a Document to the index, capturing it's relevant index attributes
      * @param document -The document to index
      */
-    indexDocument(document: Document.StoredForName<T["type"]>): void;
+    indexDocument(document: Document.StoredForName<Type>): void;
 
     /**
      * Prompt the gamemaster with a dialog to configure ownership of this Compendium pack.
@@ -259,9 +257,9 @@ declare global {
      * @param options - Additional options which modify the Compendium creation request
      *                  (default: `{}`)
      */
-    static createCompendium<T extends CompendiumCollection.Metadata>(
-      this: abstract new (...args: never) => CompendiumCollection<T>,
-      metadata: CompendiumCollection.CreateCompendiumMetadata<NoInfer<T>>,
+    static createCompendium<T extends CompendiumCollection.DocumentName>(
+      this: abstract new (...args: never) => CompendiumCollection<NoInfer<T>>,
+      metadata: CompendiumCollection.CreateCompendiumMetadata<T>,
       options?: unknown,
     ): Promise<CompendiumCollection<T>>;
 
@@ -317,7 +315,9 @@ declare global {
   }
 
   namespace CompendiumCollection {
-    interface Any extends CompendiumCollection<any> {}
+    interface Any extends CompendiumCollection<DocumentName> {}
+
+    type DocumentName = foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
 
     interface Configuration {
       ownership: foundry.packages.BasePackage.OwnershipRecord;
@@ -325,21 +325,21 @@ declare global {
     }
 
     // The type that's passed to `createCompendium`.
-    interface CreateCompendiumMetadata<T extends CompendiumCollection.Metadata> {
-      type: T["type"];
+    interface CreateCompendiumMetadata<Type extends DocumentName> {
+      type: Type;
       label: string;
-      name?: string | null | undefined;
+      name?: string | undefined;
     }
 
     // The type that's passed to `new CompendiumCollection(...)`
-    type ConstructorMetadata<T extends CompendiumCollection.Metadata> = T & {
-      index: IndexTypeForMetadata<T>;
+    type ConstructorMetadata<Type extends CompendiumCollection.DocumentName> = Metadata<Type> & {
+      index: IndexTypeForMetadata<Type>;
       folders: Folder.Implementation[];
     };
 
     // The type that appears in `compendium.metadata` after initialization.
-    interface Metadata {
-      type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+    interface Metadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName> {
+      type: Type;
       label: string;
       name: string;
 
@@ -355,22 +355,20 @@ declare global {
       packageName: string;
     }
 
-    interface GetIndexOptions<T extends CompendiumCollection.Metadata> {
+    interface GetIndexOptions<Type extends DocumentName> {
       /**
        * An array of fields to return as part of the index
        * @defaultValue `[]`
        */
-      fields?: (keyof Document.ImplementationFor<T["type"]>["_source"])[];
+      fields?: (keyof Document.SourceForName<Type>)[];
     }
 
     // TODO: Improve automatic index properties based on document type
-    type IndexEntry<T extends CompendiumCollection.Metadata> = { _id: string; uuid: string } & DeepPartial<
-      Document.ImplementationFor<T["type"]>["_source"]
+    type IndexEntry<Type extends DocumentName> = { _id: string; uuid: string } & DeepPartial<
+      Document.SourceForName<Type>
     >;
 
-    type ForDocument<Name extends Document.Type> = Name extends unknown
-      ? CompendiumCollection<Metadata & { type: Name }>
-      : never;
+    type ForDocument<Name extends DocumentName> = Name extends unknown ? CompendiumCollection<Name> : never;
 
     interface ManageCompendiumRequest extends SocketInterface.SocketRequest {
       /**
@@ -426,10 +424,10 @@ declare global {
       importParents?: boolean | undefined;
     }
 
-    interface ImportAllOptions<T extends CompendiumCollection.Metadata>
-      extends _DynamicBase<
-        SimpleMerge<Document.Database.CreateOperationForName<T["type"]>, WorldCollection.FromCompendiumOptions>
-      > {
+    type ImportAllOptions<Type extends CompendiumCollection.DocumentName> = SimpleMerge<
+      UnionToIntersection<Document.Database.CreateOperationForName<Type>>,
+      WorldCollection.FromCompendiumOptions
+    > & {
       /**
        * An existing Folder _id to use.
        * @defaultValue `null`
@@ -441,7 +439,7 @@ declare global {
        * @defaultValue `""`
        */
       folderName?: string | undefined;
-    }
+    };
 
     interface DuplicateCompendiumOptions {
       label?: string | undefined;
@@ -449,8 +447,8 @@ declare global {
   }
 }
 
-type IndexTypeForMetadata<T extends CompendiumCollection.Metadata> = foundry.utils.Collection<
-  CompendiumCollection.IndexEntry<T>
+type IndexTypeForMetadata<Type extends CompendiumCollection.DocumentName> = foundry.utils.Collection<
+  CompendiumCollection.IndexEntry<Type>
 >;
 
 // @ts-expect-error - This pattern is inherently an error.

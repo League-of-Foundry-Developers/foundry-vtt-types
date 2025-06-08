@@ -40,7 +40,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   static name: "ClientDocumentMixin";
 
   /**
-   * @see {@link abstract.Document._initialize | `abstract.Document#_initialize`}
+   * @see {@link foundry.abstract.Document._initialize | `abstract.Document#_initialize`}
    * @remarks ClientDocument override calls `super`, then if `game._documentsReady`, calls {@link InternalClientDocument._safePrepareData | `this._safePrepareData`}
    */
   // options: not null (parameter default only)
@@ -54,8 +54,8 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): Document.MetadataFor<DocumentName> extends CompendiumCollection.Metadata
-    ? CompendiumCollection<Document.MetadataFor<DocumentName>>
+  get compendium(): DocumentName extends CompendiumCollection.DocumentName
+    ? CompendiumCollection<DocumentName>
     : undefined;
 
   /**
@@ -416,7 +416,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    */
   // options: not null (destructured)
   toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
-    pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
+    pack?: CompendiumCollection<CompendiumCollection.DocumentName> | null,
     options?: Options,
   ): ClientDocument.ToCompendiumReturnType<DocumentName, Options>;
 

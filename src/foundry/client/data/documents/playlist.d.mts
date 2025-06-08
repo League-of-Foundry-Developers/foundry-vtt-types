@@ -700,7 +700,7 @@ declare global {
 
     // options: not null (parameter default only, destructured in super)
     override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
-      pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
+      pack?: CompendiumCollection.Any | null,
       options?: Options,
     ): ClientDocument.ToCompendiumReturnType<"Playlist", Options>;
 

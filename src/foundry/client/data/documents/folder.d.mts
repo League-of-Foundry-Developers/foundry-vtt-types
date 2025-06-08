@@ -116,6 +116,8 @@ declare global {
     /**
      * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     *
+     * Will be `never` if cannot be contained in a `CompendiumCollection`.
      */
     // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
     type Pack = CompendiumCollection.ForDocument<CONST.COMPENDIUM_DOCUMENT_TYPES>;
@@ -566,10 +568,10 @@ declare global {
      * @returns The updated Compendium Collection instance
      */
     // options: not null (parameter default only)
-    exportToCompendium<Metadata extends CompendiumCollection.Metadata>(
-      pack: CompendiumCollection<Metadata>,
+    exportToCompendium<Pack extends CompendiumCollection.Any>(
+      pack: Pack,
       options?: Folder.ExportToCompendiumOptions,
-    ): Promise<CompendiumCollection<Metadata>>;
+    ): Promise<Pack>;
 
     /**
      * Provide a dialog form that allows for exporting the contents of a Folder into an eligible Compendium pack.
