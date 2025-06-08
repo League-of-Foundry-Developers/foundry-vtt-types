@@ -136,7 +136,7 @@ declare namespace TextureLoader {
   interface AnyConstructor extends Identity<typeof AnyTextureLoader> {}
 
   /** @remarks This is effectively [[void, void], [void, void], [void, void]] */
-  // TODO: Allow actually having the PixiBasisKTX2 types here.
+  // TODO: Allow actually having the PixiBasisKTX2 types here. (https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3371)
   type InitializeBasisTranscoderReturn = Promise<
     | [
         Awaited<ReturnType<typeof TranscoderWorker.loadTranscoder>>,
