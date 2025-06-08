@@ -5,113 +5,148 @@ export declare const FORMATS: {
   RGBA: typeof PIXI.FORMATS.RGBA;
 };
 
-export interface Debug {
+/** @internal */
+type _CommonOptionalProperties = InexactPartial<{
   /**
    * Debug option.
    * @remarks Enables logging via `console.debug`
    */
-  debug?: boolean | undefined | null;
-}
+  debug: boolean;
+
+  /** Hash to test. */
+  hash: string;
+
+  /** Skip hash? */
+  skipHash: boolean;
+}>;
 
 /** @internal */
-export type _ProcessBufferToBase64Options = InexactPartial<{
+type _ProcessBufferToBase64Options = InexactPartial<{
   /**
    * The required image type.
    * @defaultValue `"image/png"`
-   * @remarks Can't be null as it only has a parameter default
    */
   type: string;
 
   /**
    * The required image quality.
    * @defaultValue `1`
-   * @remarks Can't be null as it only has a parameter default
    */
   quality: number;
-
-  /**
-   * Hash to test.
-   * @remarks Can't be null as it's passed directly to the `controlHashes` function,
-   * where it is only checked for `=== undefined`
-   */
-  hash: string;
-
-  /**
-   * The format the buffer is in
-   * @remarks Only matters whether it's `FORMATS.RED` or not. Property is undocumented by foundry.
-   */
-  readFormat: PIXI.FORMATS | null;
 }>;
 
 /** @internal */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-type _BaseBufferOptions = {
-  /** Buffer used to create the image data. */
-  buffer: Uint8ClampedArray;
-
-  /** Buffered image width. */
+interface _CommonRequiredProperties {
+  /** Width of the image. */
   width: number;
 
-  /** Buffered image height. */
+  /** Height of the image */
   height: number;
-};
+}
 
-export interface ProcessBufferToBase64Options extends _BaseBufferOptions, _ProcessBufferToBase64Options, Debug {}
+type _Out = InexactPartial<{
+  /** The output buffer. */
+  out: ArrayBuffer;
+}>;
 
-export interface ExpandOrReduceBufferOptions
-  extends _BaseBufferOptions,
-    Debug,
-    Pick<_ProcessBufferToBase64Options, "hash"> {}
+export interface ProcessBufferToBase64Options
+  extends _ProcessBufferToBase64Options,
+    _CommonRequiredProperties,
+    _CommonOptionalProperties {
+  /** Buffer used to create the image data. */
+  buffer: Uint8ClampedArray;
+}
 
-export type ProcessBufferToBase64Return = [
-  {
-    base64img: string | undefined;
-    buffer: Uint8ClampedArray;
-    hash: string | undefined;
-  },
-  [bufferBuffer: ArrayBufferLike],
+export interface ProcessBufferRedToBufferRGBAOptions
+  extends _Out,
+    _CommonRequiredProperties,
+    _CommonOptionalProperties {
+  /** Buffer to expand */
+  buffer: Uint8ClampedArray;
+}
+
+export interface ProcessBufferRGBAToBufferRedOptions
+  extends _Out,
+    _CommonRequiredProperties,
+    _CommonOptionalProperties {
+  /** Buffer to reduce */
+  buffer: Uint8ClampedArray;
+}
+
+export interface CopyBufferOptions extends _CommonOptionalProperties, _Out {
+  /** Buffer to copy. */
+  buffer: Uint8ClampedArray;
+}
+
+export interface Debug extends Pick<_CommonOptionalProperties, "debug"> {}
+
+export interface ExpandOrReduceBufferOptions extends Debug, _Out {}
+
+/** @internal */
+interface _CommonResultProperties {
+  buffer: Uint8ClampedArray;
+  out: ArrayBuffer | undefined;
+  hash: string | undefined;
+}
+
+export interface ProcessBufferToBase64Result extends Omit<_CommonResultProperties, "out"> {
+  base64img: string | undefined;
+}
+
+export interface ProcessBufferRedToBufferRGBAResult extends _CommonResultProperties {
+  rgbaBuffer: Uint8ClampedArray | undefined;
+}
+
+export interface ProcessBufferRGBAToBufferRedResult extends _CommonResultProperties {
+  redBuffer: Uint8ClampedArray | undefined;
+}
+
+export interface CopyBufferResult extends _CommonResultProperties {
+  copy: Uint8ClampedArray | undefined;
+}
+
+/**
+ * @privateRemarks There isn't any point being more specific with the names of the `transfer` elements,
+ * as `copyBuffer` can return `buffer.buffer` in either the first or second position
+ */
+export type BufferOperationReturn<ResultType> = [
+  result: ResultType,
+  transfer: [firstBuffer: ArrayBufferLike, secondBuffer?: ArrayBufferLike],
 ];
 
-export type ProcessBufferRedToBufferRGBAReturn = [
-  {
-    rgbaBuffer: Uint8ClampedArray | undefined;
-    buffer: Uint8ClampedArray;
-    hash: string | undefined;
-  },
-  [rgbaBufferBuffer: ArrayBufferLike, bufferBuffer: ArrayBufferLike],
-];
+export interface ControlHashesReturnObject {
+  /** boolean to know if the hashes are the same */
+  same: boolean;
 
-export type ProcessBufferRGBAToBufferREDReturn = [
-  {
-    redBuffer: Uint8ClampedArray | undefined;
-    buffer: Uint8ClampedArray;
-    hash: string | undefined;
-  },
-  [bufferBuffer: ArrayBufferLike],
-];
+  /** the previous or the new hash */
+  hash: string;
+}
 
 /**
  * Process the image compression.
  */
 export declare function processBufferToBase64(
   options: ProcessBufferToBase64Options,
-): Promise<ProcessBufferToBase64Return>;
+): Promise<BufferOperationReturn<ProcessBufferToBase64Result>>;
 
 /**
  * Expand a single RED channel buffer into a RGBA buffer and returns it to the main thread.
- * The created RGBA buffer is transfered.
+ * The created RGBA buffer is transferred.
  */
 export declare function processBufferRedToBufferRGBA(
-  options: ExpandOrReduceBufferOptions,
-): Promise<ProcessBufferRedToBufferRGBAReturn>;
+  options: ProcessBufferRedToBufferRGBAOptions,
+): Promise<BufferOperationReturn<ProcessBufferRedToBufferRGBAResult>>;
 
 /**
  * Reduce a RGBA buffer into a single RED buffer and returns it to the main thread.
- * The created RGBA buffer is transfered.
+ * The created RGBA buffer is transferred.
  */
 export declare function processBufferRGBAToBufferRED(
-  options: ExpandOrReduceBufferOptions,
-): Promise<ProcessBufferRGBAToBufferREDReturn>;
+  options: ProcessBufferRGBAToBufferRedOptions,
+): Promise<BufferOperationReturn<ProcessBufferRGBAToBufferRedResult>>;
+
+/** Copy the buffer. */
+export declare function copyBuffer(options: CopyBufferOptions): Promise<BufferOperationReturn<CopyBufferResult>>;
 
 /**
  * Control the hash of a provided buffer.
@@ -120,11 +155,11 @@ export declare function processBufferRGBAToBufferRED(
  * @returns Returns an empty object if `hash === undefined` else returns `{same: <boolean to know if the hashes are the same>, hash: <the previous or the new hash>}`
  */
 export declare function controlHashes(buffer: Uint8ClampedArray, hash?: undefined): EmptyObject;
-export declare function controlHashes(buffer: Uint8ClampedArray, hash: string): { same: boolean; hash: string };
+export declare function controlHashes(buffer: Uint8ClampedArray, hash: string): ControlHashesReturnObject;
 export declare function controlHashes(
   buffer: Uint8ClampedArray,
   hash?: string,
-): EmptyObject | { same: boolean; hash: string };
+): EmptyObject | ControlHashesReturnObject;
 
 /**
  * Create an offscreen canvas element containing the pixel data.
@@ -136,7 +171,7 @@ export declare function pixelsToOffscreenCanvas(
   buffer: Uint8ClampedArray,
   width: number,
   height: number,
-  { debug }?: Debug,
+  options?: Debug,
 ): OffscreenCanvas;
 
 /**
@@ -147,7 +182,7 @@ export declare function offscreenToBase64(
   offscreen: OffscreenCanvas,
   type?: string,
   quality?: number,
-  { debug }?: Debug,
+  options?: Debug,
 ): Promise<string>;
 
 /**
@@ -162,7 +197,7 @@ export declare function expandBuffer(
   buffer: Uint8ClampedArray,
   width: number,
   height: number,
-  { debug }?: Debug,
+  options?: ExpandOrReduceBufferOptions,
 ): Uint8ClampedArray;
 
 /**
@@ -172,5 +207,5 @@ export declare function reduceBuffer(
   buffer: Uint8ClampedArray,
   width: number,
   height: number,
-  { debug }?: Debug,
+  options?: ExpandOrReduceBufferOptions,
 ): Uint8ClampedArray;
