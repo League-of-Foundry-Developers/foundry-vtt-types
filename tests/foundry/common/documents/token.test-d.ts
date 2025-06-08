@@ -121,7 +121,7 @@ expectTypeOf(myToken.name).toBeString();
 expectTypeOf(myToken.displayName).toEqualTypeOf<CONST.TOKEN_DISPLAY_MODES>();
 expectTypeOf(myToken.actorId).toEqualTypeOf<string | null>();
 expectTypeOf(myToken.actorLink).toBeBoolean();
-expectTypeOf(myToken.delta).toEqualTypeOf<foundry.documents.BaseActor>();
+expectTypeOf(myToken.delta).toEqualTypeOf<ActorDelta.Implementation | null>();
 expectTypeOf(myToken.appendNumber).toBeBoolean();
 expectTypeOf(myToken.prependAdjective).toBeBoolean();
 

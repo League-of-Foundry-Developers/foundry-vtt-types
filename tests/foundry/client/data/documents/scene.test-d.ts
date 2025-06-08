@@ -6,10 +6,9 @@ new Scene.implementation();
 // @ts-expect-error - A Scene requires name.
 new Scene.implementation({});
 const scene = new Scene.implementation({ name: "My scene" });
+
 expectTypeOf(scene).toEqualTypeOf<Scene.Implementation>();
-if (!(scene.grid instanceof foundry.grid.BaseGrid)) {
-  expectTypeOf(scene.grid).toEqualTypeOf<SchemaField.InitializedData<Scene.Schema>["grid"]>();
-}
+expectTypeOf(scene.grid).toEqualTypeOf<SchemaField.InitializedData<Scene.Schema>["grid"]>();
 expectTypeOf(scene.dimensions).toEqualTypeOf<Scene.Dimensions>();
 expectTypeOf(scene.active).toEqualTypeOf<boolean>();
 expectTypeOf(scene.background.src).toEqualTypeOf<string | null | undefined>();

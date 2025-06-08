@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, Identity } from "#utils";
 import type Document from "../abstract/document.mts";
 import type { documents } from "#client/client.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -375,6 +375,9 @@ declare abstract class BaseActorDelta<
 export default BaseActorDelta;
 
 declare namespace BaseActorDelta {
+  interface Any extends AnyBaseActorDelta {}
+  interface AnyConstructor extends Identity<typeof AnyBaseActorDelta> {}
+
   export import Name = ActorDelta.Name;
   export import ConstructorArgs = ActorDelta.ConstructorArgs;
   export import Hierarchy = ActorDelta.Hierarchy;
@@ -434,4 +437,8 @@ declare namespace BaseActorDelta {
   interface _Schema extends ActorDelta.Schema {
     system: any;
   }
+}
+
+declare abstract class AnyBaseActorDelta extends BaseActorDelta<BaseActorDelta.SubType> {
+  constructor(...args: never);
 }

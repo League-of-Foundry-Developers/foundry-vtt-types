@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { AnyObject } from "fvtt-types/utils";
 import type AdditionalTypesField from "../../../../src/foundry/common/packages/sub-types.d.mts";
 
 const baseSystem = new foundry.packages.BaseSystem({
@@ -10,8 +9,7 @@ expectTypeOf(baseSystem.strictDataCleaning).toEqualTypeOf<boolean>();
 
 // schema fields
 expectTypeOf(baseSystem.version).toEqualTypeOf<string>();
-expectTypeOf(baseSystem.documentTypes).toEqualTypeOf<AnyObject | AdditionalTypesField.ServerTypeDeclarations>();
-expectTypeOf(baseSystem.documentTypes).toEqualTypeOf<AnyObject | AdditionalTypesField.ServerTypeDeclarations>();
+expectTypeOf(baseSystem.documentTypes).toEqualTypeOf<AdditionalTypesField.ServerTypeDeclarations>();
 expectTypeOf(baseSystem.background).toEqualTypeOf<string | undefined>();
 expectTypeOf(baseSystem.initiative).toEqualTypeOf<string | undefined>();
 
