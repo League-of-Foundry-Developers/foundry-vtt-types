@@ -1,5 +1,6 @@
 import type { NullishProps } from "#utils";
 import type { LineCircleIntersection } from "#common/utils/geometry.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 import * as _PIXI from "pixi.js";
 
 declare global {

@@ -1,6 +1,7 @@
 import type { FixedInstanceType, Identity } from "#utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
+import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 
 /**
  * A specialized subclass of the BaseLightSource which is used to render global light source linked to the scene.

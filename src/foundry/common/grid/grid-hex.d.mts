@@ -1,4 +1,5 @@
 import type HexagonalGrid from "./hexagonal.mjs";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
  * A helper class which represents a single hexagon as part of a HexagonalGrid.

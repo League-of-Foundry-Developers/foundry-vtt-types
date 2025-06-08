@@ -9,6 +9,8 @@ import type {
   RequiredProps,
 } from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { TextureTransitionFilter } from "#client/canvas/rendering/filters/_module.d.mts";
 import BaseToken = foundry.documents.BaseToken;
 import sources = foundry.canvas.sources;
 

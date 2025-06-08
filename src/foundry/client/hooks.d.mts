@@ -13,6 +13,7 @@ import type {
 import type CompendiumArt from "#client/helpers/media/compendium-art.d.mts";
 import type { Hooks as HookConfigs } from "#configuration";
 import type Hooks from "./helpers/hooks.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
 import Application = foundry.appv1.api.Application;

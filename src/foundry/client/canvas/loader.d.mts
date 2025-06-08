@@ -135,9 +135,15 @@ declare namespace TextureLoader {
   interface Any extends AnyTextureLoader {}
   interface AnyConstructor extends Identity<typeof AnyTextureLoader> {}
 
-  // TODO: replace unknowns with KTX2 types
+  /** @remarks This is effectively [[void, void], [void, void], [void, void]] */
+  // TODO: Allow actually having the PixiBasisKTX2 types here.
   type InitializeBasisTranscoderReturn = Promise<
-    [Awaited<ReturnType<typeof TranscoderWorker.loadTranscoder>>, unknown, unknown] | void
+    | [
+        Awaited<ReturnType<typeof TranscoderWorker.loadTranscoder>>,
+        [void, void], // Awaited<ReturnType<typeof PixiBasisKTX2.KTX2Parser.loadTranscoder>>,
+        [void, void], // Awaited<ReturnType<typeof PixiBasisKTX2.BasisParser.loadTranscoder>>,
+      ]
+    | void
   >;
 
   /** @remarks Differs from {@linkcode loadTexture.Return} in that it includes `PIXI.BaseTexture` in place of `PIXI.Texture` */

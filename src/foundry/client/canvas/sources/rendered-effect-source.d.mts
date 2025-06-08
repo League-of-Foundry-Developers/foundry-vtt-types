@@ -1,6 +1,7 @@
 import type { AnyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type BaseLightSource from "./base-light-source.d.mts";
+import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
 
 /**
  * An abstract class which extends the base PointSource to provide common functionality for rendering.
@@ -114,7 +115,7 @@ declare abstract class RenderedEffectSource<
    * Configure which shaders are used for each rendered layer.
    * @privateRemarks Foundry marks this as private then overrides it in `PointVisionSource`
    */
-  protected _configureShaders(): Record<keyof RenderingLayers, AdaptiveLightingShader.AnyConstructor>;
+  protected _configureShaders(): Record<keyof RenderingLayers, shaders.AdaptiveLightingShader.AnyConstructor>;
 
   /**
    * Specific configuration for a layer.
@@ -145,7 +146,7 @@ declare abstract class RenderedEffectSource<
   /**
    * Update shader uniforms used by every rendered layer.
    */
-  protected _updateCommonUniforms(shader: AbstractBaseShader): void;
+  protected _updateCommonUniforms(shader: shaders.AbstractBaseShader): void;
 
   /**
    * Update shader uniforms used for the background layer.
@@ -318,19 +319,19 @@ declare namespace RenderedEffectSource {
      * A custom illumination shader used by this animation
      * @defaultValue `AdaptiveIlluminationShader`
      */
-    illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+    illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
     /**
      * A custom coloration shader used by this animation
      * @defaultValue `AdaptiveColorationShader`
      */
-    colorationShader: AdaptiveColorationShader.AnyConstructor;
+    colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
 
     /**
      * A custom background shader used by this animation
      * @defaultValue `AdaptiveBackgroundShader`
      */
-    backgroundShader: AdaptiveBackgroundShader.AnyConstructor;
+    backgroundShader: shaders.AdaptiveBackgroundShader.AnyConstructor;
   }> & { darknessShader?: never };
 
   /**
@@ -343,7 +344,7 @@ declare namespace RenderedEffectSource {
      * A custom darkness shader used by this animation
      * @defaultValue `AdaptiveDarknessShader`
      */
-    darknessShader: AdaptiveDarknessShader.AnyConstructor;
+    darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
 
     illuminationShader?: never;
     colorationShader?: never;
@@ -405,17 +406,17 @@ declare namespace RenderedEffectSource {
     /**
      * The shader instance used for the layer
      */
-    shader: AdaptiveLightingShader | undefined;
+    shader: shaders.AdaptiveLightingShader | undefined;
 
     /** @remarks Foundry does not include this in the typedef but is in the initialization of `RenderedEffectSource#layers` */
-    vmUniforms: AbstractBaseShader.Uniforms | undefined;
+    vmUniforms: shaders.AbstractBaseShader.Uniforms | undefined;
   }
 
   interface LayerConfig {
     /**
      * The default shader used by this layer
      */
-    defaultShader: AdaptiveLightingShader.AnyConstructor;
+    defaultShader: shaders.AdaptiveLightingShader.AnyConstructor;
 
     /**
      * The blend mode used by this layer

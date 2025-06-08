@@ -7,6 +7,7 @@ import type {
   NullishProps,
   ToMethod,
 } from "#utils";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
 

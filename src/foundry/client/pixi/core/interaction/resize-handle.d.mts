@@ -1,4 +1,5 @@
 import type { Identity, NullishProps } from "#utils";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare global {
   class ResizeHandle extends PIXI.Graphics {

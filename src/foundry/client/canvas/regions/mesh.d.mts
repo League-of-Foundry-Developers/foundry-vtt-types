@@ -1,3 +1,5 @@
+import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_module.d.mts";
+
 /** A mesh of a {@linkcode Region} */
 declare class RegionMesh extends PIXI.Container {
   /**

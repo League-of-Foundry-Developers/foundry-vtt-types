@@ -1,4 +1,6 @@
 import type { Identity, InexactPartial, NullishProps } from "#utils";
+import type { PrimaryBaseSamplerShader } from "#client/canvas/rendering/shaders/_module.d.mts";
+import type { TextureLoader } from "#client/canvas/_module.d.mts";
 
 declare global {
   /**

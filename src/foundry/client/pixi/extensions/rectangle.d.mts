@@ -1,4 +1,5 @@
 import type { Brand, InexactPartial } from "#utils";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 import * as _PIXI from "pixi.js";
 
 declare global {

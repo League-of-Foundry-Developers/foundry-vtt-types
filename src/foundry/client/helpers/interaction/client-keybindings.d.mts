@@ -1,5 +1,6 @@
 import type { LazyUnknown, ValueOf } from "#utils";
 import type KeyboardManager from "./keyboard-manager.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
  * A class responsible for managing defined game keybinding.
