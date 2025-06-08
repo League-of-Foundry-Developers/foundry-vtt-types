@@ -104,8 +104,7 @@ expectTypeOf(item.collection).toEqualTypeOf<Collection<typeof item>>();
 // @ts-expect-error Only getter, no setter
 item.collection = new Collection<typeof item>();
 
-// TODO: This appears to be `undefined` in all cases https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3306
-expectTypeOf(item.compendium).toEqualTypeOf<undefined>();
+expectTypeOf(item.compendium).toEqualTypeOf<CompendiumCollection<"Item">>();
 // @ts-expect-error Only getter, no setter
 item.compendium = game.packs!.contents[0]!;
 

@@ -273,7 +273,7 @@ declare class EmbeddedCollection<
        * An array of filters to apply
        * @defaultValue `[]`
        */
-      filters: SearchFilter.FieldFilter[];
+      filters: foundry.applications.ux.SearchFilter.FieldFilter[];
 
       /**
        * An array of document IDs to exclude from search results

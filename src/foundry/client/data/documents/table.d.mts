@@ -3,6 +3,7 @@ import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseRollTable from "#common/documents/roll-table.mjs";
+import type TextEditor from "#client/applications/ux/text-editor.mjs";
 
 import fields = foundry.data.fields;
 
@@ -97,6 +98,8 @@ declare global {
     /**
      * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     *
+     * Will be `never` if cannot be contained in a `CompendiumCollection`.
      */
     // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
     type Pack = CompendiumCollection.ForDocument<Name>;
@@ -762,7 +765,7 @@ declare global {
 
     // options: not null (parameter default only, destructured in super)
     override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
-      pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
+      pack?: CompendiumCollection.Any | null,
       options?: Options,
     ): ClientDocument.ToCompendiumReturnType<"RollTable", Options>;
 

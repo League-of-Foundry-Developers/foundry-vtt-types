@@ -683,17 +683,45 @@ export type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
  * @template T - The base type that `U` will be merged into.
  * @template U - The type that will be merged into `T`.
  */
-export type Merge<T, U> =
-  IsObject<U> extends true
-    ? IsObject<T> extends true
-      ? SimpleMerge<
-          T,
-          {
-            [K in keyof U]: T extends { readonly [_ in K]?: infer V } ? Merge<V, U[K]> : U[K];
-          }
-        >
-      : U
-    : U;
+export type Merge<T, U> = U extends object ? (T extends object ? _Merge<T, U> : U) : U;
+
+type _Merge<T extends object, U extends object> = T extends AnyArray
+  ? U extends AnyArray
+    ? MergeArray<T, U>
+    : _MergeObject<T, U>
+  : _MergeObject<T, U>;
+
+type _MergeObject<T extends object, U extends object> = U extends AnyObject
+  ? T extends AnyObject
+    ? _MergePlainObject<T, U>
+    : _MergeComplexObject<T, U>
+  : _MergeComplexObject<T, U>;
+
+type MergeArray<T extends AnyArray, U extends AnyArray> = number extends U["length"] | T["length"]
+  ? Array<T[number] | U[number]>
+  : [...U, ...DropFirstN<T, U["length"]>];
+
+type DropFirstN<
+  T extends AnyArray,
+  DropN extends number,
+  Accumulator extends AnyArray = [],
+> = Accumulator["length"] extends DropN
+  ? T
+  : T extends [unknown, ...infer Items]
+    ? DropFirstN<Items, DropN, [...Accumulator, 1]>
+    : [];
+
+// TODO(LukeAbby): This needs to be more complex as to account for stuff like optionality correctly.
+type _MergePlainObject<T extends object, U extends object> = {
+  [K in keyof T as K extends keyof U ? never : K]: T[K];
+} & {
+  [K in keyof U]: T extends { readonly [_ in K]?: infer V } ? Merge<V, U[K]> : U[K];
+};
+
+interface _MergeComplexObject<T extends object, U extends object> extends Override<T, _MergePlainObject<T, U>> {}
+
+// @ts-expect-error - This pattern is inherently an error.
+interface Override<T extends object, U extends object> extends U, T {}
 
 /**
  * Returns whether the type is a plain object. Excludes functions, arrays, and constructors while still being friendly to interfaces.
@@ -1002,12 +1030,6 @@ export type ShapeWithIndexSignature<
 > = PrimaryShape & {
   readonly [K in keyof T & IndexSignature]: K extends keyof PrimaryShape ? PrimaryShape[K] : IndexType;
 };
-
-/**
- * Defer is a utility type that allows you to defer the evaluation of a type.
- * The use cases for this are extremely advanced. In essence they have to do with breaking cycles in evaluation.
- */
-export type Defer<T> = [T][T extends any ? 0 : never];
 
 export type MustBeValidUuid<Uuid extends string, Type extends Document.Type = Document.Type> = _MustBeValidUuid<
   Uuid,

@@ -2,17 +2,17 @@ import { expectTypeOf } from "vitest";
 import type { DeepPartial } from "fvtt-types/utils";
 
 const compendiumCollection = await CompendiumCollection.createCompendium({
-  type: "JournalEntry" as const,
+  type: "JournalEntry",
   label: "Important Plotholes",
   name: "plotholes",
 });
 
-expectTypeOf(compendiumCollection).toEqualTypeOf<CompendiumCollection<CompendiumCollection.Metadata>>();
+expectTypeOf(compendiumCollection).toEqualTypeOf<CompendiumCollection<"JournalEntry">>();
 expectTypeOf(compendiumCollection.metadata).toEqualTypeOf<CompendiumCollection.Metadata>();
 
-const metadata: CompendiumCollection.Metadata = {
+const metadata = {
   name: "plotholes",
-  type: "JournalEntry" as const,
+  type: "JournalEntry",
   label: "Important Plotholes",
   flags: {},
   id: "plotholes",
@@ -24,17 +24,17 @@ const metadata: CompendiumCollection.Metadata = {
   ownership: {
     PLAYER: "OWNER",
   },
-};
+} satisfies CompendiumCollection.Metadata;
 
-const constructorMetadata: CompendiumCollection.ConstructorMetadata<typeof metadata> = {
+const constructorMetadata = {
   ...metadata,
   index: new foundry.utils.Collection(),
   folders: [],
-};
+} satisfies CompendiumCollection.ConstructorMetadata<"JournalEntry">;
 
 const compendium2 = new CompendiumCollection(constructorMetadata);
 
-expectTypeOf(compendium2).toEqualTypeOf<CompendiumCollection<CompendiumCollection.Metadata>>();
+expectTypeOf(compendium2).toEqualTypeOf<CompendiumCollection<"JournalEntry">>();
 expectTypeOf(compendium2.metadata).toEqualTypeOf<CompendiumCollection.Metadata>();
 
 expectTypeOf(compendiumCollection.get("", { strict: true })).toEqualTypeOf<JournalEntry.Stored>();

@@ -621,7 +621,7 @@ declare global {
     protected _sortSounds(a: PlaylistSound.Implementation, b: PlaylistSound.Implementation): number;
 
     // options: not null (destructured)
-    override toAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
+    override toAnchor(options?: foundry.applications.ux.TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
     /**
      * @remarks Returns {@link Playlist.playAll | `this.playAll()`} or {@link Playlist.stopAll | `this.stopAll()`}
@@ -700,7 +700,7 @@ declare global {
 
     // options: not null (parameter default only, destructured in super)
     override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
-      pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
+      pack?: CompendiumCollection.Any | null,
       options?: Options,
     ): ClientDocument.ToCompendiumReturnType<"Playlist", Options>;
 

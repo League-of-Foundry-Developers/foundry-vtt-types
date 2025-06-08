@@ -1,3 +1,5 @@
+import type { InexactPartial } from "#utils";
+
 /**
  * A controller class for managing drag and drop workflows within an Application instance.
  * The controller manages the following actions: dragstart, dragover, drop.
@@ -12,10 +14,147 @@
  * });
  * dragDrop.bind(html);
  * ```
- * @remarks TODO: Stub, copy from v12 implementation & update
  */
-declare class DragDrop {}
+declare class DragDrop {
+  /**
+   * @param options - (default: `{}`)
+   */
+  constructor({ dragSelector, dropSelector, permissions, callbacks }?: DragDrop.Configuration);
 
-declare namespace DragDrop {}
+  /**
+   * A set of callback functions for each action of the drag & drop workflow.
+   * @defaultValue `{}`
+   */
+  callbacks: DragDrop.Callbacks;
+
+  /**
+   * The HTML selector which identifies draggable elements.
+   * @defaultValue `undefined`
+   */
+  dragSelector: string | null | undefined;
+
+  /**
+   * The HTML selector which identifies drop targets.
+   * @defaultValue `undefined`
+   */
+  dropSelector: string | null;
+
+  /**
+   * A set of functions to control authorization to begin drag workflows, and drop content.
+   * @defaultValue `{}`
+   */
+  permissions: DragDrop.Permissions;
+
+  /**
+   * Bind the DragDrop controller to an HTML application
+   * @param html - The HTML element to which the handler is bound
+   */
+  bind(html: HTMLElement): this;
+
+  /**
+   * Execute a callback function associated with a certain action in the workflow
+   * @param event  - The drag event being handled
+   * @param action - The action being attempted
+   */
+  callback(event: DragEvent, action: DragDrop.Action): void;
+
+  /**
+   * Test whether the current user has permission to perform a step of the workflow
+   * @param action   - The action being attempted
+   * @param selector - The selector being targeted
+   * @returns Can the action be performed?
+   */
+  can(action: DragDrop.PermissionKey, selector?: DragDrop.DragSelector): boolean;
+
+  /**
+   * Handle the start of a drag workflow
+   * @param event - The drag event being handled
+   * @internal
+   */
+  protected _handleDragStart(event: DragEvent): void;
+
+  /**
+   * Handle a drag workflow ending for any reason.
+   * @param event - The drag event.
+   */
+  protected _handleDragEnd(event: DragEvent): void;
+
+  /**
+   * Handle entering a drop target while dragging.
+   * @param event - The Drag event.
+   */
+  protected _handleDragEnter(event: DragEvent): void;
+
+  /**
+   * Handle leaving a drop target while dragging.
+   * @param event - The drag event.
+   */
+  protected _handleDragLeave(event: DragEvent): void;
+
+  /**
+   * Handle a dragged element over a droppable target
+   * @param event - The drag event being handled
+   * @internal
+   */
+  protected _handleDragOver(event: DragEvent): void;
+
+  /**
+   * Handle a dragged element dropped on a droppable target
+   * @param event - The drag event being handled
+   * @internal
+   */
+  protected _handleDrop(event: DragEvent): void;
+
+  /**
+   * A helper to create an image preview element for use during HTML element dragging.
+   */
+  static createDragImage(img: HTMLImageElement, width: number, height: number): HTMLDivElement;
+
+  /**
+   * Retrieve the configured DragDrop implementation.
+   */
+  static get implementation(): typeof DragDrop;
+}
+
+declare namespace DragDrop {
+  type Action = "dragstart" | "dragover" | "drop" | "dragenter" | "dragleave" | "dragend";
+
+  type PermissionKey = "dragstart" | "drop";
+
+  type DragSelector = string | null | undefined;
+
+  interface Callbacks extends InexactPartial<Record<Action, (event: DragEvent) => void>> {}
+
+  interface Permissions extends Partial<Record<PermissionKey, (selector: DragSelector) => boolean>> {}
+
+  /** @internal */
+  interface _Configuration {
+    /**
+     * The CSS selector used to target draggable elements.
+     * @defaultValue `null`
+     */
+    dragSelector?: DragDrop["dragSelector"];
+
+    /**
+     * The CSS selector used to target viable drop targets.
+     * @defaultValue `null`
+     */
+    dropSelector?: DragDrop["dropSelector"];
+
+    /**
+     * Permission tests for each action
+     * @defaultValue `{}`
+     */
+    permissions?: DragDrop["permissions"];
+
+    /**
+     * Callback functions for each action
+     * @defaultValue `{}`
+     */
+    callbacks: Callbacks;
+  }
+
+  interface Configuration extends InexactPartial<_Configuration> {}
+}
 
 export default DragDrop;

@@ -10,7 +10,6 @@ declare global {
    */
   class DocumentCollection<
     DocumentType extends Document.Type,
-    Name extends string,
     Methods extends Collection.Methods.Any = DocumentCollection.Methods<DocumentType>,
   > extends foundry.utils.Collection<Document.StoredForName<DocumentType>, Methods> {
     constructor(data: Document.SourceForName<DocumentType>[]);
@@ -56,7 +55,7 @@ declare global {
     /**
      * The Collection class name
      */
-    get name(): Name;
+    get name(): string;
 
     /**
      * Instantiate a Document for inclusion in the Collection.
@@ -150,7 +149,7 @@ declare global {
   }
 
   namespace DocumentCollection {
-    interface Any extends DocumentCollection<Document.Type, string> {}
+    interface Any extends DocumentCollection<Document.Type, Collection.Methods.Any> {}
 
     interface Methods<T extends Document.Type> {
       get<Options extends DocumentCollection.GetOptions | undefined = undefined>(
@@ -199,7 +198,7 @@ declare global {
        * An array of filters to apply
        * @defaultValue `[]`
        */
-      filters: SearchFilter.FieldFilter[];
+      filters: foundry.applications.ux.SearchFilter.FieldFilter[];
 
       /**
        * An array of document IDs to exclude from search results

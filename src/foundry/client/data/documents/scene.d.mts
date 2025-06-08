@@ -4,6 +4,7 @@ import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { LightData, TextureData } from "#common/data/data.d.mts";
 import type ImageHelper from "#client/helpers/media/image-helper.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 import fields = foundry.data.fields;
 
@@ -1291,7 +1292,7 @@ declare global {
 
     // options: not null (parameter default only, destructured in super)
     override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
-      pack?: CompendiumCollection<CompendiumCollection.Metadata> | null,
+      pack?: CompendiumCollection.Any | null,
       options?: Options,
     ): ClientDocument.ToCompendiumReturnType<"Scene", Options>;
 

@@ -1,5 +1,6 @@
 import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
+import type FormDataExtended from "../ux/form-data-extended.d.mts";
 
 import Document = foundry.abstract.Document;
 

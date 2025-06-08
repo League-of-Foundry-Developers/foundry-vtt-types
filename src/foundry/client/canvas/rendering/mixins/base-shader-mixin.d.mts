@@ -113,6 +113,10 @@ declare class BaseShader {
   static GLSL1_COMPATIBILITY_FRAGMENT: string;
 }
 
+/**
+ * A mixin which decorates a PIXI.Filter or PIXI.Shader with common properties.
+ * @param ShaderClass - The parent ShaderClass class being mixed.
+ */
 declare function BaseShaderMixin<BaseClass extends BaseShaderMixin.BaseClass>(
   ShaderClass: BaseClass,
 ): Mixin<typeof BaseShader, BaseClass>;

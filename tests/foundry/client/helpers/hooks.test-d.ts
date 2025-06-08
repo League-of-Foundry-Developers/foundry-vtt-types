@@ -1,3 +1,4 @@
+import type { EmptyObject } from "#utils";
 import { expectTypeOf } from "vitest";
 
 expectTypeOf(foundry.helpers.Hooks.events).toEqualTypeOf<Hooks.HookedFunction[]>();
@@ -24,18 +25,11 @@ Hooks.on<Hooks.CloseApplication<FormApplication>>("closeFormApplication", (app, 
   expectTypeOf(jq).toEqualTypeOf<JQuery>();
 });
 
-Hooks.on("error", (...args) => {
-  if (args[0] === "Canvas#draw") expectTypeOf(args[2].layer).toEqualTypeOf<CanvasLayer>();
+Hooks.on("error", (location, _err, data) => {
+  if (location === "Canvas#draw") expectTypeOf(data.layer).toEqualTypeOf<CanvasLayer>();
+  if (location === "Game#initializeCanvas") expectTypeOf(data).toEqualTypeOf<EmptyObject>();
+  if (location === "MyClass#myMethod") expectTypeOf(data.foo).toEqualTypeOf<number>();
 });
-
-Hooks.on("error", (...args) => {
-  if (args[0] === "Game#initializeCanvas") expectTypeOf(args[2].foo).toEqualTypeOf<never>();
-});
-
-// TODO: Clean up as part of revised hooks file
-// Hooks.on("error", (...args) => {
-//   if (args[0] === "MyClass#myMethod") expectTypeOf(args[2].foo).toEqualTypeOf<number>();
-// });
 
 // Test for @peril_maelstrom on Discord, see https://discord.com/channels/732325252788387980/803646399014109205/1377367755338289223
 Hooks.on("deleteToken", (document, options) => {

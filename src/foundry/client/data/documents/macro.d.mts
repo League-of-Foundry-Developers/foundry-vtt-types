@@ -50,7 +50,7 @@ declare global {
           compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
           label: string;
           labelPlural: string;
-          coreTypes: CONST.MACRO_TYPES[];
+          coreTypes: ["script", "chat"]; // This isn't `CONST.MACRO_TYPES[]` due to the semantics of `Merge`.
           permissions: Metadata.Permissions;
           schemaVersion: string;
         }>
@@ -124,6 +124,8 @@ declare global {
     /**
      * Types of `CompendiumCollection` this document might be contained in.
      * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
+     *
+     * Will be `never` if cannot be contained in a `CompendiumCollection`.
      */
     // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
     type Pack = CompendiumCollection.ForDocument<"Scene">;

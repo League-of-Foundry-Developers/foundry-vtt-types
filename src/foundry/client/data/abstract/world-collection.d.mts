@@ -12,7 +12,10 @@ declare global {
   abstract class WorldCollection<
     DocumentName extends Document.Type,
     Name extends string,
-  > extends DirectoryCollectionMixin(DocumentCollection)<DocumentName, Name> {
+  > extends DirectoryCollectionMixin(DocumentCollection)<DocumentName> {
+    // Note: This isn't a real override but it's here to make the type more specific.
+    override get name(): Name;
+
     /**
      * Reference the set of Folders which contain documents in this collection
      */
@@ -62,9 +65,10 @@ declare global {
      * DatabaseCreateOperation but the foundry typedef doesn't have them).
      */
     importFromCompendium(
-      pack: CompendiumCollection<CompendiumCollection.Metadata & { type: DocumentName }>,
+      pack: WorldCollection.Pack<DocumentName>,
       id: string,
-      updateData?: DeepPartial<Document.SourceForName<DocumentName>>,
+      // The name `updateData` is a misnomer. It's merged with the create data.
+      updateData?: DeepPartial<Document.CreateDataForName<DocumentName>>,
       options?: InexactPartial<
         Document.Database.CreateOperation<DatabaseCreateOperation> & WorldCollection.FromCompendiumOptions
       >,
@@ -161,6 +165,10 @@ declare global {
       | ClientDocument._OmitProperty<GetKey<Options, "clearOwnership", undefined>, true, "ownership">
       | (GetKey<Options, "keepId", undefined> extends true ? never : never)
     >;
+
+    type Pack<DocumentName extends Document.Type> = DocumentName extends CompendiumCollection.DocumentName
+      ? CompendiumCollection<DocumentName>
+      : never;
   }
 }
 
