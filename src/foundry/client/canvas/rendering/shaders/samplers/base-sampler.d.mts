@@ -9,7 +9,7 @@ declare class BatchPlugin<BaseSamplerShaderClass extends BaseSamplerShader.AnyCo
 
   geometryClass: BaseSamplerShader.ToGeometryClass<BaseSamplerShaderClass["batchGeometry"]>;
 
-  setShaderGenerator(options?: InexactPartial<BatchRenderer.ShaderGeneratorOptions>): void;
+  setShaderGenerator(options?: BatchRenderer.ShaderGeneratorOptions): void;
 
   contextChange(): void;
 }
@@ -49,7 +49,7 @@ declare class BaseSamplerShader extends AbstractBaseShader {
    * The plugin name associated for this instance, if any.
    * Returns "batch" if the shader is disabled.
    */
-  get pluginName(): (typeof BaseSamplerShader)["classPluginName"];
+  get pluginName(): typeof BaseSamplerShader.classPluginName;
 
   /**
    * Activate or deactivate this sampler. If set to false, the batch rendering is redirected to "batch".
@@ -171,22 +171,16 @@ declare class BaseSamplerShader extends AbstractBaseShader {
    */
   static createPlugin<ThisType extends BaseSamplerShader.AnyConstructor>(
     this: ThisType,
-  ): Mixin<typeof BatchPlugin<ThisType> & BatchPluginStatic<ThisType>, ThisType["batchRendererClass"]>;
+  ): BaseSamplerShader.CreatedPlugin<ThisType>;
 
   /**
    * Register the plugin for this sampler.
    */
-  static registerPlugin(
-    options?: InexactPartial<{
-      /**
-       * Override the plugin of the same name that is already registered?
-       * @defaultValue `false`
-       */
-      force: boolean;
-    }>,
-  ): void;
+  static registerPlugin(options?: BaseSamplerShader.RegisterPluginOptions): void;
 
   protected override _preRender: AbstractBaseShader.PreRenderFunction;
+
+  #BaseSamplerShader: true;
 }
 
 declare namespace BaseSamplerShader {
@@ -204,6 +198,22 @@ declare namespace BaseSamplerShader {
     G extends readonly unknown[] ? typeof BatchGeometry : G;
 
   type BatchGeometry = typeof PIXI.BatchGeometry | BaseSamplerShader.BatchGeometryData[];
+
+  type CreatedPlugin<ShaderClass extends BaseSamplerShader.AnyConstructor> = Mixin<
+    typeof BatchPlugin<ShaderClass> & BatchPluginStatic<ShaderClass>,
+    ShaderClass["batchRendererClass"]
+  >;
+
+  /** @internal */
+  type _RegisterPluginOptions = InexactPartial<{
+    /**
+     * Override the plugin of the same name that is already registered?
+     * @defaultValue `false`
+     */
+    force: boolean;
+  }>;
+
+  interface RegisterPluginOptions extends _RegisterPluginOptions {}
 }
 
 export default BaseSamplerShader;

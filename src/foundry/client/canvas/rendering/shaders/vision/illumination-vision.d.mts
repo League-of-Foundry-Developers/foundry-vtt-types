@@ -21,6 +21,37 @@ declare class IlluminationVisionShader extends AdaptiveVisionShader {
 
   static override fragmentShader: string;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   technique: LightData.cleanData().initial,
+   *   attenuation: 0,
+   *   exposure: 0,
+   *   saturation: 0,
+   *   darknessLevel: 0,
+   *   colorVision: [1, 1, 1],
+   *   colorTint: [1, 1, 1],
+   *   colorBackground: [1, 1, 1],
+   *   screenDimensions: [1, 1],
+   *   time: 0,
+   *   useSampler: false,
+   *   linkedToDarknessLevel: true,
+   *   primaryTexture: null,
+   *   depthTexture: null,
+   *   darknessLevelTexture: null,
+   *   depthElevation: 1,
+   *   ambientBrightest: [1, 1, 1],
+   *   ambientDarkness: [0, 0, 0],
+   *   ambientDaylight: [1, 1, 1],
+   *   weights: [0, 0, 0, 0],
+   *   dimLevelCorrection: 1,
+   *   brightLevelCorrection: 2,
+   *   globalLight: false,
+   *   globalLightThresholds: [0, 0]
+   * }
+   * ```
+   */
   static override defaultUniforms: AbstractBaseShader.Uniforms;
 }
 

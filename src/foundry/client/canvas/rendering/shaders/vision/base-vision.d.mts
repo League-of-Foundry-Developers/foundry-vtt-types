@@ -11,9 +11,10 @@ declare class AdaptiveVisionShader extends AdaptiveLightingShader {
 
   static override COMPUTE_ILLUMINATION: string;
 
-  static override SHADOW: string;
-
   static override FRAGMENT_BEGIN: string;
+
+  /** @defaultValue `""` */
+  static override SHADOW: string;
 
   /**
    * A mapping of available shader techniques
