@@ -2,6 +2,8 @@ import type { InexactPartial, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import * as _PIXI from "pixi.js";
 
+export default function extendPIXIPolygon(): void;
+
 declare global {
   namespace PIXI {
     interface Polygon {

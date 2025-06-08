@@ -1,4 +1,4 @@
-export {};
+export default function extendPIXIGraphics(): void;
 
 declare global {
   namespace PIXI {
