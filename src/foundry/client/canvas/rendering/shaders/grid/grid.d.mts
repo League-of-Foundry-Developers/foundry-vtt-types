@@ -97,7 +97,7 @@ declare class GridShader extends AbstractBaseShader {
   /**
    * Configure the shader.
    */
-  configure(options?: NullishProps<{ style: AbstractBaseShader.UniformValue }>): void;
+  configure(options?: GridShader.ConfigureOptions): void;
 
   protected override _preRender: AbstractBaseShader.PreRenderFunction;
 }
@@ -105,6 +105,14 @@ declare class GridShader extends AbstractBaseShader {
 declare namespace GridShader {
   interface Any extends AnyGridShader {}
   interface AnyConstructor extends Identity<typeof AnyGridShader> {}
+
+  /** @internal */
+  type _ConfigureOptions = NullishProps<{
+    /** @defaultValue `0` */
+    style: AbstractBaseShader.UniformValue;
+  }>;
+
+  interface ConfigureOptions extends _ConfigureOptions {}
 }
 
 export default GridShader;
