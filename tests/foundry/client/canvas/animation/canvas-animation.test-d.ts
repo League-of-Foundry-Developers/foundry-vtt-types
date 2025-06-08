@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { CanvasAnimation } from "#client/canvas/animation/_module.mjs";
 
 declare function someEasing(pt: number): number;
 declare const somePromise: Promise<unknown>;

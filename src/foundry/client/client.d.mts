@@ -854,6 +854,36 @@ declare global {
   export import srcExists = foundry.canvas.srcExists;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode CanvasAnimation} which is now namespaced under {@linkcode foundry.canvas.animation.CanvasAnimation}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasAnimation = foundry.canvas.animation.CanvasAnimation;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ChatBubbles} which is now namespaced under {@linkcode foundry.canvas.animation.ChatBubbles}"
+   * (since v13 will be removed in v15)
+   */
+  export import ChatBubbles = foundry.canvas.animation.ChatBubbles;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SmoothNoise} which is now namespaced under {@linkcode foundry.canvas.animation.SmoothNoise}"
+   * (since v13 will be removed in v15)
+   */
+  export import SmoothNoise = foundry.canvas.animation.SmoothNoise;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode BatchShaderGenerator} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchShaderGenerator}"
+   * (since v13 will be removed in v15)
+   */
+  export import BatchShaderGenerator = foundry.canvas.rendering.batching.BatchShaderGenerator;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode BatchRenderer} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchRenderer}"
+   * (since v13 will be removed in v15)
+   */
+  export import BatchRenderer = foundry.canvas.rendering.batching.BatchRenderer;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode SMAAFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.SMAAFilter}"
    * (since v13 will be removed in v15)
    */
@@ -930,18 +960,6 @@ declare global {
    * (since v13 will be removed in v15)
    */
   export import WeatherOcclusionMaskFilter = foundry.canvas.rendering.filters.WeatherOcclusionMaskFilter;
-
-  /**
-   * @deprecated "You are accessing the global {@linkcode BatchRenderer} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchRenderer}"
-   * (since v13 will be removed in v15)
-   */
-  export import BatchRenderer = foundry.canvas.rendering.batching.BatchRenderer;
-
-  /**
-   * @deprecated "You are accessing the global {@linkcode BatchShaderGenerator} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchShaderGenerator}"
-   * (since v13 will be removed in v15)
-   */
-  export import BatchShaderGenerator = foundry.canvas.rendering.batching.BatchShaderGenerator;
 
   /**
    * @deprecated "You are accessing the global {@linkcode BaseShaderMixin} which is now namespaced under {@linkcode foundry.canvas.rendering.mixins.BaseShaderMixin}"

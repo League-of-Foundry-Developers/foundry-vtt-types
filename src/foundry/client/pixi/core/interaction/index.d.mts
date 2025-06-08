@@ -1,4 +1,3 @@
-import "./canvas-animation.d.mts";
 import "./control-icon.d.mts";
 import "./mouse-handler.d.mts";
 import "./ping.d.mts";

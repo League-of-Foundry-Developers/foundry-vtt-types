@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { SmoothNoise } from "#client/canvas/animation/_module.mjs";
 
 const mySN = new SmoothNoise({
   amplitude: 0.2,

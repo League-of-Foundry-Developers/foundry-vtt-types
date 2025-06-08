@@ -5,4 +5,3 @@ import "./layers/index.d.mts";
 import "./perception/index.d.mts";
 import "./placeable.d.mts";
 import "./placeables/index.d.mts";
-import "./webgl/index.d.mts";
