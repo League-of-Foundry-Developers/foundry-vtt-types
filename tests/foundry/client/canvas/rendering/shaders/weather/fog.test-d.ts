@@ -1,14 +1,13 @@
 import { expectTypeOf } from "vitest";
 import { AbstractBaseShader, FogShader } from "#client/canvas/rendering/shaders/_module.mjs";
 
-const FS = FogShader;
-let myFS;
+const myFS = FogShader.create();
+expectTypeOf(myFS).toEqualTypeOf<FogShader>();
 
-expectTypeOf(FS.fragmentShader).toExtend<AbstractBaseShader.FragmentShaderFunction>();
-expectTypeOf(FS.fragmentShader(1)).toEqualTypeOf<string>();
-expectTypeOf(FS.createProgram()).toEqualTypeOf<PIXI.Program>();
-expectTypeOf(FS.OCTAVES(4)).toEqualTypeOf<string>();
-expectTypeOf((myFS = FS.create())).toEqualTypeOf<FogShader>();
+expectTypeOf(FogShader.fragmentShader).toExtend<AbstractBaseShader.FragmentShaderFunction>();
+expectTypeOf(FogShader.fragmentShader(CONST.CANVAS_PERFORMANCE_MODES.LOW)).toEqualTypeOf<string>();
+expectTypeOf(FogShader.createProgram()).toEqualTypeOf<PIXI.Program>();
+expectTypeOf(FogShader.OCTAVES(CONST.CANVAS_PERFORMANCE_MODES.HIGH)).toEqualTypeOf<string>();
 
 expectTypeOf(myFS.speed).toEqualTypeOf<number>();
 expectTypeOf(myFS["_preRender"]).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();
