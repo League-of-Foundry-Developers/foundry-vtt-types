@@ -1312,12 +1312,8 @@ declare namespace Document {
     NameFor<ConcreteDocument>
   >;
 
-  // TODO(LukeAbby): Look into why removing the conform causes an issue in `EmbeddedCollectionDeltaField`
-  type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
-    ImplementationFor<NameFor<ConcreteDocument>>,
-    Document.Any
-    // TODO(LukeAbby): Look into if there's a way to do this without causing circular loops.
-    // FixedInstanceType<ConfigurationFailure[Name]>
+  type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = ImplementationFor<
+    NameFor<ConcreteDocument>
   >;
 
   type TemporaryIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true

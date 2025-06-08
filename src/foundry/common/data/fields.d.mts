@@ -2739,7 +2739,8 @@ declare class EmbeddedCollectionField<
   >,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentElementType = EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
-  InitializedElementType extends Document.Any = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
+  InitializedElementType extends
+    Document.Internal.Instance.Any = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentType = EmbeddedCollectionField.AssignmentType<AssignmentElementType, Options>,
   InitializedType = EmbeddedCollectionField.InitializedType<
@@ -2975,7 +2976,8 @@ declare class EmbeddedCollectionDeltaField<
   >,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentElementType = EmbeddedCollectionDeltaField.AssignmentElementType<ElementFieldType>,
-  InitializedElementType extends Document.Any = EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
+  InitializedElementType extends
+    Document.Internal.Instance.Any = EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentType = EmbeddedCollectionDeltaField.AssignmentType<AssignmentElementType, Options>,
   InitializedType = EmbeddedCollectionDeltaField.InitializedType<
