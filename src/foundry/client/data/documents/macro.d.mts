@@ -50,7 +50,7 @@ declare global {
           compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
           label: string;
           labelPlural: string;
-          coreTypes: CONST.MACRO_TYPES[];
+          coreTypes: ["script", "chat"]; // This isn't `CONST.MACRO_TYPES[]` due to the semantics of `Merge`.
           permissions: Metadata.Permissions;
           schemaVersion: string;
         }>

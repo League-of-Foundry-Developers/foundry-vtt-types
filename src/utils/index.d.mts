@@ -685,13 +685,17 @@ export type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
  */
 export type Merge<T, U> = U extends object ? (T extends object ? _Merge<T, U> : U) : U;
 
-type _Merge<T extends object, U extends object> =
-  | (T extends AnyArray ? (U extends AnyArray ? MergeArray<T, U> : never) : never)
-  | (U extends AnyObject
-      ? T extends AnyObject
-        ? _MergePlainObject<T, U>
-        : _MergeComplexObject<T, U>
-      : _MergeComplexObject<T, U>);
+type _Merge<T extends object, U extends object> = T extends AnyArray
+  ? U extends AnyArray
+    ? MergeArray<T, U>
+    : _MergeObject<T, U>
+  : _MergeObject<T, U>;
+
+type _MergeObject<T extends object, U extends object> = U extends AnyObject
+  ? T extends AnyObject
+    ? _MergePlainObject<T, U>
+    : _MergeComplexObject<T, U>
+  : _MergeComplexObject<T, U>;
 
 type MergeArray<T extends AnyArray, U extends AnyArray> = number extends U["length"] | T["length"]
   ? Array<T[number] | U[number]>
