@@ -4923,7 +4923,11 @@ declare namespace TypeDataField {
   >;
 
   /** @internal */
-  type _Source<T> = T;
+  type _Source<T> = {
+    [K in keyof T]: T[K] extends (abstract new (...args: never) => infer U extends DataModel.Any)
+      ? U["_source"]
+      : never;
+  }[keyof T];
 }
 
 /**

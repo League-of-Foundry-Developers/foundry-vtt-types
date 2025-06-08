@@ -22,7 +22,11 @@ const metadata = {
   packageType: "module",
   path: "path",
   ownership: {
-    PLAYER: "OWNER",
+    NONE: "NONE",
+    PLAYER: "NONE",
+    TRUSTED: "LIMITED",
+    ASSISTANT: "INHERIT",
+    GAMEMASTER: "OWNER",
   },
 } satisfies CompendiumCollection.Metadata;
 
@@ -61,7 +65,7 @@ expectTypeOf(compendiumCollection.documentClass).toEqualTypeOf<JournalEntry.Impl
 
 const itemCollection = new CompendiumCollection({
   ...metadata,
-  type: "Item" as const,
+  type: "Item",
   index: new foundry.utils.Collection(),
   folders: [],
 });
@@ -75,6 +79,18 @@ expectTypeOf(
 expectTypeOf(await itemCollection.getDocuments()).toEqualTypeOf<Item.Implementation[]>(); // get all items
 expectTypeOf(await itemCollection.getDocuments({})).toEqualTypeOf<Item.Implementation[]>(); // get all items
 expectTypeOf(await itemCollection.getDocuments({ name: "foo" })).toEqualTypeOf<Item.Implementation[]>(); // get all items called "foo"
-expectTypeOf(
-  await itemCollection.getDocuments({ $or: [{ name: "baz" }, { name: "bar" }], effects: { $size: 2 } }), // only get items called "baz" or "bar" that have exactly 2 effects
-).toEqualTypeOf<Item.Implementation[]>();
+
+await itemCollection.getDocuments({
+  name__in: ["baz", "bar"],
+});
+
+await itemCollection.getDocuments({
+  system: {
+    attack: 1,
+  },
+});
+
+await itemCollection.getDocuments({
+  // @ts-expect-error - Excess keys should not be allowed.
+  excessKey: 123,
+});
