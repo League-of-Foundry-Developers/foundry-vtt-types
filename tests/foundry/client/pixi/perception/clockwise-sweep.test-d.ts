@@ -6,8 +6,8 @@ const pointB = new PIXI.Point(0, 0);
 declare const someRect: PIXI.Rectangle;
 declare const somePoly: PIXI.Polygon;
 declare const someCircle: PIXI.Circle;
-declare const someEdge: foundry.canvas.edges.Edge;
-declare const somePV: foundry.canvas.edges.PolygonVertex;
+declare const someEdge: foundry.canvas.geometry.edges.Edge;
+declare const somePV: foundry.canvas.geometry.edges.PolygonVertex;
 
 expectTypeOf(ClockwiseSweepPolygon.testCollision(pointA, pointB, { type: "light" })).toEqualTypeOf<PolygonVertex[]>();
 expectTypeOf(

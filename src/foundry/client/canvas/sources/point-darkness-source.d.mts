@@ -2,6 +2,7 @@ import type { AnyObject, FixedInstanceType, Identity, IntentionalPartial, Requir
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
+import type { PointSourceMesh } from "../containers/_module.d.mts";
 
 /**
  * A specialized subclass of the BaseLightSource which renders a source of darkness as a point-based effect.
@@ -50,7 +51,7 @@ declare class PointDarknessSource<
   /**
    * The Edge instances added by this darkness source.
    */
-  edges: foundry.canvas.edges.Edge[];
+  edges: foundry.canvas.geometry.edges.Edge[];
 
   /**
    * A convenience accessor to the darkness layer mesh.

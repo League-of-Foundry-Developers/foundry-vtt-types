@@ -1,6 +1,6 @@
 import type { Identity, IntentionalPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type Edge from "#client/canvas/edges/edge.d.mts";
+import type Edge from "#client/canvas/geometry/edges/edge.d.mts";
 
 declare global {
   /**
@@ -18,7 +18,7 @@ declare global {
     /**
      * A mapping of vertices which define potential collision points
      */
-    vertices: Map<number, foundry.canvas.edges.PolygonVertex>;
+    vertices: Map<number, foundry.canvas.geometry.edges.PolygonVertex>;
 
     /**
      * The set of edges which define potential boundaries of the polygon
@@ -95,7 +95,7 @@ declare global {
      * @returns The array of sorted vertices
      * @privateRemarks Foundry marked `@private`
      */
-    protected _sortVertices(): foundry.canvas.edges.PolygonVertex[];
+    protected _sortVertices(): foundry.canvas.geometry.edges.PolygonVertex[];
 
     /**
      * Test whether a target vertex is behind some closer active edge.
@@ -108,7 +108,7 @@ declare global {
      * @privateRemarks Foundry marked `@private`
      */
     protected _isVertexBehindActiveEdges(
-      vertex: foundry.canvas.edges.PolygonVertex,
+      vertex: foundry.canvas.geometry.edges.PolygonVertex,
       activeEdges: Set<Edge>,
     ): { isBehind: boolean; wasLimited: boolean };
 
@@ -121,7 +121,7 @@ declare global {
      * @privateRemarks Foundry marked `@private`
      */
     protected _determineSweepResult(
-      vertex: foundry.canvas.edges.PolygonVertex,
+      vertex: foundry.canvas.geometry.edges.PolygonVertex,
       activeEdges: Set<Edge>,
       hasCollinear?: boolean,
     ): void;
@@ -140,7 +140,7 @@ declare global {
      * @param activeEdges - The set of currently active edges
      * @privateRemarks Foundry marked `@private`
      */
-    protected _switchEdge(result: foundry.canvas.edges.CollisionResult, activeEdges: Set<Edge>): void;
+    protected _switchEdge(result: foundry.canvas.geometry.edges.CollisionResult, activeEdges: Set<Edge>): void;
 
     protected override _testCollision<Mode extends PointSourcePolygon.CollisionModes>(
       ray: Ray,
@@ -153,7 +153,7 @@ declare global {
      * Visualize the polygon, displaying its computed area, rays, and collision points
      * @privateRemarks Foundry marked `@private`
      */
-    protected _visualizeCollision(ray: Ray, collisions: foundry.canvas.edges.PolygonVertex[]): void;
+    protected _visualizeCollision(ray: Ray, collisions: foundry.canvas.geometry.edges.PolygonVertex[]): void;
   }
 
   namespace ClockwiseSweepPolygon {
@@ -178,7 +178,7 @@ declare global {
        *
        * Tested for truthiness in `#visualize` before use, so a nullish value is fine but never attains in core
        */
-      result?: foundry.canvas.edges.CollisionResult | undefined | null;
+      result?: foundry.canvas.geometry.edges.CollisionResult | undefined | null;
     }
   }
 }

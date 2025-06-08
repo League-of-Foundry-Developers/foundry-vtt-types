@@ -3,8 +3,8 @@
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 /* eslint-disable import-x/extensions */
 
-// export * as types from "./_types.mjs";
-// export * as edges from "./edges/_module.mjs";
+export * as types from "./_types.mjs";
+export * as edges from "./edges/_module.mjs";
 
 // export { default as Quadtree, CanvasQuadtree } from "./quad-tree.mjs";
 export { default as UnboundTransform } from "./unbound-transform.mjs";

@@ -6,7 +6,7 @@ type NullishBoolean = boolean | undefined | null;
 declare const somePV: PolygonVertex;
 declare const someEdge: Edge;
 
-const myCollisionResult = new foundry.canvas.edges.CollisionResult({
+const myCollisionResult = new foundry.canvas.geometry.edges.CollisionResult({
   target: somePV,
   isBehind: false,
   wasLimited: true,

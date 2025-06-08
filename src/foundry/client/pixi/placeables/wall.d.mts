@@ -1,7 +1,8 @@
 import type { FixedInstanceType, HandleEmptyObject, NullishProps } from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import Edge = foundry.canvas.edges.Edge;
+import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
+import Edge = foundry.canvas.geometry.edges.Edge;
 
 declare module "#configuration" {
   namespace Hooks {
@@ -255,7 +256,7 @@ declare global {
      * @param point - Some reference point, relative to which orientation is determined
      * @returns An orientation in CONST.WALL_DIRECTIONS which indicates whether the Point is left, right, or collinear (both) with the Wall
      * @deprecated since v12, until v14
-     * @remarks "`Wall#orientPoint` has been moved to {@link Edge.orientPoint | `foundry.canvas.edges.Edge#orientPoint`}"
+     * @remarks "`Wall#orientPoint` has been moved to {@link Edge.orientPoint | `foundry.canvas.geometry.edges.Edge#orientPoint`}"
      */
     orientPoint(point: Canvas.Point): CONST.WALL_DIRECTIONS;
 
@@ -267,7 +268,7 @@ declare global {
      * @param externalRadius - The external radius of the source (default: `0`)
      * @returns `true` if the wall has a threshold greater than 0 for the source type, and the source type is within that distance.
      * @deprecated since v12, until v14
-     * @remarks "Wall#applyThreshold has been moved to {@link Edge.applyThreshold | `foundry.canvas.edges.Edge#applyThreshold`}"
+     * @remarks "Wall#applyThreshold has been moved to {@link Edge.applyThreshold | `foundry.canvas.geometry.edges.Edge#applyThreshold`}"
      */
     applyThreshold(
       sourceType: Edge.AttenuationTypes,

@@ -378,14 +378,14 @@ expectTypeOf(
     origin: { x: 80, y: 27 },
     mode: "all",
   }),
-).toEqualTypeOf<foundry.canvas.edges.PolygonVertex[]>(); // actual return for `"all"`
+).toEqualTypeOf<foundry.canvas.geometry.edges.PolygonVertex[]>(); // actual return for `"all"`
 expectTypeOf(
   token.checkCollision(p, {
     type: "move",
     origin: { x: 80, y: 27 },
     mode: "closest",
   }),
-).toEqualTypeOf<foundry.canvas.edges.PolygonVertex | null>(); // actual return for `"closest"
+).toEqualTypeOf<foundry.canvas.geometry.edges.PolygonVertex | null>(); // actual return for `"closest"
 
 expectTypeOf(token.getSize()).toEqualTypeOf<{ width: number; height: number }>();
 expectTypeOf(token.getShape()).toEqualTypeOf<PIXI.Rectangle | PIXI.Polygon>();

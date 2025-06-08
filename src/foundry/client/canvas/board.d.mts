@@ -1,5 +1,6 @@
 import type { InexactPartial, NullishProps, FixedInstanceType } from "#utils";
 import type { CANVAS_PERFORMANCE_MODES } from "#common/constants.d.mts";
+import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 
 type InternalCanvas = new (...args: never) => {
   readonly [K in keyof CONFIG.Canvas.Groups]?: FixedInstanceType<CONFIG.Canvas.Groups[K]["groupClass"]> | undefined;
@@ -157,7 +158,7 @@ declare class Canvas extends _InternalCanvas {
   /**
    * A singleton CanvasEdges instance.
    */
-  edges: foundry.canvas.edges.CanvasEdges;
+  edges: foundry.canvas.geometry.edges.CanvasEdges;
 
   /**
    * The singleton FogManager instance.

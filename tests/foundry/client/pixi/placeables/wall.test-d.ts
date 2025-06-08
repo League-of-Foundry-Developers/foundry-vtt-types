@@ -17,7 +17,7 @@ expectTypeOf(wall.endpoints).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(wall.directionIcon).toEqualTypeOf<PIXI.Sprite | undefined>();
 expectTypeOf(wall.highlight).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(wall.coords).toEqualTypeOf<Wall.Coordinates>();
-expectTypeOf(wall.edge).toEqualTypeOf<foundry.canvas.edges.Edge>();
+expectTypeOf(wall.edge).toEqualTypeOf<foundry.canvas.geometry.edges.Edge>();
 expectTypeOf(wall.bounds).toEqualTypeOf<PIXI.Rectangle>();
 expectTypeOf(wall.isDoor).toBeBoolean();
 expectTypeOf(wall.isOpen).toBeBoolean();
@@ -117,6 +117,6 @@ expectTypeOf(wall.applyThreshold("light", wall.center)).toBeBoolean();
 expectTypeOf(wall.applyThreshold("light", wall.center, 200)).toBeBoolean();
 expectTypeOf(wall.applyThreshold("light", wall.center, null)).toBeBoolean();
 
-expectTypeOf(wall.vertices).toEqualTypeOf<foundry.canvas.edges.Edge>();
+expectTypeOf(wall.vertices).toEqualTypeOf<foundry.canvas.geometry.edges.Edge>();
 expectTypeOf(wall.A).toEqualTypeOf<PIXI.Point>();
 expectTypeOf(wall.B).toEqualTypeOf<PIXI.Point>();

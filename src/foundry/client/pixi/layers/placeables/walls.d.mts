@@ -176,7 +176,7 @@ declare global {
      * Initialization to identify all intersections between walls.
      * These intersections are cached and used later when computing point source polygons.
      * @deprecated since v12 until v14
-     * @remarks "WallsLayer#identifyWallIntersections is deprecated in favor of foundry.canvas.edges.Edge.identifyEdgeIntersections and has no effect."
+     * @remarks "WallsLayer#identifyWallIntersections is deprecated in favor of foundry.canvas.geometry.edges.Edge.identifyEdgeIntersections and has no effect."
      */
     identifyWallIntersections(): void;
   }

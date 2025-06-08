@@ -332,8 +332,8 @@ declare global {
     /** @internal */
     interface _CollisionTypesReturnMap {
       any: boolean;
-      closest: foundry.canvas.edges.PolygonVertex | null;
-      all: foundry.canvas.edges.PolygonVertex[];
+      closest: foundry.canvas.geometry.edges.PolygonVertex | null;
+      all: foundry.canvas.geometry.edges.PolygonVertex[];
     }
 
     type TestCollision<Mode extends CollisionModes> = _CollisionTypesReturnMap[Mode];
