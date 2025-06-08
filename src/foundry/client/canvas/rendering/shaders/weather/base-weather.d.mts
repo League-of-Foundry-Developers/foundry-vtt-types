@@ -60,7 +60,7 @@ declare class AbstractWeatherShader<
    * Update the scale of this effect with new values
    * @param scale - The desired scale
    */
-  set scale(scale: number | { x: number; y?: number });
+  set scale(scale: number | AbstractWeatherShader.ScaleValues);
 
   /** @remarks No getter is actually provided */
   get scale(): undefined;
@@ -77,11 +77,20 @@ declare class AbstractWeatherShader<
   speed: number;
 
   protected override _preRender: AbstractBaseShader.PreRenderFunction;
+
+  #AbstractWeatherShader: true;
 }
 
 declare namespace AbstractWeatherShader {
   interface Any extends AnyAbstractWeatherShader {}
   interface AnyConstructor extends Identity<typeof AnyAbstractWeatherShader> {}
+
+  interface ScaleValues {
+    x: number;
+
+    /** @remarks If not provided, uses the `x` value */
+    y?: number | undefined;
+  }
 
   interface CommonUniforms extends AbstractBaseShader.Uniforms {
     terrainUvMatrix: PIXI.Matrix;

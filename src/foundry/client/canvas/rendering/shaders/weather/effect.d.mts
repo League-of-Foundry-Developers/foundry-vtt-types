@@ -19,9 +19,7 @@ declare class WeatherShaderEffect extends QuadMesh {
   /**
    * Set shader parameters.
    */
-  configure(
-    config?: WeatherShaderEffect.Configuration, // not:null (gets `Object.entries()`ed)
-  ): void;
+  configure(config?: WeatherShaderEffect.Configuration): void;
 
   /**
    * Begin animation
@@ -37,14 +35,18 @@ declare class WeatherShaderEffect extends QuadMesh {
    * Initialize the weather effect.
    * @param config - Config object.
    */
-  protected _initialize(config: WeatherShaderEffect.Configuration): void;
+  protected _initialize(config?: WeatherShaderEffect.Configuration): void;
 }
 
 declare namespace WeatherShaderEffect {
   interface Any extends AnyWeatherShaderEffect {}
   interface AnyConstructor extends Identity<typeof AnyWeatherShaderEffect> {}
 
-  type Configuration = IntentionalPartial<AbstractBaseShader.Uniforms & AbstractWeatherShader>;
+  /**
+   * @remarks Any keys in the current shader class are allowed in addition to arbitrary uniforms.
+   * Can't be made more specific because the shader class can be changed after construction.
+   */
+  interface Configuration extends IntentionalPartial<AbstractBaseShader.Uniforms & AbstractWeatherShader> {}
 }
 
 export default WeatherShaderEffect;

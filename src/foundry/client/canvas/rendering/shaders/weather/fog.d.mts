@@ -22,16 +22,16 @@ declare class FogShader<
   /**
    * Configure the number of octaves into the shaders.
    */
-  static OCTAVES(mode: number): string;
+  static OCTAVES(mode: CONST.CANVAS_PERFORMANCE_MODES): string;
 
   /**
    * Configure the fog complexity according to mode (performance).
    */
-  static FOG(mode: number): string;
+  static FOG(mode: CONST.CANVAS_PERFORMANCE_MODES): string;
 
   static override createProgram(): PIXI.Program;
 
-  static override fragmentShader(mode: number): string;
+  static override fragmentShader(mode: CONST.CANVAS_PERFORMANCE_MODES): string;
 }
 
 declare namespace FogShader {
