@@ -17,6 +17,8 @@ declare class FramebufferSnapshot {
    * @returns The framebuffer snapshot.
    */
   getFramebufferTexture(renderer: PIXI.Renderer): PIXI.RenderTexture;
+
+  #FramebufferSnapshot: true;
 }
 
 declare namespace FramebufferSnapshot {

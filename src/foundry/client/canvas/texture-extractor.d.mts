@@ -6,7 +6,7 @@ import type { Brand, Identity, InexactPartial } from "#utils";
 declare class TextureExtractor {
   /**
    * @param renderer - The renderer
-   * @param config - Worker initialization options
+   * @param config   - Worker initialization options
    */
   constructor(renderer: PIXI.Renderer, config?: TextureExtractor.ConstructorOptions);
 
@@ -141,7 +141,7 @@ declare namespace TextureExtractor {
 
   interface PixelsExtractionOptions extends _PixelsExtractOptions, _ExtractionOptions {
     /** The NONE compression mode. */
-    compression?: TextureExtractor.CompressionModes["NONE"];
+    compression?: TextureExtractor.CompressionModes["NONE"] | undefined;
   }
 
   interface Base64ExtractionOptions extends _Base64ExtractionOptions, _ExtractionOptions {
