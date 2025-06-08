@@ -17,12 +17,12 @@ import type {
   NullishProps,
   AllKeysOf,
   DiscriminatedUnion,
-  SimpleMerge,
   PickValue,
   Identity,
   Brand,
   AnyMutableObject,
   MaybePromise,
+  Override,
 } from "#utils";
 import type * as CONST from "../constants.mts";
 import type {
@@ -205,6 +205,8 @@ declare abstract class Document<
    * Foundry marked `@internal`
    */
   _getParentCollection(parentCollection?: string): string | null;
+
+  _id: string | null;
 
   /**
    * The canonical identifier for this Document
@@ -917,7 +919,11 @@ declare abstract class AnyDocument extends Document<Document.Type, {}, Document.
 declare namespace Document {
   interface Any extends AnyDocument {}
   interface AnyStored extends Document.Internal.Stored<Any> {}
-  interface AnyValid extends AnyDocument {}
+  interface AnyValid extends AnyDocument {
+    get invalid(): false;
+  }
+  interface AnyInvalid extends Document.Internal.Invalid<AnyValid> {}
+
   interface AnyConstructor extends Identity<typeof AnyDocument> {}
 
   type Type = CONST.ALL_DOCUMENT_TYPES;
@@ -1154,21 +1160,24 @@ declare namespace Document {
       | DiscriminatedUnion<SystemMap[SubType]>
       | (SubType extends ModuleSubtype ? UnknownSystem : never);
 
-    type Stored<D extends Document.Any> = D & {
-      id: string;
-      _id: string;
-      _source: GetKey<D, "_source"> & { _id: string };
-    };
-
-    type Invalid<D extends Document.Any> = SimpleMerge<
+    type Stored<D extends Document.Any> = Override<
       D,
       {
         id: string;
         _id: string;
-        _source: object;
-        system: object;
+        _source: Override<D["_source"], { _id: string }>;
       }
     >;
+
+    // @ts-expect-error - This pattern is inherently an error.
+    interface Invalid<D extends Document.Any> extends _Invalid, D {}
+
+    /** @internal */
+    interface _Invalid {
+      _source: object;
+      system?: object | undefined;
+      get invalid(): true;
+    }
 
     interface DropData<DocumentType extends Document.Type> {
       /**

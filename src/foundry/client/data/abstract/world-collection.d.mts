@@ -1,7 +1,11 @@
-import type { DeepPartial, DropFirst, GetKey, Identity, InexactPartial } from "#utils";
+import type { DeepPartial, GetKey, Identity, InexactPartial } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DatabaseCreateOperation } from "#common/abstract/_types.d.mts";
 import type { AbstractSidebarTab, DocumentDirectory } from "#client/applications/sidebar/_module.mjs";
+
+import DocumentSheet = foundry.appv1.api.DocumentSheet;
+import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
+import DocumentSheetConfig = foundry.applications.apps.DocumentSheetConfig;
 
 declare global {
   /**
@@ -98,7 +102,9 @@ declare global {
      * ```
      */
     static registerSheet(
-      ...args: DropFirst<Parameters<typeof foundry.applications.apps.DocumentSheetConfig.registerSheet>>
+      scope: string,
+      sheetClass: DocumentSheet.AnyConstructor | DocumentSheetV2.AnyConstructor,
+      options?: DocumentSheetConfig.SheetRegistrationOptions,
     ): void;
 
     /**
@@ -110,7 +116,9 @@ declare global {
      * Actors.unregisterSheet("core", ActorSheet);
      */
     static unregisterSheet(
-      ...args: DropFirst<Parameters<typeof foundry.applications.apps.DocumentSheetConfig.unregisterSheet>>
+      scope: string,
+      sheetClass: DocumentSheet.AnyConstructor | DocumentSheetV2.AnyConstructor,
+      options: DocumentSheetConfig.UnregisterSheetOptions,
     ): void;
 
     /**

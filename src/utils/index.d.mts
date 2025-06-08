@@ -1,5 +1,7 @@
 import type { Document } from "../foundry/common/abstract/_module.d.mts";
 
+export {};
+
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig ? ModuleConfig[Name] : {};
 
@@ -720,8 +722,12 @@ type _MergePlainObject<T extends object, U extends object> = {
 
 interface _MergeComplexObject<T extends object, U extends object> extends Override<T, _MergePlainObject<T, U>> {}
 
+/**
+ * Overrides properties of `T` with properties in `U`. Be careful using this type as its internal
+ * implementation is likely a bit shaky.
+ */
 // @ts-expect-error - This pattern is inherently an error.
-interface Override<T extends object, U extends object> extends U, T {}
+export interface Override<T extends object, U extends object> extends U, T {}
 
 /**
  * Returns whether the type is a plain object. Excludes functions, arrays, and constructors while still being friendly to interfaces.
@@ -992,8 +998,6 @@ export type NonNullish = {};
 // It would be unsound to merge into so an interface is not used.
 export type EmptyObject = Record<string, never>;
 
-declare const empty: unique symbol;
-
 /**
  * This helper type helps emulate index signatures for types with incompatible concrete keys.
  *
@@ -1072,11 +1076,6 @@ type _MustBeValidUuid<
     : `${Type}.${string}` | `${string}.${string}.${Type}.${string}`;
 
 /**
- * Drops the first element of an array
- */
-type DropFirst<T extends AnyArray> = T extends [infer _1, ...infer V] ? V : T;
-
-/**
  * This type is used when you want to use `unknown` in a union. This works because while `T | unknown`
  * will reduce to `unknown`. However by comparison the only way that `T | LazyUnknown` can reduce is
  * if there's
@@ -1140,7 +1139,7 @@ export type Coalesce<T, D, CoalesceType = undefined> = T extends CoalesceType ? 
  */
 export type NullishCoalesce<T, D> = T extends null | undefined ? D : T;
 
-interface EarlierHook {
+export interface EarlierHook {
   none: never;
   init: "none";
   i18nInit: "none" | "init";
@@ -1163,7 +1162,7 @@ export type InitializationHook = keyof EarlierHook;
  * HooksRan<"init">;     // "none" | "init"
  * HooksRan<"i18nInit">; // "none" | "init" | "i18nInit"
  * HooksRan<"setup">;    // "none" | "init" | "i18nInit" | "setup"
- * HooksRan<"setup">;    // "none" | "init" | "i18nInit" | "setup" | "ready"
+ * HooksRan<"ready">;    // "none" | "init" | "i18nInit" | "setup" | "ready"
  * ```
  */
 export type HooksRan<T extends InitializationHook> = EarlierHook[T] | T;

@@ -166,7 +166,7 @@ declare global {
      * await pack.getDocuments({ type__in: ["weapon", "armor"] });
      * ```
      */
-    getDocuments(query?: Record<string, unknown>): Promise<Document.StoredForName<Type>[]>;
+    getDocuments(query?: Record<string, unknown>): Promise<Document.ImplementationFor<Type>[]>;
 
     /**
      * Get the ownership level that a User has for this Compendium pack.

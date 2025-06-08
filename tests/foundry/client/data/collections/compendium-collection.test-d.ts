@@ -72,9 +72,9 @@ expectTypeOf(
   (await itemCollection.getIndex({ fields: ["name", "effects", "system"] })).get("some id", { strict: true }),
 ).toEqualTypeOf<{ _id: string; uuid: string } & DeepPartial<foundry.documents.BaseItem["_source"]>>();
 
-expectTypeOf(await itemCollection.getDocuments()).toEqualTypeOf<Item.Stored[]>(); // get all items
-expectTypeOf(await itemCollection.getDocuments({})).toEqualTypeOf<Item.Stored[]>(); // get all items
-expectTypeOf(await itemCollection.getDocuments({ name: "foo" })).toEqualTypeOf<Item.Stored[]>(); // get all items called "foo"
+expectTypeOf(await itemCollection.getDocuments()).toEqualTypeOf<Item.Implementation[]>(); // get all items
+expectTypeOf(await itemCollection.getDocuments({})).toEqualTypeOf<Item.Implementation[]>(); // get all items
+expectTypeOf(await itemCollection.getDocuments({ name: "foo" })).toEqualTypeOf<Item.Implementation[]>(); // get all items called "foo"
 expectTypeOf(
   await itemCollection.getDocuments({ $or: [{ name: "baz" }, { name: "bar" }], effects: { $size: 2 } }), // only get items called "baz" or "bar" that have exactly 2 effects
-).toEqualTypeOf<Item.Stored[]>();
+).toEqualTypeOf<Item.Implementation[]>();
