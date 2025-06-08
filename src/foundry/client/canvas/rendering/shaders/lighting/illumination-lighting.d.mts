@@ -27,12 +27,12 @@ declare class AdaptiveIlluminationShader extends AdaptiveLightingShader {
    * @defaultValue
    * ```js
    * {
-   *   technique: 1,
-   *   shadows: 0,
-   *   saturation: 0,
-   *   intensity: 5,
-   *   attenuation: 0.5,
-   *   contrast: 0,
+   *   technique: 1,     // overwritten by LightData.cleanData().coloration in a subsequent static init block
+   *   shadows: 0,       // overwritten by LightData.cleanData().shadows in a subsequent static init block
+   *   saturation: 0,    // overwritten by LightData.cleanData().saturation in a subsequent static init block
+   *   intensity: 5,     // overwritten by LightData.cleanData().intensity in a subsequent static init block
+   *   attenuation: 0.5, // overwritten by LightData.cleanData().attenuation in a subsequent static init block
+   *   contrast: 0,      // overwritten by LightData.cleanData().contrast in a subsequent static init block
    *   exposure: 0,
    *   ratio: 0.5,
    *   darknessLevel: 0,

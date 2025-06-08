@@ -20,7 +20,7 @@ declare class AdaptiveDarknessShader extends AdaptiveLightingShader {
    * @defaultValue
    * ```js
    * {
-   *   intensity: 5,
+   *   intensity: 5, // overwritten by LightData.cleanData().intensity in a subsequent static init block
    *   color: Color.from("#8651d5").rgb,
    *   screenDimensions: [1, 1],
    *   time: 0,
