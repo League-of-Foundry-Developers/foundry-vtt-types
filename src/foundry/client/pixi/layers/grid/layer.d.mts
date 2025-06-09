@@ -1,6 +1,7 @@
 import type { EmptyObject, HandleEmptyObject, Identity, NullishProps, RemoveIndexSignatures } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { GridShader } from "#client/canvas/rendering/shaders/_module.d.mts";
+import type { GridMesh, GridHighlight } from "#client/canvas/containers/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

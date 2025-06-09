@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type Edge from "../../../../../src/foundry/client/canvas/edges/edge.d.mts";
-import type PolygonVertex from "../../../../../src/foundry/client/canvas/edges/vertex.d.mts";
+import { Edge, PolygonVertex } from "#client/canvas/geometry/edges/_module.mjs";
 
 type NullishBoolean = boolean | undefined | null;
 declare const somePV: PolygonVertex;

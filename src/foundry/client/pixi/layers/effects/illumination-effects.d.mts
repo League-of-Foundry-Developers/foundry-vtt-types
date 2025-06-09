@@ -1,5 +1,6 @@
 import type { HandleEmptyObject, Identity } from "#utils";
 import type { VisualEffectsMaskingFilter } from "#client/canvas/rendering/filters/_module.mjs";
+import type { CachedContainer, SpriteMesh } from "#client/canvas/containers/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

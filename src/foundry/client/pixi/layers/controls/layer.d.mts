@@ -1,6 +1,7 @@
 import type { FixedInstanceType, HandleEmptyObject, Identity, NullishProps } from "#utils";
 import type { LineIntersection } from "#common/utils/geometry.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { Cursor } from "#client/canvas/containers/_module.mjs";
 
 declare module "#configuration" {
   namespace Hooks {

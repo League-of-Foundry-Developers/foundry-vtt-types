@@ -9,6 +9,7 @@ import type {
   GetKey,
 } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { ControlIcon } from "#client/canvas/containers/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type {
   DatabaseCreateOperation,

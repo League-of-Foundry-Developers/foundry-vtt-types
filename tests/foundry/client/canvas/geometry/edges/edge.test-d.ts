@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type PolygonVertex from "../../../../../src/foundry/client/canvas/edges/vertex.d.mts";
-import type Edge from "../../../../../src/foundry/client/canvas/edges/edge.d.mts";
+import { Edge, PolygonVertex } from "#client/canvas/geometry/edges/_module.mjs";
 
 declare const p: Canvas.Point;
 declare const someWall: Wall.Implementation;

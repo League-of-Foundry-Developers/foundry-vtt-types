@@ -1,5 +1,6 @@
 import type { HandleEmptyObject, Identity, InexactPartial, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { PreciseText } from "#client/canvas/containers/_module.mjs";
 
 declare module "#configuration" {
   namespace Hooks {

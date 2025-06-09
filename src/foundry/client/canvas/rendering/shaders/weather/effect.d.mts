@@ -1,5 +1,6 @@
 import type { Identity, IntentionalPartial } from "#utils";
 import type { AbstractBaseShader, AbstractWeatherShader } from "../_module.mjs";
+import type { QuadMesh } from "#client/canvas/containers/_module.mjs";
 
 /**
  * An interface for defining shader-based weather effects

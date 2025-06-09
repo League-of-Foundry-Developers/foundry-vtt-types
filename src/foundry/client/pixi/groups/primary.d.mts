@@ -1,5 +1,6 @@
 import type { Brand, HandleEmptyObject, Identity } from "#utils";
 import type { PrimaryCanvasGroupAmbienceFilter } from "#client/canvas/rendering/filters/_module.d.mts";
+import type { CachedContainer, SpriteMesh } from "#client/canvas/containers/_module.d.mts";
 
 // Included to match Foundry's documented types
 type PrimaryCanvasObject = ReturnType<typeof PrimaryCanvasObjectMixin>;

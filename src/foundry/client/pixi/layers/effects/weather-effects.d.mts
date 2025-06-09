@@ -2,6 +2,11 @@ import type { HandleEmptyObject, Identity, InexactPartial, IntentionalPartial, N
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { AbstractWeatherShader, WeatherShaderEffect } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { WeatherOcclusionMaskFilter } from "#client/canvas/rendering/filters/_module.d.mts";
+import type {
+  FullCanvasObjectMixin,
+  ParticleEffect,
+  AutumnLeavesWeatherEffect,
+} from "#client/canvas/containers/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

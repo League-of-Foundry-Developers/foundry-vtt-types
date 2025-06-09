@@ -1,5 +1,6 @@
 import type { AnyObject, EmptyObject, InexactPartial, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { GridHighlight } from "#client/canvas/containers/_module.mjs";
 
 /**
  * The base grid class.

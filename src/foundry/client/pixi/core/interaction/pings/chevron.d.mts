@@ -1,4 +1,5 @@
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 
 declare global {
   /**

@@ -1,5 +1,6 @@
 import type { HandleEmptyObject, Identity, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { VisualEffectsMaskingFilter } from "#client/canvas/rendering/filters/_module.d.mts";
 

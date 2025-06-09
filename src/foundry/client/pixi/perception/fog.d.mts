@@ -1,6 +1,7 @@
 import type EventEmitterMixin from "#common/utils/event-emitter.mjs";
 import type { FixedInstanceType, Identity } from "#utils";
 import type TextureExtractor from "#client/canvas/texture-extractor.d.mts";
+import type { SpriteMesh } from "#client/canvas/containers/_module.mjs";
 
 declare global {
   /**

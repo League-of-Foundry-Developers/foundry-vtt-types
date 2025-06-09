@@ -1,6 +1,7 @@
 import type { ValueOf, FixedInstanceType, HandleEmptyObject, RequiredProps, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
+import type { PreciseText } from "#client/canvas/containers/_module.mjs";
 
 declare module "#configuration" {
   namespace Hooks {
