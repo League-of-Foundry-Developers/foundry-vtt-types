@@ -22,7 +22,6 @@ declare class TextureLoader {
    * @remarks Foundry provides an `@license` attributing the `pixi-basis-ktx2` package to Kristof Van Der Haeghen.
    * The full text of the MIT license is omitted here.
    */
-  // TODO: add KTX2 types and modify the return accordingly
   static initializeBasisTranscoder(): TextureLoader.InitializeBasisTranscoderReturn;
 
   /**
@@ -136,12 +135,11 @@ declare namespace TextureLoader {
   interface AnyConstructor extends Identity<typeof AnyTextureLoader> {}
 
   /** @remarks This is effectively [[void, void], [void, void], [void, void]] */
-  // TODO: Allow actually having the PixiBasisKTX2 types here. (https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3371)
   type InitializeBasisTranscoderReturn = Promise<
     | [
         Awaited<ReturnType<typeof TranscoderWorker.loadTranscoder>>,
-        [void, void], // Awaited<ReturnType<typeof PixiBasisKTX2.KTX2Parser.loadTranscoder>>,
-        [void, void], // Awaited<ReturnType<typeof PixiBasisKTX2.BasisParser.loadTranscoder>>,
+        Awaited<ReturnType<typeof PixiBasisKTX2.KTX2Parser.loadTranscoder>>,
+        Awaited<ReturnType<typeof PixiBasisKTX2.BasisParser.loadTranscoder>>,
       ]
     | void
   >;
