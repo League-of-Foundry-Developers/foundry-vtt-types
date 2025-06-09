@@ -2144,6 +2144,21 @@ export declare const REGION_EVENTS: Readonly<{
    * @see {@linkcode foundry.documents.types.RegionTokenRoundEndEvent}
    */
   TOKEN_ROUND_END: "tokenRoundEnd";
+
+  /**
+   * @deprecated "CONST.REGION_EVENTS.BEHAVIOR_STATUS is deprecated in favor of BEHAVIOR_ACTIVATED, BEHAVIOR_DEACTIVATED, BEHAVIOR_VIEWED, and BEHAVIOR_UNVIEWED." (since v13 until v15)
+   */
+  BEHAVIOR_STATUS: "behaviorStatus";
+
+  /**
+   * @deprecated "CONST.REGION_EVENTS.TOKEN_PRE_MOVE is deprecated without replacement. The TOKEN_PRE_MOVE event is not longer triggered." (since v13 until v15)
+   */
+  TOKEN_PRE_MOVE: "tokenPreMove";
+
+  /**
+   * @deprecated "CONST.REGION_EVENTS.TOKEN_PRE_MOVE is deprecated without replacement. The TOKEN_MOVE event is not longer triggered." (since v13 until v15)
+   */
+  TOKEN_MOVE: "tokenMove";
 }>;
 export type REGION_EVENTS = ValueOf<typeof REGION_EVENTS>;
 
