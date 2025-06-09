@@ -1818,6 +1818,16 @@ declare global {
     };
 
     /**
+     * Configuration for the RegionBehavior embedded document type
+     */
+    RegionBehavior: {
+      documentClass: Document.ImplementationClassFor<"Region">;
+      dataModels: Record<string, typeof foundry.data.regionBehaviors.RegionBehaviorType>;
+      typeLabels?: Record<"base", string>;
+      typeIcons: Record<string, string>;
+    };
+
+    /**
      * Configuration for the Tile embedded document type and its representation on the game Canvas
      */
     Tile: {
