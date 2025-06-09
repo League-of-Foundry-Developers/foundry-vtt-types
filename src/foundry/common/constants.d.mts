@@ -2000,54 +2000,88 @@ export const TEXT_ENRICH_EMBED_MAX_DEPTH: number;
  */
 export declare const REGION_EVENTS: Readonly<{
   /**
+   * Triggered when the Region Behavior becomes active, i.e. is enabled or created without being disabled.
+   * The event is triggered only for this Region Behavior.
+   */
+  BEHAVIOR_ACTIVATED: "behaviorActivated";
+
+  /**
+   * Triggered when the Region Behavior becomes inactive, i.e. is disabled or deleted without being disabled.
+   * The event is triggered only for this Region Behavior.
+   */
+  BEHAVIOR_DEACTIVATED: "behaviorDeactivated"
+
+  /**
+   * Triggered when the Region Behavior becomes unviewed, i.e. inactive or the Scene of its Region is unviewed.
+   * The event is triggered only for this Region Behavior.
+   */
+  BEHAVIOR_UNVIEWED: "behaviorUnviewed"
+
+  /**
+   * Triggered when the Region Behavior becomes viewed, i.e. active and the Scene of its Region is viewed.
+   * The event is triggered only for this Region Behavior.
+   */
+  BEHAVIOR_VIEWED: "behaviorViewed"
+
+  /**
    * Triggered when the shapes or bottom/top elevation of the Region are changed.
    */
   REGION_BOUNDARY: "regionBoundary";
 
   /**
-   * Triggered when the behavior is enabled/disabled or the Scene its Region is in is viewed/unviewed.
+   * Triggered when a Token animates into a Region.
+   * This event is only triggered only if the Scene the Token is in is viewed.
    */
-  BEHAVIOR_STATUS: "behaviorStatus";
+  TOKEN_ANIMATE_IN: "tokenAnimateIn"
+
+  /**
+   * Triggered when a Token animates out of a Region.
+   * This event is triggered only if the Scene the Token is in is viewed.
+   */
+  TOKEN_ANIMATE_OUT: "tokenAnimateOut"
 
   /**
    * Triggered when a Token enters a Region.
+   * A Token enters a Region whenever ...
+   * - it is created within the Region,
+   * - the boundary of the Region has changed such that the Token is now inside the Region,
+   * - the Token moves into the Region (the Token's x, y, elevation, width, height, or shape has changed such that it is now inside the Region), or
+   * - a Region Behavior becomes active (i.e., is enabled or created while enabled), in which case the event it triggered only for this Region Behavior.
    */
   TOKEN_ENTER: "tokenEnter";
 
   /**
-   * Triggered when a Token exists a Region.
+   * Triggered when a Token exits a Region.
+   * A Token exits a Region whenever ...
+   * - it is deleted while inside the Region,
+   * - the boundary of the Region has changed such that the Token is no longer inside the Region,
+   * - the Token moves out of the Region (the Token's x, y, elevation, width, height, or shape has changed such that it is no longer inside the Region), or
+   * - a Region Behavior becomes inactive (i.e., is disabled or deleted while enabled), in which case the event it triggered only for this Region Behavior.
    */
   TOKEN_EXIT: "tokenExit";
 
   /**
-   * Triggered when a Token is about to move into, out of, through, or within a Region.
-   */
-  TOKEN_PRE_MOVE: "tokenPreMove";
-
-  /**
-   * Triggered when a Token moves into, out of, through, or within a Region.
-   */
-  TOKEN_MOVE: "tokenMove";
-
-  /**
    * Triggered when a Token moves into a Region.
+   * A Token moves whenever its x, y, elevation, width, height, or shape is changed.
    */
   TOKEN_MOVE_IN: "tokenMoveIn";
 
   /**
    * Triggered when a Token moves out of a Region.
+   * A Token moves whenever its x, y, elevation, width, height, or shape is changed.
    */
   TOKEN_MOVE_OUT: "tokenMoveOut";
 
   /**
-   * Triggered when a Token starts its Combat turn in a Region.
+   * Triggered when a Token moves within a Region.
+   * A token moves whenever its x, y, elevation, width, height, or shape is changed.
    */
-  TOKEN_TURN_START: "tokenTurnStart";
+  TOKEN_MOVE_WITHIN: "tokenMoveWithin"
 
   /**
-   * Triggered when a Token ends its Combat turn in a Region.
+   * Triggered when a Token ends the Combat round in a Region.
    */
-  TOKEN_TURN_END: "tokenTurnEnd";
+  TOKEN_ROUND_END: "tokenRoundEnd";
 
   /**
    * Triggered when a Token starts the Combat round in a Region.
@@ -2055,9 +2089,14 @@ export declare const REGION_EVENTS: Readonly<{
   TOKEN_ROUND_START: "tokenRoundStart";
 
   /**
-   * Triggered when a Token ends the Combat round in a Region.
+   * Triggered when a Token ends its Combat turn in a Region.
    */
-  TOKEN_ROUND_END: "tokenRoundEnd";
+  TOKEN_TURN_END: "tokenTurnEnd";
+
+  /**
+   * Triggered when a Token starts its Combat turn in a Region.
+   */
+  TOKEN_TURN_START: "tokenTurnStart";
 }>;
 export type REGION_EVENTS = ValueOf<typeof REGION_EVENTS>;
 
