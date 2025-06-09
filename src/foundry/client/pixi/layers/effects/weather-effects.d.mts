@@ -5,11 +5,8 @@ import type { WeatherOcclusionMaskFilter } from "#client/canvas/rendering/filter
 
 declare module "#configuration" {
   namespace Hooks {
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface CanvasLayerConfig {
-      // This is commented out because the `hookName` for `WeatherEffects` is currently bugged.
-      // See: https://github.com/foundryvtt/foundryvtt/issues/12930
-      // WeatherEffects: WeatherEffects.Any;
+      WeatherEffects: WeatherEffects.Any;
     }
   }
 }

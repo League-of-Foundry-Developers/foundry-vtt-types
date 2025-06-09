@@ -45,34 +45,6 @@ export interface DeprecatedHookConfig {
     app: foundry.applications.ui.SceneNavigation,
     contextOptions: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[],
   ) => boolean | void;
-
-  /**
-   * @deprecated This hook does not currently exist due to a bug in {@linkcode WeatherEffects.hookName}
-   * where it currently is `"FullCanvasObject"` instead of the correct `"WeatherEffects"`.
-   * See: https://github.com/foundryvtt/foundryvtt/issues/12930
-   */
-  drawWeatherEffects: Hooks.DrawLayer<WeatherEffects>;
-
-  /**
-   * @deprecated This hook does not currently exist due to a bug in {@linkcode WeatherEffects.hookName}
-   * where it currently is `"FullCanvasObject"` instead of the correct `"WeatherEffects"`.
-   * See: https://github.com/foundryvtt/foundryvtt/issues/12930
-   */
-  tearDownEffects: Hooks.TearDownLayer<WeatherEffects>;
-
-  /**
-   * @deprecated This hook only exists due to a bug in {@linkcode WeatherEffects.hookName} where it
-   * is `"FullCanvasObject"` instead of the correct `"WeatherEffects"`.
-   * See: https://github.com/foundryvtt/foundryvtt/issues/12930
-   */
-  drawFullCanvasObject: Hooks.DrawLayer<WeatherEffects>;
-
-  /**
-   * @deprecated This hook only exists due to a bug in {@linkcode WeatherEffects.hookName} where it
-   * is `"FullCanvasObject"` instead of the correct `"WeatherEffects"`.
-   * See: https://github.com/foundryvtt/foundryvtt/issues/12930
-   */
-  tearDownCanvasObject: Hooks.TearDownLayer<WeatherEffects>;
 }
 
 /**
