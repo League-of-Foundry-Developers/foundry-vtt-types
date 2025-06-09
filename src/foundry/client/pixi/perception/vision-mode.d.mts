@@ -1,6 +1,7 @@
 import type { Brand, InterfaceToObject, RemoveIndexSignatures, SimpleMerge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
+import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 import DataField = foundry.data.fields.DataField;
 import type DataModel from "#common/abstract/data.d.mts";
 import type PointVisionSource from "#client/canvas/sources/point-vision-source.d.mts";

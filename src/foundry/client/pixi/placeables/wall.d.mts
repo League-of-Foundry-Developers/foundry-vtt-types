@@ -1,5 +1,6 @@
 import type { FixedInstanceType, HandleEmptyObject, NullishProps } from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 import Edge = foundry.canvas.edges.Edge;
 
 declare module "#configuration" {

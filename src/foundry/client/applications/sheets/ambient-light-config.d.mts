@@ -2,6 +2,7 @@ import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+import type { AdaptiveLightingShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

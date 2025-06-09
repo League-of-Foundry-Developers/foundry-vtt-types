@@ -1,5 +1,6 @@
 import type { Brand, Coalesce, Identity, InexactPartial, NullishProps } from "#utils";
 import type PointEffectSourceMixin from "#client/canvas/sources/point-effect-source.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare global {
   /**

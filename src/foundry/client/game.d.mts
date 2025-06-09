@@ -10,6 +10,7 @@ import type {
 } from "#utils";
 import type BasePackage from "#common/packages/base-package.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 import AVMaster = foundry.av.AVMaster;
 

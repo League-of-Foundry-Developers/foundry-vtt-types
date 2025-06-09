@@ -1,5 +1,6 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { Brand, FixedInstanceType, HandleEmptyObject, NullishProps } from "#utils";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 import type RegionShape from "#client/canvas/regions/shape.d.mts";
 import type RegionPolygonTree from "#client/canvas/regions/polygon-tree.d.mts";
 import type RegionGeometry from "#client/canvas/regions/geometry.d.mts";

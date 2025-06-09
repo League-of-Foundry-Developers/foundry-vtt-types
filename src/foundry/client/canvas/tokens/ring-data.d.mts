@@ -2,6 +2,7 @@ import type DataModel from "#common/abstract/data.d.mts";
 import type { DataField, DataSchema } from "#common/data/fields.d.mts";
 import type { AnyConstructor, SimpleMerge } from "#utils";
 import type TokenRing from "./ring.d.mts";
+import type { PrimaryBaseSamplerShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 
 import fields = foundry.data.fields;
 

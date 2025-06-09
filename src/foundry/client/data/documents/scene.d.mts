@@ -4,6 +4,7 @@ import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { LightData, TextureData } from "#common/data/data.d.mts";
 import type ImageHelper from "#client/helpers/media/image-helper.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 import fields = foundry.data.fields;
 

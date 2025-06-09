@@ -1,4 +1,5 @@
 import type { ValueOf, FixedInstanceType, HandleEmptyObject, RequiredProps, NullishProps } from "#utils";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 
 declare module "#configuration" {

@@ -1,4 +1,5 @@
 import type { HandleEmptyObject, Identity, NullishProps } from "#utils";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 
 declare module "#configuration" {

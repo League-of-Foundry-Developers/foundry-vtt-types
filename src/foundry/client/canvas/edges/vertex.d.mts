@@ -1,5 +1,6 @@
 import type { Identity, NullishProps } from "#utils";
 import type Edge from "./edge.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
  * A specialized point data structure used to represent vertices in the context of the ClockwiseSweepPolygon.

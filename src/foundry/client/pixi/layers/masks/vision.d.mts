@@ -1,4 +1,7 @@
 import type { Identity } from "#utils";
+// TODO: following import is temporary pending a proper v13 pass on this file
+import type AlphaBlurFilter from "#client/canvas/rendering/filters/blur.mjs";
+import type { VoidFilter } from "#client/canvas/rendering/filters/_module.d.mts";
 
 declare global {
   /**

@@ -1,4 +1,5 @@
 import type { Identity, IntentionalPartial } from "#utils";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Edge from "#client/canvas/edges/edge.d.mts";
 
 declare global {

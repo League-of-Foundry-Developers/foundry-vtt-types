@@ -1,5 +1,6 @@
 import type { Identity } from "#utils";
 import type { LineIntersection } from "#common/utils/geometry.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare global {
   /**

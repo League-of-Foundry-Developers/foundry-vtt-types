@@ -1,4 +1,5 @@
 import type { Brand, FixedInstanceType, Identity, IntentionalPartial, NullishProps } from "#utils";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare global {
   /**

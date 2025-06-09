@@ -5,7 +5,7 @@ const layer = new CanvasVisibility();
 expectTypeOf(layer.vision).toEqualTypeOf<CanvasVisionMask.CanvasVisionContainer | undefined>();
 expectTypeOf(layer.explored).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(layer.visibilityOverlay).toEqualTypeOf<PIXI.Sprite | undefined>();
-expectTypeOf(layer.filter).toEqualTypeOf<VisibilityFilter.ConfiguredInstance | undefined>();
+expectTypeOf(layer.filter).toEqualTypeOf<VisibilityFilter.Implementation | undefined>();
 expectTypeOf(layer.visionModeData).toEqualTypeOf<CanvasVisibility.VisionModeData>();
 expectTypeOf(layer.lightingVisibility).toEqualTypeOf<CanvasVisibility.LightingVisibility>();
 expectTypeOf(layer.lightingVisibility.background).toExtend<VisionMode.LIGHTING_VISIBILITY>();

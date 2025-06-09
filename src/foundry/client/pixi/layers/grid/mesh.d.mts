@@ -1,4 +1,5 @@
 import type { InexactPartial } from "#utils";
+import type { GridShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 
 declare global {
   /**

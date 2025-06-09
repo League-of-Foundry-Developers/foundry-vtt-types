@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import type { AnyConcreteConstructor, AnyConstructor, AnyFunction } from "#utils";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Document } from "./abstract/_module.d.mts";
 
 import ClientSettings = foundry.helpers.ClientSettings;

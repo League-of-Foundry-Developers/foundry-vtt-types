@@ -1,4 +1,4 @@
-export {};
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare global {
   /**

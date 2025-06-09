@@ -1,4 +1,5 @@
 import type { AnyObject, EmptyObject, InexactPartial, Identity } from "#utils";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
  * The base grid class.

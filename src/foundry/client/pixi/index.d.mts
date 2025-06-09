@@ -1,4 +1,3 @@
-import "./board.d.mts";
 import "./core/index.d.mts";
 import "./extensions/index.d.mts";
 import "./groups/index.d.mts";
@@ -7,4 +6,3 @@ import "./perception/index.d.mts";
 import "./placeable.d.mts";
 import "./placeables/index.d.mts";
 import "./webgl/index.d.mts";
-import "./workers/index.d.mts";

@@ -1,4 +1,5 @@
 import type { Identity } from "#utils";
+import type { AdaptiveLightingShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 
 declare global {
   /**

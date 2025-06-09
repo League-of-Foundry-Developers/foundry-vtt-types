@@ -10,6 +10,10 @@
 // ```
 // If you try to merge with `declare global` you'll instead completely override the namespace.
 
+// eslint-disable-next-line import-x/no-named-default
+import { default as AlphaBlurFilter, AlphaBlurFilterPass } from "#client/canvas/rendering/filters/blur.mjs";
+
+export import AVSettings = globalThis.AVSettings;
 export import AbstractBaseFilter = globalThis.AbstractBaseFilter;
 export import AbstractBaseMaskFilter = globalThis.AbstractBaseMaskFilter;
 export import AbstractBaseShader = globalThis.AbstractBaseShader;
@@ -29,8 +33,15 @@ export import AdaptiveVisionShader = globalThis.AdaptiveVisionShader;
 export import AdjustDarknessLevelRegionShader = globalThis.AdjustDarknessLevelRegionShader;
 export import Adventure = globalThis.Adventure;
 export import AlertPing = globalThis.AlertPing;
-export import AlphaBlurFilter = globalThis.AlphaBlurFilter;
-export import AlphaBlurFilterPass = globalThis.AlphaBlurFilterPass;
+
+// The two following are (possibly erroneously) not re-exported by their `_module.mjs`, despite being previously global and not `@internal`
+
+/** @deprecated No longer global as of v13.344, nor exported anywhere accessible */
+export import AlphaBlurFilter = AlphaBlurFilter;
+
+/** @deprecated No longer global as of v13.344, nor exported anywhere accessible */
+export import AlphaBlurFilterPass = AlphaBlurFilterPass;
+
 export import AmbientLight = globalThis.AmbientLight;
 export import AmbientLightDocument = globalThis.AmbientLightDocument;
 export import AmbientSound = globalThis.AmbientSound;

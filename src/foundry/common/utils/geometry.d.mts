@@ -1,3 +1,5 @@
+import type { Canvas } from "#client/canvas/_module.d.mts";
+
 /**
  * Determine the relative orientation of three points in two-dimensional space.
  * The result is also an approximation of twice the signed area of the triangle defined by the three points.
