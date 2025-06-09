@@ -1822,7 +1822,10 @@ declare global {
      */
     RegionBehavior: {
       documentClass: Document.ImplementationClassFor<"Region">;
-      dataModels: Record<string, typeof foundry.data.regionBehaviors.RegionBehaviorType>;
+      dataModels: Record<
+        string,
+        typeof foundry.data.regionBehaviors.RegionBehaviorType<any, RegionBehavior.Implementation, AnyObject, AnyObject>
+      >;
       typeLabels?: Record<"base", string>;
       typeIcons: Record<string, string>;
     };
