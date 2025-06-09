@@ -10,6 +10,7 @@ import type {
   IsObject,
   AllKeysOf,
   GetKey,
+  Override,
 } from "#utils";
 import type { SchemaField } from "../data/fields.d.mts";
 import type { DatabaseCreateOperation, DatabaseDeleteOperation, DatabaseUpdateOperation } from "./_types.d.mts";
@@ -18,9 +19,6 @@ import type Document from "./document.d.mts";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
 
 type DataSchema = foundry.data.fields.DataSchema;
-
-// @ts-expect-error - This pattern is inherently an error.
-interface Override<T extends object, U extends object> extends U, T {}
 
 interface _InternalTypeDataModelInterface extends DataModel.AnyConstructor {
   new <Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends object>(

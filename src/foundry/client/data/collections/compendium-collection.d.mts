@@ -1,4 +1,4 @@
-import type { DeepPartial, EmptyObject, InexactPartial, SimpleMerge, UnionToIntersection } from "#utils";
+import type { DeepPartial, EmptyObject, InexactPartial, PrettifyType, SimpleMerge, UnionToIntersection } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 
 import SocketInterface = foundry.helpers.SocketInterface;
@@ -166,7 +166,7 @@ declare global {
      * await pack.getDocuments({ type__in: ["weapon", "armor"] });
      * ```
      */
-    getDocuments(query?: Record<string, unknown>): Promise<Document.StoredForName<Type>[]>;
+    getDocuments(query?: CompendiumCollection.Query<Type>): Promise<Document.ImplementationFor<Type>[]>;
 
     /**
      * Get the ownership level that a User has for this Compendium pack.
@@ -444,8 +444,32 @@ declare global {
     interface DuplicateCompendiumOptions {
       label?: string | undefined;
     }
+
+    // Note(LukeAbby): One neat possibility for this type would be making something like `type: "foo"`,
+    // `type__ne: "foo"`, and `type__in: ["foo", "bar"]` all narrow `system`.
+    type Query<Type extends CompendiumCollection.DocumentName> = _Queryify<Document.SourceForName<Type>>;
+
+    /** @internal */
+    type _Queryify<T> = T extends object ? _QueryifyObject<T> : T;
+
+    /** @internal */
+    type _QueryifyObject<T extends object> = PrettifyType<
+      {
+        [K in keyof T]?: _Queryify<T[K]>;
+      } & {
+        [K in keyof T as K extends string
+          ? IsComparable<T[K]> extends true
+            ? `${K}__in`
+            : never
+          : never]?: ReadonlyArray<T[K]>;
+      } & {
+        [K in keyof T as K extends string ? (IsComparable<T[K]> extends true ? `${K}__ne` : never) : never]?: T[K];
+      }
+    >;
   }
 }
+
+type IsComparable<T> = T extends boolean | string | number | bigint | symbol | null | undefined ? true : false;
 
 type IndexTypeForMetadata<Type extends CompendiumCollection.DocumentName> = foundry.utils.Collection<
   CompendiumCollection.IndexEntry<Type>

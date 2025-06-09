@@ -629,7 +629,7 @@ declare global {
        * The ActorDelta embedded document which stores the differences between this
        * token and the base actor it represents.
        */
-      delta: ActorDeltaField<typeof documents.BaseActor>;
+      delta: ActorDeltaField<typeof documents.BaseActorDelta>;
 
       /**
        * The x-coordinate of the top-left corner of the Token

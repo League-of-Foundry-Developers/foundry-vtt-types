@@ -383,7 +383,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
  * A special subclass of EmbeddedDocumentField which allows construction of the ActorDelta to be lazily evaluated.
  */
 export class ActorDeltaField<
-  DocumentType extends Document.AnyConstructor,
+  DocumentType extends foundry.documents.BaseActorDelta.AnyConstructor,
   Options extends fields.EmbeddedDocumentField.Options<DocumentType> = fields.EmbeddedDocumentField.DefaultOptions,
 > extends fields.EmbeddedDocumentField<DocumentType, Options> {
   // options: not null (parameter default only)
