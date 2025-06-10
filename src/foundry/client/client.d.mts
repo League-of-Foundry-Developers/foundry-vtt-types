@@ -6,7 +6,7 @@
 import "#common/primitives/_module.mjs";
 import * as _CONST from "#common/constants.mjs";
 import * as _abstract from "#common/abstract/_module.mjs";
-import * as _documents from "#common/documents/_module.mjs";
+import * as _documents from "#client/documents/_module.mjs";
 import * as _packages from "#client/packages/_module.mjs";
 // utils is exported here in the foundry file
 import * as _config from "#common/config.mjs";
@@ -1380,6 +1380,36 @@ declare global {
    * (since v13 will be removed in v15)
    */
   export import TextureCompressor = foundry.canvas.workers.TextureCompressor;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ClientDocumentMixin} which is now namespaced under {@linkcode foundry.documents.abstract.ClientDocumentMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import ClientDocumentMixin = foundry.documents.abstract.ClientDocumentMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasDocumentMixin} which is now namespaced under {@linkcode foundry.documents.abstract.CanvasDocumentMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasDocumentMixin = foundry.documents.abstract.CanvasDocumentMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DirectoryCollectionMixin} which is now namespaced under {@linkcode foundry.documents.abstract.DirectoryCollectionMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import DirectoryCollectionMixin = foundry.documents.abstract.DirectoryCollectionMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DocumentCollection} which is now namespaced under {@linkcode foundry.documents.abstract.DocumentCollection}"
+   * (since v13 will be removed in v15)
+   */
+  export import DocumentCollection = foundry.documents.abstract.DocumentCollection;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode WorldCollection} which is now namespaced under {@linkcode foundry.documents.abstract.WorldCollection}"
+   * (since v13 will be removed in v15)
+   */
+  export import WorldCollection = foundry.documents.abstract.WorldCollection;
 
   /**
    * @deprecated "You are accessing the global {@linkcode AsyncWorker} which is now namespaced under {@linkcode foundry.helpers.AsyncWorker}"

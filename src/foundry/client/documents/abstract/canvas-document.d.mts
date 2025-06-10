@@ -2,6 +2,7 @@ import type { FixedInstanceType, Mixin } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { InternalClientDocument } from "./client-document.d.mts";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class CanvasDocument<
   DocumentName extends Document.Type,
   PlaceableType extends Document.PlaceableType = Extract<DocumentName, Document.PlaceableType>,
@@ -42,24 +43,24 @@ declare class CanvasDocument<
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 }
 
-declare global {
-  /**
-   * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
-   */
-  // TODO(LukeAbby): The constraint here should ideally be something like `Document<Document.PlaceableType, any, Scene.Implementation | null>` but this causes circularities.
-  function CanvasDocumentMixin<BaseClass extends CanvasDocumentMixin.BaseClass>(
-    Base: BaseClass,
-  ): CanvasDocumentMixin.Mix<BaseClass>;
+/**
+ * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
+ */
+// TODO(LukeAbby): The constraint here should ideally be something like `Document<Document.PlaceableType, any, Scene.Implementation | null>` but this causes circularities.
+declare function CanvasDocumentMixin<BaseClass extends CanvasDocumentMixin.BaseClass>(
+  Base: BaseClass,
+): CanvasDocumentMixin.Mix<BaseClass>;
 
-  namespace CanvasDocumentMixin {
-    interface AnyMixedConstructor extends ReturnType<typeof ClientDocumentMixin<BaseClass>> {}
-    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
+declare namespace CanvasDocumentMixin {
+  interface AnyMixedConstructor extends ReturnType<typeof foundry.documents.abstract.ClientDocumentMixin<BaseClass>> {}
+  interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
-    type Mix<BaseClass extends CanvasDocumentMixin.BaseClass> = Mixin<
-      typeof CanvasDocument<Document.NameFor<BaseClass>>,
-      BaseClass
-    >;
+  type Mix<BaseClass extends CanvasDocumentMixin.BaseClass> = Mixin<
+    typeof CanvasDocument<Document.NameFor<BaseClass>>,
+    BaseClass
+  >;
 
-    type BaseClass = Document.Internal.Constructor;
-  }
+  type BaseClass = Document.Internal.Constructor;
 }
+
+export default CanvasDocumentMixin;

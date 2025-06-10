@@ -3,6 +3,7 @@ import type { FixedInstanceType, Mixin } from "#utils";
 /**
  * An extension of the Collection class which adds behaviors specific to tree-based collections of entries and folders.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class DirectoryCollection {
   /** @privateRemarks All mixin classes need a constructor like this */
   constructor(...args: any[]);
@@ -87,33 +88,33 @@ declare class DirectoryCollection {
   ): number;
 }
 
-declare global {
-  /**
-   * A mixin which adds directory functionality to a DocumentCollection, such as folders, tree structures, and sorting.
-   * @param BaseCollection - The base collection class to extend
-   * @returns A Collection mixed with DirectoryCollection functionality
-   */
-  function DirectoryCollectionMixin<BaseCollection extends foundry.utils.Collection.AnyConstructor>(
-    BaseCollection: BaseCollection,
-  ): Mixin<typeof DirectoryCollection, BaseCollection>;
+/**
+ * A mixin which adds directory functionality to a DocumentCollection, such as folders, tree structures, and sorting.
+ * @param BaseCollection - The base collection class to extend
+ * @returns A Collection mixed with DirectoryCollection functionality
+ */
+declare function DirectoryCollectionMixin<BaseCollection extends foundry.utils.Collection.AnyConstructor>(
+  BaseCollection: BaseCollection,
+): Mixin<typeof DirectoryCollection, BaseCollection>;
 
-  namespace DirectoryCollectionMixin {
-    interface AnyMixedConstructor
-      extends ReturnType<typeof DirectoryCollectionMixin<foundry.utils.Collection.AnyConstructor>> {}
-    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
+declare namespace DirectoryCollectionMixin {
+  interface AnyMixedConstructor
+    extends ReturnType<typeof DirectoryCollectionMixin<foundry.utils.Collection.AnyConstructor>> {}
+  interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
-    type BaseClass = foundry.utils.Collection.AnyConstructor;
+  type BaseClass = foundry.utils.Collection.AnyConstructor;
 
-    interface TreeNode<T> {
-      children: TreeNode<T>[];
-      depth: number;
-      entries: T[];
-      folder: Folder.Implementation;
-      root: boolean;
-      visible: boolean;
-    }
-
-    type AlphabeticalSortEntry = { name: string } & object;
-    type StandardSortEntry = { sort: number } & object;
+  interface TreeNode<T> {
+    children: TreeNode<T>[];
+    depth: number;
+    entries: T[];
+    folder: Folder.Implementation;
+    root: boolean;
+    visible: boolean;
   }
+
+  type AlphabeticalSortEntry = { name: string } & object;
+  type StandardSortEntry = { sort: number } & object;
 }
+
+export default DirectoryCollectionMixin;

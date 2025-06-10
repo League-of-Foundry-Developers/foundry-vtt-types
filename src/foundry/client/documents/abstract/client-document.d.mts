@@ -574,32 +574,30 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
 type _ClientDocumentType = InternalClientDocument<Document.Type> & Document.AnyConstructor;
 declare const _ClientDocument: _ClientDocumentType;
 
-type ClientDocumentMixinBaseClass = Document.Internal.Constructor;
+/**
+ * A mixin which extends each Document definition with specialized client-side behaviors.
+ * This mixin defines the client-side interface for database operations and common document behaviors.
+ */
+// FIXME(LukeAbby): Unlike most mixins, `ClientDocumentMixin` actually requires a specific constructor, the same as `Document`.
+// This means that `BaseClass extends Document.Internal.Constructor` is actually too permissive.
+// However this easily leads to circularities.
+declare function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
+  Base: BaseClass,
+): ClientDocumentMixin.Mix<BaseClass>;
 
+declare namespace ClientDocumentMixin {
+  type Mix<BaseClass extends Document.Internal.Constructor> = Mixin<
+    typeof InternalClientDocument<Document.NameFor<BaseClass>>,
+    BaseClass
+  >;
+}
+
+// TODO: Namespaces typically match the Mixin, not the non-exported class, but we're exporting the class for type reasons,
+// TODO: so this is an exception?
 declare global {
   interface ClientDocument extends FixedInstanceType<typeof _ClientDocument> {}
   interface ClientDocumentConstructor extends Identity<typeof _ClientDocument> {}
 
-  /**
-   * A mixin which extends each Document definition with specialized client-side behaviors.
-   * This mixin defines the client-side interface for database operations and common document behaviors.
-   */
-  // FIXME(LukeAbby): Unlike most mixins, `ClientDocumentMixin` actually requires a specific constructor, the same as `Document`.
-  // This means that `BaseClass extends Document.Internal.Constructor` is actually too permissive.
-  // However this easily leads to circularities.
-  function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
-    Base: BaseClass,
-  ): ClientDocumentMixin.Mix<BaseClass>;
-
-  namespace ClientDocumentMixin {
-    type Mix<BaseClass extends Document.Internal.Constructor> = Mixin<
-      typeof InternalClientDocument<Document.NameFor<BaseClass>>,
-      BaseClass
-    >;
-  }
-
-  // TODO: Namespaces typically match the Mixin, not the non-exported class, but we're exporting the class for type reasons,
-  // TODO: so this is an exception?
   namespace ClientDocument {
     interface SortOptions<T, SortKey extends string = "sort"> extends foundry.utils.SortOptions<T, SortKey> {
       /**
@@ -741,3 +739,5 @@ declare global {
     interface OnSheetChangeOptions extends _OnSheetChangeOptions {}
   }
 }
+
+export { ClientDocumentMixin as default, InternalClientDocument };
