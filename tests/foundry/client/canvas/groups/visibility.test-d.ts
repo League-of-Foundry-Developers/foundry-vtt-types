@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { CanvasVisibility } from "#client/canvas/groups/_module.mjs";
 
 const layer = new CanvasVisibility();
 

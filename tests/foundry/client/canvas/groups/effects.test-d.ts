@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { EffectsCanvasGroup, CanvasVisibility } from "#client/canvas/groups/_module.mjs";
 
 expectTypeOf(EffectsCanvasGroup.groupName).toEqualTypeOf<undefined>();
 

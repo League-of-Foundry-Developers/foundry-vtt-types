@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { EnvironmentCanvasGroup } from "#client/canvas/groups/_module.mjs";
 
 expectTypeOf(EnvironmentCanvasGroup.groupName).toEqualTypeOf<"environment">();
 expectTypeOf(EnvironmentCanvasGroup.tearDownChildren).toEqualTypeOf<boolean>();

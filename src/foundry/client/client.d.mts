@@ -944,6 +944,60 @@ declare global {
   export import AutumnLeavesWeatherEffect = foundry.canvas.containers.AutumnLeavesWeatherEffect;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode CanvasGroupMixin} which is now namespaced under {@linkcode foundry.canvas.groups.CanvasGroupMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasGroupMixin = foundry.canvas.groups.CanvasGroupMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode EffectsCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.EffectsCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode EnvironmentCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.EnvironmentCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import EnvironmentCanvasGroup = foundry.canvas.groups.EnvironmentCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode HiddenCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.HiddenCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import HiddenCanvasGroup = foundry.canvas.groups.HiddenCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode InterfaceCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.InterfaceCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import InterfaceCanvasGroup = foundry.canvas.groups.InterfaceCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode OverlayCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.OverlayCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import OverlayCanvasGroup = foundry.canvas.groups.OverlayCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.PrimaryCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryCanvasGroup = foundry.canvas.groups.PrimaryCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RenderedCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.RenderedCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import RenderedCanvasGroup = foundry.canvas.groups.RenderedCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasVisibility} which is now namespaced under {@linkcode foundry.canvas.groups.CanvasVisibility}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode Quadtree} which is now namespaced under {@linkcode foundry.canvas.geometry.Quadtree}"
    * (since v13 will be removed in v15)
    */

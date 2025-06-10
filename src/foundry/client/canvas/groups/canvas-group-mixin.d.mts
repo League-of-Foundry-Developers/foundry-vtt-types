@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { FixedInstanceType, HandleEmptyObject, Identity, PrettifyType, RemoveIndexSignatures } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 
@@ -88,72 +89,73 @@ type ApplyGroup<
     ...args: ConstructorParameters<BaseClass>
   ) => CanvasGroup<Group, DrawOptions, TearDownOptions> & FixedInstanceType<BaseClass>);
 
+/**
+ * A mixin which decorates any container with base canvas common properties.
+ * @param ContainerClass - The parent Container class being mixed.
+ */
+declare function CanvasGroupMixin<
+  BaseClass extends CanvasGroupMixin.BaseClass,
+  // In `_createLayers` the code assigns top level properties to the class.
+  // This is why Group exists.`
+  Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup = NoLayerGroup,
+>(ContainerClass: BaseClass): CanvasGroupMixin.Mix<BaseClass, Group>;
+
 declare global {
   /**
-   * A mixin which decorates any container with base canvas common properties.
-   * @param ContainerClass - The parent Container class being mixed.
-   * @returns A ContainerClass subclass mixed with BaseCanvasMixin features.
-   */
-  function CanvasGroupMixin<
-    BaseClass extends CanvasGroupMixin.BaseClass,
-    // In `_createLayers` the code assigns top level properties to the class.
-    // This is why Group exists.`
-    Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup = NoLayerGroup,
-  >(ContainerClass: BaseClass): CanvasGroupMixin.Mix<BaseClass, Group>;
-
-  /**
    * @deprecated since v12, until 14
-   * @remarks "BaseCanvasMixin is deprecated in favor of CanvasGroupMixin"
+   * @remarks "`BaseCanvasMixin` is deprecated in favor of {@linkcode foundry.canvas.groups.CanvasGroupMixin}"
    */
   const BaseCanvasMixin: typeof CanvasGroupMixin;
-
-  namespace CanvasGroupMixin {
-    // Note(LukeAbby): This doesn't just use `Mix` because piecing together an `AnyMixed` type is
-    // more subtle than typical here. Specifically
-    interface AnyMixedConstructor extends Identity<typeof AnyCanvasGroup> {}
-    interface AnyMixed extends AnyCanvasGroup {}
-
-    type BaseClass = PIXI.Container.AnyConstructor;
-
-    type Mix<
-      BaseClass extends CanvasGroupMixin.BaseClass,
-      Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
-    > = BaseClass & ApplyGroup<BaseClass, Group>;
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    interface DrawOptions {}
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    interface TearDownOptions {}
-
-    interface Layers {
-      readonly [key: string]: CanvasLayer;
-    }
-
-    type LayerGroup = keyof CONFIG["Canvas"]["groups"];
-
-    type LayersFor<T extends LayerGroup | NoLayerGroup> = PrettifyType<
-      _FilterOutNever<{
-        readonly [K in keyof typeof Canvas.layers]: (typeof Canvas.layers)[K] extends {
-          readonly layerClass?: abstract new (...args: infer _1) => infer LayerInstance extends CanvasLayer;
-          readonly group?: T;
-        }
-          ? LayerInstance
-          : never;
-      }>
-    >;
-
-    /** @internal */
-    type _FilterOutNever<T> = {
-      [K in keyof T as [T[K]] extends [never] ? never : K]: T[K];
-    };
-
-    /**
-     * @deprecated Replaced by {@linkcode CanvasGroupMixin.Mix}.
-     */
-    export import Mixed = CanvasGroupMixin.Mix;
-  }
 }
+
+declare namespace CanvasGroupMixin {
+  // Note(LukeAbby): This doesn't just use `Mix` because piecing together an `AnyMixed` type is
+  // more subtle than typical here. Specifically
+  interface AnyMixedConstructor extends Identity<typeof AnyCanvasGroup> {}
+  interface AnyMixed extends AnyCanvasGroup {}
+
+  type BaseClass = PIXI.Container.AnyConstructor;
+
+  type Mix<
+    BaseClass extends CanvasGroupMixin.BaseClass,
+    Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
+  > = BaseClass & ApplyGroup<BaseClass, Group>;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface DrawOptions {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface TearDownOptions {}
+
+  interface Layers {
+    readonly [key: string]: CanvasLayer;
+  }
+
+  type LayerGroup = keyof CONFIG["Canvas"]["groups"];
+
+  type LayersFor<T extends LayerGroup | NoLayerGroup> = PrettifyType<
+    _FilterOutNever<{
+      readonly [K in keyof typeof Canvas.layers]: (typeof Canvas.layers)[K] extends {
+        readonly layerClass?: abstract new (...args: infer _1) => infer LayerInstance extends CanvasLayer;
+        readonly group?: T;
+      }
+        ? LayerInstance
+        : never;
+    }>
+  >;
+
+  /** @internal */
+  type _FilterOutNever<T> = {
+    [K in keyof T as [T[K]] extends [never] ? never : K]: T[K];
+  };
+
+  /**
+   * @deprecated Replaced by {@linkcode CanvasGroupMixin.Mix}.
+   */
+  export import Mixed = CanvasGroupMixin.Mix;
+}
+
+export default CanvasGroupMixin;
 
 declare abstract class InnerAnyCanvasGroup extends CanvasGroup<
   NoLayerGroup,

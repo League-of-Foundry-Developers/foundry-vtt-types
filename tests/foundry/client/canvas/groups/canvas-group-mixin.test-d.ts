@@ -1,4 +1,5 @@
 import { assertType, expectTypeOf } from "vitest";
+import { CanvasGroupMixin, PrimaryCanvasGroup } from "#client/canvas/groups/_module.mjs";
 
 class FakePrimaryGroup<
   DrawOptions extends PrimaryCanvasGroup.DrawOptions = PrimaryCanvasGroup.DrawOptions,

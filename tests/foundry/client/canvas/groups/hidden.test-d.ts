@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { HiddenCanvasGroup } from "#client/canvas/groups/_module.mjs";
 
 expectTypeOf(HiddenCanvasGroup.groupName).toEqualTypeOf<"hidden">();
 

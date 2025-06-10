@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { RenderedCanvasGroup } from "#client/canvas/groups/_module.mjs";
 
 expectTypeOf(RenderedCanvasGroup.groupName).toEqualTypeOf<"rendered">();
 
