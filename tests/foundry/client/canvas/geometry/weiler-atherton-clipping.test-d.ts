@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { WeilerAthertonClipper } from "#client/canvas/geometry/_module.mjs";
 
 expectTypeOf(WeilerAthertonClipper.CLIP_TYPES).toExtend<
   Record<keyof WeilerAthertonClipper.ClipTypes, WeilerAthertonClipper.CLIP_TYPES>

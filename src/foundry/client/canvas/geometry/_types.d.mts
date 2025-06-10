@@ -1,4 +1,5 @@
-import type { Edge } from "./edges/_module.d.mts";
+import type { Edge, PolygonVertex } from "./edges/_module.d.mts";
+import type { ClockwiseSweepPolygon, PointSourcePolygon, Ray, Quadtree } from "./_module.mjs";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 // After seeing that none of these types add anything or are even exported a
@@ -16,18 +17,19 @@ type EdgeType = Edge.EdgeTypes;
 
 type EdgeOptions = Edge.ConstructorOptions;
 
-// type PointSourcePolygonType =
+type PointSourcePolygonType = PointSourcePolygon.PolygonType;
 
-// type PointSourcePolygonConfig =
+type PointSourcePolygonConfig = PointSourcePolygon.Config;
 
+// TODO: new in v13
 // type ClockwiseSweepPolygonConfig =
 
-// type RayIntersection =
+type RayIntersection = Ray.Intersection;
 
-// type QuadtreeObject =
+type QuadtreeObject<T> = Quadtree.Object<T>;
 
-// type VertexMap =
+type VertexMap = Map<number, PolygonVertex>;
 
-// type EdgeSet =
+type EdgeSet = Set<Edge>;
 
-// type PolygonRay =
+type PolygonRay = ClockwiseSweepPolygon.Ray;

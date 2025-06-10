@@ -1,5 +1,4 @@
 import "./core/index.d.mts";
-import "./extensions/index.d.mts";
 import "./groups/index.d.mts";
 import "./layers/index.d.mts";
 import "./perception/index.d.mts";

@@ -325,6 +325,7 @@ declare namespace PointSourcePolygon {
 
   type BoundaryShapes = PIXI.Rectangle | PIXI.Circle | PIXI.Polygon;
 
+  /** @remarks Foundry comments 'TODO: "universal" will be deprecated in v14' */
   type PolygonType = "light" | "sight" | "sound" | "move" | "universal";
 
   type CollisionModes = "any" | "all" | "closest";

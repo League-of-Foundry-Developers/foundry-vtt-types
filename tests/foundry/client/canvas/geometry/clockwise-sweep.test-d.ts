@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type PolygonVertex from "../../../../../src/foundry/client/canvas/edges/vertex.d.mts";
+import { ClockwiseSweepPolygon, WeilerAthertonClipper } from "#client/canvas/geometry/_module.mjs";
+import { PolygonVertex } from "#client/canvas/geometry/edges/_module.mjs";
 
 const pointA = new PIXI.Point(0, 0);
 const pointB = new PIXI.Point(0, 0);

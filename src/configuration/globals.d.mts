@@ -152,7 +152,10 @@ export import MouseInteractionManager = globalThis.MouseInteractionManager;
 export import Note = globalThis.Note;
 export import NoteDocument = globalThis.NoteDocument;
 export import NotesLayer = globalThis.NotesLayer;
-export import ObservableTransform = globalThis.ObservableTransform;
+
+/** @deprecated No deprecated global provided by foundry as of 13.345 */
+export import ObservableTransform = foundry.canvas.geometry.ObservableTransform;
+
 export import OccludableSamplerShader = globalThis.OccludableSamplerShader;
 export import OutlineOverlayFilter = globalThis.OutlineOverlayFilter;
 export import OverlayCanvasGroup = globalThis.OverlayCanvasGroup;

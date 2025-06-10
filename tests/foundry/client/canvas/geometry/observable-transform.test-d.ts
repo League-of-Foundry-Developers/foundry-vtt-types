@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { ObservableTransform } from "#client/canvas/geometry/_module.mjs";
 
 const someScope = new PIXI.Polygon();
 function someCallback(this: PIXI.Polygon) {

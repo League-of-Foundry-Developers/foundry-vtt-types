@@ -944,6 +944,18 @@ declare global {
   export import AutumnLeavesWeatherEffect = foundry.canvas.containers.AutumnLeavesWeatherEffect;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode Quadtree} which is now namespaced under {@linkcode foundry.canvas.geometry.Quadtree}"
+   * (since v13 will be removed in v15)
+   */
+  export import Quadtree = foundry.canvas.geometry.Quadtree;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasQuadtree} which is now namespaced under {@linkcode foundry.canvas.geometry.CanvasQuadtree}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasQuadtree = foundry.canvas.geometry.CanvasQuadtree;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode UnboundTransform} which is now namespaced under {@linkcode foundry.canvas.geometry.UnboundTransform}"
    * (since v13 will be removed in v15)
    */
@@ -972,6 +984,18 @@ declare global {
    * (since v13 will be removed in v15)
    */
   export import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ClockwiseSweepPolygon} which is now namespaced under {@linkcode foundry.canvas.geometry.ClockwiseSweepPolygon}"
+   * (since v13 will be removed in v15)
+   */
+  export import ClockwiseSweepPolygon = foundry.canvas.geometry.ClockwiseSweepPolygon;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode WeilerAthertonClipper} which is now namespaced under {@linkcode foundry.canvas.geometry.WeilerAthertonClipper}"
+   * (since v13 will be removed in v15)
+   */
+  export import WeilerAthertonClipper = foundry.canvas.geometry.WeilerAthertonClipper;
 
   /**
    * @deprecated "You are accessing the global {@linkcode CanvasAnimation} which is now namespaced under {@linkcode foundry.canvas.animation.CanvasAnimation}"
