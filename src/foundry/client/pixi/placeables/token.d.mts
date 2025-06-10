@@ -16,6 +16,8 @@ import type { TextureTransitionFilter } from "#client/canvas/rendering/filters/_
 import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import BaseToken = foundry.documents.BaseToken;
 import sources = foundry.canvas.sources;
+import { RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
+import RenderFlag = RenderFlags.RenderFlag;
 
 declare module "#configuration" {
   namespace Hooks {

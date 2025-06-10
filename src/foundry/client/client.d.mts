@@ -1070,6 +1070,60 @@ declare global {
   export import SmoothNoise = foundry.canvas.animation.SmoothNoise;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode MouseInteractionManager} which is now namespaced under {@linkcode foundry.canvas.interaction.MouseInteractionManager}"
+   * (since v13 will be removed in v15)
+   */
+  export import MouseInteractionManager = foundry.canvas.interaction.MouseInteractionManager;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RenderFlagsMixin} which is now namespaced under {@linkcode foundry.canvas.interaction.RenderFlagsMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import RenderFlagsMixin = foundry.canvas.interaction.RenderFlagsMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RenderFlags} which is now namespaced under {@linkcode foundry.canvas.interaction.RenderFlags}"
+   * (since v13 will be removed in v15)
+   */
+  export import RenderFlags = foundry.canvas.interaction.RenderFlags;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Ping} which is now namespaced under {@linkcode foundry.canvas.interaction.Ping}"
+   * (since v13 will be removed in v15)
+   */
+  export import Ping = foundry.canvas.interaction.Ping;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PulsePing} which is now namespaced under {@linkcode foundry.canvas.interaction.PulsePing}"
+   * (since v13 will be removed in v15)
+   */
+  export import PulsePing = foundry.canvas.interaction.PulsePing;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ChevronPing} which is now namespaced under {@linkcode foundry.canvas.interaction.ChevronPing}"
+   * (since v13 will be removed in v15)
+   */
+  export import ChevronPing = foundry.canvas.interaction.ChevronPing;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AlertPing} which is now namespaced under {@linkcode foundry.canvas.interaction.AlertPing}"
+   * (since v13 will be removed in v15)
+   */
+  export import AlertPing = foundry.canvas.interaction.AlertPing;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ArrowPing} which is now namespaced under {@linkcode foundry.canvas.interaction.ArrowPing}"
+   * (since v13 will be removed in v15)
+   */
+  export import ArrowPing = foundry.canvas.interaction.ArrowPing;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Ruler} which is now namespaced under {@linkcode foundry.canvas.interaction.Ruler}"
+   * (since v13 will be removed in v15)
+   */
+  export import Ruler = foundry.canvas.interaction.Ruler;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode BatchShaderGenerator} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchShaderGenerator}"
    * (since v13 will be removed in v15)
    */

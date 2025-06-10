@@ -1,5 +1,8 @@
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { FixedInstanceType, HandleEmptyObject } from "#utils";
+import type { ResizeHandle } from "#client/canvas/containers/_module.d.mts";
+import { RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
+import RenderFlag = RenderFlags.RenderFlag;
 
 declare module "#configuration" {
   namespace Hooks {

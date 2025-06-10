@@ -2,6 +2,8 @@ import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { FixedInstanceType, HandleEmptyObject, IntentionalPartial, NullishProps, RequiredProps } from "#utils";
 import PointDarknessSource = foundry.canvas.sources.PointDarknessSource;
 import PointLightSource = foundry.canvas.sources.PointLightSource;
+import { RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
+import RenderFlag = RenderFlags.RenderFlag;
 
 declare module "#configuration" {
   namespace Hooks {

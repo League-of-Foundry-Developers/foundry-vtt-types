@@ -16,6 +16,8 @@ import type {
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
 } from "#common/abstract/_types.d.mts";
+import { MouseInteractionManager, RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
+import RenderFlag = RenderFlags.RenderFlag;
 
 // Gets a key with a required shape to conform to which is also used as a fallback when the key doesn't exist.
 type GetKeyWithShape<T, K extends PropertyKey, S> = MakeConform<GetKey<T, K>, S>;

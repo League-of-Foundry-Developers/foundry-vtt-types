@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { MouseInteractionManager } from "#client/canvas/interaction/_module.mjs";
 
 expectTypeOf(MouseInteractionManager.INTERACTION_STATES.CLICKED).toExtend<MouseInteractionManager.INTERACTION_STATES>();
 

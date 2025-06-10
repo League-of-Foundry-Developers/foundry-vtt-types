@@ -183,7 +183,10 @@ export import RegionBehavior = globalThis.RegionBehavior;
 export import RegionDocument = globalThis.RegionDocument;
 export import RegionLayer = globalThis.RegionLayer;
 export import RegionShader = globalThis.RegionShader;
-export import RenderFlag = globalThis.RenderFlag;
+
+/** @deprecated Use {@linkcode foundry.canvas.interaction.RenderFlags.RenderFlag} instead */
+export import RenderFlag = foundry.canvas.interaction.RenderFlags.RenderFlag;
+
 export import RenderFlagsMixin = globalThis.RenderFlagsMixin;
 export import RenderedCanvasGroup = globalThis.RenderedCanvasGroup;
 export import ResizeHandle = globalThis.ResizeHandle;

@@ -4,6 +4,8 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
 import type RegionShape from "#client/canvas/regions/shape.d.mts";
 import type RegionPolygonTree from "#client/canvas/regions/polygon-tree.d.mts";
 import type RegionGeometry from "#client/canvas/regions/geometry.d.mts";
+import { RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
+import RenderFlag = RenderFlags.RenderFlag;
 
 declare module "#configuration" {
   namespace Hooks {

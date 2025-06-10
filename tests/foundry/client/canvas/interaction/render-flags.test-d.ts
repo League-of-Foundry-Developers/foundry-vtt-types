@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { RenderFlags, RenderFlagsMixin } from "#client/canvas/interaction/_module.mjs";
 
 const validFlags = { someFlag: { propagate: ["otherFlag" as const] }, otherFlag: {} };
 

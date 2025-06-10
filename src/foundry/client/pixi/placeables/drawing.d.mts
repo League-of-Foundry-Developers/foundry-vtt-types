@@ -2,6 +2,8 @@ import type { ValueOf, FixedInstanceType, HandleEmptyObject, RequiredProps, Null
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { PreciseText } from "#client/canvas/containers/_module.mjs";
+import { RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
+import RenderFlag = RenderFlags.RenderFlag;
 
 declare module "#configuration" {
   namespace Hooks {

@@ -23,7 +23,7 @@ export * as groups from "./groups/_module.mjs";
 // export * as placeables from "./placeables/_module.mjs";
 // export * as primary from "./primary/_module.mjs";
 export * as geometry from "./geometry/_module.mjs";
-// export * as interaction from "./interaction/_module.mjs";
+export * as interaction from "./interaction/_module.mjs";
 export * as animation from "./animation/_module.mjs";
 export * as rendering from "./rendering/_module.mjs";
 // export * as perception from "./perception/_module.mjs";

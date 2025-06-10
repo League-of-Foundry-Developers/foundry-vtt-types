@@ -1,4 +1,6 @@
 import type { InterfaceToObject, NullishProps } from "#utils";
+import { RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
+import RenderFlag = RenderFlags.RenderFlag;
 
 declare global {
   /**

@@ -8,6 +8,8 @@ import type {
   NullishProps,
   RequiredProps,
 } from "#utils";
+import { RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
+import RenderFlag = RenderFlags.RenderFlag;
 
 declare module "#configuration" {
   namespace Hooks {

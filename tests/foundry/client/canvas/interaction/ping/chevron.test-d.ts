@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { ChevronPing } from "#client/canvas/interaction/_module.mjs";
 
 const myPoint = new PIXI.Point(2, 2);
 

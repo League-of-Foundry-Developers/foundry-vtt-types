@@ -4,6 +4,8 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import Edge = foundry.canvas.geometry.edges.Edge;
+import { RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
+import RenderFlag = RenderFlags.RenderFlag;
 
 declare module "#configuration" {
   namespace Hooks {
