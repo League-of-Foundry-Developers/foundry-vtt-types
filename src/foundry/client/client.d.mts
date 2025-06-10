@@ -1412,6 +1412,108 @@ declare global {
   export import WorldCollection = foundry.documents.abstract.WorldCollection;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode Actors} which is now namespaced under {@linkcode foundry.documents.collections.Actors}"
+   * (since v13 will be removed in v15)
+   */
+  export import Actors = foundry.documents.collections.Actors;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CardStacks} which is now namespaced under {@linkcode foundry.documents.collections.CardStacks}"
+   * (since v13 will be removed in v15)
+   */
+  export import CardStacks = foundry.documents.collections.CardStacks;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CombatEncounters} which is now namespaced under {@linkcode foundry.documents.collections.CombatEncounters}"
+   * (since v13 will be removed in v15)
+   */
+  export import CombatEncounters = foundry.documents.collections.CombatEncounters;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode FogExplorations} which is now namespaced under {@linkcode foundry.documents.collections.FogExplorations}"
+   * (since v13 will be removed in v15)
+   */
+  export import FogExplorations = foundry.documents.collections.FogExplorations;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Folders} which is now namespaced under {@linkcode foundry.documents.collections.Folders}"
+   * (since v13 will be removed in v15)
+   */
+  export import Folders = foundry.documents.collections.Folders;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Items} which is now namespaced under {@linkcode foundry.documents.collections.Items}"
+   * (since v13 will be removed in v15)
+   */
+  export import Items = foundry.documents.collections.Items;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Journal} which is now namespaced under {@linkcode foundry.documents.collections.Journal}"
+   * (since v13 will be removed in v15)
+   */
+  export import Journal = foundry.documents.collections.Journal;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Macros} which is now namespaced under {@linkcode foundry.documents.collections.Macros}"
+   * (since v13 will be removed in v15)
+   */
+  export import Macros = foundry.documents.collections.Macros;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Messages} which is now namespaced under {@linkcode foundry.documents.collections.ChatMessages}"
+   * (since v13 will be removed in v15)
+   */
+  export import Messages = foundry.documents.collections.ChatMessages;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Playlists} which is now namespaced under {@linkcode foundry.documents.collections.Playlists}"
+   * (since v13 will be removed in v15)
+   */
+  export import Playlists = foundry.documents.collections.Playlists;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RollTables} which is now namespaced under {@linkcode foundry.documents.collections.RollTables}"
+   * (since v13 will be removed in v15)
+   */
+  export import RollTables = foundry.documents.collections.RollTables;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Scenes} which is now namespaced under {@linkcode foundry.documents.collections.Scenes}"
+   * (since v13 will be removed in v15)
+   */
+  export import Scenes = foundry.documents.collections.Scenes;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode WorldSettings} which is now namespaced under {@linkcode foundry.documents.collections.WorldSettings}"
+   * (since v13 will be removed in v15)
+   */
+  export import WorldSettings = foundry.documents.collections.WorldSettings;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Users} which is now namespaced under {@linkcode foundry.documents.collections.Users}"
+   * (since v13 will be removed in v15)
+   */
+  export import Users = foundry.documents.collections.Users;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CompendiumCollection} which is now namespaced under {@linkcode foundry.documents.collections.CompendiumCollection}"
+   * (since v13 will be removed in v15)
+   */
+  export import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CompendiumFolderCollection} which is now namespaced under {@linkcode foundry.documents.collections.CompendiumFolderCollection}"
+   * (since v13 will be removed in v15)
+   */
+  export import CompendiumFolderCollection = foundry.documents.collections.CompendiumFolderCollection;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CompendiumPacks} which is now namespaced under {@linkcode foundry.documents.collections.CompendiumPacks}"
+   * (since v13 will be removed in v15)
+   */
+  export import CompendiumPacks = foundry.documents.collections.CompendiumPacks;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode AsyncWorker} which is now namespaced under {@linkcode foundry.helpers.AsyncWorker}"
    * (since v13 will be removed in v15)
    */
