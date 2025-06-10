@@ -1,6 +1,7 @@
 import type { Identity, IntentionalPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Edge from "#client/canvas/geometry/edges/edge.d.mts";
+import type { PointSourcePolygon, Ray } from "#client/canvas/geometry/_module.d.mts";
 
 declare global {
   /**
@@ -171,7 +172,7 @@ declare global {
      */
     type DetermineEdgesReturn = IntentionalPartial<Record<Edge.EdgeTypes, 1 | 2>>;
 
-    interface Ray extends globalThis.Ray {
+    interface Ray extends foundry.canvas.geometry.Ray {
       /**
        * @remarks Only set in `ClockwiseSweepPolygon#_switchEdge` and only consumed in `#visualize`,
        * despite unrelated method(s) having parameters claiming to want a `PolygonRay`

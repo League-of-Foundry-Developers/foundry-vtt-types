@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { PolygonMesher } from "#client/canvas/geometry/_module.mjs";
 
 declare const somePoly: PIXI.Polygon;
 declare const someGometry: PIXI.Geometry;

@@ -3,6 +3,7 @@ import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 import type { PointSourceMesh } from "../containers/_module.d.mts";
+import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 
 /**
  * A specialized subclass of the BaseLightSource which renders a source of darkness as a point-based effect.

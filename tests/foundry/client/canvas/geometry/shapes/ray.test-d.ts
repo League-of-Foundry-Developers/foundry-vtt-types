@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type { LineIntersection } from "../../../../../../src/foundry/common/utils/geometry.d.mts";
+import { Ray } from "#client/canvas/geometry/_module.mjs";
 
 let myRay = Ray.towardsPoint({ x: 0, y: 0 }, { x: 1, y: 1 }, 5);
 myRay = Ray.fromAngle(50, 50, Math.PI / 2, 200);

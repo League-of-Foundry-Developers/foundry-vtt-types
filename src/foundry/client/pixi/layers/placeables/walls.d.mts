@@ -1,5 +1,6 @@
 import type { Coalesce, HandleEmptyObject, Identity, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { Ray, PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

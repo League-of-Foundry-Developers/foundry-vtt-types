@@ -950,6 +950,30 @@ declare global {
   export import UnboundTransform = foundry.canvas.geometry.UnboundTransform;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode LimitedAnglePolygon} which is now namespaced under {@linkcode foundry.canvas.geometry.LimitedAnglePolygon}"
+   * (since v13 will be removed in v15)
+   */
+  export import LimitedAnglePolygon = foundry.canvas.geometry.LimitedAnglePolygon;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PolygonMesher} which is now namespaced under {@linkcode foundry.canvas.geometry.PolygonMesher}"
+   * (since v13 will be removed in v15)
+   */
+  export import PolygonMesher = foundry.canvas.geometry.PolygonMesher;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Ray} which is now namespaced under {@linkcode foundry.canvas.geometry.Ray}"
+   * (since v13 will be removed in v15)
+   */
+  export import Ray = foundry.canvas.geometry.Ray;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PointSourcePolygon} which is now namespaced under {@linkcode foundry.canvas.geometry.PointSourcePolygon}"
+   * (since v13 will be removed in v15)
+   */
+  export import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode CanvasAnimation} which is now namespaced under {@linkcode foundry.canvas.animation.CanvasAnimation}"
    * (since v13 will be removed in v15)
    */

@@ -1,6 +1,7 @@
 import type { Brand, FixedInstanceType, Identity, IntentionalPartial, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { GridHighlight, PreciseText } from "#client/canvas/containers/_module.mjs";
+import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 
 declare global {
   /**

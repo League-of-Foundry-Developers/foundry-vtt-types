@@ -5,6 +5,7 @@ import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
 import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
+import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 
 import SimplePeerAVClient = foundry.av.clients.SimplePeerAVClient;
 

@@ -2,6 +2,7 @@ import type { FixedInstanceType, HandleEmptyObject, NullishProps } from "#utils"
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
+import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import Edge = foundry.canvas.geometry.edges.Edge;
 
 declare module "#configuration" {

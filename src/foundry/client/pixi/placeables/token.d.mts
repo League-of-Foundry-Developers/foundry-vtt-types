@@ -13,6 +13,7 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { PreciseText } from "#client/canvas/containers/_module.mjs";
 import type { TextureTransitionFilter } from "#client/canvas/rendering/filters/_module.d.mts";
+import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import BaseToken = foundry.documents.BaseToken;
 import sources = foundry.canvas.sources;
 
