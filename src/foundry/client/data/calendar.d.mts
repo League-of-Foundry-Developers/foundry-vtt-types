@@ -270,7 +270,7 @@ declare namespace CalendarData {
 declare class CalendarData<Components extends CalendarData.TimeComponents> extends DataModel<CalendarData.Schema> {
   /**
    * Expand a world time integer into an object containing the relevant time components.
-   * @param components  - An amount of time expressed as components
+   * @param components - An amount of time expressed as components
    * @returns The cumulative time in seconds
    */
   componentsToTime(components: Partial<Components>): number;
@@ -301,20 +301,20 @@ declare class CalendarData<Components extends CalendarData.TimeComponents> exten
    */
   format<Formatter extends CalendarData.Formatter>(
     time?: number | Components,
-    formatter?: CalendarData.Formatter,
+    formatter?: Formatter,
     options?: CalendarData.FormatterOptions<Formatter>,
   ): string;
 
   /**
    * Test whether a year is a leap year.
-   * @param year  - The year to test
+   * @param year - The year to test
    * @returns Is it a leap year?
    */
   isLeapYear(year: number): boolean;
 
   /**
    * Expand a world time integer into an object containing the relevant time components.
-   * @param time  - A time in seconds (default: `0`)
+   * @param time - A time in seconds (default: `0`)
    * @returns The time expressed as components
    */
   timeToComponents(time: number): Components;

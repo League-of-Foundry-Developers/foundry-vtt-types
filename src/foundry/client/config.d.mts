@@ -1446,7 +1446,7 @@ declare global {
     /**
      * Configuration for time tracking
      */
-    time: CONFIG.time;
+    time: CONFIG.Time;
 
     /**
      * Configuration for the ActiveEffect embedded document type
@@ -3309,7 +3309,7 @@ declare global {
       }
     }
 
-    interface time {
+    interface Time {
       /** The Calendar configuration used for in-world timekeeping. */
       worldCalendarConfig: foundry.data.CalendarData.CreateData;
 
@@ -3335,10 +3335,10 @@ declare global {
       roundTime: number;
 
       /** Formatting functions used to display time data as strings. */
-      formatters: CONFIG.time.formatters;
+      formatters: CONFIG.Time.formatters;
     }
 
-    namespace time {
+    namespace Time {
       interface formatters {
         timestamp: typeof foundry.data.CalendarData.formatTimestamp;
         ago: typeof foundry.data.CalendarData.formatAgo;
