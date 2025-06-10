@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { PerceptionManager } from "#client/canvas/perception/_module.mjs";
 
 const manager = new PerceptionManager();
 

@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { FogManager } from "#client/canvas/perception/_module.mjs";
 
 expectTypeOf(FogManager.COMMIT_THRESHOLD).toBeNumber();
 

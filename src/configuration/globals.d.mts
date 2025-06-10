@@ -12,6 +12,7 @@
 
 // eslint-disable-next-line import-x/no-named-default
 import { default as AlphaBlurFilter, AlphaBlurFilterPass } from "#client/canvas/rendering/filters/blur.mjs";
+import { ShaderField } from "#client/canvas/perception/vision-mode.mjs";
 
 export import AVSettings = globalThis.AVSettings;
 export import AbstractBaseFilter = globalThis.AbstractBaseFilter;
@@ -198,7 +199,10 @@ export import Ruler = globalThis.Ruler;
 export import Scene = globalThis.Scene;
 export import Scenes = globalThis.Scenes;
 export import Setting = globalThis.Setting;
-export import ShaderField = globalThis.ShaderField;
+
+/** @deprecated No longer global as of 13.345, nor exported anywhere accessible */
+export import ShaderField = ShaderField;
+
 export import SimplePeer = globalThis.SimplePeer;
 export import SirenColorationShader = globalThis.SirenColorationShader;
 export import SirenIlluminationShader = globalThis.SirenIlluminationShader;

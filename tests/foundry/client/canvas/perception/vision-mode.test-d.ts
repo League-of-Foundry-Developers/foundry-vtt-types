@@ -1,4 +1,6 @@
 import { expectTypeOf } from "vitest";
+// eslint-disable-next-line import-x/no-named-default
+import { default as VisionMode, ShaderField } from "#client/canvas/perception/vision-mode.mjs";
 
 expectTypeOf(VisionMode.LIGHTING_VISIBILITY).toExtend<
   Record<keyof VisionMode.LightingVisibility, VisionMode.LIGHTING_VISIBILITY>

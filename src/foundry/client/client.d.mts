@@ -1124,6 +1124,60 @@ declare global {
   export import Ruler = foundry.canvas.interaction.Ruler;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode FogManager} which is now namespaced under {@linkcode foundry.canvas.perception.FogManager}"
+   * (since v13 will be removed in v15)
+   */
+  export import FogManager = foundry.canvas.perception.FogManager;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PerceptionManager} which is now namespaced under {@linkcode foundry.canvas.perception.PerceptionManager}"
+   * (since v13 will be removed in v15)
+   */
+  export import PerceptionManager = foundry.canvas.perception.PerceptionManager;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode VisionMode} which is now namespaced under {@linkcode foundry.canvas.perception.VisionMode}"
+   * (since v13 will be removed in v15)
+   */
+  export import VisionMode = foundry.canvas.perception.VisionMode;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DetectionMode} which is now namespaced under {@linkcode foundry.canvas.perception.DetectionMode}"
+   * (since v13 will be removed in v15)
+   */
+  export import DetectionMode = foundry.canvas.perception.DetectionMode;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DetectionModeAll} which is now namespaced under {@linkcode foundry.canvas.perception.DetectionModeAll}"
+   * (since v13 will be removed in v15)
+   */
+  export import DetectionModeAll = foundry.canvas.perception.DetectionModeAll;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DetectionModeLightPerception} which is now namespaced under {@linkcode foundry.canvas.perception.DetectionModeLightPerception}"
+   * (since v13 will be removed in v15)
+   */
+  export import DetectionModeLightPerception = foundry.canvas.perception.DetectionModeLightPerception;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DetectionModeInvisibility} which is now namespaced under {@linkcode foundry.canvas.perception.DetectionModeInvisibility}"
+   * (since v13 will be removed in v15)
+   */
+  export import DetectionModeInvisibility = foundry.canvas.perception.DetectionModeInvisibility;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DetectionModeBasicSight} which is now namespaced under {@linkcode foundry.canvas.perception.DetectionModeDarkvision}"
+   * (since v13 will be removed in v15)
+   */
+  export import DetectionModeBasicSight = foundry.canvas.perception.DetectionModeDarkvision;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DetectionModeTremor} which is now namespaced under {@linkcode foundry.canvas.perception.DetectionModeTremor}"
+   * (since v13 will be removed in v15)
+   */
+  export import DetectionModeTremor = foundry.canvas.perception.DetectionModeTremor;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode BatchShaderGenerator} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchShaderGenerator}"
    * (since v13 will be removed in v15)
    */

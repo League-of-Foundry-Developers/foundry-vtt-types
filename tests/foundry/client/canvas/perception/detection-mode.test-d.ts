@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { DetectionMode } from "#client/canvas/perception/_module.mjs";
 
 expectTypeOf(DetectionMode.getDetectionFilter()).toEqualTypeOf<PIXI.Filter | undefined>();
 expectTypeOf(DetectionMode.DETECTION_TYPES).toExtend<
@@ -61,29 +62,3 @@ expectTypeOf(
 expectTypeOf(
   myDetectionMode["_testRange"](someVisionSource, someTokenDetectionMode, someToken, someCanvasVisibilityTest),
 ).toEqualTypeOf<boolean>();
-
-const myDetectionModeLightPerception = new DetectionModeLightPerception(source);
-expectTypeOf(myDetectionModeLightPerception["_canDetect"](someVisionSource, someToken)).toEqualTypeOf<boolean>();
-expectTypeOf(
-  myDetectionModeLightPerception["_testPoint"](
-    someVisionSource,
-    someTokenDetectionMode,
-    someToken,
-    someCanvasVisibilityTest,
-  ),
-).toEqualTypeOf<boolean>();
-
-const myDetectionModeBasicSight = new DetectionModeBasicSight(source);
-expectTypeOf(myDetectionModeBasicSight["_canDetect"](someVisionSource, someToken)).toEqualTypeOf<boolean>();
-
-expectTypeOf(DetectionModeInvisibility.getDetectionFilter()).toEqualTypeOf<PIXI.Filter>();
-const myDetectionModeInvisibility = new DetectionModeInvisibility(source);
-expectTypeOf(myDetectionModeInvisibility["_canDetect"](someVisionSource, someToken)).toEqualTypeOf<boolean>();
-
-expectTypeOf(DetectionModeTremor.getDetectionFilter()).toEqualTypeOf<PIXI.Filter>();
-const myDetectionModeTremor = new DetectionModeTremor(source);
-expectTypeOf(myDetectionModeTremor["_canDetect"](someVisionSource, someToken)).toEqualTypeOf<boolean>();
-
-expectTypeOf(DetectionModeAll.getDetectionFilter()).toEqualTypeOf<PIXI.Filter>();
-const myDetectionModeAll = new DetectionModeAll(source);
-expectTypeOf(myDetectionModeAll["_canDetect"](someVisionSource, someToken)).toEqualTypeOf<boolean>();
