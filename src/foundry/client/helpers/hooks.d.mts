@@ -22,11 +22,7 @@ declare global {
      * @param options - Options which customize hook registration
      * @returns An ID number of the hooked function which can be used to turn off the hook later
      */
-    static on<K extends keyof HookConfig.HookConfig>(
-      hook: K,
-      fn: HookConfig.HookConfig[K],
-      options?: Hooks.OnOptions,
-    ): number;
+    static on<K extends Hooks.HookName>(hook: K, fn: Hooks.Function<K>, options?: Hooks.OnOptions): number;
 
     /**
      * @deprecated These hooks are now designed to be automatically inferred.
@@ -55,7 +51,7 @@ declare global {
      * @param fn   - The callback function which should be triggered when the hook event occurs
      * @returns An ID number of the hooked function which can be used to turn off the hook later
      */
-    static once<K extends keyof HookConfig.HookConfig>(hook: K, fn: HookConfig.HookConfig[K]): number;
+    static once<K extends Hooks.HookName>(hook: K, fn: Hooks.Function<K>): number;
 
     /**
      * @deprecated These hooks are now designed to be automatically inferred.
@@ -80,7 +76,7 @@ declare global {
      * @param hook - The unique name of the hooked event
      * @param fn   - The function, or ID number for the function, that should be turned off
      */
-    static off<K extends keyof HookConfig.HookConfig>(hook: K, fn: number | HookConfig.HookConfig[K]): void;
+    static off<K extends Hooks.HookName>(hook: K, fn: number | Hooks.Function<K>): void;
 
     /**
      * @deprecated These hooks are now designed to be automatically inferred.
@@ -109,7 +105,7 @@ declare global {
      * @param hook - The hook being triggered
      * @param args - Arguments passed to the hook callback functions
      */
-    static callAll<K extends keyof HookConfig.HookConfig>(hook: K, ...args: Parameters<HookConfig.HookConfig[K]>): true;
+    static callAll<K extends Hooks.HookName>(hook: K, ...args: Hooks.HookParameters<K>): true;
 
     /**
      * @deprecated These hooks are now designed to be automatically inferred.
@@ -140,7 +136,7 @@ declare global {
      * @param hook - The hook being triggered
      * @param args - Arguments passed to the hook callback functions
      */
-    static call<K extends keyof HookConfig.HookConfig>(hook: K, ...args: Parameters<HookConfig.HookConfig[K]>): boolean;
+    static call<K extends Hooks.HookName>(hook: K, ...args: Hooks.HookParameters<K>): boolean;
 
     /**
      * @deprecated These hooks are now designed to be automatically inferred.
@@ -171,6 +167,10 @@ declare global {
   }
 
   namespace Hooks {
+    type HookName = keyof HookConfig.HookConfig;
+    type Function<K extends HookName> = HookConfig.HookConfig[K];
+    type HookParameters<K extends HookName> = Parameters<Function<K>>;
+
     interface HookedFunction {
       hook: string;
       id: number;
