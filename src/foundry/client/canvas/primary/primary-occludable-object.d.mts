@@ -1,7 +1,9 @@
 import type { FixedInstanceType, Mixin, NullishProps } from "#utils";
+import type { PrimaryCanvasObjectMixin } from "./_module.d.mts";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class PrimaryOccludableObject {
-  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /**
@@ -145,58 +147,58 @@ declare class PrimaryOccludableObject {
   renderOcclusion(renderer: PIXI.Renderer): void;
 }
 
-declare global {
-  function PrimaryOccludableObjectMixin<BaseClass extends PrimaryOccludableObjectMixin.BaseClass>(
-    DisplayObject: BaseClass,
-  ): Mixin<typeof PrimaryOccludableObject, ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>>;
+declare function PrimaryOccludableObjectMixin<BaseClass extends PrimaryOccludableObjectMixin.BaseClass>(
+  DisplayObject: BaseClass,
+): Mixin<typeof PrimaryOccludableObject, ReturnType<typeof PrimaryCanvasObjectMixin<BaseClass>>>;
 
-  namespace PrimaryOccludableObjectMixin {
-    interface AnyMixedConstructor extends ReturnType<typeof PrimaryOccludableObjectMixin<BaseClass>> {}
-    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
+declare namespace PrimaryOccludableObjectMixin {
+  interface AnyMixedConstructor extends ReturnType<typeof PrimaryOccludableObjectMixin<BaseClass>> {}
+  interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
-    type BaseClass = PIXI.Container.AnyConstructor;
+  type BaseClass = PIXI.Container.AnyConstructor;
 
-    /** @internal */
-    type _TestOcclusionOptions = NullishProps<{
-      /**
-       * Test corners of the hit-box in addition to the token center?
-       * @defaultValue `0`
-       */
-      corners: boolean;
-    }>;
+  /** @internal */
+  type _TestOcclusionOptions = NullishProps<{
+    /**
+     * Test corners of the hit-box in addition to the token center?
+     * @defaultValue `0`
+     */
+    corners: boolean;
+  }>;
 
-    /** Additional options that affect testing */
-    interface TestOcclusionOptions extends _TestOcclusionOptions {}
+  /** Additional options that affect testing */
+  interface TestOcclusionOptions extends _TestOcclusionOptions {}
 
-    interface OcclusionState {
-      /** The amount of FADE occlusion */
-      fade: number;
+  interface OcclusionState {
+    /** The amount of FADE occlusion */
+    fade: number;
 
-      /** The amount of RADIAL occlusion */
-      radial: number;
+    /** The amount of RADIAL occlusion */
+    radial: number;
 
-      /** The amount of VISION occlusion */
-      vision: number;
-    }
+    /** The amount of VISION occlusion */
+    vision: number;
+  }
 
-    interface HoverFadeState {
-      /** The hovered state */
-      hovered: boolean;
+  interface HoverFadeState {
+    /** The hovered state */
+    hovered: boolean;
 
-      /** The last time when a mouse event was hovering this object */
-      hoveredTime: number;
+    /** The last time when a mouse event was hovering this object */
+    hoveredTime: number;
 
-      /** The faded state */
-      faded: boolean;
+    /** The faded state */
+    faded: boolean;
 
-      /** The fading state */
-      fading: boolean;
+    /** The fading state */
+    fading: boolean;
 
-      /** The time the fade animation started */
-      fadingTime: number;
+    /** The time the fade animation started */
+    fadingTime: number;
 
-      /** The amount of occlusion */
-      occlusion: number;
-    }
+    /** The amount of occlusion */
+    occlusion: number;
   }
 }
+
+export default PrimaryOccludableObjectMixin;

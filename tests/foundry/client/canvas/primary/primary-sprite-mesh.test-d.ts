@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { PrimarySpriteMesh } from "#client/canvas/primary/_module.mjs";
 
 declare const someTex: PIXI.Texture;
 

@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { CanvasTransformMixin, PrimaryCanvasObjectMixin } from "#client/canvas/primary/_module.mjs";
 
 const myCT = new (CanvasTransformMixin(PIXI.Container))();
 

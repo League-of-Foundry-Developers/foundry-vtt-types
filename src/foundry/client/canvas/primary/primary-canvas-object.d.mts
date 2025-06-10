@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { FixedInstanceType, Mixin } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
+import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
 
 declare class PrimaryCanvasObject {
-  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /**
@@ -161,39 +163,38 @@ declare class CanvasTransformMixinClass {
   containsCanvasPoint(point: PIXI.IPointData): boolean;
 }
 
-declare global {
-  /**
-   * A mixin which decorates a DisplayObject with additional properties expected for rendering in the PrimaryCanvasGroup.
-   * @param DisplayObject - The parent DisplayObject class being mixed
-   * @returns A DisplayObject subclass mixed with PrimaryCanvasObject features
-   * @privateRemarks Despite naming the argument "DisplayObject", it's typed as only taking `PIXI.Container`s, which matches core's usage
-   */
-  function PrimaryCanvasObjectMixin<BaseClass extends PrimaryCanvasObjectMixin.BaseClass>(
-    DisplayObject: BaseClass,
-  ): Mixin<typeof PrimaryCanvasObject, ReturnType<typeof CanvasTransformMixin<BaseClass>>>;
+/**
+ * A mixin which decorates a DisplayObject with additional properties expected for rendering in the PrimaryCanvasGroup.
+ * @param DisplayObject - The parent DisplayObject class being mixed
+ * @returns A DisplayObject subclass mixed with PrimaryCanvasObject features
+ * @privateRemarks Despite naming the argument "DisplayObject", it's typed as only taking `PIXI.Container`s, which matches core's usage
+ */
+declare function PrimaryCanvasObjectMixin<BaseClass extends PrimaryCanvasObjectMixin.BaseClass>(
+  DisplayObject: BaseClass,
+): Mixin<typeof PrimaryCanvasObject, ReturnType<typeof CanvasTransformMixin<BaseClass>>>;
 
-  namespace PrimaryCanvasObjectMixin {
-    interface AnyMixedConstructor
-      extends ReturnType<typeof PrimaryCanvasObjectMixin<PrimaryCanvasObjectMixin.BaseClass>> {}
-    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
+declare namespace PrimaryCanvasObjectMixin {
+  interface AnyMixedConstructor
+    extends ReturnType<typeof PrimaryCanvasObjectMixin<PrimaryCanvasObjectMixin.BaseClass>> {}
+  interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
-    type BaseClass = PIXI.Container.AnyConstructor;
-  }
-
-  /**
-   * A mixin which decorates a DisplayObject with additional properties for canvas transforms and bounds.
-   * @param DisplayObject - The parent DisplayObject class being mixed
-   * @returns A DisplayObject subclass mixed with CanvasTransformMixin features
-   * @privateRemarks Despite naming the argument "DisplayObject", it's typed as only taking `PIXI.Container`s, which matches core's usage
-   */
-  function CanvasTransformMixin<BaseClass extends CanvasTransformMixin.BaseClass>(
-    DisplayObject: BaseClass,
-  ): Mixin<typeof CanvasTransformMixinClass, BaseClass>;
-
-  namespace CanvasTransformMixin {
-    interface AnyMixedConstructor extends ReturnType<typeof CanvasTransformMixin<CanvasTransformMixin.BaseClass>> {}
-    interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
-
-    type BaseClass = PIXI.Container.AnyConstructor;
-  }
+  type BaseClass = PIXI.Container.AnyConstructor;
 }
+
+/**
+ * A mixin which decorates a DisplayObject with additional properties for canvas transforms and bounds.
+ * @param DisplayObject - The parent DisplayObject class being mixed
+ * @returns A DisplayObject subclass mixed with CanvasTransformMixin features
+ * @privateRemarks Despite naming the argument "DisplayObject", it's typed as only taking `PIXI.Container`s, which matches core's usage
+ */
+declare function CanvasTransformMixin<BaseClass extends CanvasTransformMixin.BaseClass>(
+  DisplayObject: BaseClass,
+): Mixin<typeof CanvasTransformMixinClass, BaseClass>;
+
+declare namespace CanvasTransformMixin {
+  interface AnyMixedConstructor extends ReturnType<typeof CanvasTransformMixin<CanvasTransformMixin.BaseClass>> {}
+  interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
+
+  type BaseClass = PIXI.Container.AnyConstructor;
+}
+export { PrimaryCanvasObjectMixin as default, CanvasTransformMixin };

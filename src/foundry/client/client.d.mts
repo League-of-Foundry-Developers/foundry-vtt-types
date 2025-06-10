@@ -1178,6 +1178,48 @@ declare global {
   export import DetectionModeTremor = foundry.canvas.perception.DetectionModeTremor;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryCanvasContainer} which is now namespaced under {@linkcode foundry.canvas.primary.PrimaryCanvasContainer}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryCanvasContainer = foundry.canvas.primary.PrimaryCanvasContainer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryGraphics} which is now namespaced under {@linkcode foundry.canvas.primary.PrimaryGraphics}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryGraphics = foundry.canvas.primary.PrimaryGraphics;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryParticleEffect} which is now namespaced under {@linkcode foundry.canvas.primary.PrimaryParticleEffect}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryParticleEffect = foundry.canvas.primary.PrimaryParticleEffect;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimarySpriteMesh} which is now namespaced under {@linkcode foundry.canvas.primary.PrimarySpriteMesh}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryOccludableObjectMixin} which is now namespaced under {@linkcode foundry.canvas.primary.PrimaryOccludableObjectMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryOccludableObjectMixin = foundry.canvas.primary.PrimaryOccludableObjectMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryCanvasObjectMixin} which is now namespaced under {@linkcode foundry.canvas.primary.PrimaryCanvasObjectMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryCanvasObjectMixin = foundry.canvas.primary.PrimaryCanvasObjectMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasTransformMixin} which is now namespaced under {@linkcode foundry.canvas.primary.CanvasTransformMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasTransformMixin = foundry.canvas.primary.CanvasTransformMixin;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode BatchShaderGenerator} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchShaderGenerator}"
    * (since v13 will be removed in v15)
    */

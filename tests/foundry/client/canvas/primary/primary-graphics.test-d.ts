@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import { PrimaryGraphics } from "#client/canvas/primary/_module.mjs";
 
 declare const someToken: Token.Implementation;
 declare const someGG: PIXI.GraphicsGeometry;
