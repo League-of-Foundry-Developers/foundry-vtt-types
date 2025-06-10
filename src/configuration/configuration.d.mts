@@ -317,3 +317,20 @@ export interface SettingConfig {
   "core.tokenDragPreview": boolean;
   "core.visionAnimation": boolean;
 }
+
+/**
+ * Allows you to control the name of your system. Useful for typing things like `game.system.id`
+ * @example
+ * ```typescript
+ * declare module "fvtt-types/configuration" {
+ *   interface SystemNameConfig {
+ *     name: "lancer";
+ *   }
+ * }
+ *
+ * const systemName = game.system.id;
+ * //    ^? "lancer"
+ * ```
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface SystemNameConfig {}

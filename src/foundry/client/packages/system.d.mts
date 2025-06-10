@@ -2,6 +2,8 @@ import type BasePackage from "#common/packages/base-package.d.mts";
 import type AdditionalTypesField from "#common/packages/sub-types.d.mts";
 import type DataModel from "#common/abstract/data.mjs";
 import type ClientPackageMixin from "./client-package.d.mts";
+import type { SystemNameConfig } from "#configuration";
+import type { GetKey } from "fvtt-types/utils";
 
 import fields = foundry.data.fields;
 import Game = foundry.Game;
@@ -11,6 +13,8 @@ declare class System extends ClientPackageMixin(foundry.packages.BaseSystem) {
 
   // options: not null (parameter default only, destructured in super)
   protected override _configure(options?: DataModel.ConfigureOptions): void;
+
+  id: GetKey<SystemNameConfig, "name", string>;
 
   /**
    * @deprecated since v12, will be removed in v14
