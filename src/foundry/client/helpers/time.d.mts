@@ -37,7 +37,7 @@ declare class GameTime {
    * Initialize a calendar configuration.
    * This is called once automatically upon construction, but can be called manually if `CONFIG.time` changes.
    */
-  initializeCalendar: void;
+  initializeCalendar(): void;
 
   /**
    * Advance or rewind the world time according to a delta amount expressed either in seconds or as components.
@@ -56,7 +56,7 @@ declare class GameTime {
   set(time: CalendarData.TimeComponents | number, options?: AnyObject): Promise<number>;
 
   /** Synchronize the local client game time with the official time kept by the server */
-  sync: Promise<GameTime>;
+  sync(): Promise<GameTime>;
 
   /**
    * Handle follow-up actions when the official World time is changed
