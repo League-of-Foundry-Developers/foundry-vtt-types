@@ -295,7 +295,7 @@ declare namespace MouseInteractionManager {
    *   - For Regions specifically, `hoverOut` takes an `options: { updateLegend: boolean }` object, and that key is also added to Region `hoverIn` options
    * - `longPress` receives `origin: PIXI.Point`
    */
-  type CallbackFunction = (event: Event | PIXI.FederatedEvent, ...args: AnyArray) => boolean | null | void;
+  type CallbackFunction = (event: Event | PIXI.FederatedEvent, ...args: never) => boolean | null | void;
 
   type Callbacks = Partial<Record<Action, CallbackFunction>>;
 
