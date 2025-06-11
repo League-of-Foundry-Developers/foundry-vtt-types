@@ -175,9 +175,10 @@ declare namespace WorldCollection {
     | (GetKey<Options, "keepId", undefined> extends true ? never : never)
   >;
 
-  type Pack<DocumentName extends Document.Type> = DocumentName extends CompendiumCollection.DocumentName
-    ? CompendiumCollection<DocumentName>
-    : never;
+  type Pack<DocumentName extends Document.Type> =
+    DocumentName extends foundry.documents.collections.CompendiumCollection.DocumentName
+      ? foundry.documents.collections.CompendiumCollection<DocumentName>
+      : never;
 }
 
 declare abstract class AnyWorldCollection extends WorldCollection<Document.Type, string> {

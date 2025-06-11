@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 import type { DeepPartial } from "fvtt-types/utils";
 import { CompendiumCollection } from "#client/documents/collections/_module.mjs";
 
-const compendiumCollection = await CompendiumCollection.createCompendium({
+const compendiumCollection = await foundry.documents.collections.CompendiumCollection.createCompendium({
   type: "JournalEntry",
   label: "Important Plotholes",
   name: "plotholes",
@@ -29,13 +29,13 @@ const metadata = {
     ASSISTANT: "INHERIT",
     GAMEMASTER: "OWNER",
   },
-} satisfies CompendiumCollection.Metadata;
+} satisfies foundry.documents.collections.CompendiumCollection.Metadata;
 
 const constructorMetadata = {
   ...metadata,
   index: new foundry.utils.Collection(),
   folders: [],
-} satisfies CompendiumCollection.ConstructorMetadata<"JournalEntry">;
+} satisfies foundry.documents.collections.CompendiumCollection.ConstructorMetadata<"JournalEntry">;
 
 const compendium2 = new CompendiumCollection(constructorMetadata);
 
@@ -58,9 +58,9 @@ if (compendiumCollection instanceof DocumentCollection) {
   expectTypeOf(compendiumCollection).toExtend<CompendiumCollectionType>();
 }
 
-expectTypeOf((await compendiumCollection.getIndex()).get("some id", { strict: true })).toEqualTypeOf<
-  { _id: string; uuid: string } & DeepPartial<foundry.documents.BaseJournalEntry["_source"]>
->();
+expectTypeOf(
+  (await foundry.documents.collections.CompendiumCollection.getIndex()).get("some id", { strict: true }),
+).toEqualTypeOf<{ _id: string; uuid: string } & DeepPartial<foundry.documents.BaseJournalEntry["_source"]>>();
 
 expectTypeOf(compendiumCollection.documentClass).toEqualTypeOf<JournalEntry.ImplementationClass>();
 

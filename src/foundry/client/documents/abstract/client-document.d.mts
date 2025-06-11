@@ -54,8 +54,8 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): DocumentName extends CompendiumCollection.DocumentName
-    ? CompendiumCollection<DocumentName>
+  get compendium(): DocumentName extends foundry.documents.collections.CompendiumCollection.DocumentName
+    ? foundry.documents.collections.CompendiumCollection<DocumentName>
     : undefined;
 
   /**
@@ -416,7 +416,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    */
   // options: not null (destructured)
   toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
-    pack?: CompendiumCollection<CompendiumCollection.DocumentName> | null,
+    pack?: foundry.documents.collections.CompendiumCollection<foundry.documents.collections.CompendiumCollection.DocumentName> | null,
     options?: Options,
   ): ClientDocument.ToCompendiumReturnType<DocumentName, Options>;
 

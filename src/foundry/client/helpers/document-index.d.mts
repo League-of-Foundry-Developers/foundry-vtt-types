@@ -92,7 +92,7 @@ declare class DocumentIndex {
     doc: foundry.abstract.Document.Any,
     options?: {
       /** The compendium that the index belongs to. */
-      pack?: CompendiumCollection.Any;
+      pack?: foundry.documents.collections.CompendiumCollection.Any;
     },
   ): void;
 
@@ -101,7 +101,7 @@ declare class DocumentIndex {
    * @param pack - The compendium pack.
    * @internal
    */
-  protected _indexCompendium(pack: CompendiumCollection.Any): void;
+  protected _indexCompendium(pack: foundry.documents.collections.CompendiumCollection.Any): void;
 
   /**
    * Add all of a parent document's embedded documents to the index.
