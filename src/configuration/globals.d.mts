@@ -13,6 +13,7 @@
 // eslint-disable-next-line import-x/no-named-default
 import { default as AlphaBlurFilter, AlphaBlurFilterPass } from "#client/canvas/rendering/filters/blur.mjs";
 import { ShaderField } from "#client/canvas/perception/vision-mode.mjs";
+import { DarknessLevelContainer } from "#client/canvas/layers/_module.mjs";
 
 export import AVSettings = globalThis.AVSettings;
 export import AbstractBaseFilter = globalThis.AbstractBaseFilter;
@@ -91,7 +92,10 @@ export import CompendiumCollection = globalThis.CompendiumCollection;
 export import CompendiumPacks = globalThis.CompendiumPacks;
 export import ControlIcon = globalThis.ControlIcon;
 export import ControlsLayer = globalThis.ControlsLayer;
-export import DarknessLevelContainer = globalThis.DarknessLevelContainer;
+
+/** @deprecated No longer global as of 13.345, nor exported anywhere accessible */
+export import DarknessLevelContainer = DarknessLevelContainer;
+
 export import DepthSamplerShader = globalThis.DepthSamplerShader;
 export import DetectionMode = globalThis.DetectionMode;
 export import DirectoryCollectionMixin = globalThis.DirectoryCollectionMixin;
