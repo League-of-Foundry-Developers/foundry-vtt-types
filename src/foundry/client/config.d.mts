@@ -1446,13 +1446,7 @@ declare global {
     /**
      * Configuration for time tracking
      */
-    time: {
-      /** @defaultValue `0` */
-      turnTime: number;
-
-      /** @defaultValue `0` */
-      roundTime: number;
-    };
+    time: CONFIG.Time;
 
     /**
      * Configuration for the ActiveEffect embedded document type
@@ -3312,6 +3306,42 @@ declare global {
       interface Sounds {
         epic: CONFIG.Combat.SoundPreset;
         mc: CONFIG.Combat.SoundPreset;
+      }
+    }
+
+    interface Time {
+      /** The Calendar configuration used for in-world timekeeping. */
+      worldCalendarConfig: foundry.data.CalendarData.CreateData;
+
+      /** The CalendarData subclass is used for in-world timekeeping. */
+      worldCalendarClass: typeof foundry.data.CalendarData;
+
+      /** The Calendar configuration used for IRL timekeeping. */
+      earthCalendarConfig: foundry.data.CalendarData.CreateData;
+
+      /** The CalendarData subclass is used for IRL timekeeping. */
+      earthCalendarClass: typeof foundry.data.CalendarData;
+
+      /**
+       * The number of seconds which automatically elapse at the end of a Combat turn.
+       * @defaultValue `0`
+       */
+      turnTime: number;
+
+      /**
+       * The number of seconds which automatically elapse at the end of a Combat round.
+       * @defaultValue `0`
+       */
+      roundTime: number;
+
+      /** Formatting functions used to display time data as strings. */
+      formatters: CONFIG.Time.formatters;
+    }
+
+    namespace Time {
+      interface formatters {
+        timestamp: typeof foundry.data.CalendarData.formatTimestamp;
+        ago: typeof foundry.data.CalendarData.formatAgo;
       }
     }
   }
