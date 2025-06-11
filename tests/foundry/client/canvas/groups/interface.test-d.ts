@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { InterfaceCanvasGroup } from "#client/canvas/groups/_module.mjs";
+import type { Drawing } from "#client/canvas/placeables/_module.d.mts";
 
 expectTypeOf(InterfaceCanvasGroup.groupName).toEqualTypeOf<"interface">();
 

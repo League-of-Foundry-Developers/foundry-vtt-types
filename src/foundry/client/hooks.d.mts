@@ -14,6 +14,11 @@ import type CompendiumArt from "#client/helpers/media/compendium-art.d.mts";
 import type { Hooks as HookConfigs } from "#configuration";
 import type Hooks from "./helpers/hooks.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { CanvasGroupMixin, CanvasVisibility, EffectsCanvasGroup } from "#client/canvas/groups/_module.d.mts";
+import type * as layers from "#client/canvas/layers/_module.d.mts";
+
+import type { Note, PlaceableObject, Token } from "#client/canvas/placeables/_module.d.mts";
+import type { TokenRingConfig } from "#client/canvas/placeables/tokens/_module.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
 import Application = foundry.appv1.api.Application;
@@ -183,7 +188,11 @@ interface AllCanvasLayers extends CanvasLayerConfig, InteractionLayerConfig, Pla
 // TODO(LukeAbby): Add warning for invalid configuration.
 // Grabs only valid items.
 type CanvasLayerName = {
-  [K in keyof AllCanvasLayers]: K extends string ? (AllCanvasLayers[K] extends CanvasLayer.Any ? K : never) : never;
+  [K in keyof AllCanvasLayers]: K extends string
+    ? AllCanvasLayers[K] extends layers.CanvasLayer.Any
+      ? K
+      : never
+    : never;
 }[keyof AllCanvasLayers];
 
 type DrawCanvasLayerHooks = {
@@ -203,7 +212,7 @@ interface AllInteractionLayers extends InteractionLayerConfig, PlaceablesLayerCo
 // Grabs only valid items.
 type InteractionLayerName = {
   [K in keyof AllInteractionLayers]: K extends string
-    ? AllInteractionLayers[K] extends InteractionLayer.Any
+    ? AllInteractionLayers[K] extends layers.InteractionLayer.Any
       ? K
       : never
     : never;
@@ -231,15 +240,15 @@ interface InteractionLayerHooks
 // Grabs only valid items.
 type PlaceableLayerName = {
   [K in keyof PlaceablesLayerConfig]: K extends string
-    ? PlaceablesLayerConfig[K] extends PlaceablesLayer.Any
+    ? PlaceablesLayerConfig[K] extends layers.PlaceablesLayer.Any
       ? K
       : never
     : never;
 }[keyof PlaceablesLayerConfig];
 
 type PastePlaceableLayerHooks = {
-  [K in PlaceableLayerName as `paste${PlaceablesLayer.DocumentNameOf<PlaceablesLayerConfig[K]>}`]: Hooks.PastePlaceableObject<
-    PlaceablesLayer.ObjectOf<PlaceablesLayerConfig[K]>
+  [K in PlaceableLayerName as `paste${layers.PlaceablesLayer.DocumentNameOf<PlaceablesLayerConfig[K]>}`]: Hooks.PastePlaceableObject<
+    layers.PlaceablesLayer.ObjectOf<PlaceablesLayerConfig[K]>
   >;
 };
 
@@ -380,7 +389,11 @@ export interface AllHooks extends DynamicHooks {
    */
   dropCanvasData: (
     canvas: Canvas,
-    data: TokenLayer.DropData | NotesLayer.DropData | SoundsLayer.DropData | TilesLayer.DropData,
+    data:
+      | layers.TokenLayer.DropData
+      | layers.NotesLayer.DropData
+      | layers.SoundsLayer.DropData
+      | layers.TilesLayer.DropData,
   ) => boolean | void;
 
   /**
@@ -630,7 +643,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@link LightingLayer.refresh | `LightingLayer#refresh`}
    */
-  lightingRefresh: (layer: LightingLayer) => void;
+  lightingRefresh: (layer: layers.LightingLayer) => void;
 
   /**
    * A hook event that fires when visibility is refreshed.
@@ -673,8 +686,8 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   initializeWeatherEffects: (
-    weatherEffect: WeatherEffects,
-    weatherEffectsConfig?: WeatherEffects.EffectConfiguration | null,
+    weatherEffect: layers.WeatherEffects,
+    weatherEffectsConfig?: layers.WeatherEffects.EffectConfiguration | null,
   ) => void;
 
   /** Adventure */
@@ -946,7 +959,7 @@ export interface AllHooks extends DynamicHooks {
    * @param ringConfig - The ring configuration instance
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  initializeDynamicTokenRingConfig: (ringConfig: foundry.canvas.tokens.TokenRingConfig) => void;
+  initializeDynamicTokenRingConfig: (ringConfig: TokenRingConfig) => void;
 
   /**
    * A hook event that fires when the context menu for a PlayersList entry is constructed.
@@ -1145,7 +1158,7 @@ declare global {
      * @param layer - The layer being drawn
      * @template L - the type of the CanvasLayer
      */
-    type DrawLayer<L extends CanvasLayer.Any = CanvasLayer.Any> = (layer: L) => void;
+    type DrawLayer<L extends layers.CanvasLayer.Any = layers.CanvasLayer.Any> = (layer: L) => void;
 
     /**
      * A hook event that fires when a {@linkcode CanvasLayer} is deconstructed.
@@ -1153,7 +1166,7 @@ declare global {
      * @param layer - The layer being deconstructed
      * @template L - the type of the CanvasLayer
      */
-    type TearDownLayer<L extends CanvasLayer.Any = CanvasLayer.Any> = (layer: L) => void;
+    type TearDownLayer<L extends layers.CanvasLayer.Any = layers.CanvasLayer.Any> = (layer: L) => void;
 
     /**
      * A hook event that fires when any PlaceableObject is pasted onto the Scene.
@@ -1398,7 +1411,7 @@ declare global {
      * @param layer - The layer becoming active
      * @remarks This is called by {@linkcode Hooks.callAll}.
      */
-    type ActivateLayer<L extends InteractionLayer = InteractionLayer> = (layer: L) => void;
+    type ActivateLayer<L extends layers.InteractionLayer = layers.InteractionLayer> = (layer: L) => void;
 
     /**
      * A hook event that fires with a {@linkcode InteractionLayer} becomes inactive.
@@ -1406,7 +1419,7 @@ declare global {
      * @param layer - The layer becoming inactive
      * @remarks This is called by {@linkcode Hooks.callAll}.
      */
-    type DeactivateLayer<L extends InteractionLayer = InteractionLayer> = (layer: L) => void;
+    type DeactivateLayer<L extends layers.InteractionLayer = layers.InteractionLayer> = (layer: L) => void;
 
     /**
      * A hook event that fires when the context menu for entries in an Application is constructed. Substitute the
@@ -1491,7 +1504,7 @@ declare global {
       | GetSidebarDirectoryFolderContext;
 
     interface ErrorCallbackParameters {
-      "Canvas#draw": [location: "Canvas#draw", err: Error, data: { layer: CanvasLayer }];
+      "Canvas#draw": [location: "Canvas#draw", err: Error, data: { layer: layers.CanvasLayer }];
       "Application#render": [location: "Application#render", err: Error, data: Application.RenderOptions];
       "Localization#_loadTranslationFile": [
         location: "Localization#_loadTranslationFile",

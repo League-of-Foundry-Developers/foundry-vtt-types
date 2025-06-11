@@ -3,6 +3,12 @@ import type { PrimaryCanvasGroupAmbienceFilter } from "#client/canvas/rendering/
 import type { CachedContainer, SpriteMesh } from "#client/canvas/containers/_module.d.mts";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
 import type { CanvasQuadtree } from "#client/canvas/geometry/quad-tree.d.mts";
+import type { Drawing, Tile, Token } from "#client/canvas/placeables/_module.d.mts";
+import type {
+  PrimaryCanvasObjectMixin,
+  PrimaryGraphics,
+  PrimarySpriteMesh,
+} from "#client/canvas/primary/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

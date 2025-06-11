@@ -14,8 +14,8 @@ type AmbientSoundPlaybackConfig = foundry.canvas.layers.SoundsLayer.AmbientSound
 type CanvasHistoryEvent<DocumentName extends foundry.abstract.Document.PlaceableType> =
   foundry.canvas.layers.PlaceablesLayer.HistoryEntry<DocumentName>;
 
-// type PlaceablesLayerOptions<Placeable extends foundry.canvas.placeables.PlaceableObject.AnyConstructor> =
-//   foundry.canvas.placeables.PlaceableObject.LayerOptions<Placeable>;
+type PlaceablesLayerOptions<Placeable extends foundry.canvas.placeables.PlaceableObject.AnyConstructor> =
+  foundry.canvas.layers.PlaceablesLayer.LayerOptions<Placeable>;
 
 type CanvasVisionContainerSight = foundry.canvas.layers.CanvasVisionMask.CanvasVisionContainerSight;
 

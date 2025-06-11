@@ -3,6 +3,7 @@ import type { DeepPartial, Identity } from "../../../../../utils/index.d.mts";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type AbstractSidebarTab from "../sidebar-tab.d.mts";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

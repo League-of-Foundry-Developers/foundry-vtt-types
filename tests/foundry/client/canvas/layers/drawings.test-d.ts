@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { DrawingsLayer } from "#client/canvas/layers/_module.mjs";
+import type { Drawing } from "#client/canvas/placeables/_module.d.mts";
 
 expectTypeOf(DrawingsLayer.documentName).toEqualTypeOf<"Drawing">();
 expectTypeOf(DrawingsLayer.instance).toEqualTypeOf<DrawingsLayer | undefined>();

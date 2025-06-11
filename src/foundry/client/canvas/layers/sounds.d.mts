@@ -1,6 +1,7 @@
 import type { IntentionalPartial, InexactPartial, NullishProps, HandleEmptyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
+import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

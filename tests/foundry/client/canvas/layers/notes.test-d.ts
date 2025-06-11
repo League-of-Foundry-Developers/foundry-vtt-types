@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { NotesLayer } from "#client/canvas/layers/_module.mjs";
+import type { Note } from "#client/canvas/placeables/_module.d.mts";
 
 expectTypeOf(NotesLayer.documentName).toEqualTypeOf<"Note">();
 expectTypeOf(NotesLayer.instance).toEqualTypeOf<NotesLayer | undefined>();

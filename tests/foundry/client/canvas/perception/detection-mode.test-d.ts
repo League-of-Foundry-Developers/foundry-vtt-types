@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { DetectionMode } from "#client/canvas/perception/_module.mjs";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 expectTypeOf(DetectionMode.getDetectionFilter()).toEqualTypeOf<PIXI.Filter | undefined>();
 expectTypeOf(DetectionMode.DETECTION_TYPES).toExtend<

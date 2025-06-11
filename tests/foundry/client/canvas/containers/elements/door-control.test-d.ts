@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { DoorControl } from "#client/canvas/containers/_module.mjs";
+import type { Wall } from "#client/canvas/placeables/_module.d.mts";
 
 declare const wall: Wall.Implementation;
 

@@ -1,5 +1,5 @@
 import type { Identity, NullishProps } from "#utils";
-import type TokenRing from "#client/canvas/tokens/ring.d.mts";
+import type { TokenRing } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { OccludableSamplerShader, PrimaryBaseSamplerShader } from "../../_module.mjs";
 import type { BatchRenderer } from "../../../batching/_module.mjs";
 

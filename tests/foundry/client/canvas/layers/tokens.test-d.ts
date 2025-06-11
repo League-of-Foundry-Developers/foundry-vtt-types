@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { TokenLayer } from "#client/canvas/layers/_module.mjs";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 expectTypeOf(TokenLayer.documentName).toEqualTypeOf<"Token">();
 expectTypeOf(TokenLayer.instance).toEqualTypeOf<TokenLayer | undefined>();

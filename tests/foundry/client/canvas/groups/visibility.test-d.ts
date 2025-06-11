@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { CanvasVisibility } from "#client/canvas/groups/_module.mjs";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 const layer = new CanvasVisibility();
 

@@ -1,4 +1,5 @@
 import type { FixedInstanceType, Identity } from "#utils";
+import type { Wall } from "#client/canvas/placeables/_module.d.mts";
 
 /**
  * An icon representing a Door Control

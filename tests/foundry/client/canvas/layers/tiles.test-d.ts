@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { TilesLayer } from "#client/canvas/layers/_module.mjs";
+import type { Tile } from "#client/canvas/placeables/_module.d.mts";
 
 expectTypeOf(TilesLayer.documentName).toEqualTypeOf<"Tile">();
 expectTypeOf(TilesLayer.instance).toEqualTypeOf<TilesLayer | undefined>();

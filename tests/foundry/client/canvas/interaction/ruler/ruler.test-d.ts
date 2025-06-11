@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { Ruler } from "#client/canvas/interaction/_module.mjs";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 expectTypeOf(Ruler.STATES).toExtend<Record<keyof Ruler.States, Ruler.STATES>>();
 expectTypeOf(Ruler.canMeasure).toBeBoolean();

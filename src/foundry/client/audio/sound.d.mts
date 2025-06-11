@@ -1,5 +1,6 @@
 import type { Brand, InexactPartial, MaybePromise, NullishProps, Identity } from "#utils";
 import type EventEmitterMixin from "#common/utils/event-emitter.d.mts";
+import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
 
 declare namespace Sound {
   interface Any extends AnySound {}

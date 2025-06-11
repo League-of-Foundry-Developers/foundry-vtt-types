@@ -4,6 +4,7 @@ import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseMacro from "#common/documents/macro.d.mts";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 import fields = foundry.data.fields;
 

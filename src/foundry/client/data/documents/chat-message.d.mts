@@ -4,6 +4,7 @@ import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
 import type BaseChatMessage from "#common/documents/chat-message.d.mts";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 import fields = foundry.data.fields;
 

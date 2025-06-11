@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { Edge, PolygonVertex } from "#client/canvas/geometry/edges/_module.mjs";
+import type { PlaceableObject, Wall } from "#client/canvas/placeables/_module.d.mts";
 
 declare const p: Canvas.Point;
 declare const someWall: Wall.Implementation;

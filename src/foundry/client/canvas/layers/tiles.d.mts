@@ -1,6 +1,7 @@
 import type { HandleEmptyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { CanvasDepthMask, PlaceablesLayer } from "./_module.d.mts";
+import type { Tile } from "#client/canvas/placeables/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

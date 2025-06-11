@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { DetectionMode, DetectionModeInvisibility } from "#client/canvas/perception/_module.mjs";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 const source = {
   id: "foo",

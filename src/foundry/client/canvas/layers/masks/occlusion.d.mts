@@ -1,6 +1,7 @@
 import type { Identity } from "#utils";
 import type { CachedContainer } from "#client/canvas/containers/_module.d.mts";
 import type { PrimaryCanvasObjectMixin } from "#client/canvas/primary/_module.d.mts";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 /**
  * The occlusion mask which contains radial occlusion and vision occlusion from tokens.

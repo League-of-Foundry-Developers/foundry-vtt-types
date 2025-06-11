@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type PointLightSource from "../../../../../src/foundry/client/canvas/sources/point-light-source.d.mts";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 const PLS = foundry.canvas.sources.PointLightSource;
 

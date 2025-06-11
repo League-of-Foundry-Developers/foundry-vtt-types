@@ -1,4 +1,6 @@
 import type { AllHooks } from "#client/hooks.mjs";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import type { WeatherEffects } from "#client/canvas/layers/_module.mjs";
 
 export interface HookConfig extends AllHooks {}
 

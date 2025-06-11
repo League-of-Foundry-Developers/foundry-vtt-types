@@ -1,16 +1,17 @@
 import { expectTypeOf } from "vitest";
 import { TemplateLayer } from "#client/canvas/layers/_module.mjs";
+import type { MeasuredTemplate } from "#client/canvas/placeables/_module.d.mts";
 
 expectTypeOf(TemplateLayer.documentName).toEqualTypeOf<"MeasuredTemplate">();
 expectTypeOf(TemplateLayer.instance).toEqualTypeOf<TemplateLayer | undefined>();
 expectTypeOf(TemplateLayer.layerOptions).toEqualTypeOf<TemplateLayer.LayerOptions>();
 expectTypeOf(TemplateLayer.layerOptions.name).toEqualTypeOf<"templates">();
-expectTypeOf(TemplateLayer.layerOptions.objectClass).toEqualTypeOf<MeasuredTemplate.Implementation>();
+expectTypeOf(TemplateLayer.layerOptions.objectClass).toEqualTypeOf<MeasuredTemplate.ImplementationClass>();
 expectTypeOf(TemplateLayer.registerSettings()).toEqualTypeOf<void>();
 
 const layer = new TemplateLayer();
 
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<MeasuredTemplate.Implementation>();
+expectTypeOf(layer.options.objectClass).toEqualTypeOf<MeasuredTemplate.ImplementationClass>();
 expectTypeOf(layer.options).toEqualTypeOf<TemplateLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"templates">();
 

@@ -3,6 +3,8 @@ import type { documents } from "#client/client.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { InterfaceToObject, Merge } from "#utils";
 import type BaseJournalEntry from "#common/documents/journal-entry.mjs";
+import type { Note } from "#client/canvas/placeables/_module.d.mts";
+import type { NotesLayer } from "#client/canvas/layers/_module.d.mts";
 
 import fields = foundry.data.fields;
 

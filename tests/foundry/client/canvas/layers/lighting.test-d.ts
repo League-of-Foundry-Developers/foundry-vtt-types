@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { LightingLayer } from "#client/canvas/layers/_module.mjs";
+import type { AmbientLight } from "#client/canvas/placeables/_module.d.mts";
 
 expectTypeOf(LightingLayer.documentName).toEqualTypeOf<"AmbientLight">();
 expectTypeOf(LightingLayer.instance).toEqualTypeOf<LightingLayer | undefined>();

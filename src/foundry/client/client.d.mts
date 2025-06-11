@@ -238,6 +238,12 @@ declare global {
   export import DocumentSheet = foundry.appv1.api.DocumentSheet;
 
   /**
+   * A "secret" global to help debug attributes of the currently controlled Token.
+   * This is only for debugging, and may be removed in the future, so it's not safe to use.
+   */
+  let _token: foundry.canvas.placeables.Token.Implementation | null;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode Game} which is now namespaced under {@linkcode foundry.Game}"
    * (since v13 will be removed in v15)
    */
@@ -818,6 +824,12 @@ declare global {
   export import Canvas = foundry.canvas.Canvas;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode SceneManager} which is now namespaced under {@linkcode foundry.canvas.SceneManager}"
+   * (since v13 will be removed in v15)
+   */
+  export import SceneManager = foundry.canvas.SceneManager;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode FramebufferSnapshot} which is now namespaced under {@linkcode foundry.canvas.FramebufferSnapshot}"
    * (since v13 will be removed in v15)
    */
@@ -1130,6 +1142,66 @@ declare global {
   export import TokenLayer = foundry.canvas.layers.TokenLayer;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode PlaceableObject} which is now namespaced under {@linkcode foundry.canvas.placeables.PlaceableObject}"
+   * (since v13 will be removed in v15)
+   */
+  export import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Drawing} which is now namespaced under {@linkcode foundry.canvas.placeables.Drawing}"
+   * (since v13 will be removed in v15)
+   */
+  export import Drawing = foundry.canvas.placeables.Drawing;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Note} which is now namespaced under {@linkcode foundry.canvas.placeables.Note}"
+   * (since v13 will be removed in v15)
+   */
+  export import Note = foundry.canvas.placeables.Note;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Region} which is now namespaced under {@linkcode foundry.canvas.placeables.Region}"
+   * (since v13 will be removed in v15)
+   */
+  export import Region = foundry.canvas.placeables.Region;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Tile} which is now namespaced under {@linkcode foundry.canvas.placeables.Tile}"
+   * (since v13 will be removed in v15)
+   */
+  export import Tile = foundry.canvas.placeables.Tile;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Token} which is now namespaced under {@linkcode foundry.canvas.placeables.Token}"
+   * (since v13 will be removed in v15)
+   */
+  export import Token = foundry.canvas.placeables.Token;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode MeasuredTemplate} which is now namespaced under {@linkcode foundry.canvas.placeables.MeasuredTemplate}"
+   * (since v13 will be removed in v15)
+   */
+  export import MeasuredTemplate = foundry.canvas.placeables.MeasuredTemplate;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Wall} which is now namespaced under {@linkcode foundry.canvas.placeables.Wall}"
+   * (since v13 will be removed in v15)
+   */
+  export import Wall = foundry.canvas.placeables.Wall;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AmbientLight} which is now namespaced under {@linkcode foundry.canvas.placeables.AmbientLight}"
+   * (since v13 will be removed in v15)
+   */
+  export import AmbientLight = foundry.canvas.placeables.AmbientLight;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AmbientSound} which is now namespaced under {@linkcode foundry.canvas.placeables.AmbientSound}"
+   * (since v13 will be removed in v15)
+   */
+  export import AmbientSound = foundry.canvas.placeables.AmbientSound;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode Quadtree} which is now namespaced under {@linkcode foundry.canvas.geometry.Quadtree}"
    * (since v13 will be removed in v15)
    */
@@ -1254,6 +1326,54 @@ declare global {
    * (since v13 will be removed in v15)
    */
   export import Ruler = foundry.canvas.interaction.Ruler;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode UserTargets} which is now namespaced under {@linkcode foundry.canvas.placeables.tokens.UserTargets}"
+   * (since v13 will be removed in v15)
+   */
+  export import UserTargets = foundry.canvas.placeables.tokens.UserTargets;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode TokenRing} which is now namespaced under {@linkcode foundry.canvas.placeables.tokens.TokenRing}"
+   * (since v13 will be removed in v15)
+   */
+  export import TokenRing = foundry.canvas.placeables.tokens.TokenRing;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode TokenRingConfig} which is now namespaced under {@linkcode foundry.canvas.placeables.tokens.TokenRingConfig}"
+   * (since v13 will be removed in v15)
+   */
+  export import TokenRingConfig = foundry.canvas.placeables.tokens.TokenRingConfig;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DynamicRingData} which is now namespaced under {@linkcode foundry.canvas.placeables.tokens.DynamicRingData}"
+   * (since v13 will be removed in v15)
+   */
+  export import DynamicRingData = foundry.canvas.placeables.tokens.DynamicRingData;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RegionGeometry} which is now namespaced under {@linkcode foundry.canvas.placeables.regions.RegionGeometry}"
+   * (since v13 will be removed in v15)
+   */
+  export import RegionGeometry = foundry.canvas.placeables.regions.RegionGeometry;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RegionPolygonTree} which is now namespaced under {@linkcode foundry.data.regionShapes.RegionPolygonTree}"
+   * (since v13 will be removed in v15)
+   */
+  export import RegionPolygonTree = foundry.data.regionShapes.RegionPolygonTree;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RegionShape} which is now namespaced under {@linkcode foundry.data.regionShapes.RegionShape}"
+   * (since v13 will be removed in v15)
+   */
+  export import RegionShape = foundry.data.regionShapes.RegionShape;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RegionMesh} which is now namespaced under {@linkcode foundry.canvas.placeables.regions.RegionMesh}"
+   * (since v13 will be removed in v15)
+   */
+  export import RegionMesh = foundry.canvas.placeables.regions.RegionMesh;
 
   /**
    * @deprecated "You are accessing the global {@linkcode FogManager} which is now namespaced under {@linkcode foundry.canvas.perception.FogManager}"

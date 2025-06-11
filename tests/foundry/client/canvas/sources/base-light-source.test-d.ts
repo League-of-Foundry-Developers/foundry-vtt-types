@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type BaseLightSource from "../../../../../src/foundry/client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "../../../../../src/foundry/client/canvas/sources/rendered-effect-source.d.mts";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 declare class MyLightSource extends foundry.canvas.sources.BaseLightSource {
   protected override _createShapes(): void;

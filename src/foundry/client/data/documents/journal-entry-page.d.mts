@@ -4,6 +4,7 @@ import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseJournalEntryPage from "#common/documents/journal-entry-page.d.mts";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
+import type { Note } from "#client/canvas/placeables/_module.d.mts";
 
 import fields = foundry.data.fields;
 

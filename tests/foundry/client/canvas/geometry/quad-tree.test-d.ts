@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { Quadtree, CanvasQuadtree } from "#client/canvas/geometry/_module.mjs";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 expectTypeOf(Quadtree.INDICES).toExtend<Record<keyof Quadtree.Indices, Quadtree.INDICES>>();
 

@@ -3,6 +3,7 @@ import type { Container, DisplayObject } from "pixi.js";
 import { CanvasLayer, PlaceablesLayer } from "#client/canvas/layers/_module.mjs";
 import type Document from "../../../../../../src/foundry/common/abstract/document.d.mts";
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
+import type { AmbientLight, PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 type CAL = AmbientLight.Implementation;
 type CALDoc = AmbientLightDocument.Implementation;

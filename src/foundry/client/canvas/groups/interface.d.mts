@@ -2,6 +2,7 @@ import type { HandleEmptyObject, Identity, InexactPartial, NullishProps } from "
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PreciseText } from "#client/canvas/containers/_module.mjs";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
+import type { Drawing } from "#client/canvas/placeables/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

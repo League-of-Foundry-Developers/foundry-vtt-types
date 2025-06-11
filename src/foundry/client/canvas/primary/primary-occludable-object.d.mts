@@ -1,5 +1,6 @@
 import type { FixedInstanceType, Mixin, NullishProps } from "#utils";
 import type { PrimaryCanvasObjectMixin } from "./_module.d.mts";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class PrimaryOccludableObject {

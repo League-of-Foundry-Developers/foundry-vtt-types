@@ -2,6 +2,7 @@ import { expectTypeOf } from "vitest";
 import { CanvasOcclusionMask } from "#client/canvas/layers/_module.mjs";
 import { CachedContainer } from "#client/canvas/containers/_module.mjs";
 import { PrimaryCanvasObjectMixin } from "#client/canvas/primary/_module.mjs";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 expectTypeOf(CanvasOcclusionMask.textureConfiguration).toEqualTypeOf<CachedContainer.TextureConfiguration>();
 
