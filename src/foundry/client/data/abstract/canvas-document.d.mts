@@ -1,6 +1,7 @@
 import type { FixedInstanceType, Mixin } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { InternalClientDocument } from "./client-document.d.mts";
+import type { PlaceablesLayer } from "#client/canvas/layers/_module.d.mts";
 
 declare class CanvasDocument<
   DocumentName extends Document.Type,

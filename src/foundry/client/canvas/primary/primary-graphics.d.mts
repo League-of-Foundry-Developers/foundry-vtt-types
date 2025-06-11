@@ -1,5 +1,6 @@
 import type { Identity, NullishProps } from "#utils";
 import type { PrimaryCanvasObjectMixin } from "./_module.d.mts";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 /**
  * A basic PCO which is handling drawings of any shape.

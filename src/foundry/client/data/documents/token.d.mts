@@ -5,6 +5,7 @@ import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
 import type { ActorDeltaField } from "#common/documents/token.d.mts";
 import type BaseToken from "#common/documents/token.d.mts";
 import type { LightData, TextureData } from "#common/data/data.mjs";
+import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
 
 import fields = foundry.data.fields;
 import type DataModel from "#common/abstract/data.mjs";

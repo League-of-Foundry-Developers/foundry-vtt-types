@@ -2,6 +2,7 @@ import type { FixedInstanceType, Identity, NullishProps, RequiredProps } from "#
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 
 /**
  * A specialized subclass of the BaseEffectSource which describes a point-based source of sound.

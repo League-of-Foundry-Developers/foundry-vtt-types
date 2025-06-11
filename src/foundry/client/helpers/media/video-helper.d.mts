@@ -1,4 +1,5 @@
 import "youtube";
+import type { SpriteMesh } from "#client/canvas/containers/_module.d.mts";
 
 /**
  * A helper class to provide common functionality for working with HTML5 video objects

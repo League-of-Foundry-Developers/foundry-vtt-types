@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import { TokenRing } from "#client/canvas/tokens/_module.mjs";
+import { TokenRing } from "#client/canvas/placeables/tokens/_module.mjs";
 import { TokenRingSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
 import { BatchRenderer } from "#client/canvas/rendering/batching/_module.mjs";
 

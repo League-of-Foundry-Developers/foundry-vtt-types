@@ -2,6 +2,7 @@
 import type { FixedInstanceType, Mixin } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 declare class PrimaryCanvasObject {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */

@@ -4,6 +4,7 @@ import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { VisualEffectsMaskingFilter } from "#client/canvas/rendering/filters/_module.d.mts";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
+import type * as layers from "#client/canvas/layers/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -70,27 +71,27 @@ declare class EffectsCanvasGroup<
     void
   >;
 
-  override _createLayers(): Record<string, CanvasLayer>;
+  override _createLayers(): Record<string, layers.CanvasLayer>;
 
   /**
    * A layer of background alteration effects which change the appearance of the primary group render texture.
    */
-  background: CanvasBackgroundAlterationEffects;
+  background: layers.CanvasBackgroundAlterationEffects;
 
   /**
    * A layer which adds illumination-based effects to the scene.
    */
-  illumination: CanvasIlluminationEffects;
+  illumination: layers.CanvasIlluminationEffects;
 
   /**
    * A layer which adds color-based effects to the scene.
    */
-  coloration: CanvasColorationEffects;
+  coloration: layers.CanvasColorationEffects;
 
   /**
    * A layer which adds darkness effects to the scene.
    */
-  darkness: CanvasDarknessEffects;
+  darkness: layers.CanvasDarknessEffects;
 
   /**
    * Clear all effects containers and animated sources.

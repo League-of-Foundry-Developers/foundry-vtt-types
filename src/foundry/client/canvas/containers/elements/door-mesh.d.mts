@@ -1,4 +1,5 @@
 import type { Identity } from "#utils";
+import type { PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
 
 // TODO: whole class
 declare class DoorMesh extends PrimarySpriteMesh {}

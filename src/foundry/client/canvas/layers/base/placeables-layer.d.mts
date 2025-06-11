@@ -12,6 +12,7 @@ import type Document from "#common/abstract/document.d.mts";
 import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
 import type { CanvasLayer, InteractionLayer } from "../_module.d.mts";
 import type { CanvasQuadtree } from "#client/canvas/geometry/_module.d.mts";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 /**
  * A subclass of Canvas Layer which is specifically designed to contain multiple PlaceableObject instances,

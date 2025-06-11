@@ -2,6 +2,9 @@ import type { HandleEmptyObject, Identity, InexactPartial, IntentionalPartial, N
 import type { Canvas } from "#client/canvas/_module.mjs";
 import type { VisibilityFilter } from "#client/canvas/rendering/filters/_module.mjs";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
+import type { CanvasVisionMask } from "#client/canvas/layers/_module.d.mts";
+import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

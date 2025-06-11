@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { FixedInstanceType, HandleEmptyObject, Identity, PrettifyType, RemoveIndexSignatures } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { CanvasLayer } from "#client/canvas/layers/_module.d.mts";
 
 declare const DynamicClass: new <_Computed extends object>(...args: never) => _Computed;
 

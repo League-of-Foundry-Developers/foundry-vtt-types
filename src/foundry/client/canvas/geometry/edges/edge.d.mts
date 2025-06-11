@@ -2,6 +2,7 @@ import type PolygonVertex from "./vertex.d.mts";
 import type { LineIntersection } from "#common/utils/geometry.d.mts";
 import type { Identity, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 /**
  * A data structure used to represent potential edges used by the ClockwiseSweepPolygon.

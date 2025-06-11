@@ -1,5 +1,6 @@
 import type { Identity, InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { ClockwiseSweepPolygon } from "#client/canvas/geometry/_module.d.mts";
 
 /**
  * A special class of Polygon which implements a limited angle of emission for a Point Source.

@@ -4,6 +4,7 @@ import type { TextureLoader } from "#client/canvas/_module.d.mts";
 import type { SpriteMesh } from "#client/canvas/containers/_module.mjs";
 import type { PrimaryOccludableObjectMixin } from "./_module.d.mts";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 /**
  * A basic PCO sprite mesh which is handling occlusion and depth.

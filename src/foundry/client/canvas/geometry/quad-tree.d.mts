@@ -1,5 +1,7 @@
 import type { Brand, Identity, InexactPartial, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { PrimaryCanvasObjectMixin } from "#client/canvas/primary/_module.d.mts";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 /**
  * A Quadtree implementation that supports collision detection for rectangles.
