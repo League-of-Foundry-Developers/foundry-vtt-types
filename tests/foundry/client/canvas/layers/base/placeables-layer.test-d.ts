@@ -30,7 +30,7 @@ expectTypeOf(PlaceablesLayer.placeableClass).toEqualTypeOf<PlaceableObject.AnyCo
 
 const layer = new SomeLightLayer();
 
-expectTypeOf(layer.options).toEqualTypeOf<PlaceablesLayer.LayerOptions<"AmbientLight">>();
+expectTypeOf(layer.options).toEqualTypeOf<PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass>>();
 
 const firstHistoryEntry = layer.history[0]!;
 if (firstHistoryEntry.type === "create") {
