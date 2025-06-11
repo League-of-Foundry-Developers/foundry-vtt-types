@@ -492,6 +492,7 @@ declare namespace RegionDocument {
     RegionDocument.Metadata.Embedded
   >;
 
+  // TODO: <Data extends object>
   interface RegionEvent {
     /** The name of the event */
     name: string;

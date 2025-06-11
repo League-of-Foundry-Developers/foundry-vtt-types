@@ -8,66 +8,123 @@ export {};
 // have as reference to keep us synced with the latest version of Foundry.
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-type ActiveEffectData = ActiveEffect.CreateData;
-type EffectDurationData = ActiveEffect.DurationData;
-type EffectChangeData = ActiveEffect.ChangeData;
-type ActorData = Actor.CreateData;
-type ActorDeltaData = ActorDelta.CreateData;
-type AdventureData = Adventure.CreateData;
-type AmbientLightData = AmbientLightDocument.CreateData;
-type AmbientSoundData = AmbientSoundDocument.CreateData;
-type AmbientSoundEffect = AmbientSoundDocument.Effect;
-type CardData = Card.CreateData;
-type CardFaceData = Card.FaceData;
-type CardsData = Cards.CreateData;
-type ChatMessageData = ChatMessage.CreateData;
-type ChatSpeakerData = ChatMessage.SpeakerData;
-type CombatData = Combat.CreateData;
-type CombatantData = Combatant.CreateData;
-type CombatantGroupData = unknown;
-type DrawingData = DrawingDocument.CreateData;
-type FogExplorationData = FogExploration.CreateData;
-type FolderData = Folder.CreateData;
-type ItemData = Item.CreateData;
-type JournalEntryData = JournalEntry.CreateData;
-type JournalEntryCategoryData = unknown;
-type JournalEntryPageImageData = unknown;
-type JournalEntryPageTextData = unknown;
-type JournalEntryPageVideoData = unknown;
-type JournalEntryPageTitleData = unknown;
-type JournalEntryPageData = JournalEntryPage.CreateData;
-type MacroData = Macro.CreateData;
-type MeasuredTemplateData = MeasuredTemplateDocument.CreateData;
-type NoteData = NoteDocument.CreateData;
-type PlaylistData = Playlist.CreateData;
-type PlaylistSoundData = PlaylistSound.CreateData;
-type RollTableData = RollTable.CreateData;
-type SceneData = Scene.CreateData;
-type GridData = unknown; // Scene.GridSchema?
-type EnvironmentData = unknown;
-type _GlobalLightData = unknown;
-type GlobalLightData = unknown;
-type SceneEnvironmentData = Scene.EnvironmentData;
-type RegionData = RegionDocument.CreateData;
-type RegionBehaviorData = RegionBehavior.CreateData;
-type RegionSocketEvent = RegionDocument.SocketRegionEvent;
-type SettingData = Setting.CreateData;
-type TableResultData = TableResult.CreateData;
-type TileRestrictionsData = unknown;
-type TileOcclusionData = unknown;
-type TileVideoData = unknown;
-type TileData = TileDocument.CreateData;
-type TokenOcclusionData = unknown;
-type TokenRingData = unknown;
-type TokenData = TokenDocument.CreateData;
-type PrototypeTokenData = unknown;
-type TokenSightData = unknown;
-type TokenDetectionMode = TokenDocument.DetectionModeData;
-type TokenBarData = unknown;
-type TokenPosition = unknown;
-type TokenDimensions = unknown;
-type TokenHexagonalOffsetsData = unknown;
-type TokenHexagonalShapeData = unknown;
-type UserData = User.CreateData;
-type WallData = WallDocument.CreateData;
-type WallThresholdData = WallDocument.ThresholdData;
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
+type AdventureImportData = Adventure.ImportData;
+
+type AdventureImportOptions = Adventure.ImportOptions;
+
+type AdventureImportResult = Adventure.ImportResult;
+
+type _ActiveEffectDuration = ActiveEffect.Duration;
+
+type ActiveEffectDuration = ActiveEffect.DurationData & _ActiveEffectDuration;
+
+type CombatHistoryData = Combat.HistoryData;
+
+type CombatTurnEventContext = unknown;
+
+type CombatRoundEventContext = unknown;
+
+// TODO: Data extends object, pass generic to RegionDocument.RegionEvent once set up
+type RegionEvent<Data> = RegionDocument.RegionEvent;
+
+type RegionRegionBoundaryEvent = RegionEvent<{}>;
+
+type RegionBehaviorActivatedEvent = RegionEvent<{}>;
+
+type RegionBehaviorDeactivatedEvent = RegionEvent<{}>;
+
+type RegionBehaviorViewedEvent = RegionEvent<{}>;
+
+type RegionBehaviorUnviewedEvent = RegionEvent<{}>;
+
+type RegionTokenEnterExitEventData = unknown;
+
+type RegionTokenEnterExitEvent = RegionEvent<RegionTokenEnterExitEventData>;
+
+type RegionTokenEnterEvent = RegionTokenEnterExitEvent;
+
+type RegionTokenExitEvent = RegionTokenEnterExitEvent;
+
+type RegionTokenMoveEventData = unknown;
+
+type RegionTokenMoveEvent = RegionEvent<RegionTokenMoveEventData>;
+
+type RegionTokenMoveInEvent = RegionTokenMoveEvent;
+
+type RegionTokenMoveOutEvent = RegionTokenMoveEvent;
+
+type RegionTokenMoveWithinEvent = RegionTokenMoveEvent;
+
+type RegionTokenAnimateEventData = unknown;
+
+type RegionTokenAnimateEvent = RegionEvent<RegionTokenAnimateEventData>;
+
+type RegionTokenAnimateInEvent = RegionTokenAnimateEvent;
+
+type RegionTokenAnimateOutEvent = RegionTokenAnimateEvent;
+
+type RegionTokenTurnEventData = unknown;
+
+type RegionTokenTurnEvent = RegionEvent<RegionTokenTurnEventData>;
+
+type RegionTokenTurnStartEvent = RegionTokenTurnEvent;
+
+type RegionTokenTurnEndEvent = RegionTokenTurnEvent;
+
+type RegionTokenRoundEventData = unknown;
+
+type RegionTokenRoundEvent = RegionEvent<RegionTokenRoundEventData>;
+
+type RegionTokenRoundStartEvent = RegionTokenRoundEvent;
+
+type RegionTokenRoundEndEvent = RegionTokenRoundEvent;
+
+type RegionMovementSegment = unknown;
+
+type RegionSegmentizeMovementPathWaypoint = unknown;
+
+type RollTableDraw = RollTable.Draw;
+
+type SceneDimensions = Scene.Dimensions;
+
+type TrackedAttributesDescription = TokenDocument.TrackedAttributesDescription;
+
+type TokenMeasuredMovementWaypoint = unknown;
+
+type TokenMovementWaypoint = unknown;
+
+type TokenMovementSegmentData = unknown;
+
+type TokenMeasureMovementPathWaypoint = unknown;
+
+type TokenMeasureMovementPathOptions = unknown;
+
+type TokenMovementCostFunction = unknown;
+
+type TokenGetCompleteMovementPathWaypoint = unknown;
+
+type TokenCompleteMovementWaypoint = unknown;
+
+type TokenSegmentizeMovementWaypoint = unknown;
+
+type TokenRegionMovementWaypoint = unknown;
+
+type TokenRegionMovementSegment = unknown;
+
+type TokenMovementSectionData = unknown;
+
+type TokenMovementHistoryData = unknown;
+
+type TokenMovementMethod = unknown;
+
+type TokenMovementState = unknown;
+
+type TokenMovementData = unknown;
+
+type TokenMovementOperation = unknown;
+
+type TokenMovementContinuationData = unknown;
+
+type TokenMovementContinuationHandle = unknown;
