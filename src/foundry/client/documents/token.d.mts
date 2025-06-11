@@ -1371,4 +1371,4 @@ interface ObjectAttributeBar {
   editable: boolean;
 }
 
-export default TokenDocument;
+export { TokenDocument as default, SingleAttributeBar, ObjectAttributeBar };
