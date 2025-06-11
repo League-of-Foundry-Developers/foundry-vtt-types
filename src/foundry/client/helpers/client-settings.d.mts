@@ -34,7 +34,7 @@ declare class ClientSettings {
    * Each storage interface shares the same API as window.localStorage
    * @remarks This is a lie, it doesn't actually have the same interface...
    */
-  storage: Map<string, Storage | WorldSettings>;
+  storage: Map<string, Storage | foundry.documents.collections.WorldSettings>;
 
   /**
    * Return a singleton instance of the Game Settings Configuration app

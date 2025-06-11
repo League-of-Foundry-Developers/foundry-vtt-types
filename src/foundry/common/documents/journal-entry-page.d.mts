@@ -324,7 +324,7 @@ declare namespace BaseJournalEntryPage {
     // The expression `ClientDocumentMixin(BaseJournalEntryPage)` is more intuitive but it has worse
     // caching, likely due to the majority of tsc's caching working off of names.
     // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
-    interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseJournalEntryPage> {}
+    interface ClientDocument extends foundry.documents.abstract.ClientDocumentMixin.Mix<typeof BaseJournalEntryPage> {}
     const ClientDocument: ClientDocument;
   }
 

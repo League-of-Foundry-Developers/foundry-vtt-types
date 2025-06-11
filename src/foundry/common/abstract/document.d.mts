@@ -1060,20 +1060,20 @@ declare namespace Document {
    * @internal
    */
   interface _WorldCollectionMap {
-    Actor: Actors.Configured;
-    Cards: CardStacks;
-    Combat: CombatEncounters;
-    FogExploration: FogExplorations;
-    Folder: Folders;
-    Item: Items;
-    JournalEntry: Journal;
-    Macro: Macros;
-    ChatMessage: Messages;
-    Playlist: Playlists;
-    Scene: Scenes;
-    Setting: WorldSettings;
-    RollTable: RollTables;
-    User: Users;
+    Actor: foundry.documents.collections.Actors.Configured;
+    Cards: foundry.documents.collections.CardStacks;
+    Combat: foundry.documents.collections.CombatEncounters;
+    FogExploration: foundry.documents.collections.FogExplorations;
+    Folder: foundry.documents.collections.Folders;
+    Item: foundry.documents.collections.Items;
+    JournalEntry: foundry.documents.collections.Journal;
+    Macro: foundry.documents.collections.Macros;
+    ChatMessage: foundry.documents.collections.ChatMessages;
+    Playlist: foundry.documents.collections.Playlists;
+    Scene: foundry.documents.collections.Scenes;
+    Setting: foundry.documents.collections.WorldSettings;
+    RollTable: foundry.documents.collections.RollTables;
+    User: foundry.documents.collections.Users;
   }
 
   type WorldCollectionFor<Name extends Document.WorldType> = _WorldCollectionMap[Name];

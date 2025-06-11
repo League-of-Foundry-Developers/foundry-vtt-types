@@ -309,7 +309,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Actor">;
 
       /** @defaultValue `Actors` */
-      collection: Actors.AnyConstructor;
+      collection: foundry.documents.collections.Actors.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -378,7 +378,7 @@ declare global {
      */
     Cards: {
       /** @defaultValue `CardStacks` */
-      collection: CardStacks.AnyConstructor;
+      collection: foundry.documents.collections.CardStacks.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -447,7 +447,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"ChatMessage">;
 
       /** @defaultValue `Messages` */
-      collection: Messages.AnyConstructor;
+      collection: foundry.documents.collections.ChatMessages.AnyConstructor;
 
       /** @defaultValue `"templates/sidebar/chat-message.html"` */
       template: string;
@@ -487,7 +487,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Combat">;
 
       /** @defaultValue `CombatEncounters` */
-      collection: CombatEncounters.AnyConstructor;
+      collection: foundry.documents.collections.CombatEncounters.AnyConstructor;
 
       /** @defaultValue `"fas fa-swords"` */
       sidebarIcon: string;
@@ -565,7 +565,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `FogExplorations` */
-      collection: FogExplorations.AnyConstructor;
+      collection: foundry.documents.collections.FogExplorations.AnyConstructor;
     };
 
     /**
@@ -576,7 +576,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Folder">;
 
       /** @defaultValue `Folders` */
-      collection: Folders.AnyConstructor;
+      collection: foundry.documents.collections.Folders.AnyConstructor;
 
       /** @defaultValue `"fas fa-folder"` */
       sidebarIcon: string;
@@ -600,7 +600,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Item">;
 
       /** @defaultValue `Items` */
-      collection: Items.AnyConstructor;
+      collection: foundry.documents.collections.Items.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -647,7 +647,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Journal` */
-      collection: Journal.AnyConstructor;
+      collection: foundry.documents.collections.Journal.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -760,7 +760,7 @@ declare global {
       typeLabels?: Record<foundry.documents.BaseMacro.SubType, string>;
 
       /** @defaultValue `Macros` */
-      collection: Macros.AnyConstructor;
+      collection: foundry.documents.collections.Macros.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -790,7 +790,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Playlists` */
-      collection: Playlists.AnyConstructor;
+      collection: foundry.documents.collections.Playlists.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -823,7 +823,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `RollTables` */
-      collection: RollTables.AnyConstructor;
+      collection: foundry.documents.collections.RollTables.AnyConstructor;
 
       /** @defaultValue `["formula"]` */
       compendiumIndexFields: string[];
@@ -859,7 +859,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Scenes` */
-      collection: Scenes.AnyConstructor;
+      collection: foundry.documents.collections.Scenes.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -886,7 +886,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `WorldSettings` */
-      collection: WorldSettings.AnyConstructor;
+      collection: foundry.documents.collections.WorldSettings.AnyConstructor;
     };
 
     /**
@@ -907,7 +907,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Users` */
-      collection: Users.AnyConstructor;
+      collection: foundry.documents.collections.Users.AnyConstructor;
     };
 
     /**
