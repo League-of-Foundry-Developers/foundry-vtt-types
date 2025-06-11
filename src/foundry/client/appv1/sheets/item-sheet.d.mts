@@ -17,9 +17,10 @@ declare module "#configuration" {
  *
  * @template Options - the type of the options object
  */
-declare class ItemSheet<
-  Options extends DocumentSheet.Options<Item.Implementation> = DocumentSheet.Options<Item.Implementation>,
-> extends DocumentSheet<Item.Implementation, Options> {
+declare class ItemSheet<Options extends ItemSheet.Options = ItemSheet.Options> extends DocumentSheet<
+  Item.Implementation,
+  Options
+> {
   /**
    * @defaultValue
    * ```typescript
@@ -36,7 +37,7 @@ declare class ItemSheet<
    * })
    * ```
    */
-  static get defaultOptions(): DocumentSheet.Options<Item.Implementation>;
+  static get defaultOptions(): ItemSheet.Options;
 
   override get title(): string;
 
@@ -57,9 +58,10 @@ declare class ItemSheet<
 declare namespace ItemSheet {
   interface Any extends ItemSheet<any> {}
 
-  interface ItemSheetData<
-    Options extends DocumentSheet.Options<Item.Implementation> = DocumentSheet.Options<Item.Implementation>,
-  > extends DocumentSheet.DocumentSheetData<Options, Item.Implementation> {
+  interface Options extends DocumentSheet.Options<Item.Implementation> {}
+
+  interface ItemSheetData<Options extends ItemSheet.Options = ItemSheet.Options>
+    extends DocumentSheet.DocumentSheetData<Options, Item.Implementation> {
     item: this["document"];
   }
 }
