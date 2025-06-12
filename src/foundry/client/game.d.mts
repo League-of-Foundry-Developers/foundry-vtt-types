@@ -83,7 +83,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * A mapping of CompendiumCollection instances, one per Compendium pack.
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
-  readonly packs: SimpleInitializedOn<CompendiumPacks, "setup", RunEvents>;
+  readonly packs: SimpleInitializedOn<foundry.documents.collections.CompendiumPacks, "setup", RunEvents>;
 
   /**
    * A registry of document sub-types and their respective data models.
@@ -120,7 +120,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
   readonly collections: SimpleInitializedOn<
-    foundry.utils.Collection<WorldCollection<Document.Type, string>>,
+    foundry.utils.Collection<foundry.documents.abstract.WorldCollection<Document.Type, string>>,
     "setup",
     RunEvents
   >;
@@ -471,7 +471,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   /**
    * A convenience accessor for the currently viewed Combat encounter
    */
-  get combat(): CombatEncounters["viewed"];
+  get combat(): foundry.documents.collections.CombatEncounters["viewed"];
 
   /**
    * A state variable which tracks whether the game session is currently paused

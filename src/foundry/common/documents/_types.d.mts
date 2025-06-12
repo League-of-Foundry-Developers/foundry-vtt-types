@@ -15,6 +15,16 @@ type EffectDurationData = ActiveEffect.DurationData;
 
 type EffectChangeData = ActiveEffect.ChangeData;
 
+type ActorData = Actor.InitializedData;
+
+type ActorDeltaData = ActorDelta.InitializedData;
+
+type AdventureData = Adventure.InitializedData;
+
+type AmbientLightData = AmbientLightDocument.InitializedData;
+
+type AmbientSoundData = AmbientSoundDocument.InitializedData;
+
 type AmbientSoundEffect = AmbientSoundDocument.Effect;
 
 type CardData = Card.InitializedData;
@@ -31,6 +41,8 @@ type CombatData = Combat.InitializedData;
 
 type CombatantData = Combatant.InitializedData;
 
+type CombatantGroupData = unknown;
+
 type DrawingData = DrawingDocument.InitializedData;
 
 type FogExplorationData = FogExploration.InitializedData;
@@ -40,6 +52,8 @@ type FolderData = Folder.InitializedData;
 type ItemData = Item.InitializedData;
 
 type JournalEntryData = JournalEntry.InitializedData;
+
+type JournalEntryCategoryData = unknown;
 
 type JournalEntryPageImageData = JournalEntryPage.InitializedData["image"];
 
@@ -82,9 +96,13 @@ type RegionData = RegionDocument.InitializedData;
 
 type RegionBehaviorData = RegionBehavior.InitializedData;
 
+type RegionSocketEvent = RegionDocument.SocketRegionEvent;
+
 type SettingData = Setting.InitializedData;
 
 type TableResultData = TableResult.InitializedData;
+
+type TileRestrictionsData = TileDocument.InitializedData["restrictions"];
 
 type TileOcclusionData = TileDocument.InitializedData["occlusion"];
 
@@ -92,13 +110,27 @@ type TileVideoData = TileDocument.InitializedData["video"];
 
 type TileData = TileDocument.InitializedData;
 
+type TokenOcclusionData = TokenDocument.InitializedData["occludable"];
+
+type TokenRingData = TokenDocument.InitializedData["ring"];
+
 type TokenData = TokenDocument.InitializedData;
+
+type PrototypeTokenData = unknown;
 
 type TokenSightData = TokenDocument.InitializedData["sight"];
 
 type TokenDetectionMode = TokenDocument.DetectionModeData;
 
 type TokenBarData = TokenDocument.InitializedData["bar1"];
+
+type TokenPosition = unknown;
+
+type TokenDimensions = unknown;
+
+type TokenHexagonalOffsetsData = unknown;
+
+type TokenHexagonalShapeData = unknown;
 
 type UserData = User.InitializedData;
 

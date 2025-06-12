@@ -427,7 +427,7 @@ declare namespace BaseToken {
     // The expression `CanvasDocumentMixin(BaseToken)` is more intuitive but it has worse
     // caching, likely due to the majority of tsc's caching working off of names.
     // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
-    interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BaseToken> {}
+    interface CanvasDocument extends foundry.documents.abstract.CanvasDocumentMixin.Mix<typeof BaseToken> {}
     const CanvasDocument: CanvasDocument;
   }
 }

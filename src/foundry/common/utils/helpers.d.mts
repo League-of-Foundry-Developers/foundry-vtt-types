@@ -496,7 +496,7 @@ export interface ResolvedUUID {
   /**
    * The collection that the primary Document belongs to.
    */
-  collection?: DocumentCollection.Any | undefined;
+  collection?: foundry.documents.abstract.DocumentCollection.Any | undefined;
 
   /**
    * Additional Embedded Document parts.

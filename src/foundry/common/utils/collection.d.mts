@@ -172,7 +172,7 @@ declare namespace Collection {
   }
 
   interface Methods<V> {
-    get<Options extends DocumentCollection.GetOptions | undefined = undefined>(
+    get<Options extends foundry.documents.abstract.DocumentCollection.GetOptions | undefined = undefined>(
       key: string,
       { strict }?: Options,
     ): Collection.GetReturnType<V, Options>;

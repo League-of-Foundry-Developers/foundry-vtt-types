@@ -315,7 +315,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Actor">;
 
       /** @defaultValue `Actors` */
-      collection: Actors.AnyConstructor;
+      collection: foundry.documents.collections.Actors.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -384,7 +384,7 @@ declare global {
      */
     Cards: {
       /** @defaultValue `CardStacks` */
-      collection: CardStacks.AnyConstructor;
+      collection: foundry.documents.collections.CardStacks.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -453,7 +453,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"ChatMessage">;
 
       /** @defaultValue `Messages` */
-      collection: Messages.AnyConstructor;
+      collection: foundry.documents.collections.ChatMessages.AnyConstructor;
 
       /** @defaultValue `"templates/sidebar/chat-message.html"` */
       template: string;
@@ -493,7 +493,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Combat">;
 
       /** @defaultValue `CombatEncounters` */
-      collection: CombatEncounters.AnyConstructor;
+      collection: foundry.documents.collections.CombatEncounters.AnyConstructor;
 
       /** @defaultValue `"fas fa-swords"` */
       sidebarIcon: string;
@@ -571,7 +571,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `FogExplorations` */
-      collection: FogExplorations.AnyConstructor;
+      collection: foundry.documents.collections.FogExplorations.AnyConstructor;
     };
 
     /**
@@ -582,7 +582,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Folder">;
 
       /** @defaultValue `Folders` */
-      collection: Folders.AnyConstructor;
+      collection: foundry.documents.collections.Folders.AnyConstructor;
 
       /** @defaultValue `"fas fa-folder"` */
       sidebarIcon: string;
@@ -606,7 +606,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Item">;
 
       /** @defaultValue `Items` */
-      collection: Items.AnyConstructor;
+      collection: foundry.documents.collections.Items.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -653,7 +653,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Journal` */
-      collection: Journal.AnyConstructor;
+      collection: foundry.documents.collections.Journal.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -766,7 +766,7 @@ declare global {
       typeLabels?: Record<foundry.documents.BaseMacro.SubType, string>;
 
       /** @defaultValue `Macros` */
-      collection: Macros.AnyConstructor;
+      collection: foundry.documents.collections.Macros.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -796,7 +796,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Playlists` */
-      collection: Playlists.AnyConstructor;
+      collection: foundry.documents.collections.Playlists.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -829,7 +829,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `RollTables` */
-      collection: RollTables.AnyConstructor;
+      collection: foundry.documents.collections.RollTables.AnyConstructor;
 
       /** @defaultValue `["formula"]` */
       compendiumIndexFields: string[];
@@ -865,7 +865,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Scenes` */
-      collection: Scenes.AnyConstructor;
+      collection: foundry.documents.collections.Scenes.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -892,7 +892,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `WorldSettings` */
-      collection: WorldSettings.AnyConstructor;
+      collection: foundry.documents.collections.WorldSettings.AnyConstructor;
     };
 
     /**
@@ -913,7 +913,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Users` */
-      collection: Users.AnyConstructor;
+      collection: foundry.documents.collections.Users.AnyConstructor;
     };
 
     /**
@@ -1452,13 +1452,7 @@ declare global {
     /**
      * Configuration for time tracking
      */
-    time: {
-      /** @defaultValue `0` */
-      turnTime: number;
-
-      /** @defaultValue `0` */
-      roundTime: number;
-    };
+    time: CONFIG.Time;
 
     /**
      * Configuration for the ActiveEffect embedded document type
@@ -3312,6 +3306,42 @@ declare global {
       interface Sounds {
         epic: CONFIG.Combat.SoundPreset;
         mc: CONFIG.Combat.SoundPreset;
+      }
+    }
+
+    interface Time {
+      /** The Calendar configuration used for in-world timekeeping. */
+      worldCalendarConfig: foundry.data.CalendarData.CreateData;
+
+      /** The CalendarData subclass is used for in-world timekeeping. */
+      worldCalendarClass: typeof foundry.data.CalendarData;
+
+      /** The Calendar configuration used for IRL timekeeping. */
+      earthCalendarConfig: foundry.data.CalendarData.CreateData;
+
+      /** The CalendarData subclass is used for IRL timekeeping. */
+      earthCalendarClass: typeof foundry.data.CalendarData;
+
+      /**
+       * The number of seconds which automatically elapse at the end of a Combat turn.
+       * @defaultValue `0`
+       */
+      turnTime: number;
+
+      /**
+       * The number of seconds which automatically elapse at the end of a Combat round.
+       * @defaultValue `0`
+       */
+      roundTime: number;
+
+      /** Formatting functions used to display time data as strings. */
+      formatters: CONFIG.Time.formatters;
+    }
+
+    namespace Time {
+      interface formatters {
+        timestamp: typeof foundry.data.CalendarData.formatTimestamp;
+        ago: typeof foundry.data.CalendarData.formatAgo;
       }
     }
   }

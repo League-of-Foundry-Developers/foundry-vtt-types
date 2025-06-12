@@ -478,10 +478,10 @@ export interface AllHooks extends DynamicHooks {
    * @param options   - Additional options which modified the modification request
    * @param userId    - The ID of the User who triggered the modification workflow
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link CompendiumCollection._onModifyContents | `CompendiumCollection#_onModifyContents`}
+   * @see {@link foundry.documents.collections.CompendiumCollection._onModifyContents | `foundry.documents.collections.CompendiumCollection#_onModifyContents`}
    */
   updateCompendium: (
-    pack: CompendiumCollection.Any,
+    pack: foundry.documents.collections.CompendiumCollection.Any,
     documents: Document.Any[],
     options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
     userId: string,
@@ -607,7 +607,7 @@ export interface AllHooks extends DynamicHooks {
   applyCompendiumArt: (
     documentClass: Actor.ImplementationClass,
     source: foundry.documents.BaseActor.CreateData,
-    pack: CompendiumCollection.Any,
+    pack: foundry.documents.collections.CompendiumCollection.Any,
     art: CompendiumArt.Info,
   ) => void;
 

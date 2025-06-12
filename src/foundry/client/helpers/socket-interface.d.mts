@@ -13,7 +13,9 @@ declare class SocketInterface {
    */
   static dispatch<DatabaseAction extends keyof DatabaseOperationMap>(
     eventName: string,
-    request: DocumentSocketRequest<DatabaseAction> | CompendiumCollection.ManageCompendiumRequest,
+    request:
+      | DocumentSocketRequest<DatabaseAction>
+      | foundry.documents.collections.CompendiumCollection.ManageCompendiumRequest,
   ): Promise<SocketInterface.SocketResponse>;
 }
 

@@ -97,7 +97,7 @@ expectTypeOf(clientSettings.get("core", "combatTrackerConfig")).toEqualTypeOf<
   MaybeEmpty<{ resource: string; skipDefeated: boolean }>
 >();
 expectTypeOf(clientSettings.get("core", "compendiumConfiguration")).toEqualTypeOf<
-  Partial<Record<string, CompendiumCollection.Configuration>>
+  Partial<Record<string, foundry.documents.collections.CompendiumCollection.Configuration>>
 >();
 
 type RollMode = keyof typeof CONFIG.Dice.rollModes;

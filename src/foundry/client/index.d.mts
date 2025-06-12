@@ -1,5 +1,4 @@
 import "./config.d.mts";
-import "./data/index.d.mts";
 import "./game.d.mts";
 import "./head.d.mts";
 import "./hooks.d.mts";

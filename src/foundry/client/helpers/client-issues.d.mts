@@ -43,7 +43,7 @@ declare class ClientIssues {
    * @internal
    */
   _trackValidationFailures(
-    collection: WorldCollection<Document.Type, string>,
+    collection: foundry.documents.abstract.WorldCollection<Document.Type, string>,
     source: unknown,
     error: DataModelValidationError,
   ): void;
