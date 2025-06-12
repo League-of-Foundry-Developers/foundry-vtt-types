@@ -51,6 +51,7 @@ declare namespace Cards {
         hasTypeData: true;
         label: string;
         labelPlural: string;
+        permissions: Metadata.Permissions;
         coreTypes: ["deck", "hand", "pile"];
         schemaVersion: string;
       }>
@@ -62,6 +63,11 @@ declare namespace Cards {
      */
     interface Embedded {
       Card: "cards";
+    }
+
+    interface Permissions {
+      create: "OWNER";
+      delete: "OWNER";
     }
   }
 
@@ -285,7 +291,7 @@ declare namespace Cards {
     _id: fields.DocumentIdField;
 
     /** The text name of this stack */
-    name: fields.StringField<{ required: true; blank: false; label: "CARDS.Name"; textSearch: true }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * The type of this stack, in BaseCards.metadata.types
@@ -298,7 +304,7 @@ declare namespace Cards {
      * A text description of this stack
      * @defaultValue `""`
      */
-    description: fields.HTMLField<{ label: "CARDS.Description"; textSearch: true }>;
+    description: fields.HTMLField<{ textSearch: true }>;
 
     /**
      * An image or video which is used to represent the stack of cards
@@ -307,7 +313,6 @@ declare namespace Cards {
     img: fields.FilePathField<{
       categories: ["IMAGE", "VIDEO"];
       initial: () => typeof BaseCards.DEFAULT_ICON;
-      label: "CARDS.Image";
     }>;
 
     /**
@@ -326,19 +331,19 @@ declare namespace Cards {
      * The visible width of this stack
      * @defaultValue `null`
      */
-    width: fields.NumberField<{ integer: true; positive: true; label: "Width" }>;
+    width: fields.NumberField<{ integer: true; positive: true }>;
 
     /**
      * The visible height of this stack
      * @defaultValue `null`
      */
-    height: fields.NumberField<{ integer: true; positive: true; label: "Height" }>;
+    height: fields.NumberField<{ integer: true; positive: true }>;
 
     /**
      * The angle of rotation of this stack
      * @defaultValue `0`
      */
-    rotation: fields.AngleField<{ label: "Rotation" }>;
+    rotation: fields.AngleField;
 
     /**
      * Whether or not to publicly display the number of cards in this stack
@@ -368,6 +373,7 @@ declare namespace Cards {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**

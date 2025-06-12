@@ -14,19 +14,6 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BaseToken`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseToken` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link TokenDocument.implementation | `new TokenDocument.implementation(...)`} instead which will give you
-   * a system specific implementation of `TokenDocument`.
-   */
-  constructor(...args: TokenDocument.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -43,13 +30,19 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    *     update: this.#canUpdate,
    *     delete: "TOKEN_DELETE"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseToken.Metadata;
 
   static override defineSchema(): BaseToken.Schema;
+
+  /** @defaultValue `["DOCUMENT", "TOKEN"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /** @defaultValue `["x", "y", "elevation", "width", "height", "shape"]` */
+  static MOVEMENT_FIELDS: Readonly<string[]>;
 
   /**
    * The default icon used for newly created Token documents
@@ -58,15 +51,11 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   static DEFAULT_ICON: string;
 
   /**
-   * @remarks If `this.actor`, uses {@link Actor.testUserPermission | `this.actor.testUserPermission`} otherwise `super`'s. Core's `Actor` implementation
-   * doesn't override this method, so without further extension, that's equivalent to {@link Document.testUserPermission | `Document#testUserPermission`}
+   * Prepare changes to a descendent delta collection.
+   * @param changes - Candidate source changes.
+   * @param options - Options which determine how the new data is merged.
    */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  protected _prepareDeltaUpdate(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateOptions): void;
 
   // changes, options: not null (parameter default only)
   override updateSource(
@@ -74,24 +63,115 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     options?: DataModel.UpdateOptions,
   ): TokenDocument.UpdateData;
 
+  /**
+   * Get the snapped position of the Token.
+   * @param data - The position and dimensions
+   * @returns The snapped position
+   */
+  // TODO: properly type `TokenDimensions` (second part of data)
+  getSnappedPosition(
+    data?: Partial<foundry.canvas.Canvas.ElevatedPoint & { width: number; height: number; shape: CONST.TOKEN_SHAPES }>,
+  ): foundry.canvas.Canvas.ElevatedPoint;
+
+  /**
+   * Get the top-left offset of the Token
+   * @param data - The position and dimensions
+   * @returns The top-left grid offset
+   */
+  // TODO: properly type `TokenDimensions` (second part of data) and `GridOffset3D` (return)
+  protected _positionToGridOffset(
+    data?: Partial<foundry.canvas.Canvas.ElevatedPoint & { width: number; height: number; shape: CONST.TOKEN_SHAPES }>,
+  ): { i: number; j: number; k: number };
+
+  /**
+   * Get the position of the Token from the top-left grid offset.
+   * @param offset - The top-left grid offset
+   * @param data   - The dimensions that override the current dimensions
+   * @returns The snapped position
+   */
+  // TODO: properly type `GridOffset3D` (offset) and `TokenDimensions` (data)
+  protected _gridOffsetToPosition(
+    offset: { i: number; j: number; k: number },
+    data?: Partial<{ width: number; height: number; shape: CONST.TOKEN_SHAPES }>,
+  ): foundry.canvas.Canvas.ElevatedPoint;
+
+  /**
+   * Get the width and height of the Token in pixels.
+   * @param data - The width and/or height in grid units (must be positive)
+   * @returns The width and height in pixels
+   */
+  getSize(data?: Partial<{ width: number; height: number }>): { width: number; height: number };
+
+  /**
+   * Get the center point of the Token.
+   * @param data - The position and dimensions
+   * @returns The center point
+   */
+  // TODO: properly type `TokenDimensions` (second part of data)
+  getCenterPoint(
+    data?: Partial<foundry.canvas.Canvas.ElevatedPoint & { width: number; height: number; shape: CONST.TOKEN_SHAPES }>,
+  ): foundry.canvas.Canvas.ElevatedPoint;
+
+  /**
+   * Get the grid space polygon of the Token.
+   * Returns undefined in gridless grids because there are no grid spaces.
+   * @param data - The dimensions
+   * @returns The grid space polygon or undefined if gridless
+   */
+  // TODO: properly type `TokenDimensions` (data)
+  getGridSpacePolygon(
+    data?: Partial<{ width: number; height: number; shape: CONST.TOKEN_SHAPES }>,
+  ): foundry.canvas.Canvas.Point[] | void;
+
+  /**
+   * Get the offsets of grid spaces that are occupied by this Token at the current or given position.
+   * The grid spaces the Token occupies are those that are covered by the Token's shape in the snapped position.
+   * Returns an empty array in gridless grids.
+   * @param data - The position and dimensions
+   * @returns The offsets of occupied grid spaces
+   */
+  // TODO: properly type `TokenDimensions` (second part of data) and `GridOffset2D` (return)
+  getOccupiedGridSpaceOffsets(
+    data?: Partial<foundry.canvas.Canvas.Point & { width: number; height: number; shape: CONST.TOKEN_SHAPES }>,
+  ): { i: number; j: number }[];
+
+  /**
+   * Get the hexagonal offsets given the type, width, and height.
+   * @param width   - The width of the Token (positive)
+   * @param height  - The height of the Token (positive)
+   * @param shape   - The shape (one of {@link CONST.TOKEN_SHAPES})
+   * @param columns - Column-based instead of row-based hexagonal grid?
+   * @returns The hexagonal offsets
+   */
+  // TODO: properly type `TokenHexagonalOffsetsData` (return)
+  protected static _getHexagonalOffsets(
+    width: number,
+    height: number,
+    shape: CONST.TOKEN_SHAPES,
+    columns: boolean,
+  ): Readonly<{ even: { i: number; j: number }; odd: { i: number; j: number }; anchor: foundry.canvas.Canvas.Point }>;
+
+  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   // TODO: Update with the Delta conditionality
-  override toObject(source?: boolean | null): TokenDocument.Source;
+  override toObject(source?: boolean): TokenDocument.Source;
 
   /**
    * @remarks
    * Migrations:
-   * - `actorData` to `delta` (since v11, no specified end)
+   * - `hexagonalShape` to `shape` (since v13, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**
    * @remarks
    * Shims:
-   * - `actorData` to `delta` (since v11, until v13)
    * - `effects` to nothing (since v12, until v14)
    *   - "`TokenDocument#effects` is deprecated in favor of using {@linkcode ActiveEffect} documents on the associated `Actor`")
    * - `overlayEffect` to nothing (since v12, until v14)
    *   - "`TokenDocument#overlayEffect` is deprecated in favor of using `ActiveEffect` documents on the associated `Actor`")
+   * - `hexagonalShape` to `shape` (since v13, until v15)
+   *   - "`TokenDocument#hexagonalShape` is deprecated in favor of `TokenDocument#shape`."
    */
   // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -107,6 +187,12 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @remarks "TokenDocument# is deprecated in favor of using {@linkcode ActiveEffect} documents on the associated Actor"
    */
   get overlayEffect(): "";
+
+  /**
+   * @deprecated since v13, until v15
+   * @remarks "TokenDocument#hexagonalShape is deprecated in favor of {@linkcode TokenDocument#shape}"
+   */
+  get hexagonalShape(): CONST.TOKEN_SHAPES;
 
   /*
    * After this point these are not really overridden methods.

@@ -13,19 +13,6 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BaseScene`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseScene` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link Scene.implementation | `new Scene.implementation(...)`} instead which will give you
-   * a system specific implementation of `Scene`.
-   */
-  constructor(...args: Scene.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -47,13 +34,25 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    *   label: "DOCUMENT.Scene",
    *   labelPlural: "DOCUMENT.Scenes",
    *   preserveOnImport: [...super.metadata.preserveOnImport, "active"],
-   *   schemaVersion: "12.325"
+   *   schemaVersion: "13.341"
    * });
    * ```
    */
   static override metadata: BaseScene.Metadata;
 
   static override defineSchema(): BaseScene.Schema;
+
+  /** @defaultValue `["DOCUMENT", "SCENE"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /**
+   * The default grid defined by the system.
+   */
+  static get defaultGrid(): foundry.grid.BaseGrid;
+
+  protected override _initialize(options?: Document.InitializeOptions): void;
+
+  override updateSource(changes: Scene.UpdateData, options: DataModel.UpdateOptions): Scene.UpdateData;
 
   /**
    * @remarks
@@ -83,7 +82,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * - `darkness` to `environment.darknessLevel` (since v12, until 14)
    */
   // options: not null (destructured)
-  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
    * @deprecated since v12, until v14
@@ -411,6 +410,8 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   static override fromSource(source: Scene.CreateData, context?: DataModel.FromSourceOptions): Scene.Implementation;
 
   static override fromJSON(json: string): Scene.Implementation;
+
+  #BaseScene: true;
 }
 
 export default BaseScene;

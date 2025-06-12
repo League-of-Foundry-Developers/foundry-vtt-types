@@ -14,19 +14,6 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BaseUser`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseUser` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link User.implementation | `new User.implementation(...)`} instead which will give you
-   * a system specific implementation of `User`.
-   */
-  constructor(...args: User.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -39,13 +26,13 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    *     update: this.#canUpdate,
    *     delete: this.#canDelete
    *   },
-   *   schemaVersion: "12.324",
+   *   schemaVersion: "13.341",
    * });
    * ```
    */
   static override metadata: User.Metadata;
 
-  /** @defaultValue `["USER"]` */
+  /** @defaultValue `["DOCUMENT", "USER"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
   static override defineSchema(): BaseUser.Schema;
@@ -70,7 +57,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   can(action: BaseUser.ActionPermission): boolean;
 
   /** @remarks Returns `.OWNER` for the User in question, `.NONE` for everyone else */
-  override getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Test whether the User has at least a specific permission

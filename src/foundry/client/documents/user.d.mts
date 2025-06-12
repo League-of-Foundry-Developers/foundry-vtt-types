@@ -274,6 +274,7 @@ declare namespace User {
      * An object of optional key/value flags.
      * @defaultValue `{}`
      */
+    // TODO: retype as `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**

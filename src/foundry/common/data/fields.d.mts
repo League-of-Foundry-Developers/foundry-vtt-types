@@ -3816,7 +3816,7 @@ declare namespace FilePathField {
  * - InitialValue: `0`
  */
 declare class AngleField<
-  Options extends NumberField.Options = AngleField.DefaultOptions,
+  Options extends AngleField.Options = AngleField.DefaultOptions,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentType = AngleField.AssignmentType<Options>,
   InitializedType = AngleField.InitializedType<Options>,
@@ -3867,6 +3867,10 @@ declare class AngleField<
 }
 
 declare namespace AngleField {
+  interface Options extends NumberField.Options {
+    normalize?: boolean | undefined;
+  }
+
   /** The type of the default options for the {@linkcode AngleField} class. */
   type DefaultOptions = SimpleMerge<
     NumberField.DefaultOptions,

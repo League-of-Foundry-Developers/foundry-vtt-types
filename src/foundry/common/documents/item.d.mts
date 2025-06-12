@@ -17,19 +17,6 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   any
 > {
   /**
-   * @param data    - Initial data from which to construct the `BaseItem`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseItem` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link Item.implementation | `new Item.implementation(...)`} instead which will give you
-   * a system specific implementation of `Item`.
-   */
-  constructor(...args: Item.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -41,8 +28,11 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    *   embedded: {ActiveEffect: "effects"},
    *   label: "DOCUMENT.Item",
    *   labelPlural: "DOCUMENT.Items",
-   *   permissions: {create: "ITEM_CREATE"},
-   *   schemaVersion: "12.324"
+   *   permissions: {
+   *     create: BaseItem.#canCreate,
+   *     delete: "OWNER"
+   *   },
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -64,28 +54,11 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    */
   static getDefaultArtwork(itemData?: BaseItem.CreateData): Item.GetDefaultArtworkReturn;
 
-  /**
-   * @remarks If `this.isEmbedded`, uses `this.parent.canUserModify(user, "update")`, dropping `data` and forcing `action`,
-   * otherwise `super`'s (with all arguments forwarded). Core's `Actor` implementation doesn't override this method, so
-   * without further extension those are both {@link Document.canUserModify | `Document#canUserModify`}
-   */
-  // data: not null (parameter default only)
-  override canUserModify<Action extends "create" | "update" | "delete">(
-    user: User.Implementation,
-    action: Action,
-    data?: Document.CanUserModifyData<Item.Schema, Action>,
-  ): boolean;
+  protected override _initialize(options?: Document.InitializeOptions): void;
 
-  /**
-   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Actor` implementation
-   * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  static override canUserCreate(user: User.Implementation): boolean;
 
   /**
    * @remarks
@@ -93,6 +66,9 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.

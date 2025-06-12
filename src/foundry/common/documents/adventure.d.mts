@@ -14,19 +14,6 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BaseAdventure`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseAdventure` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link Adventure.implementation | `new Adventure.implementation(...)`} instead which will give you
-   * a system specific implementation of `Adventure`.
-   */
-  constructor(...args: Adventure.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -35,13 +22,16 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    *   compendiumIndexFields: ["_id", "name", "description", "img", "sort", "folder"],
    *   label: "DOCUMENT.Adventure",
    *   labelPlural: "DOCUMENT.Adventures",
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: Adventure.Metadata;
 
   static override defineSchema(): BaseAdventure.Schema;
+
+  /** @defaultValue `["DOCUMENT", "ADVENTURE"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /**
    * An array of the fields which provide imported content from the Adventure.

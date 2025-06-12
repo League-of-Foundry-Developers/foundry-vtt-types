@@ -61,6 +61,7 @@ declare namespace JournalEntry {
      * The embedded metadata
      */
     interface Embedded {
+      JournalEntryCategory: "categories";
       JournalEntryPage: "pages";
     }
 
@@ -69,6 +70,7 @@ declare namespace JournalEntry {
      */
     interface Permissions {
       create: "JOURNAL_CREATE";
+      delete: "OWNER";
     }
   }
 
@@ -259,6 +261,12 @@ declare namespace JournalEntry {
      * @defaultValue `null`
      */
     folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+
+    /**
+     * The categories contained within this JournalEntry.
+     * @defaultValue `[]`
+     */
+    categories: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryCategory, JournalEntry.Implementation>;
 
     /**
      * The numeric sort value which orders this JournalEntry relative to its siblings

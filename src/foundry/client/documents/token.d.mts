@@ -9,6 +9,7 @@ import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
 
 import fields = foundry.data.fields;
 import type DataModel from "#common/abstract/data.mjs";
+import type { TerrainData } from "#client/data/terrain-data.mjs";
 
 declare namespace TokenDocument {
   /**
@@ -263,6 +264,8 @@ declare namespace TokenDocument {
      */
     actorLink: fields.BooleanField;
 
+    randomImg: fields.BooleanField;
+
     appendNumber: fields.BooleanField;
 
     prependAdjective: fields.BooleanField;
@@ -271,13 +274,13 @@ declare namespace TokenDocument {
      * The width of the Token in grid units
      * @defaultValue `1`
      */
-    width: fields.NumberField<{ nullable: false; positive: true; initial: 1; step: 0.5; label: "Width" }>;
+    width: fields.NumberField<{ nullable: false; positive: true; initial: 1; step: 0.5 }>;
 
     /**
      * The height of the Token in grid units
      * @defaultValue `1`
      */
-    height: fields.NumberField<{ nullable: false; positive: true; initial: 1; step: 0.5; label: "Height" }>;
+    height: fields.NumberField<{ nullable: false; positive: true; initial: 1; step: 0.5 }>;
 
     /**
      * The token's texture on the canvas.
@@ -292,20 +295,6 @@ declare namespace TokenDocument {
       };
       wildcard: true;
     }>;
-
-    /**
-     * @defaultValue `CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1`
-     */
-    hexagonalShape: fields.NumberField<
-      {
-        initial: typeof CONST.TOKEN_HEXAGONAL_SHAPES.ELLIPSE_1;
-        choices: CONST.TOKEN_HEXAGONAL_SHAPES[];
-      },
-      // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
-      CONST.TOKEN_HEXAGONAL_SHAPES | null | undefined,
-      CONST.TOKEN_HEXAGONAL_SHAPES,
-      CONST.TOKEN_HEXAGONAL_SHAPES
-    >;
 
     /**
      * Prevent the Token image from visually rotating?
@@ -432,15 +421,13 @@ declare namespace TokenDocument {
         required: true;
         blank: false;
         initial: "basic";
-        label: "TOKEN.VisionMode";
-        hint: "TOKEN.VisionModeHint";
       }>;
 
       /**
        * A special color which applies a hue to the visible area
        * @defaultValue `null`
        */
-      color: fields.ColorField<{ label: "TOKEN.VisionColor" }>;
+      color: fields.ColorField;
 
       /**
        * A degree of attenuation which gradually fades the edges of the visible area
@@ -448,8 +435,6 @@ declare namespace TokenDocument {
        */
       attenuation: fields.AlphaField<{
         initial: 0.1;
-        label: "TOKEN.VisionAttenuation";
-        hint: "TOKEN.VisionAttenuationHint";
       }>;
 
       /**
@@ -462,8 +447,6 @@ declare namespace TokenDocument {
         initial: 0;
         min: -1;
         max: 1;
-        label: "TOKEN.VisionBrightness";
-        hint: "TOKEN.VisionBrightnessHint";
       }>;
 
       /**
@@ -476,8 +459,6 @@ declare namespace TokenDocument {
         initial: 0;
         min: -1;
         max: 1;
-        label: "TOKEN.VisionSaturation";
-        hint: "TOKEN.VisionSaturationHint";
       }>;
 
       /**
@@ -490,8 +471,6 @@ declare namespace TokenDocument {
         initial: 0;
         min: -1;
         max: 1;
-        label: "TOKEN.VisionContrast";
-        hint: "TOKEN.VisionContrastHint";
       }>;
     }>;
 
@@ -514,7 +493,7 @@ declare namespace TokenDocument {
       /**
        * @defaultValue `0`
        */
-      radius: fields.NumberField<{ nullable: false; min: 0; step: 0.01; initial: 0 }>;
+      radius: fields.NumberField<{ required: true; nullable: false; min: 0; step: 0.01; initial: 0 }>;
     }>;
 
     /**
@@ -544,7 +523,7 @@ declare namespace TokenDocument {
       /**
        * @defaultValue `1`
        */
-      effects: fields.NumberField<{ initial: 1; min: 0; max: 0x7fffff; integer: true }>;
+      effects: fields.NumberField<{ required: true; initial: 1; min: 0; max: 0x7fffff; integer: true }>;
 
       /**
        * @defaultValue see properties
@@ -553,7 +532,7 @@ declare namespace TokenDocument {
         /**
          * @defaultValue `1`
          */
-        scale: fields.NumberField<{ initial: 1; min: 0.5 }>;
+        scale: fields.NumberField<{ required: true; nullable: false; initial: 1; min: 0.5 }>;
 
         /**
          * @defaultValue `null`
@@ -562,15 +541,40 @@ declare namespace TokenDocument {
       }>;
     }>;
 
-    /**
-     * @remarks Foundry marked `@internal`
-     */
-    _regions: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseRegion, { idOnly: true }>>;
+    turnMarker: fields.SchemaField<{
+      mode: fields.NumberField<
+        {
+          required: true;
+          choices: CONST.TOKEN_TURN_MARKER_MODES[];
+          initial: typeof CONST.TOKEN_TURN_MARKER_MODES.DEFAULT;
+          validationError: "must be a value in CONST.TOKEN_TURN_MARKER_MODES";
+        },
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        CONST.TOKEN_TURN_MARKER_MODES | null | undefined,
+        CONST.TOKEN_TURN_MARKER_MODES,
+        CONST.TOKEN_TURN_MARKER_MODES
+      >;
+
+      animation: fields.StringField<{ required: true; blank: false; nullable: true }>;
+
+      src: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
+
+      disposition: fields.BooleanField;
+    }>;
+
+    movementAction: fields.StringField<{
+      required: true;
+      blank: false;
+      nullable: true;
+      initial: null;
+      choices: typeof CONFIG.Token.movement.actions;
+    }>;
 
     /**
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype as `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
   }
 
@@ -595,6 +599,120 @@ declare namespace TokenDocument {
   }
 
   interface DetectionModeData extends SchemaField.InitializedData<DetectionModeSchema> {}
+
+  interface MovementHistorySchema extends DataSchema {
+    /**
+     * The top-left x-coordinate in pixels (integer).
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; integer: true; initial: undefined }>;
+
+    /**
+     * The top-left y-coordinate in pixels (integer).
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; integer: true; initial: undefined }>;
+
+    /**
+     * The elevation in grid units.
+     * @defaultValue `undefined`
+     */
+    elevation: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The width in grid spaces (positive).
+     * @defaultValue `undefined`
+     */
+    width: fields.NumberField<{ required: true; nullable: false; positive: true; initial: undefined }>;
+
+    /**
+     * The height in grid spaces (positive).
+     * @defaultValue `undefined`
+     */
+    height: fields.NumberField<{ required: true; nullable: false; positive: true; initial: undefined }>;
+
+    /**
+     * The shape type (see {@linkcode CONST.TOKEN_SHAPES}).
+     * @defaultValue `undefined`
+     */
+    shape: fields.NumberField<
+      {
+        required: true;
+        initial: undefined;
+        choices: CONST.TOKEN_SHAPES[];
+      },
+      // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+      CONST.TOKEN_SHAPES | null | undefined,
+      CONST.TOKEN_SHAPES,
+      CONST.TOKEN_SHAPES
+    >;
+
+    /**
+     * The movement action from the previous to this waypoint.
+     * @defaultValue `undefined`
+     */
+    action: fields.StringField<{ required: true; blank: false; initial: undefined }>;
+
+    /**
+     * The terrain data from the previous to this waypoint.
+     * @defaultValue `undefined`
+     */
+    terrain:
+      | fields.EmbeddedDataField<typeof TerrainData, { nullable: true; initial: undefined }>
+      | fields.ObjectField<{ nullable: true; initial: undefined }>;
+
+    /**
+     * Was this waypoint snapped to the grid?
+     * @defaultValue `undefined`
+     */
+    snapped: fields.BooleanField<{ initial: undefined }>;
+
+    /**
+     * Was this waypoint explicitly placed by the user?
+     * @defaultValue `undefined`
+     */
+    explicit: fields.BooleanField<{ initial: undefined }>;
+
+    /**
+     * Is this waypoint a checkpoint?
+     * @defaultValue `undefined`
+     */
+    checkpoint: fields.BooleanField<{ initial: undefined }>;
+
+    /**
+     * Is this waypoint intermediate?
+     * @defaultValue `undefined`
+     */
+    intermediate: fields.BooleanField<{ initial: undefined }>;
+
+    /**
+     * The ID of the user that moved the token to from the previous to this waypoint.
+     * @defaultValue `undefined`
+     */
+    userId: fields.ForeignDocumentField<
+      typeof documents.BaseUser,
+      { idOnly: true; required: true; initial: undefined }
+    >;
+
+    /**
+     * The ID of the movement from the previous to this waypoint.
+     * @defaultValue `undefined`
+     */
+    movementId: fields.StringField<{
+      required: true;
+      blank: false;
+      initial: undefined;
+      validate: (value: string) => void;
+    }>;
+
+    /**
+     * The movement cost from the previous to this waypoint (nonnegative).
+     * @defaultValue `undefined`
+     */
+    cost: fields.NumberField<{ required: true; nullable: false; min: 0; initial: undefined }>;
+  }
+
+  interface MovementHistory extends SchemaField.InitializedData<MovementHistorySchema> {}
 
   /**
    * The schema for {@linkcode TokenDocument}. This is the source of truth for how an TokenDocument document
@@ -632,22 +750,34 @@ declare namespace TokenDocument {
     delta: ActorDeltaField<typeof documents.BaseActorDelta>;
 
     /**
+     * The shape of the Token
+     * @defaultValue `CONST.TOKEN_SHAPES.RECTANGLE_1`
+     */
+    shape: fields.NumberField<{ initial: typeof CONST.TOKEN_SHAPES.RECTANGLE_1; choices: CONST.TOKEN_SHAPES[] }>;
+
+    /**
      * The x-coordinate of the top-left corner of the Token
      * @defaultValue `0`
      */
-    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
+    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
      * The y-coordinate of the top-left corner of the Token
      * @defaultValue `0`
      */
-    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
+    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
      * The vertical elevation of the Token, in distance units
      * @defaultValue `0`
      */
     elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+    /**
+     * The z-index of this token relative to other siblings
+     * @defaultValue `0`
+     */
+    sort: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
      * Is the Token currently locked? A locked token cannot be moved or rotated via
@@ -657,16 +787,20 @@ declare namespace TokenDocument {
     locked: fields.BooleanField;
 
     /**
-     * The z-index of this token relative to other siblings
-     * @defaultValue `0`
-     */
-    sort: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
-
-    /**
      * Is the Token currently hidden from player view?
      * @defaultValue `false`
      */
     hidden: fields.BooleanField;
+
+    /**
+     * @remarks Foundry marked `@internal`
+     */
+    _movementHistory: fields.ArrayField<fields.SchemaField<MovementHistorySchema>>;
+
+    /**
+     * @remarks Foundry marked `@internal`
+     */
+    _regions: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseRegion, { idOnly: true }>>;
   }
 
   namespace Database {

@@ -17,9 +17,11 @@ interface DefaultDocumentClasses {
   ChatMessage: typeof ChatMessage;
   Combat: typeof Combat;
   Combatant: typeof Combatant;
+  CombatantGroup: typeof CombatantGroup;
   FogExploration: typeof FogExploration;
   Folder: typeof Folder;
   Item: typeof Item;
+  JournalEntryCategory: typeof JournalEntryCategory;
   JournalEntryPage: typeof JournalEntryPage;
   JournalEntry: typeof JournalEntry;
   Macro: typeof Macro;
@@ -52,9 +54,11 @@ interface DefaultDocumentInstance {
   ChatMessage: ChatMessage;
   Combat: Combat;
   Combatant: Combatant;
+  CombatantGroup: CombatantGroup;
   FogExploration: FogExploration;
   Folder: Folder;
   Item: Item;
+  JournalEntryCategory: JournalEntryCategory;
   JournalEntryPage: JournalEntryPage;
   JournalEntry: JournalEntry;
   Macro: Macro;
@@ -108,9 +112,11 @@ export interface ConfiguredDocumentClass {
   ChatMessage: GetDocumentClass<"ChatMessage">;
   Combat: GetDocumentClass<"Combat">;
   Combatant: GetDocumentClass<"Combatant">;
+  CombatantGroup: GetDocumentClass<"CombatantGroup">;
   FogExploration: GetDocumentClass<"FogExploration">;
   Folder: GetDocumentClass<"Folder">;
   Item: GetDocumentClass<"Item">;
+  JournalEntryCategory: GetDocumentClass<"JournalEntryCategory">;
   JournalEntryPage: GetDocumentClass<"JournalEntryPage">;
   JournalEntry: GetDocumentClass<"JournalEntry">;
   Macro: GetDocumentClass<"Macro">;
@@ -144,9 +150,11 @@ export interface ConfiguredDocumentInstance {
   ChatMessage: GetDocumentInstance<"ChatMessage">;
   Combat: GetDocumentInstance<"Combat">;
   Combatant: GetDocumentInstance<"Combatant">;
+  CombatantGroup: GetDocumentInstance<"CombatantGroup">;
   FogExploration: GetDocumentInstance<"FogExploration">;
   Folder: GetDocumentInstance<"Folder">;
   Item: GetDocumentInstance<"Item">;
+  JournalEntryCategory: GetDocumentInstance<"JournalEntryCategory">;
   JournalEntryPage: GetDocumentInstance<"JournalEntryPage">;
   JournalEntry: GetDocumentInstance<"JournalEntry">;
   Macro: GetDocumentInstance<"Macro">;
@@ -192,10 +200,12 @@ export interface ConfiguredMetadata {
   ChatMessage: ChatMessage.Metadata;
   Combat: Combat.Metadata;
   Combatant: Combatant.Metadata;
+  CombatantGroup: CombatantGroup.Metadata;
   Drawing: DrawingDocument.Metadata;
   FogExploration: FogExploration.Metadata;
   Folder: Folder.Metadata;
   Item: Item.Metadata;
+  JournalEntryCategory: JournalEntryCategory.Metadata;
   JournalEntryPage: JournalEntryPage.Metadata;
   JournalEntry: JournalEntry.Metadata;
   Macro: Macro.Metadata;
@@ -231,9 +241,11 @@ export interface CreateData {
   ChatMessage: documents.BaseChatMessage.CreateData;
   Combat: documents.BaseCombat.CreateData;
   Combatant: documents.BaseCombatant.CreateData;
+  CombatantGroup: documents.BaseCombatantGroup.CreateData;
   FogExploration: documents.BaseFogExploration.CreateData;
   Folder: documents.BaseFolder.CreateData;
   Item: documents.BaseItem.CreateData;
+  JournalEntryCategory: documents.BaseJournalEntryCategory.CreateData;
   JournalEntryPage: documents.BaseJournalEntryPage.CreateData;
   JournalEntry: documents.BaseJournalEntry.CreateData;
   Macro: documents.BaseMacro.CreateData;
@@ -273,9 +285,11 @@ interface MisconfiguredCards extends ConformToDocumentConstructor<typeof Cards> 
 interface MisconfiguredChatMessage extends ConformToDocumentConstructor<typeof ChatMessage> {}
 interface MisconfiguredCombat extends ConformToDocumentConstructor<typeof Combat> {}
 interface MisconfiguredCombatant extends ConformToDocumentConstructor<typeof Combatant> {}
+interface MisconfiguredCombatantGroup extends ConformToDocumentConstructor<typeof CombatantGroup> {}
 interface MisconfiguredFogExploration extends ConformToDocumentConstructor<typeof FogExploration> {}
 interface MisconfiguredFolder extends ConformToDocumentConstructor<typeof Folder> {}
 interface MisconfiguredItem extends ConformToDocumentConstructor<typeof Item> {}
+interface MisconfiguredJournalEntryCategory extends ConformToDocumentConstructor<typeof JournalEntryCategory> {}
 interface MisconfiguredJournalEntryPage extends ConformToDocumentConstructor<typeof JournalEntryPage> {}
 interface MisconfiguredJournalEntry extends ConformToDocumentConstructor<typeof JournalEntry> {}
 interface MisconfiguredMacro extends ConformToDocumentConstructor<typeof Macro> {}
@@ -309,9 +323,11 @@ export interface ConfigurationFailure {
   ChatMessage: MisconfiguredChatMessage;
   Combat: MisconfiguredCombat;
   Combatant: MisconfiguredCombatant;
+  CombatantGroup: MisconfiguredCombatantGroup;
   FogExploration: MisconfiguredFogExploration;
   Folder: MisconfiguredFolder;
   Item: MisconfiguredItem;
+  JournalEntryCategory: MisconfiguredJournalEntryCategory;
   JournalEntryPage: MisconfiguredJournalEntryPage;
   JournalEntry: MisconfiguredJournalEntry;
   Macro: MisconfiguredMacro;

@@ -58,8 +58,7 @@ declare namespace MeasuredTemplateDocument {
      */
     interface Permissions {
       create(user: User.Internal.Implementation, doc: Implementation): boolean;
-      update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
-      delete(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -183,6 +182,7 @@ declare namespace MeasuredTemplateDocument {
      * The _id of the user who created this measured template
      * @defaultValue `game?.user?.id`
      */
+    // TODO: retype this to `DocumentAuthorField`
     author: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string | undefined }>;
 
     /**
@@ -193,7 +193,6 @@ declare namespace MeasuredTemplateDocument {
       {
         required: true;
         choices: CONST.MEASURED_TEMPLATE_TYPES[];
-        label: "Type";
         initial: typeof CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
         validationError: "must be a value in CONST.MEASURED_TEMPLATE_TYPES";
       },
@@ -207,13 +206,13 @@ declare namespace MeasuredTemplateDocument {
      * The x-coordinate position of the origin of the template effect
      * @defaultValue `0`
      */
-    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
+    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
      * The y-coordinate position of the origin of the template effect
      * @defaultValue `0`
      */
-    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
+    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
      * The elevation of the template
@@ -236,26 +235,25 @@ declare namespace MeasuredTemplateDocument {
       nullable: false;
       initial: 0;
       min: 0;
-      label: "Distance";
     }>;
 
     /**
      * The angle of rotation for the measured template
      * @defaultValue `0`
      */
-    direction: fields.AngleField<{ label: "Direction" }>;
+    direction: fields.AngleField;
 
     /**
      * The angle of effect of the measured template, applies to cone types
      * @defaultValue `0`
      */
-    angle: fields.AngleField<{ normalize: false; label: "Angle" }>;
+    angle: fields.AngleField<{ normalize: false }>;
 
     /**
      * The width of the measured template, applies to ray types
      * @defaultValue `0`
      */
-    width: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; step: 0.01; label: "Width" }>;
+    width: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; step: 0.01 }>;
 
     /**
      * A color string used to tint the border of the template shape
@@ -279,12 +277,13 @@ declare namespace MeasuredTemplateDocument {
      * Is the template currently hidden?
      * @defaultValue `false`
      */
-    hidden: fields.BooleanField<{ label: "Hidden" }>;
+    hidden: fields.BooleanField;
 
     /**
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype this to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
   }
 

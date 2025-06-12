@@ -15,19 +15,6 @@ declare abstract class BaseTableResult<
   out _SubType extends BaseTableResult.SubType = BaseTableResult.SubType,
 > extends Document<"TableResult", BaseTableResult.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BaseTableResult`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseTableResult` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link TableResult.implementation | `new TableResult.implementation(...)`} instead which will give you
-   * a system specific implementation of `TableResult`.
-   */
-  constructor(...args: TableResult.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -37,27 +24,36 @@ declare abstract class BaseTableResult<
    *   labelPlural: "DOCUMENT.TableResults",
    *   coreTypes: Object.values(CONST.TABLE_RESULT_TYPES),
    *   permissions: {
-   *     update: this.#canUpdate
+   *     create: "OWNER",
+   *     update: this.#canUpdate,
+   *     delete: "OWNER"
    *   },
    *   compendiumIndexFields: ["type"],
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * });
    * ```
    */
   static override metadata: BaseTableResult.Metadata;
 
+  /** @defaultValue `["TABLE_RESULT"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
   static override defineSchema(): BaseTableResult.Schema;
 
   /**
-   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `RollTable` implementation
-   * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
+   * @deprecated since V13 until V15
    */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  get text(): string;
+
+  /**
+   * @deprecated since V13 until V15
+   */
+  get documentId(): string | null;
+
+  /**
+   * @deprecated since v13 until V15
+   */
+  get documentCollection(): string;
 
   /**
    * @remarks
@@ -65,6 +61,8 @@ declare abstract class BaseTableResult<
    * - Numeric `type`s to their new — since v12 — string values
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.

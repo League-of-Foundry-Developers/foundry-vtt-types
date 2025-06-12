@@ -174,8 +174,6 @@ declare namespace Adventure {
     name: fields.StringField<{
       required: true;
       blank: false;
-      label: "ADVENTURE.Name";
-      hint: "ADVENTURE.NameHint";
       textSearch: true;
     }>;
 
@@ -183,21 +181,19 @@ declare namespace Adventure {
      * The file path for the primary image of the adventure
      * @defaultValue `null`
      */
-    img: fields.FilePathField<{ categories: ["IMAGE"]; label: "ADVENTURE.Image"; hint: "ADVENTURE.ImageHint" }>;
+    img: fields.FilePathField<{ categories: ["IMAGE"] }>;
 
     /**
      * A string caption displayed under the primary image banner
      * @defaultValue `""`
      */
-    caption: fields.HTMLField<{ label: "ADVENTURE.Caption"; hint: "ADVENTURE.CaptionHint" }>;
+    caption: fields.HTMLField;
 
     /**
      * An HTML text description for the adventure
      * @defaultValue `""`
      */
     description: fields.HTMLField<{
-      label: "ADVENTURE.Description";
-      hint: "ADVENTURE.DescriptionHint";
       textSearch: true;
     }>;
 
@@ -273,6 +269,7 @@ declare namespace Adventure {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**

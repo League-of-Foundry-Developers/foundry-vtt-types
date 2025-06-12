@@ -712,6 +712,16 @@ declare namespace Canvas {
   type Point = PIXI.Point | { x: number; y: number };
 
   /**
+   * A 3D point, expessed as \{x, y, elevation\}.
+   * @remarks Copied from `common/_types.mjs`
+   */
+  interface ElevatedPoint {
+    x: number;
+    y: number;
+    elevation: number;
+  }
+
+  /**
    * A single point, expressed as an array \[x,y\]
    * @remarks Copied from `resources/app/common/types.mjs`
    *

@@ -56,6 +56,8 @@ type Point = Canvas.Point;
 
 type PointArray = Canvas.PointTuple;
 
+type ElevantedPoint = Canvas.ElevatedPoint;
+
 type Rectangle = Canvas.Rectangle;
 
 type BuiltinTypes = typeof Number | typeof String | typeof Boolean;

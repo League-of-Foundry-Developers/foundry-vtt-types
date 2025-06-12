@@ -955,6 +955,7 @@ declare namespace Document {
     | "ChatMessage"
     | "Combat"
     | "Combatant"
+    | "CombatantGroup"
     | "Item"
     | "JournalEntryPage"
     | "RegionBehavior";
@@ -997,6 +998,7 @@ declare namespace Document {
     | (Name extends "ChatMessage" ? ChatMessage.OfType<SubType & ChatMessage.SubType> : never)
     | (Name extends "Combat" ? Combat.OfType<SubType & Combat.SubType> : never)
     | (Name extends "Combatant" ? Combatant.OfType<SubType & Combatant.SubType> : never)
+    | (Name extends "CombatantGroup" ? CombatantGroup.OfType<SubType & CombatantGroup.SubType> : never)
     | (Name extends "Folder" ? Folder.OfType<SubType & Folder.SubType> : never)
     | (Name extends "Item" ? Item.OfType<SubType & Item.SubType> : never)
     | (Name extends "JournalEntryPage" ? JournalEntryPage.OfType<SubType & JournalEntryPage.SubType> : never)
@@ -1030,6 +1032,7 @@ declare namespace Document {
     | "ChatMessage"
     | "Combat"
     | "Combatant"
+    | "CombatantGroup"
     | "Item"
     | "JournalEntryPage"
     | "RegionBehavior";
@@ -1212,9 +1215,11 @@ declare namespace Document {
     | (DocumentType extends "ChatMessage" ? ChatMessage.CreateData : never)
     | (DocumentType extends "Combat" ? Combat.CreateData : never)
     | (DocumentType extends "Combatant" ? Combatant.CreateData : never)
+    | (DocumentType extends "CombatantGroup" ? CombatantGroup.CreateData : never)
     | (DocumentType extends "FogExploration" ? FogExploration.CreateData : never)
     | (DocumentType extends "Folder" ? Folder.CreateData : never)
     | (DocumentType extends "Item" ? Item.CreateData : never)
+    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.CreateData : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.CreateData : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.CreateData : never)
     | (DocumentType extends "Macro" ? Macro.CreateData : never)
@@ -1246,9 +1251,11 @@ declare namespace Document {
     | (DocumentType extends "ChatMessage" ? ChatMessage.UpdateData : never)
     | (DocumentType extends "Combat" ? Combat.UpdateData : never)
     | (DocumentType extends "Combatant" ? Combatant.UpdateData : never)
+    | (DocumentType extends "CombatantGroup" ? CombatantGroup.UpdateData : never)
     | (DocumentType extends "FogExploration" ? FogExploration.UpdateData : never)
     | (DocumentType extends "Folder" ? Folder.UpdateData : never)
     | (DocumentType extends "Item" ? Item.UpdateData : never)
+    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.UpdateData : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.UpdateData : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.UpdateData : never)
     | (DocumentType extends "Macro" ? Macro.UpdateData : never)
@@ -1280,9 +1287,11 @@ declare namespace Document {
     | (DocumentType extends "ChatMessage" ? ChatMessage.Source : never)
     | (DocumentType extends "Combat" ? Combat.Source : never)
     | (DocumentType extends "Combatant" ? Combatant.Source : never)
+    | (DocumentType extends "CombatantGroup" ? CombatantGroup.Source : never)
     | (DocumentType extends "FogExploration" ? FogExploration.Source : never)
     | (DocumentType extends "Folder" ? Folder.Source : never)
     | (DocumentType extends "Item" ? Item.Source : never)
+    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Source : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Source : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Source : never)
     | (DocumentType extends "Macro" ? Macro.Source : never)
@@ -1331,9 +1340,11 @@ declare namespace Document {
     | (DocumentType extends "ChatMessage" ? ChatMessage.Stored : never)
     | (DocumentType extends "Combat" ? Combat.Stored : never)
     | (DocumentType extends "Combatant" ? Combatant.Stored : never)
+    | (DocumentType extends "CombatantGroup" ? CombatantGroup.Stored : never)
     | (DocumentType extends "FogExploration" ? FogExploration.Stored : never)
     | (DocumentType extends "Folder" ? Folder.Stored : never)
     | (DocumentType extends "Item" ? Item.Stored : never)
+    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Stored : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Stored : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Stored : never)
     | (DocumentType extends "Macro" ? Macro.Stored : never)
@@ -1365,9 +1376,11 @@ declare namespace Document {
     | (DocumentType extends "ChatMessage" ? ChatMessage.Invalid : never)
     | (DocumentType extends "Combat" ? Combat.Invalid : never)
     | (DocumentType extends "Combatant" ? Combatant.Invalid : never)
+    | (DocumentType extends "CombatantGroup" ? CombatantGroup.Invalid : never)
     | (DocumentType extends "FogExploration" ? FogExploration.Invalid : never)
     | (DocumentType extends "Folder" ? Folder.Invalid : never)
     | (DocumentType extends "Item" ? Item.Invalid : never)
+    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Invalid : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Invalid : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Invalid : never)
     | (DocumentType extends "Macro" ? Macro.Invalid : never)
@@ -1782,9 +1795,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.Create : never)
       | (DocumentType extends "Combat" ? Combat.Database.Create : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.Create : never)
+      | (DocumentType extends "CombatantGroup" ? CombatantGroup.Database.Create : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.Create : never)
       | (DocumentType extends "Folder" ? Folder.Database.Create : never)
       | (DocumentType extends "Item" ? Item.Database.Create : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.Create : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.Create : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.Create : never)
       | (DocumentType extends "Macro" ? Macro.Database.Create : never)
@@ -1816,9 +1831,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "Combat" ? Combat.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.CreateOperation<Temporary> : never)
+      | (DocumentType extends "CombatantGroup" ? CombatantGroup.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "Folder" ? Folder.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "Item" ? Item.Database.CreateOperation<Temporary> : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "Macro" ? Macro.Database.CreateOperation<Temporary> : never)
@@ -1850,9 +1867,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.UpdateOperation : never)
       | (DocumentType extends "Combat" ? Combat.Database.UpdateOperation : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.UpdateOperation : never)
+      | (DocumentType extends "CombatantGroup" ? CombatantGroup.Database.UpdateOperation : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.UpdateOperation : never)
       | (DocumentType extends "Folder" ? Folder.Database.UpdateOperation : never)
       | (DocumentType extends "Item" ? Item.Database.UpdateOperation : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.UpdateOperation : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.UpdateOperation : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.UpdateOperation : never)
       | (DocumentType extends "Macro" ? Macro.Database.UpdateOperation : never)
@@ -1884,9 +1903,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.DeleteOperation : never)
       | (DocumentType extends "Combat" ? Combat.Database.DeleteOperation : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.DeleteOperation : never)
+      | (DocumentType extends "CombatantGround" ? CombatantGroup.Database.DeleteOperation : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.DeleteOperation : never)
       | (DocumentType extends "Folder" ? Folder.Database.DeleteOperation : never)
       | (DocumentType extends "Item" ? Item.Database.DeleteOperation : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.DeleteOperation : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.DeleteOperation : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.DeleteOperation : never)
       | (DocumentType extends "Macro" ? Macro.Database.DeleteOperation : never)
@@ -1918,9 +1939,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.CreateOptions : never)
       | (DocumentType extends "Combat" ? Combat.Database.CreateOptions : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.CreateOptions : never)
+      | (DocumentType extends "CombatantGroup" ? CombatantGroup.Database.CreateOptions : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.CreateOptions : never)
       | (DocumentType extends "Folder" ? Folder.Database.CreateOptions : never)
       | (DocumentType extends "Item" ? Item.Database.CreateOptions : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.CreateOptions : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.CreateOptions : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.CreateOptions : never)
       | (DocumentType extends "Macro" ? Macro.Database.CreateOptions : never)
@@ -1952,9 +1975,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.UpdateOptions : never)
       | (DocumentType extends "Combat" ? Combat.Database.UpdateOptions : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.UpdateOptions : never)
+      | (DocumentType extends "CombatantGroup" ? CombatantGroup.Database.UpdateOptions : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.UpdateOptions : never)
       | (DocumentType extends "Folder" ? Folder.Database.UpdateOptions : never)
       | (DocumentType extends "Item" ? Item.Database.UpdateOptions : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.UpdateOptions : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.UpdateOptions : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.UpdateOptions : never)
       | (DocumentType extends "Macro" ? Macro.Database.UpdateOptions : never)
@@ -1986,9 +2011,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.DeleteOptions : never)
       | (DocumentType extends "Combat" ? Combat.Database.DeleteOptions : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.DeleteOptions : never)
+      | (DocumentType extends "CombatantGroup" ? CombatantGroup.Database.DeleteOptions : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.DeleteOptions : never)
       | (DocumentType extends "Folder" ? Folder.Database.DeleteOptions : never)
       | (DocumentType extends "Item" ? Item.Database.DeleteOptions : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.DeleteOptions : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.DeleteOptions : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.DeleteOptions : never)
       | (DocumentType extends "Macro" ? Macro.Database.DeleteOptions : never)
@@ -2270,9 +2297,11 @@ declare namespace Document {
     ChatMessage: ChatMessage.DropData;
     Combat: Combat.DropData;
     Combatant: Combatant.DropData;
+    CombatantGroup: CombatantGroup.DropData;
     FogExploration: FogExploration.DropData;
     Folder: Folder.DropData;
     Item: Item.DropData;
+    JournalEntryCategory: JournalEntryCategory.DropData;
     JournalEntryPage: JournalEntryPage.DropData;
     JournalEntry: JournalEntry.DropData;
     Macro: Macro.DropData;

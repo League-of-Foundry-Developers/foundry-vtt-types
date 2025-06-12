@@ -189,9 +189,9 @@ declare namespace PlaylistSound {
 
     /**
      * A channel in CONST.AUDIO_CHANNELS where this sound is are played
-     * @defaultValue `"music"`
+     * @defaultValue `""`
      */
-    channel: fields.StringField<{ choices: typeof CONST.AUDIO_CHANNELS; initial: string; blank: true }>;
+    channel: fields.StringField<{ required: true; choices: typeof CONST.AUDIO_CHANNELS; initial: string; blank: true }>;
 
     /**
      * Is this sound currently playing?
@@ -233,6 +233,7 @@ declare namespace PlaylistSound {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype as `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
   }
 

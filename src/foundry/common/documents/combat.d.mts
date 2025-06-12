@@ -17,19 +17,6 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   any
 > {
   /**
-   * @param data    - Initial data from which to construct the `BaseCombat`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseCombat` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link Combat.implementation | `new Combat.implementation(...)`} instead which will give you
-   * a system specific implementation of `Combat`.
-   */
-  constructor(...args: Combat.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -38,17 +25,21 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    *   label: "DOCUMENT.Combat",
    *   labelPlural: "DOCUMENT.Combats",
    *   embedded: {
-   *     Combatant: "combatants"
+   *     Combatant: "combatants",
+   *     CombatantGroup: "groups"
    *   },
    *   hasTypeData: true,
    *   permissions: {
    *     update: this.#canUpdate
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseCombat.Metadata;
+
+  /** @defaultValue `["DOCUMENT", "COMBAT"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   static override defineSchema(): BaseCombat.Schema;
 
@@ -67,6 +58,12 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    * @remarks Foundry's implementation always returns `true`
    */
   protected _canChangeTurn(user: User.Implementation): boolean;
+
+  protected override _preUpdate(
+    changed: Combat.UpdateData,
+    options: Combat.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
 
   /*
    * After this point these are not really overridden methods.
@@ -211,12 +208,6 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
     operation: Combat.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
-
-  protected override _preUpdate(
-    changed: Combat.UpdateData,
-    options: Combat.Database.PreUpdateOptions,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: Combat.UpdateData,

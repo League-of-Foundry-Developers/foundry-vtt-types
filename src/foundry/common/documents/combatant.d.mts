@@ -16,19 +16,6 @@ declare abstract class BaseCombatant<
   out SubType extends BaseCombatant.SubType = BaseCombatant.SubType,
 > extends Document<"Combatant", BaseCombatant._Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BaseCombatant`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseCombatant` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link Combatant.implementation | `new Combatant.implementation(...)`} instead which will give you
-   * a system specific implementation of `Combatant`.
-   */
-  constructor(...args: Combatant.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -39,10 +26,11 @@ declare abstract class BaseCombatant<
    *   isEmbedded: true,
    *   hasTypeData: true,
    *   permissions: {
-   *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     create: "OWNER",
+   *     update: this.#canUpdate,
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -56,7 +44,7 @@ declare abstract class BaseCombatant<
    * Returns {@link DOCUMENT_OWNERSHIP_LEVELS.OWNER | `OWNER`} if `user.isGM`, otherwise forwards to `this.actor?.getUserLevel(user)`.
    * If thats nullish, returns {@link DOCUMENT_OWNERSHIP_LEVELS.NONE | `NONE`}
    */
-  override getUserLevel(user?: User.Implementation | null): DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): DOCUMENT_OWNERSHIP_LEVELS;
 
   /*
    * After this point these are not really overridden methods.

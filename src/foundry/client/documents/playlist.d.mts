@@ -66,6 +66,7 @@ declare namespace Playlist {
      */
     interface Permissions {
       create: "PLAYLIST_CREATE";
+      delete: "OWNER";
     }
   }
 
@@ -288,7 +289,7 @@ declare namespace Playlist {
      * A duration in milliseconds to fade volume transition
      * @defaultValue `null`
      */
-    fade: fields.NumberField<{ positive: true }>;
+    fade: fields.NumberField<{ integer: true; positive: true }>;
 
     /**
      * The _id of a Folder which contains this playlist
@@ -335,6 +336,7 @@ declare namespace Playlist {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype as `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<"Playlist">;
 
     /**

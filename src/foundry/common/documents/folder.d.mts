@@ -17,19 +17,6 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
   any
 > {
   /**
-   * @param data    - Initial data from which to construct the `BaseFolder`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseFolder` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link Folder.implementation | `new Folder.implementation(...)`} instead which will give you
-   * a system specific implementation of `Folder`.
-   */
-  constructor(...args: Folder.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -38,13 +25,21 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
    *   label: "DOCUMENT.Folder",
    *   labelPlural: "DOCUMENT.Folders",
    *   coreTypes: CONST.FOLDER_DOCUMENT_TYPES,
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseFolder.Metadata;
 
   static override defineSchema(): BaseFolder.Schema;
+
+  /** @defaultValue `["DOCUMENT", "FOLDER"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /**
+   * @throws If `data.folder === data._id` (no putting folders inside themselves)
+   */
+  static validateJoint(data: Folder.Source): void;
 
   /**
    * Allow folder sorting modes
@@ -274,12 +269,6 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
   protected static override _schema: SchemaField<Folder.Schema>;
 
   static override get schema(): SchemaField<Folder.Schema>;
-
-  /**
-   * @remarks Actual override, not just part of the template
-   * @throws If `data.folder === data._id` (no putting folders inside themselves)
-   */
-  static validateJoint(data: Folder.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(source: Folder.CreateData, context?: DataModel.FromSourceOptions): Folder.Implementation;

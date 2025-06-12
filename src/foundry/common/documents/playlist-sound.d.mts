@@ -13,19 +13,6 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BasePlaylistSound.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BasePlaylistSound`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BasePlaylistSound` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link PlaylistSound.implementation | `new PlaylistSound.implementation(...)`} instead which will give you
-   * a system specific implementation of `PlaylistSound`.
-   */
-  constructor(...args: PlaylistSound.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -35,7 +22,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    *   label: "DOCUMENT.PlaylistSound",
    *   labelPlural: "DOCUMENT.PlaylistSounds",
    *   compendiumIndexFields: ["name", "sort"],
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -43,16 +30,8 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   static override defineSchema(): BasePlaylistSound.Schema;
 
-  /**
-   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Playlist` implementation
-   * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  /** @defaultValue `["DOCUMENT", "PLAYLIST_SOUND"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /*
    * After this point these are not really overridden methods.

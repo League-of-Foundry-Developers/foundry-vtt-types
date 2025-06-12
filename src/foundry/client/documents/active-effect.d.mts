@@ -49,10 +49,16 @@ declare namespace ActiveEffect {
         label: string;
         labelPlural: string;
         schemaVersion: string;
+        permissions: Metadata.Permissions;
       }>
     > {}
 
-  // No need for Metadata namespace
+  namespace Metadata {
+    interface Permissions {
+      create: "OWNER";
+      delete: "OWNER";
+    }
+  }
 
   /**
    * Allowed subtypes of `ActiveEffect`. This is configured through various methods. Modern Foundry

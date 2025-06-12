@@ -17,19 +17,6 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   any
 > {
   /**
-   * @param data    - Initial data from which to construct the `BaseCard`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseCard` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link Card.implementation | `new Card.implementation(...)`} instead which will give you
-   * a system specific implementation of `Card`.
-   */
-  constructor(...args: Card.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -41,10 +28,11 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    *   labelPlural: "DOCUMENT.Cards",
    *   permissions: {
    *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     update: this.#canUpdate,
+   *     delete: "OWNER"
    *   },
    *   compendiumIndexFields: ["name", "type", "suit", "sort"],
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -58,16 +46,8 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    */
   static DEFAULT_ICON: string;
 
-  /**
-   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Cards` implementation
-   * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  /** @defaultValue `["DOCUMENT", "CARD"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /*
    * After this point these are not really overridden methods.

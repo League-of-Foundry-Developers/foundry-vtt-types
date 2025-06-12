@@ -13,26 +13,35 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BaseRollTable`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseRollTable` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link RollTable.implementation | `new RollTable.implementation(...)`} instead which will give you
-   * a system specific implementation of the `RollTable` document.
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "RollTable",
+   *   collection: "tables",
+   *   indexed: true,
+   *   compendiumIndexFields: ["_id", "name", "description", "img", "sort", "folder"],
+   *   embedded: {TableResult: "results"},
+   *   label: "DOCUMENT.RollTable",
+   *   labelPlural: "DOCUMENT.RollTables",
+   *   schemaVersion: "13.341"
+   * })
+   * ```
    */
-  constructor(...args: RollTable.ConstructorArgs);
-
   static override metadata: BaseRollTable.Metadata;
 
-  static override defineSchema(): BaseRollTable.Schema;
+  /** @defaultValue `["DOCUMENT", "TABLE"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /**
    * The default icon used for newly created Macro documents
+   * @defaultValue `"icons/svg/d20-grey.svg"`
+   * @remarks "Macro" comes from foundry's comment
    */
-  static DEFAULT_ICON: "icons/svg/d20-grey.svg";
+  static DEFAULT_ICON: string;
+
+  static override defineSchema(): BaseRollTable.Schema;
+
+  protected override _initialize(options?: Document.InitializeOptions): void;
 
   /**
    * @remarks
@@ -40,6 +49,9 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.

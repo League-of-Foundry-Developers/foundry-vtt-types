@@ -270,8 +270,10 @@ export const EMBEDDED_DOCUMENT_TYPES: readonly [
   "AmbientSound",
   "Card",
   "Combatant",
+  "CombatantGroup",
   "Drawing",
   "Item",
+  "JournalEntryCategory",
   "JournalEntryPage",
   "MeasuredTemplate",
   "Note",
@@ -1064,40 +1066,61 @@ export declare const TOKEN_DISPOSITIONS: Readonly<{
 export type TOKEN_DISPOSITIONS = Brand<number, "constants.TOKEN_DISPOSITIONS">;
 
 /**
- * The possible shapes of Tokens in hexagonal grids.
+ * The allowed token turn markers modes.
  */
-export declare const TOKEN_HEXAGONAL_SHAPES: Readonly<{
+export declare const TOKEN_TURN_MARKER_MODES: Readonly<{
+  /**
+   * The turn marker is disabled for this token.
+   */
+  DISABLED: 0 & TOKEN_TURN_MARKER_MODES;
+
+  /**
+   * The turn marker for this token is using the combat tracker settings (which could be disabled).
+   */
+  DEFAULT: 1 & TOKEN_TURN_MARKER_MODES;
+
+  /**
+   * The turn marker is using the token settings (unless the combat tracker turn marker setting is disabled)
+   */
+  CUSTOM: 2 & TOKEN_TURN_MARKER_MODES;
+}>;
+export type TOKEN_TURN_MARKER_MODES = Brand<number, "constants.TOKEN_TURN_MARKER_MODES">;
+
+/**
+ * The possible shapes of Tokens.
+ */
+export declare const TOKEN_SHAPES: Readonly<{
   /**
    * Ellipse (Variant 1)
    */
-  ELLIPSE_1: 0 & TOKEN_HEXAGONAL_SHAPES;
+  ELLIPSE_1: 0 & TOKEN_SHAPES;
 
   /**
    * Ellipse (Variant 2)
    */
-  ELLIPSE_2: 1 & TOKEN_HEXAGONAL_SHAPES;
+  ELLIPSE_2: 1 & TOKEN_SHAPES;
 
   /**
    * Trapezoid (Variant 1)
    */
-  TRAPEZOID_1: 2 & TOKEN_HEXAGONAL_SHAPES;
+  TRAPEZOID_1: 2 & TOKEN_SHAPES;
 
   /**
    * Trapezoid (Variant 2)
    */
-  TRAPEZOID_2: 3 & TOKEN_HEXAGONAL_SHAPES;
+  TRAPEZOID_2: 3 & TOKEN_SHAPES;
 
   /**
    * Rectangle (Variant 1)
    */
-  RECTANGLE_1: 4 & TOKEN_HEXAGONAL_SHAPES;
+  RECTANGLE_1: 4 & TOKEN_SHAPES;
 
   /**
    * Rectangle (Variant 2)
    */
-  RECTANGLE_2: 5 & TOKEN_HEXAGONAL_SHAPES;
+  RECTANGLE_2: 5 & TOKEN_SHAPES;
 }>;
-export type TOKEN_HEXAGONAL_SHAPES = Brand<number, "constants.TOKEN_HEXAGONAL_SHAPES">;
+export type TOKEN_SHAPES = Brand<number, "constants.TOKEN_SHAPES">;
 
 /**
  * Define the allowed User permission levels.
@@ -2187,3 +2210,8 @@ export type REGION_VISIBILITY = Brand<number, "constants.REGION_VISIBILITY">;
  * @deprecated since v12
  */
 export type DOCUMENT_TYPES = Exclude<WORLD_DOCUMENT_TYPES, "FogExploration" | "Setting">;
+
+/**
+ * @deprecated since v13
+ */
+export type TOKEN_HEXAGONAL_SHAPES = TOKEN_SHAPES;

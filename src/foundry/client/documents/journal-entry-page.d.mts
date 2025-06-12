@@ -52,11 +52,17 @@ declare namespace JournalEntryPage {
         labelPlural: string;
         coreTypes: ["text", "image", "pdf", "video"];
         compendiumIndexFields: ["name", "type", "sort"];
+        permissions: Metadata.Permissions;
         schemaVersion: string;
       }>
     > {}
 
-  // No need for Metadata namespace
+  namespace Metadata {
+    interface Permissions {
+      create: "OWNER";
+      delete: "OWNER";
+    }
+  }
 
   /**
    * Allowed subtypes of `JournalEntryPage`. This is configured through various methods. Modern Foundry
@@ -364,6 +370,12 @@ declare namespace JournalEntryPage {
     }>;
 
     /**
+     * An optional category that this page belongs to.
+     * @defaultValue `null`
+     */
+    category: fields.DocumentIdField<{ readonly: false }>;
+
+    /**
      * The numeric sort value which orders this page relative to its siblings.
      * @defaultValue `0`
      */
@@ -381,6 +393,7 @@ declare namespace JournalEntryPage {
      * An object of optional key/value flags.
      * @defaultValue `{}`
      */
+    // TODO: retype this to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     _stats: fields.DocumentStatsField;

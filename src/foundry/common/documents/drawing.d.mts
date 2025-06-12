@@ -14,19 +14,6 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BaseDrawing`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseDrawing` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link DrawingDocument.implementation | `new DrawingDocument.implementation(...)`} instead which will give you
-   * a system specific implementation of `DrawingDocument`.
-   */
-  constructor(...args: DrawingDocument.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -37,29 +24,40 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    *   isEmbedded: true,
    *   permissions: {
    *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseDrawing.Metadata;
 
+  /** @defaultValue `["DOCUMENT", "DRAWING"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
   static override defineSchema(): BaseDrawing.Schema;
+
+  /**
+   * Validate whether the drawing has some visible content (as required by validation).
+   */
+  protected static _validateVisibleContent(
+    data: Partial<Pick<BaseDrawing.InitializedData, "shape">> &
+      Pick<
+        BaseDrawing.InitializedData,
+        "text" | "textAlpha" | "fillType" | "fillAlpha" | "strokeWidth" | "strokeAlpha"
+      >,
+  ): boolean;
+
+  /**
+   * @remarks
+   * @throws If `data` fails `BaseDrawing.#validateVisibleContent` validation (must have some visible text, fill, *or* line)
+   */
+  static override validateJoint(data: DrawingDocument.Source): void;
 
   /** @remarks Returns `user.hasPermission("DRAWING_CREATE")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
-  /**
-   * @remarks Returns `true` if `user` is the `author` of the `Drawing` and `options.exact` is falsey.
-   * Otherwise, forwards to {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * @remarks
@@ -75,12 +73,6 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    */
   // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
-
-  /**
-   * @remarks
-   * @throws If `data` fails `BaseDrawing.#validateVisibleContent` validation (must have some visible text, fill, *or* line)
-   */
-  static override validateJoint(data: DrawingDocument.Source): void;
 
   /**
    * @deprecated since v12, until v14

@@ -1,6 +1,5 @@
 import type { AnyMutableObject, Identity } from "#utils";
 import type Document from "../abstract/document.mts";
-import type { documents } from "#client/client.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
@@ -18,19 +17,6 @@ declare abstract class BaseActorDelta<
   out SubType extends BaseActorDelta.SubType = BaseActorDelta.SubType,
 > extends Document<"ActorDelta", BaseActorDelta._Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BaseActorDelta`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseActorDelta` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link ActorDelta.implementation | `new ActorDelta.implementation(...)`} instead which will give you
-   * a system specific implementation of `ActorDelta`.
-   */
-  constructor(...args: ActorDelta.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -43,7 +29,11 @@ declare abstract class BaseActorDelta<
    *     Item: "items",
    *     ActiveEffect: "effects"
    *   },
-   *   schemaVersion: "12.324"
+   *   permissions: {
+   *     create: "OWNER",
+   *     delete: "OWNER"
+   *   }
+   *   schemaVersion: "13.341"
    * });
    * ```
    */
@@ -51,24 +41,7 @@ declare abstract class BaseActorDelta<
 
   static override defineSchema(): BaseActorDelta.Schema;
 
-  /**
-   * @remarks Forwards to `this.parent.canUserModify`. Core's `TokenDocument` implementation doesn't override this method,
-   * so without further extension that's equivalent to {@link Document.canUserModify | `Document#canUserModify`}
-   */
-  // data: not null (parameter default only)
-  override canUserModify<Action extends "create" | "update" | "delete">(
-    user: User.Implementation,
-    action: Action,
-    data?: Document.CanUserModifyData<TokenDocument.Schema, Action>,
-  ): boolean;
-
-  /** @remarks Forwards to {@link TokenDocument.testUserPermission | `this.parent.testUserPermission`} */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  override getUserLevel(user: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Retrieve the base actor's collection, if it exists.
@@ -84,26 +57,36 @@ declare abstract class BaseActorDelta<
    * @param delta     - The ActorDelta.
    * @param baseActor - The base Actor.
    * @param context   - Context to supply to synthetic Actor instantiation.
-   * @remarks `context` is spread into an object, so it being `null` is effectively the same as omitted
+   * @remarks `baseActor` is documented as being a `BaseActor` but in practice can only ever be `Actor.Implementation`
    */
   static applyDelta(
     delta: BaseActorDelta,
-    baseActor: documents.BaseActor,
-    context?: BaseActorDelta.ApplyDeltaContext | null,
+    baseActor: Actor.Implementation,
+    context?: BaseActorDelta.ApplyDeltaContext,
   ): Actor.Implementation | null;
 
   /**
    * @remarks
    * Migrations:
-   * - {@link documents.BaseActor.migrateData | `BaseActor`}'s
+   * - {@link foundry.documents.BaseActor.migrateData | `BaseActor`}'s
    *
    * Simply forwards to `BaseActor`
    */
   static migrateData(source: AnyMutableObject): AnyMutableObject;
 
+  /**
+   * Prepare changes to a descendent delta collection.
+   * @param changes - Candidate source changes. (default: `{}`)
+   * @param options - Options which determine how the new data is merged. (default: `{}`)
+   */
+  protected _prepareDeltaUpdate(changes: ActorDelta.UpdateData, options: DataModel.UpdateOptions): void;
+
+  /** @remarks passes to {@linkcode _prepareDeltaUpdate} prior to calling super */
+  override updateSource(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): ActorDelta.UpdateData;
+
   /** @remarks Strips optional (`required: false`) fields from the object before returning */
   // TODO: Properly type this override
-  override toObject(source?: boolean | null): SchemaField.SourceData<ActorDelta.Schema>;
+  override toObject(source?: boolean): SchemaField.SourceData<ActorDelta.Schema>;
 
   /*
    * After this point these are not really overridden methods.

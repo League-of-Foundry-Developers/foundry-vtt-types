@@ -61,6 +61,7 @@ declare namespace Combat {
      */
     interface Embedded {
       Combatant: "combatants";
+      CombatantGroup: "groups";
     }
 
     /**
@@ -307,6 +308,12 @@ declare namespace Combat {
     scene: fields.ForeignDocumentField<typeof documents.BaseScene>;
 
     /**
+     * A Collection of Documents that represent a grouping of individual Combatants
+     * @defaultValue `[]`
+     */
+    groups: fields.EmbeddedCollectionField<typeof documents.BaseCombatantGroup, Combat.Implementation>;
+
+    /**
      * A Collection of Combatant embedded Documents
      * @defaultValue `[]`
      */
@@ -328,14 +335,13 @@ declare namespace Combat {
       integer: true;
       min: 0;
       initial: 0;
-      label: "COMBAT.Round";
     }>;
 
     /**
      * The current turn in the Combat round
      * @defaultValue `null`
      */
-    turn: fields.NumberField<{ required: true; integer: true; min: 0; initial: null; label: "COMBAT.Turn" }>;
+    turn: fields.NumberField<{ required: true; integer: true; min: 0; initial: null }>;
 
     /**
      * The current sort order of this Combat relative to others in the same Scene
@@ -347,6 +353,7 @@ declare namespace Combat {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**

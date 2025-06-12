@@ -1,4 +1,5 @@
 import type { Merge } from "#utils";
+import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 
@@ -197,6 +198,12 @@ declare namespace Setting {
       nullable: true;
       initial: null;
     }>;
+
+    /**
+     * The ID of the user this Setting belongs to, if user-scoped.
+     * @defaultValue `null`
+     */
+    user: fields.ForeignDocumentField<typeof documents.BaseUser, { idOnly: true }>;
 
     /**
      * An object of creation and access information

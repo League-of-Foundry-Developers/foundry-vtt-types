@@ -235,7 +235,7 @@ declare namespace RegionDocument {
     /**
      * The name used to describe the Region
      */
-    name: fields.StringField<{ required: true; blank: false; label: "Name"; textSearch: true }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * The color used to highlight the Region
@@ -245,17 +245,12 @@ declare namespace RegionDocument {
       required: true;
       nullable: false;
       initial: () => string;
-      label: "REGION.FIELDS.color.label";
-      hint: "REGION.FIELDS.color.hint";
     }>;
 
     /**
      * The shapes that make up the Region
      */
-    shapes: fields.ArrayField<
-      fields.TypedSchemaField<BaseShapeData.Types>,
-      { label: "REGION.FIELDS.shapes.label"; hint: "REGION.FIELDS.shapes.hint" }
-    >;
+    shapes: fields.ArrayField<fields.TypedSchemaField<BaseShapeData.Types>>;
 
     /**
      * A RegionElevation object which defines the elevation levels where the Region takes effect
@@ -270,8 +265,6 @@ declare namespace RegionDocument {
          */
         bottom: fields.NumberField<{
           required: true;
-          label: "REGION.FIELDS.elevation.FIELDS.bottom.label";
-          hint: "REGION.FIELDS.elevation.FIELDS.bottom.hint";
         }>;
 
         /**
@@ -281,13 +274,9 @@ declare namespace RegionDocument {
          */
         top: fields.NumberField<{
           required: true;
-          label: "REGION.FIELDS.elevation.FIELDS.top.label";
-          hint: "REGION.FIELDS.elevation.FIELDS.top.hint";
         }>;
       },
       {
-        label: "REGION.FIELDS.elevation.label";
-        hint: "REGION.FIELDS.elevation.hint";
         validate: (d: unknown) => boolean;
         validationError: "elevation.top may not be less than elevation.bottom";
       }
@@ -298,8 +287,7 @@ declare namespace RegionDocument {
      */
     behaviors: fields.EmbeddedCollectionField<
       typeof foundry.documents.BaseRegionBehavior,
-      RegionDocument.Implementation,
-      { label: "REGION.FIELDS.behaviors.label"; hint: "REGION.FIELDS.behaviors.hint" }
+      RegionDocument.Implementation
     >;
 
     /** @defaultValue `CONST.REGION_VISIBILITY.LAYER` */
@@ -308,8 +296,6 @@ declare namespace RegionDocument {
         required: true;
         initial: typeof CONST.REGION_VISIBILITY.LAYER;
         choices: CONST.REGION_VISIBILITY[];
-        label: "REGION.FIELDS.visibility.label";
-        hint: "REGION.FIELDS.visibility.hint";
       },
       CONST.REGION_VISIBILITY | null | undefined,
       CONST.REGION_VISIBILITY | null,
@@ -322,6 +308,7 @@ declare namespace RegionDocument {
     /**
      * An object of optional key/value flags
      */
+    // TODO: retype as `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
   }
 

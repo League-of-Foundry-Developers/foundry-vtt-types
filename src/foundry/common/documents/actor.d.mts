@@ -17,19 +17,6 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   any
 > {
   /**
-   * @param data    - Initial data from which to construct the `BaseActor`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseActor` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link Actor.implementation | `new Actor.implementation(...)`} instead which will give you
-   * a system specific implementation of `Actor`.
-   */
-  constructor(...args: Actor.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -45,7 +32,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    *     create: this.#canCreate,
    *     update: this.#canUpdate
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -72,8 +59,23 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     options?: Document.InitializeSourceOptions,
   ): BaseActor.Source;
 
+  /** @remarks calls `DocumentStatsField._shimDocument(this)` */
+  protected override _initialize(options?: Document.InitializeOptions): void;
+
   /** @remarks Returns `user.hasPermission("ACTOR_CREATE")` */
   static override canUserCreate(user: User.Implementation): boolean;
+
+  protected override _preCreate(
+    data: Actor.CreateData,
+    options: Actor.Database.PreCreateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected override _preUpdate(
+    changed: Actor.UpdateData,
+    options: Actor.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
 
   /**
    * @remarks
@@ -81,6 +83,9 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.
@@ -202,12 +207,6 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     key: Key,
   ): Promise<this>;
 
-  protected override _preCreate(
-    data: Actor.CreateData,
-    options: Actor.Database.PreCreateOptions,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
-
   protected override _onCreate(data: Actor.CreateData, options: Actor.Database.OnCreateOperation, userId: string): void;
 
   protected static override _preCreateOperation(
@@ -221,12 +220,6 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     operation: Actor.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
-
-  protected override _preUpdate(
-    changed: Actor.UpdateData,
-    options: Actor.Database.PreUpdateOptions,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: Actor.UpdateData,

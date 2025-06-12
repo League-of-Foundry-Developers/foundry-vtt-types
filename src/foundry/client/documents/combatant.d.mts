@@ -59,8 +59,9 @@ declare namespace Combatant {
      * The permissions for whether a certain user can create, update, or delete this document.
      */
     interface Permissions {
-      create(user: User.Internal.Implementation, doc: Implementation): boolean;
+      create: "OWNER";
       update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -265,9 +266,8 @@ declare namespace Combatant {
 
     /**
      * The initiative score for the Combatant which determines its turn order
-     * @defaultValue `null`
      */
-    initiative: fields.NumberField<{ label: "COMBAT.CombatantInitiative" }>;
+    initiative: fields.NumberField<{ required: true; label: "COMBAT.CombatantInitiative" }>;
 
     /**
      * Is this Combatant currently hidden?
@@ -282,9 +282,16 @@ declare namespace Combatant {
     defeated: fields.BooleanField<{ label: "COMBAT.CombatantDefeated" }>;
 
     /**
+     * An optional group this Combatant belongs to.
+     * @defaultValue `null`
+     */
+    group: fields.DocumentIdField<{ readonly: false }>;
+
+    /**
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype this to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     _stats: fields.DocumentStatsField;

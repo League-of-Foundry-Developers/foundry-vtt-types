@@ -68,7 +68,8 @@ declare namespace Item {
      * The permissions for whether a certain user can create, update, or delete this document.
      */
     interface Permissions {
-      create: "ITEM_CREATE";
+      create(user: User.Internal.Implementation, doc: Implementation, data: CreateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -340,6 +341,7 @@ declare namespace Item {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype as `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**

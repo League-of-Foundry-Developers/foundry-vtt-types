@@ -58,7 +58,9 @@ declare namespace TableResult {
      * The permissions for whether a certain user can create, update, or delete this document.
      */
     interface Permissions {
+      create: "OWNER";
       update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -225,10 +227,9 @@ declare namespace TableResult {
     >;
 
     /**
-     * The text which describes the table result
      * @defaultValue `""`
      */
-    text: fields.HTMLField<{ textSearch: true }>;
+    name: fields.StringField<{ required: true; nullable: false; blank: true; initial: ""; textSearch: true }>;
 
     /**
      * An image file url that represents the table result
@@ -237,21 +238,18 @@ declare namespace TableResult {
     img: fields.FilePathField<{ categories: ["IMAGE"] }>;
 
     /**
-     * A named collection from which this result is drawn
-     * @defaultValue `undefined`
-     * @remarks If this is a `compendium` type result, will be the pack ID; If `document`, the DocumentName
+     * @defaultValue `""`
      */
-    documentCollection: fields.StringField;
+    description: fields.HTMLField<{ textSearch: true }>;
 
     /**
-     * The _id of a Document within the collection this result references
-     * @defaultValue `null`
+     * @defaultValue `undefined`
      */
-    documentId: fields.ForeignDocumentField<typeof Document, { idOnly: true }>;
+    documentUuid: fields.DocumentUUIDField<{ required: false; nullable: true; initial: undefined }>;
 
     /**
      * The probabilistic weight of this result relative to other results
-     * @defaultValue `null`
+     * @defaultValue `1`
      */
     weight: fields.NumberField<{ required: true; integer: true; positive: true; nullable: false; initial: 1 }>;
 
@@ -262,6 +260,8 @@ declare namespace TableResult {
     range: fields.ArrayField<
       fields.NumberField<{ integer: true }>,
       {
+        min: 2;
+        max: 2;
         validate: (r: [start: number, end: number]) => boolean;
         validationError: "must be a length-2 array of ascending integers";
       }
@@ -277,7 +277,10 @@ declare namespace TableResult {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
+
+    _stats: fields.DocumentStatsField;
   }
 
   namespace Database {

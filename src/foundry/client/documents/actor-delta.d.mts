@@ -57,6 +57,7 @@ declare namespace ActorDelta {
         labelPlural: string;
         isEmbedded: true;
         embedded: Metadata.Embedded;
+        permissions: Metadata.Permissions;
         schemaVersion: string;
       }>
     > {}
@@ -68,6 +69,11 @@ declare namespace ActorDelta {
     interface Embedded {
       Item: "items";
       ActiveEffect: "effects";
+    }
+
+    interface Permissions {
+      create: "OWNER";
+      delete: "OWNER";
     }
   }
 

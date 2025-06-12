@@ -12,21 +12,6 @@ declare abstract class BaseJournalEntryPage<
   out SubType extends BaseJournalEntryPage.SubType = BaseJournalEntryPage.SubType,
 > extends Document<"JournalEntryPage", BaseJournalEntryPage._Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BaseJournalEntryPage`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseJournalEntryPage` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link JournalEntryPage.implementation | `new JournalEntryPage.implementation(...)`} instead which will give you
-   * a system specific implementation of `JournalEntryPage`.
-   */
-  constructor(...args: JournalEntryPage.ConstructorArgs);
-
-  _source: BaseJournalEntryPage.Source;
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -38,21 +23,17 @@ declare abstract class BaseJournalEntryPage<
    *   labelPlural: "DOCUMENT.JournalEntryPages",
    *   coreTypes: ["text", "image", "pdf", "video"],
    *   compendiumIndexFields: ["name", "type", "sort"],
-   *   schemaVersion: "12.324"
+   *   permissions: {
+   *     create: "OWNER",
+   *     delete: "OWNER"
+   *   },
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseJournalEntryPage.Metadata;
 
   static override defineSchema(): BaseJournalEntryPage.Schema;
-
-  /**
-   * @remarks Uses `game.user` if `user` is falsey.
-   *
-   * If this page's ownership is `.INHERIT` for this user (specified or default),
-   * forwards to `this.parent.getUserLevel`.
-   */
-  override getUserLevel(user?: User.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /*
    * After this point these are not really overridden methods.

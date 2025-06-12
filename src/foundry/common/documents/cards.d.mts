@@ -17,19 +17,6 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   any
 > {
   /**
-   * @param data    - Initial data from which to construct the `BaseCards`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseCards` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link Cards.implementation | `new Cards.implementation(...)`} instead which will give you
-   * a system specific implementation of `Cards`.
-   */
-  constructor(...args: Cards.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * super.metadata, {
@@ -41,9 +28,12 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    *   hasTypeData: true,
    *   label: "DOCUMENT.Cards",
    *   labelPlural: "DOCUMENT.CardsPlural",
-   *   permissions: {create: "CARDS_CREATE"},
+   *   permissions: {
+   *     create: "CARDS_CREATE",
+   *     delete: "OWNER"
+   *   },
    *   coreTypes: ["deck", "hand", "pile"],
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -51,11 +41,17 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   static override defineSchema(): BaseCards.Schema;
 
+  /** @defaultValue `["DOCUMENT", "CARDS"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
   /**
    * The default icon used for a cards stack that does not have a custom image set
    * @defaultValue `"icons/svg/card-hand.svg"`
    */
   static DEFAULT_ICON: string;
+
+  /** @remarks calls `DocumentStatsField._shimDocument(this)` */
+  protected override _initialize(options?: Document.InitializeOptions): void;
 
   /**
    * @remarks
@@ -63,6 +59,9 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.

@@ -13,19 +13,6 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate", BaseMeasuredTemplate.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BaseMeasuredTemplate`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseMeasuredTemplate` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link MeasuredTemplateDocument.implementation | `new MeasuredTemplateDocument.implementation(...)`} instead which will give you
-   * a system specific implementation of `MeasuredTemplateDocument`.
-   */
-  constructor(...args: MeasuredTemplateDocument.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -36,9 +23,9 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    *   isEmbedded: true,
    *   permissions: {
    *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -46,16 +33,10 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   static override defineSchema(): BaseMeasuredTemplate.Schema;
 
-  /**
-   * @remarks Returns `true` if `user` is the `author` of the `MeasuredTemplate` and `options.exact` is falsey.
-   * Otherwise, forwards to {@link Document.testUserPermission | Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  /** @defaultValue `["DOCUMENT", "TEMPLATE"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * @remarks

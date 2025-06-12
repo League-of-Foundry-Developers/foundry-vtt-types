@@ -13,19 +13,6 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJournalEntry.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BaseJournalEntry`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseJournalEntry` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link JournalEntry.implementation | `new JournalEntry.implementation(...)`} instead which will give you
-   * a system specific implementation of `JournalEntry`.
-   */
-  constructor(...args: JournalEntry.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -33,13 +20,17 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    *   collection: "journal",
    *   indexed: true,
    *   compendiumIndexFields: ["_id", "name", "sort", "folder"],
-   *   embedded: {JournalEntryPage: "pages"},
+   *   embedded: {
+   *     JournalEntryCategory: "categories",
+   *     JournalEntryPage: "pages"
+   *   },
    *   label: "DOCUMENT.JournalEntry",
    *   labelPlural: "DOCUMENT.JournalEntries",
    *   permissions: {
-   *     create: "JOURNAL_CREATE"
+   *     create: "JOURNAL_CREATE",
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -47,12 +38,17 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override defineSchema(): BaseJournalEntry.Schema;
 
+  protected override _initialize(options?: Document.InitializeOptions): void;
+
   /**
    * @remarks
    * Migrations:
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.

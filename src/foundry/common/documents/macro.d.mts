@@ -17,19 +17,6 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
   any
 > {
   /**
-   * @param data    - Initial data from which to construct the `BaseMacro`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseMacro` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link Macro.implementation | `new Macro.implementation(...)`} instead which will give you
-   * a system specific implementation of `Macro`.
-   */
-  constructor(...args: Macro.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -42,9 +29,10 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    *   coreTypes: Object.values(CONST.MACRO_TYPES),
    *   permissions: {
    *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     update: this.#canUpdate,
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -52,11 +40,16 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
 
   static override defineSchema(): BaseMacro.Schema;
 
+  /** @defaultValue `["DOCUMENT", "MACRO"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
   /**
    * The default icon used for newly created Macro documents.
    * @defaultValue `"icons/svg/dice-target.svg"`
    */
   static DEFAULT_ICON: string;
+
+  protected override _initialize(options?: Document.InitializeOptions): void;
 
   /**
    * @remarks
@@ -64,6 +57,9 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
    * @remarks
@@ -74,18 +70,13 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
   /** @remarks Returns `user.hasRole("PLAYER")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
-  /**
-   * @remarks Returns `true` if `user` is the `author` of the `Macro` and `options.exact` is falsey.
-   * Otherwise, forwards to {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
-  // _preCreate is overridden with no type changes
+  protected override _preCreate(
+    data: Macro.CreateData,
+    options: Macro.Database.PreCreateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
 
   /*
    * After this point these are not really overridden methods.
@@ -168,12 +159,6 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
     scope: Scope,
     key: Key,
   ): Promise<this>;
-
-  protected override _preCreate(
-    data: Macro.CreateData,
-    options: Macro.Database.PreCreateOptions,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
 
   protected override _onCreate(data: Macro.CreateData, options: Macro.Database.OnCreateOperation, userId: string): void;
 

@@ -13,19 +13,6 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any> {
   /**
-   * @param data    - Initial data from which to construct the `BaseWall`
-   * @param context - Construction context options
-   *
-   * @deprecated Constructing `BaseWall` directly is not advised. The base document classes exist in
-   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
-   * on the server to manage document validation and storage.
-   *
-   * You should use {@link WallDocument.implementation | `new WallDocument.implementation(...)`} instead which will give you
-   * a system specific implementation of `WallDocument`.
-   */
-  constructor(...args: WallDocument.ConstructorArgs);
-
-  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -36,7 +23,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
    *   permissions: {
    *     update: this.#canUpdate
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */

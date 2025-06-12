@@ -51,6 +51,7 @@ declare namespace RegionBehavior {
           "displayScrollingText",
           "executeMacro",
           "executeScript",
+          "modifyMovementCost",
           "pauseGame",
           "suppressWeather",
           "teleportToken",
@@ -244,7 +245,7 @@ declare namespace RegionBehavior {
      * The name used to describe the RegionBehavior
      * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true; blank: true; label: string; textSearch: true }>;
+    name: fields.StringField<{ required: true; blank: true; textSearch: true }>;
 
     /**
      * An RegionBehavior subtype which configures the system data model applied
@@ -260,11 +261,12 @@ declare namespace RegionBehavior {
      * Is the RegionBehavior currently disabled?
      * @defaultValue `false`
      */
-    disabled: fields.BooleanField<{ label: "BEHAVIOR.FIELDS.disabled.label"; hint: "BEHAVIOR.FIELDS.disabled.hint" }>;
+    disabled: fields.BooleanField;
 
     /**
      * An object of optional key/value flags
      */
+    // TODO: retype as `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**

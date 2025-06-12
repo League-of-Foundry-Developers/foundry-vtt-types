@@ -449,7 +449,7 @@ declare namespace Scene {
      * An image or video file path providing foreground media for the scene
      * @defaultValue `null`
      */
-    foreground: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
+    foreground: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; virtual: true }>;
 
     /**
      * The elevation of the foreground layer where overhead tiles reside
@@ -490,13 +490,13 @@ declare namespace Scene {
      */
     initial: fields.SchemaField<{
       /** @defaultValue `null` */
-      x: fields.NumberField<{ integer: true; nullable: true }>;
+      x: fields.NumberField<{ integer: true; required: true }>;
 
       /** @defaultValue `null` */
-      y: fields.NumberField<{ integer: true; nullable: true }>;
+      y: fields.NumberField<{ integer: true; required: true }>;
 
       /** @defaultValue `0.5` */
-      scale: fields.NumberField<{ nullable: true; min: 0.25; max: 3; initial: 0.5 }>;
+      scale: fields.NumberField<{ required: true; positive: true }>;
     }>;
 
     /**
@@ -545,20 +545,20 @@ declare namespace Scene {
        * A special overlay image or video texture which is used for fog of war
        * @defaultValue `null`
        */
-      overlay: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
+      overlay: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; virtual: true }>;
 
       colors: fields.SchemaField<{
         /**
          * A color tint applied to explored regions of fog of war
          * @defaultValue `null`
          */
-        explored: fields.ColorField<{ label: "SCENES.FogExploredColor" }>;
+        explored: fields.ColorField;
 
         /**
          * A color tint applied to unexplored regions of fog of war
          * @defaultValue `null`
          */
-        unexplored: fields.ColorField<{ label: "SCENES.FogUnexploredColor" }>;
+        unexplored: fields.ColorField;
       }>;
     }>;
 
@@ -677,6 +677,7 @@ declare namespace Scene {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**

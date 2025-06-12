@@ -354,6 +354,7 @@ declare namespace Actor {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: Retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<"Actor">;
 
     /**

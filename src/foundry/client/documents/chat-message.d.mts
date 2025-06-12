@@ -61,7 +61,7 @@ declare namespace ChatMessage {
      */
     interface Permissions {
       create(user: User.Internal.Implementation, doc: Implementation): boolean;
-      update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -255,6 +255,7 @@ declare namespace ChatMessage {
      * The _id of the User document who generated this message
      * @defaultValue `game?.user?.id`
      */
+    // TODO: retype this to `DocumentAuthorField`
     author: fields.ForeignDocumentField<typeof documents.BaseUser, { nullable: false; initial: () => string }>;
 
     /**
@@ -322,6 +323,7 @@ declare namespace ChatMessage {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype this to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
 
     _stats: fields.DocumentStatsField;
