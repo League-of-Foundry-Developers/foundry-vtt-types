@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { Roll } from "#client/dice/_module.d.mts";
 
 const combatant = new Combatant.implementation({}, {});
 
@@ -16,7 +17,7 @@ expectTypeOf(
   combatant.testUserPermission(user, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.INHERIT),
 ).toEqualTypeOf<boolean>();
 
-expectTypeOf(combatant.getInitiativeRoll()).toEqualTypeOf<Roll>();
+expectTypeOf(combatant.getInitiativeRoll()).toEqualTypeOf<Roll.ConfiguredInstance>();
 expectTypeOf(combatant.rollInitiative("")).toEqualTypeOf<Promise<Combatant.Implementation | undefined>>();
 
 expectTypeOf(combatant.prepareDerivedData()).toEqualTypeOf<void>();

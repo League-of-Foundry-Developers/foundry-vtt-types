@@ -28,20 +28,22 @@ expectTypeOf(layer["_deactivate"]()).toBeVoid();
 
 expectTypeOf(layer.releaseAll()).toBeNumber();
 
-expectTypeOf(layer["_pasteObject"](someWall, somePoint)).toEqualTypeOf<Document.ConfiguredSourceForName<"Wall">>();
+expectTypeOf(layer["_pasteObject"](someWall, somePoint)).toEqualTypeOf<Omit<WallDocument.Source, "_id">>();
 expectTypeOf(layer["_pasteObject"](someWall, somePoint, { hidden: true, snap: false })).toEqualTypeOf<
-  Document.ConfiguredSourceForName<"Wall">
+  Omit<WallDocument.Source, "_id">
 >();
 expectTypeOf(layer["_pasteObject"](someWall, somePoint, { hidden: null, snap: undefined })).toEqualTypeOf<
-  Document.ConfiguredSourceForName<"Wall">
+  Omit<WallDocument.Source, "_id">
 >();
+
+declare const _x: Document.ConfiguredSourceForName<"Wall">;
 
 expectTypeOf(layer["_getWallEndpointCoordinates"](somePoint)).toEqualTypeOf<Canvas.PointTuple>();
 expectTypeOf(layer["_getWallEndpointCoordinates"](somePoint, { snap: true })).toEqualTypeOf<Canvas.PointTuple>();
 expectTypeOf(layer["_getWallEndpointCoordinates"](somePoint, { snap: null })).toEqualTypeOf<Canvas.PointTuple>();
 
-expectTypeOf(layer["_getWallDataFromActiveTool"]()).toEqualTypeOf<Document.ConfiguredSourceForName<"Wall">>();
-expectTypeOf(layer["_getWallDataFromActiveTool"]("ethereal")).toEqualTypeOf<Document.ConfiguredSourceForName<"Wall">>();
+expectTypeOf(layer["_getWallDataFromActiveTool"]()).toEqualTypeOf<WallDocument.Source>();
+expectTypeOf(layer["_getWallDataFromActiveTool"]("ethereal")).toEqualTypeOf<WallDocument.Source>();
 // @ts-expect-error foobar is not a handled Wall tool
 expectTypeOf(layer["_getWallDataFromActiveTool"]("foobar")).toEqualTypeOf<Document.ConfiguredSourceForName<"Wall">>();
 

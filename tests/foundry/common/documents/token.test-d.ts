@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type { InterfaceToObject } from "fvtt-types/utils";
+import { TokenRing } from "#client/canvas/placeables/tokens/_module.mjs";
 import BaseToken = foundry.documents.BaseToken;
 import Document = foundry.abstract.Document;
 
@@ -97,7 +98,7 @@ myToken = new TestBaseToken({
       ring: "#FAAAAF",
       background: "#AFFFFA",
     },
-    effects: foundry.canvas.tokens.TokenRing.effects.BKG_WAVE + foundry.canvas.tokens.TokenRing.effects.RING_GRADIENT,
+    effects: TokenRing.effects.BKG_WAVE + TokenRing.effects.RING_GRADIENT,
     subject: {
       scale: 2.78,
       texture: "path/to/subject.webp",
