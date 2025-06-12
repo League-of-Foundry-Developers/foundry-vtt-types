@@ -13,6 +13,8 @@ export { default as IterableWeakSet } from "./iterable-weak-set.mjs";
 export { default as IterableWeakMap } from "./iterable-weak-map.mjs";
 export { default as Color } from "./color.mjs";
 export { default as Semaphore } from "./semaphore.mjs";
-export { default as StringTree } from "./string-tree.mjs";
-export { default as WordTree } from "./word-tree.mjs";
 export { default as BitMask } from "./bitmask.mjs";
+export { default as WordTree } from "./word-tree.mjs";
+export { default as StringTree } from "./string-tree.mjs";
+
+// export const AsyncFunction = (async function() {}).constructor;
