@@ -17,6 +17,19 @@ declare abstract class BaseActorDelta<
   out SubType extends BaseActorDelta.SubType = BaseActorDelta.SubType,
 > extends Document<"ActorDelta", BaseActorDelta._Schema, any> {
   /**
+   * @param data    - Initial data from which to construct the `BaseActorDelta`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseActorDelta` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link ActorDelta.implementation | `new ActorDelta.implementation(...)`} instead which will give you
+   * a system specific implementation of `ActorDelta`.
+   */
+  constructor(...args: ActorDelta.ConstructorArgs);
+
+  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {

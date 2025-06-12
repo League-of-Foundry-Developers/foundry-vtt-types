@@ -15,6 +15,19 @@ declare abstract class BaseCombatantGroup<
   out SubType extends BaseCombatantGroup.SubType = BaseCombatantGroup.SubType,
 > extends Document<"CombatantGroup", BaseCombatantGroup._Schema, any> {
   /**
+   * @param data    - Initial data from which to construct the `BaseCombatantGroup`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseCombatantGroup` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link CombatantGroup.implementation | `new CombatantGroup.implementation(...)`} instead which will give you
+   * a system specific implementation of `CombatantGroup`.
+   */
+  constructor(...args: CombatantGroup.ConstructorArgs);
+
+  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {

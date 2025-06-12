@@ -15,6 +15,19 @@ declare abstract class BaseTableResult<
   out _SubType extends BaseTableResult.SubType = BaseTableResult.SubType,
 > extends Document<"TableResult", BaseTableResult.Schema, any> {
   /**
+   * @param data    - Initial data from which to construct the `BaseTableResult`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseTableResult` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link TableResult.implementation | `new TableResult.implementation(...)`} instead which will give you
+   * a system specific implementation of `TableResult`.
+   */
+  constructor(...args: TableResult.ConstructorArgs);
+
+  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {

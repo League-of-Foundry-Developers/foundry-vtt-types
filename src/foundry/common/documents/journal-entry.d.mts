@@ -13,6 +13,19 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJournalEntry.Schema, any> {
   /**
+   * @param data    - Initial data from which to construct the `BaseJournalEntry`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseJournalEntry` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link JournalEntry.implementation | `new JournalEntry.implementation(...)`} instead which will give you
+   * a system specific implementation of `JournalEntry`.
+   */
+  constructor(...args: JournalEntry.ConstructorArgs);
+
+  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {

@@ -17,6 +17,19 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   any
 > {
   /**
+   * @param data    - Initial data from which to construct the `BaseCards`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseCards` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link Cards.implementation | `new Cards.implementation(...)`} instead which will give you
+   * a system specific implementation of `Cards`.
+   */
+  constructor(...args: Cards.ConstructorArgs);
+
+  /**
    * @defaultValue
    * ```js
    * super.metadata, {

@@ -17,6 +17,19 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
   any
 > {
   /**
+   * @param data    - Initial data from which to construct the `BaseFolder`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseFolder` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link Folder.implementation | `new Folder.implementation(...)`} instead which will give you
+   * a system specific implementation of `Folder`.
+   */
+  constructor(...args: Folder.ConstructorArgs);
+
+  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {

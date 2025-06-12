@@ -12,6 +12,19 @@ declare abstract class BaseJournalEntryPage<
   out SubType extends BaseJournalEntryPage.SubType = BaseJournalEntryPage.SubType,
 > extends Document<"JournalEntryPage", BaseJournalEntryPage._Schema, any> {
   /**
+   * @param data    - Initial data from which to construct the `BaseJournalEntryPage`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseJournalEntryPage` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link JournalEntryPage.implementation | `new JournalEntryPage.implementation(...)`} instead which will give you
+   * a system specific implementation of `JournalEntryPage`.
+   */
+  constructor(...args: JournalEntryPage.ConstructorArgs);
+
+  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {

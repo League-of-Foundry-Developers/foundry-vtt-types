@@ -17,6 +17,19 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   any
 > {
   /**
+   * @param data    - Initial data from which to construct the `BaseActor`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseActor` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link Actor.implementation | `new Actor.implementation(...)`} instead which will give you
+   * a system specific implementation of `Actor`.
+   */
+  constructor(...args: Actor.ConstructorArgs);
+
+  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {

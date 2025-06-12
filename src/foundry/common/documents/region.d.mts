@@ -10,6 +10,19 @@ import type { DataField, SchemaField } from "#common/data/fields.mjs";
  */
 declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, any> {
   /**
+   * @param data    - Initial data from which to construct the `BaseRegion`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseRegion` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link RegionDocument.implementation | `new RegionDocument.implementation(...)`} instead which will give you
+   * a system specific implementation of `RegionDocument`.
+   */
+  constructor(...args: RegionDocument.ConstructorArgs);
+
+  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
@@ -21,16 +34,13 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    *   embedded: {
    *     RegionBehavior: "behaviors"
    *   },
-   *   schemaVersion: "13.341"
+   *   schemaVersion: "12.324"
    * })
    * ```
    */
   static override metadata: BaseRegion.Metadata;
 
   static override defineSchema(): BaseRegion.Schema;
-
-  /** @defaultValue `["DOCUMENT", "REGION"]` */
-  static override LOCALIZATION_PREFIXES: string[];
 
   /*
    * After this point these are not really overridden methods.

@@ -17,6 +17,19 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   any
 > {
   /**
+   * @param data    - Initial data from which to construct the `BaseItem`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseItem` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link Item.implementation | `new Item.implementation(...)`} instead which will give you
+   * a system specific implementation of `Item`.
+   */
+  constructor(...args: Item.ConstructorArgs);
+
+  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {

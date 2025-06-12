@@ -15,6 +15,19 @@ declare abstract class BaseChatMessage<
   out SubType extends BaseChatMessage.SubType = BaseChatMessage.SubType,
 > extends Document<"ChatMessage", BaseChatMessage._Schema, any> {
   /**
+   * @param data    - Initial data from which to construct the `BaseChatMessage`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseChatMessage` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link ChatMessage.implementation | `new ChatMessage.implementation(...)`} instead which will give you
+   * a system specific implementation of `ChatMessage`.
+   */
+  constructor(...args: ChatMessage.ConstructorArgs);
+
+  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {

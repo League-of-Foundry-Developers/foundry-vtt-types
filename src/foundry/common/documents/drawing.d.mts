@@ -14,6 +14,19 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schema, any> {
   /**
+   * @param data    - Initial data from which to construct the `BaseDrawing`
+   * @param context - Construction context options
+   *
+   * @deprecated Constructing `BaseDrawing` directly is not advised. The base document classes exist in
+   * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
+   * on the server to manage document validation and storage.
+   *
+   * You should use {@link DrawingDocument.implementation | `new DrawingDocument.implementation(...)`} instead which will give you
+   * a system specific implementation of `DrawingDocument`.
+   */
+  constructor(...args: DrawingDocument.ConstructorArgs);
+
+  /**
    * @defaultValue
    * ```js
    * mergeObject(super.metadata, {
