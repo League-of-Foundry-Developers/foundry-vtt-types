@@ -6,8 +6,8 @@
 export * as types from "./_types.mjs";
 
 export { default as MouseInteractionManager } from "./mouse-handler.mjs";
-// Exporting RenderFlag here is an fvtt-types convenience, since this is the rare type from a `_types` file that sees direct use
-export { default as RenderFlags, RenderFlagsMixin, RenderFlag } from "./render-flags.mjs";
+
+export { default as RenderFlags, RenderFlagsMixin } from "./render-flags.mjs";
 
 // Ping classes
 export { default as Ping } from "./ping/ping.mjs";
@@ -19,3 +19,6 @@ export { default as ArrowPing } from "./ping/arrow.mjs";
 // Ruler classes
 export { default as BaseRuler } from "./ruler/base-ruler.mjs";
 export { default as Ruler } from "./ruler/ruler.mjs";
+
+// Type-only exports
+export { RenderFlag } from "./render-flags.mjs";

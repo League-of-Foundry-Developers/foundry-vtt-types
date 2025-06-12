@@ -4,7 +4,6 @@ import type { AnyObject, EmptyObject } from "fvtt-types/utils";
 import type { RollParseNode } from "../../../../src/foundry/client/dice/_types.d.mts";
 
 class CustomRoll<D extends Record<string, unknown> = EmptyObject> extends Roll<D> {}
-expectTypeOf(Roll).toEqualTypeOf<typeof Roll>();
 
 // Attack with advantage!
 type RollType = Roll<{ prof: number; strMod: number }>;

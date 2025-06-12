@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import { SMAAFilter } from "#client/canvas/rendering/filters/_module.mjs";
+import SMAAFilter = foundry.canvas.rendering.filters.SMAAFilter;
 
 expectTypeOf(SMAAFilter.PRESETS).toExtend<Record<keyof SMAAFilter.Presets, SMAAFilter.PRESETS>>();
 
