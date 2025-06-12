@@ -5,8 +5,7 @@ import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import Edge = foundry.canvas.geometry.edges.Edge;
-import { RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
-import RenderFlag = RenderFlags.RenderFlag;
+import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
 
 declare module "#configuration" {
   namespace Hooks {

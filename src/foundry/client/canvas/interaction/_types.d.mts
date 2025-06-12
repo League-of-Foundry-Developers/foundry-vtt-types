@@ -9,7 +9,7 @@
 
 export {};
 
-type RenderFlag = foundry.canvas.interaction.RenderFlags.RenderFlag.Any;
+type RenderFlag = foundry.canvas.interaction.RenderFlag.Any;
 
 type PingData = User.PingData;
 

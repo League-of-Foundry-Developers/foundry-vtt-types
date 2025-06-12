@@ -19,8 +19,7 @@ import type { TokenRing } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
 import BaseToken = foundry.documents.BaseToken;
 import sources = foundry.canvas.sources;
-import { RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
-import RenderFlag = RenderFlags.RenderFlag;
+import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
 
 declare module "#configuration" {
   namespace Hooks {

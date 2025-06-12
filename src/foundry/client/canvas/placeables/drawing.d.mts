@@ -4,8 +4,7 @@ import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { PrimaryGraphics } from "#client/canvas/primary/_module.d.mts";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { PreciseText } from "#client/canvas/containers/_module.mjs";
-import { RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
-import RenderFlag = RenderFlags.RenderFlag;
+import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
 
 declare module "#configuration" {
   namespace Hooks {

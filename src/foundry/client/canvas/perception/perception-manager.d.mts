@@ -1,6 +1,5 @@
 import type { InterfaceToObject, NullishProps } from "#utils";
-import { RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
-import RenderFlag = RenderFlags.RenderFlag;
+import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
 
 /**
  * A helper class which manages the refresh workflow for perception layers on the canvas.

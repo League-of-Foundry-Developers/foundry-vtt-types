@@ -4,8 +4,7 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { RegionShape, RegionPolygonTree } from "#client/data/region-shapes/_module.d.mts";
 import type { RegionGeometry } from "#client/canvas/placeables/regions/_module.d.mts";
-import { RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
-import RenderFlag = RenderFlags.RenderFlag;
+import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
 
 declare module "#configuration" {
   namespace Hooks {

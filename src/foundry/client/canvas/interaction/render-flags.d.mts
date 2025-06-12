@@ -11,7 +11,7 @@ import type {
 import type { LogCompatibilityWarningOptions } from "#common/utils/logging.d.mts";
 
 declare class RenderFlagObject {
-  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /**
@@ -73,6 +73,16 @@ type _RenderFlag<Keys extends string> = InexactPartial<{
   alias: boolean;
 }>;
 
+// Note(LukeAbby): The usage of `ConcreteKeys` is a hazard; if tsc were to become smarter it might
+// notice that `ConcreteKeys<Flags>` is actually contravariant and reject this type. However
+// `RenderFlags` is built upon the assumption this is only used in safe ways.
+declare interface RenderFlag<out Flags extends object, Key extends keyof Flags>
+  extends _RenderFlag<Exclude<Extract<ConcreteKeys<Flags>, string>, Key>> {}
+
+declare namespace RenderFlag {
+  interface Any extends _RenderFlag<string> {}
+}
+
 /**
  * A data structure for tracking a set of boolean status flags.
  * This is a restricted set which can only accept flag values which are pre-defined.
@@ -124,16 +134,6 @@ declare namespace RenderFlags {
      */
     priority?: typeof PIXI.UPDATE_PRIORITY.OBJECTS | typeof PIXI.UPDATE_PRIORITY.PERCEPTION;
   }
-
-  // Note(LukeAbby): The usage of `ConcreteKeys` is a hazard; if tsc were to become smarter it might
-  // notice that `ConcreteKeys<Flags>` is actually contravariant and reject this type. However
-  // `RenderFlags` is built upon the assumption this is only used in safe ways.
-  interface RenderFlag<out Flags extends object, Key extends keyof Flags>
-    extends _RenderFlag<Exclude<Extract<ConcreteKeys<Flags>, string>, Key>> {}
-
-  namespace RenderFlag {
-    interface Any extends _RenderFlag<string> {}
-  }
 }
 
 /**
@@ -164,7 +164,7 @@ declare namespace RenderFlagsMixin {
 
   type BaseClass = AnyConstructor;
 
-  type RENDER_FLAGS = Record<string, RenderFlags.RenderFlag.Any>;
+  type RENDER_FLAGS = Record<string, RenderFlag.Any>;
 
   /**
    * This type exists only to make sure `ToBooleanFlags` isn't a homomorphic mapped type
@@ -179,4 +179,4 @@ declare namespace RenderFlagsMixin {
   };
 }
 
-export { RenderFlags as default, RenderFlagsMixin };
+export { RenderFlags as default, RenderFlagsMixin, RenderFlag };

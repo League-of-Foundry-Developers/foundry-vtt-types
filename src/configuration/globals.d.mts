@@ -219,8 +219,8 @@ export import RegionShader = globalThis.RegionShader;
 export import RegionShape = globalThis.RegionShape;
 export import RegionMesh = globalThis.RegionMesh;
 
-/** @deprecated Use {@linkcode foundry.canvas.interaction.RenderFlags.RenderFlag} instead */
-export import RenderFlag = foundry.canvas.interaction.RenderFlags.RenderFlag;
+/** @deprecated Use {@linkcode foundry.canvas.interaction.RenderFlag} instead */
+export import RenderFlag = foundry.canvas.interaction.RenderFlag;
 
 export import RenderFlagsMixin = globalThis.RenderFlagsMixin;
 export import RenderFlags = globalThis.RenderFlags;

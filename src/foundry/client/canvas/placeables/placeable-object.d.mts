@@ -16,8 +16,12 @@ import type {
   DatabaseDeleteOperation,
   DatabaseUpdateOperation,
 } from "#common/abstract/_types.d.mts";
-import { MouseInteractionManager, RenderFlagsMixin, RenderFlags } from "#client/canvas/interaction/_module.mjs";
-import RenderFlag = RenderFlags.RenderFlag;
+import {
+  MouseInteractionManager,
+  RenderFlagsMixin,
+  RenderFlags,
+  type RenderFlag,
+} from "#client/canvas/interaction/_module.mjs";
 
 /**
  * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
