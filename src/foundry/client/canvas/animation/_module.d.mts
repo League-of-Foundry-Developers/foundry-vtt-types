@@ -3,6 +3,6 @@
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 /* eslint-disable import-x/extensions */
 
-// export {default as CanvasAnimation} from "./canvas-animation.mjs";
+export { default as CanvasAnimation } from "./canvas-animation.mjs";
 export { default as ChatBubbles } from "./chat-bubbles.mjs";
-// export {default as SmoothNoise} from "./smooth-noise.mjs";
+export { default as SmoothNoise } from "./smooth-noise.mjs";

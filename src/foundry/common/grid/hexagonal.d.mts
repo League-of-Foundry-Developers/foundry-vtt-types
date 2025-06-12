@@ -1,5 +1,6 @@
 import type BaseGrid from "./base.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 import type { InexactPartial } from "#utils";
 

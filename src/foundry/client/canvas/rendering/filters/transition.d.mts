@@ -1,6 +1,8 @@
 import type { Brand, Identity, InexactPartial } from "#utils";
 import type { AbstractBaseFilter } from "./_module.d.mts";
 import type { AbstractBaseShader } from "../shaders/_module.mjs";
+import type { SpriteMesh } from "#client/canvas/containers/_module.mjs";
+import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 
 /**
  * A filter specialized for transition effects between a source object and a target texture.

@@ -1,5 +1,10 @@
 import type { InexactPartial, NullishProps, FixedInstanceType } from "#utils";
 import type { CANVAS_PERFORMANCE_MODES } from "#common/constants.d.mts";
+import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
+import type { MouseInteractionManager, RenderFlagsMixin, Ping } from "#client/canvas/interaction/_module.d.mts";
+import type * as groups from "#client/canvas/groups/_module.d.mts";
+import type * as layers from "#client/canvas/layers/_module.d.mts";
+import type { PerceptionManager } from "#client/canvas/perception/_module.d.mts";
 
 type InternalCanvas = new (...args: never) => {
   readonly [K in keyof CONFIG.Canvas.Groups]?: FixedInstanceType<CONFIG.Canvas.Groups[K]["groupClass"]> | undefined;
@@ -152,12 +157,12 @@ declare class Canvas extends _InternalCanvas {
   /**
    * The rendered canvas group which render the environment canvas group and the interface canvas group.
    */
-  rendered: RenderedCanvasGroup;
+  rendered: groups.RenderedCanvasGroup;
 
   /**
    * A singleton CanvasEdges instance.
    */
-  edges: foundry.canvas.edges.CanvasEdges;
+  edges: foundry.canvas.geometry.edges.CanvasEdges;
 
   /**
    * The singleton FogManager instance.
@@ -172,7 +177,7 @@ declare class Canvas extends _InternalCanvas {
   /**
    * The environment canvas group which render the primary canvas group and the effects canvas group.
    */
-  environment: EnvironmentCanvasGroup;
+  environment: groups.EnvironmentCanvasGroup;
 
   /**
    * The primary Canvas group which generally contains tangible physical objects which exist within the Scene.
@@ -180,20 +185,20 @@ declare class Canvas extends _InternalCanvas {
    * This allows the rendered result of the Primary Canvas Group to be affected by a {@linkcode BaseSamplerShader}.
    * @defaultValue `undefined`
    */
-  readonly primary: PrimaryCanvasGroup | undefined;
+  readonly primary: groups.PrimaryCanvasGroup | undefined;
 
   /**
    * The effects Canvas group which modifies the result of the {@linkcode PrimaryCanvasGroup} by adding special effects.
    * This includes lighting, vision, fog of war and related animations.
    * @defaultValue `undefined`
    */
-  readonly effects: EffectsCanvasGroup | undefined;
+  readonly effects: groups.EffectsCanvasGroup | undefined;
 
   /**
    * The visibility Canvas group which handles the fog of war overlay by consolidating multiple render textures,
    * and applying a filter with special effects and blur.
    */
-  visibility: CanvasVisibility;
+  visibility: groups.CanvasVisibility;
 
   /**
    * The interface Canvas group which is rendered above other groups and contains all interactive elements.
@@ -201,12 +206,12 @@ declare class Canvas extends _InternalCanvas {
    * interacting with different types of {@linkcode Document}s which can be represented on the Canvas.
    * @defaultValue `undefined`
    */
-  readonly interface: InterfaceCanvasGroup | undefined;
+  readonly interface: groups.InterfaceCanvasGroup | undefined;
 
   /**
    * The overlay Canvas group which is rendered above other groups and contains elements not bound to stage transform.
    */
-  readonly overlay: OverlayCanvasGroup;
+  readonly overlay: groups.OverlayCanvasGroup;
 
   /**
    * The singleton HeadsUpDisplay container which overlays HTML rendering on top of this Canvas.
@@ -285,12 +290,12 @@ declare class Canvas extends _InternalCanvas {
   /**
    * An Array of all CanvasLayer instances which are active on the Canvas board
    */
-  get layers(): CanvasLayer[];
+  get layers(): layers.CanvasLayer[];
 
   /**
    * Return a reference to the active Canvas Layer
    */
-  get activeLayer(): CanvasLayer | null;
+  get activeLayer(): layers.CanvasLayer | null;
 
   /**
    * The currently displayed darkness level, which may override the saved Scene value.
@@ -420,29 +425,29 @@ declare class Canvas extends _InternalCanvas {
   // Layers are added to the global `canvas` object via `CanvasGroupMixin#_createLayers()`
   // TODO: Revisit after updating CONFIG in #2911
 
-  readonly weather?: WeatherEffects;
+  readonly weather?: layers.WeatherEffects;
 
   // GridLayer is not assigned due to conflicting `Canvas#grid` property pointing to the BaseGrid subclass
 
-  readonly drawings?: DrawingsLayer;
+  readonly drawings?: layers.DrawingsLayer;
 
-  readonly templates?: TemplateLayer;
+  readonly templates?: layers.TemplateLayer;
 
-  readonly tiles?: TilesLayer;
+  readonly tiles?: layers.TilesLayer;
 
-  readonly walls?: WallsLayer;
+  readonly walls?: layers.WallsLayer;
 
-  readonly tokens?: TokenLayer;
+  readonly tokens?: layers.TokenLayer;
 
-  readonly sounds?: SoundsLayer;
+  readonly sounds?: layers.SoundsLayer;
 
-  readonly lighting?: LightingLayer;
+  readonly lighting?: layers.LightingLayer;
 
-  readonly notes?: NotesLayer;
+  readonly notes?: layers.NotesLayer;
 
-  readonly regions?: RegionLayer;
+  readonly regions?: layers.RegionLayer;
 
-  readonly controls?: ControlsLayer;
+  readonly controls?: layers.ControlsLayer;
 
   /**
    * Given an embedded object name, get the canvas layer for that object

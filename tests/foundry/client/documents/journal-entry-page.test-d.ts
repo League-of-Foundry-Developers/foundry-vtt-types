@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { Note } from "#client/canvas/placeables/_module.d.mts";
 
 // @ts-expect-error data is required
 new JournalEntryPage.implementation();

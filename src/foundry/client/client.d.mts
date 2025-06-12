@@ -275,6 +275,12 @@ declare global {
   export import DocumentSheet = foundry.appv1.api.DocumentSheet;
 
   /**
+   * A "secret" global to help debug attributes of the currently controlled Token.
+   * This is only for debugging, and may be removed in the future, so it's not safe to use.
+   */
+  let _token: foundry.canvas.placeables.Token.Implementation | null;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode Game} which is now namespaced under {@linkcode foundry.Game}"
    * (since v13 will be removed in v15)
    */
@@ -855,6 +861,12 @@ declare global {
   export import Canvas = foundry.canvas.Canvas;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode SceneManager} which is now namespaced under {@linkcode foundry.canvas.SceneManager}"
+   * (since v13 will be removed in v15)
+   */
+  export import SceneManager = foundry.canvas.SceneManager;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode FramebufferSnapshot} which is now namespaced under {@linkcode foundry.canvas.FramebufferSnapshot}"
    * (since v13 will be removed in v15)
    */
@@ -889,6 +901,624 @@ declare global {
    * (since v13 will be removed in v15)
    */
   export import srcExists = foundry.canvas.srcExists;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CachedContainer} which is now namespaced under {@linkcode foundry.canvas.containers.CachedContainer}"
+   * (since v13 will be removed in v15)
+   */
+  export import CachedContainer = foundry.canvas.containers.CachedContainer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode UnboundContainer} which is now namespaced under {@linkcode foundry.canvas.containers.UnboundContainer}"
+   * (since v13 will be removed in v15)
+   */
+  export import UnboundContainer = foundry.canvas.containers.UnboundContainer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode FullCanvasObjectMixin} which is now namespaced under {@linkcode foundry.canvas.containers.FullCanvasObjectMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import FullCanvasObjectMixin = foundry.canvas.containers.FullCanvasObjectMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PointSourceMesh} which is now namespaced under {@linkcode foundry.canvas.containers.PointSourceMesh}"
+   * (since v13 will be removed in v15)
+   */
+  export import PointSourceMesh = foundry.canvas.containers.PointSourceMesh;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode QuadMesh} which is now namespaced under {@linkcode foundry.canvas.containers.QuadMesh}"
+   * (since v13 will be removed in v15)
+   */
+  export import QuadMesh = foundry.canvas.containers.QuadMesh;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SpriteMesh} which is now namespaced under {@linkcode foundry.canvas.containers.SpriteMesh}"
+   * (since v13 will be removed in v15)
+   */
+  export import SpriteMesh = foundry.canvas.containers.SpriteMesh;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ControlIcon} which is now namespaced under {@linkcode foundry.canvas.containers.ControlIcon}"
+   * (since v13 will be removed in v15)
+   */
+  export import ControlIcon = foundry.canvas.containers.ControlIcon;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ResizeHandle} which is now namespaced under {@linkcode foundry.canvas.containers.ResizeHandle}"
+   * (since v13 will be removed in v15)
+   */
+  export import ResizeHandle = foundry.canvas.containers.ResizeHandle;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PreciseText} which is now namespaced under {@linkcode foundry.canvas.containers.PreciseText}"
+   * (since v13 will be removed in v15)
+   */
+  export import PreciseText = foundry.canvas.containers.PreciseText;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode GridMesh} which is now namespaced under {@linkcode foundry.canvas.containers.GridMesh}"
+   * (since v13 will be removed in v15)
+   */
+  export import GridMesh = foundry.canvas.containers.GridMesh;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode GridHighlight} which is now namespaced under {@linkcode foundry.canvas.containers.GridHighlight}"
+   * (since v13 will be removed in v15)
+   */
+  export import GridHighlight = foundry.canvas.containers.GridHighlight;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Cursor} which is now namespaced under {@linkcode foundry.canvas.containers.Cursor}"
+   * (since v13 will be removed in v15)
+   */
+  export import Cursor = foundry.canvas.containers.Cursor;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DoorControl} which is now namespaced under {@linkcode foundry.canvas.containers.DoorControl}"
+   * (since v13 will be removed in v15)
+   */
+  export import DoorControl = foundry.canvas.containers.DoorControl;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ParticleEffect} which is now namespaced under {@linkcode foundry.canvas.containers.ParticleEffect}"
+   * (since v13 will be removed in v15)
+   */
+  export import ParticleEffect = foundry.canvas.containers.ParticleEffect;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AutumnLeavesWeatherEffect} which is now namespaced under {@linkcode foundry.canvas.containers.AutumnLeavesWeatherEffect}"
+   * (since v13 will be removed in v15)
+   */
+  export import AutumnLeavesWeatherEffect = foundry.canvas.containers.AutumnLeavesWeatherEffect;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasGroupMixin} which is now namespaced under {@linkcode foundry.canvas.groups.CanvasGroupMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasGroupMixin = foundry.canvas.groups.CanvasGroupMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode EffectsCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.EffectsCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode EnvironmentCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.EnvironmentCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import EnvironmentCanvasGroup = foundry.canvas.groups.EnvironmentCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode HiddenCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.HiddenCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import HiddenCanvasGroup = foundry.canvas.groups.HiddenCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode InterfaceCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.InterfaceCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import InterfaceCanvasGroup = foundry.canvas.groups.InterfaceCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode OverlayCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.OverlayCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import OverlayCanvasGroup = foundry.canvas.groups.OverlayCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.PrimaryCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryCanvasGroup = foundry.canvas.groups.PrimaryCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RenderedCanvasGroup} which is now namespaced under {@linkcode foundry.canvas.groups.RenderedCanvasGroup}"
+   * (since v13 will be removed in v15)
+   */
+  export import RenderedCanvasGroup = foundry.canvas.groups.RenderedCanvasGroup;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasVisibility} which is now namespaced under {@linkcode foundry.canvas.groups.CanvasVisibility}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasLayer} which is now namespaced under {@linkcode foundry.canvas.layers.CanvasLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasLayer = foundry.canvas.layers.CanvasLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode InteractionLayer} which is now namespaced under {@linkcode foundry.canvas.layers.InteractionLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import InteractionLayer = foundry.canvas.layers.InteractionLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PlaceablesLayer} which is now namespaced under {@linkcode foundry.canvas.layers.PlaceablesLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import PlaceablesLayer = foundry.canvas.layers.PlaceablesLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ControlsLayer} which is now namespaced under {@linkcode foundry.canvas.layers.ControlsLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import ControlsLayer = foundry.canvas.layers.ControlsLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasBackgroundAlterationEffects} which is now namespaced under {@linkcode foundry.canvas.layers.CanvasBackgroundAlterationEffects}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasBackgroundAlterationEffects = foundry.canvas.layers.CanvasBackgroundAlterationEffects;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasColorationEffects} which is now namespaced under {@linkcode foundry.canvas.layers.CanvasColorationEffects}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasColorationEffects = foundry.canvas.layers.CanvasColorationEffects;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasDarknessEffects} which is now namespaced under {@linkcode foundry.canvas.layers.CanvasDarknessEffects}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasDarknessEffects = foundry.canvas.layers.CanvasDarknessEffects;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasIlluminationEffects} which is now namespaced under {@linkcode foundry.canvas.layers.CanvasIlluminationEffects}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasIlluminationEffects = foundry.canvas.layers.CanvasIlluminationEffects;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode WeatherEffects} which is now namespaced under {@linkcode foundry.canvas.layers.WeatherEffects}"
+   * (since v13 will be removed in v15)
+   */
+  export import WeatherEffects = foundry.canvas.layers.WeatherEffects;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode GridLayer} which is now namespaced under {@linkcode foundry.canvas.layers.GridLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import GridLayer = foundry.canvas.layers.GridLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasDepthMask} which is now namespaced under {@linkcode foundry.canvas.layers.CanvasDepthMask}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasDepthMask = foundry.canvas.layers.CanvasDepthMask;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasOcclusionMask} which is now namespaced under {@linkcode foundry.canvas.layers.CanvasOcclusionMask}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasOcclusionMask = foundry.canvas.layers.CanvasOcclusionMask;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasVisionMask} which is now namespaced under {@linkcode foundry.canvas.layers.CanvasVisionMask}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasVisionMask = foundry.canvas.layers.CanvasVisionMask;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DrawingsLayer} which is now namespaced under {@linkcode foundry.canvas.layers.DrawingsLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import DrawingsLayer = foundry.canvas.layers.DrawingsLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode NotesLayer} which is now namespaced under {@linkcode foundry.canvas.layers.NotesLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import NotesLayer = foundry.canvas.layers.NotesLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SoundsLayer} which is now namespaced under {@linkcode foundry.canvas.layers.SoundsLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import SoundsLayer = foundry.canvas.layers.SoundsLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode TemplateLayer} which is now namespaced under {@linkcode foundry.canvas.layers.TemplateLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import TemplateLayer = foundry.canvas.layers.TemplateLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode TilesLayer} which is now namespaced under {@linkcode foundry.canvas.layers.TilesLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import TilesLayer = foundry.canvas.layers.TilesLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode WallsLayer} which is now namespaced under {@linkcode foundry.canvas.layers.WallsLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import WallsLayer = foundry.canvas.layers.WallsLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RegionLayer} which is now namespaced under {@linkcode foundry.canvas.layers.RegionLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import RegionLayer = foundry.canvas.layers.RegionLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode LightingLayer} which is now namespaced under {@linkcode foundry.canvas.layers.LightingLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import LightingLayer = foundry.canvas.layers.LightingLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode TokenLayer} which is now namespaced under {@linkcode foundry.canvas.layers.TokenLayer}"
+   * (since v13 will be removed in v15)
+   */
+  export import TokenLayer = foundry.canvas.layers.TokenLayer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PlaceableObject} which is now namespaced under {@linkcode foundry.canvas.placeables.PlaceableObject}"
+   * (since v13 will be removed in v15)
+   */
+  export import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Drawing} which is now namespaced under {@linkcode foundry.canvas.placeables.Drawing}"
+   * (since v13 will be removed in v15)
+   */
+  export import Drawing = foundry.canvas.placeables.Drawing;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Note} which is now namespaced under {@linkcode foundry.canvas.placeables.Note}"
+   * (since v13 will be removed in v15)
+   */
+  export import Note = foundry.canvas.placeables.Note;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Region} which is now namespaced under {@linkcode foundry.canvas.placeables.Region}"
+   * (since v13 will be removed in v15)
+   */
+  export import Region = foundry.canvas.placeables.Region;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Tile} which is now namespaced under {@linkcode foundry.canvas.placeables.Tile}"
+   * (since v13 will be removed in v15)
+   */
+  export import Tile = foundry.canvas.placeables.Tile;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Token} which is now namespaced under {@linkcode foundry.canvas.placeables.Token}"
+   * (since v13 will be removed in v15)
+   */
+  export import Token = foundry.canvas.placeables.Token;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode MeasuredTemplate} which is now namespaced under {@linkcode foundry.canvas.placeables.MeasuredTemplate}"
+   * (since v13 will be removed in v15)
+   */
+  export import MeasuredTemplate = foundry.canvas.placeables.MeasuredTemplate;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Wall} which is now namespaced under {@linkcode foundry.canvas.placeables.Wall}"
+   * (since v13 will be removed in v15)
+   */
+  export import Wall = foundry.canvas.placeables.Wall;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AmbientLight} which is now namespaced under {@linkcode foundry.canvas.placeables.AmbientLight}"
+   * (since v13 will be removed in v15)
+   */
+  export import AmbientLight = foundry.canvas.placeables.AmbientLight;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AmbientSound} which is now namespaced under {@linkcode foundry.canvas.placeables.AmbientSound}"
+   * (since v13 will be removed in v15)
+   */
+  export import AmbientSound = foundry.canvas.placeables.AmbientSound;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Quadtree} which is now namespaced under {@linkcode foundry.canvas.geometry.Quadtree}"
+   * (since v13 will be removed in v15)
+   */
+  export import Quadtree = foundry.canvas.geometry.Quadtree;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasQuadtree} which is now namespaced under {@linkcode foundry.canvas.geometry.CanvasQuadtree}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasQuadtree = foundry.canvas.geometry.CanvasQuadtree;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode UnboundTransform} which is now namespaced under {@linkcode foundry.canvas.geometry.UnboundTransform}"
+   * (since v13 will be removed in v15)
+   */
+  export import UnboundTransform = foundry.canvas.geometry.UnboundTransform;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode LimitedAnglePolygon} which is now namespaced under {@linkcode foundry.canvas.geometry.LimitedAnglePolygon}"
+   * (since v13 will be removed in v15)
+   */
+  export import LimitedAnglePolygon = foundry.canvas.geometry.LimitedAnglePolygon;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PolygonMesher} which is now namespaced under {@linkcode foundry.canvas.geometry.PolygonMesher}"
+   * (since v13 will be removed in v15)
+   */
+  export import PolygonMesher = foundry.canvas.geometry.PolygonMesher;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Ray} which is now namespaced under {@linkcode foundry.canvas.geometry.Ray}"
+   * (since v13 will be removed in v15)
+   */
+  export import Ray = foundry.canvas.geometry.Ray;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PointSourcePolygon} which is now namespaced under {@linkcode foundry.canvas.geometry.PointSourcePolygon}"
+   * (since v13 will be removed in v15)
+   */
+  export import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ClockwiseSweepPolygon} which is now namespaced under {@linkcode foundry.canvas.geometry.ClockwiseSweepPolygon}"
+   * (since v13 will be removed in v15)
+   */
+  export import ClockwiseSweepPolygon = foundry.canvas.geometry.ClockwiseSweepPolygon;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode WeilerAthertonClipper} which is now namespaced under {@linkcode foundry.canvas.geometry.WeilerAthertonClipper}"
+   * (since v13 will be removed in v15)
+   */
+  export import WeilerAthertonClipper = foundry.canvas.geometry.WeilerAthertonClipper;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasAnimation} which is now namespaced under {@linkcode foundry.canvas.animation.CanvasAnimation}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasAnimation = foundry.canvas.animation.CanvasAnimation;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ChatBubbles} which is now namespaced under {@linkcode foundry.canvas.animation.ChatBubbles}"
+   * (since v13 will be removed in v15)
+   */
+  export import ChatBubbles = foundry.canvas.animation.ChatBubbles;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode SmoothNoise} which is now namespaced under {@linkcode foundry.canvas.animation.SmoothNoise}"
+   * (since v13 will be removed in v15)
+   */
+  export import SmoothNoise = foundry.canvas.animation.SmoothNoise;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode MouseInteractionManager} which is now namespaced under {@linkcode foundry.canvas.interaction.MouseInteractionManager}"
+   * (since v13 will be removed in v15)
+   */
+  export import MouseInteractionManager = foundry.canvas.interaction.MouseInteractionManager;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RenderFlagsMixin} which is now namespaced under {@linkcode foundry.canvas.interaction.RenderFlagsMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import RenderFlagsMixin = foundry.canvas.interaction.RenderFlagsMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RenderFlags} which is now namespaced under {@linkcode foundry.canvas.interaction.RenderFlags}"
+   * (since v13 will be removed in v15)
+   */
+  export import RenderFlags = foundry.canvas.interaction.RenderFlags;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Ping} which is now namespaced under {@linkcode foundry.canvas.interaction.Ping}"
+   * (since v13 will be removed in v15)
+   */
+  export import Ping = foundry.canvas.interaction.Ping;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PulsePing} which is now namespaced under {@linkcode foundry.canvas.interaction.PulsePing}"
+   * (since v13 will be removed in v15)
+   */
+  export import PulsePing = foundry.canvas.interaction.PulsePing;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ChevronPing} which is now namespaced under {@linkcode foundry.canvas.interaction.ChevronPing}"
+   * (since v13 will be removed in v15)
+   */
+  export import ChevronPing = foundry.canvas.interaction.ChevronPing;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AlertPing} which is now namespaced under {@linkcode foundry.canvas.interaction.AlertPing}"
+   * (since v13 will be removed in v15)
+   */
+  export import AlertPing = foundry.canvas.interaction.AlertPing;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ArrowPing} which is now namespaced under {@linkcode foundry.canvas.interaction.ArrowPing}"
+   * (since v13 will be removed in v15)
+   */
+  export import ArrowPing = foundry.canvas.interaction.ArrowPing;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode Ruler} which is now namespaced under {@linkcode foundry.canvas.interaction.Ruler}"
+   * (since v13 will be removed in v15)
+   */
+  export import Ruler = foundry.canvas.interaction.Ruler;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode UserTargets} which is now namespaced under {@linkcode foundry.canvas.placeables.tokens.UserTargets}"
+   * (since v13 will be removed in v15)
+   */
+  export import UserTargets = foundry.canvas.placeables.tokens.UserTargets;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode TokenRing} which is now namespaced under {@linkcode foundry.canvas.placeables.tokens.TokenRing}"
+   * (since v13 will be removed in v15)
+   */
+  export import TokenRing = foundry.canvas.placeables.tokens.TokenRing;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode TokenRingConfig} which is now namespaced under {@linkcode foundry.canvas.placeables.tokens.TokenRingConfig}"
+   * (since v13 will be removed in v15)
+   */
+  export import TokenRingConfig = foundry.canvas.placeables.tokens.TokenRingConfig;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DynamicRingData} which is now namespaced under {@linkcode foundry.canvas.placeables.tokens.DynamicRingData}"
+   * (since v13 will be removed in v15)
+   */
+  export import DynamicRingData = foundry.canvas.placeables.tokens.DynamicRingData;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RegionGeometry} which is now namespaced under {@linkcode foundry.canvas.placeables.regions.RegionGeometry}"
+   * (since v13 will be removed in v15)
+   */
+  export import RegionGeometry = foundry.canvas.placeables.regions.RegionGeometry;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RegionPolygonTree} which is now namespaced under {@linkcode foundry.data.regionShapes.RegionPolygonTree}"
+   * (since v13 will be removed in v15)
+   */
+  export import RegionPolygonTree = foundry.data.regionShapes.RegionPolygonTree;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RegionShape} which is now namespaced under {@linkcode foundry.data.regionShapes.RegionShape}"
+   * (since v13 will be removed in v15)
+   */
+  export import RegionShape = foundry.data.regionShapes.RegionShape;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode RegionMesh} which is now namespaced under {@linkcode foundry.canvas.placeables.regions.RegionMesh}"
+   * (since v13 will be removed in v15)
+   */
+  export import RegionMesh = foundry.canvas.placeables.regions.RegionMesh;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode FogManager} which is now namespaced under {@linkcode foundry.canvas.perception.FogManager}"
+   * (since v13 will be removed in v15)
+   */
+  export import FogManager = foundry.canvas.perception.FogManager;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PerceptionManager} which is now namespaced under {@linkcode foundry.canvas.perception.PerceptionManager}"
+   * (since v13 will be removed in v15)
+   */
+  export import PerceptionManager = foundry.canvas.perception.PerceptionManager;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode VisionMode} which is now namespaced under {@linkcode foundry.canvas.perception.VisionMode}"
+   * (since v13 will be removed in v15)
+   */
+  export import VisionMode = foundry.canvas.perception.VisionMode;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DetectionMode} which is now namespaced under {@linkcode foundry.canvas.perception.DetectionMode}"
+   * (since v13 will be removed in v15)
+   */
+  export import DetectionMode = foundry.canvas.perception.DetectionMode;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DetectionModeAll} which is now namespaced under {@linkcode foundry.canvas.perception.DetectionModeAll}"
+   * (since v13 will be removed in v15)
+   */
+  export import DetectionModeAll = foundry.canvas.perception.DetectionModeAll;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DetectionModeLightPerception} which is now namespaced under {@linkcode foundry.canvas.perception.DetectionModeLightPerception}"
+   * (since v13 will be removed in v15)
+   */
+  export import DetectionModeLightPerception = foundry.canvas.perception.DetectionModeLightPerception;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DetectionModeInvisibility} which is now namespaced under {@linkcode foundry.canvas.perception.DetectionModeInvisibility}"
+   * (since v13 will be removed in v15)
+   */
+  export import DetectionModeInvisibility = foundry.canvas.perception.DetectionModeInvisibility;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DetectionModeBasicSight} which is now namespaced under {@linkcode foundry.canvas.perception.DetectionModeDarkvision}"
+   * (since v13 will be removed in v15)
+   */
+  export import DetectionModeBasicSight = foundry.canvas.perception.DetectionModeDarkvision;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode DetectionModeTremor} which is now namespaced under {@linkcode foundry.canvas.perception.DetectionModeTremor}"
+   * (since v13 will be removed in v15)
+   */
+  export import DetectionModeTremor = foundry.canvas.perception.DetectionModeTremor;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryCanvasContainer} which is now namespaced under {@linkcode foundry.canvas.primary.PrimaryCanvasContainer}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryCanvasContainer = foundry.canvas.primary.PrimaryCanvasContainer;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryGraphics} which is now namespaced under {@linkcode foundry.canvas.primary.PrimaryGraphics}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryGraphics = foundry.canvas.primary.PrimaryGraphics;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryParticleEffect} which is now namespaced under {@linkcode foundry.canvas.primary.PrimaryParticleEffect}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryParticleEffect = foundry.canvas.primary.PrimaryParticleEffect;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimarySpriteMesh} which is now namespaced under {@linkcode foundry.canvas.primary.PrimarySpriteMesh}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryOccludableObjectMixin} which is now namespaced under {@linkcode foundry.canvas.primary.PrimaryOccludableObjectMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryOccludableObjectMixin = foundry.canvas.primary.PrimaryOccludableObjectMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode PrimaryCanvasObjectMixin} which is now namespaced under {@linkcode foundry.canvas.primary.PrimaryCanvasObjectMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import PrimaryCanvasObjectMixin = foundry.canvas.primary.PrimaryCanvasObjectMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode CanvasTransformMixin} which is now namespaced under {@linkcode foundry.canvas.primary.CanvasTransformMixin}"
+   * (since v13 will be removed in v15)
+   */
+  export import CanvasTransformMixin = foundry.canvas.primary.CanvasTransformMixin;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode BatchShaderGenerator} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchShaderGenerator}"
+   * (since v13 will be removed in v15)
+   */
+  export import BatchShaderGenerator = foundry.canvas.rendering.batching.BatchShaderGenerator;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode BatchRenderer} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchRenderer}"
+   * (since v13 will be removed in v15)
+   */
+  export import BatchRenderer = foundry.canvas.rendering.batching.BatchRenderer;
 
   /**
    * @deprecated "You are accessing the global {@linkcode SMAAFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.SMAAFilter}"
@@ -967,18 +1597,6 @@ declare global {
    * (since v13 will be removed in v15)
    */
   export import WeatherOcclusionMaskFilter = foundry.canvas.rendering.filters.WeatherOcclusionMaskFilter;
-
-  /**
-   * @deprecated "You are accessing the global {@linkcode BatchRenderer} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchRenderer}"
-   * (since v13 will be removed in v15)
-   */
-  export import BatchRenderer = foundry.canvas.rendering.batching.BatchRenderer;
-
-  /**
-   * @deprecated "You are accessing the global {@linkcode BatchShaderGenerator} which is now namespaced under {@linkcode foundry.canvas.rendering.batching.BatchShaderGenerator}"
-   * (since v13 will be removed in v15)
-   */
-  export import BatchShaderGenerator = foundry.canvas.rendering.batching.BatchShaderGenerator;
 
   /**
    * @deprecated "You are accessing the global {@linkcode BaseShaderMixin} which is now namespaced under {@linkcode foundry.canvas.rendering.mixins.BaseShaderMixin}"

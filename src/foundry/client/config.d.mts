@@ -4,6 +4,12 @@ import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "#utils"
 import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
 import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
+import type * as canvasLayers from "#client/canvas/layers/_module.d.mts";
+import type * as canvasGroups from "#client/canvas/groups/_module.d.mts";
+import type * as perception from "#client/canvas/perception/_module.d.mts";
+import type * as placeables from "#client/canvas/placeables/_module.d.mts";
+import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
+import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 
 import SimplePeerAVClient = foundry.av.clients.SimplePeerAVClient;
 
@@ -942,7 +948,7 @@ declare global {
      * Available Weather Effects implementations
      */
     weatherEffects: {
-      [key: string]: WeatherEffects.AmbienceConfiguration;
+      [key: string]: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -957,7 +963,7 @@ declare global {
        * }
        * ```
        */
-      leaves: WeatherEffects.AmbienceConfiguration;
+      leaves: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -985,7 +991,7 @@ declare global {
        * }
        * ```
        */
-      rain: WeatherEffects.AmbienceConfiguration;
+      rain: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1026,7 +1032,7 @@ declare global {
        * }
        * ```
        */
-      rainStorm: WeatherEffects.AmbienceConfiguration;
+      rainStorm: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1051,7 +1057,7 @@ declare global {
        * }
        * ```
        */
-      fog: WeatherEffects.AmbienceConfiguration;
+      fog: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1077,7 +1083,7 @@ declare global {
        * }
        * ```
        */
-      snow: WeatherEffects.AmbienceConfiguration;
+      snow: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1115,7 +1121,7 @@ declare global {
        * }
        * ```
        */
-      blizzard: WeatherEffects.AmbienceConfiguration;
+      blizzard: canvasLayers.WeatherEffects.AmbienceConfiguration;
     };
 
     /**
@@ -1629,11 +1635,10 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof AmbientLightDocument` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof AmbientLight>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.AmbientLight>;
 
       /** @defaultValue `typeof LightingLayer` */
-      layerClass: LightingLayer.AnyConstructor;
+      layerClass: canvasLayers.LightingLayer.AnyConstructor;
     };
 
     /**
@@ -1654,11 +1659,10 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof AmbientSound` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof AmbientSound>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.AmbientSound>;
 
       /** @defaultValue `typeof SoundsLayer` */
-      layerClass: SoundsLayer.AnyConstructor;
+      layerClass: canvasLayers.SoundsLayer.AnyConstructor;
     };
 
     /**
@@ -1707,11 +1711,10 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Drawing` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof Drawing>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Drawing>;
 
       /** @defaultValue `typeof DrawingsLayer` */
-      layerClass: typeof DrawingsLayer;
+      layerClass: typeof canvasLayers.DrawingsLayer;
 
       /** @defaultValue `typeof DrawingHUD` */
       hudClass: typeof foundry.applications.hud.DrawingHUD;
@@ -1757,11 +1760,10 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof MeasuredTemplate` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.MeasuredTemplate>;
 
       /** @defaultValue `typeof TemplateLayer` */
-      layerClass: typeof TemplateLayer;
+      layerClass: typeof canvasLayers.TemplateLayer;
     };
 
     /**
@@ -1782,11 +1784,10 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Note` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof Note>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Note>;
 
       /** @defaultValue `typeof NotesLayer` */
-      layerClass: NotesLayer.AnyConstructor;
+      layerClass: canvasLayers.NotesLayer.AnyConstructor;
     };
 
     Region: {
@@ -1794,11 +1795,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Region">;
 
       /** @defaultValue `Region` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof Region>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Region>;
 
       /** @defaultValue `RegionLayer` */
-      layerClass: RegionLayer.AnyConstructor;
+      layerClass: canvasLayers.RegionLayer.AnyConstructor;
 
       /**
        * @remarks added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -1842,11 +1842,10 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Tile` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof Tile>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Tile>;
 
       /** @defaultValue `typeof TilesLayer` */
-      layerClass: TilesLayer.AnyConstructor;
+      layerClass: canvasLayers.TilesLayer.AnyConstructor;
 
       /** @defaultValue `typeof TileHUD` */
       hudClass: foundry.applications.hud.TileHUD.AnyConstructor;
@@ -1870,11 +1869,10 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Token` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof Token>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Token>;
 
       /** @defaultValue `typeof TokenLayer` */
-      layerClass: TokenLayer.AnyConstructor;
+      layerClass: canvasLayers.TokenLayer.AnyConstructor;
 
       /** @defaultValue `typeof TokenConfig` */
       prototypeSheetClass: foundry.applications.sheets.TokenConfig.AnyConstructor;
@@ -1890,7 +1888,7 @@ declare global {
        * @remarks Foundry leaves a comment claiming `"ring property is initialized in foundry.canvas.tokens.TokenRingConfig.initialize"`,
        * and while that's true, it's _instantiated_ here in `config.js` via defineProperty (`enumerable: true`)
        */
-      readonly ring: foundry.canvas.tokens.TokenRingConfig;
+      readonly ring: foundry.canvas.placeables.tokens.TokenRingConfig;
     };
 
     /**
@@ -1911,11 +1909,10 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Wall` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof Wall>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Wall>;
 
       /** @defaultValue `typeof WallsLayer` */
-      layerClass: WallsLayer.AnyConstructor;
+      layerClass: canvasLayers.WallsLayer.AnyConstructor;
 
       /** @defaultValue `1` */
       thresholdAttenuationMultiplier: number;
@@ -2399,7 +2396,7 @@ declare global {
        * @defaultValue `FogManager`
        * @remarks Can't be `AnyConstructor` because Foundry assumes it can call `new` with the same arguments FogManager accepts
        */
-      fogManager: typeof FogManager;
+      fogManager: typeof perception.FogManager;
 
       polygonBackends: Canvas.PolygonBackends;
 
@@ -2414,7 +2411,7 @@ declare global {
        * @defaultValue `Ruler`
        * @remarks Not `AnyConstructor` because it's instantiated with a `User.Implementation` as its first argument
        */
-      rulerClass: typeof Ruler;
+      rulerClass: typeof foundry.canvas.interaction.Ruler;
 
       /** @defaultValue `0.8` */
       dragSpeedModifier: number;
@@ -2467,28 +2464,28 @@ declare global {
     namespace Canvas {
       interface Groups {
         /** @defaultValue `{ groupClass: HiddenCanvasGroup, parent: "stage" }` */
-        hidden: CONFIG.Canvas.GroupDefinition<typeof HiddenCanvasGroup>;
+        hidden: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.HiddenCanvasGroup>;
 
         /** @defaultValue `{ groupClass: RenderedCanvasGroup, parent: "stage" }` */
-        rendered: CONFIG.Canvas.GroupDefinition<typeof RenderedCanvasGroup>;
+        rendered: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.RenderedCanvasGroup>;
 
         /** @defaultValue `{ groupClass: EnvironmentCanvasGroup, parent: "rendered" }` */
-        environment: CONFIG.Canvas.GroupDefinition<typeof EnvironmentCanvasGroup>;
+        environment: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.EnvironmentCanvasGroup>;
 
         /** @defaultValue `{ groupClass: PrimaryCanvasGroup, parent: "environment" }` */
-        primary: CONFIG.Canvas.GroupDefinition<typeof PrimaryCanvasGroup>;
+        primary: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.PrimaryCanvasGroup>;
 
         /** @defaultValue `{ groupClass: EffectsCanvasGroup, parent: "environment" }` */
-        effects: CONFIG.Canvas.GroupDefinition<typeof EffectsCanvasGroup>;
+        effects: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.EffectsCanvasGroup>;
 
         /** @defaultValue `{ groupClass: CanvasVisibility, parent: "rendered" }` */
-        visibility: CONFIG.Canvas.GroupDefinition<typeof CanvasVisibility>;
+        visibility: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.CanvasVisibility>;
 
         /** @defaultValue `{ groupClass: InterfaceCanvasGroup, parent: "rendered", zIndexDrawings: 500, zIndexScrollingText: 1100 }` */
-        interface: CONFIG.Canvas.GroupDefinition<typeof InterfaceCanvasGroup>;
+        interface: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.InterfaceCanvasGroup>;
 
         /** @defaultValue `{ groupClass: OverlayCanvasGroup, parent: "stage" }` */
-        overlay: CONFIG.Canvas.GroupDefinition<typeof OverlayCanvasGroup>;
+        overlay: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.OverlayCanvasGroup>;
       }
 
       // This requires `CanvasGroupConstructor` because `Canvas##createGroups` assumes there's no parameters.
@@ -2501,44 +2498,47 @@ declare global {
 
       interface Layers {
         /** @defaultValue `{ layerClass: WeatherLayer, group: "primary" }` */
-        weather: LayerDefinition<typeof WeatherEffects, "primary">;
+        weather: LayerDefinition<typeof canvasLayers.WeatherEffects, "primary">;
 
         /** @defaultValue `{ layerClass: GridLayer, group: "interface" }` */
-        grid: LayerDefinition<typeof GridLayer, "interface">;
+        grid: LayerDefinition<typeof canvasLayers.GridLayer, "interface">;
 
         /** @defaultValue `{ layerClass: RegionLayer, group: "interface" }` */
         // regions: LayerDefinition<typeof RegionLayer, "interface">;
 
         /** @defaultValue `{ layerClass: DrawingsLayer, group: "interface" }` */
-        drawings: LayerDefinition<typeof DrawingsLayer, "interface">;
+        drawings: LayerDefinition<typeof canvasLayers.DrawingsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TemplateLayer, group: "interface" }` */
-        templates: LayerDefinition<typeof TemplateLayer, "interface">;
+        templates: LayerDefinition<typeof canvasLayers.TemplateLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
-        tiles: LayerDefinition<typeof TilesLayer, "interface">;
+        tiles: LayerDefinition<typeof canvasLayers.TilesLayer, "interface">;
 
         /** @defaultValue `{ layerClass: WallsLayer, group: "interface" }` */
-        walls: LayerDefinition<typeof WallsLayer, "interface">;
+        walls: LayerDefinition<typeof canvasLayers.WallsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
-        tokens: LayerDefinition<typeof TokenLayer, "interface">;
+        tokens: LayerDefinition<typeof canvasLayers.TokenLayer, "interface">;
 
         /** @defaultValue `{ layerClass: SoundsLayer, group: "interface" }` */
-        sounds: LayerDefinition<typeof SoundsLayer, "interface">;
+        sounds: LayerDefinition<typeof canvasLayers.SoundsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: LightingLayer, group: "interface" }` */
-        lighting: LayerDefinition<typeof LightingLayer, "interface">;
+        lighting: LayerDefinition<typeof canvasLayers.LightingLayer, "interface">;
 
         /** @defaultValue `{ layerClass: NotesLayer, group: "interface" }` */
-        notes: LayerDefinition<typeof NotesLayer, "interface">;
+        notes: LayerDefinition<typeof canvasLayers.NotesLayer, "interface">;
 
         /** @defaultValue `{ layerClass: ControlsLayer, group: "interface" }` */
-        controls: LayerDefinition<typeof ControlsLayer, "interface">;
+        controls: LayerDefinition<typeof canvasLayers.ControlsLayer, "interface">;
       }
 
       // This requires `typeof CanvasLayer` because `CanvasGroupMixin#_createLayers` assumes there's no parameters.
-      interface LayerDefinition<LayerClass extends typeof CanvasLayer, Group extends keyof CONFIG["Canvas"]["groups"]> {
+      interface LayerDefinition<
+        LayerClass extends typeof canvasLayers.CanvasLayer,
+        Group extends keyof CONFIG["Canvas"]["groups"],
+      > {
         layerClass: LayerClass;
         group: Group;
       }
@@ -2572,7 +2572,7 @@ declare global {
       }
 
       interface GridStyles {
-        [key: string]: GridLayer.GridStyle;
+        [key: string]: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2586,7 +2586,7 @@ declare global {
          * }
          * ```
          */
-        solidLines: GridLayer.GridStyle;
+        solidLines: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2600,7 +2600,7 @@ declare global {
          * }
          * ```
          */
-        dashedLines: GridLayer.GridStyle;
+        dashedLines: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2614,7 +2614,7 @@ declare global {
          * }
          * ```
          */
-        dottedLines: GridLayer.GridStyle;
+        dottedLines: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2628,7 +2628,7 @@ declare global {
          * }
          * ```
          */
-        squarePoints: GridLayer.GridStyle;
+        squarePoints: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2642,7 +2642,7 @@ declare global {
          * }
          * ```
          */
-        diamondPoints: GridLayer.GridStyle;
+        diamondPoints: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2656,7 +2656,7 @@ declare global {
          * }
          * ```
          */
-        roundPoints: GridLayer.GridStyle;
+        roundPoints: canvasLayers.GridLayer.GridStyle;
       }
 
       interface LightAnimations {
@@ -3030,7 +3030,7 @@ declare global {
       }
 
       interface VisionModes {
-        [key: string]: VisionMode;
+        [key: string]: perception.VisionMode;
 
         /**
          * Default (Basic) Vision
@@ -3046,7 +3046,7 @@ declare global {
          * })
          * ```
          */
-        basic: VisionMode;
+        basic: perception.VisionMode;
 
         /**
          * Darkvision
@@ -3072,7 +3072,7 @@ declare global {
          * })
          * ```
          */
-        darkvision: VisionMode;
+        darkvision: perception.VisionMode;
 
         /**
          * Darkvision
@@ -3106,7 +3106,7 @@ declare global {
          * })
          * ```
          */
-        monochromatic: VisionMode;
+        monochromatic: perception.VisionMode;
 
         /**
          * Blindness
@@ -3132,7 +3132,7 @@ declare global {
          * }),
          * ```
          */
-        blindness: VisionMode;
+        blindness: perception.VisionMode;
 
         /**
          * Tremorsense
@@ -3160,7 +3160,7 @@ declare global {
          * }, {animated: true})
          * ```
          */
-        tremorsense: VisionMode;
+        tremorsense: perception.VisionMode;
 
         /**
          * Light Amplification
@@ -3200,25 +3200,25 @@ declare global {
          * })
          * ```
          */
-        lightAmplification: VisionMode;
+        lightAmplification: perception.VisionMode;
       }
 
       interface DetectionModes {
-        [key: string]: DetectionMode;
+        [key: string]: perception.DetectionMode;
 
-        lightPerception: DetectionModeLightPerception;
+        lightPerception: perception.DetectionModeLightPerception;
 
-        basicSight: DetectionModeBasicSight;
+        basicSight: perception.DetectionModeDarkvision;
 
-        seeInvisibility: DetectionModeInvisibility;
+        seeInvisibility: perception.DetectionModeInvisibility;
 
-        senseInvisibility: DetectionModeInvisibility;
+        senseInvisibility: perception.DetectionModeInvisibility;
 
-        feelTremor: DetectionModeTremor;
+        feelTremor: perception.DetectionModeTremor;
 
-        seeAll: DetectionModeAll;
+        seeAll: perception.DetectionModeAll;
 
-        senseAll: DetectionModeAll;
+        senseAll: perception.DetectionModeAll;
       }
     }
 
@@ -3349,7 +3349,7 @@ declare global {
   const CONFIG: CONFIG;
 }
 
-type ConfiguredObjectClassOrDefault<Fallback extends PlaceableObject.AnyConstructor> = GetKey<
+type ConfiguredObjectClassOrDefault<Fallback extends placeables.PlaceableObject.AnyConstructor> = GetKey<
   PlaceableObjectClassConfig,
   Fallback["embeddedName"],
   Fallback

@@ -1,5 +1,7 @@
 import type { Mixin, IntentionalPartial, FixedInstanceType, RequiredProps } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
+import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
+import type { PointSourceMesh } from "#client/canvas/containers/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class PointEffectSource {

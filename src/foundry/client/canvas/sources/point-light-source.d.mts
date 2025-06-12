@@ -1,7 +1,12 @@
 import type { AnyObject, FixedInstanceType, Identity, IntentionalPartial, RequiredProps } from "#utils";
-import type BaseLightSource from "./base-light-source.d.mts";
-import type PointEffectSourceMixin from "./point-effect-source.d.mts";
-import type RenderedEffectSource from "./rendered-effect-source.d.mts";
+import type {
+  BaseLightSource,
+  PointEffectSourceMixin,
+  RenderedEffectSource,
+} from "#client/canvas/sources/_module.d.mts";
+import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import type { CanvasVisibility } from "#client/canvas/groups/_module.d.mts";
 
 /**
  * A specialized subclass of the BaseLightSource which renders a source of light as a point-based effect.

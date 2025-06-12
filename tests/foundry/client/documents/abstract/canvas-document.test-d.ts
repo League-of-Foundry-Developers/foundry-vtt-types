@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { AmbientLight } from "#client/canvas/placeables/_module.d.mts";
 
 const doc = new AmbientLightDocument.implementation();
 

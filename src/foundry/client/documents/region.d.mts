@@ -3,6 +3,7 @@ import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseShapeData } from "#common/data/data.mjs";
 import type BaseRegion from "#common/documents/region.mjs";
+import type { Region } from "#client/canvas/placeables/_module.d.mts";
 
 import fields = foundry.data.fields;
 

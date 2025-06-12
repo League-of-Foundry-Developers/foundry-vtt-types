@@ -1,4 +1,5 @@
 import type { AllHooks } from "#client/hooks.mjs";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 export interface HookConfig extends AllHooks {}
 

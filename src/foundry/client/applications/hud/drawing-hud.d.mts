@@ -1,6 +1,7 @@
 import type BasePlaceableHUD from "./placeable-hud.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type { Identity } from "#utils";
+import type { Drawing } from "#client/canvas/placeables/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

@@ -2,6 +2,7 @@ import type { AnyObject, Identity, InexactPartial, IntentionalPartial, NullishPr
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
+import type { PointSourceMesh } from "#client/canvas/containers/_module.d.mts";
 
 /**
  * An abstract class which extends the base PointSource to provide common functionality for rendering.

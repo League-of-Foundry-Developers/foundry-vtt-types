@@ -1,5 +1,6 @@
 import type { Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {

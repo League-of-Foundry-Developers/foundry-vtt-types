@@ -326,7 +326,7 @@ declare class CalendarData<Components extends CalendarData.TimeComponents> exten
     _options?: AnyObject,
   ): string;
 
-  /** Format time components as "{years}, {days}, {hours}, {minutes}, {seconds} ago". */
+  /** Format time components as "\{years\}, \{days\}, \{hours\}, \{minutes\}, \{seconds\} ago". */
   static formatAgo(
     calendar: CalendarData<CalendarData.TimeComponents>,
     components: CalendarData.TimeComponents,

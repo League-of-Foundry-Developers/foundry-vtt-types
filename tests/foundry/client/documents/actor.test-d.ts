@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 // import type { ArmorData, WeaponData } from "./item.test-d";
 
 // @ts-expect-error - Actor requires name.
