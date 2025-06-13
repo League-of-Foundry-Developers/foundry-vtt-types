@@ -1,5 +1,14 @@
+import type { Identity } from "#utils";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      CombatantConfig: CombatantConfig.Any;
+    }
+  }
+}
 
 /**
  * The Combatant configuration application.
@@ -17,9 +26,26 @@ declare class CombatantConfig<
 > {}
 
 declare namespace CombatantConfig {
-  interface RenderContext extends DocumentSheetV2.RenderContext<Combatant.Implementation> {}
+  interface Any extends AnyCombatantConfig {}
+  interface AnyConstructor extends Identity<typeof AnyCombatantConfig> {}
 
-  interface Configuration extends DocumentSheetV2.Configuration<Combatant.Implementation> {}
+  interface RenderContext
+    extends HandlebarsApplicationMixin.RenderContext,
+      DocumentSheetV2.RenderContext<Combatant.Implementation> {}
+
+  interface Configuration
+    extends HandlebarsApplicationMixin.Configuration,
+      DocumentSheetV2.Configuration<Combatant.Implementation> {}
+
+  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
+}
+
+declare abstract class AnyCombatantConfig extends CombatantConfig<
+  CombatantConfig.RenderContext,
+  CombatantConfig.Configuration,
+  CombatantConfig.RenderOptions
+> {
+  constructor(...args: never);
 }
 
 export default CombatantConfig;

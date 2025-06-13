@@ -1,13 +1,22 @@
 import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
+import type FormDataExtended from "../ux/form-data-extended.d.mts";
 
 import Document = foundry.abstract.Document;
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      DocumentSheetV2: DocumentSheetV2.Any;
+    }
+  }
+}
 
 declare namespace DocumentSheetV2 {
   interface Any extends AnyDocumentSheetV2 {}
   interface AnyConstructor extends Identity<typeof AnyDocumentSheetV2> {}
 
-  interface RenderContext<ConcreteDocument extends Document.Any = Document.Any> extends ApplicationV2.RenderContext {
+  interface RenderContext<ConcreteDocument extends Document.Any> extends ApplicationV2.RenderContext {
     document: ConcreteDocument;
     source: ConcreteDocument["_source"];
     fields: ConcreteDocument["schema"]["fields"];
@@ -188,6 +197,11 @@ declare class DocumentSheetV2<
 
 export default DocumentSheetV2;
 
-declare abstract class AnyDocumentSheetV2 extends DocumentSheetV2<any, any, any, any> {
+declare abstract class AnyDocumentSheetV2 extends DocumentSheetV2<
+  Document.Any,
+  object,
+  DocumentSheetV2.Configuration<Document.Any>,
+  DocumentSheetV2.RenderOptions
+> {
   constructor(...args: never);
 }

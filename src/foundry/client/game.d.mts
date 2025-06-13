@@ -10,6 +10,7 @@ import type {
 } from "#utils";
 import type BasePackage from "#common/packages/base-package.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 import AVMaster = foundry.av.AVMaster;
 
@@ -65,12 +66,12 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   /**
    * The game World which is currently active.
    */
-  readonly world: World;
+  readonly world: foundry.packages.World;
 
   /**
    * The System which is used to power this game World.
    */
-  readonly system: System;
+  readonly system: foundry.packages.System;
 
   /**
    * A Map of active Modules which are currently eligible to be enabled in this World.
@@ -82,7 +83,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * A mapping of CompendiumCollection instances, one per Compendium pack.
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
-  readonly packs: SimpleInitializedOn<CompendiumPacks, "setup", RunEvents>;
+  readonly packs: SimpleInitializedOn<foundry.documents.collections.CompendiumPacks, "setup", RunEvents>;
 
   /**
    * A registry of document sub-types and their respective data models.
@@ -106,7 +107,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * The global document index.
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
-  readonly documentIndex: SimpleInitializedOn<DocumentIndex, "setup", RunEvents>;
+  readonly documentIndex: SimpleInitializedOn<foundry.helpers.DocumentIndex, "setup", RunEvents>;
 
   /**
    * The UUID redirects tree.
@@ -119,7 +120,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
   readonly collections: SimpleInitializedOn<
-    foundry.utils.Collection<WorldCollection<Document.Type, string>>,
+    foundry.utils.Collection<foundry.documents.abstract.WorldCollection<Document.Type, string>>,
     "setup",
     RunEvents
   >;
@@ -234,7 +235,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * The singleton compendium art manager.
    * @remarks Initialized just before the `"setup"` hook event.
    */
-  readonly compendiumArt: foundry.helpers.CompendiumArt;
+  readonly compendiumArt: foundry.helpers.media.CompendiumArt;
 
   /**
    * A singleton instance of the Audio Helper class
@@ -250,82 +251,82 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   /**
    * The singleton Clipboard Helper.
    */
-  readonly clipboard: ClipboardHelper;
+  readonly clipboard: foundry.helpers.interaction.ClipboardHelper;
 
   /**
    * Localization support
    * @remarks Initialized just before the `"i18nInit"` hook event.
    */
-  readonly i18n: SimpleInitializedOn<Localization, "i18nInit", RunEvents>;
+  readonly i18n: SimpleInitializedOn<foundry.helpers.Localization, "i18nInit", RunEvents>;
 
   /**
    * The singleton instance of the ClientIssues manager.
    */
-  readonly issues: ClientIssues;
+  readonly issues: foundry.helpers.ClientIssues;
 
   /**
    * The Gamepad Manager
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  readonly gamepad: SimpleInitializedOn<GamepadManager, "ready", RunEvents>;
+  readonly gamepad: SimpleInitializedOn<foundry.helpers.interaction.GamepadManager, "ready", RunEvents>;
 
   /**
    * The Keyboard Manager
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  readonly keyboard: SimpleInitializedOn<KeyboardManager, "ready", RunEvents>;
+  readonly keyboard: SimpleInitializedOn<foundry.helpers.interaction.KeyboardManager, "ready", RunEvents>;
 
   /**
    * Client keybindings which are used to configure application behavior
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  readonly keybindings: SimpleInitializedOn<ClientKeybindings, "ready", RunEvents>;
+  readonly keybindings: SimpleInitializedOn<foundry.helpers.interaction.ClientKeybindings, "ready", RunEvents>;
 
   /**
    * The Mouse Manager
    * @remarks Initialized just before the `"ready"` hook event.
    */
-  readonly mouse: SimpleInitializedOn<MouseManager, "ready", RunEvents>;
+  readonly mouse: SimpleInitializedOn<foundry.helpers.interaction.MouseManager, "ready", RunEvents>;
 
   /**
    * The New User Experience manager.
    * @remarks Initialized just after the `"ready"` hook event.
    */
-  readonly nue: NewUserExperience;
+  readonly nue: foundry.nue.NewUserExperienceManager;
 
   /**
    * Client settings which are used to configure application behavior
    * @remarks Settings are registered between `"init"` and `"i18nInit"` hook events.
    */
-  readonly settings: ClientSettings;
+  readonly settings: foundry.helpers.ClientSettings;
 
   /**
    * A singleton GameTime instance which manages the progression of time within the game world.
    */
-  readonly time: GameTime;
+  readonly time: foundry.helpers.GameTime;
 
   /**
    * A singleton instance of the TooltipManager class
    * @remarks Initialized just before the `"setup"` hook events is called.
    */
-  readonly tooltip: SimpleInitializedOn<TooltipManager, "setup", RunEvents>;
+  readonly tooltip: SimpleInitializedOn<foundry.helpers.interaction.TooltipManager, "setup", RunEvents>;
 
   /**
    * A singleton instance of the Tour collection class
    * @remarks Initialized just before the `"setup"` hook events is called.
    */
-  readonly tours: SimpleInitializedOn<Tours, "setup", RunEvents>;
+  readonly tours: SimpleInitializedOn<foundry.nue.ToursCollection, "setup", RunEvents>;
 
   /**
    * A singleton instance of the Video Helper class
    * @remarks Initialized just before the `"setup"` hook events is called.
    */
-  readonly video: SimpleInitializedOn<VideoHelper, "setup", RunEvents>;
+  readonly video: SimpleInitializedOn<foundry.helpers.media.VideoHelper, "setup", RunEvents>;
 
   /**
    * A singleton web Worker manager.
    */
-  readonly workers: WorkerManager;
+  readonly workers: foundry.helpers.WorkerManager;
 
   /**
    * Fetch World data and return a Game instance
@@ -470,7 +471,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   /**
    * A convenience accessor for the currently viewed Combat encounter
    */
-  get combat(): CombatEncounters["viewed"];
+  get combat(): foundry.documents.collections.CombatEncounters["viewed"];
 
   /**
    * A state variable which tracks whether the game session is currently paused
@@ -483,12 +484,16 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   get activeTool(): string;
 
   /**
-   * Toggle the pause state of the game
-   * Trigger the `pauseGame` Hook when the paused state changes
-   * @param pause - The desired pause state; true for paused, false for un-paused
-   * @param push  - Push the pause state change to other connected clients? Requires an GM user.
-   *                (default: `false`)
+   * Toggle the pause state of the game, triggering the {@link hookEvents.pauseGame} hook when the paused
+   * state changes.
+   * @param pause   - The desired pause state; true for paused, false for un-paused
+   * @param options - Additional options which modify the pause operation
    * @returns The new paused state
+   */
+  togglePause(pause: boolean, options?: Game.TogglePauseOptions): void;
+
+  /**
+   * @deprecated "You are passing the legacy `push` boolean to `Game#togglePause`. This is replaced by the `broadcast` option, for example `game.togglePause(true, {broadcast: true})`" (since v13 until v15)
    */
   togglePause(pause: boolean, push?: boolean): void;
 
@@ -496,7 +501,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * Open Character sheet for current token or controlled actor
    * @returns The ActorSheet which was toggled, or null if the User has no character
    */
-  toggleCharacterSheet(): ActorSheet | null;
+  toggleCharacterSheet(): foundry.appv1.sheets.ActorSheet.Any | foundry.applications.sheets.ActorSheetV2.Any | null;
 
   /**
    * Log out of the game session by returning to the Join screen
@@ -622,14 +627,14 @@ declare global {
 }
 
 declare namespace Game {
-  interface ModuleCollection extends Collection<Module> {
+  interface ModuleCollection extends Collection<foundry.packages.Module> {
     /**
      * Gets the module requested for by ID
      * @see {@linkcode ModuleConfig} to add custom properties to modules like APIs.
      * @see {@linkcode RequiredModules} to remove `undefined` from the return type for a given module
      * @param id - The module ID to look up
      */
-    get<T extends string>(id: T): Module & ConfiguredModule<T>;
+    get<T extends string>(id: T): foundry.packages.Module & ConfiguredModule<T>;
   }
 
   namespace Model {
@@ -644,6 +649,7 @@ declare namespace Game {
     type TypeNames<DocumentType extends Document.Type> = Document.SubTypesOf<DocumentType>;
   }
 
+  /** @internal */
   type _Model = {
     [DocumentType in Document.Type]: {
       // The `& string` is helpful even though there should never be any numeric/symbol keys.
@@ -685,7 +691,7 @@ declare namespace Game {
       } | null;
       storages: ("public" | "data" | "s3")[];
     };
-    modules: Module["_source"][];
+    modules: foundry.packages.Module["_source"][];
     options: {
       language: string;
       port: number;
@@ -706,7 +712,7 @@ declare namespace Game {
     >;
     paused: boolean;
     release: foundry.config.ReleaseData["_source"];
-    system: System["_source"];
+    system: foundry.packages.System["_source"];
     systemUpdate: {
       hasUpdate: boolean;
       version: string;
@@ -717,7 +723,7 @@ declare namespace Game {
     // but is only filled in if there's `template.json`
     model: Model;
     userId: string;
-    world: World["_source"];
+    world: foundry.packages.World["_source"];
   } & {
     [DocumentType in  // eslint-disable-next-line @typescript-eslint/no-deprecated
       | foundry.CONST.DOCUMENT_TYPES
@@ -731,6 +737,21 @@ declare namespace Game {
   };
 
   type View = ValueOf<typeof foundry.CONST.GAME_VIEWS>;
+
+  interface TogglePauseOptions {
+    /**
+     * Broadcast the pause state change to other connected clients?
+     * Broadcasting to other clients can only be done by a GM user.
+     * @defaultValue `false`
+     */
+    broadcast?: boolean | undefined;
+
+    /**
+     * The ID of the user who triggered the pause operation. This is
+     * populated automatically by the game server.
+     */
+    userId?: string | undefined;
+  }
 }
 
 declare global {

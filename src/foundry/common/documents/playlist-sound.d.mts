@@ -66,8 +66,6 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "PlaylistSound";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
@@ -319,7 +317,7 @@ declare namespace BasePlaylistSound {
     // The expression `CanvasDocumentMixin(BasePlaylistSound)` is more intuitive but it has worse
     // caching, likely due to the majority of tsc's caching working off of names.
     // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
-    interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BasePlaylistSound> {}
+    interface CanvasDocument extends foundry.documents.abstract.CanvasDocumentMixin.Mix<typeof BasePlaylistSound> {}
     const CanvasDocument: CanvasDocument;
   }
 }

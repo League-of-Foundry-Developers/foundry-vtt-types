@@ -4,6 +4,7 @@ import type EmbeddedCollection from "../../../../src/foundry/common/abstract/emb
 import BaseRegion = foundry.documents.BaseRegion;
 import Document = foundry.abstract.Document;
 import type { BaseShapeData } from "../../../../src/foundry/common/data/data.d.mts";
+import type { Region } from "#client/canvas/placeables/_module.d.mts";
 
 class TestRegion extends BaseRegion {}
 

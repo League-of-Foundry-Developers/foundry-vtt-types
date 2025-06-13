@@ -1,9 +1,0 @@
-import "./chatbubble.d.mts";
-import "./container.d.mts";
-import "./controls.d.mts";
-import "./hotbar.d.mts";
-import "./hud.d.mts";
-import "./menu.d.mts";
-import "./navigation.d.mts";
-import "./pause.d.mts";
-import "./players.d.mts";

@@ -80,8 +80,6 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "Combat";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
@@ -369,7 +367,7 @@ declare namespace BaseCombat {
     // The expression `ClientDocumentMixin(BaseCombat)` is more intuitive but it has worse
     // caching, likely due to the majority of tsc's caching working off of names.
     // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
-    interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseCombat> {}
+    interface ClientDocument extends foundry.documents.abstract.ClientDocumentMixin.Mix<typeof BaseCombat> {}
     const ClientDocument: ClientDocument;
   }
 

@@ -5,12 +5,13 @@ import Document = foundry.abstract.Document;
 
 class TestRegionBehavior extends BaseRegionBehavior {}
 
-let myRB;
 // @ts-expect-error RegionBehavior requires a `type` for creation
-myRB = new TestRegionBehavior();
+new TestRegionBehavior();
+
 // @ts-expect-error RegionBehavior requires a `type` for creation
-myRB = new TestRegionBehavior({});
-myRB = new TestRegionBehavior({
+new TestRegionBehavior({});
+
+new TestRegionBehavior({
   _id: "XXXXXSomeIDXXXXX",
   name: "Some Behaviour",
   type: "executeScript", // required for creation
@@ -33,7 +34,7 @@ myRB = new TestRegionBehavior({
   },
 });
 
-myRB = new TestRegionBehavior({
+new TestRegionBehavior({
   _id: null,
   name: null,
   type: "executeScript", // required for creation
@@ -51,12 +52,13 @@ myRB = new TestRegionBehavior({
     systemVersion: null,
   },
 });
-myRB = new TestRegionBehavior({
+
+new TestRegionBehavior({
   type: "executeScript", // required for creation
   _stats: null,
 });
 
-myRB = new TestRegionBehavior({
+new TestRegionBehavior({
   _id: undefined,
   name: undefined,
   type: "executeScript", // required for creation
@@ -74,10 +76,13 @@ myRB = new TestRegionBehavior({
     systemVersion: undefined,
   },
 });
-myRB = new TestRegionBehavior({
+
+new TestRegionBehavior({
   type: "executeScript", // required for creation
   _stats: undefined,
 });
+
+declare const myRB: TestRegionBehavior;
 
 expectTypeOf(myRB).toEqualTypeOf<BaseRegionBehavior>();
 

@@ -65,7 +65,7 @@ declare global {
     /**
      * @defaultValue `{}`
      */
-    windows: Record<number, Application.Any>;
+    windows: Record<number, foundry.appv1.api.Application.Any>;
   }
 
   /**

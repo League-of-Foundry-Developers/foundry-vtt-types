@@ -45,7 +45,6 @@ import type {
   // NonNullish,
   // EmptyObject,
   // ShapeWithIndexSignature,
-  // Defer,
   // MustBeValidUuid,
   // Quote,
   SplitString,
@@ -184,7 +183,6 @@ expectTypeOf(await numberMaybePromise).toEqualTypeOf<number>();
 // TODO: NonNullish
 // TODO: EmptyObject
 // TODO: ShapeWithIndexSignature
-// TODO: Defer
 // TODO: MustBeValidUuid
 // TODO: Quote
 

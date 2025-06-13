@@ -8,7 +8,7 @@ import System from "./system.mjs";
 import World from "./world.mjs";
 
 export * as types from "./_types.mjs";
-// export * from "#common/packages/_module.mjs";
+export * from "#common/packages/_module.mjs";
 export { default as ClientPackageMixin } from "./client-package.mjs";
 export { Module, System, World };
 

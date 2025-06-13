@@ -94,8 +94,6 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "Actor";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
@@ -379,7 +377,7 @@ declare namespace BaseActor {
     // The expression `ClientDocumentMixin(BaseActor)` is more intuitive but it has worse
     // caching, likely due to the majority of tsc's caching working off of names.
     // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
-    interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseActor> {}
+    interface ClientDocument extends foundry.documents.abstract.ClientDocumentMixin.Mix<typeof BaseActor> {}
     const ClientDocument: ClientDocument;
   }
 

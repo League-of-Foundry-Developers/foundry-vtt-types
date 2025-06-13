@@ -50,8 +50,6 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    * defined DRY-ly while also being easily overridable.
    */
 
-  static " fvtt_types_internal_document_name_static": "AmbientLight";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
@@ -304,7 +302,7 @@ declare namespace BaseAmbientLight {
     // The expression `CanvasDocumentMixin(BaseAmbientLight)` is more intuitive but it has worse
     // caching, likely due to the majority of tsc's caching working off of names.
     // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
-    interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BaseAmbientLight> {}
+    interface CanvasDocument extends foundry.documents.abstract.CanvasDocumentMixin.Mix<typeof BaseAmbientLight> {}
     const CanvasDocument: CanvasDocument;
   }
 }

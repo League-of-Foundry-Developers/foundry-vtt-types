@@ -1,5 +1,7 @@
 import type { Document } from "../foundry/common/abstract/_module.d.mts";
 
+export {};
+
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig ? ModuleConfig[Name] : {};
 
@@ -280,18 +282,27 @@ export type ToMethod<T extends AnyFunction> = {
   method(...args: Parameters<T>): ReturnType<T>;
 }["method"];
 
+/**
+ * @deprecated Replaced by {@linkcode Document.SheetClassFor}
+ */
 export type ConfiguredSheetClass<T extends Document.AnyConstructor> = GetKey<
   GetKey<CONFIG, T["metadata"]["name"]>,
   "sheetClass",
   T
 >;
 
+/**
+ * @deprecated Replaced by {@linkcode Document.ObjectClassFor}
+ */
 export type ObjectClass<T extends Document.AnyConstructor> = GetKey<
   GetKey<CONFIG, T["metadata"]["name"]>,
   "objectClass",
   T
 >;
 
+/**
+ * @deprecated Replaced by {@linkcode Document.LayerClassFor}
+ */
 export type LayerClass<T extends Document.AnyConstructor> = GetKey<
   GetKey<CONFIG, T["metadata"]["name"]>,
   "layerClass",
@@ -300,6 +311,7 @@ export type LayerClass<T extends Document.AnyConstructor> = GetKey<
 
 /**
  * Actual document types that go in folders
+ * @deprecated No replacement as this was deemed too niche.
  */
 export type FolderDocumentTypes = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
 
@@ -673,17 +685,49 @@ export type Titlecase<S extends string> = S extends `${infer A} ${infer B}`
  * @template T - The base type that `U` will be merged into.
  * @template U - The type that will be merged into `T`.
  */
-export type Merge<T, U> =
-  IsObject<U> extends true
-    ? IsObject<T> extends true
-      ? SimpleMerge<
-          T,
-          {
-            [K in keyof U]: T extends { readonly [_ in K]?: infer V } ? Merge<V, U[K]> : U[K];
-          }
-        >
-      : U
-    : U;
+export type Merge<T, U> = U extends object ? (T extends object ? _Merge<T, U> : U) : U;
+
+type _Merge<T extends object, U extends object> = T extends AnyArray
+  ? U extends AnyArray
+    ? MergeArray<T, U>
+    : _MergeObject<T, U>
+  : _MergeObject<T, U>;
+
+type _MergeObject<T extends object, U extends object> = U extends AnyObject
+  ? T extends AnyObject
+    ? _MergePlainObject<T, U>
+    : _MergeComplexObject<T, U>
+  : _MergeComplexObject<T, U>;
+
+type MergeArray<T extends AnyArray, U extends AnyArray> = number extends U["length"] | T["length"]
+  ? Array<T[number] | U[number]>
+  : [...U, ...DropFirstN<T, U["length"]>];
+
+type DropFirstN<
+  T extends AnyArray,
+  DropN extends number,
+  Accumulator extends AnyArray = [],
+> = Accumulator["length"] extends DropN
+  ? T
+  : T extends [unknown, ...infer Items]
+    ? DropFirstN<Items, DropN, [...Accumulator, 1]>
+    : [];
+
+// TODO(LukeAbby): This needs to be more complex as to account for stuff like optionality correctly.
+type _MergePlainObject<T extends object, U extends object> = {
+  [K in keyof T as K extends keyof U ? never : K]: T[K];
+} & {
+  [K in keyof U]: T extends { readonly [_ in K]?: infer V } ? Merge<V, U[K]> : U[K];
+};
+
+interface _MergeComplexObject<T extends object, U extends object> extends Override<T, _MergePlainObject<T, U>> {}
+
+/**
+ * Overrides properties of `T` with properties in `U`. Be careful using this type as its internal
+ * implementation is likely a bit shaky.
+ */
+// @ts-expect-error - This pattern is inherently an error.
+export interface Override<T extends object, U extends object> extends U, T {}
 
 /**
  * Returns whether the type is a plain object. Excludes functions, arrays, and constructors while still being friendly to interfaces.
@@ -954,8 +998,6 @@ export type NonNullish = {};
 // It would be unsound to merge into so an interface is not used.
 export type EmptyObject = Record<string, never>;
 
-declare const empty: unique symbol;
-
 /**
  * This helper type helps emulate index signatures for types with incompatible concrete keys.
  *
@@ -992,12 +1034,6 @@ export type ShapeWithIndexSignature<
 > = PrimaryShape & {
   readonly [K in keyof T & IndexSignature]: K extends keyof PrimaryShape ? PrimaryShape[K] : IndexType;
 };
-
-/**
- * Defer is a utility type that allows you to defer the evaluation of a type.
- * The use cases for this are extremely advanced. In essence they have to do with breaking cycles in evaluation.
- */
-export type Defer<T> = [T][T extends any ? 0 : never];
 
 export type MustBeValidUuid<Uuid extends string, Type extends Document.Type = Document.Type> = _MustBeValidUuid<
   Uuid,
@@ -1038,11 +1074,6 @@ type _MustBeValidUuid<
       ? OriginalUuid
       : InvalidUuid<OriginalUuid>
     : `${Type}.${string}` | `${string}.${string}.${Type}.${string}`;
-
-/**
- * Drops the first element of an array
- */
-type DropFirst<T extends AnyArray> = T extends [infer _1, ...infer V] ? V : T;
 
 /**
  * This type is used when you want to use `unknown` in a union. This works because while `T | unknown`
@@ -1108,7 +1139,7 @@ export type Coalesce<T, D, CoalesceType = undefined> = T extends CoalesceType ? 
  */
 export type NullishCoalesce<T, D> = T extends null | undefined ? D : T;
 
-interface EarlierHook {
+export interface EarlierHook {
   none: never;
   init: "none";
   i18nInit: "none" | "init";
@@ -1131,7 +1162,7 @@ export type InitializationHook = keyof EarlierHook;
  * HooksRan<"init">;     // "none" | "init"
  * HooksRan<"i18nInit">; // "none" | "init" | "i18nInit"
  * HooksRan<"setup">;    // "none" | "init" | "i18nInit" | "setup"
- * HooksRan<"setup">;    // "none" | "init" | "i18nInit" | "setup" | "ready"
+ * HooksRan<"ready">;    // "none" | "init" | "i18nInit" | "setup" | "ready"
  * ```
  */
 export type HooksRan<T extends InitializationHook> = EarlierHook[T] | T;

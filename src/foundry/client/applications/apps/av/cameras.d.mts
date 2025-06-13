@@ -1,7 +1,16 @@
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
+import type { Identity } from "#utils";
 
 import AVSettings = foundry.av.AVSettings;
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      CameraViews: CameraViews.Any;
+    }
+  }
+}
 
 /**
  * An application that shows docked camera views.
@@ -9,13 +18,17 @@ import AVSettings = foundry.av.AVSettings;
  */
 declare class CameraViews<
   RenderContext extends CameraViews.RenderContext = CameraViews.RenderContext,
-  Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
-  RenderOptions extends
-    HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
+  Configuration extends CameraViews.Configuration = CameraViews.Configuration,
+  RenderOptions extends CameraViews.RenderOptions = CameraViews.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {}
 
 declare namespace CameraViews {
-  interface RenderContext extends ApplicationV2.RenderContext {}
+  interface Any extends AnyCameraViews {}
+  interface AnyConstructor extends Identity<typeof AnyCameraViews> {}
+
+  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
+  interface Configuration extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration {}
+  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
 
   interface ControlContext {
     icon: string;
@@ -92,6 +105,14 @@ declare namespace CameraViews {
     /** Whether to show a volume bar for this user. */
     show: boolean;
   }
+}
+
+declare abstract class AnyCameraViews extends CameraViews<
+  CameraViews.RenderContext,
+  CameraViews.Configuration,
+  CameraViews.RenderOptions
+> {
+  constructor(...args: never);
 }
 
 export default CameraViews;

@@ -3,32 +3,111 @@ import type {
   AnyObject,
   EmptyObject,
   DeepPartial,
-  IsObject,
   Merge,
   RemoveIndexSignatures,
   SimpleMerge,
   Identity,
+  IsObject,
+  AllKeysOf,
+  GetKey,
+  Override,
 } from "#utils";
 import type { SchemaField } from "../data/fields.d.mts";
 import type { DatabaseCreateOperation, DatabaseDeleteOperation, DatabaseUpdateOperation } from "./_types.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
+import type TextEditor from "#client/applications/ux/text-editor.mjs";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
 interface _InternalTypeDataModelInterface extends DataModel.AnyConstructor {
   new <Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends object>(
     ...args: DataModel.ConstructorArgs<Schema, Parent>
-
-    // Note(LukeAbby): This seemingly redundant `DataModel<Schema, Parent>` is to
-    // Ensure that TypeScript allows overriding `protected` methods in subclasses.
-    // See: https://gist.github.com/LukeAbby/b9fd57eeba778a25297721e88b3e6bdd
-  ): DataModel<Schema, Parent> & _ComputedInstance;
+  ): DataModelOverride<Schema, Parent, _ComputedInstance>;
 }
+
+// Note(LukeAbby): This is carefully written to ensure that TypeScript allows overriding `protected`
+// methods of `DataModel` in subclasses. If `Override<DataModel<Schema, Parent>, _ComputedInstance>`
+// is used instead. it doesn't work.
+//
+// See: https://gist.github.com/LukeAbby/b9fd57eeba778a25297721e88b3e6bdd
+// @ts-expect-error - This pattern is inherently an error.
+interface DataModelOverride<Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends object>
+  extends _ComputedInstance,
+    DataModel<Schema, Parent> {}
+
+type UnmergePartial<
+  Schema extends DataSchema,
+  BaseData extends object,
+  DerivedData extends object,
+  Initialized extends object = SchemaField.InitializedData<Schema>,
+> = {
+  [K in keyof BaseData]?: BaseData[K];
+} & {
+  // Note(LukeAbby): This JSDoc is currently wishful thinking, hoping that JSDoc on index signatures
+  // will be preserved eventually.
+
+  /**
+   * @deprecated This property only exists once `prepareDerivedData` has been called.
+   */
+  // TODO(LukeAbby): At some point it may be a good idea to account for the messy union cases.
+  [K in keyof DerivedData as K extends keyof BaseData | keyof Initialized ? never : K]?: never;
+} & {
+  [K in keyof Initialized as K extends keyof BaseData ? never : K]: Initialized[K];
+};
+
+type MergePartial<BaseData, DerivedData> = {
+  [K in keyof BaseData as K extends keyof DerivedData ? never : K]: BaseData[K];
+} & {
+  [K in keyof DerivedData as K extends PartialKey<BaseData, DerivedData> ? K : never]?: K extends keyof BaseData
+    ? _MergePartial<BaseData[K], DerivedData[K]>
+    : DerivedData[K];
+} & {
+  [K in keyof DerivedData as K extends PartialKey<BaseData, DerivedData> ? never : K]: K extends keyof BaseData
+    ? _MergePartial<BaseData[K], DerivedData[K]>
+    : DerivedData[K];
+};
+
+// TODO(LukeAbby): The logic here is over-simplified.
+type _MergePartial<Base, Derived> = [Base, Derived] extends [object, object] ? MergePartial<Base, Derived> : Derived;
+
+type PartialKey<BaseData, DerivedData> = {
+  [K in keyof MetadataFor<DerivedData>]: _PartialKey<K, GetKey<MetadataFor<BaseData>, K>, MetadataFor<DerivedData>[K]>;
+}[keyof MetadataFor<DerivedData>];
+
+// A key should be partial when at least one of `BaseData` and `DerivedData` is not an object or
+// at least one one of `BaseData` and `DerivedData` is not required.
+type _PartialKey<
+  K extends PropertyKey,
+  BaseMetadata extends Metadata,
+  DerivedMetadata extends Metadata,
+> = false extends BaseMetadata["isObject"] | DerivedMetadata["isObject"]
+  ? K
+  : true extends BaseMetadata["isOptional"] | DerivedMetadata["isOptional"]
+    ? K
+    : never;
+
+interface Metadata {
+  isOptional: boolean;
+  isObject: boolean;
+}
+
+type MetadataFor<T> = _MetadataFor<{
+  [K in keyof T]-?: {
+    isOptional: T extends { readonly [_ in K]: unknown } ? false : true;
+    isObject: IsObject<T[K]>;
+  };
+}>;
+
+type _MetadataFor<T extends Record<PropertyKey, Metadata>> = {
+  [K in AllKeysOf<T>]: {
+    isOptional: T[K]["isOptional"];
+    isObject: T[K]["isObject"];
+  };
+};
 
 declare const _InternalTypeDataModelConst: _InternalTypeDataModelInterface;
 
-// @ts-expect-error Ignore the error, this is a workaround for a dynamic class.
 declare class _InternalTypeDataModel<
   Schema extends DataSchema,
   Parent extends Document<Document.Type, DataSchema, Document.Any | null>,
@@ -40,67 +119,8 @@ declare class _InternalTypeDataModel<
 
 declare const __TypeDataModelBrand: unique symbol;
 
-// These properties are used to give a performant way of inferring types like `BaseData` and `DerivedData` types.
-// This avoids checking the entire constraint `T extends TypeDataModel.Any` to infer out the types.
-// To prevent adding properties that could appear at runtime they are unique symbols.
-// This makes them uniterable and means that the only way to access them is to have a reference to the variables which will be impossible outside of this file.
-declare const __Schema: unique symbol;
-declare const __Parent: unique symbol;
-declare const __BaseModel: unique symbol;
-declare const __BaseData: unique symbol;
-declare const __DerivedData: unique symbol;
-
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
 type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
-
-// Removes the base and derived data from the type.
-// Has no extends bounds to simplify any checking logic.
-type RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData> = SimpleMerge<
-  Omit<BaseThis, keyof BaseData | keyof DerivedData>,
-  BaseModel
->;
-
-// Merges U into T but makes the appropriate keys partial.
-// This is similar to `Merge<T, DeepPartial<U>>` but only makes the deepest keys in `U` optional.
-type MergePartial<T, U> = Omit<T, keyof U> & {
-  [K in keyof U as K extends PartialMergeKeys<T, U> ? K : never]?: InnerMerge<U, K, T>;
-} & {
-  [K in keyof U as K extends PartialMergeKeys<T, U> ? never : K]: InnerMerge<U, K, T>;
-};
-
-// Note(LukeAbby): The addition of `PropertyKey` seems to help simplify tsc's type checking.
-// This will likely not be necessary after
-type RequiredKeys<T> = PropertyKey &
-  {
-    [K in keyof T]-?: T extends { readonly [_ in K]: any } ? K : never;
-  }[keyof T];
-
-// Returns all the keys of U that should be partial when merged into T.
-// Only if both `T[K]` and `U[K]` are required and both are objects should a key be required.
-// This is because essentially only the most deep keys that are merged in need to be optional.
-//
-// Note(LukeAbby): The addition of `PropertyKey` seems to help simplify tsc's type checking.
-type PartialMergeKeys<T, U> = PropertyKey &
-  {
-    [K in keyof U]-?: K extends RequiredKeys<U>
-      ? K extends RequiredKeys<T>
-        ? IsObject<T[K]> extends true
-          ? IsObject<U[K]> extends true
-            ? never
-            : K
-          : K
-        : K
-      : K;
-  }[keyof U];
-
-// Merges `U[K]` into `T[K]` if they're both objects, returns `U[K]` otherwise.
-type InnerMerge<U, K extends keyof U, T> = T extends { readonly [_ in K]?: infer V }
-  ? IsObject<U[K]> extends true
-    ? IsObject<V> extends true
-      ? MergePartial<V, U[K]>
-      : Partial<U[K]>
-    : Partial<U[K]>
-  : U[K];
 
 declare namespace TypeDataModel {
   interface Any extends AnyTypeDataModel {}
@@ -122,14 +142,14 @@ declare namespace TypeDataModel {
       out Schema extends DataSchema,
       out Parent extends Document.Any,
       out BaseModel,
-      out BaseData,
-      out DerivedData,
+      out BaseData extends AnyObject,
+      out DerivedData extends AnyObject,
     > {
-      [__Schema]: Schema;
-      [__Parent]: Parent;
-      [__BaseModel]: BaseModel;
-      [__BaseData]: BaseData;
-      [__DerivedData]: DerivedData;
+      " __fvtt_types_schema": Schema;
+      " __fvtt_types_parent": Parent;
+      " __fvtt_types_base_model": BaseModel;
+      " __fvtt_types_base_data": BaseData;
+      " __fvtt_types_derived_data": DerivedData;
     }
 
     namespace Instance {
@@ -138,16 +158,13 @@ declare namespace TypeDataModel {
   }
 
   type PrepareBaseDataThis<BaseThis extends Internal.Instance.Any> =
-    BaseThis extends Internal.Instance<infer _1, infer _2, infer BaseModel, infer BaseData, infer DerivedData>
-      ? MergePartial<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareBaseData">, BaseData>
+    BaseThis extends Internal.Instance<infer Schema, infer _1, infer _2, infer BaseData, infer DerivedData>
+      ? Override<BaseThis, UnmergePartial<Schema, RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>>
       : never;
 
   type PrepareDerivedDataThis<BaseThis extends Internal.Instance.Any> =
-    BaseThis extends Internal.Instance<infer _1, infer _2, infer BaseModel, infer BaseData, infer DerivedData>
-      ? MergePartial<
-          SimpleMerge<Omit<RemoveDerived<BaseThis, BaseModel, BaseData, DerivedData>, "prepareDerivedData">, BaseData>,
-          DerivedData
-        >
+    BaseThis extends Internal.Instance<infer _1, infer _2, infer _3, infer BaseData, infer DerivedData>
+      ? Override<BaseThis, MergePartial<RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>>
       : never;
 
   type ParentAssignmentType<Schema extends DataSchema, Parent extends Document.Internal.Instance.Any> = SimpleMerge<
@@ -226,15 +243,15 @@ declare abstract class TypeDataModel<
   BaseData extends AnyObject = EmptyObject,
   DerivedData extends AnyObject = EmptyObject,
 > extends _InternalTypeDataModel<Schema, Parent, BaseData, DerivedData> {
-  static [__TypeDataModelBrand]: never;
+  static [__TypeDataModelBrand]: true;
 
-  [__Schema]: Schema;
-  [__Parent]: Parent;
-  [__BaseModel]: DataModel<Schema, Parent>;
-  [__BaseData]: RemoveIndexSignatures<BaseData>;
-  [__DerivedData]: RemoveIndexSignatures<DerivedData>;
+  " __fvtt_types_schema": Schema;
+  " __fvtt_types_parent": Parent;
+  " __fvtt_types_base_model": DataModel<Schema, Parent>;
+  " __fvtt_types_base_data": BaseData;
+  " __fvtt_types_derived_data": DerivedData;
 
-  modelProvider: System | Module | null;
+  modelProvider: foundry.packages.System | foundry.packages.Module | null;
 
   /**
    * A set of localization prefix paths which are used by this data model.

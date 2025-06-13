@@ -1,15 +1,22 @@
-import type { AnyObject, DeepPartial, EmptyObject } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      RegionLegend: RegionLegend.Any;
+    }
+  }
+}
 
 /**
  * Scene Region Legend.
  */
-export default class RegionLegend<
-  RenderContext extends AnyObject = EmptyObject,
-  Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
-  RenderOptions extends
-    HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
+declare class RegionLegend<
+  RenderContext extends RegionLegend.RenderContext = RegionLegend.RenderContext,
+  Configuration extends RegionLegend.Configuration = RegionLegend.Configuration,
+  RenderOptions extends RegionLegend.RenderOptions = RegionLegend.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   #RegionLegend: true;
 
@@ -55,3 +62,36 @@ export default class RegionLegend<
    */
   _hoverRegion(region: RegionDocument.Implementation, hover: boolean): void;
 }
+
+declare namespace RegionLegend {
+  interface Any extends AnyRegionLegend {}
+  interface AnyConstructor extends Identity<typeof AnyRegionLegend> {}
+
+  /**
+   * @remarks Foundry's override of `_prepareContext` does not call `super`. Therefore it does not
+   * inherit context from its parent class.
+   */
+  interface RenderContext {
+    regions: RegionDocument.Implementation[];
+    elevation: Elevation;
+  }
+
+  interface Elevation {
+    bottom: number | string;
+    top: number | string;
+  }
+
+  interface Configuration extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration {}
+
+  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
+}
+
+declare abstract class AnyRegionLegend extends RegionLegend<
+  RegionLegend.RenderContext,
+  RegionLegend.Configuration,
+  RegionLegend.RenderOptions
+> {
+  constructor(...args: never);
+}
+
+export default RegionLegend;

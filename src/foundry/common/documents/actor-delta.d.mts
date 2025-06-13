@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, Identity } from "#utils";
 import type Document from "../abstract/document.mts";
 import type { documents } from "#client/client.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -116,8 +116,6 @@ declare abstract class BaseActorDelta<
    */
 
   /* Document overrides */
-
-  static " fvtt_types_internal_document_name_static": "ActorDelta";
 
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
@@ -377,6 +375,9 @@ declare abstract class BaseActorDelta<
 export default BaseActorDelta;
 
 declare namespace BaseActorDelta {
+  interface Any extends AnyBaseActorDelta {}
+  interface AnyConstructor extends Identity<typeof AnyBaseActorDelta> {}
+
   export import Name = ActorDelta.Name;
   export import ConstructorArgs = ActorDelta.ConstructorArgs;
   export import Hierarchy = ActorDelta.Hierarchy;
@@ -425,7 +426,7 @@ declare namespace BaseActorDelta {
     // The expression `ClientDocumentMixin(BaseActorDelta)` is more intuitive but it has worse
     // caching, likely due to the majority of tsc's caching working off of names.
     // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
-    interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseActorDelta> {}
+    interface ClientDocument extends foundry.documents.abstract.ClientDocumentMixin.Mix<typeof BaseActorDelta> {}
     const ClientDocument: ClientDocument;
   }
 
@@ -436,4 +437,8 @@ declare namespace BaseActorDelta {
   interface _Schema extends ActorDelta.Schema {
     system: any;
   }
+}
+
+declare abstract class AnyBaseActorDelta extends BaseActorDelta<BaseActorDelta.SubType> {
+  constructor(...args: never);
 }

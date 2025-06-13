@@ -3,17 +3,25 @@ import * as worker from "../../../../types/workers/image-compressor.mjs";
 
 declare global {
   export import FORMATS = worker.FORMATS;
-  export import Debug = worker.Debug;
 
   export import ProcessBufferToBase64Options = worker.ProcessBufferToBase64Options;
+  export import ProcessBufferRedToBufferRGBAOptions = worker.ProcessBufferRedToBufferRGBAOptions;
+  export import ProcessBufferRGBAToBufferRedOptions = worker.ProcessBufferRGBAToBufferRedOptions;
+  export import CopyBufferOptions = worker.CopyBufferOptions;
+  export import Debug = worker.Debug;
   export import ExpandOrReduceBufferOptions = worker.ExpandOrReduceBufferOptions;
-  export import ProcessBufferToBase64Return = worker.ProcessBufferToBase64Return;
-  export import ProcessBufferRedToBufferRGBAReturn = worker.ProcessBufferRedToBufferRGBAReturn;
-  export import ProcessBufferRGBAToBufferREDReturn = worker.ProcessBufferRGBAToBufferREDReturn;
+  export import ControlHashesReturnObject = worker.ControlHashesReturnObject;
+
+  export import ProcessBufferToBase64Result = worker.ProcessBufferToBase64Result;
+  export import ProcessBufferRedToBufferRGBAResult = worker.ProcessBufferRedToBufferRGBAResult;
+  export import ProcessBufferRGBAToBufferRedResult = worker.ProcessBufferRGBAToBufferRedResult;
+  export import CopyBufferResult = worker.CopyBufferResult;
+  export import BufferOperationReturn = worker.BufferOperationReturn;
 
   export import processBufferToBase64 = worker.processBufferToBase64;
   export import processBufferRedToBufferRGBA = worker.processBufferRedToBufferRGBA;
   export import processBufferRGBAToBufferRED = worker.processBufferRGBAToBufferRED;
+  export import copyBuffer = worker.copyBuffer;
   export import controlHashes = worker.controlHashes;
   export import pixelsToOffscreenCanvas = worker.pixelsToOffscreenCanvas;
   export import offscreenToBase64 = worker.offscreenToBase64;

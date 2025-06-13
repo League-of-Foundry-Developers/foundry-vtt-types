@@ -90,8 +90,6 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "MeasuredTemplate";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
@@ -343,7 +341,7 @@ declare namespace BaseMeasuredTemplate {
     // The expression `CanvasDocumentMixin(BaseMeasuredTemplate)` is more intuitive but it has worse
     // caching, likely due to the majority of tsc's caching working off of names.
     // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
-    interface CanvasDocument extends CanvasDocumentMixin.Mix<typeof BaseMeasuredTemplate> {}
+    interface CanvasDocument extends foundry.documents.abstract.CanvasDocumentMixin.Mix<typeof BaseMeasuredTemplate> {}
     const CanvasDocument: CanvasDocument;
   }
 }

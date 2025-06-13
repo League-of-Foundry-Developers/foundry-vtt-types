@@ -236,7 +236,9 @@ export interface SettingConfig {
   "core.chatBubbles": fields.BooleanField<{ initial: true }>;
   "core.chatBubblesPan": fields.BooleanField<{ initial: true }>;
   "core.combatTrackerConfig": MaybeEmpty<{ resource: string; skipDefeated: boolean }>;
-  "core.compendiumConfiguration": Partial<Record<string, CompendiumCollection.Configuration>>;
+  "core.compendiumConfiguration": Partial<
+    Record<string, foundry.documents.collections.CompendiumCollection.Configuration>
+  >;
   "core.coneTemplateType": "round" | "flat";
   "core.colorSchema": fields.StringField<{
     required: true;
@@ -267,7 +269,7 @@ export interface SettingConfig {
   "core.globalAmbientVolume": number;
   "core.globalInterfaceVolume": number;
   "core.globalPlaylistVolume": number;
-  "core.keybindings": Record<string, ClientKeybindings.KeybindingActionBinding[]>;
+  "core.keybindings": Record<string, foundry.helpers.interaction.ClientKeybindings.KeybindingActionBinding[]>;
   "core.language": fields.StringField<{
     required: true;
     blank: false;
@@ -317,3 +319,20 @@ export interface SettingConfig {
   "core.tokenDragPreview": boolean;
   "core.visionAnimation": boolean;
 }
+
+/**
+ * Allows you to control the name of your system. Useful for typing things like `game.system.id`
+ * @example
+ * ```typescript
+ * declare module "fvtt-types/configuration" {
+ *   interface SystemNameConfig {
+ *     name: "lancer";
+ *   }
+ * }
+ *
+ * const systemName = game.system.id;
+ * //    ^? "lancer"
+ * ```
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface SystemNameConfig {}

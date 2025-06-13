@@ -20,10 +20,24 @@ declare namespace HandlebarsApplicationMixin {
     focus?: string | undefined;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface RenderContext {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface Configuration {}
+
   interface RenderOptions {
     parts: string[];
   }
+
+  /**
+   * @deprecated - Merge {@linkcode ApplicationV2.RenderOptions} and {@linkcode HandlebarsApplicationMixin.RenderOptions} individually.
+   */
   interface ApplicationV2RenderOptions extends RenderOptions, ApplicationV2.RenderOptions {}
+
+  /**
+   * @deprecated - Merge {@linkcode DocumentSheetV2.RenderOptions} and {@linkcode HandlebarsApplicationMixin.RenderOptions} individually.
+   */
   interface DocumentSheetV2RenderOptions extends RenderOptions, DocumentSheetV2.RenderOptions {}
 
   interface HandlebarsTemplatePart {

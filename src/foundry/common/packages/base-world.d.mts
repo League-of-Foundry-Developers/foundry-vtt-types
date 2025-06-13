@@ -49,14 +49,14 @@ declare class BaseWorld extends BasePackage<BaseWorld.Schema> {
        * against. Tests against the currently installed modules by
        * default.
        */
-      modules: Collection<Module>;
+      modules: Collection<foundry.packages.Module>;
 
       /**
        * A specific collection of modules to test availability
        * against. Tests against the currently installed modules by
        * default.
        */
-      systems: Collection<System>;
+      systems: Collection<foundry.packages.System>;
 
       /**
        * Ignore the world's own core software compatibility and

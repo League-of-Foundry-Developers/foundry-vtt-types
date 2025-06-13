@@ -2,7 +2,6 @@ import type { FixedInstanceType, LoggingLevels } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type {
   DatabaseGetOperation,
-  DatabaseCreateOperation,
   DatabaseUpdateOperation,
   DatabaseDeleteOperation,
 } from "#common/abstract/_types.d.mts";
@@ -21,7 +20,7 @@ declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
 
   protected override _createDocuments<T extends Document.AnyConstructor>(
     documentClass: T,
-    request: DatabaseCreateOperation<FixedInstanceType<T>>,
+    operation: Document.Database.CreateOperationForName<T["documentName"], boolean | undefined>,
     user: User.Implementation,
   ): Promise<FixedInstanceType<T>[]>;
 

@@ -1,6 +1,13 @@
-import type ApplicationV2 from "#client/applications/api/application.mjs";
+import type { Identity } from "#utils";
 import type CategoryBrowser from "../../api/category-browser.d.mts";
-import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      ToursManagement: ToursManagement.Any;
+    }
+  }
+}
 
 /**
  * A management app for configuring which Tours are available or have been completed.
@@ -8,11 +15,10 @@ import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.
 declare class ToursManagement<
   Entry extends ToursManagement.Entry = ToursManagement.Entry,
   RenderContext extends ToursManagement.RenderContext<Entry> = ToursManagement.RenderContext<Entry>,
-  Configuration extends CategoryBrowser.Configuration = CategoryBrowser.Configuration,
-  RenderOptions extends
-    HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
+  Configuration extends ToursManagement.Configuration = ToursManagement.Configuration,
+  RenderOptions extends ToursManagement.RenderOptions = ToursManagement.RenderOptions,
 > extends CategoryBrowser<Entry, RenderContext, Configuration, RenderOptions> {
-  static override DEFAULT_OPTIONS: Partial<ApplicationV2.Configuration>;
+  static override DEFAULT_OPTIONS: Partial<CategoryBrowser.Configuration>;
   protected override _prepareCategoryData(): Promise<Record<string, CategoryBrowser.CategoryData<Entry>>>;
   protected override _sortCategories(
     a: CategoryBrowser.CategoryData<Entry>,
@@ -23,6 +29,9 @@ declare class ToursManagement<
 }
 
 declare namespace ToursManagement {
+  interface Any extends AnyToursManagement {}
+  interface AnyConstructor extends Identity<typeof AnyToursManagement> {}
+
   interface Entry {
     id: string;
     label: string;
@@ -35,6 +44,18 @@ declare namespace ToursManagement {
   }
 
   interface RenderContext<Entry> extends CategoryBrowser.RenderContext<Entry> {}
+
+  interface Configuration extends CategoryBrowser.Configuration {}
+  interface RenderOptions extends CategoryBrowser.RenderOptions {}
+}
+
+declare abstract class AnyToursManagement extends ToursManagement<
+  ToursManagement.Entry,
+  ToursManagement.RenderContext<ToursManagement.Entry>,
+  ToursManagement.Configuration,
+  ToursManagement.RenderOptions
+> {
+  constructor(...args: never);
 }
 
 export default ToursManagement;

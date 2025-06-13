@@ -3,6 +3,13 @@ import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "#utils";
 import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
+import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
+import type * as canvasLayers from "#client/canvas/layers/_module.d.mts";
+import type * as canvasGroups from "#client/canvas/groups/_module.d.mts";
+import type * as perception from "#client/canvas/perception/_module.d.mts";
+import type * as placeables from "#client/canvas/placeables/_module.d.mts";
+import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
+import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 
 import SimplePeerAVClient = foundry.av.clients.SimplePeerAVClient;
 
@@ -308,7 +315,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Actor">;
 
       /** @defaultValue `Actors` */
-      collection: Actors.AnyConstructor;
+      collection: foundry.documents.collections.Actors.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -377,7 +384,7 @@ declare global {
      */
     Cards: {
       /** @defaultValue `CardStacks` */
-      collection: CardStacks.AnyConstructor;
+      collection: foundry.documents.collections.CardStacks.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -446,7 +453,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"ChatMessage">;
 
       /** @defaultValue `Messages` */
-      collection: Messages.AnyConstructor;
+      collection: foundry.documents.collections.ChatMessages.AnyConstructor;
 
       /** @defaultValue `"templates/sidebar/chat-message.html"` */
       template: string;
@@ -486,7 +493,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Combat">;
 
       /** @defaultValue `CombatEncounters` */
-      collection: CombatEncounters.AnyConstructor;
+      collection: foundry.documents.collections.CombatEncounters.AnyConstructor;
 
       /** @defaultValue `"fas fa-swords"` */
       sidebarIcon: string;
@@ -564,7 +571,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `FogExplorations` */
-      collection: FogExplorations.AnyConstructor;
+      collection: foundry.documents.collections.FogExplorations.AnyConstructor;
     };
 
     /**
@@ -575,7 +582,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Folder">;
 
       /** @defaultValue `Folders` */
-      collection: Folders.AnyConstructor;
+      collection: foundry.documents.collections.Folders.AnyConstructor;
 
       /** @defaultValue `"fas fa-folder"` */
       sidebarIcon: string;
@@ -599,7 +606,7 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Item">;
 
       /** @defaultValue `Items` */
-      collection: Items.AnyConstructor;
+      collection: foundry.documents.collections.Items.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -646,7 +653,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Journal` */
-      collection: Journal.AnyConstructor;
+      collection: foundry.documents.collections.Journal.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -759,7 +766,7 @@ declare global {
       typeLabels?: Record<foundry.documents.BaseMacro.SubType, string>;
 
       /** @defaultValue `Macros` */
-      collection: Macros.AnyConstructor;
+      collection: foundry.documents.collections.Macros.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -789,7 +796,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Playlists` */
-      collection: Playlists.AnyConstructor;
+      collection: foundry.documents.collections.Playlists.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -822,7 +829,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `RollTables` */
-      collection: RollTables.AnyConstructor;
+      collection: foundry.documents.collections.RollTables.AnyConstructor;
 
       /** @defaultValue `["formula"]` */
       compendiumIndexFields: string[];
@@ -858,7 +865,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Scenes` */
-      collection: Scenes.AnyConstructor;
+      collection: foundry.documents.collections.Scenes.AnyConstructor;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -885,7 +892,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `WorldSettings` */
-      collection: WorldSettings.AnyConstructor;
+      collection: foundry.documents.collections.WorldSettings.AnyConstructor;
     };
 
     /**
@@ -906,7 +913,7 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `Users` */
-      collection: Users.AnyConstructor;
+      collection: foundry.documents.collections.Users.AnyConstructor;
     };
 
     /**
@@ -941,7 +948,7 @@ declare global {
      * Available Weather Effects implementations
      */
     weatherEffects: {
-      [key: string]: WeatherEffects.AmbienceConfiguration;
+      [key: string]: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -956,7 +963,7 @@ declare global {
        * }
        * ```
        */
-      leaves: WeatherEffects.AmbienceConfiguration;
+      leaves: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -984,7 +991,7 @@ declare global {
        * }
        * ```
        */
-      rain: WeatherEffects.AmbienceConfiguration;
+      rain: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1025,7 +1032,7 @@ declare global {
        * }
        * ```
        */
-      rainStorm: WeatherEffects.AmbienceConfiguration;
+      rainStorm: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1050,7 +1057,7 @@ declare global {
        * }
        * ```
        */
-      fog: WeatherEffects.AmbienceConfiguration;
+      fog: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1076,7 +1083,7 @@ declare global {
        * }
        * ```
        */
-      snow: WeatherEffects.AmbienceConfiguration;
+      snow: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1114,7 +1121,7 @@ declare global {
        * }
        * ```
        */
-      blizzard: WeatherEffects.AmbienceConfiguration;
+      blizzard: canvasLayers.WeatherEffects.AmbienceConfiguration;
     };
 
     /**
@@ -1445,13 +1452,7 @@ declare global {
     /**
      * Configuration for time tracking
      */
-    time: {
-      /** @defaultValue `0` */
-      turnTime: number;
-
-      /** @defaultValue `0` */
-      roundTime: number;
-    };
+    time: CONFIG.Time;
 
     /**
      * Configuration for the ActiveEffect embedded document type
@@ -1634,11 +1635,10 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof AmbientLightDocument` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof AmbientLight>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.AmbientLight>;
 
       /** @defaultValue `typeof LightingLayer` */
-      layerClass: LightingLayer.AnyConstructor;
+      layerClass: canvasLayers.LightingLayer.AnyConstructor;
     };
 
     /**
@@ -1659,11 +1659,10 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof AmbientSound` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof AmbientSound>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.AmbientSound>;
 
       /** @defaultValue `typeof SoundsLayer` */
-      layerClass: SoundsLayer.AnyConstructor;
+      layerClass: canvasLayers.SoundsLayer.AnyConstructor;
     };
 
     /**
@@ -1712,14 +1711,13 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Drawing` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof Drawing>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Drawing>;
 
       /** @defaultValue `typeof DrawingsLayer` */
-      layerClass: typeof DrawingsLayer;
+      layerClass: typeof canvasLayers.DrawingsLayer;
 
       /** @defaultValue `typeof DrawingHUD` */
-      hudClass: typeof DrawingHUD;
+      hudClass: typeof foundry.applications.hud.DrawingHUD;
     };
 
     /**
@@ -1762,11 +1760,10 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof MeasuredTemplate` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.MeasuredTemplate>;
 
       /** @defaultValue `typeof TemplateLayer` */
-      layerClass: typeof TemplateLayer;
+      layerClass: typeof canvasLayers.TemplateLayer;
     };
 
     /**
@@ -1787,11 +1784,10 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Note` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof Note>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Note>;
 
       /** @defaultValue `typeof NotesLayer` */
-      layerClass: NotesLayer.AnyConstructor;
+      layerClass: canvasLayers.NotesLayer.AnyConstructor;
     };
 
     Region: {
@@ -1799,11 +1795,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Region">;
 
       /** @defaultValue `Region` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof Region>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Region>;
 
       /** @defaultValue `RegionLayer` */
-      layerClass: RegionLayer.AnyConstructor;
+      layerClass: canvasLayers.RegionLayer.AnyConstructor;
 
       /**
        * @remarks added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -1814,6 +1809,19 @@ declare global {
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
        */
       typeLabels?: Record<"base", string>;
+    };
+
+    /**
+     * Configuration for the RegionBehavior embedded document type
+     */
+    RegionBehavior: {
+      documentClass: Document.ImplementationClassFor<"Region">;
+      dataModels: Record<
+        string,
+        typeof foundry.data.regionBehaviors.RegionBehaviorType<any, RegionBehavior.Implementation, AnyObject, AnyObject>
+      >;
+      typeLabels?: Record<"base", string>;
+      typeIcons: Record<string, string>;
     };
 
     /**
@@ -1834,14 +1842,13 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Tile` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof Tile>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Tile>;
 
       /** @defaultValue `typeof TilesLayer` */
-      layerClass: TilesLayer.AnyConstructor;
+      layerClass: canvasLayers.TilesLayer.AnyConstructor;
 
       /** @defaultValue `typeof TileHUD` */
-      hudClass: TileHUD.AnyConstructor;
+      hudClass: foundry.applications.hud.TileHUD.AnyConstructor;
     };
 
     /**
@@ -1862,17 +1869,16 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Token` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof Token>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Token>;
 
       /** @defaultValue `typeof TokenLayer` */
-      layerClass: TokenLayer.AnyConstructor;
+      layerClass: canvasLayers.TokenLayer.AnyConstructor;
 
       /** @defaultValue `typeof TokenConfig` */
-      prototypeSheetClass: TokenConfig.AnyConstructor;
+      prototypeSheetClass: foundry.applications.sheets.TokenConfig.AnyConstructor;
 
       /** @defaultValue `typeof TokenHUD` */
-      hudClass: TokenHUD.AnyConstructor;
+      hudClass: foundry.applications.hud.TokenHUD.AnyConstructor;
 
       /** @defaultValue `"TOKEN.Adjectives"` */
       adjectivesPrefix: string;
@@ -1882,7 +1888,7 @@ declare global {
        * @remarks Foundry leaves a comment claiming `"ring property is initialized in foundry.canvas.tokens.TokenRingConfig.initialize"`,
        * and while that's true, it's _instantiated_ here in `config.js` via defineProperty (`enumerable: true`)
        */
-      readonly ring: foundry.canvas.tokens.TokenRingConfig;
+      readonly ring: foundry.canvas.placeables.tokens.TokenRingConfig;
     };
 
     /**
@@ -1903,11 +1909,10 @@ declare global {
       typeLabels?: Record<"base", string>;
 
       /** @defaultValue `typeof Wall` */
-      // eslint-disable-next-line no-restricted-syntax
-      objectClass: ConfiguredObjectClassOrDefault<typeof Wall>;
+      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Wall>;
 
       /** @defaultValue `typeof WallsLayer` */
-      layerClass: WallsLayer.AnyConstructor;
+      layerClass: canvasLayers.WallsLayer.AnyConstructor;
 
       /** @defaultValue `1` */
       thresholdAttenuationMultiplier: number;
@@ -2209,7 +2214,7 @@ declare global {
        * A collection of custom enrichers that can be applied to text content, allowing for the matching and handling of
        * custom patterns.
        */
-      enrichers: TextEditor.EnricherConfig[];
+      enrichers: foundry.applications.ux.TextEditor.EnricherConfig[];
     };
 
     /**
@@ -2247,67 +2252,67 @@ declare global {
   namespace CONFIG {
     interface UI {
       /** @defaultValue `MainMenu` */
-      menu: MainMenu.AnyConstructor;
+      menu: foundry.applications.ui.MainMenu.AnyConstructor;
 
       /** @defaultValue `Sidebar` */
-      sidebar: Sidebar.AnyConstructor;
+      sidebar: foundry.applications.sidebar.Sidebar.AnyConstructor;
 
       /** @defaultValue `Pause` */
-      pause: Pause.AnyConstructor;
+      pause: foundry.applications.ui.GamePause.AnyConstructor;
 
       /** @defaultValue `SceneNavigation` */
-      nav: SceneNavigation.AnyConstructor;
+      nav: foundry.applications.ui.SceneNavigation.AnyConstructor;
 
       /** @defaultValue `Notifications` */
       notifications: foundry.applications.ui.Notifications.AnyConstructor;
 
       /** @defaultValue `ActorDirectory` */
-      actors: ActorDirectory.AnyConstructor;
+      actors: foundry.applications.sidebar.tabs.ActorDirectory.AnyConstructor;
 
       /** @defaultValue `CardsDirectory` */
-      cards: CardsDirectory.AnyConstructor;
+      cards: foundry.applications.sidebar.tabs.CardsDirectory.AnyConstructor;
 
       /** @defaultValue `ChatLog` */
-      chat: ChatLog.AnyConstructor;
+      chat: foundry.applications.sidebar.tabs.ChatLog.AnyConstructor;
 
       /** @defaultValue `CombatTracker` */
-      combat: CombatTracker.AnyConstructor;
+      combat: foundry.applications.sidebar.tabs.CombatTracker.AnyConstructor;
 
       /** @defaultValue `CompendiumDirectory` */
-      compendium: CompendiumDirectory.AnyConstructor;
+      compendium: foundry.applications.sidebar.tabs.CompendiumDirectory.AnyConstructor;
 
       /** @defaultValue `SceneControls` */
-      controls: SceneControls.AnyConstructor;
+      controls: foundry.applications.ui.SceneControls.AnyConstructor;
 
       /** @defaultValue `Hotbar` */
-      hotbar: Hotbar.AnyConstructor;
+      hotbar: foundry.applications.ui.Hotbar.AnyConstructor;
 
       /** @defaultValue `ItemDirectory` */
-      items: ItemDirectory.AnyConstructor;
+      items: foundry.applications.sidebar.tabs.ItemDirectory.AnyConstructor;
 
       /** @defaultValue `JournalDirectory` */
-      journal: JournalDirectory.AnyConstructor;
+      journal: foundry.applications.sidebar.tabs.JournalDirectory.AnyConstructor;
 
       /** @defaultValue `MacroDirectory` */
-      macros: MacroDirectory.AnyConstructor;
+      macros: foundry.applications.sidebar.tabs.MacroDirectory.AnyConstructor;
 
       /** @defaultValue `PlayerList` */
-      players: PlayerList.AnyConstructor;
+      players: foundry.applications.ui.Players.AnyConstructor;
 
       /** @defaultValue `PlaylistDirectory` */
-      playlists: PlaylistDirectory.AnyConstructor;
+      playlists: foundry.applications.sidebar.tabs.PlaylistDirectory.AnyConstructor;
 
       /** @defaultValue `SceneDirectory` */
-      scenes: SceneDirectory.AnyConstructor;
+      scenes: foundry.applications.sidebar.tabs.SceneDirectory.AnyConstructor;
 
       /** @defaultValue `Settings` */
-      settings: Settings.AnyConstructor;
+      settings: foundry.applications.sidebar.tabs.Settings.AnyConstructor;
 
       /** @defaultValue `RollTableDirectory` */
-      tables: RollTableDirectory.AnyConstructor;
+      tables: foundry.applications.sidebar.tabs.RollTableDirectory.AnyConstructor;
 
       /** @defaultValue `CameraViews` */
-      webrtc: CameraViews.AnyConstructor;
+      webrtc: foundry.applications.apps.av.CameraViews.AnyConstructor;
     }
 
     interface Canvas {
@@ -2326,7 +2331,7 @@ declare global {
       /** @defaultValue `0xffffff` */
       brightestColor: number;
 
-      chatBubblesClass: ChatBubbles.AnyConstructor;
+      chatBubblesClass: foundry.canvas.animation.ChatBubbles;
 
       /** @defaultValue `0.25` */
       darknessLightPenalty: number;
@@ -2391,22 +2396,22 @@ declare global {
        * @defaultValue `FogManager`
        * @remarks Can't be `AnyConstructor` because Foundry assumes it can call `new` with the same arguments FogManager accepts
        */
-      fogManager: typeof FogManager;
+      fogManager: typeof perception.FogManager;
 
       polygonBackends: Canvas.PolygonBackends;
 
       /** @defaultValue `number` */
       darknessSourcePaddingMultiplier: number;
 
-      visibilityFilter: VisibilityFilter.AnyConstructor;
+      visibilityFilter: foundry.canvas.rendering.filters.VisibilityFilter.AnyConstructor;
 
-      visualEffectsMaskingFilter: VisualEffectsMaskingFilter.AnyConstructor;
+      visualEffectsMaskingFilter: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.AnyConstructor;
 
       /**
        * @defaultValue `Ruler`
        * @remarks Not `AnyConstructor` because it's instantiated with a `User.Implementation` as its first argument
        */
-      rulerClass: typeof Ruler;
+      rulerClass: typeof foundry.canvas.interaction.Ruler;
 
       /** @defaultValue `0.8` */
       dragSpeedModifier: number;
@@ -2459,28 +2464,28 @@ declare global {
     namespace Canvas {
       interface Groups {
         /** @defaultValue `{ groupClass: HiddenCanvasGroup, parent: "stage" }` */
-        hidden: CONFIG.Canvas.GroupDefinition<typeof HiddenCanvasGroup>;
+        hidden: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.HiddenCanvasGroup>;
 
         /** @defaultValue `{ groupClass: RenderedCanvasGroup, parent: "stage" }` */
-        rendered: CONFIG.Canvas.GroupDefinition<typeof RenderedCanvasGroup>;
+        rendered: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.RenderedCanvasGroup>;
 
         /** @defaultValue `{ groupClass: EnvironmentCanvasGroup, parent: "rendered" }` */
-        environment: CONFIG.Canvas.GroupDefinition<typeof EnvironmentCanvasGroup>;
+        environment: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.EnvironmentCanvasGroup>;
 
         /** @defaultValue `{ groupClass: PrimaryCanvasGroup, parent: "environment" }` */
-        primary: CONFIG.Canvas.GroupDefinition<typeof PrimaryCanvasGroup>;
+        primary: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.PrimaryCanvasGroup>;
 
         /** @defaultValue `{ groupClass: EffectsCanvasGroup, parent: "environment" }` */
-        effects: CONFIG.Canvas.GroupDefinition<typeof EffectsCanvasGroup>;
+        effects: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.EffectsCanvasGroup>;
 
         /** @defaultValue `{ groupClass: CanvasVisibility, parent: "rendered" }` */
-        visibility: CONFIG.Canvas.GroupDefinition<typeof CanvasVisibility>;
+        visibility: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.CanvasVisibility>;
 
         /** @defaultValue `{ groupClass: InterfaceCanvasGroup, parent: "rendered", zIndexDrawings: 500, zIndexScrollingText: 1100 }` */
-        interface: CONFIG.Canvas.GroupDefinition<typeof InterfaceCanvasGroup>;
+        interface: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.InterfaceCanvasGroup>;
 
         /** @defaultValue `{ groupClass: OverlayCanvasGroup, parent: "stage" }` */
-        overlay: CONFIG.Canvas.GroupDefinition<typeof OverlayCanvasGroup>;
+        overlay: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.OverlayCanvasGroup>;
       }
 
       // This requires `CanvasGroupConstructor` because `Canvas##createGroups` assumes there's no parameters.
@@ -2493,44 +2498,47 @@ declare global {
 
       interface Layers {
         /** @defaultValue `{ layerClass: WeatherLayer, group: "primary" }` */
-        weather: LayerDefinition<typeof WeatherEffects, "primary">;
+        weather: LayerDefinition<typeof canvasLayers.WeatherEffects, "primary">;
 
         /** @defaultValue `{ layerClass: GridLayer, group: "interface" }` */
-        grid: LayerDefinition<typeof GridLayer, "interface">;
+        grid: LayerDefinition<typeof canvasLayers.GridLayer, "interface">;
 
         /** @defaultValue `{ layerClass: RegionLayer, group: "interface" }` */
         // regions: LayerDefinition<typeof RegionLayer, "interface">;
 
         /** @defaultValue `{ layerClass: DrawingsLayer, group: "interface" }` */
-        drawings: LayerDefinition<typeof DrawingsLayer, "interface">;
+        drawings: LayerDefinition<typeof canvasLayers.DrawingsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TemplateLayer, group: "interface" }` */
-        templates: LayerDefinition<typeof TemplateLayer, "interface">;
+        templates: LayerDefinition<typeof canvasLayers.TemplateLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
-        tiles: LayerDefinition<typeof TilesLayer, "interface">;
+        tiles: LayerDefinition<typeof canvasLayers.TilesLayer, "interface">;
 
         /** @defaultValue `{ layerClass: WallsLayer, group: "interface" }` */
-        walls: LayerDefinition<typeof WallsLayer, "interface">;
+        walls: LayerDefinition<typeof canvasLayers.WallsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
-        tokens: LayerDefinition<typeof TokenLayer, "interface">;
+        tokens: LayerDefinition<typeof canvasLayers.TokenLayer, "interface">;
 
         /** @defaultValue `{ layerClass: SoundsLayer, group: "interface" }` */
-        sounds: LayerDefinition<typeof SoundsLayer, "interface">;
+        sounds: LayerDefinition<typeof canvasLayers.SoundsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: LightingLayer, group: "interface" }` */
-        lighting: LayerDefinition<typeof LightingLayer, "interface">;
+        lighting: LayerDefinition<typeof canvasLayers.LightingLayer, "interface">;
 
         /** @defaultValue `{ layerClass: NotesLayer, group: "interface" }` */
-        notes: LayerDefinition<typeof NotesLayer, "interface">;
+        notes: LayerDefinition<typeof canvasLayers.NotesLayer, "interface">;
 
         /** @defaultValue `{ layerClass: ControlsLayer, group: "interface" }` */
-        controls: LayerDefinition<typeof ControlsLayer, "interface">;
+        controls: LayerDefinition<typeof canvasLayers.ControlsLayer, "interface">;
       }
 
       // This requires `typeof CanvasLayer` because `CanvasGroupMixin#_createLayers` assumes there's no parameters.
-      interface LayerDefinition<LayerClass extends typeof CanvasLayer, Group extends keyof CONFIG["Canvas"]["groups"]> {
+      interface LayerDefinition<
+        LayerClass extends typeof canvasLayers.CanvasLayer,
+        Group extends keyof CONFIG["Canvas"]["groups"],
+      > {
         layerClass: LayerClass;
         group: Group;
       }
@@ -2564,7 +2572,7 @@ declare global {
       }
 
       interface GridStyles {
-        [key: string]: GridLayer.GridStyle;
+        [key: string]: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2578,7 +2586,7 @@ declare global {
          * }
          * ```
          */
-        solidLines: GridLayer.GridStyle;
+        solidLines: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2592,7 +2600,7 @@ declare global {
          * }
          * ```
          */
-        dashedLines: GridLayer.GridStyle;
+        dashedLines: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2606,7 +2614,7 @@ declare global {
          * }
          * ```
          */
-        dottedLines: GridLayer.GridStyle;
+        dottedLines: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2620,7 +2628,7 @@ declare global {
          * }
          * ```
          */
-        squarePoints: GridLayer.GridStyle;
+        squarePoints: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2634,7 +2642,7 @@ declare global {
          * }
          * ```
          */
-        diamondPoints: GridLayer.GridStyle;
+        diamondPoints: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2648,7 +2656,7 @@ declare global {
          * }
          * ```
          */
-        roundPoints: GridLayer.GridStyle;
+        roundPoints: canvasLayers.GridLayer.GridStyle;
       }
 
       interface LightAnimations {
@@ -2660,10 +2668,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `FlameIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: foundry.canvas.rendering.shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `FlameColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         torch: {
@@ -2674,10 +2682,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `TorchIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: foundry.canvas.rendering.shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `TorchColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         revolving: {
@@ -2688,7 +2696,7 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `RevolvingColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         siren: {
@@ -2699,10 +2707,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `SirenIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: foundry.canvas.rendering.shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `SirenIlluminationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         pulse: {
@@ -2713,10 +2721,10 @@ declare global {
           animation: BaseLightSource.LightAnimationFunction;
 
           /** @defaultValue `PulseIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `PulseColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         chroma: {
@@ -2727,7 +2735,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `ChromaColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         wave: {
@@ -2738,10 +2746,10 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `WaveIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `WaveColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         fog: {
@@ -2752,7 +2760,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `FogColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         sunburst: {
@@ -2763,10 +2771,10 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `SunburstIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `SunburstColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         dome: {
@@ -2777,7 +2785,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `LightDomeColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         emanation: {
@@ -2788,7 +2796,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `EmanationColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         hexa: {
@@ -2799,7 +2807,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `HexaDomeColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         ghost: {
@@ -2810,10 +2818,10 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `GhostLightIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `GhostLightColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         energy: {
@@ -2824,7 +2832,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `EnergyFieldColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         vortex: {
@@ -2835,10 +2843,10 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `VortexIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `VortexColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         witchwave: {
@@ -2849,10 +2857,10 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `BewitchingWaveIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `BewitchingWaveColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         rainbowswirl: {
@@ -2863,7 +2871,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `SwirlingRainbowColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         radialrainbow: {
@@ -2874,7 +2882,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `RadialRainbowColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
 
         fairy: {
@@ -2885,10 +2893,10 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `FairyLightIlluminationShader` */
-          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue `FairyLightColorationShader` */
-          colorationShader: AdaptiveColorationShader.AnyConstructor;
+          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         };
       }
 
@@ -2901,7 +2909,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `MagicalGloomDarknessShader` */
-          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+          darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
         };
 
         roiling: {
@@ -2912,7 +2920,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `RoilingDarknessShader` */
-          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+          darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
         };
 
         hole: {
@@ -2923,7 +2931,7 @@ declare global {
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `BlackHoleDarknessShader` */
-          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+          darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
         };
       }
 
@@ -3022,7 +3030,7 @@ declare global {
       }
 
       interface VisionModes {
-        [key: string]: VisionMode;
+        [key: string]: perception.VisionMode;
 
         /**
          * Default (Basic) Vision
@@ -3038,7 +3046,7 @@ declare global {
          * })
          * ```
          */
-        basic: VisionMode;
+        basic: perception.VisionMode;
 
         /**
          * Darkvision
@@ -3064,7 +3072,7 @@ declare global {
          * })
          * ```
          */
-        darkvision: VisionMode;
+        darkvision: perception.VisionMode;
 
         /**
          * Darkvision
@@ -3098,7 +3106,7 @@ declare global {
          * })
          * ```
          */
-        monochromatic: VisionMode;
+        monochromatic: perception.VisionMode;
 
         /**
          * Blindness
@@ -3124,7 +3132,7 @@ declare global {
          * }),
          * ```
          */
-        blindness: VisionMode;
+        blindness: perception.VisionMode;
 
         /**
          * Tremorsense
@@ -3152,7 +3160,7 @@ declare global {
          * }, {animated: true})
          * ```
          */
-        tremorsense: VisionMode;
+        tremorsense: perception.VisionMode;
 
         /**
          * Light Amplification
@@ -3192,25 +3200,25 @@ declare global {
          * })
          * ```
          */
-        lightAmplification: VisionMode;
+        lightAmplification: perception.VisionMode;
       }
 
       interface DetectionModes {
-        [key: string]: DetectionMode;
+        [key: string]: perception.DetectionMode;
 
-        lightPerception: DetectionModeLightPerception;
+        lightPerception: perception.DetectionModeLightPerception;
 
-        basicSight: DetectionModeBasicSight;
+        basicSight: perception.DetectionModeDarkvision;
 
-        seeInvisibility: DetectionModeInvisibility;
+        seeInvisibility: perception.DetectionModeInvisibility;
 
-        senseInvisibility: DetectionModeInvisibility;
+        senseInvisibility: perception.DetectionModeInvisibility;
 
-        feelTremor: DetectionModeTremor;
+        feelTremor: perception.DetectionModeTremor;
 
-        seeAll: DetectionModeAll;
+        seeAll: perception.DetectionModeAll;
 
-        senseAll: DetectionModeAll;
+        senseAll: perception.DetectionModeAll;
       }
     }
 
@@ -3300,12 +3308,48 @@ declare global {
         mc: CONFIG.Combat.SoundPreset;
       }
     }
+
+    interface Time {
+      /** The Calendar configuration used for in-world timekeeping. */
+      worldCalendarConfig: foundry.data.CalendarData.CreateData;
+
+      /** The CalendarData subclass is used for in-world timekeeping. */
+      worldCalendarClass: typeof foundry.data.CalendarData;
+
+      /** The Calendar configuration used for IRL timekeeping. */
+      earthCalendarConfig: foundry.data.CalendarData.CreateData;
+
+      /** The CalendarData subclass is used for IRL timekeeping. */
+      earthCalendarClass: typeof foundry.data.CalendarData;
+
+      /**
+       * The number of seconds which automatically elapse at the end of a Combat turn.
+       * @defaultValue `0`
+       */
+      turnTime: number;
+
+      /**
+       * The number of seconds which automatically elapse at the end of a Combat round.
+       * @defaultValue `0`
+       */
+      roundTime: number;
+
+      /** Formatting functions used to display time data as strings. */
+      formatters: CONFIG.Time.formatters;
+    }
+
+    namespace Time {
+      interface formatters {
+        timestamp: typeof foundry.data.CalendarData.formatTimestamp;
+        ago: typeof foundry.data.CalendarData.formatAgo;
+      }
+    }
   }
 
   const CONFIG: CONFIG;
 }
 
-type ConfiguredObjectClassOrDefault<Fallback extends PlaceableObject.AnyConstructor> = GetKey<
+type ConfiguredObjectClassOrDefault<Fallback extends placeables.PlaceableObject.AnyConstructor> = GetKey<
   PlaceableObjectClassConfig,
   Fallback["embeddedName"],
   Fallback
@@ -3316,7 +3360,7 @@ interface SheetClassConfig {
 
   canConfigure: boolean;
 
-  cls: DocumentSheet.AnyConstructor;
+  cls: foundry.applications.api.DocumentSheetV2.AnyConstructor | foundry.appv1.api.DocumentSheet.AnyConstructor;
 
   default: boolean;
 

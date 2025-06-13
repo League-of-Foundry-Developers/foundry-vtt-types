@@ -1,4 +1,6 @@
 import type { NullishProps, IntentionalPartial, AnyObject, Identity } from "#utils";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import type { CanvasGroupMixin, EffectsCanvasGroup } from "#client/canvas/groups/_module.d.mts";
 
 /**
  * TODO - Re-document after ESM refactor.

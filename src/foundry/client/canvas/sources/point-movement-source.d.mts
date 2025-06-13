@@ -1,6 +1,7 @@
 import type { Identity } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
+import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 
 /**
  * A specialized subclass of the BaseEffectSource which describes a movement-based source.

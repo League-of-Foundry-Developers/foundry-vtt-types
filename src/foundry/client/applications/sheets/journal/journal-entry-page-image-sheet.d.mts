@@ -1,18 +1,38 @@
-import type DocumentSheetV2 from "../../api/document-sheet.d.mts";
+import type { Identity } from "#utils";
 import type JournalEntryPageHandlebarsSheet from "./journal-entry-page-hbs-sheet.d.mts";
-import type JournalEntryPageSheet from "./journal-entry-page-sheet.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      JournalEntryPageImageSheet: JournalEntryPageImageSheet.Any;
+    }
+  }
+}
 
 /**
  * An Application responsible for displaying and editing a single image-type JournalEntryPage Document.
  */
 declare class JournalEntryPageImageSheet<
   RenderContext extends JournalEntryPageImageSheet.RenderContext = JournalEntryPageImageSheet.RenderContext,
-  Configuration extends JournalEntryPageSheet.Configuration = JournalEntryPageSheet.Configuration,
-  RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
+  Configuration extends JournalEntryPageImageSheet.Configuration = JournalEntryPageImageSheet.Configuration,
+  RenderOptions extends JournalEntryPageImageSheet.RenderOptions = JournalEntryPageImageSheet.RenderOptions,
 > extends JournalEntryPageHandlebarsSheet<RenderContext, Configuration, RenderOptions> {}
 
 declare namespace JournalEntryPageImageSheet {
+  interface Any extends AnyJournalEntryPageImageSheet {}
+  interface AnyConstructor extends Identity<typeof AnyJournalEntryPageImageSheet> {}
+
   interface RenderContext extends JournalEntryPageHandlebarsSheet.RenderContext {}
+  interface Configuration extends JournalEntryPageHandlebarsSheet.Configuration {}
+  interface RenderOptions extends JournalEntryPageHandlebarsSheet.RenderOptions {}
+}
+
+declare abstract class AnyJournalEntryPageImageSheet extends JournalEntryPageImageSheet<
+  JournalEntryPageImageSheet.RenderContext,
+  JournalEntryPageImageSheet.Configuration,
+  JournalEntryPageImageSheet.RenderOptions
+> {
+  constructor(...args: never);
 }
 
 export default JournalEntryPageImageSheet;

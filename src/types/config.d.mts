@@ -31,7 +31,7 @@ type MustBeValid<T extends ValidDataModel> = T;
 type _TestValidDataModelConfig = MustConform<DataModelConfig, ValidDataModel>;
 
 interface ValidSettingConfig {
-  readonly [K: string]: ClientSettings.Type;
+  readonly [K: string]: foundry.helpers.ClientSettings.Type;
 }
 
 type _TestValidSettingConfig = MustConform<InterfaceToObject<SettingConfig>, ValidSettingConfig>;

@@ -1,17 +1,23 @@
-import type { InterfaceToObject, AnyObject, DeepPartial } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      AmbientSoundConfig: AmbientSoundConfig.Any;
+    }
+  }
+}
 
 /**
  * The AmbientSound configuration application.
  */
 declare class AmbientSoundConfig<
-  RenderContext extends AnyObject = InterfaceToObject<AmbientSoundConfig.RenderContext>,
-  Configuration extends
-    DocumentSheetV2.Configuration<AmbientSoundDocument.Implementation> = DocumentSheetV2.Configuration<AmbientSoundDocument.Implementation>,
-  RenderOptions extends
-    HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
+  RenderContext extends object = AmbientSoundConfig.RenderContext,
+  Configuration extends AmbientSoundConfig.Configuration = AmbientSoundConfig.Configuration,
+  RenderOptions extends AmbientSoundConfig.RenderOptions = AmbientSoundConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
   AmbientSoundDocument.Implementation,
   RenderContext,
@@ -39,7 +45,12 @@ declare class AmbientSoundConfig<
 }
 
 declare namespace AmbientSoundConfig {
-  interface RenderContext {
+  interface Any extends AnyAmbientSoundConfig {}
+  interface AnyConstructor extends Identity<typeof AnyAmbientSoundConfig> {}
+
+  interface RenderContext
+    extends HandlebarsApplicationMixin.RenderContext,
+      DocumentSheetV2.RenderContext<AmbientSoundDocument.Implementation> {
     sound: AmbientSoundDocument.Implementation;
     source: foundry.documents.BaseAmbientSound.Source;
     fields: foundry.documents.BaseAmbientSound.Schema;
@@ -47,6 +58,20 @@ declare namespace AmbientSoundConfig {
     soundEffects: unknown; // TODO: Update after CONFIG updated
     buttons: ApplicationV2.FormFooterButton[];
   }
+
+  interface Configuration
+    extends HandlebarsApplicationMixin.Configuration,
+      DocumentSheetV2.Configuration<AmbientSoundDocument.Implementation> {}
+
+  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
+}
+
+declare abstract class AnyAmbientSoundConfig extends AmbientSoundConfig<
+  object,
+  AmbientSoundConfig.Configuration,
+  AmbientSoundConfig.RenderOptions
+> {
+  constructor(...args: never);
 }
 
 export default AmbientSoundConfig;

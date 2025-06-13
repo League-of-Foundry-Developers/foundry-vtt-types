@@ -17,12 +17,12 @@ import type {
   NullishProps,
   AllKeysOf,
   DiscriminatedUnion,
-  SimpleMerge,
   PickValue,
   Identity,
   Brand,
   AnyMutableObject,
   MaybePromise,
+  Override,
 } from "#utils";
 import type * as CONST from "../constants.mts";
 import type {
@@ -175,7 +175,7 @@ declare abstract class Document<
   /**
    * The canonical name of this Document type, for example "Actor".
    */
-  static get documentName(): string;
+  static get documentName(): Document.Type;
 
   /**
    * The canonical name of this Document type, for example "Actor".
@@ -205,6 +205,8 @@ declare abstract class Document<
    * Foundry marked `@internal`
    */
   _getParentCollection(parentCollection?: string): string | null;
+
+  _id: string | null;
 
   /**
    * The canonical identifier for this Document
@@ -899,8 +901,6 @@ declare abstract class Document<
     context: Document.ModificationContext<Document.Any | null>,
   ): Promise<unknown>;
 
-  static " fvtt_types_internal_document_name_static": Document.Type;
-
   " fvtt_types_internal_document_name": DocumentName;
   " fvtt_types_internal_document_schema": Schema;
   " fvtt_types_internal_document_parent": Parent;
@@ -919,7 +919,11 @@ declare abstract class AnyDocument extends Document<Document.Type, {}, Document.
 declare namespace Document {
   interface Any extends AnyDocument {}
   interface AnyStored extends Document.Internal.Stored<Any> {}
-  interface AnyValid extends AnyDocument {}
+  interface AnyValid extends AnyDocument {
+    get invalid(): false;
+  }
+  interface AnyInvalid extends Document.Internal.Invalid<AnyValid> {}
+
   interface AnyConstructor extends Identity<typeof AnyDocument> {}
 
   type Type = CONST.ALL_DOCUMENT_TYPES;
@@ -1056,20 +1060,20 @@ declare namespace Document {
    * @internal
    */
   interface _WorldCollectionMap {
-    Actor: Actors.Configured;
-    Cards: CardStacks;
-    Combat: CombatEncounters;
-    FogExploration: FogExplorations;
-    Folder: Folders;
-    Item: Items;
-    JournalEntry: Journal;
-    Macro: Macros;
-    ChatMessage: Messages;
-    Playlist: Playlists;
-    Scene: Scenes;
-    Setting: WorldSettings;
-    RollTable: RollTables;
-    User: Users;
+    Actor: foundry.documents.collections.Actors.Configured;
+    Cards: foundry.documents.collections.CardStacks;
+    Combat: foundry.documents.collections.CombatEncounters;
+    FogExploration: foundry.documents.collections.FogExplorations;
+    Folder: foundry.documents.collections.Folders;
+    Item: foundry.documents.collections.Items;
+    JournalEntry: foundry.documents.collections.Journal;
+    Macro: foundry.documents.collections.Macros;
+    ChatMessage: foundry.documents.collections.ChatMessages;
+    Playlist: foundry.documents.collections.Playlists;
+    Scene: foundry.documents.collections.Scenes;
+    Setting: foundry.documents.collections.WorldSettings;
+    RollTable: foundry.documents.collections.RollTables;
+    User: foundry.documents.collections.Users;
   }
 
   type WorldCollectionFor<Name extends Document.WorldType> = _WorldCollectionMap[Name];
@@ -1097,7 +1101,7 @@ declare namespace Document {
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
     type Constructor = (abstract new (...args: never) => Instance.Any) & {
-      " fvtt_types_internal_document_name_static": Document.Type;
+      documentName: Document.Type;
     };
 
     interface Instance<
@@ -1156,38 +1160,45 @@ declare namespace Document {
       | DiscriminatedUnion<SystemMap[SubType]>
       | (SubType extends ModuleSubtype ? UnknownSystem : never);
 
-    type Stored<D extends Document.Any> = D & {
-      id: string;
-      _id: string;
-      _source: GetKey<D, "_source"> & { _id: string };
-    };
-
-    type Invalid<D extends Document.Any> = SimpleMerge<
+    type Stored<D extends Document.Any> = Override<
       D,
       {
         id: string;
         _id: string;
-        _source: object;
-        system: object;
+        _source: Override<D["_source"], { _id: string }>;
       }
     >;
+
+    // @ts-expect-error - This pattern is inherently an error.
+    interface Invalid<D extends Document.Any> extends _Invalid, D {}
+
+    /** @internal */
+    interface _Invalid {
+      _source: object;
+      system?: object | undefined;
+      get invalid(): true;
+    }
+
+    interface DropData<DocumentType extends Document.Type> {
+      /**
+       * The data used to create a new document.
+       * At least one of `data` and `uuid` must be set.
+       */
+      data?: Document.CreateDataForName<DocumentType>;
+
+      /**
+       * The uuid of an existing document.
+       * At least one of `data` and `uuid` must be set.
+       */
+      // TODO: Handle as part of the UUID update.
+      uuid?: string;
+    }
   }
 
   /** Any Document, that is a child of the given parent Document. */
   // An empty schema is the most appropriate type due to removing index signatures.
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   type AnyChild<Parent extends Any | null> = Document<Document.Type, {}, Parent>;
-
-  /**
-   * Returns the type of the constructor data for the given {@linkcode foundry.abstract.Document}.
-   */
-  type CreateDataFor<T extends Document.Internal.Constructor> = SchemaField.CreateData<
-    T extends { defineSchema: () => infer R extends DataSchema } ? R : never
-  >;
-
-  type UpdateDataFor<T extends Document.Internal.Constructor> = SchemaField.UpdateData<
-    T extends { defineSchema: () => infer R extends DataSchema } ? R : never
-  >;
 
   // These helper types exist to help break a loop
 
@@ -1301,12 +1312,8 @@ declare namespace Document {
     NameFor<ConcreteDocument>
   >;
 
-  // TODO(LukeAbby): Look into why removing the conform causes an issue in `EmbeddedCollectionDeltaField`
-  type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = MakeConform<
-    ImplementationFor<NameFor<ConcreteDocument>>,
-    Document.Any
-    // TODO(LukeAbby): Look into if there's a way to do this without causing circular loops.
-    // FixedInstanceType<ConfigurationFailure[Name]>
+  type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = ImplementationFor<
+    NameFor<ConcreteDocument>
   >;
 
   type TemporaryIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true
@@ -1382,8 +1389,7 @@ declare namespace Document {
     | (DocumentType extends "Token" ? TokenDocument.Invalid : never)
     | (DocumentType extends "Wall" ? WallDocument.Invalid : never);
 
-  type NameFor<ConcreteDocument extends Document.Internal.Constructor> =
-    ConcreteDocument[" fvtt_types_internal_document_name_static"];
+  type NameFor<ConcreteDocument extends Document.Internal.Constructor> = ConcreteDocument["documentName"];
 
   type ImplementationFor<Name extends Type> = ConfiguredDocumentInstance[Name];
   type ImplementationClassFor<Name extends Type> = ConfiguredDocumentClass[Name];
@@ -1666,31 +1672,12 @@ declare namespace Document {
     interface Embedded extends Identity<{ [K in Document.Type]?: string }> {}
   }
 
-  type ConfiguredSheetClassFor<Name extends Document.Type> = MakeConform<
+  type SheetClassFor<Name extends Document.Type> = MakeConform<
     GetKey<GetKey<CONFIG, Name>, "sheetClass">,
     AnyConstructor
   >;
 
-  type ConfiguredObjectClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "objectClass">;
-
-  type ConfiguredLayerClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "layerClass">;
-
-  type DropData<T extends Document.Any> = T extends { id: string | undefined }
-    ? DropData.Data<T> & DropData.UUID
-    : DropData.Data<T>;
-
-  namespace DropData {
-    type Any = DropData<any>;
-
-    interface Data<T extends Document.Any> {
-      type: T["documentName"];
-      data: T["_source"];
-    }
-
-    interface UUID {
-      uuid: string;
-    }
-  }
+  type LayerClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "layerClass">;
 
   namespace Database {
     type Operation = "create" | "update" | "delete";
@@ -2108,7 +2095,7 @@ declare namespace Document {
   type CreateDialogContext<
     DocumentName extends Document.Type,
     Parent extends Document.Any | null,
-  > = InexactPartial<Dialog.Options> &
+  > = InexactPartial<foundry.appv1.api.Dialog.Options> &
     NullishProps<{
       /**
        * A compendium pack within which the Document should be created
@@ -2268,6 +2255,47 @@ declare namespace Document {
     : This;
 
   /**
+   * The options for `fromDropData`. Foundry never uses these so the interface is currently empty.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface DropDataOptions {}
+
+  type DropDataFor<Name extends Document.Type> = {
+    ActiveEffect: ActiveEffect.DropData;
+    ActorDelta: ActorDelta.DropData;
+    Actor: Actor.DropData;
+    Adventure: Adventure.DropData;
+    Card: Card.DropData;
+    Cards: Cards.DropData;
+    ChatMessage: ChatMessage.DropData;
+    Combat: Combat.DropData;
+    Combatant: Combatant.DropData;
+    FogExploration: FogExploration.DropData;
+    Folder: Folder.DropData;
+    Item: Item.DropData;
+    JournalEntryPage: JournalEntryPage.DropData;
+    JournalEntry: JournalEntry.DropData;
+    Macro: Macro.DropData;
+    PlaylistSound: PlaylistSound.DropData;
+    Playlist: Playlist.DropData;
+    RegionBehavior: RegionBehavior.DropData;
+    RollTable: RollTable.DropData;
+    Scene: Scene.DropData;
+    Setting: Setting.DropData;
+    TableResult: TableResult.DropData;
+    User: User.DropData;
+    AmbientLight: AmbientLightDocument.DropData;
+    AmbientSound: AmbientSoundDocument.DropData;
+    Drawing: DrawingDocument.DropData;
+    MeasuredTemplate: MeasuredTemplateDocument.DropData;
+    Note: NoteDocument.DropData;
+    Region: RegionDocument.DropData;
+    Tile: TileDocument.DropData;
+    Token: TokenDocument.DropData;
+    Wall: WallDocument.DropData;
+  }[Name];
+
+  /**
    * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -2299,4 +2327,68 @@ declare namespace Document {
 
   /** @deprecated This type currently does not have a replacement as it was deemed too niche. If you have a use case for it let us know. */
   type Temporary<D extends Document.Any> = D extends Internal.Stored<infer U> ? U : D;
+
+  /**
+   * @deprecated Replaced with {@linkcode Document.SheetClassFor}
+   */
+  export import ConfiguredSheetClassFor = Document.SheetClassFor;
+
+  /**
+   * @deprecated Replaced with {@linkcode Document.ObjectClassFor}
+   */
+  export import ConfiguredObjectClassFor = Document.ObjectClassFor;
+
+  /**
+   * @deprecated Replaced with {@linkcode Document.LayerClassFor}
+   */
+  export import ConfiguredLayerClassFor = Document.LayerClassFor;
+
+  /**
+   * Returns the type of the constructor data for the given {@linkcode foundry.abstract.Document}.
+   * @deprecated Replaced with {@linkcode CreateDataForName}
+   */
+  type CreateDataFor<T extends Document.Internal.Constructor> = SchemaField.CreateData<
+    T extends { defineSchema: () => infer R extends DataSchema } ? R : never
+  >;
+
+  /**
+   * @deprecated Replaced with {@linkcode UpdateDataForName}
+   */
+  type UpdateDataFor<T extends Document.Internal.Constructor> = SchemaField.UpdateData<
+    T extends { defineSchema: () => infer R extends DataSchema } ? R : never
+  >;
+
+  /**
+   * @deprecated Use `[Document].DropData` instead.
+   */
+  type DropData<T extends Document.Any> = T extends { id: string | undefined }
+    ? // eslint-disable-next-line @typescript-eslint/no-deprecated
+      DropData.Data<T> & DropData.UUID
+    : // eslint-disable-next-line @typescript-eslint/no-deprecated
+      DropData.Data<T>;
+
+  namespace DropData {
+    /**
+     * @deprecated - This type is likely too broad to be useful. Deprecated without replacement.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type Any = DropData<any>;
+
+    /**
+     * @deprecated - This type is a part of the drop data which is now gotten through
+     * `[Document].DropData`. Use that instead.
+     */
+    interface Data<T extends Document.Any> {
+      type: T["documentName"];
+      data: T["_source"];
+    }
+
+    /**
+     * @deprecated - This type is a part of the drop data which is now gotten through
+     * `[Document].DropData`. Use that instead.
+     */
+    interface UUID {
+      uuid: string;
+    }
+  }
 }

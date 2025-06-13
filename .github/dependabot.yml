@@ -8,7 +8,7 @@ updates:
   - package-ecosystem: "npm"
     allow:
       # Only development dependencies can be updated due to the perculiar nature of fvtt-types.
-      # Specifically
+      # Specifically the production dependencies of fvtt-types are all pinned to whatever version Foundry has.
       - dependency-type: development
     groups:
       everything:

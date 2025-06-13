@@ -246,6 +246,11 @@ declare class ShapeData extends DataModel<ShapeData.Schema> {
 }
 
 declare namespace BaseShapeData {
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
   interface Schema<ShapeType extends ShapeTypes = ShapeTypes> extends DataSchema {
     /**
      * The type of shape, a value in BaseShapeData.TYPES.
@@ -656,13 +661,15 @@ declare namespace PrototypeToken {
   }
 
   /**
-   * {@linkcode PrototypeToken.CreateData}
+   * @deprecated Replace with {@linkcode PrototypeToken.CreateData}.
    */
   type ConstructorData = CreateData;
 
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   export import Flags = TokenDocument.Flags;
 }
@@ -672,16 +679,13 @@ declare namespace PrototypeToken {
  */
 declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeToken.Parent> {
   // options: not null (destructured when passed to super)
-  constructor(
-    data?: PrototypeToken.ConstructorData | null,
-    options?: DataModel.ConstructionContext<PrototypeToken.Parent>,
-  );
+  constructor(data?: PrototypeToken.Source | null, options?: DataModel.ConstructionContext<PrototypeToken.Parent>);
 
   /**
    * @defaultValue `{}`
    * @remarks Created via `defineProperty` in constructor
    */
-  apps: Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>;
+  apps: Record<string, foundry.appv1.api.Application.Any | foundry.applications.api.ApplicationV2.Any>;
 
   static override defineSchema(): PrototypeToken.Schema;
 

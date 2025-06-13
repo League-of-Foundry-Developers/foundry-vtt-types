@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import DataModel = foundry.abstract.DataModel;
 import type { ValueOf } from "fvtt-types/utils";
-import type { ObjectAttributeBar, SingleAttributeBar } from "../../../../src/foundry/client/data/documents/token.d.mts";
+import type { ObjectAttributeBar, SingleAttributeBar } from "../../../../src/foundry/client/documents/token.d.mts";
 
 const myLight = new foundry.data.LightData();
 

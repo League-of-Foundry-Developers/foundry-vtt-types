@@ -1,17 +1,24 @@
-import type { InterfaceToObject, AnyObject, DeepPartial } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+import type { AdaptiveLightingShader } from "#client/canvas/rendering/shaders/_module.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      AmbientLightConfig: AmbientLightConfig.Any;
+    }
+  }
+}
 
 /**
  * The AmbientLight configuration application.
  */
 declare class AmbientLightConfig<
-  RenderContext extends AnyObject = InterfaceToObject<AmbientLightConfig.RenderContext>,
-  Configuration extends
-    DocumentSheetV2.Configuration<AmbientLightDocument.Implementation> = DocumentSheetV2.Configuration<AmbientLightDocument.Implementation>,
-  RenderOptions extends
-    HandlebarsApplicationMixin.DocumentSheetV2RenderOptions = HandlebarsApplicationMixin.DocumentSheetV2RenderOptions,
+  RenderContext extends object = AmbientLightConfig.RenderContext,
+  Configuration extends AmbientLightConfig.Configuration = AmbientLightConfig.Configuration,
+  RenderOptions extends AmbientLightConfig.RenderOptions = AmbientLightConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
   AmbientLightDocument.Implementation,
   RenderContext,
@@ -64,17 +71,45 @@ declare class AmbientLightConfig<
 }
 
 declare namespace AmbientLightConfig {
-  interface RenderContext {
+  interface Any extends AnyAmbientLightConfig {}
+  interface AnyConstructor extends Identity<typeof AnyAmbientLightConfig> {}
+
+  interface RenderContext
+    extends HandlebarsApplicationMixin.RenderContext,
+      DocumentSheetV2.RenderContext<AmbientLightDocument.Implementation> {
+    document: AmbientLightDocument.Implementation;
     light: AmbientLightDocument.Implementation;
     source: foundry.documents.BaseAmbientLight.Source;
+
+    /**
+     * @deprecated - Foundry deleted this with no deprecation in v13.
+     */
     fields: foundry.documents.BaseAmbientLight.Schema;
-    colorationTechniques: (typeof AdaptiveLightingShader)["SHADER_TECHNIQUES"];
+    colorationTechniques: typeof AdaptiveLightingShader.SHADER_TECHNIQUES;
     gridUnits: string;
     isDarkness: boolean;
     lightAnimations: unknown; // TODO: Update after CONFIG updated
+
+    /**
+     * @deprecated - Foundry deleted this with no deprecation in v13.
+     */
     tabs: Record<string, ApplicationV2.Tab>;
     buttons: ApplicationV2.FormFooterButton[];
   }
+
+  interface Configuration
+    extends HandlebarsApplicationMixin.Configuration,
+      DocumentSheetV2.Configuration<AmbientLightDocument.Implementation> {}
+
+  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
+}
+
+declare abstract class AnyAmbientLightConfig extends AmbientLightConfig<
+  object,
+  AmbientLightConfig.Configuration,
+  AmbientLightConfig.RenderOptions
+> {
+  constructor(...args: never);
 }
 
 export default AmbientLightConfig;

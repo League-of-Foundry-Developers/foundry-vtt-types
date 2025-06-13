@@ -302,20 +302,16 @@ declare namespace DataModel {
 
   type CreateData<Schema extends DataSchema> = fields.SchemaField.CreateData<Schema> | DataModel<Schema, any>;
 
-  type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = CreateData<SchemaOf<ConcreteDataModel>>;
-
-  // TODO(LukeAbby): Make optional only if `{}` is assignable to `AssignmentData`.
+  // TODO(LukeAbby): Make optional only if `{}` is assignable to `CreateData`.
   type ConstructorArgs<
     Schema extends DataSchema,
     Parent extends DataModel.Any | null = null,
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     ExtraConstructorOptions extends AnyObject = {},
   > = [
-    // not null (parameter default only)
     data?: DataModel.CreateData<Schema>,
 
     // Note(LukeAbby): `{ parent, strict, ...options }`
-    // not null (destructured)
     options?: DataModel.ConstructionContext<Parent> & ExtraConstructorOptions,
   ];
 
@@ -502,6 +498,11 @@ declare namespace DataModel {
   }>;
 
   interface ShimDataOptions extends _ShimDataOptions {}
+
+  /**
+   * @deprecated Replaced by {@linkcode DataModel.CreateData}
+   */
+  type ConstructorDataFor<ConcreteDataModel extends DataModel.Any> = CreateData<SchemaOf<ConcreteDataModel>>;
 }
 
 // This uses `any` because `Schema` and `Parent` are invariant

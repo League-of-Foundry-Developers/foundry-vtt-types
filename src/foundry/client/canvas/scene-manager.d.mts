@@ -90,6 +90,8 @@ declare class SceneManager {
    * Deactivate Hook functions that were added specifically for this Scene.
    */
   protected _deactivateHooks(): void;
+
+  #SceneManager: true;
 }
 
 declare namespace SceneManager {
@@ -97,8 +99,8 @@ declare namespace SceneManager {
   interface AnyConstructor extends Identity<typeof AnySceneManager> {}
 }
 
+export default SceneManager;
+
 declare abstract class AnySceneManager extends SceneManager {
   constructor(...args: never);
 }
-
-export default SceneManager;

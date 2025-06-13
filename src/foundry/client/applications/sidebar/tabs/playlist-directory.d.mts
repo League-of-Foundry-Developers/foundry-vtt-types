@@ -1,5 +1,13 @@
-import type ApplicationV2 from "../../api/application.d.mts";
+import type { Identity } from "#utils";
 import type DocumentDirectory from "../document-directory.d.mts";
+
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      PlaylistDirectory: PlaylistDirectory.Any;
+    }
+  }
+}
 
 /**
  * The World Playlist directory listing.
@@ -8,13 +16,24 @@ import type DocumentDirectory from "../document-directory.d.mts";
 declare class PlaylistDirectory<
   RenderContext extends PlaylistDirectory.RenderContext = PlaylistDirectory.RenderContext,
   Configuration extends PlaylistDirectory.Configuration = PlaylistDirectory.Configuration,
-  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
+  RenderOptions extends PlaylistDirectory.RenderOptions = PlaylistDirectory.RenderOptions,
 > extends DocumentDirectory<Playlist.ImplementationClass, RenderContext, Configuration, RenderOptions> {}
 
 declare namespace PlaylistDirectory {
-  interface RenderContext extends DocumentDirectory.RenderContext {}
+  interface Any extends AnyPlaylistDirectory {}
+  interface AnyConstructor extends Identity<typeof AnyPlaylistDirectory> {}
 
+  interface RenderContext extends DocumentDirectory.RenderContext {}
   interface Configuration extends DocumentDirectory.Configuration {}
+  interface RenderOptions extends DocumentDirectory.RenderOptions {}
+}
+
+declare abstract class AnyPlaylistDirectory extends PlaylistDirectory<
+  PlaylistDirectory.RenderContext,
+  PlaylistDirectory.Configuration,
+  PlaylistDirectory.RenderOptions
+> {
+  constructor(...args: never);
 }
 
 export default PlaylistDirectory;

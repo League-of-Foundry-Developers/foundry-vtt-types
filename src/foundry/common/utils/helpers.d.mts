@@ -447,13 +447,6 @@ export function parseS3URL(key: string): { bucket: string | null; keyPrefix: str
 export function randomID(length?: number): string;
 
 /**
- * Express a timestamp as a relative string
- * @param timeStamp - A timestamp string or Date object to be formatted as a relative time
- * @returns A string expression for the relative time
- */
-export function timeSince(timeStamp: Date | string): string;
-
-/**
  * Format a file size to an appropriate order of magnitude.
  * @param size    - The size in bytes.
  * @param options - Additional options. (default: `{}`)
@@ -503,7 +496,7 @@ export interface ResolvedUUID {
   /**
    * The collection that the primary Document belongs to.
    */
-  collection?: DocumentCollection.Any | undefined;
+  collection?: foundry.documents.abstract.DocumentCollection.Any | undefined;
 
   /**
    * Additional Embedded Document parts.

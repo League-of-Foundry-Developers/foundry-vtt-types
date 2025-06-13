@@ -1,5 +1,7 @@
 import type { Identity, IntentionalPartial, NullishProps } from "#utils";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
+import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_module.d.mts";
+import type { SmoothNoise } from "#client/canvas/animation/_module.d.mts";
 
 /**
  * A specialized subclass of BaseEffectSource which deals with the rendering of light or darkness.

@@ -1,161 +1,14 @@
-import type { AnyObject, DeepPartial } from "#utils";
+import type { AnyObject, DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type { FormSelectOption } from "../forms/fields.d.mts";
 
-declare namespace FilePicker {
-  interface RenderContext extends ApplicationV2.RenderContext {
-    bucket: string | null;
-    buckets: FormSelectOption[] | null;
-    canGoBack: boolean;
-    canUpload: boolean;
-    canSelect: boolean;
-    dirs: FolderContext[];
-    displayMode: DisplayMode;
-    extensions: string[];
-    files: FileContext[];
-    isS3: boolean;
-    noResults: boolean;
-    selected: string;
-    source: SourceInfo | S3SourceInfo;
-    sources: Sources;
-    target: string;
-    tileSize: number | null;
-    user: User.Implementation;
-    favorites: Record<string, FilePicker.FavoriteFolder>;
-    buttons: ApplicationV2.FormFooterButton[];
+declare module "#configuration" {
+  namespace Hooks {
+    interface ApplicationV2Config {
+      FilePicker: FilePicker.Any;
+    }
   }
-
-  interface FolderContext {
-    name: string;
-    path: string;
-    private: boolean;
-  }
-
-  interface FileContext {
-    name: string;
-    url: string;
-    img: string;
-  }
-
-  interface Configuration extends ApplicationV2.Configuration {
-    /**
-     * A type of file to target.
-     * @defaultValue `"any"`
-     */
-    type?: Type;
-
-    /** The current file path being modified, if any. */
-    current?: string;
-
-    /**
-     * A current file source in "data", "public", or "s3".
-     * @defaultValue `"data"`
-     */
-    activeSource?: SourceType;
-
-    /** A callback function to trigger once a file has been selected. */
-    callback?: Callback;
-
-    /**
-     * A flag which permits explicitly disallowing upload, true by default.
-     * @defaultValue `true`
-     */
-    allowUpload?: boolean;
-
-    /** An HTML form field that the result of this selection is applied to. */
-    field?: HTMLElement;
-
-    /** An HTML button element which triggers the display of this picker. */
-    button?: HTMLButtonElement;
-
-    /** The picker display mode in FilePicker.DISPLAY_MODES. */
-    displayMode?: string;
-
-    /** The picker display mode in FilePicker.DISPLAY_MODES. */
-    favorites?: Record<string, FavoriteFolder>;
-
-    /**
-     * Display the tile size configuration.
-     * @defaultValue `false`
-     */
-    tileSize?: boolean;
-
-    /** Redirect to the root directory rather than starting in the source directory of one of these files. */
-    redirectToRoot?: string[] | null | undefined;
-  }
-
-  interface FavoriteFolder {
-    /** The source of the folder (e.g. "data", "public") */
-    source: string;
-
-    /** The full path to the folder */
-    path: string;
-
-    /** The label for the path */
-    label: string;
-  }
-
-  type Type = "image" | "audio" | "video" | "text" | "imagevideo" | "font" | "folder" | "any";
-
-  type SourceType = keyof Sources;
-
-  interface SourceInfo {
-    target: string;
-  }
-
-  interface S3SourceInfo extends SourceInfo {
-    bucket: string;
-    buckets: string[];
-  }
-
-  interface Sources {
-    data: SourceInfo;
-    public: SourceInfo;
-    s3?: S3SourceInfo;
-  }
-
-  type Callback = (path: string, picker: FilePicker) => void;
-
-  type DisplayMode = "list" | "thumbs" | "tiles" | "images";
-
-  interface BrowseOptions {
-    /** A bucket within which to search if using the S3 source */
-    bucket?: string;
-
-    /** An Array of file extensions to filter on */
-    extensions?: string[];
-
-    /** The requested dir represents a wildcard path */
-    wildcard?: boolean;
-  }
-
-  interface UploadOptions {
-    /**
-     * Display a UI notification when the upload is processed
-     * @defaultValue `true`
-     * @remarks `null` equivalent to `false`
-     */
-    notify?: boolean | undefined | null;
-  }
-
-  // Unknown if these are all possible properties
-  interface BrowseReturn {
-    dirs: string[];
-    extensions: string[];
-    files: string[];
-    gridSize: number | null;
-    private: boolean;
-    privateDirs: string[];
-    target: string;
-  }
-
-  // Unknown if these are all possible properties
-  interface ConfigurePathReturn {
-    private?: boolean;
-  }
-
-  interface UploadBody extends AnyObject {}
 }
 
 /**
@@ -165,8 +18,7 @@ declare namespace FilePicker {
 declare class FilePicker<
   RenderContext extends FilePicker.RenderContext = FilePicker.RenderContext,
   Configuration extends FilePicker.Configuration = FilePicker.Configuration,
-  RenderOptions extends
-    HandlebarsApplicationMixin.ApplicationV2RenderOptions = HandlebarsApplicationMixin.ApplicationV2RenderOptions,
+  RenderOptions extends FilePicker.RenderOptions = FilePicker.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   /**
    * The full requested path given by the user
@@ -405,6 +257,183 @@ declare class FilePicker<
    * @param button - The button element
    */
   static fromButton(button: HTMLButtonElement): FilePicker;
+
+  /**
+   * Retrieve the configured FilePicker implementation.
+   * @privateRemarks TODO: Config.ux handling
+   */
+  static get implementation(): typeof FilePicker;
 }
+
+declare namespace FilePicker {
+  interface Any extends AnyFilePicker {}
+  interface AnyConstructor extends Identity<typeof AnyFilePicker> {}
+
+  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {
+    bucket: string | null;
+    buckets: FormSelectOption[] | null;
+    canGoBack: boolean;
+    canUpload: boolean;
+    canSelect: boolean;
+    dirs: FolderContext[];
+    displayMode: DisplayMode;
+    extensions: string[];
+    files: FileContext[];
+    isS3: boolean;
+    noResults: boolean;
+    selected: string;
+    source: SourceInfo | S3SourceInfo;
+    sources: Sources;
+    target: string;
+    tileSize: number | null;
+    user: User.Implementation;
+    favorites: Record<string, FilePicker.FavoriteFolder>;
+    buttons: ApplicationV2.FormFooterButton[];
+  }
+
+  interface FolderContext {
+    name: string;
+    path: string;
+    private: boolean;
+  }
+
+  interface FileContext {
+    name: string;
+    url: string;
+    img: string;
+  }
+
+  interface Configuration extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration {
+    /**
+     * A type of file to target.
+     * @defaultValue `"any"`
+     */
+    type?: Type;
+
+    /** The current file path being modified, if any. */
+    current?: string;
+
+    /**
+     * A current file source in "data", "public", or "s3".
+     * @defaultValue `"data"`
+     */
+    activeSource?: SourceType;
+
+    /** A callback function to trigger once a file has been selected. */
+    callback?: Callback;
+
+    /**
+     * A flag which permits explicitly disallowing upload, true by default.
+     * @defaultValue `true`
+     */
+    allowUpload?: boolean;
+
+    /** An HTML form field that the result of this selection is applied to. */
+    field?: HTMLElement;
+
+    /** An HTML button element which triggers the display of this picker. */
+    button?: HTMLButtonElement;
+
+    /** The picker display mode in FilePicker.DISPLAY_MODES. */
+    displayMode?: string;
+
+    /** The picker display mode in FilePicker.DISPLAY_MODES. */
+    favorites?: Record<string, FavoriteFolder>;
+
+    /**
+     * Display the tile size configuration.
+     * @defaultValue `false`
+     */
+    tileSize?: boolean;
+
+    /** Redirect to the root directory rather than starting in the source directory of one of these files. */
+    redirectToRoot?: string[] | null | undefined;
+  }
+
+  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
+
+  interface FavoriteFolder {
+    /** The source of the folder (e.g. "data", "public") */
+    source: string;
+
+    /** The full path to the folder */
+    path: string;
+
+    /** The label for the path */
+    label: string;
+  }
+
+  type Type = "image" | "audio" | "video" | "text" | "imagevideo" | "font" | "folder" | "any";
+
+  type SourceType = keyof Sources;
+
+  interface SourceInfo {
+    target: string;
+  }
+
+  interface S3SourceInfo extends SourceInfo {
+    bucket: string;
+    buckets: string[];
+  }
+
+  interface Sources {
+    data: SourceInfo;
+    public: SourceInfo;
+    s3?: S3SourceInfo;
+  }
+
+  type Callback = (path: string, picker: FilePicker) => void;
+
+  type DisplayMode = "list" | "thumbs" | "tiles" | "images";
+
+  interface BrowseOptions {
+    /** A bucket within which to search if using the S3 source */
+    bucket?: string;
+
+    /** An Array of file extensions to filter on */
+    extensions?: string[];
+
+    /** The requested dir represents a wildcard path */
+    wildcard?: boolean;
+  }
+
+  interface UploadOptions {
+    /**
+     * Display a UI notification when the upload is processed
+     * @defaultValue `true`
+     * @remarks `null` equivalent to `false`
+     */
+    notify?: boolean | undefined | null;
+  }
+
+  // Unknown if these are all possible properties
+  interface BrowseReturn {
+    dirs: string[];
+    extensions: string[];
+    files: string[];
+    gridSize: number | null;
+    private: boolean;
+    privateDirs: string[];
+    target: string;
+  }
+
+  // Unknown if these are all possible properties
+  interface ConfigurePathReturn {
+    private?: boolean;
+  }
+
+  interface UploadBody extends AnyObject {}
+
+  /**
+   * @deprecated Old name for the construction options for FilePicker
+   */
+  interface Options extends Configuration {}
+}
+
+declare abstract class AnyFilePicker extends FilePicker<
+  FilePicker.RenderContext,
+  FilePicker.Configuration,
+  FilePicker.RenderOptions
+> {}
 
 export default FilePicker;

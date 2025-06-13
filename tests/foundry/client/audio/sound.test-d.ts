@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
 import Sound = foundry.audio.Sound;
 
 expectTypeOf(Sound.STATES).toMatchTypeOf<Readonly<Record<keyof Sound.States, Sound.STATES>>>();

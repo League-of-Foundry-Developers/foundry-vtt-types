@@ -169,8 +169,6 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   /* Document overrides */
 
-  static " fvtt_types_internal_document_name_static": "Scene";
-
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
@@ -445,7 +443,7 @@ declare namespace BaseScene {
     // The expression `ClientDocumentMixin(BaseScene)` is more intuitive but it has worse
     // caching, likely due to the majority of tsc's caching working off of names.
     // See https://gist.github.com/LukeAbby/18a928fdc35c5d54dc121ed5dbf412fd.
-    interface ClientDocument extends ClientDocumentMixin.Mix<typeof BaseScene> {}
+    interface ClientDocument extends foundry.documents.abstract.ClientDocumentMixin.Mix<typeof BaseScene> {}
     const ClientDocument: ClientDocument;
   }
 }

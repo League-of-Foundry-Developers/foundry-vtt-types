@@ -1048,21 +1048,7 @@ declare namespace SchemaField {
   >;
 
   /** @internal */
-  type _FieldType<Field extends DataField.Any> =
-    Field extends EmbeddedDataField<any, any, infer AssignmentType, any, any>
-      ? AssignmentType
-      : Field extends SchemaField<infer SubSchema, any, any, any, any>
-        ? // FIXME(LukeAbby): This is a quick hack into AssignmentData that assumes that the `initial` of `SchemaField` is not changed from the default of `{}`
-          // This will be fixed with the refactoring of the types
-          // eslint-disable-next-line @typescript-eslint/no-deprecated
-          EmptyObject extends AssignmentData<SubSchema>
-          ? // eslint-disable-next-line @typescript-eslint/no-deprecated
-            AssignmentData<SubSchema> | undefined | null
-          : // eslint-disable-next-line @typescript-eslint/no-deprecated
-            AssignmentData<SubSchema>
-        : Field extends DataField<any, infer AssignType, any, any>
-          ? AssignType
-          : never;
+  type _FieldType<Field extends DataField.Any> = Field[" __fvtt_types_internal_assignment_data"];
 
   /**
    * Get the inner assignment type for the given DataSchema.
@@ -1097,13 +1083,7 @@ declare namespace SchemaField {
    */
   type InitializedData<Fields extends DataSchema> = PrettifyType<
     RemoveIndexSignatures<{
-      [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<infer Model, any, any, any, any>
-        ? FixedInstanceType<Model>
-        : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-          ? InitializedData<SubSchema>
-          : Fields[Key] extends DataField<any, any, infer InitType, any>
-            ? InitType
-            : never;
+      [Key in keyof Fields]: Fields[Key][" __fvtt_types_internal_initialized_data"];
     }>
   >;
 
@@ -1113,25 +1093,13 @@ declare namespace SchemaField {
    */
   type SourceData<Fields extends DataSchema> = PrettifyType<
     RemoveIndexSignatures<{
-      [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<any, any, any, any, infer PersistType>
-        ? PersistType
-        : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-          ? SourceData<SubSchema>
-          : Fields[Key] extends DataField<any, any, any, infer PersistType>
-            ? PersistType
-            : never;
+      [Key in keyof Fields]: Fields[Key][" __fvtt_types_internal_source_data"];
     }>
   >;
 
   type UpdateSourceData<Fields extends DataSchema> = PrettifyType<
     RemoveIndexSignatures<{
-      [Key in keyof Fields]: Fields[Key] extends EmbeddedDataField<any, any, any, any, infer PersistType>
-        ? PersistType
-        : Fields[Key] extends SchemaField<infer SubSchema, any, any, any, any>
-          ? SourceData<SubSchema>
-          : Fields[Key] extends DataField<any, any, any, infer PersistType>
-            ? PersistType
-            : never;
+      [Key in keyof Fields]: Fields[Key][" __fvtt_types_internal_initialized_data"];
     }>
   >;
 
@@ -2858,7 +2826,8 @@ declare class EmbeddedCollectionField<
   Options extends EmbeddedCollectionField.Options<any> = EmbeddedCollectionField.DefaultOptions,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentElementType = EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
-  InitializedElementType extends Document.Any = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
+  InitializedElementType extends
+    Document.Internal.Instance.Any = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentType = EmbeddedCollectionField.AssignmentType<AssignmentElementType, Options>,
   InitializedType = EmbeddedCollectionField.InitializedType<
@@ -3110,7 +3079,8 @@ declare class EmbeddedCollectionDeltaField<
   Options extends EmbeddedCollectionDeltaField.Options<any> = EmbeddedCollectionDeltaField.DefaultOptions,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentElementType = EmbeddedCollectionDeltaField.AssignmentElementType<ElementFieldType>,
-  InitializedElementType extends Document.Any = EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
+  InitializedElementType extends
+    Document.Internal.Instance.Any = EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentType = EmbeddedCollectionDeltaField.AssignmentType<AssignmentElementType, Options>,
   InitializedType = EmbeddedCollectionDeltaField.InitializedType<
@@ -3355,10 +3325,7 @@ declare namespace EmbeddedDocumentField {
   type InitializedType<
     DocumentType extends Document.AnyConstructor,
     Opts extends Options<DocumentType>,
-  > = DataField.DerivedInitializedType<
-    SchemaField.InitializedData<DataModel.SchemaOfClass<DocumentType>>,
-    MergedOptions<DocumentType, Opts>
-  >;
+  > = DataField.DerivedInitializedType<Document.ToConfiguredInstance<DocumentType>, MergedOptions<DocumentType, Opts>>;
 
   /**
    * A shorthand for the persisted type of an EmbeddedDocumentField class.
@@ -5021,7 +4988,7 @@ declare class TypeDataField<
    * Return the package that provides the sub-type for the given model.
    * @param model - The model instance created for this sub-type.
    */
-  static getModelProvider(model: DataModel.Any): System | Module | null;
+  static getModelProvider(model: DataModel.Any): foundry.packages.System | foundry.packages.Module | null;
 
   /**
    * A convenience accessor for the name of the document type associated with this TypeDataField
@@ -5181,7 +5148,17 @@ declare namespace TypeDataField {
   type PersistedType<
     ConcreteDocument extends Document.SystemConstructor,
     Opts extends Options<ConcreteDocument>,
-  > = DataField.DerivedInitializedType<AnyObject, MergedOptions<ConcreteDocument, Opts>>;
+  > = DataField.DerivedInitializedType<
+    _Source<DataModelsFor<ConcreteDocument["metadata"]["name"]>>,
+    MergedOptions<ConcreteDocument, Opts>
+  >;
+
+  /** @internal */
+  type _Source<T> = {
+    [K in keyof T]: T[K] extends (abstract new (...args: never) => infer U extends DataModel.Any)
+      ? U["_source"]
+      : never;
+  }[keyof T];
 }
 
 /**
