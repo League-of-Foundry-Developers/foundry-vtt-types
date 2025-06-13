@@ -463,6 +463,8 @@ declare namespace JournalEntry {
     JournalEntry.DirectDescendant,
     JournalEntry.Metadata.Embedded
   >;
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -643,7 +645,7 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
   protected override _onDeleteDescendantDocuments(...args: Cards.OnDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"JournalEntry", JournalEntry.Parent>): string;
+  static override defaultName(context?: JournalEntry.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(

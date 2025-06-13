@@ -336,6 +336,8 @@ declare namespace JournalEntryCategory {
    * make us any more wrong than currently.
    */
   type Resource = string | number | null;
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -359,7 +361,7 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
   // Descendant Document operations have been left out because JournalEntryCategory does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"JournalEntryCategory", JournalEntryCategory.Parent>): string;
+  static override defaultName(context?: JournalEntryCategory.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(

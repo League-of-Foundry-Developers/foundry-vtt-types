@@ -379,6 +379,8 @@ declare namespace FogExploration {
    * with this interface via `{query, ...options}` before passing to {@link ClientDatabaseBackend.get | `this.database.get`}
    */
   interface LoadOptions extends Omit<IntentionalPartial<DatabaseGetOperation>, "query"> {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -439,7 +441,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   // Descendant Document operations have been left out because FogExploration does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"FogExploration", FogExploration.Parent>): string;
+  static override defaultName(context?: FogExploration.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(

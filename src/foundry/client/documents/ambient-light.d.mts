@@ -368,6 +368,8 @@ declare namespace AmbientLightDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -406,7 +408,7 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"AmbientLight", NonNullable<AmbientLightDocument.Parent>>,
+    context?: AmbientLightDocument.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */

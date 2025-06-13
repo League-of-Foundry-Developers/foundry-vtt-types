@@ -585,6 +585,8 @@ declare namespace ChatMessage {
   }
 
   type PassableRollMode = CONST.DICE_ROLL_MODES | "roll";
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -740,7 +742,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   // Descendant Document operations have been left out because ChatMessage does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"ChatMessage", ChatMessage.Parent>): string;
+  static override defaultName(context?: ChatMessage.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(

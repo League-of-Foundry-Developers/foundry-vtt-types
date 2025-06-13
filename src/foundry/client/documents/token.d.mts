@@ -1342,6 +1342,8 @@ declare namespace TokenDocument {
   }
 
   interface MovementOperation extends Omit<MovementData, "user" | "state" | "updateOptions"> {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -1997,7 +1999,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"Token", NonNullable<TokenDocument.Parent>>,
+    context?: TokenDocument.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */

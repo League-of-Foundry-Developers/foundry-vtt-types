@@ -422,6 +422,8 @@ declare namespace MeasuredTemplateDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -463,7 +465,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"MeasuredTemplate", NonNullable<MeasuredTemplateDocument.Parent>>,
+    context?: MeasuredTemplateDocument.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */

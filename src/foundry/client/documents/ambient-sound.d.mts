@@ -429,6 +429,8 @@ declare namespace AmbientSoundDocument {
      */
     intensity?: number | undefined;
   }
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -460,7 +462,7 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"AmbientSound", NonNullable<AmbientSoundDocument.Parent>>,
+    context?: AmbientSoundDocument.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */

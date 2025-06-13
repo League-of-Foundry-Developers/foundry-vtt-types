@@ -519,6 +519,8 @@ declare namespace Playlist {
   }>;
 
   interface PlayNextOptions extends _PlayNextOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -778,7 +780,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   protected override _preDeleteDescendantDocuments(...args: Playlist.PreDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Playlist", Playlist.Parent>): string;
+  static override defaultName(context?: Playlist.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(

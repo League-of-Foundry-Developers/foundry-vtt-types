@@ -407,6 +407,8 @@ declare namespace RegionBehavior {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -473,7 +475,7 @@ declare class RegionBehavior<
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"RegionBehavior", NonNullable<RegionBehavior.Parent>>,
+    context?: RegionBehavior.DefaultNameContext,
   ): string;
 
   // options: not null (parameter default only)

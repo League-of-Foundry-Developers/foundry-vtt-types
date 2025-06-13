@@ -305,7 +305,7 @@ expectTypeOf(
   ),
 ).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(TestActiveEffect.hasSystemData).toEqualTypeOf<true>();
+expectTypeOf(TestActiveEffect.hasTypeData).toEqualTypeOf<true>();
 // shim methods and _logDataFieldMigration have no type changes from Document
 
 // core's implementation for these three are actual no-ops, no point testing the modification context

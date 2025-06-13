@@ -1105,6 +1105,8 @@ declare namespace Scene {
   }
 
   interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -1389,7 +1391,7 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
   protected override _onDeleteDescendantDocuments(...args: Scene.OnDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Scene", Scene.Parent>): string;
+  static override defaultName(context?: Scene.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(

@@ -486,6 +486,8 @@ declare namespace DrawingDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -528,7 +530,7 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"Drawing", NonNullable<DrawingDocument.Parent>>,
+    context?: DrawingDocument.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */

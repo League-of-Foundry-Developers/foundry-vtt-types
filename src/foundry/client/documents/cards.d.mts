@@ -695,6 +695,8 @@ declare namespace Cards {
      */
     toUpdate: Record<string, Card.UpdateData[]>;
   }
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -982,7 +984,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
   protected override _onDeleteDescendantDocuments(...args: Cards.OnDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Cards", Cards.Parent>): string;
+  static override defaultName(context?: Cards.DefaultNameContext): string;
 
   // options: not null (parameter default only)
   static override fromDropData(

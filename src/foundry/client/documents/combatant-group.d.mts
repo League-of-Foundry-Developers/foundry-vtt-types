@@ -408,6 +408,8 @@ declare namespace CombatantGroup {
    * make us any more wrong than currently.
    */
   type Resource = string | number | null;
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -455,7 +457,7 @@ declare class CombatantGroup<
    // Descendant Document operations have been left out because CombatantGroup does not have any descendant documents.
   
    // context: not null (destructured)
-   static override defaultName(context?: Document.DefaultNameContext<"CombatantGroup", CombatantGroup.Parent>): string;
+   static override defaultName(context?: CombatantGroup.DefaultNameContext): string;
   
    // data: not null (parameter default only), context: not null (destructured)
    static override createDialog(

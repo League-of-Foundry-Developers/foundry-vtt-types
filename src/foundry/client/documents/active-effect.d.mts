@@ -624,6 +624,8 @@ declare namespace ActiveEffect {
   type ApplyFieldReturn<Field extends DataField.Any | null | undefined> = Field extends DataField.Any
     ? DataField.InitializedTypeFor<Field>
     : unknown;
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -910,7 +912,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"ActiveEffect", NonNullable<ActiveEffect.Parent>>,
+    context?: ActiveEffect.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */

@@ -584,6 +584,8 @@ declare namespace RegionDocument {
     /** Teleport between the waypoints? */
     teleport: boolean;
   }
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -833,7 +835,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"Region", NonNullable<RegionDocument.Parent>>,
+    context?: RegionDocument.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */

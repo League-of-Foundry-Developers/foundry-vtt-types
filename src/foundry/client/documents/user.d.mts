@@ -550,6 +550,8 @@ declare namespace User {
   }
 
   type ActionPermission = keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -723,7 +725,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
   // Descendant Document operations have been left out because User does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"User", User.Parent>): string;
+  static override defaultName(context?: User.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(

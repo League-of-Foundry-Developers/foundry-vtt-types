@@ -568,6 +568,8 @@ declare namespace RollTable {
      */
     rollable?: boolean | undefined;
   }
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -865,7 +867,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
   protected override _preDeleteDescendantDocuments(...args: RollTable.PreDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"RollTable", RollTable.Parent>): string;
+  static override defaultName(context?: RollTable.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(

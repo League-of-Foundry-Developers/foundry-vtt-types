@@ -476,6 +476,8 @@ declare namespace Folder {
     /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
     resolve?: never;
   }
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -615,7 +617,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
   // Descendant Document operations have been left out because Folder does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Folder", Folder.Parent>): string;
+  static override defaultName(context?: Folder.DefaultNameContext): string;
 
   // options: not null (parameter default only)
   static override fromDropData(

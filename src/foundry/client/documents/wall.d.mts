@@ -519,6 +519,8 @@ declare namespace WallDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -549,7 +551,7 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
   // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Wall", NonNullable<WallDocument.Parent>>): string;
+  static override defaultName(context?: WallDocument.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(

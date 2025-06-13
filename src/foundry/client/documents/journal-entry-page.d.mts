@@ -595,6 +595,8 @@ declare namespace JournalEntryPage {
   }>;
 
   interface EmbedImagePageConfig extends _EmbedImagePageConfig, TextEditor.DocumentHTMLEmbedConfig {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -790,7 +792,7 @@ declare class JournalEntryPage<
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"JournalEntryPage", NonNullable<JournalEntryPage.Parent>>,
+    context?: JournalEntryPage.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */

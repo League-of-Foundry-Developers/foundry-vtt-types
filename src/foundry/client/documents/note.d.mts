@@ -429,6 +429,8 @@ declare namespace NoteDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -481,7 +483,7 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
   // Descendant Document operations have been left out because Note does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Note", NonNullable<NoteDocument.Parent>>): string;
+  static override defaultName(context?: NoteDocument.DefaultNameContext): string;
 
 
   // options: not null (parameter default only)

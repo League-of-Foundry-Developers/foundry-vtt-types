@@ -517,6 +517,8 @@ declare namespace ActorDelta {
   }>;
 
   interface InitializeOptions extends Document.InitializeOptions, _InitializeOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -730,7 +732,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"ActorDelta", NonNullable<ActorDelta.Parent>>,
+    context?: ActorDelta.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */

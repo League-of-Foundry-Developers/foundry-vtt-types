@@ -507,6 +507,8 @@ declare namespace Card {
    * @remarks {@link Card.discard | `Card#discard`} calls {@link Cards.pass | `this.parent.pass`} with `action: "discard"` provided
    */
   interface DiscardOptions extends PassOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -630,7 +632,7 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
   // Descendant Document operations have been left out because Card does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Card", NonNullable<Card.Parent>>): string;
+  static override defaultName(context?: Card.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(

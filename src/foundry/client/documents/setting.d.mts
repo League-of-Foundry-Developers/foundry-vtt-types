@@ -344,6 +344,8 @@ declare namespace Setting {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -391,7 +393,7 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
   // Descendant Document operations have been left out because Setting does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Setting", Setting.Parent>): string;
+  static override defaultName(context?: Setting.DefaultNameContext): string;
 
   /**
    * @throws Foundry tries to figure out the folders for the world collection and errors out

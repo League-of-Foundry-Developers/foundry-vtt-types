@@ -368,6 +368,8 @@ declare namespace PlaylistSound {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -493,7 +495,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"PlaylistSound", NonNullable<PlaylistSound.Parent>>,
+    context?: PlaylistSound.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */

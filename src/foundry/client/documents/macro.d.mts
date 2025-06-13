@@ -491,6 +491,8 @@ declare namespace Macro {
   type ExecuteReturn<SubType extends Macro.SubType> =
     | (SubType extends "chat" ? Promise<ChatMessage.Implementation | undefined | void> : never)
     | (SubType extends "script" ? Promise<unknown> | void : never);
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -562,7 +564,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   // Descendant Document operations have been left out because Macro does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Macro", Macro.Parent>): string;
+  static override defaultName(context?: Macro.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(

@@ -616,6 +616,8 @@ declare namespace Actor {
     /** Whether the new value is part of an attribute bar, or just a direct value */
     isBar: boolean;
   }
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -979,7 +981,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   protected override _preDeleteDescendantDocuments(...args: Actor.PreDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Actor", Actor.Parent>): string;
+  static override defaultName(context?: Actor.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(

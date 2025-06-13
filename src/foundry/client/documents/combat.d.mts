@@ -569,6 +569,8 @@ declare namespace Combat {
   interface RoundEventContext extends Omit<TurnEventContext, "turn"> {}
 
   type CONFIG_SETTING = "combatTrackerConfig";
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -1005,7 +1007,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   protected override _preDeleteDescendantDocuments(...args: Combat.PreDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Combat", Combat.Parent>): string;
+  static override defaultName(context?: Combat.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(

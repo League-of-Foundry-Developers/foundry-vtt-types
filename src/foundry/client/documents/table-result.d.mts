@@ -416,6 +416,8 @@ declare namespace TableResult {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -473,7 +475,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"TableResult", NonNullable<TableResult.Parent>>,
+    context?: TableResult.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */

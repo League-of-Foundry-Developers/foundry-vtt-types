@@ -447,6 +447,8 @@ declare namespace Combatant {
    * make us any more wrong than currently.
    */
   type Resource = string | number | null;
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -562,7 +564,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"Combatant", NonNullable<Combatant.Parent>>,
+    context?: Combatant.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */

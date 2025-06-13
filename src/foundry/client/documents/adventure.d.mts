@@ -457,6 +457,8 @@ declare namespace Adventure {
   }>;
 
   interface ImportOptions extends _ImportOptions, PrepareImportOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -518,7 +520,7 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
   // Descendant Document operations have been left out because Adventure does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Adventure", Adventure.Parent>): string;
+  static override defaultName(context?: Adventure.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
