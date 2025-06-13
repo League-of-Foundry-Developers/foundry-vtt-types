@@ -444,6 +444,16 @@ declare namespace Adventure {
      * @defaultValue `true`
      */
     dialog: boolean;
+
+    /**
+     * An array of awaited pre-import callbacks
+     */
+    preImport?: ((data: Adventure.ImportData, options: Adventure.ImportOptions) => Promise<void>)[];
+
+    /**
+     * An array of awaited post-import callbacks
+     */
+    postImport?: ((result: Adventure.ImportResult, options: Adventure.ImportOptions) => Promise<void>)[];
   }>;
 
   interface ImportOptions extends _ImportOptions, PrepareImportOptions {}
@@ -513,7 +523,8 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<Adventure.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Adventure", Adventure.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Adventure">,
+    options?: Document.CreateDialogOptions<"Adventure">,
   ): Promise<Adventure.Stored | null | undefined>;
 
   // options: not null (parameter default only)

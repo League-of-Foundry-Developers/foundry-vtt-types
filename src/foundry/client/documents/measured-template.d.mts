@@ -469,7 +469,8 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<MeasuredTemplateDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"MeasuredTemplate", NonNullable<MeasuredTemplateDocument.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"MeasuredTemplate">,
+    options?: Document.CreateDialogOptions<"MeasuredTemplate">,
   ): Promise<MeasuredTemplateDocument.Stored | null | undefined>;
 
   // options: not null (parameter default only)

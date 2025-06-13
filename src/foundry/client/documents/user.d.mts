@@ -574,6 +574,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   /**
    * Track references to the current set of Tokens which are targeted by the User
+   * @defaultValue `new foundry.canvas.placeables.tokens.UserTargets(this)`
    */
   targets: UserTargets;
 
@@ -582,6 +583,12 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @defaultValue `null`
    */
   viewedScene: string | null;
+
+  /**
+   * Track the Token documents that this User is currently moving.
+   * @remarks foundry marks as `@readonly`
+   */
+  movingTokens: ReadonlySet<TokenDocument>;
 
   /**
    * A flag for whether the current User is a Trusted Player
@@ -593,7 +600,36 @@ declare class User extends BaseUser.Internal.ClientDocument {
    */
   get isSelf(): boolean;
 
+  /**
+   * Is this User the active GM?
+   */
+  get isActiveGM(): boolean;
+
+  /**
+   * A localized label for this User's role.
+   */
+  get roleLabel(): string;
+
+  /**
+   * The timestamp of the lats observed activity for the user.
+   */
+  get lastActivityTime(): number;
+
+  set lastActivityTime(timestamp: number);
+
   override prepareDerivedData(): void;
+
+  /**
+   * Is this User the designated User among the Users that satisfy the given condition?
+   * This function calls {@link foundry.documents.collections.Users#getDesignatedUser} and compares the designated User
+   * to this User.
+   * @example
+   * // Is the current User the designated User to create Tokens?
+   * const isDesignated = game.user.isDesignated(user => user.active && user.can("TOKEN_CREATE"));
+   * @param condition - The condition the Users must satisfy
+   * @returns Is designated User?
+   */
+  isDesignated(condition: (user: User.Implementation) => boolean): boolean;
 
   /**
    * @remarks Doesn't exist prior to data prep, set in {@link User.prepareDerivedData | `User#prepareDerivedData`}
@@ -654,10 +690,20 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   /**
    * Update the set of Token targets for the user given an array of provided Token ids.
+   * This function handles changes made elsewhere and does not broadcast to other connected clients.
    * @param targetIds - An array of Token ids which represents the new target set (default: `[]`)
    */
   // targetIds: not null (parameter default only)
-  updateTokenTargets(targetIds?: string[]): void;
+  protected _onUpdateTokenTargets(targetIds?: string[]): void;
+
+  /**
+   * Query this user
+   * @param queryName    - The query name (must be registered in `CONFIG.queries`)
+   * @param queryData    - The query data (must be JSON-serializable)
+   * @param queryOptions - The query options
+   */
+  // TODO: properly type this
+  query(queryName: string, queryData: AnyObject, queryOptions?: unknown): Promise<unknown>;
 
   // _onUpdate and _onDelete are overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
@@ -682,7 +728,8 @@ declare class User extends BaseUser.Internal.ClientDocument {
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Document.CreateDialogData<User.CreateData>,
-    context?: Document.CreateDialogContext<"User", User.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"User">,
+    options?: Document.CreateDialogOptions<"User">,
   ): Promise<User.Stored | null | undefined>;
 
   // options: not null (parameter default only)

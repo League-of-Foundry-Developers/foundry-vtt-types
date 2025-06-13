@@ -1,4 +1,6 @@
-import type { FixedInstanceType, Mixin } from "#utils";
+import type { DatabaseAction, DatabaseOperationMap } from "#common/abstract/_types.mjs";
+import type Document from "#common/abstract/document.mjs";
+import type { AnyObject, FixedInstanceType, Mixin } from "#utils";
 
 /**
  * An extension of the Collection class which adds behaviors specific to tree-based collections of entries and folders.
@@ -86,6 +88,17 @@ declare class DirectoryCollection {
     a: DirectoryCollectionMixin.StandardSortEntry,
     b: DirectoryCollectionMixin.StandardSortEntry,
   ): number;
+
+  /**
+   * @remarks marked by foundry as `@override`
+   */
+  protected _onModifyContents<A extends DatabaseAction>(
+    action: A,
+    documents: Document.AnyStored,
+    result: readonly AnyObject[] | readonly string[],
+    operation: DatabaseOperationMap[A],
+    user: User.Implementation
+  ): void;
 }
 
 /**

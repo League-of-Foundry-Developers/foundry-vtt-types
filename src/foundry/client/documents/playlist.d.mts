@@ -537,12 +537,6 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   constructor(...args: Playlist.ConstructorArgs);
 
   /**
-   * Playlists may have a playback order which defines the sequence of Playlist Sounds
-   * @defaultValue `undefined`
-   */
-  protected _playbackOrder: string[] | undefined;
-
-  /**
    * The order in which sounds within this playlist will be played (if sequential or shuffled)
    * Uses a stored seed for randomization to guarantee that all clients generate the same random order.
    */
@@ -699,6 +693,18 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    */
   _onSoundStart(sound: PlaylistSound.Implementation): Promise<void>;
 
+  /**
+   * Spawn a dialog for bulk importing sound files into a playlist.
+   * @returns Returns true if any sound files were successfully imported.
+   */
+  bulkImportDialog(): Promise<boolean>;
+
+  /**
+   * Create PlaylistSounds in this Playlist from the given file paths.
+   * @param paths - File paths to import.
+   */
+  bulkImportSounds(paths: string[]): Promise<PlaylistSound.Implementation[]>;
+
   // options: not null (parameter default only, destructured in super)
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: foundry.documents.collections.CompendiumCollection.Any | null,
@@ -777,7 +783,8 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Document.CreateDialogData<Playlist.CreateData>,
-    context?: Document.CreateDialogContext<"Playlist", Playlist.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Playlist">,
+    options?: Document.CreateDialogOptions<"Playlist">,
   ): Promise<Playlist.Stored | null | undefined>;
 
   // options: not null (parameter default only)

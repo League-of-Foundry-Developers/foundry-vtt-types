@@ -366,7 +366,7 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
   // options: not null (parameter default only)
   protected override _initialize(options?: Document.InitializeOptions): void;
 
-  // _onCreate and _preUpdate are overridden but with no signature changes.
+  // _onCreate and _onUpdate are overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
   /**
@@ -399,7 +399,8 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Setting.CreateData,
-    context?: Document.CreateDialogContext<"Setting", Setting.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Setting">,
+    options?: Document.CreateDialogOptions<"Setting">,
   ): never;
 
   // options: not null (parameter default only)

@@ -635,7 +635,8 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<Card.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Card", NonNullable<Card.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"Card">,
+    options?: Document.CreateDialogOptions<"Card">,
   ): Promise<Card.Stored | null | undefined>;
 
   // options: not null (parameter default only)

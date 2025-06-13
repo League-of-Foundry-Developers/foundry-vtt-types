@@ -450,12 +450,11 @@ declare class RegionBehavior<
 
   /**
    * @remarks No type changes, just removes `executeScript` from `options.types` if the user lacks the `MACRO_SCRIPT` permission
-   *
-   * `context.parent` is required as creation requires one
    */
   static override createDialog(
     data: Document.CreateDialogData<RegionBehavior.CreateData> | undefined,
-    context: Document.CreateDialogContext<"RegionBehavior", NonNullable<RegionBehavior.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"RegionBehavior">,
+    dialogOptions?: Document.CreateDialogOptions<"RegionBehavior">,
   ): Promise<RegionBehavior.Stored | null | undefined>;
 
   /*

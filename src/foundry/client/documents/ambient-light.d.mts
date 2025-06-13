@@ -412,7 +412,8 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<AmbientLightDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"AmbientLight", NonNullable<AmbientLightDocument.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"AmbientLight">,
+    options?: Document.CreateDialogOptions<"AmbientLight">,
   ): Promise<AmbientLightDocument.Stored | null | undefined>;
 
   // options: not null (parameter default only)

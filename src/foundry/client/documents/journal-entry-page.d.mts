@@ -796,7 +796,8 @@ declare class JournalEntryPage<
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<JournalEntryPage.CreateData> | undefined,
-    context: Document.CreateDialogContext<"JournalEntryPage", NonNullable<JournalEntryPage.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"JournalEntryPage">,
+    options?: Document.CreateDialogOptions<"JournalEntryPage">,
   ): Promise<JournalEntryPage.Stored | null | undefined>;
 
   // options: not null (parameter default only)

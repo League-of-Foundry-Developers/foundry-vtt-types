@@ -600,7 +600,7 @@ declare namespace TokenDocument {
 
   interface DetectionModeData extends SchemaField.InitializedData<DetectionModeSchema> {}
 
-  interface MovementHistorySchema extends DataSchema {
+  interface MeasuredMovementWaypointSchema extends DataSchema {
     /**
      * The top-left x-coordinate in pixels (integer).
      * @defaultValue `undefined`
@@ -712,7 +712,7 @@ declare namespace TokenDocument {
     cost: fields.NumberField<{ required: true; nullable: false; min: 0; initial: undefined }>;
   }
 
-  interface MovementHistory extends SchemaField.InitializedData<MovementHistorySchema> {}
+  interface MeasuredMovementWaypoint extends SchemaField.InitializedData<MeasuredMovementWaypointSchema> {}
 
   /**
    * The schema for {@linkcode TokenDocument}. This is the source of truth for how an TokenDocument document
@@ -795,7 +795,7 @@ declare namespace TokenDocument {
     /**
      * @remarks Foundry marked `@internal`
      */
-    _movementHistory: fields.ArrayField<fields.SchemaField<MovementHistorySchema>>;
+    _movementHistory: fields.ArrayField<fields.SchemaField<MeasuredMovementWaypointSchema>>;
 
     /**
      * @remarks Foundry marked `@internal`
@@ -1077,6 +1077,271 @@ declare namespace TokenDocument {
   // | (Name extends "ActiveEffect" ? globalThis.Collection<ActiveEffect.Implementation> : never)
   // | (Name extends Embedded.CollectionName ? Embedded.CollectionFor<Name> : never);
   type GetEmbeddedCollectionResult<_Name extends GetEmbeddedCollectionName> = Collection.Any;
+
+  type MovementState = "completed" | "paused" | "pending" | "stopped";
+
+  type MovementMethod = "api" | "config" | "dragging" | "keyboard" | "paste" | "undo";
+
+  interface Position {
+    /**
+     * The top-left x-coordinate in pixels (integer).
+     */
+    x: number;
+    
+    /**
+     * The top-left y-coordinate in pixels (integer).
+     */
+    y: number;
+    
+    /**
+     * The elevation in grid units.
+     */
+    elevation: number;
+    
+    /**
+     * The width in grid spaces (positive).
+     */
+    width: number;
+    
+    /**
+     * The height in grid spaces (positive).
+     */
+    height: number;
+    
+    /**
+     * The shape type (see {@link CONST.TOKEN_SHAPES}).
+     */
+    shape: CONST.TOKEN_SHAPES;
+  }
+
+  interface Dimensions extends Omit<Position, "width" | "height" | "shape"> {}
+
+  interface MovementWaypoint extends Omit<MeasuredMovementWaypoint, "terrain" | "intermediate" | "userId" | "movementId" | "cost"> {}
+
+  interface MovementSectionData {
+    /**
+     * The waypoints of the movement path
+     */
+    waypoints: TokenDocument.MeasuredMovementWaypoint[];
+
+    /**
+     * The distance of the movement path
+     */
+    distance: number;
+
+    /**
+     * The cost of the movement path
+     */
+    cost: number;
+
+    /**
+     * The number of spaces moved along the path
+     */
+    spaces: number;
+
+    /**
+     * The number of diagonals moved along the path
+     */
+    diagonals: number;
+  }
+
+  interface MovementHistoryData {
+    /**
+     * The recorded waypoints of the movement path
+     */
+    recorded: TokenDocument.MovementSectionData;
+    
+    /**
+     * The unrecorded waypoints of the movement path
+     */
+    unrecorded: TokenDocument.MovementSectionData;
+    
+    /**
+     * The distance of the combined movement path
+     */
+    distance: number;
+    
+    /**
+     * The cost of the combined movement path
+     */
+    cost: number;
+    
+    /**
+     * The number spaces of moved along the combined path
+     */
+    space: number;
+    
+    /**
+     * The number of diagonals moved along the combined path
+     */
+    diagonals: number;
+  }
+
+  interface ConstrainMovementPathOptions {
+    /**
+     * Constrain a preview path?
+     * @defaultValue `false`
+     */
+    preview: boolean;
+    
+    /**
+     * Ignore walls?
+     * @defaultValue `false`
+     */
+    ignoreWalls: boolean;
+
+    /**
+     * Ignore cost?
+     * @defaultValue `false`
+     */
+    ignoreCost: boolean;
+
+    /**
+     * Consider movement history? If true, uses the current movement history. If waypoints are passed, uses those as the history.
+     * @defaultValue: `false`
+     */
+    history: boolean | ReadonlyArray<TokenDocument.MeasuredMovementWaypoint>;
+  }
+
+  interface MovementContinuationHandle {
+    /**
+     * The movement ID
+     */
+    movementId: string;
+    
+    /**
+     * The continuation promise
+     */
+    continuePromise: Promise<boolean> | undefined;
+  }
+
+  interface MovementContinuationData {
+    /**
+     * The movement ID
+     */
+    movementId: string;
+    
+    /**
+     * The number of continuations
+     */
+    continueCounter: number;
+
+    /**
+     * Was continued?
+     */
+    continued: boolean;
+
+    /**
+     * The continuation promise
+     */
+    continuePromise: Promise<boolean> | null;
+    
+    /**
+     * The promise to wait for before continuing movement
+     */
+    waitPromise: Promise<void>;
+
+    /**
+     * Resolve function of the wait promise
+     */
+    resolveWaitPromise: () => {} | undefined;
+
+    /**
+     * The promise that resolves after the update workflow
+     */
+    postWorkflowPromise: Promise<void>;
+
+    /**
+     * The movement continuation states
+     */
+    states: {
+      [movementId: string]: {
+        handles: Map<string | symbol, TokenDocument.MovementContinuationHandle>;
+        callbacks: Array<(continued: boolean) => void>;
+        pending: Set<string>;
+      }
+    }
+  }
+
+  interface MovementData {
+    /**
+     * The ID of the movement
+     */
+    id: string;
+
+    /**
+     * The chain of prior movement IDs that this movement is a continuation of
+     */
+    chain: string[];
+
+    /**
+     * The origin of movement
+     */
+    origin: TokenDocument.Position;
+
+    /**
+     * The destination of movement
+     */
+    destination: TokenDocument.Position;
+
+    /**
+     * The waypoints and measurements of the passed path
+     */
+    passed: TokenDocument.MovementSectionData;
+
+    /**
+     * The waypoints and measurements of the pending path
+     */
+    pending: TokenDocument.MovementSectionData;
+
+    /**
+     * The waypoints and measurements of the history path
+     */
+    history: TokenDocument.MovementHistoryData;
+
+    /**
+     * Was the movement recorded in the movement history?
+     */
+    recorded: boolean;
+    
+    /**
+     * The method of movement
+     */
+    method: TokenDocument.MovementMethod;
+
+    /**
+     * The options to constrain movement
+     */
+    constrainOptions: Omit<TokenDocument.ConstrainMovementPathOptions, "preview" | "history">;
+
+    /**
+     * Automatically rotate the token in the direction of movement?
+     */
+    autoRotate: boolean;
+
+    /**
+     * Show the ruler during the movement animation of the token?
+     */
+    showRuler: boolean;
+
+    /**
+     * The user that moved the token
+     */
+    user: User.Implementation;
+
+    /**
+     * The state of the movement
+     */
+    state: TokenDocument.MovementState;
+
+    /**
+     * The update options of the movement operation
+     */
+    // TODO: type this properly
+    updateOptions: AnyObject;
+  }
+
+  interface MovementOperation extends Omit<MovementData, "user" | "state" | "updateOptions"> {}
 }
 
 /**
@@ -1091,6 +1356,29 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param context - Construction context options
    */
   constructor(...args: TokenDocument.ConstructorArgs);
+
+  /**
+   * The current movement data of this Token document.
+   */
+  get movement(): Readonly<TokenDocument.MovementData>;
+
+  /**
+   * The movement continuation state of this Token document.
+   * @internal
+   * @defaultValue ```js
+   * {
+   *   movementId: "",
+   *   continueCounter: 0,
+   *   continued: false,
+   *   continuePromise: Promise.resolve(false),
+   *   waitPromise: Promise.resolve(),
+   *   resolveWaitPromise: undefined,
+   *   postWorkflowPromise: Promise.resolve(),
+   *   states: {}
+   * }
+   * ```
+   */
+  protected _movementContinuation: TokenDocument.MovementContinuationData;
 
   /**
    * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
@@ -1108,7 +1396,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   /**
    * A reference to the base, World-level Actor this token represents.
    */
-  get baseActor(): Actor.Implementation | undefined;
+  get baseActor(): Actor.Implementation | null;
 
   /**
    * An indicator for whether or not the current User has full control over this Token document.
@@ -1137,9 +1425,21 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   get inCombat(): boolean;
 
   /**
+   * The movement history
+   */
+  get movementHistory(): TokenDocument.MeasuredMovementWaypoint;
+
+  /**
+   * Check if the document has a distinct subject texture (inferred or explicit).
+   */
+  get hasDistinctSubjectTexture(): boolean;
+
+  /**
    * The Regions this Token is currently in.
    */
   regions: Set<RegionDocument.Implementation> | null;
+
+  protected override _initializeSource(data: TokenDocument.CreateData, options?: Document.InitializeSourceOptions): TokenDocument.Source;
 
   // options: not null (parameter default only)
   protected override _initialize(options?: Document.InitializeOptions): void;
@@ -1154,6 +1454,12 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * Infer the subject texture path to use for a token ring.
    */
   protected _inferRingSubjectTexture(): string;
+
+  /**
+   * Infer the movement action.
+   * The default implementation returns `CONFIG.Token.movement.defaultAction`.
+   */
+  protected _inferMovementAction(): string;
 
   /**
    * Prepare detection modes which are available to the Token.
@@ -1175,6 +1481,110 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @returns Does the Actor of the Token have this status effect?
    */
   hasStatusEffect(statusId: string): boolean;
+
+  /**
+   * Move the Token through the given waypoint(s).
+   * @param waypoints - The waypoint(s) to move the Token through
+   * @param options   - Parameters of the update operation
+   * @returns A Promise that resolves to true if the Token was moved, otherwise resolves to false
+   */
+  // TODO: extract this `options` typing
+  move(
+    waypoints: Partial<TokenDocument.MovementWaypoint> | Partial<TokenDocument.MovementWaypoint>[],
+    options?: Partial<Omit<TokenDocument.Database.UpdateOperation, "updates"> & { method: TokenDocument.MovementMethod; autoRotate: boolean; showRuler: boolean; constrainOptions: Omit<TokenDocument.ConstrainMovementPathOptions, "preview" | "history">}>
+  ): Promise<boolean>;
+
+  /**
+   * Undo all recorded movement or the recorded movement corresponding to given movement ID up to the last movement.
+   * The token is displaced to the prior recorded position and the movement history it rolled back accordingly.
+   * @param movementId - The ID of the recorded movement to undo
+   * @returns True if the movement was undone, otherwise false
+   */
+  revertRecordedMovement(movementId?: string): Promise<boolean>;
+
+  /**
+   * Resize the token Token such that its center point remains (almost) unchanged. The center point might change
+   * slightly because the new (x, y) position is rounded.
+   * @param dimensions - The new dimensions
+   * @param options    - Parameters of the update operation
+   * @returns A Promise that resolves to true if the Token was resized, otherwise resolves to false
+   */
+  resize(dimensions: Partial<TokenDocument.Dimensions>, options?: Partial<Omit<TokenDocument.Database.UpdateOperation, "updates">>): Promise<boolean>;
+
+  /**
+   * Stop the movement of this Token document. The movement cannot be continued after being stopped.
+   * Only the User that initiated the movement can stop it.
+   * @returns True if the movement was or is stopped, otherwise false
+   */
+  stopMovement(): boolean;
+
+  /**
+   * Pause the movement of this Token document. The movement can be resumed after being paused.
+   * Only the User that initiated the movement can pause it.
+   * Returns a callback that can be used to resume the movement later.
+   * Only after all callbacks and keys have been called the movement of the Token is resumed.
+   * If the callback is called within the update operation workflow, the movement is resumed after the workflow.
+   * @overload
+   * @returns The callback to resume movement if the movement was or is paused,
+   *                                              otherwise null
+   * @example
+   * ```js
+   * // This is an Execute Script Region Behavior that makes the token invisible
+   * // On TOKEN_MOVE_IN...
+   * if ( !event.user.isSelf ) return;
+   * const resumeMovement = event.data.token.pauseMovement();
+   * event.data.token.toggleStatusEffect("invisible", {active: true});
+   * const resumed = await resumeMovement();
+   * ```
+   */
+  /**
+   * Pause the movement of this Token document. The movement can be resumed after being paused.
+   * Only the User that initiated the movement can pause it.
+   * Returns a promise that resolves to true if the movement was resumed by
+   * {@link foundry.documents.TokenDocument.resumeMovement | `TokenDocument#resumeMovement`} with the same key that was passed to this function.
+   * Only after all callbacks and keys have been called the movement of the Token is resumed.
+   * If the callback is called within the update operation workflow, the movement is resumed after the workflow.
+   * @overload
+   * @param key - The key to resume movement with {@link foundry.documents.TokenDocument.resumeMovement | `TokenDocument#resumeMovement`}
+   * @returns The continuation promise if the movement was paused, otherwise null
+   * @example
+   * ```js
+   * // This is an Execute Script Region Behavior of a pressure plate that activates a trap
+   * // On TOKEN_MOVE_IN...
+   * if ( event.user.isSelf ) {
+   *   event.data.token.pauseMovement(this.parent.uuid);
+   * }
+   * if ( game.user.isActiveGM ) {
+   *   const trapUuid; // The Region Behavior UUID of the trap
+   *   const trapBehavior = await fromUuid(trapUuid);
+   *   await trapBehavior.update({disabled: false});
+   *   event.data.token.resumeMovement(event.data.movement.id, this.parent.uuid);
+   * }
+   * ```
+   */
+  pauseMovement(key?: string): () => Promise<boolean> | Promise<boolean> | null;
+
+  /**
+   * Resume the movement given its ID and the key that was passed to {@link foundry.documents.TokenDocument.pauseMovement | `TokenDocument#pauseMovement`}.
+   * @param movementId - The movement ID
+   * @param key        - The key that was passed to {@link foundry.documents.TokenDocument.pauseMovement | `TokenDocument#pauseMovement`}
+   */
+  resumeMovement(movementId: string, key: string): void;
+
+  /**
+   * Measure the movement path for this Token.
+   * @param waypoints - The waypoints of movement
+   * @param options   - Additional measurement options
+   */
+  // TODO: type this out
+  measureMovementPath(waypoints: TokenDocument.MeasuredMovementWaypoint[], options?: unknown): foundry.grid.BaseGrid.MeasurePathResult;
+
+  /**
+   * Get the path of movement with the intermediate steps of the direct path between waypoints.
+   * @param waypoints - The waypoints of movement
+   * @returns The path of movement with all intermediate steps 
+   */
+  getCompleteMovementPath(waypoints: Partial<Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId" | "cost">>): Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId" | "cost">;
 
   /**
    * Add or remove this Token from a Combat encounter.
@@ -1229,8 +1639,90 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
     embeddedName: EmbeddedName,
   ): TokenDocument.GetEmbeddedCollectionResult<EmbeddedName>;
 
-  // _onCreate, _preUpdate, _onUpdate, _onDelete, preCreateOperation, _preUpdateOperation, _onCreateOperation,
+  // _onCreate, _preUpdate, _onUpdate, _onDelete, _preCreateOperation, _preUpdateOperation, _onCreateOperation,
   // _onUpdateOperation, _onDeleteOperation are all overridden but with no signature changes from their definition in BaseToken.
+
+  /**
+   * 
+   * @param changes - The changes that will be applied to this Token
+   * @returns The Region IDs this Token is in after changes ar applied (sorted)
+   * @internal
+   */
+  // TODO: type this properly
+  protected _identifyRegions(changes?: unknown): string[];
+
+  /**
+   * Reject the movement or modify the update operation as needed based on the movement.
+   * Called after the movement for this document update has been determined.
+   * The waypoints of movement are final and cannot be changed. The movement can only be rejected entirely.
+   * @param movement  - The pending movement of this Token
+   * @param operation - The update operation
+   * @returns If false, the movement is prevented
+   * @remarks default implementation does nothing
+   */
+  // TODO: extract these types, maybe
+  protected _preUpdateMovement(
+    movement: Readonly<Omit<TokenDocument.MovementOperation, "autoRotate" | "showRuler">> & Pick<TokenDocument.MovementOperation, "autoRotate" | "showRuler">,
+    operation: Partial<TokenDocument.Database.UpdateOperation>
+  ): Promise<boolean | void>;
+
+  /**
+   * Post-process an update operation of a movement.
+   * @param movement  - The movement of this Token
+   * @param operation - The update operation
+   * @param user      - The User that requested the update operation
+   * @remarks default implementation does nothing
+   */
+  protected _onUpdateMovement(movement: Readonly<TokenDocument.MovementOperation>, operation: Partial<TokenDocument.Database.UpdateOperation>, user: User.Implementation): void;
+
+  /**
+   * Called when the current movement is stopped.
+   */
+  protected _onMovementStopped(): void;
+
+  /**
+   * Called when the current movement is paused.
+   */
+  protected _onMovementPaused(): void;
+
+  /**
+   * Called when the movement is recorded or cleared.
+   */
+  protected _onMovementRecorded(): void;
+
+  /**
+   * Add deprecated getters for the teleport and forced option.
+   * @internal
+   * @deprecated since v13
+   */
+  protected static _addTeleportAndForcedShims(operation: TokenDocument.Database.UpdateOperation): void;
+
+  /**
+   * Are these changes moving the Token?
+   * @overload
+   * @param changes - The (candidate) changes
+   */
+  /**
+   * Are these changes moving the Token from the given origin?
+   * @overload
+   * @param changes - The (candidate) changes
+   * @param origin  - The origin
+   * @returns Is movement?
+   * @internal
+   */
+  protected static _isMovementUpdate(changes: TokenDocument.UpdateData, origin?: TokenDocument.Position): boolean;
+
+  /**
+   * Should the movement of this Token update be recorded in the movement history?
+   * Called as part of the preUpdate workflow if the Token is moved.
+   * @returns Should the movement of this Token update be recorded in the movement history?
+   */
+  protected _shouldRecordMovementHistory(): boolean;
+
+  /**
+   * Clear the movement history of this Token.
+   */
+  clearMovementHistory(): Promise<void>;
 
   /**
    * Is to Token document updated such that the Regions the Token is contained in may change?
@@ -1239,6 +1731,65 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @returns Could this Token update change Region containment?
    */
   protected _couldRegionsChange(changes: TokenDocument.UpdateData): boolean;
+
+  /**
+   * Test whether the Token is inside the Region.
+   * This function determines the state of {@link TokenDocument#regions} and
+   * {@link foundry.documents.RegionDocument#tokens}.
+   * The Token and the Region must be in the same Scene.
+   *
+   * Implementations of this function are restricted in the following ways:
+   *   - If the bounds (given by {@link TokenDocument#getSize}) of the Token do not intersect the
+   *     Region, then the Token is not contained within the Region.
+   *   - If the Token is inside the Region a particular elevation, then the Token is inside the Region at any elevation
+   *     within the elevation range of the Region.
+   *   - This function must not use prepared field values that are animated. In particular, it must use the source
+   *     instead of prepared values of the following fields: `x`, `y`, `elevation`, `width`, `height`, and `shape`.
+   *
+   * If this function is overridden, then {@link TokenDocument#segmentizeRegionMovementPath} must be
+   * overridden too.
+   *
+   * If an override of this function uses Token document fields other than `x`, `y`, `elevation`, `width`, `height`, and
+   * `shape`, {@link TokenDocument#_couldRegionsChange} must be overridden to return true for changes
+   * of these fields. If an override of this function uses non-Token properties other than `Scene#grid.type` and
+   * `Scene#grid.size`,
+   * {@link foundry.documents.Scene#updateTokenRegions} must be called when any of those properties change.
+   * @overload
+   * @param region - The region.
+   */
+  /**
+   * @overload
+   * @param region - The region.
+   * @param data   - The position and dimensions. Defaults to the values of the document source.
+   * @returns Is inside the Region?
+   */
+  testInsideRegion(region: RegionDocument, data?: Partial<foundry.canvas.Canvas.ElevatedPoint & TokenDocument.Dimensions>): boolean;
+
+  /**
+   * Split the Token movement path through the Region into its segments.
+   * The Token and the Region must be in the same Scene.
+   *
+   * Implementations of this function are restricted in the following ways:
+   *   - The segments must go through the waypoints.
+   *   - The *from* position matches the *to* position of the succeeding segment.
+   *   - The Token must be contained (w.r.t. {@link TokenDocument#testInsideRegion}) within the Region
+   *     at the *from* and *to* of MOVE segments.
+   *   - The Token must be contained (w.r.t. {@link TokenDocument#testInsideRegion}) within the Region
+   *     at the *to* position of ENTER segments.
+   *   - The Token must be contained (w.r.t. {@link TokenDocument#testInsideRegion}) within the Region
+   *     at the *from* position of EXIT segments.
+   *   - The Token must not be contained (w.r.t. {@link TokenDocument#testInsideRegion}) within the
+   *     Region at the *from* position of ENTER segments.
+   *   - The Token must not be contained (w.r.t. {@link TokenDocument#testInsideRegion}) within the
+   *     Region at the *to* position of EXIT segments.
+   *   - This function must not use prepared field values that are animated. In particular, it must use the source
+   *     instead of prepared values of the following fields: `x`, `y`, `elevation`, `width`, `height`, and `shape`.
+   * @param region    - The region
+   * @param waypoints - The waypoints of movement
+   * @returns The movement split into its segments
+   */
+  // TODO: extract this typing
+  segmentizeRegionMovementPath(region: RegionDocument, waypoints: Partial<Pick<TokenDocument.MeasuredMovementWaypoint, "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped">>[]): RegionDocument.MovementSegment[];
 
   /**
    * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
@@ -1421,24 +1972,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   ): TokenDocument.TrackedAttributesChoice[];
 
   /**
-   * @deprecated since v11, no specified end
-   * @remarks `"TokenDocument#getActor has been deprecated. Please use the`
-   * `TokenDocument#actor getter to retrieve the Actor instance that the TokenDocument represents, or use`
-   * `TokenDocument#delta#apply to generate a new synthetic Actor instance."`
-   */
-  getActor(): Actor.Implementation;
-
-  /**
-   * @deprecated since v11, until v13
-   * @remarks "You are accessing `TokenDocument#actorData` which is deprecated. Source data may be retrieved via
-   * {@link TokenDocument.delta | `TokenDocument#delta`} but all modifications/access should be done via the
-   * synthetic Actor at {@link TokenDocument.actor | `TokenDocument#actor`} if possible."
-   */
-  get actorData(): ActorDelta.Source;
-
-  set actorData(actorData: ActorDelta.CreateData);
-
-  /**
    * A helper function to toggle a status effect which includes an Active Effect template
    * @param effectData - The Active Effect data, including statusId
    * @param options    - Options to configure application of the Active Effect
@@ -1470,7 +2003,8 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<TokenDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Token", NonNullable<TokenDocument.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"Token">,
+    options?: Document.CreateDialogOptions<"Token">,
   ): Promise<TokenDocument.Stored | null | undefined>;
 
   // options: not null (parameter default only)

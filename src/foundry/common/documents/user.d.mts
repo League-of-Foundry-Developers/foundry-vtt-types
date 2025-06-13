@@ -235,8 +235,6 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
     user: User.Implementation,
   ): Promise<void>;
 
-  static override get hasSystemData(): undefined;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
 
   // options: not null (parameter default only in _addDataFieldShim)

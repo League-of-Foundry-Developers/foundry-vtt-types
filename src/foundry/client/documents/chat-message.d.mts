@@ -603,14 +603,6 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   constructor(...args: ChatMessage.ConstructorArgs);
 
   /**
-   * Is the display of dice rolls in this message collapsed (false) or expanded (true)
-   * @defaultValue `false`
-   * @private
-   * @remarks Toggled in {@link ChatLog._onDiceRollClick | `ChatLog#_onDiceRollClick`}
-   */
-  protected _rollExpanded: boolean;
-
-  /**
    * Is this ChatMessage currently displayed in the sidebar ChatLog?
    * @defaultValue `false`
    * @remarks Set `true` in {@link ChatLog.postOne | `ChatLog#postOne`} and {@link ChatLog._renderBatch | `ChatLog#_renderBatch`}
@@ -647,16 +639,25 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   get visible(): boolean;
 
   /**
+   * The Actor which represents the speaker of this message (if any).
+   */
+  get speakerActor(): Actor.Implementation | null;
+
+  /**
    * @remarks Initializes `this.rolls` from an array of JSON-serializable objects to instances of their listed Roll class,
    * dropping any that throw when passed to {@linkcode Roll.fromData}
    */
   override prepareDerivedData(): void;
 
   /**
-   * Transform a provided object of ChatMessage data by applying a certain rollMode to the data object.
-   * @param chatData - The object of ChatMessage data prior to applying a rollMode preference
-   * @param rollMode - The rollMode preference to apply to this message data
-   * @returns The modified ChatMessage data with rollMode preferences applied
+   * Transform a provided object of ChatMessage data by applying a certain roll mode to the data object.
+   *  - Public: `whisper` is set to `[]` and `blind` is set to `false`.
+   *  - Self: `whisper` is set to `[game.user.id]` and `blind` is set to `false`.
+   *  - Private: `whisper` is set to the GM users unless `whisper` is nonempty and `blind` is set to `false`.
+   *  - Blind: `whisper` is set to the GM users unless `whisper` is nonempty and `blind` is set to `true`.
+   * @param chatData - The object of ChatMessage data
+   * @param rollMode - The roll mode to apply to this message data. `"roll"` is the current roll mode.
+   * @returns The modified ChatMessage data with the roll mode applied
    */
   static applyRollMode(
     chatData: ChatMessage.CreateData,
@@ -664,8 +665,9 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   ): ChatMessage.CreateData;
 
   /**
-   * Update the data of a ChatMessage instance to apply a requested rollMode
-   * @param rollMode - The rollMode preference to apply to this message data
+   * Update the data of a ChatMessage instance to apply a requested roll mode.
+   * This function calls {@link ChatMessage.applyRollMode} and updates the source of the ChatMessage.
+   * @param rollMode - The roll mode to apply to this message data. `"roll"` is the current roll mode.
    * @remarks Only calls `this.updateSource`, doesn't db update messages already stored
    */
   applyRollMode(rollMode: ChatMessage.PassableRollMode): void;
@@ -682,32 +684,11 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   static getSpeaker(options?: ChatMessage.GetSpeakerOptions): ChatMessage.SpeakerData;
 
   /**
-   * A helper to prepare the speaker object based on a target TokenDocument
-   * @param options - Options which affect speaker identification
-   * @returns The identified speaker data
-   */
-  protected static _getSpeakerFromToken(options: ChatMessage.GetSpeakerFromTokenOptions): ChatMessage.SpeakerData;
-
-  /**
-   * A helper to prepare the speaker object based on a target Actor
-   * @param options - Options which affect speaker identification
-   * @returns The identified speaker data
-   */
-  protected static _getSpeakerFromActor(options: ChatMessage.GetSpeakerFromActorOptions): ChatMessage.SpeakerData;
-
-  /**
-   * A helper to prepare the speaker object based on a target User
-   * @param options - Options which affect speaker identification
-   * @returns The identified speaker data
-   */
-  protected static _getSpeakerFromUser(options: ChatMessage.GetSpeakerFromUserOptions): ChatMessage.SpeakerData;
-
-  /**
    * Obtain an Actor instance which represents the speaker of this message (if any)
    * @param speaker - The speaker data object
    * @remarks `speaker` has no parameter default, if it's falsey this returns `null`
    */
-  static getSpeakerActor(speaker?: ChatMessage.SpeakerData | null): Actor.Implementation | null;
+  static getSpeakerActor(speaker?: ChatMessage.SpeakerData): Actor.Implementation | null;
 
   /**
    * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
@@ -722,26 +703,13 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * @remarks See {@linkcode ChatMessage.WhisperRecipient}
    */
   static getWhisperRecipients(name: ChatMessage.WhisperRecipient): User.Stored[];
-
+  
   /**
    * Render the HTML for the ChatMessage which should be added to the log
+   * @param options - Additional options passed to the Handlebars Template.
    */
-  getHTML(): Promise<JQuery>;
-
-  /**
-   * Render the inner HTML content for ROLL type messages.
-   * @param messageData - The chat message data used to render the message HTML
-   * @internal
-   */
-  protected _renderRollContent(messageData: ChatMessage.MessageData): Promise<void>;
-
-  /**
-   * Render HTML for the array of Roll objects included in this message.
-   * @param isPrivate - Is the chat message private? (default: `false`)
-   * @returns The rendered HTML string
-   * @remarks `isPrivate` is passed into {@link Roll.render | `Roll#render`} where it has a parameter default of `false`
-   */
-  protected _renderRollHTML(isPrivate?: boolean | null): Promise<string>;
+  // TODO: better type `options`
+  renderHTML(options?: { canDelete?: boolean; canClose?: boolean}): Promise<HTMLElement>;
 
   // _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
@@ -750,6 +718,12 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * Export the content of the chat message into a standardized log format
    */
   export(): string;
+
+  
+  /**
+   * @deprecated since v13 until v15
+   */
+  getHTML(): Promise<JQuery>;
 
   /*
    * After this point these are not really overridden methods.
@@ -771,7 +745,8 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Document.CreateDialogData<ChatMessage.CreateData>,
-    context?: Document.CreateDialogContext<"ChatMessage", ChatMessage.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"ChatMessage">,
+    options?: Document.CreateDialogOptions<"ChatMessage">,
   ): Promise<ChatMessage.Stored | null | undefined>;
 
   // options: not null (parameter default only)

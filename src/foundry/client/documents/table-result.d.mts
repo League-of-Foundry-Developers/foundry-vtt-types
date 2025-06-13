@@ -441,8 +441,19 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
   override prepareBaseData(): void;
 
   /**
-   * Prepare a string representation for the result which (if possible) will be a dynamic link or otherwise plain text
-   * @returns The text to display
+   * Prepare a string representation for this result.
+   */
+  getHTML: Promise<string>;
+
+  /**
+   * Create a content-link anchor from this Result's referenced Document.
+   */
+  documentToAnchor(): HTMLAnchorElement | null;
+
+  // _preUpdate is overridden but with no signature changes.
+
+  /**
+   * @deprecated since V13 until V15
    */
   getChatText(): string;
 
@@ -468,7 +479,8 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<TableResult.CreateData> | undefined,
-    context: Document.CreateDialogContext<"TableResult", NonNullable<TableResult.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"TableResult">,
+    options?: Document.CreateDialogOptions<"TableResult">,
   ): Promise<TableResult.Stored | null | undefined>;
 
   // options: not null (parameter default only)

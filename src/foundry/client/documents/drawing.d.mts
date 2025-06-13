@@ -502,6 +502,12 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
   constructor(...args: DrawingDocument.ConstructorArgs);
 
   /**
+   * Fields included in the drawing defaults setting
+   * @defaultValue `["strokeWidth", "strokeColor", "strokeAlpha", "bezierFactor", "fillType", "fillColor", "fillAlpha", "texture", "text", "fontFamily", "fontSize", "textColor", "textAlpha"]`
+   */
+  static defaultDrawingFields: (keyof DrawingDocument.InitializedData)[];
+
+  /**
    * Is the current User the author of this drawing?
    */
   get isAuthor(): boolean;
@@ -528,7 +534,8 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<DrawingDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Drawing", NonNullable<DrawingDocument.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"Drawing">,
+    options?: Document.CreateDialogOptions<"Drawing">,
   ): Promise<DrawingDocument.Stored | null | undefined>;
 
   // options: not null (parameter default only)

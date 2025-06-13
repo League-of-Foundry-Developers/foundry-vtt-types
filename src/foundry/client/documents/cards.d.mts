@@ -794,25 +794,6 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
   recall(options?: Cards.RecallOptions): Promise<this>;
 
   /**
-   * Perform a reset operation for a deck, retrieving all original cards from other stacks where they may have been
-   * drawn.
-   * @param options - Options which modify the reset operation. (default: `{}`)
-   * @returns The Cards document after the reset operation has completed.
-   * @private
-   */
-  // options: not null (destructured)
-  protected _resetDeck(options?: Cards.RecallOptions): Promise<this>;
-
-  /**
-   * Return all cards in this stack to their original decks.
-   * @param options - Options which modify the return operation. (default: `{}`)
-   * @returns The Cards document after the return operation has completed.
-   * @private
-   */
-  // options: not null (destructured)
-  protected _resetStack(options?: InexactPartial<Cards.RecallOptions>): Promise<this>;
-
-  /**
    * A sorting function that is used to determine the standard order of Card documents within an un-shuffled stack.
    * @param a - The card being sorted
    * @param b - Another card being sorted against
@@ -834,22 +815,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    */
   protected _drawCards(number: number, how: CONST.CARD_DRAW_MODES): Card.Implementation[];
 
-  /**
-   * Create a ChatMessage which provides a notification of the cards operation which was just performed.
-   * Visibility of the resulting message is linked to the default roll mode selected in the chat log dropdown.
-   * @param source  - The source Cards document from which the action originated
-   * @param action  - The localization key which formats the chat message notification
-   * @param context - Data passed to the i18n.format method for the localization key
-   * @returns A created ChatMessage document
-   * @private
-   */
-  protected _postChatNotification(
-    source: Cards.Implementation,
-    action: string,
-    context: Record<string, unknown>,
-  ): Promise<ChatMessage.Implementation | undefined>;
-
-  // _preCreate, _onUpdate, and _preDelete are all overridden but with no signature changes from BaseCards.
+  // _preCreate and _preDelete are overridden but with no signature changes from BaseCards.
 
   /**
    * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.
@@ -884,14 +850,15 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
 
   // options: not null (parameter default only)
   override deleteDialog(
-    options?: InexactPartial<foundry.appv1.api.Dialog.Options>,
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
   ): Promise<this | false | null | undefined>;
 
   /** @remarks No type changes, just creates a fancier `Dialog` than `super` */
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Document.CreateDialogData<Cards.CreateData>,
-    context?: Document.CreateDialogContext<"Cards", Cards.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Cards">,
+    options?: Document.CreateDialogOptions<"Cards">,
   ): Promise<Cards.Stored | null | undefined>;
 
   /*

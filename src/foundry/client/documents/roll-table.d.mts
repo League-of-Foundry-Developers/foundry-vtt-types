@@ -651,12 +651,6 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
   roll(options?: RollTable.RollOptions): Promise<RollTable.Draw>;
 
   /**
-   * Handle a roll from within embedded content.
-   * @param event - The originating event.
-   */
-  protected _rollFromEmbeddedHTML(event: PointerEvent): Promise<void>;
-
-  /**
    * Get an Array of valid results for a given rolled total
    * @param value - The rolled value
    * @returns An Array of results
@@ -724,6 +718,15 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | null>;
+
+  /**
+   * Handle a roll from within embedded content.
+   * @param event  - The originating event
+   * @param action - The named action that was clicked
+   */
+  protected _onClickEmbedAction(event: PointerEvent, action: string): Promise<void>;
+
+  override onEmbed(element: foundry.applications.elements.HTMLDocumentEmbedElement): void;
 
   /**
    * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
@@ -867,7 +870,8 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Document.CreateDialogData<RollTable.CreateData>,
-    context?: Document.CreateDialogContext<"RollTable", RollTable.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"RollTable">,
+    options?: Document.CreateDialogOptions<"RollTable">,
   ): Promise<RollTable.Stored | null | undefined>;
 
   // options: not null (parameter default only)

@@ -560,6 +560,14 @@ declare namespace Combat {
     combatantId: string | null;
   }
 
+  interface TurnEventContext {
+    round: number;
+    turn: number;
+    skipped: boolean;
+  }
+
+  interface RoundEventContext extends Omit<TurnEventContext, "turn"> {}
+
   type CONFIG_SETTING = "combatTrackerConfig";
 }
 
@@ -601,7 +609,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   static CONFIG_SETTING: "combatTrackerConfig";
 
   /** Get the Combatant who has the current turn. */
-  get combatant(): Combatant.Implementation | undefined;
+  get combatant(): Combatant.Implementation | undefined | null;
 
   /**
    * Get the Combatant who has the next turn.
@@ -644,27 +652,36 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param actorOrId - An Actor ID or an Actor instance.
    */
   getCombatantsByActor(actorOrId: string | Actor.Implementation): Combatant.Implementation[];
+  
+  /**
+   * Calculate the time delta between two turns.
+   * @param fromRound - The from-round
+   * @param fromTurn  - The from-turn
+   * @param toRound   - The to-round
+   * @param toTurn    - The to-turn
+   */
+  getTimeDelta(fromRound: number, fromTurn: number | null, toRound: number, toTurn: number | null): number;
 
   /** Begin the combat encounter, advancing to round 1 and turn 1 */
-  startCombat(): Promise<this | undefined>;
+  startCombat(): Promise<this>;
 
   /** Advance the combat to the next round */
-  nextRound(): Promise<this | undefined>;
+  nextRound(): Promise<this>;
 
   /** Rewind the combat to the previous round */
-  previousRound(): Promise<this | undefined>;
+  previousRound(): Promise<this>;
 
   /** Advance the combat to the next turn */
-  nextTurn(): Promise<this | undefined>;
+  nextTurn(): Promise<this>;
 
   /** Rewind the combat to the previous turn */
-  previousTurn(): Promise<this | undefined>;
+  previousTurn(): Promise<this>;
 
   /** Display a dialog querying the GM whether they wish to end the combat encounter and empty the tracker */
-  endCombat(): Promise<this | undefined>;
+  endCombat(): Promise<this>;
 
   /** Toggle whether this combat is linked to the scene or globally available. */
-  toggleSceneLink(): Promise<this | undefined>;
+  toggleSceneLink(): Promise<this>;
 
   /** Reset all combatant initiative scores, setting the turn back to zero */
   resetAll(): Promise<this | undefined>;
@@ -733,6 +750,17 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    */
   protected _refreshTokenHUD(documents: Combatant.Implementation[]): void;
 
+  /**
+   * Clear the movement history of all Tokens within this Combat.
+   * @overload
+   */
+  /**
+   * Clear the movement history of the Combatants' Tokens.
+   * @overload
+   * @param combatants - The combatants whose movement history is cleared
+   */
+  clearMovementHistories(combatants?: Iterable<Combatant.Implementation>): Promise<void>;
+
   // _onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes from BaseCombat.
 
   /**
@@ -789,13 +817,43 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    */
   protected override _onDeleteDescendantDocuments(...args: Combat.OnDeleteDescendantDocumentsArgs): void;
 
-  #onModifyCombatants();
+  /**
+   * This workflow occurs after a Combatant is added to the Combat.
+   * This can be overridden to implement system-specific combat tracking behaviors.
+   * The default implementation of this function does nothing.
+   * This method only executes for one designated GM user. If no GM users are present this method will not be called.
+   * @param combatant - The Combatant that entered the Combat
+   */
+  protected _onEnter(combatant: Combatant.Implementation): Promise<void>;
+
+  /**
+   * This workflow occurs after a Combatant is removed from the Combat.
+   * This can be overridden to implement system-specific combat tracking behaviors.
+   * The default implementation of this function does nothing.
+   * This method only executes for one designated GM user. If no GM users are present this method will not be called.
+   * @param combatant - The Combatant that exited the Combat
+   */
+  protected _onExit(combatant: Combatant.Implementation): Promise<void>
+
+  /**
+   * Called after {@link Combat#_onExit} and takes care of clearing the movement history of the
+   * Combatant's Token.
+   * This function is not called for Combatants that don't have a Token.
+   * The default implementation clears the movement history always.
+   * @param combatant - The Combatant that exited the Combat
+   */
+  protected _clearMovementHistoryOnExit(combatant: Combatant.Implementation): Promise<void>;
 
   /**
    * Get the current history state of the Combat encounter.
    * @param combatant - The new active combatant (default: `this.combatant`)
    */
   protected _getCurrentState(combatant?: Combatant.Implementation): Combat.HistoryData;
+
+  /**
+   * Update display of Token combat turn markers.
+   */
+  protected _updateTurnMarkers(): void;
 
   /**
    * Manage the execution of Combat lifecycle events.
@@ -810,43 +868,63 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   /**
    * A workflow that occurs at the end of each Combat Turn.
-   * This workflow occurs after the Combat document update, prior round information exists in this.previous.
+   * This workflow occurs after the Combat document update.
    * This can be overridden to implement system-specific combat tracking behaviors.
+   * The default implementation of this function does nothing.
    * This method only executes for one designated GM user. If no GM users are present this method will not be called.
    * @param combatant - The Combatant whose turn just ended
+   * @param context   - The context of the turn tat just ended
    */
-  protected _onEndTurn(combatant: Combatant.Implementation): Promise<void>;
+  protected _onEndTurn(combatant: Combatant.Implementation, context: Combat.TurnEventContext): Promise<void>;
 
   /**
    * A workflow that occurs at the end of each Combat Round.
-   * This workflow occurs after the Combat document update, prior round information exists in this.previous.
+   * This workflow occurs after the Combat document update.
    * This can be overridden to implement system-specific combat tracking behaviors.
+   * The default implementation of this function does nothing.
    * This method only executes for one designated GM user. If no GM users are present this method will not be called.
+   * @param context - The context of the round that just ended
    */
-  protected _onEndRound(): Promise<void>;
+  protected _onEndRound(context: Combat.RoundEventContext): Promise<void>;
 
   /**
    * A workflow that occurs at the start of each Combat Round.
-   * This workflow occurs after the Combat document update, new round information exists in this.current.
+   * This workflow occurs after the Combat document update.
    * This can be overridden to implement system-specific combat tracking behaviors.
+   * The default implementation of this function does nothing.
    * This method only executes for one designated GM user. If no GM users are present this method will not be called.
+   * @param context - The context of the round that just started
    */
-  protected _onStartRound(): Promise<void>;
+  protected _onStartRound(context: Combat.RoundEventContext): Promise<void>;
 
   /**
    * A workflow that occurs at the start of each Combat Turn.
-   * This workflow occurs after the Combat document update, new turn information exists in this.current.
+   * This workflow occurs after the Combat document update.
    * This can be overridden to implement system-specific combat tracking behaviors.
+   * The default implementation of this function does nothing.
    * This method only executes for one designated GM user. If no GM users are present this method will not be called.
    * @param combatant - The Combatant whose turn just started
+   * @param context   - The context of the turn that just started
    */
-  protected _onStartTurn(combatant: Combatant.Implementation): Promise<void>;
+  protected _onStartTurn(combatant: Combatant.Implementation, context: Combat.TurnEventContext): Promise<void>;
 
   /**
-   * @deprecated Since v11 until v13.
-   * @remarks "`Combat#updateEffectDurations` is renamed to  {@link Combat.updateCombatantActors | `Combat#updateCombatantActors`}"
+   * Called after {@link Combat#_onStartTurn} and takes care of clearing the movement history of the
+   * Combatant's Token.
+   * This function is not called for Combatants that don't have a Token.
+   * The default implementation clears the movement history always.
+   * @param combatant - The Combatant whose turn just started
+   * @param context   - The context of the turn that just started
    */
-  updateEffectDurations(): void;
+  protected _clearMovementHistoryOnStartTurn(combatant: Combatant.Implementation, context: Combat.TurnEventContext): Promise<void>
+
+  /**
+   * When Tokens are deleted, handle actions to update/delete Combatants of these Tokens.
+   * @param tokens    - An array of Tokens which have been deleted
+   * @param operation - The operation that deleted the Tokens
+   * @param user      - The User that deleted the Tokens
+   */
+  protected static _onDeleteTokens(tokens: TokenDocument[], operation: Combat.Database.DeleteOperation, user: User.Implementation): void;
 
   /**
    * @deprecated Since v12, no stated end
@@ -932,7 +1010,8 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Document.CreateDialogData<Combat.CreateData>,
-    context?: Document.CreateDialogContext<"Combat", Combat.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Combat">,
+    options?: Document.CreateDialogOptions<"Combat">,
   ): Promise<Combat.Stored | null | undefined>;
 
   // options: not null (parameter default only)

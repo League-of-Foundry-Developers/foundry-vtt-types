@@ -2206,6 +2206,24 @@ export declare const REGION_VISIBILITY: Readonly<{
 }>;
 export type REGION_VISIBILITY = Brand<number, "constants.REGION_VISIBILITY">;
 
+export declare const REGION_MOVEMENT_SEGMENTS: Readonly<{
+  /**
+   * The segment crosses the boundary of the Region and exits it.
+   */
+  EXIT: -1 & REGION_MOVEMENT_SEGMENTS;
+
+  /**
+   * The segment does not cross the boundary of the region and is contained within it.
+   */
+  MOVE: 0 & REGION_MOVEMENT_SEGMENTS;
+
+  /**
+   * The segment crosses the boundary of the region and enters it.
+   */
+  ENTER: 1 & REGION_MOVEMENT_SEGMENTS;
+}>;
+export type REGION_MOVEMENT_SEGMENTS = Brand<number, "constants.REGION_MOVEMENT_SEGMENTS">;
+
 /**
  * @deprecated since v12
  */

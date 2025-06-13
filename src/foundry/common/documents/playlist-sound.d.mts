@@ -195,8 +195,6 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  static override get hasSystemData(): undefined;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 

@@ -554,7 +554,8 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<WallDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Wall", NonNullable<WallDocument.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"Wall">,
+    options?: Document.CreateDialogOptions<"Wall">,
   ): Promise<WallDocument.Stored | null | undefined>;
 
   // options: not null (parameter default only)

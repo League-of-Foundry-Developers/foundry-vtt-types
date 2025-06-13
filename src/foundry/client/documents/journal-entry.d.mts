@@ -517,6 +517,11 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
 
   // _onUpdate and _onDelete are overridden but with no signature changes from their definition in BaseJournalEntry.
 
+  /**
+   * A sorting comparator for `JournalEntryCategory` documents
+   */
+  static sortCategories(a: JournalEntryCategory.Implementation, b: JournalEntryCategory.Implementation): number;
+
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.
@@ -643,7 +648,8 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Document.CreateDialogData<JournalEntry.CreateData>,
-    context?: Document.CreateDialogContext<"JournalEntry", JournalEntry.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"JournalEntry">,
+    options?: Document.CreateDialogOptions<"JournalEntry">,
   ): Promise<JournalEntry.Stored | null | undefined>;
 
   // options: not null (parameter default only)

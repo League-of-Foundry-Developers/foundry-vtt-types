@@ -410,7 +410,9 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
   protected _createSound(): Sound | null;
 
   /**
-   * Determine the fade duration for this PlaylistSound based on its own configuration and that of its parent.
+   * Determine the fade-in length:
+   * - If the track is not decoded yet, just honor the configured value.
+   * - Once we know the real duration, cap the fade to half duration of the track.
    */
   get fadeDuration(): number;
 
@@ -419,6 +421,17 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
    * This will be undefined if the audio context is not yet active.
    */
   get context(): AudioContext | undefined;
+
+  /**
+   * schedule the fade-out that should occur when repeat is off.
+   * Does nothing if the sound is set to repeat or has no finite duration
+   */
+  protected _scheduleFadeOut(): void;
+
+  /**
+   * Cancel any pending fade-out on the current sound.
+   */
+  protected _cancelFadeOut(): void;
 
   /**
    * Synchronize playback for this particular PlaylistSound instance
@@ -438,7 +451,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
    */
   override _onClickDocumentLink(event: MouseEvent): Promise<Playlist.Implementation | undefined>;
 
-  // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+  // _preUpdate, _onUpdate, and _onDelete are all overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
   /**
@@ -486,7 +499,8 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<PlaylistSound.CreateData> | undefined,
-    context: Document.CreateDialogContext<"PlaylistSound", NonNullable<PlaylistSound.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"PlaylistSound">,
+    options?: Document.CreateDialogOptions<"PlaylistSound">,
   ): Promise<PlaylistSound.Stored | null | undefined>;
 
   // options: not null (parameter default only)
@@ -501,6 +515,8 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
   ): Promise<PlaylistSound.Implementation>;
 
   // Embedded document operations have been left out because PlaylistSound does not have any embedded documents.
+
+  #PlaylistSound: true;
 }
 
 export default PlaylistSound;

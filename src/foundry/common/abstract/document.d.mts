@@ -113,14 +113,6 @@ declare abstract class Document<
    */
   static get schema(): SchemaField.Any;
 
-  // options: not null (parameter default only)
-  protected _initialize(options?: Document.InitializeOptions): void;
-
-  /**
-   * A mapping of singleton embedded Documents which exist in this model.
-   */
-  readonly singletons: Record<string, Document.AnyChild<this>>;
-
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
   /**
@@ -129,23 +121,30 @@ declare abstract class Document<
    * ```typescript
    * {
    *   name: "Document",
+   *   label: "DOCUMENT.Document"
+   *   coreTypes: [BASE_DOCUMENT_TYPE],
    *   collection: "documents",
+   *   embedded: {},
+   *   hasTypeData: false,
    *   indexed: false,
    *   compendiumIndexFields: [],
-   *   label: "DOCUMENT.Document",
-   *   coreTypes: [],
-   *   embedded: {},
    *   permissions: {
-   *     create: "ASSISTANT",
-   *     update: "ASSISTANT",
-   *     delete: "ASSISTANT"
+   *     view: "LIMITED"       // At least limited permission is required to view the Document
+   *     create: "ASSISTANT",  // Assistants or Gamemasters can create Documents
+   *     update: "ASSISTANT",  // Document owners can update Documents (this includes GM users)
+   *     delete: "ASSISTANT"   // Assistants or Gamemasters can create Documents
    *   },
-   *   preserveOnImport: ["_id", "sort", "ownership"],
+   *   preserveOnImport: ["_id", "sort", "ownership", folder],
    *   schemaVersion: undefined
    * }
    * ```
    */
   static metadata: Document.Metadata.Any;
+
+  /**
+   * @defaultValue `["DOCUMENT"]`
+   */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /**
    * The database backend used to execute operations and handle results
@@ -219,20 +218,35 @@ declare abstract class Document<
   get isEmbedded(): boolean;
 
   /**
+   * Is this document in a compendium?
+   */
+  get inCompendium(): boolean;
+
+  /**
    * A Universally Unique Identifier (uuid) for this Document instance.
    */
   get uuid(): string;
 
   /**
-   * Test whether a given User has a sufficient role in order to create Documents of this type in general.
+   * Test whether a given User has sufficient permissions to create Documents of this type in general. This does not
+   * guarantee that the User is able to create all Documents of this type, as certain document-specific requirements
+   * may also be present.
+   *
+   * Generally speaking, this method is used to verify whether a User should be presented with the option to create
+   * Documents of this type in the UI.
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
    */
   static canUserCreate(user: User.Implementation): boolean;
 
   /**
-   * Get the explicit permission level that a specific User has over this Document, a value in {@link CONST.DOCUMENT_OWNERSHIP_LEVELS | `CONST.DOCUMENT_OWNERSHIP_LEVELS`}.
-   * This method returns the value recorded in Document ownership, regardless of the User's role.
+   * Get the explicit permission level that a User has over this Document, a value in {@link CONST.DOCUMENT_OWNERSHIP_LEVELS | `CONST.DOCUMENT_OWNERSHIP_LEVELS`}.
+   * Compendium content ignores the ownership field in favor of User role-based ownership. Otherwise, Documents use
+   * granular per-User ownership definitions and Embedded Documents defer to their parent ownership.
+   *
+   * This method returns the value recorded in Document ownership, regardless of the User's role, for example a
+   * GAMEMASTER user might still return a result of NONE if they are not explicitly denoted as having a level.
+   *
    * To test whether a user has a certain capability over the document, testUserPermission should be used.
    * @param user - The User being tested (default: `game.user`)
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
@@ -811,21 +825,6 @@ declare abstract class Document<
     operation: never,
     user: User.Internal.Implementation,
   ): Promise<unknown>;
-
-  /**
-   * @deprecated since v10, no specified end
-   * @remarks "You are accessing the "data" field of which was deprecated in v10 and replaced with "system".
-   * Continued usage of pre-v10 ".data" paths is no longer supported"
-   *
-   * @throws An error with the above deprecation warning, if this Document's schema has a `system` field
-   */
-  get data(): never;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "You are accessing `Document.hasSystemData` which is deprecated. Please use `Document.hasTypeData` instead."
-   */
-  static get hasSystemData(): undefined | true;
 
   /**
    * A reusable helper for adding migration shims.
@@ -1643,24 +1642,24 @@ declare namespace Document {
 
   interface Metadata<out ThisType extends Document.Any> {
     readonly name: ThisType["documentName"];
-    readonly collection: string;
-    readonly indexed: boolean;
-    readonly compendiumIndexFields: readonly string[];
     readonly label: string;
     readonly coreTypes: readonly string[];
+    readonly collection: string;
     readonly embedded: {
       [DocumentType in Document.Type]?: string;
     };
     readonly permissions: {
+      view: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
       create: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
       update: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
       delete: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: EmptyObject) => boolean>;
     };
+    readonly hasTypeData?: boolean;
+    readonly indexed: boolean;
+    readonly compendiumIndexFields: readonly string[];
     readonly preserveOnImport: readonly string[];
     readonly schemaVersion?: string | undefined;
     readonly labelPlural?: string; // This is not set for the Document class but every class that implements Document actually provides it.
-    readonly types?: readonly string[];
-    readonly hasSystemData?: boolean;
   }
 
   namespace Metadata {
@@ -1668,18 +1667,20 @@ declare namespace Document {
 
     interface Default {
       readonly name: "Document";
-      readonly collection: "documents";
-      readonly indexed: false;
-      readonly compendiumIndexFields: [];
       readonly label: "DOCUMENT.Document";
       readonly coreTypes: [CONST.BASE_DOCUMENT_TYPE];
+      readonly collection: "documents";
       readonly embedded: EmptyObject;
+      readonly hasTypeData: false;
+      readonly indexed: false;
+      readonly compendiumIndexFields: [];
       readonly permissions: {
+        view: "LIMITED";
         create: "ASSISTANT";
-        update: "ASSISTANT";
+        update: "OWNER";
         delete: "ASSISTANT";
       };
-      readonly preserveOnImport: ["_id", "sort", "ownership"];
+      readonly preserveOnImport: ["_id", "sort", "ownership", "folder"];
     }
 
     interface Embedded extends Identity<{ [K in Document.Type]?: string }> {}
@@ -2132,6 +2133,22 @@ declare namespace Document {
     }> &
     _PossibleSubtypesContext<DocumentName> &
     ParentContext<Parent>;
+
+  type CreateDialogOptions<
+    DocumentName extends Document.Type,
+  > = InexactPartial<foundry.applications.api.DialogV2.PromptConfig> &
+    NullishProps<{
+      /**
+       * A template to use for the dialog contents instead of the default.
+       */
+      template: string;
+
+      /**
+       * Additional render context to provide to the template.
+       */
+      context: AnyObject;
+    }> &
+    _PossibleSubtypesContext<DocumentName>;
 
   interface FromImportContext<Parent extends Document.Any | null> extends Omit<ConstructionContext<Parent>, "strict"> {
     /**

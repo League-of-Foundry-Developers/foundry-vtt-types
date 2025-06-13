@@ -208,8 +208,6 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     user: User.Implementation,
   ): Promise<void>;
 
-  static override get hasSystemData(): undefined;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 

@@ -439,6 +439,43 @@ declare class CombatantGroup<
    * Clear the movement history of all Tokens within this Combatant Group.
    */
   clearMovementHistories(): Promise<void>;
+
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
+   */
+  
+   // ClientDocument overrides
+  
+   // Descendant Document operations have been left out because CombatantGroup does not have any descendant documents.
+  
+   // context: not null (destructured)
+   static override defaultName(context?: Document.DefaultNameContext<"CombatantGroup", CombatantGroup.Parent>): string;
+  
+   // data: not null (parameter default only), context: not null (destructured)
+   static override createDialog(
+    data?: Document.CreateDialogData<CombatantGroup.CreateData>,
+    createOptions?: Document.Database.CreateOperationForName<"CombatantGroup">,
+    options?: Document.CreateDialogOptions<"CombatantGroup">,
+   ): Promise<CombatantGroup.Stored | null | undefined>;
+  
+   // options: not null (parameter default only)
+   static override fromDropData(
+     data: CombatantGroup.DropData,
+     options?: CombatantGroup.DropDataOptions,
+   ): Promise<CombatantGroup.Implementation | undefined>;
+  
+   static override fromImport(
+     source: CombatantGroup.Source,
+     context?: Document.FromImportContext<CombatantGroup.Parent> | null,
+   ): Promise<CombatantGroup.Implementation>;
+  
+   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 }
 
 export default CombatantGroup;

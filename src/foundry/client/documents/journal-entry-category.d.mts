@@ -343,6 +343,43 @@ declare namespace JournalEntryCategory {
  */
 declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.ClientDocument {
   override prepareDerivedData(): void;
+
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
+   */
+
+  // ClientDocument overrides
+
+  // Descendant Document operations have been left out because JournalEntryCategory does not have any descendant documents.
+
+  // context: not null (destructured)
+  static override defaultName(context?: Document.DefaultNameContext<"JournalEntryCategory", JournalEntryCategory.Parent>): string;
+
+  // data: not null (parameter default only), context: not null (destructured)
+  static override createDialog(
+    data?: Document.CreateDialogData<JournalEntryCategory.CreateData>,
+    createOptions?: Document.Database.CreateOperationForName<"JournalEntryCategory">,
+    options?: Document.CreateDialogOptions<"JournalEntryCategory">,
+  ): Promise<JournalEntryCategory.Stored | null | undefined>;
+
+  // options: not null (parameter default only)
+  static override fromDropData(
+    data: JournalEntryCategory.DropData,
+    options?: JournalEntryCategory.DropDataOptions,
+  ): Promise<JournalEntryCategory.Implementation | undefined>;
+
+  static override fromImport(
+    source: JournalEntryCategory.Source,
+    context?: Document.FromImportContext<JournalEntryCategory.Parent> | null,
+  ): Promise<JournalEntryCategory.Implementation>;
+
+  override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 }
 
 export default JournalEntryCategory;

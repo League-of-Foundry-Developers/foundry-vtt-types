@@ -478,7 +478,8 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<TileDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Tile", NonNullable<TileDocument.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"Tile">,
+    options?: Document.CreateDialogOptions<"Tile">,
   ): Promise<TileDocument.Stored | null | undefined>;
 
   // options: not null (parameter default only)

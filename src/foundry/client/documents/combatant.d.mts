@@ -503,19 +503,6 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   get isDefeated(): boolean;
 
   /**
-   * @remarks Returns `true` for GMs, regardless of `options.exact`. Otherwise, returns
-   * `this.actor?.canUserModify(user, "update") || false`
-   *
-   * @privateRemarks This is the only document that overrides this in the non-Base class
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
-
-  /**
    * Get a Roll object which represents the initiative roll for this Combatant.
    * @param formula -  An explicit Roll formula to use for the combatant.
    * @returns The Roll instance to use for the combatant.
@@ -527,7 +514,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
    * @param formula - A dice formula which overrides the default for this Combatant.
    * @returns The updated Combatant.
    */
-  rollInitiative(formula: string): Promise<this | undefined>;
+  rollInitiative(formula?: string): Promise<this | undefined>;
 
   /**
    * @remarks Initializes `_videoSrc`, applies `img` and `name` fallbacks, and calls {@link Combatant.updateResource | `Combatant#updateResource`}
@@ -545,6 +532,16 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
    * @returns  The initiative formula to use for this combatant.
    */
   protected _getInitiativeFormula(): string;
+
+  /**
+   * Prepare derived data based on group membership.
+   */
+  protected _prepareGroup(): void;
+
+  /**
+   * Clear the movement history of the Combatant's Token.
+   */
+  clearMovementHistory: Promise<void>;
 
   // DatabaseLifecycle Events are overridden but with no signature changes.
   // These are already covered in BaseCombatant
@@ -571,7 +568,8 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<Combatant.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Combatant", NonNullable<Combatant.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"Combatant">,
+    options?: Document.CreateDialogOptions<"Combatant">,
   ): Promise<Combatant.Stored | null | undefined>;
 
   // options: not null (parameter default only)

@@ -556,6 +556,34 @@ declare namespace RegionDocument {
   interface _EventData {
     readonly [K: string]: Document.Any | _EventData | _EventData[];
   }
+
+  interface SegmentizeMovementPathWaypoint {
+    /** The x-coordinate in pixels (integer). */
+    x: number;
+
+    /** The y-coordinate in pixels (integer). */
+    y: number;
+
+    /** The elevation in grid units. */
+    elevation: number;
+
+    /** Teleport from the previous to this waypoint? Default: `false`. */
+    teleport?: boolean;
+  }
+
+  interface MovementSegment {
+    /** The type of this segment (see {@link CONST.REGION_MOVEMENT_SEGMENTS}). */
+    type: CONST.REGION_MOVEMENT_SEGMENTS;
+
+    /** The waypoint that this segment starts from. */
+    from: foundry.canvas.Canvas.ElevatedPoint;
+
+    /** The waypoint that this segment goes to. */
+    to: foundry.canvas.Canvas.ElevatedPoint;
+
+    /** Teleport between the waypoints? */
+    teleport: boolean;
+  }
 }
 
 /**
@@ -569,31 +597,104 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   constructor(...args: RegionDocument.ConstructorArgs);
 
   /**
+   * The shapes of this Region.
+   * 
+   * The value of this property must not be mutated.
+   * 
+   * This property is updated only by a document update.
+   */
+  get regionShapes(): ReadonlyArray<foundry.data.regionShapes.RegionShape<any>>;
+  
+    /**
+     * The polygons of this Region.
+     * 
+     * The value of this property must not be mutated.
+     * 
+     * This property is updated only by a document update.
+     */
+    get polygons(): ReadonlyArray<PIXI.Polygon>;
+
+  /**
+   * The polygon tree of this Region.
+   * 
+   * The value of this property must not be mutated.
+   * 
+   * This property is updated only by a document update.
+   */
+  get polygonTree(): foundry.data.regionShapes.RegionPolygonTree;
+
+  /**
+   * The Clipper paths of this Region.
+   * 
+   * The value of this property must not be mutated.
+   * 
+   * This property is updated only by a document update.
+   */
+  get clipperPaths(): ReadonlyArray<ReadonlyArray<ClipperLib.IntPoint>>;
+
+  /**
+   * The triangulation of this Region.
+   * 
+   * The value of this property must not be mutated.
+   * 
+   * This property is updated only by a document update.
+   */
+  get triangulation(): Readonly<{ vertices: Float32Array; indices: Uint16Array | Uint32Array }>;
+
+  /**
+   * The bounds of this Region.
+   * 
+   * The value of this property must not be mutated.
+   * 
+   * This property is updated only by a document update.
+   */
+  get bounds(): PIXI.Rectangle;
+  
+  /** 
+   * The tokens inside this region.
+   * @remarks marked by foundry as `@readonly`
+   */
+  tokens: ReadonlySet<TokenDocument.Implementation>;
+
+  prepareBaseData(): void;
+
+  /**
+   * Test whether the given point (at the given elevation) is inside this Region.
+   * @param point - The point.
+   * @returns Is this point inside this Region?
+   */
+  testPoint(point: foundry.canvas.Canvas.ElevatedPoint): boolean;
+
+  /**
+   * Split the movement path into its segments.
+   * @param waypoints - The waypoints of movement.
+   * @param samples   - The points relative to the waypoints that are tested.
+   *                    Whenever one of them is inside the region, the moved object
+   *                    is considered to be inside the region.
+   * @returns The movement split into its segments.
+   */
+  segmentizeMovementPath(waypoints: RegionDocument.SegmentizeMovementPathWaypoint[], samples: foundry.canvas.Canvas.Point[]): RegionDocument.MovementSegment[];
+
+  /**
+   * Teleport a Token into this Region.
+   * The Token may be in the same Scene as this Region, or in a different Scene.
+   * The current User must be an owner of the Token Document in order to teleport it
+   * For teleportation to a different Scene the current User requires `TOKEN_CREATE` and
+   * `TOKEN_DELETE` permissions. If the Token is teleported to different Scene, it is deleted
+   * and a new Token Document in the other Scene is created.
+   * @param token - An existing Token Document to teleport
+   * @returns The same Token Document if teleported within the same Scene, or a new Token Document if teleported to a different Scene
+   */
+  teleportToken(token: TokenDocument.Implementation): Promise<TokenDocument.Implementation>;
+
+  /**
    * Activate the Socket event listeners.
    * @param socket - The active game socket
    * @internal
    */
   protected static _activateSocketListeners(socket: WebSocket): void;
 
-  /**
-   * Update the tokens of the given regions.
-   *
-   * If called during Region/Scene create/update/delete workflows, the Token documents are always reset and
-   * so never in an animated state, which means the reset option may be false. It is important that the
-   * containment test is not done in an animated state.
-   * @param regions - The regions to update the tokens for
-   * @internal
-   */
-  // options: not null (destructured)
-  protected static _updateTokens(
-    regions: RegionDocument.Implementation[],
-    options?: RegionDocument.UpdateTokensOptions,
-  ): Promise<void>;
-
-  // _onCreateOperation, _onUpdateOperation, and _onDeleteOperation are overridden from BaseRegion without signature changes.
-
-  /** The tokens inside this region. */
-  tokens: Set<TokenDocument.Implementation>;
+  // _onUpdate, _onCreateOperation, _onUpdateOperation, and _onDeleteOperation are overridden from BaseRegion without signature changes.
 
   /**
    * Trigger the Region event.
@@ -738,7 +839,8 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<RegionDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Region", NonNullable<RegionDocument.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"Region">,
+    options?: Document.CreateDialogOptions<"Region">,
   ): Promise<RegionDocument.Stored | null | undefined>;
 
   // options: not null (parameter default only)

@@ -690,7 +690,8 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Document.CreateDialogData<Item.CreateData>,
-    context?: Document.CreateDialogContext<"Item", Item.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Item">,
+    options?: Document.CreateDialogOptions<"Item">,
   ): Promise<Item.Stored | null | undefined>;
 
   // options: not null (parameter default only)

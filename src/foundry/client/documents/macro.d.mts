@@ -545,6 +545,8 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   /** @remarks Returns `this.execute({event})` */
   override _onClickDocumentLink(event: MouseEvent): Macro.ExecuteReturn<SubType>;
 
+  // _onCreate is overridden but with no signature changes from its definition in BaseMacro.
+
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.
@@ -565,7 +567,8 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Macro.CreateData,
-    context?: Document.CreateDialogContext<"Macro", Macro.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Macro">,
+    options?: Document.CreateDialogOptions<"Macro">,
   ): Promise<Macro.Stored | null | undefined>;
 
   // options: not null (parameter default only)

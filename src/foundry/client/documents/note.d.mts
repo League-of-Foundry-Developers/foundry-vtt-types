@@ -445,6 +445,12 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
    */
   constructor(...args: NoteDocument.ConstructorArgs);
 
+  static override createDialog(
+    data: Document.CreateDialogData<NoteDocument.CreateData> | undefined,
+    createOptions?: Document.Database.CreateOperationForName<"Note">,
+    dialogOptions?: Document.CreateDialogOptions<"Note">,
+  ): Promise<NoteDocument.Stored | null | undefined>;
+
   /**
    * The associated JournalEntry which is referenced by this Note
    */
@@ -477,11 +483,6 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
   // context: not null (destructured)
   static override defaultName(context?: Document.DefaultNameContext<"Note", NonNullable<NoteDocument.Parent>>): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
-  static override createDialog(
-    data: Document.CreateDialogData<NoteDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Note", NonNullable<NoteDocument.Parent>>,
-  ): Promise<NoteDocument.Stored | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(
