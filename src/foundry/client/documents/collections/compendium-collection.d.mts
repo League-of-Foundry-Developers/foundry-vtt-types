@@ -3,6 +3,7 @@ import type Document from "#common/abstract/document.d.mts";
 
 import SocketInterface = foundry.helpers.SocketInterface;
 import Game = foundry.Game;
+import type ApplicationV2 from "#client/applications/api/application.mjs";
 
 /**
  * A collection of Document objects contained within a specific compendium pack.
@@ -21,12 +22,6 @@ declare class CompendiumCollection<
 
   /** A subsidiary collection which contains the more minimal index of the pack */
   index: IndexTypeForMetadata<Type>;
-
-  /**
-   * A debounced function which will clear the contents of the Compendium pack if it is not accessed frequently.
-   * @internal
-   */
-  _flush: () => void;
 
   /**
    * The amount of time that Document instances within this CompendiumCollection are held in memory.
@@ -83,11 +78,6 @@ declare class CompendiumCollection<
   get sort(): number;
 
   // Note(LukeAbby): The override for `_getVisibleTreeContents` become unreasonably long and don't add any changes and so has been omitted.
-
-  static _sortStandard(
-    a: foundry.documents.abstract.DirectoryCollectionMixin.StandardSortEntry,
-    b: foundry.documents.abstract.DirectoryCollectionMixin.StandardSortEntry,
-  ): number;
 
   /** Access the compendium configuration data for this pack */
   get config(): foundry.documents.collections.CompendiumCollection.Configuration | EmptyObject;
@@ -233,13 +223,13 @@ declare class CompendiumCollection<
 
   /**
    * Provide a dialog form that prompts the user to import the full contents of a Compendium pack into the World.
-   * @param options - Additional options passed to the Dialog.confirm method
+   * @param options - Additional options passed to the DialogV2.confirm method
    *                  (default: `{}`)
    * @returns A promise which resolves in the following ways: an array of imported
    *          Documents if the "yes" button was pressed, false if the "no" button was pressed, or
    *          null if the dialog was closed without making a choice.
    */
-  importDialog(options?: foundry.appv1.api.Dialog.Options): Promise<Document.StoredForName<Type>[] | null | false>;
+  importDialog(options?: foundry.applications.api.DialogV2.ConfirmConfig): Promise<Document.StoredForName<Type>[] | null | false>;
 
   /**
    * Add a Document to the index, capturing it's relevant index attributes
@@ -312,17 +302,13 @@ declare class CompendiumCollection<
 
   // Note(LukeAbby): The override for `updateAll` and `_onModifyContents` become unreasonably long and don't add any changes and so has been omitted.
 
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks `"CompendiumCollection#private is deprecated in favor of the new CompendiumCollection#ownership, CompendiumCollection#getUserLevel, CompendiumCollection#visible properties"`
-   */
-  get private(): boolean;
+  override render(force?: boolean, options?: Application.Options | ApplicationV2.RenderOptions): void;
 
   /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks `"CompendiumCollection#isOpen is deprecated and will be removed in V13"`
+   * Handle changes to the world compendium configuration setting.
    */
-  get isOpen(): boolean;
+  // TODO: extract this type
+  protected static _onConfigure(config: Record<string, { folder?: string | undefined; sort?: number | undefined; locked?: boolean | undefined }>): void;
 }
 
 declare namespace CompendiumCollection {
