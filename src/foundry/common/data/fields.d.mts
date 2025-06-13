@@ -1992,6 +1992,7 @@ declare namespace ObjectField {
     _EffectiveOptions<Options>
   >;
 
+  // TODO: remove FlagsField once document moves are done and all schemas are updated
   namespace FlagsField {
     /**
      * @internal
@@ -3897,7 +3898,7 @@ declare namespace FilePathField {
  * - InitialValue: `0`
  */
 declare class AngleField<
-  Options extends NumberField.Options = AngleField.DefaultOptions,
+  Options extends AngleField.Options = AngleField.DefaultOptions,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentType = AngleField.AssignmentType<Options>,
   InitializedType = AngleField.InitializedType<Options>,
@@ -3949,6 +3950,10 @@ declare class AngleField<
 }
 
 declare namespace AngleField {
+  interface Options extends NumberField.Options {
+    normalize?: boolean | undefined;
+  }
+
   /** The type of the default options for the {@linkcode AngleField} class. */
   type DefaultOptions = SimpleMerge<
     NumberField.DefaultOptions,
@@ -4573,15 +4578,19 @@ declare namespace IntegerSortField {
  */
 // TODO: wire up the existing FlagsField types to this Field
 declare class DocumentFlagsField<
+  Name extends Document.Type,
+  // The type `{}` is useful here because in an intersection it reduces down to nothing unlike `EmptyObject`.
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  ExtensionFlags extends AnyObject = {},
   const Options extends DocumentFlagsField.Options = DocumentFlagsField.DefaultOptions,
+> extends TypedObjectField<
+  ObjectField,
+  Options,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  const AssignmentType = DocumentFlagsField.AssignmentType<Options>,
-  const InitializedType = DocumentFlagsField.InitializedType<Options>,
-  const PersistedType extends
-    | Record<string, AnyObject>
-    | null
-    | undefined = DocumentFlagsField.InitializedType<Options>,
-> extends TypedObjectField<ObjectField, Options, AssignmentType, InitializedType, PersistedType> {
+  DocumentFlagsField.AssignmentType<Name, ExtensionFlags, Options>,
+  DocumentFlagsField.InitializedType<Name, ExtensionFlags, Options>,
+  DocumentFlagsField.InitializedType<Name, ExtensionFlags, Options>
+> {
   constructor(options?: DocumentFlagsField.Options, context?: DataField.ConstructionContext);
 
   static override get _defaults(): DocumentFlagsField.Options;
@@ -4603,25 +4612,49 @@ declare namespace DocumentFlagsField {
 
   /**
    * A shorthand for the assignment type of a IntegerSortField class.
-   * @template Options - the options that override the default options
+   * @template Name           - The Document name
+   * @template ExtensionFlags - additional flags besides the ones configured for the class
+   * @template Options        - the options that override the default options
    *
    * @deprecated - AssignmentType is being deprecated. See {@linkcode SchemaField.AssignmentData}
    * for more details.
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type AssignmentType<Options extends DocumentFlagsField.Options> = DataField.DerivedAssignmentType<
-    Record<string, AnyObject>,
+  type AssignmentType<
+    Name extends Document.Type,
+    ExtensionFlags extends AnyObject,
+    Options extends DocumentFlagsField.Options,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+  > = DataField.DerivedAssignmentType<
+    _TwoLevelPartial<Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>>,
     MergedOptions<Options>
   >;
 
   /**
    * A shorthand for the initialized type of a IntegerSortField class.
-   * @template Options - the options that override the default options
+   * @template Name           - The Document name
+   * @template ExtensionFlags - additional flags besides the ones configured for the class
+   * @template Options        - the options that override the default options
    */
-  type InitializedType<Options extends DocumentFlagsField.Options> = DataField.DerivedInitializedType<
-    Record<string, AnyObject>,
+  type InitializedType<
+    Name extends Document.Type,
+    ExtensionFlags extends AnyObject,
+    Options extends DocumentFlagsField.Options,
+  > = DataField.DerivedInitializedType<
+    _TwoLevelPartial<Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>>,
     MergedOptions<Options>
   >;
+
+  /**
+   * @internal
+   */
+  type _TwoLevelPartial<T> = {
+    [K in keyof T]?: _PartialObject<T[K]>;
+  };
+
+  /**
+   * @internal
+   */
+  type _PartialObject<T> = T extends object ? Partial<T> : T;
 }
 
 /**
