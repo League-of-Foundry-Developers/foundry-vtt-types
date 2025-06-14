@@ -2390,10 +2390,10 @@ declare namespace Document {
     interface UUID {
       uuid: string;
     }
-
-    /**
-     * @deprecated This type has been deprecated because of the inconsistent casing of "Subtype" instead of "SubType". Use {@linkcode Document.ModuleSubType} instead.
-     */
-    type ModuleSubtype = ModuleSubType;
   }
+
+  /**
+   * @deprecated This type has been deprecated because of the inconsistent casing of "Subtype" instead of "SubType". Use {@linkcode Document.ModuleSubType} instead.
+   */
+  type ModuleSubtype = ModuleSubType;
 }
