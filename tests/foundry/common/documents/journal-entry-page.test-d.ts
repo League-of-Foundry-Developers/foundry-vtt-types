@@ -23,7 +23,7 @@ expectTypeOf(coreTypeMetadata).toEqualTypeOf<"image" | "pdf" | "text" | "video">
 expectTypeOf(coreTypes).toEqualTypeOf<"image" | "pdf" | "text" | "video">();
 
 // headquarters is added in tests/foundry/common/data/fields.test-d.ts
-type SubType = "image" | "pdf" | "text" | "video" | "headquarters" | Document.ModuleSubtype;
+type SubType = "image" | "pdf" | "text" | "video" | "headquarters" | Document.ModuleSubType;
 
 expectTypeOf<BaseJournalEntryPage.SubType>().toEqualTypeOf<SubType>();
 expectTypeOf(myJournalEntryPage.type).toEqualTypeOf<SubType>();

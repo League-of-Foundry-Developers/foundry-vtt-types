@@ -57,9 +57,9 @@ declare global {
 
 expectTypeOf(JEPCoreTypes).toEqualTypeOf<
   "base",
-  "image" | "pdf" | "text" | "video" | foundry.abstract.Document.ModuleSubtype
+  "image" | "pdf" | "text" | "video" | foundry.abstract.Document.ModuleSubType
 >();
-expectTypeOf(JEPSystemTypes).toEqualTypeOf<"headquarters" | foundry.abstract.Document.ModuleSubtype>();
+expectTypeOf(JEPSystemTypes).toEqualTypeOf<"headquarters" | foundry.abstract.Document.ModuleSubType>();
 
 declare const myJournalEntryPage: JournalEntryPage.Implementation;
 if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {

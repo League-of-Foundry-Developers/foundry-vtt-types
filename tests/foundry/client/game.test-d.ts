@@ -90,9 +90,9 @@ if (game.ready) {
 }
 
 // Game model
-expectTypeOf<Item.SubType>().toEqualTypeOf<"weapon" | "armor" | "base" | Document.ModuleSubtype>();
+expectTypeOf<Item.SubType>().toEqualTypeOf<"weapon" | "armor" | "base" | Document.ModuleSubType>();
 expectTypeOf<Document.ImplementationClassFor<"Item">>().toEqualTypeOf<Item.ImplementationClass>();
-expectTypeOf(game.documentTypes!.Item).toEqualTypeOf<Array<"weapon" | "armor" | "base" | Document.ModuleSubtype>>();
+expectTypeOf(game.documentTypes!.Item).toEqualTypeOf<Array<"weapon" | "armor" | "base" | Document.ModuleSubType>>();
 
 if (game instanceof Game) {
   const tokenModel = game.model.Token;
