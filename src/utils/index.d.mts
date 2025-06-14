@@ -1288,11 +1288,11 @@ export type Identity<T extends object> = T;
 export type DiscriminatedUnion<U extends object> = _DiscriminatedUnion<U, AllKeysOf<U>>;
 
 type _DiscriminatedUnion<U extends object, AllKeys extends AllKeysOf<U>> = U extends unknown
-  ? {
-      [K in keyof U]: U[K];
-    } & {
-      readonly [K in Exclude<AllKeys, keyof U>]?: never;
-    }
+  ? [Exclude<AllKeys, keyof U>] extends [never]
+    ? U
+    : U & {
+        readonly [K in Exclude<AllKeys, keyof U>]?: never;
+      }
   : never;
 
 /**
