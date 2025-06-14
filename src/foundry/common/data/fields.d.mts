@@ -207,7 +207,7 @@ declare abstract class DataField<
    * @param value - The provided non-default value
    * @returns The standardized value
    */
-  protected abstract _cast(value: AssignmentType): InitializedType;
+  protected abstract _cast(value: unknown): AssignmentType;
 
   /**
    * Attempt to retrieve a valid initial value for the DataField.
@@ -907,7 +907,7 @@ declare class SchemaField<
 
   protected override _getField(path: string[]): DataField.Any;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /**
    * @remarks Ensures `options.source` is set via effectively `||= data`, then forwards to each field's `#clean`
@@ -1222,7 +1222,7 @@ declare class BooleanField<
 
   protected static override get _defaults(): BooleanField.Options;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /** @remarks `options` is unused in `BooleanField` */
   protected override _validateType(
@@ -1379,7 +1379,7 @@ declare class NumberField<
 
   protected static override get _defaults(): NumberField.Options;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /**
    * @remarks Applies `integer`, `min`, `max`, and `step`
@@ -1637,7 +1637,7 @@ declare class StringField<
   // options: not null (parameter default only, property access)
   override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   protected override _validateSpecial(value: AssignmentType): boolean | void;
 
@@ -1862,7 +1862,7 @@ declare class ObjectField<
 
   override getInitialValue(data?: unknown): InitializedType;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   // options: not null (parameter default only)
   override initialize(
@@ -2215,7 +2215,7 @@ declare class ArrayField<
   // options: not null (could be destructured in element#_validateModel)
   protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /**
    * @remarks `options` gets its `partial` property forced `false`, then each element gets run through its field's `#clean`
@@ -2800,7 +2800,7 @@ declare class EmbeddedCollectionField<
    */
   get schema(): this["model"]["schema"];
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /**
    * @remarks Calls the Collection's Document's Implementation's `schema.clean` on every entry in `value`,
@@ -3284,7 +3284,7 @@ declare class DocumentIdField<
 
   protected static override get _defaults(): StringField.Options<unknown>;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /** @remarks `options` is unused in `DocumentIdField` */
   protected override _validateType(
@@ -3490,7 +3490,7 @@ declare class ForeignDocumentField<
 
   protected static override get _defaults(): ForeignDocumentField.Options;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   // options: not null (parameter default only)
   override initialize(
@@ -3604,7 +3604,7 @@ declare class ColorField<
   /** @throws If the value isn't a valid {@link foundry.utils.Color.Source | `Color.Source`} *after* going through `super` */
   override getInitialValue(data?: unknown): InitializedType;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /**
    * @remarks Returns `value.css` if it's a `.valid` `Color`, otherwise `this.getInitialValue(options.source)`
@@ -3855,7 +3855,7 @@ declare class AngleField<
 
   protected static override get _defaults(): NumberField.Options;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /**
    * @deprecated since v12, until v14
@@ -4007,7 +4007,7 @@ declare class HueField<
 > extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
   static get _defaults(): HueField.Options;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 }
 
 declare namespace HueField {
@@ -4938,7 +4938,7 @@ declare class TypedSchemaField<
   // options: not null (parameter default only, property access in super)
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   protected override _validateSpecial(value: AssignmentType): boolean | void;
 
