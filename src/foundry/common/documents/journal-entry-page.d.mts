@@ -24,8 +24,6 @@ declare abstract class BaseJournalEntryPage<
    */
   constructor(...args: JournalEntryPage.ConstructorArgs);
 
-  _source: BaseJournalEntryPage.Source;
-
   /**
    * @defaultValue
    * ```js
@@ -38,21 +36,17 @@ declare abstract class BaseJournalEntryPage<
    *   labelPlural: "DOCUMENT.JournalEntryPages",
    *   coreTypes: ["text", "image", "pdf", "video"],
    *   compendiumIndexFields: ["name", "type", "sort"],
-   *   schemaVersion: "12.324"
+   *   permissions: {
+   *     create: "OWNER",
+   *     delete: "OWNER"
+   *   },
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseJournalEntryPage.Metadata;
 
   static override defineSchema(): BaseJournalEntryPage.Schema;
-
-  /**
-   * @remarks Uses `game.user` if `user` is falsey.
-   *
-   * If this page's ownership is `.INHERIT` for this user (specified or default),
-   * forwards to `this.parent.getUserLevel`.
-   */
-  override getUserLevel(user?: User.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /*
    * After this point these are not really overridden methods.
@@ -210,8 +204,6 @@ declare abstract class BaseJournalEntryPage<
     operation: JournalEntryPage.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

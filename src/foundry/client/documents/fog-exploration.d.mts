@@ -214,6 +214,7 @@ declare namespace FogExploration {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     _stats: fields.DocumentStatsField;
@@ -378,6 +379,8 @@ declare namespace FogExploration {
    * with this interface via `{query, ...options}` before passing to {@link ClientDatabaseBackend.get | `this.database.get`}
    */
   interface LoadOptions extends Omit<IntentionalPartial<DatabaseGetOperation>, "query"> {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -399,7 +402,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   // query: not null (destructured)
   static load(
     query?: FogExploration.LoadQuery,
-    options?: FogExploration.LoadOptions | null,
+    options?: FogExploration.LoadOptions,
   ): Promise<FogExploration.Implementation | null>;
 
   /**
@@ -423,12 +426,6 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
     options: FogExploration.LoadOptions,
   ): Promise<FogExploration.Implementation | null>;
 
-  /**
-   * @deprecated since v11, until v13
-   * @remarks "`explore` is obsolete and always returns `true`. The fog exploration does not record position anymore."
-   */
-  explore(source: unknown, force?: boolean): true;
-
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.
@@ -444,12 +441,13 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   // Descendant Document operations have been left out because FogExploration does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"FogExploration", FogExploration.Parent>): string;
+  static override defaultName(context?: FogExploration.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: FogExploration.CreateData,
-    context?: Document.CreateDialogContext<"FogExploration", FogExploration.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"FogExploration">,
+    options?: Document.CreateDialogOptions<"FogExploration">,
   ): Promise<FogExploration.Stored | null | undefined>;
 
   // options: not null (parameter default only)

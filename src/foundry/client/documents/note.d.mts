@@ -57,7 +57,8 @@ declare namespace NoteDocument {
      * The permissions for whether a certain user can create, update, or delete this document.
      */
     interface Permissions {
-      create: "NOTE_CREATE";
+      create(user: User.Internal.Implementation, doc: Implementation, data: CreateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -193,13 +194,13 @@ declare namespace NoteDocument {
      * The x-coordinate position of the center of the note icon
      * @defaultValue `0`
      */
-    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
+    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
      * The y-coordinate position of the center of the note icon
      * @defaultValue `0`
      */
-    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
+    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
      * The elevation of the note
@@ -225,7 +226,6 @@ declare namespace NoteDocument {
         anchorY: 0.5;
         fit: "contain";
       };
-      label: "NOTE.EntryIcon";
     }>;
 
     /**
@@ -239,20 +239,19 @@ declare namespace NoteDocument {
       min: 32;
       initial: 40;
       validationError: "must be an integer greater than 32";
-      label: "NOTE.IconSize";
     }>;
 
     /**
      * Optional text which overrides the title of the linked Journal Entry
      * @defaultValue `""`
      */
-    text: fields.StringField<{ label: "NOTE.TextLabel"; textSearch: true }>;
+    text: fields.StringField<{ textSearch: true }>;
 
     /**
      * The font family used to display the text label on this note, defaults to CONFIG.defaultFontFamily
      * @defaultValue `globalThis.CONFIG?.defaultFontFamily || "Signika"`
      */
-    fontFamily: fields.StringField<{ required: true; label: "NOTE.FontFamily"; initial: () => string }>;
+    fontFamily: fields.StringField<{ required: true; initial: () => string }>;
 
     /**
      * The font size used to display the text label on this note
@@ -265,7 +264,6 @@ declare namespace NoteDocument {
       max: 128;
       initial: 32;
       validationError: "must be an integer between 8 and 128";
-      label: "NOTE.FontSize";
     }>;
 
     /**
@@ -277,7 +275,6 @@ declare namespace NoteDocument {
         required: true;
         choices: CONST.TEXT_ANCHOR_POINTS[];
         initial: typeof CONST.TEXT_ANCHOR_POINTS.BOTTOM;
-        label: "NOTE.AnchorPoint";
         validationError: "must be a value in CONST.TEXT_ANCHOR_POINTS";
       },
       CONST.TEXT_ANCHOR_POINTS | null | undefined,
@@ -289,7 +286,7 @@ declare namespace NoteDocument {
      * The string that defines the color with which the note text is rendered
      * @defaultValue `#FFFFFF`
      */
-    textColor: fields.ColorField<{ required: true; nullable: false; initial: "#FFFFFF"; label: "NOTE.TextColor" }>;
+    textColor: fields.ColorField<{ required: true; nullable: false; initial: "#FFFFFF" }>;
 
     /**
      * Whether this map pin is globally visible or requires LoS to see.
@@ -301,6 +298,7 @@ declare namespace NoteDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
   }
 
@@ -431,6 +429,8 @@ declare namespace NoteDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -446,6 +446,12 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
    * @param context - Construction context options
    */
   constructor(...args: NoteDocument.ConstructorArgs);
+
+  static override createDialog(
+    data: Document.CreateDialogData<NoteDocument.CreateData> | undefined,
+    createOptions?: Document.Database.CreateOperationForName<"Note">,
+    dialogOptions?: Document.CreateDialogOptions<"Note">,
+  ): Promise<NoteDocument.Stored | null | undefined>;
 
   /**
    * The associated JournalEntry which is referenced by this Note
@@ -477,13 +483,8 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
   // Descendant Document operations have been left out because Note does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Note", NonNullable<NoteDocument.Parent>>): string;
+  static override defaultName(context?: NoteDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
-  static override createDialog(
-    data: Document.CreateDialogData<NoteDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Note", NonNullable<NoteDocument.Parent>>,
-  ): Promise<NoteDocument.Stored | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

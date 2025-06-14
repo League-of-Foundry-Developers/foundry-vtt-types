@@ -47,13 +47,25 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    *   label: "DOCUMENT.Scene",
    *   labelPlural: "DOCUMENT.Scenes",
    *   preserveOnImport: [...super.metadata.preserveOnImport, "active"],
-   *   schemaVersion: "12.325"
+   *   schemaVersion: "13.341"
    * });
    * ```
    */
   static override metadata: BaseScene.Metadata;
 
   static override defineSchema(): BaseScene.Schema;
+
+  /** @defaultValue `["DOCUMENT", "SCENE"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /**
+   * The default grid defined by the system.
+   */
+  static get defaultGrid(): foundry.grid.BaseGrid;
+
+  protected override _initialize(options?: Document.InitializeOptions): void;
+
+  override updateSource(changes: Scene.UpdateData, options: DataModel.UpdateOptions): Scene.UpdateData;
 
   /**
    * @remarks
@@ -83,7 +95,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * - `darkness` to `environment.darknessLevel` (since v12, until 14)
    */
   // options: not null (destructured)
-  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
    * @deprecated since v12, until v14
@@ -338,8 +350,6 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     user: User.Implementation,
   ): Promise<void>;
 
-  static override get hasSystemData(): undefined;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 
@@ -411,6 +421,8 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   static override fromSource(source: Scene.CreateData, context?: DataModel.FromSourceOptions): Scene.Implementation;
 
   static override fromJSON(json: string): Scene.Implementation;
+
+  #BaseScene: true;
 }
 
 export default BaseScene;

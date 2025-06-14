@@ -1,4 +1,5 @@
 import type { Merge } from "#utils";
+import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 
@@ -199,6 +200,12 @@ declare namespace Setting {
     }>;
 
     /**
+     * The ID of the user this Setting belongs to, if user-scoped.
+     * @defaultValue `null`
+     */
+    user: fields.ForeignDocumentField<typeof documents.BaseUser, { idOnly: true }>;
+
+    /**
      * An object of creation and access information
      * @defaultValue see {@linkcode fields.DocumentStatsField}
      */
@@ -337,6 +344,8 @@ declare namespace Setting {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -359,7 +368,7 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
   // options: not null (parameter default only)
   protected override _initialize(options?: Document.InitializeOptions): void;
 
-  // _onCreate and _preUpdate are overridden but with no signature changes.
+  // _onCreate and _onUpdate are overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
   /**
@@ -384,7 +393,7 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
   // Descendant Document operations have been left out because Setting does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Setting", Setting.Parent>): string;
+  static override defaultName(context?: Setting.DefaultNameContext): string;
 
   /**
    * @throws Foundry tries to figure out the folders for the world collection and errors out
@@ -392,7 +401,8 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Setting.CreateData,
-    context?: Document.CreateDialogContext<"Setting", Setting.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Setting">,
+    options?: Document.CreateDialogOptions<"Setting">,
   ): never;
 
   // options: not null (parameter default only)

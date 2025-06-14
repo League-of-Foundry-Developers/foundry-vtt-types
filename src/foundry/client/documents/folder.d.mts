@@ -252,6 +252,7 @@ declare namespace Folder {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**
@@ -475,6 +476,8 @@ declare namespace Folder {
     /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
     resolve?: never;
   }
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -511,6 +514,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
 
   /**
    * Return whether the folder is displayed in the sidebar to the current User.
+   * @defaultValue `false`
    */
   displayed: boolean;
 
@@ -547,6 +551,8 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    */
   get ancestors(): Folder.Implementation[];
 
+  override get inCompendium(): boolean;
+
   // _preCreate overridden but with no signature changes.
   // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
@@ -554,7 +560,8 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
   // data, options: not null (parameter defaults only)
   static override createDialog(
     data?: Document.CreateDialogData<Folder.CreateData>,
-    context?: Folder.CreateDialogOptions,
+    createOptions?: Document.Database.CreateOperationForName<"Folder">,
+    options?: Document.CreateDialogOptions<"Folder">,
   ): Promise<Folder.Stored | null | undefined>;
 
   /**
@@ -587,7 +594,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * @param recursive - Identify child folders recursively, if false only direct children are returned (default: `false`)
    * @returns An array of Folder documents which are subfolders of this one
    */
-  getSubfolders(recursive?: boolean | null): Folder.Implementation[];
+  getSubfolders(recursive?: boolean): Folder.Implementation[];
 
   /**
    * Get the Folder documents which are parent folders of the current folder or any if its parents.
@@ -610,7 +617,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
   // Descendant Document operations have been left out because Folder does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Folder", Folder.Parent>): string;
+  static override defaultName(context?: Folder.DefaultNameContext): string;
 
   // options: not null (parameter default only)
   static override fromDropData(

@@ -269,6 +269,7 @@ declare namespace AmbientSoundDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
   }
 
@@ -428,6 +429,8 @@ declare namespace AmbientSoundDocument {
      */
     intensity?: number | undefined;
   }
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -459,13 +462,14 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"AmbientSound", NonNullable<AmbientSoundDocument.Parent>>,
+    context?: AmbientSoundDocument.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<AmbientSoundDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"AmbientSound", NonNullable<AmbientSoundDocument.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"AmbientSound">,
+    options?: Document.CreateDialogOptions<"AmbientSound">,
   ): Promise<AmbientSoundDocument.Stored | null | undefined>;
 
   // options: not null (parameter default only)

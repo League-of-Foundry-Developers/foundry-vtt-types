@@ -210,9 +210,6 @@ expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: null }
 // migrateData and shimData overridden with no signature changes
 
 // deprecated since v12 until v14
-expectTypeOf(fullTestAE.label).toBeString();
-expectTypeOf((fullTestAE.label = "foo")).toBeString();
-
 expectTypeOf(fullTestAE.icon).toEqualTypeOf<string | null | undefined>();
 expectTypeOf((fullTestAE.icon = "path/to/tex.png")).toBeString();
 
@@ -308,7 +305,7 @@ expectTypeOf(
   ),
 ).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(TestActiveEffect.hasSystemData).toEqualTypeOf<true>();
+expectTypeOf(TestActiveEffect.hasTypeData).toEqualTypeOf<true>();
 // shim methods and _logDataFieldMigration have no type changes from Document
 
 // core's implementation for these three are actual no-ops, no point testing the modification context

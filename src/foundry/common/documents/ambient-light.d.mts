@@ -33,7 +33,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    *   collection: "lights",
    *   label: "DOCUMENT.AmbientLight",
    *   labelPlural: "DOCUMENT.AmbientLights",
-   *   schemaVersion: "12.324",
+   *   schemaVersion: "13.341",
    * })
    * ```
    */
@@ -41,7 +41,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static override defineSchema(): BaseAmbientLight.Schema;
 
-  /** @defaultValue `["AMBIENT_SOUND"]` */
+  /** @defaultValue `["DOCUMENT", "AMBIENT_LIGHT"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
   /*
@@ -192,8 +192,6 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     operation: AmbientLightDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

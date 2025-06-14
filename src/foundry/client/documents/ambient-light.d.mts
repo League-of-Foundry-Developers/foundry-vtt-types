@@ -220,6 +220,7 @@ declare namespace AmbientLightDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
   }
 
@@ -367,6 +368,8 @@ declare namespace AmbientLightDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -405,13 +408,14 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"AmbientLight", NonNullable<AmbientLightDocument.Parent>>,
+    context?: AmbientLightDocument.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<AmbientLightDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"AmbientLight", NonNullable<AmbientLightDocument.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"AmbientLight">,
+    options?: Document.CreateDialogOptions<"AmbientLight">,
   ): Promise<AmbientLightDocument.Stored | null | undefined>;
 
   // options: not null (parameter default only)

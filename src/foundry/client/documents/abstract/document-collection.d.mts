@@ -88,22 +88,22 @@ declare class DocumentCollection<
 
   /**
    * Render any Applications associated with this DocumentCollection.
+   * @param force   - Force rendering  (default: `false`)
+   * @param options - Optional options (default: `{}`)
    */
   render(force?: boolean, options?: Application.Options | ApplicationV2.RenderOptions): void;
 
   /**
    * Get the searchable fields for a given document or index, based on its data model
-   * @param documentName    - The document type name
-   * @param documentSubtype - The document subtype name
-   * @param isEmbedded      - Whether the document is an embedded object
-   * @returns The dot-delimited property paths of searchable fields
+   * @param documentName - The document name
+   * @param type         - A document subtype
+   * @returns A record of searchable DataField definitions
    */
   // TODO: Could significantly improve this with type defs
   static getSearchableFields<T extends foundry.abstract.Document.Type>(
     documentName: T,
-    documentSubtype?: foundry.abstract.Document.SubTypesOf<T>,
-    isEmbedded?: boolean,
-  ): Set<string>;
+    type?: foundry.abstract.Document.SubTypesOf<T>
+  ): Record<string, DocumentCollection.SearchableField>;
 
   /**
    * Find all Documents which match a given search term using a full-text search against their indexed HTML fields and their name.
@@ -207,6 +207,10 @@ declare namespace DocumentCollection {
   }
 
   interface SearchOptions extends InexactPartial<_SearchOptions> {}
+
+  type SearchableField = foundry.data.fields.DataField | {
+    [K in string]: SearchableField;
+  }
 
   interface GetInvalidOptions {
     /**

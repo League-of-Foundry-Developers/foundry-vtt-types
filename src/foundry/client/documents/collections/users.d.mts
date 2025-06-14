@@ -35,16 +35,21 @@ declare class Users extends foundry.documents.abstract.WorldCollection<"User", "
    */
   get activeGM(): User.Implementation | null;
 
+  /**
+   * Get the designated User among the Users that satisfy the given condition.
+   * Returns `null` if no Users satisfy the given condition.
+   * Returns a User with the highest role among the qualifying Users.
+   * Qualifying Users aren't necessary active Users unless it is part of the condition.
+   * @example
+   * // Get the designated User for creating Tokens that is active
+   * const user = game.users.getDesignatedUser(user => user.active && user.can("TOKEN_CREATE"));
+   * @param condition - The condition the Users must satisfy
+   * @returns The designated User or `null`
+   */
+  getDesignatedUser(condition: (user: User) => boolean): User | null;
+
   /** @remarks This is not marked as protected because it is used in {@link Game.activateSocketListeners | `Game#activateSocketListeners`} */
   static _activateSocketListeners(socket: io.Socket): void;
-
-  /**
-   * Handle receipt of activity data from another User connected to the Game session
-   * @param userId       - The User id who generated the activity data
-   * @param activityData - The object of activity data (default: `{}`)
-   */
-  // activityData: not null (parameter default only)
-  protected static _handleUserActivity(userId: string, activityData?: User.ActivityData): void;
 }
 
 declare namespace Users {

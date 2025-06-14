@@ -61,6 +61,7 @@ declare namespace JournalEntry {
      * The embedded metadata
      */
     interface Embedded {
+      JournalEntryCategory: "categories";
       JournalEntryPage: "pages";
     }
 
@@ -69,6 +70,7 @@ declare namespace JournalEntry {
      */
     interface Permissions {
       create: "JOURNAL_CREATE";
+      delete: "OWNER";
     }
   }
 
@@ -259,6 +261,12 @@ declare namespace JournalEntry {
      * @defaultValue `null`
      */
     folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+
+    /**
+     * The categories contained within this JournalEntry.
+     * @defaultValue `[]`
+     */
+    categories: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryCategory, JournalEntry.Implementation>;
 
     /**
      * The numeric sort value which orders this JournalEntry relative to its siblings
@@ -455,6 +463,8 @@ declare namespace JournalEntry {
     JournalEntry.DirectDescendant,
     JournalEntry.Metadata.Embedded
   >;
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -508,6 +518,11 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
   panToNote(options?: NotesLayer.PanToNoteOptions): Promise<void>;
 
   // _onUpdate and _onDelete are overridden but with no signature changes from their definition in BaseJournalEntry.
+
+  /**
+   * A sorting comparator for `JournalEntryCategory` documents
+   */
+  static sortCategories(a: JournalEntryCategory.Implementation, b: JournalEntryCategory.Implementation): number;
 
   /*
    * After this point these are not really overridden methods.
@@ -630,12 +645,13 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
   protected override _onDeleteDescendantDocuments(...args: Cards.OnDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"JournalEntry", JournalEntry.Parent>): string;
+  static override defaultName(context?: JournalEntry.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Document.CreateDialogData<JournalEntry.CreateData>,
-    context?: Document.CreateDialogContext<"JournalEntry", JournalEntry.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"JournalEntry">,
+    options?: Document.CreateDialogOptions<"JournalEntry">,
   ): Promise<JournalEntry.Stored | null | undefined>;
 
   // options: not null (parameter default only)

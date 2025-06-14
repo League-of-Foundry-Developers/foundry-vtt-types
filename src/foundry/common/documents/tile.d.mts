@@ -33,13 +33,16 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    *   collection: "tiles",
    *   label: "DOCUMENT.Tile",
    *   labelPlural: "DOCUMENT.Tiles",
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseTile.Metadata;
 
   static override defineSchema(): BaseTile.Schema;
+
+  /** @defaultValue `["DOCUMENT", "TILE"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /**
    * @remarks

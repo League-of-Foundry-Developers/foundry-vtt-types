@@ -1694,6 +1694,34 @@ declare global {
     };
 
     /**
+     * Configuration for the CombatantGroup embedded document type within a Combat document.
+     */
+    CombatantGroup: {
+      /** @defaultValue `CombatantGroup` */
+      documentClass: Document.ImplementationClassFor<"CombatantGroup">;
+
+      /**
+       * @defaultValue `{}`
+       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
+       */
+      dataModels: Record<string, typeof DataModel<any, CombatantGroup.Implementation>>;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<foundry.documents.BaseCombatantGroup.SubType, Record<string, SheetClassConfig>>;
+
+      /**
+       * @defaultValue `{}`
+       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
+       */
+      typeLabels: Record<foundry.documents.BaseCombatantGroup.SubType, string>;
+
+      /** @defaultValue `{}` */
+      typeIcons: Record<string, string>;
+    };
+
+    /**
      * Configuration for the Drawing embedded document type and its representation on the game Canvas
      */
     Drawing: {
@@ -1718,6 +1746,24 @@ declare global {
 
       /** @defaultValue `typeof DrawingHUD` */
       hudClass: typeof foundry.applications.hud.DrawingHUD;
+    };
+
+    /**
+     * Configuration for the JournalEntryCategory embedded document type.
+     */
+    JournalEntryCategory: {
+      /** @defaultValue `JournalEntryCategory` */
+      documentClass: Document.ImplementationClassFor<"JournalEntryCategory">;
+
+      /**
+       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       */
+      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+
+      /**
+       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
+       */
+      typeLabels?: Record<"base", string>;
     };
 
     /**
@@ -1879,6 +1925,98 @@ declare global {
 
       /** @defaultValue `typeof TokenHUD` */
       hudClass: foundry.applications.hud.TokenHUD.AnyConstructor;
+
+      /** @defaultValue `typeof TokenRuler` */
+      rulerClass: foundry.canvas.placeables.tokens.TokenRuler;
+
+      movement: {
+        /** @defaultValue `data.TerrainData` */
+        TerrainData: typeof foundry.data.BaseTerrainData;
+
+        /**
+         * The default movementa nimation speed in grid spaces per second.
+         * @defaultValue `6`
+         */
+        defaultSpeed: number;
+
+        /** @defaultValue `"walk"` */
+        defaultAction: string;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   walk: {
+         *     label: "TOKEN.MOVEMENT.ACTIONS.walk.label",
+         *     icon: "fa-solid fa-person-walking",
+         *     order: 0
+         *   },
+         *   fly: {
+         *     label: "TOKEN.MOVEMENT.ACTIONS.fly.label",
+         *     icon: "fa-solid fa-person-fairy",
+         *     order: 1
+         *   },
+         *   swim: {
+         *     label: "TOKEN.MOVEMENT.ACTIONS.swim.label",
+         *     icon: "fa-solid fa-person-swimming",
+         *     order: 2,
+         *     getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2})
+         *   },
+         *   burrow: {
+         *     label: "TOKEN.MOVEMENT.ACTIONS.burrow.label",
+         *     icon: "fa-solid fa-person-digging",
+         *     order: 3
+         *   },
+         *   crawl: {
+         *     label: "TOKEN.MOVEMENT.ACTIONS.crawl.label",
+         *     icon: "fa-solid fa-person-praying",
+         *     order: 4,
+         *     getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
+         *     deriveTerrainDifficulty: ({walk}) => walk,
+         *     getCostFunction: () => cost => cost * 2
+         *   },
+         *   climb: {
+         *     label: "TOKEN.MOVEMENT.ACTIONS.climb.label",
+         *     icon: "fa-solid fa-person-through-window",
+         *     order: 5,
+         *     getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
+         *     deriveTerrainDifficulty: ({walk}) => walk,
+         *     getCostFunction: () => cost => cost * 2
+         *   },
+         *   jump: {
+         *     label: "TOKEN.MOVEMENT.ACTIONS.jump.label",
+         *     icon: "fa-solid fa-person-running-fast",
+         *     order: 6,
+         *     deriveTerrainDifficulty: ({walk, fly}) => Math.max(walk, fly),
+         *     getCostFunction: () => cost => cost * 2
+         *   },
+         *   blink: {
+         *     label: "TOKEN.MOVEMENT.ACTIONS.blink.label",
+         *     icon: "fa-solid fa-person-from-portal",
+         *     order: 7,
+         *     teleport: true,
+         *     getAnimationOptions: () => ({duration: 0}),
+         *     deriveTerrainDifficulty: () => 1
+         *   },
+         *   displace: {
+         *     label: "TOKEN.MOVEMENT.ACTIONS.displace.label",
+         *     icon: "fa-solid fa-transporter-1",
+         *     order: 8,
+         *     teleport: true,
+         *     measure: false,
+         *     walls: null,
+         *     visualize: false,
+         *     getAnimationOptions: () => ({duration: 0}),
+         *     canSelect: () => false,
+         *     deriveTerrainDifficulty: () => 1,
+         *     getCostFunction: () => () => 0
+         *   }
+         * }
+         * ```
+         */
+        // TODO: stub
+        actions: Record<string, any>;
+      };
 
       /** @defaultValue `"TOKEN.Adjectives"` */
       adjectivesPrefix: string;
