@@ -1157,8 +1157,8 @@ declare namespace Document {
     };
 
     type SystemOfType<SystemMap extends Record<SubType, object>, SubType extends string> =
-      | DiscriminatedUnion<SubType extends keyof SystemMap ? SystemMap[SubType] : never> // Note(LukeAbby): This seemingly unnecessary conditional is to avoid `SystemMap[SubType]` being `unknown`
-      | (SubType extends ModuleSubType | "base" ? UnknownSystem : never);
+      | DiscriminatedUnion<SystemMap[SubType]>
+      | (SubType extends ModuleSubType ? UnknownSystem : never);
 
     type Stored<D extends Document.Any> = Override<
       D,
