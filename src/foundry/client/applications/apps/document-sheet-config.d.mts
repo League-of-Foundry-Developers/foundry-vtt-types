@@ -34,7 +34,7 @@ declare class DocumentSheetConfig<
     documentClass: Document.AnyConstructor,
     scope: string,
     sheetClass: DocumentSheet.AnyConstructor | DocumentSheetV2.AnyConstructor,
-    options: DocumentSheetConfig.UnregisterSheetOptions,
+    options?: DocumentSheetConfig.UnregisterSheetOptions,
   ): void;
 }
 
