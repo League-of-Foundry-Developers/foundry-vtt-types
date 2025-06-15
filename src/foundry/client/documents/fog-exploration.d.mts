@@ -125,7 +125,7 @@ declare namespace FogExploration {
   /**
    * An instance of `FogExploration` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<FogExploration.Implementation> {}
+  type Stored = Document.Internal.Stored<FogExploration.Implementation>;
 
   /**
    * The data put in {@link FogExploration._source | `FogExploration#_source`}. This data is what was

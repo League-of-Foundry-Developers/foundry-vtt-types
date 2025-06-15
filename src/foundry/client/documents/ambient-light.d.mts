@@ -113,7 +113,7 @@ declare namespace AmbientLightDocument {
   /**
    * An instance of `AmbientLightDocument` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<AmbientLightDocument.Implementation> {}
+  type Stored = Document.Internal.Stored<AmbientLightDocument.Implementation>;
 
   /**
    * The data put in {@link AmbientLightDocument._source | `AmbientLightDocument#_source`}. This data is what was
