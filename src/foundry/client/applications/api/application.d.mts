@@ -23,10 +23,6 @@ declare module "#configuration" {
 
 declare const __ApplicationV2Brand: unique symbol;
 
-declare const __Configuration: unique symbol;
-declare const __RenderOptions: unique symbol;
-declare const __RenderContext: unique symbol;
-
 type _ClassMustBeAssignableToInternal = MustConform<typeof ApplicationV2, ApplicationV2.Internal.Constructor>;
 type _InstanceMustBeAssignableToInternal = MustConform<ApplicationV2, ApplicationV2.Internal.Instance.Any>;
 
@@ -36,6 +32,10 @@ declare namespace ApplicationV2 {
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
+    const __Configuration: unique symbol;
+    const __RenderOptions: unique symbol;
+    const __RenderContext: unique symbol;
+
     type Constructor = (abstract new (...args: never) => Instance.Any) & {
       [__ApplicationV2Brand]: never;
     };
@@ -66,8 +66,14 @@ declare namespace ApplicationV2 {
     }
   }
 
-  type RenderContextOf<Application extends ApplicationV2.Any> = Application[typeof __RenderContext];
-  type RenderOptionsOf<Application extends ApplicationV2.Any> = Application[typeof __RenderOptions];
+  type RenderContextOf<Application extends ApplicationV2.Internal.Instance.Any> =
+    Application[typeof ApplicationV2.Internal.__RenderContext];
+
+  type ConfigurationOf<Application extends ApplicationV2.Internal.Instance.Any> =
+    Application[typeof ApplicationV2.Internal.__Configuration];
+
+  type RenderOptionsOf<Application extends ApplicationV2.Internal.Instance.Any> =
+    Application[typeof ApplicationV2.Internal.__RenderOptions];
 
   type EmittedEvents = Readonly<["render", "close", "position"]>;
 
@@ -468,9 +474,9 @@ declare class ApplicationV2<
 > extends EventEmitterMixin() {
   static [__ApplicationV2Brand]: never;
 
-  [__RenderContext]: RenderContext;
-  [__Configuration]: Configuration;
-  [__RenderOptions]: RenderOptions;
+  [ApplicationV2.Internal.__RenderContext]: RenderContext;
+  [ApplicationV2.Internal.__Configuration]: Configuration;
+  [ApplicationV2.Internal.__RenderOptions]: RenderOptions;
 
   /**
    * Applications are constructed by providing an object of configuration options.
