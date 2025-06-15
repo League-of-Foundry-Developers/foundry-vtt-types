@@ -720,14 +720,18 @@ type _MergePlainObject<T extends object, U extends object> = {
   [K in keyof U]: T extends { readonly [_ in K]?: infer V } ? Merge<V, U[K]> : U[K];
 };
 
-interface _MergeComplexObject<T extends object, U extends object> extends Override<T, _MergePlainObject<T, U>> {}
+interface _MergeComplexObject<T extends object, U extends object> extends _Override<T, _MergePlainObject<T, U>> {}
 
 /**
  * Overrides properties of `T` with properties in `U`. Be careful using this type as its internal
  * implementation is likely a bit shaky.
+ *
+ * Note: `U` must NOT be a union. If it is unexpected behavior may occur.
  */
+export type Override<T extends object, U extends object> = T extends unknown ? _Override<T, U> : never;
+
 // @ts-expect-error - This pattern is inherently an error.
-export interface Override<T extends object, U extends object> extends U, T {}
+interface _Override<T extends object, U extends object> extends U, T {}
 
 /**
  * Returns whether the type is a plain object. Excludes functions, arrays, and constructors while still being friendly to interfaces.
