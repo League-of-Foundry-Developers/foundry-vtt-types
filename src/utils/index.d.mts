@@ -282,39 +282,6 @@ export type ToMethod<T extends AnyFunction> = {
   method(...args: Parameters<T>): ReturnType<T>;
 }["method"];
 
-/**
- * @deprecated Replaced by {@linkcode Document.SheetClassFor}
- */
-export type ConfiguredSheetClass<T extends Document.AnyConstructor> = GetKey<
-  GetKey<CONFIG, T["metadata"]["name"]>,
-  "sheetClass",
-  T
->;
-
-/**
- * @deprecated Replaced by {@linkcode Document.ObjectClassFor}
- */
-export type ObjectClass<T extends Document.AnyConstructor> = GetKey<
-  GetKey<CONFIG, T["metadata"]["name"]>,
-  "objectClass",
-  T
->;
-
-/**
- * @deprecated Replaced by {@linkcode Document.LayerClassFor}
- */
-export type LayerClass<T extends Document.AnyConstructor> = GetKey<
-  GetKey<CONFIG, T["metadata"]["name"]>,
-  "layerClass",
-  T
->;
-
-/**
- * Actual document types that go in folders
- * @deprecated No replacement as this was deemed too niche.
- */
-export type FolderDocumentTypes = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
-
 export type MaybeEmpty<T extends AnyObject> =
   | T
   | {
@@ -1356,3 +1323,42 @@ type _SplitString<
   : S extends ""
     ? []
     : [...Return, S];
+
+export type DeepReadonly<T extends object> = T extends AnyObject | AnyArray
+  ? { readonly [K in keyof T]: _DeepReadonly<T[K]> }
+  : T;
+
+type _DeepReadonly<T> = T extends object ? DeepReadonly<T> : T;
+
+/**
+ * @deprecated Replaced by {@linkcode Document.SheetClassFor}
+ */
+export type ConfiguredSheetClass<T extends Document.AnyConstructor> = GetKey<
+  GetKey<CONFIG, T["metadata"]["name"]>,
+  "sheetClass",
+  T
+>;
+
+/**
+ * @deprecated Replaced by {@linkcode Document.ObjectClassFor}
+ */
+export type ObjectClass<T extends Document.AnyConstructor> = GetKey<
+  GetKey<CONFIG, T["metadata"]["name"]>,
+  "objectClass",
+  T
+>;
+
+/**
+ * @deprecated Replaced by {@linkcode Document.LayerClassFor}
+ */
+export type LayerClass<T extends Document.AnyConstructor> = GetKey<
+  GetKey<CONFIG, T["metadata"]["name"]>,
+  "layerClass",
+  T
+>;
+
+/**
+ * Actual document types that go in folders
+ * @deprecated No replacement as this was deemed too niche.
+ */
+export type FolderDocumentTypes = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
