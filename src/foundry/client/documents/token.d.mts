@@ -1,4 +1,4 @@
-import type { AnyArray, AnyObject, InexactPartial, InterfaceToObject, Merge, NullishProps } from "#utils";
+import type { AnyArray, AnyObject, DeepReadonly, InexactPartial, InterfaceToObject, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
@@ -25,7 +25,7 @@ declare namespace TokenDocument {
   /**
    * The documents embedded within `TokenDocument`.
    */
-  type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
+  type Hierarchy = DeepReadonly<Document.HierarchyOf<Schema>>;
 
   /**
    * The implementation of the `TokenDocument` document instance configured through `CONFIG.Token.documentClass` in Foundry and
@@ -1118,6 +1118,11 @@ declare namespace TokenDocument {
 
   interface MovementWaypoint extends Omit<MeasuredMovementWaypoint, "terrain" | "intermediate" | "userId" | "movementId" | "cost"> {}
 
+  interface MovementSegmentData extends Pick<MeasuredMovementWaypoint, "width" | "height" | "shape" | "action" | "terrain"> {
+    actionConfig: CONFIG.Token.MovementActionConfig;
+    teleport: boolean;
+  }
+
   interface MovementSectionData {
     /**
      * The waypoints of the movement path
@@ -1200,7 +1205,7 @@ declare namespace TokenDocument {
      * Consider movement history? If true, uses the current movement history. If waypoints are passed, uses those as the history.
      * @defaultValue: `false`
      */
-    history: boolean | ReadonlyArray<TokenDocument.MeasuredMovementWaypoint>;
+    history: boolean | DeepReadonly<TokenDocument.MeasuredMovementWaypoint[]>;
   }
 
   interface MovementContinuationHandle {
@@ -1337,11 +1342,52 @@ declare namespace TokenDocument {
     /**
      * The update options of the movement operation
      */
-    // TODO: type this properly
-    updateOptions: AnyObject;
+    // TODO: this can also be given `movement` and `_movementArguments`, I think, see `TokenDocument#continueMovement`
+    updateOptions: Database.UpdateOperation;
+  }
+
+  interface MoveOptions extends Database.UpdateOperation {
+    method: MovementMethod;
+    autoRotate: boolean;
+    showRuler: boolean;
+    constrainOptions: Omit<ConstrainMovementPathOptions, "preview" | "history">;
+  }
+
+  interface MovementCostFunction extends foundry.grid.BaseGrid.MeasurePathCostFunction3D<MovementSegmentData> {}
+
+  interface MeasureMovementPathOptions {
+    /**
+     * Measure a preview path?
+     * @defaultValue `false`
+     */
+    preview?: boolean;
   }
 
   interface MovementOperation extends Omit<MovementData, "user" | "state" | "updateOptions"> {}
+
+  /**
+   * The hexagonal offsets of a Token.
+   */
+  interface HexagonalOffsetsData {
+    /**
+     * The occupied offsets in an even grid in the 0th row/column
+     */
+    even: foundry.grid.BaseGrid.Offset2D[];
+
+    /**
+     * The occupied offsets in an odd grid in the 0th row/column
+     */
+    odd: foundry.grid.BaseGrid.Offset2D[];
+
+    /**
+     * The anchor in normalized coordiantes
+     */
+    anchor: foundry.canvas.Canvas.Point;
+  }
+
+  interface PreMovementOptions extends DeepReadonly<Omit<MovementOperation, "autoRotate" | "showRuler">>, Pick<MovementOperation, "autoRotate" | "showRuler"> {}
+
+  interface SegmentizeMovementWaypoint extends InexactPartial<Pick<MeasuredMovementWaypoint, "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped">> {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
@@ -1362,7 +1408,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   /**
    * The current movement data of this Token document.
    */
-  get movement(): Readonly<TokenDocument.MovementData>;
+  get movement(): DeepReadonly<TokenDocument.MovementData>;
 
   /**
    * The movement continuation state of this Token document.
@@ -1490,10 +1536,9 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param options   - Parameters of the update operation
    * @returns A Promise that resolves to true if the Token was moved, otherwise resolves to false
    */
-  // TODO: extract this `options` typing
   move(
     waypoints: Partial<TokenDocument.MovementWaypoint> | Partial<TokenDocument.MovementWaypoint>[],
-    options?: Partial<Omit<TokenDocument.Database.UpdateOperation, "updates"> & { method: TokenDocument.MovementMethod; autoRotate: boolean; showRuler: boolean; constrainOptions: Omit<TokenDocument.ConstrainMovementPathOptions, "preview" | "history">}>
+    options?: InexactPartial<TokenDocument.MoveOptions>
   ): Promise<boolean>;
 
   /**
@@ -1578,8 +1623,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param waypoints - The waypoints of movement
    * @param options   - Additional measurement options
    */
-  // TODO: type this out
-  measureMovementPath(waypoints: TokenDocument.MeasuredMovementWaypoint[], options?: unknown): foundry.grid.BaseGrid.MeasurePathResult;
+  measureMovementPath(waypoints: TokenDocument.MeasuredMovementWaypoint[], options?: TokenDocument.MeasureMovementPathOptions): foundry.grid.BaseGrid.MeasurePathResult;
 
   /**
    * Get the path of movement with the intermediate steps of the direct path between waypoints.
@@ -1650,8 +1694,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @returns The Region IDs this Token is in after changes ar applied (sorted)
    * @internal
    */
-  // TODO: type this properly
-  protected _identifyRegions(changes?: unknown): string[];
+  protected _identifyRegions(changes?: InexactPartial<TokenDocument.UpdateData>): string[];
 
   /**
    * Reject the movement or modify the update operation as needed based on the movement.
@@ -1662,9 +1705,8 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @returns If false, the movement is prevented
    * @remarks default implementation does nothing
    */
-  // TODO: extract these types, maybe
   protected _preUpdateMovement(
-    movement: Readonly<Omit<TokenDocument.MovementOperation, "autoRotate" | "showRuler">> & Pick<TokenDocument.MovementOperation, "autoRotate" | "showRuler">,
+    movement: TokenDocument.PreMovementOptions,
     operation: Partial<TokenDocument.Database.UpdateOperation>
   ): Promise<boolean | void>;
 
@@ -1675,7 +1717,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param user      - The User that requested the update operation
    * @remarks default implementation does nothing
    */
-  protected _onUpdateMovement(movement: Readonly<TokenDocument.MovementOperation>, operation: Partial<TokenDocument.Database.UpdateOperation>, user: User.Implementation): void;
+  protected _onUpdateMovement(movement: DeepReadonly<TokenDocument.MovementOperation>, operation: Partial<TokenDocument.Database.UpdateOperation>, user: User.Implementation): void;
 
   /**
    * Called when the current movement is stopped.
@@ -1790,8 +1832,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param waypoints - The waypoints of movement
    * @returns The movement split into its segments
    */
-  // TODO: extract this typing
-  segmentizeRegionMovementPath(region: RegionDocument, waypoints: Partial<Pick<TokenDocument.MeasuredMovementWaypoint, "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped">>[]): RegionDocument.MovementSegment[];
+  segmentizeRegionMovementPath(region: RegionDocument, waypoints: TokenDocument.SegmentizeMovementWaypoint[]): RegionDocument.MovementSegment[];
 
   /**
    * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters

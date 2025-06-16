@@ -543,6 +543,7 @@ declare namespace BaseGrid {
     thickness?: number | undefined;
   }
 
+  // TODO: Figure out to do with this lil guy
   interface Offset {
     /** The row coordinate */
     i: number;
@@ -551,9 +552,35 @@ declare namespace BaseGrid {
     j: number;
   }
 
+  /**
+   * 2D offset coordinates of a grid space.
+   */
+  interface Offset2D {
+    /** The row coordinate (an integer) */
+    i: number;
+
+    /** The column coordinate (an integer) */
+    j: number;
+  }
+
+  /**
+   * 3D offset coordinates of a grid space.
+   */
+  interface Offset3D extends Offset {
+    /**
+     * The vertical coordinate (an integer)
+     */
+    k: number;
+  }
+
   type OffsetRange = [i0: number, j0: number, i1: number, j1: number];
 
+  // TODO: Figure out to do with this lil guy
   type Coordinates = Offset | Canvas.Point;
+
+  type Coordinates2D = Offset2D | Canvas.Point;
+
+  type Coordinates3D = Offset3D | Canvas.ElevatedPoint;
 
   interface SnappingBehavior {
     /** The snapping mode (a union of {@linkcode CONST.GRID_SNAPPING_MODES}) */
@@ -638,7 +665,34 @@ declare namespace BaseGrid {
    * @param distance - The distance between the grid spaces, or 0 if teleported.
    * @returns The cost of the move between the grid spaces.
    */
+  // TODO: Figure out to do with this lil guy
   type MeasurePathCostFunction = (from: Offset, to: Offset, distance: number) => number;
+
+  /**
+   * A function that returns the cost for a given move between grid spaces in 2D.
+   * In square and hexagonal grids the grid spaces are always adjacent unless teleported.
+   * The function is never called with the same offsets.
+   * @param from     - The offset that is moved from
+   * @param to       - The offset that is moved to
+   * @param distance - The distance between the grid spaces
+   * @param segment  - The properties of the segment
+   * @returns The cost of the move between the grid spaces (nonnegative)
+   */
+  // TODO: `SegmentData` type, properly
+  type MeasurePathCostFunction2D<SegmentData extends unknown> = (from: Readonly<Offset2D>, to: Readonly<Offset2D>, distance: number, segment: Readonly<SegmentData>) => number;
+
+  /**
+   * A function that returns the cost for a given move between grid spaces in 3D.
+   * In square and hexagonal grids the grid spaces are always adjacent unless teleported.
+   * The function is never called with the same offsets.
+   * @param from     - The offset that is moved from
+   * @param to       - The offset that is moved to
+   * @param distance - The distance between the grid spaces
+   * @param segment  - The properties of the segment
+   * @returns The cost of the move between the grid spaces (nonnegative)
+   */
+  // TODO: `SegmentData` type, properly
+  type MeasurePathCostFunction3D<SegmentData extends unknown> = (from: Readonly<Offset3D>, to: Readonly<Offset3D>, distance: number, segment: Readonly<SegmentData>) => number;
 
   interface Dimensions {
     width: number;

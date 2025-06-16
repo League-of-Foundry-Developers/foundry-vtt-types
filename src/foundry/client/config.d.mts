@@ -2017,8 +2017,7 @@ declare global {
          * }
          * ```
          */
-        // TODO: stub
-        actions: Record<string, any>;
+        actions: Record<string, Partial<CONFIG.Token.MovementActionConfig>>;
       };
 
       /** @defaultValue `"TOKEN.Adjectives"` */
@@ -2388,6 +2387,12 @@ declare global {
      * Configure the Application classes used to render various core UI elements in the application
      */
     ui: CONFIG.UI;
+
+    /**
+     * System and modules must prefix the names of the queries they register (e.g. "my-module.aCustomQuery").
+     * Non-prefixed query names are reserved by core.
+     */
+    queries: CONFIG.Queries;
   }
 
   namespace CONFIG {
@@ -2454,6 +2459,11 @@ declare global {
 
       /** @defaultValue `CameraViews` */
       webrtc: foundry.applications.apps.av.CameraViews.AnyConstructor;
+    }
+
+    interface Queries {
+      dialog: typeof foundry.applications.api.DialogV2._handleQuery,
+      confirmTeleportToken: typeof foundry.data.regionBehaviors.TeleportTokenRegionBehaviorType._confirmQuery
     }
 
     interface Canvas {
@@ -3447,6 +3457,98 @@ declare global {
       interface Sounds {
         epic: CONFIG.Combat.SoundPreset;
         mc: CONFIG.Combat.SoundPreset;
+      }
+    }
+
+    namespace Token {
+      /** Returns the cost of the move between the grid spaces (nonnegative) */
+      type MovementActionCostFunction = (
+        /** The base cost (terrain cost) */
+        baseCost: number,
+
+        /** The offset that is moved from */
+        from: Readonly<foundry.grid.BaseGrid.Offset3D>,
+        
+        /** The offset that is moved to */
+        to: Readonly<foundry.grid.BaseGrid.Offset3D>,
+        
+        /** The distance between the grid spaces */
+        distance: number,
+
+        /** The properties of the segment */
+        segment: Readonly<TokenDocument.MovementSegmentData>
+      ) => number;
+
+      interface MovementActionConfig {
+        /**
+         * The label of the movement action.
+         */
+        label: string;
+
+        /**
+         * The icon of the movement action.
+         */
+        icon: string;
+
+        /**
+         * The number that is used to sort the movement actions / movement action configs.
+         * Determines the order in the Token Config/HUD and of cycling.
+         * @defaultValue `0`
+         */
+        order: number;
+
+        /**
+         * Is teleportation? If true, the movement does not go through all grid spaces
+         * between the origin and destination: it goes from teh origin immediately to the destination grid space.
+         * @defaultValue `false`
+         */
+        teleport: boolean;
+
+        /**
+         * Is the movement measured? The distance, cost, spaces, and diagonals
+         * of a segment that is not measured are always 0.
+         * @defaultValue `true`
+         */
+        measure: boolean;
+
+        /**
+         * The type of walls that block this movement, if any.
+         * @defaultValue `"move"`
+         */
+        walls: string | null;
+
+        /**
+         * Is segment of the movement visualized by the ruler?
+         * @defaultValue `true`
+         */
+        visualize: boolean;
+
+        /**
+         * Get the default animation options for this movement action.
+         * @defaultValue `() => ({})`
+         */
+        getAnimationOptions: (token: foundry.canvas.placeables.Token) => Pick<foundry.canvas.placeables.Token.AnimateOptions, "duration" | "movementSpeed" | "easing" | "ontick">;
+        
+        /**
+         * Can the current User select this movement action for the given Token? If selectable, the movement action of the
+         * Token can be set to this movement action by the User via the UI and when cycling.
+         * @defaultValue `() => true`
+         */
+        canSelect: (token: TokenDocument | foundry.data.PrototypeToken) => boolean;
+
+        /**
+         * If set, this function is used to derive the terrain difficulty from from nonderived difficulties,
+         * which are those that do not have `deriveTerrainDifficulty` set.
+         * Used by {@link foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType}.
+         * Derived terrain difficulties are not configurable via the behavior UI.
+         */
+        deriveTerrainDifficulty: ((nonDerivedDifficulties: {[action: string]: number}) => number) | null;
+        
+        /**
+         * The cost modification function.
+         * @defaultValue `() => cost => cost`
+         */
+        getCostFunction: (token: TokenDocument, options: TokenDocument.MeasureMovementPathOptions) => MovementActionCostFunction;
       }
     }
 

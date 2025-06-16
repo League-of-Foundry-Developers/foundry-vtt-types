@@ -307,8 +307,7 @@ declare class CompendiumCollection<
   /**
    * Handle changes to the world compendium configuration setting.
    */
-  // TODO: extract this type
-  protected static _onConfigure(config: Record<string, { folder?: string | undefined; sort?: number | undefined; locked?: boolean | undefined }>): void;
+  protected static _onConfigure(config: CompendiumCollection.WorldCompendiumConfiguration): void;
 }
 
 declare namespace CompendiumCollection {
@@ -445,6 +444,14 @@ declare namespace CompendiumCollection {
   interface DuplicateCompendiumOptions {
     label?: string | undefined;
   }
+
+  interface WorldCompendiumPackConfiguration {
+    folder?: string;
+    sort?: number;
+    locked?: boolean;
+  }
+
+  interface WorldCompendiumConfiguration extends Record<string, InexactPartial<WorldCompendiumPackConfiguration>> {}
 
   // Note(LukeAbby): One neat possibility for this type would be making something like `type: "foo"`,
   // `type__ne: "foo"`, and `type__in: ["foo", "bar"]` all narrow `system`.

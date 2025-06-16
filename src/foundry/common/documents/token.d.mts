@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, DeepReadonly, InexactPartial } from "#utils";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -81,9 +81,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param data - The position and dimensions
    * @returns The snapped position
    */
-  // TODO: properly type `TokenDimensions` (second part of data)
   getSnappedPosition(
-    data?: Partial<foundry.canvas.Canvas.ElevatedPoint & { width: number; height: number; shape: CONST.TOKEN_SHAPES }>,
+    data?: InexactPartial<foundry.canvas.Canvas.ElevatedPoint & TokenDocument.Dimensions>,
   ): foundry.canvas.Canvas.ElevatedPoint;
 
   /**
@@ -91,10 +90,9 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param data - The position and dimensions
    * @returns The top-left grid offset
    */
-  // TODO: properly type `TokenDimensions` (second part of data) and `GridOffset3D` (return)
   protected _positionToGridOffset(
-    data?: Partial<foundry.canvas.Canvas.ElevatedPoint & { width: number; height: number; shape: CONST.TOKEN_SHAPES }>,
-  ): { i: number; j: number; k: number };
+    data?: InexactPartial<foundry.canvas.Canvas.ElevatedPoint & TokenDocument.Dimensions>,
+  ): foundry.grid.BaseGrid.Offset3D;
 
   /**
    * Get the position of the Token from the top-left grid offset.
@@ -102,10 +100,9 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param data   - The dimensions that override the current dimensions
    * @returns The snapped position
    */
-  // TODO: properly type `GridOffset3D` (offset) and `TokenDimensions` (data)
   protected _gridOffsetToPosition(
-    offset: { i: number; j: number; k: number },
-    data?: Partial<{ width: number; height: number; shape: CONST.TOKEN_SHAPES }>,
+    offset: foundry.grid.BaseGrid.Offset3D,
+    data?: InexactPartial<TokenDocument.Dimensions>,
   ): foundry.canvas.Canvas.ElevatedPoint;
 
   /**
@@ -120,9 +117,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param data - The position and dimensions
    * @returns The center point
    */
-  // TODO: properly type `TokenDimensions` (second part of data)
   getCenterPoint(
-    data?: Partial<foundry.canvas.Canvas.ElevatedPoint & { width: number; height: number; shape: CONST.TOKEN_SHAPES }>,
+    data?: InexactPartial<foundry.canvas.Canvas.ElevatedPoint & TokenDocument.Dimensions>,
   ): foundry.canvas.Canvas.ElevatedPoint;
 
   /**
@@ -131,9 +127,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param data - The dimensions
    * @returns The grid space polygon or undefined if gridless
    */
-  // TODO: properly type `TokenDimensions` (data)
   getGridSpacePolygon(
-    data?: Partial<{ width: number; height: number; shape: CONST.TOKEN_SHAPES }>,
+    data?: InexactPartial<TokenDocument.Dimensions>,
   ): foundry.canvas.Canvas.Point[] | void;
 
   /**
@@ -143,10 +138,9 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param data - The position and dimensions
    * @returns The offsets of occupied grid spaces
    */
-  // TODO: properly type `TokenDimensions` (second part of data) and `GridOffset2D` (return)
   getOccupiedGridSpaceOffsets(
-    data?: Partial<foundry.canvas.Canvas.Point & { width: number; height: number; shape: CONST.TOKEN_SHAPES }>,
-  ): { i: number; j: number }[];
+    data?: InexactPartial<foundry.canvas.Canvas.Point & TokenDocument.Dimensions>,
+  ): foundry.grid.BaseGrid.Offset2D[];
 
   /**
    * Get the hexagonal offsets given the type, width, and height.
@@ -156,13 +150,12 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param columns - Column-based instead of row-based hexagonal grid?
    * @returns The hexagonal offsets
    */
-  // TODO: properly type `TokenHexagonalOffsetsData` (return)
   protected static _getHexagonalOffsets(
     width: number,
     height: number,
     shape: CONST.TOKEN_SHAPES,
     columns: boolean,
-  ): Readonly<{ even: { i: number; j: number }; odd: { i: number; j: number }; anchor: foundry.canvas.Canvas.Point }>;
+  ): DeepReadonly<TokenDocument.HexagonalOffsetsData>;
 
   override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 

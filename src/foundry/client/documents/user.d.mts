@@ -552,6 +552,17 @@ declare namespace User {
   type ActionPermission = keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface QueryOptions {
+    /**
+     * The timeout in milliseconds
+     */
+    timeout?: number;
+  }
+
+  type QueryName = keyof typeof CONFIG.queries;
+  type QueryData<QueryName extends User.QueryName> = Parameters<typeof CONFIG.queries[QueryName]>[0];
+  type QueryReturn<QueryName extends User.QueryName> = ReturnType<typeof CONFIG.queries[QueryName]>;
 }
 
 /**
@@ -703,9 +714,9 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @param queryName    - The query name (must be registered in `CONFIG.queries`)
    * @param queryData    - The query data (must be JSON-serializable)
    * @param queryOptions - The query options
+   * @returns The query result
    */
-  // TODO: properly type this
-  query(queryName: string, queryData: AnyObject, queryOptions?: unknown): Promise<unknown>;
+  query<QueryName extends User.QueryName>(queryName: QueryName, queryData: User.QueryData<QueryName>, {timeout}?: User.QueryOptions): Promise<User.QueryReturn<QueryName>>;
 
   // _onUpdate and _onDelete are overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.

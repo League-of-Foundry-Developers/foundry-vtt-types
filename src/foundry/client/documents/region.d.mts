@@ -605,6 +605,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * 
    * This property is updated only by a document update.
    */
+  // TODO: this `any`
   get regionShapes(): ReadonlyArray<foundry.data.regionShapes.RegionShape<any>>;
   
     /**
