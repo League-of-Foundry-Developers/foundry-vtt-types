@@ -1,5 +1,5 @@
 import { expectTypeOf, assertType } from "vitest";
-import type { AnyConstructor, AnyFunction, NonNullish } from "fvtt-types/utils";
+import type { AnyConstructor, AnyFunction, DeepReadonly, NonNullish } from "fvtt-types/utils";
 import fu = foundry.utils;
 
 import FormApplication = foundry.appv1.api.FormApplication;
@@ -76,15 +76,17 @@ const freezable = {
   foo: true,
   bar: 17,
   baz: "fizz",
+  arr: [1, 2, 3],
+  obj: {
+    foo2: false,
+    bar2: 71,
+  },
 };
-expectTypeOf(fu.deepFreeze(freezable)).toEqualTypeOf<Readonly<{ foo: boolean; bar: number; baz: string }>>();
-expectTypeOf(fu.deepFreeze(freezable, {})).toEqualTypeOf<Readonly<{ foo: boolean; bar: number; baz: string }>>();
-expectTypeOf(fu.deepFreeze(freezable, { strict: true })).toEqualTypeOf<
-  Readonly<{ foo: boolean; bar: number; baz: string }>
->();
-expectTypeOf(fu.deepFreeze(freezable, { strict: undefined })).toEqualTypeOf<
-  Readonly<{ foo: boolean; bar: number; baz: string }>
->();
+type AfterFreezing = { foo: boolean; bar: number; baz: string; arr: number[]; obj: { foo2: boolean; bar2: number } };
+expectTypeOf(fu.deepFreeze(freezable)).toEqualTypeOf<DeepReadonly<AfterFreezing>>();
+expectTypeOf(fu.deepFreeze(freezable, {})).toEqualTypeOf<DeepReadonly<AfterFreezing>>();
+expectTypeOf(fu.deepFreeze(freezable, { strict: true })).toEqualTypeOf<DeepReadonly<AfterFreezing>>();
+expectTypeOf(fu.deepFreeze(freezable, { strict: undefined })).toEqualTypeOf<DeepReadonly<AfterFreezing>>();
 
 // deepSeal
 
