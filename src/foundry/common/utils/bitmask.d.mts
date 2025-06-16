@@ -3,7 +3,7 @@ import type { Identity } from "#utils";
 declare class InternalBitMask<T extends Record<string, boolean>> extends Number {
   /**
    * Create a new BitMask instance.
-   * @param states    - An object containing valid states and their corresponding initial boolean values (default is null).
+   * @param states - An object containing valid states and their corresponding initial boolean values (default is null).
    * @remarks
    * @throws If the passed list of states has more than 32 keys
    */
@@ -11,7 +11,7 @@ declare class InternalBitMask<T extends Record<string, boolean>> extends Number 
 
   /**
    * The enum associated with this structure.
-   * @remarks Foundry marks `@readonly` - the object is frozen, but the property is not
+   * @remarks Foundry marks `@readonly`; the object is frozen, but the property is not
    */
   states: Readonly<{ [K in keyof T]: K }>;
 
@@ -44,7 +44,7 @@ declare class InternalBitMask<T extends Record<string, boolean>> extends Number 
    * @param state   - The state to toggle. Throws an error if the provided state is not valid.
    * @param enabled - Toggle on (true) or off (false)? If undefined, the state is switched automatically.
    */
-  toggleState(state: keyof T, enabled?: boolean): void;
+  toggleState(state: keyof T, enabled: boolean): void;
 
   /**
    * Toggle the state of a specific state in the bitmask.
