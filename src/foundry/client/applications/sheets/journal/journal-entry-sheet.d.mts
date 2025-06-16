@@ -1,5 +1,4 @@
-import type { Identity } from "#utils";
-import type { ValueOf } from "type-fest";
+import type { ValueOf, Identity } from "#utils";
 import type DocumentSheetV2 from "../../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 

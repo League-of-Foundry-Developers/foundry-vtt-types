@@ -177,7 +177,7 @@ declare namespace RegionDocument {
   /**
    * An instance of `Region` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<RegionDocument.Implementation> {}
+  type Stored = Document.Internal.Stored<RegionDocument.Implementation>;
 
   /**
    * The data put in {@link RegionDocument._source | `RegionDocument#_source`}. This data is what was

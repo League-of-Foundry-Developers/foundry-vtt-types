@@ -526,6 +526,9 @@ declare global {
         decimals: number;
       };
 
+      /** @defaultValue "icons/vtt-512.png" */
+      fallbackTurnMarker: string;
+
       /**
        * @defaultValue
        * ```typescript

@@ -1,6 +1,9 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType } from "fvtt-types/utils";
 
+import AdventureImporter = foundry.appv1.sheets.AdventureImporter;
+import AdventureExporter = foundry.appv1.sheets.AdventureExporter;
+
 declare const adventure: Adventure.Implementation;
 const adventureImporter = new AdventureImporter(adventure);
 

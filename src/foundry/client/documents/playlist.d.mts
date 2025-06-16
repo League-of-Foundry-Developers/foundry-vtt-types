@@ -184,7 +184,7 @@ declare namespace Playlist {
   /**
    * An instance of `Playlist` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<Playlist.Implementation> {}
+  type Stored = Document.Internal.Stored<Playlist.Implementation>;
 
   /**
    * The data put in {@link Playlist._source | `Playlist#_source`}.. This data is what was

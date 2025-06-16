@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import type { MaybePromise } from "fvtt-types/utils";
 
+import JournalSheet = foundry.appv1.sheets.JournalSheet;
+
 declare const journalEntry: JournalEntry.Implementation;
 const journalSheet = new JournalSheet(journalEntry);
 

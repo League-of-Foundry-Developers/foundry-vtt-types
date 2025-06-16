@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import { ResizeHandle } from "#client/canvas/containers/_module.mjs";
 
+import Canvas = foundry.canvas.Canvas;
+
 declare const someRect: Canvas.Rectangle;
 
 const myResizeHandle = new ResizeHandle([2, 3], { canDrag: () => true });

@@ -120,7 +120,7 @@ declare namespace WallDocument {
   /**
    * An instance of `WallDocument` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<WallDocument.Implementation> {}
+  type Stored = Document.Internal.Stored<WallDocument.Implementation>;
 
   /**
    * The data put in {@link foundry.abstract.DataModel._source | `DataModel#_source`}. This data is what was

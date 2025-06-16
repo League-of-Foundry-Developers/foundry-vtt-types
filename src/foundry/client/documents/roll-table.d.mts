@@ -179,7 +179,7 @@ declare namespace RollTable {
   /**
    * An instance of `RollTable` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<RollTable.Implementation> {}
+  type Stored = Document.Internal.Stored<RollTable.Implementation>;
 
   /**
    * The data put in {@link RollTable._source | `RollTable#_source`}. This data is what was

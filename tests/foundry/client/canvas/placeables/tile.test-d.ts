@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import { PlaceableObject, Tile, Token } from "#client/canvas/placeables/_module.mjs";
 
+import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
+
 declare const doc: TileDocument.Stored;
 
 expectTypeOf(Tile.embeddedName).toEqualTypeOf<"Tile">();
@@ -127,15 +129,24 @@ expectTypeOf(tile["_onHandleDragCancel"](someEvent)).toBeVoid();
 expectTypeOf(tile["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.isRoof).toEqualTypeOf<boolean>();
 declare const someToken: Token.Implementation;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.testOcclusion(someToken)).toBeBoolean();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.testOcclusion(someToken, {})).toBeBoolean();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.testOcclusion(someToken, { corners: true })).toBeBoolean();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.testOcclusion(someToken, { corners: null })).toBeBoolean();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.containsPixel(50, 50)).toBeBoolean();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.containsPixel(50, 50, 0.3)).toBeBoolean();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.getPixelAlpha(50, 50)).toBeNumber();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile._getAlphaBounds()).toEqualTypeOf<PIXI.Rectangle | undefined>;

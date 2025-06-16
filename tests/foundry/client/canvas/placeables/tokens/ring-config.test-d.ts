@@ -2,6 +2,8 @@ import { expectTypeOf } from "vitest";
 import { TokenRingConfig, TokenRing, DynamicRingData } from "#client/canvas/placeables/tokens/_module.mjs";
 import type { PrimaryBaseSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
 
+import TokenRingSamplerShader = foundry.canvas.rendering.shaders.TokenRingSamplerShader;
+
 expectTypeOf(TokenRingConfig.CORE_TOKEN_RINGS).toEqualTypeOf<TokenRingConfig.MaybeCoreRings>;
 
 expectTypeOf(TokenRingConfig.CORE_TOKEN_RINGS_FIT_MODES).toEqualTypeOf<TokenRingConfig.CoreTokenRingsFitModes>();
@@ -23,7 +25,7 @@ expectTypeOf(myTRC.effects).toEqualTypeOf<Record<string, string>>();
 expectTypeOf(myTRC.spritesheet).toEqualTypeOf<string | null>();
 
 expectTypeOf(myTRC.shaderClass).toEqualTypeOf<PrimaryBaseSamplerShader.AnyConstructor>();
-expectTypeOf((myTRC.shaderClass = TokenRingSamplerShader)).toEqualTypeOf<typeof TokenRingSamplerShader>();
+myTRC.shaderClass = TokenRingSamplerShader;
 
 expectTypeOf(myTRC.label).toEqualTypeOf<string | undefined>();
 expectTypeOf(myTRC.id).toEqualTypeOf<string | undefined>();
@@ -38,4 +40,5 @@ expectTypeOf(myTRC.configIDs).toEqualTypeOf<string[]>();
 expectTypeOf(myTRC.configLabels).toEqualTypeOf<Record<string, string>>();
 
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myTRC.configNames).toEqualTypeOf<string[]>();

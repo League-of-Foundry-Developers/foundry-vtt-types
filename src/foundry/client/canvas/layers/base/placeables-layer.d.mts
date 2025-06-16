@@ -126,7 +126,7 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
    * Iterates over placeable objects that are eligible for control/select.
    * @yields A placeable object
    */
-  controllableObjects(): Generator<PlaceableObject.Any>;
+  controllableObjects(): Generator<PlaceableObject.Any, void, undefined>;
 
   /**
    * Track the set of PlaceableObjects on this layer which are currently controlled.

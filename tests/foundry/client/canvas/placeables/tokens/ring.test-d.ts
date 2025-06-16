@@ -3,6 +3,8 @@ import { TokenRing } from "#client/canvas/placeables/tokens/_module.mjs";
 import type { PrimaryBaseSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 
+import Token = foundry.canvas.placeables.Token;
+
 expectTypeOf(TokenRing.effects).toExtend<Record<keyof TokenRing.Effects, TokenRing.EFFECTS>>();
 
 // Ideally `TokenRing.initialized` could be used to narrow `TokenRing` but that would require

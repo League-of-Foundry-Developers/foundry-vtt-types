@@ -115,7 +115,7 @@ declare namespace PlaylistSound {
   /**
    * An instance of `PlaylistSound` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<PlaylistSound.Implementation> {}
+  type Stored = Document.Internal.Stored<PlaylistSound.Implementation>;
 
   /**
    * The data put in {@link PlaylistSound._source | `PlaylistSound#_source`}. This data is what was

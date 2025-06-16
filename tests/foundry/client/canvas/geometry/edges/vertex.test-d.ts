@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import { Edge, PolygonVertex } from "#client/canvas/geometry/edges/_module.mjs";
 
+import Canvas = foundry.canvas.Canvas;
+
 const vertex = new foundry.canvas.geometry.edges.PolygonVertex(2, 2);
 
 expectTypeOf(vertex.x).toEqualTypeOf<number>();

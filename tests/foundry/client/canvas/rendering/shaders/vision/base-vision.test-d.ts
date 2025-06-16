@@ -1,11 +1,14 @@
 import { expectTypeOf } from "vitest";
-import { AdaptiveVisionShader } from "#client/canvas/rendering/shaders/_module.mjs";
 
-const AVS = AdaptiveVisionShader;
-let myAVS;
+import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
+import AdaptiveLightingShader = foundry.canvas.rendering.shaders.AdaptiveLightingShader;
+import AdaptiveVisionShader = foundry.canvas.rendering.shaders.AdaptiveVisionShader;
 
-expectTypeOf(AVS.FRAGMENT_FUNCTIONS).toEqualTypeOf<string>();
-expectTypeOf(AVS.SHADER_TECHNIQUES).toEqualTypeOf<Record<string, AdaptiveLightingShader.ShaderTechnique>>();
-expectTypeOf((myAVS = AVS.create())).toEqualTypeOf<AdaptiveVisionShader>();
+expectTypeOf(AdaptiveVisionShader.FRAGMENT_FUNCTIONS).toEqualTypeOf<string>();
+expectTypeOf(AdaptiveVisionShader.SHADER_TECHNIQUES).toEqualTypeOf<
+  Record<string, AdaptiveLightingShader.ShaderTechnique>
+>();
+expectTypeOf(AdaptiveVisionShader.create()).toEqualTypeOf<AdaptiveVisionShader>();
 
+declare const myAVS: AdaptiveVisionShader;
 expectTypeOf(myAVS["_preRender"]).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();

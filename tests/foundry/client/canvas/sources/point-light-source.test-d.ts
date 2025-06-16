@@ -1,13 +1,17 @@
 import { expectTypeOf } from "vitest";
-import type PointLightSource from "../../../../../src/foundry/client/canvas/sources/point-light-source.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
-const PLS = foundry.canvas.sources.PointLightSource;
+import PointLightSource = foundry.canvas.sources.PointLightSource;
+import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
 
-expectTypeOf(PLS.effectsCollection).toBeString();
-expectTypeOf(PLS.defaultData).toEqualTypeOf<PointLightSource.SourceData>();
+import AdaptiveBackgroundShader = foundry.canvas.rendering.shaders.AdaptiveBackgroundShader;
+import FairyLightIlluminationShader = foundry.canvas.rendering.shaders.FairyLightIlluminationShader;
+import FairyLightColorationShader = foundry.canvas.rendering.shaders.FairyLightColorationShader;
 
-const mySource = new PLS();
+expectTypeOf(PointLightSource.effectsCollection).toBeString();
+expectTypeOf(PointLightSource.defaultData).toEqualTypeOf<PointLightSource.SourceData>();
+
+const mySource = new PointLightSource();
 
 expectTypeOf(mySource.data).toEqualTypeOf<PointLightSource.SourceData>();
 expectTypeOf(mySource.shape).toEqualTypeOf<PointSourcePolygon>();
@@ -18,7 +22,7 @@ const sourceData = {
   alpha: 0.1,
   angle: 215,
   animation: {
-    animation: PLS.prototype.animateTime,
+    animation: PointLightSource.prototype.animateTime,
     illuminationShader: FairyLightIlluminationShader,
     colorationShader: FairyLightColorationShader,
     backgroundShader: AdaptiveBackgroundShader,
@@ -72,4 +76,5 @@ expectTypeOf(mySource["_canDetectObject"](null)).toBeBoolean();
 expectTypeOf(mySource["_canDetectObject"](someToken)).toBeBoolean();
 
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(mySource.isDarkness).toEqualTypeOf<false>();

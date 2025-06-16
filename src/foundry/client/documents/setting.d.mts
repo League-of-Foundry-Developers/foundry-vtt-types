@@ -122,7 +122,7 @@ declare namespace Setting {
   /**
    * An instance of `Setting` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<Setting.Implementation> {}
+  type Stored = Document.Internal.Stored<Setting.Implementation>;
 
   /**
    * The data put in {@link Setting._source | `Setting#_source`}. This data is what was

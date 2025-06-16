@@ -235,7 +235,7 @@ declare namespace ActorDelta {
   /**
    * An instance of `ActorDelta` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<ActorDelta.Implementation> {}
+  type Stored = Document.Internal.Stored<ActorDelta.Implementation>;
 
   /**
    * The data put in {@link ActorDelta._source | `ActorDelta#_source`}. This data is what was

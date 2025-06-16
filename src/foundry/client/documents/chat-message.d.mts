@@ -167,14 +167,12 @@ declare namespace ChatMessage {
    * An instance of `ChatMessage` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid<out SubType extends ChatMessage.SubType = ChatMessage.SubType>
-    extends Document.Internal.Invalid<OfType<SubType>> {}
+  interface Invalid extends Document.Internal.Invalid<Implementation> {}
 
   /**
    * An instance of `ChatMessage` that comes from the database.
    */
-  interface Stored<out SubType extends ChatMessage.SubType = ChatMessage.SubType>
-    extends Document.Internal.Stored<OfType<SubType>> {}
+  type Stored<SubType extends ChatMessage.SubType = ChatMessage.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
    * The data put in {@link ChatMessage._source | `ChatMessage#_source`}. This data is what was

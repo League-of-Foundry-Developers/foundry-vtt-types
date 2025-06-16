@@ -1,6 +1,9 @@
 import { expectTypeOf } from "vitest";
 import { RegionLayer } from "#client/canvas/layers/_module.mjs";
 
+import Canvas = foundry.canvas.Canvas;
+import Region = foundry.canvas.placeables.Region;
+
 expectTypeOf(RegionLayer.documentName).toEqualTypeOf<"Region">();
 expectTypeOf(RegionLayer.instance).toEqualTypeOf<RegionLayer | undefined>();
 expectTypeOf(RegionLayer.layerOptions).toEqualTypeOf<RegionLayer.LayerOptions>();

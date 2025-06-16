@@ -112,7 +112,7 @@ declare namespace TileDocument {
   /**
    * An instance of `TileDocument` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<TileDocument.Implementation> {}
+  type Stored = Document.Internal.Stored<TileDocument.Implementation>;
 
   /**
    * The data put in {@link TileDocument._source | `TileDocument#_source`}. This data is what was

@@ -2,6 +2,10 @@ import { expectTypeOf } from "vitest";
 import { Ruler } from "#client/canvas/interaction/_module.mjs";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
+import Canvas = foundry.canvas.Canvas;
+import GridHighlight = foundry.canvas.containers.GridHighlight;
+import Ray = foundry.canvas.geometry.Ray;
+
 expectTypeOf(Ruler.STATES).toExtend<Record<keyof Ruler.States, Ruler.STATES>>();
 expectTypeOf(Ruler.canMeasure).toBeBoolean();
 

@@ -1,5 +1,8 @@
 import { expectTypeOf } from "vitest";
 
+import AsyncWorker = foundry.helpers.AsyncWorker;
+import WorkerManager = foundry.helpers.WorkerManager;
+
 const asyncWorker = new AsyncWorker("");
 
 expectTypeOf(asyncWorker.name).toEqualTypeOf<string>();

@@ -113,7 +113,7 @@ declare namespace Adventure {
   /**
    * An instance of `Adventure` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<Adventure.Implementation> {}
+  type Stored = Document.Internal.Stored<Adventure.Implementation>;
 
   /**
    * The data put in {@link Adventure._source | `Adventure#_source`}. This data is what was

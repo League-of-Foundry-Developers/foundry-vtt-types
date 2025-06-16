@@ -211,11 +211,14 @@ expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: null }
 
 // deprecated since v12 until v14
 expectTypeOf(fullTestAE.icon).toEqualTypeOf<string | null | undefined>();
-expectTypeOf((fullTestAE.icon = "path/to/tex.png")).toBeString();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+fullTestAE.icon = "path/to/tex.png";
 
 // Document template static overrides
 
-expectTypeOf(TestActiveEffect["_initializationOrder"]()).toEqualTypeOf<Generator<[string, fields.DataField.Any]>>();
+expectTypeOf(TestActiveEffect["_initializationOrder"]()).toEqualTypeOf<
+  Generator<[string, fields.DataField.Any], void, undefined>
+>();
 expectTypeOf(TestActiveEffect.implementation).toEqualTypeOf<ActiveEffect.ImplementationClass>();
 expectTypeOf(TestActiveEffect.baseDocument).toEqualTypeOf<typeof BaseActiveEffect>();
 expectTypeOf(TestActiveEffect.collectionName).toEqualTypeOf<"effects">();
@@ -309,8 +312,11 @@ expectTypeOf(TestActiveEffect.hasTypeData).toEqualTypeOf<true>();
 // shim methods and _logDataFieldMigration have no type changes from Document
 
 // core's implementation for these three are actual no-ops, no point testing the modification context
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(TestActiveEffect["_onCreateDocuments"]([effect, nonBaseAE], {}));
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(TestActiveEffect["_onUpdateDocuments"]([effect, nonBaseAE], {}));
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(TestActiveEffect["_onDeleteDocuments"]([effect, nonBaseAE], {}));
 
 expectTypeOf(TestActiveEffect["_schema"]).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();

@@ -2,6 +2,10 @@ import { expectTypeOf } from "vitest";
 import { CanvasVisibility } from "#client/canvas/groups/_module.mjs";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
+import CanvasVisionMask = foundry.canvas.layers.CanvasVisionMask;
+import VisibilityFilter = foundry.canvas.rendering.filters.VisibilityFilter;
+import VisionMode = foundry.canvas.perception.VisionMode;
+
 const layer = new CanvasVisibility();
 
 expectTypeOf(layer.vision).toEqualTypeOf<CanvasVisionMask.CanvasVisionContainer | undefined>();
@@ -54,4 +58,5 @@ expectTypeOf(
 ).toEqualTypeOf<CanvasVisibility.TestConfig>();
 
 // deprecated until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.fogOverlay).toEqualTypeOf<typeof layer.visibilityOverlay>();

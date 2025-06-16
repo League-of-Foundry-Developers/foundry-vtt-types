@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import KeyboardManager = foundry.helpers.interaction.KeyboardManager;
+
 const keyboard = new KeyboardManager();
 
 expectTypeOf(keyboard.downKeys).toEqualTypeOf<Set<string>>();

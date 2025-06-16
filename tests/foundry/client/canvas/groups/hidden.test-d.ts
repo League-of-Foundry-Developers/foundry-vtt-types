@@ -1,6 +1,9 @@
 import { expectTypeOf } from "vitest";
 import { HiddenCanvasGroup } from "#client/canvas/groups/_module.mjs";
 
+import CanvasGroupMixin = foundry.canvas.groups.CanvasGroupMixin;
+import HiddenCanvasGroup = foundry.canvas.groups.HiddenCanvasGroup;
+
 expectTypeOf(HiddenCanvasGroup.groupName).toEqualTypeOf<"hidden">();
 
 declare const someDisplayObject: PIXI.DisplayObject;

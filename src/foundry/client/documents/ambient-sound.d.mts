@@ -113,7 +113,7 @@ declare namespace AmbientSoundDocument {
   /**
    * An instance of `AmbientSoundDocument` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<AmbientSoundDocument.Implementation> {}
+  type Stored = Document.Internal.Stored<AmbientSoundDocument.Implementation>;
 
   /**
    * The data put in {@link AmbientSoundDocument._source | `AmbientSoundDocument#_source`}. This data is what was

@@ -1,7 +1,13 @@
 import { expectTypeOf } from "vitest";
-import ApplicationV2 = foundry.applications.api.ApplicationV2;
-import Document = foundry.abstract.Document;
 import type { FixedInstanceType, InexactPartial } from "../../../../../src/utils/index.d.mts";
+
+import Application = foundry.appv1.api.Application;
+import ApplicationV2 = foundry.applications.api.ApplicationV2;
+import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
+import Document = foundry.abstract.Document;
+import Dialog = foundry.appv1.api.Dialog;
+import FormApplication = foundry.appv1.api.FormApplication;
+import TextEditor = foundry.applications.ux.TextEditor;
 
 const item = new Item.implementation({ name: "foo", type: "base" });
 declare const someActor: Actor.Implementation;
@@ -154,7 +160,7 @@ expectTypeOf(item.render(true, { title: "foo" })).toBeVoid();
 // TODO: This will error as long as ApplicationV2.RenderOptions isn't inherently DeepPartialed
 expectTypeOf(item.render(true, { window: { title: "foo" } })).toBeVoid();
 
-declare const sortOptions: SortingHelpers.SortOptions<typeof item>;
+declare const sortOptions: foundry.utils.SortOptions<typeof item>;
 declare const updateData: Item.UpdateData;
 expectTypeOf(item.sortRelative()).toEqualTypeOf<Promise<typeof item>>();
 expectTypeOf(item.sortRelative({})).toEqualTypeOf<Promise<typeof item>>();
@@ -298,7 +304,7 @@ expectTypeOf(
   }),
 ).toBeVoid();
 
-expectTypeOf(item.toDragData()).toEqualTypeOf<Document.DropData<Item.Implementation>>();
+expectTypeOf(item.toDragData()).toEqualTypeOf<Item.DropData>();
 
 expectTypeOf(item.importFromJSON(`{"foo":true}`)).toEqualTypeOf<Promise<typeof item>>();
 expectTypeOf(item.importFromJSONDialog()).toEqualTypeOf<Promise<void>>();

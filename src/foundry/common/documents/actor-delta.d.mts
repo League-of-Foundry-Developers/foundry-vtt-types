@@ -20,7 +20,7 @@ declare abstract class BaseActorDelta<
    * @param data    - Initial data from which to construct the `BaseActorDelta`
    * @param context - Construction context options
    *
-   * @deprecated Constructing `BaseActorDelta` directly is not advised. The base document classes exist in
+   * @remarks Constructing `BaseActorDelta` directly is not advised. The base document classes exist in
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
@@ -114,7 +114,7 @@ declare abstract class BaseActorDelta<
   /* Document overrides */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: ActorDelta.ParentCollectionName | null;
 
@@ -203,7 +203,9 @@ declare abstract class BaseActorDelta<
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends ActorDelta.Flags.Scope, Key extends ActorDelta.Flags.Key<Scope>>(
     scope: Scope,

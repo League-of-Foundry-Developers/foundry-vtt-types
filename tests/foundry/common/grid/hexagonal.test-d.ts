@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import Canvas = foundry.canvas.Canvas;
+
 declare const config: foundry.grid.HexagonalGrid.Configuration;
 
 const hexGrid = new foundry.grid.HexagonalGrid(config);

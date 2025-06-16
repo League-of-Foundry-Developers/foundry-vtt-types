@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
+import JournalPageSheet = foundry.appv1.sheets.JournalPageSheet;
+
 declare const journalEntryPage: JournalEntryPage.Implementation;
 const journalPageSheet = new JournalPageSheet(journalEntryPage);
 

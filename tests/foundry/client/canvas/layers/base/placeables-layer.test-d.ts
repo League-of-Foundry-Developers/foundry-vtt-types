@@ -1,9 +1,14 @@
 import { expectTypeOf } from "vitest";
 import type { Container, DisplayObject } from "pixi.js";
-import { CanvasLayer, PlaceablesLayer } from "#client/canvas/layers/_module.mjs";
-import type Document from "../../../../../../src/foundry/common/abstract/document.d.mts";
+
+import AmbientLight = foundry.canvas.placeables.AmbientLight;
+import BasePlaceableHUD = foundry.applications.hud.BasePlaceableHUD;
+import CanvasLayer = foundry.canvas.layers.CanvasLayer;
+import CanvasQuadtree = foundry.canvas.geometry.CanvasQuadtree;
+import Document = foundry.abstract.Document;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
-import type { AmbientLight, PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import PlaceablesLayer = foundry.canvas.layers.PlaceablesLayer;
+import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 
 type CAL = AmbientLight.Implementation;
 type CALDoc = AmbientLightDocument.Implementation;
@@ -46,6 +51,7 @@ expectTypeOf(layer.objects).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.preview).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.quadtree).toExtend<CanvasQuadtree<AmbientLight.Implementation> | null>();
 expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<CALDoc, Scene.Implementation> | null>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<number>();
 expectTypeOf(layer.hud).toEqualTypeOf<BasePlaceableHUD<CAL> | null>();
 expectTypeOf(layer.placeables).toEqualTypeOf<CAL[]>();

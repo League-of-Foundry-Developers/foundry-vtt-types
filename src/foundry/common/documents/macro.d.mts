@@ -20,7 +20,7 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    * @param data    - Initial data from which to construct the `BaseMacro`
    * @param context - Construction context options
    *
-   * @deprecated Constructing `BaseMacro` directly is not advised. The base document classes exist in
+   * @remarks Constructing `BaseMacro` directly is not advised. The base document classes exist in
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
@@ -155,7 +155,9 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends Macro.Flags.Scope, Key extends Macro.Flags.Key<Scope>>(
     scope: Scope,

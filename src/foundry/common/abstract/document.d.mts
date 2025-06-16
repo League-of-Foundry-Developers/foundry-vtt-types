@@ -113,7 +113,7 @@ declare abstract class Document<
    */
   static get schema(): SchemaField.Any;
 
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   /**
    * Default metadata which applies to each instance of this Document type.
@@ -613,7 +613,7 @@ declare abstract class Document<
    * @param _parentPath - A parent field path already traversed
    * @remarks Not called within Foundry's client-side code, likely exists for server documents
    */
-  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   /**
    * Get the value of a "flag" for this document
@@ -984,9 +984,9 @@ declare namespace Document {
     :
         | Document.CoreTypesForName<Name>
         | ConfiguredSubTypesOf<Name>
-        | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubtype : never);
+        | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubType : never);
 
-  type ModuleSubtype = Brand<`${string}.${string}`, "Document.ModuleSubtype">;
+  type ModuleSubType = Brand<`${string}.${string}`, "Document.ModuleSubtype">;
 
   type OfType<Name extends WithSubTypes, SubType extends SubTypesOf<Name>> =
     | (Name extends "ActiveEffect" ? ActiveEffect.OfType<SubType & ActiveEffect.SubType> : never)
@@ -1014,7 +1014,7 @@ declare namespace Document {
    * See {@linkcode UnknownSystem} for other possibilities.
    */
   interface UnknownSourceData extends AnyObject {
-    type: ModuleSubtype;
+    type: ModuleSubType;
   }
 
   /**
@@ -1152,7 +1152,7 @@ declare namespace Document {
               [K in SubType]: infer Source;
             }
           ? Source
-          : SubType extends Document.ModuleSubtype
+          : SubType extends Document.ModuleSubType
             ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
               {}
             : UnknownSystem;
@@ -1160,7 +1160,7 @@ declare namespace Document {
 
     type SystemOfType<SystemMap extends Record<SubType, object>, SubType extends string> =
       | DiscriminatedUnion<SystemMap[SubType]>
-      | (SubType extends ModuleSubtype ? UnknownSystem : never);
+      | (SubType extends ModuleSubType | "base" ? UnknownSystem : never);
 
     type Stored<D extends Document.Any> = Override<
       D,
@@ -2437,4 +2437,9 @@ declare namespace Document {
       uuid: string;
     }
   }
+
+  /**
+   * @deprecated This type has been deprecated because of the inconsistent casing of "Subtype" instead of "SubType". Use {@linkcode Document.ModuleSubType} instead.
+   */
+  type ModuleSubtype = ModuleSubType;
 }

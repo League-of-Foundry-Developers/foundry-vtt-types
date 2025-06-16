@@ -165,14 +165,12 @@ declare namespace ActiveEffect {
    * An instance of `ActiveEffect` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid<out SubType extends ActiveEffect.SubType = ActiveEffect.SubType>
-    extends Document.Internal.Invalid<OfType<SubType>> {}
+  interface Invalid extends Document.Internal.Invalid<Implementation> {}
 
   /**
    * An instance of `ActiveEffect` that comes from the database.
    */
-  interface Stored<out SubType extends ActiveEffect.SubType = ActiveEffect.SubType>
-    extends Document.Internal.Stored<OfType<SubType>> {}
+  type Stored<SubType extends ActiveEffect.SubType = ActiveEffect.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
    * The data put in {@link ActiveEffect._source | `ActiveEffect#_source`}. This data is what was

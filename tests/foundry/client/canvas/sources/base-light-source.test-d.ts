@@ -1,7 +1,10 @@
 import { expectTypeOf } from "vitest";
-import type BaseLightSource from "../../../../../src/foundry/client/canvas/sources/base-light-source.d.mts";
-import type RenderedEffectSource from "../../../../../src/foundry/client/canvas/sources/rendered-effect-source.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
+
+import BaseLightSource = foundry.canvas.sources.BaseLightSource;
+import RenderedEffectSource = foundry.canvas.sources.RenderedEffectSource;
+import AdaptiveBackgroundShader = foundry.canvas.rendering.shaders.AdaptiveBackgroundShader;
+import SmoothNoise = foundry.canvas.animation.SmoothNoise;
 
 declare class MyLightSource extends foundry.canvas.sources.BaseLightSource {
   protected override _createShapes(): void;
@@ -51,4 +54,5 @@ expectTypeOf(mySource.animateTorch(23, { intensity: undefined, reverse: null, sp
 expectTypeOf(mySource.animateFlickering(12, { amplification: -3, intensity: 2, reverse: true, speed: 10 })).toBeVoid();
 
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(mySource.isDarkness).toBeBoolean();

@@ -1,6 +1,10 @@
 import { expectTypeOf } from "vitest";
 import type { MaybeEmpty } from "fvtt-types/utils";
 
+import ClientSettings = foundry.helpers.ClientSettings;
+import SettingsConfig = foundry.applications.settings.SettingsConfig;
+import WorldSettings = foundry.documents.collections.WorldSettings;
+
 const clientSettings = new ClientSettings([]);
 
 expectTypeOf(clientSettings.settings).toEqualTypeOf<Map<keyof SettingConfig & string, ClientSettings.SettingConfig>>();

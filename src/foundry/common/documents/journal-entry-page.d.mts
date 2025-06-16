@@ -15,7 +15,7 @@ declare abstract class BaseJournalEntryPage<
    * @param data    - Initial data from which to construct the `BaseJournalEntryPage`
    * @param context - Construction context options
    *
-   * @deprecated Constructing `BaseJournalEntryPage` directly is not advised. The base document classes exist in
+   * @remarks Constructing `BaseJournalEntryPage` directly is not advised. The base document classes exist in
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
@@ -61,7 +61,7 @@ declare abstract class BaseJournalEntryPage<
   /* Document overrides */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: JournalEntryPage.ParentCollectionName | null;
 
@@ -120,7 +120,9 @@ declare abstract class BaseJournalEntryPage<
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends JournalEntryPage.Flags.Scope, Key extends JournalEntryPage.Flags.Key<Scope>>(
     scope: Scope,

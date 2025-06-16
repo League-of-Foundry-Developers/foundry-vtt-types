@@ -1,6 +1,11 @@
 import { expectTypeOf } from "vitest";
 import { RegionMesh } from "#client/canvas/placeables/regions/_module.mjs";
 
+import Region = foundry.canvas.placeables.Region;
+import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
+import PulseColorationShader = foundry.canvas.rendering.shaders.PulseColorationShader;
+import RegionShader = foundry.canvas.rendering.shaders.RegionShader;
+
 declare const someRegion: Region.Implementation;
 
 const myRM = new RegionMesh(someRegion, RegionShader);

@@ -18,7 +18,7 @@ declare abstract class BaseChatMessage<
    * @param data    - Initial data from which to construct the `BaseChatMessage`
    * @param context - Construction context options
    *
-   * @deprecated Constructing `BaseChatMessage` directly is not advised. The base document classes exist in
+   * @remarks Constructing `BaseChatMessage` directly is not advised. The base document classes exist in
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
@@ -139,7 +139,9 @@ declare abstract class BaseChatMessage<
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends ChatMessage.Flags.Scope, Key extends ChatMessage.Flags.Key<Scope>>(
     scope: Scope,

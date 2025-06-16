@@ -235,14 +235,12 @@ declare namespace Combat {
    * An instance of `Combat` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid<out SubType extends Combat.SubType = Combat.SubType>
-    extends Document.Internal.Invalid<OfType<SubType>> {}
+  interface Invalid extends Document.Internal.Invalid<Implementation> {}
 
   /**
    * An instance of `Combat` that comes from the database.
    */
-  interface Stored<out SubType extends Combat.SubType = Combat.SubType>
-    extends Document.Internal.Stored<OfType<SubType>> {}
+  type Stored<SubType extends Combat.SubType = Combat.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
    * The data put in {@link Combat._source | `Combat#_source`}. This data is what was

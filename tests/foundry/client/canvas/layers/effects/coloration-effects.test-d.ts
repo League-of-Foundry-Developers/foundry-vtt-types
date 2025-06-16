@@ -1,5 +1,8 @@
 import { expectTypeOf } from "vitest";
-import { CanvasColorationEffects, CanvasLayer } from "#client/canvas/layers/_module.mjs";
+
+import CanvasColorationEffects = foundry.canvas.layers.CanvasColorationEffects;
+import CanvasLayer = foundry.canvas.layers.CanvasLayer;
+import VisualEffectsMaskingFilter = foundry.canvas.rendering.filters.VisualEffectsMaskingFilter;
 
 const layer = new CanvasColorationEffects();
 

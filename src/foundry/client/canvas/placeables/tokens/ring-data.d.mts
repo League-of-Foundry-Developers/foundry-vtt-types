@@ -90,7 +90,7 @@ declare class ClassReferenceField<
 
   static override get _defaults(): DataField.Options.Any;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /** @remarks `data` is unused, always returns `this.initial` */
   override getInitialValue(data?: unknown): InitializedType;

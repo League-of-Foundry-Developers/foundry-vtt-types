@@ -1,17 +1,19 @@
 import { expectTypeOf } from "vitest";
 
+import Tour = foundry.nue.Tour;
+
 declare const tourConfig: Tour.Config;
 
 const tour = new Tour(tourConfig);
 
 expectTypeOf(tour.config).toEqualTypeOf<Tour.Config>();
-expectTypeOf(tour.targetElement).toEqualTypeOf<HTMLElement | undefined>();
+expectTypeOf(tour.targetElement).toEqualTypeOf<HTMLElement | null | undefined>();
 expectTypeOf(tour.fadeElement).toEqualTypeOf<HTMLElement | undefined>();
 expectTypeOf(tour.overlayElement).toEqualTypeOf<HTMLElement | undefined>();
-expectTypeOf(tour.id).toEqualTypeOf<string | undefined>();
+expectTypeOf(tour.id).toEqualTypeOf<string>();
 expectTypeOf(tour.title).toEqualTypeOf<string>();
 expectTypeOf(tour.description).toEqualTypeOf<string | undefined>();
-expectTypeOf(tour.namespace).toEqualTypeOf<string | undefined>();
+expectTypeOf(tour.namespace).toEqualTypeOf<string>();
 expectTypeOf(tour.key).toEqualTypeOf<string>();
 expectTypeOf(tour.steps).toEqualTypeOf<Tour.Step[]>();
 expectTypeOf(tour.currentStep).toEqualTypeOf<Tour.Step | null>();
@@ -37,6 +39,6 @@ expectTypeOf(Tour.STATUS).toEqualTypeOf<
 >();
 expectTypeOf(Tour.tourInProgress).toEqualTypeOf<boolean>();
 expectTypeOf(Tour.activeTour).toEqualTypeOf<Tour | null>();
-expectTypeOf(Tour.onMovementAction([])).toEqualTypeOf<boolean>();
+expectTypeOf(Tour.onMovementAction([])).toEqualTypeOf<true | void>();
 expectTypeOf(Tour.HIGHLIGHT_PADDING).toEqualTypeOf<number>();
 expectTypeOf(Tour.fromJSON("")).toEqualTypeOf<Promise<Tour>>();

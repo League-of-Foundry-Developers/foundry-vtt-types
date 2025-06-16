@@ -190,7 +190,7 @@ declare namespace JournalEntry {
   /**
    * An instance of `JournalEntry` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<JournalEntry.Implementation> {}
+  type Stored = Document.Internal.Stored<JournalEntry.Implementation>;
 
   /**
    * The data put in {@link JournalEntry._source | `JournalEntry#_source`}. This data is what was

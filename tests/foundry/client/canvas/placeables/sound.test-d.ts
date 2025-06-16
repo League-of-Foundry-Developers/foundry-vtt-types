@@ -2,6 +2,8 @@ import { expectTypeOf } from "vitest";
 import { AmbientSound, PlaceableObject } from "#client/canvas/placeables/_module.mjs";
 import type { Sound } from "#client/audio/_module.d.mts";
 
+import ControlIcon = foundry.canvas.containers.ControlIcon;
+
 expectTypeOf(AmbientSound.embeddedName).toEqualTypeOf<"AmbientSound">();
 expectTypeOf(AmbientSound.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   Array<"refresh" | "refreshField" | "refreshPosition" | "refreshState" | "refreshElevation"> | undefined
@@ -101,7 +103,15 @@ expectTypeOf(sound["_onDragEnd"]()).toBeVoid();
 expectTypeOf(sound["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
 // deprecated since v12, until v14
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(sound.updateSource()).toBeVoid();
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(sound.updateSource({})).toBeVoid();
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(sound.updateSource({ deleted: true })).toBeVoid();
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(sound.updateSource({ deleted: null })).toBeVoid();

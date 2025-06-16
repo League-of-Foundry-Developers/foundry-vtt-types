@@ -146,7 +146,7 @@ declare class Canvas extends _InternalCanvas {
    * The singleton PIXI.Application instance rendered on the Canvas.
    * @defaultValue `undefined`
    */
-  readonly app: PIXI.Application | undefined;
+  readonly app: PIXI.Application<HTMLCanvasElement> | undefined;
 
   /**
    * The primary stage container of the PIXI.Application.

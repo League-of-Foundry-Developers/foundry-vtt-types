@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import Dialog = foundry.appv1.api.Dialog;
+
 const title = "title";
 const content = "content";
 const label = "label";

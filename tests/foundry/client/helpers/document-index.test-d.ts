@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import DocumentIndex = foundry.helpers.DocumentIndex;
+
 const docindex = new DocumentIndex();
 
 expectTypeOf(docindex.trees).toEqualTypeOf<Record<string, foundry.utils.WordTree>>();

@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import { GridMesh } from "#client/canvas/containers/_module.mjs";
 
+import GridShader = foundry.canvas.rendering.shaders.GridShader;
+
 const myGridMesh = new GridMesh(GridShader);
 
 expectTypeOf(myGridMesh.data.type).toExtend<CONST.GRID_TYPES>();

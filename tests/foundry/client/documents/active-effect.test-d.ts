@@ -206,6 +206,7 @@ expectTypeOf(effect["_applyCustom"](someActor, change, { baz: 17 }, { fizz: fals
 expectTypeOf(effect["_displayScrollingStatus"](true)).toBeVoid();
 
 // deprecated since v11 until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(effect._getSourceName()).toEqualTypeOf<Promise<string>>();
 
 // ClientDocument instance override(s)
