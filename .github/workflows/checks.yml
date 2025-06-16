@@ -313,7 +313,7 @@ jobs:
           fetch-depth: 1
 
       - name: Download Main Test Results
-        uses: dawidd6/action-download-artifact@v10
+        uses: dawidd6/action-download-artifact@v11
         with:
           branch: main
           name: main-test-results
