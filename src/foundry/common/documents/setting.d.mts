@@ -62,7 +62,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   /* Document overrides */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: Setting.ParentCollectionName | null;
 
@@ -116,7 +116,9 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   protected override _preCreate(
     data: Setting.CreateData,

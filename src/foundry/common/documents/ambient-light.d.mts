@@ -51,7 +51,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: AmbientLightDocument.ParentCollectionName | null;
 
@@ -108,7 +108,9 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends AmbientLightDocument.Flags.Scope, Key extends AmbientLightDocument.Flags.Key<Scope>>(
     scope: Scope,

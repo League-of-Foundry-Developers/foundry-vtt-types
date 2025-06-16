@@ -95,7 +95,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: DrawingDocument.ParentCollectionName | null;
 
@@ -152,7 +152,9 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends DrawingDocument.Flags.Scope, Key extends DrawingDocument.Flags.Key<Scope>>(
     scope: Scope,

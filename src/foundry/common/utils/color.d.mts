@@ -152,7 +152,7 @@ declare class InternalColor extends PatchedNumber {
   /**
    * Iterating over a Color is equivalent to iterating over its [r,g,b] color channels.
    */
-  [Symbol.iterator](): Generator<number>;
+  [Symbol.iterator](): Generator<number, void, undefined>;
 
   /**
    * Set an rgb array with the rgb values contained in this Color class.

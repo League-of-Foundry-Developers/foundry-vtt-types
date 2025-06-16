@@ -95,7 +95,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   /* Document overrides */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: Actor.ParentCollectionName | null;
 
@@ -184,7 +184,9 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends Actor.Flags.Scope, Key extends Actor.Flags.Key<Scope>>(
     scope: Scope,

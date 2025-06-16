@@ -66,7 +66,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   /* Document overrides */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: Adventure.ParentCollectionName | null;
 
@@ -120,7 +120,9 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends Adventure.Flags.Scope, Key extends Adventure.Flags.Key<Scope>>(
     scope: Scope,

@@ -55,7 +55,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   /* Document overrides */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: RegionDocument.ParentCollectionName | null;
 
@@ -145,7 +145,9 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends RegionDocument.Flags.Scope, Key extends RegionDocument.Flags.Key<Scope>>(
     scope: Scope,

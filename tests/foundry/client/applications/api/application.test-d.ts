@@ -116,6 +116,6 @@ expectTypeOf(ApplicationV2.RENDER_STATES).toEqualTypeOf<{
 }>();
 expectTypeOf(ApplicationV2.emittedEvents).toEqualTypeOf<string[]>();
 expectTypeOf(ApplicationV2.inheritanceChain()).toEqualTypeOf<
-  Generator<foundry.applications.api.ApplicationV2.AnyConstructor>
+  Generator<foundry.applications.api.ApplicationV2.AnyConstructor, void, undefined>
 >();
 expectTypeOf(ApplicationV2.parseCSSDimensions("", 1)).toEqualTypeOf<number | undefined>();

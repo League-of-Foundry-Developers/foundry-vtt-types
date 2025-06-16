@@ -67,7 +67,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   /* Document overrides */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: Playlist.ParentCollectionName | null;
 
@@ -154,7 +154,9 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends Playlist.Flags.Scope, Key extends Playlist.Flags.Key<Scope>>(
     scope: Scope,

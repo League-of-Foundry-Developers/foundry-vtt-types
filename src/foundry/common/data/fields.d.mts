@@ -859,7 +859,7 @@ declare class SchemaField<
   /**
    * Iterate over a SchemaField by iterating over its fields.
    */
-  [Symbol.iterator](): Generator<DataField.Unknown>;
+  [Symbol.iterator](): Generator<DataField.Unknown, void, undefined>;
 
   // TODO: see if its viable to narrow keys, values, entries, has, and get's types via the schema
 

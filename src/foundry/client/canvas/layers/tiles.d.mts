@@ -50,7 +50,7 @@ declare class TilesLayer extends PlaceablesLayer<"Tile"> {
    * @remarks Only produces foreground or non-forground tiles, depending on the state
    * of the foregound layer toggle control
    */
-  override controllableObjects(): Generator<Tile.Implementation>;
+  override controllableObjects(): Generator<Tile.Implementation, void, undefined>;
 
   override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 

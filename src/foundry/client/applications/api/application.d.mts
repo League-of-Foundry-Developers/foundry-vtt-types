@@ -604,7 +604,7 @@ declare class ApplicationV2<
    * Iterate over the inheritance chain of this Application.
    * The chain includes this Application itself and all parents until the base application is encountered.
    */
-  static inheritanceChain(): Generator<ApplicationV2.AnyConstructor>;
+  static inheritanceChain(): Generator<ApplicationV2.AnyConstructor, void, undefined>;
 
   /**
    * Initialize configuration options for the Application instance.
@@ -670,7 +670,7 @@ declare class ApplicationV2<
   /**
    * Iterate over header control buttons, filtering for controls which are visible for the current client.
    */
-  protected _headerControlsButtons(): Generator<ApplicationV2.HeaderControlsEntry>;
+  protected _headerControlsButtons(): Generator<ApplicationV2.HeaderControlsEntry, void, undefined>;
 
   /**
    * Render an HTMLElement for the Application.
