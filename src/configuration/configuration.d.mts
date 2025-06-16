@@ -239,6 +239,7 @@ export interface SettingConfig {
   "core.compendiumConfiguration": Partial<
     Record<string, foundry.documents.collections.CompendiumCollection.Configuration>
   >;
+  "core.gridTemplates": fields.BooleanField<{ initial: false }>;
   "core.coneTemplateType": "round" | "flat";
   "core.colorSchema": fields.StringField<{
     required: true;

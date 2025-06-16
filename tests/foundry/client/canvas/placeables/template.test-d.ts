@@ -1,6 +1,10 @@
 import { expectTypeOf } from "vitest";
 import { MeasuredTemplate, PlaceableObject } from "#client/canvas/placeables/_module.mjs";
 
+import Canvas = foundry.canvas.Canvas;
+import ControlIcon = foundry.canvas.containers.ControlIcon;
+import PreciseText = foundry.canvas.containers.PreciseText;
+
 expectTypeOf(MeasuredTemplate.embeddedName).toEqualTypeOf<"MeasuredTemplate">();
 expectTypeOf(MeasuredTemplate.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
@@ -112,6 +116,10 @@ expectTypeOf(template["_onClickRight"](someEvent)).toBeVoid();
 expectTypeOf(template["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
 // deprecated since v12, until v14
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(template.borderColor).toBeNumber();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(template.fillColor).toBeNumber();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(template.owner).toBeBoolean();

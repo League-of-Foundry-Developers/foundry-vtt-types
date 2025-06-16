@@ -387,14 +387,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks An explicit return value of `false` prevents the Document being created.
    * @see {@link Canvas._onDrop | `Canvas#_onDrop`}
    */
-  dropCanvasData: (
-    canvas: Canvas,
-    data:
-      | layers.TokenLayer.DropData
-      | layers.NotesLayer.DropData
-      | layers.SoundsLayer.DropData
-      | layers.TilesLayer.DropData,
-  ) => boolean | void;
+  dropCanvasData: (canvas: Canvas, data: Hooks.DropData, event: DragEvent) => boolean | void;
 
   /**
    * A hook event that fires when objects are highlighted on the canvas.
@@ -1541,5 +1534,11 @@ declare global {
         data: { id: string; documentName: string },
       ];
     }
+
+    type DropData =
+      | layers.TokenLayer.DropData
+      | layers.NotesLayer.DropData
+      | layers.SoundsLayer.DropData
+      | layers.TilesLayer.DropData;
   }
 }

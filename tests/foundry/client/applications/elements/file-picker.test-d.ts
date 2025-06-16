@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import FilePicker = foundry.applications.apps.FilePicker;
+
 const fileElement = new foundry.applications.elements.HTMLFilePickerElement();
 
 expectTypeOf(fileElement.input).toEqualTypeOf<HTMLInputElement>();

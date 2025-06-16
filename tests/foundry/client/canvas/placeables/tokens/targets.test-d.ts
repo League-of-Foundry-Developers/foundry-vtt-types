@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import { UserTargets } from "#client/canvas/placeables/tokens/_module.mjs";
 
+import Token = foundry.canvas.placeables.Token;
+
 declare const user: User.Implementation;
 declare const token: Token.Implementation;
 

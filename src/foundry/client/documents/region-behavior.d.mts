@@ -178,14 +178,14 @@ declare namespace RegionBehavior {
    * An instance of `RegionBehavior` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid<out SubType extends RegionBehavior.SubType = RegionBehavior.SubType>
-    extends Document.Internal.Invalid<OfType<SubType>> {}
+  interface Invalid extends Document.Internal.Invalid<Implementation> {}
 
   /**
    * An instance of `RegionBehavior` that comes from the database.
    */
-  interface Stored<out SubType extends RegionBehavior.SubType = RegionBehavior.SubType>
-    extends Document.Internal.Stored<OfType<SubType>> {}
+  type Stored<SubType extends RegionBehavior.SubType = RegionBehavior.SubType> = Document.Internal.Stored<
+    OfType<SubType>
+  >;
 
   /**
    * The data put in {@link RegionBehavior._source | `RegionBehavior#_source`}. This data is what was

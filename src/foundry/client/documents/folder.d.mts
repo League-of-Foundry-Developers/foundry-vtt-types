@@ -150,14 +150,12 @@ declare namespace Folder {
    * An instance of `Folder` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid<out SubType extends Folder.SubType = Folder.SubType>
-    extends Document.Internal.Invalid<OfType<SubType>> {}
+  interface Invalid extends Document.Internal.Invalid<Implementation> {}
 
   /**
    * An instance of `Folder` that comes from the database.
    */
-  interface Stored<out SubType extends Folder.SubType = Folder.SubType>
-    extends Document.Internal.Stored<OfType<SubType>> {}
+  type Stored<SubType extends Folder.SubType = Folder.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
    * The data put in {@link Folder._source | `Folder#_source`}. This data is what was

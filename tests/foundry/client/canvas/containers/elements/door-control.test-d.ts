@@ -18,7 +18,7 @@ expectTypeOf(control.bg).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(control.icon).toEqualTypeOf<PIXI.Sprite | undefined>();
 expectTypeOf(control.border).toEqualTypeOf<PIXI.Graphics | undefined>();
 
-expectTypeOf(control["_getTexture"]()).toEqualTypeOf<LoadTexture.Return>();
+expectTypeOf(control["_getTexture"]()).toEqualTypeOf<foundry.canvas.loadTexture.Return>();
 
 expectTypeOf(control.reposition()).toEqualTypeOf<void>();
 

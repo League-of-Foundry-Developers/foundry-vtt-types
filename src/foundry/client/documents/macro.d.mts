@@ -159,14 +159,12 @@ declare namespace Macro {
    * An instance of `Macro` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid<out SubType extends Macro.SubType = Macro.SubType>
-    extends Document.Internal.Invalid<OfType<SubType>> {}
+  interface Invalid extends Document.Internal.Invalid<OfType<SubType>> {}
 
   /**
    * An instance of `Macro` that comes from the database.
    */
-  interface Stored<out SubType extends Macro.SubType = Macro.SubType>
-    extends Document.Internal.Stored<OfType<SubType>> {}
+  type Stored<SubType extends Macro.SubType = Macro.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
    * The data put in {@link Macro._source | `Macro#_source`}. This data is what was

@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import Canvas = foundry.canvas.Canvas;
+
 declare const coordinates: foundry.grid.HexagonalGrid.Coordinates;
 declare const grid: foundry.grid.HexagonalGrid;
 

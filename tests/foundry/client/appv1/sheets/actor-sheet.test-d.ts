@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import type { MaybePromise } from "fvtt-types/utils";
 
+import ActorSheet = foundry.appv1.sheets.ActorSheet;
+
 declare const actor: Actor.Implementation;
 const actorSheet = new ActorSheet(actor);
 

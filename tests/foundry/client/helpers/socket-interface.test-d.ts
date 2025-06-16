@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 
+import SocketInterface = foundry.helpers.SocketInterface;
 import Document = foundry.abstract.Document;
 
 declare const request: Document.SocketRequest<"get">;

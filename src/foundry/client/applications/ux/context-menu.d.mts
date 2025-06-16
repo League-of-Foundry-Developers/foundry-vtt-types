@@ -103,10 +103,9 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
 
   /**
    * @deprecated "ContextMenu is changing to no longer transact jQuery objects for menu item callbacks.
-   * Because the jQuery option provided to the ContextMenu constructor was undefined, your  callbacks will receive jQuery objects.
+   * Because the jQuery option provided to the ContextMenu constructor was undefined, your callbacks will receive jQuery objects.
    * You may opt-out and receive HTMLElement references instead by passing jQuery: false to the constructor.
    * This parameter will be false by default in v14 and deprecated entirely in v15 at which point only HTMLElement references will be used."
-   * @deprecated "ContextMenu is changing to no longer transact jQuery objects. You must begin passing an HTMLElement instead."
    */
   static create(
     app: Application.Any,

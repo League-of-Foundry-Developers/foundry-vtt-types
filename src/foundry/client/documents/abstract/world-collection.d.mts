@@ -119,7 +119,7 @@ declare abstract class WorldCollection<
   static unregisterSheet(
     scope: string,
     sheetClass: DocumentSheet.AnyConstructor | DocumentSheetV2.AnyConstructor,
-    options: DocumentSheetConfig.UnregisterSheetOptions,
+    options?: DocumentSheetConfig.UnregisterSheetOptions,
   ): void;
 
   /**

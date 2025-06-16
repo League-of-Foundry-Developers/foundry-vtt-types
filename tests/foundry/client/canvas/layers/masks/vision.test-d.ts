@@ -19,9 +19,13 @@ if (vis) {
   expectTypeOf(vis.darkness.darkness).toEqualTypeOf<PIXI.LegacyGraphics>();
   expectTypeOf(vis.light.global.meshes).toEqualTypeOf<PIXI.Container>();
   // deprecated since v12 until v14
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(vis.light.tokens.tokens.tokens.tokens).toEqualTypeOf<typeof vis.light>();
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(vis.base).toEqualTypeOf<typeof vis.light.preview>();
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(vis.fov).toEqualTypeOf<typeof vis.light>();
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(vis.los).toEqualTypeOf<typeof vis.light.mask>();
 }
 
@@ -34,6 +38,8 @@ expectTypeOf(myVisionMask.attachVision(someVisionContainer)).toEqualTypeOf<Canva
 expectTypeOf(myVisionMask.detachVision()).toEqualTypeOf<CanvasVisionMask.CanvasVisionContainer>();
 
 // deprecated since v11, until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myVisionMask.filter).toEqualTypeOf<AlphaBlurFilter | undefined>();
 declare const someBlurFilter: AlphaBlurFilter;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 myVisionMask.filter = someBlurFilter;

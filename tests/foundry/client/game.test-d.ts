@@ -1,7 +1,11 @@
 import { expectTypeOf, assertType } from "vitest";
 import type { EmptyObject } from "fvtt-types/utils";
 
+import CombatEncounters = foundry.documents.collections.CombatEncounters;
+import ClientSettings = foundry.helpers.ClientSettings;
 import Document = foundry.abstract.Document;
+import Localization = foundry.helpers.Localization;
+import Module = foundry.packages.Module;
 
 declare const aGame: Game;
 
@@ -90,9 +94,9 @@ if (game.ready) {
 }
 
 // Game model
-expectTypeOf<Item.SubType>().toEqualTypeOf<"weapon" | "armor" | "base" | Document.ModuleSubtype>();
+expectTypeOf<Item.SubType>().toEqualTypeOf<"weapon" | "armor" | "base" | Document.ModuleSubType>();
 expectTypeOf<Document.ImplementationClassFor<"Item">>().toEqualTypeOf<Item.ImplementationClass>();
-expectTypeOf(game.documentTypes!.Item).toEqualTypeOf<Array<"weapon" | "armor" | "base" | Document.ModuleSubtype>>();
+expectTypeOf(game.documentTypes!.Item).toEqualTypeOf<Array<"weapon" | "armor" | "base" | Document.ModuleSubType>>();
 
 if (game instanceof Game) {
   const tokenModel = game.model.Token;

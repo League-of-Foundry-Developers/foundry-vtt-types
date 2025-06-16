@@ -1,6 +1,16 @@
 import { expectTypeOf } from "vitest";
 import type RenderedEffectSource from "../../../../../src/foundry/client/canvas/sources/rendered-effect-source.d.mts";
 
+import AdaptiveColorationShader = foundry.canvas.rendering.shaders.AdaptiveColorationShader;
+import AdaptiveDarknessShader = foundry.canvas.rendering.shaders.AdaptiveDarknessShader;
+import AdaptiveIlluminationShader = foundry.canvas.rendering.shaders.AdaptiveIlluminationShader;
+import AdaptiveLightingShader = foundry.canvas.rendering.shaders.AdaptiveLightingShader;
+import AdaptiveBackgroundShader = foundry.canvas.rendering.shaders.AdaptiveBackgroundShader;
+import BlackHoleDarknessShader = foundry.canvas.rendering.shaders.BlackHoleDarknessShader;
+import FlameIlluminationShader = foundry.canvas.rendering.shaders.FlameIlluminationShader;
+import FlameColorationShader = foundry.canvas.rendering.shaders.FlameColorationShader;
+import PointSourceMesh = foundry.canvas.containers.PointSourceMesh;
+
 declare class MyRenderedSource extends foundry.canvas.sources.RenderedEffectSource {
   protected override _createShapes(): void;
 }
@@ -153,5 +163,8 @@ expectTypeOf(mySource.active).toEqualTypeOf<boolean>();
 expectTypeOf(meshes.background?.visible).toEqualTypeOf<boolean | undefined>();
 
 // deprecated since v11, until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(mySource.preview).toBeBoolean();
-expectTypeOf((mySource.preview = false)).toBeBoolean();
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+mySource.preview = false;

@@ -111,7 +111,10 @@ expectTypeOf(helper["_onFirstGesture"](event, resolveCB)).toBeVoid();
 expectTypeOf(helper.debug("a debug message")).toEqualTypeOf<void>();
 
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(helper.getCache("bar")).toEqualTypeOf<AudioBuffer | undefined>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(helper.updateCache("baz", true)).toBeVoid();
 declare const buffer: AudioBuffer;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(helper.setCache("fizz", buffer)).toBeVoid();

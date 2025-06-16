@@ -1,10 +1,10 @@
 import { expectTypeOf } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
-expectTypeOf(saveDataToFile("", "", "")).toEqualTypeOf<void>();
+expectTypeOf(foundry.utils.saveDataToFile("", "", "")).toEqualTypeOf<void>();
 
 declare const file: File;
-expectTypeOf(readTextFromFile(file)).toEqualTypeOf<Promise<string>>();
+expectTypeOf(foundry.utils.readTextFromFile(file)).toEqualTypeOf<Promise<string>>();
 
 expectTypeOf(getDocumentClass("Actor")).toEqualTypeOf<Actor.ImplementationClass>();
 expectTypeOf(getDocumentClass("Item")).toEqualTypeOf<Item.ImplementationClass>();
@@ -44,6 +44,6 @@ interface SortingStructure {
 }
 
 declare const input: SortingStructure;
-expectTypeOf(SortingHelpers.performIntegerSort(input, {})).toEqualTypeOf<
+expectTypeOf(foundry.utils.performIntegerSort(input, {})).toEqualTypeOf<
   Array<{ target: SortingStructure; update: { sort: number } }>
 >();

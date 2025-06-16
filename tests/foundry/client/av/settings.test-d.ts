@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import AVMaster = foundry.av.AVMaster;
+
 const avSettings = new AVSettings();
 
 expectTypeOf(avSettings.client).toEqualTypeOf<AVSettings.ClientSettings>();

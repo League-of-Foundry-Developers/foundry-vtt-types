@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-const GameTime = foundry.helpers.GameTime;
+import GameTime = foundry.helpers.GameTime;
 
 if (game) {
   const gameTime = new GameTime();

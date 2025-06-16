@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import type { AmbientLight } from "#client/canvas/placeables/_module.d.mts";
 
+import LightingLayer = foundry.canvas.layers.LightingLayer;
+
 const doc = new AmbientLightDocument.implementation();
 
 // Test the inheritance

@@ -1,12 +1,12 @@
 import { expectTypeOf } from "vitest";
-import type PointMovementSource from "../../../../../src/foundry/client/canvas/sources/point-movement-source.d.mts";
 
-const PMS = foundry.canvas.sources.PointMovementSource;
+import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
+import PointMovementSource = foundry.canvas.sources.PointMovementSource;
 
-expectTypeOf(PMS.sourceType).toBeString();
-expectTypeOf(PMS.defaultData).toEqualTypeOf<PointMovementSource.SourceData>();
+expectTypeOf(PointMovementSource.sourceType).toBeString();
+expectTypeOf(PointMovementSource.defaultData).toEqualTypeOf<PointMovementSource.SourceData>();
 
-const mySource = new PMS();
+const mySource = new PointMovementSource();
 
 expectTypeOf(mySource.data).toEqualTypeOf<PointMovementSource.SourceData>();
 expectTypeOf(mySource.shape).toEqualTypeOf<PointSourcePolygon>();

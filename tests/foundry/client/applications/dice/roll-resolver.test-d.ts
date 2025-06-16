@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import FormDataExtended = foundry.applications.ux.FormDataExtended;
+
 const rollResolver = new foundry.applications.dice.RollResolver(new Roll("3d6"));
 
 expectTypeOf(rollResolver.fulfillable).toEqualTypeOf<

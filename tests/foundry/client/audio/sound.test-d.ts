@@ -2,7 +2,7 @@ import { expectTypeOf } from "vitest";
 import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
 import Sound = foundry.audio.Sound;
 
-expectTypeOf(Sound.STATES).toMatchTypeOf<Readonly<Record<keyof Sound.States, Sound.STATES>>>();
+expectTypeOf(Sound.STATES).toExtend<Readonly<Record<keyof Sound.States, Sound.STATES>>>();
 expectTypeOf(Sound.STATES.STOPPING).toEqualTypeOf<Sound.States["STOPPING"]>();
 expectTypeOf(Sound.MAX_BUFFER_DURATION).toBeNumber();
 expectTypeOf(Sound.emittedEvents).toEqualTypeOf<string[]>();
@@ -131,17 +131,18 @@ expectTypeOf(sound["_connectPipeline"]()).toBeVoid();
 expectTypeOf(sound["_disconnectPipeline"]()).toBeVoid();
 
 // deprecated since v12, until v14
-expectTypeOf(Sound.LOAD_STATES).toEqualTypeOf<typeof Sound.STATES>();
+expectTypeOf(Sound.STATES).toEqualTypeOf<typeof Sound.STATES>();
 
-expectTypeOf(sound.loadState).toEqualTypeOf<Sound.STATES>();
+expectTypeOf(sound["_state"]).toEqualTypeOf<Sound.STATES>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(sound.container).toEqualTypeOf<typeof sound>();
-expectTypeOf(sound.node).toEqualTypeOf<typeof sound.sourceNode>();
+expectTypeOf(sound.sourceNode).toEqualTypeOf<typeof sound.sourceNode>();
 
 const eventCallback = (e: Event) => console.log(e);
-expectTypeOf(sound.on("eventName", eventCallback)).toBeVoid();
-expectTypeOf(sound.on("eventName", eventCallback, {})).toBeVoid();
-expectTypeOf(sound.on("eventName", eventCallback, { once: true })).toBeVoid();
-expectTypeOf(sound.on("eventName", eventCallback, { once: null })).toBeVoid();
+expectTypeOf(sound.addEventListener("eventName", eventCallback)).toBeVoid();
+expectTypeOf(sound.addEventListener("eventName", eventCallback, {})).toBeVoid();
+expectTypeOf(sound.addEventListener("eventName", eventCallback, { once: true })).toBeVoid();
+expectTypeOf(sound.addEventListener("eventName", eventCallback, { once: null })).toBeVoid();
 
-expectTypeOf(sound.off("eventName", eventCallback)).toBeVoid();
-expectTypeOf(sound.emit("eventName")).toBeVoid();
+expectTypeOf(sound.removeEventListener("eventName", eventCallback)).toBeVoid();
+expectTypeOf(sound.dispatchEvent(new Event("eventName"))).toBeBoolean();

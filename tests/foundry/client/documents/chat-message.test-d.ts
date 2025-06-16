@@ -63,7 +63,7 @@ expectTypeOf(chat.isContentVisible).toEqualTypeOf<boolean>();
 expectTypeOf(chat.isRoll).toEqualTypeOf<boolean>();
 expectTypeOf(chat.rolls).toEqualTypeOf<Roll[]>();
 expectTypeOf(chat.visible).toEqualTypeOf<boolean>();
-expectTypeOf(chat.user).toEqualTypeOf<User.Implementation>(); // TODO: This seems off? Possible issue with ForeignDocumentField
+expectTypeOf(chat.author).toEqualTypeOf<User.Implementation>(); // TODO: This seems off? Possible issue with ForeignDocumentField
 expectTypeOf(chat.prepareData()).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.BLIND)).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.PRIVATE)).toEqualTypeOf<void>();

@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import ClientKeybindings = foundry.helpers.interaction.ClientKeybindings;
+
 const keybindings = new ClientKeybindings();
 
 expectTypeOf(keybindings.actions).toEqualTypeOf<Map<string, ClientKeybindings.KeybindingActionConfig>>();

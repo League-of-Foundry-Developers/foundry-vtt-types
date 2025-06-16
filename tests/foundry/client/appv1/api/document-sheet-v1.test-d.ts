@@ -1,5 +1,8 @@
 import { assertType, expectTypeOf, test } from "vitest";
 
+import DocumentSheet = foundry.appv1.api.DocumentSheet;
+import FormApplication = foundry.appv1.api.FormApplication;
+
 const doc = new AmbientLightDocument.implementation();
 const sheet = new (class extends DocumentSheet<
   AmbientLightDocument.Implementation,

@@ -1,5 +1,8 @@
 import { expectTypeOf } from "vitest";
-import { Drawing, PlaceableObject } from "#client/canvas/placeables/_module.mjs";
+
+import Drawing = foundry.canvas.placeables.Drawing;
+import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
+import PrimaryGraphics = foundry.canvas.primary.PrimaryGraphics;
 
 declare const drawingDoc: DrawingDocument.Stored;
 

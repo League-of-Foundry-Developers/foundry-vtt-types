@@ -2,6 +2,9 @@ import { expectTypeOf } from "vitest";
 import { TokenLayer } from "#client/canvas/layers/_module.mjs";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
+import Canvas = foundry.canvas.Canvas;
+import TokenHUD = foundry.applications.hud.TokenHUD;
+
 expectTypeOf(TokenLayer.documentName).toEqualTypeOf<"Token">();
 expectTypeOf(TokenLayer.instance).toEqualTypeOf<TokenLayer | undefined>();
 expectTypeOf(TokenLayer.layerOptions).toEqualTypeOf<TokenLayer.LayerOptions>();
@@ -69,10 +72,14 @@ expectTypeOf(layer["_onClickLeft"](someEvent)).toBeVoid();
 expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<Token.Implementation[] | void>>();
 
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<1>();
 declare const someCombat: Combat.Implementation;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.toggleCombat()).toEqualTypeOf<Promise<Combatant.Implementation[]>>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.toggleCombat(null, null, { token: null })).toEqualTypeOf<Promise<Combatant.Implementation[]>>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.toggleCombat(true, someCombat, { token: someToken })).toEqualTypeOf<
   Promise<Combatant.Implementation[]>
 >();

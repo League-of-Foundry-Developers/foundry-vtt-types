@@ -233,14 +233,12 @@ declare namespace Actor {
    * An instance of `Actor` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid<out SubType extends Actor.SubType = Actor.SubType>
-    extends Document.Internal.Invalid<OfType<SubType>> {}
+  interface Invalid extends Document.Internal.Invalid<Implementation> {}
 
   /**
    * An instance of `Actor` that comes from the database.
    */
-  interface Stored<out SubType extends Actor.SubType = Actor.SubType>
-    extends Document.Internal.Stored<OfType<SubType>> {}
+  type Stored<SubType extends Actor.SubType = Actor.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
    * The data put in {@link Actor._source | `Actor#_source`}. This data is what was

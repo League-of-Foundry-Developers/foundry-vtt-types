@@ -124,7 +124,7 @@ declare namespace MeasuredTemplateDocument {
   /**
    * An instance of `MeasuredTemplateDocument` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<MeasuredTemplateDocument.Implementation> {}
+  type Stored = Document.Internal.Stored<MeasuredTemplateDocument.Implementation>;
 
   /**
    * The data put in {@link MeasuredTemplate._source | `MeasuredTemplate#_source`}. This data is what was

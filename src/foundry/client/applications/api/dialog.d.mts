@@ -527,6 +527,10 @@ declare namespace DialogV2 {
     | (T extends "input" ? InputReturn<Options> : never);
 
   namespace Internal {
+    const __Configuration: typeof ApplicationV2.Internal.__Configuration;
+    const __RenderContext: typeof ApplicationV2.Internal.__RenderContext;
+    const __RenderOptions: typeof ApplicationV2.Internal.__RenderOptions;
+
     type WaitReturn<Options> = Internal.ButtonReturnType<Options> | Internal.DismissType<Options>;
 
     type DismissType<Options> = Options extends {

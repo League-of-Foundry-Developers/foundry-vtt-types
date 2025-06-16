@@ -26,7 +26,7 @@ declare class ShaderField<
   // TODO: _cast blatantly breaks inheritance so this is difficult to work with
 
   /** @remarks The value provided to a ShaderField must be an AbstractBaseShader subclass. */
-  override _cast(value: any): NonNullable<InitializedType>; // typeof AbstractBaseShader;
+  override _cast(value: unknown): AssignmentType; // typeof AbstractBaseShader;
 }
 
 declare namespace ShaderField {

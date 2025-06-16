@@ -430,9 +430,6 @@ const rules = [
       // It can make sense to have empty functions in tests.
       "@typescript-eslint/no-empty-function": "off",
 
-      // Testing deprecated things is still useful for quality assurance.
-      "@typescript-eslint/no-deprecated": "off",
-
       // While test are broken these errors are disabled.
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/no-unsafe-call": "off",

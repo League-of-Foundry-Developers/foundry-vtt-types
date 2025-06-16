@@ -2,6 +2,8 @@ import { expectTypeOf, assertType } from "vitest";
 import type { AnyConstructor, AnyFunction, NonNullish } from "fvtt-types/utils";
 import fu = foundry.utils;
 
+import FormApplication = foundry.appv1.api.FormApplication;
+
 declare function functionWithoutParameters(): void;
 declare function functionWithParameters(a: number, b: string, c?: boolean): void;
 declare function functionWithReturnTypeOtherThanVoid(): number;

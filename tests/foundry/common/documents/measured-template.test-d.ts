@@ -86,4 +86,5 @@ expectTypeOf(myTemplate.borderColor).toEqualTypeOf<Color | undefined>();
 expectTypeOf(myTemplate.fillColor).toEqualTypeOf<Color | undefined>();
 
 // non-schema
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myTemplate.user).toEqualTypeOf<User.Implementation | null>();

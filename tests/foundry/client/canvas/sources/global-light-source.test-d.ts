@@ -1,14 +1,17 @@
 import { expectTypeOf } from "vitest";
-import type GlobalLightSource from "../../../../../src/foundry/client/canvas/sources/global-light-source.d.mts";
 
-const { GlobalLightSource: GLSC } = foundry.canvas.sources;
+import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
+import GlobalLightSource = foundry.canvas.sources.GlobalLightSource;
+import AdaptiveBackgroundShader = foundry.canvas.rendering.shaders.AdaptiveBackgroundShader;
+import PulseColorationShader = foundry.canvas.rendering.shaders.PulseColorationShader;
+import PulseIlluminationShader = foundry.canvas.rendering.shaders.PulseIlluminationShader;
 
-expectTypeOf(GLSC.sourceType).toBeString();
-expectTypeOf(GLSC.effectsCollection).toBeString();
-expectTypeOf(GLSC.defaultData).toEqualTypeOf<GlobalLightSource.SourceData>();
+expectTypeOf(GlobalLightSource.sourceType).toBeString();
+expectTypeOf(GlobalLightSource.effectsCollection).toBeString();
+expectTypeOf(GlobalLightSource.defaultData).toEqualTypeOf<GlobalLightSource.SourceData>();
 
 declare const ecg: EffectsCanvasGroup;
-const mySource = new GLSC({ object: ecg, sourceId: "globalLight" });
+const mySource = new GlobalLightSource({ object: ecg, sourceId: "globalLight" });
 
 expectTypeOf(mySource.data).toEqualTypeOf<GlobalLightSource.SourceData>();
 expectTypeOf(mySource.shape).toEqualTypeOf<PIXI.Polygon>();
@@ -19,7 +22,7 @@ expectTypeOf(
     alpha: 0.9,
     angle: 360,
     animation: {
-      animation: GLSC.prototype.animatePulse,
+      animation: GlobalLightSource.prototype.animatePulse,
       colorationShader: PulseColorationShader,
       illuminationShader: PulseIlluminationShader,
       backgroundShader: AdaptiveBackgroundShader,

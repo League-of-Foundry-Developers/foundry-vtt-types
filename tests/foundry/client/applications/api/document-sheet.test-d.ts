@@ -2,6 +2,7 @@ import { expectTypeOf } from "vitest";
 
 import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 import Document = foundry.abstract.Document;
+import FormDataExtended = foundry.applications.ux.FormDataExtended;
 
 declare const documentSheetV2: DocumentSheetV2<Document.Any>;
 

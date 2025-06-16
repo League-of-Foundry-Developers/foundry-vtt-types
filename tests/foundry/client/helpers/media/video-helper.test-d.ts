@@ -1,5 +1,8 @@
 import { expectTypeOf } from "vitest";
 
+import VideoHelper = foundry.helpers.media.VideoHelper;
+import SpriteMesh = foundry.canvas.containers.SpriteMesh;
+
 const videoHelper = new VideoHelper();
 
 expectTypeOf(videoHelper.pending).toEqualTypeOf<Set<HTMLVideoElement>>();

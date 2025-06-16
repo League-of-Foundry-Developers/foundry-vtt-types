@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import Canvas = foundry.canvas.Canvas;
+
 declare const config: foundry.grid.BaseGrid.Configuration;
 
 const gridlessGrid = new foundry.grid.GridlessGrid(config);

@@ -98,10 +98,15 @@ expectTypeOf(light["_onDragEnd"]()).toBeVoid();
 expectTypeOf(light["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(light.updateSource()).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(light.updateSource({})).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(light.updateSource({ deleted: true })).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(light.updateSource({ deleted: null })).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(light.source).toEqualTypeOf<
   PointLightSource.ConfiguredInstance | PointDarknessSource.ConfiguredInstance | undefined
 >();

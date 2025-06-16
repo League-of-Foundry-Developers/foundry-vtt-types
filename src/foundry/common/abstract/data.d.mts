@@ -55,7 +55,7 @@ declare abstract class DataModel<
    * The source data object for this DataModel instance.
    * Once constructed, the source object is sealed such that no keys may be added nor removed.
    */
-  readonly _source: Readonly<fields.SchemaField.SourceData<Schema>>;
+  readonly _source: fields.SchemaField.SourceData<Schema>;
 
   /**
    * The defined and cached Data Schema for all instances of this DataModel.

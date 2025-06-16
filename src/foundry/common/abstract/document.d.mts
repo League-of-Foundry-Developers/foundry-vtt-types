@@ -984,9 +984,9 @@ declare namespace Document {
     :
         | Document.CoreTypesForName<Name>
         | ConfiguredSubTypesOf<Name>
-        | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubtype : never);
+        | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubType : never);
 
-  type ModuleSubtype = Brand<`${string}.${string}`, "Document.ModuleSubtype">;
+  type ModuleSubType = Brand<`${string}.${string}`, "Document.ModuleSubtype">;
 
   type OfType<Name extends WithSubTypes, SubType extends SubTypesOf<Name>> =
     | (Name extends "ActiveEffect" ? ActiveEffect.OfType<SubType & ActiveEffect.SubType> : never)
@@ -1013,7 +1013,7 @@ declare namespace Document {
    * See {@linkcode UnknownSystem} for other possibilities.
    */
   interface UnknownSourceData extends AnyObject {
-    type: ModuleSubtype;
+    type: ModuleSubType;
   }
 
   /**
@@ -1150,7 +1150,7 @@ declare namespace Document {
               [K in SubType]: infer Source;
             }
           ? Source
-          : SubType extends Document.ModuleSubtype
+          : SubType extends Document.ModuleSubType
             ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
               {}
             : UnknownSystem;
@@ -1158,7 +1158,7 @@ declare namespace Document {
 
     type SystemOfType<SystemMap extends Record<SubType, object>, SubType extends string> =
       | DiscriminatedUnion<SystemMap[SubType]>
-      | (SubType extends ModuleSubtype ? UnknownSystem : never);
+      | (SubType extends ModuleSubType | "base" ? UnknownSystem : never);
 
     type Stored<D extends Document.Any> = Override<
       D,
@@ -2391,4 +2391,9 @@ declare namespace Document {
       uuid: string;
     }
   }
+
+  /**
+   * @deprecated This type has been deprecated because of the inconsistent casing of "Subtype" instead of "SubType". Use {@linkcode Document.ModuleSubType} instead.
+   */
+  type ModuleSubtype = ModuleSubType;
 }

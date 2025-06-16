@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import Localization = foundry.helpers.Localization;
+
 type Translations = {
   [K: string]: string | Translations;
 };
