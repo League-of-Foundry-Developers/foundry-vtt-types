@@ -148,4 +148,5 @@ expectTypeOf(myDrawing.fontSize).toEqualTypeOf<number | undefined>();
 expectTypeOf(myDrawing.textColor).toEqualTypeOf<Color | undefined>();
 
 // non-schema:
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myDrawing.z).toBeNumber();

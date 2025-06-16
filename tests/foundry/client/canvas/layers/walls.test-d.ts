@@ -3,6 +3,10 @@ import type { Document } from "#common/abstract/_module.d.mts";
 import { WallsLayer } from "#client/canvas/layers/_module.mjs";
 import type { Wall } from "#client/canvas/placeables/_module.d.mts";
 
+import Canvas = foundry.canvas.Canvas;
+import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
+import Ray = foundry.canvas.geometry.Ray;
+
 expectTypeOf(WallsLayer.documentName).toEqualTypeOf<"Wall">();
 expectTypeOf(WallsLayer.instance).toEqualTypeOf<WallsLayer | undefined>();
 expectTypeOf(WallsLayer.layerOptions).toEqualTypeOf<WallsLayer.LayerOptions>();
@@ -60,20 +64,28 @@ expectTypeOf(layer["_onClickRight"](someEvent)).toBeVoid();
 declare const someRay: Ray;
 
 // deprecated since v11 until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.checkCollision(someRay, { type: "move" })).toEqualTypeOf<PointSourcePolygon.TestCollision<"all">>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.checkCollision(someRay, { type: "sight", mode: "any" })).toEqualTypeOf<
   PointSourcePolygon.TestCollision<"any">
 >();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.checkCollision(someRay, { type: "light", mode: "closest" })).toEqualTypeOf<
   PointSourcePolygon.TestCollision<"closest">
 >();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.checkCollision(someRay, { type: "sound", mode: "all" })).toEqualTypeOf<
   PointSourcePolygon.TestCollision<"all">
 >();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.highlightControlledSegments()).toBeVoid();
 
 // deprecated since v12 until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.initialize()).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.identifyInteriorWalls()).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.identifyWallIntersections()).toBeVoid();

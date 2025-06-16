@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import Canvas = foundry.canvas.Canvas;
+
 const a = { x: 0, y: 0 };
 const b = new PIXI.Point(0, 0);
 const c = { x: 0, y: 0 };

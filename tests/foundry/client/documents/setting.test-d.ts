@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
+import SettingsConfig = foundry.applications.settings.SettingsConfig;
+
 // @ts-expect-error - requires key
 new Setting.implementation();
 

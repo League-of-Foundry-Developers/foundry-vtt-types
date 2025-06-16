@@ -1,6 +1,9 @@
 import { expectTypeOf } from "vitest";
-import { InterfaceCanvasGroup } from "#client/canvas/groups/_module.mjs";
-import type { Drawing } from "#client/canvas/placeables/_module.d.mts";
+
+import CanvasGroupMixin = foundry.canvas.groups.CanvasGroupMixin;
+import Drawing = foundry.canvas.placeables.Drawing;
+import InterfaceCanvasGroup = foundry.canvas.groups.InterfaceCanvasGroup;
+import PreciseText = foundry.canvas.containers.PreciseText;
 
 expectTypeOf(InterfaceCanvasGroup.groupName).toEqualTypeOf<"interface">();
 

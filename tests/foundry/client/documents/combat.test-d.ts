@@ -17,6 +17,7 @@ expectTypeOf(combat.isActive).toEqualTypeOf<boolean>();
 expectTypeOf(combat.activate()).toEqualTypeOf<Promise<Combat.Implementation[]>>();
 expectTypeOf(combat.prepareDerivedData()).toEqualTypeOf<void>();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(combat.getCombatantByActor("")).toEqualTypeOf<Combatant.Implementation | undefined>();
 
 expectTypeOf(combat.startCombat()).toEqualTypeOf<Promise<Combat.Implementation>>();

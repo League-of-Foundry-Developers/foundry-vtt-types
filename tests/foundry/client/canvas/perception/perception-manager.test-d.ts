@@ -41,4 +41,5 @@ expectTypeOf(
 expectTypeOf(manager.initialize()).toEqualTypeOf<void>();
 
 // deprecated
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(manager.refresh()).toEqualTypeOf<void>();

@@ -1,6 +1,9 @@
 import { expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
+import DocumentSheet = foundry.appv1.api.DocumentSheet;
+import ItemSheet = foundry.appv1.sheets.ItemSheet;
+
 declare const item: Item.Implementation;
 const itemSheet = new ItemSheet(item);
 

@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import type { MaybePromise } from "fvtt-types/utils";
 
+import Application = foundry.appv1.api.Application;
+
 declare const app: Application;
 
 expectTypeOf(Application.defaultOptions).toEqualTypeOf<Application.Options>();

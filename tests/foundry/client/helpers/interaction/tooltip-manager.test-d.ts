@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import TooltipManager = foundry.helpers.interaction.TooltipManager.implementation;
+
 const tooltipManager = new TooltipManager();
 
 declare const element: HTMLElement;

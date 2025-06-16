@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 
-const m = new foundry.utils.IterableWeakMap<{ x: number }, { y: string }>();
+import IterableWeakMap = foundry.utils.IterableWeakMap;
+
+const m = new IterableWeakMap<{ x: number }, { y: string }>();
 
 expectTypeOf(m.delete({ x: 1 })).toEqualTypeOf<boolean>();
 expectTypeOf(m.get({ x: 1 })).toEqualTypeOf<{ y: string } | undefined>();

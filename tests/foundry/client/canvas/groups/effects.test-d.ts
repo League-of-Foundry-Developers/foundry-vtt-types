@@ -1,5 +1,9 @@
 import { expectTypeOf } from "vitest";
-import { EffectsCanvasGroup, CanvasVisibility } from "#client/canvas/groups/_module.mjs";
+
+import CanvasGroupMixin = foundry.canvas.groups.CanvasGroupMixin;
+import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
+import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
+import VisualEffectsMaskingFilter = foundry.canvas.rendering.filters.VisualEffectsMaskingFilter;
 
 expectTypeOf(EffectsCanvasGroup.groupName).toEqualTypeOf<undefined>();
 
@@ -19,7 +23,9 @@ expectTypeOf(myEffectGroup.toggleMaskingFilters(false)).toEqualTypeOf<void>();
 expectTypeOf(myEffectGroup.animateDarkness(3, { duration: 40000 })).toEqualTypeOf<Promise<boolean | void>>();
 
 // deprecated since v12 until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myEffectGroup.visibility).toExtend<CanvasVisibility.Any>();
 expectTypeOf(
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   myEffectGroup.globalLightSource,
 ).toEqualTypeOf<foundry.canvas.sources.GlobalLightSource.ConfiguredInstance>();

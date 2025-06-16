@@ -70,6 +70,7 @@ if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {
 
 declare const embeddedModel: typeof foundry.data.LightData;
 declare type embeddedOptions = foundry.data.fields.EmbeddedDataField.Options<typeof embeddedModel>;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 declare const embeddedAssignment: foundry.data.fields.EmbeddedDataField.AssignmentType<
   typeof embeddedModel,
   embeddedOptions

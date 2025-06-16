@@ -16,7 +16,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    * @param data    - Initial data from which to construct the `BasePlaylistSound`
    * @param context - Construction context options
    *
-   * @deprecated Constructing `BasePlaylistSound` directly is not advised. The base document classes exist in
+   * @remarks Constructing `BasePlaylistSound` directly is not advised. The base document classes exist in
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *

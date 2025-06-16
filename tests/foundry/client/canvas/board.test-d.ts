@@ -1,6 +1,17 @@
 import { expectTypeOf } from "vitest";
 
-const { Canvas } = foundry.canvas;
+import Canvas = foundry.canvas.Canvas;
+import DrawingsLayer = foundry.canvas.layers.DrawingsLayer;
+import EnvironmentCanvasGroup = foundry.canvas.groups.EnvironmentCanvasGroup;
+import HiddenCanvasGroup = foundry.canvas.groups.HiddenCanvasGroup;
+import LightingLayer = foundry.canvas.layers.LightingLayer;
+import NotesLayer = foundry.canvas.layers.NotesLayer;
+import TemplateLayer = foundry.canvas.layers.TemplateLayer;
+import TilesLayer = foundry.canvas.layers.TilesLayer;
+import TokenLayer = foundry.canvas.layers.TokenLayer;
+import SoundsLayer = foundry.canvas.layers.SoundsLayer;
+import RenderedCanvasGroup = foundry.canvas.groups.RenderedCanvasGroup;
+import WallsLayer = foundry.canvas.layers.WallsLayer;
 
 const myCanvas = new Canvas();
 declare const someScene: Scene.Implementation;

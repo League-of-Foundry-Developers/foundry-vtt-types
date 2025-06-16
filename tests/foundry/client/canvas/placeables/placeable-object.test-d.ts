@@ -3,6 +3,12 @@ import Document = foundry.abstract.Document;
 import type { HandleEmptyObject } from "#utils";
 import { PlaceableObject } from "#client/canvas/placeables/_module.mjs";
 
+import Canvas = foundry.canvas.Canvas;
+import ControlIcon = foundry.canvas.containers.ControlIcon;
+import FormApplication = foundry.appv1.api.FormApplication;
+import LightingLayer = foundry.canvas.layers.LightingLayer;
+import MouseInteractionManager = foundry.canvas.interaction.MouseInteractionManager;
+
 expectTypeOf(PlaceableObject.embeddedName).toBeString();
 
 expectTypeOf(PlaceableObject.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<

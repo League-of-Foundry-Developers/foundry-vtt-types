@@ -2,6 +2,9 @@ import { expectTypeOf } from "vitest";
 import { TilesLayer } from "#client/canvas/layers/_module.mjs";
 import type { Tile } from "#client/canvas/placeables/_module.d.mts";
 
+import Canvas = foundry.canvas.Canvas;
+import TileHUD = foundry.applications.hud.TileHUD;
+
 expectTypeOf(TilesLayer.documentName).toEqualTypeOf<"Tile">();
 expectTypeOf(TilesLayer.instance).toEqualTypeOf<TilesLayer | undefined>();
 expectTypeOf(TilesLayer.layerOptions).toEqualTypeOf<TilesLayer.LayerOptions>();

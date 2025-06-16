@@ -1,6 +1,9 @@
 import { expectTypeOf } from "vitest";
-import type BaseEffectSource from "../../../../../src/foundry/client/canvas/sources/base-effect-source.d.mts";
 import type { IntentionalPartial } from "fvtt-types/utils";
+
+import BaseEffectSource = foundry.canvas.sources.BaseEffectSource;
+import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
+import CanvasGroupMixin = foundry.canvas.groups.CanvasGroupMixin;
 
 class MyEffectSource<SourceData extends BaseEffectSource.SourceData = BaseEffectSource.SourceData> extends foundry
   .canvas.sources.BaseEffectSource<SourceData, PIXI.Polygon> {
@@ -118,8 +121,11 @@ expectTypeOf(mySource.add()).toBeVoid();
 expectTypeOf(mySource.remove()).toBeVoid();
 
 // deprecated since v11, until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(mySource.sourceType).toBeString();
 
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(mySource["_createShape"]()).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(mySource.disabled).toBeBoolean();

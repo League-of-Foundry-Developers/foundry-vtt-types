@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-const { AbstractBaseShader } = foundry.canvas.rendering.shaders;
+import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 
 class TestShader extends AbstractBaseShader {}
 

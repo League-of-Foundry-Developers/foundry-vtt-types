@@ -1,7 +1,11 @@
 import { expectTypeOf, assertType } from "vitest";
 import type { EmptyObject } from "fvtt-types/utils";
 
+import CombatEncounters = foundry.documents.collections.CombatEncounters;
+import ClientSettings = foundry.helpers.ClientSettings;
 import Document = foundry.abstract.Document;
+import Localization = foundry.helpers.Localization;
+import Module = foundry.packages.Module;
 
 declare const aGame: Game;
 

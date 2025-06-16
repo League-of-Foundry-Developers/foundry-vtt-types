@@ -1,5 +1,9 @@
 import { expectTypeOf } from "vitest";
-import type PointEffectSourceMixin from "../../../../../src/foundry/client/canvas/sources/point-effect-source.d.mts";
+
+import ClockwiseSweepPolygon = foundry.canvas.geometry.ClockwiseSweepPolygon;
+import PointEffectSourceMixin = foundry.canvas.sources.PointEffectSourceMixin;
+import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
+import PointSourceMesh = foundry.canvas.containers.PointSourceMesh;
 
 declare class MyPointEffectSource<
   SourceData extends PointEffectSourceMixin.MixedSourceData = PointEffectSourceMixin.MixedSourceData,
@@ -15,6 +19,7 @@ const mySource = new MyPointEffectSource();
 
 expectTypeOf(mySource.data).toEqualTypeOf<PointEffectSourceMixin.MixedSourceData>();
 expectTypeOf(mySource.shape).toEqualTypeOf<ClockwiseSweepPolygon>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(mySource.radius).toBeNumber();
 
 expectTypeOf(mySource["_initialize"]({})).toBeVoid();
@@ -35,6 +40,8 @@ expectTypeOf(mySource["_createShapes"]()).toBeVoid();
 expectTypeOf(mySource["_drawMesh"]("background")).toEqualTypeOf<PointSourceMesh | null>();
 expectTypeOf(mySource["_updateGeometry"]()).toBeVoid();
 
-// deprecated since v11, until v13
-expectTypeOf((mySource.radius = 5)).toBeNumber();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+mySource.radius = 5;
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(mySource.los).toEqualTypeOf<ClockwiseSweepPolygon>();
