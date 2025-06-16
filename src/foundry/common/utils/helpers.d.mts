@@ -1,4 +1,12 @@
-import type { AnyArray, AnyConstructor, AnyFunction, AnyObject, InexactPartial, NonNullish } from "#utils";
+import type {
+  AnyArray,
+  AnyConstructor,
+  AnyFunction,
+  AnyObject,
+  DeepReadonly,
+  InexactPartial,
+  NonNullish,
+} from "#utils";
 import type Document from "../abstract/document.d.mts";
 
 /**
@@ -49,8 +57,7 @@ export const debouncedReload: () => void;
  * @remarks
  * @throws If passed an object with a depth over 100, or if it encounters anything but a plain object, array, or primitive
  */
-// TODO: This return type should account for recursively (conditional on it being a plain object or array) freezing
-export function deepFreeze<const T extends AnyObject>(obj: T, options?: DeepFreezeOptions): Readonly<T>;
+export function deepFreeze<const T extends AnyObject>(obj: T, options?: DeepFreezeOptions): DeepReadonly<T>;
 
 /** @internal */
 type _DeepFreezeOptions = InexactPartial<{
