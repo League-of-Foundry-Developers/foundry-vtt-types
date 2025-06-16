@@ -21,9 +21,6 @@ exports[`vitestTestsImproving`] = {
     "tests/foundry/client/appv1/sheets/adventure-importer.test-d.ts:1474438215": [
       [5, 49, 1, "\'\\"C/Users/Shey/projects/foundry-vtt-types/src/foundry/client/appv1/sheets/_module\\"\' has no exported member named \'AdventureExporter\'. Did you mean \'AdventureImporter\'?", "177612"]
     ],
-    "tests/foundry/client/audio/sound.test-d.ts:3720201788": [
-      [145, 67, 1, "Type \'null\' is not assignable to type \'boolean | undefined\'.", "177612"]
-    ],
     "tests/foundry/client/av/master.test-d.ts:378228540": [
       [4, 30, 1, "Namespace \'\\"C/Users/Shey/projects/foundry-vtt-types/src/foundry/client/av/_module\\"\' has no exported member \'AVConfig\'.", "177651"]
     ],
@@ -255,10 +252,6 @@ exports[`vitestTestsImproving`] = {
     ],
     "tests/foundry/client/helpers/hooks.test-d.ts:2962123759": [
       [33, 35, 1, "Type \'FormApplication<unknown, Options>\' does not satisfy the constraint \'{ object \\"Expected unknown, Actual never\\"; options never; element { [x number] { normalize () => void; autofocus boolean; dataset { [x string] string | undefined; [x number] string | undefined; }; ... 308 more ...; focus (options? FocusOptions | undefined) => void; }; ... 139 more ...; wrapInner (wr...\'.\\n  Types of property \'object\' are incompatible.\\n    Type \'unknown\' is not assignable to type \'\\"Expected unknown, Actual never\\"\'.", "177616"]
-    ],
-    "tests/foundry/client/utils/helpers.test-d.ts:2924151657": [
-      [9, 55, 1, "Type \'typeof Actor\' does not satisfy the constraint \'\\"Expected ..., Actual undefined\\"\'.", "177600"],
-      [10, 54, 1, "Type \'typeof _CustomItemClass\' does not satisfy the constraint \'\\"Expected ..., Actual undefined\\"\'.", "177612"]
     ],
     "tests/foundry/common/abstract/data.mjs.test-d.ts:1922994951": [
       [19, 54, 1, "Type \'string | undefined\' does not satisfy the constraint \'StrictEqualUsingTSInternalIdenticalToOperator<RemoveIndexSignatures<{ [Key in keyof Schema] Schema[Key][\\" __fvtt_types_internal_initialized_data\\"]; }>[\\"genericProperty\\"], string | undefined> extends true ? unknown  MismatchInfo<...>\'.\\n  Type \'undefined\' is not assignable to type \'StrictEqualUsingTSInternalIdenticalToOperator<RemoveIndexSignatures<{ [Key in keyof Schema] Schema[Key][\\" __fvtt_types_internal_initialized_data\\"]; }>[\\"genericProperty\\"], string | undefined> extends true ? unknown  MismatchInfo<...>\'.", "177612"]
