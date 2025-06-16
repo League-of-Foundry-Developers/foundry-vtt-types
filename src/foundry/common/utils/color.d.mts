@@ -110,6 +110,7 @@ declare class InternalColor extends PatchedNumber {
    * @param other  - Some other Color to mix with
    * @param weight - The mixing weight placed on this color where weight is placed on the other color
    * @returns The resulting mixed Color
+   * @remarks `weight` should be in the range [0, 1]
    */
   mix(other: Color, weight: number): Color;
 
@@ -165,6 +166,7 @@ declare class InternalColor extends PatchedNumber {
    * @param color2 - The second color to mix.
    * @param weight - Weight of the linear interpolation.
    * @returns The resulting mixed color
+   * @remarks `weight` should be in the range [0, 1]
    */
   static mix(color1: number, color2: number, weight: number): number;
 

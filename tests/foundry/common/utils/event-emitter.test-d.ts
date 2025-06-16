@@ -11,7 +11,7 @@ const eventEmitter = new EventEmitter();
 expectTypeOf(eventEmitter.addEventListener("eventName", listener)).toBeVoid();
 expectTypeOf(eventEmitter.addEventListener("eventName", listener, {})).toBeVoid();
 expectTypeOf(eventEmitter.addEventListener("eventName", listener, { once: true })).toBeVoid();
-expectTypeOf(eventEmitter.addEventListener("eventName", listener, { once: null })).toBeVoid();
+expectTypeOf(eventEmitter.addEventListener("eventName", listener, { once: undefined })).toBeVoid();
 
 expectTypeOf(eventEmitter.removeEventListener("eventName", listener)).toBeVoid();
 

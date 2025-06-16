@@ -1,4 +1,4 @@
-import type { AnyConstructor, Coalesce, FixedInstanceType, Mixin, PhantomConstructor, NullishProps } from "#utils";
+import type { AnyConstructor, Coalesce, FixedInstanceType, Mixin, PhantomConstructor, InexactPartial } from "#utils";
 
 /**
  * A mixin class which implements the behavior of EventTarget.
@@ -44,6 +44,8 @@ declare class EventEmitter {
    * @returns Was default behavior for the event prevented?
    */
   dispatchEvent(event: Event): boolean;
+
+  #EventEmitter: true;
 }
 
 /**
@@ -66,7 +68,7 @@ declare namespace EventEmitterMixin {
   type BaseClass = AnyConstructor;
 
   /** @internal */
-  type _AddListenerOptions = NullishProps<{
+  type _AddListenerOptions = InexactPartial<{
     /**
      * Should the event only be responded to once and then removed
      * @defaultValue `false`
