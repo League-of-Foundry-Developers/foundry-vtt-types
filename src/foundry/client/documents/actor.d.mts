@@ -752,7 +752,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * If CONFIG.ActiveEffect.legacyTransferral is false, this will also return all the transferred ActiveEffects on any
    * of the Actor's owned Items.
    */
-  allApplicableEffects(): Generator<ActiveEffect.Implementation>;
+  allApplicableEffects(): Generator<ActiveEffect.Implementation, void, undefined>;
 
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Actor

@@ -81,7 +81,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   /* Document overrides */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: Combat.ParentCollectionName | null;
 
@@ -170,7 +170,9 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends Combat.Flags.Scope, Key extends Combat.Flags.Key<Scope>>(
     scope: Scope,

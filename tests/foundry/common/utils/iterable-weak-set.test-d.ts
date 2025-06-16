@@ -6,6 +6,6 @@ expectTypeOf(m.add({ x: 1 })).toEqualTypeOf<foundry.utils.IterableWeakSet<{ x: n
 expectTypeOf(m.delete({ x: 1 })).toEqualTypeOf<boolean>();
 expectTypeOf(m.has({ x: 1 })).toEqualTypeOf<boolean>();
 
-expectTypeOf(m.values()).toEqualTypeOf<Generator<{ x: number }, void, never>>();
+expectTypeOf(m.values()).toEqualTypeOf<Generator<{ x: number }, void, undefined>>();
 
 expectTypeOf(m.clear()).toBeVoid();

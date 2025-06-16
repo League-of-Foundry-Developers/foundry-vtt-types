@@ -68,7 +68,7 @@ declare class EffectsCanvasGroup<
   allSources(): Generator<
     foundry.canvas.sources.PointDarknessSource | foundry.canvas.sources.PointLightSource,
     void,
-    void
+    undefined
   >;
 
   override _createLayers(): Record<string, layers.CanvasLayer>;

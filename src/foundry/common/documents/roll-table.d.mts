@@ -54,7 +54,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   /* Document overrides */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   readonly parentCollection: RollTable.ParentCollectionName | null;
 
@@ -141,7 +141,9 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends RollTable.Flags.Scope, Key extends RollTable.Flags.Key<Scope>>(
     scope: Scope,

@@ -71,7 +71,7 @@ declare abstract class BaseCombatant<
   /* Document overrides */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: Combatant.ParentCollectionName | null;
 
@@ -127,7 +127,9 @@ declare abstract class BaseCombatant<
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends Combatant.Flags.Scope, Key extends Combatant.Flags.Key<Scope>>(
     scope: Scope,

@@ -77,7 +77,7 @@ declare class RegionPolygonTreeNode {
   get bounds(): PIXI.Rectangle | null;
 
   /** @privateRemarks Recursively iterates all child nodes */
-  [Symbol.iterator](): Generator<RegionPolygonTreeNode>;
+  [Symbol.iterator](): Generator<RegionPolygonTreeNode, void, undefined>;
 
   /**
    * Test whether given point is contained within this node.

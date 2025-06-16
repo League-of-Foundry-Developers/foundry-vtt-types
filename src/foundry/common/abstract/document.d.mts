@@ -121,7 +121,7 @@ declare abstract class Document<
    */
   readonly singletons: Record<string, Document.AnyChild<this>>;
 
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   /**
    * Default metadata which applies to each instance of this Document type.
@@ -599,7 +599,7 @@ declare abstract class Document<
    * @param _parentPath - A parent field path already traversed
    * @remarks Not called within Foundry's client-side code, likely exists for server documents
    */
-  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   /**
    * Get the value of a "flag" for this document
