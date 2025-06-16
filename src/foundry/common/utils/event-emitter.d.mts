@@ -46,6 +46,14 @@ declare class EventEmitter {
   dispatchEvent(event: Event): boolean;
 }
 
+/**
+ * Augment a base class with EventEmitter behavior.
+ * @param BaseClass - Some base class augmented with event emitter functionality: defaults to an anonymous empty class.
+ */
+declare function EventEmitterMixin<BaseClass extends EventEmitterMixin.BaseClass | undefined = undefined>(
+  BaseClass?: BaseClass,
+): EventEmitterMixin.Mix<BaseClass>;
+
 declare namespace EventEmitterMixin {
   interface AnyMixedConstructor extends ReturnType<typeof EventEmitterMixin<BaseClass>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
@@ -70,13 +78,5 @@ declare namespace EventEmitterMixin {
 
   type EventListener = (event: Event) => void;
 }
-
-/**
- * Augment a base class with EventEmitter behavior.
- * @param BaseClass - Some base class augmented with event emitter functionality
- */
-declare function EventEmitterMixin<BaseClass extends EventEmitterMixin.BaseClass | undefined = undefined>(
-  BaseClass?: BaseClass,
-): EventEmitterMixin.Mix<BaseClass>;
 
 export default EventEmitterMixin;

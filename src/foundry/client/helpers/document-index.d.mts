@@ -18,7 +18,7 @@ declare class DocumentIndex {
    * A reverse-lookup of a document's UUID to its parent node in the word tree.
    * @defaultValue `{}`
    */
-  uuids: Record<string, foundry.utils.StringTree.StringTreeNode<DocumentIndex.Leaf>>;
+  uuids: Record<string, foundry.utils.StringTree.Node<DocumentIndex.Leaf>>;
 
   /**
    * Returns a Promise that resolves when the indexing process is complete.
@@ -55,7 +55,7 @@ declare class DocumentIndex {
       /**
        * A filter function to apply to each candidate entry.
        */
-      filterEntries?: foundry.utils.StringTree.StringTreeEntryFilter;
+      filterEntries?: foundry.utils.StringTree.EntryFilter;
 
       /**
        * Only return entries that the user meets this ownership level for.

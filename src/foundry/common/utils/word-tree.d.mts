@@ -1,3 +1,4 @@
+import type { Identity } from "#utils";
 import type StringTree from "./string-tree.d.mts";
 
 /**
@@ -12,7 +13,7 @@ declare class WordTree<Key = string> extends StringTree<WordTree.WordTreeEntry, 
    * @param entry     - The entry to store.
    * @returns         The node the entry was added to.
    */
-  addLeaf(key: Key, entry: WordTree.WordTreeEntry): StringTree.StringTreeNode<WordTree.WordTreeEntry>;
+  addLeaf(key: Key, entry: WordTree.WordTreeEntry): StringTree.Node<WordTree.WordTreeEntry>;
 
   /**
    * Return entries that match the given string prefix.
@@ -27,10 +28,13 @@ declare class WordTree<Key = string> extends StringTree<WordTree.WordTreeEntry, 
    * @param prefix - The prefix.
    * @returns The node
    */
-  nodeAtPrefix(prefix: Key): StringTree.StringTreeNode<WordTree.WordTreeEntry> | void;
+  nodeAtPrefix(prefix: Key): StringTree.Node<WordTree.WordTreeEntry> | void;
 }
 
 declare namespace WordTree {
+  interface Any extends AnyWordTree {}
+  interface AnyConstructor extends Identity<typeof AnyWordTree> {}
+
   /**
    * A leaf entry in the tree.
    */
@@ -51,3 +55,7 @@ declare namespace WordTree {
 }
 
 export default WordTree;
+
+declare abstract class AnyWordTree extends WordTree<string> {
+  constructor(...args: never);
+}

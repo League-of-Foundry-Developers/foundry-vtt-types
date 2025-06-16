@@ -1,4 +1,7 @@
-import type { AnyObject } from "#utils";
+import type { AnyObject, Identity } from "#utils";
+
+/** @privateRemarks Getters like {@linkcode StringTree.leaves} are not allowed to return `unique symbol` directly */
+declare const _leavesSymbol: unique symbol;
 
 /**
  * A data structure representing a tree of string nodes with arbitrary object leaves.
@@ -7,12 +10,7 @@ declare class StringTree<Leaf extends object = AnyObject, Key = string[]> {
   /**
    * The key symbol that stores the leaves of any given node.
    */
-  // replaced the getter definition with a static property so that
-  //    it can be referenced as part of the StringTreeNode interface
-  // static get leaves(): symbol;
-  static readonly leaves: unique symbol;
-
-  static readonly #leaves: unique symbol;
+  static get leaves(): typeof _leavesSymbol;
 
   /**
    * Insert an entry into the tree.
@@ -20,7 +18,7 @@ declare class StringTree<Leaf extends object = AnyObject, Key = string[]> {
    * @param entry    - The entry to store.
    * @returns   The node the entry was added to.
    */
-  addLeaf(strings: Key, entry: Leaf): StringTree.StringTreeNode<Leaf>;
+  addLeaf(strings: Key, entry: Leaf): StringTree.Node<Leaf>;
 
   /**
    * Traverse the tree along the given string path and return any entries reachable from the node.
@@ -39,7 +37,7 @@ declare class StringTree<Leaf extends object = AnyObject, Key = string[]> {
   nodeAtPrefix<Options extends StringTree.NodeAtPrefixOptions>(
     strings: Key,
     options?: Options,
-  ): StringTree.StringTreeNode<Leaf> | void;
+  ): StringTree.Node<Leaf> | void;
 
   /**
    * Perform a breadth-first search starting from the given node and retrieving any entries reachable from that node,
@@ -50,35 +48,40 @@ declare class StringTree<Leaf extends object = AnyObject, Key = string[]> {
    * @param options - Additional options to configure behaviour.
    */
   protected _breadthFirstSearch(
-    node: StringTree.StringTreeNode<Leaf>,
+    node: StringTree.Node<Leaf>,
     entries: Leaf[],
-    queue: StringTree.StringTreeNode<Leaf>[],
+    queue: StringTree.Node<Leaf>[],
     options?: StringTree.BreadthFirstSearchOptions,
   ): void;
+
+  #StringTree: true;
 }
 
 declare namespace StringTree {
+  interface Any extends AnyStringTree {}
+  interface AnyConstructor extends Identity<typeof AnyStringTree> {}
+
   /**
    * A string tree node consists of zero-or-more string keys, and a leaves property that contains any objects that
    * terminate at the current node.
    */
-  interface StringTreeNode<Leaf extends object> {
+  interface Node<Leaf extends object> {
     [StringTree.leaves]: Leaf[];
-    [key: string]: StringTreeNode<Leaf>;
+    [key: string]: Node<Leaf>;
   }
 
   /**
    * @param entry   - The entry to filter.
    * @returns Whether the entry should be included in the result set.
    */
-  type StringTreeEntryFilter = (entry: unknown) => boolean;
+  type EntryFilter = (entry: unknown) => boolean;
 
   interface LookupOptions {
     /** The maximum number of items to retrieve. */
     limit?: number | undefined;
 
     /** A filter function to apply to each candidate entry. */
-    filterEntries?: StringTree.StringTreeEntryFilter | undefined;
+    filterEntries?: StringTree.EntryFilter | undefined;
   }
 
   interface NodeAtPrefixOptions {
@@ -99,3 +102,7 @@ declare namespace StringTree {
 }
 
 export default StringTree;
+
+declare abstract class AnyStringTree extends StringTree<object, string[]> {
+  constructor(...args: never);
+}

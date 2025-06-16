@@ -1,7 +1,5 @@
-import type { AnyArray, AnyConstructor, AnyFunction, InexactPartial, NonNullish } from "#utils";
+import type { AnyArray, AnyConstructor, AnyFunction, AnyObject, InexactPartial, NonNullish } from "#utils";
 import type Document from "../abstract/document.d.mts";
-
-export {};
 
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.
@@ -14,7 +12,7 @@ export function benchmark<F extends AnyFunction>(func: F, iterations: number, ..
 /**
  * A debugging function to test latency or timeouts by forcibly locking the thread for an amount of time.
  * @param ms    - A number of milliseconds to lock
- * @param debug - (default: `false`)
+ * @param debug - Log debugging information? (default: `false`)
  */
 export function threadLock(ms: number, debug?: boolean): Promise<void>;
 
@@ -30,71 +28,131 @@ export function debounce<T extends AnyFunction>(callback: T, delay: number): (..
 /**
  * Wrap a callback in a throttled timeout.
  * Delay execution of the callback function when the last time the function was called was delay milliseconds ago
- * @param callback     - A function to execute once the throttled threshold has been passed
- * @param delay        - A maximum amount of time in milliseconds between to execution
- * @returns            - A wrapped function which can be called to throttle execution
+ * @param callback - A function to execute once the throttled threshold has been passed
+ * @param delay    - A maximum amount of time in milliseconds between to execution
+ * @returns A wrapped function which can be called to throttle execution
  */
 export function throttle<T extends (...args: any[]) => any>(callback: T, delay: number): T;
 
 /**
  * A utility function to reload the page with a debounce.
  */
-export const debouncedReload: VoidFunction;
+export const debouncedReload: () => void;
 
-export interface DeepCloneOptions {
+/**
+ * Recursively freezes ({@linkcode Object.freeze}) the object (or value).
+ * This method DOES NOT support cyclical data structures.
+ * This method DOES NOT support advanced object types like Set, Map, or other specialized classes.
+ * @param obj     - The object (or value)
+ * @param options - Options to configure the behaviour of deepFreeze
+ * @returns The same object (or value) that was passed in
+ * @remarks
+ * @throws If passed an object with a depth over 100, or if it encounters anything but a plain object, array, or primitive
+ */
+// TODO: This return type should account for recursively (conditional on it being a plain object or array) freezing
+export function deepFreeze<const T extends AnyObject>(obj: T, options?: DeepFreezeOptions): Readonly<T>;
+
+/** @internal */
+type _DeepFreezeOptions = InexactPartial<{
   /**
-   * Throw an Error if deepClone is unable to clone something instead of returning the original
+   * Throw an Error if deepFreeze is unable to freeze something instead of returning the original
    * @defaultValue `false`
    */
-  strict?: boolean;
+  strict: boolean;
+}>;
 
+export interface DeepFreezeOptions extends _DeepFreezeOptions {}
+
+/**
+ * Recursively seals ({@linkcode Object.seal}) the object (or value).
+ * This method DOES NOT support cyclical data structures.
+ * This method DOES NOT support advanced object types like Set, Map, or other specialized classes.
+ * @param obj     - The object (or value)
+ * @param options - Options to configure the behaviour of deepSeal
+ * @returns The same object (or value) that was passed in
+ * @remarks
+ * @throws If passed an object with a depth over 100, or if it encounters anything but a plain object, array, or primitive
+ */
+export function deepSeal<T extends AnyObject>(obj: T, options?: DeepSealOptions): T;
+
+/** @internal */
+type _DeepSealOptions = InexactPartial<{
   /**
-   * An internal depth tracker
-   * @defaultValue `0`
+   * Throw an Error if deepSeal is unable to seal something
+   * @defaultValue `false`
    */
-  _d?: number;
-}
+  strict: boolean;
+}>;
+
+export interface DeepSealOptions extends _DeepSealOptions {}
 
 /**
  * Quickly clone a simple piece of data, returning a copy which can be mutated safely.
  * This method DOES support recursive data structures containing inner objects or arrays.
+ * This method DOES NOT support cyclical data structures.
  * This method DOES NOT support advanced object types like Set, Map, or other specialized classes.
- * @param original        - Some sort of data
- * @param options         - Options to configure the behaviour of deepClone
- * @returns               - The clone of that data
- * @throws                - An Error if deepClone is unable to clone something and strict mode is enabled
+ * @param original - Some sort of data
+ * @param options  - Options to configure the behaviour of deepClone
+ * @returns The clone of that data
+ * @remarks
+ * @throws If passed an object with a depth over 100, or if it encounters anything but a plain object, array, `Date`, or primitive
  */
 export function deepClone<T>(original: T, options?: DeepCloneOptions): T;
 
-export type DiffObjectOptions = InexactPartial<{
+/** @internal */
+type _DeepCloneOptions = InexactPartial<{
+  /**
+   * Throw an Error if deepClone is unable to clone something instead of returning the original
+   * @defaultValue `false`
+   */
+  strict: boolean;
+}>;
+
+export interface DeepCloneOptions extends _DeepCloneOptions {}
+
+/**
+ * Deeply difference an object against some other, returning the update keys and values.
+ * @param original - An object comparing data against which to compare
+ * @param other    - An object containing potentially different data
+ * @param options  - Additional options which configure the diff operation
+ * @returns An object of the data in other which differs from that in original
+ */
+export function diffObject(original: object, other: object, options?: DiffObjectOptions): object;
+
+/** @internal */
+type _DiffObjectOptions = InexactPartial<{
   /**
    * Only recognize differences in other for keys which also exist in original
    * @defaultValue `false`
    */
-  inner?: boolean;
+  inner: boolean;
 
   /**
    * Apply special logic to deletion keys. They will only be kept if the original object has a
    * corresponding key that could be deleted.
    * @defaultValue `false`
    */
-  deletionKeys?: boolean;
+  deletionKeys: boolean;
 
   /**
    * An internal depth tracker
    * @defaultValue `0`
+   * @remarks Not intended to be passed externally. v13 converted the outer signature of `deepClone` to hide this param,
+   * and that pattern was copied for `deepFreeze` and `deepSeal`; Not sure why they didn't use it here.
    */
-  _d?: number;
+  _d: number;
 }>;
 
+export interface DiffObjectOptions extends _DiffObjectOptions {}
+
 /**
- * Deeply difference an object against some other, returning the update keys and values.
- * @param original       - An object comparing data against which to compare
- * @param other          - An object containing potentially different data
- * @param options        - Additional options which configure the diff operation
- * @returns               - An object of the data in other which differs from that in original
+ * Recurse through an object, applying all special keys.
+ * Deletion keys ("-=") are removed.
+ * Forced replacement keys ("==") are assigned.
+ * @remarks Returns the passed `obj` for anything but plain objects and arrays.
  */
-export function diffObject(original: object, other: object, options?: DiffObjectOptions): object;
+// TODO: bespoke return type accounting for deletion keys recursively
+export function applySpecialKeys<T>(obj: T): T;
 
 /**
  * Test if two objects contain the same enumerable keys and values.
@@ -123,6 +181,13 @@ export function duplicate<T>(original: T): Duplicated<T>;
 export type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated<T>;
 
 /**
+ * Is a string key of an object used for certain deletion or forced replacement operations.
+ */
+export function isDeletionKey(key: string): key is DeletionKey;
+
+export type DeletionKey = `-=${string}` | `==${string}`;
+
+/**
  * Test whether some class is a subclass of a parent.
  * Returns true if the classes are identical.
  * @param cls    - The class to test
@@ -133,16 +198,18 @@ export function isSubclass<Parent extends AnyConstructor>(cls: AnyConstructor, p
 
 /**
  * Search up the prototype chain and return the class that defines the given property.
- * @param obj                - A class instance or class definition which contains a property.
- *                             If a class instance is passed the property is treated as an instance attribute.
- *                             If a class constructor is passed the property is treated as a static attribute.
- * @param property           - The property name
- * @returns     - The class that defines the property
+ * @param obj      - A class instance or class definition which contains a property.
+ *
+ * If a class instance is passed the property is treated as an instance attribute.
+ *
+ * If a class constructor is passed the property is treated as a static attribute.
+ * @param property - The property name
+ * @returns The class that defines the property
  */
 export function getDefiningClass(obj: AnyConstructor, property: string): AnyConstructor;
 
 /**
- * Encode a url-like string by replacing any characters which need encoding
+ * Encode an url-like string by replacing any characters which need encoding
  * @param path - A fully-qualified URL or url component (like a relative path)
  * @returns An encoded URL string
  */
@@ -164,8 +231,8 @@ export function expandObject(obj: object): object;
  *
  * @param source   - An object which contains the data you wish to filter
  * @param template - An object which contains the structure you wish to preserve
- * @param options  - Additional options which customize the filtration
- *                   (default: `{}`)
+ * @param options  - Additional options which customize the filtration (default: `{}`)
+ * @returns The filtered object
  *
  * @example Filter an object
  * ```typescript
@@ -177,22 +244,25 @@ export function expandObject(obj: object): object;
  */
 export function filterObject(source: object, template: object, options?: FilterObjectOptions): object;
 
-export interface FilterObjectOptions {
+/** @internal */
+type _FilterObjectOptions = InexactPartial<{
   /**
    * Whether to keep deletion keys
    * @defaultValue `false`
    */
-  deletionKeys?: boolean | undefined;
+  deletionKeys: boolean;
 
   /**
    * Instead of keeping values from the source, instead draw values from the template
    * @defaultValue `false`
    */
-  templateValues?: boolean | undefined;
-}
+  templateValues: boolean;
+}>;
+
+export interface FilterObjectOptions extends _FilterObjectOptions {}
 
 /**
- * Flatten a possibly multi-dimensional object to a one-dimensional one by converting all nested keys to dot notation
+ * Flatten a possibly multidimensional object to a one-dimensional one by converting all nested keys to dot notation
  * @param obj - The object to flatten
  * @param _d  - Track the recursion depth to prevent overflow. (default: `0`)
  * @returns A flattened object
@@ -221,6 +291,15 @@ export interface GetRouteOptions {
  */
 export function getRoute(path: string, { prefix }?: GetRouteOptions): string;
 
+/** @internal */
+type _GetRouteOptions = InexactPartial<{
+  /**
+   * A path prefix to apply
+   * @defaultValue {@linkcode globalThis.ROUTE_PREFIX}
+   */
+  prefix: string | null;
+}>;
+
 /**
  * Learn the underlying data type of some variable. Supported identifiable types include:
  * undefined, null, number, string, boolean, function, Array, Set, Map, Promise, Error,
@@ -245,7 +324,8 @@ export function getType(
   | "number"
   | "string"
   | "symbol"
-  | "undefined";
+  | "undefined"
+  | "Unknown";
 
 /**
  * A helper function which tests whether an object has a property or nested property given a string key.
@@ -263,7 +343,7 @@ export function hasProperty(object: object, key: string): boolean;
  * @param key    - An object property with notation a.b.c
  * @returns The value of the found property
  */
-export function getProperty(object: object, key: string): any;
+export function getProperty(object: object, key: string): unknown;
 
 /**
  * A helper function which searches through an object to assign a value using a string key
@@ -275,6 +355,22 @@ export function getProperty(object: object, key: string): any;
  */
 export function setProperty(object: object, key: string, value: any): boolean;
 
+/**
+ * A helper function which searches through an object to delete a value by a string key.
+ * The string key supports the notation a.b.c which would delete object[a][b][c]
+ * @param object - The object to traverse
+ * @param key    - An object property with notation a.b.c
+ * @returns Was the property deleted?
+ */
+export function deleteProperty(object: object, key: string): boolean;
+
+/**
+ * Invert an object by assigning its values as keys and its keys as values.
+ * @param obj - The original object to invert
+ * @returns The inverted object with keys and values swapped
+ */
+export function invertObject<T extends InvertableObject>(obj: T): InvertObject<T>;
+
 // Merging into this would be antithetical to its purpose.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type InvertableObject = {
@@ -284,13 +380,6 @@ export type InvertableObject = {
 export type InvertObject<in out T extends InvertableObject> = {
   [K in keyof T as T[K]]: K;
 };
-
-/**
- * Invert an object by assigning its values as keys and its keys as values.
- * @param obj - The original object to invert
- * @returns The inverted object with keys and values swapped
- */
-export function invertObject<T extends InvertableObject>(obj: T): InvertObject<T>;
 
 /**
  * Return whether a target version (v1) is more advanced than some other reference version (v0).
@@ -306,7 +395,6 @@ export function isNewerVersion(v1: number | string, v0: number | string): boolea
  * @param value - The value to test
  * @returns Is the value empty-like?
  */
-
 export function isEmpty(
   value: undefined | null | unknown[] | object | Set<unknown> | Map<unknown, unknown> | NonNullish,
 ): boolean;
@@ -353,6 +441,11 @@ export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
  * ```typescript
  * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null}, {performDeletions: true});   // {k2: "v2"}
  * ```
+ *
+ * @example Explicitly replacing an inner object key
+ * ```js
+ * mergeObject({k1: {i1: "v1"}}, {"==k1": {i2: "v2"}}, {performDeletions: true}); // {k1: {i2: "v2"}}
+ * ```
  */
 export function mergeObject<const T extends object, const U extends object, const M extends MergeObjectOptions>(
   original: T,
@@ -361,88 +454,71 @@ export function mergeObject<const T extends object, const U extends object, cons
   _d?: number,
 ): MergeObject<T, U, M>;
 
-export interface MergeObjectOptions {
+/** @internal */
+type _MergeObjectOptions = InexactPartial<{
   /**
    * Control whether to insert new top-level objects into the resulting structure which do not previously exist in the original object.
    * @defaultValue `true`
    */
-  insertKeys?: boolean | undefined;
+  insertKeys: boolean;
 
   /**
    * Control whether to insert new nested values into child objects in the resulting structure which did not previously exist in the original object.
    * @defaultValue `true`
    */
-  insertValues?: boolean | undefined;
+  insertValues: boolean;
 
   /**
    * Control whether to replace existing values in the source, or only merge values which do not already exist in the original object.
    * @defaultValue `true`
    */
-  overwrite?: boolean | undefined;
+  overwrite: boolean;
 
   /**
    * Control whether to merge inner-objects recursively (if true), or whether to simply replace inner objects with a provided new value.
    * @defaultValue `true`
    */
-  recursive?: boolean | undefined;
+  recursive: boolean;
 
   /**
    * Control whether to apply updates to the original object in-place (if true), otherwise the original object is duplicated and the copy is merged.
    * @defaultValue `true`
    */
-  inplace?: boolean | undefined;
+  inplace: boolean;
 
   /**
    * Control whether strict type checking requires that the value of a key in the other object must match the data type in the original data to be merged.
    * @defaultValue `false`
    */
-  enforceTypes?: boolean | undefined;
+  enforceTypes: boolean;
 
   /**
    * Control whether to perform deletions on the original object if deletion keys are present in the other object.
    * @defaultValue `false`
    */
-  performDeletions?: boolean | undefined; // TODO: implement this in the mergeObject return type
-}
+  performDeletions: boolean; // TODO: implement this in the mergeObject return type
+}>;
 
-/**
- * A helper function for merging objects when the target key does not exist in the original
- * @internal
- */
-declare function _mergeInsert(
-  original: object,
-  k: PropertyKey,
-  v: any,
-  options?: Pick<MergeObjectOptions, "insertKeys" | "insertValues" | "performDeletions">,
-  _d?: number,
-): void;
-
-/**
- * A helper function for merging objects when the target key exists in the original
- * @internal
- */
-declare function _mergeUpdate<T extends object, K extends keyof T>(
-  original: T,
-  k: K,
-  v: any,
-  options?: Pick<
-    MergeObjectOptions,
-    "insertKeys" | "insertValues" | "enforceTypes" | "overwrite" | "recursive" | "performDeletions"
-  >,
-  _d?: number,
-): void;
+export interface MergeObjectOptions extends _MergeObjectOptions {}
 
 /**
  * Parse an S3 key to learn the bucket and the key prefix used for the request.
  * @param key - A fully qualified key name or prefix path.
  */
-export function parseS3URL(key: string): { bucket: string | null; keyPrefix: string };
+export function parseS3URL(key: string): ParseS3URLReturn;
+
+export interface ParseS3URLReturn {
+  /** @remarks `null` only if the passed URL fails {@linkcode URL.parseSafe} */
+  bucket: string | null;
+
+  /** @remarks `""` if the passed URL fails {@linkcode URL.parseSafe} */
+  keyPrefix: string;
+}
 
 /**
  * Generate a random alphanumeric string ID of a given requested length using `crypto.getRandomValues()`.
- * @param length    - The length of the random string to generate, which must be at most 16384.
- *                    (default: `16`)
- * @returns          - A string containing random letters (A-Z, a-z) and numbers (0-9).
+ * @param length - The length of the random string to generate, which must be at most 16384. (default: `16`)
+ * @returns A string containing random letters (A-Z, a-z) and numbers (0-9).
  */
 export function randomID(length?: number): string;
 
@@ -453,19 +529,23 @@ export function randomID(length?: number): string;
  */
 export function formatFileSize(size: number, options?: FormatFileSizeOptions): string;
 
-export interface FormatFileSizeOptions {
+/** @internal */
+type _FormatFileSizeOptions = InexactPartial<{
   /**
    * The number of decimal places to round to.
    * @defaultValue `2`
    */
-  decimalPlaces?: number | undefined;
+  decimalPlaces: number;
 
   /**
    * The base to use. In base 10 a kilobyte is 1000 bytes. In base 2 it is 1024 bytes.
    * @defaultValue `10`
+   * @remarks Foundry only actually checks if the base is `2` or not; all other values are treated as `10`
    */
-  base?: 2 | 10 | undefined;
-}
+  base: 2 | 10;
+}>;
+
+export interface FormatFileSizeOptions extends _FormatFileSizeOptions {}
 
 export interface ResolvedUUID {
   /**
@@ -475,8 +555,9 @@ export interface ResolvedUUID {
 
   /**
    * The type of Document referenced. Legacy compendium UUIDs will not populate this field if the compendium is not active in the World.
+   * @remarks This property is always present, the above caveat simply means it might be `undefined`
    */
-  type?: Document.Type | undefined;
+  type: Document.Type | undefined;
 
   /**
    * The ID of the Document referenced.
@@ -485,18 +566,20 @@ export interface ResolvedUUID {
 
   /**
    * The primary Document type of this UUID. Only present if the Document is embedded.
+   * @remarks This property is always present, the above caveat simply means it might be `undefined`
    */
-  primaryType?: foundry.CONST.PRIMARY_DOCUMENT_TYPES | undefined;
+  primaryType: CONST.PRIMARY_DOCUMENT_TYPES | undefined;
 
   /**
    * The primary Document ID of this UUID. Only present if the Document is embedded.
+   * @remarks This property is always present, the above caveat simply means it might be `undefined`
    */
-  primaryId?: string | undefined;
+  primaryId: string | undefined;
 
   /**
    * The collection that the primary Document belongs to.
    */
-  collection?: foundry.documents.abstract.DocumentCollection.Any | undefined;
+  collection: foundry.documents.abstract.DocumentCollection.Any | undefined;
 
   /**
    * Additional Embedded Document parts.
@@ -504,27 +587,25 @@ export interface ResolvedUUID {
   embedded: string[];
 
   /**
-   * An already-resolved parent Document.
-   */
-  doc?: Document.Any | undefined;
-
-  /**
    * Either the document type or the parent type. Retained for backwards compatibility.
    */
-  documentType?: Document.Type | undefined;
+  documentType: Document.Type | undefined;
 
   /**
    * Either the document id or the parent id. Retained for backwards compatibility.
    */
-  documentId?: string | undefined;
+  documentId: string | undefined;
 }
 
-export interface ParseUUIDOptions {
+/** @internal */
+type _ParseUUIDOptions = InexactPartial<{
   /**
    * A document to resolve relative UUIDs against.
    */
-  relative?: Document.Any;
-}
+  relative: Document.Any;
+}>;
+
+export interface ParseUUIDOptions extends _ParseUUIDOptions {}
 
 /**
  * Parse a UUID into its constituent parts, identifying the type and ID of the referenced document.

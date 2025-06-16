@@ -73,7 +73,7 @@ declare class InternalColor extends PatchedNumber {
   /**
    * The color represented as a linear RGB array.
    * Assumes r, g, and b are contained in the set [0, 1] and returns linear r, g, and b in the set [0, 1].
-   * {@link https://en.wikipedia.org/wiki/SRGB#Transformation}
+   * @see {@link https://en.wikipedia.org/wiki/SRGB#Transformation}
    */
   get linear(): Color.RGBColorVector;
 
