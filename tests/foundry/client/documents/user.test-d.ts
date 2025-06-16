@@ -2,6 +2,7 @@ import { assertType, expectTypeOf, test } from "vitest";
 
 import UserTargets = foundry.canvas.placeables.tokens.UserTargets;
 import FormApplication = foundry.appv1.api.FormApplication;
+import DialogV2 = foundry.applications.api.DialogV2;
 
 // @ts-expect-error - requires a name.
 new User.implementation();
@@ -27,6 +28,26 @@ expectTypeOf(user.avatar).toEqualTypeOf<string | null | undefined>();
 expectTypeOf(user.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();
 
 expectTypeOf(user.color).toEqualTypeOf<Color>();
+
+const queryConfig = { timeout: 100 };
+
+expectTypeOf(user.query("dialog", { type: "confirm", config: { content: "Do thing?" } }, queryConfig)).toEqualTypeOf<Promise<DialogV2.QueryReturn<"confirm", {}>>>();
+
+declare module "fvtt-types/configuration" {
+  namespace CONFIG {
+    interface Queries {
+      "draw-steel.spendHeroToken": (payload: { userId: string, spendType: string, flavor: string }, queryOptions: User.QueryOptions) => void;
+    }
+  }
+}
+
+const queryPayload = {
+  userId: "test",
+  spendType: "test",
+  flavor: "test",
+};
+
+expectTypeOf(user.query("draw-steel.spendHeroToken", queryPayload, queryConfig)).toEqualTypeOf<Promise<void>>();
 
 declare class ConfiguredUser extends User {}
 
