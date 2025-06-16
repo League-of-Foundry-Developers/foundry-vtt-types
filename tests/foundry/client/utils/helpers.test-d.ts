@@ -6,8 +6,8 @@ expectTypeOf(foundry.utils.saveDataToFile("", "", "")).toEqualTypeOf<void>();
 declare const file: File;
 expectTypeOf(foundry.utils.readTextFromFile(file)).toEqualTypeOf<Promise<string>>();
 
-expectTypeOf(getDocumentClass("Actor")).toEqualTypeOf<Actor.ImplementationClass | undefined>();
-expectTypeOf(getDocumentClass("Item")).toEqualTypeOf<Item.ImplementationClass | undefined>();
+expectTypeOf(getDocumentClass("Actor")).toEqualTypeOf<Actor.ImplementationClass>();
+expectTypeOf(getDocumentClass("Item")).toEqualTypeOf<Item.ImplementationClass>();
 
 expectTypeOf(fromUuid("Actor.uuid1")).toEqualTypeOf<Promise<Actor.Implementation | null>>;
 expectTypeOf(fromUuid("Actor.uuid1.Item.uuid2")).toEqualTypeOf<Promise<Item.Implementation | null>>;

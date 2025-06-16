@@ -102,10 +102,9 @@ type FromUuidValidate<
  * Return a reference to the Document class implementation which is configured for use.
  * @param documentName - The canonical Document name, for example "Actor"
  * @returns configured Document class implementation
+ * @privateRemarks Foundry types this as `| undefined` but they can't enforce passing a valid Document type
  */
-export function getDocumentClass<Name extends Document.Type>(
-  documentName: Name,
-): Document.ImplementationClassFor<Name> | undefined;
+export function getDocumentClass<Name extends Document.Type>(documentName: Name): Document.ImplementationClassFor<Name>;
 
 /**
  * Return a reference to the PlaceableObject class implementation which is configured for use.
