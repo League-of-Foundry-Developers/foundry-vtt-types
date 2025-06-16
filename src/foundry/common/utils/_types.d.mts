@@ -15,9 +15,9 @@ type LineCircleIntersection = foundry.utils.LineCircleIntersection;
 
 type ResolvedUUID = foundry.utils.ResolvedUUID;
 
-// type IterableWeakMapHeldValue =
+type IterableWeakMapHeldValue<K extends WeakKey> = foundry.utils.IterableWeakMap.HeldValue<K>;
 
-// type IterableWeakMapValue =
+type IterableWeakMapValue<K extends WeakKey, V> = foundry.utils.IterableWeakMap.Value<K, V>;
 
 type StringTreeNode<Leaf extends object> = foundry.utils.StringTree.Node<Leaf>;
 
