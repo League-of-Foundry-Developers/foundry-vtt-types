@@ -597,6 +597,41 @@ export interface ResolvedUUID {
   documentId: string | undefined;
 }
 
+/**
+ * Parse a UUID into its constituent parts, identifying the type and ID of the referenced document.
+ * The ResolvedUUID result also identifies a "primary" document which is a root-level document either in the game
+ * World or in a Compendium pack which is a parent of the referenced document.
+ * @param uuid     - The UUID to parse.
+ * @param options  - Options to configure parsing behavior.
+ * @returns Returns, if possible, the Collection, Document Type, and Document ID to resolve the parent document, as well as the remaining Embedded Document parts, if any.
+ */
+export function parseUuid(uuid: string, options?: ParseUUIDOptions): ResolvedUUID;
+
+/**
+ * Escape the given unescaped string.
+ *
+ * Escaped strings are safe to use inside inner HTML of most tags and in most quoted HTML attributes.
+ * They are not NOT safe to use in `<script>` tags, unquoted attributes, `href`, `onmouseover`, and similar.
+ * They must be unescaped first if they are used inside a context that would escape them.
+ *
+ * Handles only `&`, `<`, `>`, `"`, and `'`.
+ * @see {@link foundry.utils.unescapeHTML}
+ * @param value - An unescaped string
+ * @returns The escaped string
+ * @privateRemarks Foundry types `value` as `string|any`, as the method passes it through `String()`, but accounting for that seems counterproductive
+ */
+export function escapeHTML(value: string): string;
+
+/**
+ * Unescape the given escaped string.
+ *
+ * Handles only `&amp;`, `&lt;`, `&gt;`, `&quot;`, and `&#x27;`.
+ * @see {@link foundry.utils.escapeHTML}
+ * @param value - An escaped string
+ * @returns The escaped string
+ */
+export function unescapeHTML(value: string): string;
+
 /** @internal */
 type _ParseUUIDOptions = InexactPartial<{
   /**
@@ -608,84 +643,38 @@ type _ParseUUIDOptions = InexactPartial<{
 export interface ParseUUIDOptions extends _ParseUUIDOptions {}
 
 /**
- * Parse a UUID into its constituent parts, identifying the type and ID of the referenced document.
- * The ResolvedUUID result also identifies a "primary" document which is a root-level document either in the game
- * World or in a Compendium pack which is a parent of the referenced document.
- * @param uuid           - The UUID to parse.
- * @param options        - Options to configure parsing behavior.
- * @returns              - Returns the Collection, Document Type, and Document ID to resolve the parent
- *                         document, as well as the remaining Embedded Document parts, if any.
- * @throws               - An error if the provided uuid string is incorrectly structured
+ * Build a Universally Unique Identifier (uuid) from possibly limited data. An attempt will be made to resolve omitted
+ * components, but an identifier and at least one of documentName, parent, and pack are required.
+ * @param context - Data for building the uuid
+ * @returns A well-formed Document uuid unless one is unable to be created
  */
-export function parseUuid(uuid: string, options?: ParseUUIDOptions): ResolvedUUID;
+export function buildUuid(context?: BuildUUIDContext): string | null;
 
-/**
- * Resolve a UUID relative to another document.
- * The general-purpose algorithm for resolving relative UUIDs is as follows:
- * 1. If the number of parts is odd, remove the first part and resolve it against the current document and update the
- *    current document.
- * 2. If the number of parts is even, resolve embedded documents against the current document.
- * @param uuid     - The UUID to resolve.
- * @param relative - The document to resolve against.
- * @internal
- */
-declare function _resolveRelativeUuid(uuid: string, relative: Document.Any): ResolvedUUID;
+/** @internal */
+type _BuildUUIDContext = InexactPartial<{
+  /**
+   * The document name (or type)
+   * @remarks At least one of `documentName`, `parent`, or `pack` *must* be provided or `buildUuid` will return `null`
+   */
+  documentName: Document.Type;
 
-/**
- * Converts an RGB color value to HSV. Conversion formula adapted from http://en.wikipedia.org/wiki/HSV_color_space.
- * Assumes r, g, and b are contained in the set [0, 1] and returns h, s, and v in the set [0, 1].
- * @param r - The red color value
- * @param g - The green color value
- * @param b - The blue color value
- * @returns The HSV representation
- * @deprecated since v10 until v12, rgbToHsv is deprecated in favor of {@link foundry.utils.Color.hsv | `foundry.utils.Color#hsv`}
- */
-export function rgbToHsv(r: number, g: number, b: number): [h: number, s: number, v: number];
+  /**
+   * The document's parent, if any
+   * @remarks At least one of `documentName`, `parent`, or `pack` *must* be provided or `buildUuid` will return `null`
+   */
+  parent: Document.Any | null;
 
-/**
- * Converts an HSV color value to RGB. Conversion formula adapted from http://en.wikipedia.org/wiki/HSV_color_space.
- * Assumes h, s, and v are contained in the set [0, 1] and returns r, g, and b in the set [0, 1].
- * @param h - The hue
- * @param s - The saturation
- * @param v - The value
- * @returns The RGB representation
- * @deprecated since v10 until v12, hsvToRgb is deprecated in favor of {@linkcode foundry.utils.Color.fromHSV}
- */
-export function hsvToRgb(h: number, s: number, v: number): [r: number, g: number, b: number];
+  /**
+   * The document's compendium pack, if applicable
+   * @remarks At least one of `documentName`, `parent`, or `pack` *must* be provided or `buildUuid` will return `null`
+   */
+  pack: string | null;
+}>;
 
-/**
- * Converts a color as an [R, G, B] array of normalized floats to a hexadecimal number.
- * @param rgb - Array of numbers where all values are normalized floats from 0.0 to 1.0.
- * @returns The numeric color as hexadecimal
- * @deprecated since v10 until v12, rgbToHex is deprecated in favor of {@linkcode foundry.utils.Color.fromRGB}
- */
-export function rgbToHex(rgb: [r: number, g: number, b: number]): number;
-
-/**
- * Convert a hex color code to an RGB array
- * @param hex - A hex color number
- * @returns An array of [r,g,b] colors normalized on the range of [0,1]
- * @deprecated since v10 until v12, hexToRGB is deprecated in favor of {@link foundry.utils.Color.rgb | `foundry.utils.Color#rgb`}
- */
-export function hexToRGB(hex: number): [r: number, g: number, b: number];
-
-/**
- * Convert a hex color code to an RGBA color string which can be used for CSS styling
- * @param hex   - A hex color number
- * @param alpha - An optional level of transparency
- *                (default: `1.0`)
- * @returns An rgba style string
- * @deprecated since v10 until v12, hexToRGBAString is deprecated in favor of {@link foundry.utils.Color.toRGBA | `foundry.utils.Color#toRGBA`}
- */
-export function hexToRGBAString(hex: number, alpha?: number): `rgba(${number}, ${number}, ${number})`;
-
-/**
- * Convert a string color to a hex integer
- * @param color - The string color
- * @returns The hexadecimal color code
- * @deprecated since v10 until v12, colorStringToHex is deprecated in favor of {@linkcode foundry.utils.Color.from}
- */
-export function colorStringToHex(color: string): number | null;
+export interface BuildUUIDContext extends _BuildUUIDContext {
+  /** The identifier of the document */
+  id: string;
+}
 
 /**
  * Internal Helper for {@linkcode Duplicated}. A union type of all types that do not have a JSON representation.
