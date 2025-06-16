@@ -62,7 +62,7 @@ declare class DocumentIndex {
        */
       ownership?: DOCUMENT_OWNERSHIP_LEVELS;
     },
-  ): Record<string, foundry.utils.WordTree.WordTreeEntry[]>;
+  ): Record<string, foundry.utils.WordTree.Entry[]>;
 
   /**
    * Add an entry to the index.

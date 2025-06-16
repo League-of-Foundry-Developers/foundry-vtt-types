@@ -23,6 +23,6 @@ type StringTreeNode<Leaf extends object> = foundry.utils.StringTree.Node<Leaf>;
 
 type StringTreeEntryFilter = foundry.utils.StringTree.EntryFilter;
 
-type WordTreeEntry = foundry.utils.WordTree.WordTreeEntry;
+type WordTreeEntry = foundry.utils.WordTree.Entry;
 
 type EmittedEventListener = foundry.utils.EventEmitterMixin.EventListener;

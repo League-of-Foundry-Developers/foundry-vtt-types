@@ -1,4 +1,4 @@
-import type { AnyObject, Identity } from "#utils";
+import type { AnyObject, Identity, InexactPartial } from "#utils";
 
 /** @privateRemarks Getters like {@linkcode StringTree.leaves} are not allowed to return `unique symbol` directly */
 declare const _leavesSymbol: unique symbol;
@@ -76,29 +76,27 @@ declare namespace StringTree {
    */
   type EntryFilter = (entry: unknown) => boolean;
 
-  interface LookupOptions {
+  /** @internal */
+  type _SearchOptions = InexactPartial<{
     /** The maximum number of items to retrieve. */
-    limit?: number | undefined;
+    limit: number;
 
     /** A filter function to apply to each candidate entry. */
-    filterEntries?: StringTree.EntryFilter | undefined;
-  }
+    filterEntries: StringTree.EntryFilter;
+  }>;
+
+  interface LookupOptions extends _SearchOptions {}
 
   interface NodeAtPrefixOptions {
     /**
-     * Only return the most recently visited node that has
-     * leaves, otherwise return the exact node at the prefix,
-     * if it exists. Defaults to false.
-     *
+     * Only return the most recently visited node that has leaves,
+     * otherwise return the exact node at the prefix, if it exists.
      * @defaultValue `false`
      */
     hasLeaves?: boolean | undefined;
   }
 
-  interface BreadthFirstSearchOptions {
-    /** The maximum number of entries to retrieve before stopping. */
-    limit?: number | undefined;
-  }
+  interface BreadthFirstSearchOptions extends _SearchOptions {}
 }
 
 export default StringTree;
