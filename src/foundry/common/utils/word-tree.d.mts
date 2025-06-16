@@ -1,19 +1,23 @@
 import type { Identity, InexactPartial } from "#utils";
-import type StringTree from "./string-tree.d.mts";
+import type { StringTree } from "./_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 
 /**
  * A data structure for quickly retrieving objects by a string prefix.
  * Note that this works well for languages with alphabets (latin, cyrillic, korean, etc.), but may need more nuanced
  * handling for languages that compose characters and letters.
  */
-declare class WordTree<Key = string> extends StringTree<WordTree.Entry, Key> {
+declare class WordTree<DocumentName extends Document.Type, Key = string> extends StringTree<
+  WordTree.Entry<DocumentName>,
+  Key
+> {
   /**
    * Insert an entry into the tree.
    * @param string - The string key for the entry.
    * @param entry - The entry to store.
    * @returns The node the entry was added to.
    */
-  addLeaf(key: Key, entry: WordTree.Entry): StringTree.Node<WordTree.Entry>;
+  addLeaf(key: Key, entry: WordTree.Entry<DocumentName>): WordTree.EntryNode<DocumentName>;
 
   /**
    * Return entries that match the given string prefix.
@@ -21,14 +25,15 @@ declare class WordTree<Key = string> extends StringTree<WordTree.Entry, Key> {
    * @param options - Additional options to configure behaviour.
    * @returns A number of entries that have the given prefix.
    */
-  lookup(prefix: Key, options?: WordTree.LookupOptions): WordTree.Entry[];
+  lookup(prefix: Key, options?: WordTree.LookupOptions<DocumentName>): WordTree.Entry<DocumentName>[];
 
   /**
    * Returns the node at the given prefix.
    * @param prefix - The prefix.
    * @returns The node
+   * @remarks Calls super with no way to provide options, meaning `undefined` is never allow
    */
-  nodeAtPrefix(prefix: Key): StringTree.Node<WordTree.Entry> | void;
+  nodeAtPrefix(prefix: Key): WordTree.EntryNode<DocumentName> | undefined;
 }
 
 declare namespace WordTree {
@@ -45,29 +50,41 @@ declare namespace WordTree {
     limit: number;
   }>;
 
-  interface LookupOptions extends Omit<StringTree.LookupOptions, "limit">, _LookupOptions {}
+  interface LookupOptions<DocumentName extends Document.Type>
+    extends Omit<StringTree.LookupOptions<Entry<DocumentName>>, "limit">,
+      _LookupOptions {}
 
   /**
    * A leaf entry in the tree.
    */
-  interface Entry {
+  interface Entry<DocumentName extends Document.Type> {
     /** An object that this entry represents. */
     // TODO(LukeAbby): This appears to be possible to be a compendium index entry.
-    entry: foundry.abstract.Document.Any;
+    entry: Document.ImplementationFor<DocumentName>;
 
     /** The document type. */
-    documentName: string;
+    documentName: DocumentName;
 
     /** The document's UUID. */
     uuid: string;
 
     /** The (optional) pack ID. */
-    pack?: string | undefined;
+    pack?: string;
+  }
+
+  namespace Entry {
+    type Any = Entry<Document.Type>;
+  }
+
+  type EntryNode<DocumentName extends Document.Type> = StringTree.Node<Entry<DocumentName>>;
+
+  namespace EntryNode {
+    type Any = WordTree.EntryNode<Document.Type>;
   }
 }
 
 export default WordTree;
 
-declare abstract class AnyWordTree extends WordTree<string> {
+declare abstract class AnyWordTree extends WordTree<Document.Type, string> {
   constructor(...args: never);
 }

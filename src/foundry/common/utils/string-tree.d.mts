@@ -26,7 +26,7 @@ declare class StringTree<Leaf extends object = AnyObject, Key = string[]> {
    * @param options         - Additional options to configure behaviour.
    * @returns    The reachable entries
    */
-  lookup(strings: Key, options?: StringTree.LookupOptions): Leaf[];
+  lookup(strings: Key, options?: StringTree.LookupOptions<Leaf>): Leaf[];
 
   /**
    * Returns the node at the given path through the tree.
@@ -34,10 +34,7 @@ declare class StringTree<Leaf extends object = AnyObject, Key = string[]> {
    * @param options - Additional options to configure behaviour.
    * @returns The node at the path, if found
    */
-  nodeAtPrefix<Options extends StringTree.NodeAtPrefixOptions>(
-    strings: Key,
-    options?: Options,
-  ): StringTree.Node<Leaf> | void;
+  nodeAtPrefix(strings: Key, options?: StringTree.NodeAtPrefixOptions): StringTree.Node<Leaf> | undefined;
 
   /**
    * Perform a breadth-first search starting from the given node and retrieving any entries reachable from that node,
@@ -51,7 +48,7 @@ declare class StringTree<Leaf extends object = AnyObject, Key = string[]> {
     node: StringTree.Node<Leaf>,
     entries: Leaf[],
     queue: StringTree.Node<Leaf>[],
-    options?: StringTree.BreadthFirstSearchOptions,
+    options?: StringTree.BreadthFirstSearchOptions<Leaf>,
   ): void;
 
   #StringTree: true;
@@ -71,21 +68,22 @@ declare namespace StringTree {
   }
 
   /**
-   * @param entry   - The entry to filter.
+   * @template Leaf - The leaf type of this StringTree
+   * @param entry - The entry to filter.
    * @returns Whether the entry should be included in the result set.
    */
-  type EntryFilter = (entry: unknown) => boolean;
+  type EntryFilter<Leaf extends object> = (entry: Leaf) => boolean;
 
   /** @internal */
-  type _SearchOptions = InexactPartial<{
+  type _SearchOptions<Leaf extends object> = InexactPartial<{
     /** The maximum number of items to retrieve. */
     limit: number;
 
     /** A filter function to apply to each candidate entry. */
-    filterEntries: StringTree.EntryFilter;
+    filterEntries: StringTree.EntryFilter<Leaf>;
   }>;
 
-  interface LookupOptions extends _SearchOptions {}
+  interface LookupOptions<Leaf extends object> extends _SearchOptions<Leaf> {}
 
   interface NodeAtPrefixOptions {
     /**
@@ -96,7 +94,7 @@ declare namespace StringTree {
     hasLeaves?: boolean | undefined;
   }
 
-  interface BreadthFirstSearchOptions extends _SearchOptions {}
+  interface BreadthFirstSearchOptions<Leaf extends object> extends _SearchOptions<Leaf> {}
 }
 
 export default StringTree;

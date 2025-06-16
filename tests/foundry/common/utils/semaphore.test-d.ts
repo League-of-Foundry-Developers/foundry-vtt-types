@@ -1,6 +1,9 @@
 import { expectTypeOf } from "vitest";
+import Semaphore = foundry.utils.Semaphore;
 
-declare const lock: Semaphore;
+new Semaphore();
+
+const lock = new Semaphore(4);
 
 expectTypeOf(lock.add(async (s: string) => !s, "test")).toEqualTypeOf<Promise<boolean>>();
 expectTypeOf(lock.add(async () => false)).toEqualTypeOf<Promise<boolean>>();

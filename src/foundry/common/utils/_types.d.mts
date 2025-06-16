@@ -21,8 +21,8 @@ type IterableWeakMapValue<K extends WeakKey, V> = foundry.utils.IterableWeakMap.
 
 type StringTreeNode<Leaf extends object> = foundry.utils.StringTree.Node<Leaf>;
 
-type StringTreeEntryFilter = foundry.utils.StringTree.EntryFilter;
+type StringTreeEntryFilter<Leaf extends object> = foundry.utils.StringTree.EntryFilter<Leaf>;
 
-type WordTreeEntry = foundry.utils.WordTree.Entry;
+type WordTreeEntry<DocumentName extends foundry.abstract.Document.Type> = foundry.utils.WordTree.Entry<DocumentName>;
 
 type EmittedEventListener = foundry.utils.EventEmitterMixin.EventListener;
