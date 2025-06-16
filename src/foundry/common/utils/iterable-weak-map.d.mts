@@ -41,22 +41,22 @@ declare class IterableWeakMap<K extends WeakKey, V> extends WeakMap<K, V> {
    * Enumerate the entries.
    * @returns
    */
-  [Symbol.iterator](): Generator<[K, V], void, never>;
+  [Symbol.iterator](): Generator<[K, V], void, undefined>;
 
   /**
    * Enumerate the entries.
    */
-  entries(): Generator<[K, V], void, never>;
+  entries(): Generator<[K, V], void, undefined>;
 
   /**
    * Enumerate the keys.
    */
-  keys(): Generator<K, void, never>;
+  keys(): Generator<K, void, undefined>;
 
   /**
    * Enumerate the values.
    */
-  values(): Generator<V, void, never>;
+  values(): Generator<V, void, undefined>;
 
   #IterableWeakMap: true;
 }

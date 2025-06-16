@@ -182,6 +182,7 @@ export type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated
 
 /**
  * Is a string key of an object used for certain deletion or forced replacement operations.
+ * @remarks Foundry seems to refer to both `-=...` and `==...` as "deletion keys" in this context
  */
 export function isDeletionKey(key: string): key is DeletionKey;
 
@@ -276,17 +277,9 @@ export function flattenObject(obj: object, _d?: number): object;
  */
 export function getParentClasses(cls: AnyConstructor): Array<AnyConstructor>;
 
-export interface GetRouteOptions {
-  /**
-   * A path prefix to apply
-   * (default: `null`)
-   */
-  prefix?: string | null | undefined;
-}
-
 /**
  * Get the URL route for a certain path which includes a path prefix, if one is set
- * @param path   - The Foundry URL path
+ * @param path - The Foundry URL path
  * @returns The absolute URL path
  */
 export function getRoute(path: string, { prefix }?: GetRouteOptions): string;
@@ -299,6 +292,8 @@ type _GetRouteOptions = InexactPartial<{
    */
   prefix: string | null;
 }>;
+
+export interface GetRouteOptions extends _GetRouteOptions {}
 
 /**
  * Learn the underlying data type of some variable. Supported identifiable types include:
@@ -378,7 +373,7 @@ export type InvertableObject = {
 };
 
 export type InvertObject<in out T extends InvertableObject> = {
-  [K in keyof T as T[K]]: K;
+  -readonly [K in keyof T as T[K]]: K;
 };
 
 /**
@@ -399,22 +394,13 @@ export function isEmpty(
   value: undefined | null | unknown[] | object | Set<unknown> | Map<unknown, unknown> | NonNullish,
 ): boolean;
 
-export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
-  DeleteByObjectKeys<T, U, M>,
-  RemoveDeletingObjectKeys<U, M>,
-  M
->;
-
 /**
  * Update a source object by replacing its keys and values with those from a target object.
  *
  * @param original - The initial object which should be updated with values from the target
- * @param other    - A new object whose values should replace those in the source
- *                   (default: `{}`)
- * @param options  - Additional options which configure the merge
- *                   (default: `{}`)
- * @param _d       - A privately used parameter to track recursion depth.
- *                   (default: `0`)
+ * @param other    - A new object whose values should replace those in the source (default: `{}`)
+ * @param options  - Additional options which configure the merge (default: `{}`)
+ * @param _d       - A privately used parameter to track recursion depth. (default: `0`)
  * @returns The original source object including updated, inserted, or overwritten records.
  *
  * @example Control how new keys and values are added
@@ -453,6 +439,12 @@ export function mergeObject<const T extends object, const U extends object, cons
   options?: M,
   _d?: number,
 ): MergeObject<T, U, M>;
+
+export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
+  DeleteByObjectKeys<T, U, M>,
+  RemoveDeletingObjectKeys<U, M>,
+  M
+>;
 
 /** @internal */
 type _MergeObjectOptions = InexactPartial<{
@@ -607,6 +599,16 @@ export interface ResolvedUUID {
  */
 export function parseUuid(uuid: string, options?: ParseUUIDOptions): ResolvedUUID;
 
+/** @internal */
+type _ParseUUIDOptions = InexactPartial<{
+  /**
+   * A document to resolve relative UUIDs against.
+   */
+  relative: Document.Any;
+}>;
+
+export interface ParseUUIDOptions extends _ParseUUIDOptions {}
+
 /**
  * Escape the given unescaped string.
  *
@@ -631,16 +633,6 @@ export function escapeHTML(value: string): string;
  * @returns The escaped string
  */
 export function unescapeHTML(value: string): string;
-
-/** @internal */
-type _ParseUUIDOptions = InexactPartial<{
-  /**
-   * A document to resolve relative UUIDs against.
-   */
-  relative: Document.Any;
-}>;
-
-export interface ParseUUIDOptions extends _ParseUUIDOptions {}
 
 /**
  * Build a Universally Unique Identifier (uuid) from possibly limited data. An attempt will be made to resolve omitted
