@@ -66,9 +66,9 @@ type SettingConfig = ClientSettings.SettingConfig;
 
 type SettingSubmenuConfig = ClientSettings.SettingSubmenuConfig;
 
-type KeyBindingActionConfig = ClientKeybindings.KeybindingActionConfig;
+type KeyBindingActionConfig = ClientKeybindings.StoredKeybindingActionConfig;
 
-type KeybindingActionBinding = ClientKeybindings.KeybindingActionBinding;
+type KeybindingActionBinding = ClientKeybindings.StoredKeybindingActionBinding;
 
 type KeybindingAction = ClientKeybindings.KeybindingAction;
 

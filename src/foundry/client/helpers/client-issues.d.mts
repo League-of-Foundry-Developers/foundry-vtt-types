@@ -11,7 +11,7 @@ declare class ClientIssues {
    * configuration.
    * @internal
    */
-  _detectWebGLIssues(): void;
+  protected _detectWebGLIssues(): void;
 
   /**
    * Add an invalid Document to the module-provided sub-type counts.
@@ -21,7 +21,7 @@ declare class ClientIssues {
    *
    * @remarks official documentation says "invalid", but the document can be valid, it is simply not yet validated.
    */
-  _countDocumentSubType(
+  protected _countDocumentSubType(
     cls: Document.AnyConstructor,
     source: AnyObject,
     options?: ClientIssues.CountDocumentSubTypesOptions,
@@ -34,7 +34,7 @@ declare class ClientIssues {
    * @param error      - The validation error.
    * @internal
    */
-  _trackValidationFailures(
+  protected _trackValidationFailures(
     collection: foundry.documents.abstract.WorldCollection.Any,
     source: AnyObject,
     error: DataModelValidationError,
@@ -44,7 +44,7 @@ declare class ClientIssues {
    * Detect and record certain usability error messages which are likely to result in the user having a bad experience.
    * @internal
    */
-  _detectUsabilityIssues(): void;
+  protected _detectUsabilityIssues(): void;
 
   /**
    * Get the Document sub-type counts for a given module.
