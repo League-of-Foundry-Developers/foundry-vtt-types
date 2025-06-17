@@ -361,7 +361,7 @@ declare namespace ClientKeybindings {
 
   /**
    * An action that can occur when a key is pressed
-   * @remarks Copied from `resources/app/common/types.mjs`
+   * @remarks Copied from `client/_types.mjs`
    */
   interface KeybindingAction {
     /** The namespaced machine identifier of the Action */

@@ -1,10 +1,16 @@
+import type { Brand, Identity, InexactPartial } from "#utils";
 import type ClientKeybindings from "./client-keybindings.mjs";
 
 /**
  * A set of helpers and management functions for dealing with user input from keyboard events.
  * {@link https://keycode.info/}
+ * @see {@link foundry.Game.keyboard | `Game#keyboard`}
  */
 declare class KeyboardManager {
+  /**
+   * @remarks
+   * @throws If `game.keyboard` is already initialized
+   */
   constructor();
 
   /**
@@ -33,82 +39,89 @@ declare class KeyboardManager {
 
   /**
    * Track which KeyboardEvent#code presses associate with each modifier
+   * @defaultValue
+   * ```js
+   * {
+   *   Alt: ["AltLeft", "AltRight"];
+   *   Control: ["ControlLeft", "ControlRight", "MetaLeft", "MetaRight", "Meta", "OsLeft", "OsRight"];
+   *   Shift: ["ShiftLeft", "ShiftRight"];
+   * }
+   * ```
    */
-  static MODIFIER_CODES: {
-    Alt: ["AltLeft", "AltRight"];
-    Control: ["ControlLeft", "ControlRight", "MetaLeft", "MetaRight", "Meta", "OsLeft", "OsRight"];
-    Shift: ["ShiftLeft", "ShiftRight"];
-  };
+  static MODIFIER_CODES: KeyboardManager.ModifierCodes;
 
   /**
    * Key codes which are "protected" and should not be used because they are reserved for browser-level actions.
+   * @defaultValue `["F5", "F11", "F12", "PrintScreen", "ScrollLock", "NumLock", "CapsLock"]`
    */
-  static PROTECTED_KEYS: ["F5", "F11", "F12", "PrintScreen", "ScrollLock", "NumLock", "CapsLock"];
+  static PROTECTED_KEYS: string[];
 
-  /** The OS-specific string display for what their Command key is */
-  static CONTROL_KEY_STRING: "⌘" | "Control";
+  /**
+   * The OS-specific string display for what their Command key is
+   * @defaultValue `navigator.appVersion.includes("Mac") ? "⌘" : "Control"`
+   */
+  static CONTROL_KEY_STRING: string;
 
   /**
    * A special mapping of how special KeyboardEvent#code values should map to displayed strings or symbols.
    * Values in this configuration object override any other display formatting rules which may be applied.
+   * @defaultValue
+   * ```js
+   * {
+   *   ArrowLeft: "⬅",
+   *   ArrowRight: "➡",
+   *   ArrowUp: "⬆",
+   *   ArrowDown: "⬇",
+   *   Backquote: "`",
+   *   Backslash: "\\",
+   *   BracketLeft: "[",
+   *   BracketRight: "]",
+   *   Comma: ",",
+   *   Control: this.CONTROL_KEY_STRING,
+   *   Equal: "=",
+   *   Meta: isMac ? "⌘" : "⊞",
+   *   MetaLeft: isMac ? "⌘" : "⊞",
+   *   MetaRight: isMac ? "⌘" : "⊞",
+   *   OsLeft: isMac ? "⌘" : "⊞",
+   *   OsRight: isMac ? "⌘" : "⊞",
+   *   Minus: "-",
+   *   NumpadAdd: "Numpad+",
+   *   NumpadSubtract: "Numpad-",
+   *   Period: ".",
+   *   Quote: "'",
+   *   Semicolon: ";",
+   *   Slash: "/"
+   * }
+   * ```
    */
-  static KEYCODE_DISPLAY_MAPPING: {
-    ArrowLeft: "←" | "🡸";
-    ArrowRight: "→" | "🡺";
-    ArrowUp: "↑" | "🡹";
-    ArrowDown: "↓" | "🡻";
-    Backquote: "`";
-    Backslash: "\\";
-    BracketLeft: "[";
-    BracketRight: "]";
-    Comma: ",";
-    Control: (typeof KeyboardManager)["CONTROL_KEY_STRING"];
-    Equal: "=";
-    Meta: "⌘" | "⊞";
-    MetaLeft: "⌘" | "⊞";
-    MetaRight: "⌘" | "⊞";
-    OsLeft: "⌘" | "⊞";
-    OsRight: "⌘" | "⊞";
-    Minus: "-";
-    NumpadAdd: "Numpad+";
-    NumpadSubtract: "Numpad-";
-    Period: ".";
-    Quote: "'";
-    Semicolon: ";";
-    Slash: "/";
-  };
+  static KEYCODE_DISPLAY_MAPPING: Record<string, string>;
 
   /**
-   * Test whether an HTMLElement currently has focus.
-   * If so we normally don't want to process keybinding actions.
+   * Determines whether an `HTMLElement` currently has focus, which may influence keybinding actions.
+   *
+   * An element is considered to have focus if:
+   * 1. It has a `dataset.keyboardFocus` attribute explicitly set to `"true"` or an empty string (`""`).
+   * 2. It is an `<input>`, `<select>`, or `<textarea>` element, all of which inherently accept keyboard input.
+   * 3. It has the `isContentEditable` property set to `true`, meaning it is an editable element.
+   * 4. It is a `<button>` element inside a `<form>`, which suggests interactive use.
+   *
+   * An element is considered **not** focused if:
+   * 1. There is no currently active element (`document.activeElement` is not an `HTMLElement`).
+   * 2. It has a `dataset.keyboardFocus` attribute explicitly set to `"false"`.
+   *
+   * If none of these conditions are met, the element is assumed to be unfocused.
    */
   get hasFocus(): boolean;
 
   /**
    * Emulates a key being pressed, triggering the Keyboard event workflow.
-   * @param up       - If True, emulates the `keyup` Event. Else, the `keydown` event
-   * @param code     - The KeyboardEvent#code which is being pressed
-   * @param altKey   - Emulate the ALT modifier as pressed
-   *                   (default: `false`)
-   * @param ctrlKey  - Emulate the CONTROL modifier as pressed
-   *                   (default: `false`)
-   * @param shiftKey - Emulate the SHIFT modifier as pressed
-   *                   (default: `false`)
-   * @param repeat   - Emulate this as a repeat event
-   *                   (default: `false`)
-   * @param force    - Force the event to be handled.
-   *                   (default: `false`)
+   * @param up   - If True, emulates the `keyup` Event. Else, the `keydown` event
+   * @param code - The {@linkcode KeyboardEvent.code | KeyboardEvent#code} which is being pressed
    */
   static emulateKeypress(
     up: boolean,
     key: string,
-    {
-      altKey,
-      ctrlKey,
-      shiftKey,
-      repeat,
-      force,
-    }?: { altKey?: boolean; ctrlKey?: boolean; shiftKey?: boolean; repeat?: boolean; force?: boolean },
+    options?: KeyboardManager.EmulateKeypressOptions,
   ): KeyboardManager.KeyboardEventContext;
 
   /**
@@ -124,18 +137,17 @@ declare class KeyboardManager {
    * A list of possible key codes is documented here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values
    *
    * @param event - The originating keypress event
-   * @param up    - A flag for whether the key is down or up
-   *                (default: `false`)
+   * @param up    - A flag for whether the key is down or up (default: `false`)
    * @returns The standardized context of the event
    */
-  static getKeyboardEventContext(event: KeyboardEvent, up: boolean): KeyboardManager.KeyboardEventContext;
+  static getKeyboardEventContext(event: KeyboardEvent, up?: boolean): KeyboardManager.KeyboardEventContext;
 
   /**
    * Report whether a modifier in KeyboardManager.MODIFIER_KEYS is currently actively depressed.
    * @param modifier - A modifier in MODIFIER_KEYS
    * @returns Is this modifier key currently down (active)?
    */
-  isModifierActive(modifier: string): boolean;
+  isModifierActive(modifier: keyof KeyboardManager.ModifierKeys): boolean;
 
   /**
    * Report whether a core action key is currently actively depressed.
@@ -143,18 +155,6 @@ declare class KeyboardManager {
    * @returns              Is this core action key currently down (active)?
    */
   isCoreActionKeyActive(action: string): boolean;
-
-  /**
-   * Converts a Keyboard Context event into a string representation, such as "C" or "Control+C"
-   * @param context          - The standardized context of the event
-   * @param includeModifiers - If True, includes modifiers in the string representation
-   *                           (default: `true`)
-   * @internal
-   */
-  protected static _getContextDisplayString(
-    context: KeyboardManager.KeyboardEventContext,
-    includeModifiers?: boolean,
-  ): string;
 
   /**
    * Given a standardized pressed key, find all matching registered Keybind Actions.
@@ -165,78 +165,90 @@ declare class KeyboardManager {
   static _getMatchingActions(context: KeyboardManager.KeyboardEventContext): ClientKeybindings.KeybindingAction[];
 
   /**
-   * Test whether a keypress context matches the registration for a keybinding action
-   * @param action  - The keybinding action
-   * @param context - The keyboard event context
-   * @returns Does the context match the action requirements?
-   * @internal
-   */
-  protected static _testContext(
-    action: ClientKeybindings.KeybindingAction,
-    context: KeyboardManager.KeyboardEventContext,
-  ): boolean;
-
-  /**
-   * Given a registered Keybinding Action, executes the action with a given event and context
-   *
-   * @param keybind - The registered Keybinding action to execute
-   * @param context - The gathered context of the event
-   * @returns Returns true if the keybind was consumed
-   * @internal
-   */
-  protected static _executeKeybind(
-    keybind: ClientKeybindings.KeybindingAction,
-    context: KeyboardManager.KeyboardEventContext,
-  ): boolean;
-
-  /**
    * Processes a keyboard event context, checking it against registered keybinding actions
    * @param context - The keyboard event context
    * @internal
    */
-  protected _processKeyboardContext(context: KeyboardManager.KeyboardEventContext): void;
-
-  /**
-   * Reset tracking for which keys are in the down and released states
-   * @internal
-   */
-  protected _reset(): void;
+  protected _processKeyboardContext(
+    context: KeyboardManager.KeyboardEventContext,
+    options?: KeyboardManager.ProcessKeyboardContextOptions,
+  ): void;
 
   /**
    * Emulate a key-up event for any currently down keys. When emulating, we go backwards such that combinations such as
    * "CONTROL + S" emulate the "S" first in order to capture modifiers.
    * @param force - Force the keyup events to be handled.
    */
-  releaseKeys({ force }?: { force: boolean }): void;
-
-  /**
-   * Handle a key press into the down position
-   * @param event - The originating keyboard event
-   * @param up    - A flag for whether the key is down or up
-   * @internal
-   */
-  protected _handleKeyboardEvent(event: KeyboardEvent, up: boolean): void;
-
-  /**
-   * Input events do not fire with isComposing = false at the end of a composition event in Chrome
-   * See: https://github.com/w3c/uievents/issues/202
-   */
-  protected _onCompositionEnd(event: CompositionEvent): void;
+  releaseKeys(options?: KeyboardManager.ReleaseKeysOptions): void;
 
   /**
    * Release any down keys when focusing a form element.
    * @param event - The focus event.
    */
   protected _onFocusIn(event: FocusEvent): void;
+
+  #KeyboardManager: true;
 }
 
 declare namespace KeyboardManager {
+  interface Any extends AnyKeyboardManager {}
+  interface AnyConstructor extends Identity<typeof AnyKeyboardManager> {}
+
+  type MODIFIER_KEYS = Brand<string, "KeyboardManager.MODIFIER_KEYS">;
+
+  interface ModifierKeys {
+    CONTROL: "Control" & MODIFIER_KEYS;
+    SHIFT: "Shift" & MODIFIER_KEYS;
+    ALT: "Alt" & MODIFIER_KEYS;
+  }
+
+  interface ModifierCodes {
+    Alt: string[];
+    Control: string[];
+    Shift: string[];
+  }
+
+  /** @internal */
+  type _EmulateKeypressOptions = InexactPartial<{
+    /**
+     * Emulate the ALT modifier as pressed
+     * @defaultValue `false`
+     */
+    altKey: boolean;
+
+    /**
+     * Emulate the CONTROL modifier as pressed
+     * @defaultValue `false`
+     */
+    ctrlKey: boolean;
+
+    /**
+     * Emulate the SHIFT modifier as pressed
+     * @defaultValue `false`
+     */
+    shiftKey: boolean;
+
+    /**
+     * Emulate this as a repeat event
+     * @defaultValue `false`
+     */
+    repeat: boolean;
+
+    /**
+     * Force the event to be handled.
+     * @defaultValue `false`
+     */
+    force: boolean;
+  }>;
+
+  interface EmulateKeypressOptions extends _EmulateKeypressOptions {}
+
   /**
    * Keyboard event context
-   * @remarks Copied from `resources/app/common/types.mjs`
+   * @remarks Copied from `client/_types.mjs`
    */
   interface KeyboardEventContext {
-    /** The normalized string key, such as "A" */
+    /** The normalized string key, such as "KeyA" */
     key: string;
 
     /** The originating keypress event */
@@ -254,7 +266,7 @@ declare namespace KeyboardManager {
     /** Are any of the modifiers being pressed */
     hasModifier: boolean;
 
-    /** A list of string modifiers applied to this context, such as [ "CONTROL" ] */
+    /** A list of string modifiers applied to this context, such as ["CONTROL"] */
     modifiers: string[];
 
     /** True if the Key is Up, else False if down */
@@ -266,6 +278,22 @@ declare namespace KeyboardManager {
     /** The executing Keybinding Action. May be undefined until the action is known. */
     action?: string | undefined;
   }
+
+  interface ProcessKeyboardContextOptions extends Pick<EmulateKeypressOptions, "force"> {}
+
+  type _ReleaseKeysOptions = InexactPartial<{
+    /**
+     * Force the keyup events to be handled.
+     * @defaultValue `true`
+     */
+    force: boolean;
+  }>;
+
+  interface ReleaseKeysOptions extends _ReleaseKeysOptions {}
 }
 
 export default KeyboardManager;
+
+declare abstract class AnyKeyboardManager extends KeyboardManager {
+  constructor(...args: never);
+}
