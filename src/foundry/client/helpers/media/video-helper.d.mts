@@ -1,12 +1,17 @@
 import "youtube";
 import type { SpriteMesh } from "#client/canvas/containers/_module.d.mts";
+import type { Identity, InexactPartial } from "#utils";
+import type { ImageHelper } from "./_module.d.mts";
 
 /**
  * A helper class to provide common functionality for working with HTML5 video objects
  * A singleton instance of this class is available as `game.video`
  */
 declare class VideoHelper {
-  /** @throws `"You may not re-initialize the singleton VideoHelper. Use game.video instead."` */
+  /**
+   * @remarks
+   * @throws "You may not re-initialize the singleton {@linkcode VideoHelper}. Use {@linkcode game.video} instead."
+   */
   constructor();
 
   /**
@@ -17,7 +22,6 @@ declare class VideoHelper {
 
   /**
    * A mapping of base64 video thumbnail images
-   * @defaultValue an empty Map
    */
   thumbs: Map<string, string>;
 
@@ -26,16 +30,6 @@ declare class VideoHelper {
    * @defaultValue `true`
    */
   locked: boolean;
-
-  /**
-   * Store a Promise while the YouTube API is initializing.
-   */
-  #youTubeReady: Promise<void>;
-
-  /**
-   * The YouTube URL regex.
-   */
-  #youTubeRegex: RegExp;
 
   /**
    * Return the HTML element which provides the source for a loaded texture.
@@ -71,28 +65,7 @@ declare class VideoHelper {
    * @param video   - The VIDEO element to play
    * @param options - Additional options for modifying video playback (default: `{}`)
    */
-  play(
-    video: HTMLVideoElement,
-    options?: {
-      /**
-       * Should the video be playing? Otherwise, it will be paused
-       * @defaultValue `true`
-       */
-      playing?: boolean;
-
-      /**
-       * Should the video loop?
-       * @defaultValue `true`
-       */
-      loop?: boolean;
-
-      /** A specific timestamp between 0 and the video duration to begin playback */
-      offset?: number;
-
-      /** Desired volume level of the video's audio channel (if any) */
-      volume?: number;
-    },
-  ): void;
+  play(video: HTMLVideoElement, options?: VideoHelper.PlayOptions): void;
 
   /**
    * Stop a single video source
@@ -108,14 +81,6 @@ declare class VideoHelper {
   awaitFirstGesture(): void;
 
   /**
-   * Handle the first observed user gesture
-   * We need a slight delay because unfortunately Chrome is stupid and doesn't always acknowledge the gesture fast enough.
-   * @param event - The mouse-move event which enables playback
-   * @internal
-   */
-  protected _onFirstGesture(event: Event): void;
-
-  /**
    * Create and cache a static thumbnail to use for the video.
    * The thumbnail is cached using the video file path or URL.
    * @param src     - The source video URL
@@ -123,7 +88,7 @@ declare class VideoHelper {
    * @returns The created and cached base64 thumbnail image, or a placeholder image if the canvas is
    *          disabled and no thumbnail can be generated.
    */
-  createThumbnail(src: string, options: foundry.helpers.media.ImageHelper.CompositeOptions): Promise<string>;
+  createThumbnail(src: string, options?: ImageHelper.CreateThumbnailOptions): Promise<string>;
 
   /**
    * Lazily-load the YouTube API and retrieve a Player instance for a given iframe.
@@ -149,14 +114,45 @@ declare class VideoHelper {
   /**
    * Test a URL to see if it points to a YouTube video.
    * @param url - The URL to test. (default: `""`)
+   * @remarks It makes no sense that the only parameter has a default value, but it does
    */
   isYouTubeURL(url?: string): boolean;
 
-  /**
-   * Inject the YouTube API into the page.
-   * @returns A Promise that resolves when the API has initialized.
-   */
-  #injectYouTubeAPI(): Promise<void>;
+  #VideoHelper: true;
+}
+
+declare namespace VideoHelper {
+  interface Any extends AnyVideoHelper {}
+  interface AnyConstructor extends Identity<typeof AnyVideoHelper> {}
+
+  type _PlayOptions = InexactPartial<{
+    /**
+     * Should the video be playing? Otherwise, it will be paused
+     * @defaultValue `true`
+     */
+    playing: boolean;
+
+    /**
+     * Should the video loop?
+     * @defaultValue `true`
+     */
+    loop: boolean;
+
+    /** A specific timestamp between 0 and the video duration to begin playback */
+    offset: number;
+
+    /**
+     * Desired volume level of the video's audio channel (if any)
+     * @remarks Should be between `0` and `1`
+     */
+    volume: number;
+  }>;
+
+  interface PlayOptions extends _PlayOptions {}
 }
 
 export default VideoHelper;
+
+declare abstract class AnyVideoHelper extends VideoHelper {
+  constructor(...args: never);
+}

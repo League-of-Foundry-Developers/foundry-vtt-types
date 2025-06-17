@@ -122,6 +122,8 @@ declare class ClientKeybindings {
    * @param view - The active game view
    */
   protected _registerCoreKeybindings(view: foundry.Game.View): void;
+
+  #ClientKeybindings: true;
 }
 
 declare namespace ClientKeybindings {

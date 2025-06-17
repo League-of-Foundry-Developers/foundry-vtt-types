@@ -1,4 +1,5 @@
-import type { AnyObject, DeepPartial, Identity } from "#utils";
+import type { AnyObject, DeepPartial, Identity, LazyUnknown } from "#utils";
+import type { EmptyObject } from "type-fest";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type { FormSelectOption } from "../forms/fields.d.mts";
@@ -179,10 +180,8 @@ declare class FilePicker<
    * @param source  - The data source to which the file should be uploaded
    * @param path    - The destination path
    * @param file    - The File object to upload
-   * @param body    - Additional file upload options sent in the POST body
-   *                  (default: `{}`)
-   * @param options - Additional options to configure how the method behaves
-   *                  (default: `{}`)
+   * @param body    - Additional file upload options sent in the POST body (default: `{}`)
+   * @param options - Additional options to configure how the method behaves (default: `{}`)
    * @returns The response object
    */
   // not: null
@@ -192,7 +191,7 @@ declare class FilePicker<
     file: File,
     body?: FilePicker.UploadBody,
     options?: FilePicker.UploadOptions,
-  ): Promise<Response>;
+  ): Promise<FilePicker.UploadReturn>;
 
   /**
    * A convenience function that uploads a file to a given package's persistent /storage/ directory
@@ -212,7 +211,7 @@ declare class FilePicker<
     file: File,
     body?: FilePicker.UploadBody,
     options?: FilePicker.UploadOptions,
-  ): Promise<Response>;
+  ): Promise<FilePicker.UploadReturn>;
 
   /**
    * Browse to a specific location for this FilePicker instance
@@ -268,6 +267,13 @@ declare class FilePicker<
 declare namespace FilePicker {
   interface Any extends AnyFilePicker {}
   interface AnyConstructor extends Identity<typeof AnyFilePicker> {}
+
+  /**
+   * @remarks {@linkcode FilePicker.upload} (and {@linkcode FilePicker.uploadPersistent}, which returns a call to the former)
+   * claims to return 'the response object', but actually returns the {@linkcode Response#json}, if any of the various early
+   * returns aren't hit
+   */
+  type UploadReturn = false | void | EmptyObject | LazyUnknown;
 
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {
     bucket: string | null;

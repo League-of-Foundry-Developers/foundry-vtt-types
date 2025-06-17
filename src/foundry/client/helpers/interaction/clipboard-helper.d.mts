@@ -6,7 +6,7 @@
 declare class ClipboardHelper {
   /**
    * @remarks
-   * @throws `"You may not re-initialize the singleton ClipboardHelper. Use game.clipboard instead."`
+   * @throws "You may not re-initialize the singleton {@linkcode ClipboardHelper}. Use {@linkcode game.clipboard} instead."
    */
   constructor();
 

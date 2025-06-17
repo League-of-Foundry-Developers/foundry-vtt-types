@@ -1,4 +1,4 @@
-import type { InexactPartial, NullishProps } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type FilePicker from "#client/applications/apps/file-picker.mjs";
 
 /**
@@ -8,14 +8,13 @@ declare class ImageHelper {
   /**
    * Create thumbnail preview for a provided image path.
    * @param src     - The string URL or DisplayObject of the texture to render to a thumbnail
-   * @param options - Additional named options passed to the {@linkcode ImageHelper.compositeCanvasTexture} method
-   *                  (default: `{}`)
+   * @param options - Additional named options passed to the {@linkcode ImageHelper.compositeCanvasTexture} method (default: `{}`)
    * @returns The parsed and converted thumbnail data
    */
   static createThumbnail(
     src: string | PIXI.DisplayObject,
     options?: ImageHelper.CreateThumbnailOptions,
-  ): Promise<ImageHelper.ThumbnailReturn> | null;
+  ): Promise<ImageHelper.ThumbnailReturn | null>;
 
   /**
    * Test whether a source file has a supported image extension type
@@ -27,8 +26,7 @@ declare class ImageHelper {
   /**
    * Composite a canvas object by rendering it to a single texture
    * @param object  - The DisplayObject to render to a texture
-   * @param options - Additional named options
-   *                  (default: `{}`)
+   * @param options - Additional named options (default: `{}`)
    * @returns The composite Texture object
    */
   static compositeCanvasTexture(object: PIXI.DisplayObject, options?: ImageHelper.CompositeOptions): PIXI.Texture;
@@ -51,7 +49,7 @@ declare class ImageHelper {
    */
   static pixiToBase64(
     target: PIXI.DisplayObject,
-    type?: foundry.CONST.IMAGE_FILE_EXTENSIONS,
+    type?: CONST.IMAGE_FILE_EXTENSIONS,
     quality?: number,
   ): Promise<string>;
 
@@ -63,7 +61,7 @@ declare class ImageHelper {
    */
   static canvasToBase64(
     canvas: HTMLCanvasElement,
-    type?: foundry.CONST.IMAGE_FILE_EXTENSIONS,
+    type?: CONST.IMAGE_FILE_EXTENSIONS,
     quality?: number,
   ): Promise<string>;
 
@@ -80,7 +78,7 @@ declare class ImageHelper {
     fileName: string,
     filePath: string,
     options?: ImageHelper.UploadBase64Options,
-  ): Promise<ReturnType<typeof FilePicker.upload>>;
+  ): Promise<FilePicker.UploadReturn>;
 
   /**
    * Create a canvas element containing the pixel data.
@@ -92,20 +90,16 @@ declare class ImageHelper {
     pixels: Uint8ClampedArray,
     width: number,
     height: number,
-    options: ImageHelper.PixelsToCanvasOptions,
+    options?: ImageHelper.PixelsToCanvasOptions,
   ): HTMLCanvasElement;
 }
 
 declare namespace ImageHelper {
-  /**
-   * Helper type to simplify NullishProps usage.
-   *
-   * @remarks Letting this be NullishProps instead of InexactPartial because despite `tx` and `ty` only
-   * having defaults via `{=0}`, they either get overwritten or `*=`ed which casts null to `0`, their default anyway.
-   *
-   * @internal
-   */
-  type _CompositeOptions = NullishProps<{
+  interface Any extends AnyImageHelper {}
+  interface AnyConstructor extends Identity<typeof AnyImageHelper> {}
+
+  /** @internal */
+  type _CompositeOptions = InexactPartial<{
     /**
      * Center the texture in the rendered frame?
      * @defaultValue `true`
@@ -143,23 +137,15 @@ declare namespace ImageHelper {
    */
   interface CompositeOptions extends _CompositeOptions {}
 
-  interface CreateThumbnailOptions extends ImageHelper.CompositeOptions, ImageHelper.TextureToImageOptions {}
+  interface CreateThumbnailOptions extends CompositeOptions, TextureToImageOptions {}
 
-  type Format = "image/png" | "image/jpeg" | "image/webp";
-
-  /**
-   * Helper type to simplify NullishProps usage
-   * @remarks Letting this be NullishProps, as, after testing, passing null values to `HTMLCanvasElement#toBlob()`,
-   * where these eventually end up, doesn't break anything and seems to apply the defaults
-   *
-   * @internal
-   */
-  type _TextureToImageOptions = NullishProps<{
+  /** @internal */
+  type _TextureToImageOptions = InexactPartial<{
     /**
      * Image format, e.g. "image/jpeg" or "image/webp".
      * @defaultValue `"image/png"`
      */
-    format: Format;
+    format: CONST.IMAGE_FILE_EXTENSIONS;
 
     /**
      * JPEG or WEBP compression from 0 to 1. Default is 0.92.
@@ -170,32 +156,26 @@ declare namespace ImageHelper {
 
   interface TextureToImageOptions extends _TextureToImageOptions {}
 
-  /**
-   * Intermediary type to simplify use of optionality- and nullish-permissiveness-modifying helpers
-   *
-   * @internal
-   */
+  /** @internal */
   type _UploadBase64Options = InexactPartial<{
     /**
      * The data storage location to which the file should be uploaded
-     * @remarks Can't be null because it's passed directly to `FilePicker.upload` and its only default is via signature default value
      * @defaultValue `"data"`
      */
     storage: FilePicker.SourceType;
-  }> &
-    NullishProps<{
-      /**
-       * The MIME type of the file being uploaded
-       * @remarks Will be extracted from the base64 data, if not provided.
-       */
-      type: foundry.CONST.IMAGE_FILE_EXTENSIONS;
 
-      /**
-       * Display a UI notification when the upload is processed.
-       * @defaultValue `true`
-       */
-      notify: boolean;
-    }>;
+    /**
+     * The MIME type of the file being uploaded
+     * @remarks Will be extracted from the base64 data, if not provided.
+     */
+    type: CONST.IMAGE_FILE_EXTENSIONS;
+
+    /**
+     * Display a UI notification when the upload is processed.
+     * @defaultValue `true`
+     */
+    notify: boolean;
+  }>;
 
   interface UploadBase64Options extends _UploadBase64Options {}
 
@@ -229,7 +209,7 @@ declare namespace ImageHelper {
     width: number;
   }
 
-  type _PixelsToCanvasOptions = NullishProps<{
+  type _PixelsToCanvasOptions = InexactPartial<{
     /**
      * The element to use.
      * @remarks If not provided, a new HTMLCanvasElement is created.
@@ -247,3 +227,7 @@ declare namespace ImageHelper {
 }
 
 export default ImageHelper;
+
+declare abstract class AnyImageHelper extends ImageHelper {
+  constructor(...args: never);
+}
