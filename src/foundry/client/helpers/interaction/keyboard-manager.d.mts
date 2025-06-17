@@ -4,7 +4,7 @@ import type ClientKeybindings from "./client-keybindings.mjs";
 /**
  * A set of helpers and management functions for dealing with user input from keyboard events.
  * {@link https://keycode.info/}
- * @see {@link foundry.Game.keyboard | `Game#keyboard`}
+ * @see {@linkcode foundry.Game.keyboard | Game#keyboard}
  */
 declare class KeyboardManager {
   /**
@@ -31,11 +31,7 @@ declare class KeyboardManager {
   /**
    * Allowed modifier keys
    */
-  static MODIFIER_KEYS: {
-    CONTROL: "Control";
-    SHIFT: "Shift";
-    ALT: "Alt";
-  };
+  static MODIFIER_KEYS: KeyboardManager.ModifierKeys;
 
   /**
    * Track which KeyboardEvent#code presses associate with each modifier
@@ -151,8 +147,8 @@ declare class KeyboardManager {
 
   /**
    * Report whether a core action key is currently actively depressed.
-   * @param action       - The core action to verify (ex: "target")
-   * @returns              Is this core action key currently down (active)?
+   * @param action - The core action to verify (ex: "target")
+   * @returns Is this core action key currently down (active)?
    */
   isCoreActionKeyActive(action: string): boolean;
 
@@ -162,7 +158,9 @@ declare class KeyboardManager {
    * @returns The matched Keybind Actions. May be empty.
    * @internal
    */
-  static _getMatchingActions(context: KeyboardManager.KeyboardEventContext): ClientKeybindings.KeybindingAction[];
+  protected static _getMatchingActions(
+    context: KeyboardManager.KeyboardEventContext,
+  ): ClientKeybindings.KeybindingAction[];
 
   /**
    * Processes a keyboard event context, checking it against registered keybinding actions

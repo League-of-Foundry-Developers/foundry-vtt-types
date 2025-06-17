@@ -2,7 +2,7 @@ import type { Identity } from "#utils";
 
 /**
  * Management class for Mouse events
- * @see {@link foundry.Game.mouse | `Game#mouse`}
+ * @see {@linkcode foundry.Game.mouse | Game#mouse}
  */
 declare class MouseManager {
   /**
