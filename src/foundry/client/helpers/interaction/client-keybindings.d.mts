@@ -1,4 +1,4 @@
-import type { Brand, Identity } from "#utils";
+import type { Brand, Identity, InexactPartial, IntentionalPartial } from "#utils";
 import type KeyboardManager from "./keyboard-manager.d.mts";
 
 /**
@@ -15,7 +15,7 @@ declare class ClientKeybindings {
   constructor();
 
   /** Registered Keybinding actions */
-  actions: Map<string, ClientKeybindings.KeybindingActionConfig>;
+  actions: Map<`${string}.${string}`, ClientKeybindings.StoredKeybindingActionConfig>;
 
   /** A mapping of a string key to possible Actions that might execute off it */
   activeKeys: Map<string, ClientKeybindings.KeybindingAction[]>;
@@ -24,7 +24,7 @@ declare class ClientKeybindings {
    * A stored cache of Keybind Actions Ids to Bindings
    * @remarks This is only undefined before the "ready" hook.
    */
-  bindings: Map<string, ClientKeybindings.KeybindingActionBinding[]> | undefined;
+  bindings: Map<string, ClientKeybindings.StoredKeybindingActionBinding[]> | undefined;
 
   static MOVEMENT_DIRECTIONS: ClientKeybindings.MovementDirections;
 
@@ -84,7 +84,7 @@ declare class ClientKeybindings {
    * game.keybindings.get("myModule", "showNotification");
    * ```
    */
-  get(namespace: string, action: string): ClientKeybindings.KeybindingActionBinding[];
+  get(namespace: string, action: string): ClientKeybindings.StoredKeybindingActionBinding[];
 
   /**
    * Set the editable Bindings of a Keybinding Action for a certain namespace and Action
@@ -115,7 +115,10 @@ declare class ClientKeybindings {
    * @param b - the second Keybinding Action
    * @internal
    */
-  static _compareActions(a: ClientKeybindings.ActionComparison, b: ClientKeybindings.ActionComparison): number;
+  protected static _compareActions(
+    a: ClientKeybindings.ActionComparison,
+    b: ClientKeybindings.ActionComparison,
+  ): number;
 
   /**
    * Register core keybindings.
@@ -131,65 +134,120 @@ declare namespace ClientKeybindings {
   interface AnyConstructor extends Identity<typeof AnyClientKeybindings> {}
 
   /**
-   * A Client Keybinding Action Configuration
-   * @remarks Copied from `resources/app/common/types.mjs`
+   * @remarks The shape of stored ({@linkcode ClientKeybindings.actions | #actions}) action configs.
+   * Any optional properties here are not provided defaults by {@link ClientKeybindings.register | #register}
    */
-  interface KeybindingActionConfig {
+  interface StoredKeybindingActionConfig {
     /** The namespace within which the action was registered */
-    namespace?: string;
+    namespace: string;
 
     /** The human readable name */
     name: string;
 
     /** An additional human readable hint */
-    hint?: string | undefined;
+    hint?: string;
 
-    /** The default bindings that can never be changed nor removed. */
-    uneditable?: KeybindingActionBinding[] | undefined;
+    /**
+     * The default bindings that can never be changed nor removed.
+     * @defaultValue `[]`
+     */
+    uneditable: KeybindingActionBinding[];
 
-    /** The default bindings that can be changed by the user. */
-    editable?: KeybindingActionBinding[] | undefined;
+    /**
+     * The default bindings that can be changed by the user.
+     * @defaultValue `[]`
+     */
+    editable: KeybindingActionBinding[];
 
     /** A function to execute when a key down event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-    onDown?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
+    onDown?: (ctx: KeyboardManager.KeyboardEventContext) => boolean | void;
 
     /** A function to execute when a key up event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-    onUp?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
+    onUp?: (ctx: KeyboardManager.KeyboardEventContext) => boolean | void;
 
-    /** If True, allows Repeat events to execute the Action's onDown. Defaults to false. */
-    repeat?: boolean | undefined;
+    /**
+     * If True, allows Repeat events to execute the Action's onDown. Defaults to false.
+     * @defaultValue `false`
+     */
+    repeat: boolean;
 
     /** If true, only a GM can edit and execute this Action */
-    restricted?: boolean | undefined;
+    restricted?: boolean;
 
-    /** Modifiers such as [ "CONTROL" ] that can be also pressed when executing this Action. Prevents using one of these modifiers as a Binding. */
-    reservedModifiers?: string[] | undefined;
+    /**
+     * Modifiers such as [ "CONTROL" ] that can be also pressed when executing this Action. Prevents using one of these modifiers as a Binding.
+     * @defaultValue `[]`
+     */
+    reservedModifiers: string[];
 
-    /** The preferred precedence of running this Keybinding Action */
-    precedence?: number | undefined; // TODO: KEYBINDING_PRECEDENCE?
+    /**
+     * The preferred precedence of running this Keybinding Action
+     * @defaultValue {@linkcode CONST.KEYBINDING_PRECEDENCE.NORMAL}
+     */
+    precedence: CONST.KEYBINDING_PRECEDENCE;
 
     /** The recorded registration order of the action */
-    order?: number | undefined;
+    order: number;
   }
+
+  /**
+   * Omitted fields are overwritten by {@link ClientKeybindings.register | #register} regardless of passed values
+   * @internal
+   */
+  type _PassableKeybindingActionConfig = Omit<StoredKeybindingActionConfig, "namespace" | "order">;
+
+  /**
+   * The interface to be passed to {@link ClientKeybindings.register | #register}. `name` is always required,
+   * and the properties enumerated in the `InexactPartial` have defaults provided
+   * @internal
+   */
+  type _KeybindingActionConfig = InexactPartial<
+    IntentionalPartial<_PassableKeybindingActionConfig, Exclude<keyof _PassableKeybindingActionConfig, "name">>,
+    "precedence" | "uneditable" | "editable" | "repeat" | "reservedModifiers"
+  >;
+
+  /**
+   * A Client Keybinding Action Configuration
+   * @remarks Copied from `client/_types.mjs`
+   */
+  interface KeybindingActionConfig extends _KeybindingActionConfig {}
+
+  interface StoredKeybindingActionBinding {
+    /**
+     * A numeric index which tracks this bindings position during form rendering
+     * @remarks Appears to never exist on stored bindings in {@linkcode ClientKeybindings.bindings | ClientKeybindings#bindings},
+     * only existing on values in the `ControlsConfig##pendingEdits` private Map during a binding setting operation in the UI
+     */
+    index?: number;
+
+    /**
+     * The KeyboardEvent#code value from {@link https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values}
+     * @remarks Registration will throw if one of {@linkcode KeyboardManager.PROTECTED_KEYS} is passed
+     */
+    key: string;
+
+    /**
+     * An array of modifiers keys from KeyboardManager.MODIFIER_KEYS which are required for this binding to be activated
+     * @defaultValue `[]`
+     * @remarks The `keyof ... ` (UPPERCASE values) part of this union has a "For backwards compatibility" comment attached by foundry; no deprecation warning or `until` provided
+     */
+    modifiers: (KeyboardManager.MODIFIER_KEYS | keyof KeyboardManager.ModifierKeys)[];
+  }
+
+  interface _PassableActionBinding extends Omit<StoredKeybindingActionBinding, "index"> {}
 
   /**
    * A Client Keybinding Action Binding
-   * @remarks Copied from `resources/app/common/types.mjs`
+   * @remarks Copied from `client/_types.mjs`
    */
-  interface KeybindingActionBinding {
-    /** A numeric index which tracks this bindings position during form rendering */
-    index?: number | undefined;
-
-    /** The KeyboardEvent#code value from https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values */
-    key: string;
-
-    /** An array of modifiers keys from KeyboardManager.MODIFIER_KEYS which are required for this binding to be activated */
-    modifiers?: string[] | undefined;
-  }
+  interface KeybindingActionBinding
+    extends InexactPartial<_PassableActionBinding, Exclude<keyof _PassableActionBinding, "key">> {}
 
   /**
    * An action that can occur when a key is pressed
-   * @remarks Copied from `client/_types.mjs`
+   * @remarks
+   *
+   * Copied from `client/_types.mjs`
    */
   interface KeybindingAction {
     /** The namespaced machine identifier of the Action */
@@ -202,22 +260,22 @@ declare namespace ClientKeybindings {
     name: string;
 
     /** Required modifiers */
-    requiredModifiers: string[];
+    requiredModifiers: KeyboardManager.MODIFIER_KEYS[];
 
     /** Optional (reserved) modifiers */
-    optionalModifiers: string[];
+    optionalModifiers: KeyboardManager.MODIFIER_KEYS[];
 
     /** The handler that executes onDown */
-    onDown?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
+    onDown: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
 
     /** The handler that executes onUp */
-    onUp?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
+    onUp: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
 
     /** If True, allows Repeat events to execute this Action's onDown */
     repeat: boolean;
 
     /** If true, only a GM can execute this Action */
-    restricted: boolean;
+    restricted: boolean | undefined;
 
     /** The registration precedence */
     precedence: number;
@@ -226,6 +284,11 @@ declare namespace ClientKeybindings {
     order: number;
   }
 
+  /**
+   * @remarks The only two properties that {@linkcode ClientKeybindings._compareActions} care about.
+   * Its JSDoc provides this type as an anonymous inline `Pick`, but in actual use it's always passed
+   * full {@linkcode KeybindingAction}s, so it's somewhat redundant.
+   */
   interface ActionComparison extends Pick<KeybindingAction, "precedence" | "order"> {}
 
   type MOVEMENT_DIRECTIONS = Brand<string, "ClientKeybindings.MOVEMENT_DIRECTIONS">;
