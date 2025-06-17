@@ -1,4 +1,4 @@
-import type { AnyFunction } from "#utils";
+import type { AnyFunction, Identity, InexactPartial } from "#utils";
 import type { Hooks as HookConfig } from "#configuration";
 
 /**
@@ -12,7 +12,7 @@ declare global {
     /**
      * A mapping of hook events which have functions registered to them.
      */
-    static get events(): Hooks.HookedFunction[];
+    static get events(): Record<string, Hooks.HookedFunction[]>;
 
     /**
      * Register a callback handler which should be triggered when a hook is triggered.
@@ -167,6 +167,16 @@ declare global {
   }
 
   namespace Hooks {
+    interface Any extends AnyHooks {}
+    interface AnyConstructor extends Identity<typeof AnyHooks> {}
+
+    type _OnOptions = InexactPartial<{
+      /** Only trigger the hooked function once */
+      once: boolean;
+    }>;
+
+    interface OnOptions extends _OnOptions {}
+
     type HookName = keyof HookConfig.HookConfig;
     type Function<K extends HookName> = HookConfig.HookConfig[K];
     type HookParameters<K extends HookName> = Parameters<Function<K>>;
@@ -207,3 +217,7 @@ declare global {
 }
 
 export default Hooks;
+
+declare abstract class AnyHooks extends Hooks {
+  constructor(...args: never);
+}

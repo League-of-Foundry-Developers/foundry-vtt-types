@@ -1,10 +1,10 @@
 import type CalendarData from "#client/data/calendar.mjs";
-import type { AnyObject } from "#utils";
+import type { AnyObject, Identity } from "#utils";
 
 /**
  * A singleton class at which keeps the official Server and World time stamps.
  * Uses a basic implementation of https://www.geeksforgeeks.org/cristians-algorithm/ for synchronization.
- * @see {@link foundry.Game#time}
+ * @see {@linkcode foundry.Game.time | Game#time}
  */
 declare class GameTime {
   constructor();
@@ -45,7 +45,10 @@ declare class GameTime {
    * @param options - Additional options passed to `game.settings.set`
    * @returns The new game time
    */
-  advance(delta: CalendarData.TimeComponents | number, options?: AnyObject): Promise<number>;
+  advance(
+    delta: CalendarData.TimeComponents | number,
+    options?: foundry.helpers.ClientSettings.SetOptions,
+  ): Promise<number>;
 
   /**
    * Directly set the world time to a certain value expressed either in seconds or as components.
@@ -53,10 +56,10 @@ declare class GameTime {
    * @param options - Additional options passed to `game.settings.set`
    * @returns The new game time
    */
-  set(time: CalendarData.TimeComponents | number, options?: AnyObject): Promise<number>;
+  set(time: CalendarData.TimeComponents | number, options?: foundry.helpers.ClientSettings.SetOptions): Promise<number>;
 
   /** Synchronize the local client game time with the official time kept by the server */
-  sync(): Promise<GameTime>;
+  sync(): Promise<this>;
 
   /**
    * Handle follow-up actions when the official World time is changed
@@ -69,6 +72,13 @@ declare class GameTime {
   #GameTime: true;
 }
 
-declare namespace GameTime {}
+declare namespace GameTime {
+  interface Any extends AnyGameTime {}
+  interface AnyConstructor extends Identity<typeof AnyGameTime> {}
+}
 
 export default GameTime;
+
+declare abstract class AnyGameTime extends GameTime {
+  constructor(...args: never);
+}

@@ -1007,11 +1007,6 @@ declare global {
    * ```
    */
   namespace Hooks {
-    interface OnOptions {
-      /** Only trigger the hooked function once */
-      once?: boolean;
-    }
-
     interface HotReloadData {
       /** The type of package which was modified */
       packageType: string;
@@ -1026,7 +1021,7 @@ declare global {
       path: string;
 
       /** The file extension which was modified, e.g. "js", "css", "html" */
-      extension: "js" | "css" | "html" | (string & {});
+      extension: "js" | "css" | "html" | "hbs" | (string & {});
     }
 
     /**
