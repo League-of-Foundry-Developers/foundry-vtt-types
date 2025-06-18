@@ -86,7 +86,7 @@ declare class DocumentIndex {
    * @param documentName - The name of the documents to index.
    * @internal
    */
-  protected _indexWorldCollection(documentName: string): void;
+  protected _indexWorldCollection(documentName: DocumentIndex.IndexedDocumentNames): void;
 
   #DocumentIndex: true;
 }
@@ -143,7 +143,7 @@ declare namespace DocumentIndex {
      * @defaultValue `[]`
      * @remarks If left empty, uses {@linkcode DocumentIndex.trees | Object.keys(this.trees)}
      */
-    documentTypes: string[];
+    documentTypes: IndexedDocumentNames[];
 
     /**
      * A filter function to apply to each candidate entry.
