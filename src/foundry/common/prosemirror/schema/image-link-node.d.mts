@@ -1,8 +1,8 @@
-import { MarkSpec, Node, NodeSpec } from "prosemirror-model";
+import type { AttributeSpec, Node, NodeSpec } from "prosemirror-model";
 import type SchemaDefinition from "./schema-definition.d.mts";
-import { EditorView } from "prosemirror-view";
-
-export default ImageLinkNode;
+import type { EditorView } from "prosemirror-view";
+import type LinkMark from "./link-mark.d.mts";
+import type ImageNode from "./image-node.d.mts";
 
 /**
  * A class responsible for encapsulating logic around image-link nodes in the ProseMirror schema.
@@ -10,13 +10,13 @@ export default ImageLinkNode;
 declare class ImageLinkNode extends SchemaDefinition {
   static override tag: "a";
 
-  static override get attrs(): Record<string, unknown>;
+  static override get attrs(): Record<string, AttributeSpec>;
 
-  static override getAttrs(el: HTMLLinkElement): boolean | Record<string, unknown>;
+  static override getAttrs(el: HTMLLinkElement): SchemaDefinition.GetAttrsReturn;
 
-  static override toDOM(node: Node): [string, unknown];
+  static override toDOM(node: Node): [...ReturnType<typeof LinkMark.toDOM>, ReturnType<typeof ImageNode.toDOM>];
 
-  static override make(): NodeSpec | MarkSpec;
+  static override make(): NodeSpec;
 
   /**
    * Handle clicking on image links while editing.
@@ -25,5 +25,7 @@ declare class ImageLinkNode extends SchemaDefinition {
    * @param event - The click event.
    * @param node  - The Node instance.
    */
-  static onClick(view: EditorView, pos: number, event: JQuery.ClickEvent, node: Node): boolean;
+  static onClick(view: EditorView, pos: number, event: PointerEvent, node: Node): boolean;
 }
+
+export default ImageLinkNode;

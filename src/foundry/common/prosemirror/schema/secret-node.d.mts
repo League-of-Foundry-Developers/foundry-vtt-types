@@ -1,8 +1,6 @@
-import { MarkSpec, Node, NodeSpec } from "prosemirror-model";
+import type { Node, NodeSpec, AttributeSpec, Attrs } from "prosemirror-model";
+import type { EditorState, Transaction } from "prosemirror-state";
 import type SchemaDefinition from "./schema-definition.d.mts";
-import { EditorState, Transaction } from "prosemirror-state";
-
-export default SecretNode;
 
 /**
  * A class responsible for encapsulating logic around secret nodes in the ProseMirror schema.
@@ -10,13 +8,13 @@ export default SecretNode;
 declare class SecretNode extends SchemaDefinition {
   static override tag: "section";
 
-  static override get attrs(): Record<string, unknown>;
+  static override get attrs(): Record<string, AttributeSpec>;
 
-  static override getAttrs(el: HTMLElement): boolean | Record<string, unknown>;
+  static override getAttrs(el: HTMLElement): SchemaDefinition.GetAttrsReturn;
 
-  static override toDOM(node: Node): [string, Record<string, unknown>, number];
+  static override toDOM(node: Node): [string, Attrs, number];
 
-  static override make(): NodeSpec | MarkSpec;
+  static override make(): NodeSpec;
 
   /**
    * Handle slitting a secret block in two, making sure the new block gets a unique ID.
@@ -25,3 +23,5 @@ declare class SecretNode extends SchemaDefinition {
    */
   static split(state: EditorState, dispatch: (tr: Transaction) => void): boolean;
 }
+
+export default SecretNode;

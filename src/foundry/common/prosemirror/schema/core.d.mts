@@ -1,51 +1,23 @@
-import { Node } from "prosemirror-model";
+import type { RequiredProps } from "#utils";
+import type { NodeSpec } from "prosemirror-model";
 
-export declare const paragraph: {
-  attrs: Record<string, unknown>;
-  managed: Record<string, unknown>;
-  content: string;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: (node: Node) => [string, Record<string, string>, number] | [string, number];
-};
+export declare const paragraph: RequiredProps<
+  NodeSpec,
+  "attrs" | "managed" | "content" | "group" | "parseDOM" | "toDOM"
+>;
 
-export declare const blockquote: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const blockquote: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const hr: {
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-};
+export declare const hr: RequiredProps<NodeSpec, "group" | "parseDOM" | "toDOM">;
 
-export declare const heading: {
-  attrs: Record<string, unknown>;
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: (node: Node) => [string, number];
-};
+export declare const heading: RequiredProps<
+  NodeSpec,
+  "attrs" | "content" | "group" | "defining" | "parseDOM" | "toDOM"
+>;
 
-export declare const pre: {
-  content: string;
-  marks: string;
-  group: string;
-  code: boolean;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, [string, number]];
-};
+export declare const pre: RequiredProps<
+  NodeSpec,
+  "content" | "marks" | "group" | "code" | "defining" | "parseDOM" | "toDOM"
+>;
 
-export declare const br: {
-  inline: boolean;
-  group: string;
-  selectable: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-};
+export declare const br: RequiredProps<NodeSpec, "inline" | "group" | "selectable" | "parseDOM" | "toDOM">;
