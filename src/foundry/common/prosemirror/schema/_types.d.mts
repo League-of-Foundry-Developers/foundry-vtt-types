@@ -1,3 +1,4 @@
+import type AttributeCapture from "./attribute-capture.d.mts";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // After seeing that none of these types add anything or are even exported a
 // very reasonable question may be: Why on earth does this file exist?
@@ -8,24 +9,8 @@
 
 export {};
 
-// These types are only used for internal/private method things; the namespace it would make
-// the most sense to put them in otherwise is not accessible under `foundry`
+// These types are only used in code that users cannot access under `foundry`
 
-interface AllowedAttributeConfiguration {
-  /** The set of exactly-matching attribute names. */
-  attrs: Set<string>;
+type AllowedAttributeConfiguration = AttributeCapture.AllowedAttributeConfiguration;
 
-  /** A list of wildcard allowed prefixes for attributes. */
-  wildcards: string[];
-}
-
-interface ManagedAttributesSpec {
-  /** A list of managed attributes. */
-  attributes: string[];
-
-  /** A list of CSS property names that are managed as inline styles. */
-  styles: string[];
-
-  /** A list of managed class names. */
-  classes: string[];
-}
+type ManagedAttributesSpec = AttributeCapture.ManagedAttributesSpec;
