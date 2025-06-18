@@ -324,10 +324,17 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the World time has been updated.
    * @param worldTime - The new canonical World time
    * @param delta     - The time delta
+   * @param options   - Options passed from the requesting client where the change was made
+   * @param userId    - The ID of the User who advanced the time
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@link GameTime.onUpdateWorldTime | `GameTime#onUpdateWorldTime`}
    */
-  updateWorldTime: (worldTime: number, delta: number) => void;
+  updateWorldTime: (
+    worldTime: number,
+    delta: number,
+    options: Setting.Database.UpdateOperation,
+    userId: string,
+  ) => void;
 
   /** CanvasLifecycle */
 
