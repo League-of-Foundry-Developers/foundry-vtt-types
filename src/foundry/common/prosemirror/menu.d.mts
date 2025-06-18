@@ -4,54 +4,6 @@ import type { EditorView } from "prosemirror-view";
 import type { ProseMirrorCommand } from "./keymaps.d.mts";
 import type ProseMirrorPlugin from "./plugin.d.mts";
 
-export declare namespace ProseMirrorMenu {
-  export interface ProseMirrorMenuOptions {
-    /** A function to call when the save button is pressed. */
-    onSave?: () => void;
-
-    /** Whether this editor instance is intended to be destroyed when saved. */
-    destroyOnSave?: boolean;
-
-    /** Whether to display a more compact version of the menu. */
-    compact?: boolean;
-  }
-
-  export interface Item {
-    /** A string identifier for this menu item. */
-    action: string;
-
-    /** The description of the menu item. */
-    title: string;
-
-    /** An optional class to apply to the menu item. */
-    class?: string;
-
-    /** An optional style to apply to the title text. */
-    style?: string;
-
-    /** The menu item's icon HTML. */
-    icon?: string;
-
-    /** The mark to apply to the selected text. */
-    mark?: MarkType;
-
-    /** The node to wrap the selected text in. */
-    node?: NodeType;
-
-    /** An object of attributes for the node or mark. */
-    attrs?: Attrs; // object
-
-    /** A numeric priority which determines whether this item is displayed as the dropdown title. Lower priority takes precedence. */
-    priority?: number;
-
-    /** The command to run when the menu item is clicked. */
-    cmd?: ProseMirrorCommand;
-
-    /** Whether the current item is active under the given selection or cursor. (default: `false`) */
-    active?: boolean;
-  }
-}
-
 // It's here, as defined, but it should probably be put in dropdown.d.ts
 export declare namespace ProseMirrorDropDown {
   export interface Entry extends ProseMirrorMenu.Item {
@@ -76,8 +28,6 @@ export declare namespace ProseMirrorDropDown {
  * @param attrs - Attributes for the node.
  */
 export type MenuToggleBlockWrapCommand = (node: NodeType, attrs?: Attrs) => ProseMirrorCommand;
-
-export default ProseMirrorMenu;
 
 /**
  * A class responsible for building a menu for a ProseMirror instance.
@@ -268,3 +218,53 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
    */
   protected _toggleTextBlock(node: NodeType, options?: { /** Attributes for the node. */ attrs?: object }): void;
 }
+
+export declare namespace ProseMirrorMenu {
+  export interface ProseMirrorMenuOptions {
+    /** A function to call when the save button is pressed. */
+    onSave?: () => void;
+
+    /** Whether this editor instance is intended to be destroyed when saved. */
+    destroyOnSave?: boolean;
+
+    /** Whether to display a more compact version of the menu. */
+    compact?: boolean;
+  }
+
+  export interface Item {
+    /** A string identifier for this menu item. */
+    action: string;
+
+    /** The description of the menu item. */
+    title: string;
+
+    /** An optional class to apply to the menu item. */
+    class?: string;
+
+    /** An optional style to apply to the title text. */
+    style?: string;
+
+    /** The menu item's icon HTML. */
+    icon?: string;
+
+    /** The mark to apply to the selected text. */
+    mark?: MarkType;
+
+    /** The node to wrap the selected text in. */
+    node?: NodeType;
+
+    /** An object of attributes for the node or mark. */
+    attrs?: Attrs; // object
+
+    /** A numeric priority which determines whether this item is displayed as the dropdown title. Lower priority takes precedence. */
+    priority?: number;
+
+    /** The command to run when the menu item is clicked. */
+    cmd?: ProseMirrorCommand;
+
+    /** Whether the current item is active under the given selection or cursor. (default: `false`) */
+    active?: boolean;
+  }
+}
+
+export default ProseMirrorMenu;
