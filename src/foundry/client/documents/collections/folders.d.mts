@@ -13,8 +13,9 @@ declare class Folders extends foundry.documents.abstract.WorldCollection<"Folder
 
   /**
    * Track which Folders are currently expanded in the UI
+   * @internal
    */
-  _expanded: Partial<Record<string, boolean>>;
+  protected _expanded: Partial<Record<string, boolean>>;
 
   _onModifyContents<A extends DatabaseAction>(
     action: A,
@@ -23,11 +24,6 @@ declare class Folders extends foundry.documents.abstract.WorldCollection<"Folder
     operation: DatabaseOperationMap[A],
     user: User.Implementation,
   ): void;
-
-  /**
-   * Refresh the display of any active JournalSheet instances where the folder list will change.
-   */
-  protected _refreshJournalEntrySheets(): void;
 
   render(
     force?: boolean,

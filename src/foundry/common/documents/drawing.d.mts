@@ -37,29 +37,40 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    *   isEmbedded: true,
    *   permissions: {
    *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseDrawing.Metadata;
 
+  /** @defaultValue `["DOCUMENT", "DRAWING"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
   static override defineSchema(): BaseDrawing.Schema;
+
+  /**
+   * Validate whether the drawing has some visible content (as required by validation).
+   */
+  protected static _validateVisibleContent(
+    data: Partial<Pick<BaseDrawing.InitializedData, "shape">> &
+      Pick<
+        BaseDrawing.InitializedData,
+        "text" | "textAlpha" | "fillType" | "fillAlpha" | "strokeWidth" | "strokeAlpha"
+      >,
+  ): boolean;
+
+  /**
+   * @remarks
+   * @throws If `data` fails `BaseDrawing.#validateVisibleContent` validation (must have some visible text, fill, *or* line)
+   */
+  static override validateJoint(data: DrawingDocument.Source): void;
 
   /** @remarks Returns `user.hasPermission("DRAWING_CREATE")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
-  /**
-   * @remarks Returns `true` if `user` is the `author` of the `Drawing` and `options.exact` is falsey.
-   * Otherwise, forwards to {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * @remarks
@@ -75,12 +86,6 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    */
   // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
-
-  /**
-   * @remarks
-   * @throws If `data` fails `BaseDrawing.#validateVisibleContent` validation (must have some visible text, fill, *or* line)
-   */
-  static override validateJoint(data: DrawingDocument.Source): void;
 
   /**
    * @deprecated since v12, until v14
@@ -238,8 +243,6 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     operation: DrawingDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

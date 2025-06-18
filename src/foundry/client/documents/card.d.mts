@@ -62,6 +62,7 @@ declare namespace Card {
     interface Permissions {
       create(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
       update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -228,13 +229,13 @@ declare namespace Card {
     _id: fields.DocumentIdField;
 
     /** The text name of this card */
-    name: fields.StringField<{ required: true; blank: false; label: "CARD.Name" }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * A text description of this card which applies to all faces
      * @defaultValue `""`
      */
-    description: fields.HTMLField<{ label: "CARD.Description" }>;
+    description: fields.HTMLField;
 
     /**
      * A category of card (for example, a suit) to which this card belongs
@@ -252,13 +253,13 @@ declare namespace Card {
      * An optional suit designation which is used by default sorting
      * @defaultValue `undefined`
      */
-    suit: fields.StringField<{ label: "CARD.Suit" }>;
+    suit: fields.StringField<{ required: true }>;
 
     /**
      * An optional numeric value of the card which is used by default sorting
      * @defaultValue `null`
      */
-    value: fields.NumberField<{ label: "CARD.Value" }>;
+    value: fields.NumberField<{ required: true }>;
 
     /**
      * An object of face data which describes the back of this card
@@ -268,19 +269,19 @@ declare namespace Card {
        * A name for this card face
        * @defaultValue `undefined`
        */
-      name: fields.StringField<{ label: "CARD.BackName" }>;
+      name: fields.StringField;
 
       /**
        * Displayed text that belongs to this face
        * @defaultValue `""`
        */
-      text: fields.HTMLField<{ label: "CARD.BackText" }>;
+      text: fields.HTMLField;
 
       /**
        * A displayed image or video file which depicts the face
        * @defaultValue `null`
        */
-      img: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; label: "CARD.BackImage" }>;
+      img: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
     }>;
 
     /**
@@ -293,13 +294,13 @@ declare namespace Card {
      * The index of the currently displayed face, or null if the card is face-down
      * @defaultValue `null`
      */
-    face: fields.NumberField<{ required: true; initial: null; integer: true; min: 0; label: "CARD.Face" }>;
+    face: fields.NumberField<{ required: true; initial: null; integer: true; min: 0 }>;
 
     /**
      * Whether this card is currently drawn from its source deck
      * @defaultValue `false`
      */
-    drawn: fields.BooleanField<{ label: "CARD.Drawn" }>;
+    drawn: fields.BooleanField;
 
     /**
      * The document ID of the origin deck to which this card belongs
@@ -311,19 +312,19 @@ declare namespace Card {
      * The visible width of this card
      * @defaultValue `null`
      */
-    width: fields.NumberField<{ integer: true; positive: true; label: "Width" }>;
+    width: fields.NumberField<{ integer: true; positive: true }>;
 
     /**
      * The visible height of this card
      * @defaultValue `null`
      */
-    height: fields.NumberField<{ integer: true; positive: true; label: "Height" }>;
+    height: fields.NumberField<{ integer: true; positive: true }>;
 
     /**
      * The angle of rotation of this card
      * @defaultValue `0`
      */
-    rotation: fields.AngleField<{ label: "Rotation" }>;
+    rotation: fields.AngleField;
 
     /**
      * The sort order of this card relative to others in the same stack
@@ -335,6 +336,7 @@ declare namespace Card {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype this to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     _stats: fields.DocumentStatsField;
@@ -345,13 +347,13 @@ declare namespace Card {
      * A name for this card face
      * @defaultValue `undefined`
      */
-    name: fields.StringField<{ label: "CARD.FaceName" }>;
+    name: fields.StringField;
 
     /**
      * Displayed text that belongs to this face
      * @defaultValue `""`
      */
-    text: fields.HTMLField<{ label: "CARD.FaceText" }>;
+    text: fields.HTMLField;
 
     /**
      * A displayed image or video file which depicts the face
@@ -360,7 +362,6 @@ declare namespace Card {
     img: fields.FilePathField<{
       categories: ["IMAGE", "VIDEO"];
       initial: () => typeof BaseCard.DEFAULT_ICON;
-      label: "CARD.FaceImage";
     }>;
   }
 
@@ -505,6 +506,8 @@ declare namespace Card {
    * @remarks {@link Card.discard | `Card#discard`} calls {@link Cards.pass | `this.parent.pass`} with `action: "discard"` provided
    */
   interface DiscardOptions extends PassOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -628,12 +631,13 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
   // Descendant Document operations have been left out because Card does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Card", NonNullable<Card.Parent>>): string;
+  static override defaultName(context?: Card.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<Card.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Card", NonNullable<Card.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"Card">,
+    options?: Document.CreateDialogOptions<"Card">,
   ): Promise<Card.Stored | null | undefined>;
 
   // options: not null (parameter default only)

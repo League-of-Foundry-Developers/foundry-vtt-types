@@ -91,7 +91,7 @@ type SceneDimensions = Scene.Dimensions;
 
 type TrackedAttributesDescription = TokenDocument.TrackedAttributesDescription;
 
-type TokenMeasuredMovementWaypoint = unknown;
+type TokenMeasuredMovementWaypoint = TokenDocument.MeasuredMovementWaypoint;
 
 type TokenMovementWaypoint = unknown;
 

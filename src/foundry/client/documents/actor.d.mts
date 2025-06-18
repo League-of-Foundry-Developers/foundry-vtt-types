@@ -352,6 +352,7 @@ declare namespace Actor {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: Retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<"Actor">;
 
     /**
@@ -523,7 +524,7 @@ declare namespace Actor {
     [SubType in Item.SubType]: Array<Item.OfType<SubType>>;
   };
 
-  type GetActiveTokensReturn<Document extends boolean | null | undefined> = Document extends true
+  type GetActiveTokensReturn<Document extends boolean | undefined> = Document extends true
     ? TokenDocument.Implementation[]
     : Token.Implementation[];
 
@@ -613,6 +614,8 @@ declare namespace Actor {
     /** Whether the new value is part of an attribute bar, or just a direct value */
     isBar: boolean;
   }
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -677,26 +680,13 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   statuses: Set<string>;
 
   /**
-   * A cached array of image paths which can be used for this Actor's token.
-   * Null if the list has not yet been populated.
-   * @defaultValue `null`
-   * @private
-   */
-  protected _tokenImages: string[] | null;
-
-  /**
-   * Cache the last drawn wildcard token to avoid repeat draws
-   * @defaultValue `null`
-   */
-  protected _lastWildcard: string | null;
-
-  /**
    * Provide a thumbnail image path used to represent this document.
    */
   get thumbnail(): string;
 
   /**
-   * Provide an object which organizes all embedded Item instances by their type
+   * A convenience getter to an object that organizes all embedded Item instances by subtype. The object is cached and
+   * lazily re-computed as needed.
    */
   get itemTypes(): Actor.ItemTypes;
 
@@ -741,8 +731,8 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    *                   (default: `false`)
    * @returns An array of Token instances in the current Scene which reference this Actor.
    */
-  getActiveTokens<ReturnDocument extends boolean | null | undefined = false>(
-    linked?: boolean | null,
+  getActiveTokens<ReturnDocument extends boolean | undefined = false>(
+    linked?: boolean,
     document?: ReturnDocument,
   ): Actor.GetActiveTokensReturn<ReturnDocument>;
 
@@ -824,14 +814,6 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
     statusId: string,
     options?: Actor.ToggleStatusEffectOptions,
   ): Promise<ActiveEffect.Implementation | boolean | undefined>;
-
-  /**
-   * Request wildcard token images from the server and return them.
-   * @param actorId - The actor whose prototype token contains the wildcard image path.
-   * @private
-   */
-  // options: not null (parameter default only)
-  protected static _requestTokenImages(actorId: string, options?: Actor.RequestTokenImagesOptions): Promise<string[]>;
 
   /**
    * Get this actor's dependent tokens.
@@ -997,12 +979,13 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   protected override _preDeleteDescendantDocuments(...args: Actor.PreDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Actor", Actor.Parent>): string;
+  static override defaultName(context?: Actor.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Document.CreateDialogData<Actor.CreateData>,
-    context?: Document.CreateDialogContext<"Actor", Actor.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Actor">,
+    options?: Document.CreateDialogOptions<"Actor">,
   ): Promise<Actor.Stored | null | undefined>;
 
   // options: not null (parameter default only)
@@ -1017,6 +1000,8 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   ): Promise<Actor.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
+  #Actor: true;
 }
 
 export default Actor;

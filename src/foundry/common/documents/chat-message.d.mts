@@ -39,9 +39,9 @@ declare abstract class BaseChatMessage<
    *   isPrimary: true,
    *   permissions: {
    *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -49,16 +49,7 @@ declare abstract class BaseChatMessage<
 
   static override defineSchema(): BaseChatMessage.Schema;
 
-  /**
-   * @remarks Returns `true` if `user` is the `author` of the `ChatMessage` and `options.exact` is falsey.
-   * Otherwise, forwards to {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * @remarks
@@ -234,8 +225,6 @@ declare abstract class BaseChatMessage<
     operation: ChatMessage.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

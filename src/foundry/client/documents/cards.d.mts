@@ -51,6 +51,7 @@ declare namespace Cards {
         hasTypeData: true;
         label: string;
         labelPlural: string;
+        permissions: Metadata.Permissions;
         coreTypes: ["deck", "hand", "pile"];
         schemaVersion: string;
       }>
@@ -62,6 +63,11 @@ declare namespace Cards {
      */
     interface Embedded {
       Card: "cards";
+    }
+
+    interface Permissions {
+      create: "OWNER";
+      delete: "OWNER";
     }
   }
 
@@ -283,7 +289,7 @@ declare namespace Cards {
     _id: fields.DocumentIdField;
 
     /** The text name of this stack */
-    name: fields.StringField<{ required: true; blank: false; label: "CARDS.Name"; textSearch: true }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * The type of this stack, in BaseCards.metadata.types
@@ -296,7 +302,7 @@ declare namespace Cards {
      * A text description of this stack
      * @defaultValue `""`
      */
-    description: fields.HTMLField<{ label: "CARDS.Description"; textSearch: true }>;
+    description: fields.HTMLField<{ textSearch: true }>;
 
     /**
      * An image or video which is used to represent the stack of cards
@@ -305,7 +311,6 @@ declare namespace Cards {
     img: fields.FilePathField<{
       categories: ["IMAGE", "VIDEO"];
       initial: () => typeof BaseCards.DEFAULT_ICON;
-      label: "CARDS.Image";
     }>;
 
     /**
@@ -324,19 +329,19 @@ declare namespace Cards {
      * The visible width of this stack
      * @defaultValue `null`
      */
-    width: fields.NumberField<{ integer: true; positive: true; label: "Width" }>;
+    width: fields.NumberField<{ integer: true; positive: true }>;
 
     /**
      * The visible height of this stack
      * @defaultValue `null`
      */
-    height: fields.NumberField<{ integer: true; positive: true; label: "Height" }>;
+    height: fields.NumberField<{ integer: true; positive: true }>;
 
     /**
      * The angle of rotation of this stack
      * @defaultValue `0`
      */
-    rotation: fields.AngleField<{ label: "Rotation" }>;
+    rotation: fields.AngleField;
 
     /**
      * Whether or not to publicly display the number of cards in this stack
@@ -366,6 +371,7 @@ declare namespace Cards {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**
@@ -687,6 +693,8 @@ declare namespace Cards {
      */
     toUpdate: Record<string, Card.UpdateData[]>;
   }
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -786,25 +794,6 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
   recall(options?: Cards.RecallOptions): Promise<this>;
 
   /**
-   * Perform a reset operation for a deck, retrieving all original cards from other stacks where they may have been
-   * drawn.
-   * @param options - Options which modify the reset operation. (default: `{}`)
-   * @returns The Cards document after the reset operation has completed.
-   * @private
-   */
-  // options: not null (destructured)
-  protected _resetDeck(options?: Cards.RecallOptions): Promise<this>;
-
-  /**
-   * Return all cards in this stack to their original decks.
-   * @param options - Options which modify the return operation. (default: `{}`)
-   * @returns The Cards document after the return operation has completed.
-   * @private
-   */
-  // options: not null (destructured)
-  protected _resetStack(options?: InexactPartial<Cards.RecallOptions>): Promise<this>;
-
-  /**
    * A sorting function that is used to determine the standard order of Card documents within an un-shuffled stack.
    * @param a - The card being sorted
    * @param b - Another card being sorted against
@@ -826,22 +815,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    */
   protected _drawCards(number: number, how: CONST.CARD_DRAW_MODES): Card.Implementation[];
 
-  /**
-   * Create a ChatMessage which provides a notification of the cards operation which was just performed.
-   * Visibility of the resulting message is linked to the default roll mode selected in the chat log dropdown.
-   * @param source  - The source Cards document from which the action originated
-   * @param action  - The localization key which formats the chat message notification
-   * @param context - Data passed to the i18n.format method for the localization key
-   * @returns A created ChatMessage document
-   * @private
-   */
-  protected _postChatNotification(
-    source: Cards.Implementation,
-    action: string,
-    context: Record<string, unknown>,
-  ): Promise<ChatMessage.Implementation | undefined>;
-
-  // _preCreate, _onUpdate, and _preDelete are all overridden but with no signature changes from BaseCards.
+  // _preCreate and _preDelete are overridden but with no signature changes from BaseCards.
 
   /**
    * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.
@@ -876,14 +850,15 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
 
   // options: not null (parameter default only)
   override deleteDialog(
-    options?: InexactPartial<foundry.appv1.api.Dialog.Options>,
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
   ): Promise<this | false | null | undefined>;
 
   /** @remarks No type changes, just creates a fancier `Dialog` than `super` */
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Document.CreateDialogData<Cards.CreateData>,
-    context?: Document.CreateDialogContext<"Cards", Cards.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Cards">,
+    options?: Document.CreateDialogOptions<"Cards">,
   ): Promise<Cards.Stored | null | undefined>;
 
   /*
@@ -1007,7 +982,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
   protected override _onDeleteDescendantDocuments(...args: Cards.OnDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Cards", Cards.Parent>): string;
+  static override defaultName(context?: Cards.DefaultNameContext): string;
 
   // options: not null (parameter default only)
   static override fromDropData(

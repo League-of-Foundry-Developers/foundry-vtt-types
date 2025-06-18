@@ -39,13 +39,19 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    *     update: this.#canModify,
    *     delete: this.#canModify
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseFogExploration.Metadata;
 
   static override defineSchema(): BaseFogExploration.Schema;
+
+  protected override _preUpdate(
+    changed: FogExploration.UpdateData,
+    options: FogExploration.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
 
   /*
    * After this point these are not really overridden methods.
@@ -161,12 +167,6 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     user: User.Implementation,
   ): Promise<void>;
 
-  protected override _preUpdate(
-    changed: FogExploration.UpdateData,
-    options: FogExploration.Database.PreUpdateOptions,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
-
   protected override _onUpdate(
     changed: FogExploration.UpdateData,
     options: FogExploration.Database.OnUpdateOperation,
@@ -203,8 +203,6 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     operation: FogExploration.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

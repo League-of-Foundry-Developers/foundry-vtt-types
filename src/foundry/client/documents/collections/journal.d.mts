@@ -15,7 +15,7 @@ declare class Journal extends foundry.documents.abstract.WorldCollection<"Journa
    * Display a dialog which prompts the user to show a JournalEntry or JournalEntryPage to other players.
    * @param doc - The JournalEntry or JournalEntryPage to show.
    */
-  static showDialog<T extends JournalEntry.Implementation | JournalEntryPage.Implementation>(doc: T): Promise<T | void>;
+  static showDialog<T extends JournalEntry.Implementation | JournalEntryPage.Implementation>(doc: T): Promise<void>;
 
   /**
    * Show the JournalEntry or JournalEntryPage to connected players.

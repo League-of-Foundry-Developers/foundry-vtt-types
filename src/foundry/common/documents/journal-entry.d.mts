@@ -33,13 +33,17 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    *   collection: "journal",
    *   indexed: true,
    *   compendiumIndexFields: ["_id", "name", "sort", "folder"],
-   *   embedded: {JournalEntryPage: "pages"},
+   *   embedded: {
+   *     JournalEntryCategory: "categories",
+   *     JournalEntryPage: "pages"
+   *   },
    *   label: "DOCUMENT.JournalEntry",
    *   labelPlural: "DOCUMENT.JournalEntries",
    *   permissions: {
-   *     create: "JOURNAL_CREATE"
+   *     create: "JOURNAL_CREATE",
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -47,12 +51,17 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override defineSchema(): BaseJournalEntry.Schema;
 
+  protected override _initialize(options?: Document.InitializeOptions): void;
+
   /**
    * @remarks
    * Migrations:
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.
@@ -243,8 +252,6 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     operation: JournalEntry.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

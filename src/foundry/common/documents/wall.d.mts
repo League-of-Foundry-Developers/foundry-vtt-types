@@ -36,7 +36,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
    *   permissions: {
    *     update: this.#canUpdate
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -200,8 +200,6 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     operation: WallDocument.Database.OnDeleteOperation,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

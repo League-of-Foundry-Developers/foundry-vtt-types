@@ -174,8 +174,6 @@ declare namespace Adventure {
     name: fields.StringField<{
       required: true;
       blank: false;
-      label: "ADVENTURE.Name";
-      hint: "ADVENTURE.NameHint";
       textSearch: true;
     }>;
 
@@ -183,21 +181,19 @@ declare namespace Adventure {
      * The file path for the primary image of the adventure
      * @defaultValue `null`
      */
-    img: fields.FilePathField<{ categories: ["IMAGE"]; label: "ADVENTURE.Image"; hint: "ADVENTURE.ImageHint" }>;
+    img: fields.FilePathField<{ categories: ["IMAGE"] }>;
 
     /**
      * A string caption displayed under the primary image banner
      * @defaultValue `""`
      */
-    caption: fields.HTMLField<{ label: "ADVENTURE.Caption"; hint: "ADVENTURE.CaptionHint" }>;
+    caption: fields.HTMLField;
 
     /**
      * An HTML text description for the adventure
      * @defaultValue `""`
      */
     description: fields.HTMLField<{
-      label: "ADVENTURE.Description";
-      hint: "ADVENTURE.DescriptionHint";
       textSearch: true;
     }>;
 
@@ -273,6 +269,7 @@ declare namespace Adventure {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**
@@ -447,9 +444,21 @@ declare namespace Adventure {
      * @defaultValue `true`
      */
     dialog: boolean;
+
+    /**
+     * An array of awaited pre-import callbacks
+     */
+    preImport?: ((data: Adventure.ImportData, options: Adventure.ImportOptions) => Promise<void>)[];
+
+    /**
+     * An array of awaited post-import callbacks
+     */
+    postImport?: ((result: Adventure.ImportResult, options: Adventure.ImportOptions) => Promise<void>)[];
   }>;
 
   interface ImportOptions extends _ImportOptions, PrepareImportOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -511,12 +520,13 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
   // Descendant Document operations have been left out because Adventure does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Adventure", Adventure.Parent>): string;
+  static override defaultName(context?: Adventure.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<Adventure.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Adventure", Adventure.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Adventure">,
+    options?: Document.CreateDialogOptions<"Adventure">,
   ): Promise<Adventure.Stored | null | undefined>;
 
   // options: not null (parameter default only)

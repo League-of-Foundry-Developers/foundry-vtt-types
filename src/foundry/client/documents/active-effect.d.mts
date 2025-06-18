@@ -49,10 +49,16 @@ declare namespace ActiveEffect {
         label: string;
         labelPlural: string;
         schemaVersion: string;
+        permissions: Metadata.Permissions;
       }>
     > {}
 
-  // No need for Metadata namespace
+  namespace Metadata {
+    interface Permissions {
+      create: "OWNER";
+      delete: "OWNER";
+    }
+  }
 
   /**
    * Allowed subtypes of `ActiveEffect`. This is configured through various methods. Modern Foundry
@@ -616,6 +622,8 @@ declare namespace ActiveEffect {
   type ApplyFieldReturn<Field extends DataField.Any | null | undefined> = Field extends DataField.Any
     ? DataField.InitializedTypeFor<Field>
     : unknown;
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -671,7 +679,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   /**
    * Is there some system logic that makes this active effect ineligible for application?
-   * @remarks Core's implementation always returns `false`
+   * @remarks Core's implementation defers to `system.isSuppressed` on a `TypeDataModel`, else `false`. As such all overrides should begin with `if (super.isSuppressed) return true;`
    */
   get isSuppressed(): boolean;
 
@@ -689,8 +697,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    *  Does this Active Effect currently modify an Actor?
    */
   get modifiesActor(): boolean;
-
-  override prepareBaseData(): void;
 
   override prepareDerivedData(): void;
 
@@ -760,11 +766,10 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   /**
    * Apply this ActiveEffect to a provided Actor.
-   * TODO: This method is poorly conceived. Its functionality is static, applying a provided change to an Actor
-   * TODO: When we revisit this in Active Effects V2 this should become an Actor method, or a static method
    * @param actor  - The Actor to whom this effect should be applied
    * @param change - The change data being applied
    * @returns An object of property paths and their updated values.
+   * @remarks In the future this likely will become either an `Actor` method or a static one
    */
   apply(actor: Actor.Implementation, change: ActiveEffect.ChangeData): AnyMutableObject;
 
@@ -776,32 +781,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param changes - The aggregate update paths and their updated values.
    */
   protected _applyLegacy(actor: Actor.Implementation, change: ActiveEffect.ChangeData, changes: AnyMutableObject): void;
-
-  /**
-   * Cast a raw ActiveEffect.EffectChangeData change string to the desired data type.
-   * @param raw - The raw string value
-   * @param type - The target data type that the raw value should be cast to match
-   * @returns The parsed delta cast to the target data type
-   * @private
-   * @remarks Core's implementation returns `boolean | number | string` or the return of {@link ActiveEffect._parseOrString | `ActiveEffect#_parseOrString`}
-   */
-  protected _castDelta(raw: string, type: string): JSONValue;
-
-  /**
-   * Cast a raw ActiveEffect.EffectChangeData change string to an Array of an inner type.
-   * @param raw  - The raw string value
-   * @param type - The target data type of inner array elements
-   * @returns The parsed delta cast as a typed array
-   */
-  protected _castArray(raw: string, type: string): JSONValue[];
-
-  /**
-   * Parse serialized JSON, or retain the raw string.
-   * @param raw - A raw serialized string
-   * @returns The parsed value, or the original value if parsing failed
-   * @remarks Tries to `JSON.parse(raw)`, simply returns `raw` if error
-   */
-  protected _parseOrString(raw: string): JSONValue;
 
   /**
    * Apply an ActiveEffect that uses an ADD application mode.
@@ -818,7 +797,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param delta   - The parsed value of the change object
    * @param changes - An object which accumulates changes to be applied
    * @returns The resulting applied value
-   * @private
    * @remarks Core's implementation does not use `actor`
    */
   protected _applyAdd(
@@ -838,7 +816,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param delta   - The parsed value of the change object
    * @param changes - An object which accumulates changes to be applied
    * @returns The resulting applied value
-   * @private
    * @remarks Core's implementation does not use `actor`
    */
   protected _applyMultiply(
@@ -858,7 +835,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param delta   - The parsed value of the change object
    * @param changes - An object which accumulates changes to be applied
    * @returns The resulting applied value
-   * @private
    * @remarks Core's implementation does not use `actor` or `current`
    */
   protected _applyOverride(
@@ -878,7 +854,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param delta   - The parsed value of the change object
    * @param changes - An object which accumulates changes to be applied
    * @returns The resulting applied value
-   * @private
    * @remarks Core's implementation does not use `actor`
    */
   protected _applyUpgrade(
@@ -897,7 +872,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param delta   - The parsed value of the change object
    * @param changes - An object which accumulates changes to be applied
    * @returns The resulting applied value
-   * @private
    */
   protected _applyCustom(
     actor: Actor.Implementation,
@@ -912,31 +886,13 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    */
   static getInitialDuration(): ActiveEffect.GetInitialDurationReturn;
 
-  /**
-   * @remarks If attempting to set `core.statusId`, logs a compatibility warning:
-   *
-   * "You are setting flags.core.statusId on an Active Effect. This flag is deprecated
-   * in favor of the {@link ActiveEffect.statuses | `statuses`} set."
-   */
-  override getFlag<Scope extends ActiveEffect.Flags.Scope, Key extends ActiveEffect.Flags.Key<Scope>>(
-    scope: Scope,
-    key: Key,
-  ): Document.GetFlag<ActiveEffect.Name, Scope, Key>;
-
-  // _preCreate, _onCreate, _preUpdate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseActiveEffect.
+  // _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseActiveEffect.
 
   /**
    * Display changes to active effects as scrolling Token status text.
    * @param enabled - Is the active effect currently enabled?
    */
   protected _displayScrollingStatus(enabled: boolean): void;
-
-  /**
-   * Get the name of the source of the Active Effect
-   * @deprecated since v11, will be removed in v13
-   * @remarks "You are accessing `ActiveEffect._getSourceName` which is deprecated."
-   */
-  _getSourceName(): Promise<string>;
 
   /*
    * After this point these are not really overridden methods.
@@ -954,13 +910,14 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"ActiveEffect", NonNullable<ActiveEffect.Parent>>,
+    context?: ActiveEffect.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<ActiveEffect.CreateData> | undefined,
-    context: Document.CreateDialogContext<"ActiveEffect", NonNullable<ActiveEffect.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"ActiveEffect">,
+    options?: Document.CreateDialogOptions<"ActiveEffect">,
   ): Promise<ActiveEffect.Stored | null | undefined>;
 
   // options: not null (parameter default only)
@@ -975,6 +932,8 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
   ): Promise<ActiveEffect.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
+  #ActiveEffect: true;
 }
 
 export default ActiveEffect;

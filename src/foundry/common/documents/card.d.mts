@@ -41,10 +41,11 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    *   labelPlural: "DOCUMENT.Cards",
    *   permissions: {
    *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     update: this.#canUpdate,
+   *     delete: "OWNER"
    *   },
    *   compendiumIndexFields: ["name", "type", "suit", "sort"],
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -58,16 +59,8 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    */
   static DEFAULT_ICON: string;
 
-  /**
-   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Cards` implementation
-   * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  /** @defaultValue `["DOCUMENT", "CARD"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /*
    * After this point these are not really overridden methods.
@@ -220,8 +213,6 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
     operation: Card.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

@@ -22,11 +22,10 @@ declare class TeleportTokenRegionBehaviorType extends RegionBehaviorType<Telepor
   static override events: Record<string, RegionBehaviorType.EventBehaviorStaticHandler>;
 
   /**
-   * Activate the Socket event listeners.
-   * @param socket      - The active game socket
+   * The query handler for teleporation confirmation.
    * @internal
    */
-  protected static _activateSocketListeners(socket: WebSocket): void;
+  static _confirmQuery(queryData: { behaviorUuid: string; token: string }): Promise<boolean>;
 }
 
 export default TeleportTokenRegionBehaviorType;

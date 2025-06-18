@@ -58,9 +58,8 @@ declare namespace DrawingDocument {
      * The permissions for whether a certain user can create, update, or delete this document.
      */
     interface Permissions {
-      create: "DRAWING_CREATE";
-      update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
-      delete(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      create(user: User.Internal.Implementation, doc: Implementation, data: CreateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -184,6 +183,7 @@ declare namespace DrawingDocument {
      * The _id of the user who created the drawing
      * @defaultValue `game.user?.id`
      */
+    // TODO: retype to `DocumentAuthorField`
     author: fields.ForeignDocumentField<
       typeof documents.BaseUser,
       { nullable: false; initial: () => string | undefined }
@@ -199,13 +199,13 @@ declare namespace DrawingDocument {
      * The x-coordinate position of the top-left corner of the drawn shape
      * @defaultValue `0`
      */
-    x: fields.NumberField<{ required: true; nullable: false; initial: 0; label: "XCoord" }>;
+    x: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
     /**
      * The y-coordinate position of the top-left corner of the drawn shape
      * @defaultValue `0`
      */
-    y: fields.NumberField<{ required: true; nullable: false; initial: 0; label: "YCoord" }>;
+    y: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
     /**
      * The elevation of the drawing
@@ -223,7 +223,7 @@ declare namespace DrawingDocument {
      * The angle of rotation for the drawing figure
      * @defaultValue `0`
      */
-    rotation: fields.AngleField<{ label: "DRAWING.Rotation" }>;
+    rotation: fields.AngleField;
 
     /**
      * An amount of bezier smoothing applied, between 0 and 1
@@ -245,7 +245,7 @@ declare namespace DrawingDocument {
         required: true;
         nullable: false;
         initial: typeof CONST.DRAWING_FILL_TYPES.NONE;
-        choices: CONST.DRAWING_FILL_TYPES[];
+        choices: Record<CONST.DRAWING_FILL_TYPES, string>;
         label: "DRAWING.FillTypes";
         validationError: "must be a value in CONST.DRAWING_FILL_TYPES";
       },
@@ -351,6 +351,7 @@ declare namespace DrawingDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<"Drawing">;
   }
 
@@ -485,6 +486,8 @@ declare namespace DrawingDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -499,6 +502,12 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
    * @param context - Construction context options
    */
   constructor(...args: DrawingDocument.ConstructorArgs);
+
+  /**
+   * Fields included in the drawing defaults setting
+   * @defaultValue `["strokeWidth", "strokeColor", "strokeAlpha", "bezierFactor", "fillType", "fillColor", "fillAlpha", "texture", "text", "fontFamily", "fontSize", "textColor", "textAlpha"]`
+   */
+  static defaultDrawingFields: (keyof DrawingDocument.InitializedData)[];
 
   /**
    * Is the current User the author of this drawing?
@@ -521,13 +530,14 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"Drawing", NonNullable<DrawingDocument.Parent>>,
+    context?: DrawingDocument.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<DrawingDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Drawing", NonNullable<DrawingDocument.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"Drawing">,
+    options?: Document.CreateDialogOptions<"Drawing">,
   ): Promise<DrawingDocument.Stored | null | undefined>;
 
   // options: not null (parameter default only)

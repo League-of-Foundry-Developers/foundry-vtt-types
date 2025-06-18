@@ -66,6 +66,7 @@ declare namespace Playlist {
      */
     interface Permissions {
       create: "PLAYLIST_CREATE";
+      delete: "OWNER";
     }
   }
 
@@ -288,7 +289,7 @@ declare namespace Playlist {
      * A duration in milliseconds to fade volume transition
      * @defaultValue `null`
      */
-    fade: fields.NumberField<{ positive: true }>;
+    fade: fields.NumberField<{ integer: true; positive: true }>;
 
     /**
      * The _id of a Folder which contains this playlist
@@ -335,6 +336,7 @@ declare namespace Playlist {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype as `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<"Playlist">;
 
     /**
@@ -517,6 +519,8 @@ declare namespace Playlist {
   }>;
 
   interface PlayNextOptions extends _PlayNextOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -533,12 +537,6 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * @param context - Construction context options
    */
   constructor(...args: Playlist.ConstructorArgs);
-
-  /**
-   * Playlists may have a playback order which defines the sequence of Playlist Sounds
-   * @defaultValue `undefined`
-   */
-  protected _playbackOrder: string[] | undefined;
 
   /**
    * The order in which sounds within this playlist will be played (if sequential or shuffled)
@@ -697,6 +695,18 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    */
   _onSoundStart(sound: PlaylistSound.Implementation): Promise<void>;
 
+  /**
+   * Spawn a dialog for bulk importing sound files into a playlist.
+   * @returns Returns true if any sound files were successfully imported.
+   */
+  bulkImportDialog(): Promise<boolean>;
+
+  /**
+   * Create PlaylistSounds in this Playlist from the given file paths.
+   * @param paths - File paths to import.
+   */
+  bulkImportSounds(paths: string[]): Promise<PlaylistSound.Implementation[]>;
+
   // options: not null (parameter default only, destructured in super)
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: foundry.documents.collections.CompendiumCollection.Any | null,
@@ -770,12 +780,13 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   protected override _preDeleteDescendantDocuments(...args: Playlist.PreDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Playlist", Playlist.Parent>): string;
+  static override defaultName(context?: Playlist.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Document.CreateDialogData<Playlist.CreateData>,
-    context?: Document.CreateDialogContext<"Playlist", Playlist.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Playlist">,
+    options?: Document.CreateDialogOptions<"Playlist">,
   ): Promise<Playlist.Stored | null | undefined>;
 
   // options: not null (parameter default only)

@@ -189,13 +189,13 @@ declare namespace TileDocument {
      * The x-coordinate position of the top-left corner of the tile
      * @defaultValue `0`
      */
-    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
+    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
      * The y-coordinate position of the top-left corner of the tile
      * @defaultValue `0`
      */
-    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
+    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
      * The elevation of the tile
@@ -253,7 +253,7 @@ declare namespace TileDocument {
        */
       mode: fields.NumberField<
         {
-          choices: CONST.OCCLUSION_MODES[];
+          choices: Record<CONST.OCCLUSION_MODES, string>;
           initial: typeof CONST.OCCLUSION_MODES.NONE;
           validationError: "must be a value in CONST.TILE_OCCLUSION_MODES";
         },
@@ -298,6 +298,7 @@ declare namespace TileDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype as `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
   }
 
@@ -441,6 +442,8 @@ declare namespace TileDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -472,12 +475,13 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Tile does not have any descendant documents.
 
-  static override defaultName(context?: Document.DefaultNameContext<"Tile", NonNullable<TileDocument.Parent>>): string;
+  static override defaultName(context?: TileDocument.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<TileDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Tile", NonNullable<TileDocument.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"Tile">,
+    options?: Document.CreateDialogOptions<"Tile">,
   ): Promise<TileDocument.Stored | null | undefined>;
 
   // options: not null (parameter default only)

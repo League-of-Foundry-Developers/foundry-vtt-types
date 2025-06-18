@@ -14,17 +14,19 @@ declare class WorldSettings extends foundry.documents.abstract.WorldCollection<"
 
   /**
    * Return the Setting or Keybind document with the given key.
-   * @param key - The setting key
+   * @param key  - The setting key
+   * @param user - For user-scoped settings, the user ID. (default `null`)
    * @returns The Setting.
    */
-  getSetting(key: string): ReturnType<this["find"]>;
+  getSetting(key: string, user?: string | null): ReturnType<this["find"]>;
 
   /**
    * Return the serialized value of the world setting as a string
-   * @param key - The setting key
+   * @param key  - The setting key
+   * @param user - For user-scoped settings, the user ID.
    * @returns The serialized setting string
    */
-  getItem(key: string): string | null;
+  getItem(key: string, user?: string): string | null;
 }
 
 declare namespace WorldSettings {

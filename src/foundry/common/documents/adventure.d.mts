@@ -35,13 +35,16 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    *   compendiumIndexFields: ["_id", "name", "description", "img", "sort", "folder"],
    *   label: "DOCUMENT.Adventure",
    *   labelPlural: "DOCUMENT.Adventures",
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: Adventure.Metadata;
 
   static override defineSchema(): BaseAdventure.Schema;
+
+  /** @defaultValue `["DOCUMENT", "ADVENTURE"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /**
    * An array of the fields which provide imported content from the Adventure.
@@ -206,8 +209,6 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     operation: Adventure.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

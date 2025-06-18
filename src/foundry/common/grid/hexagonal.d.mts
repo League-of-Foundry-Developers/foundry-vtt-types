@@ -361,6 +361,7 @@ declare namespace HexagonalGrid {
     even: boolean;
   }
 
+  // TODO: Figure out to do with this lil guy
   /** Cube coordinates in a hexagonal grid. q + r + s = 0. */
   interface Cube {
     /**
@@ -379,12 +380,37 @@ declare namespace HexagonalGrid {
     s: number;
   }
 
+  /**
+   * 2D cube coordinates in a hexagonal grid. q + r + s = 0.
+   */
+  interface Cube2D extends Cube {}
+
+  /**
+   * 3D cube coordinates in a hexagonal grid. q + r + s = 0.
+   */
+  interface Cube3D extends Cube2D {
+    /**
+     * The vertical coordinate.
+     */
+    k: number;
+  }
+
   interface Offset extends BaseGrid.Offset {}
 
   interface OffsetRange extends BaseGrid.OffsetRange {}
 
   /** Cube coordinates in a hexagonal grid. q + r + s = 0. */
   type Coordinates = BaseGrid.Coordinates | Cube;
+
+  /**
+   * 2D hexagonal cube coordinates, a 2D offset of a grid space, or a 2D point with pixel coordinates.
+   */
+  type Coordinates2D = BaseGrid.Coordinates2D | Cube2D;
+
+  /**
+   * 3D hexagonal cube coordinates, a 3D offset of a grid space, or a 3D point with pixel coordinates.
+   */
+  type Coordinates3D = BaseGrid.Coordinates3D | Cube3D;
 
   interface SnappingBehavior extends BaseGrid.SnappingBehavior {}
 

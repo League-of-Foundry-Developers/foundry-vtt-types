@@ -63,6 +63,7 @@ declare namespace Macro {
     interface Permissions {
       create(user: User.Internal.Implementation, doc: Implementation): boolean;
       update(user: User.Internal.Implementation, doc: Implementation): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -223,18 +224,19 @@ declare namespace Macro {
      * The name of this Macro
      * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true; blank: false; label: "Name"; textSearch: true }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * A Macro subtype from CONST.MACRO_TYPES
      * @defaultValue `CONST.MACRO_TYPES.CHAT`
      */
-    type: fields.DocumentTypeField<typeof BaseMacro, { initial: typeof CONST.MACRO_TYPES.CHAT; label: "Type" }>;
+    type: fields.DocumentTypeField<typeof BaseMacro, { initial: typeof CONST.MACRO_TYPES.CHAT }>;
 
     /**
      * The _id of a User document which created this Macro *
      * @defaultValue `game?.user?.id`
      */
+    // TODO: retype this to `DocumentAuthorField`
     author: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
 
     /**
@@ -244,7 +246,6 @@ declare namespace Macro {
     img: fields.FilePathField<{
       categories: ["IMAGE"];
       initial: () => typeof BaseMacro.DEFAULT_ICON;
-      label: "Image";
     }>;
 
     /**
@@ -258,7 +259,6 @@ declare namespace Macro {
       choices: CONST.MACRO_SCOPES[];
       initial: (typeof CONST.MACRO_SCOPES)[0];
       validationError: "must be a value in CONST.MACRO_SCOPES";
-      label: "Scope";
     }>;
 
     /**
@@ -268,7 +268,6 @@ declare namespace Macro {
     command: fields.StringField<{
       required: true;
       blank: true;
-      label: "Command";
     }>;
 
     /**
@@ -293,6 +292,7 @@ declare namespace Macro {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype this to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**
@@ -489,6 +489,8 @@ declare namespace Macro {
   type ExecuteReturn<SubType extends Macro.SubType> =
     | (SubType extends "chat" ? Promise<ChatMessage.Implementation | undefined | void> : never)
     | (SubType extends "script" ? Promise<unknown> | void : never);
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -543,6 +545,8 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   /** @remarks Returns `this.execute({event})` */
   override _onClickDocumentLink(event: MouseEvent): Macro.ExecuteReturn<SubType>;
 
+  // _onCreate is overridden but with no signature changes from its definition in BaseMacro.
+
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.
@@ -558,12 +562,13 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   // Descendant Document operations have been left out because Macro does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Macro", Macro.Parent>): string;
+  static override defaultName(context?: Macro.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Macro.CreateData,
-    context?: Document.CreateDialogContext<"Macro", Macro.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Macro">,
+    options?: Document.CreateDialogOptions<"Macro">,
   ): Promise<Macro.Stored | null | undefined>;
 
   // options: not null (parameter default only)

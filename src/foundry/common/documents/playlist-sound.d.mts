@@ -35,7 +35,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    *   label: "DOCUMENT.PlaylistSound",
    *   labelPlural: "DOCUMENT.PlaylistSounds",
    *   compendiumIndexFields: ["name", "sort"],
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -43,16 +43,8 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   static override defineSchema(): BasePlaylistSound.Schema;
 
-  /**
-   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Playlist` implementation
-   * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  /** @defaultValue `["DOCUMENT", "PLAYLIST_SOUND"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /*
    * After this point these are not really overridden methods.
@@ -204,8 +196,6 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     operation: PlaylistSound.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
-
-  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

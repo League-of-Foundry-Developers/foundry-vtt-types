@@ -18,7 +18,6 @@ let myDelta = new TestAD({}, { parent: someToken });
 
 declare const someActor: Actor.Implementation;
 expectTypeOf(TestAD.applyDelta(myDelta, someActor)).toEqualTypeOf<Actor.Implementation | null>();
-expectTypeOf(TestAD.applyDelta(myDelta, someActor, null)).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(TestAD.applyDelta(myDelta, someActor, {})).toEqualTypeOf<Actor.Implementation | null>();
 // @ts-expect-error parent is not allowed to be passed, as that context is used for the synthetic actor creation, its parent must be the same as the delta's parent
 expectTypeOf(TestAD.applyDelta(myDelta, someActor, { parent: someToken })).toEqualTypeOf<Actor.Implementation | null>();

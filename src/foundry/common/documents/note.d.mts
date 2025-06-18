@@ -34,9 +34,10 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    *   label: "DOCUMENT.Note",
    *   labelPlural: "DOCUMENT.Notes",
    *   permissions: {
-   *     create: "NOTE_CREATE"
+   *     create: BaseNote.#canCreate,
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -44,25 +45,18 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   static override defineSchema(): BaseNote.Schema;
 
+  /** @defaultValue `["DOCUMENT", "NOTE"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
   /**
    * The default icon used for newly created Note documents.
    * @defaultValue `"icons/svg/book.svg"`
    */
   static DEFAULT_ICON: string;
 
-  /**
-   * @remarks Returns `true` for GMs regardless of `options.exact`
-   *
-   * If this is an unlinked note (lacks an `entryId`), returns `user.hasPermission("NOTE_CREATE")`. Otherwise,
-   * `this.entry.testUserPermission`, or `false` if `!this.entry`. Core's `JournalEntry` implementation doesn't
-   * override this method, so without further extension that's equivalent to {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Internal.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  static override canUserCreate(user: User.Implementation): boolean;
 
   /*
    * After this point these are not really overridden methods.
@@ -220,8 +214,6 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     operation: NoteDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

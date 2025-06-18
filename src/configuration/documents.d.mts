@@ -169,6 +169,27 @@ export interface ConfiguredCombat<SubType extends Combat.SubType> {}
 export interface ConfiguredCombatant<SubType extends Combatant.SubType> {}
 
 /**
+ * Use this interface to configure your custom generic `CombatantGroup` implementation.
+ * See also {@linkcode DocumentClassConfig} to configure your class.
+ *
+ * @example
+ * ```typescript
+ * class CustomCombatantGroup<
+ *   SubType extends CombatantGroup.SubType
+ * > extends CombatantGroup<SubType> {
+ *   ...
+ * }
+ *
+ * declare module "fvtt-types/configuration" {
+ *   interface ConfiguredCombatantGroup<SubType extends CombatantGroup.SubType> {
+ *     document: CustomCombatantGroup<SubType>;
+ *   }
+ * }
+ * ```
+ */
+export interface ConfiguredCombatantGroup<SubType extends CombatantGroup.SubType> {}
+
+/**
  * Use this interface to configure your custom generic `Folder` implementation.
  * See also {@linkcode DocumentClassConfig} to configure your class.
  *

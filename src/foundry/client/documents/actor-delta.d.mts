@@ -57,6 +57,7 @@ declare namespace ActorDelta {
         labelPlural: string;
         isEmbedded: true;
         embedded: Metadata.Embedded;
+        permissions: Metadata.Permissions;
         schemaVersion: string;
       }>
     > {}
@@ -68,6 +69,11 @@ declare namespace ActorDelta {
     interface Embedded {
       Item: "items";
       ActiveEffect: "effects";
+    }
+
+    interface Permissions {
+      create: "OWNER";
+      delete: "OWNER";
     }
   }
 
@@ -511,6 +517,8 @@ declare namespace ActorDelta {
   }>;
 
   interface InitializeOptions extends Document.InitializeOptions, _InitializeOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 }
 
 /**
@@ -532,14 +540,18 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   protected override _initialize(options?: ActorDelta.InitializeOptions): void;
 
   /** Pass-through the type from the synthetic Actor, if it exists. */
-  _type: string;
+  get type(): string;
+
+  set type(type: string);
+
+  protected _type: string;
 
   /**
    * Apply this ActorDelta to the base Actor and return a synthetic Actor.
    * @param context - Context to supply to synthetic Actor instantiation.
    * @remarks Forwards `context` to {@link BaseActorDelta.applyDelta | `this.constructor.applyDelta(this, this.parent.baseActor, context)`}
    */
-  apply(context?: BaseActorDelta.ApplyDeltaContext | null): Actor.Implementation | null;
+  apply(context?: BaseActorDelta.ApplyDeltaContext): Actor.Implementation | null;
 
   /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
   override prepareEmbeddedDocuments(): void;
@@ -583,6 +595,11 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    * @param doc - The parent whose immediate children have been modified.
    */
   _handleDeltaCollectionUpdates(doc: Document.Any): void;
+
+  /** @remarks `"No-op as ActorDeltas do not have sheets."` */
+  protected override _onSheetChange(): Promise<void>;
+
+  protected override _prepareDeltaUpdate(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): void;
 
   // _onUpdate and _onDelete are all overridden but with no signature changes from BaseActorDelta.
 
@@ -715,13 +732,14 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   // context: not null (destructured)
   static override defaultName(
-    context?: Document.DefaultNameContext<"ActorDelta", NonNullable<ActorDelta.Parent>>,
+    context?: ActorDelta.DefaultNameContext,
   ): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
     data: Document.CreateDialogData<ActorDelta.CreateData> | undefined,
-    context: Document.CreateDialogContext<"ActorDelta", NonNullable<ActorDelta.Parent>>,
+    createOptions?: Document.Database.CreateOperationForName<"ActorDelta">,
+    options?: Document.CreateDialogOptions<"ActorDelta">,
   ): Promise<ActorDelta.Stored | null | undefined>;
 
   // options: not null (parameter default only)

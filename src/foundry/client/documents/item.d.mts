@@ -68,7 +68,8 @@ declare namespace Item {
      * The permissions for whether a certain user can create, update, or delete this document.
      */
     interface Permissions {
-      create: "ITEM_CREATE";
+      create(user: User.Internal.Implementation, doc: Implementation, data: CreateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -339,6 +340,7 @@ declare namespace Item {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
+    // TODO: retype as `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**
@@ -513,6 +515,8 @@ declare namespace Item {
     /** @defaultValue `Item.DEFAULT_ICON` */
     img: string;
   }
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 }
 
 /**
@@ -682,12 +686,13 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
   protected override _onDeleteDescendantDocuments(...args: Item.OnDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Item", Item.Parent>): string;
+  static override defaultName(context?: Item.DefaultNameContext): string;
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Document.CreateDialogData<Item.CreateData>,
-    context?: Document.CreateDialogContext<"Item", Item.Parent>,
+    createOptions?: Document.Database.CreateOperationForName<"Item">,
+    options?: Document.CreateDialogOptions<"Item">,
   ): Promise<Item.Stored | null | undefined>;
 
   // options: not null (parameter default only)
