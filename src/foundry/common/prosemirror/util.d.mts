@@ -1,7 +1,6 @@
 import type { Node, Schema, Slice } from "prosemirror-model";
-// Fixes VSC not finding it for the @link TSDoc directive.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { StringNode } from "./string-serializer.d.mts";
+import type { InexactPartial } from "#utils";
 
 /**
  * Use the DOM and ProseMirror's DOMParser to construct a ProseMirror document state from an HTML string. This cannot be
@@ -9,6 +8,7 @@ import type { StringNode } from "./string-serializer.d.mts";
  * @param htmlString - A string of HTML.
  * @param schema     - The ProseMirror schema to use instead of the default one.
  * @returns The document node.
+ * @remarks Uses {@linkcode foundry.prosemirror.defaultSchema} if none is provided
  */
 export declare function parseHTMLString(htmlString: string, schema?: Schema): Node;
 
@@ -17,19 +17,35 @@ export declare function parseHTMLString(htmlString: string, schema?: Schema): No
  * @param doc     - The ProseMirror document.
  * @param options - Additional options to configure serialization behavior.
  */
-export declare function serializeHTMLString(
-  doc: Node,
-  options?: {
-    /** The ProseMirror schema to use instead of the default one. */
-    schema?: Schema;
+declare function serializeHTMLString(doc: Node, options?: serializeHTMLString.Options): string;
 
-    /** The number of spaces to use for indentation. See {@link StringNode.toString | `StringNode#toString`} for details. */
+declare namespace serializeHTMLString {
+  /**
+   * Hack to make the link in Options["spaces"] work
+   * @internal
+   */
+  type _StringNode = StringNode;
+
+  /** @internal */
+  type _Options = InexactPartial<{
+    /**
+     * The ProseMirror schema to use instead of the default one.
+     * @defaultValue {@linkcode foundry.prosemirror.defaultSchema}
+     */
+    schema: Schema;
+
+    /**
+     * The number of spaces to use for indentation. See {@link _StringNode.toString | `StringNode#toString`} for details.
+     * @defaultValue `0`
+     */
     spaces?: string | number;
-  },
-): string;
+  }>;
+
+  interface Options extends _Options {}
+}
 
 /**
- * @param node    - The candidate node.
+ * @param node - The candidate node.
  * @returns A new node to replace the candidate node, or nothing if a replacement should not be made.
  */
 export declare type ProseMirrorSliceTransformer = (node: Node) => Node | void;
@@ -41,3 +57,5 @@ export declare type ProseMirrorSliceTransformer = (node: Node) => Node | void;
  * @returns Either the original slice if no changes were made, or the newly-transformed slice.
  */
 export declare function transformSlice(slice: Slice, transformer: ProseMirrorSliceTransformer): Slice;
+
+export { serializeHTMLString };

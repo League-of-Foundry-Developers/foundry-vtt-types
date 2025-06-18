@@ -1,4 +1,7 @@
-import type { MarkSpec, NodeSpec, Schema } from "prosemirror-model";
+import type { Schema } from "prosemirror-model";
+// splitListItem is set as the handler for the `list_item` node on the schema
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { splitListItem } from "prosemirror-schema-list";
 import type {
   paragraph,
   blockquote,
@@ -14,6 +17,7 @@ import type {
   liText as list_item_text,
 } from "./schema/lists.d.mts";
 import type {
+  builtInTableNodes,
   tableComplex as table_complex,
   colgroup,
   col,
@@ -62,25 +66,35 @@ import type {
   strikethrough,
   code,
 } from "./schema/marks.d.mts";
+import type ImageNode from "./schema/image-node.d.mts";
+import type LinkMark from "./schema/link-mark.d.mts";
+import type ImageLinkNode from "./schema/image-link-node.d.mts";
+import type SecretNode from "./schema/secret-node.d.mts";
+// AttributeCapture#attributeCapture is used as a bound handler for all nodes and marks
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type AttributeCapture from "./schema/attribute-capture.d.mts";
 
 export declare const nodes: {
+  // Core Nodes.
   doc: { content: string };
-  text: { content: string };
+  text: { group: string };
   paragraph: typeof paragraph;
   blockquote: typeof blockquote;
-  secret: NodeSpec | MarkSpec;
+  secret: ReturnType<typeof SecretNode.make>;
   horizontal_rule: typeof horizontal_rule;
   heading: typeof heading;
   code_block: typeof code_block;
-  image_link: NodeSpec | MarkSpec;
-  image: NodeSpec | MarkSpec;
+  image_link: ReturnType<typeof ImageLinkNode.make>;
+  image: ReturnType<typeof ImageNode.make>;
   hard_break: typeof hard_break;
 
+  // Lists.
   ordered_list: typeof ordered_list;
   bullet_list: typeof bullet_list;
   list_item: typeof list_item;
   list_item_text: typeof list_item_text;
 
+  // Tables
   table_complex: typeof table_complex;
   tbody: typeof tbody;
   thead: typeof thead;
@@ -94,11 +108,13 @@ export declare const nodes: {
   table_header_complex: typeof table_header_complex;
   table_cell_complex_block: typeof table_cell_complex_block;
   table_header_complex_block: typeof table_header_complex_block;
-  table: Record<string, unknown>;
-  table_cell: Record<string, unknown>;
-  table_header: Record<string, unknown>;
-  table_row: Record<string, unknown>;
+  // ...(typeof builtInTableNodes):
+  table: (typeof builtInTableNodes)["table"];
+  table_cell: (typeof builtInTableNodes)["table_cell"];
+  table_header: (typeof builtInTableNodes)["table_header"];
+  table_row: (typeof builtInTableNodes)["table_row"];
 
+  // Misc.
   details: typeof details;
   summary: typeof summary;
   summary_block: typeof summary_block;
@@ -127,7 +143,7 @@ export declare const marks: {
   subscript: typeof subscript;
   span: typeof span;
   font: typeof font;
-  link: NodeSpec | MarkSpec;
+  link: ReturnType<typeof LinkMark.make>;
   em: typeof em;
   strong: typeof strong;
   underline: typeof underline;
@@ -135,4 +151,4 @@ export declare const marks: {
   code: typeof code;
 };
 
-export declare const schema: Schema;
+export declare const schema: Schema<keyof typeof nodes, keyof typeof marks>;

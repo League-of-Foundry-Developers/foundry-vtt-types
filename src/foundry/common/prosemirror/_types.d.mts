@@ -1,3 +1,8 @@
+import type { ProseMirrorSliceTransformer as _ProseMirrorSliceTransformer } from "./util.d.mts";
+import type {
+  ProseMirrorMarkOutput as _ProseMirrorMarkOutput,
+  ProseMirrorNodeOutput as _ProseMirrorNodeOutput,
+} from "./string-serializer.d.mts";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 // After seeing that none of these types add anything or are even exported a
@@ -24,8 +29,8 @@ type ProseMirrorCommand = unknown;
 
 type MenuToggleBlockWrapCommand = unknown;
 
-type ProseMirrorNodeOutput = unknown;
+type ProseMirrorNodeOutput = _ProseMirrorNodeOutput;
 
-type ProseMirrorMarkOutput = unknown;
+type ProseMirrorMarkOutput = _ProseMirrorMarkOutput;
 
-type ProseMirrorSliceTransformer = unknown;
+type ProseMirrorSliceTransformer = _ProseMirrorSliceTransformer;
