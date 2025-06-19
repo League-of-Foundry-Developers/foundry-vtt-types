@@ -1,34 +1,14 @@
-/* eslint-disable import-x/extensions */
-import type { Node } from "prosemirror-model";
 import { expectTypeOf } from "vitest";
-import { ol, ul, li, liText } from "../../../../../src/foundry/common/prosemirror/schema/lists.mjs";
+import { ol, ul, li, liText } from "#common/prosemirror/schema/lists.mjs";
+import type { RequiredProps } from "#utils";
+import type { NodeSpec } from "prosemirror-model";
 
-expectTypeOf(ol).toEqualTypeOf<{
-  content: string;
-  managed: Record<string, unknown>;
-  group: string;
-  attrs: Record<string, unknown>;
-  parseDOM: Record<string, unknown>[];
-  toDOM: (node: Node) => [string, number] | [string, Record<string, unknown>, number];
-}>();
+expectTypeOf(ol).toEqualTypeOf<
+  RequiredProps<NodeSpec, "content" | "managed" | "group" | "attrs" | "parseDOM" | "toDOM">
+>();
 
-expectTypeOf(ul).toEqualTypeOf<{
-  content: string;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(ul).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "group" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(li).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(li).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(liText).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(liText).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">>();

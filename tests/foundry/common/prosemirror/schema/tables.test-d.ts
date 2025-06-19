@@ -1,6 +1,7 @@
 /* eslint-disable import-x/extensions */
-import type { Node } from "prosemirror-model";
+import type { NodeSpec } from "prosemirror-model";
 import { expectTypeOf } from "vitest";
+import type { RequiredProps } from "#utils";
 import {
   builtInTableNodes,
   tableComplex,
@@ -19,106 +20,44 @@ import {
 } from "../../../../../src/foundry/common/prosemirror/schema/tables.mjs";
 
 expectTypeOf(builtInTableNodes).toEqualTypeOf<{
-  table: Record<string, unknown>;
-  table_cell: Record<string, unknown>;
-  table_header: Record<string, unknown>;
-  table_row: Record<string, unknown>;
+  table: NodeSpec;
+  table_cell: NodeSpec;
+  table_header: NodeSpec;
+  table_row: NodeSpec;
 }>();
 
-expectTypeOf(tableComplex).toEqualTypeOf<{
-  content: string;
-  isolating: boolean;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(tableComplex).toEqualTypeOf<
+  RequiredProps<NodeSpec, "content" | "isolating" | "group" | "parseDOM" | "toDOM">
+>();
 
-expectTypeOf(colgroup).toEqualTypeOf<{
-  content: string;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(colgroup).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(col).toEqualTypeOf<{
-  tableRole: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-}>();
+expectTypeOf(col).toEqualTypeOf<RequiredProps<NodeSpec, "tableRole" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(thead).toEqualTypeOf<{
-  content: string;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(thead).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(tbody).toEqualTypeOf<{
-  content: string;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(tbody).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(tfoot).toEqualTypeOf<{
-  content: string;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(tfoot).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(caption).toEqualTypeOf<{
-  content: string;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(caption).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(captionBlock).toEqualTypeOf<{
-  content: string;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(captionBlock).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(tableRowComplex).toEqualTypeOf<{
-  content: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(tableRowComplex).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(tableCellComplex).toEqualTypeOf<{
-  content: string;
-  attrs: Record<string, unknown>;
-  managed: Record<string, string[]>;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>;
-  toDOM: (node: Node) => [string, unknown, number];
-}>();
+expectTypeOf(tableCellComplex).toEqualTypeOf<
+  RequiredProps<NodeSpec, "content" | "attrs" | "managed" | "isolating" | "parseDOM" | "toDOM">
+>();
 
-expectTypeOf(tableCellComplexBlock).toEqualTypeOf<{
-  content: string;
-  attrs: Record<string, unknown>;
-  managed: Record<string, string[]>;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>;
-  toDOM: (node: Node) => [string, unknown, number];
-}>();
+expectTypeOf(tableCellComplexBlock).toEqualTypeOf<
+  RequiredProps<NodeSpec, "content" | "attrs" | "managed" | "isolating" | "parseDOM" | "toDOM">
+>();
 
-expectTypeOf(tableHeaderComplex).toEqualTypeOf<{
-  content: string;
-  attrs: Record<string, unknown>;
-  managed: Record<string, string[]>;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>;
-  toDOM: (node: Node) => [string, unknown, number];
-}>();
+expectTypeOf(tableHeaderComplex).toEqualTypeOf<
+  RequiredProps<NodeSpec, "content" | "attrs" | "managed" | "isolating" | "parseDOM" | "toDOM">
+>();
 
-expectTypeOf(tableHeaderComplexBlock).toEqualTypeOf<{
-  content: string;
-  attrs: Record<string, unknown>;
-  managed: Record<string, string[]>;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>;
-  toDOM: (node: Node) => [string, unknown, number];
-}>();
+expectTypeOf(tableHeaderComplexBlock).toEqualTypeOf<
+  RequiredProps<NodeSpec, "content" | "attrs" | "managed" | "isolating" | "parseDOM" | "toDOM">
+>();

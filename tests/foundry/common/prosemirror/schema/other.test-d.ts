@@ -1,4 +1,3 @@
-/* eslint-disable import-x/extensions */
 import { expectTypeOf } from "vitest";
 import {
   details,
@@ -22,154 +21,52 @@ import {
   rp,
   rt,
   iframe,
-} from "../../../../../src/foundry/common/prosemirror/schema/other.mjs";
+} from "#common/prosemirror/schema/other.mjs";
+import type { RequiredProps } from "#utils";
+import type { NodeSpec } from "prosemirror-model";
 
-expectTypeOf(details).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(details).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(summary).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(summary).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(summaryBlock).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(summaryBlock).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(dl).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(dl).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(dt).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(dt).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(dd).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(dd).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(fieldset).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(fieldset).toEqualTypeOf<
+  RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">
+>();
 
-expectTypeOf(legend).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(legend).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(picture).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(picture).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(audio).toEqualTypeOf<{
-  content: string;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(audio).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "group" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(video).toEqualTypeOf<{
-  content: string;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(video).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "group" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(track).toEqualTypeOf<{
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-}>();
+expectTypeOf(track).toEqualTypeOf<RequiredProps<NodeSpec, "parseDOM" | "toDOM">>();
 
-expectTypeOf(source).toEqualTypeOf<{
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-}>();
+expectTypeOf(source).toEqualTypeOf<RequiredProps<NodeSpec, "parseDOM" | "toDOM">>();
 
-expectTypeOf(object).toEqualTypeOf<{
-  inline: boolean;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-}>();
+expectTypeOf(object).toEqualTypeOf<RequiredProps<NodeSpec, "inline" | "group" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(figure).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(figure).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(figcaption).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(figcaption).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(small).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(small).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(ruby).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(ruby).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(rp).toEqualTypeOf<{
-  content: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(rp).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(rt).toEqualTypeOf<{
-  content: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(rt).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(iframe).toEqualTypeOf<{
-  attrs: Record<string, unknown>;
-  managed: Record<string, unknown>;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, unknown];
-}>();
+expectTypeOf(iframe).toEqualTypeOf<
+  RequiredProps<NodeSpec, "attrs" | "managed" | "group" | "defining" | "parseDOM" | "toDOM">
+>();

@@ -46,7 +46,7 @@ declare namespace SchemaDefinition {
   type DOMOutputSpecTuple = Extract<DOMOutputSpec, readonly [string, ...any[]]>;
 
   /**
-   * @privateRemarks `Record<string, any> | false | null`, from Foundry's `object|boolean`
+   * @privateRemarks `Record<string, any> | false | null`, vs Foundry's `object|boolean`
    */
   type GetAttrsReturn = ReturnType<NonNullable<TagParseRule["getAttrs"]>>;
 }

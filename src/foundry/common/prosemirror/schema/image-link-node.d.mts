@@ -14,7 +14,7 @@ declare class ImageLinkNode extends SchemaDefinition {
 
   static override getAttrs(el: HTMLLinkElement): SchemaDefinition.GetAttrsReturn;
 
-  static override toDOM(node: Node): [...ReturnType<typeof LinkMark.toDOM>, ReturnType<typeof ImageNode.toDOM>];
+  static override toDOM(node: Node): ImageLinkNode.ToDOMReturn;
 
   static override make(): NodeSpec;
 
@@ -26,6 +26,10 @@ declare class ImageLinkNode extends SchemaDefinition {
    * @param node  - The Node instance.
    */
   static onClick(view: EditorView, pos: number, event: PointerEvent, node: Node): boolean;
+}
+
+declare namespace ImageLinkNode {
+  type ToDOMReturn = [...ReturnType<typeof LinkMark.toDOM>, ReturnType<typeof ImageNode.toDOM>];
 }
 
 export default ImageLinkNode;
