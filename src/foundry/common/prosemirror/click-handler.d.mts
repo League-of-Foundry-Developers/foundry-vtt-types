@@ -1,7 +1,7 @@
 import type { EditorView } from "prosemirror-view";
 import type { Plugin } from "prosemirror-state";
 import type ProseMirrorPlugin from "./plugin.d.mts";
-import type { Node, Schema } from "prosemirror-model";
+import type { Schema } from "prosemirror-model";
 import type { AnyObject } from "#utils";
 
 export default ProseMirrorClickHandler;
@@ -24,14 +24,14 @@ declare class ProseMirrorClickHandler extends ProseMirrorPlugin {
    * @param event   - The click event.
    * @param direct  - Whether this Node is the one that was directly clicked on.
    * @returns A return value of true indicates the event has been handled, it will not propagate to
-   *          other plugins, and ProseMirror will call preventDefault on it.
+   * other plugins, and ProseMirror will call preventDefault on it.
    */
   protected _onClick(
     view: EditorView,
     pos: number,
-    node: Node,
+    node: globalThis.Node,
     nodePos: number,
-    event: JQuery.ClickEvent,
+    event: PointerEvent,
     direct: boolean,
   ): boolean | void;
 }

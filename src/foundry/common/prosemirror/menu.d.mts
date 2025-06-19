@@ -43,7 +43,7 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
   /**
    * Additional options to configure the plugin's behaviour.
    */
-  options: ProseMirrorMenu.ConstructionOptions;
+  options: Required<ProseMirrorMenu.ConstructionOptions>;
 
   /**
    * The dropdowns configured for this menu.
@@ -211,16 +211,19 @@ declare namespace ProseMirrorMenu {
     HTML: "html" & MENU_ITEM_SCOPES;
   }
 
-  interface ConstructionOptions {
+  /** @internal */
+  type _ConstructionOptions = InexactPartial<{
     /** A function to call when the save button is pressed. */
-    onSave?: () => void;
+    onSave: () => void;
 
     /** Whether this editor instance is intended to be destroyed when saved. */
-    destroyOnSave?: boolean;
+    destroyOnSave: boolean;
 
     /** Whether to display a more compact version of the menu. */
-    compact?: boolean;
-  }
+    compact: boolean;
+  }>;
+
+  interface ConstructionOptions extends _ConstructionOptions {}
 
   /** @internal */
   type _ShowDialogOptions = InexactPartial<{

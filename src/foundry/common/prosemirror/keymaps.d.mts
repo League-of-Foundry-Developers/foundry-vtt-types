@@ -42,7 +42,9 @@ declare namespace ProseMirrorKeyMaps {
    * @param view     - Escape-hatch for when the command needs to interact directly with the UI.
    * @returns Whether the command has performed any action and consumed the event.
    */
-  type Command = (state: EditorState, dispatch: (transaction: Transaction) => void, view: EditorView) => boolean;
+  type Command = (state: EditorState, dispatch: DispatchFunction, view: EditorView) => boolean;
+
+  type DispatchFunction = (transaction: Transaction) => void;
 }
 
 export default ProseMirrorKeyMaps;

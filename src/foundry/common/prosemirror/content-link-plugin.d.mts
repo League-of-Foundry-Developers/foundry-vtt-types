@@ -2,7 +2,7 @@ import type { Schema, Slice } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
 import type { EditorView } from "prosemirror-view";
 import type ProseMirrorPlugin from "./plugin.d.mts";
-import type { InexactPartial } from "#utils";
+import type Document from "#common/abstract/document.mjs";
 
 /**
  * A class responsible for handling the dropping of Documents onto the editor and creating content links for them.
@@ -18,7 +18,7 @@ declare class ProseMirrorContentLinkPlugin extends ProseMirrorPlugin {
    * The parent document housing this editor.
    * @remarks `defineProperty`'d in construction, explicitly `writable: false`
    */
-  readonly document: foundry.abstract.Document.Any | undefined;
+  readonly document: Document.Any | undefined;
 
   /**
    * Whether to generate links relative to the parent document.
@@ -39,19 +39,29 @@ declare class ProseMirrorContentLinkPlugin extends ProseMirrorPlugin {
 }
 
 declare namespace ProseMirrorContentLinkPlugin {
-  /** @internal */
-  type _ConstructionOptions = InexactPartial<{
+  interface ConstructionOptionsNoRelative {
     /** The parent document housing this editor. */
-    document: ClientDocument;
+    document?: Document.Any | undefined;
 
     /**
      * @defaultValue `false`
      * @remarks If `relativeLinks` is `true`, a valid `document` must be passed or construction will throw
      */
-    relativeLinks: boolean;
-  }>;
+    relativeLinks?: false | undefined;
+  }
 
-  interface ConstructionOptions extends _ConstructionOptions {}
+  interface ConstructionOptionsRelative {
+    /** The parent document housing this editor. */
+    document: Document.Any;
+
+    /**
+     * @defaultValue `false`
+     * @remarks If `relativeLinks` is `true`, a valid `document` must be passed or construction will throw
+     */
+    relativeLinks: true;
+  }
+
+  type ConstructionOptions = ConstructionOptionsRelative | ConstructionOptionsNoRelative;
 }
 
 export default ProseMirrorContentLinkPlugin;
