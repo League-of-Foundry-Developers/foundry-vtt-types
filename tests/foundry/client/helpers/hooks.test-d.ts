@@ -5,7 +5,7 @@ import Canvas = foundry.canvas.Canvas;
 import FormApplication = foundry.appv1.api.FormApplication;
 import CanvasLayer = foundry.canvas.layers.CanvasLayer;
 
-expectTypeOf(foundry.helpers.Hooks.events).toEqualTypeOf<Hooks.HookedFunction[]>();
+expectTypeOf(foundry.helpers.Hooks.events).toEqualTypeOf<Record<string, Hooks.HookedFunction[]>>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(Hooks.on("", () => {})).toEqualTypeOf<number>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -30,7 +30,7 @@ Hooks.on("canvasInit", (canvas) => {
 // });
 
 Hooks.on("closeFormApplication", (app, jq) => {
-  expectTypeOf(app).toEqualTypeOf<FormApplication>();
+  expectTypeOf(app).toEqualTypeOf<FormApplication.Any>();
   expectTypeOf(jq).toEqualTypeOf<JQuery>();
 });
 

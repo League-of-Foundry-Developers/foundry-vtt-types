@@ -660,6 +660,30 @@ declare namespace Game {
   };
   interface Model extends _Model {}
 
+  interface PackageWarning {
+    /** @remarks The ID of the package, matches this objects key in {@linkcode Game.Data.packageWarnings} */
+    id: string;
+
+    /** @remarks From limited empirical sampling, only `false` if the package lacks a manifest */
+    reinstallable: boolean;
+
+    /** @remarks Not included if the package itself lacks a manifest (e.g JB2A patreon pack) */
+    manifest?: string;
+
+    /** @remarks Presumably `"world" | "system" | "module"`, but difficult to confirm. */
+    type: string;
+
+    /**
+     * Error messages.
+     */
+    error: string[];
+
+    /**
+     * Warning messages.
+     */
+    warning: string[];
+  }
+
   type Data = {
     activeUsers: string[];
     addresses: {
@@ -698,7 +722,7 @@ declare namespace Game {
       routePrefix: string | null;
       updateChannel: string;
     };
-    packageWarnings: Record<string, unknown>;
+    packageWarnings: Record<string, PackageWarning>;
     packs: Array<
       PackageCompendiumData & {
         /** @deprecated since v11 */

@@ -732,6 +732,14 @@ export type SimpleMerge<Target, Override> = Omit<Target, keyof Override> & Overr
  */
 export type RequiredProps<T extends object, K extends AllKeysOf<T>> = Required<Pick<T, K>> & Omit<T, K>;
 
+/** Like {@linkcode Required}, but strips `| undefined` as well */
+export type RequiredExact<T> = {
+  [P in keyof T]-?: Exclude<T[P], undefined>;
+};
+
+/** Like {@linkcode RequiredProps}, but strips `| undefined` as well */
+export type RequiredExactProps<T extends object, K extends AllKeysOf<T>> = RequiredExact<Pick<T, K>> & Omit<T, K>;
+
 export type Mixin<MixinClass extends AnyConcreteConstructor, BaseClass extends AnyConstructor> = MixinClass & BaseClass;
 
 interface GetDataConfigOptions<T> {

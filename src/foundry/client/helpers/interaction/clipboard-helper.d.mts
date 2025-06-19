@@ -1,10 +1,12 @@
 /**
- * A helper class to manage requesting clipboard permissions and provide common functionality for working with the
- * clipboard.
+ * A singleton helper class to manage requesting clipboard permissions.
+ * Provides common functionality for working with the clipboard.
+ * @see {@linkcode foundry.Game.clipboard | Game#clipboard}
  */
 declare class ClipboardHelper {
   /**
-   * @throws `"You may not re-initialize the singleton ClipboardHelper. Use game.clipboard instead."`
+   * @remarks
+   * @throws "You may not re-initialize the singleton {@linkcode ClipboardHelper}. Use {@linkcode game.clipboard} instead."
    */
   constructor();
 

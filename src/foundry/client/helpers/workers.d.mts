@@ -1,4 +1,4 @@
-import type { AnyArray, AnyFunction, ValueOf } from "#utils";
+import type { AnyArray, AnyFunction, Brand, Identity, InexactPartial, ValueOf } from "#utils";
 
 /**
  * An asynchronous web Worker which can load user-defined functions and await execution using Promises.
@@ -6,15 +6,15 @@ import type { AnyArray, AnyFunction, ValueOf } from "#utils";
  * @param options - Worker initialization options (default: `{}`)
  */
 declare class AsyncWorker extends Worker {
-  constructor(name: string, options?: AsyncWorker.Options);
-
-  name: string;
+  constructor(name: string, options?: AsyncWorker.ConstructionOptions);
 
   /**
    * A path reference to the JavaScript file which provides companion worker-side functionality.
    * @defaultValue `"scripts/worker.js"`
    */
   static WORKER_HARNESS_JS: string;
+
+  name: string;
 
   /**
    * A Promise which resolves once the Worker is ready to accept tasks
@@ -42,14 +42,41 @@ declare class AsyncWorker extends Worker {
    * @param functionName - The named function to execute on the worker. This function must first have been loaded.
    * @param args         - An array of parameters with which to call the requested function (default: `[]`)
    * @param transfer     - An array of transferable objects which are transferred to the worker thread.
-   *                       See https://developer.mozilla.org/en-US/docs/Glossary/Transferable_objects
+   *                       See {@link https://developer.mozilla.org/en-US/docs/Glossary/Transferable_objects}
    *                       (default: `[]`)
    * @returns A Promise which resolves with the returned result of the function once complete.
    */
   executeFunction(functionName: string, args?: AnyArray, transfer?: AnyArray): Promise<unknown>;
+
+  override terminate(): void;
 }
 
 declare namespace AsyncWorker {
+  interface Any extends AnyAsyncWorker {}
+  interface AnyConstructor extends Identity<typeof AnyAsyncWorker> {}
+
+  /** @internal */
+  type _ConstructionOptions = InexactPartial<{
+    /**
+     * Should the worker run in debug mode?
+     * @defaultValue `false`
+     */
+    debug: boolean;
+
+    /**
+     * Should the worker automatically load the primitives library?
+     * @defaultValue `false`
+     */
+    loadPrimitives: boolean;
+
+    /**
+     * Should the worker operates in script modes? Optional scripts.
+     */
+    scripts: string[];
+  }>;
+
+  interface ConstructionOptions extends _ConstructionOptions {}
+
   interface WorkerTask {
     [key: string]: unknown;
 
@@ -64,19 +91,19 @@ declare namespace AsyncWorker {
 /**
  * A client-side class responsible for managing a set of web workers.
  * This interface is accessed as a singleton instance via game.workers.
- * @see {@link Game.workers | `Game#workers`}
+ * @see {@linkcode foundry.Game.workers | Game#workers}
  */
 declare class WorkerManager extends Map<string, AsyncWorker> {
+  /**
+   * @remarks
+   * @throws If {@linkcode game.workers} is already initialized
+   */
   constructor();
 
   /**
    * Supported worker task actions
    */
-  static WORKER_TASK_ACTIONS: Readonly<{
-    INIT: "init";
-    LOAD: "load";
-    EXECUTE: "execute";
-  }>;
+  static WORKER_TASK_ACTIONS: Readonly<WorkerManager.WorkerTaskActions>;
 
   /**
    * Create a new named Worker.
@@ -84,7 +111,7 @@ declare class WorkerManager extends Map<string, AsyncWorker> {
    * @param config - Worker configuration parameters passed to the AsyncWorker constructor
    * @returns The created AsyncWorker which is ready to accept tasks
    */
-  createWorker(name: string, config?: AsyncWorker.Options): Promise<AsyncWorker>;
+  createWorker(name: string, config?: AsyncWorker.ConstructionOptions): Promise<AsyncWorker>;
 
   /**
    * Retire a current Worker, terminating it immediately.
@@ -92,37 +119,27 @@ declare class WorkerManager extends Map<string, AsyncWorker> {
    * @param name - The named worker to terminate
    */
   retireWorker(name: string): void;
-
-  /**
-   * Get a currently active Worker by name.
-   * @param name - The named Worker to retrieve
-   * @returns The AsyncWorker instance
-   * @deprecated since v11, will be removed in v13
-   * @remarks `"WorkerManager#getWorker is deprecated in favor of WorkerManager#get"`
-   * @remarks Throws an error if the name is not in the internal map, while `get` does not.
-   */
-  getWorker(name: string): AsyncWorker;
 }
 
-declare namespace AsyncWorker {
-  interface Options {
-    /**
-     * Should the worker run in debug mode?
-     * @defaultValue `false`
-     */
-    debug?: boolean | undefined;
+declare namespace WorkerManager {
+  interface Any extends AnyWorkerManager {}
+  interface AnyConstructor extends Identity<typeof AnyWorkerManager> {}
 
-    /**
-     * Should the worker automatically load the primitives library?
-     * @defaultValue `false`
-     */
-    loadPrimitives?: boolean | undefined;
+  type WORKER_TASK_ACTIONS = Brand<string, "WorkerManager.WORKER_TASK_ACTIONS">;
 
-    /**
-     * Should the worker operates in script modes? Optional scripts.
-     */
-    scripts?: string[] | undefined;
+  interface WorkerTaskActions {
+    INIT: "init" & WORKER_TASK_ACTIONS;
+    LOAD: "load" & WORKER_TASK_ACTIONS;
+    EXECUTE: "execute" & WORKER_TASK_ACTIONS;
   }
 }
 
 export { AsyncWorker, WorkerManager };
+
+declare abstract class AnyAsyncWorker extends AsyncWorker {
+  constructor(...args: never);
+}
+
+declare abstract class AnyWorkerManager extends WorkerManager {
+  constructor(...args: never);
+}

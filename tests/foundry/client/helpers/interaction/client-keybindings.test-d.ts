@@ -1,23 +1,56 @@
 import { expectTypeOf } from "vitest";
 
 import ClientKeybindings = foundry.helpers.interaction.ClientKeybindings;
+import KeyboardManager = foundry.helpers.interaction.KeyboardManager;
+
+declare const action1: ClientKeybindings.KeybindingAction;
+declare const action2: ClientKeybindings.KeybindingAction;
+
+expectTypeOf(ClientKeybindings.MOVEMENT_DIRECTIONS).toEqualTypeOf<ClientKeybindings.MovementDirections>();
+expectTypeOf(ClientKeybindings.ZOOM_DIRECTIONS).toEqualTypeOf<ClientKeybindings.ZoomDirections>();
+// _compareActions only cares about two properties (the `ActionComparison` interface) but realistically
+// it will be passed full `KeybindingAction`s
+expectTypeOf(ClientKeybindings["_compareActions"](action1, action2)).toBeNumber();
 
 const keybindings = new ClientKeybindings();
 
-expectTypeOf(keybindings.actions).toEqualTypeOf<Map<string, ClientKeybindings.KeybindingActionConfig>>();
+expectTypeOf(keybindings.actions).toEqualTypeOf<
+  Map<`${string}.${string}`, ClientKeybindings.StoredKeybindingActionConfig>
+>();
 expectTypeOf(keybindings.activeKeys).toEqualTypeOf<Map<string, ClientKeybindings.KeybindingAction[]>>();
 expectTypeOf(keybindings.bindings).toEqualTypeOf<
-  Map<string, ClientKeybindings.KeybindingActionBinding[]> | undefined
+  Map<string, ClientKeybindings.StoredKeybindingActionBinding[]> | undefined
 >();
 expectTypeOf(keybindings.moveKeys).toEqualTypeOf<Set<string>>();
 expectTypeOf(keybindings.initialize()).toEqualTypeOf<void>();
 
-declare const kbac: ClientKeybindings.KeybindingActionConfig;
+expectTypeOf(
+  keybindings.register("core", "someAction", {
+    name: "Do the Action",
+    editable: [{ key: "KeyA", modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] }],
+    uneditable: [{ key: "Numpad7", modifiers: ["CONTROL"] }],
+    hint: "Some description of the action to be done",
+    onDown: (context: KeyboardManager.KeyboardEventContext) => (!context.repeat ? true : undefined),
+    onUp: (_context: KeyboardManager.KeyboardEventContext) => !!(Math.random() > 0.5),
+    precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
+    repeat: false,
+    reservedModifiers: [KeyboardManager.MODIFIER_KEYS.SHIFT],
+    restricted: true,
+  }),
+).toEqualTypeOf<void>();
 
-expectTypeOf(keybindings.register("", "", kbac)).toEqualTypeOf<void>();
-expectTypeOf(keybindings.get("", "")).toEqualTypeOf<ClientKeybindings.KeybindingActionBinding[]>();
-expectTypeOf(keybindings.set("", "")).toEqualTypeOf<Promise<void>>();
+expectTypeOf(keybindings.get("core", "someOtherAction")).toEqualTypeOf<
+  ClientKeybindings.StoredKeybindingActionBinding[]
+>();
+
+// setting with no value or explicit undefined clears bindings
+expectTypeOf(keybindings.set("core", "yetAnother")).toEqualTypeOf<Promise<void>>();
+expectTypeOf(keybindings.set("core", "yetAnother", undefined)).toEqualTypeOf<Promise<void>>();
+expectTypeOf(keybindings.set("core", "yetAnother", [{ key: "F7", modifiers: ["SHIFT"] }])).toEqualTypeOf<
+  Promise<void>
+>();
+
 expectTypeOf(keybindings.resetDefaults()).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(ClientKeybindings.MOVEMENT_DIRECTIONS).toEqualTypeOf<ClientKeybindings.MovementDirections>();
-expectTypeOf(ClientKeybindings.ZOOM_DIRECTIONS).toEqualTypeOf<ClientKeybindings.ZoomDirections>();
+declare const view: "game" | "stream";
+expectTypeOf(keybindings["_registerCoreKeybindings"](view)).toBeVoid();

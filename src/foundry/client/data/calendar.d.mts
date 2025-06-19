@@ -1,6 +1,6 @@
 import type DataModel from "#common/abstract/data.d.mts";
 import type * as fields from "#common/data/fields.mjs";
-import type { AnyObject } from "#utils";
+import type { AnyObject, IntentionalPartial } from "#utils";
 
 declare namespace CalendarData {
   interface Schema extends fields.DataSchema {
@@ -237,6 +237,8 @@ declare namespace CalendarData {
     /** Is it a leap year? */
     leapYear: boolean;
   }
+
+  type PartialTimeComponents = IntentionalPartial<TimeComponents>;
 
   /** @returns The returned string format */
   type TimeFormatter = (

@@ -184,7 +184,7 @@ export interface DatabaseUpdateOperation<
   /**
    * A compendium collection ID which contains the Documents
    */
-  pack: string | null;
+  pack?: string | null;
 
   /**
    * A parent Document UUID provided when the parent instance is unavailable
