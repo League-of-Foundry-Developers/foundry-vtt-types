@@ -1,11 +1,17 @@
 import { expectTypeOf } from "vitest";
-import type { ProseMirrorCommand } from "../../../../src/foundry/common/prosemirror/keymaps.d.mts";
+
+import ProseMirrorKeyMaps = foundry.prosemirror.ProseMirrorKeyMaps;
 
 declare const schema: foundry.prosemirror.Schema;
 
-const keymaps = new foundry.prosemirror.ProseMirrorKeyMaps(schema, {});
+expectTypeOf(
+  ProseMirrorKeyMaps.build(schema, { onSave: () => ui.notifications?.success("hi there") }),
+).toEqualTypeOf<foundry.prosemirror.Plugin>();
 
-expectTypeOf(keymaps.onSave()).toEqualTypeOf<void>();
-expectTypeOf(keymaps.buildMapping()).toEqualTypeOf<Record<string, ProseMirrorCommand>>();
+new ProseMirrorKeyMaps(schema);
+new ProseMirrorKeyMaps(schema, { onSave: undefined });
+const keymaps = new ProseMirrorKeyMaps(schema, { onSave: () => console.warn("saved!") });
 
-expectTypeOf(foundry.prosemirror.ProseMirrorKeyMaps.build(schema, {})).toEqualTypeOf<foundry.prosemirror.Plugin>();
+if (keymaps.onSave) expectTypeOf(keymaps.onSave()).toEqualTypeOf<void>();
+
+expectTypeOf(keymaps.buildMapping()).toEqualTypeOf<Record<string, ProseMirrorKeyMaps.Command>>();

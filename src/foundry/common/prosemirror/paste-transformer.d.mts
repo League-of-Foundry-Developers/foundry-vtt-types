@@ -1,22 +1,16 @@
-import type { Schema, Slice } from "prosemirror-model";
+import type { Schema } from "prosemirror-model";
 import type ProseMirrorPlugin from "./plugin.d.mts";
 import type { Plugin } from "prosemirror-state";
-import type { EditorView } from "prosemirror-view";
-import type { EmptyObject } from "#utils";
-
-export default ProseMirrorPasteTransformer;
+import type { AnyObject } from "#utils";
 
 /**
  * A class responsible for applying transformations to content pasted inside the editor.
  */
 declare class ProseMirrorPasteTransformer extends ProseMirrorPlugin {
-  static override build(schema: Schema, options?: EmptyObject): Plugin;
+  /** @remarks `options` is unused */
+  static override build(schema: Schema, options?: AnyObject): Plugin;
 
-  /**
-   * Transform content before it is injected into the ProseMirror document.
-   * @param slice - The content slice.
-   * @param view  - The ProseMirror editor view.
-   * @returns The transformed content.
-   */
-  _onPaste(slice: Slice, view: EditorView): Slice;
+  #ProseMirrorPasteTransformer: true;
 }
+
+export default ProseMirrorPasteTransformer;

@@ -1,4 +1,4 @@
-import type { NodeType } from "prosemirror-model";
+import type { Attrs, NodeType } from "prosemirror-model";
 
 declare module "prosemirror-model" {
   interface ResolvedPos {
@@ -7,6 +7,6 @@ declare module "prosemirror-model" {
      * @param other - The other node type.
      * @param attrs - An object of attributes that must also match, if provided.
      */
-    hasAncestor(other: NodeType, attrs?: ReturnType<ResolvedPos["node"]>["attrs"]): boolean;
+    hasAncestor(other: NodeType, attrs?: Attrs): boolean;
   }
 }

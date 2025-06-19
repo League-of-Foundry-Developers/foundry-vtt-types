@@ -1,61 +1,24 @@
-/* eslint-disable import-x/extensions */
-import type { Node } from "prosemirror-model";
 import { expectTypeOf } from "vitest";
-import {
-  paragraph,
-  blockquote,
-  hr,
-  heading,
-  pre,
-  br,
-} from "../../../../../src/foundry/common/prosemirror/schema/core.mjs";
+import { paragraph, blockquote, hr, heading, pre, br } from "#common/prosemirror/schema/core.mjs";
+import type { RequiredProps } from "#utils";
+import type { NodeSpec } from "prosemirror-model";
 
-expectTypeOf(paragraph).toEqualTypeOf<{
-  attrs: Record<string, unknown>;
-  managed: Record<string, unknown>;
-  content: string;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: (node: Node) => [string, Record<string, string>, number] | [string, number];
-}>();
+expectTypeOf(paragraph).toEqualTypeOf<
+  RequiredProps<NodeSpec, "attrs" | "managed" | "content" | "group" | "parseDOM" | "toDOM">
+>();
 
-expectTypeOf(blockquote).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(blockquote).toEqualTypeOf<
+  RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">
+>();
 
-expectTypeOf(hr).toEqualTypeOf<{
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-}>();
+expectTypeOf(hr).toEqualTypeOf<RequiredProps<NodeSpec, "group" | "parseDOM" | "toDOM">>();
 
-expectTypeOf(heading).toEqualTypeOf<{
-  attrs: Record<string, unknown>;
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: (node: Node) => [string, number];
-}>();
+expectTypeOf(heading).toEqualTypeOf<
+  RequiredProps<NodeSpec, "attrs" | "content" | "group" | "defining" | "parseDOM" | "toDOM">
+>();
 
-expectTypeOf(pre).toEqualTypeOf<{
-  content: string;
-  marks: string;
-  group: string;
-  code: boolean;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, [string, number]];
-}>();
+expectTypeOf(pre).toEqualTypeOf<
+  RequiredProps<NodeSpec, "content" | "marks" | "group" | "code" | "defining" | "parseDOM" | "toDOM">
+>();
 
-expectTypeOf(br).toEqualTypeOf<{
-  inline: boolean;
-  group: string;
-  selectable: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-}>();
+expectTypeOf(br).toEqualTypeOf<RequiredProps<NodeSpec, "inline" | "group" | "selectable" | "parseDOM" | "toDOM">>();

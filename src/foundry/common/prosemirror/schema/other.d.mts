@@ -1,149 +1,44 @@
-export declare const details: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+import type { RequiredProps } from "#utils";
+import type { NodeSpec } from "prosemirror-model";
 
-export declare const summary: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const details: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const summaryBlock: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const summary: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const dl: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const summaryBlock: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const dt: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const dl: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const dd: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const dt: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const fieldset: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const dd: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const legend: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const fieldset: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const picture: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const legend: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const audio: {
-  content: string;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const picture: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const video: {
-  content: string;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const audio: RequiredProps<NodeSpec, "content" | "group" | "parseDOM" | "toDOM">;
 
-export declare const track: {
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-};
+export declare const video: RequiredProps<NodeSpec, "content" | "group" | "parseDOM" | "toDOM">;
 
-export declare const source: {
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-};
+export declare const track: RequiredProps<NodeSpec, "parseDOM" | "toDOM">;
 
-export declare const object: {
-  inline: boolean;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-};
+export declare const source: RequiredProps<NodeSpec, "parseDOM" | "toDOM">;
 
-export declare const figure: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const object: RequiredProps<NodeSpec, "inline" | "group" | "parseDOM" | "toDOM">;
 
-export declare const figcaption: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const figure: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const small: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const figcaption: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const ruby: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const small: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const rp: {
-  content: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const ruby: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
 
-export declare const rt: {
-  content: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const rp: RequiredProps<NodeSpec, "content" | "parseDOM" | "toDOM">;
 
-export declare const iframe: {
-  attrs: Record<string, unknown>;
-  managed: Record<string, unknown>;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, unknown];
-};
+export declare const rt: RequiredProps<NodeSpec, "content" | "parseDOM" | "toDOM">;
+
+export declare const iframe: RequiredProps<NodeSpec, "attrs" | "managed" | "group" | "defining" | "parseDOM" | "toDOM">;

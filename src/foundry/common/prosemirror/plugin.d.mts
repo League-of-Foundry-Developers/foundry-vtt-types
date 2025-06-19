@@ -1,8 +1,5 @@
 import type { Schema } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
-import type { AnyObject } from "#utils";
-
-export default ProseMirrorPlugin;
 
 declare abstract class ProseMirrorPlugin {
   /**
@@ -12,14 +9,20 @@ declare abstract class ProseMirrorPlugin {
    */
   constructor(schema: Schema);
 
-  /** The schema to build the plugin against. */
-  schema: Schema;
+  /**
+   * The schema to build the plugin against.
+   * @remarks `defineProperty`'d in construction, and without the property existing prior, it defaults to `writable: false`
+   */
+  readonly schema: Schema;
 
   /**
    * Build the plugin.
    * @param schema - The ProseMirror schema to build the plugin against.
    * @param options - Additional options to pass to the plugin.
    * @abstract
+   * @remarks Throws if not overridden
    */
-  static build(schema: Schema, options?: AnyObject): Plugin;
+  static build(schema: Schema, options: never): Plugin;
 }
+
+export default ProseMirrorPlugin;

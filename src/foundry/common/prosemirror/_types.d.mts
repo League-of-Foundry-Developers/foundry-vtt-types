@@ -1,3 +1,9 @@
+import type { transformSlice } from "./util.d.mts";
+import type StringSerializer from "./string-serializer.d.mts";
+import type ProseMirrorDropDown from "./dropdown.d.mts";
+import type ProseMirrorMenu from "./menu.d.mts";
+import type ProseMirrorKeyMaps from "./keymaps.d.mts";
+import type ProseMirrorContentLinkPlugin from "./content-link-plugin.d.mts";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 // After seeing that none of these types add anything or are even exported a
@@ -7,25 +13,24 @@
 // them here because it has poor discoverability. The names Foundry has chosen
 // also overlaps with other existing names, such as SettingConfig vs. ClientSetting.SettingConfig
 
-// TODO: Stubs
 export {};
 
-type ProseMirrorContentLinkOptions = unknown;
+type ProseMirrorContentLinkOptions = ProseMirrorContentLinkPlugin.ConstructionOptions;
 
-type ProseMirrorMenuOptions = unknown;
+type ProseMirrorMenuOptions = ProseMirrorMenu.ConstructionOptions;
 
-type ProseMirrorMenuItem = unknown;
+type ProseMirrorMenuItem = ProseMirrorMenu.Item;
 
-type ProseMirrorDropDownEntry = unknown;
+type ProseMirrorDropDownEntry = ProseMirrorDropDown.Entry;
 
-type ProseMirrorDropDownConfig = unknown;
+type ProseMirrorDropDownConfig = ProseMirrorDropDown.Config;
 
-type ProseMirrorCommand = unknown;
+type ProseMirrorCommand = ProseMirrorKeyMaps.Command;
 
-type MenuToggleBlockWrapCommand = unknown;
+type MenuToggleBlockWrapCommand = ProseMirrorMenu.ToggleBlockWrapCommand;
 
-type ProseMirrorNodeOutput = unknown;
+type ProseMirrorNodeOutput = StringSerializer.NodeOutput;
 
-type ProseMirrorMarkOutput = unknown;
+type ProseMirrorMarkOutput = StringSerializer.MarkOutput;
 
-type ProseMirrorSliceTransformer = unknown;
+type ProseMirrorSliceTransformer = transformSlice.SliceTransformer;

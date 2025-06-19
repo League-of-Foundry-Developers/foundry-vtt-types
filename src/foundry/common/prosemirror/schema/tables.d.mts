@@ -1,106 +1,47 @@
-import { Node } from "prosemirror-model";
+import type { RequiredProps } from "#utils";
+import type { NodeSpec } from "prosemirror-model";
 
 export declare const builtInTableNodes: {
-  table: Record<string, unknown>;
-  table_cell: Record<string, unknown>;
-  table_header: Record<string, unknown>;
-  table_row: Record<string, unknown>;
+  table: NodeSpec;
+  table_cell: NodeSpec;
+  table_header: NodeSpec;
+  table_row: NodeSpec;
 };
 
-export declare const tableComplex: {
-  content: string;
-  isolating: boolean;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const tableComplex: RequiredProps<NodeSpec, "content" | "isolating" | "group" | "parseDOM" | "toDOM">;
 
-export declare const colgroup: {
-  content: string;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const colgroup: RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">;
 
-export declare const col: {
-  tableRole: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-};
+export declare const col: RequiredProps<NodeSpec, "tableRole" | "parseDOM" | "toDOM">;
 
-export declare const thead: {
-  content: string;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const thead: RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">;
 
-export declare const tbody: {
-  content: string;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const tbody: RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">;
 
-export declare const tfoot: {
-  content: string;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const tfoot: RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">;
 
-export declare const caption: {
-  content: string;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const caption: RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">;
 
-export declare const captionBlock: {
-  content: string;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const captionBlock: RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">;
 
-export declare const tableRowComplex: {
-  content: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const tableRowComplex: RequiredProps<NodeSpec, "content" | "parseDOM" | "toDOM">;
 
-export declare const tableCellComplex: {
-  content: string;
-  attrs: Record<string, unknown>;
-  managed: Record<string, string[]>;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>;
-  toDOM: (node: Node) => [string, unknown, number];
-};
+export declare const tableCellComplex: RequiredProps<
+  NodeSpec,
+  "content" | "attrs" | "managed" | "isolating" | "parseDOM" | "toDOM"
+>;
 
-export declare const tableCellComplexBlock: {
-  content: string;
-  attrs: Record<string, unknown>;
-  managed: Record<string, string[]>;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>;
-  toDOM: (node: Node) => [string, unknown, number];
-};
+export declare const tableCellComplexBlock: RequiredProps<
+  NodeSpec,
+  "content" | "attrs" | "managed" | "isolating" | "parseDOM" | "toDOM"
+>;
 
-export declare const tableHeaderComplex: {
-  content: string;
-  attrs: Record<string, unknown>;
-  managed: Record<string, string[]>;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>;
-  toDOM: (node: Node) => [string, unknown, number];
-};
+export declare const tableHeaderComplex: RequiredProps<
+  NodeSpec,
+  "content" | "attrs" | "managed" | "isolating" | "parseDOM" | "toDOM"
+>;
 
-export declare const tableHeaderComplexBlock: {
-  content: string;
-  attrs: Record<string, unknown>;
-  managed: Record<string, string[]>;
-  isolating: boolean;
-  parseDOM: Record<string, unknown>;
-  toDOM: (node: Node) => [string, unknown, number];
-};
+export declare const tableHeaderComplexBlock: RequiredProps<
+  NodeSpec,
+  "content" | "attrs" | "managed" | "isolating" | "parseDOM" | "toDOM"
+>;

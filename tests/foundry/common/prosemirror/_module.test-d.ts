@@ -20,37 +20,38 @@ import * as transform from "prosemirror-transform";
 import * as list from "prosemirror-schema-list";
 import type ProseMirrorMenu from "../../../../src/foundry/common/prosemirror/menu.d.mts";
 import type ProseMirrorPlugin from "../../../../src/foundry/common/prosemirror/plugin.d.mts";
+import { nodes, marks } from "#common/prosemirror/schema.mjs";
 
-expectTypeOf(foundry.prosemirror).toEqualTypeOf<typeof ProseMirror>();
+expectTypeOf(foundry.prosemirror.commands).toEqualTypeOf<typeof commands>();
+expectTypeOf(foundry.prosemirror.transform).toEqualTypeOf<typeof transform>();
+expectTypeOf(foundry.prosemirror.list).toEqualTypeOf<typeof list>();
+expectTypeOf(foundry.prosemirror.tables).toEqualTypeOf<typeof tables>();
+expectTypeOf(foundry.prosemirror.input).toEqualTypeOf<typeof input>();
+expectTypeOf(foundry.prosemirror.state).toEqualTypeOf<typeof state>();
 
-expectTypeOf(ProseMirror.commands).toEqualTypeOf<typeof commands>();
-expectTypeOf(ProseMirror.transform).toEqualTypeOf<typeof transform>();
-expectTypeOf(ProseMirror.list).toEqualTypeOf<typeof list>();
-expectTypeOf(ProseMirror.tables).toEqualTypeOf<typeof tables>();
-expectTypeOf(ProseMirror.input).toEqualTypeOf<typeof input>();
-expectTypeOf(ProseMirror.state).toEqualTypeOf<typeof state>();
-
-expectTypeOf(ProseMirror.AllSelection).toEqualTypeOf<typeof state.AllSelection>();
-expectTypeOf(ProseMirror.TextSelection).toEqualTypeOf<typeof state.TextSelection>();
-expectTypeOf(ProseMirror.DOMParser).toEqualTypeOf<typeof DOMParser>();
-expectTypeOf(ProseMirror.DOMSerializer).toEqualTypeOf<typeof DOMSerializer>();
-expectTypeOf(ProseMirror.EditorState).toEqualTypeOf<typeof state.EditorState>();
-expectTypeOf(ProseMirror.EditorView).toEqualTypeOf<typeof EditorView>();
-expectTypeOf(ProseMirror.Schema).toEqualTypeOf<typeof Schema>();
-expectTypeOf(ProseMirror.Step).toEqualTypeOf<typeof Step>();
-expectTypeOf(ProseMirror.Plugin).toEqualTypeOf<typeof state.Plugin>();
-expectTypeOf(ProseMirror.PluginKey).toEqualTypeOf<typeof state.PluginKey>();
-expectTypeOf(ProseMirror.ProseMirrorPlugin).toEqualTypeOf<typeof ProseMirrorPlugin>();
-expectTypeOf(ProseMirror.ProseMirrorContentLinkPlugin).toEqualTypeOf<typeof ProseMirrorContentLinkPlugin>();
-expectTypeOf(ProseMirror.ProseMirrorHighlightMatchesPlugin).toEqualTypeOf<typeof ProseMirrorHighlightMatchesPlugin>();
-expectTypeOf(ProseMirror.ProseMirrorDirtyPlugin).toEqualTypeOf<typeof ProseMirrorDirtyPlugin>();
-expectTypeOf(ProseMirror.ProseMirrorImagePlugin).toEqualTypeOf<typeof ProseMirrorImagePlugin>();
-expectTypeOf(ProseMirror.ProseMirrorClickHandler).toEqualTypeOf<typeof ProseMirrorClickHandler>();
-expectTypeOf(ProseMirror.ProseMirrorInputRules).toEqualTypeOf<typeof ProseMirrorInputRules>();
-expectTypeOf(ProseMirror.ProseMirrorKeyMaps).toEqualTypeOf<typeof ProseMirrorKeyMaps>();
-expectTypeOf(ProseMirror.ProseMirrorMenu).toEqualTypeOf<typeof ProseMirrorMenu>();
-expectTypeOf(ProseMirror.collab).toEqualTypeOf<typeof collab>();
-expectTypeOf(ProseMirror.defaultPlugins).toEqualTypeOf<
+expectTypeOf(foundry.prosemirror.AllSelection).toEqualTypeOf<typeof state.AllSelection>();
+expectTypeOf(foundry.prosemirror.TextSelection).toEqualTypeOf<typeof state.TextSelection>();
+expectTypeOf(foundry.prosemirror.DOMParser).toEqualTypeOf<typeof DOMParser>();
+expectTypeOf(foundry.prosemirror.DOMSerializer).toEqualTypeOf<typeof DOMSerializer>();
+expectTypeOf(foundry.prosemirror.EditorState).toEqualTypeOf<typeof state.EditorState>();
+expectTypeOf(foundry.prosemirror.EditorView).toEqualTypeOf<typeof EditorView>();
+expectTypeOf(foundry.prosemirror.Schema).toEqualTypeOf<typeof Schema>();
+expectTypeOf(foundry.prosemirror.Step).toEqualTypeOf<typeof Step>();
+expectTypeOf(foundry.prosemirror.Plugin).toEqualTypeOf<typeof state.Plugin>();
+expectTypeOf(foundry.prosemirror.PluginKey).toEqualTypeOf<typeof state.PluginKey>();
+expectTypeOf(foundry.prosemirror.ProseMirrorPlugin).toEqualTypeOf<typeof ProseMirrorPlugin>();
+expectTypeOf(foundry.prosemirror.ProseMirrorContentLinkPlugin).toEqualTypeOf<typeof ProseMirrorContentLinkPlugin>();
+expectTypeOf(foundry.prosemirror.ProseMirrorHighlightMatchesPlugin).toEqualTypeOf<
+  typeof ProseMirrorHighlightMatchesPlugin
+>();
+expectTypeOf(foundry.prosemirror.ProseMirrorDirtyPlugin).toEqualTypeOf<typeof ProseMirrorDirtyPlugin>();
+expectTypeOf(foundry.prosemirror.ProseMirrorImagePlugin).toEqualTypeOf<typeof ProseMirrorImagePlugin>();
+expectTypeOf(foundry.prosemirror.ProseMirrorClickHandler).toEqualTypeOf<typeof ProseMirrorClickHandler>();
+expectTypeOf(foundry.prosemirror.ProseMirrorInputRules).toEqualTypeOf<typeof ProseMirrorInputRules>();
+expectTypeOf(foundry.prosemirror.ProseMirrorKeyMaps).toEqualTypeOf<typeof ProseMirrorKeyMaps>();
+expectTypeOf(foundry.prosemirror.ProseMirrorMenu).toEqualTypeOf<typeof ProseMirrorMenu>();
+expectTypeOf(foundry.prosemirror.collab).toEqualTypeOf<typeof collab>();
+expectTypeOf(foundry.prosemirror.defaultPlugins).toEqualTypeOf<
   Record<
     | "inputRules"
     | "keyMaps"
@@ -67,11 +68,12 @@ expectTypeOf(ProseMirror.defaultPlugins).toEqualTypeOf<
     state.Plugin
   >
 >();
-expectTypeOf(ProseMirror.defaultSchema).toEqualTypeOf<Schema>();
-expectTypeOf(ProseMirror.dom).toEqualTypeOf<{
+
+expectTypeOf(foundry.prosemirror.defaultSchema).toEqualTypeOf<Schema<keyof typeof nodes, keyof typeof marks>>();
+expectTypeOf(foundry.prosemirror.dom).toEqualTypeOf<{
   parser: DOMParser;
   serializer: DOMSerializer;
   parseString: typeof parseHTMLString;
   serializeString: typeof serializeHTMLString;
 }>();
-expectTypeOf(ProseMirror.keymap).toEqualTypeOf<typeof keymap>();
+expectTypeOf(foundry.prosemirror.keymap).toEqualTypeOf<typeof keymap>();
