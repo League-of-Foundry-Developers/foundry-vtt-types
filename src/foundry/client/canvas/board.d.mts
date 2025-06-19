@@ -722,6 +722,20 @@ declare namespace Canvas {
   type PairOfPointsTuple = [x0: number, y0: number, x1: number, y1: number];
 
   /**
+   * A 3D point, expessed as \{x, y, elevation\}.
+   */
+  interface ElevatedPoint {
+    /** The x-coordinate in pixels */
+    x: number;
+
+    /** The y-coordinate in pixels */
+    y: number;
+
+    /** The elevation in grid units */
+    elevation: number;
+  }
+
+  /**
    * A standard rectangle interface.
    * @remarks Copied from `resources/app/common/types.mjs`
    */
