@@ -3,6 +3,9 @@ import type {
   ProseMirrorMarkOutput as _ProseMirrorMarkOutput,
   ProseMirrorNodeOutput as _ProseMirrorNodeOutput,
 } from "./string-serializer.d.mts";
+import type ProseMirrorDropDown from "./dropdown.d.mts";
+import type ProseMirrorMenu from "./menu.d.mts";
+import type ProseMirrorKeyMaps from "./keymaps.d.mts";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 // After seeing that none of these types add anything or are even exported a
@@ -17,17 +20,17 @@ export {};
 
 type ProseMirrorContentLinkOptions = unknown;
 
-type ProseMirrorMenuOptions = unknown;
+type ProseMirrorMenuOptions = ProseMirrorMenu.ConstructionOptions;
 
-type ProseMirrorMenuItem = unknown;
+type ProseMirrorMenuItem = ProseMirrorMenu.Item;
 
-type ProseMirrorDropDownEntry = unknown;
+type ProseMirrorDropDownEntry = ProseMirrorDropDown.Entry;
 
-type ProseMirrorDropDownConfig = unknown;
+type ProseMirrorDropDownConfig = ProseMirrorDropDown.Config;
 
-type ProseMirrorCommand = unknown;
+type ProseMirrorCommand = ProseMirrorKeyMaps.Command;
 
-type MenuToggleBlockWrapCommand = unknown;
+type MenuToggleBlockWrapCommand = ProseMirrorMenu.ToggleBlockWrapCommand;
 
 type ProseMirrorNodeOutput = _ProseMirrorNodeOutput;
 

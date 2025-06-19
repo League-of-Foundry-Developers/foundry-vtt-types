@@ -1,33 +1,10 @@
 import type { Attrs, MarkType, NodeType, Schema } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
 import type { EditorView } from "prosemirror-view";
-import type { ProseMirrorCommand } from "./keymaps.d.mts";
+import type ProseMirrorKeyMaps from "./keymaps.d.mts";
 import type ProseMirrorPlugin from "./plugin.d.mts";
-
-// It's here, as defined, but it should probably be put in dropdown.d.ts
-export declare namespace ProseMirrorDropDown {
-  export interface Entry extends ProseMirrorMenu.Item {
-    /** Any child entries. */
-    children?: Entry[];
-  }
-
-  export interface Config {
-    /** The default title of the drop-down. */
-    title: string;
-
-    /** The menu CSS class. */
-    cssClass: string;
-
-    /** The drop-down entries. */
-    entries: Entry[];
-  }
-}
-
-/**
- * @param node  - The node to wrap the selection in.
- * @param attrs - Attributes for the node.
- */
-export type MenuToggleBlockWrapCommand = (node: NodeType, attrs?: Attrs) => ProseMirrorCommand;
+import type { AnyObject, Brand, InexactPartial } from "#utils";
+import type ProseMirrorDropDown from "./dropdown.d.mts";
 
 /**
  * A class responsible for building a menu for a ProseMirror instance.
@@ -38,46 +15,49 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
    * @param view    - The editor view.
    * @param options - Additional options to configure the plugin's behaviour.
    */
-  constructor(schema: Schema, view: EditorView, options?: ProseMirrorMenu.ProseMirrorMenuOptions);
-
-  // placeholder private attribute to support subclassing.
-  #proseMirrorMenu: true;
+  constructor(schema: Schema, view: EditorView, options?: ProseMirrorMenu.ConstructionOptions);
 
   /**
    * The editor view.
+   * @remarks `defineProperty`'d in construction, and without the property existing prior, defaults to `writable: false`
    */
-  view: EditorView;
+  readonly view: EditorView;
 
   /**
    * The items configured for this menu.
+   * @remarks `defineProperty`'d in construction, and without the property existing prior, defaults to `writable: false`
    */
-  items: ProseMirrorMenu.Item[];
+  readonly items: ProseMirrorMenu.Item[];
 
   /**
    * The ID of the menu element in the DOM.
+   * @remarks `defineProperty`'d in construction, explicitly `writable: false`
    */
   readonly id: `prosemirror-menu-${string}`;
 
   /**
    * An enumeration of editor scopes in which a menu item can appear
    */
-  protected static _MENU_ITEM_SCOPES: {
-    BOTH: "";
-    TEXT: "text";
-    HTML: "html";
-  };
+  protected static _MENU_ITEM_SCOPES: ProseMirrorMenu.MenuItemScopes;
 
   /**
    * Additional options to configure the plugin's behaviour.
    */
-  options: ProseMirrorMenu.ProseMirrorMenuOptions;
+  options: ProseMirrorMenu.ConstructionOptions;
 
   /**
    * The dropdowns configured for this menu.
+   * @remarks `defineProperty`'d in {@linkcode _createDropDowns}, which is called during construction,
+   * and without the property existing prior, it defaults to `writable: false`
    */
-  dropdowns: ProseMirrorDropDown.Entry[];
+  readonly dropdowns: ProseMirrorDropDown[];
 
-  static override build(schema: Schema, options?: ProseMirrorMenu.ProseMirrorMenuOptions): Plugin;
+  /**
+   * Track whether we are currently in a state of editing the HTML source.
+   */
+  get editingSource(): boolean;
+
+  static override build(schema: Schema, options?: ProseMirrorMenu.ConstructionOptions): Plugin;
 
   /**
    * Render the menu's HTML.
@@ -94,8 +74,9 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
    * Called whenever the view's state is updated.
    * @param view      - The current editor state.
    * @param prevState - The previous editor state.
+   * @remarks Both parameters are unused
    */
-  update(view: EditorView, prevState: EditorView): void;
+  update(view?: EditorView, prevState?: EditorView): void;
 
   /**
    * Called when the view is destroyed or receives a state with different plugins.
@@ -151,6 +132,7 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
 
   /**
    * Handle requests to save the editor contents
+   * @remarks Returns `this.options.onSave?.()`
    */
   protected _handleSave(): void;
 
@@ -179,14 +161,13 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
    * @param action   - The unique menu button action.
    * @param template - The dialog's template.
    * @param options  - Additional options to configure the dialog's behaviour.
+   * @remarks The above is misleading, there's no behavior to configure,
+   * just a place to pass a handlebars context for the template
    */
   protected _showDialog(
     action: string,
     template: string,
-    options?: {
-      /** Data to pass to the template. (default: `{}`) */
-      data: Record<string, unknown>;
-    },
+    options?: ProseMirrorMenu.ShowDialogOptions,
   ): Promise<HTMLDialogElement>;
 
   /**
@@ -207,8 +188,8 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
    */
   protected _toggleBlock(
     node: NodeType,
-    wrap: MenuToggleBlockWrapCommand,
-    options?: { /** Attributes for the node. */ attrs?: object },
+    wrap: ProseMirrorMenu.ToggleBlockWrapCommand,
+    options?: ProseMirrorMenu.ToggleBlockOptions,
   ): void;
 
   /**
@@ -216,11 +197,21 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
    * @param node    - The type of node being interacted with.
    * @param options - Additional options to configure behaviour.
    */
-  protected _toggleTextBlock(node: NodeType, options?: { /** Attributes for the node. */ attrs?: object }): void;
+  protected _toggleTextBlock(node: NodeType, options?: ProseMirrorMenu.ToggleTextBlockOptions): void;
+
+  #ProseMirrorMenu: true;
 }
 
-export declare namespace ProseMirrorMenu {
-  export interface ProseMirrorMenuOptions {
+declare namespace ProseMirrorMenu {
+  type MENU_ITEM_SCOPES = Brand<string, "ProseMirrorMenu.MENU_ITEM_SCOPES">;
+
+  interface MenuItemScopes {
+    BOTH: "" & MENU_ITEM_SCOPES;
+    TEXT: "text" & MENU_ITEM_SCOPES;
+    HTML: "html" & MENU_ITEM_SCOPES;
+  }
+
+  interface ConstructionOptions {
     /** A function to call when the save button is pressed. */
     onSave?: () => void;
 
@@ -231,7 +222,28 @@ export declare namespace ProseMirrorMenu {
     compact?: boolean;
   }
 
-  export interface Item {
+  /** @internal */
+  type _ShowDialogOptions = InexactPartial<{
+    /**
+     * Data to pass to the template.
+     * @defaultValue `{}`
+     */
+    data: AnyObject;
+  }>;
+
+  interface ShowDialogOptions extends _ShowDialogOptions {}
+
+  /** @internal */
+  type _Attrs = InexactPartial<{
+    /** Attributes for the node. */
+    attrs: Attrs;
+  }>;
+
+  interface ToggleBlockOptions extends _Attrs {}
+
+  interface ToggleTextBlockOptions extends _Attrs {}
+
+  interface Item {
     /** A string identifier for this menu item. */
     action: string;
 
@@ -260,11 +272,17 @@ export declare namespace ProseMirrorMenu {
     priority?: number;
 
     /** The command to run when the menu item is clicked. */
-    cmd?: ProseMirrorCommand;
+    cmd?: ProseMirrorKeyMaps.Command;
 
     /** Whether the current item is active under the given selection or cursor. (default: `false`) */
     active?: boolean;
   }
+
+  /**
+   * @param node  - The node to wrap the selection in.
+   * @param attrs - Attributes for the node.
+   */
+  type ToggleBlockWrapCommand = (node: NodeType, attrs?: Attrs) => ProseMirrorKeyMaps.Command;
 }
 
 export default ProseMirrorMenu;

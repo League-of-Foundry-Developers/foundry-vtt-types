@@ -11,7 +11,8 @@ declare abstract class SchemaDefinition {
 
   /**
    * Schema attributes
-   * @remarks Foundry marked `@abstract`; Throws if not overridden
+   * @abstract
+   * @remarks Throws if not overridden
    */
   static get attrs(): Record<string, AttributeSpec>;
 
@@ -19,19 +20,22 @@ declare abstract class SchemaDefinition {
    * Check if an HTML element is appropriate to represent as this node, and if so, extract its schema attributes.
    * @param el - The HTML element
    * @returns Returns false if the HTML element is not appropriate for this schema node, otherwise returns its attributes.
-   * @remarks Foundry marked `@abstract`; Throws if not overridden
+   * @abstract
+   * @remarks Throws if not overridden
    */
   static getAttrs(el: HTMLElement): SchemaDefinition.GetAttrsReturn;
 
   /**
    * Convert a ProseMirror Node back into an HTML element.
    * @param node - The ProseMirror node.
-   * @remarks Foundry marked `@abstract`; Throws if not overridden
+   * @abstract
+   * @remarks Throws if not overridden
    */
   static toDOM(node: Node): SchemaDefinition.DOMOutputSpecTuple;
 
   /**
    * Create the ProseMirror schema specification.
+   * @abstract
    * @remarks Foundry marked `@abstract` but does *not* throw if not overridden, subclasses all `return mergeObject(super.make(), ...)`
    */
   static make(): NodeSpec | MarkSpec;
