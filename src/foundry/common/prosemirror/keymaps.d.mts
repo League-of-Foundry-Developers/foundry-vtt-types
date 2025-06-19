@@ -33,7 +33,7 @@ declare class ProseMirrorKeyMaps extends ProseMirrorPlugin {
 declare namespace ProseMirrorKeyMaps {
   interface Options {
     /** A function to call when Ctrl+S is pressed. */
-    onSave?: () => void;
+    onSave?: (() => void) | undefined;
   }
 
   /**
