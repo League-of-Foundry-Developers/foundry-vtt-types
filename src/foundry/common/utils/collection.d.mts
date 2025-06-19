@@ -20,7 +20,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
   /**
    * When iterating over a Collection, we should iterate over its values instead of over its entries
    */
-  [Symbol.iterator](): IterableIterator<V>;
+  [Symbol.iterator](): MapIterator<V>;
 
   /**
    * Return an Array of all the entry values in the Collection

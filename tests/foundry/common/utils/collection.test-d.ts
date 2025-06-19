@@ -2,6 +2,10 @@ import { expectTypeOf, test } from "vitest";
 
 const c = new Collection<string>();
 
+for (const el of c) {
+  expectTypeOf(el).toBeString();
+}
+
 expectTypeOf(c.contents).toEqualTypeOf<string[]>();
 
 expectTypeOf(c.toJSON()).toEqualTypeOf<string[]>();

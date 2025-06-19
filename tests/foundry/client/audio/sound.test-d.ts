@@ -142,7 +142,7 @@ const eventCallback = (e: Event) => console.log(e);
 expectTypeOf(sound.addEventListener("eventName", eventCallback)).toBeVoid();
 expectTypeOf(sound.addEventListener("eventName", eventCallback, {})).toBeVoid();
 expectTypeOf(sound.addEventListener("eventName", eventCallback, { once: true })).toBeVoid();
-expectTypeOf(sound.addEventListener("eventName", eventCallback, { once: null })).toBeVoid();
+expectTypeOf(sound.addEventListener("eventName", eventCallback, { once: undefined })).toBeVoid();
 
 expectTypeOf(sound.removeEventListener("eventName", eventCallback)).toBeVoid();
 expectTypeOf(sound.dispatchEvent(new Event("eventName"))).toBeBoolean();

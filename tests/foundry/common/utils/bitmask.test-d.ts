@@ -1,6 +1,8 @@
 import { expect, expectTypeOf } from "vitest";
+import BitMask = foundry.utils.BitMask;
 
-const b = new foundry.utils.BitMask({ foo: true, bar: false });
+const _emptyBitmask = new BitMask();
+const b = new BitMask({ foo: true, bar: false });
 
 // test assignability to number
 const n: number = b;
@@ -36,13 +38,13 @@ expectTypeOf(b.clear()).toEqualTypeOf<void>();
 expectTypeOf(b.valueOf()).toEqualTypeOf<number>();
 expectTypeOf(b.toString()).toEqualTypeOf<string>();
 
-const b2 = new foundry.utils.BitMask({ a: true });
+const b2 = new BitMask({ a: true });
 expectTypeOf(b.isCompatible(b2)).toEqualTypeOf<boolean>();
 
 expectTypeOf(b.toJSON()).toEqualTypeOf<string>();
 
-expectTypeOf(foundry.utils.BitMask.fromJSON('{"a": true}')).toEqualTypeOf<foundry.utils.BitMask.Any>();
+expectTypeOf(BitMask.fromJSON('{"a": true}')).toEqualTypeOf<BitMask.Any>();
 expectTypeOf(b.toObject()).toEqualTypeOf<Record<string, boolean>>();
 expectTypeOf(b.clone()).toEqualTypeOf<typeof b>();
 
-expectTypeOf(foundry.utils.BitMask.generateShaderBitMaskConstants(["a"])).toEqualTypeOf<string>();
+expectTypeOf(BitMask.generateShaderBitMaskConstants(["a"])).toEqualTypeOf<string>();

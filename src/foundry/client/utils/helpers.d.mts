@@ -1,4 +1,4 @@
-import type { AnyObject, MustBeValidUuid, NullishProps } from "#utils";
+import type { AnyObject, InexactPartial, MustBeValidUuid } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 
 /**
@@ -23,13 +23,19 @@ export function saveDataToFile(data: string, type: string, filename: string): vo
  */
 export function readTextFromFile(file: File): Promise<string>;
 
-export interface FromUuidOptions {
+/** @internal */
+type _FromUuidOptions = InexactPartial<{
   /** A Document to resolve relative UUIDs against. */
-  relative?: ClientDocument;
+  relative: Document.Any;
 
-  /** Allow retrieving an invalid Document. (default: `false`) */
-  invalid?: boolean;
-}
+  /**
+   * Allow retrieving an invalid Document.
+   * @defaultValue `false`
+   */
+  invalid: boolean;
+}>;
+
+export interface FromUuidOptions extends _FromUuidOptions {}
 
 /**
  * Retrieve an Entity or Embedded Entity by its Universally Unique Identifier (uuid).
@@ -41,16 +47,16 @@ export function fromUuid<ConcreteDocument extends Document.Any = __UnsetDocument
   options?: FromUuidOptions,
 ): Promise<(__UnsetDocument extends ConcreteDocument ? FromUuid<Uuid> : ConcreteDocument) | null>;
 
-export interface FromUuidSyncOptions {
-  /** A Document to resolve relative UUIDs against. */
-  relative?: ClientDocument;
+/** @internal */
+type _FromUuidSyncOptions = InexactPartial<{
+  /**
+   * Throw an error if the UUID cannot be resolved synchronously.
+   * @defaultValue `true`
+   */
+  strict: boolean;
+}>;
 
-  /** Allow retrieving an invalid Document. (default: `false`) */
-  invalid?: boolean;
-
-  /** Throw an error if the UUID cannot be resolved synchronously. (default: `true`) */
-  strict?: boolean;
-}
+export interface FromUuidSyncOptions extends _FromUuidOptions, _FromUuidSyncOptions {}
 
 /**
  * Retrieve a Document by its Universally Unique Identifier (uuid) synchronously. If the uuid resolves to a compendium
@@ -96,6 +102,7 @@ type FromUuidValidate<
  * Return a reference to the Document class implementation which is configured for use.
  * @param documentName - The canonical Document name, for example "Actor"
  * @returns configured Document class implementation
+ * @privateRemarks Foundry types this as `| undefined` but they can't enforce passing a valid Document type
  */
 export function getDocumentClass<Name extends Document.Type>(documentName: Name): Document.ImplementationClassFor<Name>;
 
@@ -107,7 +114,7 @@ export function getDocumentClass<Name extends Document.Type>(documentName: Name)
  */
 export function getPlaceableObjectClass<Name extends Document.PlaceableType>(
   documentName: Name,
-): Document.ObjectClassFor<Name>;
+): Document.ObjectClassFor<Name> | undefined;
 
 export interface SortOptions<T, SortKey extends string = "sort"> {
   /**
@@ -187,7 +194,7 @@ export function parseHTML(htmlString: string): HTMLCollection | HTMLElement;
 export function getCacheBustURL(src: string): string | false;
 
 /** @internal */
-type _FetchResourceOptions = NullishProps<{
+type _FetchResourceOptions = InexactPartial<{
   /**
    * Append a cache-busting query parameter to the request.
    * @defaultValue `false`

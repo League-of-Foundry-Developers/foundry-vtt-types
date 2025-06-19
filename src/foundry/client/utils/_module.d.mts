@@ -5,6 +5,8 @@
 
 import type { SortOptions as OriginalSortOptions, performIntegerSort } from "./helpers.mjs";
 
+// eslint-disable-next-line import-x/export
+export * from "./_types.mjs";
 export * from "#common/utils/_module.mjs";
 export * from "./helpers.mjs";
 

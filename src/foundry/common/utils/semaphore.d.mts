@@ -1,16 +1,19 @@
+import type { Identity } from "#utils";
+
 /**
  * A simple Semaphore implementation which provides a limited queue for ensuring proper concurrency.
  *
- * @example Some async function that takes time to execute
- * ```typescript
- * function fn(x: string): Promise<string> {
+ * @example Using a Semaphore
+ * ```ts
+ * // Some async function that takes time to execute
+ * function fn(x) {
  *   return new Promise(resolve => {
  *     setTimeout(() => {
  *       console.log(x);
  *       resolve(x);
- *     }, 1000));
- *   }
- * };
+ *     }, 1000);
+ *   });
+ * }
  *
  * // Create a Semaphore and add many concurrent tasks
  * const semaphore = new Semaphore(1);
@@ -30,22 +33,6 @@ declare class Semaphore {
    * The maximum number of tasks which can be simultaneously attempted.
    */
   max: number;
-
-  /**
-   * A queue of pending function signatures
-   * @defaultValue `[]`
-   * @internal
-   * @remarks The first element of an element of `_queue` is always a function and the rest of the elements are
-   * parameters to be passed to that function.
-   */
-  _queue: Array<Array<unknown>>;
-
-  /**
-   * The number of tasks which are currently underway
-   * @defaultValue `0`
-   * @internal
-   */
-  protected _active: number;
 
   /**
    * The number of pending tasks remaining in the queue
@@ -70,13 +57,16 @@ declare class Semaphore {
    */
   clear(): void;
 
-  /**
-   * Attempt to perform a task from the queue.
-   * If all workers are busy, do nothing.
-   * If successful, try again.
-   * @internal
-   */
-  protected _try(): Promise<false | void>;
+  #Semaphore: true;
+}
+
+declare namespace Semaphore {
+  interface Any extends AnySemaphore {}
+  interface AnyConstructor extends Identity<typeof AnySemaphore> {}
 }
 
 export default Semaphore;
+
+declare abstract class AnySemaphore extends Semaphore {
+  constructor(...args: never);
+}

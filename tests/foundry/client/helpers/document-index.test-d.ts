@@ -4,14 +4,12 @@ import DocumentIndex = foundry.helpers.DocumentIndex;
 
 const docindex = new DocumentIndex();
 
-expectTypeOf(docindex.trees).toEqualTypeOf<Record<string, foundry.utils.WordTree>>();
-expectTypeOf(docindex.uuids).toEqualTypeOf<
-  Record<string, foundry.utils.StringTree.StringTreeNode<DocumentIndex.Leaf>>
->();
+expectTypeOf(docindex.trees).toEqualTypeOf<Record<string, foundry.utils.WordTree.Any>>();
+expectTypeOf(docindex.uuids).toEqualTypeOf<Record<string, foundry.utils.StringTree.Node<DocumentIndex.Leaf>>>();
 expectTypeOf(docindex.ready).toEqualTypeOf<Promise<void> | null>();
 expectTypeOf(docindex.index()).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(docindex.lookup("")).toEqualTypeOf<Record<string, foundry.utils.WordTree.WordTreeEntry[]>>();
+expectTypeOf(docindex.lookup("")).toEqualTypeOf<Record<string, foundry.utils.WordTree.Entry.Any[]>>();
 
 declare const doc: JournalEntry.Implementation;
 
