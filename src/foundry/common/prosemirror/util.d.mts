@@ -45,17 +45,19 @@ declare namespace serializeHTMLString {
 }
 
 /**
- * @param node - The candidate node.
- * @returns A new node to replace the candidate node, or nothing if a replacement should not be made.
- */
-export declare type ProseMirrorSliceTransformer = (node: Node) => Node | void;
-
-/**
  * Apply a transformation to some nodes in a slice, and return the new slice.
  * @param slice       - The slice to transform.
  * @param transformer - The transformation function.
  * @returns Either the original slice if no changes were made, or the newly-transformed slice.
  */
-export declare function transformSlice(slice: Slice, transformer: ProseMirrorSliceTransformer): Slice;
+declare function transformSlice(slice: Slice, transformer: transformSlice.SliceTransformer): Slice;
 
-export { serializeHTMLString };
+declare namespace transformSlice {
+  /**
+   * @param node - The candidate node.
+   * @returns A new node to replace the candidate node, or nothing if a replacement should not be made.
+   */
+  type SliceTransformer = (node: Node) => Node | void;
+}
+
+export { serializeHTMLString, transformSlice };

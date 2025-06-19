@@ -1,8 +1,5 @@
-import type { ProseMirrorSliceTransformer as _ProseMirrorSliceTransformer } from "./util.d.mts";
-import type {
-  ProseMirrorMarkOutput as _ProseMirrorMarkOutput,
-  ProseMirrorNodeOutput as _ProseMirrorNodeOutput,
-} from "./string-serializer.d.mts";
+import type { transformSlice } from "./util.d.mts";
+import type StringSerializer from "./string-serializer.d.mts";
 import type ProseMirrorDropDown from "./dropdown.d.mts";
 import type ProseMirrorMenu from "./menu.d.mts";
 import type ProseMirrorKeyMaps from "./keymaps.d.mts";
@@ -32,8 +29,8 @@ type ProseMirrorCommand = ProseMirrorKeyMaps.Command;
 
 type MenuToggleBlockWrapCommand = ProseMirrorMenu.ToggleBlockWrapCommand;
 
-type ProseMirrorNodeOutput = _ProseMirrorNodeOutput;
+type ProseMirrorNodeOutput = StringSerializer.NodeOutput;
 
-type ProseMirrorMarkOutput = _ProseMirrorMarkOutput;
+type ProseMirrorMarkOutput = StringSerializer.MarkOutput;
 
-type ProseMirrorSliceTransformer = _ProseMirrorSliceTransformer;
+type ProseMirrorSliceTransformer = transformSlice.SliceTransformer;

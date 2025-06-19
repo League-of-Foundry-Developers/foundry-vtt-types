@@ -2,20 +2,6 @@ import type { InexactPartial } from "#utils";
 import type { DOMOutputSpec, Fragment, Mark, Schema } from "prosemirror-model";
 
 /**
- * @param node - The ProseMirror node.
- * @returns The specification to build a DOM node for this ProseMirror node.
- */
-export type ProseMirrorNodeOutput = (node: Node) => DOMOutputSpec;
-
-/**
- * @param mark   - The ProseMirror mark.
- * @param inline - Is the mark appearing in an inline context?
- * @returns The specification to build a DOM node for this ProseMirror mark.
- */
-
-export type ProseMirrorMarkOutput = (mark: Mark, inline: boolean) => DOMOutputSpec;
-
-/**
  * A class responsible for serializing a ProseMirror document into a string of HTML.
  */
 declare class StringSerializer {
@@ -23,7 +9,7 @@ declare class StringSerializer {
    * @param nodes - The node output specs.
    * @param marks - The mark output specs.
    */
-  constructor(nodes: Record<string, ProseMirrorNodeOutput>, marks: Record<string, ProseMirrorMarkOutput>);
+  constructor(nodes: Record<string, StringSerializer.NodeOutput>, marks: Record<string, StringSerializer.MarkOutput>);
 
   /**
    * Build a serializer for the given schema.
@@ -38,7 +24,7 @@ declare class StringSerializer {
    * @returns An object describing the outer node, and a reference to the child node where content should be appended, if applicable.
    * @remarks `inline` gets passed to `new StringNode`, where it has a default of `true`
    */
-  protected _specToStringNode(spec: DOMOutputSpec | string, inline?: boolean): StringSerializer.SpecToStringNodeReturn;
+  protected _specToStringNode(spec: DOMOutputSpec, inline?: boolean): StringSerializer.SpecToStringNodeReturn;
 
   /**
    * Serialize a ProseMirror fragment into an HTML string.
@@ -66,6 +52,20 @@ declare class StringSerializer {
 }
 
 declare namespace StringSerializer {
+  /**
+   * @param node - The ProseMirror node.
+   * @returns The specification to build a DOM node for this ProseMirror node.
+   */
+  type NodeOutput = (node: Node) => DOMOutputSpec;
+
+  /**
+   * @param mark   - The ProseMirror mark.
+   * @param inline - Is the mark appearing in an inline context?
+   * @returns The specification to build a DOM node for this ProseMirror mark.
+   */
+
+  type MarkOutput = (mark: Mark, inline: boolean) => DOMOutputSpec;
+
   interface SpecToStringNodeReturn {
     outer: StringNode;
     content?: StringNode;
@@ -78,8 +78,8 @@ declare namespace StringSerializer {
 declare class StringNode {
   /**
    * @param tag    - The tag name. If none is provided, this node's children will not be wrapped in an outer tag.
-   * @param attrs  - The tag attributes.
-   * @param inline - Whether the node appears inline or as a block.
+   * @param attrs  - The tag attributes. (default: `{}`)
+   * @param inline - Whether the node appears inline or as a block. (default: `true`)
    */
   constructor(tag?: string, attrs?: Record<string, string>, inline?: boolean);
 
