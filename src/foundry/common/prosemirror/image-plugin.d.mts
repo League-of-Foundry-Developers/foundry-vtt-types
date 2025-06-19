@@ -8,7 +8,7 @@ import type Document from "#common/abstract/document.mjs";
  * A class responsible for handle drag-and-drop and pasting of image content. Ensuring no base64 data is injected
  * directly into the journal content and it is instead uploaded to the user's data directory.
  */
-declare class ProseMirrorImagePlugin<Doc extends Document.Any> extends ProseMirrorPlugin {
+declare class ProseMirrorImagePlugin<Doc extends ClientDocument> extends ProseMirrorPlugin {
   /**
    * @param schema   - The ProseMirror schema.
    * @param options  - Additional options to configure the plugin's behaviour.
@@ -76,7 +76,7 @@ declare class ProseMirrorImagePlugin<Doc extends Document.Any> extends ProseMirr
 }
 
 declare namespace ProseMirrorImagePlugin {
-  interface ConstructionOptions<Doc extends Document.Any> {
+  interface ConstructionOptions<Doc extends ClientDocument> {
     /** A related Document to store extract base64 images for. */
     document: Doc;
   }

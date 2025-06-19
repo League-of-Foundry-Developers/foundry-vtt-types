@@ -2,6 +2,7 @@ import type { Schema, Slice } from "prosemirror-model";
 import type { Plugin } from "prosemirror-state";
 import type { EditorView } from "prosemirror-view";
 import type ProseMirrorPlugin from "./plugin.d.mts";
+import type { InexactPartial } from "#utils";
 
 /**
  * A class responsible for handling the dropping of Documents onto the editor and creating content links for them.
@@ -11,19 +12,21 @@ declare class ProseMirrorContentLinkPlugin extends ProseMirrorPlugin {
    * @param schema  - The ProseMirror schema.
    * @param options - Additional options to configure the plugin's behaviour.
    */
-  constructor(schema: Schema, options?: ProseMirrorContentLinkPlugin.ProseMirrorContentLinkOptions);
+  constructor(schema: Schema, options?: ProseMirrorContentLinkPlugin.ConstructionOptions);
 
   /**
    * The parent document housing this editor.
+   * @remarks `defineProperty`'d in construction, explicitly `writable: false`
    */
-  readonly document: foundry.abstract.Document.Any;
+  readonly document: foundry.abstract.Document.Any | undefined;
 
   /**
    * Whether to generate links relative to the parent document.
+   * @remarks `defineProperty`'d in construction, explicitly `writable: false`
    */
   readonly relativeLinks: boolean;
 
-  static override build(schema: Schema, options?: ProseMirrorContentLinkPlugin.ProseMirrorContentLinkOptions): Plugin;
+  static override build(schema: Schema, options?: ProseMirrorContentLinkPlugin.ConstructionOptions): Plugin;
 
   /**
    * Handle a drop onto the editor.
@@ -32,17 +35,23 @@ declare class ProseMirrorContentLinkPlugin extends ProseMirrorPlugin {
    * @param slice - A slice of editor content.
    * @param moved - Whether the slice has been moved from a different part of the editor.
    */
-  protected _onDrop(view: EditorView, event: DragEvent, slice: Slice, moved: boolean): void | true;
+  protected _onDrop(view: EditorView, event: DragEvent, slice: Slice, moved: boolean): boolean | void;
 }
 
 declare namespace ProseMirrorContentLinkPlugin {
-  interface ProseMirrorContentLinkOptions {
+  /** @internal */
+  type _ConstructionOptions = InexactPartial<{
     /** The parent document housing this editor. */
-    document?: foundry.abstract.Document.Any | undefined;
+    document: ClientDocument;
 
-    /** @defaultValue `false` */
-    relativeLinks?: boolean | undefined;
-  }
+    /**
+     * @defaultValue `false`
+     * @remarks If `relativeLinks` is `true`, a valid `document` must be passed or construction will throw
+     */
+    relativeLinks: boolean;
+  }>;
+
+  interface ConstructionOptions extends _ConstructionOptions {}
 }
 
 export default ProseMirrorContentLinkPlugin;

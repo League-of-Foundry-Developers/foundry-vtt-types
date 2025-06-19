@@ -2,6 +2,7 @@ import type { EditorView } from "prosemirror-view";
 import type { Plugin } from "prosemirror-state";
 import type ProseMirrorPlugin from "./plugin.d.mts";
 import type { Node, Schema } from "prosemirror-model";
+import type { AnyObject } from "#utils";
 
 export default ProseMirrorClickHandler;
 
@@ -9,7 +10,8 @@ export default ProseMirrorClickHandler;
  * A class responsible for managing click events inside a ProseMirror editor.
  */
 declare class ProseMirrorClickHandler extends ProseMirrorPlugin {
-  static override build(schema: Schema, options?: Record<string, unknown>): Plugin;
+  /** @remarks `options` is unused */
+  static override build(schema: Schema, options?: AnyObject): Plugin;
 
   /* -------------------------------------------- */
 

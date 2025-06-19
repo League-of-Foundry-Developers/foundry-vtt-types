@@ -6,6 +6,7 @@ import type {
 import type ProseMirrorDropDown from "./dropdown.d.mts";
 import type ProseMirrorMenu from "./menu.d.mts";
 import type ProseMirrorKeyMaps from "./keymaps.d.mts";
+import type ProseMirrorContentLinkPlugin from "./content-link-plugin.d.mts";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 // After seeing that none of these types add anything or are even exported a
@@ -15,10 +16,9 @@ import type ProseMirrorKeyMaps from "./keymaps.d.mts";
 // them here because it has poor discoverability. The names Foundry has chosen
 // also overlaps with other existing names, such as SettingConfig vs. ClientSetting.SettingConfig
 
-// TODO: Stubs
 export {};
 
-type ProseMirrorContentLinkOptions = unknown;
+type ProseMirrorContentLinkOptions = ProseMirrorContentLinkPlugin.ConstructionOptions;
 
 type ProseMirrorMenuOptions = ProseMirrorMenu.ConstructionOptions;
 
