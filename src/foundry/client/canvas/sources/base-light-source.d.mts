@@ -1,7 +1,6 @@
-import type { Identity, IntentionalPartial, NullishProps } from "#utils";
+import type { Identity, InexactPartial, IntentionalPartial } from "#utils";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_module.d.mts";
-import type { SmoothNoise } from "#client/canvas/animation/_module.d.mts";
 
 /**
  * A specialized subclass of BaseEffectSource which deals with the rendering of light or darkness.
@@ -9,7 +8,7 @@ import type { SmoothNoise } from "#client/canvas/animation/_module.d.mts";
 declare abstract class BaseLightSource<
   SourceData extends BaseLightSource.SourceData = BaseLightSource.SourceData,
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
-  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = RenderedEffectSource.Layers,
+  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = BaseLightSource.Layers,
 > extends RenderedEffectSource<SourceData, SourceShape, RenderingLayers> {
   /** @defaultValue `"light"` */
   static override sourceType: string;
@@ -22,24 +21,26 @@ declare abstract class BaseLightSource<
 
   /**
    * The corresponding lighting levels for dim light.
-   * @defaultValue `foundry.CONST.LIGHTING_LEVELS.DIM`
+   * @defaultValue `CONST.LIGHTING_LEVELS.DIM`
    */
-  protected static _dimLightingLevel: foundry.CONST.LIGHTING_LEVELS;
+  protected static _dimLightingLevel: CONST.LIGHTING_LEVELS;
 
   /**
    * The corresponding lighting levels for bright light.
-   * @defaultValue `foundry.CONST.LIGHTING_LEVELS.BRIGHT`
+   * @defaultValue `CONST.LIGHTING_LEVELS.BRIGHT`
    */
-  protected static _brightLightingLevel: foundry.CONST.LIGHTING_LEVELS;
+  protected static _brightLightingLevel: CONST.LIGHTING_LEVELS;
 
   /**
    * The corresponding animation config.
    * @privateRemarks Only uses {@linkcode CONFIG.Canvas.lightAnimations} in
-   * {@linkcode foundry.canvas.sources.BaseLightSource}, but
-   * {@linkcode foundry.canvas.sources.PointDarknessSource}
+   * {@linkcode BaseLightSource}, but
+   * {@linkcode foundry.canvas.sources.PointDarknessSource | PointDarknessSource}
    * overrides to use `.darknessAnimations`, so the union type is necessary
    */
   protected static get ANIMATIONS(): typeof CONFIG.Canvas.lightAnimations | typeof CONFIG.Canvas.darknessAnimations;
+
+  protected static override get _layers(): Record<string, RenderedEffectSource.LayerConfig>;
 
   /**
    * @defaultValue
@@ -88,7 +89,6 @@ declare abstract class BaseLightSource<
    * @param dt      - Delta time
    * @param options - Additional options which modify the torch animation
    */
-  // not null (destructured)
   animateTorch(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
 
   /**
@@ -96,23 +96,24 @@ declare abstract class BaseLightSource<
    * @param dt      - Delta time
    * @param options - Additional options which modify the flame animation
    */
-  // not null (destructured)
   animateFlickering(dt: number, options?: BaseLightSource.AnimateFlickeringOptions): void;
-
-  /**
-   * @remarks This property will be generated on any class that is `#animateFlickering`'s `this` when it is called.
-   * In Foundry practice this will always be a `BaseLightSource` subclass, so it's defined here. Foundry does not
-   * document it.
-   */
-  _noise?: SmoothNoise;
 
   /**
    * A basic "pulse" animation which expands and contracts.
    * @param dt      - Delta time
    * @param options - Additional options which modify the pulse animation
    */
-  // not null (destructured)
   animatePulse(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
+
+  /**
+   * A sound-reactive animation that uses bass/mid/treble blending to control certain shader uniforms.
+   * "speed" is interpreted as how quickly we adapt to changes in audio. No time-based pulsing is used by default,
+   * but we incorporate dt into smoothing so that behavior is consistent across varying frame rates.
+   *
+   * @param dt      - The delta time since the last frame, in milliseconds.
+   * @param options - Additional options for customizing the audio reaction.
+   */
+  animateSoundPulse(dt: number, options?: BaseLightSource.AnimateSoundPulseOptions): void;
 
   /**
    * @deprecated since v12, until v14
@@ -121,11 +122,21 @@ declare abstract class BaseLightSource<
    * Always returns `false`
    */
   get isDarkness(): boolean;
+
+  #BaseLightSource: true;
 }
 
 declare namespace BaseLightSource {
   interface Any extends AnyBaseLightSource {}
   interface AnyConstructor extends Identity<typeof AnyBaseLightSource> {}
+
+  // Interface would require `RenderingLayers extends ... = InterfaceToObject<Layers>` in every subclass signature
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  type Layers = {
+    background: RenderedEffectSource.SourceLayer;
+    coloration: RenderedEffectSource.SourceLayer;
+    illumination: RenderedEffectSource.SourceLayer;
+  };
 
   type LightAnimationFunction = (
     this: BaseLightSource,
@@ -193,16 +204,10 @@ declare namespace BaseLightSource {
      * @defaultValue `false`
      */
     vision: boolean;
-
-    /**
-     * Strength of this source to beat or not negative/positive sources
-     * @defaultValue `0`
-     */
-    priority: number;
   }
 
   /** @internal */
-  type _AnimateFlickeringOptions = NullishProps<{
+  type _AnimateFlickeringOptions = InexactPartial<{
     /**
      * Noise amplification (\>1) or dampening (\<1)
      * @defaultValue `1`
@@ -212,6 +217,31 @@ declare namespace BaseLightSource {
   }>;
 
   interface AnimateFlickeringOptions extends RenderedEffectSource.AnimationFunctionOptions, _AnimateFlickeringOptions {}
+
+  /** @internal */
+  type _AnimateSoundPulseOptionsOptions = InexactPartial<{
+    /**
+     * A smoothing factor in `[0..10]`, effectively updates/second.
+     * @defaultValue `5`
+     */
+    speed: number;
+
+    /**
+     * A blend factor in `[0..10]` that transitions from bass (near `0`) to treble (near `10`)
+     * Mid frequencies dominate around `intensity=5`.
+     * @defaultValue `5`
+     */
+    intensity: number;
+
+    /**
+     * Whether to invert the final amplitude as 1 - amplitude.
+     * @defaultValue `false`
+     */
+    reverse: boolean;
+  }>;
+
+  /** @privateRemarks Different property descriptions, otherwise identical to {@linkcode RenderedEffectSource.AnimationFunctionOptions} */
+  interface AnimateSoundPulseOptions extends _AnimateSoundPulseOptionsOptions {}
 }
 
 declare abstract class AnyBaseLightSource extends BaseLightSource<

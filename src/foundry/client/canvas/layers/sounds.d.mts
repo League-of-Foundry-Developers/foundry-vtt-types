@@ -296,7 +296,7 @@ declare namespace SoundsLayer {
     /**
      * The SoundSource which defines the area of effect for the sound
      */
-    source: foundry.canvas.sources.PointSoundSource.ConfiguredInstance;
+    source: foundry.canvas.sources.PointSoundSource.Implementation;
 
     /**
      * An AmbientSound object responsible for the sound, or undefined

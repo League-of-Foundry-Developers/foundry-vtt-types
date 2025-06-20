@@ -14,7 +14,7 @@ import type { CanvasVisibility } from "#client/canvas/groups/_module.d.mts";
 declare class PointLightSource<
   SourceData extends PointLightSource.SourceData = PointLightSource.SourceData,
   SourceShape extends PointSourcePolygon = PointSourcePolygon,
-  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = RenderedEffectSource.Layers,
+  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = BaseLightSource.Layers,
 > extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape, RenderingLayers> {
   /** @defaultValue `"lightSources"` */
   static override effectsCollection: string;
@@ -27,6 +27,8 @@ declare class PointLightSource<
    * and we are counting what happens in `initialize` as 'the constructor', this gets to be declared never undefined.
    */
   override shape: SourceShape;
+
+  override get requiresEdges(): boolean;
 
   protected override _initialize(data: IntentionalPartial<SourceData>): void;
 
@@ -41,7 +43,6 @@ declare class PointLightSource<
    * Test whether this LightSource provides visibility to see a certain target object.
    * @param config - The visibility test configuration
    * @returns Is the target object visible to this source?
-   * @remarks Despite being an `={}` parameter, this will error if `config.tests` is not at least an empty array of `CanvasVisibility.Test`s
    */
   testVisibility(config: CanvasVisibility.TestConfig): boolean;
 
@@ -54,13 +55,14 @@ declare class PointLightSource<
   protected _canDetectObject(target?: PlaceableObject.Any | null): boolean;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks `"BaseLightSource#isDarkness is now obsolete. Use DarknessSource instead."`
-   *
-   * Always returns `false`
-   * @privateRemarks This isn't actually overridden here, `BaseLightSource#isDarkness` always returns false, but it's type as `boolean` there to allow `PointDarknessSource#isDarkness` to return true.
+   * @deprecated "`BaseLightSource#isDarkness` is now obsolete. Use {@linkcode foundry.canvas.sources.PointDarknessSource | PointDarknessSource} instead." (since v12, until v14)
+   * @remarks Always returns `false`
+   * @privateRemarks This isn't actually overridden here; {@linkcode BaseLightSource.isDarkness | BaseLightSource#isDarkness} always returns false, but it's typed as `boolean`
+   * there since {@linkcode foundry.canvas.sources.PointDarknessSource | PointDarknessSource#isDarkness} returns true.
    */
   get isDarkness(): false;
+
+  #PointLightSource: true;
 }
 
 declare namespace PointLightSource {
@@ -71,12 +73,13 @@ declare namespace PointLightSource {
     animation: RenderedEffectSource.StoredLightAnimationConfig;
   }
 
-  interface PolygonConfig
-    extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold" | "includeDarkness"> {}
+  interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold"> {}
 
-  type ConfiguredClass = CONFIG["Canvas"]["lightSourceClass"];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["lightSourceClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 }
+
+export default PointLightSource;
 
 declare abstract class AnyPointLightSource extends PointLightSource<
   PointLightSource.SourceData,
@@ -85,5 +88,3 @@ declare abstract class AnyPointLightSource extends PointLightSource<
 > {
   constructor(...args: never);
 }
-
-export default PointLightSource;

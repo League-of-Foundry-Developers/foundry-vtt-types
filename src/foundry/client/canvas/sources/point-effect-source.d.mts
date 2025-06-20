@@ -1,7 +1,8 @@
-import type { Mixin, IntentionalPartial, FixedInstanceType, RequiredProps } from "#utils";
+import type { Mixin, IntentionalPartial, FixedInstanceType, RequiredProps, AnyObject } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { PointSourceMesh } from "#client/canvas/containers/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class PointEffectSource {
@@ -20,8 +21,6 @@ declare class PointEffectSource {
    *   walls: true
    * }
    * ```
-   * @remarks This type is only accurate for classes extending `PointEffectSourceMixin(BaseEffectSource)`.
-   * Other subclasses must override.
    */
   static defaultData: PointEffectSourceMixin.MixedSourceData;
 
@@ -29,14 +28,39 @@ declare class PointEffectSource {
    * @defaultValue `CONFIG.Canvas.polygonBackends[this.constructor.sourceType].create(origin, config)`
    * @privateRemarks This is not in Foundry's code, but the mixin class loses access to the type parameter that would
    * otherwise be here, and per the default above this is always a {@linkcode PointSourcePolygon} subclass, always
-   * {@linkcode ClockwiseSweepPolygon} in core
+   * {@linkcode foundry.canvas.geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon} in core
    */
   shape: PointSourcePolygon;
+
+  /**
+   * The Edge instances added by this source.
+   */
+  edges: foundry.canvas.geometry.edges.Edge[];
+
+  /**
+   * Whether this Point Effect source can create edges or not.
+   * Overriding classes can define dynamic behavior if needed.
+   * Default to false so that typical point sources do not create edges.
+   */
+  get requiresEdges(): boolean;
 
   /**
    * A convenience reference to the radius of the source.
    */
   get radius(): number;
+
+  /**
+   * The (elevated) origin of this point effect source.
+   */
+  get origin(): Canvas.ElevatedPoint;
+
+  /**
+   * The priority of this point effect source.
+   */
+  get priority(): number;
+
+  // TODO: Flatten<IntentionalPartial<SourceData>>
+  protected _configure(changes: AnyObject): void;
 
   protected _initialize(data: IntentionalPartial<PointEffectSourceMixin.MixedSourceData>): void;
 
@@ -49,31 +73,32 @@ declare class PointEffectSource {
 
   protected _createShapes(): void;
 
+  protected _destroy(): void;
+
   protected _drawMesh(layerId: string): PointSourceMesh | null;
 
   protected _updateGeometry(): void;
 
   /**
-   * @deprecated since v11, until v13
-   * @remarks `"The setter PointEffectSource#radius is deprecated. The radius should not be set anywhere except in PointEffectSource#_initialize."`
+   * Create the Edge instances that correspond to this source.
    */
-  // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
-  set radius(radius);
+  protected _createEdges(): void;
 
   /**
-   * @deprecated since v11, until v13
-   * @remarks `"PointEffectSource#los is deprecated in favor of PointEffectSource#shape."`
-   * @privateRemarks Actually implemented as getter/setter for deprecation warning purposes, but this causes inheritance problems with  {@link foundry.canvas.sources.PointVisionSource#los | `PointVisionSource`}
+   * Remove edges from the active Edges collection.
    */
-  los: this["shape"];
+  protected _deleteEdges(): void;
+
+  #PointEffectSource: true;
 }
 
 /**
- * TODO - documentation required about what a PointEffectSource is.
- * @privateRemarks the TODO is from foundry, update this class whenever the comments are done
+ * Provides a common framework for effect sources that emanate from a central point and extend within a specific radius.
+ * This mixin can be used to manage any effect with a point-based origin, such as light, darkness, or other effects.
+ * @param BaseSource - The base source class to extend
  */
 declare function PointEffectSourceMixin<BaseClass extends PointEffectSourceMixin.BaseClass>(
-  Base: BaseClass,
+  BaseSource: BaseClass,
 ): Mixin<typeof PointEffectSource, BaseClass>;
 
 declare namespace PointEffectSourceMixin {
@@ -85,8 +110,18 @@ declare namespace PointEffectSourceMixin {
   type MixedSourceData = SourceData & BaseEffectSource.SourceData;
 
   /** @remarks This mixin guarantees certain keys in the return type beyond the base required `type` */
+  // TODO(esheyw): uncomment edgeOptions once canvas.geometry is done
   interface PolygonConfig
-    extends RequiredProps<PointSourcePolygon.Config, "radius" | "externalRadius" | "angle" | "rotation" | "source"> {}
+    extends RequiredProps<
+      PointSourcePolygon.Config,
+      | "radius"
+      //| "edgeOptions"
+      | "externalRadius"
+      | "angle"
+      | "rotation"
+      | "priority"
+      | "source"
+    > {}
 
   interface SourceData {
     /**
@@ -118,6 +153,12 @@ declare namespace PointEffectSourceMixin {
      * @defaultValue `true`
      */
     walls: boolean;
+
+    /**
+     * Strength of this source to beat or not negative/positive sources
+     * @defaultValue `0`
+     */
+    priority: number;
   }
 }
 

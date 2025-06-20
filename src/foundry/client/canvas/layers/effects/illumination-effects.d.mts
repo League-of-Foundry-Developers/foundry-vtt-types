@@ -19,7 +19,7 @@ declare class CanvasIlluminationEffects extends CanvasLayer {
    * The filter used to mask visual effects on this layer
    * @remarks Only `undefined` prior to first draw
    */
-  filter: VisualEffectsMaskingFilter.ImplementationInstance | undefined;
+  filter: VisualEffectsMaskingFilter.Implementation | undefined;
 
   /**
    * The container holding the lights.

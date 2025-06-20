@@ -33,11 +33,11 @@ declare namespace PointMovementSource {
   // references this class directly, not a `CONFIG` property
 }
 
+export default PointMovementSource;
+
 declare abstract class AnyPointMovementSource extends PointMovementSource<
   PointMovementSource.SourceData,
   PointSourcePolygon
 > {
   constructor(...args: never);
 }
-
-export default PointMovementSource;

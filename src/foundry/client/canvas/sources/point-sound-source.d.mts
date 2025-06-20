@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Identity, NullishProps, RequiredProps } from "#utils";
+import type { FixedInstanceType, Identity, InexactPartial, RequiredProps } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
@@ -29,9 +29,15 @@ declare class PointSoundSource<
 
   /**
    * Get the effective volume at which an AmbientSound source should be played for a certain listener.
-   * @remarks If `listener` is falsey, returns `0`. If `options.easing` is falsey, returns `1`
    */
-  getVolumeMultiplier(listener?: Canvas.Point | null, options?: PointSoundSource.GetVolumeMultiplierOptions): number;
+  getVolumeMultiplier(listener: Canvas.ElevatedPoint, options?: PointSoundSource.GetVolumeMultiplierOptions): number;
+
+  /**
+   * Get the effective volume at which an AmbientSound source should be played for a certain listener.
+   * @deprecated "PointSoundSource#getVolumeMultiplier({@linkcode Canvas.Point | Point}) has been deprecated in favor of
+   * PointSoundSource#getVolumeMultiplier({@linkcode Canvas.ElevatedPoint | ElevatedPoint})." (since v13, until v15)
+   */
+  getVolumeMultiplier(listener: Canvas.Point, options?: PointSoundSource.GetVolumeMultiplierOptions): number;
 }
 
 declare namespace PointSoundSource {
@@ -39,10 +45,9 @@ declare namespace PointSoundSource {
   interface AnyConstructor extends Identity<typeof AnyPointSoundSource> {}
 
   /** @internal */
-  type _GetVolumeMultiplierOptions = NullishProps<{
+  type _GetVolumeMultiplierOptions = InexactPartial<{
     /**
      * @defaultValue `true`
-     * @remarks If `false`, return `1`
      */
     easing: boolean;
   }>;
@@ -53,12 +58,12 @@ declare namespace PointSoundSource {
 
   interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold"> {}
 
-  type ConfiguredClass = CONFIG["Canvas"]["soundSourceClass"];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["soundSourceClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 }
+
+export default PointSoundSource;
 
 declare abstract class AnyPointSoundSource extends PointSoundSource<PointSoundSource.SourceData, PointSourcePolygon> {
   constructor(...args: never);
 }
-
-export default PointSoundSource;
