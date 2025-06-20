@@ -158,7 +158,7 @@ declare class ControlsLayer extends InteractionLayer {
    * @param event   - The triggering canvas interaction event.
    * @param origin  - The local canvas coordinates of the mousepress.
    */
-  protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): Promise<boolean>;
+  protected _onLongPress(event: Canvas.Event.Pointer, origin: PIXI.Point): Promise<boolean>;
 
   /**
    * Handle the canvas panning to a new view.
@@ -168,7 +168,7 @@ declare class ControlsLayer extends InteractionLayer {
 
   /**
    * Create and draw the Cursor object for a given User
-   * @param user - The User document for whom to draw the cursor Container
+   * @param user - The User docuwment for whom to draw the cursor Container
    */
   drawCursor(user: User.Implementation): Cursor;
 

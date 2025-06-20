@@ -4,6 +4,8 @@ import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { ControlIcon, PreciseText } from "#client/canvas/containers/_module.mjs";
 import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
 
+import Canvas = foundry.canvas.Canvas;
+
 declare module "#configuration" {
   namespace Hooks {
     interface PlaceableObjectConfig {
@@ -116,12 +118,12 @@ declare class Note extends PlaceableObject<NoteDocument.Implementation> {
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
   // options: not null (destructured)
-  protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): void;
+  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
 
-  protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
+  protected override _onClickLeft2(event: Canvas.Event.Pointer): void;
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.DragLeftDropUpdate[];
+  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
 
   /**
    * The text label used to annotate this Note

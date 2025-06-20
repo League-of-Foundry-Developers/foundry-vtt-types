@@ -385,7 +385,7 @@ export interface AllHooks extends DynamicHooks {
    * @param data   - The data that has been dropped onto the Canvas
    * @remarks This is called by {@linkcode Hooks.call}.
    * @remarks An explicit return value of `false` prevents the Document being created.
-   * @see {@link Canvas._onDrop | `Canvas#_onDrop`}
+   * @see `Canvas.#_onDrop`
    */
   dropCanvasData: (canvas: Canvas, data: Hooks.DropData, event: DragEvent) => boolean | void;
 

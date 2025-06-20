@@ -11,6 +11,8 @@ import type {
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
 
+import Canvas = foundry.canvas.Canvas;
+
 declare module "#configuration" {
   namespace Hooks {
     interface PlaceableObjectConfig {
@@ -142,23 +144,23 @@ declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implemen
   // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
-  protected override _canHUD(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canHUD(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /** @remarks Always returns `false` ("Double-right does nothing") */
-  protected override _canConfigure(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canConfigure(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
   // options: not null (destructured)
-  protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): void;
+  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
 
-  protected override _onClickRight(event: PIXI.FederatedEvent): void;
+  protected override _onClickRight(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
   protected override _onDragEnd(): void;
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.DragLeftDropUpdate[];
+  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
 
   /**
    * @deprecated since v12, until v14

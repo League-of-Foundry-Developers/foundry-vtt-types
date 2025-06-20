@@ -373,25 +373,25 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
     options?: PlaceablesLayer.CreatePreviewOptions, // not:null (destructured)
   ): Promise<Document.ObjectFor<DocumentName>>;
 
-  protected override _onClickLeft(event: PIXI.FederatedEvent): void;
+  protected override _onClickLeft(event: Canvas.Event.Pointer): void;
 
-  protected override _canDragLeftStart(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canDragLeftStart(user: User.Implementation, event: Canvas.Event.Pointer): boolean;
 
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftDrop(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftCancel(event: PointerEvent): void;
+  protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
-  protected override _onClickRight(event: PIXI.FederatedEvent): void;
+  protected override _onClickRight(event: Canvas.Event.Pointer): void;
 
   /** @privateRemarks `void` added to return union for TokenLayer reasons */
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  protected override _onMouseWheel(event: WheelEvent): Promise<Document.ObjectFor<DocumentName>[] | void>;
+  protected override _onMouseWheel(event: Canvas.Event.Wheel): Promise<Document.ObjectFor<DocumentName>[] | void>;
 
-  protected override _onDeleteKey(event: KeyboardEvent): Promise<void>;
+  protected override _onDeleteKey(event: Canvas.Event.DeleteKey): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14

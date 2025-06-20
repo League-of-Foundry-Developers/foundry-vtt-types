@@ -44,7 +44,7 @@ declare class DoorControl extends PIXI.Container {
   /**
    * Determine whether the DoorControl is visible to the calling user's perspective.
    * The control is always visible if the user is a GM and no Tokens are controlled.
-   * @see {@link CanvasVisibility.testVisibility | `CanvasVisibility#testVisibility`}
+   * @see {@link foundry.canvas.groups.CanvasVisibility.testVisibility | `CanvasVisibility#testVisibility`}
    */
   get isVisible(): boolean;
 
@@ -52,27 +52,27 @@ declare class DoorControl extends PIXI.Container {
    * Handle mouse over events on a door control icon.
    * @param event - The originating interaction event
    */
-  protected _onMouseOver(event: PIXI.FederatedEvent): false | void;
+  protected _onMouseOver(event: PIXI.FederatedEvent<PointerEvent>): false | void;
 
   /**
    * Handle mouse out events on a door control icon.
    * @param event - The originating interaction event
    */
-  protected _onMouseOut(event: PIXI.FederatedEvent): false | void;
+  protected _onMouseOut(event: PIXI.FederatedEvent<PointerEvent>): false | void;
 
   /**
    * Handle left mouse down events on a door control icon.
    * This should only toggle between the OPEN and CLOSED states.
    * @param event - The originating interaction event
    */
-  protected _onMouseDown(event: PIXI.FederatedEvent): false | void | Promise<WallDocument.Implementation>;
+  protected _onMouseDown(event: PIXI.FederatedEvent<PointerEvent>): false | void | Promise<WallDocument.Implementation>;
 
   /**
    * Handle right mouse down events on the door control icon
    * This should toggle whether the door is LOCKED or CLOSED
    * @param event - The originating interaction event
    */
-  protected _onRightDown(event: PIXI.FederatedEvent): void | Promise<WallDocument.Implementation>;
+  protected _onRightDown(event: PIXI.FederatedEvent<PointerEvent>): void | Promise<WallDocument.Implementation>;
 }
 
 declare namespace DoorControl {

@@ -384,7 +384,7 @@ declare abstract class PlaceableObject<
    * @param event - The event object.
    * @returns The returned status.
    */
-  protected _canHUD(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected _canHUD(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to configure the Placeable Object?
@@ -392,7 +392,7 @@ declare abstract class PlaceableObject<
    * @param event - The event object.
    * @returns The returned status.
    */
-  protected _canConfigure(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected _canConfigure(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to control the Placeable Object?
@@ -400,7 +400,7 @@ declare abstract class PlaceableObject<
    * @param event - The event object.
    * @returns The returned status.
    */
-  protected _canControl(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected _canControl(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to view details of the Placeable Object?
@@ -408,15 +408,16 @@ declare abstract class PlaceableObject<
    * @param event - The event object.
    * @returns The returned status.
    */
-  protected _canView(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected _canView(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to create the underlying Document?
    * @param user  - The User performing the action.
    * @param event - The event object.
    * @returns The returned status.
+   * @remarks It appears that `_canCreate` is completely unused.
    */
-  protected _canCreate(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected _canCreate(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to drag this Placeable Object?
@@ -424,7 +425,7 @@ declare abstract class PlaceableObject<
    * @param event - The event object.
    * @returns The returned status.
    */
-  protected _canDrag(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected _canDrag(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to left-click drag this Placeable Object?
@@ -432,7 +433,7 @@ declare abstract class PlaceableObject<
    * @param event - The event object.
    * @returns The returned status
    */
-  protected _canDragLeftStart(user: User.Implementation, event: DragEvent): boolean;
+  protected _canDragLeftStart(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to hover on this Placeable Object?
@@ -440,7 +441,7 @@ declare abstract class PlaceableObject<
    * @param event - The event object.
    * @returns The returned status.
    */
-  protected _canHover(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected _canHover(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to update the underlying Document?
@@ -448,7 +449,7 @@ declare abstract class PlaceableObject<
    * @param event - The event object.
    * @returns The returned status.
    */
-  protected _canUpdate(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected _canUpdate(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
   /**
    * Does the User have permission to delete the underlying Document?
@@ -456,7 +457,7 @@ declare abstract class PlaceableObject<
    * @param event - The event object.
    * @returns The returned status.
    */
-  protected _canDelete(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected _canDelete(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Actions that should be taken for this Placeable Object when a mouseover event occurs.
@@ -467,73 +468,73 @@ declare abstract class PlaceableObject<
    * @remarks {@link Wall._onHoverIn | `Wall#_onHoverIn`} can return `false`, otherwise this is always `void`
    */
   // options: not null (destructured)
-  protected _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
+  protected _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): false | void;
 
   /**
    * Actions that should be taken for this Placeable Object when a mouseout event occurs
    * @see `MouseInteractionManager##handlePointerOut`
    * @param event - The triggering canvas interaction event
    */
-  protected _onHoverOut(event: PIXI.FederatedEvent): void;
+  protected _onHoverOut(event: Canvas.Event.Pointer): void;
 
   /**
    * Should the placeable propagate left click downstream?
    * @remarks Unconditionally returns `false` in `PlaceableObject`
    */
-  protected _propagateLeftClick(_event: PIXI.FederatedEvent): boolean;
+  protected _propagateLeftClick(_event: Canvas.Event.Pointer): boolean;
 
   /**
    * Callback actions which occur on a single left-click event to assume control of the object
    * @see `MouseInteractionManager##handleClickLeft`
    * @param event - The triggering canvas interaction event
    */
-  protected _onClickLeft(event: PIXI.FederatedEvent): void;
+  protected _onClickLeft(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a single left-unclick event to assume control of the object
    * @param event - The triggering canvas interaction event
    */
-  protected _onUnclickLeft(event: PIXI.FederatedEvent): void;
+  protected _onUnclickLeft(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a double left-click event to activate
    * @see `MouseInteractionManager##handleClickLeft2`
    * @param event - The triggering canvas interaction event
    */
-  protected _onClickLeft2(event: PIXI.FederatedEvent): void;
+  protected _onClickLeft2(event: Canvas.Event.Pointer): void;
 
   /**
    * Should the placeable propagate right click downstream?
    * @remarks Unconditionally returns `false` in `PlaceableObject`
    */
-  protected _propagateRightClick(_event: PIXI.FederatedEvent): boolean;
+  protected _propagateRightClick(_event: Canvas.Event.Pointer): boolean;
 
   /**
    * Callback actions which occur on a single right-click event to configure properties of the object
    * @see `MouseInteractionManager##handleClickRight`
    * @param event - The triggering canvas interaction event
    */
-  protected _onClickRight(event: PIXI.FederatedEvent): void;
+  protected _onClickRight(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a single right-unclick event
    * @param event - The triggering canvas interaction event
    */
-  protected _onUnclickRight(event: PIXI.FederatedEvent): void;
+  protected _onUnclickRight(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a double right-click event to configure properties of the object
    * @see `MouseInteractionManager##handleClickRight2`
    * @param event - The triggering canvas interaction event
    */
-  protected _onClickRight2(event: PIXI.FederatedEvent): void;
+  protected _onClickRight2(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur when a mouse-drag action is first begun.
    * @see `MouseInteractionManager##handleDragStart`
    * @param event - The triggering canvas interaction event
    */
-  protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
+  protected _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
   /**
    * Begin a drag operation from the perspective of the preview clone.
@@ -552,14 +553,14 @@ declare abstract class PlaceableObject<
    * @see `MouseInteractionManager##handleDragMove`
    * @param event - The triggering canvas interaction event
    */
-  protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a mouse-move operation.
    * @see `MouseInteractionManager##handleDragDrop`
    * @param event - The triggering canvas interaction event
    */
-  protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+  protected _onDragLeftDrop(event: Canvas.Event.Pointer): void;
 
   /**
    * Perform the database updates that should occur as the result of a drag-left-drop operation.
@@ -567,42 +568,42 @@ declare abstract class PlaceableObject<
    * @returns An array of database updates to perform for documents in this collection
    * @remarks `| null` in the return because of the `Wall` override
    */
-  protected _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.AnyDragLeftDropUpdate[] | null;
+  protected _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.AnyDragLeftDropUpdate[] | null;
 
   /**
    * Callback actions which occur on a mouse-move operation.
    * @see `MouseInteractionManager##handleDragCancel`
    * @param event - The triggering mouse click event
    */
-  protected _onDragLeftCancel(event: PIXI.FederatedEvent): void;
+  protected _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a right mouse-drag operation.
    * @see `MouseInteractionManager##handleDragStart`
    * @param event - The triggering mouse click event
    */
-  protected _onDragRightStart(event: PIXI.FederatedEvent): void;
+  protected _onDragRightStart(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a right mouse-drag operation.
    * @see `MouseInteractionManager##handleDragMove`
    * @param event - The triggering canvas interaction event
    */
-  protected _onDragRightMove(event: PIXI.FederatedEvent): void;
+  protected _onDragRightMove(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a right mouse-drag operation.
    * @see `MouseInteractionManager##handleDragDrop`
    * @param event - The triggering canvas interaction event
    */
-  protected _onDragRightDrop(event: PIXI.FederatedEvent): void;
+  protected _onDragRightDrop(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a right mouse-drag operation.
    * @see `MouseInteractionManager##handleDragDrop`
    * @param event - The triggering mouse click event
    */
-  protected _onDragRightCancel(event: PIXI.FederatedEvent): void;
+  protected _onDragRightCancel(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback action which occurs on a long press.
@@ -610,7 +611,7 @@ declare abstract class PlaceableObject<
    * @param event  - The triggering canvas interaction event
    * @param origin - The local canvas coordinates of the mousepress.
    */
-  protected _onLongPress(event: PIXI.FederatedEvent, origin: PIXI.Point): void;
+  protected _onLongPress(event: Canvas.Event.Pointer, origin: PIXI.Point): void;
 }
 
 declare namespace PlaceableObject {
