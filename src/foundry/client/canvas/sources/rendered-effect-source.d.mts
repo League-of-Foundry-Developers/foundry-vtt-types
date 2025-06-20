@@ -297,13 +297,14 @@ declare namespace RenderedEffectSource {
     /**
      * The animation seed
      * @defaultValue `Math.floor(Math.random() * 100000)`
-     * @remarks No Foundry-provided config (`CONFIG.lightAnimations`, `CONFIG.darknessAnimations`) specifies this, but it would be respected if set
+     * @remarks No Foundry-provided config ({@linkcode CONFIG.Canvas.lightAnimations}, {@linkcode CONFIG.Canvas.darknessAnimations})
+     * specifies this, but it would be respected if set
      */
     seed: number;
   }>;
 
   /**
-   * Each Foundry-provided entry in `CONFIG.Canvas.lightAnimations` provides at least a `colorationShader`,
+   * Each Foundry-provided entry in {@linkcode CONFIG.Canvas.lightAnimations} provides at least a `colorationShader`,
    * but any properties not provided will be backfilled by `|| this.layers[layer].defaultShader`
    * @internal
    */
@@ -419,12 +420,9 @@ declare namespace RenderedEffectSource {
   }
 
   // Interface would require `RenderingLayers extends ... = InterfaceToObject<Layers>` in every subclass signature
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  type Layers = {
-    background: RenderedEffectSource.SourceLayer;
-    coloration: RenderedEffectSource.SourceLayer;
-    illumination: RenderedEffectSource.SourceLayer;
-  };
+  // RES provides no layers as of 13.345
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/no-empty-object-type
+  type Layers = {};
 }
 
 export default RenderedEffectSource;

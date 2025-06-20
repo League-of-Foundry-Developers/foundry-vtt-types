@@ -9,7 +9,7 @@ import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_modul
 declare class GlobalLightSource<
   SourceData extends GlobalLightSource.SourceData = GlobalLightSource.SourceData,
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
-  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = RenderedEffectSource.Layers,
+  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = BaseLightSource.Layers,
 > extends BaseLightSource<SourceData, SourceShape, RenderingLayers> {
   /** @defaultValue `"GlobalLight"` */
   static override sourceType: string;
@@ -40,7 +40,7 @@ declare class GlobalLightSource<
 
   /**
    * Name of this global light source.
-   * @defaultValue `this.constructor.sourceType` (`"GlobalLight"`)
+   * @defaultValue {@linkcode GlobalLightSource.sourceType | this.constructor.sourceType}
    */
   name: string;
 
@@ -87,7 +87,10 @@ declare namespace GlobalLightSource {
     /** @defaultValue `0` */
     attenuation: number;
 
-    /** @defaultValue `-Infinity` */
+    /**
+     * @defaultValue `-Infinity`
+     * @remarks Seemingly unused here, since `GlobalLightSource` does not inherit from `PointEffectSourceMixin`
+     */
     priority: number;
 
     // `vision` override omitted as it doesn't change the default

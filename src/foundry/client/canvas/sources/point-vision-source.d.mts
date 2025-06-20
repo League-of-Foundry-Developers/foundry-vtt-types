@@ -11,7 +11,7 @@ import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
 declare class PointVisionSource<
   SourceData extends PointVisionSource.SourceData = PointVisionSource.SourceData,
   SourceShape extends PointSourcePolygon = PointSourcePolygon,
-  RenderingLayers extends RenderedEffectSource.Layers = RenderedEffectSource.Layers,
+  RenderingLayers extends RenderedEffectSource.Layers = PointVisionSource.Layers,
 > extends PointEffectSourceMixin(RenderedEffectSource)<SourceData, SourceShape, RenderingLayers> {
   /** @defaultValue `"sight"` */
   static override sourceType: string;
@@ -26,13 +26,13 @@ declare class PointVisionSource<
    * The corresponding lighting levels for dim light.
    * @defaultValue `foundry.CONST.LIGHTING_LEVELS.DIM`
    */
-  protected static _dimLightingLevel: foundry.CONST.LIGHTING_LEVELS;
+  protected static _dimLightingLevel: CONST.LIGHTING_LEVELS;
 
   /**
    * The corresponding lighting levels for bright light.
    * @defaultValue `foundry.CONST.LIGHTING_LEVELS.BRIGHT`
    */
-  protected static _brightLightingLevel: foundry.CONST.LIGHTING_LEVELS;
+  protected static _brightLightingLevel: CONST.LIGHTING_LEVELS;
 
   static override EDGE_OFFSET: number;
 
@@ -176,11 +176,21 @@ declare class PointVisionSource<
     shader: AdaptiveVisionShader,
     vmUniforms: Array<[string, AbstractBaseShader.UniformValue]>,
   ): void;
+
+  #PointVisionSource;
 }
 
 declare namespace PointVisionSource {
   interface Any extends AnyPointVisionSource {}
   interface AnyConstructor extends Identity<typeof AnyPointVisionSource> {}
+
+  // Interface would require `RenderingLayers extends ... = InterfaceToObject<Layers>` in every subclass signature
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  type Layers = {
+    background: RenderedEffectSource.SourceLayer;
+    coloration: RenderedEffectSource.SourceLayer;
+    illumination: RenderedEffectSource.SourceLayer;
+  };
 
   interface SourceData extends RenderedEffectSource.SourceData, PointEffectSourceMixin.SourceData {
     /**
@@ -243,11 +253,10 @@ declare namespace PointVisionSource {
     darkness?: boolean;
   }
 
-  interface PolygonConfig
-    extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "radius" | "useThreshold" | "includeDarkness"> {}
+  interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "radius" | "useThreshold"> {}
 
-  type ConfiguredClass = CONFIG["Canvas"]["visionSourceClass"];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["visionSourceClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 }
 
 declare abstract class AnyPointVisionSource extends PointVisionSource<
