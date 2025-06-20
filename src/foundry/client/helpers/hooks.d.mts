@@ -25,12 +25,6 @@ declare global {
     static on<K extends Hooks.HookName>(hook: K, fn: Hooks.Function<K>, options?: Hooks.OnOptions): number;
 
     /**
-     * @deprecated These hooks are now designed to be automatically inferred.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    static on<H extends Hooks.DynamicCallbacks>(hook: string, fn: H, options?: Hooks.OnOptions): number;
-
-    /**
      * @deprecated This hook has been deprecated. See the hook's definition for more details.
      */
     static on<K extends keyof HookConfig.DeprecatedHookConfig>(
@@ -38,11 +32,6 @@ declare global {
       fn: HookConfig.DeprecatedHookConfig[K],
       options?: Hooks.OnOptions,
     ): number;
-
-    /**
-     * @deprecated Please merge into {@linkcode HookConfig.HookConfig | "fvtt-types/configuration/Hooks.HookConfig"} instead.
-     */
-    static on<H extends AnyFunction>(hook: string, fn: H, options?: Hooks.OnOptions): number;
 
     /**
      * Register a callback handler for an event which is only triggered once the first time the event occurs.
@@ -54,12 +43,6 @@ declare global {
     static once<K extends Hooks.HookName>(hook: K, fn: Hooks.Function<K>): number;
 
     /**
-     * @deprecated These hooks are now designed to be automatically inferred.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    static once<H extends Hooks.DynamicCallbacks>(hook: string, fn: H): number;
-
-    /**
      * @deprecated This hook has been deprecated. See the hook's definition for more details.
      */
     static once<K extends keyof HookConfig.DeprecatedHookConfig>(
@@ -68,8 +51,6 @@ declare global {
       options?: Hooks.OnOptions,
     ): number;
 
-    static once<H extends AnyFunction>(hook: string, fn: H): number;
-
     /**
      * Unregister a callback handler for a particular hook event
      *
@@ -77,12 +58,6 @@ declare global {
      * @param fn   - The function, or ID number for the function, that should be turned off
      */
     static off<K extends Hooks.HookName>(hook: K, fn: number | Hooks.Function<K>): void;
-
-    /**
-     * @deprecated These hooks are now designed to be automatically inferred.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    static off<H extends Hooks.DynamicCallbacks>(hook: string, fn: number | H): void;
 
     /**
      * @deprecated This hook has been deprecated. See the hook's definition for more details.
@@ -94,11 +69,6 @@ declare global {
     ): void;
 
     /**
-     * @deprecated Please merge into {@linkcode HookConfig.HookConfig | "fvtt-types/configuration/Hooks.HookConfig"} instead.
-     */
-    static off<H extends AnyFunction>(hook: string, fn: number | H): void;
-
-    /**
      * Call all hook listeners in the order in which they were registered
      * Hooks called this way can not be handled by returning false and will always trigger every hook callback.
      *
@@ -108,23 +78,12 @@ declare global {
     static callAll<K extends Hooks.HookName>(hook: K, ...args: Hooks.HookParameters<K>): true;
 
     /**
-     * @deprecated These hooks are now designed to be automatically inferred.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    static callAll<H extends Hooks.DynamicCallbacks>(hook: string, ...args: Parameters<H>): true;
-
-    /**
      * @deprecated This hook has been deprecated. See the hook's definition for more details.
      */
     static callAll<K extends keyof HookConfig.DeprecatedHookConfig>(
       hook: K,
       ...args: Parameters<HookConfig.DeprecatedHookConfig[K]>
     ): true;
-
-    /**
-     * @deprecated Please merge into {@linkcode HookConfig.HookConfig | "fvtt-types/configuration/Hooks.HookConfig"} instead.
-     */
-    static callAll<H extends (...args: unknown[]) => unknown>(hook: string, ...args: Parameters<H>): true;
 
     /**
      * Call hook listeners in the order in which they were registered.
@@ -139,23 +98,12 @@ declare global {
     static call<K extends Hooks.HookName>(hook: K, ...args: Hooks.HookParameters<K>): boolean;
 
     /**
-     * @deprecated These hooks are now designed to be automatically inferred.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    static call<H extends Hooks.DynamicCallbacks>(hook: string, ...args: Parameters<H>): boolean;
-
-    /**
      * @deprecated This hook has been deprecated. See the hook's definition for more details.
      */
     static call<K extends keyof HookConfig.DeprecatedHookConfig>(
       hook: K,
       ...args: Parameters<HookConfig.DeprecatedHookConfig[K]>
     ): boolean;
-
-    /**
-     * @deprecated Please merge into {@linkcode HookConfig.HookConfig | "fvtt-types/configuration/Hooks.HookConfig"} instead.
-     */
-    static call<H extends (...args: unknown[]) => unknown>(hook: string, ...args: Parameters<H>): boolean;
 
     /**
      * Notify subscribers that an error has occurred within foundry.
