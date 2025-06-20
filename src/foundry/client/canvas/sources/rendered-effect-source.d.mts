@@ -1,7 +1,14 @@
 import type { AnyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type BaseLightSource from "./base-light-source.d.mts";
-import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
+import type {
+  AbstractBaseShader,
+  AdaptiveLightingShader,
+  AdaptiveBackgroundShader,
+  AdaptiveColorationShader,
+  AdaptiveIlluminationShader,
+  AdaptiveDarknessShader,
+} from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { PointSourceMesh } from "#client/canvas/containers/_module.d.mts";
 
 /**
@@ -27,7 +34,7 @@ declare abstract class RenderedEffectSource<
 
   /**
    * Layers handled by this rendered source.
-   * @remarks Keys should match the keys of RenderingLayers
+   * @remarks Keys should match the keys of RenderingLayers, can't enforce because static
    */
   protected static get _layers(): Record<string, RenderedEffectSource.LayerConfig>;
 
@@ -114,13 +121,12 @@ declare abstract class RenderedEffectSource<
 
   /**
    * Configure which shaders are used for each rendered layer.
-   * @privateRemarks Foundry marks this as private then overrides it in `PointVisionSource`
    */
-  protected _configureShaders(): Record<keyof RenderingLayers, shaders.AdaptiveLightingShader.AnyConstructor>;
+  protected _configureShaders(): Record<keyof RenderingLayers, AdaptiveLightingShader.AnyConstructor>;
 
   /**
    * Specific configuration for a layer.
-   * @remarks Is a no-op in `RenderedEffectSource`
+   * @remarks Is a no-op in {@linkcode RenderedEffectSource}
    */
   protected _configureLayer(layer: RenderedEffectSource.SourceLayer, layerId: string): void;
 
@@ -147,7 +153,7 @@ declare abstract class RenderedEffectSource<
   /**
    * Update shader uniforms used by every rendered layer.
    */
-  protected _updateCommonUniforms(shader: shaders.AbstractBaseShader): void;
+  protected _updateCommonUniforms(shader: AbstractBaseShader): void;
 
   /**
    * Update shader uniforms used for the background layer.
@@ -169,10 +175,8 @@ declare abstract class RenderedEffectSource<
   /**
    * Animate the PointSource, if an animation is enabled and if it currently has rendered containers.
    * @param dt - Delta time.
-   * @privateRemarks In core this will return `void`, as the `this.animation.animation` function will  be a {@link foundry.canvas.sources.BaseLightSource.LightAnimationFunction | `BaseLightSource.LightAnimationFunction`}
-   * and in fact most of the time will be {@link foundry.canvas.sources.RenderedEffectSource.animateTime | `RenderedEffectSource#animateTime`}, but it could technically be set to any function
    */
-  animate(dt: number): this["animation"]["animation"] extends (...args: infer _1) => infer Return ? Return : void;
+  animate(dt: number): void;
 
   /**
    * Generic time-based animation used for Rendered Point Sources.
@@ -185,29 +189,19 @@ declare abstract class RenderedEffectSource<
    * Get corrected level according to level and active vision mode data.
    * @returns The corrected level.
    */
-  static getCorrectedLevel(level: foundry.CONST.LIGHTING_LEVELS): foundry.CONST.LIGHTING_LEVELS;
+  static getCorrectedLevel(level: CONST.LIGHTING_LEVELS): CONST.LIGHTING_LEVELS;
 
   /**
    * Get corrected color according to level, dim color, bright color and background color.
    */
   static getCorrectedColor(
-    level: foundry.CONST.LIGHTING_LEVELS,
+    level: CONST.LIGHTING_LEVELS,
     colorDim: Color,
     colorBright: Color,
     colorBackground?: Color | null,
   ): Color;
 
-  /**
-   * @deprecated since v11, until v13
-   * @remarks "The RenderedEffectSource#preview is deprecated. Use RenderedEffectSource#isPreview instead."
-   */
-  set preview(preview: boolean);
-
-  /**
-   * @deprecated since v11, until v13
-   * @remarks "The RenderedEffectSource#preview is deprecated. Set RenderedEffectSource#preview as part of RenderedEffectSource#initialize instead."
-   */
-  get preview(): boolean;
+  #RenderedEffectSource: true;
 }
 
 declare namespace RenderedEffectSource {
@@ -246,27 +240,22 @@ declare namespace RenderedEffectSource {
     preview: boolean;
   }
 
-  type AnimationFunction = (
-    this: RenderedEffectSource,
-
-    /** Delta time */
-    dt: number,
-    options?: AnimationFunctionOptions,
-  ) => void;
+  /**
+   * @param dt - Delta time
+   */
+  type AnimationFunction = (this: RenderedEffectSource, dt: number, options?: AnimationFunctionOptions) => void;
 
   /** @internal */
   type _AnimationFunctionOptions = InexactPartial<{
     /**
      * The animation speed, from 0 to 10
      * @defaultValue `5`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     speed: number;
 
     /**
      * The animation intensity, from 1 to 10
      * @defaultValue `5`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     intensity: number;
 
@@ -274,10 +263,13 @@ declare namespace RenderedEffectSource {
      * Reverse the animation direction
      * @defaultValue `false`
      */
-    reverse: boolean | null;
+    reverse: boolean;
   }>;
 
-  /** Shared options for the {@link RenderedEffectSource.AnimationFunction | `AnimationFunction`}s provided by {@link foundry.canvas.sources.RenderedEffectSource | `RenderedEffectSource`} and subclasses */
+  /**
+   * Shared options for the {@linkcode RenderedEffectSource.AnimationFunction | AnimationFunction}s
+   * provided by {@linkcode RenderedEffectSource} and subclasses
+   */
   interface AnimationFunctionOptions extends _AnimationFunctionOptions {}
 
   /**
@@ -305,7 +297,7 @@ declare namespace RenderedEffectSource {
     /**
      * The animation seed
      * @defaultValue `Math.floor(Math.random() * 100000)`
-     * @remarks No Foundry-provided config specifies this, but it would be respected if set
+     * @remarks No Foundry-provided config (`CONFIG.lightAnimations`, `CONFIG.darknessAnimations`) specifies this, but it would be respected if set
      */
     seed: number;
   }>;
@@ -315,24 +307,24 @@ declare namespace RenderedEffectSource {
    * but any properties not provided will be backfilled by `|| this.layers[layer].defaultShader`
    * @internal
    */
-  type _AnimationConfigLightingShaders = NullishProps<{
+  type _AnimationConfigLightingShaders = InexactPartial<{
     /**
      * A custom illumination shader used by this animation
-     * @defaultValue `AdaptiveIlluminationShader`
+     * @defaultValue {@linkcode AdaptiveIlluminationShader}
      */
-    illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
+    illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
     /**
      * A custom coloration shader used by this animation
-     * @defaultValue `AdaptiveColorationShader`
+     * @defaultValue {@linkcode AdaptiveColorationShader}
      */
-    colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+    colorationShader: AdaptiveColorationShader.AnyConstructor;
 
     /**
      * A custom background shader used by this animation
-     * @defaultValue `AdaptiveBackgroundShader`
+     * @defaultValue {@linkcode AdaptiveBackgroundShader}
      */
-    backgroundShader: shaders.AdaptiveBackgroundShader.AnyConstructor;
+    backgroundShader: AdaptiveBackgroundShader.AnyConstructor;
   }> & { darknessShader?: never };
 
   /**
@@ -345,11 +337,12 @@ declare namespace RenderedEffectSource {
      * A custom darkness shader used by this animation
      * @defaultValue `AdaptiveDarknessShader`
      */
-    darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
+    darknessShader: AdaptiveDarknessShader.AnyConstructor;
 
-    illuminationShader?: never;
-    colorationShader?: never;
-    backgroundShader?: never;
+    // TODO(esheyw): see if these or the above are really necessary in testing
+    // illuminationShader?: never;
+    // colorationShader?: never;
+    // backgroundShader?: never;
   }
 
   /**
@@ -360,7 +353,7 @@ declare namespace RenderedEffectSource {
   type _AnimationConfigComputed = InexactPartial<{
     /**
      * The animation time
-     * @remarks Always computed, never specified in `CONFIG`
+     * @remarks Always computed, never specified in any of the provided animations in `CONFIG`
      */
     time: number;
   }>;
@@ -407,17 +400,17 @@ declare namespace RenderedEffectSource {
     /**
      * The shader instance used for the layer
      */
-    shader: shaders.AdaptiveLightingShader | undefined;
+    shader: AdaptiveLightingShader | undefined;
 
     /** @remarks Foundry does not include this in the typedef but is in the initialization of `RenderedEffectSource#layers` */
-    vmUniforms: shaders.AbstractBaseShader.Uniforms | undefined;
+    vmUniforms: AbstractBaseShader.Uniforms | undefined;
   }
 
   interface LayerConfig {
     /**
      * The default shader used by this layer
      */
-    defaultShader: shaders.AdaptiveLightingShader.AnyConstructor;
+    defaultShader: AdaptiveLightingShader.AnyConstructor;
 
     /**
      * The blend mode used by this layer
@@ -434,6 +427,8 @@ declare namespace RenderedEffectSource {
   };
 }
 
+export default RenderedEffectSource;
+
 declare abstract class AnyRenderedEffectSource extends RenderedEffectSource<
   RenderedEffectSource.SourceData,
   PIXI.Polygon,
@@ -441,5 +436,3 @@ declare abstract class AnyRenderedEffectSource extends RenderedEffectSource<
 > {
   constructor(...args: never);
 }
-
-export default RenderedEffectSource;
