@@ -262,7 +262,7 @@ declare namespace PointVisionSource {
 declare abstract class AnyPointVisionSource extends PointVisionSource<
   PointVisionSource.SourceData,
   PointSourcePolygon,
-  RenderedEffectSource.Layers
+  PointVisionSource.Layers
 > {
   constructor(...args: never);
 }

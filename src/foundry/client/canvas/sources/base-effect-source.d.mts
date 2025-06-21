@@ -1,4 +1,4 @@
-import type { IntentionalPartial, AnyObject, Identity, InexactPartial } from "#utils";
+import type { IntentionalPartial, AnyObject, Identity, InexactPartial, UnconditionalInexactPartial } from "#utils";
 import type * as placeables from "#client/canvas/placeables/_module.d.mts";
 import type { EnvironmentCanvasGroup } from "#client/canvas/groups/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
@@ -138,7 +138,7 @@ declare abstract class BaseEffectSource<
    * @param options - Additional options which modify source initialization
    * @returns The initialized source
    */
-  initialize(data?: InexactPartial<SourceData>, options?: BaseEffectSource.InitializeOptions): this;
+  initialize(data?: UnconditionalInexactPartial<SourceData>, options?: BaseEffectSource.InitializeOptions): this;
 
   /**
    * Subclass specific data initialization steps.

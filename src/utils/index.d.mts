@@ -539,6 +539,10 @@ export type InexactPartial<T extends object> = {
   [K2 in keyof T]?: T[K2] | undefined;
 };
 
+export type UnconditionalInexactPartial<T extends object> = {
+  [K in keyof T]?: T[K] | undefined;
+};
+
 /**
  * Makes select properties in `T` optional and explicitly allows both `null` and
  * `undefined` values.
