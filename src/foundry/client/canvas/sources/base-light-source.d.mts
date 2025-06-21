@@ -247,7 +247,7 @@ declare namespace BaseLightSource {
 declare abstract class AnyBaseLightSource extends BaseLightSource<
   BaseLightSource.SourceData,
   PIXI.Polygon,
-  RenderedEffectSource.Layers
+  BaseLightSource.Layers
 > {
   constructor(...args: never);
 }

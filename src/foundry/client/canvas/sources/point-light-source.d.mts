@@ -84,7 +84,7 @@ export default PointLightSource;
 declare abstract class AnyPointLightSource extends PointLightSource<
   PointLightSource.SourceData,
   PointSourcePolygon,
-  RenderedEffectSource.Layers
+  BaseLightSource.Layers
 > {
   constructor(...args: never);
 }
