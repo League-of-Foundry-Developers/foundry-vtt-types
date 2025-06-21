@@ -76,14 +76,7 @@ type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infe
  *   The most common time this shows up is with the pattern
  *   `exampleFunction({ prop = "foo" } = {}) { ... }`.
  */
-export type IntentionalPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
-  {
-    [K2 in keyof T as Extract<K2, K>]?: T[K2];
-  } & {
-    // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for
-    [K2 in keyof T as Exclude<K2, K>]: T[K2];
-  }
->;
+export type IntentionalPartial<T extends object> = Partial<T>;
 
 /**
  * This type is used to make a constraint where `T` must be statically known to overlap with `U`.
