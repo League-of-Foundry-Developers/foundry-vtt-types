@@ -1,4 +1,4 @@
-import type { Brand, InterfaceToObject, RemoveIndexSignatures, SimpleMerge } from "#utils";
+import type { Brand, ConcreteKeys, InterfaceToObject, SimpleMerge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_module.d.mts";
@@ -138,7 +138,7 @@ declare namespace VisionMode {
   interface Any extends AnyVisionMode {}
   type AnyConstructor = typeof AnyVisionMode;
 
-  type ConfiguredModes = keyof RemoveIndexSignatures<CONFIG["Canvas"]["visionModes"]>;
+  type ConfiguredModes = ConcreteKeys<CONFIG["Canvas"]["visionModes"]>;
 
   type LIGHTING_VISIBILITY = Brand<number, "VisionMode.LIGHTING_VISIBILITY">;
 

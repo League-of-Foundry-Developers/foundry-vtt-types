@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyObject, IntentionalPartial, UnconditionalInexactPartial } from "#utils";
+import type { AnyObject, InexactPartial, IntentionalPartial } from "#utils";
 
 import BaseEffectSource = foundry.canvas.sources.BaseEffectSource;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
@@ -13,7 +13,7 @@ class MyEffectSource<
   static override effectsCollection = "someCollection";
 
   // testing that initialize knows the keys of `data`
-  override initialize(data?: UnconditionalInexactPartial<SourceData>, options?: BaseEffectSource.InitializeOptions) {
+  override initialize(data?: InexactPartial<SourceData>, options?: BaseEffectSource.InitializeOptions) {
     if (data) {
       // @ts-expect-error foo is not a key of BaseEffectSource.SourceData
       if (data.foo) return this;
@@ -51,7 +51,7 @@ const mySource = new MyEffectSource({ object, sourceId: object.id });
 expectTypeOf(mySource.object).toEqualTypeOf<PlaceableObject.Any | EnvironmentCanvasGroup.Any | null>();
 expectTypeOf(mySource.sourceId).toEqualTypeOf<string>();
 expectTypeOf(mySource.data).toEqualTypeOf<BaseEffectSource.SourceData>();
-expectTypeOf(mySource.shape).toEqualTypeOf<PIXI.Polygon | undefined>();
+expectTypeOf(mySource.shape).toEqualTypeOf<PIXI.Polygon | number[] | undefined>();
 
 expectTypeOf(mySource["_flags"]).toEqualTypeOf<BaseEffectSource.Flags>();
 expectTypeOf((mySource["_flags"].foo = true)).toBeBoolean();

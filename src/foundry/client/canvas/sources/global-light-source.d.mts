@@ -60,6 +60,12 @@ declare namespace GlobalLightSource {
   interface Any extends AnyGlobalLightSource {}
   interface AnyConstructor extends Identity<typeof AnyGlobalLightSource> {}
 
+  type Initialized<
+    SourceData extends GlobalLightSource.SourceData = GlobalLightSource.SourceData,
+    SourceShape extends PIXI.Polygon = PIXI.Polygon,
+    RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = BaseLightSource.Layers,
+  > = GlobalLightSource<SourceData, SourceShape, RenderingLayers> & { shape: SourceShape };
+
   /**
    * @privateRemarks `attenuation`, `priority`, and `elevation` exist in the parent interface,
    * but are here for defaultValue overrides

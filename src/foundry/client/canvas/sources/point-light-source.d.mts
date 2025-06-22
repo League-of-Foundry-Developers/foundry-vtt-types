@@ -7,6 +7,7 @@ import type {
 import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { CanvasVisibility } from "#client/canvas/groups/_module.d.mts";
+import type { ShapeData } from "#common/data/data.mjs";
 
 /**
  * A specialized subclass of the BaseLightSource which renders a source of light as a point-based effect.
@@ -65,6 +66,12 @@ declare class PointLightSource<
 declare namespace PointLightSource {
   interface Any extends AnyPointLightSource {}
   interface AnyConstructor extends Identity<typeof AnyPointLightSource> {}
+
+  type Initialized<
+    SourceData extends PointLightSource.SourceData = PointLightSource.SourceData,
+    SourceShape extends PointSourcePolygon = PointLightSource.ConfiguredPolygon,
+    RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = BaseLightSource.Layers,
+  > = PointLightSource<SourceData, SourceShape, RenderingLayers> & { shape: ShapeData };
 
   interface SourceData extends PointEffectSourceMixin.SourceData, BaseLightSource.SourceData {
     animation: RenderedEffectSource.StoredLightAnimationConfig;

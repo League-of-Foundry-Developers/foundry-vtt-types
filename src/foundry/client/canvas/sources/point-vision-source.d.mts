@@ -77,11 +77,10 @@ declare class PointVisionSource<
 
   /**
    * The vision mode linked to this VisionSource
-   * @remarks Foundry types this as `| null`, and initializes to `= null` in the class body,
-   * but then sets it to `CONFIG.Canvas.visionModes[this.data.visionMode]` during actual
-   * initialization, so it'll either be a defined `VisionMode` or `undefined`
+   * @remarks This is initialized to `null` in the class body, but then is set to `CONFIG.Canvas.visionModes[this.data.visionMode]`
+   * during initialization, and `this.data.visionMode` has a fallback of `"basic"` applied in `#_initialize`
    */
-  visionMode: VisionMode | undefined;
+  visionMode: VisionMode | null;
 
   /**
    * The vision mode activation flag for handlers
@@ -95,18 +94,18 @@ declare class PointVisionSource<
    * The unconstrained LOS polygon.
    * @remarks Initialization includes `this.los = this.shape` in `#_createShapes()`
    */
-  los: SourceShape;
+  los: SourceShape | undefined;
 
   /**
    * The polygon of light perception.
    * @remarks Initialization includes `this.light = this._createLightPolygon()` in `#_createShapes()`
    */
-  light: SourceShape;
+  light: SourceShape | undefined;
 
   /**
    * An alias for the shape of the vision source.
    */
-  get fov(): SourceShape;
+  get fov(): SourceShape | undefined;
 
   /**
    * If this vision source background is rendered into the lighting container.
@@ -163,6 +162,7 @@ declare class PointVisionSource<
    * If the light perception radius is unconstrained, no new polygon instance is created;
    * instead the LOS polygon of this vision source is returned.
    * @returns The new polygon or `this.los`.
+   * @remarks Not `|undefined` because calling this
    */
   protected _createLightPolygon(): SourceShape;
 
@@ -207,6 +207,18 @@ declare namespace PointVisionSource {
     background: RenderedEffectSource.SourceLayer;
     coloration: RenderedEffectSource.SourceLayer;
     illumination: RenderedEffectSource.SourceLayer;
+  };
+
+  type Initialized<
+    SourceData extends PointVisionSource.SourceData = PointVisionSource.SourceData,
+    SourceShape extends PointSourcePolygon = PointVisionSource.ConfiguredPolygon,
+    RenderingLayers extends RenderedEffectSource.Layers = PointVisionSource.Layers,
+  > = PointVisionSource<SourceData, SourceShape, RenderingLayers> & {
+    shape: SourceShape;
+    los: SourceShape;
+    light: SourceShape;
+    get fov(): SourceShape;
+    get preferred(): boolean;
   };
 
   interface SourceData extends RenderedEffectSource.SourceData, PointEffectSourceMixin.SourceData {
@@ -256,7 +268,10 @@ declare namespace PointVisionSource {
     blinded: boolean;
   }
 
-  /** @privateRemarks Foundry types the property this is for as just `object` */
+  /**
+   * @privateRemarks Foundry types the property this is for as just `object`.
+   * Keys found in {@linkcode PointVisionSource._updateVisionMode | #_updateVisionMode}
+   */
   interface VisionModeOverrides {
     colorRGB: Color.RGBColorVector | null;
     brightness: number;
@@ -267,7 +282,14 @@ declare namespace PointVisionSource {
 
   /** @privateRemarks Foundry types this as just the Record, but only ever checks the one key */
   interface BlindedReasons extends Record<string, boolean | undefined> {
+    /** @remarks See `PointVisionSource##updateBlindedState` */
     darkness?: boolean;
+
+    /** @remarks See {@linkcode foundry.canvas.placeables.Token._getVisionBlindedStates | Token#_getVisionBlindedStates} */
+    blind?: boolean;
+
+    /** @remarks See {@linkcode foundry.canvas.placeables.Token._getVisionBlindedStates | Token#_getVisionBlindedStates} */
+    burrow?: boolean;
   }
 
   interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "radius" | "useThreshold"> {}
@@ -281,7 +303,7 @@ declare namespace PointVisionSource {
 
 declare abstract class AnyPointVisionSource extends PointVisionSource<
   PointVisionSource.SourceData,
-  PointSourcePolygon,
+  PointVisionSource.ConfiguredPolygon,
   PointVisionSource.Layers
 > {
   constructor(...args: never);

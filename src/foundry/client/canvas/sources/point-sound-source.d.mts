@@ -16,13 +16,7 @@ declare class PointSoundSource<
   /** @privateRemarks Not in Foundry code, necessary type override */
   static override defaultData: PointSoundSource.SourceData;
 
-  /**
-   * @privateRemarks This is not in foundry's code, but since this class (and its parent) implements `_createShapes`,
-   * and we are counting what happens in `initialize` as 'the constructor', this gets to be declared never undefined.
-   */
-  override shape: SourceShape;
-
-  override get effectsCollection(): foundry.utils.Collection<this>;
+  override get effectsCollection(): Collection<this>;
 
   override _getPolygonConfiguration(): PointSoundSource.PolygonConfig;
 
@@ -42,6 +36,11 @@ declare class PointSoundSource<
 declare namespace PointSoundSource {
   interface Any extends AnyPointSoundSource {}
   interface AnyConstructor extends Identity<typeof AnyPointSoundSource> {}
+
+  type Initialized<
+    SourceData extends PointSoundSource.SourceData = PointSoundSource.SourceData,
+    SourceShape extends PointSourcePolygon = PointSoundSource.ConfiguredPolygon,
+  > = PointSoundSource<SourceData, SourceShape> & { shape: SourceShape };
 
   /** @internal */
   type _GetVolumeMultiplierOptions = InexactPartial<{
@@ -64,6 +63,9 @@ declare namespace PointSoundSource {
 
 export default PointSoundSource;
 
-declare abstract class AnyPointSoundSource extends PointSoundSource<PointSoundSource.SourceData, PointSourcePolygon> {
+declare abstract class AnyPointSoundSource extends PointSoundSource<
+  PointSoundSource.SourceData,
+  PointSoundSource.ConfiguredPolygon
+> {
   constructor(...args: never);
 }

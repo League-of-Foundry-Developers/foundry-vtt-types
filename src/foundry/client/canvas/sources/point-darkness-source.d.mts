@@ -47,7 +47,7 @@ declare class PointDarknessSource<
   /**
    * The optional geometric shape is solely utilized for visual representation regarding darkness sources.
    * Used only when an additional radius is added for visuals.
-   * @remarks Undefined prior to initialization
+   * @remarks `undefined` prior to initialization
    */
   protected _visualShape: SourceShape | null | undefined;
 
@@ -58,12 +58,12 @@ declare class PointDarknessSource<
    */
   protected _padding: number;
 
-  /** @remarks Unconditionally returns `true` for darkness sources   */
+  /** @remarks Unconditionally returns `true` for darkness sources */
   override get requiresEdges(): boolean;
 
   /**
    * A convenience accessor to the darkness layer mesh.
-   * @remarks Unlike the other three layer getters inherited from {@linkcode RenderedEffectSource}, this is never undefined
+   * @privateRemarks Unlike the other three layer getters inherited from {@linkcode RenderedEffectSource}, this is never undefined
    */
   get darkness(): PointSourceMesh;
 
@@ -97,6 +97,12 @@ declare namespace PointDarknessSource {
   interface Any extends AnyPointDarknessSource {}
   interface AnyConstructor extends Identity<typeof AnyPointDarknessSource> {}
 
+  type Initialized<
+    SourceData extends PointDarknessSource.SourceData = PointDarknessSource.SourceData,
+    SourceShape extends PointSourcePolygon = PointDarknessSource.ConfiguredPolygon,
+    RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = PointDarknessSource.Layers,
+  > = PointDarknessSource<SourceData, SourceShape, RenderingLayers> & { shape: SourceShape };
+
   interface SourceData extends BaseLightSource.SourceData, PointEffectSourceMixin.SourceData {
     /**
      * @privateRemarks Type override only, a darkness source is not going to use a
@@ -124,7 +130,7 @@ export default PointDarknessSource;
 
 declare abstract class AnyPointDarknessSource extends PointDarknessSource<
   PointDarknessSource.SourceData,
-  PointSourcePolygon,
+  PointDarknessSource.ConfiguredPolygon,
   PointDarknessSource.Layers
 > {
   constructor(...args: never);
