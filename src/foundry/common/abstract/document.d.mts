@@ -49,9 +49,9 @@ import type EmbeddedCollection from "./embedded-collection.d.mts";
 export default Document;
 
 type InexactPartialExcept<T extends object, RequiredKey> = {
-  [K in keyof T as Extract<K, RequiredKey>]: T;
+  [K in keyof T as Extract<K, RequiredKey>]: T[K];
 } & {
-  [K in keyof T as Exclude<K, RequiredKey>]?: T | null | undefined;
+  [K in keyof T as Exclude<K, RequiredKey>]?: T[K] | null | undefined;
 };
 
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
