@@ -12,7 +12,10 @@ declare class PointMovementSource<
 > extends PointEffectSourceMixin(BaseEffectSource)<SourceData, SourceShape> {
   static override sourceType: "move";
 
-  /** @privateRemarks Not in Foundry code, necessary type override */
+  /**
+   * @remarks See {@linkcode PointEffectSourceMixin.AnyMixedConstructor.defaultData | PointEffectSourceMixin.defaultData}
+   * @privateRemarks Not in Foundry code, necessary type override
+   */
   static override defaultData: PointMovementSource.SourceData;
 }
 

@@ -99,6 +99,7 @@ declare abstract class BaseLightSource<
    *   vision: false
    * }
    * ```
+   * @remarks See {@linkcode RenderedEffectSource.defaultData}
    */
   static override defaultData: BaseLightSource.SourceData;
 
@@ -157,7 +158,7 @@ declare abstract class BaseLightSource<
   /**
    * /**
    * @deprecated "`BaseLightSource#isDarkness` is now obsolete. Use {@linkcode foundry.canvas.sources.PointDarknessSource | PointDarknessSource} instead." (since v12, until v14)
-   * @remarks Always returns `false`, typed as `boolean` to allow PointDarknessSource override
+   * @remarks Always returns `false`, typed as `boolean` to allow `PointDarknessSource` override
    */
   get isDarkness(): boolean;
 
@@ -177,7 +178,7 @@ declare namespace BaseLightSource {
   };
 
   type LightAnimationFunction = (
-    this: BaseLightSource,
+    this: BaseLightSource.Any,
     dt: number,
     options?: RenderedEffectSource.AnimationFunctionOptions,
   ) => void;
@@ -249,7 +250,6 @@ declare namespace BaseLightSource {
     /**
      * Noise amplification (\>1) or dampening (\<1)
      * @defaultValue `1`
-     * @remarks Parameter default only, `null` is only cast to `0`
      */
     amplification: number;
   }>;

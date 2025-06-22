@@ -23,16 +23,17 @@ declare class PointVisionSource<
 
   /**
    * The corresponding lighting levels for dim light.
-   * @defaultValue `foundry.CONST.LIGHTING_LEVELS.DIM`
+   * @defaultValue {@linkcode CONST.LIGHTING_LEVELS.DIM}
    */
   protected static _dimLightingLevel: CONST.LIGHTING_LEVELS;
 
   /**
    * The corresponding lighting levels for bright light.
-   * @defaultValue `foundry.CONST.LIGHTING_LEVELS.BRIGHT`
+   * @defaultValue {@linkcode CONST.LIGHTING_LEVELS.BRIGHT}
    */
   protected static _brightLightingLevel: CONST.LIGHTING_LEVELS;
 
+  /** @defaultValue `-2` */
   static override EDGE_OFFSET: number;
 
   /** @defaultValue `"visionSources"` */
@@ -51,6 +52,7 @@ declare class PointVisionSource<
    *   lightRadius: null
    * }
    * ```
+   * @remarks See {@linkcode PointEffectSourceMixin.AnyMixedConstructor.defaultData | PointEffectSourceMixin.defaultData}
    */
   static override defaultData: PointVisionSource.SourceData;
 

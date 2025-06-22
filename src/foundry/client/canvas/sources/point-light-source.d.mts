@@ -23,7 +23,10 @@ declare class PointLightSource<
   /** @defaultValue `"lightSources"` */
   static override effectsCollection: string;
 
-  /** @privateRemarks Not in Foundry code, necessary type override */
+  /**
+   * @remarks See {@linkcode BaseLightSource.defaultData}, {@linkcode PointEffectSourceMixin.AnyMixedConstructor.defaultData | PointEffectSourceMixin.defaultData}
+   * @privateRemarks Not in Foundry code, necessary type override
+   */
   static override defaultData: PointLightSource.SourceData;
 
   override get requiresEdges(): boolean;
@@ -71,7 +74,11 @@ declare namespace PointLightSource {
     SourceData extends PointLightSource.SourceData = PointLightSource.SourceData,
     SourceShape extends PointSourcePolygon = PointLightSource.ConfiguredPolygon,
     RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = BaseLightSource.Layers,
-  > = PointLightSource<SourceData, SourceShape, RenderingLayers> & { shape: ShapeData };
+  > = PointLightSource<SourceData, SourceShape, RenderingLayers> & {
+    shape: ShapeData;
+    cachedAttenuation: number;
+    computedAttenuation: number;
+  };
 
   interface SourceData extends PointEffectSourceMixin.SourceData, BaseLightSource.SourceData {
     animation: RenderedEffectSource.StoredLightAnimationConfig;

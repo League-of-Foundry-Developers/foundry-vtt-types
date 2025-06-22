@@ -41,7 +41,10 @@ declare class PointDarknessSource<
    */
   protected static override get _layers(): Record<string, RenderedEffectSource.LayerConfig>;
 
-  /** @privateRemarks This is not in Foundry's code, but accounts for the mixin class's static property's inability to be generic */
+  /**
+   * @remarks See {@linkcode BaseLightSource.defaultData}, {@linkcode PointEffectSourceMixin.AnyMixedConstructor.defaultData | PointEffectSourceMixin.defaultData}
+   * @privateRemarks Not in Foundry code, necessary type override
+   */
   static override defaultData: PointDarknessSource.SourceData;
 
   /**
@@ -101,7 +104,11 @@ declare namespace PointDarknessSource {
     SourceData extends PointDarknessSource.SourceData = PointDarknessSource.SourceData,
     SourceShape extends PointSourcePolygon = PointDarknessSource.ConfiguredPolygon,
     RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = PointDarknessSource.Layers,
-  > = PointDarknessSource<SourceData, SourceShape, RenderingLayers> & { shape: SourceShape };
+  > = PointDarknessSource<SourceData, SourceShape, RenderingLayers> & {
+    shape: SourceShape;
+    cachedAttenuation: number;
+    computedAttenuation: number;
+  };
 
   interface SourceData extends BaseLightSource.SourceData, PointEffectSourceMixin.SourceData {
     /**

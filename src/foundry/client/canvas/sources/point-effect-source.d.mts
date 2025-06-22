@@ -21,6 +21,8 @@ declare class PointEffectSource {
    *   walls: true
    * }
    * ```
+   * @remarks `...super.defaultData` will depend on the mixed class; See {@linkcode foundry.canvas.sources.BaseLightSource.defaultData | BaseLightSource.defaultData},
+   * {@linkcode foundry.canvas.sources.RenderedEffectSource.defaultData | RenderedEffectSource.defaultData}, or {@linkcode BaseEffectSource.defaultData}
    */
   static defaultData: PointEffectSourceMixin.MixedSourceData;
 

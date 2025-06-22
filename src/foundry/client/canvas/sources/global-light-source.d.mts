@@ -31,6 +31,7 @@ declare class GlobalLightSource<
    *   darkness: {min: 0, max: 0}
    * }
    * ```
+   * @remarks See {@linkcode BaseLightSource.defaultData}
    */
   static override defaultData: GlobalLightSource.SourceData;
 

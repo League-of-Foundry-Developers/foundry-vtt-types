@@ -61,6 +61,7 @@ declare abstract class RenderedEffectSource<
    *   color: null
    * }
    * ```
+   * @remarks See {@linkcode sources.BaseEffectSource.defaultData | BaseEffectSource.defaultData}
    */
   static defaultData: RenderedEffectSource.SourceData;
 
@@ -255,7 +256,8 @@ declare namespace RenderedEffectSource {
   }
 
   /**
-   * @param dt - Delta time
+   * @param dt      - Delta time
+   * @param options - Additional options which modify the animation
    */
   type AnimationFunction = (this: RenderedEffectSource, dt: number, options?: AnimationFunctionOptions) => void;
 
