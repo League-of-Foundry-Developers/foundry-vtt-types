@@ -535,14 +535,9 @@ export type AllKeysOf<T extends object> = T extends unknown ? keyof T : never;
  *
  * @internal
  */
-export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
-  {
-    [K2 in keyof T as Extract<K2, K>]?: T[K2] | undefined;
-  } & {
-    // Note(LukeAbby): This effectively inlines `Omit<T, K>` hoping for slightly better performance.
-    [K2 in keyof T as Exclude<K2, K>]: T[K2];
-  }
->;
+export type InexactPartial<T extends object> = {
+  [K2 in keyof T]?: T[K2] | undefined;
+};
 
 /**
  * Makes select properties in `T` optional and explicitly allows both `null` and
@@ -576,14 +571,9 @@ export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<
  *
  * @internal
  */
-export type NullishProps<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
-  {
-    [K2 in keyof T as Extract<K2, K>]?: T[K2] | null | undefined;
-  } & {
-    // Note(LukeAbby): This effectively inlines `Omit<T, K>` hoping for slightly better performance.
-    [K2 in keyof T as Exclude<K2, K>]: T[K2];
-  }
->;
+export type NullishProps<T extends object> = {
+  [K2 in keyof T]?: T[K2] | null | undefined;
+};
 
 /**
  * Expand an object that contains keys in dotted notation

@@ -602,24 +602,46 @@ declare namespace PlaceablesLayer {
 
   /**
    * @internal
-   * @privateRemarks Only marking `x` and `y` from `Canvas.Rectangle` optional, as the `PIXI.Rectangle` defaults of `0` make no sense for `width` or `height` in this context
    */
-  type _SelectObjectsOptions = NullishProps<Canvas.Rectangle, "x" | "y"> &
-    InexactPartial<{
-      /**
-       * Optional arguments provided to any called release() method
-       * @defaultValue `{}`
-       * @remarks Can't be null as it only has a parameter default
-       */
-      releaseOptions: PlaceableObject.ReleaseOptions;
+  type _SelectObjectsOptions = {
+    /**
+     * The top-left x-coordinate of the selection rectangle.
+     * @remarks Foundry marked optional. Ignored as the default of 0 is questionable.
+     */
+    x: number;
 
-      /**
-       * Optional arguments provided to any called control() method
-       * @defaultValue `{}`
-       * @remarks Can't be null as it only has a parameter default
-       */
-      controlOptions: PlaceableObject.ControlOptions;
-    }>;
+    /**
+     * The top-left y-coordinate of the selection rectangle.
+     * @remarks Foundry marked optional. Ignored as the default of 0 is questionable.
+     */
+    y: number;
+
+    /**
+     * The width of the selection rectangle.
+     * @remarks Foundry marked optional. Ignored as the default of 0 is questionable.
+     */
+    width: number;
+
+    /**
+     * The height of the selection rectangle.
+     * @remarks Foundry marked optional. Ignored as the default of 0 is questionable.
+     */
+    height: number;
+  } & InexactPartial<{
+    /**
+     * Optional arguments provided to any called release() method
+     * @defaultValue `{}`
+     * @remarks Can't be null as it only has a parameter default
+     */
+    releaseOptions: PlaceableObject.ReleaseOptions;
+
+    /**
+     * Optional arguments provided to any called control() method
+     * @defaultValue `{}`
+     * @remarks Can't be null as it only has a parameter default
+     */
+    controlOptions: PlaceableObject.ControlOptions;
+  }>;
 
   interface SelectObjectsOptions extends _SelectObjectsOptions {}
 
