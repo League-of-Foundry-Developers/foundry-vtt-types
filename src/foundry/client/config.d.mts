@@ -2680,7 +2680,29 @@ declare global {
       }
 
       interface LightAnimations extends Record<string, RenderedEffectSource.LightAnimationConfig> {
-        flame: {
+        flame: LightAnimations.Flame;
+        torch: LightAnimations.Torch;
+        revolving: LightAnimations.Revolving;
+        siren: LightAnimations.Siren;
+        pulse: LightAnimations.Pulse;
+        chroma: LightAnimations.Chroma;
+        wave: LightAnimations.Wave;
+        fog: LightAnimations.Fog;
+        sunburst: LightAnimations.Sunburst;
+        dome: LightAnimations.Dome;
+        emanation: LightAnimations.Emanation;
+        hexa: LightAnimations.Hexa;
+        ghost: LightAnimations.Ghost;
+        energy: LightAnimations.Energy;
+        vortex: LightAnimations.Vortex;
+        witchwave: LightAnimations.WitchWave;
+        rainbowswirl: LightAnimations.RainbowSwirl;
+        radialrainbow: LightAnimations.RadialRainbow;
+        fairy: LightAnimations.Fairy;
+      }
+
+      namespace LightAnimations {
+        interface Flame extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationFame"` */
           label: string;
 
@@ -2692,9 +2714,9 @@ declare global {
 
           /** @defaultValue `FlameColorationShader` */
           colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        torch: {
+        interface Torch extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationTorch"` */
           label: string;
 
@@ -2706,9 +2728,9 @@ declare global {
 
           /** @defaultValue `TorchColorationShader` */
           colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        revolving: {
+        interface Revolving extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationRevolving"` */
           label: string;
 
@@ -2717,9 +2739,9 @@ declare global {
 
           /** @defaultValue `RevolvingColorationShader` */
           colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        siren: {
+        interface Siren extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationSiren"` */
           label: string;
 
@@ -2731,9 +2753,9 @@ declare global {
 
           /** @defaultValue `SirenIlluminationShader` */
           colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        pulse: {
+        interface Pulse extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationPulse"` */
           label: string;
 
@@ -2745,9 +2767,9 @@ declare global {
 
           /** @defaultValue `PulseColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        chroma: {
+        interface Chroma extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationChroma"` */
           label: string;
 
@@ -2756,9 +2778,9 @@ declare global {
 
           /** @defaultValue `ChromaColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        wave: {
+        interface Wave extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationWave"` */
           label: string;
 
@@ -2770,9 +2792,9 @@ declare global {
 
           /** @defaultValue `WaveColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        fog: {
+        interface Fog extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationFog"` */
           label: string;
 
@@ -2781,9 +2803,9 @@ declare global {
 
           /** @defaultValue `FogColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        sunburst: {
+        interface Sunburst extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationSunburst"` */
           label: string;
 
@@ -2795,9 +2817,9 @@ declare global {
 
           /** @defaultValue `SunburstColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        dome: {
+        interface Dome extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationLightDome"` */
           label: string;
 
@@ -2806,9 +2828,9 @@ declare global {
 
           /** @defaultValue `LightDomeColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        emanation: {
+        interface Emanation extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationEmanation"` */
           label: string;
 
@@ -2817,9 +2839,9 @@ declare global {
 
           /** @defaultValue `EmanationColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        hexa: {
+        interface Hexa extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationHexaDome";` */
           label: string;
 
@@ -2828,9 +2850,9 @@ declare global {
 
           /** @defaultValue `HexaDomeColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        ghost: {
+        interface Ghost extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationGhostLight"` */
           label: string;
 
@@ -2842,9 +2864,9 @@ declare global {
 
           /** @defaultValue `GhostLightColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        energy: {
+        interface Energy extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationEnergyField"` */
           label: string;
 
@@ -2853,9 +2875,9 @@ declare global {
 
           /** @defaultValue `EnergyFieldColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        vortex: {
+        interface Vortex extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationVortex"` */
           label: string;
 
@@ -2867,9 +2889,9 @@ declare global {
 
           /** @defaultValue `VortexColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        witchwave: {
+        interface WitchWave extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationBewitchingWave"` */
           label: string;
 
@@ -2881,9 +2903,9 @@ declare global {
 
           /** @defaultValue `BewitchingWaveColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        rainbowswirl: {
+        interface RainbowSwirl extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationSwirlingRainbow"` */
           label: string;
 
@@ -2892,9 +2914,9 @@ declare global {
 
           /** @defaultValue `SwirlingRainbowColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        radialrainbow: {
+        interface RadialRainbow extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationRadialRainbow"` */
           label: string;
 
@@ -2903,9 +2925,9 @@ declare global {
 
           /** @defaultValue `RadialRainbowColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        fairy: {
+        interface Fairy extends RenderedEffectSource.LightAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationFairyLight"` */
           label: string;
 
@@ -2917,11 +2939,17 @@ declare global {
 
           /** @defaultValue `FairyLightColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
       }
 
       interface DarknessAnimations extends Record<string, RenderedEffectSource.DarknessAnimationConfig> {
-        magicalGloom: {
+        magicalGloom: DarknessAnimations.MagicalGloom;
+        roiling: DarknessAnimations.Roiling;
+        hole: DarknessAnimations.Hole;
+      }
+
+      namespace DarknessAnimations {
+        interface MagicalGloom extends RenderedEffectSource.DarknessAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationMagicalGloom"` */
           label: string;
 
@@ -2930,9 +2958,9 @@ declare global {
 
           /** @defaultValue `MagicalGloomDarknessShader` */
           darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
-        };
+        }
 
-        roiling: {
+        interface Roiling extends RenderedEffectSource.DarknessAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationRoilingMass"` */
           label: string;
 
@@ -2941,9 +2969,9 @@ declare global {
 
           /** @defaultValue `RoilingDarknessShader` */
           darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
-        };
+        }
 
-        hole: {
+        interface Hole extends RenderedEffectSource.DarknessAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationBlackHole"` */
           label: string;
 
@@ -2952,7 +2980,7 @@ declare global {
 
           /** @defaultValue `BlackHoleDarknessShader` */
           darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
-        };
+        }
       }
 
       interface Pings {
