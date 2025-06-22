@@ -4,7 +4,7 @@ import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import BaseLightSource = foundry.canvas.sources.BaseLightSource;
 import RenderedEffectSource = foundry.canvas.sources.RenderedEffectSource;
 import AdaptiveBackgroundShader = foundry.canvas.rendering.shaders.AdaptiveBackgroundShader;
-import SmoothNoise = foundry.canvas.animation.SmoothNoise;
+import PointSourceMesh = foundry.canvas.containers.PointSourceMesh;
 
 declare class MyLightSource extends foundry.canvas.sources.BaseLightSource {
   protected override _createShapes(): void;
@@ -23,10 +23,13 @@ const mySource = new MyLightSource({ object: someToken, sourceId: "asfsdfs" });
 
 expectTypeOf(mySource.ratio).toBeNumber();
 
+expectTypeOf(mySource.background).toEqualTypeOf<PointSourceMesh>();
+expectTypeOf(mySource.coloration).toEqualTypeOf<PointSourceMesh>();
+expectTypeOf(mySource.illumination).toEqualTypeOf<PointSourceMesh>();
+
 // only new SourceData keys tested here, thorough tests are on the final Point*Source classes
 expectTypeOf(
   mySource["_initialize"]({
-    priority: 7,
     alpha: 0.2,
     bright: 50,
     dim: 100,
@@ -46,10 +49,10 @@ expectTypeOf(mySource["_updateCommonUniforms"](someBackgroundShader)).toBeVoid()
 
 expectTypeOf(mySource.cachedAttenuation).toEqualTypeOf<number | undefined>();
 expectTypeOf(mySource.computedAttenuation).toEqualTypeOf<number | undefined>();
-expectTypeOf(mySource._noise).toEqualTypeOf<SmoothNoise | undefined>();
 
+// the LightAnimationFunctions all share an options interface
 expectTypeOf(mySource.animatePulse(7)).toBeVoid();
-expectTypeOf(mySource.animateTorch(23, { intensity: undefined, reverse: null, speed: undefined })).toBeVoid();
+expectTypeOf(mySource.animateTorch(23, { intensity: undefined, reverse: undefined, speed: undefined })).toBeVoid();
 // animateFlickering is the only animation function with an extra option (`amplification`)
 expectTypeOf(mySource.animateFlickering(12, { amplification: -3, intensity: 2, reverse: true, speed: 10 })).toBeVoid();
 

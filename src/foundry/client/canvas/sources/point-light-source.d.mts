@@ -72,11 +72,9 @@ declare namespace PointLightSource {
 
   interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold"> {}
 
-  // TODO: make configurable
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["lightSourceClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  // TODO: make configurable
   interface ConfiguredPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["light"]> {}
   interface ConfiguredPolygon extends FixedInstanceType<ConfiguredPolygonClass> {}
 }

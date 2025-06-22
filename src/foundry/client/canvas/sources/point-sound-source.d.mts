@@ -55,11 +55,9 @@ declare namespace PointSoundSource {
 
   interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold"> {}
 
-  // TODO: make configurable
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["soundSourceClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  // TODO: make configurable
   interface ConfiguredPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["sound"]> {}
   interface ConfiguredPolygon extends FixedInstanceType<ConfiguredPolygonClass> {}
 }

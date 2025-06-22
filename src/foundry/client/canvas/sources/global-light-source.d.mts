@@ -43,7 +43,7 @@ declare class GlobalLightSource<
   /**
    * A custom polygon placeholder.
    * @defaultValue `null`
-   * @remarks This is not set anywhere in Foundry code, so will always be null barring system/module/user action
+   * @remarks This is not set anywhere in Foundry code, so will always be `null` barring system/module/user action
    */
   customPolygon: PIXI.Polygon | number[] | null;
 

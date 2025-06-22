@@ -308,9 +308,16 @@ declare const Color: typeof InternalColor & (new (...args: any) => number);
 type Color = InternalColor & number;
 
 declare namespace Color {
+  /** @remarks Values between `0` and `1` */
   type RGBColorVector = [r: number, g: number, b: number];
+
+  /** @remarks Values between `0` and `1` */
   type RGBAColorVector = [r: number, g: number, b: number, a: number];
+
+  /** @remarks Values between `0` and `1` */
   type HSVColorVector = [h: number, s: number, v: number];
+
+  /** @remarks Values between `0` and `1` */
   type HSLColorVector = [h: number, s: number, l: number];
 
   type Source = number | RGBColorVector | string | Color;

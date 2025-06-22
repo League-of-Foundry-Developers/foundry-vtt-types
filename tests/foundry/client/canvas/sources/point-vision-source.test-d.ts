@@ -6,6 +6,7 @@ import PointVisionSource = foundry.canvas.sources.PointVisionSource;
 import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
 import RenderedEffectSource = foundry.canvas.sources.RenderedEffectSource;
 import VisionMode = foundry.canvas.perception.VisionMode;
+import PointSourceMesh = foundry.canvas.containers.PointSourceMesh;
 
 expectTypeOf(PointVisionSource.sourceType).toBeString();
 expectTypeOf(PointVisionSource["_initializeShaderKeys"]).toEqualTypeOf<string[]>();
@@ -21,11 +22,17 @@ const mySource = new PointVisionSource();
 
 expectTypeOf(mySource.data).toEqualTypeOf<PointVisionSource.SourceData>();
 expectTypeOf(mySource.shape).toEqualTypeOf<PointSourcePolygon>();
+
+expectTypeOf(mySource.background).toEqualTypeOf<PointSourceMesh>();
+expectTypeOf(mySource.coloration).toEqualTypeOf<PointSourceMesh>();
+expectTypeOf(mySource.illumination).toEqualTypeOf<PointSourceMesh>();
+
 expectTypeOf(mySource.visionMode).toEqualTypeOf<VisionMode | undefined>();
 expectTypeOf(mySource["_visionModeActivated"]).toBeBoolean();
 expectTypeOf(mySource.los).toEqualTypeOf<PointSourcePolygon>();
 expectTypeOf(mySource.light).toEqualTypeOf<PointSourcePolygon>();
 expectTypeOf(mySource.fov).toEqualTypeOf<PointSourcePolygon>();
+
 expectTypeOf(mySource.preferred).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(mySource.isAnimated).toBeBoolean();
 expectTypeOf(mySource.lightRadius).toBeNumber();

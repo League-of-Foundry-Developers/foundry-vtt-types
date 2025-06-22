@@ -55,7 +55,7 @@ const mySource = new MyRenderedSource({ object, sourceId: object.id });
 expectTypeOf(mySource.animation).toEqualTypeOf<RenderedEffectSource.StoredAnimationConfig>();
 
 // if there's a `darknessShader`, it's a `DarknessAnimationConfig`
-if (mySource.animation.darknessShader) {
+if ("darknessShader" in mySource.animation) {
   expectTypeOf(mySource.animation.darknessShader).toEqualTypeOf<AdaptiveDarknessShader.AnyConstructor>();
 } else {
   expectTypeOf(mySource.animation.illuminationShader).toEqualTypeOf<
@@ -79,9 +79,9 @@ expectTypeOf(mySource.isAnimated).toBeBoolean();
 expectTypeOf(mySource.hasActiveLayer).toBeBoolean();
 expectTypeOf(mySource.isPreview).toBeBoolean();
 
-expectTypeOf(mySource.background).toEqualTypeOf<PointSourceMesh>();
-expectTypeOf(mySource.coloration).toEqualTypeOf<PointSourceMesh>();
-expectTypeOf(mySource.illumination).toEqualTypeOf<PointSourceMesh>();
+expectTypeOf(mySource.background).toEqualTypeOf<undefined>();
+expectTypeOf(mySource.coloration).toEqualTypeOf<undefined>();
+expectTypeOf(mySource.illumination).toEqualTypeOf<undefined>();
 
 // only new SourceData keys tested here, thorough tests are on the final Point*Source classes
 expectTypeOf(

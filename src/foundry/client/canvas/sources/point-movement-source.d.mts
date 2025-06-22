@@ -31,7 +31,6 @@ declare namespace PointMovementSource {
   // This is the only core Point*Source class that isn't configurable, `Token##getMovementSource`
   // references this class directly, there is no `CONFIG.Canvas.movementSourceClass` or equivalent
 
-  // TODO: make configurable
   interface ConfiguredPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["move"]> {}
   interface ConfiguredPolygon extends FixedInstanceType<ConfiguredPolygonClass> {}
 }
