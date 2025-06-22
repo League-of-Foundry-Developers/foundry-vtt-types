@@ -11,20 +11,19 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
  */
 declare class PointDarknessSource<
   SourceData extends PointDarknessSource.SourceData = PointDarknessSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointSourcePolygon,
+  SourceShape extends PointSourcePolygon = PointDarknessSource.ConfiguredPolygon,
   RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = PointDarknessSource.Layers,
 > extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape, RenderingLayers> {
-  /** @defaultValue `"darkness"` */
-  static override sourceType: string;
+  static override sourceType: "darkness";
 
   /** @defaultValue `"darknessSources"` */
   static override effectsCollection: string;
 
   /** @defaultValue `foundry.CONST.LIGHTING_LEVELS.HALFDARK` */
-  protected static override _dimLightingLevel: foundry.CONST.LIGHTING_LEVELS;
+  protected static override _dimLightingLevel: CONST.LIGHTING_LEVELS;
 
   /** @defaultValue `foundry.CONST.LIGHTING_LEVELS.DARKNESS` */
-  protected static override _brightLightingLevel: foundry.CONST.LIGHTING_LEVELS;
+  protected static override _brightLightingLevel: CONST.LIGHTING_LEVELS;
 
   /** @defaultValue `CONFIG.Canvas.darknessAnimations` */
   protected static get ANIMATIONS(): typeof CONFIG.Canvas.darknessAnimations;
@@ -37,14 +36,9 @@ declare class PointDarknessSource<
   /**
    * The optional geometric shape is solely utilized for visual representation regarding darkness sources.
    * Used only when an additional radius is added for visuals.
+   * @remarks Undefined prior to initialization
    */
-  protected _visualShape: SourceShape | null;
-
-  /**
-   * @privateRemarks This is not in foundry's code, but since this class (and its parent) implements `_createShapes`,
-   * and we are counting what happens in `initialize` as 'the constructor', this gets to be declared never undefined.
-   */
-  override shape: SourceShape;
+  protected _visualShape: SourceShape | null | undefined;
 
   /**
    * Padding applied on the darkness source shape for visual appearance only.
@@ -103,8 +97,13 @@ declare namespace PointDarknessSource {
     darkness: RenderedEffectSource.SourceLayer;
   };
 
+  // TODO: make configurable
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["darknessSourceClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
+
+  // TODO: make configurable
+  interface ConfiguredPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["darkness"]> {}
+  interface ConfiguredPolygon extends FixedInstanceType<ConfiguredPolygonClass> {}
 }
 
 export default PointDarknessSource;

@@ -11,8 +11,7 @@ declare class GlobalLightSource<
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
   RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = BaseLightSource.Layers,
 > extends BaseLightSource<SourceData, SourceShape, RenderingLayers> {
-  /** @defaultValue `"GlobalLight"` */
-  static override sourceType: string;
+  static override sourceType: "GlobalLight";
 
   /** @defaultValue `"lightSources"` */
   static override effectsCollection: string;
@@ -34,9 +33,6 @@ declare class GlobalLightSource<
    * ```
    */
   static override defaultData: GlobalLightSource.SourceData;
-
-  /** @privateRemarks This class implements `#_createShapes`, so it's shape property will 'never' be undefined (after initialization) */
-  shape: SourceShape;
 
   /**
    * Name of this global light source.

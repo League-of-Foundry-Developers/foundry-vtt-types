@@ -10,11 +10,10 @@ import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
  */
 declare class PointVisionSource<
   SourceData extends PointVisionSource.SourceData = PointVisionSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointSourcePolygon,
+  SourceShape extends PointSourcePolygon = PointVisionSource.ConfiguredPolygon,
   RenderingLayers extends RenderedEffectSource.Layers = PointVisionSource.Layers,
 > extends PointEffectSourceMixin(RenderedEffectSource)<SourceData, SourceShape, RenderingLayers> {
-  /** @defaultValue `"sight"` */
-  static override sourceType: string;
+  static override sourceType: "sight";
 
   /** @defaultValue `["visionMode", "blinded"]` */
   protected static override _initializeShaderKeys: string[];
@@ -255,8 +254,13 @@ declare namespace PointVisionSource {
 
   interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "radius" | "useThreshold"> {}
 
+  // TODO: make configurable
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["visionSourceClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
+
+  // TODO: make configurable
+  interface ConfiguredPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["sight"]> {}
+  interface ConfiguredPolygon extends FixedInstanceType<ConfiguredPolygonClass> {}
 }
 
 declare abstract class AnyPointVisionSource extends PointVisionSource<

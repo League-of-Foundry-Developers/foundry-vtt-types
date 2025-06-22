@@ -25,7 +25,7 @@ declare abstract class BaseEffectSource<
    * An effect source is constructed by providing configuration options.
    * @param options - Options which modify the base effect source instance
    */
-  constructor(options?: BaseEffectSource.ConstructorOptions);
+  constructor(options: BaseEffectSource.ConstructorOptions);
 
   /**
    * The type of source represented by this data structure.
@@ -36,7 +36,8 @@ declare abstract class BaseEffectSource<
 
   /**
    * The target collection into the effects canvas group.
-   * @remarks Foundry marked `@abstract`; Is `undefined` in `BaseEffectSource`
+   * @abstract
+   * @remarks Is `undefined` in `BaseEffectSource`
    */
   static effectsCollection: string | undefined;
 
@@ -56,7 +57,7 @@ declare abstract class BaseEffectSource<
 
   /**
    * Some other object which is responsible for this source.
-   * @privateRemarks see {@linkcode BaseEffectSource._ConstructorOptions.object}
+   * @privateRemarks see {@linkcode BaseEffectSource.ConstructorOptions.object}
    */
   object: placeables.PlaceableObject.Any | EnvironmentCanvasGroup.Any | null;
 
@@ -64,7 +65,7 @@ declare abstract class BaseEffectSource<
    * The source id linked to this effect source.
    * @remarks Foundry types this as Readonly<string>, but does nothing to that effect at runtime
    */
-  sourceId: string | undefined;
+  sourceId: string;
 
   /**
    * The data of this source.
@@ -73,7 +74,7 @@ declare abstract class BaseEffectSource<
 
   /**
    * The geometric shape of the effect source which is generated later.
-   * @remarks This only isn't `undefined` in subclasses implementing `_createShapes()`, usually via {@link foundry.canvas.sources.PointEffectSourceMixin | `PointEffectSourceMixin`}
+   * @remarks This is `undefined` prior to the first call to {@linkcode BaseEffectSource.initialize | BaseEffectSource#Initialize}
    */
   shape: SourceShape | undefined;
 
@@ -223,8 +224,7 @@ declare namespace BaseEffectSource {
 
   interface ConstructorOptions extends _ConstructorOptions {
     /**
-     * A unique ID for this source. This will be set automatically if an
-     * object is provided, otherwise is required.
+     * A unique ID for this source. This will be set automatically if an object is provided, otherwise is required.
      * @remarks The above is misleading; sourceId **was** only inferred if you passed a `PlaceableObject`
      * _instead_ of an options object to the constructor (which was a deprecated path removed in v13),
      * _not_ if you pass in `{ object: PlaceableObject }`, where you're expected to also pass `sourceId`
@@ -268,7 +268,6 @@ declare namespace BaseEffectSource {
     reset: boolean;
   }>;
 
-  /** @privateRemarks Foundry describes an `options.behaviors` key, but it is neither checked for nor used at runtime */
   interface InitializeOptions extends _InitializeOptions {}
 
   /** @privateRemarks The `| number` is from Foundry's typing, but core only uses boolean flags in v12.331 */

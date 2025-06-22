@@ -340,14 +340,13 @@ declare namespace RenderedEffectSource {
      */
     darknessShader: AdaptiveDarknessShader.AnyConstructor;
 
-    // TODO(esheyw): see if these or the above are really necessary in testing
-    // illuminationShader?: never;
-    // colorationShader?: never;
-    // backgroundShader?: never;
+    illuminationShader?: never;
+    colorationShader?: never;
+    backgroundShader?: never;
   }
 
   /**
-   * `this.animation.time` always gets set by `RenderedEffectSource#animateTime`,
+   * {@linkcode RenderedEffectSource.animation | this.animation.time} always gets set by {@linkcode RenderedEffectSource.animateTime | #animateTime},
    * which all animation functions end up calling
    * @internal
    */
