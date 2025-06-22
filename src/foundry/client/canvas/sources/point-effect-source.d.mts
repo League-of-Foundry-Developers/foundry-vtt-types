@@ -26,14 +26,16 @@ declare class PointEffectSource {
 
   /**
    * @defaultValue `CONFIG.Canvas.polygonBackends[this.constructor.sourceType].create(origin, config)`
+   * @remarks `undefined` prior to initialization
    * @privateRemarks This is not in Foundry's code, but the mixin class loses access to the type parameter that would
    * otherwise be here, and per the default above this is always a {@linkcode PointSourcePolygon} subclass, always
    * {@linkcode foundry.canvas.geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon} in core
    */
-  shape: PointSourcePolygon;
+  shape: PointSourcePolygon | undefined;
 
   /**
    * The Edge instances added by this source.
+   * @defaultValue `[]`
    */
   edges: foundry.canvas.geometry.edges.Edge[];
 

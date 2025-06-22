@@ -1,7 +1,8 @@
-import type { IntentionalPartial, AnyObject, Identity, InexactPartial, UnconditionalInexactPartial } from "#utils";
+import type { IntentionalPartial, AnyObject, Identity, InexactPartial } from "#utils";
 import type * as placeables from "#client/canvas/placeables/_module.d.mts";
 import type { EnvironmentCanvasGroup } from "#client/canvas/groups/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { PointSoundSource } from "./_module.d.mts";
 
 /**
  * TODO - Re-document after ESM refactor.
@@ -38,8 +39,9 @@ declare abstract class BaseEffectSource<
    * The target collection into the effects canvas group.
    * @abstract
    * @remarks Is `undefined` in `BaseEffectSource`
+   * @privateRemarks Point
    */
-  static effectsCollection: string | undefined;
+  static effectsCollection: Collection<PointSoundSource> | string | undefined;
 
   /**
    * Effect source default data.
@@ -77,7 +79,7 @@ declare abstract class BaseEffectSource<
    * @remarks This is `undefined` prior to the first call to {@linkcode BaseEffectSource.initialize | BaseEffectSource#Initialize}
    *
    * Only ever `number[]` in {@linkcode foundry.canvas.sources.GlobalLightSource}, and only if
-   * {@linkcode foundry.canavs.sources.GlobalLightSource.customPolygon | #customPolygon} is set
+   * {@linkcode foundry.canvas.sources.GlobalLightSource.customPolygon | #customPolygon} is set
    * to a `number[]` before initialization.
    */
   shape: SourceShape | number[] | undefined;
@@ -143,7 +145,7 @@ declare abstract class BaseEffectSource<
    * @param options - Additional options which modify source initialization
    * @returns The initialized source
    */
-  initialize(data?: UnconditionalInexactPartial<SourceData>, options?: BaseEffectSource.InitializeOptions): this;
+  initialize(data?: InexactPartial<SourceData>, options?: BaseEffectSource.InitializeOptions): this;
 
   /**
    * Subclass specific data initialization steps.
