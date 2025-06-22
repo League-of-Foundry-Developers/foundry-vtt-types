@@ -13,7 +13,10 @@ declare class PointSoundSource<
 > extends PointEffectSourceMixin(BaseEffectSource)<SourceData, SourceShape> {
   static override sourceType: "sound";
 
-  /** @privateRemarks Not in Foundry code, necessary type override */
+  /**
+   * @remarks See {@linkcode PointEffectSourceMixin.AnyMixedConstructor.defaultData | PointEffectSourceMixin.defaultData}
+   * @privateRemarks Not in Foundry code, necessary type override
+   */
   static override defaultData: PointSoundSource.SourceData;
 
   override get effectsCollection(): Collection<this>;
