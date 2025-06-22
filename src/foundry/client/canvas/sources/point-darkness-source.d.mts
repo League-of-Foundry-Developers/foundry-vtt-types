@@ -28,6 +28,17 @@ declare class PointDarknessSource<
   /** @defaultValue `CONFIG.Canvas.darknessAnimations` */
   protected static get ANIMATIONS(): typeof CONFIG.Canvas.darknessAnimations;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   darkness: {
+   *     defaultShader: AdaptiveDarknessShader,
+   *     blendMode: "MAX_COLOR"
+   *   }
+   * }
+   * ```
+   */
   protected static override get _layers(): Record<string, RenderedEffectSource.LayerConfig>;
 
   /** @privateRemarks This is not in Foundry's code, but accounts for the mixin class's static property's inability to be generic */
@@ -52,6 +63,7 @@ declare class PointDarknessSource<
 
   /**
    * A convenience accessor to the darkness layer mesh.
+   * @remarks Unlike the other three layer getters inherited from {@linkcode RenderedEffectSource}, this is never undefined
    */
   get darkness(): PointSourceMesh;
 
@@ -86,6 +98,10 @@ declare namespace PointDarknessSource {
   interface AnyConstructor extends Identity<typeof AnyPointDarknessSource> {}
 
   interface SourceData extends BaseLightSource.SourceData, PointEffectSourceMixin.SourceData {
+    /**
+     * @privateRemarks Type override only, a darkness source is not going to use a
+     * {@linkcode RenderedEffectSource.LightAnimationConfig | LightAnimationConfig}
+     */
     animation: RenderedEffectSource.StoredDarknessAnimationConfig;
   }
 
@@ -97,11 +113,9 @@ declare namespace PointDarknessSource {
     darkness: RenderedEffectSource.SourceLayer;
   };
 
-  // TODO: make configurable
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["darknessSourceClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  // TODO: make configurable
   interface ConfiguredPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["darkness"]> {}
   interface ConfiguredPolygon extends FixedInstanceType<ConfiguredPolygonClass> {}
 }

@@ -5,6 +5,7 @@ import GlobalLightSource = foundry.canvas.sources.GlobalLightSource;
 import AdaptiveBackgroundShader = foundry.canvas.rendering.shaders.AdaptiveBackgroundShader;
 import PulseColorationShader = foundry.canvas.rendering.shaders.PulseColorationShader;
 import PulseIlluminationShader = foundry.canvas.rendering.shaders.PulseIlluminationShader;
+import PointSourceMesh = foundry.canvas.containers.PointSourceMesh;
 
 expectTypeOf(GlobalLightSource.sourceType).toBeString();
 expectTypeOf(GlobalLightSource.effectsCollection).toBeString();
@@ -53,6 +54,10 @@ expectTypeOf(
 
 expectTypeOf(mySource.name).toBeString();
 expectTypeOf(mySource.customPolygon).toEqualTypeOf<PIXI.Polygon | number[] | null>();
+
+expectTypeOf(mySource.background).toEqualTypeOf<PointSourceMesh>();
+expectTypeOf(mySource.coloration).toEqualTypeOf<PointSourceMesh>();
+expectTypeOf(mySource.illumination).toEqualTypeOf<PointSourceMesh>();
 
 expectTypeOf(mySource["_updateColorationUniforms"]()).toBeVoid();
 expectTypeOf(mySource["_updateIlluminationUniforms"]()).toBeVoid();

@@ -9,7 +9,7 @@ import type * as canvasGroups from "#client/canvas/groups/_module.d.mts";
 import type * as perception from "#client/canvas/perception/_module.d.mts";
 import type * as placeables from "#client/canvas/placeables/_module.d.mts";
 import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
-import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
+import type * as geometry from "#client/canvas/geometry/_module.d.mts";
 
 import SimplePeerAVClient = foundry.av.clients.SimplePeerAVClient;
 
@@ -2399,7 +2399,7 @@ declare global {
 
       /**
        * @defaultValue `foundry.canvas.sources.PointSoundSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
        */
       soundSourceClass: typeof foundry.canvas.sources.PointSoundSource;
 
@@ -2574,21 +2574,19 @@ declare global {
         bright: number;
       }
 
+      /**
+       * @privateRemarks Foundry types this as `{@enum `{@linkcode geometry.PointSourcePolygon | PointSourcePolygon}`}`,
+       * but all the runtime defaults are {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}. It is not
+       * impossible to add a new type of source with its own, non-CSP class, but this is unlikely to come up in real world
+       * code.
+       */
       interface PolygonBackends {
-        /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        sight: PointSourcePolygon.AnyConstructor;
-
-        /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        light: PointSourcePolygon.AnyConstructor;
-
-        /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        darkness: PointSourcePolygon.AnyConstructor;
-
-        /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        sound: PointSourcePolygon.AnyConstructor;
-
-        /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        move: PointSourcePolygon.AnyConstructor;
+        sight: geometry.ClockwiseSweepPolygon.AnyConstructor;
+        light: geometry.ClockwiseSweepPolygon.AnyConstructor;
+        darkness: geometry.ClockwiseSweepPolygon.AnyConstructor;
+        sound: geometry.ClockwiseSweepPolygon.AnyConstructor;
+        move: geometry.ClockwiseSweepPolygon.AnyConstructor;
+        [K: string]: geometry.PointSourcePolygon.AnyConstructor;
       }
 
       interface GridStyles {

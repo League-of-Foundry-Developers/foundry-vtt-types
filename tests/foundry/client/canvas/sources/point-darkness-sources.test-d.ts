@@ -19,7 +19,12 @@ expectTypeOf(mySource["_visualShape"]).toEqualTypeOf<PointSourcePolygon | null>(
 expectTypeOf(mySource.shape).toEqualTypeOf<PointSourcePolygon>();
 expectTypeOf(mySource["_padding"]).toBeNumber();
 expectTypeOf(mySource.edges).toEqualTypeOf<foundry.canvas.geometry.edges.Edge[]>();
+
 expectTypeOf(mySource.darkness).toEqualTypeOf<PointSourceMesh>();
+
+expectTypeOf(mySource.background).toEqualTypeOf<undefined>();
+expectTypeOf(mySource.coloration).toEqualTypeOf<undefined>();
+expectTypeOf(mySource.illumination).toEqualTypeOf<undefined>();
 
 const sourceData = {
   x: 50,

@@ -54,7 +54,25 @@ declare class PointVisionSource<
    */
   static override defaultData: PointVisionSource.SourceData;
 
-  /** @remarks Overrides `Adaptive*Shader` references with `*VisionShader` ones */
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   background: {
+   *     defaultShader: BackgroundVisionShader,
+   *     blendMode: "MAX_COLOR"
+   *   },
+   *   coloration: {
+   *     defaultShader: ColorationVisionShader,
+   *     blendMode: "SCREEN"
+   *   },
+   *   illumination: {
+   *     defaultShader: IlluminationVisionShader,
+   *     blendMode: "MAX_COLOR"
+   *   }
+   * }
+   * ```
+   */
   protected static get _layers(): Record<string, RenderedEffectSource.LayerConfig>;
 
   /**
@@ -254,11 +272,9 @@ declare namespace PointVisionSource {
 
   interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "radius" | "useThreshold"> {}
 
-  // TODO: make configurable
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["visionSourceClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  // TODO: make configurable
   interface ConfiguredPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["sight"]> {}
   interface ConfiguredPolygon extends FixedInstanceType<ConfiguredPolygonClass> {}
 }

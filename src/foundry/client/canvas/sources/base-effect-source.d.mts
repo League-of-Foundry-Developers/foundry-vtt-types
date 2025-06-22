@@ -75,8 +75,12 @@ declare abstract class BaseEffectSource<
   /**
    * The geometric shape of the effect source which is generated later.
    * @remarks This is `undefined` prior to the first call to {@linkcode BaseEffectSource.initialize | BaseEffectSource#Initialize}
+   *
+   * Only ever `number[]` in {@linkcode foundry.canvas.sources.GlobalLightSource}, and only if
+   * {@linkcode foundry.canavs.sources.GlobalLightSource.customPolygon | #customPolygon} is set
+   * to a `number[]` before initialization.
    */
-  shape: SourceShape | undefined;
+  shape: SourceShape | number[] | undefined;
 
   /**
    * A collection of boolean flags which control rendering and refresh behavior for the source.

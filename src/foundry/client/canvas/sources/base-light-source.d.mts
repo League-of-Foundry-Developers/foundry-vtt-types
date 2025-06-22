@@ -60,6 +60,25 @@ declare abstract class BaseLightSource<
    */
   protected static get ANIMATIONS(): typeof CONFIG.Canvas.lightAnimations | typeof CONFIG.Canvas.darknessAnimations;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   background: {
+   *     defaultShader: AdaptiveBackgroundShader,
+   *     blendMode: "MAX_COLOR",
+   *   },
+   *   coloration: {
+   *     defaultShader: AdaptiveColorationShader,
+   *     blendMode: "SCREEN",
+   *   },
+   *   illumination: {
+   *     defaultShader: AdaptiveIlluminationShader,
+   *     blendMode: "MAX_COLOR",
+   *   },
+   * }
+   * ```
+   */
   protected static override get _layers(): Record<string, RenderedEffectSource.LayerConfig>;
 
   /**
@@ -98,10 +117,10 @@ declare abstract class BaseLightSource<
 
   protected override _updateCommonUniforms(shader: AbstractBaseShader): void;
 
-  /** @remarks Doesn't exist prior to initialization. Ultimately set in `_updateCommonUniforms` */
+  /** @remarks Doesn't exist prior to initialization. Ultimately set in {@linkcode BaseLightSource._updateCommonUniforms | _updateCommonUniforms} */
   cachedAttenuation?: number;
 
-  /** @remarks Doesn't exist prior to initialization. Ultimately set in `_updateCommonUniforms` */
+  /** @remarks Doesn't exist prior to initialization. Ultimately set in {@linkcode BaseLightSource._updateCommonUniforms | _updateCommonUniforms} */
   computedAttenuation?: number;
 
   /**
@@ -136,10 +155,9 @@ declare abstract class BaseLightSource<
   animateSoundPulse(dt: number, options?: BaseLightSource.AnimateSoundPulseOptions): void;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "BaseLightSource#isDarkness is now obsolete. Use DarknessSource instead."
-   *
-   * Always returns `false`
+   * /**
+   * @deprecated "`BaseLightSource#isDarkness` is now obsolete. Use {@linkcode foundry.canvas.sources.PointDarknessSource | PointDarknessSource} instead." (since v12, until v14)
+   * @remarks Always returns `false`, typed as `boolean` to allow PointDarknessSource override
    */
   get isDarkness(): boolean;
 

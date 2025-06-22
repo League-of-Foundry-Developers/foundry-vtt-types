@@ -7,6 +7,7 @@ import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
 import AdaptiveBackgroundShader = foundry.canvas.rendering.shaders.AdaptiveBackgroundShader;
 import FairyLightIlluminationShader = foundry.canvas.rendering.shaders.FairyLightIlluminationShader;
 import FairyLightColorationShader = foundry.canvas.rendering.shaders.FairyLightColorationShader;
+import PointSourceMesh = foundry.canvas.containers.PointSourceMesh;
 
 expectTypeOf(PointLightSource.effectsCollection).toBeString();
 expectTypeOf(PointLightSource.defaultData).toEqualTypeOf<PointLightSource.SourceData>();
@@ -15,6 +16,10 @@ const mySource = new PointLightSource();
 
 expectTypeOf(mySource.data).toEqualTypeOf<PointLightSource.SourceData>();
 expectTypeOf(mySource.shape).toEqualTypeOf<PointSourcePolygon>();
+
+expectTypeOf(mySource.background).toEqualTypeOf<PointSourceMesh>();
+expectTypeOf(mySource.coloration).toEqualTypeOf<PointSourceMesh>();
+expectTypeOf(mySource.illumination).toEqualTypeOf<PointSourceMesh>();
 
 const sourceData = {
   x: 50,
