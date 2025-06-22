@@ -1,6 +1,6 @@
 import type * as CONST from "#common/constants.d.mts";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "#utils";
+import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise, RemoveIndexSignatures } from "#utils";
 import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
 import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
@@ -2441,9 +2441,9 @@ declare global {
 
       gridStyles: Canvas.GridStyles;
 
-      lightAnimations: Canvas.LightAnimations;
+      lightAnimations: RemoveIndexSignatures<Canvas.LightAnimations>;
 
-      darknessAnimations: Canvas.DarknessAnimations;
+      darknessAnimations: RemoveIndexSignatures<Canvas.DarknessAnimations>;
 
       /**
        * A registry of Scenes which are managed by a specific SceneManager class.
@@ -2582,6 +2582,9 @@ declare global {
         light: PointSourcePolygon.AnyConstructor;
 
         /** @defaultValue `typeof ClockwiseSweepPolygon` */
+        darkness: PointSourcePolygon.AnyConstructor;
+
+        /** @defaultValue `typeof ClockwiseSweepPolygon` */
         sound: PointSourcePolygon.AnyConstructor;
 
         /** @defaultValue `typeof ClockwiseSweepPolygon` */
@@ -2676,7 +2679,7 @@ declare global {
         roundPoints: canvasLayers.GridLayer.GridStyle;
       }
 
-      interface LightAnimations {
+      interface LightAnimations extends Record<string, RenderedEffectSource.LightAnimationConfig> {
         flame: {
           /** @defaultValue `"LIGHT.AnimationFame"` */
           label: string;
@@ -2917,7 +2920,7 @@ declare global {
         };
       }
 
-      interface DarknessAnimations {
+      interface DarknessAnimations extends Record<string, RenderedEffectSource.DarknessAnimationConfig> {
         magicalGloom: {
           /** @defaultValue `"LIGHT.AnimationMagicalGloom"` */
           label: string;

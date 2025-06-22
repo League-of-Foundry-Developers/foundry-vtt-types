@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyObject, IntentionalPartial, UnconditionalInexactPartial } from "fvtt-types/utils";
+import type { AnyObject, IntentionalPartial, UnconditionalInexactPartial } from "#utils";
 
 import BaseEffectSource = foundry.canvas.sources.BaseEffectSource;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
@@ -12,8 +12,14 @@ class MyEffectSource<
 
   static override effectsCollection = "someCollection";
 
+  // testing that initialize knows the keys of `data`
   override initialize(data?: UnconditionalInexactPartial<SourceData>, options?: BaseEffectSource.InitializeOptions) {
-    if (data?.disabled) if (options?.reset) return this;
+    if (data) {
+      // @ts-expect-error foo is not a key of BaseEffectSource.SourceData
+      if (data.foo) return this;
+      if (data.disabled && data.x && data.y && data.elevation) return this;
+    }
+    if (options?.reset) return this;
     return this;
   }
 
@@ -36,10 +42,14 @@ expectTypeOf(MyEffectSource.sourceType).toBeString();
 expectTypeOf(MyEffectSource.effectsCollection).toBeString();
 expectTypeOf(MyEffectSource.defaultData).toEqualTypeOf<BaseEffectSource.SourceData>();
 
-const mySource = new MyEffectSource();
+declare const object: foundry.canvas.placeables.Token.Implementation;
+// @ts-expect-error A source must be passed a sourceId option at construction
+new MyEffectSource();
+new MyEffectSource({ sourceId: foundry.utils.randomID() });
+const mySource = new MyEffectSource({ object, sourceId: object.id });
 
 expectTypeOf(mySource.object).toEqualTypeOf<PlaceableObject.Any | EnvironmentCanvasGroup.Any | null>();
-expectTypeOf(mySource.sourceId).toEqualTypeOf<string | undefined>();
+expectTypeOf(mySource.sourceId).toEqualTypeOf<string>();
 expectTypeOf(mySource.data).toEqualTypeOf<BaseEffectSource.SourceData>();
 expectTypeOf(mySource.shape).toEqualTypeOf<PIXI.Polygon | undefined>();
 

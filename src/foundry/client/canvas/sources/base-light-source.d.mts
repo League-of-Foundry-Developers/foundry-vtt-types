@@ -10,13 +10,33 @@ declare abstract class BaseLightSource<
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
   RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = BaseLightSource.Layers,
 > extends RenderedEffectSource<SourceData, SourceShape, RenderingLayers> {
-  /** @defaultValue `"light"` */
+  /**
+   * @defaultValue `"light"`
+   * @privateRemarks left `string` here, with a real and fake override in {@linkcode foundry.canvas.source.PointDarknessSource | PointDarknessSource}
+   * and {@linkcode foundry.canvas.sources.PointLightSource | PointLightSource} respectively
+   */
   static override sourceType: string;
 
   /** @defaultValue `["animation.type", "walls"]` */
   protected static override _initializeShaderKeys: string[];
 
-  /** @defaultValue `["dim", "bright", "attenuation", "alpha", "coloration", "color", "contrast", "saturation", "shadows", "luminosity"]` */
+  /**
+   * @defaultValue
+   * ```js
+   * [
+   *   "dim",
+   *   "bright",
+   *   "attenuation",
+   *   "alpha",
+   *   "coloration",
+   *   "color",
+   *   "contrast",
+   *   "saturation",
+   *   "shadows",
+   *   "luminosity",
+   * ]
+   * ```
+   */
   protected static override _refreshUniformsKeys: string[];
 
   /**

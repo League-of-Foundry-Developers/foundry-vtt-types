@@ -13,20 +13,17 @@ import type { CanvasVisibility } from "#client/canvas/groups/_module.d.mts";
  */
 declare class PointLightSource<
   SourceData extends PointLightSource.SourceData = PointLightSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointSourcePolygon,
+  SourceShape extends PointSourcePolygon = PointLightSource.ConfiguredPolygon,
   RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = BaseLightSource.Layers,
 > extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape, RenderingLayers> {
+  /** @privateRemarks Actually inherited from {@linkcode BaseLightSource} */
+  static override sourceType: "light";
+
   /** @defaultValue `"lightSources"` */
   static override effectsCollection: string;
 
   /** @privateRemarks Not in Foundry code, necessary type override */
   static override defaultData: PointLightSource.SourceData;
-
-  /**
-   * @privateRemarks This is not in foundry's code, but since this class (and its parent) implements `_createShapes`,
-   * and we are counting what happens in `initialize` as 'the constructor', this gets to be declared never undefined.
-   */
-  override shape: SourceShape;
 
   override get requiresEdges(): boolean;
 
@@ -75,8 +72,13 @@ declare namespace PointLightSource {
 
   interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold"> {}
 
+  // TODO: make configurable
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["lightSourceClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
+
+  // TODO: make configurable
+  interface ConfiguredPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["light"]> {}
+  interface ConfiguredPolygon extends FixedInstanceType<ConfiguredPolygonClass> {}
 }
 
 export default PointLightSource;

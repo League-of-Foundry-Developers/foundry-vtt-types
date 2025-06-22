@@ -9,10 +9,9 @@ import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
  */
 declare class PointSoundSource<
   SourceData extends PointSoundSource.SourceData = PointSoundSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointSourcePolygon,
+  SourceShape extends PointSourcePolygon = PointSoundSource.ConfiguredPolygon,
 > extends PointEffectSourceMixin(BaseEffectSource)<SourceData, SourceShape> {
-  /** @defaultValue `"sound"` */
-  static override sourceType: string;
+  static override sourceType: "sound";
 
   /** @privateRemarks Not in Foundry code, necessary type override */
   static override defaultData: PointSoundSource.SourceData;
@@ -46,9 +45,7 @@ declare namespace PointSoundSource {
 
   /** @internal */
   type _GetVolumeMultiplierOptions = InexactPartial<{
-    /**
-     * @defaultValue `true`
-     */
+    /** @defaultValue `true` */
     easing: boolean;
   }>;
 
@@ -58,8 +55,13 @@ declare namespace PointSoundSource {
 
   interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold"> {}
 
+  // TODO: make configurable
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["soundSourceClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
+
+  // TODO: make configurable
+  interface ConfiguredPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["sound"]> {}
+  interface ConfiguredPolygon extends FixedInstanceType<ConfiguredPolygonClass> {}
 }
 
 export default PointSoundSource;

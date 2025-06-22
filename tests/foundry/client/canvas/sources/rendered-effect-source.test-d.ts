@@ -21,9 +21,7 @@ expectTypeOf(MyRenderedSource["_layers"]).toEqualTypeOf<Record<string, RenderedE
 expectTypeOf(MyRenderedSource.EDGE_OFFSET).toBeNumber();
 expectTypeOf(MyRenderedSource.defaultData).toEqualTypeOf<RenderedEffectSource.SourceData>();
 
-expectTypeOf(
-  MyRenderedSource.getCorrectedLevel(CONST.LIGHTING_LEVELS.BRIGHT),
-).toExtend<foundry.CONST.LIGHTING_LEVELS>();
+expectTypeOf(MyRenderedSource.getCorrectedLevel(CONST.LIGHTING_LEVELS.BRIGHT)).toExtend<CONST.LIGHTING_LEVELS>();
 expectTypeOf(
   MyRenderedSource.getCorrectedColor(
     CONST.LIGHTING_LEVELS.HALFDARK,
@@ -48,7 +46,11 @@ expectTypeOf(
   ),
 ).toEqualTypeOf<Color>();
 
-const mySource = new MyRenderedSource();
+declare const object: foundry.canvas.placeables.Token.Implementation;
+// @ts-expect-error A source must be passed a sourceId option at construction
+new MyRenderedSource();
+new MyRenderedSource({ sourceId: foundry.utils.randomID() });
+const mySource = new MyRenderedSource({ object, sourceId: object.id });
 
 expectTypeOf(mySource.animation).toEqualTypeOf<RenderedEffectSource.StoredAnimationConfig>();
 
@@ -57,17 +59,18 @@ if (mySource.animation.darknessShader) {
   expectTypeOf(mySource.animation.darknessShader).toEqualTypeOf<AdaptiveDarknessShader.AnyConstructor>();
 } else {
   expectTypeOf(mySource.animation.illuminationShader).toEqualTypeOf<
-    AdaptiveIlluminationShader.AnyConstructor | undefined | null
+    AdaptiveIlluminationShader.AnyConstructor | undefined
   >();
   expectTypeOf(mySource.animation.colorationShader).toEqualTypeOf<
-    AdaptiveColorationShader.AnyConstructor | undefined | null
+    AdaptiveColorationShader.AnyConstructor | undefined
   >();
   expectTypeOf(mySource.animation.backgroundShader).toEqualTypeOf<
-    AdaptiveBackgroundShader.AnyConstructor | undefined | null
+    AdaptiveBackgroundShader.AnyConstructor | undefined
   >();
 }
 
 expectTypeOf(mySource.layers).toEqualTypeOf<RenderedEffectSource.Layers>();
+// @ts-expect-error RenderedEffectSource provides no layers as of v13
 expectTypeOf(mySource.layers.background.mesh).toEqualTypeOf<PointSourceMesh | undefined>();
 
 expectTypeOf(mySource.colorRGB).toEqualTypeOf<Color.RGBColorVector | null>();

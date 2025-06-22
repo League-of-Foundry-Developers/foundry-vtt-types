@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { FixedInstanceType, Identity } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
@@ -8,10 +8,9 @@ import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
  */
 declare class PointMovementSource<
   SourceData extends PointMovementSource.SourceData = PointMovementSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointSourcePolygon,
+  SourceShape extends PointSourcePolygon = PointMovementSource.ConfiguredPolygon,
 > extends PointEffectSourceMixin(BaseEffectSource)<SourceData, SourceShape> {
-  /** @defaultValue `"move"` */
-  static override sourceType: string;
+  static override sourceType: "move";
 
   /** @privateRemarks Not in Foundry code, necessary type override */
   static override defaultData: PointMovementSource.SourceData;
@@ -30,7 +29,11 @@ declare namespace PointMovementSource {
   interface SourceData extends PointEffectSourceMixin.MixedSourceData {}
 
   // This is the only core Point*Source class that isn't configurable, `Token##getMovementSource`
-  // references this class directly, not a `CONFIG` property
+  // references this class directly, there is no `CONFIG.Canvas.movementSourceClass` or equivalent
+
+  // TODO: make configurable
+  interface ConfiguredPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["move"]> {}
+  interface ConfiguredPolygon extends FixedInstanceType<ConfiguredPolygonClass> {}
 }
 
 export default PointMovementSource;
