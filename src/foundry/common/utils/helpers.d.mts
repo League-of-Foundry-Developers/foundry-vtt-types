@@ -309,9 +309,9 @@ export interface GetRouteOptions extends _GetRouteOptions {}
  * @param variable - A provided variable
  * @returns The named type of the token
  */
-export function getType(
-  variable: unknown,
-):
+export function getType(variable: unknown): DataType;
+
+export type DataType =
   | "Array"
   | "Error"
   | "HTMLElement"
@@ -355,7 +355,7 @@ export function getProperty(object: object, key: string): unknown;
  * @param value  - The value to be assigned
  * @returns Whether the value was changed from its previous value
  */
-export function setProperty(object: object, key: string, value: any): boolean;
+export function setProperty(object: object, key: string, value: unknown): boolean;
 
 /**
  * A helper function which searches through an object to delete a value by a string key.
@@ -624,7 +624,7 @@ export interface ParseUUIDOptions extends _ParseUUIDOptions {}
  * They must be unescaped first if they are used inside a context that would escape them.
  *
  * Handles only `&`, `<`, `>`, `"`, and `'`.
- * @see {@link foundry.utils.unescapeHTML}
+ * @see {@linkcode foundry.utils.unescapeHTML}
  * @param value - An unescaped string
  * @returns The escaped string
  * @privateRemarks Foundry types `value` as `string|any`, as the method passes it through `String()`, but accounting for that seems counterproductive
@@ -635,7 +635,7 @@ export function escapeHTML(value: string): string;
  * Unescape the given escaped string.
  *
  * Handles only `&amp;`, `&lt;`, `&gt;`, `&quot;`, and `&#x27;`.
- * @see {@link foundry.utils.escapeHTML}
+ * @see {@linkcode foundry.utils.escapeHTML}
  * @param value - An escaped string
  * @returns The escaped string
  */
