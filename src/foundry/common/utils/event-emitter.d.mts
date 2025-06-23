@@ -1,4 +1,4 @@
-import type { AnyConstructor, Coalesce, FixedInstanceType, Mixin, PhantomConstructor, NullishProps } from "#utils";
+import type { AnyConstructor, Coalesce, FixedInstanceType, Mixin, PhantomConstructor, InexactPartial } from "#utils";
 
 /**
  * A mixin class which implements the behavior of EventTarget.
@@ -44,7 +44,17 @@ declare class EventEmitter {
    * @returns Was default behavior for the event prevented?
    */
   dispatchEvent(event: Event): boolean;
+
+  #EventEmitter: true;
 }
+
+/**
+ * Augment a base class with EventEmitter behavior.
+ * @param BaseClass - Some base class augmented with event emitter functionality: defaults to an anonymous empty class.
+ */
+declare function EventEmitterMixin<BaseClass extends EventEmitterMixin.BaseClass | undefined = undefined>(
+  BaseClass?: BaseClass,
+): EventEmitterMixin.Mix<BaseClass>;
 
 declare namespace EventEmitterMixin {
   interface AnyMixedConstructor extends ReturnType<typeof EventEmitterMixin<BaseClass>> {}
@@ -58,7 +68,7 @@ declare namespace EventEmitterMixin {
   type BaseClass = AnyConstructor;
 
   /** @internal */
-  type _AddListenerOptions = NullishProps<{
+  type _AddListenerOptions = InexactPartial<{
     /**
      * Should the event only be responded to once and then removed
      * @defaultValue `false`
@@ -70,13 +80,5 @@ declare namespace EventEmitterMixin {
 
   type EventListener = (event: Event) => void;
 }
-
-/**
- * Augment a base class with EventEmitter behavior.
- * @param BaseClass - Some base class augmented with event emitter functionality
- */
-declare function EventEmitterMixin<BaseClass extends EventEmitterMixin.BaseClass | undefined = undefined>(
-  BaseClass?: BaseClass,
-): EventEmitterMixin.Mix<BaseClass>;
 
 export default EventEmitterMixin;

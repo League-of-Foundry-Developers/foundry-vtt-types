@@ -12,13 +12,13 @@ declare class DocumentIndex {
    * A collection of WordTree structures for each document type.
    * @defaultValue `{}`
    */
-  trees: Record<string, foundry.utils.WordTree>;
+  trees: Record<string, foundry.utils.WordTree.Any>;
 
   /**
    * A reverse-lookup of a document's UUID to its parent node in the word tree.
    * @defaultValue `{}`
    */
-  uuids: Record<string, foundry.utils.StringTree.StringTreeNode<DocumentIndex.Leaf>>;
+  uuids: Record<string, foundry.utils.StringTree.Node<DocumentIndex.Leaf>>;
 
   /**
    * Returns a Promise that resolves when the indexing process is complete.
@@ -55,14 +55,14 @@ declare class DocumentIndex {
       /**
        * A filter function to apply to each candidate entry.
        */
-      filterEntries?: foundry.utils.StringTree.StringTreeEntryFilter;
+      filterEntries?: foundry.utils.StringTree.EntryFilter<object>;
 
       /**
        * Only return entries that the user meets this ownership level for.
        */
       ownership?: DOCUMENT_OWNERSHIP_LEVELS;
     },
-  ): Record<string, foundry.utils.WordTree.WordTreeEntry[]>;
+  ): Record<string, foundry.utils.WordTree.Entry.Any[]>;
 
   /**
    * Add an entry to the index.
