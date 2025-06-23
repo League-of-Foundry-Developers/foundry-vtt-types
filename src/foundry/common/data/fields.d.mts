@@ -775,7 +775,11 @@ declare namespace DataField {
 
   type ToInputConfigWithChoices<InitializedType, Choices extends AnyChoices | undefined> = SimpleMerge<
     Omit<ToInputConfigWithOptions<InitializedType>, "options">,
-    Choices extends undefined ? StringField.GetChoicesOptions : NullishProps<StringField.GetChoicesOptions, "choices">
+    Choices extends undefined
+      ? StringField.GetChoicesOptions
+      : Omit<StringField.GetChoicesOptions, "choices"> & {
+          choices?: StringField.GetChoicesOptions["choices"] | undefined;
+        }
   >;
 
   type SelectableToInputConfig<InitializedType, Choices extends StringField.Choices | undefined> =
@@ -783,8 +787,14 @@ declare namespace DataField {
     | ToInputConfigWithOptions<InitializedType>
     | ToInputConfigWithChoices<InitializedType, Choices>;
 
-  // `DataField#toFormGroup` provides default values for these by way of `??=`.
-  interface GroupConfig extends NullishProps<FormGroupConfig, "label" | "hint" | "input"> {}
+  /**
+   * `label`, `hint`, and `input` are all provided defaults. Note that
+   */
+  interface GroupConfig extends Omit<FormGroupConfig, "label" | "hint" | "input"> {
+    label?: FormGroupConfig["label"] | null | undefined;
+    hint?: FormGroupConfig["hint"] | null | undefined;
+    input?: FormGroupConfig["input"] | null | undefined;
+  }
 }
 
 declare abstract class AnyDataField extends DataField<any, any, any, any> {
@@ -4349,7 +4359,9 @@ declare namespace HTMLField {
   >;
 
   // `HTMLField#toFormGroup` provides a default by way of `groupConfig.stacked ??= true`.
-  interface GroupConfig extends NullishProps<DataField.GroupConfig, "stacked"> {}
+  interface GroupConfig extends Omit<DataField.GroupConfig, "stacked"> {
+    stacked?: DataField.GroupConfig["stacked"] | null | undefined;
+  }
 }
 
 /**
@@ -5164,7 +5176,9 @@ declare namespace JavaScriptField {
   >;
 
   // `JavaScriptField#toFormGroup` provides a default by way of `groupConfig.stacked ??= true`.
-  interface GroupConfig extends NullishProps<DataField.GroupConfig, "stacked"> {}
+  interface GroupConfig extends Omit<DataField.GroupConfig, "stacked"> {
+    stacked?: DataField.GroupConfig["stacked"] | null | undefined;
+  }
 
   interface ToInputConfig<InitializedType>
     extends SimpleMerge<DataField.ToInputConfig<InitializedType>, TextAreaInputConfig> {}

@@ -38,9 +38,9 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<void>>();
 
-declare const someEvent: PIXI.FederatedEvent;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const someDragEvent: DragEvent;
-expectTypeOf(layer["_onClickLeft"](someEvent)).toEqualTypeOf<Promise<Note.Implementation | void>>();
+expectTypeOf(layer["_onClickLeft"](pointerEvent)).toEqualTypeOf<Promise<Note.Implementation | void>>();
 
 expectTypeOf(
   layer["_onDropData"](someDragEvent, {

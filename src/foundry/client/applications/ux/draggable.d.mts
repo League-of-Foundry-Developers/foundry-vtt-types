@@ -1,5 +1,6 @@
 import type Application from "#client/appv1/api/application-v1.mjs";
 import type ApplicationV2 from "#client/applications/api/application.d.mts";
+import type { Identity } from "#utils";
 
 /**
  * A UI utility to make an element draggable.
@@ -101,6 +102,9 @@ declare class Draggable<R extends boolean | Draggable.Resizable = false> {
 }
 
 declare namespace Draggable {
+  interface Any extends AnyDraggable {}
+  interface AnyConstructor extends Identity<typeof AnyDraggable> {}
+
   interface Resizable {
     /**
      * A CSS selector for the resize handle.
@@ -143,6 +147,10 @@ declare namespace Draggable {
     resizeMove: ["pointermove", (e: Event) => void, false];
     resizeUp: ["pointerup", (e: Event) => void, false];
   }
+}
+
+declare abstract class AnyDraggable extends Draggable<boolean | Draggable.Resizable> {
+  constructor(...args: never);
 }
 
 export default Draggable;

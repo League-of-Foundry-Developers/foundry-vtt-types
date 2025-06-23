@@ -92,25 +92,25 @@ expectTypeOf(wall["_playDoorSound"]("lock")).toBeVoid();
 expectTypeOf(wall.soundRadius).toBeNumber();
 
 declare const someUser: User.Implementation;
-declare const someEvent: PIXI.FederatedEvent;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 
-expectTypeOf(wall["_canControl"](someUser, someEvent)).toBeBoolean();
+expectTypeOf(wall["_canControl"](someUser, pointerEvent)).toBeBoolean();
 
-expectTypeOf(wall["_onHoverIn"](someEvent)).toEqualTypeOf<false | void>();
-expectTypeOf(wall["_onHoverIn"](someEvent, {})).toEqualTypeOf<false | void>();
-expectTypeOf(wall["_onHoverIn"](someEvent, { hoverOutOthers: true })).toEqualTypeOf<false | void>();
-expectTypeOf(wall["_onHoverIn"](someEvent, { hoverOutOthers: null })).toEqualTypeOf<false | void>();
+expectTypeOf(wall["_onHoverIn"](pointerEvent)).toEqualTypeOf<false | void>();
+expectTypeOf(wall["_onHoverIn"](pointerEvent, {})).toEqualTypeOf<false | void>();
+expectTypeOf(wall["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toEqualTypeOf<false | void>();
+expectTypeOf(wall["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toEqualTypeOf<false | void>();
 
 expectTypeOf(wall["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
 
-expectTypeOf(wall["_onHoverOut"](someEvent)).toBeVoid();
-expectTypeOf(wall["_onClickLeft"](someEvent)).toBeBoolean();
-expectTypeOf(wall["_onClickLeft2"](someEvent)).toBeVoid();
-expectTypeOf(wall["_onClickRight2"](someEvent)).toBeVoid();
-expectTypeOf(wall["_onDragLeftStart"](someEvent)).toBeVoid();
-expectTypeOf(wall["_onDragLeftMove"](someEvent)).toBeVoid();
+expectTypeOf(wall["_onHoverOut"](pointerEvent)).toBeVoid();
+expectTypeOf(wall["_onClickLeft"](pointerEvent)).toBeBoolean();
+expectTypeOf(wall["_onClickLeft2"](pointerEvent)).toBeVoid();
+expectTypeOf(wall["_onClickRight2"](pointerEvent)).toBeVoid();
+expectTypeOf(wall["_onDragLeftStart"](pointerEvent)).toBeVoid();
+expectTypeOf(wall["_onDragLeftMove"](pointerEvent)).toBeVoid();
 
-expectTypeOf(wall["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<Wall.DragLeftDropUpdate[] | null>();
+expectTypeOf(wall["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<Wall.DragLeftDropUpdate[] | null>();
 
 // deprecated since v12, until v14
 // eslint-disable-next-line @typescript-eslint/no-deprecated

@@ -41,9 +41,9 @@ expectTypeOf(layer.drawSelect(someRect)).toBeVoid();
 
 expectTypeOf(layer["_deactivate"]()).toBeVoid();
 expectTypeOf(layer["_onMouseMove"]()).toBeVoid();
-declare const someEvent: PIXI.FederatedEvent;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const somePoint: PIXI.Point;
-expectTypeOf(layer["_onLongPress"](someEvent, somePoint)).toEqualTypeOf<Promise<boolean>>();
+expectTypeOf(layer["_onLongPress"](pointerEvent, somePoint)).toEqualTypeOf<Promise<boolean>>();
 expectTypeOf(layer["_onCanvasPan"]()).toBeVoid();
 
 declare const someUser: User.Implementation;

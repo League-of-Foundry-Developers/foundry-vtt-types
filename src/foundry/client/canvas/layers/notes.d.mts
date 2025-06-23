@@ -74,7 +74,7 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
   ): Promise<void>;
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  protected override _onClickLeft(event: PIXI.FederatedEvent): Promise<Note.Implementation | void>;
+  protected override _onClickLeft(event: Canvas.Event.Pointer): Promise<Note.Implementation | void>;
 
   /**
    * Handle JournalEntry document drop data

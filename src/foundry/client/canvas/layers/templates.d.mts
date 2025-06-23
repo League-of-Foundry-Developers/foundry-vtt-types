@@ -51,12 +51,12 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
    */
   static registerSettings(): void;
 
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
   // @ts-expect-error Foundry is changing the return type here from Promise<PlaceableObject[]> to Promise<MeasuredTemplate>
-  protected override _onMouseWheel(event: WheelEvent): Promise<MeasuredTemplate.Implementation> | void;
+  protected override _onMouseWheel(event: Canvas.Event.Wheel): Promise<MeasuredTemplate.Implementation> | void;
 }
 
 declare namespace TemplateLayer {
