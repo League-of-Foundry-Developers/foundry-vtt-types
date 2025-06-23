@@ -181,7 +181,9 @@ expectTypeOf(myTile.video.loop).toBeBoolean();
 expectTypeOf(myTile.video.autoplay).toBeBoolean();
 expectTypeOf(myTile.video.volume).toBeNumber();
 expectTypeOf(myTile.flags).toEqualTypeOf<
-  InterfaceToObject<TileDocument.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  foundry.data.fields.DocumentFlagsField._TwoLevelPartial<
+    InterfaceToObject<TileDocument.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  >
 >();
 
 // document-specific flag(s)

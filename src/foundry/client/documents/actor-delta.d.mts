@@ -325,7 +325,7 @@ declare namespace ActorDelta {
     /**
      * An object of actor flag overrides.
      */
-    flags: fields.ObjectField.FlagsField<"Actor">;
+    flags: fields.DocumentFlagsField<"Actor">;
   }
 
   namespace Database {

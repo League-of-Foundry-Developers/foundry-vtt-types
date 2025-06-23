@@ -348,7 +348,7 @@ declare namespace DrawingDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<"Drawing">;
+    flags: fields.DocumentFlagsField<"Drawing">;
   }
 
   namespace Database {

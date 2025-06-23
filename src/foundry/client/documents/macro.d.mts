@@ -293,7 +293,7 @@ declare namespace Macro {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     /**
      * An object of creation and access information

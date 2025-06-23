@@ -352,7 +352,7 @@ declare namespace Actor {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<"Actor">;
+    flags: fields.DocumentFlagsField<"Actor">;
 
     /**
      * An object of creation and access information

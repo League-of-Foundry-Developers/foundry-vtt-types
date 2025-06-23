@@ -4134,7 +4134,7 @@ declare namespace HueField {
  */
 declare class DocumentAuthorField<
   DocumentType extends Document.AnyConstructor,
-  Options extends ForeignDocumentField.Options = ForeignDocumentField.DefaultOptions,
+  Options extends DocumentAuthorField.Options = DocumentAuthorField.DefaultOptions,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentType = ForeignDocumentField.AssignmentType<DocumentType, Options>,
   InitializedType = ForeignDocumentField.InitializedType<DocumentType, Options>,
@@ -4591,7 +4591,6 @@ declare namespace IntegerSortField {
 /**
  * A subclass of {@linkcode TypedObjectField} that is used specifically for the Document "flags" field.
  */
-// TODO: wire up the existing FlagsField types to this Field
 declare class DocumentFlagsField<
   Name extends Document.Type,
   // The type `{}` is useful here because in an intersection it reduces down to nothing unlike `EmptyObject`.
@@ -4659,16 +4658,12 @@ declare namespace DocumentFlagsField {
     MergedOptions<Options>
   >;
 
-  /**
-   * @internal
-   */
+  /** @internal */
   type _TwoLevelPartial<T> = {
     [K in keyof T]?: _PartialObject<T[K]>;
   };
 
-  /**
-   * @internal
-   */
+  /** @internal */
   type _PartialObject<T> = T extends object ? Partial<T> : T;
 }
 

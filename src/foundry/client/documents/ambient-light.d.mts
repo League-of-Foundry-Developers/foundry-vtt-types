@@ -220,7 +220,7 @@ declare namespace AmbientLightDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
+    flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
   }
 
   namespace Database {

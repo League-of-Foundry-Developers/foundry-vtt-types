@@ -88,14 +88,12 @@ expectTypeOf(myRB).toEqualTypeOf<BaseRegionBehavior>();
 
 expectTypeOf(myRB._id).toEqualTypeOf<string | null>();
 expectTypeOf(myRB.name).toBeString();
-// TODO: fix somehow
-// excessively deep error
-// expectTypeOf(myRB.type).toEqualTypeOf<
-//   foundry.data.fields.DocumentTypeField.InitializedType<
-//     typeof BaseRegionBehavior,
-//     foundry.data.fields.DocumentTypeField.DefaultOptions
-//   >
-// >();
+expectTypeOf(myRB.type).toEqualTypeOf<
+  foundry.data.fields.DocumentTypeField.InitializedType<
+    typeof BaseRegionBehavior,
+    foundry.data.fields.DocumentTypeField.DefaultOptions
+  >
+>();
 // expectTypeOf(myRB.system).toEqualTypeOf</* ???? */>()
 expectTypeOf(myRB.disabled).toBeBoolean();
 expectTypeOf(myRB.flags).toEqualTypeOf<InterfaceToObject<Document.CoreFlags>>();

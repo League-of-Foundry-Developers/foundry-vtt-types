@@ -168,7 +168,9 @@ expectTypeOf(myToken.ring.subject.texture).toEqualTypeOf<string | null | undefin
 // TODO: ArrayField<ForeignDocumentField> is returning `never[]`
 expectTypeOf(myToken._regions).toEqualTypeOf<Array<string | null>>();
 expectTypeOf(myToken.flags).toEqualTypeOf<
-  InterfaceToObject<TokenDocument.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  foundry.data.fields.DocumentFlagsField._TwoLevelPartial<
+    InterfaceToObject<TokenDocument.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  >
 >();
 
 // The following fields can't really be `undefined` because they have `initial`s, see https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3055
